@@ -17,9 +17,8 @@ class DatabaseModel extends BaseModel
 
     public function collection(): array
     {
-        $db = db_connect();
         $return = array();
-        $tables = $db->listTables();
+        $tables = $this->db->listTables();
         foreach ($tables as $table) {
             $item = new \stdClass();
             $item->type = 'database';
@@ -27,14 +26,14 @@ class DatabaseModel extends BaseModel
             $item->attributes = new \stdClass();
             
             $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . '`';
-            $query = $db->query($sql);
+            $query = $this->db->query($sql);
             $result = $query->getResult();
             $item->attributes->name = $table;
             $item->attributes->count = intval($result[0]->count);
 
-            if ($db->fieldExists('current', $table)) {
+            if ($this->db->fieldExists('current', $table)) {
                 $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . "` WHERE current = 'y'";
-                $query = $db->query($sql);
+                $query = $this->db->query($sql);
                 $result = $query->getResult();
                 $item->attributes->current_row = true;
                 $item->attributes->current = intval($result[0]->count);
@@ -43,13 +42,13 @@ class DatabaseModel extends BaseModel
                 $item->attributes->current_row = false;
             }
 
-            if ($db->fieldExists('org_id', $table)) {
+            if ($this->db->fieldExists('org_id', $table)) {
                 $item->attributes->org_id_row = true;
             } else {
                 $item->attributes->org_id_row = false;
             }
 
-            if ($db->fieldExists('device_id', $table)) {
+            if ($this->db->fieldExists('device_id', $table)) {
                 $item->attributes->device_id_row = true;
             } else {
                 $item->attributes->device_id_row = false;
@@ -90,13 +89,12 @@ class DatabaseModel extends BaseModel
     public function export(string $table = ''): array
     {
         $instance = & get_instance();
-        $db = db_connect();
-        if (!$db->tableExists($table)) {
+        if (!$this->db->tableExists($table)) {
             return array();
         }
-        $builder = $db->table($table);
+        $builder = $this->db->table($table);
         $sql = "SELECT * FROM $table";
-        $result = $db->query($sql)->getResult();
+        $result = $this->db->query($sql)->getResult();
         $count = count($result);
         // Credentials Clouds both use an encrypted JSON string in the credentials column. Decode this.
         if ($table === 'clouds' or $table === 'credential' or $table === 'credentials') {
@@ -163,8 +161,7 @@ class DatabaseModel extends BaseModel
 
     public function read(string $table = ''): array
     {
-        $db = db_connect();
-        $builder = $db->table($table);
+        $builder = $this->db->table($table);
         $item = new \stdClass();
         $item->id = $table;
         $item->attributes = new \stdClass();
@@ -174,13 +171,13 @@ class DatabaseModel extends BaseModel
         $item->attributes->current = 0;
         $item->attributes->non_current = 0;
         $item->attributes->current_row = false;
-        if ($db->fieldExists('current', $table)) {
+        if ($this->db->fieldExists('current', $table)) {
             $builder->where('current', 'y');
             $item->attributes->current = $builder->countAllResults();
             $item->attributes->non_current = $item->attributes->count - $item->attributes->current;
             $item->attributes->current_row = true;
         }
-        if ($db->fieldExists('org_id', $table)) {
+        if ($this->db->fieldExists('org_id', $table)) {
             $item->attributes->org_id_row = true;
         } else {
             $item->attributes->org_id_row = false;
@@ -188,15 +185,15 @@ class DatabaseModel extends BaseModel
         if ($table === 'devices') {
             $item->attributes->status = array();
             $sql = 'SELECT status, COUNT(*) AS `count` FROM system GROUP BY `status`';
-            $query = $db->query($sql);
+            $query = $this->db->query($sql);
             $item->attributes->status = $query->getResult();
         }
         $item->attributes->columns = array();
-        $item->attributes->columns = $db->getFieldData($table);
+        $item->attributes->columns = $this->db->getFieldData($table);
         foreach ($item->attributes->columns as &$column) {
             if ($column->type === 'enum') {
                 $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `values` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = '" . $table . "' AND COLUMN_NAME = '" . $column->name . "'";
-                $query = $db->query($sql);
+                $query = $this->db->query($sql);
                 $column->values = $query->getResult()[0]->values;
             }
         }
@@ -208,8 +205,9 @@ class DatabaseModel extends BaseModel
 
     public function update($id = null, $data = null): bool
     {
-        $db = db_connect();
         $output = '';
+        // NOTE the below is simply because all the SQL statements in the following include files use $db->query, not $this->db->query.
+        $db = db_connect();
         if (intval(config('Openaudit')->internal_version) < 20210512) {
             # upgrade for 4.1.1
             include "db_upgrades/db_4.1.1.php";
@@ -261,7 +259,6 @@ class DatabaseModel extends BaseModel
 
     public function updateForm()
     {
-        $db = db_connect();
         $instance = & get_instance();
         $result = new \stdClass();
         if (php_uname('s') === 'Windows NT') {
@@ -278,8 +275,8 @@ class DatabaseModel extends BaseModel
         $result->current_version = config('Openaudit')->display_version;
         $result->new_version = config('Openaudit')->displayVersion;
         $result->hostname = php_uname('n');
-        $result->database_platform = $db->getPlatform();
-        $result->database_version = $db->getVersion();
+        $result->database_platform = $this->db->getPlatform();
+        $result->database_version = $this->db->getVersion();
         $result->web_server = (!empty(getenv("SERVER_SOFTWARE"))) ? getenv("SERVER_SOFTWARE") : '';
         if (empty($result->web_server) and !empty(php_sapi_name())) {
             $result->web_server = php_sapi_name();

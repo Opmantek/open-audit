@@ -343,7 +343,6 @@ class LogonModel extends Model
             }
         }
 
-        $db = db_connect();
         $sql = "SELECT * FROM users WHERE name = ? and active = 'y'";
         $query = $db->query($sql, [$username]);
         $result = $query->getResult();

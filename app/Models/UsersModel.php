@@ -166,9 +166,8 @@ class UsersModel extends BaseModel
 
     public function logon($username = '', $password = '', $domain = '')
     {
-        $db = db_connect();
         $sql = '/* m_logon::logon */ ' . "SELECT * FROM users WHERE name = ? and password = ? and active = 'y'";
-        $query = $db->query($sql, [$username, $password]);
+        $query = $this->db->query($sql, [$username, $password]);
         $result = $query->getResult();
         return $result;
     }

@@ -76,7 +76,7 @@ class DashboardsModel extends BaseModel
                 return false;
             }
             $sql = "UPDATE users SET dashboard_id = 1 WHERE dashboard_id = ?";
-            $query = $db->query($sql, [$id]);
+            $query = $this->db->query($sql, [$id]);
             return true;
         } else {
             return false;
