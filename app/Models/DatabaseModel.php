@@ -184,7 +184,7 @@ class DatabaseModel extends BaseModel
         }
         if ($table === 'devices') {
             $item->attributes->status = array();
-            $sql = 'SELECT status, COUNT(*) AS `count` FROM system GROUP BY `status`';
+            $sql = 'SELECT status, COUNT(*) AS `count` FROM devices GROUP BY `status`';
             $query = $this->db->query($sql);
             $item->attributes->status = $query->getResult();
         }
