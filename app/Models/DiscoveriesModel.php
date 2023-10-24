@@ -821,7 +821,9 @@ class DiscoveriesModel extends BaseModel
         if (!empty($dco)) {
             if (empty($result[0]->attributes->scan_options)) {
                 $result[0]->attributes->scan_options = new \stdClass();
-                foreach ($dco[0] as $key => $value) {
+            }
+            foreach ($dco[0] as $key => $value) {
+                if (!isset($result[0]->attributes->scan_options->{$key})) {
                     $result[0]->attributes->scan_options->{$key} = '';
                 }
             }
