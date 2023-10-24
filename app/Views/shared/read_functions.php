@@ -85,6 +85,17 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         }
     }
 
+    $add_thing_button = '';
+    if (($collection === 'clusters') and !empty($id)) {
+        if ($style === 'icontext') {
+            $collection_button .= "\n<a id=\"button_add_device\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Add Device') . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $id) . "?type=cluster\"><span style=\"margin-right:6px;\" class=\"fa fa-desktop text-oa-success\"></span>" . __('Add Device') . "</a>";
+        } else if ($style === 'icon') {
+            $collection_button .= "\n<a id=\"button_add_device\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Add Device') . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $id) . "?type=cluster\"><span class=\"fa fa-desktop text-oa-success\"></span></a>";
+        } else {
+            $collection_button = "\n<a id=\"button_add_device\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Add Device') . "\" href=\"" . url_to('componentsCreateForm', 'clusters', $id) . "?type=cluster\">" . __('Add Device') . "</a>";
+        }
+    }
+
     $return = "<div class=\"row\">
                         <div class=\"col-6 clearfix\">
                             <h6 style=\"padding-top:10px;\"><span class=\"{$icon} oa-icon\"></span>{$collection_title}</h6>

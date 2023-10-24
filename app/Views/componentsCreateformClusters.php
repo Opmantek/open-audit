@@ -10,7 +10,7 @@ if (stripos($meta->query_string, 'type=cluster') !== false) {
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= create_card_header('applications', 'fa fa-th-list', $user); ?>
+                    <?= create_card_header('clusters', 'fa fa-th-list', $user); ?>
                 </div>
                 <div class="card-body">
                     <div class="row">
