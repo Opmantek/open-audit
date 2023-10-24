@@ -234,7 +234,6 @@ window.onload = function () {
         $("#button_execute").remove();
         $(".delete_link").remove();
 
-
         $('.chart-raw-legend').css('overflow-y','visible');
 
         Highcharts.generictheme = {
@@ -298,7 +297,9 @@ window.onload = function () {
         <?php
         foreach ($included['widgets'] as $widget) {
             if (!empty($widget->formatted)) {
-                echo "\n\tHighcharts.chart(" . html_entity_decode(json_encode($widget->formatted)) . ");\n";
+                $wf = json_encode($widget->formatted);
+                $wf = str_replace('"function(event){location.href = this.options.url;}"', 'function(event){location.href = this.options.url;}', $wf);
+                echo "\n\tHighcharts.chart(" . html_entity_decode($wf) . ");\n";
             }
         } ?>
 
