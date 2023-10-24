@@ -42,7 +42,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     }
 
     $export_csv_button = '';
-    if ($collection === 'queries') {
+    if ($collection === 'queries' and !empty($id)) {
         if ($style === 'icontext') {
             $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('queriesExecute', $id) . "?format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>";
         } else if ($style === 'icon') {
