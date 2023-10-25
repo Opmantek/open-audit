@@ -280,7 +280,7 @@ window.onload = function () {
             var $name = $(this).attr("data-name");
             $.ajax({
                 type: "DELETE",
-                url: oae_url_base + "/database/queue?current=all",
+                url: web_folder + "index.php/database/queue",
                 dataType: "json",
                 success: function (data) {
                     window.location.reload(true);
@@ -298,14 +298,14 @@ window.onload = function () {
             }
             var data = {};
             data["data"] = {};
-            data["data"]["id"] = 'queue_count';
+            data["data"]["id"] = <?= $included['queue_id'] ?>;
             data["data"]["type"] = 'configuration';
             data["data"]["attributes"] = {};
             data["data"]["attributes"]['value'] = 0;
             data = JSON.stringify(data);
             $.ajax({
                 type: "PATCH",
-                url: oae_url_base + "/configuration/queue_count",
+                url: web_folder + "index.php/configuration/<?= $included['queue_id'] ?>",
                 contentType: "application/json",
                 data: {data : data},
                 success: function (data) {

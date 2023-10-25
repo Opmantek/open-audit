@@ -174,7 +174,7 @@ class DevicesModel extends BaseModel
         $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'first_seen', 'instance_options', 'credentials', 'discovery_id');
         foreach ($data as $key => $value) {
             if (!empty($value) and !in_array($key, $disallowed_fields)) {
-                $edit_sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, 'Data was changed', ?, ?, 'system', ?, ?, ?, '')";
+                $edit_sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, 'Data was changed', ?, ?, 'devices', ?, ?, ?, '')";
                 $query = $this->db->query($edit_sql, [intval($id), $data->last_seen_by, $weight, $key, $data->last_seen, $value]);
             }
         }
@@ -260,13 +260,13 @@ class DevicesModel extends BaseModel
         }
         if (!empty($identification)) {
             if (empty($device->type) or $device->type === 'unknown') {
-                $sql = "UPDATE `system` SET `type` = 'unclassified', `icon` = 'unclassified', `identification` = ? WHERE `id` = ?";
+                $sql = "UPDATE `devices` SET `type` = 'unclassified', `icon` = 'unclassified', `identification` = ? WHERE `id` = ?";
             } else {
-                $sql = "UPDATE `system` SET `identification` = ? WHERE `id` = ?";
+                $sql = "UPDATE `devices` SET `identification` = ? WHERE `id` = ?";
             }
         } else {
             $identification = 'No information could be retrieved.';
-            $sql = "UPDATE `system` SET `identification` = ? WHERE `id` = ?";
+            $sql = "UPDATE `devices` SET `identification` = ? WHERE `id` = ?";
         }
         $query = $this->db->query($sql, [$identification, $id]);
         return true;

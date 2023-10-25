@@ -124,7 +124,7 @@ class RulesModel extends BaseModel
         helper('macaddress');
 
         if (empty($id) && empty($device)) {
-            log_message('error', 'RulesExecute called, but no $device object or $id passed.');
+            log_message('error', 'RulesExecute called, but no device object or id passed.');
             return;
         }
 

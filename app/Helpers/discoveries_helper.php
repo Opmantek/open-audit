@@ -1778,10 +1778,10 @@ if (! function_exists('ip_audit')) {
 
         // Run our rules to update the device attributes
         if (!empty($audit)) {
-            log_message('debug', 'rulesModel::execute::return because $audit script result exists');
+            log_message('debug', 'rulesModel::execute::return because audit script result exists');
             $instance->rulesModel->execute($audit->system, intval($discovery->id), 'return', intval($audit->system->id));
         } else {
-            log_message('debug', 'rulesModel::execute::update because $audit script result does not exist');
+            log_message('debug', 'rulesModel::execute::update because audit script result does not exist');
             $instance->rulesModel->execute(null, intval($discovery->id), 'update', intval($device->id));
         }
 
