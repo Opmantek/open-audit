@@ -2610,6 +2610,11 @@ if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
 		if [[ "$name" == *"opReports"* ]]; then
 			installed_on=$(env stat --format=%y /usr/local/omk/lib/ReportsController.pm.exe 2>/dev/null | cut -d. -f1)
 		fi
+		if [[ "$name" == *"No"* ]]; then
+			# A weird edge case to account for 
+			# No OMK manifest file at '/data/opmojo/bin/../manifest'.
+			continue
+		fi
 		echo "		<item>" >> "$xml_file"
 		echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
 		echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
@@ -2620,6 +2625,21 @@ if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
 		echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
 		echo "		</item>" >> "$xml_file"
 	done
+fi
+if [ -f "/usr/local/open-audit/app/Config/OpenAudit.php" ]; then
+	# Open-AudiT 5 and greater
+	name="Open-AudIT"
+	version=$(grep displayVersion /usr/local/open-audit/app/Config/OpenAudit.php | cut -d\' -f2)
+	installed_on=$(env stat --format=%y /usr/local/open-audit/app/Config/View.php 2>/dev/null | cut -d. -f1)
+	echo "		<item>" >> "$xml_file"
+	echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
+	echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+	echo "			<description></description>" >> "$xml_file"
+	echo "			<url>https://firstwave.com</url>" >> "$xml_file"
+	echo "			<publisher>FirstWave</publisher>" >> "$xml_file"
+	echo "			<location>/usr/local/open-audit</location>" >> "$xml_file"
+	echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
+	echo "		</item>" >> "$xml_file"
 fi
 # Detect Quest InTrust agent
 adcscm_path=`service adcscm.linux_intel status 2>/dev/null | grep '\-service' | awk '{ print $3 }'`
