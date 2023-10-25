@@ -88,7 +88,7 @@ class NetworksModel extends BaseModel
     }
 
     /**
-     * Run the SQL definition and return the provided properties or the system.id list
+     * Unused
      * @param  integer $id The ID of the group
      * @return array       An array of standard formatted devices, or an empty array
      */

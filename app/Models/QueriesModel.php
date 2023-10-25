@@ -114,7 +114,7 @@ class QueriesModel extends BaseModel
     }
 
     /**
-     * Run the SQL definition and return the provided properties or the system.id list
+     * Run the SQL definition and return resultset
      * @param  integer $id The ID of the group
      * @return array       An array of standard formatted devices, or an empty array
      */
@@ -344,7 +344,7 @@ class QueriesModel extends BaseModel
 
         $dictionary->about = '<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
-        $dictionary->notes = '<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT system.id AS `system.id`, system.name AS `system.name` ...</code>.<br /><br />The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br /><br />An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br /><code>SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, <br />system.name AS `system.name`, system.os_name AS `system.os_name` FROM<br /> system WHERE @filter AND system.os_group = "Linux"</code><br /><br /></p>';
+        $dictionary->notes = '<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br /><br />The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br /><br />An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br /><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, <br />devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM<br /> devices WHERE @filter AND devices.os_group = "Linux"</code><br /><br /></p>';
 
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;

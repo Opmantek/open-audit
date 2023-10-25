@@ -1758,12 +1758,12 @@ function audit_format_system($parameters)
     if (empty($input->id)) {
         $input->id = '';
     } else {
-        $sql = 'SELECT `status` FROM system WHERE id = ?';
+        $sql = 'SELECT `status` FROM `devices` WHERE `id` = ?';
         $query = $db->query($sql, [intval($input->id)]);
         $result = $query->getResult();
         $log->device_id = intval($input->id);
         if (empty($result[0]->status) or $result[0]->status === 'deleted') {
-            $log->message = 'Removing supplied system ID (' . intval($input->id) . ') as the device is in a deleted status.';
+            $log->message = 'Removing supplied device ID (' . intval($input->id) . ') as the device is in a deleted status.';
             $log->ip = $input->ip;
             $log->command_status = 'fail';
             $log->severity = 4;
