@@ -89,7 +89,7 @@ if (!$db->tableExists('baselines_results')) {
 if (!empty($baselines)) {
     $results = array();
     # This is a temporary directory created by the installer so the web user can read the baselines results files
-    $path = '/usr/local/open-audit/temp_baselines_results';
+    $path = APPPATH . '../temp_baselines_results';
     if (file_exists($path)) {
         $results = array_diff(scandir($path), array('.', '..'));
         log_message('info', "Baselines Results taken from $path");
@@ -124,7 +124,7 @@ if (!empty($baselines)) {
         }
 
         # Now delete the temporary directory and any files within
-        if ($path === '/usr/local/open-audit/temp_baselines_results') {
+        if ($path === APPPATH . '../temp_baselines_results') {
             foreach ($results as $result) {
                 unlink($path . '/' . $result);
             }
@@ -809,7 +809,7 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $email_config_items = array('mail_domain' => 'example.com', 'mail_from' => 'yourmailname@example.com', 'mail_password' => 'your_password', 'mail_server' => 'smtp.example.com', 'mail_server_port' => 25, 'mail_use_tls' => 'true', 'mail_user' => 'your_user_account@example.com');
-$files = array('/usr/local/omk/conf/opCommon.json', 'c:\\omk\\conf\\opCommon.json', '/usr/local/opmojo/conf/opCommon.json');
+$files = array(config('Openaudit')->commercial_dir . '/conf/opCommon.json');
 foreach ($files as $file) {
     if (file_exists($file)) {
         $contents = file_get_contents($file);

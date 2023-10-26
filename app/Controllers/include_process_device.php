@@ -29,10 +29,12 @@ $log->command_status = 'notice';
 $log->display = 'y';
 $initial_log_id = $this->discoveryLogModel->create($log);
 
+log_message('debug', 'Matching device start');
 $id = deviceMatch($device->system);
 if (empty($id) && !empty($device->system->id)) {
     $id = intval($device->system->id);
 }
+log_message('debug', 'Matching device finish');
 if (!empty($id) && !empty($device->system->id) && intval($id) !== intval($device->system->id)) {
     // We delete this original system as likely with limited data (from
     // nmap and/or snmp) we couldn't match an existing system
@@ -58,7 +60,9 @@ if (!empty($device->system->os_installation_date)) {
 if (empty($id)) {
     // insert a new system
     $device->system->first_seen = $device->system->last_seen;
+    log_message('debug', 'Creating device start');
     $device->system->id = $this->devicesModel->create($device->system);
+    log_message('debug', 'Creating device finish');
     $log->command_status = 'fail';
     if (!empty($device->system->id)) {
         $log->command_status = 'success';
@@ -70,16 +74,19 @@ if (empty($id)) {
     $this->discoveryLogModel->create($log);
     // In the case where we inserted a new device, m_device::match will add a log entry, but have no
     // associated device_id. Update this one row.
+    log_message('debug', 'Update discovery log start');
     $sql = 'UPDATE `discovery_log` SET device_id = ? WHERE device_id IS NULL AND pid = ? AND ip = ?';
     $query = $db->query($sql, [$device->system->id, $log->pid, @ip_address_from_db($device->system->ip)]);
+    log_message('debug', 'Update discovery log finish');
 } else {
     // update an existing system
     // log_message('info', 'UPDATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
     $log->message = 'UPDATE entry for ' . @$device->system->hostname . ', ID ' . $device->system->id;
     $log->device_id = $device->system->id;
     $log->ip = @ip_address_from_db($device->system->ip);
-
+    log_message('debug', 'Updating device start');
     $test = $this->devicesModel->update($device->system->id, $device->system);
+    log_message('debug', 'Updating device finish');
     $log->command_status = 'fail';
     if ($test) {
         $log->command_status = 'success';
@@ -95,7 +102,9 @@ $log = new \stdClass();
 $log->id = $initial_log_id;
 $log->device_id = $device->system->id;
 $log->ip = (!empty($device->system->ip)) ? ip_address_from_db($device->system->ip) : '';
+log_message('debug', 'Update discovery log start');
 $this->discoveryLogModel->update($initial_log_id, $log);
+log_message('debug', 'Update discovery log finish');
 
 $audit_ip = '127.000.000.001';
 if (!empty($_SERVER['REMOTE_ADDR'])) {
@@ -127,7 +136,9 @@ $db->query($sql, [$device->system->id, $username, $device->system->last_seen_by,
 
 foreach ($device as $key => $value) {
     if ($key !== 'system' && $key !== 'audit_wmi_fail' && $key !== 'dns') {
+        log_message('debug', 'Update component ' . $key . ' start');
         $this->componentsModel->upsert($key, $device->system, $device->{$key});
+        log_message('debug', 'Update component ' . $key . ' finish');
     }
 }
 

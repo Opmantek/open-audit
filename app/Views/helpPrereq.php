@@ -38,16 +38,16 @@ if (php_uname('s') == "Windows NT") {
                             <p id="cron_file_permission">This file tells Linux to poll the application to determine if there are any scheduled tasks that should be run.</p>
                             <pre>chmod 644 /etc/cron.d/open-audit</pre><br />
                             <p>This is the directory where we store any attachments to devices.</p>
-                            <pre>chmod 777 /usr/local/open-audit/app/Attachments</pre><br />
+                            <pre>chmod 777 <?= APPPATH ?>Attachments</pre><br />
                             <p>Our framework uploads files here for processing, then deletes them. Think submitted audit results, etc.</p>
-                            <pre>chmod 777 /usr/local/open-audit/writable/uploads</pre><br />
+                            <pre>chmod 777 <?= str_replace('/app/', '', APPPATH) ?>/writable/uploads</pre><br />
                             <p>The application creates temporary audit scrtips here, copies them to the target machines, then deletes them.</p>
-                            <pre>chmod 777 /usr/local/open-audit/other/scripts</pre><br />
+                            <pre>chmod 777 <?= str_replace('/app/', '', APPPATH) ?>/other/scripts</pre><br />
                             <p>Any user uploaded images are placed here.</p>
-                            <pre>chmod 777 /usr/local/open-audit/public/custom_images</pre><br />
+                            <pre>chmod 777 <?= str_replace('/app/', '', APPPATH) ?>/public/custom_images</pre><br />
                             <p class="fs-1">Cron</p>
                             <p id="cron_file_exists">A sample cron file for Linux is below. This should be placed in /etc/cron.d/open-audit</p><br />
-                            <pre># m h dom month dow user command<br .># run the task checker each minute<br />* * * * *   root    /usr/local/open-audit/other/tasks.sh >/dev/null 2>&1</pre>
+                            <pre># m h dom month dow user command<br .># run the task checker each minute<br />* * * * *   root    php <?= str_replace('/app/', '', APPPATH) ?>/public/index.php tasks execute >/dev/null 2>&1</pre>
                             <br />
 
                         </div>

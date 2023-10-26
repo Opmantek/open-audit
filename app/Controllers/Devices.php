@@ -165,7 +165,7 @@ class Devices extends BaseController
     {
         $db = db_connect();
         $count = 0;
-        $files = glob('/usr/local/open-audit/other/example_devices/*.{xml,json}', GLOB_BRACE);
+        $files = glob(APPPATH . '/../other/example_devices/*.{xml,json}', GLOB_BRACE);
         $this->config->discovery_use_dns = 'n';
         foreach ($files as $file) {
             $device = file_get_contents($file);
@@ -211,12 +211,12 @@ class Devices extends BaseController
     public function importNMIS()
     {
         // Use nmis9 node admin tool
-        if (!file_exists('/usr/local/nmis9/admin/node_admin.pl')) {
-            log_message('error', 'Importing from NMIS requires /usr/local/nmis9/admin/node_admin.pl to exist.');
+        if (!file_exists($this->config->nmis . '/admin/node_admin.pl')) {
+            log_message('error', 'Importing from NMIS requires ' . $this->config->nmis . '/admin/node_admin.pl to exist.');
             \Config\Services::session()->setFlashdata('error', 'NMIS NodeAdmin not detected.');
             return redirect()->route('devicesCollection');
         }
-        $command = '/usr/local/nmis9/admin/node_admin.pl act=export format=json keep_ids=1 2>/dev/null';
+        $command = $this->config->nmis . '/admin/node_admin.pl act=export format=json keep_ids=1 2>/dev/null';
         exec($command, $string, $return_var);
         if ($return_var !== 0) {
             log_message('error', 'Error importing from NMIS9 using NodeAdmin tool.');

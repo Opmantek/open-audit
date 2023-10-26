@@ -104,7 +104,7 @@ function nmapSuid()
             $suid = 'y';
         }
     } else if (file_exists('/usr/local/bin/nmap')) {
-        $command_string = 'ls -lh /usr/bin/nmap | cut -d" " -f1 | cut -c4';
+        $command_string = 'ls -lh /usr/local/bin/nmap | cut -d" " -f1 | cut -c4';
         exec($command_string, $output);
         if (isset($output[0]) and $output[0] === 's') {
             $suid = 'y';
@@ -117,32 +117,23 @@ function dirPermLinux()
 {
     $perm = array();
     $perm['cron_file_exists'] = 'n';
-    // $perm['cron_file_permission'] = 'n';
     if (file_exists('/etc/cron.d/open-audit')) {
         $perm['cron_file_exists'] = 'y';
-        // $command_string = `ls -l /etc/cron.d/open-audit | cut -d" " -f1 | grep -v total`;
-        // $output = shell_exec($command_string);
-        // log_message('debug', "Permission:" . json_encode($output));
-        // if (!empty($output)) {
-        //     if (trim($output[0]) === '-rw-r--r--' or trim($output[0]) === '-rw-r--r--.') {
-        //         $perm['cron_file_permission'] = 'y';
-        //     }
-        // }
     }
     $perm['attachments_dir'] = 'n';
-    if (is_writable('/usr/local/open-audit/app/Attachments')) {
+    if (is_writable(APPPATH . '/Attachments')) {
         $perm['attachments_dir'] = 'y';
     }
     $perm['uploads_dir'] = 'n';
-    if (is_writable('/usr/local/open-audit/writable/uploads')) {
+    if (is_writable(APPPATH . '/../writable/uploads')) {
         $perm['uploads_dir'] = 'y';
     }
     $perm['scripts_dir'] = 'n';
-    if (is_writable('/usr/local/open-audit/other/scripts')) {
+    if (is_writable(APPPATH . '/../other/scripts')) {
         $perm['scripts_dir'] = 'y';
     }
     $perm['custom_images_dir'] = 'n';
-    if (is_writable('/usr/local/open-audit/public/custom_images')) {
+    if (is_writable(APPPATH . '/../public/custom_images')) {
         $perm['custom_images_dir'] = 'y';
     }
     return $perm;

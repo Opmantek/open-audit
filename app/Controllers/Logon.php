@@ -40,50 +40,11 @@ class Logon extends Controller
 {
     public function createForm()
     {
-        $this->checkDefaults();
         $this->session = session();
         if (!empty($this->session->get('user_id'))) {
-            return redirect()->to(site_url('orgs'));
+            return redirect()->to(site_url('summaries'));
         }
         return view('logon', ['config' => new \Config\OpenAudit()]);
-    }
-
-    public function checkDefaults()
-    {
-        $db = db_connect();
-        $sql = "UPDATE configuration SET value = 'community' WHERE name = 'product'";
-        $db->query($sql);
-        $sql = "UPDATE configuration SET value = 'none' WHERE name = 'license'";
-        $db->query($sql);
-        if (file_exists(APPPATH . '../other/modules.json')) {
-            $modules = file_get_contents(APPPATH.'../other/modules.json');
-            if (!empty($modules)) {
-                $modules = json_decode($modules);
-                # echo "<pre>"; print_r($modules); exit;
-                $configFiles = array('/usr/local/opmojo/conf/opCommon.json', '/usr/local/omk/conf/opCommon.json');
-                foreach ($configFiles as $configFile) {
-                    if (is_file($configFile)) {
-                        $installed = file_get_contents($configFile);
-                    }
-                }
-                if (!empty($installed)) {
-                    $modules->opLicensing->installed = true;
-                    $installed = json_decode($installed);
-                    foreach ($installed->omkd->load_applications as $app) {
-                        if (!empty($modules->{$app})) {
-                            $modules->{$app}->installed = true;
-                        }
-                    }
-                    if (file_exists($modules->NMIS->file)) {
-                        $modules->NMIS->installed = true;
-                    }
-                    $sql = "UPDATE configuration SET value = ? WHERE name = 'modules'";
-                    $db->query($sql, [json_encode($modules)]);
-                } else {
-                    unset($modules->opLicensing);
-                }
-            }
-        }
     }
 
     public function create()
@@ -170,13 +131,8 @@ class Logon extends Controller
     {
         $this->response->setContentType('application/json');
         $json = '{"license":"none","product":"free"}';
-        $enterprise_binary = '';
-        $binaries = array('/usr/local/opmojo/private/enterprise.pl', '/usr/local/open-audit/other/enterprise.bin', 'c:\\xampp\\open-audit\\enterprise.exe');
-        foreach ($binaries as $binary) {
-            if (file_exists($binary)) {
-                $enterprise_binary = $binary;
-            }
-        }
+        $this->config =  new \Config\OpenAudit();
+        $enterprise_binary = $this->config->enterprise_binary;
         if (!empty($enterprise_binary)) {
             if (php_uname('s') === 'Windows NT') {
                 $command = "%comspec% /c start /b " . $enterprise_binary . " --license";

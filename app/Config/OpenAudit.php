@@ -14,6 +14,18 @@ class OpenAudit extends BaseConfig
         $this->displayVersion = '5.0.0';
         $this->microtime = microtime(true);
 
+        $commercial_dir = array(APPPATH . '/../../omk',
+            APPPATH . '/../../opmojo',
+            '/usr/local/omk',
+            '/usr/local/opmojo',
+            'c:\\omk');
+
+        $binaries = array(APPPATH . '/../other/enterprise.bin',
+            APPPATH . '/../other/enterprise.exe',
+            '/usr/local/oac/enterprise.pl');
+
+        $nmis = "/usr/local/nmis9";
+
         parent::__construct();
         $db = Database::connect();
         $query = $db->query('SELECT * FROM `configuration`');
@@ -133,7 +145,6 @@ class OpenAudit extends BaseConfig
         }
 
         $this->enterprise_binary = '';
-        $binaries = array('/usr/local/oac/enterprise.pl', '/usr/local/open-audit/other/enterprise.bin', 'c:\\xampp\\open-audit\\enterprise.exe');
         foreach ($binaries as $binary) {
             if (file_exists($binary)) {
                 $this->enterprise_binary = $binary;
@@ -148,12 +159,14 @@ class OpenAudit extends BaseConfig
 
         $modules = array();
         $apps = array();
-        $base = '/usr/local/omk';
-        if (file_exists('/usr/local/opmojo')) {
-            $base = '/usr/local/opmojo';
+        $this->commercial_dir = '';
+        foreach ($commercial_dir as $dir) {
+            if (file_exists($dir)) {
+                $this->commercial_dir = $dir;
+            }
         }
-        if (file_exists($base . '/conf/opCommon.json')) {
-            $omkConfig = file_get_contents($base . '/conf/opCommon.json');
+        if (file_exists($this->commercial_dir . '/conf/opCommon.json')) {
+            $omkConfig = file_get_contents($this->commercial_dir . '/conf/opCommon.json');
             if (!empty($omkConfig)) {
                 $omkConfig = json_decode($omkConfig);
             }
@@ -161,17 +174,17 @@ class OpenAudit extends BaseConfig
                 $apps = $omkConfig->omkd->load_applications;
             }
         }
-        $nmis = "/usr/local/nmis9/cgi-bin/nmiscgi.pl";
-        $opLicense = $base . "/bin/oplicense-cli.pl";
-        $modules[] = (object)array("name" => "Applications",  "url" => (file_exists($base))           ? "/omk"                  : "");
-        $modules[] = (object)array("name" => "opCharts",      "url" => (in_array('opCharts', $apps))  ? "/omk/opCharts"         : "https://firstwave.com/products/interactive-dashboards-and-charts/");
-        $modules[] = (object)array("name" => "opEvents",      "url" => (in_array('opEvents', $apps))  ? "/omk/opEvents/"        : "https://firstwave.com/opevents-traps-network-event-management/");
-        $modules[] = (object)array("name" => "opConfig",      "url" => (in_array('opConfig', $apps))  ? "/omk/opConfig"         : "https://firstwave.com/products/network-configuration-management/");
-        $modules[] = (object)array("name" => "opHA",          "url" => (in_array('opHA', $apps))      ? "/omk/opHA"             : "https://firstwave.com/products/distributed-network-management/");
+        $this->nmis = (!empty(file_exists($nmis))) ? $nmis : '';
+        $opLicense = $this->commercial_dir . "/bin/oplicense-cli.pl";
+        $modules[] = (object)array("name" => "Applications",  "url" => (file_exists($this->commercial_dir)) ? "/omk"                  : "");
+        $modules[] = (object)array("name" => "opCharts",      "url" => (in_array('opCharts',  $apps)) ? "/omk/opCharts"         : "https://firstwave.com/products/interactive-dashboards-and-charts/");
+        $modules[] = (object)array("name" => "opEvents",      "url" => (in_array('opEvents',  $apps)) ? "/omk/opEvents/"        : "https://firstwave.com/opevents-traps-network-event-management/");
+        $modules[] = (object)array("name" => "opConfig",      "url" => (in_array('opConfig',  $apps)) ? "/omk/opConfig"         : "https://firstwave.com/products/network-configuration-management/");
+        $modules[] = (object)array("name" => "opHA",          "url" => (in_array('opHA',      $apps)) ? "/omk/opHA"             : "https://firstwave.com/products/distributed-network-management/");
         $modules[] = (object)array("name" => "opReports",     "url" => (in_array('opReports', $apps)) ? "/omk/opReports/"       : "https => //firstwave.com/products/advanced-analysis-and-reporting/");
         $modules[] = (object)array("name" => "opAddress",     "url" => (in_array('opAddress', $apps)) ? "/omk/opAddress/"       : "https://firstwave.com/products/ip-address-audit-and-management/");
         $modules[] = (object)array("name" => "opLicensing",   "url" => (file_exists($opLicense))      ? "/omk/opLicense"        : "");
-        $modules[] = (object)array("name" => "NMIS",          "url" => (file_exists($nmis))           ? "/cgi-nmis9/nmiscgi.pl" : "https://firstwave.com/products/network-management-information-system/");
+        $modules[] = (object)array("name" => "NMIS",          "url" => (file_exists($nmis . '/cgi-bin/nmiscgi.pl'))           ? "/cgi-nmis9/nmiscgi.pl" : "https://firstwave.com/products/network-management-information-system/");
         $modules[] = (object)array("name" => "Other Modules", "url" => "https://firstwave.com");
         $this->modules = $modules;
     }

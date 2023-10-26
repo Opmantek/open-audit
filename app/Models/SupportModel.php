@@ -164,7 +164,7 @@ class SupportModel extends BaseModel
             // Get the oldest log file
             $command_string = "ls " . APPPATH . "../writable/logs/*.log | sort | head -n1";
             exec($command_string, $output, $return_var);
-            $logfile = str_replace('/usr/local/open-audit/app/../writable/logs/log-', '', $output[0]);
+            $logfile = str_replace(APPPATH . '../writable/logs/log-', '', $output[0]);
             $logfile = str_replace('.log', '', $logfile);
             $data->app->oldest_logfile = $logfile;
             unset($output);
@@ -173,7 +173,7 @@ class SupportModel extends BaseModel
             // Get the youngest log file
             $command_string = "ls " . APPPATH . "../writable/logs/*.log | sort | tail -n1";
             exec($command_string, $output, $return_var);
-            $logfile = str_replace('/usr/local/open-audit/app/../writable/logs/log-', '', $output[0]);
+            $logfile = str_replace(APPPATH . '../writable/logs/log-', '', $output[0]);
             $logfile = str_replace('.log', '', $logfile);
             $data->app->youngest_logfile = $logfile;
             unset($logfile);
@@ -236,7 +236,7 @@ class SupportModel extends BaseModel
             unset($command_string);
 
             // winexe version
-            $command_string = '/usr/local/open-audit/other/winexe-static-2 --version 2>&1';
+            $command_string = APPPATH . '../other/winexe-static-2 --version 2>&1';
             exec($command_string, $output, $return_var);
             if (isset($output[0]) && strpos($output[0], 'winexe') === 0) {
                 $data->prereq->winexe = $output[0];
@@ -293,29 +293,29 @@ class SupportModel extends BaseModel
                 unset($command_string);
             }
             // Scripts perms - should be writable
-            $data->permissions->scripts = '/usr/local/open-audit/other - FAIL';
-            if (is_writable('/usr/local/open-audit/other')) {
-                $data->permissions->scripts = '/usr/local/open-audit/other - PASS';
+            $data->permissions->scripts = APPPATH . '../other - FAIL';
+            if (is_writable(APPPATH . '../other')) {
+                $data->permissions->scripts = APPPATH . '../other - PASS';
             }
             // Attachments perms - should be writable
-            $data->permissions->attachments = '/usr/local/open-audit/app/Attachments - FAIL';
-            if (is_writable('/usr/local/open-audit/app/Attachments')) {
-                $data->permissions->attachments = '/usr/local/open-audit/app/Attachments - PASS';
+            $data->permissions->attachments = APPPATH . 'Attachments - FAIL';
+            if (is_writable(APPPATH . 'Attachments')) {
+                $data->permissions->attachments = APPPATH . 'Attachments - PASS';
             }
             // Uploads perms - should be writable
-            $data->permissions->uploads = '/usr/local/open-audit/writable/uploads - FAIL';
-            if (is_writable('/usr/local/open-audit/writable/uploads')) {
-                $data->permissions->uploads = '/usr/local/open-audit/writable/uploads - PASS';
+            $data->permissions->uploads = APPPATH . '../writable/uploads - FAIL';
+            if (is_writable(APPPATH . '../writable/uploads')) {
+                $data->permissions->uploads = APPPATH . '../writable/uploads - PASS';
             }
             // Custom Images perms - should be writable
-            $data->permissions->custom_images = '/usr/local/open-audit/public/custom_images - FAIL';
-            if (is_writable('/usr/local/open-audit/public/custom_images')) {
-                $data->permissions->custom_images = '/usr/local/open-audit/public/custom_images - PASS';
+            $data->permissions->custom_images = APPPATH . '../public/custom_images - FAIL';
+            if (is_writable(APPPATH . '../public/custom_images')) {
+                $data->permissions->custom_images = APPPATH . '../public/custom_images - PASS';
             }
             // Logs perms - should be writable
-            $data->permissions->logs = '/usr/local/open-audit/writable/logs - FAIL';
-            if (is_writable('/usr/local/open-audit/writable/logs')) {
-                $data->permissions->logs = '/usr/local/open-audit/writable/logs - PASS';
+            $data->permissions->logs = APPPATH . '../writable/logs - FAIL';
+            if (is_writable(APPPATH . '../writable/logs')) {
+                $data->permissions->logs = APPPATH . '../writable/logs - PASS';
             }
         }
         return array($data);

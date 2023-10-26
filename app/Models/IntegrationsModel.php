@@ -1095,16 +1095,15 @@ class IntegrationsModel extends BaseModel
 
         $include['devices_fields'] = $this->db->getFieldNames('devices');
 
+        $instance = & get_instance();
+
         if (php_uname('s') !== 'Windows NT') {
             $auth_method = '';
             $token_auth_method = '';
             $config_file_contents = '';
             $auth = '';
-            if (file_exists('/usr/local/omk/conf/opCommon.json')) {
-                $config_file_contents = file_get_contents('/usr/local/omk/conf/opCommon.json');
-            }
-            if (file_exists('/usr/local/opmojo/conf/opCommon.json')) {
-                $config_file_contents = file_get_contents('/usr/local/opmojo/conf/opCommon.json');
+            if (file_exists($instance->config->commercial_dir . '/conf/opCommon.json')) {
+                $config_file_contents = file_get_contents($instance->config->commercial_dir . '/conf/opCommon.json');
             }
             if (!empty($config_file_contents)) {
                 $config = json_decode($config_file_contents);
@@ -1119,10 +1118,10 @@ class IntegrationsModel extends BaseModel
                 $auth = 'auth_method_3';
             }
             if ($auth === '') {
-                $include['warning'] = 'Please set auth_method_1 (or 2 or 3) in the config (/usr/local/omk/config/opCommon.json) to token to avoid having to use credentials for local NMIS Integrations.';
+                $include['warning'] = 'Please set auth_method_1 (or 2 or 3) in the config (' . $instance->config->commercial_dir . '/conf/opCommon.json) to token to avoid having to use credentials for local NMIS Integrations.';
             }
             if (empty($config->authentication->auth_token_key)) {
-                $include['warning'] = 'Please set an auth_token_key in the config (/usr/local/omk/config/opCommon.json) to avoid having to use credentials for local NMIS Integrations.';
+                $include['warning'] = 'Please set an auth_token_key in the config (' . $instance->config->commercial_dir . '/conf/opCommon.json) to avoid having to use credentials for local NMIS Integrations.';
             }
         }
         return $include;

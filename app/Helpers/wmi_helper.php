@@ -112,7 +112,6 @@ if (! function_exists('execute_windows')) {
         }
 
         if (php_uname('s') === 'Darwin') {
-            $filepath = APPPATH . '../other';
             if (!file_exists('/usr/local/bin/winexe')) {
                 log_message('warning', 'Winexe not installed on OSX, cannot run execute_windows.');
                 return false;

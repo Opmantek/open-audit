@@ -7,10 +7,11 @@ declare(strict_types=1);
 if (!function_exists('generate_token')) {
     function generate_token()
     {
+        $config =  new \Config\OpenAudit();
         $command = '';
         $user_token = '';
         // Load and parse opConfig.json
-        $files = array ('/usr/local/omk/conf/opCommon.json', 'c:\\omk\\conf\\opCommon.json', '/usr/local/opmojo/conf/opCommon.json');
+        $files = array ($config->commercial_dir . '/conf/opCommon.json');
         foreach ($files as $file) {
             if (file_exists($file)) {
                 log_message('debug', 'Parsing config file: ' . $file);
@@ -33,7 +34,7 @@ if (!function_exists('generate_token')) {
             $message = 'One of the auth methods must be set to token for NMIS integrations to work without a username and password.';
             log_message('error', $message);
         }
-        $files = array('/usr/local/open-audit/other/generate_auth_token.pl', $bin.'generate_auth_token.exe', $bin.'generate_auth_token.pl');
+        $files = array(APPPATH . '/../other/generate_auth_token.pl', $bin.'generate_auth_token.exe', $bin.'generate_auth_token.pl');
         foreach ($files as $file) {
             if (file_exists($file)) {
                 log_message('debug', 'Using ' . $file . ' to generate token.');
