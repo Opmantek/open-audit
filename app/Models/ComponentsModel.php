@@ -1035,7 +1035,9 @@ class ComponentsModel extends BaseModel
                 }
                 if (!empty($data[$i]->installed_on)) {
                     $date = date_create($data[$i]->installed_on);
-                    $data[$i]->installed_on = date_format($date, "Y-m-d H:i:s");
+                    if (!empty($date)) {
+                        $data[$i]->installed_on = date_format($date, "Y-m-d H:i:s");
+                    }
                 }
             }
         }
