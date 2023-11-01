@@ -74,7 +74,7 @@ self_delete='n'
 debugging=2
 
 # Version
-version="4.4.2"
+version="5.0.0"
 
 discovery_id=""
 

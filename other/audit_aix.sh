@@ -47,7 +47,7 @@ url="http://localhost/open-audit/index.php/input/devices"
 debugging=1
 
 # Version
-version="4.4.2"
+version="5.0.0"
 
 discovery_id=""
 help=""
