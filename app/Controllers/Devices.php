@@ -100,6 +100,20 @@ class Devices extends BaseController
             }
             include "include_process_device.php";
             $id = $device->system->id;
+            $discoveryLogModel = new \App\Models\DiscoveryLogModel();
+            $log = new \stdClass();
+            $log->discovery_id = null;
+            $log->device_id = $device->system->id;
+            $log->timestamp = null;
+            $log->severity = 7;
+            $log->pid = getmypid();
+            $log->file = 'Input';
+            $log->function = 'devices';
+            $log->message = 'Audit result processing completed';
+            $log->command = '';
+            $log->command_status = 'success';
+            $log->display = 'y';
+            $discoveryLogModel->create($log);
         }
 
         if (!empty($id)) {
