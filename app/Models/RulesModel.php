@@ -178,6 +178,7 @@ class RulesModel extends BaseModel
                 if ($device->switch_port === 0) {
                     $device->switch_port = '';
                 }
+                $device->discovery_id = '';
             } else {
                 log_message('error', "Could not retrieve data from devices table for ID: $id. Not running Rules function.");
                 $log->severity = 4;
