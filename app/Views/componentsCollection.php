@@ -18,6 +18,7 @@ $user->permissions['components'] = '';
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
                                     <th data-orderable="false" class="text-center"><?= __('View Device') ?></th>
                                     <th data-orderable="false" class="text-center"><?= __('Device') ?></th>
+                                    <th class="text-center"><?= __('ID') ?></th>
                                     <?php if (!empty($data[0]->attributes)) { ?>
                                         <?php foreach ($data[0]->attributes as $key => $value) {
                                             if ($key === 'id' or $key === 'orgs.id' or $key === 'devices.id' or $key === 'device_id') {
@@ -35,6 +36,7 @@ $user->permissions['components'] = '';
                                     <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsRead', $item->id) ?>?components.type=<?= $item->type ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
                                     <?= collection_button_read('devices', $item->attributes->device_id) ?>
                                     <td><?= $item->attributes->{'devices.name'} ?></td>
+                                    <td><?= $item->attributes->{'id'} ?></td>
                                     <?php foreach ($data[0]->attributes as $key => $value) {
                                         if ($key === 'id' or $key === 'orgs.id' or $key === 'devices.id' or $key === 'device_id') {
                                             continue;
