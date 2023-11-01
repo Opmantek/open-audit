@@ -189,7 +189,10 @@ if (!function_exists('audit_convert')) {
         $log->severity = 7;
         $log->message = 'Audit converted';
         $log->command_status = 'success';
-        $discoveryLogModel->create($log);
+        if (!empty($log->discovery_id) or !empty($log->device_id)) {
+            # Do not bother to log if we don't know the deviceID or a discoveryID
+            $discoveryLogModel->create($log);
+        }
         log_message('debug', 'Returning $input is an ' . gettype($input));
         if (empty($input->system)) {
             log_message('error', 'Something is wrong, $input->system is empty.');
