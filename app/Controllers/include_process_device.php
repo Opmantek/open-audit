@@ -127,7 +127,7 @@ if (!empty($device->system->discovery_id)) {
     // we were supplied an audit result, but no discovery_id
     // delete all dicovery logs where device_id = our ID and log.pid != our pid
     $sql = "DELETE FROM `discovery_log` WHERE `device_id` = ? AND (`pid` != ?) AND discovery_id IS NULL";
-    $query = $db->query($sql, [intval($device->system->id), intval(getmypid()), $device->system->last_seen]);
+    $query = $db->query($sql, [intval($device->system->id), intval(getmypid())]);
 }
 $script_version = (!empty($device->system->script_version)) ? $device->system->script_version : '';
 $username = (!empty($this->user->full_name)) ? $this->user->full_name : '';
