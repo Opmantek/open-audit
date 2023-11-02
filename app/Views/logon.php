@@ -90,20 +90,20 @@ include('shared/lang.php');
                             <div class="row">
                                 <div class="col-12">
                                     <div class="col-12 text-center">
-                                        <h1><img class="rounded-circle border border-white border-0" style="background: white; width:80px; padding-right:20px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Open-AudIT logo"> Open-AudIT</h1>
+                                        <h1><img class="rounded-circle border border-white border-0" style="background: white; width:80px; padding-right:20px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Open-AudIT logo"> <span class="text-secondary">Open-AudIT</span></h1>
                                     </div>
 
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
                                         <div class="offset-4 col-4" style="position:relative;">
-                                            <label class="form-label" for="username">Username</label>
+                                            <label class="form-label text-secondary" for="username">Username</label>
                                             <input class="form-control" type="text" id="username" name="username" />
                                         </div>
                                     </div> 
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
                                         <div class="offset-4 col-4" style="position:relative;">
-                                            <label class="form-label" for="password">Password</label>
+                                            <label class="form-label text-secondary" for="password">Password</label>
                                             <input class="form-control" type="password" id="password" name="password" />
                                         </div>
                                     </div> 
@@ -122,16 +122,16 @@ include('shared/lang.php');
                                     <?php if ($config->device_count === 0) { ?>
                                     <div class="row">
                                         <div class="offset-4 col-4" style="position:relative;">
-                                            <div class="well well-sm" style="padding:10px; margin:4px; background:#d9edf7;">No devices are in the database.</div>
-                                            <div class="well well-sm" style="padding:10px; margin:4px; background:#dff0d8;">Initial login credentials are admin / password.</div>
-                                            <div class="well well-sm" style="padding:10px; margin:4px; background:#f2dede;">Please log in and change these ASAP.</div>
+                                            <div class="well well-sm text-secondary" style="padding:10px; margin:4px; background:#d9edf7;">No devices are in the database.</div>
+                                            <div class="well well-sm text-secondary" style="padding:10px; margin:4px; background:#dff0d8;">Initial login credentials are admin / password.</div>
+                                            <div class="well well-sm text-secondary" style="padding:10px; margin:4px; background:#f2dede;">Please log in and change these ASAP.</div>
                                         </div>
                                     </div>
                                     <?php } ?>
 
                                     <div class="row">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                        <br>Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a>
+                                        <br><span class="text-secondary">Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a></span>
                                         </div>
                                         <?php if (!empty($config->default_network_address) and strpos($config->default_network_address, '127.0.0.1') === false and strpos($config->default_network_address, 'localhost') === false and !empty($config->default_network_address)) { ?>
                                         <span align='center'>
