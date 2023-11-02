@@ -32,6 +32,7 @@ class Scripts extends BaseController
 {
     public function download($id)
     {
+        $id = intval($id);
         if (empty($this->scriptsModel)) {
             $this->scriptsModel = model('App\Models\ScriptsModel');
         }
@@ -49,7 +50,7 @@ class Scripts extends BaseController
         $script = $this->scriptsModel->read($id);
         header('Cache-Control: public');
         header('Content-Description: File Transfer');
-        header('Content-Disposition: attachment; filename=' . $script[0]->attributes->name);
+        header('Content-Disposition: attachment; filename=' . $script[0]->attributes->based_on);
         $header = "Content-Type: application/x-sh";
         if ($script[0]->attributes->based_on == 'audit_windows.vbs') {
             $header = "Content-Type: text/vbscript";

@@ -155,15 +155,20 @@ class ScriptsModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        if (empty($data->options)) {
+            $data->options = new \stdClass();
+        }
         if (!empty($data->options) and is_string($data->options)) {
             $data->options = json_decode($data->options);
         }
         $options = scripts_options();
         foreach ($data->options as $name => $value) {
-            $value = str_replace("'", '', $value);
-            $value = str_replace('"', '', $value);
-            $value = str_replace(';', '', $value);
-            $value = str_replace("\n", '', $value);
+            if (is_string($value)) {
+                $value = str_replace("'", '', $value);
+                $value = str_replace('"', '', $value);
+                $value = str_replace(';', '', $value);
+                $value = str_replace("\n", '', $value);
+            }
             $values = $options[$name]->values;
             if (!empty($values)) {
                 $value_array = explode(',', $values);

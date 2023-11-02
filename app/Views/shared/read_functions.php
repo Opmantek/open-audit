@@ -96,6 +96,17 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         }
     }
 
+    $download_button = '';
+    if ($collection === 'scripts' and !empty($id)) {
+        if ($style === 'icontext') {
+            $export_csv_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-download text-primary\"></span>" . __("Download") . "</a>";
+        } else if ($style === 'icon') {
+            $export_csv_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span class=\"fa fa-download text-primary\"></span></a>";
+        } else {
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\">" . __("Download") . "</a>";
+        }
+    }
+
     $return = "<div class=\"row\">
                         <div class=\"col-6 clearfix\">
                             <h6 style=\"padding-top:10px;\"><span class=\"{$icon} oa-icon\"></span>{$collection_title}</h6>
@@ -104,6 +115,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
                             <div class=\"btn-group btn-group-sm float-end\" role=\"group\" id=\"oa_panel_buttons\">
                                 <div class=\"page-title-right\">
                                     $collection_button
+                                    $download_button
                                     $create_button
                                     $delete_button
                                     $export_button

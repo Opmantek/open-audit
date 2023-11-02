@@ -97,7 +97,7 @@ $routes->get('login', 'Logon::createForm');
 $routes->post('logon', 'Logon::create');
 $routes->get('logout', 'Logon::delete');
 
-$routes->get('scripts/(:any)/download', 'Scripts::download/$1');
+$routes->get('scripts/(:any)/download', 'Scripts::download/$1', ['as' => 'scriptsDownload']);
 
 $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::class, 'as' => 'searchCreate']);
 
