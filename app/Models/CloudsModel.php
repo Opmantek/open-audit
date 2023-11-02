@@ -228,7 +228,7 @@ class CloudsModel extends BaseModel
             } else {
                 $included['stats']->devices_not_audited += 1;
             }
-            if ($devices[$i]->instance_state === 'running') {
+            if ($devices[$i]->{'devices.instance_state'} === 'running') {
                 $included['stats']->devices_running += 1;
             } else {
                 $included['stats']->devices_stopped += 1;
