@@ -218,6 +218,9 @@ class UsersModel extends BaseModel
         if (!empty($data->orgs)) {
             $data->orgs = json_encode(array_map('intval', $data->orgs));
         }
+        if (!empty($data->password)) {
+            $data->password = password_hash($data->password, PASSWORD_DEFAULT);
+        }
         $data = $this->updateFieldData('users', $data);
         // And update the record
         $this->builder->where('id', intval($id));
