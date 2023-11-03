@@ -92,6 +92,7 @@ class Logon extends Controller
 
         $user = $this->logonModel->logon($username, $password);
         if ($user) {
+            log_message('info', 'Valid credentials for ' . $username . ' from ' . @$this->request->getIPAddress());
             $this->session->set('user_id', $user->id);
             if ($format !== 'json') {
                 if (!empty($_POST['url'])) {
@@ -116,7 +117,7 @@ class Logon extends Controller
             print_r(json_encode($user));
             exit;
         }
-        log_message('error', json_encode($user));
+        log_message('info', 'Invalid credentials for ' . $username . ' from ' . @$this->request->getIPAddress());
         return redirect()->to(site_url('logon'));
     }
 
