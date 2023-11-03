@@ -16,6 +16,10 @@ if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $permissions_button = '<li class="nav-item" role="presentation"><a href="#permissions" class="nav-link" id="permissions-tab">' . __('Permissions') . '</a></li>';
 }
+$update_group = false;
+if ($config->product === 'enterprise') {
+    $update_group = true;
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -40,7 +44,7 @@ if ($style === 'icontext') {
                                 <div class="col-6">
                                     <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
                                     <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                                    <?= read_field('ad_group', $resource->ad_group, $dictionary->columns->ad_group, $update, __('AD Group')) ?>
+                                    <?= read_field('ad_group', $resource->ad_group, $dictionary->columns->ad_group, $update_group, __('AD Group')) ?>
                                     <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                                     <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                                 </div>

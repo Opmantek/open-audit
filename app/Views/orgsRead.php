@@ -2,6 +2,10 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+$update_group = false;
+if ($config->product === 'enterprise') {
+    $update_group = true;
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -15,7 +19,7 @@ include 'shared/read_functions.php';
                             <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
                             <?= read_select('parent_id', $resource->parent_id, $dictionary->columns->parent_id, $update, __('Parent'), $orgs) ?>
                             <?= read_select('type', $resource->type, $dictionary->columns->type, $update, __('Type'), $included['types']) ?>
-                            <?= read_field('ad_group', $resource->ad_group, $dictionary->columns->ad_group, $update, __('AD Group')) ?>
+                            <?= read_field('ad_group', $resource->ad_group, $dictionary->columns->ad_group, $update_group, __('AD Group')) ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
