@@ -420,7 +420,14 @@ class RulesModel extends BaseModel
                                 $hit++;
                             }
                             break;
-                        
+
+                        case 're':
+                            if (isset($device->{$input->attribute}) and preg_match($input->value, $device->{$input->attribute})) {
+                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " re " . $input->value;
+                                $hit++;
+                            }
+                            break;
+
                         default:
                             if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} === (string)$input->value) {
                                 $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " default " . $input->value;
@@ -545,6 +552,16 @@ class RulesModel extends BaseModel
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if (stripos((string)$dsub->{$input->attribute}, $input->value) === 0) {
                                         $log->message .= " Hit on " . $dsub->{$input->attribute} . " st " . $input->value;
+                                        $hit++;
+                                        break;
+                                    }
+                                }
+                                break;
+
+                            case 're':
+                                foreach ($device_sub[$input->table] as $dsub) {
+                                    if (preg_match($input->value, (string)$dsub->{$input->attribute})) {
+                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " re " . $input->value;
                                         $hit++;
                                         break;
                                     }
@@ -780,7 +797,7 @@ class RulesModel extends BaseModel
 
         $dictionary->about = '<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>';
 
-        $dictionary->notes = '<p></p>';
+        $dictionary->notes = '<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>';
 
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;

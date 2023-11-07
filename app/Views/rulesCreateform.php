@@ -53,6 +53,7 @@ include 'shared/create_functions.php';
                                                                         <option value="nl"><?= __('not like') ?></option>
                                                                         <option value="in"><?= __('in') ?></option>
                                                                         <option value="ni"><?= __('not in') ?></option>
+                                                                        <option value="re"><?= __('regex') ?></option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-3">
