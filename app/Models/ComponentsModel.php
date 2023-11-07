@@ -33,7 +33,6 @@ class ComponentsModel extends BaseModel
         for ($i=0; $i < $count; $i++) {
             if ($resp->meta->filter[$i]->name === 'type' or $resp->meta->filter[$i]->name === 'components.type') {
                 // The request has populated components.type=memory or components.type=memory,processor - get those into the $table variable
-                // NOTE - Only usable via the JSON API
                 if (strpos($resp->meta->filter[$i]->value, ',') !== false) {
                     # We have a comma separated list of tables
                     $tables = explode(',', $resp->meta->filter[$i]->value);
