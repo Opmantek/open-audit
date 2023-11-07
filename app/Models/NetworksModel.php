@@ -340,7 +340,7 @@ class NetworksModel extends BaseModel
 
         $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'network', 'description', 'orgs.name');
-        $dictionary->attributes->create = array('network'); # We MUST have each of these present and assigned a value
+        $dictionary->attributes->create = array('network'); # We MUST have each of these present and assigned a value # TODO - wiki says name, org_id, network. Check this.
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
