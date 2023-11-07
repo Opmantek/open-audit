@@ -70,6 +70,9 @@ class OrgsModel extends BaseModel
             $data->ad_group = preg_replace('/[^\w-]/', '', $data->ad_group);
         }
         $data = $this->createFieldData('orgs', $data);
+        if (empty($data)) {
+            return null;
+        }
         $this->builder->insert($data);
         if ($this->sqlError($this->db->error())) {
             return false;

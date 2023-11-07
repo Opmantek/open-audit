@@ -77,6 +77,9 @@ class CredentialsModel extends BaseModel
             $data->credentials = simpleEncrypt(json_encode($data->credentials), config('Encryption')->key);
         }
         $data = $this->createFieldData('credentials', $data);
+        if (empty($data)) {
+            return null;
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));

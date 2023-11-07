@@ -75,6 +75,9 @@ class AttributesModel extends BaseModel
             return null;
         }
         $data = $this->createFieldData('attributes', $data);
+        if (empty($data)) {
+            return null;
+        }
         $this->builder->insert($data);
         $error = $this->sqlError($this->db->error());
         if ($error) {

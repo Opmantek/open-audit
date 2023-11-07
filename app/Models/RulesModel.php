@@ -85,6 +85,9 @@ class RulesModel extends BaseModel
             $data->outputs = json_encode($new_outputs);
         }
         $data = $this->createFieldData('rules', $data);
+        if (empty($data)) {
+            return null;
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));

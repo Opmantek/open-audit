@@ -356,6 +356,9 @@ class DiscoveriesModel extends BaseModel
         $data->match_options = json_encode($data->match_options);
 
         $data = $this->createFieldData('discoveries', $data);
+        if (empty($data)) {
+            return null;
+        }
         // log_message('debug', json_encode($data));
         $this->builder->insert($data);
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));

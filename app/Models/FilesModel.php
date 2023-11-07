@@ -66,6 +66,9 @@ class FilesModel extends BaseModel
         $data->path = str_replace(';', '', $data->path);
         $data->path = str_replace("\n", '', $data->path);
         $data = $this->createFieldData('files', $data);
+        if (empty($data)) {
+            return null;
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));

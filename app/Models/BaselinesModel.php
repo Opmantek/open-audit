@@ -60,6 +60,9 @@ class BaselinesModel extends BaseModel
             return null;
         }
         $data = $this->createFieldData('baselines', $data);
+        if (empty($data)) {
+            return null;
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));

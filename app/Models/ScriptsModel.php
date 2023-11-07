@@ -243,6 +243,9 @@ class ScriptsModel extends BaseModel
         }
         $data->options = json_encode($data->options);
         $data = $this->createFieldData('scripts', $data);
+        if (empty($data)) {
+            return null;
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));

@@ -66,6 +66,9 @@ class UsersModel extends BaseModel
         }
         $data->password = password_hash($data->password, PASSWORD_DEFAULT);
         $data = $this->createFieldData('users', $data);
+        if (empty($data)) {
+            return null;
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
@@ -316,7 +319,7 @@ class UsersModel extends BaseModel
 
         $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'full_name', 'email', 'active', 'roles', 'orgs.name');
-        $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
+        $dictionary->attributes->create = array('name','org_id','lang','roles','orgs'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields

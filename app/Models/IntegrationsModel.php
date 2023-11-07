@@ -101,6 +101,9 @@ class IntegrationsModel extends BaseModel
             $data->fields = json_encode($new_fields);
         }
         $data = $this->createFieldData('integrations', $data);
+        if (empty($data)) {
+            return null;
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));

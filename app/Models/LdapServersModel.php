@@ -62,6 +62,9 @@ class LdapServersModel extends BaseModel
             return null;
         }
         $data = $this->createFieldData('ldap_servers', $data);
+        if (empty($data)) {
+            return null;
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
