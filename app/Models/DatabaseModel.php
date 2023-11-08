@@ -208,6 +208,73 @@ class DatabaseModel extends BaseModel
         $output = '';
         // NOTE the below is simply because all the SQL statements in the following include files use $db->query, not $this->db->query.
         $db = db_connect();
+        $instance = & get_instance();
+
+        if (intval(config('Openaudit')->internal_version) < 20190214) {
+            # upgrade for 3.0.0
+            include "db_upgrades/db_3.0.0.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20190301) {
+            # upgrade for 3.0.1
+            include "db_upgrades/db_3.0.1.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20190810) {
+            # upgrade for 3.0.2
+            include "db_upgrades/db_3.0.2.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20190512) {
+            # upgrade for 3.1.0
+            include "db_upgrades/db_3.1.0.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20190810) {
+            # upgrade for 3.2.0
+            include "db_upgrades/db_3.2.0.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20190923) {
+            # upgrade for 3.2.2
+            include "db_upgrades/db_3.2.2.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20191010) {
+            # upgrade for 3.3.0
+            include "db_upgrades/db_3.3.0.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20200620) {
+            # upgrade for 3.4.0
+            include "db_upgrades/db_3.4.0.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20200810) {
+            # upgrade for 3.5.0
+            include "db_upgrades/db_3.5.0.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20201012) {
+            # upgrade for 3.5.1
+            include "db_upgrades/db_3.5.1.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20201115) {
+            # upgrade for 3.5.2
+            include "db_upgrades/db_3.5.2.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20210104) {
+            # upgrade for 3.5.3
+            include "db_upgrades/db_3.5.3.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20210126) {
+            # upgrade for 3.5.4
+            include "db_upgrades/db_3.5.4.php";
+        }
+
         if (intval(config('Openaudit')->internal_version) < 20210512) {
             # upgrade for 4.1.1
             include "db_upgrades/db_4.1.1.php";

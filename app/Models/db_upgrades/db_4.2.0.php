@@ -5,6 +5,7 @@ $output .= "Upgrade database to 4.2.0 commenced.\n\n";
 $sql = "DROP TABLE IF EXISTS `integrations`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = "CREATE TABLE `integrations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -46,10 +47,12 @@ $sql = "CREATE TABLE `integrations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = "DROP TABLE IF EXISTS `integrations_log`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = "CREATE TABLE `integrations_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -62,295 +65,34 @@ $sql = "CREATE TABLE `integrations_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
-$integration = new \stdClass();
-$integration->attributes = '{"username" : "","url" : "http://localhost/omk/","password" : ""}';
-$integration->create_external_from_internal = "y";
-$integration->create_internal_from_external = "y";
-$integration->delete_external_from_internal = "n";
-$integration->description = "";
-$integration->discovery_run = "y";
-$integration->name = "Default NMIS Integration";
-$integration->org_id = 1;
-$integration->select_external_attribute = "";
-$integration->select_external_type = "all";
-$integration->select_external_value = "";
-$integration->select_internal_attribute = "nmis_manage";
-$integration->select_internal_type = "attribute";
-$integration->select_internal_value = "y";
-$integration->type = "nmis";
-$integration->update_external_from_internal = "y";
-$integration->update_internal_from_external = "y";
-$integration->fields = '[{
-     "external_field_type" : "text",
-     "priority" : "internal",
-     "external_field_name" : "configuration.businessService",
-     "default_value" : "",
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.nmis_business_service"
-  },
-  {
-     "external_field_type" : "text",
-     "external_field_name" : "server_name",
-     "priority" : "external",
-     "default_value" : "",
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.nmis_poller"
-  },
-  {
-     "internal_field_name" : "system.nmis_notes",
-     "matching_attribute" : "n",
-     "priority" : "external",
-     "external_field_name" : "configuration.notes",
-     "default_value" : "",
-     "external_field_type" : "text"
-  },
-  {
-     "internal_field_name" : "system.nmis_manage",
-     "matching_attribute" : "n",
-     "external_field_name" : "",
-     "priority" : "internal",
-     "default_value" : "y",
-     "external_field_type" : "text"
-  },
-  {
-     "external_field_type" : "text",
-     "default_value" : "",
-     "external_field_name" : "configuration.sysDescr",
-     "priority" : "external",
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.sysDescr"
-  },
-  {
-     "default_value" : "Default Location",
-     "external_field_name" : "configuration.location",
-     "priority" : "internal",
-     "external_field_type" : "text",
-     "internal_field_name" : "locations.name",
-     "matching_attribute" : "n"
-  },
-  {
-     "matching_attribute" : "n",
-     "internal_field_name" : "credentials.windows_username",
-     "external_field_type" : "text",
-     "priority" : "internal",
-     "external_field_name" : "configuration.wmiusername",
-     "default_value" : ""
-  },
-  {
-     "matching_attribute" : "n",
-     "internal_field_name" : "credentials.windows_password",
-     "external_field_type" : "text",
-     "external_field_name" : "configuration.wmipassword",
-     "priority" : "internal",
-     "default_value" : ""
-  },
-  {
-     "default_value" : "",
-     "external_field_name" : "configuration.version",
-     "priority" : "internal",
-     "external_field_type" : "text",
-     "internal_field_name" : "credentials.version",
-     "matching_attribute" : "n"
-  },
-  {
-     "matching_attribute" : "n",
-     "internal_field_name" : "credentials.snmp_community",
-     "external_field_type" : "text",
-     "priority" : "internal",
-     "external_field_name" : "configuration.community",
-     "default_value" : ""
-  },
-  {
-     "priority" : "internal",
-     "external_field_name" : "configuration.username",
-     "default_value" : "",
-     "external_field_type" : "text",
-     "internal_field_name" : "credentials.security_name",
-     "matching_attribute" : "n"
-  },
-  {
-     "external_field_type" : "text",
-     "default_value" : "",
-     "priority" : "internal",
-     "external_field_name" : "configuration.customer",
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.nmis_customer"
-  },
-  {
-     "priority" : "internal",
-     "external_field_name" : "configuration.authpassword",
-     "default_value" : "",
-     "external_field_type" : "text",
-     "internal_field_name" : "credentials.authentication_passphrase",
-     "matching_attribute" : "n"
-  },
-  {
-     "internal_field_name" : "credentials.authentication_protocol",
-     "matching_attribute" : "n",
-     "default_value" : "",
-     "external_field_name" : "configuration.authprotocol",
-     "priority" : "internal",
-     "external_field_type" : "text"
-  },
-  {
-     "default_value" : "",
-     "external_field_name" : "configuration.privpassword",
-     "priority" : "internal",
-     "external_field_type" : "text",
-     "internal_field_name" : "credentials.privacy_passphrase",
-     "matching_attribute" : "n"
-  },
-  {
-     "external_field_type" : "text",
-     "default_value" : "",
-     "external_field_name" : "configuration.privprotocol",
-     "priority" : "internal",
-     "matching_attribute" : "n",
-     "internal_field_name" : "credentials.privacy_protocol"
-  },
-  {
-     "priority" : "external",
-     "external_field_name" : "configuration.active",
-     "default_value" : "1",
-     "external_field_type" : "bool_one_zero",
-     "internal_field_name" : "fields.nmis_active",
-     "matching_attribute" : "n"
-  },
-  {
-     "internal_field_name" : "fields.nmis_collect",
-     "matching_attribute" : "n",
-     "default_value" : "1",
-     "external_field_name" : "configuration.collect",
-     "priority" : "external",
-     "external_field_type" : "bool_one_zero"
-  },
-  {
-     "internal_field_name" : "fields.nmis_model",
-     "matching_attribute" : "n",
-     "default_value" : "automatic",
-     "priority" : "external",
-     "external_field_name" : "configuration.model",
-     "external_field_type" : "text"
-  },
-  {
-     "external_field_type" : "text",
-     "default_value" : "wan",
-     "external_field_name" : "configuration.netType",
-     "priority" : "external",
-     "matching_attribute" : "n",
-     "internal_field_name" : "fields.nmis_netType"
-  },
-  {
-     "internal_field_name" : "fields.nmis_ping",
-     "matching_attribute" : "n",
-     "default_value" : "true",
-     "external_field_name" : "configuration.ping",
-     "priority" : "external",
-     "external_field_type" : "bool"
-  },
-  {
-     "internal_field_name" : "fields.nmis_port",
-     "matching_attribute" : "n",
-     "priority" : "external",
-     "external_field_name" : "configuration.port",
-     "default_value" : "161",
-     "external_field_type" : "integer"
-  },
-  {
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.name",
-     "external_field_type" : "text",
-     "default_value" : "",
-     "priority" : "internal",
-     "external_field_name" : "name"
-  },
-  {
-     "external_field_type" : "text",
-     "external_field_name" : "name",
-     "priority" : "internal",
-     "default_value" : "",
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.nmis_name"
-  },
-  {
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.name",
-     "external_field_type" : "text",
-     "default_value" : "",
-     "priority" : "internal",
-     "external_field_name" : "configuration.display_name"
-  },
-  {
-     "external_field_type" : "text",
-     "default_value" : "Open-AudIT",
-     "external_field_name" : "configuration.group",
-     "priority" : "internal",
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.nmis_group"
-  },
-  {
-     "external_field_type" : "text",
-     "external_field_name" : "configuration.host",
-     "priority" : "internal",
-     "default_value" : "",
-     "matching_attribute" : "y",
-     "internal_field_name" : "system.ip"
-  },
-  {
-     "internal_field_name" : "system.omk_uuid",
-     "matching_attribute" : "y",
-     "default_value" : "",
-     "priority" : "external",
-     "external_field_name" : "uuid",
-     "external_field_type" : "text"
-  },
-  {
-     "external_field_type" : "text",
-     "external_field_name" : "configuration.roleType",
-     "priority" : "internal",
-     "default_value" : "",
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.nmis_role"
-  },
-  {
-     "external_field_type" : "capitalise",
-     "priority" : "internal",
-     "external_field_name" : "configuration.serviceStatus",
-     "default_value" : "",
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.environment"
-  },
-  {
-     "external_field_type" : "text",
-     "priority" : "external",
-     "external_field_name" : "cluster_id",
-     "default_value" : "",
-     "matching_attribute" : "n",
-     "internal_field_name" : "system.nmis_poller_uuid"
-  }
-]';
-$integration->fields = str_replace("\n", "", $integration->fields);
-$integrationsModel = new \App\Models\IntegrationsModel();
-$integrationsModel->create($integration);
+$sql = "INSERT INTO `integrations` VALUES (1,'Default NMIS Integration',1,'','nmis','{\"pollers\":[],\"groups\":[],\"roles\":[],\"customers\":[],\"business_services\":[]}','{\"password\":\"\",\"url\":\"http://localhost/omk/\",\"username\":\"\"}',0,'y',0,'y','[]','[]','n',2,'y','[{\"default_value\":\"\",\"external_field_name\":\"configuration.version\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.snmp_version\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.community\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_community\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.username\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_v3_security_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.authpassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_v3_authentication_passphrase\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.authprotocol\",\"external_field_type\":\"lower\",\"internal_field_name\":\"credentials.snmp_v3_authentication_protocol\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.privpassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.snmp_v3_privacy_passphrase\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.privprotocol\",\"external_field_type\":\"lower\",\"internal_field_name\":\"credentials.snmp_v3_privacy_protocol\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.wmiusername\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.windows_username\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.wmipassword\",\"external_field_type\":\"text\",\"internal_field_name\":\"credentials.windows_password\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.businessService\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_business_service\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"server_name\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_poller\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.notes\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_notes\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"y\",\"external_field_name\":\"\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_manage\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.sysDescr\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.sysDescr\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"Default Location\",\"external_field_name\":\"configuration.location\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.locations_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.customer\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_customer\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"1\",\"external_field_name\":\"configuration.active\",\"external_field_type\":\"bool_one_zero\",\"internal_field_name\":\"fields.nmis_active\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"1\",\"external_field_name\":\"configuration.collect\",\"external_field_type\":\"bool_one_zero\",\"internal_field_name\":\"fields.nmis_collect\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"automatic\",\"external_field_name\":\"configuration.model\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_model\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"wan\",\"external_field_name\":\"configuration.netType\",\"external_field_type\":\"text\",\"internal_field_name\":\"fields.nmis_netType\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"true\",\"external_field_name\":\"configuration.ping\",\"external_field_type\":\"bool\",\"internal_field_name\":\"fields.nmis_ping\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"161\",\"external_field_name\":\"configuration.port\",\"external_field_type\":\"integer\",\"internal_field_name\":\"fields.nmis_port\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"name\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"name\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.display_name\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.name\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"Open-AudIT\",\"external_field_name\":\"configuration.group\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_group\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.host\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.ip\",\"matching_attribute\":\"y\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"uuid\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.omk_uuid\",\"matching_attribute\":\"y\",\"priority\":\"external\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.roleType\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_role\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"configuration.serviceStatus\",\"external_field_type\":\"capitalise\",\"internal_field_name\":\"devices.environment\",\"matching_attribute\":\"n\",\"priority\":\"internal\"},{\"default_value\":\"\",\"external_field_name\":\"cluster_id\",\"external_field_type\":\"text\",\"internal_field_name\":\"devices.nmis_poller_uuid\",\"matching_attribute\":\"n\",\"priority\":\"external\"},{\"default_value\" : \"1\",\"matching_attribute\" : \"n\",\"external_field_name\" : \"activated.NMIS\",\"priority\" : \"internal\",\"internal_field_name\" : \"fields.activated_NMIS\",\"external_field_type\" : \"integer\"},{\"default_value\" : \"1\",\"matching_attribute\" : \"n\",\"external_field_name\" : \"activated.opConfig\",\"priority\" : \"internal\",\"external_field_type\" : \"integer\",\"internal_field_name\" : \"fields.activated_opConfig\"},{\"default_value\" : \"1\",\"matching_attribute\" : \"n\",\"external_field_name\" : \"activated.opEvents\",\"internal_field_name\" : \"fields.activated_opEvents\",\"priority\" : \"internal\",\"external_field_type\" : \"integer\"}]','',0,'all','','nmis_manage',0,'attribute','y',0,'y',0,'y','n','','2000-01-01 00:00:00',0,'system',NOW())";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = 'UPDATE `tasks` set `sub_resource_id` = 1 WHERE `type` = "integrations"';
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
-if ($db->fieldExists('nmis_poller_uuid', 'system')) {
+if (!$db->fieldExists('nmis_poller_uuid', 'system')) {
     $sql = "ALTER TABLE `system` ADD `nmis_poller_uuid` varchar(45) NOT NULL DEFAULT '' AFTER `nmis_poller`";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
 }
 
 $sql = "DELETE FROM `rules` WHERE `name` = 'NMIS Manage for SNMP devices'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `rules` VALUES (NULL,'NMIS Manage for SNMP devices',1,'Set nmis_manage to y if we detect an SNMP OID.',100,'[{\"attribute\":\"snmp_oid\",\"operator\":\"gt\",\"table\":\"system\",\"value\":\"\"}]','[{\"attribute\":\"nmis_manage\",\"table\":\"system\",\"value\":\"y\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $ips = server_ip();
 $ips = explode(',', $ips);
@@ -369,6 +111,7 @@ if ($subnet !== '') {
     $sql = "INSERT INTO `discoveries` (id, name, org_id, description, type, subnet, edited_date, edited_by) VALUES (null,'Default Discovery',1,'Automatically created default discovery for $subnet.','subnet','$subnet',NOW(),'system')";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
 } else {
     $output .= "WARNING - Could not determine a private IP for server, no default discovery created.\n\n";
 }
@@ -377,10 +120,12 @@ if ($subnet !== '') {
 $sql = "UPDATE `configuration` SET `value` = '20210810' WHERE `name` = 'internal_version'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = "UPDATE `configuration` SET `value` = '4.2.0' WHERE `name` = 'display_version'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $output .= "Upgrade database to 4.2.0 completed.\n\n";
 config('Openaudit')->internal_version = 20210810;

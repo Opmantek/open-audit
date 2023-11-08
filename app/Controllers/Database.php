@@ -83,6 +83,8 @@ class Database extends BaseController
             $db_schema = str_replace('timestamp NOT NULL DEFAULT current_timestamp()', "timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP", $db_schema);
             $db_schema = str_replace('text DEFAULT NULL,', "text,", $db_schema);
 
+            $db_schema = str_replace('CHARSET=utf8 COLLATE=utf8_general_ci', "CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci", $db_schema);
+
 
             // From the file
             $file_schema = '';
@@ -219,6 +221,7 @@ class Database extends BaseController
     public function update($action)
     {
         $this->databaseModel = model('App\Models\DatabaseModel');
+        $this->integrationsModel = model('App\Models\IntegrationsModel');
         $meta = new stdClass();
         $meta->collection = 'database';
         $meta->action = 'updateForm';

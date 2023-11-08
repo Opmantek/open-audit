@@ -347,7 +347,7 @@ DROP TABLE IF EXISTS `audit_log`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `audit_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `device_id` int(10) unsigned DEFAULT '0',
+  `device_id` int(10) unsigned DEFAULT NULL,
   `username` varchar(45) NOT NULL DEFAULT '',
   `type` varchar(45) NOT NULL DEFAULT '',
   `ip` varchar(45) NOT NULL DEFAULT '',
@@ -1282,7 +1282,7 @@ CREATE TABLE `discoveries` (
   `devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
   `devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
   `network_address` varchar(100) NOT NULL DEFAULT '',
-  `device_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `device_id` int(10) unsigned DEFAULT NULL,
   `scan_options` text NOT NULL,
   `match_options` text NOT NULL,
   `command_options` text NOT NULL,
@@ -1534,9 +1534,9 @@ CREATE TABLE `enterprise` (
   `request` text NOT NULL,
   `response` text NOT NULL,
   `timestamp` datetime NOT NULL DEFAULT current_timestamp(),
-  `output` varchar(65500) NOT NULL DEFAULT '',
+  `output` mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

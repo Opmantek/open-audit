@@ -47,7 +47,7 @@ if (!empty($result)) {
 }
 
 if (!$db->fieldExists('org_id', 'baselines_policies')) {
-    $sql = "ALTER TABLE `baselines_policies` ADD org_id int(10) unsigned DEFAULT '1' AFTER `id`";
+    $sql = "ALTER TABLE `baselines_policies` ADD org_id int(10) unsigned NOT NULL DEFAULT '1' AFTER `id`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -318,9 +318,9 @@ $sql = "CREATE TABLE `enterprise` (
   `request` text NOT NULL,
   `response` text NOT NULL,
   `timestamp` datetime NOT NULL DEFAULT current_timestamp(),
-  `output` varchar(65500) NOT NULL DEFAULT '',
+  `output` mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_general_ci";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -471,15 +471,27 @@ if (!empty($racks)) {
 }
 
 $result = array();
-$sql = "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = 'openaudit' AND TABLE_NAME = 'racks' AND CONSTRAINT_NAME = 'racks_row_id'";
-$query = $db->query($sql);
+// $sql = "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = 'openaudit' AND TABLE_NAME = 'racks' AND CONSTRAINT_NAME = 'racks_row_id'";
+// $query = $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
+// $result = $query->getResult();
+// if (count($result) > 0) {
+//     # Need to drop the foreign key
+//     $sql = "ALTER TABLE `racks` DROP FOREIGN KEY `racks_row_id`";
+//     $query = $db->query($sql);
+// }
+
+$sql = "SHOW INDEX FROM `racks` WHERE Key_name = 'row_id'";
+$result = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
-$result = $query->getResult();
-if (count($result) > 0) {
-    # Need to drop the foreign key
+
+if (!empty($result) and is_array($result) and count($result) > 0) {
     $sql = "ALTER TABLE `racks` DROP FOREIGN KEY `racks_row_id`";
-    $query = $db->query($sql);
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
 }
 
 if ($db->tableExists('rows')) {
@@ -541,7 +553,7 @@ foreach ($result as $item) {
     }
 }
 
-$sql = "ALTER TABLE `users` CHANGE access_token access_token longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`access_token`)) AFTER toolbar_style";
+$sql = "ALTER TABLE `users` CHANGE access_token access_token longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`access_token`)) AFTER `list_table_format`";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
