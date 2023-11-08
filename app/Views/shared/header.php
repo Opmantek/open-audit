@@ -70,7 +70,7 @@ if ($config->product !== 'community') {
             echo "            var baseurl = '';\n";
         } ?>
             var web_folder = '<?= base_url() ?>';
-            var device_auto_delete = '<?= $config->device_auto_delete; ?>';
+            var device_auto_delete = '<?= @$config->device_auto_delete; ?>';
 
             let prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             let html = document.querySelector('html');
