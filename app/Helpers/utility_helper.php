@@ -20,7 +20,9 @@ function &get_instance() # : \App\Controllers\BaseController
 
 function prereqCheck()
 {
-    $prereq = dirPermLinux();
+    if (php_uname('s') !== 'Windows NT') {
+        $prereq = dirPermLinux();
+    }
     $prereq['nmap_installed'] = nmapInstalled();
     $prereq['nmap_suid'] = nmapSuid();
     return $prereq;
