@@ -450,6 +450,8 @@ if (!function_exists('response_create')) {
             $response->meta->user_details = $instance->user;
             $response->meta->config = clone $config;
             unset($response->meta->config->modules);
+            unset($response->meta->config->enterprise_binary);
+            unset($response->meta->config->commercial_dir);
             // Insert the entry
             $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
             $db->query($sql, [json_encode($response)]);
