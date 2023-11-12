@@ -6,6 +6,8 @@ use CodeIgniter\Config\BaseConfig;
 
 use Config\Database;
 
+#[\AllowDynamicProperties]
+
 class OpenAudit extends BaseConfig
 {
     public function __construct()
