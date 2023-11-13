@@ -657,11 +657,10 @@ class DevicesModel extends BaseModel
             log_message('error', 'DevicesModel::update called, but no $data object supplied.');
             return false;
         }
-
         $instance = get_instance();
         $user_id = 0;
-        if (!empty($instance->user)) {
-            $user_id = $instance->user->id;
+        if (!empty($instance->user->id)) {
+            $user_id = intval($instance->user->id);
         }
 
         $log = new \stdClass();
@@ -732,10 +731,10 @@ class DevicesModel extends BaseModel
         // Get the database column names
         $fields = $this->db->getFieldNames('devices');
         // We do not compare these with the edit_log data
-        $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen', 'instance_options', 'credentials', 'discovery_id');
+        $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen', 'instance_options', 'credentials');
         $update_device = new \stdClass();
         foreach ($data as $key => $value) {
-            if (($key !== '') && ($value !== '')) {
+            if (($key !== '' && $value !== '') or ($key !== '' and $source === 'user')) {
                 // need to iterate through available columns and only insert where $key == valid column name
                 if (!in_array($key, $disallowed_fields) && in_array($key, $fields)) {
                     $previous_value = (!empty($db_entry->{$key})) ? $db_entry->{$key} : '';
@@ -765,7 +764,7 @@ class DevicesModel extends BaseModel
         // Add our non-edit_log compared attributes to the data to be updated
         foreach ($data as $key => $value) {
             if ($key !== 'id' && in_array($key, $disallowed_fields)) {
-                $update_device->$key = $value;
+                $update_device->$key = (string)$value;
             }
         }
         $update = $this->updateFieldData('devices', $update_device);
