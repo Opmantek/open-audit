@@ -101,6 +101,8 @@ class Collections extends BaseController
         }
         if ($this->resp->meta->collection === 'discoveries') {
             $this->resp->included['issues'] = $this->discoveriesModel->issuesCollection(intval($this->user->id));
+            nmapInstalled(true);
+            nmapSuid(true);
             // $this->collectorsModel = new \App\Models\CollectorsModel;
             // $this->resp->included['collectors'] = $this->collectorsModel->listUser();
         }
@@ -811,6 +813,10 @@ class Collections extends BaseController
                 $breadcrumb->url = url_to('baselines_policiesRead', $this->resp->data[0]->id);
                 $breadcrumb->name = $this->resp->data[0]->attributes->name;
                 $this->resp->meta->breadcrumbs[] = $breadcrumb;
+            }
+            if ($this->resp->meta->collection === 'discoveries') {
+                nmapInstalled(true);
+                nmapSuid(true);
             }
             $update = false;
             if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false and strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, 'u') !== false) {

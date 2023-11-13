@@ -28,7 +28,7 @@ function prereqCheck()
     return $prereq;
 }
 
-function nmapInstalled()
+function nmapInstalled($setNotice = false)
 {
     if (function_exists('get_instance')) {
         $instance = & get_instance();
@@ -52,6 +52,9 @@ function nmapInstalled()
             $nmap_installed = 'y';
         }
         unset($test_path);
+        if ($setNotice) {
+            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
+        }
     }
     if (php_uname('s') !== 'Windows NT') {
         $command_string = 'which nmap 2>/dev/null';
@@ -72,11 +75,14 @@ function nmapInstalled()
                 $nmap_installed = 'y';
             }
         }
+        if ($nmap_installed === 'n' and $setNotice) {
+            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Please install it using your package manager.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
+        }
     }
     return $nmap_installed;
 }
 
-function nmapSuid()
+function nmapSuid($setNotice = false)
 {
     if (php_uname('s') === 'Windows NT') {
         return 'y';
@@ -111,6 +117,9 @@ function nmapSuid()
         if (isset($output[0]) and $output[0] === 's') {
             $suid = 'y';
         }
+    }
+    if ($suid === 'n' and $setNotice) {
+        \Config\Services::session()->setFlashdata('error', "WARNING - Nmap SUID not set.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to configure it.");
     }
     return $suid;
 }
