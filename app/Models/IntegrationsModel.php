@@ -1063,8 +1063,9 @@ class IntegrationsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
+        $instance = & get_instance();
         $include = array();
-        $sql = "SELECT * FROM integrations_log WHERE integrations_id = ?";
+        $sql = "SELECT * FROM integrations_log WHERE integrations_id = ? LIMIT " . intval($instance->resp->meta->limit);
         $result = $this->db->query($sql, [$id])->getResult();
         $include['integrations_log'] = format_data($result, 'integrations_log');
 
