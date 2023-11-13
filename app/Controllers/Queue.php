@@ -44,6 +44,7 @@ class Queue extends BaseController
         $this->discoveriesModel = new \App\Models\DiscoveriesModel();
         $this->discoveryLogModel = new \App\Models\DiscoveryLogModel();
         #$this->integrationsModel = new \App\Models\IntegrationsModel();
+        $this->locationsModel = new \App\Models\LocationsModel();
         $this->networksModel = new \App\Models\NetworksModel();
         $this->orgsModel = new \App\Models\OrgsModel();
         $this->queueModel = new \App\Models\QueueModel();
