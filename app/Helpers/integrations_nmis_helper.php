@@ -176,13 +176,14 @@ if (!function_exists('integrations_pre')) {
             }
         } else {
             if ($integration->log) {
-                if ($integration->debug) {
-                    $message = "[integrations_pre] " . count($external_locations) . " locations returned from NMIS. " . json_encode($external_locations);
-                } else {
-                    $message = "[integrations_pre] " . count($external_locations) . " locations returned from NMIS.";
-                }
+                $message = "[integrations_pre] " . count($external_locations) . " locations returned from NMIS.";
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
+                if ($integration->debug) {
+                    $message = "[integrations_pre] Locations: " . json_encode($external_locations);
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                    $db->query($sql, [$integration->id, microtime(true)]);
+                }
             }
         }
 
@@ -326,6 +327,11 @@ if (!function_exists('integrations_pre')) {
                 $message = "[integrations_pre]  " . count($pollers) . " pollers returned from NMIS.";
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
+                if ($integration->debug) {
+                    $message = "[integrations_pre] Pollers: " . json_encode($pollers);
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                    $db->query($sql, [$integration->id, microtime(true)]);
+                }
             }
         }
 
@@ -352,6 +358,11 @@ if (!function_exists('integrations_pre')) {
                 $message = "[integrations_pre]  " . count($groups) . " groups returned from NMIS.";
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
+                if ($integration->debug) {
+                    $message = "[integrations_pre] Groups: " . json_encode($groups);
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                    $db->query($sql, [$integration->id, microtime(true)]);
+                }
             }
         }
 
@@ -376,8 +387,13 @@ if (!function_exists('integrations_pre')) {
         } else {
             if ($integration->log) {
                 $message = "[integrations_pre]  " . count($roles) . " roles returned from NMIS.";
-                $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
+                if ($integration->debug) {
+                    $message = "[integrations_pre] Roles: " . json_encode($roles);
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                    $db->query($sql, [$integration->id, microtime(true)]);
+                }
             }
         }
 
@@ -402,11 +418,16 @@ if (!function_exists('integrations_pre')) {
         } else {
             if ($integration->log) {
                 $message = "[integrations_pre]  " . count($customers_retrieved) . " customers returned from NMIS.";
-                $sql = "/* integrations_nmis_helper::pre */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
             foreach ($customers_retrieved as $customer) {
                 $customers[] = $customer->customer;
+            }
+            if ($integration->debug) {
+                $message = "[integrations_pre] Customers: " . json_encode($customers_retrieved);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                $db->query($sql, [$integration->id, microtime(true)]);
             }
         }
 
@@ -436,6 +457,11 @@ if (!function_exists('integrations_pre')) {
             }
             foreach ($business_services_retrieved as $business_service) {
                 $business_services[] = $business_service->businessService;
+            }
+            if ($integration->debug) {
+                $message = "[integrations_pre] Business Services: " . json_encode($business_services_retrieved);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                $db->query($sql, [$integration->id, microtime(true)]);
             }
         }
 
@@ -481,7 +507,7 @@ if (!function_exists('integrations_collection')) {
             if (empty($token)) {
                 $message = '[integrations_collection] Could not generate token.';
                 log_message('error', $message);
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                 $db->query($sql, [$integration->id, microtime(true), $message]);
             }
             $login_url = $url . '/login/' . $token;
@@ -839,15 +865,14 @@ if (!function_exists('integrations_create')) {
             if (!is_string($output) || !strlen($output)) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not create device in NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
-                curl_close($ch);
-                unlink($ckfile);
-                return array();
-            } else {
                 if ($integration->debug) {
                     $message = '[integrations_create] Sent device data: ' . json_encode($device);
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
-                    $db->query($sql, [$integration->id, microtime(true)], $message);
+                    $db->query($sql, [$integration->id, microtime(true), $message]);
                 }
+                curl_close($ch);
+                unlink($ckfile);
+                return array();
             }
             $external_device = @json_decode($output);
             if (empty($external_device)) {
@@ -867,7 +892,7 @@ if (!function_exists('integrations_create')) {
                     $db->query($sql, [$integration->id, microtime(true), $message]);
                     if ($integration->debug) {
                         $message = '[integrations_create] Received device creation data: ' . $output;
-                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                         $db->query($sql, [$integration->id, microtime(true), $message]);
                     }
                 } else {
@@ -979,7 +1004,7 @@ if (!function_exists('integrations_delete')) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($device));
             $output = curl_exec($ch);
             if (!is_string($output) || !strlen($output)) {
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could delete device in NMIS.')";
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not delete device in NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
@@ -1109,6 +1134,11 @@ if (!function_exists('integrations_post')) {
             $message = "[integrations_post] " . count($external_locations) . " locations returned from NMIS.";
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
             $db->query($sql, [$integration->id, microtime(true)]);
+            if ($integration->debug) {
+                $message = "[integrations_post] Locations: " . json_encode($external_locations);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                $db->query($sql, [$integration->id, microtime(true)]);
+            }
         }
 
         $location_ids = array();
@@ -1245,6 +1275,11 @@ if (!function_exists('integrations_post')) {
             $message = "[integrations_post]  " . count($pollers) . " pollers returned from NMIS.";
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
             $db->query($sql, [$integration->id, microtime(true)]);
+            if ($integration->debug) {
+                $message = "[integrations_post] Pollers: " . json_encode($pollers);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                $db->query($sql, [$integration->id, microtime(true)]);
+            }
         }
 
         // Store any groups
@@ -1268,6 +1303,11 @@ if (!function_exists('integrations_post')) {
             $message = "[integrations_post]  " . count($groups) . " groups returned from NMIS.";
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
             $db->query($sql, [$integration->id, microtime(true)]);
+            if ($integration->debug) {
+                $message = "[integrations_post] Groups: " . json_encode($groups);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                $db->query($sql, [$integration->id, microtime(true)]);
+            }
         }
 
         // Store any roles
@@ -1291,6 +1331,11 @@ if (!function_exists('integrations_post')) {
             $message = "[integrations_post]  " . count($roles) . " roles returned from NMIS.";
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
             $db->query($sql, [$integration->id, microtime(true)]);
+            if ($integration->debug) {
+                $message = "[integrations_post] Roles: " . json_encode($roles);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                $db->query($sql, [$integration->id, microtime(true)]);
+            }
         }
 
         // Store any customers
@@ -1316,6 +1361,11 @@ if (!function_exists('integrations_post')) {
             foreach ($customers_retrieved as $customer) {
                 $customers[] = $customer->customer;
             }
+            if ($integration->debug) {
+                $message = "[integrations_post] Customers: " . json_encode($customers_retrieved);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                $db->query($sql, [$integration->id, microtime(true)]);
+            }
         }
 
         // Store any business services
@@ -1340,6 +1390,11 @@ if (!function_exists('integrations_post')) {
             $db->query($sql, [$integration->id, microtime(true)]);
             foreach ($business_services_retrieved as $business_service) {
                 $business_services[] = $business_service->businessService;
+            }
+            if ($integration->debug) {
+                $message = "[integrations_post] Business Services: " . json_encode($business_services_retrieved);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
+                $db->query($sql, [$integration->id, microtime(true)]);
             }
         }
 

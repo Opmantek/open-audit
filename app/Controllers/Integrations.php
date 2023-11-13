@@ -49,7 +49,8 @@ class Integrations extends BaseController
             output($this);
             return;
         }
-        \Config\Services::session()->setFlashdata('error', 'Discovery started.');
+        \Config\Services::session()->setFlashdata('success', 'Integration started.');
+        sleep(5);
         return redirect()->route('integrationsRead', [$id]);
     }
 

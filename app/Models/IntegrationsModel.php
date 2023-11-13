@@ -382,9 +382,9 @@ class IntegrationsModel extends BaseModel
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
             $this->db->query($sql, [$integration->id, microtime(true), $message]);
 
-            $message = 'DEVICE - ' . json_encode($device->devices);
-            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
-            $this->db->query($sql, [$integration->id, microtime(true), $message]);
+            // $message = 'DEVICE - ' . json_encode($external_formatted_devices);
+            // $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+            // $this->db->query($sql, [$integration->id, microtime(true), $message]);
         }
 
         foreach ($external_formatted_devices as $device) {
@@ -395,14 +395,18 @@ class IntegrationsModel extends BaseModel
             if (!empty($id)) {
                 // We matched an existing device
                 $device->devices->id = $id;
-                $message = 'Device match found, ID: ' . $id . ' for ' . $device->devices->name;
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
-                $this->db->query($sql, [$integration->id, microtime(true), $message]);
+                if ($integration->debug) {
+                    $message = 'Device match found, ID: ' . $id . ' for ' . $device->devices->name . ' on IP ' . $device->devices->ip;
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                    $this->db->query($sql, [$integration->id, microtime(true), $message]);
+                }
             } else {
                 // No existing device
-                $message = 'No device match found for ' . $device->devices->name;
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
-                $this->db->query($sql, [$integration->id, microtime(true), $message]);
+                if ($integration->debug) {
+                    $message = 'No device match found for ' . $device->devices->name;
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                    $this->db->query($sql, [$integration->id, microtime(true), $message]);
+                }
             }
         }
 
@@ -629,7 +633,13 @@ class IntegrationsModel extends BaseModel
                             $test1 = $this->getValue($local_device, $field->external_field_name);
                             $test2 = $this->getValue($external_device, $field->external_field_name);
                             if ((string)$test1 === (string)$test2) {
+                                if ($integration->debug) {
+                                    $message = 'Matched device on ' . $field->external_field_name . '. Removing ' . $local_device->name . ' from list.';
+                                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                                    $this->db->query($sql, [$integration->id, microtime(true), $message]);
+                                }
                                 unset($new_external_devices[$key]);
+                                break;
                             }
                         }
                     }
@@ -676,7 +686,11 @@ class IntegrationsModel extends BaseModel
 
             foreach ($external_created_devices as $device) {
                 $parameters->details = $device->devices;
-                $device->devices->id = deviceMatch($device->devices);
+                # Hard Set match_ip to 'y'
+                // $match = new \stdClass();
+                // $match->ip = 'y';
+                // $device->devices->id = deviceMatch($device->devices, 0, $match);
+                $device->devices->id = deviceMatch($device->devices, 0, $parameters->match);
                 if (!empty($device->devices->id)) {
                     if ($integration->debug) {
                         $message = 'Found device with ID: ' . $device->devices->id . ' for ' . $device->devices->name;
@@ -703,7 +717,7 @@ class IntegrationsModel extends BaseModel
                         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                         $this->db->query($sql, [$integration->id, microtime(true), $message]);
                     }
-                    $this->m_device->update($temp_device);
+                    $devicesModel->update($temp_device->id, $temp_device);
                 } else {
                     $message = 'No internal device ID returned for ' . $device->devices->name . ', not updating internal device.';
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?)";
@@ -962,7 +976,7 @@ class IntegrationsModel extends BaseModel
 
         if (! empty($device_ids)) {
             // OA Fields
-            $sql = "SELECT field.*, fields.name FROM field left join fields on (field.fields_id = fields.id) WHERE device_id in (" . implode(',', $device_ids) . ")";
+            $sql = "SELECT field.*, fields.name FROM `field` LEFT JOIN `fields` ON (field.field_id = fields.id) WHERE `device_id` IN (" . implode(',', $device_ids) . ")";
             $query = $this->db->query($sql);
             $fields = $query->getResult();
 
@@ -1065,9 +1079,12 @@ class IntegrationsModel extends BaseModel
     {
         $instance = & get_instance();
         $include = array();
-        $sql = "SELECT * FROM integrations_log WHERE integrations_id = ? LIMIT " . intval($instance->resp->meta->limit);
+        $sql = "SELECT * FROM integrations_log WHERE integrations_id = ? AND `severity_text` != 'debug' LIMIT " . intval($instance->resp->meta->limit);
+        if (!empty($instance->resp->meta->debug)) {
+            $sql = "SELECT * FROM integrations_log WHERE integrations_id = ? LIMIT " . intval($instance->resp->meta->limit);
+        }
         $result = $this->db->query($sql, [$id])->getResult();
-        $include['integrations_log'] = format_data($result, 'integrations_log');
+        $include['logs'] = format_data($result, 'integrations_log');
 
         $sql = "SELECT `devices` FROM integrations WHERE id = ?";
         $data = array(intval($id));
@@ -1078,7 +1095,6 @@ class IntegrationsModel extends BaseModel
             $devices = $this->db->query($sql)->getResult();
             $include['devices'] = format_data($devices, 'devices');
         }
-
         return $include;
     }
 
@@ -1581,7 +1597,8 @@ class IntegrationsModel extends BaseModel
                         }
                     }
                     if (!$id) {
-                        // TODO Throw an error as we should always have a field already created
+                        // Throw an error as we should always have a field already created
+                        log_message('error', 'upsertCustomFields could not find an existing field.');
                     }
                     $device_field_id = 0;
                     $value = '';
@@ -1593,7 +1610,8 @@ class IntegrationsModel extends BaseModel
                     }
                     if (!$device_field_id) {
                         // Insert a new field
-                        $sql = "INSERT INTO field VALUES (null, ?, ?, NOW(), ?)";
+                        $sql = "INSERT INTO `field` (`id`, `device_id`, `field_id`, `timestamp`, `value`) VALUES (null, ?, ?, NOW(), ?)";
+                        log_message('debug', 'DeviceID: ' . $device->devices->id . ' FieldID: ' .  $id . ' Value: ' . $device->fields->{$field_name});
                         $this->db->query($sql, [$device->devices->id, $id, $device->fields->{$field_name}]);
                         // Insert an edit log
                         $sql = "INSERT INTO edit_log (user_id, device_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (0, ?, 'Field data was created', 'integrations', 1000, 'field', ?, NOW(), ?, ?)";

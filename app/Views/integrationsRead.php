@@ -25,6 +25,11 @@ if ($style === 'icontext') {
 if ($resource->type === 'nmis') {
     $resource->type = 'NMIS';
 }
+if (!empty($resource->attributes->password)) {
+    $placeholder = __("removed from display, but has been set");
+} else {
+    $placeholder = __("has not been set");
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -92,7 +97,7 @@ if ($resource->type === 'nmis') {
                                     <div class="offset-2 col-8" style="position:relative;"><hr /></div>
                                     <?= read_field('attributes.url', $resource->attributes->url, $dictionary->columns->attributes->url, $update, __('URL')) ?>
                                     <?= read_field('attributes.username', $resource->attributes->username, $dictionary->columns->attributes->username, $update, __('Username')) ?>
-                                    <?= read_field('attributes.password', $resource->attributes->password, $dictionary->columns->attributes->password, $update, __('Password')) ?>
+                                    <?= read_field('attributes.password', '', $dictionary->columns->attributes->password, $update, __('Password'), '', $placeholder, 'password') ?>
                                     <br />
                                 </div>
                                 <div class="col-6">
@@ -128,7 +133,32 @@ if ($resource->type === 'nmis') {
                                     <?= read_select('update_internal_from_external', $resource->update_internal_from_external, $dictionary->columns->update_internal_from_external, $update, __('Update Open-AudIT Devices from ') . $resource->type) ?>
                                     <?= read_select('discovery_run', $resource->discovery_run, $dictionary->columns->discovery_run, $update, __('Run Discovery')) ?>
                                     <?= read_field('discovery_name', $resource->{'discoveries.name'}, '', $update) ?>
-                                    <?= read_field('select_internal_type', $resource->{'select_internal_type'}, '', $update) ?>
+
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label for="select_internal_type" class="form-label"><?= __('Select') ?></label>
+                                            <div class="input-group">
+                                                <select class="form-select" id="select_internal_type" name="select_internal_type" data-original-value="<?= $resource->select_internal_type ?>" disabled>
+                                                    <option value="none" <?php if ($resource->select_internal_type === 'none') { ?>selected<?php } ?>><?= __('None') ?></option>
+                                                    <option value="attribute" <?php if ($resource->select_internal_type === 'attribute') { ?>selected<?php } ?>><?= __('Attribute') ?></option>
+                                                    <option value="group" <?php if ($resource->select_internal_type === 'group') { ?>selected<?php } ?>><?= __('Group') ?></option>
+                                                    <option value="value" <?php if ($resource->select_internal_type === 'value') { ?>selected<?php } ?>><?= __('Value') ?></option>
+                                                </select>
+                                                <?php if ($update) { ?>
+                                                <div class="pull-right" style="padding-left:4px;">
+                                                    <div data-attribute="select_internal_type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
+                                                    <div data-attribute="select_internal_type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
+                                                    <div data-attribute="select_internal_type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                </div>
+                                                <?php } ?>
+                                            </div>
+                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="select_internal_type" data-dictionary="<?= $dictionary->columns->select_internal_type ?>"><span><br /></span></div>
+                                        </div>
+                                    </div>
+
+
+
+
                                     <?= read_field('select_internal_attribute', $resource->{'select_internal_attribute'}, '', $update) ?>
                                     <?= read_field('select_internal_value', $resource->{'select_internal_value'}, '', $update) ?>
                                 </div>
@@ -136,7 +166,28 @@ if ($resource->type === 'nmis') {
                                     <?= read_select('create_external_from_internal', $resource->create_external_from_internal, $dictionary->columns->create_external_from_internal, $update, __('Create') . ' ' . $resource->type . ' ' . __('Devices from Open-AudIT')) ?>
                                     <?= read_select('update_external_from_internal', $resource->update_external_from_internal, $dictionary->columns->update_external_from_internal, $update, __('Update') . ' ' . $resource->type . ' ' . __('Devices from Open-AudIT')) ?>
                                     <?= read_select('delete_external_from_internal', $resource->delete_external_from_internal, $dictionary->columns->delete_external_from_internal, $update, __('Delete') . ' ' . $resource->type . ' ' . __('Devices from Open-AudIT')) ?>
-                                    <?= read_field('select_external_type', $resource->{'select_external_type'}, '', $update) ?>
+
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label for="select_external_type" class="form-label"><?= __('Select') ?></label>
+                                            <div class="input-group">
+                                                <select class="form-select" id="select_external_type" name="select_external_type" data-original-value="<?= $resource->select_external_type ?>" disabled>
+                                                    <option value="all" <?php if ($resource->select_external_type === 'all') { ?>selected<?php } ?>><?= __('All') ?></option>
+                                                    <option value="none" <?php if ($resource->select_external_type === 'none') { ?>selected<?php } ?>><?= __('None') ?></option>
+                                                    <option value="attribute" <?php if ($resource->select_external_type === 'attribute') { ?>selected<?php } ?>><?= __('Attribute') ?></option>
+                                                </select>
+                                                <?php if ($update) { ?>
+                                                <div class="pull-right" style="padding-left:4px;">
+                                                    <div data-attribute="select_external_type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
+                                                    <div data-attribute="select_external_type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
+                                                    <div data-attribute="select_external_type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                </div>
+                                                <?php } ?>
+                                            </div>
+                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="select_external_type" data-dictionary="<?= $dictionary->columns->select_external_type ?>"><span><br /></span></div>
+                                        </div>
+                                    </div>
+
                                     <?= read_field('select_external_attribute', $resource->{'select_external_attribute'}, '', $update) ?>
                                     <?= read_field('select_external_value', $resource->{'select_external_value'}, '', $update) ?>
                                 </div>
@@ -189,12 +240,12 @@ if ($resource->type === 'nmis') {
 
                         <div class="tab-pane" id="logs" role="tabpanel" tabindex="0">
                             <br>
-                            <table class="table <?= $GLOBALS['table'] ?> table-striped logsTable dataTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped logsTable dataTable" data-order='[[0,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('ID') ?></th>
                                         <th><?= __('Timestamp') ?></th>
-                                        <th><?= __('Severity') ?></th>
+                                        <th class="text-center"><?= __('Severity') ?></th>
                                         <th><?= __('Message') ?></th>
                                     </tr>
                                 </thead>
@@ -202,10 +253,28 @@ if ($resource->type === 'nmis') {
                                     <?php if (!empty($included['logs'])) { ?>
                                         <?php foreach ($included['logs'] as $result) { ?>
                                         <tr>
-                                            <td><?= $result->attributes->id ?></td>
+                                            <td class="text-center"><?= $result->attributes->id ?></td>
                                             <td><?= $result->attributes->timestamp ?></td>
-                                            <td><?= $result->attributes->severity ?></td>
-                                            <td><?= $result->attributes->message ?></td>
+                                            <?php
+                                            $severity_text = '<span class="badge bg-danger">' . $result->attributes->severity_text . '</span>';
+                                            if ($result->attributes->severity_text === 'debug') {
+                                                $severity_text = '<span class="badge bg-secondary">debug</span>';
+                                            }
+                                            if ($result->attributes->severity_text === 'info') {
+                                                $severity_text = '<span class="badge bg-info">info</span>';
+                                            }
+                                            if ($result->attributes->severity_text === 'notice') {
+                                                $severity_text = '<span class="badge bg-success">notice</span>';
+                                            }
+                                            if ($result->attributes->severity_text === 'warning') {
+                                                $severity_text = '<span class="badge bg-warning">warning</span>';
+                                            }
+                                            if ($result->attributes->severity_text === 'error') {
+                                                $severity_text = '<span class="badge bg-danger">error</span>';
+                                            }
+                                            ?>
+                                            <td class="text-center"><?= $severity_text ?></td>
+                                            <td style="word-wrap:break-word; min-width:160px; max-width:500px;"><?= $result->attributes->message ?></td>
                                         </tr>
                                         <?php } ?>
                                     <?php } ?>
