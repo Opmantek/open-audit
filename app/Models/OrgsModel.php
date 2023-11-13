@@ -77,7 +77,7 @@ class OrgsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return false;
         }
-        return ($this->db->insertID());
+        return (intval($this->db->insertID()));
     }
 
     /**

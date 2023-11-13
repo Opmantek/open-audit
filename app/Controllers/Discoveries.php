@@ -53,6 +53,7 @@ class Discoveries extends BaseController
             return;
         }
         \Config\Services::session()->setFlashdata('success', 'Discovery started.');
+        sleep(5);
         return redirect()->route('discoveriesRead', [$id]);
     }
 

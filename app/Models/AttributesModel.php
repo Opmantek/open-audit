@@ -84,7 +84,7 @@ class AttributesModel extends BaseModel
             session()->setFlashdata('error', json_encode($error));
             return null;
         }
-        return ($this->db->insertID());
+        return (intval($this->db->insertID()));
     }
 
     /**

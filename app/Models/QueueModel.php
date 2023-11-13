@@ -75,7 +75,7 @@ class QueueModel extends BaseModel
         $this->db->query($sql);
         $sql = "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
         $this->db->query($sql, [$name, $data->type, $org_id, $details]);
-        $result = $this->db->insertID();
+        $result = intval($this->db->insertID());
         $sql = "UNLOCK TABLES";
         $query = $this->db->query($sql);
         if (!empty($result)) {

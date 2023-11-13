@@ -163,7 +163,7 @@ class DevicesModel extends BaseModel
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return null;
         }
-        $id = $this->db->insertID();
+        $id = intval($this->db->insertID());
         // Set the device icon
         reset_icons($id);
 

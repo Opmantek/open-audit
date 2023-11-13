@@ -366,7 +366,7 @@ class DiscoveriesModel extends BaseModel
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return null;
         }
-        return ($this->db->insertID());
+        return (intval($this->db->insertID()));
     }
 
     /**
