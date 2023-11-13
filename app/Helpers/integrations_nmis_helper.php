@@ -113,7 +113,7 @@ if (!function_exists('integrations_pre')) {
 
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_pre] Logged on to NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
@@ -179,7 +179,7 @@ if (!function_exists('integrations_pre')) {
                 $message = "[integrations_pre] " . count($external_locations) . " locations returned from NMIS.";
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
-                if ($integration->debug) {
+                if ($integration->attributes->debug) {
                     $message = "[integrations_pre] Locations: " . json_encode($external_locations);
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                     $db->query($sql, [$integration->id, microtime(true)]);
@@ -327,7 +327,7 @@ if (!function_exists('integrations_pre')) {
                 $message = "[integrations_pre]  " . count($pollers) . " pollers returned from NMIS.";
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
-                if ($integration->debug) {
+                if ($integration->attributes->debug) {
                     $message = "[integrations_pre] Pollers: " . json_encode($pollers);
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                     $db->query($sql, [$integration->id, microtime(true)]);
@@ -358,7 +358,7 @@ if (!function_exists('integrations_pre')) {
                 $message = "[integrations_pre]  " . count($groups) . " groups returned from NMIS.";
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
-                if ($integration->debug) {
+                if ($integration->attributes->debug) {
                     $message = "[integrations_pre] Groups: " . json_encode($groups);
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                     $db->query($sql, [$integration->id, microtime(true)]);
@@ -389,7 +389,7 @@ if (!function_exists('integrations_pre')) {
                 $message = "[integrations_pre]  " . count($roles) . " roles returned from NMIS.";
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
-                if ($integration->debug) {
+                if ($integration->attributes->debug) {
                     $message = "[integrations_pre] Roles: " . json_encode($roles);
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                     $db->query($sql, [$integration->id, microtime(true)]);
@@ -424,7 +424,7 @@ if (!function_exists('integrations_pre')) {
             foreach ($customers_retrieved as $customer) {
                 $customers[] = $customer->customer;
             }
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $message = "[integrations_pre] Customers: " . json_encode($customers_retrieved);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -458,7 +458,7 @@ if (!function_exists('integrations_pre')) {
             foreach ($business_services_retrieved as $business_service) {
                 $business_services[] = $business_service->businessService;
             }
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $message = "[integrations_pre] Business Services: " . json_encode($business_services_retrieved);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -532,7 +532,7 @@ if (!function_exists('integrations_collection')) {
 
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $message = '[integrations_collection] Logged on to NMIS.';
                 log_message('debug', $message);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
@@ -689,7 +689,7 @@ if (!function_exists('integrations_update')) {
         $output = curl_exec($ch);
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_update] Logged on to NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
@@ -811,7 +811,7 @@ if (!function_exists('integrations_create')) {
         $output = curl_exec($ch);
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_create] Logged on to NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
@@ -865,7 +865,7 @@ if (!function_exists('integrations_create')) {
             if (!is_string($output) || !strlen($output)) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not create device in NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
-                if ($integration->debug) {
+                if ($integration->attributes->debug) {
                     $message = '[integrations_create] Sent device data: ' . json_encode($device);
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                     $db->query($sql, [$integration->id, microtime(true), $message]);
@@ -890,7 +890,7 @@ if (!function_exists('integrations_create')) {
                     $count = count($external_devices);
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                     $db->query($sql, [$integration->id, microtime(true), $message]);
-                    if ($integration->debug) {
+                    if ($integration->attributes->debug) {
                         $message = '[integrations_create] Received device creation data: ' . $output;
                         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                         $db->query($sql, [$integration->id, microtime(true), $message]);
@@ -952,7 +952,7 @@ if (!function_exists('integrations_delete')) {
         $output = curl_exec($ch);
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_delete] Logged on to NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
@@ -1079,7 +1079,7 @@ if (!function_exists('integrations_post')) {
         $output = curl_exec($ch);
         if (strpos($output, 'Set-Cookie') !== false) {
             // Success
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_post] Logged on to NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
@@ -1134,7 +1134,7 @@ if (!function_exists('integrations_post')) {
             $message = "[integrations_post] " . count($external_locations) . " locations returned from NMIS.";
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
             $db->query($sql, [$integration->id, microtime(true)]);
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $message = "[integrations_post] Locations: " . json_encode($external_locations);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -1275,7 +1275,7 @@ if (!function_exists('integrations_post')) {
             $message = "[integrations_post]  " . count($pollers) . " pollers returned from NMIS.";
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
             $db->query($sql, [$integration->id, microtime(true)]);
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $message = "[integrations_post] Pollers: " . json_encode($pollers);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -1303,7 +1303,7 @@ if (!function_exists('integrations_post')) {
             $message = "[integrations_post]  " . count($groups) . " groups returned from NMIS.";
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
             $db->query($sql, [$integration->id, microtime(true)]);
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $message = "[integrations_post] Groups: " . json_encode($groups);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -1331,7 +1331,7 @@ if (!function_exists('integrations_post')) {
             $message = "[integrations_post]  " . count($roles) . " roles returned from NMIS.";
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
             $db->query($sql, [$integration->id, microtime(true)]);
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $message = "[integrations_post] Roles: " . json_encode($roles);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -1361,7 +1361,7 @@ if (!function_exists('integrations_post')) {
             foreach ($customers_retrieved as $customer) {
                 $customers[] = $customer->customer;
             }
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $message = "[integrations_post] Customers: " . json_encode($customers_retrieved);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -1391,7 +1391,7 @@ if (!function_exists('integrations_post')) {
             foreach ($business_services_retrieved as $business_service) {
                 $business_services[] = $business_service->businessService;
             }
-            if ($integration->debug) {
+            if ($integration->attributes->debug) {
                 $message = "[integrations_post] Business Services: " . json_encode($business_services_retrieved);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
                 $db->query($sql, [$integration->id, microtime(true)]);

@@ -705,21 +705,17 @@ class IntegrationsModel extends BaseModel
                 $temp_device = $device->devices;
                 $temp_device->last_seen_by = 'integrations';
                 if (!empty($temp_device->id)) {
-                    $message = 'Updating internal device ID: ' . $device->devices->id . ' for ' . $device->devices->name;
+                    $message = 'Updating internal device with ID: ' . $device->devices->id . ' for ' . $device->devices->name;
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                     $this->db->query($sql, [$integration->id, microtime(true), $message]);
                     if ($integration->debug) {
-                        $message = "DEVICE - " . json_encode($device);
-                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
-                        $this->db->query($sql, [$integration->id, microtime(true), $message]);
-
-                        $message = "TEMP DEVICE - " . json_encode($temp_device);
+                        $message = "DEVICE - " . json_encode($temp_device);
                         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                         $this->db->query($sql, [$integration->id, microtime(true), $message]);
                     }
                     $devicesModel->update($temp_device->id, $temp_device);
                 } else {
-                    $message = 'No internal device ID returned for ' . $device->devices->name . ', not updating internal device.';
+                    $message = 'No internal device ID returned for ' . $temp_device->name . ', not updating internal device.';
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?)";
                     $query = $this->db->query($sql, [$integration->id, microtime(true), $message]);
                 }
@@ -1603,7 +1599,7 @@ class IntegrationsModel extends BaseModel
                     $device_field_id = 0;
                     $value = '';
                     foreach ($device_fields as $device_field) {
-                        if ($id === $device_field->fields_id) {
+                        if ($id === $device_field->field_id) {
                             $device_field_id = $device_field->id;
                             $value = $device_field->value;
                         }
