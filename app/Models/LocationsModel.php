@@ -85,7 +85,6 @@ class LocationsModel extends BaseModel
         if (empty($data)) {
             return null;
         }
-        $instance = & get_instance();
         $data = $this->createFieldData('locations', $data);
         if (empty($data)) {
             return null;
@@ -95,34 +94,7 @@ class LocationsModel extends BaseModel
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return null;
         }
-        $id = $this->db->insertID();
-
-        $user = 'system';
-        if (!empty($instance->user->full_name)) {
-            $user = $instance->user->full_name;
-        }
-
-        $sql = "INSERT INTO `buildings` VALUES (NULL, 'Default Building', ?, ?, 'The default entry for a building at this location.', '', '', '', ?, NOW())";
-        $this->db->query($sql, [$data->org_id, $id, $user]);
-        $building_id = $this->db->insertID();
-
-        if (!empty($building_id)) {
-            $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', '', ?, NOW())";
-            $this->db->query($sql, [$data->org_id, $building_id, $user]);
-            $floor_id = $this->db->insertID();
-        }
-
-        if (!empty($floor_id)) {
-            $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default Room', ?, ?, 'The default entry for a room at this location.', '', '', '', ?, NOW())";
-            $this->db->query($sql, [$data->org_id, $floor_id, $user]);
-            $room_id = $this->db->insertID();
-        }
-
-        if (!empty($room_id)) {
-            $sql = "INSERT INTO `rows` VALUES (NULL, 'Default Row', ?, ?, 'The default entry for a row at this location.', '', '', '', ?, NOW())";
-            $this->db->query($sql, [$data->org_id, $room_id, $user]);
-        }
-        return intval($id);
+        return (intval($this->db->insertID()));
     }
 
     /**
@@ -311,15 +283,15 @@ class LocationsModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location.';
 
-        $dictionary->about = '<p>A location is a physical address that can have devices associated with it.<br /><br />You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>A location is a physical address that can have devices associated with it.<br /><br />You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br /><br />' . @$instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '<p>The <code>type</code> of the location will assign its icon.<br /><br /></p>';
 
         $dictionary->product = 'community';
-        $dictionary->columns->id = $instance->dictionary->id;
-        $dictionary->columns->name = $instance->dictionary->name;
-        $dictionary->columns->org_id = $instance->dictionary->org_id;
-        $dictionary->columns->description = $instance->dictionary->description;
+        $dictionary->columns->id = @$instance->dictionary->id;
+        $dictionary->columns->name = @$instance->dictionary->name;
+        $dictionary->columns->org_id = @$instance->dictionary->org_id;
+        $dictionary->columns->description = @$instance->dictionary->description;
         $dictionary->columns->parent_id = 'Unused.';
         $dictionary->columns->sub_type = 'Unused.';
         $dictionary->columns->type = 'What is the type of this location. Allowable types held in <code>attributes</code> table.';
@@ -345,8 +317,8 @@ class LocationsModel extends BaseModel
         $dictionary->columns->longitude = 'The locations longitude.';
         $dictionary->columns->geo = 'An optional GeoCode';
         $dictionary->columns->cloud_id = 'The Cloud that owns this item. Links to <code>clouds.id</code>.';
-        $dictionary->columns->edited_by = $instance->dictionary->edited_by;
-        $dictionary->columns->edited_date = $instance->dictionary->edited_date;
+        $dictionary->columns->edited_by = @$instance->dictionary->edited_by;
+        $dictionary->columns->edited_date = @$instance->dictionary->edited_date;
         return $dictionary;
     }
 }
