@@ -459,13 +459,18 @@ if (!function_exists('response_create')) {
             // Call the binary and wait for it's response
             unset($output);
             if (php_uname('s') === 'Windows NT') {
-                $command = "%comspec% /c start /b " . $config->enterprise_binary . " $id";
+                #$command = "%comspec% /c start /b " . $config->enterprise_binary . " $id";
+                $command = "%comspec% /c start /b enterprise.exe $id";
                 if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
-                    $command = "%comspec% /c start /b " . $config->enterprise_binary . " --debug $id";
+                    #$command = "%comspec% /c start /b " . $config->enterprise_binary . " --debug $id";
+                    $command = "%comspec% /c start /b enterprise.exe --debug $id";
                     log_message('debug', $command);
                 }
+                $cwd = getcwd();
+                chdir('C:\\xampp\\open-audit\\other');
                 @exec($command, $output);
                 pclose(popen($command, 'r'));
+                chdir($cwd);
             } else {
                 $command = $config->enterprise_binary . " $id";
                 if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
