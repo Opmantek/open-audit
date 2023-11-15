@@ -14,7 +14,7 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
  * --------------------------------------------------------------------
  */
 
-$routes->collections = array('applications','attributes','baselines','baselines_policies','baselines_results','clouds','clusters','collectors', 'components',
+$collections = array('applications','attributes','baselines','baselines_policies','baselines_results','clouds','clusters','collectors', 'components',
 'configuration','connections','credentials','dashboards','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files',
 'groups','integrations','ldap_servers','licenses','locations','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles',
 'rules','scripts','summaries','support','tasks','users','widgets');
@@ -112,7 +112,7 @@ $routes->cli('integrations/(:num)/execute', 'Cli::executeIntegration/$1', ['as' 
 $routes->cli('clouds/(:num)/execute', 'Cli::executeCloud/$1', ['as' => 'executeCloud']);
 $routes->cli('devices/(:num)/cloudDevice', 'Cli::cloudDevice/$1', ['as' => 'cloudDevice']);
 
-foreach ($routes->collections as $collection) {
+foreach ($collections as $collection) {
     // Account for users editing the config and including a space character
     $collection = trim($collection);
 
