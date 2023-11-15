@@ -14,6 +14,8 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use stdClass;
 
+#[\AllowDynamicProperties]
+
 /**
  * Class BaseController
  *
