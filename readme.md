@@ -46,6 +46,9 @@ Installing is simply a matter of downloading the .run or .exe (Linux or Windows)
 
 To install from this source, please put the code in /usr/local/open-audit and link the public folder into your web root under /open-audit. Use composer to install the required dependencies. Initialise a MySQL database using the credentials found in app/Config/database.json. The MySQL schema can be found in other/open-audit.sql.
 
+## Release Notes
+Are available here - https://community.opmantek.com/display/OA/Open-AudIT+Release+Notes
+
 ## Built With
 
 * [CodeIgniter](http://www.codeigniter.com/) - The web framework used
