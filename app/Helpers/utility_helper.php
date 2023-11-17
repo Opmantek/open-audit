@@ -43,16 +43,16 @@ function nmapInstalled($setNotice = false)
     $nmap_installed = 'n';
     if (php_uname('s') === 'Windows NT') {
         // check the obvious Windows install locations
-        $test_path = 'c:\Program Files\Nmap\Nmap.exe';
-        if ($nmap_installed === 'n' && file_exists($test_path)) {
+        $test_path = 'c:\\Program Files\\Nmap\\Nmap.exe';
+        if ($nmap_installed === 'n' and file_exists($test_path)) {
             $nmap_installed = 'y';
         }
-        $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
-        if ($nmap_installed === 'n' && file_exists($test_path)) {
+        $test_path = 'c:\\Program Files (x86)\\Nmap\\Nmap.exe';
+        if ($nmap_installed === 'n' and file_exists($test_path)) {
             $nmap_installed = 'y';
         }
         unset($test_path);
-        if ($setNotice) {
+        if ($nmap_installed === 'n' and $setNotice) {
             \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
         }
     }
