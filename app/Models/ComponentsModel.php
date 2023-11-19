@@ -291,6 +291,9 @@ class ComponentsModel extends BaseModel
                 }
                 # $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $filename;
                 $target = APPPATH . '../public/custom_images/' . $filename;
+                if (php_uname('s') === 'Windows NT') {
+                    $target = 'c:\\xampp\\htdocs\\open-audit\\custom_images\\' . $filename;
+                }
                 if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
                     $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
                     $this->db->query($sql, [$data->device_id, $data->name, $filename, $data->orientation, $instance->user->full_name]);
