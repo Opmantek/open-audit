@@ -1499,7 +1499,7 @@ if (!function_exists('response_valid_collections')) {
      */
     function response_valid_collections()
     {
-        return array('applications','attributes','baselines','baselines_policies','baselines_results','chart','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rules','scripts','search','sessions','summaries','support','tasks','users','widgets');
+        return array('agents','applications','attributes','baselines','baselines_policies','baselines_results','chart','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rules','scripts','search','sessions','summaries','support','tasks','users','widgets');
     }
 }
 

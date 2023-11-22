@@ -529,6 +529,7 @@ window.onload = function () {
                                                         <option value=\"nl\"><?= __('not like') ?></option>\
                                                         <option value=\"ni\"><?= __('in') ?></option>\
                                                         <option value=\"ni\"><?= __('not in') ?></option>\
+                                                        <option value=\"re\"><?= __('regex') ?></option>\
                                                     </select>\
                                                 </div>\
                                                 <div class=\"col-4\">\

@@ -14,7 +14,7 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
  * --------------------------------------------------------------------
  */
 
-$collections = array('applications','attributes','baselines','baselines_policies','baselines_results','clouds','clusters','collectors', 'components',
+$collections = array('agents','applications','attributes','baselines','baselines_policies','baselines_results','clouds','clusters','collectors', 'components',
 'configuration','connections','credentials','dashboards','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files',
 'groups','integrations','ldap_servers','licenses','locations','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles',
 'rules','scripts','summaries','support','tasks','users','widgets');
@@ -23,6 +23,8 @@ $collections = array('applications','attributes','baselines','baselines_policies
 $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'home']);
 
 # These will match and then take precedence over the below route array
+
+$routes->post('agents/execute', 'Agents::execute', ['as' => 'agentsExecuteAll']);
 
 $routes->get('baselines/(:num)/execute', 'Baselines::executeForm/$1', ['filter' => \App\Filters\Session::class, 'as' => 'baselinesExecuteForm']);
 $routes->post('baselines/(:num)/execute', 'Baselines::execute/$1', ['filter' => \App\Filters\Session::class, 'as' => 'baselinesExecute']);
