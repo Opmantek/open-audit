@@ -87,15 +87,15 @@ class Cli extends Controller
 
     public function executeTasks()
     {
-        $this->config = new \Config\OpenAudit();
-        if (empty($this->config->enterprise_binary)) {
+        $config = new \Config\OpenAudit();
+        if (empty($config->enterprise_binary)) {
             return;
         }
         $response = new stdClass();
         $response->meta = new stdClass();
         $response->meta->collection = 'tasks';
         $response->meta->action = 'execute';
-        $response->meta->uuid = $this->config->uuid;
+        $response->meta->uuid = $config->uuid;
 
         # echo json_encode($response) . "\n";
 
@@ -106,13 +106,13 @@ class Cli extends Controller
         $id = $db->insertID();
         // Call the binary and wait for it's response
         if (php_uname('s') === 'Windows NT') {
-            $command = "%comspec% /c start /b " . $this->config->enterprise_binary . " $id";
+            $command = "%comspec% /c start /b " . $config->enterprise_binary . " $id";
             @exec($command, $output);
             pclose(popen($command, 'r'));
         } else {
-            $command = $this->config->enterprise_binary . " $id";
+            $command = $config->enterprise_binary . " $id";
             if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
-                $command = $this->config->enterprise_binary . " --debug $id";
+                $command = $config->enterprise_binary . " --debug $id 2>&1";
                 log_message('debug', $command);
             }
             @exec($command, $output);
