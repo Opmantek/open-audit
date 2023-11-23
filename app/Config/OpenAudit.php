@@ -16,8 +16,8 @@ class OpenAudit extends BaseConfig
         $this->displayVersion = '5.0.1';
         $this->microtime = microtime(true);
 
-        $commercial_dir = array(APPPATH . '/../../omk',
-            APPPATH . '/../../opmojo',
+        $commercial_dir = array(APPPATH . '../../omk',
+            APPPATH . '../../opmojo',
             '/usr/local/omk',
             '/usr/local/opmojo',
             'c:\\omk');
