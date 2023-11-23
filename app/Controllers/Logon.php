@@ -40,8 +40,8 @@ class Logon extends Controller
 {
     public function createForm()
     {
-        $this->session = session();
-        if (!empty($this->session->get('user_id'))) {
+        $session = session();
+        if (!empty($session->get('user_id'))) {
             return redirect()->to(site_url('summaries'));
         }
         return view('logon', ['config' => new \Config\OpenAudit()]);
@@ -49,9 +49,9 @@ class Logon extends Controller
 
     public function create()
     {
-        $this->session = session();
-        $this->logonModel = model('App\Models\LogonModel');
-        $this->config =  new \Config\OpenAudit();
+        $session = session();
+        $logonModel = model('App\Models\LogonModel');
+        $config =  new \Config\OpenAudit();
 
         $username = (!empty($_POST['username'])) ? $_POST['username'] : '';
         if (empty($username) && ! empty($_SERVER['HTTP_USERNAME'])) {
@@ -67,7 +67,7 @@ class Logon extends Controller
 
         if (empty($username) or empty($password)) {
             # set flash need creds
-            $this->session->setFlashdata('flash', '{"level":"danger", "message":"Credentials required"}');
+            $session->setFlashdata('flash', '{"level":"danger", "message":"Credentials required"}');
             log_message('error', '{"level":"danger", "message":"Credentials required"}');
             return redirect()->to(site_url('logon'));
         }
@@ -90,16 +90,16 @@ class Logon extends Controller
             $format = 'json';
         }
 
-        $user = $this->logonModel->logon($username, $password);
+        $user = $logonModel->logon($username, $password);
         if ($user) {
             log_message('info', 'Valid credentials for ' . $username . ' from ' . @$this->request->getIPAddress());
-            $this->session->set('user_id', $user->id);
+            $session->set('user_id', $user->id);
             if ($format !== 'json') {
                 if (!empty($_POST['url'])) {
                     header('Location: ' . $_POST['url']);
                     exit;
                 }
-                if ($this->config->device_count === 0) {
+                if ($config->device_count === 0) {
                     return redirect()->to(url_to('welcome'));
                 } else {
                     return redirect()->to(url_to('home'));
@@ -123,8 +123,8 @@ class Logon extends Controller
 
     public function delete()
     {
-        $this->session = session();
-        $this->session->destroy();
+        $session = session();
+        $session->destroy();
         return redirect()->to(site_url('logon'));
     }
 
@@ -132,8 +132,8 @@ class Logon extends Controller
     {
         $this->response->setContentType('application/json');
         $json = '{"license":"none","product":"free"}';
-        $this->config =  new \Config\OpenAudit();
-        $enterprise_binary = $this->config->enterprise_binary;
+        $config =  new \Config\OpenAudit();
+        $enterprise_binary = $config->enterprise_binary;
         if (!empty($enterprise_binary)) {
             if (php_uname('s') === 'Windows NT') {
                 $command = "%comspec% /c start /b " . $enterprise_binary . " --license";
