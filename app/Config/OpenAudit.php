@@ -22,8 +22,8 @@ class OpenAudit extends BaseConfig
             '/usr/local/opmojo',
             'c:\\omk');
 
-        $binaries = array(APPPATH . '/../other/enterprise.bin',
-            APPPATH . '/../other/enterprise.exe',
+        $binaries = array(APPPATH . '../other/enterprise.bin',
+            APPPATH . '../other/enterprise.exe',
             '/usr/local/oac/enterprise.pl');
 
         $nmis = "/usr/local/nmis9";
