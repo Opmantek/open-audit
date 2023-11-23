@@ -158,6 +158,7 @@ if (!function_exists('response_create')) {
         $response->meta->header = 200;
         // $response->meta->ids = null; // Only set below if it contains data
         $response->meta->include = '';
+        $response->meta->license_string = '';
         $response->meta->limit = '';
         $response->meta->microtime = $config->microtime;
         $response->meta->offset = 0;
@@ -474,7 +475,7 @@ if (!function_exists('response_create')) {
             } else {
                 $command = $config->enterprise_binary . " $id";
                 if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
-                    $command = $config->enterprise_binary . " --debug $id";
+                    $command = $config->enterprise_binary . " --debug $id 2>&1";
                     log_message('debug', $command);
                 }
                 @exec($command, $output);
@@ -485,10 +486,14 @@ if (!function_exists('response_create')) {
             $sql = "SELECT * FROM enterprise WHERE id = $id";
             $result = $db->query($sql)->getResult();
             // Convert the response
-            $response = json_decode($result[0]->response);
-            if (!$response) {
+            $r = @json_decode($result[0]->response);
+            if (!empty($r)) {
+                $response = $r;
+            }
+            if (empty($r)) {
+                \Config\Services::session()->setFlashdata('error', 'There is an issue with Enterprise functionality. Please contact <a target="_blank" href="https://firstwave.com">FirstWave</a> for support.');
                 log_message('error', 'Could not decode JSON response from enterprise.');
-                log_message('error', "\n" . $result[0]->response . "\n");
+                log_message('error', $result[0]->response);
             }
             $response->meta->permission_requested = $permission_requested;
             if (!empty($response->meta->license)) {
