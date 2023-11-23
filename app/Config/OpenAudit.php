@@ -12,8 +12,8 @@ class OpenAudit extends BaseConfig
 {
     public function __construct()
     {
-        $this->appVersion = 20230615;
-        $this->displayVersion = '5.0.0';
+        $this->appVersion = 20231130;
+        $this->displayVersion = '5.0.1';
         $this->microtime = microtime(true);
 
         $commercial_dir = array(APPPATH . '/../../omk',
