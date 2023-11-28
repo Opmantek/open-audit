@@ -14,6 +14,7 @@ $user->permissions['components'] = '';
                     <?php
                     $count = 0;
                     foreach ($resource as $key => $value) {
+                        $link = '';
                         $count += 1;
                         if ($count > 3) {
                             echo "</div><div class=\"row\">\n";
@@ -36,6 +37,7 @@ $user->permissions['components'] = '';
                             }
                             if ($key === 'device_id') {
                                 $label = 'Device ID';
+                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesRead', $value) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
                             }
                             if ($key === 'devices.id' or $key === 'devices.name') {
                                 continue;
@@ -46,7 +48,7 @@ $user->permissions['components'] = '';
                             if ($key === 'command_output') {
                                 $resource->{$key} = html_entity_decode($resource->{$key});
                             }
-                            echo read_field($key, $resource->{$key}, '', false, $label);
+                            echo read_field($key, $resource->{$key}, '', false, $label, $link);
                         }
                         echo "</div>\n";
                     } ?>
