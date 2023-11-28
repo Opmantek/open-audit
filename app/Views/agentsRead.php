@@ -2,6 +2,19 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+$style = @$user->toolbar_style;
+if ($style === 'icontext') {
+    $add_input = '<a id="add_inputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add If') . '"><span style="margin-right:6px;" class="fa fa-plus text-success"></span>' . __('Add If') . '</a>';
+    $add_output = '<a id="add_outputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add Then') . '"><span style="margin-right:6px;" class="fa fa-plus text-success"></span>' . __('Add Then') . '</a>';
+} else if ($style === 'icon') {
+    $add_input = '<a id="add_inputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add If') . '"><span style="margin-right:6px;" class="fa fa-plus text-success"></span></a>';
+    $add_output = '<a id="add_outputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add Then') . '"><span style="margin-right:6px;" class="fa fa-plus text-success"></span></a>';
+} else {
+    $add_input = '<a id="add_inputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add If') . '">' . __('Add If') . '</a>';
+    $add_output = '<a id="add_outputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add Then') . '">>' . __('Add Then') . '</a>';
+}
+$input_count = 0;
+$output_count = 0;
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -9,161 +22,39 @@ include 'shared/read_functions.php';
                     <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $resource->name) ?>
                 </div>
                 <div class="card-body">
+
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
                             <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                            <?= read_field('subnet', $resource->subnet, $dictionary->columns->subnet, $update) ?>
-                            <?= read_field('check_minutes', $resource->check_minutes, $dictionary->columns->check_minutes, $update) ?>
                             <?= read_field('weight', $resource->weight, $dictionary->columns->weight, $update) ?>
-                            <?= read_select('devices_assigned_to_org', $resource->devices_assigned_to_org, $dictionary->columns->devices_assigned_to_org, $update, __('Assign Devices to Organisation'), $orgs) ?>
-                            <?= read_select('devices_assigned_to_location', $resource->devices_assigned_to_location, $dictionary->columns->devices_assigned_to_location, $update, __('Assign Devices to Location'), $included['locations']) ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
-
-                            <div class="row" style="padding-top:16px;">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <hr>
-                                </div>
-                            </div>
-
-                            <div class="row" style="padding-top:16px;">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="add_inputs" class="form-label"><?= __('If') ?></label>
-                                    <?php if ($update) { ?>
-                                    <div class="float-end"><button type="button" id="add_inputs" name="add_inputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="fa fa-plus" aria-hidden="true"></i></button></div>
-                                    <?php } ?>
-
-                                    <div id="inputs" class="input-group">
-                                        <?php
-                                        $input_count = 0;
-                                        foreach ($resource->inputs as $input) {
-                                            $input_count += +1; ?>
-                                        <div id="inputs_<?= $input_count ?>" class="row col-12" style="padding-top:16px;">
-                                            <div class="col-3" style="padding-right:20px;">
-                                                <select class="input_table form-select" id="inputs[<?= $input_count ?>][attribute]" name="inputs[<?= $input_count ?>][attribute]" data-row="<?= $input_count ?>" disabled>
-                                                    <option value="" <?php if ($input->attribute === '') { echo "selected"; } ?>></option>
-                                                    <option value="os_group" <?php if ($input->attribute === 'os_group') { echo "selected"; } ?>><?= __('OS Group') ?></option>
-                                                    <option value="ip_address" <?php if ($input->attribute === 'ip_address') { echo "selected"; } ?>><?= __('IP Address') ?></option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-3" style="padding-right:20px;">
-                                                <select class="form-select" id="inputs[<?= $input_count ?>][operator]" name="inputs[<?= $input_count ?>][operator]" disabled>
-                                                    <option value="" <?php if ($input->operator === '') { echo "selected"; } ?>><?= __('') ?></option>
-                                                    <option value="eq" <?php if ($input->operator === 'eq') { echo "selected"; } ?>><?= __('equals') ?></option>
-                                                    <option value="ne" <?php if ($input->operator === 'ne') { echo "selected"; } ?>><?= __('does not equal') ?></option>
-                                                    <option value="gt" <?php if ($input->operator === 'gt') { echo "selected"; } ?>><?= __('greater than') ?></option>
-                                                    <option value="ge" <?php if ($input->operator === 'ge') { echo "selected"; } ?>><?= __('greater or equals') ?></option>
-                                                    <option value="lt" <?php if ($input->operator === 'lt') { echo "selected"; } ?>><?= __('less than') ?></option>
-                                                    <option value="le" <?php if ($input->operator === 'le') { echo "selected"; } ?>><?= __('less or equals') ?></option>
-                                                    <option value="st" <?php if ($input->operator === 'st') { echo "selected"; } ?>><?= __('starts with') ?></option>
-                                                    <option value="li" <?php if ($input->operator === 'li') { echo "selected"; } ?>><?= __('contains') ?></option>
-                                                    <option value="nl" <?php if ($input->operator === 'nl') { echo "selected"; } ?>><?= __('not like') ?></option>
-                                                    <option value="in" <?php if ($input->operator === 'in') { echo "selected"; } ?>><?= __('in') ?></option>
-                                                    <option value="ni" <?php if ($input->operator === 'ni') { echo "selected"; } ?>><?= __('not in') ?></option>
-                                                    <option value="re" <?php if ($input->operator === 're') { echo "selected"; } ?>><?= __('regex') ?></option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-3" style="padding-right:20px;">
-                                                <input type="text" class="form-control" id="inputs[<?= $input_count ?>][value]" name="inputs[<?= $input_count ?>][value]" value="<?= $input->value ?>" disabled>
-                                            </div>
-
-                                            <?php if ($update) { ?>
-                                            <div class="col-3 text-center">
-                                                <button type="button" data-delete="#inputs_<?= $input_count ?>" data-name="<?= @$input->{'attribute'} ?>.<?= @$input->{'condition'} ?>" class="inputDelete btn btn-sm btn-danger" title="<?= __('Delete') ?>">
-                                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                                </button>
-
-                                                <button style="display:none;" type="button" id="inputs_cancel_<?= $input_count ?>" data-row="<?= $input_count ?>" class="cancel_input btn btn-sm btn-danger" title="<?= __('Cancel') ?>">
-                                                    <i class="fa fa-remove" aria-hidden="true"></i>
-                                                </button>
-
-                                                <button type="button" data-action="edit" id="inputs_edit_<?= $input_count ?>" data-row="<?= $input_count ?>" class="edit_input btn btn-sm btn-default" title="<?= __('Edit') ?>">
-                                                    <i class="fa fa-edit" aria-hidden="true"></i>
-                                                </button>
-
-                                                <button style="display:none;" type="button" id="inputs_submit_<?= $input_count ?>" data-row="<?= $input_count ?>" class="submit_input btn btn-sm btn-success" title="<?= __('Submit') ?>">
-                                                    <i class="fa fa-check" aria-hidden="true"></i>
-                                                </button>
-                                            </div>
-                                            <?php } ?>
-                                        </div>
-                                        <?php } ?>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row" style="padding-top:16px;">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <hr>
-                                </div>
-                            </div>
-
-                            <div class="row" style="padding-top:16px;">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="add_outputs" class="form-label"><?= __('Then') ?></label>
-                                    <?php if ($update) { ?>
-                                    <div class="float-end">
-                                        <button type="button" id="add_outputs" name="add_outputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                                    </div>
-                                    <?php } ?>
-
-                                    <div id="outputs" class="input-group">
-                                        <?php
-                                        $output_count = 0;
-                                        foreach ($resource->outputs as $output) {
-                                            $output_count += 1; ?>
-                                        <div id="outputs_<?= $output_count ?>" class="row col-12" style="padding-top:16px;">
-                                            <div class="col-3" style="padding-right:20px;">
-                                                <select class="form-control" id="outputs[<?= $output_count ?>][action]" name="outputs[<?= $output_count ?>][action]" disabled>
-                                                    <option value="audit"><?= __('Audit') ?></option>
-                                                    <option value="command"><?= __('Command') ?></option>
-                                                    <option value="download"><?= __('Download') ?></option>
-                                                    <option value="uninstall"><?= __('Uninstall') ?></option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-3" style="padding-right:20px;">
-                                                <?php if (!empty($output->value)) { ?>
-                                                <input type="text" class="form-control" id="outputs[<?= $output_count ?>][value]" name="outputs[<?= $output_count ?>][value]" value="<?= $output->value ?>" disabled>
-                                                <?php } ?>
-                                            </div>
-
-                                            <div class="col-3"></div>
-
-                                            <div class="col-3 text-center">
-                                                <?php if ($update) { ?>
-                                                <button type="button" data-delete="#outputs_<?= $output_count ?>" data-name="<?= $output->{'action'} ?>" class="outputDelete btn btn-sm btn-danger" title="<?= __('Delete') ?>">
-                                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                                </button>
-
-                                                <button style="display:none;" type="button" id="outputs_cancel_<?= $output_count ?>" data-row="<?= $output_count ?>" class="cancel_output btn btn-sm btn-danger" title="<?= __('Cancel') ?>">
-                                                    <i class="fa fa-remove" aria-hidden="true"></i>
-                                                </button>
-
-                                                <button type="button" data-action="edit" id="outputs_edit_<?= $output_count ?>" data-row="<?= $output_count ?>" class="edit_output btn btn-sm btn-default" title="<?= __('Edit') ?>">
-                                                    <i class="fa fa-edit" aria-hidden="true"></i>
-                                                </button>
-
-                                                <button style="display:none;" type="button" id="outputs_submit_<?= $output_count ?>" data-row="<?= $output_count ?>" class="submit_output btn btn-sm btn-success" title="<?= __('Submit') ?>">
-                                                    <i class="fa fa-check" aria-hidden="true"></i>
-                                                </button>
-                                                <?php } ?>
-                                            </div>
-                                        </div>
-                                        <?php } ?>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
+                        <div class="col-4">
+                            <div class="col-12 text-center">
+                                <br>
+                                <h3><?= __('IF') ?></h3>
+                            </div>
+                            <?= read_field('test_minutes', $resource->test_minutes, $dictionary->columns->test_minutes, $update, __('Minutes')) ?>
+                            <?= read_field('test_subnet', $resource->test_subnet, $dictionary->columns->test_subnet, $update, __('Subnet')) ?>
+                            <?= read_field('test_os', $resource->test_os, $dictionary->columns->test_os, $update, __('Operating System')) ?>
 
-                        <div class="col-6">
-                            <br>
-                            <div class="offset-2 col-8">
+                            <div class="col-12 text-center">
+                                <br>
+                                <h3><?= __('Then') ?></h3>
+                            </div>
+                            <?= read_select('action_devices_assigned_to_location', $resource->action_devices_assigned_to_location, $dictionary->columns->action_devices_assigned_to_location, $update, __('Assign Devices to Location'), $included['locations']) ?>
+                            <?= read_select('action_devices_assigned_to_org', $resource->action_devices_assigned_to_org, $dictionary->columns->action_devices_assigned_to_org, $update, __('Assign Devices to Organisation'), $orgs) ?>
+                            <?= read_field('action_download', $resource->action_download, $dictionary->columns->action_download, $update, __('Download')) ?>
+                            <?= read_field('action_command', $resource->action_command, $dictionary->columns->action_command, $update, __('Command')) ?>
+                            <?= read_select('action_audit', $resource->action_audit, $dictionary->columns->action_audit, $update, __('Audit'), array()) ?>
+                            <?= read_select('action_uninstall', $resource->action_uninstall, $dictionary->columns->action_uninstall, $update, __('Uninstall'), array()) ?>
+                        </div>
+
+                        <div class="col-4">
                                 <?php if (!empty($dictionary->about)) { ?>
                                     <h4 class="text-center"><?= __('About') ?></h4><br>
                                     <?= $dictionary->about ?>
@@ -173,12 +64,13 @@ include 'shared/read_functions.php';
                                     <?= $dictionary->notes ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->columns)) { ?>
+                                    <?php $fields = array('name', 'org_id', 'description', 'weight', 'test_minutes', 'test_subnet', 'test_os', 'action_download', 'action_command', 'action_audit', 'action_uninstall', 'edited_by', 'edited_date') ?>
                                 <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($dictionary->columns as $key => $value) { ?>
-                                    <code><?= $key ?>: </code><?= @$value ?><br><br>
+                                    <?php foreach ($fields as $key) { ?>
+                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                     <?php } ?>
                                 <?php } ?>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -189,10 +81,10 @@ include 'shared/read_functions.php';
 window.onload = function () {
     $(document).ready(function () {
 
-        $("#devices_assigned_to_org").append($('<option>', { value: '', text: ''}));
-        $("#devices_assigned_to_location").append($('<option>', { value: '', text: ''}));
-        $("#devices_assigned_to_org").val("<?= $resource->devices_assigned_to_org ?>");
-        $("#devices_assigned_to_location").val("<?= $resource->devices_assigned_to_location ?>");
+        $("#action_devices_assigned_to_org").append($('<option>', { value: '', text: ''}));
+        $("#action_devices_assigned_to_location").append($('<option>', { value: '', text: ''}));
+        $("#action_devices_assigned_to_org").val("<?= $resource->action_devices_assigned_to_org ?>");
+        $("#action_devices_assigned_to_location").val("<?= $resource->action_devices_assigned_to_location ?>");
 
         var input_count = <?= $input_count ?>;
         var output_count = <?= $output_count ?>;
@@ -307,7 +199,7 @@ window.onload = function () {
             $("#inputs_delete_"+input_row).show();
             var json = new Array();
             for (var i = 0; i <= input_count; i++) {
-                if ($("#inputs\\[" + i + "\\]\\[table\\]").val()) {
+                if ($("#inputs\\[" + i + "\\]\\[attribute\\]").val()) {
                     jsonData = {};
                     jsonData.attribute = $("#inputs\\[" + i + "\\]\\[attribute\\]").val();
                     jsonData.operator = $("#inputs\\[" + i + "\\]\\[operator\\]").val();
@@ -365,6 +257,7 @@ window.onload = function () {
 
         $(document).on('click', '.submit_output', function (e) {
             var output_row = $(this).attr("data-row");
+            // console.log("OutputRow: " + output_row);
             $("#outputs\\[" + output_row + "\\]\\[action\\]").attr("disabled", true);
             $("#outputs\\[" + output_row + "\\]\\[value\\]").attr("disabled", true);
             $(this).hide();
@@ -373,7 +266,7 @@ window.onload = function () {
             $("#outputs_delete_"+output_row).show();
             var json = new Array();
             for (var i = 0; i <= output_count; i++) {
-                if ($("#outputs\\[" + i + "\\]\\[table\\]").val()) {
+                if ($("#outputs\\[" + i + "\\]\\[action\\]").val()) {
                     jsonData = {};
                     jsonData.action = $("#outputs\\[" + i + "\\]\\[action\\]").val();
                     jsonData.value = $("#outputs\\[" + i + "\\]\\[value\\]").val();
@@ -387,6 +280,7 @@ window.onload = function () {
             data["data"]["type"] = "agents";
             data["data"]["attributes"] = {};
             data["data"]["attributes"]["outputs"] = JSON.stringify(json);
+            // console.log(data);
             $.ajax({
                 type: "PATCH",
                 url: "<?= url_to('agentsRead', $resource->id) ?>",
@@ -419,15 +313,15 @@ window.onload = function () {
 
         $('#add_inputs').click(function (e) {
             input_count += 1;
-            var content = "             <div id=\"inputs_" + input_count + "\" class=\"row col-12\" style=\"padding-top:16px;\">\
-                                            <div class=\"col-3\" style=\"padding-right:20px;\">\
+            var content = "             <div id=\"inputs_" + input_count + "\" class=\"row col-12\" style=\"padding-top:16px; margin-left:-12px;\">\
+                                            <div class=\"col-3\" style=\"padding-right:3px;\">\
                                                 <select class=\"input_table form-select\" id=\"inputs[" + input_count + "][attribute]\" name=\"inputs[" + input_count + "][attribute]\" data-row=\"" + input_count + "\">\
                                                     <option value=\"\"></option>\
                                                     <option value=\"os_group\"><?= __('OS Group') ?></option>\
                                                     <option value=\"ip_address\"><?= __('IP Address') ?></option>\
                                                 </select>\
                                             </div>\
-                                            <div class=\"col-3\" style=\"padding-right:20px;\">\
+                                            <div class=\"col-3\" style=\"padding-right:3px;\">\
                                                 <select class=\"form-select\" id=\"inputs[" + input_count + "][operator]\" name=\"inputs[" + input_count + "][operator]\">\
                                                     <option value=\"eq\"><?= __('equals') ?></option>\
                                                     <option value=\"ne\"><?= __('does not equal') ?></option>\
@@ -444,16 +338,25 @@ window.onload = function () {
                                                 </select>\
                                             </div>\
                                             \
-                                            <div class=\"col-3\" style=\"padding-right:20px;\">\
+                                            <div class=\"col-4\" style=\"padding-right:3px;\">\
                                                 <input type=\"text\" class=\"form-control\" id=\"inputs[" + input_count + "][value]\" name=\"inputs[" + input_count + "][value]\">\
                                             </div>\
                                             \
-                                            <div class=\"col-3 text-center\">\
+                                            <div class=\"col-2 text-center\" style=\"padding: 3px 0px 0px 0px;\">\
                                                 <button type=\"button\" data-delete=\"#inputs_" + input_count + "\" data-row=\"" + input_count + "\" class=\"del_input btn btn-sm btn-danger\" title=\"<?= __('Delete') ?>\">\
                                                     <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\
                                                 </button>\
+\
                                                 <button style=\"display:none;\" type=\"button\" id=\"inputs_cancel_" + input_count + "\" data-row=\"" + input_count + "\" class=\"cancel_input btn btn-sm btn-danger\" title=\"<?= __('Cancel') ?>\">\
                                                     <i class=\"fa fa-remove\" aria-hidden=\"true\"></i>\
+                                                </button>\
+\
+                                                <button style=\"display:none;\" type=\"button\" data-action=\"edit\" id=\"inputs_edit_" +  input_count + "\" data-row=\"" + input_count + "\" class=\"edit_input btn btn-sm\" title=\"<?= __('Edit') ?>\">\
+                                                    <i class=\"fa fa-edit\" aria-hidden=\"true\"></i>\
+                                                </button>\
+\
+                                                <button type=\"button\" id=\"inputs_submit_" + input_count + "\" data-row=\"" + input_count + "\" class=\"submit_input btn btn-sm btn-success\" title=\"<?= __('Submit') ?>\">\
+                                                    <i class=\"fa fa-check\" aria-hidden=\"true\"></i>\
                                                 </button>\
                                             </div>\
                                         </div>";
@@ -468,9 +371,9 @@ window.onload = function () {
         $('#add_outputs').click(function (e) {
             output_count += 1;
 
-            var content = "             <div id=\"outputs_" + output_count + "\" class=\"row col-12\" style=\"padding-top:16px;\">\
-                                            <div class=\"col-3\" style=\"padding-right:20px;\">\
-                                                <select class=\"form-control\" id=\"outputs_" + output_count + "\"][action]\" name=\"outputs_" + output_count + "\"][action]\" >\
+            var content = "             <div id=\"outputs_" + output_count + "\" class=\"row col-12\" style=\"padding-top:16px; margin-left:-12px;\">\
+                                            <div class=\"col-5\" style=\"padding-right:3px;\">\
+                                                <select class=\"form-select\" id=\"outputs[" + output_count + "][action]\" name=\"outputs[" + output_count + "][action]\" data-row=\"" + output_count + "\">\
                                                     <option value=\"audit\"><?= __('Audit') ?></option>\
                                                     <option value=\"command\"><?= __('Command') ?></option>\
                                                     <option value=\"download\"><?= __('Download') ?></option>\
@@ -478,13 +381,11 @@ window.onload = function () {
                                                 </select>\
                                             </div>\
 \
-                                            <div class=\"col-3\" style=\"padding-right:20px;\">\
-                                                <input type=\"text\" class=\"form-control\" id=\"outputs_" + output_count + "\"][value]\" name=\"outputs_" + output_count + "\"][value]\">\
+                                            <div class=\"col-5\" style=\"padding-right:3px;\">\
+                                                <input type=\"text\" class=\"form-control\" id=\"outputs[" + output_count + "][value]\" name=\"outputs[" + output_count + "][value]\" data-row=\"" + output_count + "\">\
                                             </div>\
 \
-                                            <div class=\"col-3\"></div>\
-\
-                                            <div class=\"col-3 text-center\">\
+                                            <div class=\"col-2 text-center\" style=\"padding: 3px 0px 0px 0px;\">\
                                                 <button type=\"button\" data-delete=\"#outputs_" + output_count + "\" data-row=\"" + output_count + "\" class=\"del_output btn btn-sm btn-danger\" title=\"<?= __('Delete') ?>\">\
                                                     <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\
                                                 </button>\

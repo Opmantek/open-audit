@@ -21,8 +21,6 @@ include 'shared/collection_functions.php';
                                         } ?>
                                         <th><?= collection_column_name($key) ?></th>
                                     <?php } ?>
-                                    <th><?= __('Inputs') ?></th>
-                                    <th><?= __('Outputs') ?></th>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
                                     <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
@@ -44,20 +42,6 @@ include 'shared/collection_functions.php';
                                         }
                                         ?>
                                     <?php } ?>
-                                    <?php if (!empty($item->attributes->inputs)) { ?>
-                                    <td>
-                                        <?php foreach ($item->attributes->inputs as $input) { ?>
-                                            <?= $input->attribute ?> <strong><?= $input->operator ?></strong> <?= $input->value ?><br />
-                                        <?php } ?>
-                                    <?php } ?>
-                                    </td>
-                                    <?php if (!empty($item->attributes->outputs)) { ?>
-                                    <td>
-                                        <?php foreach ($item->attributes->outputs as $output) { ?>
-                                            <?= $output->action . ' ' . @$output->value ?> <br />
-                                        <?php } ?>
-                                    <?php } ?>
-                                    </td>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>

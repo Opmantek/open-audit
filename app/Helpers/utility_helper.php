@@ -452,7 +452,7 @@ if (!function_exists('collections_list')) {
 
         # FIX ME
         $collections->agents = new \StdClass();
-        $collections->agents->icon = 'fa fa-th-list';
+        $collections->agents->icon = 'fa-regular fa-comments';
         $collections->agents->name = 'Agents';
         $collections->agents->edition = 'Enterprise';
         $collections->agents->orgs = 'd';

@@ -777,14 +777,14 @@ class AgentsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name', 'subnet', 'check_minutes', 'weight');
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'weight', 'orgs.name', 'test_minutes', 'test_subnet', 'test_os', 'action_download', 'action_command', 'action_audit', 'action_uninstall');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
         $dictionary->sentence = 'Think \'if this, then that\' for devices with an Agent installed.';
 
-        $dictionary->about = '<p>Agents let you configure and audit remote PCs.</p>';
+        $dictionary->about = '<p>Agents let you audit PCs without a discovery.</p>';
 
         $dictionary->notes = '<p></p>';
 
@@ -793,13 +793,21 @@ class AgentsModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.';
-        $dictionary->columns->devices_assigned_to_org = "Any devices will be assigned to this Org if set. If not set and they are a new device they are assigned to the 'org_id' of this agent. Links to <code>orgs.id</code>.";
-        $dictionary->columns->check_minutes = 'If this many or more minutes have passed since the device contacted the server, run this rule.';
         $dictionary->columns->weight = 'A lower number means it will be applied before other rules.';
-        $dictionary->columns->inputs = 'A JSON object containing an array of attributes to match (normal weight is 100).';
-        $dictionary->columns->outputs = 'A JSON object containing an array of attributes to change if the match occurs.';
-        $dictionary->columns->subnet = 'If an agent reports in from this subnet, match.';
+
+        $dictionary->columns->test_minutes = 'If this many or more minutes have passed since the device contacted the server, perform the actions.';
+        $dictionary->columns->test_subnet = 'If an agent reports in from this subnet, perform the actions.';
+        $dictionary->columns->test_os = 'If the agent OS Name (case insensitive) contains this string, perform the actions.';
+        $dictionary->columns->tests = 'A JSON object containing an array of attributes to match.';
+
+        $dictionary->columns->action_download = 'A URL to a file to download.';
+        $dictionary->columns->action_command = 'A command to run.';
+        $dictionary->columns->action_audit = 'Should we run an audit and submit it (y/n).';
+        $dictionary->columns->action_uninstall = 'Should we uninstall the agent (y/n).';
+        $dictionary->columns->action_devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.';
+        $dictionary->columns->action_devices_assigned_to_org = "Any devices will be assigned to this Org if set. If not set and they are a new device they are assigned to the 'org_id' of this agent. Links to <code>orgs.id</code>.";
+        $dictionary->columns->actions = 'A JSON object containing an array of attributes to change if the match occurs.';
+
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;
