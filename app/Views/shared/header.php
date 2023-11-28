@@ -173,7 +173,7 @@ if ($config->product !== 'community') {
                                     $link = $report->type . 'Execute';
                                     if ($report->{'attributes'}->{'menu_category'} === $category) {
                                         if ($report->{'attributes'}->{'menu_category'} === 'Discovery') {
-                                            if ($config->license !== 'commercial') {
+                                            if (!empty($config->license) and $config->license !== 'commercial' and $config->license !== 'free') {
                                                 echo "                                <li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                             } else {
                                                 echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to($link, $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
@@ -186,7 +186,7 @@ if ($config->product !== 'community') {
                                 echo "                            </ul>\n";
                             } ?>
                                 <?= menuItem('tasks', 'r', $user, '', __('Schedule') . ' ' . __('Reports')) ?>
-                                <?= menuItem('tasks', 'r', $user, '', __('MultiReport')) ?>
+                                <!--<?= menuItem('tasks', 'r', $user, '', __('MultiReport')) ?>-->
                             </ul>
                         </li>
 
@@ -420,7 +420,7 @@ if ($config->product !== 'community') {
                                         <?= menuItem('ldap_servers', '', $user, 'ldap_serversHelp', __('Learn About') . ' ' . __('LDAP Servers')) ?>
                                     </ul>
                                 </li>
-                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Tasks') ?></a>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Tasks') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('tasks', 'r', $user, 'tasksCollection', __('List') . ' ' . __('Tasks')) ?>
                                         <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Create') . ' ' . __('Tasks')) ?>
