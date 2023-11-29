@@ -156,7 +156,6 @@ class NetworksModel extends BaseModel
 
         $sql = "SELECT COUNT(*) AS `count`, 'clouds' AS `clouds` FROM networks WHERE options != ''";
         $included['clouds'] = intval($this->db->query($sql)->getResult()[0]->count);
-        log_message('error', json_encode($included));
         return $included;
     }
 
