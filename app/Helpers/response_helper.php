@@ -488,7 +488,7 @@ if (!function_exists('response_create')) {
             $response = json_decode($result[0]->response);
             if (!$response) {
                 log_message('error', 'Could not decode JSON response from enterprise.');
-                log_message('error', "\n" . $result[0]->response . "\n");
+                log_message('error', "Response: " . @$result[0]->response . "\n");
             }
             $response->meta->permission_requested = $permission_requested;
             if (!empty($response->meta->license)) {
