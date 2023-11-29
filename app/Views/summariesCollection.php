@@ -57,7 +57,7 @@ include 'shared/collection_functions.php';
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= $link ?>" class="position-relative <?= $toast ?>">
-                                    <img style="width:4rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $name ?>.svg" alt="<?= $name ?>">
+                                    <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/<?= $name ?>.svg" alt="<?= $name ?>">
                                     <br><?= __($collection->name) ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="<?= $pill ?>"><?= $collection->count ?></span>
                                 </a>
