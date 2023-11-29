@@ -185,8 +185,7 @@ if ($config->product !== 'community') {
                                 }
                                 echo "                            </ul>\n";
                             } ?>
-                                <?= menuItem('tasks', 'r', $user, '', __('Schedule') . ' ' . __('Reports')) ?>
-                                <!--<?= menuItem('tasks', 'r', $user, '', __('MultiReport')) ?>-->
+                                <?= menuItem('tasks', 'r', $user, 'tasksCollection', __('Schedule') . ' ' . __('Reports')) ?>
                             </ul>
                         </li>
 
@@ -664,7 +663,7 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
     if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) === false) {
         $return = "<li><a class=\"dropdown-item greyout toast" .$instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
     }
-    // Check if use has permission and a license
+    // Check if user has permission and a license
     if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) !== false) {
         if (get_user_permission($collection, $permission, $user)) {
             $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
