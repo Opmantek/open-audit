@@ -177,6 +177,13 @@ class SupportModel extends BaseModel
             $logfile = str_replace('.log', '', $logfile);
             $data->app->youngest_logfile = $logfile;
             unset($logfile);
+
+            // Get any errors from the youngest logfile
+            $command_string = "grep ERROR " . APPPATH . "../writable/logs/*.log";
+            exec($command_string, $output, $return_var);
+            $data->logs = new stdClass;
+            $data->logs = $output;
+
         }
 
         if (php_uname('s') === 'Windows NT') {
