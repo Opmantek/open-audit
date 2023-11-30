@@ -283,7 +283,12 @@ $(document).ready(function () {
         "order": [[ 1, 'asc' ]],
         "info": true,
         "pageLength": 50,
-        "autoWidth": false
+        "autoWidth": false,
+        "oSearch": {
+            "bSmart": false,
+            "bRegex": true,
+            "sSearch": ""
+        }
     });
 
     /* DataTables Init Secondary */
@@ -293,7 +298,12 @@ $(document).ready(function () {
         "order": [[ 1, 'asc' ]],
         "info": false,
         "pageLength": 100,
-        "autoWidth": false
+        "autoWidth": false,
+        "oSearch": {
+            "bSmart": false,
+            "bRegex": true,
+            "sSearch": ""
+        }
     });
 
     /* Enable pop-over's */

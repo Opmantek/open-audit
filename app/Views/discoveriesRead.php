@@ -384,7 +384,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     <?= device_component_button_read('discovery_log', $log->id) ?>
                                                     <td class="text-center"><?= $log->id ?></td>
                                                     <td><?= $log->timestamp ?></td>
-                                                    <td><span style="display:none;"><?= @$log->ip_padded ?></span><?= $log->ip ?></td>
+                                                    <td><span style="display:none;"><?= @$log->ip_padded ?></span> <?= $log->ip ?> </td>
                                                     <td>
                                                     <?php if ($log->command_status === 'success') { ?>
                                                         <span class="text-success">
