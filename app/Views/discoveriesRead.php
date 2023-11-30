@@ -380,6 +380,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         <tbody>
                                             <?php foreach ($included['discovery_log'] as $log) { ?>
                                                 <?php if (strpos($log->message, 'not responding, ignoring') === false and strpos($log->message, 'responding, adding to device list') === false) { ?>
+                                                    <?php if ($log->function === 'match') {
+                                                        $log->message = 'DeviceMatch - ' . $log->message;
+                                                    } ?>
                                                 <tr>
                                                     <?= device_component_button_read('discovery_log', $log->id) ?>
                                                     <td class="text-center"><?= $log->id ?></td>
