@@ -91,14 +91,57 @@ class Cli extends Controller
         if (empty($this->config->enterprise_binary)) {
             return;
         }
+
+        // # Perform some directory permissions fixing
+
+        // # Lang Files
+        // chmod(ROOTPATH . 'app/Views/lang/cs.inc', 0666);
+        // chmod(ROOTPATH . 'app/Views/lang/de.inc', 0666);
+        // chmod(ROOTPATH . 'app/Views/lang/en.inc', 0666);
+        // chmod(ROOTPATH . 'app/Views/lang/es.inc', 0666);
+        // chmod(ROOTPATH . 'app/Views/lang/fr.inc', 0666);
+        // chmod(ROOTPATH . 'app/Views/lang/pt-br.inc', 0666);
+        // chmod(ROOTPATH . 'app/Views/lang/zh-tw.inc', 0666);
+
+        // # Other Dir
+        // chmod(ROOTPATH . 'other', 0777);
+
+        // # Scripts Dir
+        // chmod(ROOTPATH . 'other/scripts', 0777);
+
+        // # Attachments Dir
+        // chmod(ROOTPATH . 'app/Attachments', 0777);
+
+        // # Uploads Dir
+        // chmod(ROOTPATH . 'writable/uploads', 0777);
+
+        // # Cache Dir
+        // chmod(ROOTPATH . 'writable/cache', 0777);
+
+        // # Logs Dir
+        // chmod(ROOTPATH . 'writable/logs', 0777);
+
+        // # Session Dir
+        // chmod(ROOTPATH . 'writable/session', 0777);
+
+        // # DebugBar Dir
+        // chmod(ROOTPATH . 'writable/debugbar', 0777);
+
+        // # Custom Images Dir
+        // if (php_uname('s') === 'Linux') {
+        //     chmod(ROOTPATH . 'public/custom_images', 0777);
+        // }
+
+        // # Custom Images Dir
+        // if (php_uname('s') === 'Windows NT') {
+        //     chmod(ROOTPATH . '../htdocs/open-audit/custom_images', 0777);
+        // }
+
         $response = new stdClass();
         $response->meta = new stdClass();
         $response->meta->collection = 'tasks';
         $response->meta->action = 'execute';
         $response->meta->uuid = $this->config->uuid;
-
-        # echo json_encode($response) . "\n";
-
         $db = db_connect() or die("Cannot establish a database connection.");
         // Insert the entry
         $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
