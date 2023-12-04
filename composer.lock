@@ -317,7 +317,7 @@
             "require-dev": {
                 "guzzlehttp/promises": "^2.0",
                 "kelvinmo/simplejwt": "0.7.1",
-                "phpseclib/phpseclib": "^3.0",
+                "phpseclib/phpseclib": "^3.0.34",
                 "phpspec/prophecy-phpunit": "^2.0",
                 "phpunit/phpunit": "^9.0.0",
                 "sebastian/comparator": ">=1.2.3",
