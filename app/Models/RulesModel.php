@@ -141,9 +141,9 @@ class RulesModel extends BaseModel
         $log->message = 'Running rules::execute function.';
         $log->severity = 7;
         $log->command_status = 'notice';
-        $log->file = 'm_rules';
+        $log->file = 'RulesModel';
         $log->function = 'execute';
-        $log->command = 'Device Update ';
+        $log->command = 'Device Update';
 
         $device_sub = array();
         if (!empty($device)) {
@@ -152,6 +152,11 @@ class RulesModel extends BaseModel
             $log->command = 'Device Input ';
         }
         $log->command .= "($action).";
+
+        // If we also have a $device AND it's IP is populated, save and use that as we're likley incoming from discovery_helper with no audit result
+        if (!empty($device->ip)) {
+            $ip = $device->ip;
+        }
 
         if (!empty($id)) {
             // Get our device
@@ -182,6 +187,9 @@ class RulesModel extends BaseModel
                     $device->switch_port = '';
                 }
                 $device->discovery_id = '';
+                if (empty($ip)) {
+                    $ip = $device->ip;
+                }
             } else {
                 log_message('error', "Could not retrieve data from devices table for ID: $id. Not running Rules function.");
                 $log->severity = 4;
@@ -204,7 +212,13 @@ class RulesModel extends BaseModel
             $log->discovery_id = $device->discovery_id;
         }
         $log->device_id = (!empty($device->id)) ? intval($device->id) : '';
-        $log->ip = (!empty($device->ip)) ? ip_address_from_db($device->ip) : '';
+        if (!empty($ip)) {
+            $log->ip = ip_address_from_db($ip);
+        } else if (!empty($device->ip)) {
+            $log->ip = ip_address_from_db($device->ip);
+        } else {
+            $log->ip = '';
+        }
         $discoveryLogModel->create($log);
 
         $id = (!empty($device->id)) ? $device->id : '';
