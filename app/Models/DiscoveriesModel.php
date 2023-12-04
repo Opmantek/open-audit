@@ -46,6 +46,7 @@ class DiscoveriesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
+        $this->permissions();
         return format_data($query->getResult(), $resp->meta->collection);
     }
 
@@ -774,6 +775,30 @@ class DiscoveriesModel extends BaseModel
         return $query->getResult();
     }
 
+    public function permissions()
+    {
+        $warning = '';
+        $files = array('other/scripts');
+        foreach ($files as $file) {
+            if (!is_writable(ROOTPATH . $file)) {
+                $warning .= 'ERROR: ' . ROOTPATH . $file . " is not writable.\n";
+                log_message('error', ROOTPATH . $file . " is not writable.");
+            }
+        }
+        if (php_uname('s') !== 'Windows NT') {
+            $command = 'which nmap 2>/dev/null';
+            exec($command, $output, $return_var);
+            if (!isset($output[0])) {
+                $warning .= "\ERROR: Cannot find Nmap";
+                log_message('error', "Cannot find Nmap.");
+            }
+        }
+        if (!empty($warning)) {
+            \Config\Services::session()->setFlashdata('warning', $warning);
+        }
+        return;
+    }
+
     /**
      * [queue description]
      * @param  int $id The ID of the discovery to start
@@ -842,6 +867,7 @@ class DiscoveriesModel extends BaseModel
             $result[0]->attributes->scan_options->id = $scan_options_id;
             $result[0]->attributes->scan_options->{'discovery_scan_options.name'} = $dco[0]->name;
         }
+        $this->permissions();
         return $result;
     }
 
