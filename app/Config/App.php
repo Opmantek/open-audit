@@ -18,7 +18,8 @@ class App extends BaseConfig
      *    http://example.com/
      */
     # public string $baseURL = 'http://localhost:8080/';
-    public string $baseURL = BASEURL;
+    # public string $baseURL = BASEURL;
+    public string $baseURL = '';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
@@ -447,4 +448,30 @@ class App extends BaseConfig
      * @see http://www.w3.org/TR/CSP/
      */
     public bool $CSPEnabled = true;
+
+    public function __construct()
+    {
+        // Dynamically set our baseURL
+        $this->baseURL = 'http://';
+        if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) {
+            $this->baseURL = 'https://';
+        }
+        if (!empty($_SERVER['SERVER_NAME'])) {
+            $this->baseURL .= $_SERVER['SERVER_NAME'];
+        } else {
+            $this->baseURL .= 'localhost';
+        }
+        if (!empty($_SERVER['SERVER_PORT']) and $_SERVER['SERVER_PORT'] != '80' and $_SERVER['SERVER_PORT'] != '443') {
+            $this->baseURL .= ':' . $_SERVER['SERVER_PORT'];
+        }
+        $this->baseURL .= str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+        if (is_cli()) {
+            $this->baseURL = 'http://localhost/';
+        }
+
+        # Set CPSEnabled depending on environment
+        if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
+            $this->CSPEnabled = false;
+        }
+    }
 }
