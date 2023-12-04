@@ -637,7 +637,7 @@ class DiscoveriesModel extends BaseModel
             $issue->action = 'add credentials';
         } else if (strpos($issue->{'output'}, 'ERROR: Failed to open connection - NT_STATUS_CONNECTION_RESET') !== false) {
             # Windows connection from Linux Open-AudIT server
-            $issue->description = 'It is likely SMB1 was used in an attept to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="' . url_to('discoveryIssues', 2) . '">here</a>.';
+            $issue->description = 'It is likely SMB1 was used in an attempt to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="' . url_to('discoveryIssues', 2) . '">here</a>.';
             $issue->action = '';
         } else if (strpos($issue->{'output'}, 'ERROR: Failed to save ADMIN$/winexesvc.exe - NT_STATUS_ACCESS_DENIED') !== false) {
             # Windows connection from Linux Open-AudIT server
@@ -720,6 +720,12 @@ class DiscoveriesModel extends BaseModel
         } else if (strpos($issue->{'output'}, 'No credentials array passed to') !== false) {
             $issue->description = 'Ensure you have credentials for this type.';
             $issue->action = 'add credentials';
+        } else if (strpos($issue->{'output'}, 'Could not retrieve audit script for') !== false) {
+            $issue->description = 'The scripts directory at ' . ROOTPATH . 'other/scripts is not writable by the webserver. This must be fixed in order to create audit scripts to push to targets when running discovery.';
+            if (php_uname('s') === 'Linux') {
+                $issue->description .= ' You should likely run chmod 777 ' . ROOTPATH . 'other/scripts.';
+            }
+            $issue->action = '';
         } else {
             $issue->description = 'Unknown';
             $issue->action = '';
