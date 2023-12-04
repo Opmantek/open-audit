@@ -545,4 +545,36 @@ table.dataTable > thead .sorting_desc_disabled::after
         background-color: #333;
         color: white;
     }
+    .section_toggle:hover
+    {
+        cursor: pointer;
+        cursor: hand;
+        background-color: #444;
+    }
+    .mb-2
+    {
+        border-color: #888;
+        color: white;
+        background-color: #555;
+    }
+    .link_button
+    {
+        font-size: 1.2rem;
+        color: white;
+        border: var(--bs-border-width) solid var(--bs-border-color);
+        background-color: #333;
+    }
+    .btn-light a
+    {
+        font-weight: 300;
+        background-color: #999;
+    }
+    .btn-light a:hover
+    {
+        text-decoration: none;
+    }
+    .btn-outline-secondary a
+    {
+        color: var(--bs-btn-color);
+    }
 }
