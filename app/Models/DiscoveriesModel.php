@@ -516,7 +516,7 @@ class DiscoveriesModel extends BaseModel
         $sql = 'SELECT `id` FROM `configuration` WHERE `name` = "queue_count"';
         $included['queue_id'] = $this->db->query($sql)->getResult()[0]->id;
 
-        # TODO - Should we delete orphaned logs?
+        # TODO - Should we delete orphaned logs? NO - there may be logs from a direct audit result upload
         # $sql = "DELETE FROM `discovery_log` WHERE `discovery_id` IN (SELECT discovery_log.discovery_id FROM discovery_log LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discoveries.name IS NULL GROUP BY discovery_log.discovery_id)";
 
         # Mark as completed any discoveries with status = running and last logged > 30 minutes ago
