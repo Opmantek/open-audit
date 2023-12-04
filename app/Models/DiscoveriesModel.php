@@ -815,7 +815,7 @@ class DiscoveriesModel extends BaseModel
         $sql = 'DELETE from discovery_log WHERE discovery_id = ?';
         $this->db->query($sql, [$id]);
         // Reset attributes
-        $sql = "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_finished` = DATE_ADD(NOW(), interval 1 second) WHERE id = ?";
+        $sql = "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_finished` = '2001-01-01 00:00:00' WHERE id = ?";
         $this->db->query($sql, [$id]);
         // Queue the item
         $queueModel = new \App\Models\QueueModel();
