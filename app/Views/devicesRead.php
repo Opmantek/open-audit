@@ -503,6 +503,7 @@ if (!empty($included['fields'])) {
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
+                                                    <th class="text-center"><?= __('View') ?></th>
                                                     <th class="text-center"><?= __('ID') ?></th>
                                                     <th><?= __('Discovery Name') ?></th>
                                                     <th><?= __('Timestamp') ?></th>
@@ -515,6 +516,7 @@ if (!empty($included['fields'])) {
                                                 foreach ($included['discovery_log'] as $row) { ?>
                                                 <tr>
                                                     <?= device_component_button_read('discovery_log', $row->id) ?>
+                                                    <td><?= $row->{'id'} ?></td>
                                                     <td><?= $row->{'discoveries.name'} ?></td>
                                                     <td><?= $row->timestamp ?></td>
                                                     <?php if ($row->command_status === 'warning') { ?>
