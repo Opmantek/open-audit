@@ -519,8 +519,8 @@ class DiscoveriesModel extends BaseModel
         # TODO - Should we delete orphaned logs?
         # $sql = "DELETE FROM `discovery_log` WHERE `discovery_id` IN (SELECT discovery_log.discovery_id FROM discovery_log LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discoveries.name IS NULL GROUP BY discovery_log.discovery_id)";
 
-        # TODO - Should we mark as completed any discoveries with status = running and last logged > 30 minutes ago? (yes)
-        $sql = "SELECT TIMESTAMPDIFF(HOUR, discovery_log.timestamp, now()) AS `diff`, MAX(discovery_log.id), discovery_log.timestamp, discovery_log.discovery_id FROM discovery_log LEFT JOIN `discoveries` ON discovery_log.discovery_id = discoveries.id WHERE discoveries.status = 'running' AND TIMESTAMPDIFF(MINUTE, discovery_log.timestamp, now()) > 30 GROUP BY discovery_log.discovery_id";
+        # Mark as completed any discoveries with status = running and last logged > 30 minutes ago
+        $sql = "SELECT discoveries.status, discovery_id, MAX(discovery_log.id) AS `id`, `timestamp` FROM discovery_log LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discoveries.status = 'running' AND discovery_id IS NOT NULL AND  TIMESTAMPDIFF(MINUTE, discovery_log.timestamp, now()) > 30 GROUP BY discovery_id";
         $result = $this->db->query($sql)->getResult();
         foreach ($result as $discovery) {
             $sql = "UPDATE `discoveries` SET `status` = 'killed' WHERE id = ?";
