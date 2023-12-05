@@ -15,7 +15,7 @@ include 'shared/create_functions.php';
                         <p><?= __('Click the Import button below to populate Open-AudIT with example device data.') ?><br />
                         <br />
                         <form action="<?= url_to('devicesExample') ?>" method="post">
-                            <button id="submit" name="submit" type="submit" class="btn btn-primary" aria-label="<?= __('Import') ?>"><?= __('Import') ?></button>
+                            <button id="submit" name="submit" type="submit" class="btn btn-success" aria-label="<?= __('Import') ?>"><?= __('Import') ?></button>
                         </form>
                         <br />
                         </p>
