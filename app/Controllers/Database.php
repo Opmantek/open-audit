@@ -248,7 +248,11 @@ class Database extends BaseController
             $output = $this->databaseModel->update();
             $sql = "SELECT * FROM configuration WHERE `name` = 'license_eula'";
             $db = db_connect();
-            $eula = $db->query($sql)->getResult()[0];
+            $eula = new \stdClass();
+            $test = $db->query($sql)->getResult();
+            if (!empty($test[0])) {
+                $elua = $test[0];
+            }
             $item = new \stdClass();
             if (!empty($eula->value) and $eula->value !== '') {
                 $item = json_decode($eula->value);
