@@ -792,6 +792,18 @@ if (!function_exists('snmp_audit')) {
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
+        // guess at model using entity mib #3
+        if (empty($details->model)) {
+            $item_start = microtime(true);
+            $details->model = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.13.1');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Model based on Entity MIB retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.13.1';
+            $log->command_output = (string)$details->model;
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
+            unset($log->id, $log->command, $log->command_time_to_execute);
+        }
         // guess at model using host resources mib
         if (empty($details->model)) {
             $item_start = microtime(true);
