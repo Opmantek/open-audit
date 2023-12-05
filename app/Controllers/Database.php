@@ -251,7 +251,7 @@ class Database extends BaseController
             $eula = new \stdClass();
             $test = $db->query($sql)->getResult();
             if (!empty($test[0])) {
-                $elua = $test[0];
+                $eula = $test[0];
             }
             $item = new \stdClass();
             if (!empty($eula->value) and $eula->value !== '') {
