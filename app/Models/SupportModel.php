@@ -177,6 +177,12 @@ class SupportModel extends BaseModel
             $logfile = str_replace('.log', '', $logfile);
             $data->app->youngest_logfile = $logfile;
             unset($logfile);
+
+            // Get any errors from the youngest logfile
+            $command_string = "grep ERROR " . APPPATH . "../writable/logs/*.log";
+            exec($command_string, $output, $return_var);
+            $data->logs = new stdClass;
+            $data->logs = $output;
         }
 
         if (php_uname('s') === 'Windows NT') {
@@ -213,30 +219,43 @@ class SupportModel extends BaseModel
                 $data->php->process_owner = $posix_getpwuid['name'];
                 unset($posix_getpwuid);
             }
+            unset($output);
             $data->prereq->nmap = '';
             $command_string = 'nmap --version';
             exec($command_string, $output, $return_var);
-            $data->prereq->nmap = @$output[1];
-            unset($output);
-            $prereqs = array('screen', 'sshpass', 'curl', 'wget', 'zip', 'ipmitool', 'rrdtool', 'logrotate');
-            foreach ($prereqs as $prereq) {
-                $command_string = 'which ' . $prereq . ' 2>/dev/null';
-                exec($command_string, $output, $return_var);
-                $data->prereq->{$prereq} = @$output[0];
-                unset($output);
-                unset($command_string);
+            if (!empty($output)) {
+                foreach ($output as $line) {
+                    if (strpos($line, 'ersion') !== false) {
+                        $data->prereq->nmap = $line;
+                    }
+                }
             }
+            unset($output);
+            // $prereqs = array('screen', 'sshpass', 'curl', 'wget', 'zip', 'ipmitool', 'rrdtool', 'logrotate');
+            // foreach ($prereqs as $prereq) {
+            //     $command_string = 'which ' . $prereq . ' 2>/dev/null';
+            //     exec($command_string, $output, $return_var);
+            //     $data->prereq->{$prereq} = @$output[0];
+            //     unset($output);
+            //     unset($command_string);
+            // }
             // Samba Client
             $command_string = 'which smbclient 2>/dev/null';
             exec($command_string, $output, $return_var);
             if (isset($output[0])) {
                 $data->prereq->sambaclient = $output[0];
+                $command_string = 'smbclient --version';
+                unset($output);
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data->prereq->sambaclient = $output[0];
+                }
             }
             unset($output);
             unset($command_string);
 
             // winexe version
-            $command_string = APPPATH . '../other/winexe-static-2 --version 2>&1';
+            $command_string = ROOTPATH . 'other/winexe-static-2 --version 2>&1';
             exec($command_string, $output, $return_var);
             if (isset($output[0]) && strpos($output[0], 'winexe') === 0) {
                 $data->prereq->winexe = $output[0];
@@ -293,9 +312,9 @@ class SupportModel extends BaseModel
                 unset($command_string);
             }
             // Scripts perms - should be writable
-            $data->permissions->scripts = APPPATH . '../other - FAIL';
-            if (is_writable(APPPATH . '../other')) {
-                $data->permissions->scripts = APPPATH . '../other - PASS';
+            $data->permissions->scripts = ROOTPATH . 'other - FAIL';
+            if (is_writable(ROOTPATH . 'other')) {
+                $data->permissions->scripts = ROOTPATH . 'other - PASS';
             }
             // Attachments perms - should be writable
             $data->permissions->attachments = APPPATH . 'Attachments - FAIL';
@@ -303,19 +322,30 @@ class SupportModel extends BaseModel
                 $data->permissions->attachments = APPPATH . 'Attachments - PASS';
             }
             // Uploads perms - should be writable
-            $data->permissions->uploads = APPPATH . '../writable/uploads - FAIL';
-            if (is_writable(APPPATH . '../writable/uploads')) {
-                $data->permissions->uploads = APPPATH . '../writable/uploads - PASS';
+            $data->permissions->uploads = ROOTPATH . 'writable/uploads - FAIL';
+            if (is_writable(ROOTPATH . 'writable/uploads')) {
+                $data->permissions->uploads = ROOTPATH . 'writable/uploads - PASS';
             }
             // Custom Images perms - should be writable
-            $data->permissions->custom_images = APPPATH . '../public/custom_images - FAIL';
-            if (is_writable(APPPATH . '../public/custom_images')) {
-                $data->permissions->custom_images = APPPATH . '../public/custom_images - PASS';
+            $data->permissions->custom_images = ROOTPATH . 'public/custom_images - FAIL';
+            if (is_writable(ROOTPATH . 'public/custom_images')) {
+                $data->permissions->custom_images = ROOTPATH . 'public/custom_images - PASS';
             }
             // Logs perms - should be writable
-            $data->permissions->logs = APPPATH . '../writable/logs - FAIL';
-            if (is_writable(APPPATH . '../writable/logs')) {
-                $data->permissions->logs = APPPATH . '../writable/logs - PASS';
+            $data->permissions->logs = ROOTPATH . 'writable/logs - FAIL';
+            if (is_writable(ROOTPATH . 'writable/logs')) {
+                $data->permissions->logs = ROOTPATH . 'writable/logs - PASS';
+            }
+            if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
+                // Lang Files perms - should be writable
+                $files = glob(APPPATH . 'Views/lang/*.{inc}', GLOB_BRACE);
+                foreach ($files as $file) {
+                    $filename = str_replace(APPPATH . 'Views/lang/', '', $file);
+                    $data->permissions->{$filename} = $file . ' - FAIL';
+                    if (is_writable($file)) {
+                        $data->permissions->{$filename} = $file . ' - PASS';
+                    }
+                }
             }
         }
         return array($data);

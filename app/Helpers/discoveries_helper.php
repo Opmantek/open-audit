@@ -1346,9 +1346,14 @@ if (! function_exists('ip_audit')) {
         if (!empty($credentials_windows) or ! empty($credentials_ssh)) {
             $temp = $instance->scriptsModel->build(strtolower($device->os_group));
             if (empty($temp)) {
-                $log->message = 'Could not retrieve audit script for ' . strtolower($device->os_group) . ', check system log for details.';
-                $log->command_status = 'fail';
+                $log->command_output = 'Could not retrieve audit script for ' . strtolower($device->os_group) . ', check ' . ROOTPATH . 'other/scripts is writable.';
+                $log->command_status = 'issue';
                 $log->severity = 4;
+                if (php_uname('s') === 'Linux') {
+                    $command_string = 'stat ' . ROOTPATH . 'other/scripts';
+                    exec($command_string, $output, $return_var);
+                    $log->command = $command_string . ' : ' . json_encode($output);
+                }
                 $discoveryLogModel->create($log);
                 $log->command_status = 'notice';
                 $log->severity = 7;
@@ -1778,11 +1783,12 @@ if (! function_exists('ip_audit')) {
 
         // Run our rules to update the device attributes
         if (!empty($audit)) {
-            log_message('debug', 'rulesModel::execute::return because audit script result exists');
+            log_message('debug', 'rulesModel::execute::return because audit script result exists for ' . $device->ip);
             $instance->rulesModel->execute($audit->system, intval($discovery->id), 'return', intval($audit->system->id));
         } else {
-            log_message('debug', 'rulesModel::execute::update because audit script result does not exist');
-            $instance->rulesModel->execute(null, intval($discovery->id), 'update', intval($device->id));
+            log_message('debug', 'rulesModel::execute::update because audit script result does not exist for ' . $device->ip);
+            # $instance->rulesModel->execute(null, intval($discovery->id), 'update', intval($device->id));
+            $instance->rulesModel->execute($device, intval($discovery->id), 'update', intval($device->id));
         }
 
         if (!empty($audit)) {

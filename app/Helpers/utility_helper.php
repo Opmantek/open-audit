@@ -233,6 +233,17 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'agents') {
+        foreach ($result as $item) {
+            if (!empty($item->inputs)) {
+                $item->inputs = json_decode($item->inputs);
+            }
+            if (!empty($item->outputs)) {
+                $item->outputs = json_decode($item->outputs);
+            }
+        }
+    }
+
     if ($type === 'baselines_policies') {
         foreach ($result as $item) {
             if (!empty($item->tests)) {
@@ -439,8 +450,18 @@ if (!function_exists('collections_list')) {
     {
         $collections = new \stdClass();
 
-        $collections->applications = new \StdClass();
         # FIX ME
+        $collections->agents = new \StdClass();
+        $collections->agents->icon = 'fa-regular fa-comments';
+        $collections->agents->name = 'Agents';
+        $collections->agents->edition = 'Enterprise';
+        $collections->agents->orgs = 'd';
+        $collections->agents->actions = new \stdClass();
+        $collections->agents->actions->enterprise = 'crud';
+        $collections->agents->actions->professional = 'r';
+        $collections->agents->actions->community = '';
+
+        $collections->applications = new \StdClass();
         $collections->applications->icon = 'fa fa-th-list';
         $collections->applications->name = 'Applications';
         $collections->applications->edition = 'Enterprise';

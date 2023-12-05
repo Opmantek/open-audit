@@ -65,13 +65,6 @@ class Logon extends Controller
             $password = $_SERVER['HTTP_PASSWORD'];
         }
 
-        if (empty($username) or empty($password)) {
-            # set flash need creds
-            $session->setFlashdata('flash', '{"level":"danger", "message":"Credentials required"}');
-            log_message('error', '{"level":"danger", "message":"Credentials required"}');
-            return redirect()->to(site_url('logon'));
-        }
-
         $http_accept = (!empty($_SERVER['HTTP_ACCEPT'])) ? $_SERVER['HTTP_ACCEPT'] : '';
         $format = '';
         if (strpos($http_accept, 'application/json') !== false) {
@@ -88,6 +81,17 @@ class Logon extends Controller
         }
         if ($format == '') {
             $format = 'json';
+        }
+
+        if (empty($username) or empty($password)) {
+            # set flash need creds
+            $session->setFlashdata('flash', '{"level":"danger", "message":"Credentials required"}');
+            log_message('error', '{"level":"danger", "message":"Credentials required"}');
+            if ($format === 'html') {
+                return redirect()->to(site_url('logon'));
+            }
+            header('HTTP/1.0 401 Unauthorized');
+            echo '{"message":"Credentials required"}';
         }
 
         $user = $logonModel->logon($username, $password);
@@ -118,7 +122,11 @@ class Logon extends Controller
             exit;
         }
         log_message('info', 'Invalid credentials for ' . $username . ' from ' . @$this->request->getIPAddress());
-        return redirect()->to(site_url('logon'));
+        if ($format === 'html') {
+            return redirect()->to(site_url('logon'));
+        }
+        header('HTTP/1.0 401 Unauthorized');
+        echo '{"message":"Credentials required"}';
     }
 
     public function delete()

@@ -173,7 +173,7 @@ if ($config->product !== 'community') {
                                     $link = $report->type . 'Execute';
                                     if ($report->{'attributes'}->{'menu_category'} === $category) {
                                         if ($report->{'attributes'}->{'menu_category'} === 'Discovery') {
-                                            if ($config->license !== 'commercial') {
+                                            if (!empty($config->license) and $config->license !== 'commercial' and $config->license !== 'free') {
                                                 echo "                                <li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                             } else {
                                                 echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to($link, $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
@@ -185,14 +185,20 @@ if ($config->product !== 'community') {
                                 }
                                 echo "                            </ul>\n";
                             } ?>
-                                <?= menuItem('tasks', 'r', $user, '', __('Schedule') . ' ' . __('Reports')) ?>
-                                <?= menuItem('tasks', 'r', $user, '', __('MultiReport')) ?>
+                                <?= menuItem('tasks', 'r', $user, 'tasksCollection', __('Schedule') . ' ' . __('Reports')) ?>
                             </ul>
                         </li>
 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarManage" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Manage') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarManage">
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Agents') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('agents', 'r', $user, 'agentsCollection', __('List') . ' ' . __('Agents')) ?>
+                                        <?= menuItem('agents', 'c', $user, 'agentsCreateForm', __('Create') . ' ' . __('Agents')) ?>
+                                        <?= menuItem('agents', '', $user, 'agentsHelp', __('Learn About') . ' ' . __('Agents')) ?>
+                                    </ul>
+                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Applications') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('applications', 'r', $user, 'applicationsCollection', __('List') . ' ' . __('Applications')) ?>
@@ -413,7 +419,7 @@ if ($config->product !== 'community') {
                                         <?= menuItem('ldap_servers', '', $user, 'ldap_serversHelp', __('Learn About') . ' ' . __('LDAP Servers')) ?>
                                     </ul>
                                 </li>
-                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Tasks') ?></a>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Tasks') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('tasks', 'r', $user, 'tasksCollection', __('List') . ' ' . __('Tasks')) ?>
                                         <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Create') . ' ' . __('Tasks')) ?>
@@ -657,7 +663,7 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
     if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) === false) {
         $return = "<li><a class=\"dropdown-item greyout toast" .$instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
     }
-    // Check if use has permission and a license
+    // Check if user has permission and a license
     if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) !== false) {
         if (get_user_permission($collection, $permission, $user)) {
             $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";

@@ -8,13 +8,13 @@ namespace App\Models;
 
 use \stdClass;
 
-class RulesModel extends BaseModel
+class AgentsModel extends BaseModel
 {
 
     public function __construct()
     {
         $this->db = db_connect();
-        $this->builder = $this->db->table('rules');
+        $this->builder = $this->db->table('agents');
         # Use the below to execute BaseModel::__construct
         # parent::__construct();
     }
@@ -84,7 +84,7 @@ class RulesModel extends BaseModel
             }
             $data->outputs = json_encode($new_outputs);
         }
-        $data = $this->createFieldData('rules', $data);
+        $data = $this->createFieldData('agents', $data);
         if (empty($data)) {
             return null;
         }
@@ -141,9 +141,9 @@ class RulesModel extends BaseModel
         $log->message = 'Running rules::execute function.';
         $log->severity = 7;
         $log->command_status = 'notice';
-        $log->file = 'RulesModel';
+        $log->file = 'm_rules';
         $log->function = 'execute';
-        $log->command = 'Device Update';
+        $log->command = 'Device Update ';
 
         $device_sub = array();
         if (!empty($device)) {
@@ -152,11 +152,6 @@ class RulesModel extends BaseModel
             $log->command = 'Device Input ';
         }
         $log->command .= "($action).";
-
-        // If we also have a $device AND it's IP is populated, save and use that as we're likley incoming from discovery_helper with no audit result
-        if (!empty($device->ip)) {
-            $ip = $device->ip;
-        }
 
         if (!empty($id)) {
             // Get our device
@@ -187,9 +182,6 @@ class RulesModel extends BaseModel
                     $device->switch_port = '';
                 }
                 $device->discovery_id = '';
-                if (empty($ip)) {
-                    $ip = $device->ip;
-                }
             } else {
                 log_message('error', "Could not retrieve data from devices table for ID: $id. Not running Rules function.");
                 $log->severity = 4;
@@ -212,13 +204,7 @@ class RulesModel extends BaseModel
             $log->discovery_id = $device->discovery_id;
         }
         $log->device_id = (!empty($device->id)) ? intval($device->id) : '';
-        if (!empty($ip)) {
-            $log->ip = ip_address_from_db($ip);
-        } else if (!empty($device->ip)) {
-            $log->ip = ip_address_from_db($device->ip);
-        } else {
-            $log->ip = '';
-        }
+        $log->ip = (!empty($device->ip)) ? ip_address_from_db($device->ip) : '';
         $discoveryLogModel->create($log);
 
         $id = (!empty($device->id)) ? $device->id : '';
@@ -668,7 +654,10 @@ class RulesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        return array();
+        $included = array();
+        $locationsModel = new \App\Models\LocationsModel();
+        $included['locations'] = $locationsModel->listUser();
+        return $included;
     }
 
     /**
@@ -699,17 +688,17 @@ class RulesModel extends BaseModel
         }
 
         $properties = array();
-        $properties[] = 'rules.*';
+        $properties[] = 'agents.*';
         $properties[] = 'orgs.name as `orgs.name`';
         $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'rules.org_id = orgs.id', 'left');
+        $this->builder->join('orgs', 'agents.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'rules');
+        return format_data($query->getResult(), 'agents');
     }
 
     /**
@@ -739,7 +728,7 @@ class RulesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'rules');
+        return format_data($query->getResult(), 'agents');
     }
 
     /**
@@ -749,7 +738,7 @@ class RulesModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('rules')) {
+        if ($this->tableReset('agents')) {
             return true;
         }
         return false;
@@ -764,7 +753,7 @@ class RulesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        $data = $this->updateFieldData('rules', $data);
+        $data = $this->updateFieldData('agents', $data);
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
         if ($this->sqlError($this->db->error())) {
@@ -782,39 +771,22 @@ class RulesModel extends BaseModel
     {
         $instance = & get_instance();
 
-        $collection = 'rules';
+        $collection = 'agents';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'weight', 'orgs.name', 'test_minutes', 'test_subnet', 'test_os', 'action_download', 'action_command', 'action_audit', 'action_uninstall');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
+        $dictionary->sentence = 'Think \'if this, then that\' for devices with an Agent installed.';
 
-        $tables = array('bios', 'credential', 'devices', 'disk', 'dns', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
-        $columns = array();
-        foreach ($tables as $table) {
-            $fields = $this->db->getFieldNames($table);
-            $myfields = array();
-            foreach ($fields as $field) {
-                if ($field !== 'id' && $field !== 'current' && $field !== 'device_id' && $field !== 'first_seen' && $field !== 'last_seen') {
-                    $myfields[] = $field;
-                }
-            }
-            sort($myfields);
-            $columns[$table] = $myfields;
-        }
-        $dictionary->attributes->tables = $tables;
-        $dictionary->attributes->columns = $columns;
+        $dictionary->about = '<p>Agents let you audit PCs without a discovery.</p>';
 
-        $dictionary->sentence = 'Think \'if this, then that\' for your discovered devices.';
-
-        $dictionary->about = '<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>';
-
-        $dictionary->notes = '<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>';
+        $dictionary->notes = '<p></p>';
 
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
@@ -822,8 +794,20 @@ class RulesModel extends BaseModel
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->weight = 'A lower number means it will be applied before other rules.';
-        $dictionary->columns->inputs = 'A JSON object containing an array of attributes to match (normal weight is 100).';
-        $dictionary->columns->outputs = 'A JSON object containing an array of attributes to change if the match occurs.';
+
+        $dictionary->columns->test_minutes = 'If this many or more minutes have passed since the device contacted the server, perform the actions.';
+        $dictionary->columns->test_subnet = 'If an agent reports in from this subnet, perform the actions.';
+        $dictionary->columns->test_os = 'If the agent OS Name (case insensitive) contains this string, perform the actions.';
+        $dictionary->columns->tests = 'A JSON object containing an array of attributes to match.';
+
+        $dictionary->columns->action_download = 'A URL to a file to download.';
+        $dictionary->columns->action_command = 'A command to run.';
+        $dictionary->columns->action_audit = 'Should we run an audit and submit it (y/n).';
+        $dictionary->columns->action_uninstall = 'Should we uninstall the agent (y/n).';
+        $dictionary->columns->action_devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.';
+        $dictionary->columns->action_devices_assigned_to_org = "Any devices will be assigned to this Org if set. If not set and they are a new device they are assigned to the 'org_id' of this agent. Links to <code>orgs.id</code>.";
+        $dictionary->columns->actions = 'A JSON object containing an array of attributes to change if the match occurs.';
+
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

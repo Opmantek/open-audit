@@ -426,7 +426,7 @@ if (!function_exists('response_create')) {
         $permission_requested = $response->meta->permission_requested;
         if (!empty($config->enterprise_binary) and $db->tableExists('enterprise')) {
             // TODO - fix this
-            if (($response->meta->collection === 'rules' or $response->meta->collection === 'roles') and $response->meta->action === 'update') {
+            if (($response->meta->collection === 'agents' or $response->meta->collection === 'rules' or $response->meta->collection === 'roles') and $response->meta->action === 'update') {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
@@ -493,7 +493,7 @@ if (!function_exists('response_create')) {
             if (empty($r)) {
                 \Config\Services::session()->setFlashdata('error', 'There is an issue with Enterprise functionality. Please contact <a target="_blank" href="https://firstwave.com">FirstWave</a> for support.');
                 log_message('error', 'Could not decode JSON response from enterprise.');
-                log_message('error', $result[0]->response);
+                log_message('error', "Response: " . @$result[0]->response . "\n");
             }
             $response->meta->permission_requested = $permission_requested;
             if (!empty($response->meta->license)) {
@@ -511,7 +511,7 @@ if (!function_exists('response_create')) {
             }
 
             // TODO - fix this
-            if (($response->meta->collection === 'rules' or $response->meta->collection === 'roles') and $response->meta->action === 'update') {
+            if (($response->meta->collection === 'agents' or $response->meta->collection === 'rules' or $response->meta->collection === 'roles') and $response->meta->action === 'update') {
                 $response->meta->received_data = $received_data;
             }
             if ($response->meta->collection === 'search' and $response->meta->action === 'create') {
@@ -1504,7 +1504,7 @@ if (!function_exists('response_valid_collections')) {
      */
     function response_valid_collections()
     {
-        return array('applications','attributes','baselines','baselines_policies','baselines_results','chart','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rules','scripts','search','sessions','summaries','support','tasks','users','widgets');
+        return array('agents','applications','attributes','baselines','baselines_policies','baselines_results','chart','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rules','scripts','search','sessions','summaries','support','tasks','users','widgets');
     }
 }
 

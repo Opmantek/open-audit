@@ -380,11 +380,14 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         <tbody>
                                             <?php foreach ($included['discovery_log'] as $log) { ?>
                                                 <?php if (strpos($log->message, 'not responding, ignoring') === false and strpos($log->message, 'responding, adding to device list') === false) { ?>
+                                                    <?php if ($log->function === 'match') {
+                                                        $log->message = 'DeviceMatch - ' . $log->message;
+                                                    } ?>
                                                 <tr>
                                                     <?= device_component_button_read('discovery_log', $log->id) ?>
                                                     <td class="text-center"><?= $log->id ?></td>
                                                     <td><?= $log->timestamp ?></td>
-                                                    <td><span style="display:none;"><?= @$log->ip_padded ?></span><?= $log->ip ?></td>
+                                                    <td><span style="display:none;"><?= @$log->ip_padded ?></span> <?= $log->ip ?> </td>
                                                     <td>
                                                     <?php if ($log->command_status === 'success') { ?>
                                                         <span class="text-success">
@@ -436,7 +439,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <th style="min-width:6rem;"><?= __('IP') ?></th>
                                                 <th style="min-width:6rem;"><?= __('Name') ?></th>
                                                 <th><?= __('Message') ?></th>
-                                                <th style="min-width:6rem;"><?= __('Nmap Duration') ?></th>
+                                                <th style="min-width:6rem;"><?= __('Duration (hh:mm:ss)') ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -445,7 +448,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <tr>
                                                     <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $device->{'devices.id'}) ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
                                                     <td class="text-center"><img style="width:30px;" src="/open-audit/device_images/<?= $device->{'devices.icon'} ?>.svg" alt=""/></td>
-                                                    <td><span style="display:none;"><?= $device->{'devices.ip'} ?></span><?= $device->{'discovery_log.ip'} ?><br />
+                                                    <td><span style="display:none;"><?= ip_address_to_db($device->{'discovery_log.ip'}) ?></span><?= $device->{'discovery_log.ip'} ?><br />
                                                     <?php if ($device->{'devices.type'} === 'unknown') { ?>
                                                         <span class="text-danger"><i><?= $device->{'devices.type'} ?></i></span>
                                                     <?php } else if ($device->{'devices.type'} === 'unclassified') { ?>
@@ -460,7 +463,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                         <?php } ?>
                                                     </td>
                                                     <td><?= $device->{'discovery_log.message'} ?></td>
-                                                    <td><?= $device->{'discovery_log.command_time_to_execute'} . ' ' . __('seconds') ?></td>
+                                                    <td><?= $device->{'discovery_log.command_time_to_execute'} ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>

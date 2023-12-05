@@ -22,6 +22,11 @@ class ScriptsModel extends BaseModel
 
     public function build(string $operating_system = ''): array
     {
+        // First, make sure we can write to the scripts directory
+        if (!is_writable(ROOTPATH . 'other/scripts')) {
+            log_message('error', 'Cannot write to ' . ROOTPATH . 'other/scripts, so we cannot build an audit script. Discoveries will fail.');
+            return array();
+        }
         // Get and make the audit script
         $timestamp = date('y_m_d_H_i_s') . '_' . explode(' ', explode('.', microtime())[1])[0];
         $instance = & get_instance();

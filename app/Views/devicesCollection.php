@@ -158,7 +158,7 @@ if (!empty($meta->query_string)) {
                                                     echo "                                    <td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:40px\" alt=\"" . $item->attributes->icon . "\"></td>\n";
                                                 }
                                             } else if ($key === 'ip' and !empty($item->attributes->ip_padded)) {
-                                                echo "                                    <td><span style=\"display:none;\">" . $item->attributes->ip_padded . "</span>" . $item->attributes->{$key} . "</td>\n";
+                                                echo "                                    <td><span style=\"display:none;\">" . $item->attributes->ip_padded . "</span> " . $item->attributes->{$key} . " </td>\n";
                                             } else {
                                                 echo "                                    <td><span class=\"float-start\"><button type=\"button\" class=\"btn btn-xs btn-light\" data-bs-container=\"body\" data-bs-toggle=\"popover\" data-bs-html=\"true\" data-bs-placement=\"right\" data-bs-content=\"<a href='" . $query_string . "devices." . $key . "=" . $item->attributes->{$key} . "'>" . __('Include') . "</a><br><a href='" . $query_string . "devices." . $key . "=!=" . $item->attributes->{$key} . "'>" . __('Exclude') . "</a>\"><span class=\"fa fa-filter fa-xs\"></span></button></span>&nbsp;" . $item->attributes->{$key} . "</td>\n";
                                             }
@@ -238,6 +238,11 @@ window.onload = function () {
             "pagingType": "full",
             "pageLength": 50,
             "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            "oSearch": {
+                "bSmart": false,
+                "bRegex": true,
+                "sSearch": ""
+            },
             "columnDefs": [
                 <?php $i = 0;
                 if (!empty($audit_status)) {

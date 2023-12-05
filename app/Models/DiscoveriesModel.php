@@ -46,6 +46,7 @@ class DiscoveriesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
+        $this->permissions();
         return format_data($query->getResult(), $resp->meta->collection);
     }
 
@@ -515,11 +516,11 @@ class DiscoveriesModel extends BaseModel
         $sql = 'SELECT `id` FROM `configuration` WHERE `name` = "queue_count"';
         $included['queue_id'] = $this->db->query($sql)->getResult()[0]->id;
 
-        # TODO - Should we delete orphaned logs?
+        # TODO - Should we delete orphaned logs? NO - there may be logs from a direct audit result upload
         # $sql = "DELETE FROM `discovery_log` WHERE `discovery_id` IN (SELECT discovery_log.discovery_id FROM discovery_log LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discoveries.name IS NULL GROUP BY discovery_log.discovery_id)";
 
-        # TODO - Should we mark as completed any discoveries with status = running and last logged > 30 minutes ago? (yes)
-        $sql = "SELECT TIMESTAMPDIFF(HOUR, discovery_log.timestamp, now()) AS `diff`, MAX(discovery_log.id), discovery_log.timestamp, discovery_log.discovery_id FROM discovery_log LEFT JOIN `discoveries` ON discovery_log.discovery_id = discoveries.id WHERE discoveries.status = 'running' AND TIMESTAMPDIFF(MINUTE, discovery_log.timestamp, now()) > 30 GROUP BY discovery_log.discovery_id";
+        # Mark as completed any discoveries with status = running and last logged > 30 minutes ago
+        $sql = "SELECT discoveries.status, discovery_id, MAX(discovery_log.id) AS `id`, `timestamp` FROM discovery_log LEFT JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discoveries.status = 'running' AND discovery_id IS NOT NULL AND  TIMESTAMPDIFF(MINUTE, discovery_log.timestamp, now()) > 30 GROUP BY discovery_id";
         $result = $this->db->query($sql)->getResult();
         foreach ($result as $discovery) {
             $sql = "UPDATE `discoveries` SET `status` = 'killed' WHERE id = ?";
@@ -557,10 +558,26 @@ class DiscoveriesModel extends BaseModel
         $included['ips'] = $query->getResult();
 
 
-        $sql = "SELECT discovery_log.ip AS `discovery_log.ip`, discovery_log.message AS `discovery_log.message`, ROUND(discovery_log.command_time_to_execute, 1) AS `discovery_log.command_time_to_execute`, devices.id AS `devices.id`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.serial AS `devices.serial`, devices.status AS `devices.status`, devices.last_seen_by AS `devices.last_seen_by`, devices.last_seen AS `devices.last_seen`, devices.manufacturer AS `devices.manufacturer`, devices.class AS `devices.class`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification` FROM discovery_log LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.id IN (SELECT MAX(discovery_log.id) FROM discovery_log WHERE discovery_log.message NOT LIKE '%not responding%' AND discovery_log.discovery_id = ? AND discovery_log.ip != '127.0.0.1' GROUP BY discovery_log.ip)";
-        $query = $this->db->query($sql, [$id]);
-        $included['devices'] = $query->getResult();
+        #$sql = "SELECT discovery_log.ip AS `discovery_log.ip`, discovery_log.message AS `discovery_log.message`, ROUND(discovery_log.command_time_to_execute, 1) AS `discovery_log.command_time_to_execute`, devices.id AS `devices.id`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.serial AS `devices.serial`, devices.status AS `devices.status`, devices.last_seen_by AS `devices.last_seen_by`, devices.last_seen AS `devices.last_seen`, devices.manufacturer AS `devices.manufacturer`, devices.class AS `devices.class`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification` FROM discovery_log LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.id IN (SELECT MAX(discovery_log.id) FROM discovery_log WHERE discovery_log.message NOT LIKE '%not responding%' AND discovery_log.discovery_id = ? AND discovery_log.ip != '127.0.0.1' GROUP BY discovery_log.ip)";
 
+        $sql = "SELECT TIMEDIFF(MAX(discovery_log.timestamp), MIN(discovery_log.timestamp)) AS `discovery_log.command_time_to_execute`, discovery_log.ip AS `discovery_log.ip`, devices.id AS `devices.id`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.serial AS `devices.serial`, devices.status AS `devices.status`, devices.last_seen_by AS `devices.last_seen_by`, devices.last_seen AS `devices.last_seen`, devices.manufacturer AS `devices.manufacturer`, devices.class AS `devices.class`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification`, '' AS `discovery_log.message` FROM discovery_log LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.discovery_id = ? AND discovery_log.ip != '127.0.0.1' AND discovery_log.device_id IS NOT NULL GROUP BY discovery_log.ip";
+        $query = $this->db->query($sql, [$id]);
+        $devices = $query->getResult();
+        $device_ips = array();
+        foreach ($devices as $device) {
+            $device_ips[] = $device->{'discovery_log.ip'};
+        }
+        $sql = "SELECT device_id, ip, message FROM discovery_log WHERE `id` IN (SELECT MAX(t2.id) FROM discovery_log t2 WHERE discovery_id = ? GROUP BY ip) AND discovery_id = ? AND ip IN ( \"" . implode('","', $device_ips) . "\") and ip != '127.0.0.1'";
+        $query = $this->db->query($sql, [$id, $id]);
+        $messages = $query->getResult();
+        foreach ($messages as $message) {
+            foreach ($devices as $device) {
+                if ($message->ip === $device->{'discovery_log.ip'}) {
+                    $device->{'discovery_log.message'} = $message->message;
+                }
+            }
+        }
+        $included['devices'] = $devices;
         return $included;
     }
 
@@ -637,7 +654,7 @@ class DiscoveriesModel extends BaseModel
             $issue->action = 'add credentials';
         } else if (strpos($issue->{'output'}, 'ERROR: Failed to open connection - NT_STATUS_CONNECTION_RESET') !== false) {
             # Windows connection from Linux Open-AudIT server
-            $issue->description = 'It is likely SMB1 was used in an attept to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="' . url_to('discoveryIssues', 2) . '">here</a>.';
+            $issue->description = 'It is likely SMB1 was used in an attempt to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="' . url_to('discoveryIssues', 2) . '">here</a>.';
             $issue->action = '';
         } else if (strpos($issue->{'output'}, 'ERROR: Failed to save ADMIN$/winexesvc.exe - NT_STATUS_ACCESS_DENIED') !== false) {
             # Windows connection from Linux Open-AudIT server
@@ -720,6 +737,12 @@ class DiscoveriesModel extends BaseModel
         } else if (strpos($issue->{'output'}, 'No credentials array passed to') !== false) {
             $issue->description = 'Ensure you have credentials for this type.';
             $issue->action = 'add credentials';
+        } else if (strpos($issue->{'output'}, 'Could not retrieve audit script for') !== false) {
+            $issue->description = 'The scripts directory at ' . ROOTPATH . 'other/scripts is not writable by the webserver. This must be fixed in order to create audit scripts to push to targets when running discovery.';
+            if (php_uname('s') === 'Linux') {
+                $issue->description .= ' You should likely run chmod 777 ' . ROOTPATH . 'other/scripts.';
+            }
+            $issue->action = '';
         } else {
             $issue->description = 'Unknown';
             $issue->action = '';
@@ -768,6 +791,30 @@ class DiscoveriesModel extends BaseModel
         return $query->getResult();
     }
 
+    public function permissions()
+    {
+        $warning = '';
+        $files = array('other/scripts');
+        foreach ($files as $file) {
+            if (!is_writable(ROOTPATH . $file)) {
+                $warning .= 'ERROR: ' . ROOTPATH . $file . " is not writable.\n";
+                log_message('error', ROOTPATH . $file . " is not writable.");
+            }
+        }
+        if (php_uname('s') !== 'Windows NT') {
+            $command = 'which nmap 2>/dev/null';
+            exec($command, $output, $return_var);
+            if (!isset($output[0])) {
+                $warning .= "\ERROR: Cannot find Nmap";
+                log_message('error', "Cannot find Nmap.");
+            }
+        }
+        if (!empty($warning)) {
+            \Config\Services::session()->setFlashdata('warning', $warning);
+        }
+        return;
+    }
+
     /**
      * [queue description]
      * @param  int $id The ID of the discovery to start
@@ -784,7 +831,7 @@ class DiscoveriesModel extends BaseModel
         $sql = 'DELETE from discovery_log WHERE discovery_id = ?';
         $this->db->query($sql, [$id]);
         // Reset attributes
-        $sql = "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_finished` = DATE_ADD(NOW(), interval 1 second) WHERE id = ?";
+        $sql = "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_finished` = '2001-01-01 00:00:00' WHERE id = ?";
         $this->db->query($sql, [$id]);
         // Queue the item
         $queueModel = new \App\Models\QueueModel();
@@ -836,6 +883,7 @@ class DiscoveriesModel extends BaseModel
             $result[0]->attributes->scan_options->id = $scan_options_id;
             $result[0]->attributes->scan_options->{'discovery_scan_options.name'} = $dco[0]->name;
         }
+        $this->permissions();
         return $result;
     }
 

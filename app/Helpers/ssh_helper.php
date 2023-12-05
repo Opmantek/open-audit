@@ -459,6 +459,10 @@ if (! function_exists('ssh_command')) {
         unset($ssh);
         for ($i=0; $i < count($result); $i++) {
             $result[$i] = trim($result[$i]);
+            # Special Case
+            if (stripos($result[$i], 'Exiting as other audits are currently running.') !== false) {
+                return false;
+            }
         }
         $log->command_time_to_execute = (microtime(true) - $item_start);
         $log->command_output = @json_encode($result);
@@ -575,7 +579,7 @@ if (! function_exists('ssh_audit')) {
             $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
             $ssh->setTimeout(10);
             if ($credential->type === 'ssh_key') {
-                log_message('debug', 'Testing credentials named: ' . $credential->name);
+                log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
                 if (!empty($credential->credentials->password)) {
                     $key = PublicKeyLoader::load($credential->credentials->ssh_key, $credential->credentials->password);
                 } else {
@@ -600,7 +604,7 @@ if (! function_exists('ssh_audit')) {
                     unset($ssh);
                 }
             } else if ($credential->type === 'ssh') {
-                log_message('debug', 'Testing credentials named: ' . $credential->name);
+                log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
                 if ($ssh->login($credential->credentials->username, $credential->credentials->password)) {
                     $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
