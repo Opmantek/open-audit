@@ -180,7 +180,7 @@ class OpenAudit extends BaseConfig
         $opLicense = $this->commercial_dir . "/bin/oplicense-cli.pl";
         $modules[] = (object)array("name" => "Applications",  "url" => (file_exists($this->commercial_dir)) ? "/omk"                  : "");
         $modules[] = (object)array("name" => "opCharts",      "url" => (in_array('opCharts',  $apps)) ? "/omk/opCharts"         : "https://firstwave.com/products/interactive-dashboards-and-charts/");
-        $modules[] = (object)array("name" => "opEvents",      "url" => (in_array('opEvents',  $apps)) ? "/omk/opEvents/"        : "https://firstwave.com/opevents-traps-network-event-management/");
+        $modules[] = (object)array("name" => "opEvents",      "url" => (in_array('opEvents',  $apps)) ? "/omk/opEvents/"        : "https://firstwave.com/products/centralized-log-and-event-management/");
         $modules[] = (object)array("name" => "opConfig",      "url" => (in_array('opConfig',  $apps)) ? "/omk/opConfig"         : "https://firstwave.com/products/network-configuration-management/");
         $modules[] = (object)array("name" => "opHA",          "url" => (in_array('opHA',      $apps)) ? "/omk/opHA"             : "https://firstwave.com/products/distributed-network-management/");
         $modules[] = (object)array("name" => "opReports",     "url" => (in_array('opReports', $apps)) ? "/omk/opReports/"       : "https://firstwave.com/products/advanced-analysis-and-reporting/");
