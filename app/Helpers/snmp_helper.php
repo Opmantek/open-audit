@@ -1459,7 +1459,11 @@ if (!function_exists('snmp_audit')) {
                 $interface->net_index = $value;
 
                 snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-                $interface->mac = format_mac(my_snmp_get($ip, $credentials, '1.3.6.1.2.1.2.2.1.6.'.$interface->net_index));
+                $temp = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.2.2.1.6.'.$interface->net_index);
+                $interface->mac = '';
+                if (!empty($temp)) {
+                    $interface->mac = format_mac($temp);
+                }
                 snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 
                 if (! isset($interface->mac)) {
