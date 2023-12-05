@@ -230,11 +230,13 @@ class CollectorsModel extends BaseModel
         $dictionary->columns->ip = 'The IP address of this collector used to communicate with the server.';
         $dictionary->columns->network_address = 'The collectors internal IP used when it runs a discovery.';
         $dictionary->columns->type = 'A collector is either in Collector or Stand-Alone mode.';
-        $dictionary->columns->status = 'Unused.';
-        $dictionary->columns->os = 'Unused.';
-        $dictionary->columns->options = 'Unused.';
+        $dictionary->columns->os = 'Automatically populated based on the Collectors OS.';
+        $dictionary->columns->host = 'The URL of your Open-AudIT Server that this Collector will report to (no trailing slash).';
+        $dictionary->columns->community = 'The web directory on the host that Open-AudIT is installed (requires a trailing slash).';
         $dictionary->columns->user_id = 'The user account this collector uses. Links to <code>users.id</code>.';
         $dictionary->columns->uuid = 'This collectors universally unique identifier.';
+        $dictionary->columns->options = 'Unused.';
+        $dictionary->columns->status = 'Auto populated by the Open-AudIT Server.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;
