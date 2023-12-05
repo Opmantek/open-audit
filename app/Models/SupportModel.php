@@ -244,6 +244,12 @@ class SupportModel extends BaseModel
             exec($command_string, $output, $return_var);
             if (isset($output[0])) {
                 $data->prereq->sambaclient = $output[0];
+                $command_string = 'smbclient --version';
+                unset($output);
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data->prereq->sambaclient = $output[0];
+                }
             }
             unset($output);
             unset($command_string);
