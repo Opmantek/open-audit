@@ -58,12 +58,7 @@ function create_text_field(string $field, string $label = '', array $create_fiel
         $label .= ' <span style="color: #dc3545;">*</span>';
     }
 
-    $return_string = "\n                                <div class=\"row\" style=\"padding-top:16px; padding-bottom:4px;\">
-                                    <div class=\"offset-2 col-8\" style=\"position:relative;\">
-                                        <label class=\"form-label\" for=\"{$field}\">{$label}</label>
-                                        <input class=\"form-control\" type=\"" . $type . "\" id=\"{$field}\" name=\"{$field}\" {$required} " . $placeholder . "/>
-                                    </div>
-                                </div>";
+    $return_string = "<div class=\"row\" style=\"padding-top:16px; padding-bottom:4px;\"><div class=\"offset-2 col-8\" style=\"position:relative;\"><label class=\"form-label\" for=\"{$field}\">{$label}</label><input class=\"form-control\" type=\"" . $type . "\" id=\"{$field}\" name=\"{$field}\" {$required} " . $placeholder . "/></div></div>";
     return $return_string;
 }
 

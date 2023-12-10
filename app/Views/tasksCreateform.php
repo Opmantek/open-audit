@@ -269,7 +269,7 @@ window.onload = function () {
         });
 
 
-        var email_format = '<?= str_replace("\n", "\\\n", create_text_field('data[attributes][email_address]', __('Email Address'), $dictionary->attributes->create)) ?>\
+        var email_format = '<?= create_text_field('data[attributes][email_address]', __('Email Address'), $dictionary->attributes->create) ?>\
                                 <div class=\"row\" style=\"padding-top:16px;\">\
                                     <div class=\"offset-2 col-8\" style=\"position:relative;\">\
                                         <label for=\"data[attributes][format]\" class=\"form-label\"><?= __('Format') ?> <span style=\"color: #dc3545;\">*</span></label><br />\

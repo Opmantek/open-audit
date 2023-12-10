@@ -92,11 +92,11 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
-        var $microsoft = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][subscription_id]', __('Subscription ID'), $dictionary->attributes->create)) ?><?= str_replace("\n", "", create_text_field('data[attributes][credentials][tenant_id]', __('Tennant ID'), $dictionary->attributes->create)) ?><?= str_replace("\n", "", create_text_field('data[attributes][credentials][client_id]', __('Client ID'), $dictionary->attributes->create)) ?><?= str_replace("\n", "", create_text_field('data[attributes][credentials][client_secret]', __('Client Secret'), $dictionary->attributes->create)) ?>';
+        var $microsoft = '<?= create_text_field('data[attributes][credentials][subscription_id]', __('Subscription ID'), $dictionary->attributes->create) ?><?= create_text_field('data[attributes][credentials][tenant_id]', __('Tennant ID'), $dictionary->attributes->create) ?><?= create_text_field('data[attributes][credentials][client_id]', __('Client ID'), $dictionary->attributes->create) ?><?= create_text_field('data[attributes][credentials][client_secret]', __('Client Secret'), $dictionary->attributes->create) ?>';
 
-        var $amazon = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][key]', __('Key'), $dictionary->attributes->create)) ?><?= str_replace("\n", "", create_text_field('data[attributes][credentials][secret_key]', __('Secret Key'), $dictionary->attributes->create)) ?>';
+        var $amazon = '<?= create_text_field('data[attributes][credentials][key]', __('Key'), $dictionary->attributes->create) ?><?= create_text_field('data[attributes][credentials][secret_key]', __('Secret Key'), $dictionary->attributes->create) ?>';
 
-        var $google = '<?= str_replace("\n", "", create_text_field('data[attributes][credentials][json]', __('JSON'), $dictionary->attributes->create)) ?>';
+        var $google = '<?= create_text_field('data[attributes][credentials][json]', __('JSON'), $dictionary->attributes->create) ?>';
 
         $('.data_type').change(function() {
             var $type = $(this).val();
