@@ -4,6 +4,9 @@
 # Get-Help Get-WmiObject
 # Get-Command
 
+echo "Not ready for use"
+exit
+
 $Win32_BIOS = Get-WmiObject -Class Win32_BIOS
 $Win32_ComputerSystem = Get-WmiObject -Class Win32_ComputerSystem
 $Win32_ComputerSystemProduct = Get-WmiObject -Class Win32_ComputerSystemProduct
