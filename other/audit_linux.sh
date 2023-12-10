@@ -73,7 +73,7 @@ self_delete="n"
 debugging=2
 
 # Version
-version="5.0.0"
+version="5.0.2"
 
 # Display help
 help="n"

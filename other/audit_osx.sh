@@ -44,7 +44,7 @@ system_id=""
 last_seen_by="audit"
 
 # Version
-version="5.0.0"
+version="5.0.2"
 
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
