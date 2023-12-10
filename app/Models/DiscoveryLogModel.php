@@ -8,6 +8,8 @@ namespace App\Models;
 
 use \stdClass;
 
+use CodeIgniter\Database\RawSql;
+
 class DiscoveryLogModel extends BaseModel
 {
 
@@ -136,8 +138,7 @@ class DiscoveryLogModel extends BaseModel
         $data->command_status = (!empty($data->command_status)) ? $data->command_status : '';
         $data->command_time_to_execute = (!empty($data->command_time_to_execute)) ? $data->command_time_to_execute : 0;
         $data->command_output = (!empty($data->command_output)) ? $data->command_output : '';
-        $sql = "SELECT NOW() as `timestamp`";
-        $data->timestamp = $this->db->query($sql)->getResult()[0]->timestamp;
+        $data->timestamp = new RawSql('CURRENT_TIMESTAMP()');
 
         if (!empty($data->message) and stripos($data->message, 'Collector - Starting discovery') !== false and !empty($data->discovery_id)) {
             // Special clear of local discovery logs if start of a Collector discovery
