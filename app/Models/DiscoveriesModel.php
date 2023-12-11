@@ -802,10 +802,10 @@ class DiscoveriesModel extends BaseModel
             }
         }
         if (php_uname('s') !== 'Windows NT') {
-            $command = 'which nmap 2>/dev/null';
+            $command = 'nmap --version 2>/dev/null';
             exec($command, $output, $return_var);
             if (!isset($output[0])) {
-                $warning .= "\ERROR: Cannot find Nmap";
+                $warning .= "ERROR: Cannot find Nmap";
                 log_message('error', "Cannot find Nmap.");
             }
         }
