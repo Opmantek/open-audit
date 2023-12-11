@@ -283,6 +283,20 @@ processor_speed=`system_profiler SPHardwareDataType | grep "Processor Speed:" | 
 if [ -n "$processor_speed" ]; then
     processor_speed=`echo "scale = 0; $processor_speed*1000" | bc`
 fi
+if [ -z "$processor_speed" ]; then
+    if [ "$processor_description" = "Apple M1" ]; then
+        processor_speed="3200"
+    fi
+    if [ "$processor_description" = "Apple M2" ] || [ "$processor_description" = "Apple M2 Pro" ]; then
+        processor_speed="3500"
+    fi
+    if [ "$processor_description" = "Apple M2 Max" ] || [ "$processor_description" = "Apple M2 Ultra" ]; then
+        processor_speed="3700"
+    fi
+    if [ "$processor_description" = "Apple M3" ]; then
+        processor_speed="4050"
+    fi
+fi
 if [[ "$processor_description" == *"Apple"* ]]; then
     processor_manufacturer="Apple"
     processor_architecture="arm64"
