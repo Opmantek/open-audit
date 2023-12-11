@@ -141,7 +141,7 @@ class Cli extends Controller
         $response->meta = new stdClass();
         $response->meta->collection = 'tasks';
         $response->meta->action = 'execute';
-        $response->meta->uuid = $this->config->uuid;
+        $response->meta->uuid = $config->uuid;
         $db = db_connect() or die("Cannot establish a database connection.");
         // Insert the entry
         $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
@@ -231,7 +231,7 @@ class Cli extends Controller
             log_message('error', 'A cloud Device request received, but no device was present in the request.');
         }
         helper('device');
-        $this->config = new \Config\OpenAudit();
+        $config = new \Config\OpenAudit();
         $db = db_connect() or die("Cannot establish a database connection.");
         $sql = "SELECT * FROM enterprise WHERE id = ?";
         $result = $db->query($sql, [$id])->getResult();
