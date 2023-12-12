@@ -1133,7 +1133,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Object_id retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.3';
-            $log->command_output = 'Count is ' . @count($temp_object_id);
+            $count = (!empty($temp_object_id)) ? count($temp_object_id) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1143,7 +1144,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Contained_in retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.4';
-            $log->command_output = 'Count is ' . @count($temp_contained_in);
+            $count = (!empty($temp_contained_in)) ? count($temp_contained_in) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1153,7 +1155,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Class retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.5';
-            $log->command_output = 'Count is ' . @count($temp_class);
+            $count = (!empty($temp_class)) ? count($temp_class) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1163,7 +1166,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Hardware_revision retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.8';
-            $log->command_output = 'Count is ' . @count($temp_hardware_revision);
+            $count = (!empty($temp_hardware_revision)) ? count($temp_hardware_revision) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1173,7 +1177,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Firmware_revision retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.9';
-            $log->command_output = 'Count is ' . @count($temp_firmware_revision);
+            $count = (!empty($temp_firmware_revision)) ? count($temp_firmware_revision) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1183,7 +1188,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Software_revision retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.10';
-            $log->command_output = 'Count is ' . @count($temp_software_revision);
+            $count = (!empty($temp_software_revision)) ? count($temp_software_revision) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1193,7 +1199,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Serial_number retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.11';
-            $log->command_output = 'Count is ' . @count($temp_serial_number);
+            $count = (!empty($temp_serial_number)) ? count($temp_serial_number) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1203,7 +1210,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Asset_id retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.15';
-            $log->command_output = 'Count is ' . @count($temp_asset_id);
+            $count = (!empty($temp_asset_id)) ? count($temp_asset_id) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1213,7 +1221,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Is_fru retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.16';
-            $log->command_output = 'Count is ' . @count($temp_is_fru);
+            $count = (!empty($temp_is_fru)) ? count($temp_is_fru) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1289,7 +1298,8 @@ if (!function_exists('snmp_audit')) {
         $log->command_time_to_execute = (microtime(true) - $item_start);
         $log->message = 'Interfaces retrieval for '.$ip;
         $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.1';
-        $log->command_output = 'Count is ' . @count($interfaces);
+        $count = (!empty($interfaces)) ? count($interfaces) : 0;
+        $log->command_output = 'Count is ' . $count;
         $log->command_status = 'notice';
         $discoveryLogModel->create($log);
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1300,7 +1310,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Models retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.2';
-            $log->command_output = 'Count is ' . @count($models);
+            $count = (!empty($models)) ? count($models) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1310,7 +1321,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Types retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.3';
-            $log->command_output = 'Count is ' . @count($types);
+            $count = (!empty($types)) ? count($types) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1320,7 +1332,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Speeds retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.5';
-            $log->command_output = 'Count is ' . @count($speeds);
+            $count = (!empty($speeds)) ? count($speeds) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1338,7 +1351,8 @@ if (!function_exists('snmp_audit')) {
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->message = 'HighSpeeds retrieval for '.$ip;
                 $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.15';
-                $log->command_output = 'Count is ' . @count($high_speeds);
+                $count = (!empty($high_speeds)) ? count($high_speeds) : 0;
+                $log->command_output = 'Count is ' . $count;
                 $log->command_status = 'notice';
                 $discoveryLogModel->create($log);
                 unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1358,8 +1372,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Mac_addresses retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6';
-            $temp = (!empty($mac_addresses)) ? count($mac_addresses) : 0;
-            $log->command_output = "Count is $temp";
+            $count = (!empty($mac_addresses)) ? count($mac_addresses) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
@@ -1369,8 +1383,8 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Ip_enableds retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.8';
-            $temp = (!empty($ip_enableds)) ? count($ip_enableds) : 0;
-            $log->command_output = "Count is $temp";
+            $count = (!empty($ip_enableds)) ? count($ip_enableds) : 0;
+            $log->command_output = 'Count is ' . $count;
             $log->command_status = 'notice';
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
