@@ -45,6 +45,9 @@ if (!function_exists('all_ip_list')) {
                 }
             }
         } else {
+            if (php_uname('s') === 'Windows NT' and empty($output)) {
+                log_message('error', 'No response from Nmap. Is the Apache Service running as a normal user?');
+            }
             $discoveryLogModel->create($log);
             return false;
         }
@@ -101,6 +104,9 @@ if (! function_exists('responding_ip_list')) {
                     }
                 }
             } else {
+                if (php_uname('s') === 'Windows NT' and empty($output)) {
+                    log_message('error', 'No response from Nmap. Is the Apache Service running as a normal user?');
+                }
                 $log->command_output = json_encode($output);
                 $discoveryLogModel->create($log);
                 return false;
@@ -144,6 +150,9 @@ if (! function_exists('update_non_responding')) {
      */
     function update_non_responding($discovery_id = 0, $all_ip_list = array(), $responding_ip_list = array())
     {
+        if (!is_array($all_ip_list)) {
+            return;
+        }
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $instance = & get_instance();
         $db = db_connect();
@@ -191,7 +200,9 @@ if (! function_exists('queue_responding')) {
         $log->file = 'discoveries_helper';
         $log->function = 'update_responding';
         $log->command_status = 'notice';
-
+        if (!is_array($responding_ip_list)) {
+            return;
+        }
         foreach ($responding_ip_list as $key => $ip) {
             $item = new \StdClass();
             $item->ip = $ip;
@@ -281,7 +292,7 @@ if (! function_exists('discover_subnet')) {
             $discoveryLogModel->create($log);
         } else {
             $all_ip_list = all_ip_list($discovery);
-            $count = @count($all_ip_list);
+            $count = (!empty($all_ip_list)) ? count($all_ip_list) : 0;
             $log->command_status = 'notice';
             if ($discovery->scan_options->ping === 'n') {
                 $log->message = 'Ping response not required, assuming all ' . $count . ' IP addresses are up.';
