@@ -115,7 +115,7 @@ class Queue extends BaseController
 
             // Spawn another process
             if (php_uname('s') === 'Windows NT') {
-                $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . " index.php queue start";
+                $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . "index.php queue start";
                 @exec($command, $output);
                 log_message('debug', $microtime . " Spawning process " . $command . " " . json_encode($output));
                 pclose(popen($command, 'r'));

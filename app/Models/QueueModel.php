@@ -223,7 +223,7 @@ class QueueModel extends BaseModel
     public function start()
     {
         if (php_uname('s') === 'Windows NT') {
-            $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . " index.php queue start";
+            $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . "index.php queue start";
             log_message('debug', $command);
             pclose(popen($command, 'r'));
         } else if (php_uname('s') === 'Darwin') {
