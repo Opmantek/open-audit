@@ -809,6 +809,11 @@ class DiscoveriesModel extends BaseModel
                 log_message('error', "Cannot find Nmap.");
             }
         }
+        if (php_uname('s') === 'Windows NT') {
+            if (strtolower(get_current_user()) === 'system') {
+                $warning = 'The Apache service is running as SYSTEM. Discoveries will not function. Please see this wiki page and make the configuration change. <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Running Open-AudIT Apache Service under Windows</a>.';
+            }
+        }
         if (!empty($warning)) {
             \Config\Services::session()->setFlashdata('warning', $warning);
         }
