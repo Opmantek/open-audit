@@ -209,10 +209,9 @@ class CloudsModel extends BaseModel
         $included['stats']->networks = intval($this->db->query($sql, [$id])->getResult()[0]->count);
 
         $sql = "SELECT `timestamp` FROM `cloud_log` WHERE `cloud_id` = ? ORDER BY `id` ASC LIMIT 1";
-        $included['stats']->last_run = $this->db->query($sql, [$id])->getResult()[0]->timestamp;
-
-        $sql = "SELECT `timestamp` FROM `cloud_log` WHERE `cloud_id` = ? ORDER BY `id` DESC LIMIT 1";
-        $finished = $this->db->query($sql, [$id])->getResult()[0]->timestamp;
+        $temp = $this->db->query($sql, [$id])->getResult();
+        $included['stats']->last_run = (!empty($temp)) ? $temp[0]->timestamp : '';
+        $finished = $included['stats']->last_run;
 
         $date = new \DateTime($included['stats']->last_run);
         $date2 = new \DateTime($finished);
