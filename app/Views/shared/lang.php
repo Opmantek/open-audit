@@ -16,7 +16,7 @@ if (!function_exists('__')) {
         if (isset($GLOBALS['lang'][$word])) {
             return $GLOBALS['lang'][$word];
         } else {
-            if ($language_learning_mode === true and !empty($word)) {
+            if ($language_learning_mode === true and !empty($word) and php_uname('s') !== 'Windows NT') {
                 if (is_writable($language_file)) {
                     unset($lang_array);
                     $lang_array = file($language_file);
@@ -35,14 +35,15 @@ if (!function_exists('__')) {
                         }
                         $lang_array = array_unique($lang_array);
                         $file_contents = "<?php\n" . implode("", $lang_array);
-                        $handle = fopen($language_file, 'w');
-                        fwrite($handle, $file_contents);
-                        fclose($handle);
+                        $handle = @fopen($language_file, 'w');
+                        @fwrite($handle, $file_contents);
+                        @fclose($handle);
                     }
                 } else {
-                    log_message('error', "Language-Learning-Mode, but $language_file not writeable");
-                    echo "Language-Learning-Mode, but $language_file not writeable";
-                    die("Language-Learning-Mode, but $language_file not writeable");
+                    log_message('error', "Language-Learning-Mode, but $language_file not writeable.");
+                    \Config\Services::session()->setFlashdata('error', "Language-Learning-Mode, but $language_file not writeable.");
+                    // echo "Language-Learning-Mode, but $language_file not writeable";
+                    // die("Language-Learning-Mode, but $language_file not writeable");
                 }
             }
             return $word;
