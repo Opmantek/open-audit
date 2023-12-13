@@ -30,7 +30,7 @@ include 'shared/create_functions.php';
                                             <option value="integrations"><?= __('Integration') ?></option>
                                             <option value="reports"><?= __('Report') ?></option>
                                             <option value="queries"><?= __('Query') ?></option>
-                                            <option value="summaries"><?= __('Summary') ?></option>
+                                            <!--<option value="summaries"><?= __('Summary') ?></option>-->
                                         </select>
                                     </div>
                                 </div>
