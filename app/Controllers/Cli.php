@@ -150,8 +150,11 @@ class Cli extends Controller
         // Call the binary and wait for it's response
         if (php_uname('s') === 'Windows NT') {
             $command = "%comspec% /c start /b " . $config->enterprise_binary . " $id";
+            $cwd = getcwd();
+            chdir('C:\\xampp\\open-audit\\other');
             @exec($command, $output);
             pclose(popen($command, 'r'));
+            chdir($cwd);
         } else {
             $command = $config->enterprise_binary . " $id";
             if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
@@ -173,19 +176,19 @@ class Cli extends Controller
         $id = intval($id);
         helper('utility');
         helper('network');
-        $this->discoveriesModel = model('DiscoveriesModel');
-        $this->discoveriesModel->queue($id);
-        $this->queueModel = model('QueueModel');
-        $this->queueModel->start();
+        $discoveriesModel = model('DiscoveriesModel');
+        $discoveriesModel->queue($id);
+        $queueModel = model('QueueModel');
+        $queueModel->start();
     }
 
     public function executeIntegration($id)
     {
         $id = intval($id);
-        $this->IntegrationsModel = model('IntegrationsModel');
-        $this->integrationsModel->queue(intval($id));
-        $this->queueModel = model('App\Models\QueueModel');
-        $this->queueModel->start();
+        $IntegrationsModel = model('IntegrationsModel');
+        $integrationsModel->queue(intval($id));
+        $queueModel = model('App\Models\QueueModel');
+        $queueModel->start();
     }
 
     public function executeCloud($id)
