@@ -84,10 +84,7 @@ class ModelsTest extends CIUnitTestCase
                     $collection = str_replace(' ', '', $collection);
                 }
                 $namespace = "\\App\\Models\\" . $collection . "Model";
-                #$this->{strtolower($response->meta->collection) . "Model"} = new $namespace;
                 ${strtolower($response->meta->collection) . "Model"} = new $namespace;
-
-                #$result = $this->{strtolower($response->meta->collection) . "Model"}->collection($response);
                 $result = ${strtolower($response->meta->collection) . "Model"}->collection($response);
                 $this->assertIsArray($result, 'The return from ' . $collection . ' (' . $response->meta->action . ') is not an array');
                 $this->assertCount($count, $result, "Count of $collection (" . $response->meta->action . ") direct is $count, count via model is " . count($result));
