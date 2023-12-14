@@ -22,7 +22,7 @@ if (!function_exists('audit_convert')) {
             // See if we have stringified JSON
             $json = html_entity_decode($input);
             if (mb_detect_encoding($json) !== 'UTF-8') {
-                $json = utf8_encode($json);
+                $json = mb_convert_encoding($json, 'UTF-8', mb_list_encodings());
             }
             $json = @json_decode($json);
             if ($json) {
@@ -84,7 +84,7 @@ if (!function_exists('audit_convert')) {
             }
             $xml = html_entity_decode($input);
             if (mb_detect_encoding($xml) !== 'UTF-8') {
-                $xml = utf8_encode($xml);
+                $xml = mb_convert_encoding($xml, 'UTF-8', mb_list_encodings());
             }
             $xml = iconv('UTF-8', 'UTF-8//TRANSLIT', $xml);
             $xml = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/u', '', $xml);
