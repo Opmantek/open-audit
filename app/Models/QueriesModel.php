@@ -129,10 +129,10 @@ class QueriesModel extends BaseModel
             return array();
         }
         $query = $query->getResult()[0];
-        $sql = trim($query->sql);
+        $sql = trim((string)$query->sql);
         if (strpos($sql, ';') === strlen($sql)-1) {
             $sql = substr($sql, 0, strlen($sql)-1);
-            $sql = trim($sql);
+            $sql = trim((string)$sql);
         }
         if (stripos($sql, "SELECT devices") !== false and stripos($sql, "SELECT devices") === 0) {
             $filter = "devices.org_id IN ({$user->org_list})";

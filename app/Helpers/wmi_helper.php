@@ -1098,7 +1098,7 @@ if (!function_exists('wmi_audit')) {
             }
             if (!empty($wmi_result['output'][1])) {
                 $temp = explode('|', $wmi_result['output'][1]);
-                $details->install_dir = trim($temp[1]);
+                $details->install_dir = trim((string)$temp[1]);
                 unset($temp);
             }
         }

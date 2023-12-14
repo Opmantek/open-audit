@@ -687,10 +687,10 @@ if (!function_exists('response_get_query_filter')) {
                     $query->value = substr($query->value, 2);
                     $query->function = 'whereIn';
                     $query->operator = 'in';
-                    $values = explode(',', trim($query->value, '()'));
+                    $values = explode(',', trim((string)$query->value, '()'));
                     $query->value = array();
                     foreach ($values as $key => $value) {
-                        $values[$key] = trim($values[$key], '"\'');
+                        $values[$key] = trim((string)$values[$key], '"\'');
                         if (($query->name === 'ip' or stripos($query->name, '.ip') !== false) and filter_var($values[$key], FILTER_VALIDATE_IP)) {
                             $values[$key] = ip_address_to_db($values[$key]);
                         }
@@ -705,10 +705,10 @@ if (!function_exists('response_get_query_filter')) {
                     $query->value = substr($query->value, 5);
                     $query->function = 'whereNotIn';
                     $query->operator = 'not in';
-                    $values = explode(',', trim($query->value, '()'));
+                    $values = explode(',', trim((string)$query->value, '()'));
                     $query->value = array();
                     foreach ($values as $key => $value) {
-                        $values[$key] = trim(trim($values[$key]), '"\'');
+                        $values[$key] = trim(trim((string)$values[$key]), '"\'');
                         if (($query->name === 'ip' or stripos($query->name, '.ip') !== false) and filter_var($values[$key], FILTER_VALIDATE_IP)) {
                             $values[$key] = ip_address_to_db($values[$key]);
                         }
@@ -1471,7 +1471,7 @@ if (!function_exists('response_get_sort')) {
                         $properties[$i] = $temp[0] . '.' . $temp[1];
                     }
                 } else {
-                    log_message('warning', 'Invalid sort attribute supplied (' . $properties[$i] . '), removed.');
+                    log_message('warning', 'Invalid sort attribute supplied for ' . $collection . ' (' . $properties[$i] . '), removed.');
                     unset($properties[$i]);
                 }
             }

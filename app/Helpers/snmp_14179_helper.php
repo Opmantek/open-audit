@@ -15,7 +15,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
             foreach ($temp2 as $test2) {
                 if (strpos($test2, 'Version') !== false) {
                     $version = str_ireplace('Version', '', $test2);
-                    $version = trim($version);
+                    $version = trim((string)$version);
                 }
             }
             if ($version != '') {

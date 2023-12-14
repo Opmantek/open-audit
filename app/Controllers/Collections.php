@@ -275,7 +275,7 @@ class Collections extends BaseController
     }
 
     /**
-     * Returnt the default items as per a new install
+     * Return the default items as per a new install
      *
      * @return void
      */

@@ -590,13 +590,13 @@ if (!function_exists('output')) {
             foreach ($details->attributes as $attribute => $value) {
                 if (gettype($value) === 'string') {
                     $value = htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
-                    $output .= "\t\t<" . $attribute . '>' . trim($value) . '</' . $attribute . ">\n";
+                    $output .= "\t\t<" . $attribute . '>' . trim((string)$value) . '</' . $attribute . ">\n";
                 }
                 if (gettype($value) == 'array' or gettype($value) === 'object') {
                     $output .= "\t\t<" . $attribute . ">\n";
                     foreach ($value as $skey => $svalue) {
                         $svalue = htmlspecialchars((string)$svalue, ENT_XML1 | ENT_QUOTES, 'UTF-8');
-                        $output .= "\t\t\t<" . $skey . '>' . trim($svalue) . '</' . $skey . ">\n";
+                        $output .= "\t\t\t<" . $skey . '>' . trim((string)$svalue) . '</' . $skey . ">\n";
                     }
                     $output .= "\t\t</" . $attribute . ">\n";
                 }

@@ -624,7 +624,7 @@ class RulesModel extends BaseModel
                         $attributes->{$output->attribute} = $newdevice->{$output->attribute};
                         $device->{$output->attribute} = $newdevice->{$output->attribute};
                     }
-                    $log->message = trim($log->message);
+                    $log->message = trim((string)$log->message);
                     $log->command = 'Rules Match - ' . $rule->name . ', ID: ' . $rule->id;
                     $log->command_output = json_encode($attributes);
                     $log->command_time_to_execute = (microtime(true) - $item_start);

@@ -291,7 +291,7 @@ if (!function_exists('my_snmp_get')) {
         if ($string === '""') {
             $string = '';
         }
-        $string = trim($string);
+        $string = trim((string)$string);
         // if the first character is a '.', remove it.
         if (strpos($string, '.') === 0) {
             $string = substr($string, 1);
@@ -359,7 +359,7 @@ if (!function_exists('my_snmp_walk')) {
         }
         foreach ($array as $key => $value) {
             $value = $value;
-            $array[$key] = trim($array[$key]);
+            $array[$key] = trim((string)$array[$key]);
             if ($array[$key] === '""') {
                 $array[$key] = '';
             }
@@ -431,7 +431,7 @@ if (!function_exists('my_snmp_real_walk')) {
         }
         foreach ($array as $key => $value) {
             $value = $value;
-            $array[$key] = trim($array[$key]);
+            $array[$key] = trim((string)$array[$key]);
             if ($array[$key] === '""') {
                 $array[$key] = '';
             }
@@ -2126,7 +2126,7 @@ if (!function_exists('format_mac')) {
             $mac_address = str_replace('string:', '', $mac_address);
         }
         // trim any unrequired beginning or ending spaces
-        $mac_address = trim($mac_address);
+        $mac_address = trim((string)$mac_address);
         // check for a string thus "ab cd ef"
         if (substr_count($mac_address, ' ') > 0) {
             $mac_address = str_replace(' ', ':', $mac_address);

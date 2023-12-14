@@ -458,7 +458,7 @@ if (! function_exists('ssh_command')) {
         $ssh->disconnect();
         unset($ssh);
         for ($i=0; $i < count($result); $i++) {
-            $result[$i] = trim($result[$i]);
+            $result[$i] = trim((string)$result[$i]);
             # Special Case
             if (stripos($result[$i], 'Exiting as other audits are currently running.') !== false) {
                 return false;
@@ -640,9 +640,9 @@ if (! function_exists('ssh_audit')) {
             $device->os_group = 'Windows';
 
             $temp = str_replace('Name', '', $windows_os_name);
-            $temp = trim($temp);
+            $temp = trim((string)$temp);
             $temp = explode('|', $temp);
-            $device->os_name = trim($temp[0]);
+            $device->os_name = trim((string)$temp[0]);
             unset($temp);
             $log->command = 'wmic os get name; # os_name';
             $log->command_output = $device->os_name;
@@ -652,7 +652,7 @@ if (! function_exists('ssh_audit')) {
 
             $temp = $ssh->exec('wmic path win32_computersystemproduct get uuid');
             $temp = str_replace('UUID', '', $temp);
-            $device->uuid = trim($temp);
+            $device->uuid = trim((string)$temp);
             unset($temp);
             $log->command = 'wmic path win32_computersystemproduct get uuid; # uuid';
             $log->command_output = $device->uuid;
@@ -665,7 +665,7 @@ if (! function_exists('ssh_audit')) {
 
             $temp = $ssh->exec('wmic path win32_computersystemproduct get IdentifyingNumber');
             $temp = str_replace('IdentifyingNumber', '', $temp);
-            $device->serial = trim($temp);
+            $device->serial = trim((string)$temp);
             unset($temp);
             $log->command = 'wmic path win32_computersystemproduct get IdentifyingNumber; # serial';
             $log->command_output = $device->serial;
@@ -679,7 +679,7 @@ if (! function_exists('ssh_audit')) {
 
             $temp = $ssh->exec('wmic computersystem get name');
             $temp = str_replace('Name', '', $temp);
-            $device->hostname = strtolower(trim($temp));
+            $device->hostname = strtolower(trim((string)$temp));
             $device->name = $device->hostname;
             unset($temp);
             $log->command = 'wmic computersystem get name; # hostname';
@@ -737,7 +737,7 @@ if (! function_exists('ssh_audit')) {
 
         // Before we attempt to run commands, test if we're running bash
         $item_start = microtime(true);
-        $device->shell = trim($ssh->exec('echo $SHELL'));
+        $device->shell = trim((string)$ssh->exec('echo $SHELL'));
         $device->bash = '';
         $log->command = 'echo $SHELL';
         $log->command_output = $device->shell;
@@ -757,7 +757,7 @@ if (! function_exists('ssh_audit')) {
 
         if (strpos($device->shell, 'bash') === false) {
             $item_start = microtime(true);
-            $device->bash = trim($ssh->exec('which bash'));
+            $device->bash = trim((string)$ssh->exec('which bash'));
             $log->command = 'which bash';
             $log->command_output = $device->bash;
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -777,7 +777,7 @@ if (! function_exists('ssh_audit')) {
         if ($device->bash === '') {
             // See if we have /bin/sh
             $item_start = microtime(true);
-            $device->sh = trim($ssh->exec('which sh'));
+            $device->sh = trim((string)$ssh->exec('which sh'));
             $log->command = 'which sh';
             $log->command_output = $device->sh;
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -874,7 +874,7 @@ if (! function_exists('ssh_audit')) {
             }
             $item_start = microtime(true);
             $temp1 = $ssh->exec($command);
-            $temp1 = trim($temp1);
+            $temp1 = trim((string)$temp1);
             $temp2 = $temp1;
             if (stripos($temp1, 'command not found')) {
                 $temp1 = '';
@@ -896,7 +896,7 @@ if (! function_exists('ssh_audit')) {
                 if (strpos($temp1, "\n") !== false) {
                     $array1 = explode("\n", $temp1);
                     foreach ($array1 as &$string) {
-                        $string = trim($string);
+                        $string = trim((string)$string);
                         if (strpos($string, '=') !== false) {
                             $temp2 = explode('=', $string);
                             $temp2[1] = str_replace("'", '', $temp2[1]);
@@ -1054,12 +1054,12 @@ if (! function_exists('ssh_audit')) {
 
             $item_start = microtime(true);
             $command = "esxcli hardware platform get | grep 'Product Name' | cut -d: -f2 2>/dev/null";
-            $result = trim($ssh->exec($command));
+            $result = trim((string)$ssh->exec($command));
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'SSH command - VMware model';
             $log->command = $command;
             if (!empty($result)) {
-                $device->model = trim($result);
+                $device->model = trim((string)$result);
                 $log->command_status = 'success';
                 $log->command_output = $device->model;
             } else {
@@ -1079,12 +1079,12 @@ if (! function_exists('ssh_audit')) {
 
             $item_start = microtime(true);
             $command = "esxcli hardware platform get | grep 'Vendor Name' | cut -d: -f2 2>/dev/null";
-            $result = trim($ssh->exec($command));
+            $result = trim((string)$ssh->exec($command));
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'SSH command - VMware manufacturer';
             $log->command = $command;
             if (!empty($result)) {
-                $device->manufacturer = trim($result);
+                $device->manufacturer = trim((string)$result);
                 $log->command_status = 'success';
                 $log->command_output = $device->manufacturer;
             } else {
@@ -1102,7 +1102,7 @@ if (! function_exists('ssh_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'SSH command - VMware form factor';
             if (!empty($result)) {
-                $device->form_factor = trim($result);
+                $device->form_factor = trim((string)$result);
                 $log->command_status = 'success';
                 $log->command_output = $device->form_factor;
             } else {
@@ -1141,7 +1141,7 @@ if (! function_exists('ssh_audit')) {
         // DD-WRT items
         if (empty($device->os_group) && ! empty($device->ddwrt_os_name)) {
             $device->os_family = 'DD-WRT';
-            $device->os_name = trim($device->ddwrt_os_name);
+            $device->os_name = trim((string)$device->ddwrt_os_name);
             $device->type = 'router';
         }
         unset($device->ddwrt_os_name);
@@ -1151,22 +1151,22 @@ if (! function_exists('ssh_audit')) {
         unset($device->ddwrt_model);
 
         if (empty($device->os_name) && ! empty($device->solaris_os_name)) {
-            $device->os_name = trim($device->solaris_os_name);
+            $device->os_name = trim((string)$device->solaris_os_name);
             $device->type = 'computer';
         }
         unset($device->solaris_os_name);
 
-        if (!empty($device->hpux_os_group) && trim($device->hpux_os_group) === 'HP-UX') {
+        if (!empty($device->hpux_os_group) && trim((string)$device->hpux_os_group) === 'HP-UX') {
             $device->os_group = 'HP-UX';
             $device->os_family = 'HP-UX';
             $device->type = 'computer';
             $device->class = 'server';
-            $device->os_name = trim($device->hpux_os_name);
-            $device->uuid = trim($device->hpux_uuid);
-            $device->model = trim($device->hpux_model);
-            $device->serial = trim($device->hpux_serial);
-            $device->hostname = trim($device->hpux_hostname);
-            $device->domain = trim($device->hpux_domain);
+            $device->os_name = trim((string)$device->hpux_os_name);
+            $device->uuid = trim((string)$device->hpux_uuid);
+            $device->model = trim((string)$device->hpux_model);
+            $device->serial = trim((string)$device->hpux_serial);
+            $device->hostname = trim((string)$device->hpux_hostname);
+            $device->domain = trim((string)$device->hpux_domain);
         }
         unset($device->hpux_os_group);
         unset($device->hpux_uuid);
@@ -1178,13 +1178,13 @@ if (! function_exists('ssh_audit')) {
 
         if (!empty($device->synology_model)) {
             $device->system_manufacturer = 'Synology';
-            $device->model = 'Diskstation ' . trim($device->synology_model);
-            $device->serial = trim($device->synology_serial);
+            $device->model = 'Diskstation ' . trim((string)$device->synology_model);
+            $device->serial = trim((string)$device->synology_serial);
             $device->type = 'nas';
             $device->os_group = 'Linux';
             $device->os_family = 'Synology DSM';
-            $device->os_name = 'Synology DSM ' . trim($device->synology_os_major) . '.' . trim($device->synology_os_minor) . '-' . trim($device->synology_os_build);
-            $device->os_version = trim($device->synology_os_major) . '.' . trim($device->synology_os_minor);
+            $device->os_name = 'Synology DSM ' . trim((string)$device->synology_os_major) . '.' . trim((string)$device->synology_os_minor) . '-' . trim((string)$device->synology_os_build);
+            $device->os_version = trim((string)$device->synology_os_major) . '.' . trim((string)$device->synology_os_minor);
         }
 
         // Type based on os_group = Linux (set to computer)
@@ -1232,7 +1232,7 @@ if (! function_exists('ssh_audit')) {
                 }
                 $item_start = microtime(true);
                 $temp1 = $ssh->exec($command);
-                $temp1 = trim($temp1);
+                $temp1 = trim((string)$temp1);
                 $log->command = $command;
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->message = "SSH command - ls {$sudo_path} 2>/dev/null";
@@ -1242,7 +1242,7 @@ if (! function_exists('ssh_audit')) {
                     if (strpos($temp1, "\n") !== false) {
                         $array1 = explode("\n", $temp1);
                         foreach ($array1 as &$string) {
-                            $string = trim($string);
+                            $string = trim((string)$string);
                             $device->which_sudo = $string;
                         }
                     } else {
@@ -1278,13 +1278,13 @@ if (! function_exists('ssh_audit')) {
                         $output = $ssh->read('[prompt]');
                     }
                     $lines = explode("\n", $output);
-                    $hostname = trim($lines[count($lines)-2]);
+                    $hostname = trim((string)$lines[count($lines)-2]);
                     $sudo_temp_hostname = explode('.', $hostname);
                     $ssh_hostname = explode('.', $device->hostname);
                     if (trim(strtolower($sudo_temp_hostname[0])) === trim(strtolower($ssh_hostname[0]))) {
                         $device->use_sudo = true;
                     }
-                    $log->command = trim($command) . '; # hostname test using sudo';
+                    $log->command = trim((string)$command) . '; # hostname test using sudo';
                     $log->command_time_to_execute = (microtime(true) - $item_start);
                     $log->command_output = 'sudo hostname: ' . $sudo_temp_hostname[0] . ', Device hostname: ' . $ssh_hostname[0];
                     $log->message = 'SSH command - sudo hostname';
@@ -1318,11 +1318,11 @@ if (! function_exists('ssh_audit')) {
                     $output = $ssh->read('[prompt]');
                 }
                 $lines = explode("\n", $output);
-                $device->uuid = trim($lines[count($lines)-2]);
+                $device->uuid = trim((string)$lines[count($lines)-2]);
                 if ($device->uuid === ':' or strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
                     $device->uuid = '';
                 }
-                $log->command = trim($command) . '; # uuid';
+                $log->command = trim((string)$command) . '; # uuid';
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->command_output = '';
                 $log->message = 'SSH command';
@@ -1347,11 +1347,11 @@ if (! function_exists('ssh_audit')) {
                         $output = $ssh->read('[prompt]');
                     }
                     $lines = explode("\n", $output);
-                    $device->uuid = trim($lines[count($lines)-2]);
+                    $device->uuid = trim((string)$lines[count($lines)-2]);
                     if (stripos($device->uuid, 'cat /sys/class/dmi/id/product_uuid 2>/dev/null') !== false) {
                         $device->uuid = '';
                     }
-                    $log->command = trim($command) . '; # uuid';
+                    $log->command = trim((string)$command) . '; # uuid';
                     $log->command_time_to_execute = (microtime(true) - $item_start);
                     $log->command_output = '';
                     $log->message = 'SSH command';
@@ -1379,14 +1379,14 @@ if (! function_exists('ssh_audit')) {
             if (strpos($device->shell, 'bash') === false && $device->bash !== '') {
                 $command = $device->bash . " -c '" . $command . "'";
             }
-            $device->uuid = trim($ssh->exec($command));
+            $device->uuid = trim((string)$ssh->exec($command));
             $log->command_output = json_encode(explode("\n", $device->uuid));
 
             if (strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
                 $device->uuid = '';
             }
             $log->message = 'SSH command';
-            $log->command = trim($command) .'; # uuid';
+            $log->command = trim((string)$command) .'; # uuid';
             $log->command_time_to_execute = (microtime(true) - $item_start);
             if (!empty($device->uuid)) {
                 $log->command_output = $device->uuid;
@@ -1402,8 +1402,8 @@ if (! function_exists('ssh_audit')) {
                 if (strpos($device->shell, 'bash') === false && $device->bash !== '') {
                     $command = $device->bash . " -c '" . $command . "'";
                 }
-                $device->uuid = trim($ssh->exec($command));
-                $log->command = trim($command) . '; # uuid';
+                $device->uuid = trim((string)$ssh->exec($command));
+                $log->command = trim((string)$command) . '; # uuid';
                 $log->message = 'SSH command';
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 if (empty($device->uuid)) {

@@ -21,7 +21,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
 
     $i = explode("$", my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.5"));
     if (!empty($i[1])) {
-        $details->os_version = trim($i[1]);
+        $details->os_version = trim((string)$i[1]);
         $details->os_cpe_version = str_replace($details->os_version, '(', '\(');
         $details->os_cpe_version = str_replace($details->os_cpe_version, ')', '\)');
     }

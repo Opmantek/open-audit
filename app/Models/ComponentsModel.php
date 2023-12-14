@@ -669,9 +669,8 @@ class ComponentsModel extends BaseModel
 
                 if (empty($data[$i]->interface_type)) {
                     $data[$i]->interface_type = '';
-                } else {
-                    $data[$i]->interface_type = strtoupper($data[$i]->interface_type);
                 }
+                $data[$i]->interface_type = strtoupper($data[$i]->interface_type);
                 if (empty($data[$i]->status)) {
                     $data[$i]->status = '';
                 }
@@ -681,13 +680,14 @@ class ComponentsModel extends BaseModel
 
                 // new DERIVED column `name`
                 if (empty($data[$i]->name) and !empty($data[$i]->model)) {
-                    $data[$i]->name = trim($data[$i]->manufacturer . ' ' . $data[$i]->model);
+                    $data[$i]->name = trim((string)$data[$i]->manufacturer . ' ' . $data[$i]->model);
                 }
             }
         }
 
         // IP ADDRESS
         if ((string)$table === 'ip') {
+            $networksModel = new \App\Models\NetworksModel;
             $count = count($data);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($data[$i])) {
@@ -769,7 +769,7 @@ class ComponentsModel extends BaseModel
                         }
                         $network->description = 'Inserted from audit result.';
                         # TODO
-                        $instance->networksModel->upsert($network);
+                        $networksModel->upsert($network);
                     }
                 }
             }

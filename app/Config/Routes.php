@@ -116,7 +116,7 @@ $routes->cli('devices/(:num)/cloudDevice', 'Cli::cloudDevice/$1', ['as' => 'clou
 
 foreach ($collections as $collection) {
     // Account for users editing the config and including a space character
-    $collection = trim($collection);
+    $collection = trim((string)$collection);
 
     // The capitalised controller name
     $controller = ucfirst($collection);

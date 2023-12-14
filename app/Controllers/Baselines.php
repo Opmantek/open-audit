@@ -39,9 +39,9 @@ class Baselines extends BaseController
     public function executeForm($id)
     {
         $id = intval($id);
-        $this->groupsModel = new \App\Models\GroupsModel();
+        $groupsModel = new \App\Models\GroupsModel();
         $this->resp->data = $this->baselinesModel->read($id);
-        $this->resp->included['groups'] = $this->groupsModel->listUser();
+        $this->resp->included['groups'] = $groupsModel->listUser();
         return view('shared/header', [
             'config' => $this->config,
             'dictionary' => $this->baselinesModel->dictionary(),

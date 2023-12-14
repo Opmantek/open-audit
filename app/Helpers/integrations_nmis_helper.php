@@ -46,7 +46,7 @@ if (!function_exists('generate_token')) {
             $command .= " '" . $token . "' admin";
             exec($command, $output, $return_var);
             if (!empty($output)) {
-                $user_token = trim($output[0]);
+                $user_token = trim((string)$output[0]);
                 log_message('debug', 'Token generated is: ' . $user_token);
             } else {
                 log_message('error', 'Command to generate token failed. Command: ' . $command);

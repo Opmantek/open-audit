@@ -110,10 +110,10 @@ class GroupsModel extends BaseModel
             return array();
         }
         $group = $result[0];
-        $sql = trim($group->sql);
+        $sql = trim((string)$group->sql);
         if (strpos($sql, ';') === strlen($sql)-1) {
             $sql = substr($sql, 0, strlen($sql)-1);
-            $sql = trim($sql);
+            $sql = trim((string)$sql);
         }
         $properties_array = explode(',', $properties);
         $properties_new_array = array();

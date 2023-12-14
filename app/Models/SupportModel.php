@@ -273,7 +273,7 @@ class SupportModel extends BaseModel
                 if ($data->os->timezone === '') {
                     $command_string = 'timedatectl 2>/dev/null | grep zone | cut -d: -f2 | cut -d"(" -f1';
                     exec($command_string, $output, $return_var);
-                    $data->os->timezone = @trim($output[0]);
+                    $data->os->timezone = @trim((string)$output[0]);
                 }
             }
             if ($data->os->name === 'Linux (Debian)') {
@@ -283,7 +283,7 @@ class SupportModel extends BaseModel
                 unset($output);
                 unset($command_string);
             }
-            $data->os->timezone = trim($data->os->timezone);
+            $data->os->timezone = trim((string)$data->os->timezone);
         }
 
 
@@ -370,7 +370,7 @@ class SupportModel extends BaseModel
                 }
             } elseif (file_exists('/etc/issue.net')) {
                 $file_contents = file('/etc/issue.net');
-                $data->os_version = trim($file_contents[0]);
+                $data->os_version = trim((string)$file_contents[0]);
                 unset($file_contents);
             } elseif (file_exists('/etc/redhat-release')) {
                 // RedHat 6 doesn't have /etc/os-release

@@ -208,7 +208,6 @@ class Configuration extends BaseController
             $output->message = '';
             foreach ($this->config as $key => $value) {
                 if (strpos($key, 'mail') !== false) {
-                    echo "$key: $value\n";
                     if ($key === 'mail_password') {
                         $value = 'removed from display, but has been set';
                     }

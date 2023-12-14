@@ -4,10 +4,10 @@
 
 declare(strict_types=1);
 
-$this->networksModel = new \App\Models\NetworksModel;
-$this->devicesModel = new \App\Models\DevicesModel();
-$this->discoveryLogModel = new \App\Models\DiscoveryLogModel();
-$this->componentsModel = new \App\Models\ComponentsModel();
+$networksModel = new \App\Models\NetworksModel;
+$devicesModel = new \App\Models\DevicesModel();
+$discoveryLogModel = new \App\Models\DiscoveryLogModel();
+$componentsModel = new \App\Models\ComponentsModel();
 
 helper('components');
 helper('device');
@@ -27,7 +27,7 @@ $log->message = 'Audit result submitted';
 $log->command = '';
 $log->command_status = 'notice';
 $log->display = 'y';
-$initial_log_id = $this->discoveryLogModel->create($log);
+$initial_log_id = $discoveryLogModel->create($log);
 
 log_message('debug', 'Matching device start');
 $id = deviceMatch($device->system);
@@ -40,7 +40,7 @@ if (!empty($id) && !empty($device->system->id) && intval($id) !== intval($device
     // nmap and/or snmp) we couldn't match an existing system
     // Now we have an actual audit result with plenty of data
     // we have found a match and it's not the original
-    $this->devicesModel->delete($device->system->id);
+    $devicesModel->delete($device->system->id);
     $log_message('info', 'Device ID provided differs from Device ID found for ' . $device->system->hostname);
 }
 $device->system->id = intval($id);
@@ -61,7 +61,7 @@ if (empty($id)) {
     // insert a new system
     $device->system->first_seen = $device->system->last_seen;
     log_message('debug', 'Creating device start');
-    $device->system->id = $this->devicesModel->create($device->system);
+    $device->system->id = $devicesModel->create($device->system);
     log_message('debug', 'Creating device finish');
     $log->command_status = 'fail';
     if (!empty($device->system->id)) {
@@ -71,7 +71,7 @@ if (empty($id)) {
     // log_message('info', 'CREATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
     $log->ip = @ip_address_from_db($device->system->ip);
     $log->message = 'CREATE entry for ' . @$device->system->hostname . ', ID ' . $device->system->id;
-    $this->discoveryLogModel->create($log);
+    $discoveryLogModel->create($log);
     // In the case where we inserted a new device, m_device::match will add a log entry, but have no
     // associated device_id. Update this one row.
     log_message('debug', 'Update discovery log start');
@@ -85,15 +85,15 @@ if (empty($id)) {
     $log->device_id = $device->system->id;
     $log->ip = @ip_address_from_db($device->system->ip);
     log_message('debug', 'Updating device start');
-    $test = $this->devicesModel->update($device->system->id, $device->system);
+    $test = $devicesModel->update($device->system->id, $device->system);
     log_message('debug', 'Updating device finish');
     $log->command_status = 'fail';
     if ($test) {
         $log->command_status = 'success';
     }
-    $this->discoveryLogModel->create($log);
+    $discoveryLogModel->create($log);
 
-    $db_device = $this->devicesModel->read($device->system->id);
+    $db_device = $devicesModel->read($device->system->id);
     $device->system->first_seen = $db_device[0]->attributes->first_seen;
     $device->system->last_seen = $db_device[0]->attributes->last_seen;
     $device->system->last_seen_by = $db_device[0]->attributes->last_seen_by;
@@ -103,7 +103,7 @@ $log->id = $initial_log_id;
 $log->device_id = $device->system->id;
 $log->ip = (!empty($device->system->ip)) ? ip_address_from_db($device->system->ip) : '';
 log_message('debug', 'Update discovery log start');
-$this->discoveryLogModel->update($initial_log_id, $log);
+$discoveryLogModel->update($initial_log_id, $log);
 log_message('debug', 'Update discovery log finish');
 
 $audit_ip = '127.000.000.001';
@@ -137,7 +137,7 @@ $db->query($sql, [$device->system->id, $username, $device->system->last_seen_by,
 foreach ($device as $key => $value) {
     if ($key !== 'system' && $key !== 'audit_wmi_fail' && $key !== 'dns') {
         log_message('debug', 'Update component ' . $key . ' start');
-        $this->componentsModel->upsert($key, $device->system, $device->{$key});
+        $componentsModel->upsert($key, $device->system, $device->{$key});
         log_message('debug', 'Update component ' . $key . ' finish');
     }
 }
@@ -148,4 +148,3 @@ $rulesModel->execute(null, @intval($device->system->discovery_id), 'update', int
 # Because Rules may set the last_seen_by, update it here.
 $sql = "UPDATE devices SET last_seen_by = ? WHERE id = ?";
 $db->query($sql, [$device->system->last_seen_by, $device->system->id]);
-

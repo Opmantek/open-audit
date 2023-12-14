@@ -52,7 +52,7 @@ if (! function_exists('server_ip')) {
             exec($command, $output, $return_var);
             if ($return_var == 0) {
                 foreach ($output as $line) {
-                    $ip_address_array[] = trim($line);
+                    $ip_address_array[] = trim((string)$line);
                 }
             }
         }
@@ -66,7 +66,7 @@ if (! function_exists('server_ip')) {
                 # each line is returned thus: {"192.168.1.140", "fe80::e837:7bea:99a6:13e"} or thus {"192.168.1.140"}
                 # there are multiple empty lines as well
                 foreach ($output as $line) {
-                    $line = trim($line);
+                    $line = trim((string)$line);
                     if ($line != '') {
                         $line = str_replace('{', '', $line);
                         $line = str_replace('}', '', $line);
@@ -92,7 +92,7 @@ if (! function_exists('network_details')) {
     # accept $ip as either '192.168.0.12/24' or '192.168.0.12 255.255.255.0'
     function network_details($ip)
     {
-        $my_net_info = rtrim($ip);
+        $my_net_info = rtrim((string)$ip);
         $details = new \StdClass();
 
         if (! preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}(( ([0-9]{1,3}\.){3}[0-9]{1,3})|(\/[0-9]{1,2}))$/', $my_net_info)) {
@@ -116,11 +116,11 @@ if (! function_exists('network_details')) {
             $dq_host = $dqs[0];
             $bin_nmask = dqtobin($dqs[1]);
             $bin_wmask = binnmtowm($bin_nmask);
-            if (preg_match('/0/', rtrim($bin_nmask, "0"))) {
+            if (preg_match('/0/', rtrim((string)$bin_nmask, "0"))) {
                 //Wildcard mask then? hmm?
                 $bin_wmask = dqtobin($dqs[1]);
                 $bin_nmask = binwmtonm($bin_wmask);
-                if (preg_match('/0/', rtrim($bin_nmask, "0"))) {
+                if (preg_match('/0/', rtrim((string)$bin_nmask, "0"))) {
                     //If it's not wcard, whussup?
                     $details->error = "Invalid Netmask.";
                     return($details);
@@ -209,7 +209,7 @@ if (! function_exists('network_details')) {
 if (! function_exists('binnmtowm')) {
     function binnmtowm($binin)
     {
-        $binin = rtrim($binin, "0");
+        $binin = rtrim((string)$binin, "0");
         if (!preg_match('/0/', $binin)) {
             return str_pad(str_replace("1", "0", $binin), 32, "1");
         } else {
@@ -221,7 +221,7 @@ if (! function_exists('binnmtowm')) {
 if (! function_exists('bintocdr')) {
     function bintocdr($binin)
     {
-        return mb_strlen(rtrim($binin, "0"));
+        return mb_strlen(rtrim((string)$binin, "0"));
     }
 }
 
@@ -249,7 +249,7 @@ if (! function_exists('bintoint')) {
 if (! function_exists('bintoint')) {
     function binwmtonm($binin)
     {
-        $binin = rtrim($binin, "1");
+        $binin = rtrim((string)$binin, "1");
         if (!preg_match('/1/', $binin)) {
             return str_pad(str_replace("0", "1", $binin), 32, "0");
         } else {
@@ -311,24 +311,24 @@ if (! function_exists('ip_address_from_db')) {
             if (stripos($ip, '.') !== false) {
                 // this is an ip v4 address
                 $myip = explode(".", $ip);
-                $myip[0] = ltrim($myip[0], "0");
+                $myip[0] = ltrim((string)$myip[0], "0");
                 if ($myip[0] == "") {
                     $myip[0] = "0";
                 }
                 if (isset($myip[1])) {
-                    $myip[1] = ltrim($myip[1], "0");
+                    $myip[1] = ltrim((string)$myip[1], "0");
                 }
                 if (!isset($myip[1]) or $myip[1] == "") {
                     $myip[1] = "0";
                 }
                 if (isset($myip[2])) {
-                    $myip[2] = ltrim($myip[2], "0");
+                    $myip[2] = ltrim((string)$myip[2], "0");
                 }
                 if (!isset($myip[2]) or $myip[2] == "") {
                     $myip[2] = "0";
                 }
                 if (isset($myip[3])) {
-                    $myip[3] = ltrim($myip[3], "0");
+                    $myip[3] = ltrim((string)$myip[3], "0");
                 }
                 if (!isset($myip[3]) or $myip[3] == "") {
                     $myip[3] = "0";
