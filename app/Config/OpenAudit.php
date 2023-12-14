@@ -6,14 +6,43 @@ use CodeIgniter\Config\BaseConfig;
 
 use Config\Database;
 
-#[\AllowDynamicProperties]
-
 class OpenAudit extends BaseConfig
 {
+
+    public string $displayVersion = '5.0.2';
+    public int $appVersion = 20231207;
+
+    public array $enterprise_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'racks' => 'crud', 'roles' => 'cu');
+    public array $professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'tasks' => 'crud', 'widgets' => 'crud');
+    public float $microtime = 0;
+    public int $collector_connect_timeout = 10;
+    public int $collector_inactivity_timeout = 30;
+    public int $collector_insecure = 1;
+    public int $collector_request_timeout = 240;
+    public int $device_count = 0;
+    public int $device_known = 0;
+    public int $device_license = 0;
+    public int $oae_prompt_id = 0;
+    public string $enterprise_binary = '';
+    public string $homepage = 'summaries';
+    public string $nmis = '';
+    public string $server_os = '';
+    public string $server_platform = '';
+
+    public function __set($key, $value)
+    {
+        $this->$key = $value;
+    }
+
+    public function __get($key)
+    {
+        return $this->$key;
+    }
+
     public function __construct()
     {
-        $this->appVersion = 20231207;
-        $this->displayVersion = '5.0.2';
+        parent::__construct();
+
         $this->microtime = microtime(true);
 
         $commercial_dir = array(APPPATH . '../../omk',
@@ -33,8 +62,8 @@ class OpenAudit extends BaseConfig
         }
 
         $nmis = "/usr/local/nmis9";
+        $this->nmis = (!empty(file_exists($nmis))) ? $nmis : '';
 
-        parent::__construct();
         $db = Database::connect();
         $query = $db->query('SELECT * FROM `configuration`');
         $result = $query->getResult();
@@ -44,15 +73,9 @@ class OpenAudit extends BaseConfig
                 $this->{$row->name} = intval($row->value);
             }
             if ($row->name === 'oae_prompt') {
-                $this->oae_prompt_id = $row->id;
+                $this->oae_prompt_id = intval($row->id);
             }
         }
-
-        $this->collector_connect_timeout = 10;
-        $this->collector_request_timeout = 240;
-        $this->collector_inactivity_timeout = 30;
-        $this->collector_insecure = 1;
-
 
         if (!empty($this->oae_product)) {
             $this->product = strtolower(str_replace('Open-AudIT ', '', $this->oae_product));
@@ -115,10 +138,6 @@ class OpenAudit extends BaseConfig
             }
         }
 
-        // get the total number of devices
-        $this->device_count = 0;
-        $this->device_known = 0;
-        $this->device_license = 0;
         if ($this->internal_version < 20230615) {
             $query = $db->query('SELECT count(*) as device_count FROM `system`');
             if (!empty($query)) {
@@ -152,18 +171,11 @@ class OpenAudit extends BaseConfig
             }
         }
 
-        $this->enterprise_binary = '';
         foreach ($binaries as $binary) {
             if (file_exists($binary)) {
                 $this->enterprise_binary = $binary;
             }
         }
-
-        $this->enterprise_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'racks' => 'crud', 'roles' => 'cu');
-
-        $this->professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'tasks' => 'crud', 'widgets' => 'crud');
-
-
 
         $modules = array();
         $apps = array();
@@ -182,17 +194,17 @@ class OpenAudit extends BaseConfig
                 $apps = $omkConfig->omkd->load_applications;
             }
         }
-        $this->nmis = (!empty(file_exists($nmis))) ? $nmis : '';
+
         $opLicense = $this->commercial_dir . "/bin/oplicense-cli.pl";
-        $modules[] = (object)array("name" => "Applications",  "url" => (file_exists($this->commercial_dir)) ? "/omk"                  : "");
-        $modules[] = (object)array("name" => "opCharts",      "url" => (in_array('opCharts',  $apps)) ? "/omk/opCharts"         : "https://firstwave.com/products/interactive-dashboards-and-charts/");
-        $modules[] = (object)array("name" => "opEvents",      "url" => (in_array('opEvents',  $apps)) ? "/omk/opEvents/"        : "https://firstwave.com/products/centralized-log-and-event-management/");
-        $modules[] = (object)array("name" => "opConfig",      "url" => (in_array('opConfig',  $apps)) ? "/omk/opConfig"         : "https://firstwave.com/products/network-configuration-management/");
-        $modules[] = (object)array("name" => "opHA",          "url" => (in_array('opHA',      $apps)) ? "/omk/opHA"             : "https://firstwave.com/products/distributed-network-management/");
-        $modules[] = (object)array("name" => "opReports",     "url" => (in_array('opReports', $apps)) ? "/omk/opReports/"       : "https://firstwave.com/products/advanced-analysis-and-reporting/");
-        $modules[] = (object)array("name" => "opAddress",     "url" => (in_array('opAddress', $apps)) ? "/omk/opAddress/"       : "https://firstwave.com/products/ip-address-audit-and-management/");
-        $modules[] = (object)array("name" => "opLicensing",   "url" => (file_exists($opLicense))      ? "/omk/opLicense"        : "");
-        $modules[] = (object)array("name" => "NMIS",          "url" => (file_exists($nmis . '/cgi-bin/nmiscgi.pl'))           ? "/cgi-nmis9/nmiscgi.pl" : "https://firstwave.com/products/network-management-information-system/");
+        $modules[] = (object)array("name" => "Applications", "url" => (file_exists($this->commercial_dir)) ? "/omk"                  : "");
+        $modules[] = (object)array("name" => "opCharts", "url" => (in_array('opCharts', $apps)) ? "/omk/opCharts" : "https://firstwave.com/products/interactive-dashboards-and-charts/");
+        $modules[] = (object)array("name" => "opEvents", "url" => (in_array('opEvents', $apps)) ? "/omk/opEvents/" : "https://firstwave.com/products/centralized-log-and-event-management/");
+        $modules[] = (object)array("name" => "opConfig", "url" => (in_array('opConfig', $apps)) ? "/omk/opConfig" : "https://firstwave.com/products/network-configuration-management/");
+        $modules[] = (object)array("name" => "opHA", "url" => (in_array('opHA', $apps)) ? "/omk/opHA" : "https://firstwave.com/products/distributed-network-management/");
+        $modules[] = (object)array("name" => "opReports", "url" => (in_array('opReports', $apps)) ? "/omk/opReports/" : "https://firstwave.com/products/advanced-analysis-and-reporting/");
+        $modules[] = (object)array("name" => "opAddress", "url" => (in_array('opAddress', $apps)) ? "/omk/opAddress/" : "https://firstwave.com/products/ip-address-audit-and-management/");
+        $modules[] = (object)array("name" => "opLicensing", "url" => (file_exists($opLicense)) ? "/omk/opLicense" : "");
+        $modules[] = (object)array("name" => "NMIS", "url" => (file_exists($nmis . '/cgi-bin/nmiscgi.pl'))           ? "/cgi-nmis9/nmiscgi.pl" : "https://firstwave.com/products/network-management-information-system/");
         $modules[] = (object)array("name" => "Other Modules", "url" => "https://firstwave.com");
         $this->modules = $modules;
     }

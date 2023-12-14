@@ -14,8 +14,6 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use stdClass;
 
-#[\AllowDynamicProperties]
-
 /**
  * Class BaseController
  *
@@ -45,6 +43,16 @@ abstract class BaseController extends Controller
     protected $helpers = ['components', 'device', 'network', 'output', 'response', 'scripts', 'security', 'utility'];
 
     public $response;
+
+    public function __set($key, $value)
+    {
+        $this->$key = $value;
+    }
+
+    public function __get($key)
+    {
+        return $this->$key;
+    }
 
     /**
      * Constructor.
@@ -224,7 +232,7 @@ abstract class BaseController extends Controller
 
         // The dictionary items
         $this->dictionary = new stdClass();
-        $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . @$this->resp->meta->collection . '">Knowledge Base</a>.';
+        $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . (!empty($this->resp->meta->collection) ? $this->resp->meta->collection : '') . '">Knowledge Base</a>.';
         $this->dictionary->id = 'The identifier column (integer) in the database (read only).';
         $this->dictionary->name = 'The name given to this item. Ideally it should be unique.';
         $this->dictionary->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
