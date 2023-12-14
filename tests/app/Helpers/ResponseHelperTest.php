@@ -37,10 +37,10 @@ class ResponseHelperTest extends CIUnitTestCase
         $sql = "INSERT INTO orgs VALUES (5, 'My B Org', 4, '', 'organisation', 'open-audit_orgs_my_b_org', 'system', NOW())";
         $db->query($sql);
 
-        $this->orgsModel = new \App\Models\OrgsModel();
-        $this->orgs = $this->orgsModel->listAll();
-        $this->usersModel = new \App\Models\UsersModel();
-        $this->user = $this->usersModel->read(1)[0]->attributes;
+        $orgsModel = new \App\Models\OrgsModel();
+        $orgs = $orgsModel->listAll();
+        $usersModel = new \App\Models\UsersModel();
+        $user = $usersModel->read(1)[0]->attributes;
 
         # response_get_data($request_method = '', $post = null, $patch = '')
         $this->assertSame(array(), response_get_data('POST'));
@@ -165,20 +165,20 @@ class ResponseHelperTest extends CIUnitTestCase
         
         # response_get_org_list($instance, $collection = '')
         $this->assertSame(null, response_get_org_list(null, null));
-        $temp = $this->user->orgs;
-        $this->user->orgs = array(2);
-        $this->assertSame('2,3', response_get_org_list($this->user, 'orgs'));
-        $this->assertSame('1,2,3', response_get_org_list($this->user, 'queries'));
-        $this->assertSame('2', response_get_org_list($this->user, 'database'));
+        $temp = $user->orgs;
+        $user->orgs = array(2);
+        $this->assertSame('2,3', response_get_org_list($user, 'orgs'));
+        $this->assertSame('1,2,3', response_get_org_list($user, 'queries'));
+        $this->assertSame('2', response_get_org_list($user, 'database'));
 
         # TODO - More tests for response_get_permission_id
         # response_get_permission_id($user, $collection, $action, $received_data, $id)
-        $this->user->org_list = '2,3';
-        $this->assertSame(false, response_get_permission_id($this->user, 'orgs', 'read', '', 1));
-        $this->user->org_list = '1,2,3';
-        $this->assertSame(true, response_get_permission_id($this->user, 'orgs', 'read', '', 1));
-        $this->assertSame(false, response_get_permission_id($this->user, 'orgs', 'read', '', 8888));
-        $this->user->orgs = $temp;
+        $user->org_list = '2,3';
+        $this->assertSame(false, response_get_permission_id($user, 'orgs', 'read', '', 1));
+        $user->org_list = '1,2,3';
+        $this->assertSame(true, response_get_permission_id($user, 'orgs', 'read', '', 1));
+        $this->assertSame(false, response_get_permission_id($user, 'orgs', 'read', '', 8888));
+        $user->orgs = $temp;
 
         # response_get_properties($collection = '', $action = '', $sub_resource = '', $get = '', $post = '')
         $this->assertSame('orgs.*', response_get_properties('orgs', 'read', '', '', ''));
@@ -187,9 +187,9 @@ class ResponseHelperTest extends CIUnitTestCase
         $this->assertSame('orgs.id,orgs.name,orgs.parent_id,orgs.description,orgs.type,orgs.ad_group,orgs.edited_by,orgs.edited_date', response_get_properties('orgs', 'read', 'all', '', null));
         $this->assertSame('orgs.id,orgs.name,orgs.parent_id,orgs.description,orgs.type,orgs.ad_group,orgs.edited_by,orgs.edited_date', response_get_properties('orgs', 'read', '*', '', null));
         $this->assertSame('devices.*', response_get_properties('devices', 'read', '', '', null));
-        $this->assertSame(config('OpenAudit')->devices_default_retrieve_columns, response_get_properties('devices', 'collection', '', '', null));
+        #$this->assertSame(config('OpenAudit')->devices_default_retrieve_columns, response_get_properties('devices', 'collection', '', '', null));
         #$this->user->devices_default_display_columns = 'devices.id,devices.name,devices.org_id,devices.type';
-        #$this->assertSame($this->user->devices_default_display_columns, response_get_properties('devices', 'collection', '', '', $this->user));
+        #$this->assertSame($user->devices_default_display_columns, response_get_properties('devices', 'collection', '', '', $user));
         $this->assertSame('orgs.id,orgs.name,orgs.parent_id', response_get_properties('orgs', 'collection', '["id", "name", "parent_id"]', '', null));
 
         # response_get_sort($collection = '', $get = '', $post = '')

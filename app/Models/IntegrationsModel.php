@@ -28,7 +28,7 @@ class IntegrationsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $instance = & get_instance();
+        $config = new \Config\OpenAudit();
         $properties = $resp->meta->properties;
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
@@ -47,7 +47,7 @@ class IntegrationsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        if ($instance->config->decrypt_credentials === 'y') {
+        if ($config->decrypt_credentials === 'y') {
             $count = count($query);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
@@ -1348,7 +1348,7 @@ class IntegrationsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $instance = & get_instance();
+        $config = new \Config\OpenAudit();
         $properties = array();
         $properties[] = 'integrations.*';
         $properties[] = 'orgs.name as `orgs.name`';
@@ -1362,7 +1362,7 @@ class IntegrationsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        if ($instance->config->decrypt_credentials === 'y') {
+        if ($config->decrypt_credentials === 'y') {
             if (!empty($query[0]->credentials)) {
                 $query[0]->credentials = simpleDecrypt($query[0]->credentials, config('Encryption')->key);
                 $query[0]->credentials = json_decode($query[0]->credentials);

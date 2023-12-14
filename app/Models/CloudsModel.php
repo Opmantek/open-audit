@@ -28,7 +28,7 @@ class CloudsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $instance = & get_instance();
+        $config = new \Config\OpenAudit();
         $properties = $resp->meta->properties;
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
@@ -47,7 +47,7 @@ class CloudsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        if ($instance->config->decrypt_credentials === 'y') {
+        if ($config->decrypt_credentials === 'y') {
             $count = count($query);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
@@ -304,7 +304,7 @@ class CloudsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $instance = & get_instance();
+        $config = new \Config\OpenAudit();
         $query = $this->builder->getWhere(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -318,7 +318,7 @@ class CloudsModel extends BaseModel
             $cloud[0]->options->wmi = 'y';
             $cloud[0]->options->snmp = 'n';
         }
-        if ($instance->config->decrypt_credentials === 'y') {
+        if ($config->decrypt_credentials === 'y') {
             if (!empty($cloud[0]->credentials)) {
                 $cloud[0]->credentials = simpleDecrypt($cloud[0]->credentials, config('Encryption')->key);
                 $cloud[0]->credentials = json_decode($cloud[0]->credentials);

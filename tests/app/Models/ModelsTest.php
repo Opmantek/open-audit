@@ -22,19 +22,19 @@ class ModelsTest extends CIUnitTestCase
         helper('utility');
         $db = db_connect();
 
-        $this->orgsModel = new \App\Models\OrgsModel();
-        $this->orgs = $this->orgsModel->listAll();
-        $this->usersModel = new \App\Models\UsersModel();
-        $this->user = $this->usersModel->read(1)[0]->attributes;
-        $this->user->org_list = '1,2,3,4,5';
+        $orgsModel = new \App\Models\OrgsModel();
+        $orgs = $orgsModel->listAll();
+        $usersModel = new \App\Models\UsersModel();
+        $user = $usersModel->read(1)[0]->attributes;
+        $user->org_list = '1,2,3,4,5';
 
         # Setup a session for user
         $session = \Config\Services::session();
         $temp = bin2hex(openssl_random_pseudo_bytes(30));
-        $this->user->access_token = $temp;
+        $user->access_token = $temp;
         $access_token[] = $temp;
         $access_token = array_slice($access_token, -intval(config('Openaudit')->access_token_count));
-        $userdata = array('user_id' => $this->user->id, 'access_token' => $access_token);
+        $userdata = array('user_id' => $user->id, 'access_token' => $access_token);
         $session->set($userdata);
 
         $response->meta->filter = response_get_query_filter('', 'filter');
@@ -63,10 +63,10 @@ class ModelsTest extends CIUnitTestCase
                 }
                 $item->function = 'whereIn';
                 $item->operator = 'in';
-                if (is_string($this->user->org_list)) {
-                    $item->value = explode(',', $this->user->org_list);
+                if (is_string($user->org_list)) {
+                    $item->value = explode(',', $user->org_list);
                 } else {
-                    $item->value = $this->user->org_list;
+                    $item->value = $user->org_list;
                 }
                 $response->meta->filter[] = $item;
             }
@@ -84,9 +84,11 @@ class ModelsTest extends CIUnitTestCase
                     $collection = str_replace(' ', '', $collection);
                 }
                 $namespace = "\\App\\Models\\" . $collection . "Model";
-                $this->{strtolower($response->meta->collection) . "Model"} = new $namespace;
+                #$this->{strtolower($response->meta->collection) . "Model"} = new $namespace;
+                ${strtolower($response->meta->collection) . "Model"} = new $namespace;
 
-                $result = $this->{strtolower($response->meta->collection) . "Model"}->collection($response);
+                #$result = $this->{strtolower($response->meta->collection) . "Model"}->collection($response);
+                $result = ${strtolower($response->meta->collection) . "Model"}->collection($response);
                 $this->assertIsArray($result, 'The return from ' . $collection . ' (' . $response->meta->action . ') is not an array');
                 $this->assertCount($count, $result, "Count of $collection (" . $response->meta->action . ") direct is $count, count via model is " . count($result));
             }
