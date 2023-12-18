@@ -2,7 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
-$this->db = db_connect();
+$db = db_connect();
 if (php_uname('s') == "Windows NT") {
     exec("echo. |WMIC OS Get Caption", $output);
     if (isset($output[1])) {
@@ -30,7 +30,7 @@ if (php_uname('s') == "Windows NT") {
 
                 You are running version <?= $config->display_version ?> of Open-AudIT.<br />
                 Your Host is: <?= php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br />
-                Your database platform is <?= $this->db->getPlatform()." (version ".$this->db->getVersion().")"; ?>.<br />
+                Your database platform is <?= $db->getPlatform()." (version ".$db->getVersion().")"; ?>.<br />
                 Your web server is <?= getenv("SERVER_SOFTWARE") ?> .<br />
                 Your PHP version is <?= phpversion(); ?> and it's current time is <?= $config->timestamp ?>.<br /><br />
                 <?php
