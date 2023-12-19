@@ -11,8 +11,8 @@ use Config\Database;
 class OpenAudit extends BaseConfig
 {
 
-    public string $displayVersion = '5.0.2';
-    public int $appVersion = 20231207;
+    public string $displayVersion = '5.0.3';
+    public int $appVersion = 20231219;
 
     public array $enterprise_collections = array('applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'integrations' => 'crud', 'racks' => 'crud', 'roles' => 'cu');
     public array $professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'tasks' => 'crud', 'widgets' => 'crud');
