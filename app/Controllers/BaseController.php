@@ -74,6 +74,7 @@ abstract class BaseController extends Controller
         $this->config->homepage = 'summaries';
 
         $this->usersModel = model('App\Models\UsersModel');
+        $this->networksModel = model('App\Models\NetworksModel');
         $this->orgsModel = model('App\Models\OrgsModel');
         $this->queriesModel = model('App\Models\QueriesModel');
         $this->reportsModel = model('App\Models\ReportsModel');
