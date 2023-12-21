@@ -131,7 +131,7 @@ if [[ $system_hostname == *"."* ]]; then
 else
     system_domain=""
 fi
-system_os_version=$(sw_vers | grep "ProductVersion:" | cut -f2)
+system_os_version=$(sw_vers | grep "ProductVersion:" | cut -d: -f2 | xargs)
 system_os_version_major=$(echo "$system_os_version" | cut -d. -f1)
 system_os_version_minor=$(echo "$system_os_version" | cut -d. -f2)
 system_os_name="OSX $system_os_version"
