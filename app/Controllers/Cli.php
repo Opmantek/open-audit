@@ -88,7 +88,8 @@ class Cli extends Controller
     public function executeTasks()
     {
         $config = new \Config\OpenAudit();
-        if (empty($config->enterprise_binary)) {
+        $db = db_connect() or die("Cannot establish a database connection.");
+        if (empty($config->enterprise_binary) or !$db->tableExists('enterprise')) {
             return;
         }
 
@@ -142,7 +143,6 @@ class Cli extends Controller
         $response->meta->collection = 'tasks';
         $response->meta->action = 'execute';
         $response->meta->uuid = $config->uuid;
-        $db = db_connect() or die("Cannot establish a database connection.");
         // Insert the entry
         $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
         $db->query($sql, [json_encode($response)]);
