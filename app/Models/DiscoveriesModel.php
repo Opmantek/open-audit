@@ -810,8 +810,9 @@ class DiscoveriesModel extends BaseModel
             }
         }
         if (php_uname('s') === 'Windows NT') {
-            if (strtolower(get_current_user()) === 'system') {
+            if (strtolower(get_current_user()) === 'system' or exec('whoami') === 'nt authority\system') {
                 $warning = 'The Apache service is running as SYSTEM. Discoveries will not function. Please see this wiki page and make the configuration change. <a href="https://community.opmantek.com/display/OA/Running+Open-AudIT+Apache+Service+under+Windows" target="_blank">Running Open-AudIT Apache Service under Windows</a>.';
+                log_message('error', 'PHP process is owned by "nt authority\system" on Windows');
             }
         }
         if (!empty($warning)) {
