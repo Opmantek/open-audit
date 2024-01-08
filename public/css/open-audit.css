@@ -501,6 +501,11 @@ table.dataTable > thead .sorting_desc_disabled::after
 
 
 @media (prefers-color-scheme: dark) {
+    .nav-link
+    {
+        color: #fff;
+    }
+
     .table > :not(caption) > * > * {
       padding: 0.5rem 0.5rem;
       background-color: #333;
