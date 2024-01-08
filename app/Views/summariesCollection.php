@@ -20,7 +20,7 @@ include 'shared/collection_functions.php';
                         $i++;
                         $color = 'darkgrey';
                         $link = '#';
-                        $pill = '';
+                        $pill = 'background:dimgrey';
                         $badge = 'color: RGBA(108, 117, 125, var(--bs-bg-opacity, 1)) !important;';
                         $toast = 'toast' . $collection->edition;
                         if ($collection->edition === 'Community') {
