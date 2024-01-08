@@ -133,14 +133,23 @@ class SupportModel extends BaseModel
         foreach ($extensions as $extension) {
             $data->php->{'ext_'.$extension} = phpversion($extension);
             if (empty($data->php->{'ext_'.$extension}) && extension_loaded($extension)) {
-                $data->php->{'ext_'.$extension} = 'unknown version';
+                $data->php->{'ext_'.$extension} = 'ERROR - extension unknown version.';
+                log_message('error', 'Extension with unknown version - ' . $extension);
+            }
+            if (empty($data->php->{'ext_'.$extension}) && !extension_loaded($extension)) {
+                $data->php->{'ext_'.$extension} = 'ERROR - entension not loaded.';
+                log_message('error', 'Extension not loaded - ' . $extension);
             }
         }
         $data->php->log_errors = ini_get('log_errors');
         $data->php->max_execution_time = ini_get('max_execution_time');
         $data->php->max_input_time = ini_get('max_input_time');
         $data->php->memory_limit = ini_get('memory_limit');
-        $data->php->process_owner = '';
+        $data->php->process_owner =  exec('whoami');
+        if (php_uname('s') === 'Windows NT' and $data->php->process_owner === 'nt authority\system') {
+            $data->php->process_owner = 'ERROR - nt authority\system';
+            log_message('error', 'PHP process is owned by "nt authority\system" on Windows');
+        }
         $data->php->timezone = date_default_timezone_get();
         $data->php->timestamp = date('Y-m-d h:i:s a', time());
         $data->php->upload_max_filesize = ini_get('upload_max_filesize');
@@ -151,6 +160,9 @@ class SupportModel extends BaseModel
         $data->os->name = $os->os_name;
         $data->os->version = $os->os_version;
         unset($os);
+
+        $data->app->apppath = APPPATH;
+        $data->app->rootpath = ROOTPATH;
 
         if (php_uname('s') === 'Linux') {
             $data->use = new stdClass();
@@ -205,20 +217,13 @@ class SupportModel extends BaseModel
             $data->prereq->nmap = @$output[0];
             unset($output);
 
-            $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f7,8';
+            $command_string = '/bin/ls -l /etc/localtime | /usr/bin/cut -d"/" -f8,9';
             exec($command_string, $output, $return_var);
             $data->os->timezone = @$output[0];
             unset($output);
         }
 
         if (php_uname('s') === 'Linux' and strpos(urldecode($_SERVER['QUERY_STRING']), 'demo=y') === false) {
-            // php process owner
-            $data->php->process_owner = 'No PHP posix extension loaded - cannot determine process owner.';
-            if (extension_loaded('posix')) {
-                $posix_getpwuid = posix_getpwuid(posix_geteuid());
-                $data->php->process_owner = $posix_getpwuid['name'];
-                unset($posix_getpwuid);
-            }
             unset($output);
             $data->prereq->nmap = '';
             $command_string = 'nmap --version';
@@ -231,14 +236,6 @@ class SupportModel extends BaseModel
                 }
             }
             unset($output);
-            // $prereqs = array('screen', 'sshpass', 'curl', 'wget', 'zip', 'ipmitool', 'rrdtool', 'logrotate');
-            // foreach ($prereqs as $prereq) {
-            //     $command_string = 'which ' . $prereq . ' 2>/dev/null';
-            //     exec($command_string, $output, $return_var);
-            //     $data->prereq->{$prereq} = @$output[0];
-            //     unset($output);
-            //     unset($command_string);
-            // }
             // Samba Client
             $command_string = 'which smbclient 2>/dev/null';
             exec($command_string, $output, $return_var);
@@ -383,6 +380,15 @@ class SupportModel extends BaseModel
                 $data->os_name = 'Linux (Redhat)';
             }
             if (stripos($data->os_version, 'fedora') !== false) {
+                $data->os_name = 'Linux (Redhat)';
+            }
+            if (stripos($data->os_version, 'alma') !== false) {
+                $data->os_name = 'Linux (Redhat)';
+            }
+            if (stripos($data->os_version, 'oracle') !== false) {
+                $data->os_name = 'Linux (Redhat)';
+            }
+            if (stripos($data->os_version, 'rocky') !== false) {
                 $data->os_name = 'Linux (Redhat)';
             }
 
