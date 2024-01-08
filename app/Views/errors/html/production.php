@@ -1,3 +1,9 @@
+<?php
+$logfile = '/usr/local/open-audit/writable/logs/log-' . date('Y-m-d') . '.log';
+if (php_uname('s') === 'Windows NT') {
+    $logfile = 'c:\\xampp\\open-audit\\writable\\logs\\log-' . date('Y-m-d') . '.log';
+}
+?>
 <!doctype html>
 <html>
 <head>
@@ -16,7 +22,9 @@
 
         <h1 class="headline"><?= lang('Errors.whoops') ?></h1>
 
-        <p class="lead"><?= lang('Errors.weHitASnag') ?></p>
+        <!-- <p class="lead"><?= lang('Errors.weHitASnag') ?></p> -->
+
+        <p class="lead">Please <a href="mailto:support@opmantek.com">email</a> the file <?= $logfile ?> and (if you can access) the result of the <a href="/open-audit/index.php/support?format=json_data" target="_blank">Support Output<a> along with a description of what you were doing at the time of this error to FirstWave.</p>
 
     </div>
 
