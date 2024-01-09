@@ -1743,9 +1743,10 @@ if [ -n "$net_cards" ]; then
 		else
 			# This is a wireless link
 			if [ -z "$(which iwlist 2>/dev/null)" ]; then
-				net_card_speed=$(iwlist "$net_card_id" bitrate | grep Current  | cut -d. -f1 | grep -oE '[[:digit:]]*')
-			else
+				# we don't have iwlist installed
 				net_card_speed=""
+			else
+				net_card_speed=$(iwlist "$net_card_id" bitrate | grep Current  | cut -d. -f1 | grep -oE '[[:digit:]]*')
 			fi
 			net_card_type="Wireless Ethernet 802.11"
 		fi
