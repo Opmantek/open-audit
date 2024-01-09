@@ -553,13 +553,9 @@ if [ -z "$system_uuid" ] && [ -f "/sys/devices/virtual/dmi/id/product_uuid" ]; t
 	system_uuid=$(cat /sys/devices/virtual/dmi/id/product_uuid 2>/dev/null)
 fi
 
-# Get the hostname & DNS domain
+# Get the hostname & domain
 system_domain=$(hostname -d 2>/dev/null | grep -v \(none\))
 system_fqdn=$(hostname -f 2>/dev/null | grep -v \(none\))
-
-dns_hostname=$(hostname --short 2>/dev/null | head -n1 | cut -d. -f1)
-dns_domain=$(hostname --domain 2>/dev/null)
-dns_fqdn=$(hostname --fqdn 2>/dev/null | head -n1)
 
 # Get System Family (Distro Name) and the OS Name
 # Debian and Ubuntu will match on the below
@@ -734,6 +730,11 @@ fi
 if [ -z "$system_ip_address" ]; then
 	system_ip_address=$(ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/' | head -n 1)
 fi
+
+# Use the primary IP to find the DNS details
+dns_hostname=$(getent hosts $system_ip_address 2>/dev/null | cut -d" " -f3 | cut -d. -f1)
+dns_domain=$(getent hosts $system_ip_address 2>/dev/null | cut -d" " -f3 | cut -d. -f2-)
+dns_fqdn=$(getent hosts $system_ip_address 2>/dev/null | cut -d" " -f3)
 
 # Set the icon as the lower case version of the System Family.
 if [ -z "$system_os_icon" ]; then
