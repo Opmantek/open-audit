@@ -20,7 +20,7 @@ if (intval($included['devices_not_audited']) > 0 or
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down <?= $advanced_button_color ?>"></span></button>
+                                <button class="btn btn-outline-secondary panel-button c_change_primary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down <?= $advanced_button_color ?>"></span></button>
                             </div>
                         </div>
                     </div>

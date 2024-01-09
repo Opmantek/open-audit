@@ -496,8 +496,113 @@ table.dataTable > thead .sorting_desc_disabled::after
 
 
 
+.c_change_primary {
+  animation: colorchange_primary alternate infinite;  
+  animation-duration: 2s;
+  animation-iteration-count: 2;
+  animation-direction: alternate;
+  
+}
 
+@keyframes colorchange_primary
+{
+  0%  {background-color: rgba(79, 193, 233, 0)}
+  5%  {background-color: rgba(79, 193, 233, 0.05)}
+  10% {background-color: rgba(79, 193, 233, 0.10)}
+  15% {background-color: rgba(79, 193, 233, 0.15)}
+  20% {background-color: rgba(79, 193, 233, 0.20)}
+  25% {background-color: rgba(79, 193, 233, 0.25)}
 
+  30% {background-color: rgba(79, 193, 233, 0.30)}
+  35% {background-color: rgba(79, 193, 233, 0.35)}
+  40% {background-color: rgba(79, 193, 233, 0.40)}
+  45% {background-color: rgba(79, 193, 233, 0.45)}
+  50% {background-color: rgba(79, 193, 233, 0.50)}
+
+  55% {background-color: rgba(79, 193, 233, 0.55)}
+  60% {background-color: rgba(79, 193, 233, 0.60)}
+  65% {background-color: rgba(79, 193, 233, 0.65)}
+  70% {background-color: rgba(79, 193, 233, 0.70)}
+  75% {background-color: rgba(79, 193, 233, 0.75)}
+
+  80% {background-color: rgba(79, 193, 233, 0.80)}
+  85% {background-color: rgba(79, 193, 233, 0.85)}
+  90% {background-color: rgba(79, 193, 233, 0.90)}
+  95% {background-color: rgba(79, 193, 233, 0.95)}
+  100% {background-color: rgba(79, 193, 233, 1)}
+}
+
+.c_change_warning {
+  animation: colorchange_warning alternate infinite;  
+  animation-duration: 2s;
+  animation-iteration-count: 2;
+  animation-direction: alternate;
+  
+}
+
+@keyframes colorchange_warning
+{
+  0%  {background-color: rgba(255, 193, 7, 0)}
+  5%  {background-color: rgba(255, 193, 7, 0.05)}
+  10% {background-color: rgba(255, 193, 7, 0.10)}
+  15% {background-color: rgba(255, 193, 7, 0.15)}
+  20% {background-color: rgba(255, 193, 7, 0.20)}
+  25% {background-color: rgba(255, 193, 7, 0.25)}
+
+  30% {background-color: rgba(255, 193, 7, 0.30)}
+  35% {background-color: rgba(255, 193, 7, 0.35)}
+  40% {background-color: rgba(255, 193, 7, 0.40)}
+  45% {background-color: rgba(255, 193, 7, 0.45)}
+  50% {background-color: rgba(255, 193, 7, 0.50)}
+
+  55% {background-color: rgba(255, 193, 7, 0.55)}
+  60% {background-color: rgba(255, 193, 7, 0.60)}
+  65% {background-color: rgba(255, 193, 7, 0.65)}
+  70% {background-color: rgba(255, 193, 7, 0.70)}
+  75% {background-color: rgba(255, 193, 7, 0.75)}
+
+  80% {background-color: rgba(255, 193, 7, 0.80)}
+  85% {background-color: rgba(255, 193, 7, 0.85)}
+  90% {background-color: rgba(255, 193, 7, 0.90)}
+  95% {background-color: rgba(255, 193, 7, 0.95)}
+  100% {background-color: rgba(255, 193, 7, 1)}
+}
+
+.c_change_danger {
+  animation: colorchange_danger alternate infinite;  
+  animation-duration: 2s;
+  animation-iteration-count: 2;
+  animation-direction: alternate;
+  
+}
+
+@keyframes colorchange_danger
+{
+  0%  {background-color: rgba(237, 85, 101, 0)}
+  5%  {background-color: rgba(237, 85, 101, 0.05)}
+  10% {background-color: rgba(237, 85, 101, 0.10)}
+  15% {background-color: rgba(237, 85, 101, 0.15)}
+  20% {background-color: rgba(237, 85, 101, 0.20)}
+  25% {background-color: rgba(237, 85, 101, 0.25)}
+
+  30% {background-color: rgba(237, 85, 101, 0.30)}
+  35% {background-color: rgba(237, 85, 101, 0.35)}
+  40% {background-color: rgba(237, 85, 101, 0.40)}
+  45% {background-color: rgba(237, 85, 101, 0.45)}
+  50% {background-color: rgba(237, 85, 101, 0.50)}
+
+  55% {background-color: rgba(237, 85, 101, 0.55)}
+  60% {background-color: rgba(237, 85, 101, 0.60)}
+  65% {background-color: rgba(237, 85, 101, 0.65)}
+  70% {background-color: rgba(237, 85, 101, 0.70)}
+  75% {background-color: rgba(237, 85, 101, 0.75)}
+
+  80% {background-color: rgba(237, 85, 101, 0.80)}
+  85% {background-color: rgba(237, 85, 101, 0.85)}
+  90% {background-color: rgba(237, 85, 101, 0.90)}
+  95% {background-color: rgba(237, 85, 101, 0.95)}
+  100% {background-color: rgba(237, 85, 101, 1)}
+}
 
 
 @media (prefers-color-scheme: dark) {
