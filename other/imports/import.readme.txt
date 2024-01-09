@@ -1,4 +1,0 @@
-Please read the documentation in the web appliacation at Help -> Importing or online at https://community.opmantek.com/display/OA/Home
-
-OUI MAC Addresses       - http://standards-oui.ieee.org/oui.txt
-SNMP Enterprise Numbers - https://www.iana.org/assignments/enterprise-numbers/enterprise-numbers
