@@ -10,7 +10,7 @@ use Config\Database;
 
 class OpenAudit extends BaseConfig
 {
-
+    # leave for backwards compat $this->displayVersion = '5.0.3';
     public string $displayVersion = '5.0.3';
     public int $appVersion = 20231219;
 
@@ -198,7 +198,7 @@ class OpenAudit extends BaseConfig
         }
 
         $opLicense = $this->commercial_dir . "/bin/oplicense-cli.pl";
-        $modules[] = (object)array("name" => "Applications", "url" => (file_exists($this->commercial_dir)) ? "/omk"                  : "");
+        $modules[] = (object)array("name" => "Applications", "url" => (file_exists($this->commercial_dir)) ? "/omk" : "");
         $modules[] = (object)array("name" => "opCharts", "url" => (in_array('opCharts', $apps)) ? "/omk/opCharts" : "https://firstwave.com/products/interactive-dashboards-and-charts/");
         $modules[] = (object)array("name" => "opEvents", "url" => (in_array('opEvents', $apps)) ? "/omk/opEvents/" : "https://firstwave.com/products/centralized-log-and-event-management/");
         $modules[] = (object)array("name" => "opConfig", "url" => (in_array('opConfig', $apps)) ? "/omk/opConfig" : "https://firstwave.com/products/network-configuration-management/");
@@ -206,7 +206,7 @@ class OpenAudit extends BaseConfig
         $modules[] = (object)array("name" => "opReports", "url" => (in_array('opReports', $apps)) ? "/omk/opReports/" : "https://firstwave.com/products/advanced-analysis-and-reporting/");
         $modules[] = (object)array("name" => "opAddress", "url" => (in_array('opAddress', $apps)) ? "/omk/opAddress/" : "https://firstwave.com/products/ip-address-audit-and-management/");
         $modules[] = (object)array("name" => "opLicensing", "url" => (file_exists($opLicense)) ? "/omk/opLicense" : "");
-        $modules[] = (object)array("name" => "NMIS", "url" => (file_exists($nmis . '/cgi-bin/nmiscgi.pl'))           ? "/cgi-nmis9/nmiscgi.pl" : "https://firstwave.com/products/network-management-information-system/");
+        $modules[] = (object)array("name" => "NMIS", "url" => (file_exists($nmis . '/cgi-bin/nmiscgi.pl')) ? "/cgi-nmis9/nmiscgi.pl" : "https://firstwave.com/products/network-management-information-system/");
         $modules[] = (object)array("name" => "Other Modules", "url" => "https://firstwave.com");
         $this->modules = $modules;
     }
