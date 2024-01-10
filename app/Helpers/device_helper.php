@@ -363,7 +363,7 @@ if (! function_exists('deviceMatch')) {
 
         // Match based on the OMK uuid
         if (!empty($details->omk_uuid) && empty($details->id)) {
-            $sql = "SELECT devices.id FROM devices WHERE devices.omk_uuid = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id FROM devices WHERE devices.omk_uuid LIKE ? AND devices.status != 'deleted' LIMIT 1";
             $data = array("{$details->omk_uuid}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -388,7 +388,7 @@ if (! function_exists('deviceMatch')) {
 
         // Match based on the Google Cloud id (instance_ident)
         if (!empty($details->instance_ident) && empty($details->id)) {
-            $sql = "SELECT devices.id FROM devices WHERE devices.instance_ident = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id FROM devices WHERE devices.instance_ident LIKE ? AND devices.status != 'deleted' LIMIT 1";
             $data = array("{$details->instance_ident}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -412,7 +412,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_hostname_uuid) === 'y' && empty($details->id) && ! empty($details->uuid) && ! empty($details->hostname)) {
-            $sql = "SELECT devices.id FROM devices WHERE devices.hostname = ? AND devices.uuid = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id FROM devices WHERE devices.hostname LIKE ? AND devices.uuid LIKE ? AND devices.status != 'deleted' LIMIT 1";
             $data = array("{$details->hostname}", "{$details->uuid}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -467,7 +467,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_hostname_dbus) === 'y' && empty($details->id) && ! empty($details->dbus_identifier) && ! empty($details->hostname)) {
-            $sql = "SELECT devices.id FROM devices WHERE devices.hostname = ? AND devices.dbus_identifier = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id FROM devices WHERE devices.hostname LIKE ? AND devices.dbus_identifier LIKE ? AND devices.status != 'deleted' LIMIT 1";
             $data = array("{$details->hostname}", "{$details->dbus_identifier}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -522,7 +522,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_hostname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->hostname) && ! in_array($details->serial, $invalid_strings)) {
-            $sql = "SELECT devices.id FROM devices WHERE devices.hostname = ? AND devices.serial = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id FROM devices WHERE devices.hostname LIKE ? AND devices.serial LIKE ? AND devices.status != 'deleted' LIMIT 1";
             $data = array("{$details->hostname}", "{$details->serial}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -583,7 +583,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_dbus) === 'y' && empty($details->id) && ! empty($details->dbus_identifier)) {
-            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.dbus_identifier = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.dbus_identifier LIKE ? AND devices.status != 'deleted' LIMIT 1";
             $data = array("{$details->dbus_identifier}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -642,7 +642,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_dns_fqdn) === 'y' && empty($details->id) && ! empty($details->dns_fqdn)) {
-            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.dns_fqdn = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.dns_fqdn LIKE ? AND devices.status != 'deleted' LIMIT 1";
             $data = array("{$details->dns_fqdn}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -701,7 +701,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_dns_hostname) === 'y' && empty($details->id) && ! empty($details->dns_hostname)) {
-            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.dns_hostname = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.dns_hostname LIKE ? AND devices.status != 'deleted' LIMIT 1";
             $data = array("{$details->dns_hostname}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -760,7 +760,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_fqdn) === 'y' && empty($details->id) && ! empty($details->fqdn)) {
-            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.fqdn = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.fqdn LIKE ? AND devices.status != 'deleted' LIMIT 1";
             
             $data = array("{$details->fqdn}");
             $query = $db->query($sql, $data);
@@ -820,7 +820,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_serial_type) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->type) && ! in_array($details->serial, $invalid_strings)) {
-            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.serial = ? AND devices.type = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.serial LIKE ? AND devices.type LIKE ? AND devices.status != 'deleted' LIMIT 1";
             
             $data = array("{$details->serial}", "{$details->type}");
             $query = $db->query($sql, $data);
@@ -892,7 +892,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! in_array($details->serial, $invalid_strings)) {
-            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.serial = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.serial LIKE ? AND devices.status != 'deleted' LIMIT 1";
             
             $data = array("{$details->serial}");
             $query = $db->query($sql, $data);
@@ -958,7 +958,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_sysname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->sysName) && ! in_array($details->serial, $invalid_strings)) {
-            $sql = "SELECT devices.id FROM devices WHERE devices.sysName = ? AND devices.serial = ? AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id FROM devices WHERE devices.sysName LIKE ? AND devices.serial LIKE ? AND devices.status != 'deleted' LIMIT 1";
             
             $data = array("{$details->sysName}", "{$details->serial}");
             $query = $db->query($sql, $data);
@@ -1020,7 +1020,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_sysname) === 'y' && empty($details->id) && ! empty($details->sysName)) {
-            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE (devices.sysName = ?) AND devices.status != 'deleted'";
+            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE (devices.sysName LIKE ?) AND devices.status != 'deleted'";
             
             $data = array("{$details->sysName}");
             $query = $db->query($sql, $data);
@@ -1047,7 +1047,7 @@ if (! function_exists('deviceMatch')) {
                 }
             }
         } else {
-            if (strtolower($match->match_sysname_serial) !== 'y') {
+            if (strtolower($match->match_sysname) !== 'y') {
                 $message = new \StdClass();
                 $message->message = 'Not running match_sysname, matching rule set to: ' . $match->match_sysname .  '.';
                 $message->command_status = 'notice';
@@ -1076,9 +1076,9 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_mac) === 'y' && empty($details->id) && ! empty($details->mac_address)) {
             if (strtolower($match->match_mac_vmware) === 'n') {
-                $sql = "SELECT devices.id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND devices.status != 'deleted' LIMIT 1";
+                $sql = "SELECT devices.id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.mac LIKE ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND devices.status != 'deleted' LIMIT 1";
             } else {
-                $sql = "SELECT devices.id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.mac = ? AND devices.status != 'deleted' LIMIT 1";
+                $sql = "SELECT devices.id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.mac LIKE ? AND devices.status != 'deleted' LIMIT 1";
             }
             $data = array("{$details->mac_address}");
             $query = $db->query($sql, $data);
@@ -1134,9 +1134,9 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_mac) === 'y' && empty($details->id) && ! empty($details->mac_address)) {
             if (strtolower($match->match_mac_vmware) === 'n') {
-                $sql = "SELECT devices.id FROM devices LEFT JOIN network ON (devices.id = network.device_id AND network.current = 'y') WHERE network.mac = ? AND LOWER(network.mac) NOT LIKE '00:0c:29:%' AND network.mac NOT LIKE '00:50:56:%' AND network.mac NOT LIKE '00:05:69:%' AND LOWER(network.mac) NOT LIKE '00:1c:14:%' AND devices.status != 'deleted' LIMIT 1";
+                $sql = "SELECT devices.id FROM devices LEFT JOIN network ON (devices.id = network.device_id AND network.current = 'y') WHERE network.mac LIKE ? AND LOWER(network.mac) NOT LIKE '00:0c:29:%' AND network.mac NOT LIKE '00:50:56:%' AND network.mac NOT LIKE '00:05:69:%' AND LOWER(network.mac) NOT LIKE '00:1c:14:%' AND devices.status != 'deleted' LIMIT 1";
             } else {
-                $sql = "SELECT devices.id FROM devices LEFT JOIN network ON (devices.id = network.device_id AND network.current = 'y') WHERE network.mac = ? AND devices.status != 'deleted' LIMIT 1";
+                $sql = "SELECT devices.id FROM devices LEFT JOIN network ON (devices.id = network.device_id AND network.current = 'y') WHERE network.mac LIKE ? AND devices.status != 'deleted' LIMIT 1";
             }
             $data = array("{$details->mac_address}");
             $query = $db->query($sql, $data);
@@ -1194,9 +1194,9 @@ if (! function_exists('deviceMatch')) {
         if (strtolower($match->match_mac) === 'y' && empty($details->id) && ! empty($details->mac_addresses)) {
             foreach ($details->mac_addresses as $mac) {
                 if (strtolower($match->match_mac_vmware) === 'n') {
-                    $sql = "SELECT devices.id FROM devices LEFT JOIN network ON (devices.id = network.device_id AND network.current = 'y') WHERE network.mac = ? AND LOWER(network.mac) NOT LIKE '00:0c:29:%' AND network.mac NOT LIKE '00:50:56:%' AND network.mac NOT LIKE '00:05:69:%' AND LOWER(network.mac) NOT LIKE '00:1c:14:%' AND devices.status != 'deleted' LIMIT 1";
+                    $sql = "SELECT devices.id FROM devices LEFT JOIN network ON (devices.id = network.device_id AND network.current = 'y') WHERE network.mac LIKE ? AND LOWER(network.mac) NOT LIKE '00:0c:29:%' AND network.mac NOT LIKE '00:50:56:%' AND network.mac NOT LIKE '00:05:69:%' AND LOWER(network.mac) NOT LIKE '00:1c:14:%' AND devices.status != 'deleted' LIMIT 1";
                 } else {
-                    $sql = "SELECT devices.id FROM devices LEFT JOIN network ON (devices.id = network.device_id AND network.current = 'y') WHERE network.mac = ? AND devices.status != 'deleted' LIMIT 1";
+                    $sql = "SELECT devices.id FROM devices LEFT JOIN network ON (devices.id = network.device_id AND network.current = 'y') WHERE network.mac LIKE ? AND devices.status != 'deleted' LIMIT 1";
                 }
                 $data = array("{$mac}");
                 $query = $db->query($sql, $data);
@@ -1258,9 +1258,9 @@ if (! function_exists('deviceMatch')) {
                 if (!empty($mac) && (string)$mac !== '00:00:00:00:00:00') {
                     // check the ip table
                     if (strtolower($match->match_mac_vmware) === 'n') {
-                        $sql = "SELECT devices.id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND devices.status != 'deleted' LIMIT 1";
+                        $sql = "SELECT devices.id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.mac LIKE ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND devices.status != 'deleted' LIMIT 1";
                     } else {
-                        $sql = "SELECT devices.id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.mac = ? AND devices.status != 'deleted' LIMIT 1";
+                        $sql = "SELECT devices.id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.mac LIKE ? AND devices.status != 'deleted' LIMIT 1";
                     }
                     $data = array("{$mac}");
                     $query = $db->query($sql, $data);
@@ -1321,7 +1321,7 @@ if (! function_exists('deviceMatch')) {
         if (strtolower($match->match_ip) === 'y' && empty($details->id) && ! empty($details->ip) && filter_var($ip, FILTER_VALIDATE_IP)) {
             // first check the ip table as any existing devices that have been seen
             // by more than just Nmap will have an entry here
-            $sql = "SELECT devices.id, devices.org_id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.ip = ? AND ip.ip NOT LIKE '127%' AND ip.ip NOT LIKE '1::%' AND devices.status != 'deleted' LIMIT 1";
+            $sql = "SELECT devices.id, devices.org_id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.ip LIKE ? AND ip.ip NOT LIKE '127%' AND ip.ip NOT LIKE '1::%' AND devices.status != 'deleted' LIMIT 1";
             
             $data = array(ip_address_to_db($details->ip));
             $query = $db->query($sql, $data);
@@ -1415,8 +1415,7 @@ if (! function_exists('deviceMatch')) {
         }
 
         if (strtolower($match->match_hostname) === 'y' && empty($details->id) && ! empty($details->hostname)) {
-            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE (devices.hostname = ?) AND devices.status != 'deleted'";
-            
+            $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.hostname LIKE ? AND devices.status != 'deleted'";
             $data = array($details->hostname);
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -1486,7 +1485,7 @@ if (! function_exists('deviceMatch')) {
         if ((empty($match->match_ip_no_data) or strtolower($match->match_ip_no_data) === 'y') && empty($details->id) && ! empty($details->ip) && filter_var($details->ip, FILTER_VALIDATE_IP)) {
             // Check the devices table for an ip match on a device without a type or serial
             if (empty($details->id)) {
-                $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.ip = ? AND devices.ip NOT LIKE '127%' AND devices.ip NOT LIKE '1::%' AND devices.status != 'deleted' and (devices.type = 'unknown' or devices.type = 'unclassified') and devices.serial = ''";
+                $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.ip LIKE ? AND devices.ip NOT LIKE '127%' AND devices.ip NOT LIKE '1::%' AND devices.status != 'deleted' and (devices.type = 'unknown' or devices.type = 'unclassified') and devices.serial = ''";
                 
                 $data = array(ip_address_to_db($details->ip));
                 $query = $db->query($sql, $data);
