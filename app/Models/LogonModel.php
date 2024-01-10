@@ -96,13 +96,16 @@ class LogonModel extends Model
                         if (empty($bind)) {
                             $error = (string)ldap_error($ldap_connection);
                             if ($error === 'Invalid credentials') {
-                                $message = 'Invalid user supplied credentials for LDAP server at ' . $ldap->host . ', skipping.';
+                                log_message('warning', 'Invalid user supplied credentials for LDAP server at ' . $ldap->host . ', skipping.');
+                                log_message('error', $bind_string . ' at ' . $ldap_connect_string);
                             } else if ($error === "Can't contact LDAP server") {
-                                $message = 'LDAP server could not be reached at ' . $ldap->host . ', skipping.';
+                                log_message('error', 'LDAP server could not be reached at ' . $ldap->host . ', skipping.');
+                                log_message('error', $bind_string . ' at ' . $ldap_connect_string);
                             } else {
-                                $message = 'Could not bind to LDAP server at ' . $ldap->host . ', skipping.';
+                                log_message('error', 'Could not bind to LDAP server at ' . $ldap->host . ', skipping.');
+                                log_message('error', $error);
+                                log_message('error', $bind_string . ' at ' . $ldap_connect_string);
                             }
-                            log_message('warning', $message);
                             // \Config\Services::session()->setFlashdata('warning',  $message);
                             continue;
                         } else {
