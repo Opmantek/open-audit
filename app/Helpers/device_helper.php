@@ -1485,7 +1485,9 @@ if (! function_exists('deviceMatch')) {
         if ((empty($match->match_ip_no_data) or strtolower($match->match_ip_no_data) === 'y') && empty($details->id) && ! empty($details->ip) && filter_var($details->ip, FILTER_VALIDATE_IP)) {
             // Check the devices table for an ip match on a device without a type or serial
             if (empty($details->id)) {
-                $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.ip LIKE ? AND devices.ip NOT LIKE '127%' AND devices.ip NOT LIKE '1::%' AND devices.status != 'deleted' and (devices.type = 'unknown' or devices.type = 'unclassified') and devices.serial = ''";
+                # $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.ip LIKE ? AND devices.ip NOT LIKE '127%' AND devices.ip NOT LIKE '1::%' AND devices.status != 'deleted' and (devices.type = 'unknown' or devices.type = 'unclassified') and devices.serial = ''";
+
+                $sql = "SELECT devices.id, devices.org_id FROM devices LEFT JOIN edit_log ON (devices.id = edit_log.device_id) WHERE devices.ip LIKE ? AND devices.ip NOT LIKE '127%' AND devices.ip NOT LIKE '1::%' AND devices.status != 'deleted' and ((devices.type = 'unknown' or devices.type = 'unclassified') or (edit_log.previous_value IN ('unclassified', 'unknown') and edit_log.source = 'user' and devices.type = edit_log.value)) and devices.serial = ''";
                 
                 $data = array(ip_address_to_db($details->ip));
                 $query = $db->query($sql, $data);
