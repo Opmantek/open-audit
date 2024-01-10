@@ -933,6 +933,11 @@ else
 	system_pc_date_os_installation=""
 fi
 
+kernel_version=$(uname -r 2>/dev/null)
+if [ -z "$kernel_version" ]; then
+	kernel_version=$(hostnamectl 2>/dev/null | grep "Kernel" | cut -d: -f2 | cut -d" " -f3)
+fi
+
 #'''''''''''''''''''''''''''''''''
 #' Write to the audit file       '
 #'''''''''''''''''''''''''''''''''
@@ -955,6 +960,7 @@ echo "		<os_group>$(escape_xml "$system_os_group")</os_group>"
 echo "		<os_family>$(escape_xml "$system_os_family")</os_family>"
 echo "		<os_name>$(escape_xml "$system_os_name")</os_name>"
 echo "		<os_version>$(escape_xml "$system_os_version")</os_version>"
+echo "		<kernel_version>$(escape_xml "$kernel_version")</kernel_version>"
 echo "		<serial>$(escape_xml "$system_serial")</serial>"
 echo "		<model>$(escape_xml "$system_model")</model>"
 echo "		<manufacturer>$(escape_xml "$system_manufacturer")</manufacturer>"
