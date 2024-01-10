@@ -640,6 +640,10 @@ class Collections extends BaseController
         $count_create_fail = 0;
         $count_update = 0;
         $count_update_fail = 0;
+        if (empty($this->resp->meta->received_data->json) or json_encode($this->resp->meta->received_data->json) === '[""]') {
+            \Config\Services::session()->setFlashdata('error', 'No data (or invalid JSON) provided. No ' . $this->resp->meta->collection . ' created.');
+            return redirect()->route($this->resp->meta->collection.'Collection');
+        }
         foreach ($this->resp->meta->received_data->json as $item) {
             if (!empty($item->id)) {
                 $test = $this->{strtolower($this->resp->meta->collection) . "Model"}->read(intval($item->id));
@@ -719,6 +723,7 @@ class Collections extends BaseController
                 return true;
             } else {
                 log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
+                \Config\Services::session()->setFlashdata('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
                 return redirect()->route($this->resp->meta->collection.'Collection');
             }
         }
