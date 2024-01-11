@@ -820,6 +820,15 @@ if (!empty($included['fields'])) {
                                     $location = $included_location;
                                 }
                             }
+                            # If we have an invalid location_id, set it to 1 and populate as per the default location
+                            if (empty($location->attributes)) {
+                                $resource->location_id = 1;
+                                foreach ($included['locations'] as $included_location) {
+                                    if ($included_location->id == $resource->location_id) {
+                                        $location = $included_location;
+                                    }
+                                }
+                            }
                             ?>
                             <div style="margin-bottom:20px; display:none;" class="card" id="location_section">
                                 <?=  device_panel('location', $user->toolbar_style, 0, '', $update); ?>
