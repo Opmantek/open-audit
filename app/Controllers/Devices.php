@@ -98,6 +98,34 @@ class Devices extends BaseController
                 \Config\Services::session()->setFlashdata('fail', 'Could not convert audit submission.');
                 return redirect()->route('devicesCollection');
             }
+            if (!empty($device->system->location_id)) {
+                $locationsModel = new \App\Models\LocationsModel();
+                $locations = $locationsModel->listAll();
+                $hit = false;
+                foreach ($locations as $location) {
+                    if ($location->id == $device->system->location_id) {
+                        $hit = true;
+                        continue;
+                    }
+                }
+                if ($hit === false) {
+                    $device->system->location_id = 1;
+                }
+            }
+            if (!empty($device->system->org_id)) {
+                $orgsModel = new \App\Models\OrgsModel();
+                $orgs = $orgsModel->listAll();
+                $hit = false;
+                foreach ($orgs as $org) {
+                    if ($org->id == $device->system->org_id) {
+                        $hit = true;
+                        continue;
+                    }
+                }
+                if ($hit === false) {
+                    $device->system->org_id = 1;
+                }
+            }
             include "include_process_device.php";
             $id = $device->system->id;
             $discoveryLogModel = new \App\Models\DiscoveryLogModel();
