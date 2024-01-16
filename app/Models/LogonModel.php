@@ -76,6 +76,7 @@ class LogonModel extends Model
                         $ldap_connect_string = 'ldap://' . $ldap->host . ':' . $ldap->port;
                     }
                     if ($ldap_connection = @ldap_connect($ldap_connect_string)) {
+                        ldap_set_option($ldap_connection, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_ALLOW);
                         $bind_string = '';
                         $bind_password = '';
                         if ($ldap->type === 'active directory') {
@@ -94,17 +95,18 @@ class LogonModel extends Model
                             $bind = @ldap_bind($ldap_connection, $bind_string, $bind_password);
                         }
                         if (empty($bind)) {
+                            if (ldap_get_option($ldap_connection, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error)) {
+                                log_message('error', "LDAP_OPT_DIAGNOSTIC_MESSAGE: $extended_error");
+                            }
                             $error = (string)ldap_error($ldap_connection);
+                            log_message('error', 'ldap_error: ' . $error);
+                            log_message('error', $bind_string . ' at ' . $ldap_connect_string);
                             if ($error === 'Invalid credentials') {
                                 log_message('warning', 'Invalid user supplied credentials for LDAP server at ' . $ldap->host . ', skipping.');
-                                log_message('error', $bind_string . ' at ' . $ldap_connect_string);
                             } else if ($error === "Can't contact LDAP server") {
                                 log_message('error', 'LDAP server could not be reached at ' . $ldap->host . ', skipping.');
-                                log_message('error', $bind_string . ' at ' . $ldap_connect_string);
                             } else {
                                 log_message('error', 'Could not bind to LDAP server at ' . $ldap->host . ', skipping.');
-                                log_message('error', $error);
-                                log_message('error', $bind_string . ' at ' . $ldap_connect_string);
                             }
                             // \Config\Services::session()->setFlashdata('warning',  $message);
                             continue;
