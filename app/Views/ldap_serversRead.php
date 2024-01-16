@@ -14,10 +14,10 @@ include 'shared/read_functions.php';
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
                             <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                            <?= read_field('domain', $resource->description, $dictionary->columns->domain, $update) ?>
-                            <?= read_field('host', $resource->description, $dictionary->columns->host, $update) ?>
-                            <?= read_field('port', $resource->description, $dictionary->columns->port, $update) ?>
-                            <?= read_field('version', $resource->description, $dictionary->columns->version, $update) ?>
+                            <?= read_field('domain', $resource->domain, $dictionary->columns->domain, $update) ?>
+                            <?= read_field('host', $resource->host, $dictionary->columns->host, $update) ?>
+                            <?= read_field('port', $resource->port, $dictionary->columns->port, $update) ?>
+                            <?= read_field('version', $resource->version, $dictionary->columns->version, $update) ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="secure" class="form-label"><?= __('Use Secure (LDAPS)') ?></label>
