@@ -111,7 +111,7 @@ class LogonModel extends Model
                             // \Config\Services::session()->setFlashdata('warning',  $message);
                             continue;
                         } else {
-                            log_message('debug', 'Successful bind using credentials for LDAP server at ' . $ldap->host . ': ' . (string)ldap_error($ldap_connection));
+                            log_message('debug', 'Successful bind using credentials for LDAP server at ' . $ldap_connect_string . ' : ' . $bind_string);
                         }
                         $ldap->dn_password = (string)simpleDecrypt($ldap->dn_password);
                         if (!empty($ldap->dn_account) && empty($ldap->dn_password)) {
