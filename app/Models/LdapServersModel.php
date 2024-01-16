@@ -238,7 +238,7 @@ class LdapServersModel extends BaseModel
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->lang = 'The default language assigned to any user created by this LDAP server.';
         $dictionary->columns->host = 'The ip address of the LDAP server.';
-        $dictionary->columns->port = "Default of '389'.";
+        $dictionary->columns->port = "Default of 389. Normally 636 used for Active Directory LDAPS.";
         $dictionary->columns->secure = "Do you want to use LDAP or LDAPS. Set to 'y' or 'n'.";
         $dictionary->columns->domain = "The regular domain notation of your LDAP. Eg - 'open-audit.lan'.";
         $dictionary->columns->type = "One of either 'active directory' or 'openldap'";
