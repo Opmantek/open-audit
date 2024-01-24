@@ -61,6 +61,7 @@ class LogonModel extends Model
                     }
                     ldap_set_option(null, LDAP_OPT_NETWORK_TIMEOUT, 5);
                     ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
+                    ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, 0);
                     $ldap->version = intval($ldap->version);
                     if ($ldap->version === 2 or $ldap->version === 3) {
                         ldap_set_option(null, LDAP_OPT_PROTOCOL_VERSION, $ldap->version);
@@ -76,7 +77,6 @@ class LogonModel extends Model
                         $ldap_connect_string = 'ldap://' . $ldap->host . ':' . $ldap->port;
                     }
                     if ($ldap_connection = @ldap_connect($ldap_connect_string)) {
-                        ldap_set_option($ldap_connection, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_ALLOW);
                         $bind_string = '';
                         $bind_password = '';
                         if ($ldap->type === 'active directory') {

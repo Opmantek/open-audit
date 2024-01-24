@@ -46,9 +46,6 @@ if (!function_exists('response_create')) {
         if ($response->meta->collection === 'configuration' and ($response->meta->action === 'readlicense' or $response->meta->action === 'readservers')) {
             $response->meta->action = 'read';
         }
-        if (!empty($_SERVER['REMOTE_ADDR'])) {
-            $response->meta->remote_addr = $_SERVER['REMOTE_ADDR'];
-        }
 
         $response->meta->remote_addr = '';
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
