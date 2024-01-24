@@ -15,8 +15,10 @@ include 'shared/read_functions.php';
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
                             <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
                             <?= read_select('sidebar', $resource->sidebar, $dictionary->columns->sidebar, $update, __('Sidebar')) ?>
-                            <?php foreach ($resource->options->widgets as $widget) { ?>
-                                <?= read_select('options.widgets.position.' . $widget->position, $widget->widget_id, '', $update, 'Widget #' . $widget->position, $included['widgets']) ?>
+                            <?php if (!empty($resource->options->widgets)) { ?>
+                                <?php foreach ($resource->options->widgets as $widget) { ?>
+                                    <?= read_select('options.widgets.position.' . $widget->position, $widget->widget_id, '', $update, 'Widget #' . $widget->position, $included['widgets']) ?>
+                                <?php } ?>
                             <?php } ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>

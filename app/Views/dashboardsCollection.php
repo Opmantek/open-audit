@@ -30,7 +30,11 @@ include 'shared/collection_functions.php';
                             <?php if (!empty($data)) { ?>
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
-                                    <?= collection_button_read($meta->collection, $item->id) ?>
+                                    <?php if ($item->attributes->name !== 'Summary Dashboard') { ?>
+                                        <?= collection_button_read($meta->collection, $item->id) ?>
+                                    <?php } else { ?>
+                                        <td></td>
+                                    <?php } ?>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {
                                             continue;
@@ -39,7 +43,11 @@ include 'shared/collection_functions.php';
                                         ?>
                                     <?php } ?>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
-                                        <?= collection_button_delete(intval($item->id)) ?>
+                                        <?php if ($item->attributes->name !== 'Summary Dashboard') { ?>
+                                            <?= collection_button_delete(intval($item->id)) ?>
+                                        <?php } else { ?>
+                                            <td></td>
+                                        <?php } ?>
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>

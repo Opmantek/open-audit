@@ -92,18 +92,32 @@ if ($config->product !== 'community') {
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarView" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Dashboards') ?></a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarView"><?php if (!empty($dashboards)) {
-                                echo "\n";
-                                foreach ($dashboards as $dashboard) {
-                                    if ($dashboard->type === 'dashboards') {
-                                        if ($config->product === 'enterprise' or $config->product === 'professional') {
-                                            echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
-                                        } else {
-                                            echo "                                <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
+                            <ul class="dropdown-menu" aria-labelledby="navbarView">
+                                <?php if (!empty($dashboards)) {
+                                    echo "\n";
+                                    foreach ($dashboards as $dashboard) {
+                                        if ($dashboard->type === 'dashboards' and $dashboard->attributes->name === 'Summary Dashboard') {
+                                            if ($config->product === 'enterprise' or $config->product === 'professional') {
+                                                echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
+                                            } else {
+                                                echo "                                <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
+                                            }
                                         }
                                     }
-                                }
-                                                                                   } ?>
+                                } ?>
+                                <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Welcome Dashboard') ?></a></li>
+                                <li>&nbsp;</li><?php if (!empty($dashboards)) {
+                                    echo "\n";
+                                    foreach ($dashboards as $dashboard) {
+                                        if ($dashboard->type === 'dashboards' and $dashboard->attributes->name !== 'Summary Dashboard') {
+                                            if ($config->product === 'enterprise' or $config->product === 'professional') {
+                                                echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
+                                            } else {
+                                                echo "                                <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
+                                            }
+                                        }
+                                    }
+                                               } ?>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -465,11 +479,11 @@ if ($config->product !== 'community') {
                             <a class="nav-link dropdown-toggle" href="#" id="navbarModules" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Modules') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarModules">
 <?php
-    foreach ($config->modules as $module) {
-        if (!empty($module->url)) {
-            echo "                              <li><a class=\"dropdown-item\" target=\"_blank\" href=\"" . $module->url . "\">" . $module->name . "</a></li>\n";
-        }
+foreach ($config->modules as $module) {
+    if (!empty($module->url)) {
+        echo "                              <li><a class=\"dropdown-item\" target=\"_blank\" href=\"" . $module->url . "\">" . $module->name . "</a></li>\n";
     }
+}
 ?>
                             </ul>
                         </li>
@@ -547,6 +561,7 @@ if ($config->product !== 'community') {
                                             }
                                         }
                                     } ?>
+                                    <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Welcome Dashboard') ?></a></li>
                                     </ul>
                                 </div>
                                 <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute' and $meta->id != $user->dashboard_id) { ?>

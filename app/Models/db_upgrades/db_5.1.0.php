@@ -8,6 +8,16 @@ if (!$db->fieldExists('kernel_version', 'devices')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+$sql = "DELETE FROM `dashboards` WHERE `name` = 'Summary Dashboard' and `description` = 'Summary Information'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `dashboards` VALUES (null, 'Summary Dashboard', 1, 'org', 0, 'Summary Information', 'n', '[]', 'system', NOW())";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20240104' WHERE `name` = 'internal_version'";
 $db->query($sql);

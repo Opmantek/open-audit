@@ -51,11 +51,33 @@ class Dashboards extends BaseController
             output($this);
             exit();
         }
+
         $this->widgetsModel = new \App\Models\WidgetsModel();
         $this->resp->data = $this->dashboardsModel->read($this->resp->meta->id);
         $this->resp->meta->name = $this->resp->data[0]->attributes->name;
         $this->resp->meta->total = count($this->resp->data);
         $this->resp->meta->filtered = count($this->resp->data);
+
+        if ($this->resp->meta->name === 'Summary Dashboard') {
+            $included = array();
+            $included = $this->devicesModel->summary();
+            $summariesModel = new \App\Models\SummariesModel();
+            $included = array_merge($included, $summariesModel->includedCollection());
+            $included = array_merge($included, $this->devicesModel->includedCollection());
+            log_message('error', json_encode($included));
+            #log_message('error', json_encode($included['devices']));
+            return view('shared/header', [
+                'config' => $this->config,
+                'dashboards' => filter_response($this->dashboards),
+                'meta' => filter_response($this->resp->meta),
+                'orgs' => filter_response($this->orgsUser),
+                'queries' => filter_response($this->queriesUser),
+                'roles' => filter_response($this->roles),
+                'user' => filter_response($this->user)]) .
+                view('helpSummary', ['included' => $included])
+                . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+        }
+
         foreach ($this->resp->data[0]->attributes->options->widgets as $dashboardWidget) {
             $widget = $this->widgetsModel->execute(intval($dashboardWidget->widget_id));
             if ($widget->type === 'pie') {

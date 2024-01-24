@@ -637,6 +637,60 @@ class DevicesModel extends BaseModel
         return true;
     }
 
+
+    /**
+     * Read the entire collection from the database that the user is allowed to read
+     *
+     * @return array  An array of formatted entries
+     */
+    public function summary(): array
+    {
+        $instance = & get_instance();
+        $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        $orgs[] = 1;
+        $orgs = array_unique($orgs);
+
+        $include = array();
+        $properties = array();
+        $properties[] = 'devices.type AS `type`';
+        $properties[] = 'COUNT(devices.type) AS `count`';
+        $properties[] = 'devices.icon AS `icon`';
+        $this->builder->select($properties, false);
+        $this->builder->join('orgs', 'devices.org_id = orgs.id', 'left');
+        $this->builder->whereIn('orgs.id', $orgs);
+        $this->builder->groupBy('devices.type');
+        $this->builder->orderBy('devices.type');
+        $query = $this->builder->get();
+        if ($this->sqlError($this->db->error())) {
+            return array();
+        }
+        $include['devices'] = format_data($query->getResult(), 'devices');
+
+
+        $properties = array();
+        $properties[] = 'devices.os_family';
+        $properties[] = 'COUNT(devices.type) AS `count`';
+        $properties[] = 'devices.icon AS `icon`';
+        $this->builder->select($properties, false);
+        $this->builder->join('orgs', 'devices.org_id = orgs.id', 'left');
+        $this->builder->where('devices.os_family !=', '');
+        $this->builder->whereIn('orgs.id', $orgs);
+        $this->builder->groupBy('devices.os_family');
+        $this->builder->orderBy('devices.os_family');
+        $query = $this->builder->get();
+        log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        if ($this->sqlError($this->db->error())) {
+            return array();
+        }
+        $include['os'] = format_data($query->getResult(), 'devices');
+        for ($i=0; $i < count($include['os']); $i++) {
+            if (file_exists(ROOTPATH . 'public/device_images/' . strtolower(str_replace(' ', '_', $include['os'][$i]->attributes->os_family)) . '.svg')) {
+                $include['os'][$i]->attributes->icon = strtolower(str_replace(' ', '_', $include['os'][$i]->attributes->os_family));
+            }
+        }
+        return $include;
+    }
+
     /**
      * Update an individual item in the database
      *

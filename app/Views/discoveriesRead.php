@@ -469,6 +469,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <?php } ?>
                                         </tbody>
                                     </table>
+                                    <?php if ($resource->status === 'running' and empty($included['devices'])) {
+                                        echo "<p class=\"text-center\">Your discovery is running, however no devices have been interogated yet. Click the Refresh button in your browser to update this page and check the Logs tab for more detailed information.</p>";
+                                    } ?>
                                 </div>
                             </div>
                         </div>
@@ -537,6 +540,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <?php } ?>
                                         </tbody>
                                     </table>
+                                    <?php if ($resource->status === 'running' and empty($included['ips'])) {
+                                        echo "<p class=\"text-center\">Your discovery is running, however no IP Addresses have been completely scanned yet. Click the Refresh button in your browser to update this page and check the Logs tab for more detailed information.</p>";
+                                    } ?>
                                 </div>
                             </div>
                         </div>
