@@ -39,15 +39,17 @@ dim colItems, objItem, objArgs, objNetwork, objConnection, objCommand, objRecord
 dim objUser, colMembers, strMember, strPath, objNestedGroup
 dim colGroups, objGroups, objGroup, oReg
 dim temp, temp2, temp3
+dim test_domain
 
-Const wbemFlagReturnImmediately = &h10
-Const wbemFlagForwardOnly       = &h20
+const wbemFlagReturnImmediately = &h10
+const wbemFlagForwardOnly       = &h20
 const HKEY_CLASSES_ROOT         = &H80000000
 const HKEY_CURRENT_USER         = &H80000001
 const HKEY_LOCAL_MACHINE        = &H80000002
 const HKEY_USERS                = &H80000003
 
 debugging = 0
+test_domain = 1
 
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
@@ -220,28 +222,30 @@ For Each objItem In colItems
 Next
 
 dim group_domain, member_domain, local_administrators
-Set colGroups = GetObject("WinNT://" & hostname & "")
-If Err.Number <> 0 Then ShowError("Cannot select from WinNT.") end if
-colGroups.Filter = Array("group")
-If Err.Number <> 0 Then ShowError("Cannot filter Group from WinNT.") end if
-For Each objGroup In colGroups
-    if objGroup.Name = "Administrators" then
-        If Err.Number <> 0 Then
-            ShowError("Cannot select Name from WinNT.")
+if (test_domain <> 0 ) then
+    Set colGroups = GetObject("WinNT://" & hostname & "")
+    If Err.Number <> 0 Then ShowError("Cannot select from WinNT.") end if
+    colGroups.Filter = Array("group")
+    If Err.Number <> 0 Then ShowError("Cannot filter Group from WinNT.") end if
+    For Each objGroup In colGroups
+        if objGroup.Name = "Administrators" then
+            If Err.Number <> 0 Then
+                ShowError("Cannot select Name from WinNT.")
+            end if
+            For Each objUser in objGroup.Members
+                group_domain = split(objUser.ADSPath, "/")
+                If Err.Number <> 0 Then
+                    ShowError("Cannot split ADSPath from WinNT.")
+                end if
+                    member_domain = group_domain(ubound(group_domain)-1)
+                If Err.Number <> 0 Then
+                    ShowError("Cannot get domain from split ADSPath.")
+                end if
+                local_administrators = local_administrators & objUser.name & "@" & member_domain & ","
+            Next
         end if
-        For Each objUser in objGroup.Members
-            group_domain = split(objUser.ADSPath, "/")
-            If Err.Number <> 0 Then
-                ShowError("Cannot split ADSPath from WinNT.")
-            end if
-                member_domain = group_domain(ubound(group_domain)-1)
-            If Err.Number <> 0 Then
-                ShowError("Cannot get domain from split ADSPath.")
-            end if
-            local_administrators = local_administrators & objUser.name & "@" & member_domain & ","
-        Next
-    end if
-Next
+    Next
+end if
 
 wscript.echo ""
 wscript.echo "Computer Settings"
@@ -265,6 +269,10 @@ wscript.echo "OS Name:                   " & os_name
 wscript.echo "OS Build Number:           " & os_number
 wscript.echo "Local Administrators:      " & left(local_administrators,len(local_administrators)-1)
 wscript.echo ""
+
+if (test_domain <> 0 ) then
+    cs_part_of_domain = "false"
+end if
 
 dim ad_client_site_name, ad_dc_site_name, ad_description, ad_dns_forest_name
 dim ad_domain_controller_address, ad_domain_controller_address_type, ad_domain_controller_name, ad_domain_name
@@ -305,7 +313,6 @@ if (cs_part_of_domain = "True") then
         Next
     end If
 end If
-
 
 
 if (cs_part_of_domain = "True" and _
