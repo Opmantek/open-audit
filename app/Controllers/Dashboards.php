@@ -64,8 +64,6 @@ class Dashboards extends BaseController
             $summariesModel = new \App\Models\SummariesModel();
             $included = array_merge($included, $summariesModel->includedCollection());
             $included = array_merge($included, $this->devicesModel->includedCollection());
-            log_message('error', json_encode($included));
-            #log_message('error', json_encode($included['devices']));
             return view('shared/header', [
                 'config' => $this->config,
                 'dashboards' => filter_response($this->dashboards),
@@ -74,7 +72,7 @@ class Dashboards extends BaseController
                 'queries' => filter_response($this->queriesUser),
                 'roles' => filter_response($this->roles),
                 'user' => filter_response($this->user)]) .
-                view('helpSummary', ['included' => $included])
+                view('dashboardsSummary', ['included' => $included])
                 . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         }
 
