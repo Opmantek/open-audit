@@ -164,10 +164,10 @@ foreach ($ips as $ip) {
                             <div class="col">
                                 <h4>Unix</h4>
                                 <label for="ssh_username" class="form-label">SSH Username</label>
-                                <input type="text" class="form-control" placeholder="" aria-label="ssh_username" id="ssh_username" name="ssh_username" value="marku">
+                                <input type="text" class="form-control" placeholder="" aria-label="ssh_username" id="ssh_username" name="ssh_username" value="">
                                 <br>
                                 <label for="ssh_password" class="form-label">SSH Password</label>
-                                <input type="password" class="form-control" placeholder="" aria-label="ssh_password" id="ssh_password" name="ssh_password" value="Mu@Op*007*Ek">
+                                <input type="password" class="form-control" placeholder="" aria-label="ssh_password" id="ssh_password" name="ssh_password" value="">
                             </div>
 
                             <div class="col">
@@ -183,14 +183,13 @@ foreach ($ips as $ip) {
                                 <h2>Location</h2>
                                 <p>A location name will help you to find these devices in the future.</p>
                                 <label for="location_name" class="form-label">Location Name</label>
-                                <input type="text" class="form-control" placeholder="Sydney DataCenter" value="Quick SYD" aria-label="location_name" id="location_name" name="location_name">
+                                <input type="text" class="form-control" placeholder="Sydney DataCenter" aria-label="location_name" id="location_name" name="location_name">
                             </div>
                             <div class="col">
                                 <h2>Network</h2>
                                 <p>Which network should we discover. This should be in the format of 1.2.3.4/24</p>
                                 <label for="subnet" class="form-label">The Network to Discover</label>
-                                <input type="text" class="form-control" value="192.168.88.182-184" placeholder="This should be in the format of 1.2.3.4/24" aria-label="subnet" id="subnet" name="subnet" required>
-                                <!--<input type="text" class="form-control" value="<?= $subnet ?>" placeholder="This should be in the format of 1.2.3.4/24" aria-label="subnet" id="subnet" name="subnet" required>-->
+                                <input type="text" class="form-control" value="<?= $subnet ?>" placeholder="This should be in the format of 1.2.3.4/24" aria-label="subnet" id="subnet" name="subnet" required>
                             </div>
                             <div class="col">
                                 <h2>Execute</h2>
