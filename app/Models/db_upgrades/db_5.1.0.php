@@ -13,7 +13,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `dashboards` VALUES (null, 'Summary Dashboard', 1, 'org', 0, 'Summary Information', 'n', '[]', 'system', NOW())";
+$sql = "INSERT INTO `dashboards` VALUES (null, 'Summary Dashboard', 1, 'org', 0, 'Summary Information', 'n', '[]', 'system', '2000-01-01 00:00:00')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
