@@ -87,7 +87,7 @@ $ids = implode(',', $id);
                                 $item->attributes = new \stdClass();
                                 $item->attributes->name = '';
                                 $values[] = $item;
-                                $valid_values = explode(',', $field->values);
+                                $valid_values = explode(',', $field->attributes->values);
                                 foreach ($valid_values as $key => $value) {
                                     $item = new \stdClass();
                                     $item->id = $value;
@@ -146,7 +146,11 @@ $ids = implode(',', $id);
                                         if ($key === 'icon') {
                                             echo "<td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:40px\"></td>\n";
                                         } else {
-                                            echo "<td>" . $item->attributes->{$key} . "</td>\n";
+                                            if (is_string($item->attributes->{$key}) or is_numeric($item->attributes->{$key})) {
+                                                echo "<td>" . $item->attributes->{$key} . "</td>\n";
+                                            } else {
+                                                echo "<td>" . json_encode($item->attributes->{$key}) . "</td>\n";
+                                            }
                                         }
                                         ?>
                                     <?php } ?>
