@@ -8,6 +8,18 @@ if (!$db->fieldExists('kernel_version', 'devices')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if (!$db->fieldExists('tags', 'devices')) {
+    $sql = "ALTER TABLE `devices` ADD `tags` text NOT NULL DEFAULT '[]' AFTER kernel_version";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+$sql = "UPDATE `configuration` SET `value` = CONCAT(`value`, ',devices.tags') WHERE `name` = 'devices_default_retrieve_columns' AND `value` NOT LIKE '%devices.tags%'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "DELETE FROM `dashboards` WHERE `name` = 'Summary Dashboard' and `description` = 'Summary Information'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

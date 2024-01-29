@@ -56,6 +56,9 @@ if (!empty($included['fields'])) {
                                                     <?php if (!empty($resource->snmp_oid)) { ?>
                                                     <li class="list-group-item section_toggle" data-section="snmp_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/snmp_details.svg" alt=""> <a href="#"><?= __('SNMP Details') ?></a></li>
                                                     <?php } ?>
+                                                    <?php if ($config->product === 'enterprise') { ?>
+                                                    <li class="list-group-item section_toggle" data-section="tags_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/tags.svg" alt=""> <a href="#"><?= __('Tags') ?></a></li>
+                                                    <?php } ?>
                                                     <?php if (!empty($included['windows'])) { ?>
                                                     <li class="list-group-item section_toggle" data-section="windows_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/windows.svg" alt=""> <a href="#"><?= __('Windows') ?></a></li>
                                                     <?php } ?>
@@ -912,6 +915,25 @@ if (!empty($included['fields'])) {
                                     </div>
                                 </div>
                             </div>
+
+                            <?php if ($config->product === 'enterprise') { ?>
+                            <div style="margin-bottom:20px; display:none;" class="card" id="tags_section">
+                                <?=  device_panel('tags', $user->toolbar_style, 0, base_url() . "icons/tags.svg", $update); ?>
+                                <div class="card-body">
+                                        <?php foreach ($resource->tags as $tag) {
+                                            $othertags = array();
+                                            foreach ($resource->tags as $mytag) {
+                                                if ($mytag !== $tag) {
+                                                    $othertags[] = $mytag;
+                                                }
+                                            }
+                                            $othertags = json_encode($othertags);
+                                            echo '<button type="button" class="btn btn-primary rounded-pill" style="margin-right:20px;"><strong><a style="color:white;" href="' . url_to('devicesCollection') . '?devices.tags=' . $tag . '">' . $tag . '</a>&nbsp;&nbsp;&nbsp;</strong><a href="#" class="delete_tags" style="color:white;" data-tags=\'' . $othertags . '\'><span class="badge text-bg-secondary"><i class="close white-text fas fa-times"></i></span></a></button>';
+                                        }
+                                        ?>
+                                </div>
+                            </div>
+                            <?php } ?>
 
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="windows_section">
@@ -2396,6 +2418,13 @@ window.onload = function () {
     <?php } else { ?>
     $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
     <?php } ?>
+
+    $("#device_panel_tags").append('<div id="tags_control" class="btn-group" style="padding-left:20px; height:40px; display:none;" role="group"><div class="input-group"><input type="text" data-tags=\'<?= json_encode($resource->tags) ?>\' id="tags_add" class="form-control form-control-sm"><div class="float-end" style="padding-left:4px;"><button data-attribute="tags" class="btn btn-outline-success submit" title="Submit" style=""><span style="font-size: 1.2rem;" class="fa fa-check"></span></button></div></div></div>');
+
+    $(document).on('click', '#add_tags', function (e) {
+        $("#tags_control").css('display', 'block');
+    });
+
 
 }
 </script>

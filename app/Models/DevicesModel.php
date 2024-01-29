@@ -46,6 +46,11 @@ class DevicesModel extends BaseModel
         $joined_tables = array();
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
+                if ($filter->name === 'devices.tags' and $filter->operator === '=') {
+                    $filter->function = 'like';
+                    $filter->operator = '';
+                    $filter->value = '"' . $filter->value . '"';
+                }
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
             } else {
                 $this->builder->{$filter->function}($filter->name, $filter->value);
@@ -71,9 +76,10 @@ class DevicesModel extends BaseModel
             return array();
         }
         $result = $query->getResult();
+        $count = count($result);
 
         if (isset($result[0]->type) and isset($result[0]->last_seen_by) and $instance->config->product !== 'community') {
-            for ($i=0; $i < count($result); $i++) {
+            for ($i=0; $i < $count; $i++) {
                 # BAD
                 if ($result[$i]->last_seen_by === 'nmap' and ($result[$i]->type === 'unclassified' or $result[$i]->type === 'unknown')) {
                     $result[$i]->audit_class = 'fa fa-times text-danger';
@@ -113,6 +119,18 @@ class DevicesModel extends BaseModel
                 }
             }
         }
+
+        if (isset($result[0]->tags)) {
+            for ($i=0; $i < $count; $i++) {
+                if (!empty($result[$i]->tags)) {
+                    $result[$i]->tags = @json_decode($result[$i]->tags);
+                }
+                if (empty($result[$i]->tags)) {
+                    $result[$i]->tags = array();
+                }
+            }
+        }
+
         return format_data($result, $resp->meta->collection);
     }
 
@@ -591,6 +609,14 @@ class DevicesModel extends BaseModel
             return array();
         }
         $device = $query->getResult();
+        if (isset($device[0]->tags)) {
+            if (!empty($device[0]->tags)) {
+                $device[0]->tags = @json_decode($device[0]->tags);
+            }
+            if (empty($device[0]->tags)) {
+                $device[0]->tags = array();
+            }
+        }
         if (!empty($device[0]->instance_tags)) {
             $device[0]->instance_tags = json_decode($device[0]->instance_tags);
         }

@@ -77,6 +77,10 @@ $(document).ready(function () {
                 return;
             }
         }
+        if (attribute == 'tags' && collection == 'devices') {
+            value = JSON.parse($("#tags_add").attr("data-tags"));
+            value.push($("#tags_add").val());
+        }
         if (attribute.indexOf(".") === -1) {
             data["data"]["attributes"][attribute] = value;
         } else {
@@ -113,7 +117,11 @@ $(document).ready(function () {
             data: {data : data},
             success: function (data) {
                 $("#liveToastSuccess-header").text("Update Succeeded");
-                $("#liveToastSuccess-body").text(attribute + " has been updated.");
+                if (attribute == 'tags' && collection == 'devices') {
+                    $("#liveToastSuccess-body").text(attribute + " has been updated. Refresh page to update.");
+                } else {
+                    $("#liveToastSuccess-body").text(attribute + " has been updated.");
+                }
                 var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
                 var toastList = toastElList.map(function(toastEl) {
                     return new bootstrap.Toast(toastEl)
@@ -147,6 +155,9 @@ $(document).ready(function () {
         $(".submit[data-attribute='" + attribute.replace(/\./g, '\\.') + "']").hide();
         $(".cancel[data-attribute='" + attribute.replace(/\./g, '\\.') + "']").hide();
         $(".form-help[data-attribute='" + attribute.replace(/\./g, '\\.') + "']").html('<br />');
+        if (attribute == 'tags' && collection == 'devices') {
+            $("#tags_control").css('display', 'none');
+        }
     });
 
     /* Delete links */
@@ -213,6 +224,51 @@ $(document).ready(function () {
                 console.log(JSON.stringify(jqXHR));
                 alert(jqXHR.responseJSON.errors[0].code + ": " + jqXHR.responseJSON.errors[0].detail);
                 return false;
+            }
+        });
+    });
+
+
+    /* Inline edit, click DELETE on tags */
+    $(document).on('click', '.delete_tags', function (e) {
+        if (confirm("Are you sure you want to delete this tag?") !== true) {
+            return;
+        }
+        var attribute = 'tags';
+        var value = $(this).attr("data-tags");
+        var data = {};
+        data["data"] = {};
+        data["data"]["id"] = id;
+        data["data"]["type"] = collection;
+        data["data"]["attributes"] = {};
+        data["data"]["attributes"]["tags"] = value;
+        data = JSON.stringify(data);
+        console.log(data);
+        $.ajax({
+            type: "PATCH",
+            url: id,
+            contentType: "application/json",
+            data: {data : data},
+            success: function (data) {
+                $("#liveToastSuccess-header").text("Update Succeeded");
+                $("#liveToastSuccess-body").text(attribute + " has been updated. Refresh page to update.");
+                var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
+                var toastList = toastElList.map(function(toastEl) {
+                    return new bootstrap.Toast(toastEl)
+                });
+                toastList.forEach(toast => toast.show());
+            },
+            error: function (data) {
+                data = JSON.parse(data.responseText);
+                $("#liveToastFailure-header").text("Update Failed");
+                $("#liveToastFailure-body").text(data.message);
+                var toastElList = [].slice.call(document.querySelectorAll('.toast-failure'));
+                var toastList = toastElList.map(function(toastEl) {
+                    return new bootstrap.Toast(toastEl)
+                });
+                toastList.forEach(toast => toast.show());
+                console.log(data);
+
             }
         });
     });
