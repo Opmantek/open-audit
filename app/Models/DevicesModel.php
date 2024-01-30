@@ -168,9 +168,11 @@ class DevicesModel extends BaseModel
                 $data->name = '';
             }
         }
-        if (strpos($data->name, '.') !== false) {
+        if (strpos($data->name, '.') !== false and filter_var($data->name, FILTER_VALIDATE_IP) === false) {
+            // We have a name, not an IP, that contains a 'dot'. Split it and use the first item as the name.
             $temp = explode('.', $data->name);
             $data->name = $temp[0];
+            unset($temp);
         }
         if (empty($data->org_id)) {
             $data->org_id = 1;
