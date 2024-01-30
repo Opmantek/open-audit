@@ -76,9 +76,9 @@ class ScriptsModel extends BaseModel
         }
         if ($audit_script !== '') {
             if (php_uname('s') == 'Windows NT') {
-                $source = FCPATH . '..\\other\\scripts\\' . $source_name;
+                $source = ROOTPATH . 'other\\scripts\\' . $source_name;
             } else {
-                $source = FCPATH . '../other/scripts/' . $source_name;
+                $source = ROOTPATH . 'other/scripts/' . $source_name;
             }
             $sql = "SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
             $result = $this->db->query($sql)->getResult();
@@ -337,7 +337,7 @@ class ScriptsModel extends BaseModel
             log_message('error', 'No script returned when ScriptsModel::download called with ID ' . $id);
             return null;
         }
-        $filename = FCPATH . '../other/' . $data->based_on;
+        $filename = ROOTPATH . 'other/' . $data->based_on;
         if (!file_exists($filename)) {
             log_message('error', "Script does not exist on filesystem for $filename.");
             return null;
