@@ -77,6 +77,12 @@ class OpenAudit extends BaseConfig
             if ($row->name === 'oae_prompt') {
                 $this->oae_prompt_id = intval($row->id);
             }
+            if ($row->name === 'license_string') {
+                $this->license_string_id = intval($row->id);
+            }
+            if ($row->name === 'license_string_collector') {
+                $this->license_string_collector_id = intval($row->id);
+            }
         }
 
         if (!empty($this->oae_product)) {
