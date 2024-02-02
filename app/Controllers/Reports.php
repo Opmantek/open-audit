@@ -66,9 +66,9 @@ class Reports extends BaseController
 
         $breadcrumb = new stdClass();
         $breadcrumb->url = url_to('reportsExecute', $this->resp->meta->id);
-        $breadcrumb->name = $this->resp->meta->name ;
+        $breadcrumb->name = (!empty($this->resp->meta->name)) ? $this->resp->meta->name : '';
         $this->resp->meta->breadcrumbs[] = $breadcrumb;
-        $this->resp->data = format_data($this->resp->data, 'devices');
+        $this->resp->data = (!empty($this->resp->data)) ? format_data($this->resp->data, 'devices') : array();
 
         $this->resp->meta->total = count($this->resp->data);
         $this->resp->meta->filtered = count($this->resp->data);
@@ -83,7 +83,11 @@ class Reports extends BaseController
             return true;
         }
         if (empty($this->resp->data)) {
-            \Config\Services::session()->setFlashdata('error', 'No data returned when running report.');
+            if (empty($this->resp->errors)) {
+                \Config\Services::session()->setFlashdata('error', 'No data returned when running report.');
+            } else {
+                \Config\Services::session()->setFlashdata('error', $this->resp->errors);
+            }
             return redirect()->route('devicesCollection');
         }
         if ($this->resp->meta->filtered === $this->resp->meta->limit) {
