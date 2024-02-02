@@ -1535,7 +1535,7 @@ DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `request` text NOT NULL,
-  `response` text NOT NULL,
+  `response` longtext NOT NULL,
   `timestamp` datetime NOT NULL DEFAULT current_timestamp(),
   `output` mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
