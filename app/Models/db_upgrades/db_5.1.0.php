@@ -30,6 +30,11 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "ALTER TABLE `enterprise` CHANGE `response` `response` LONGTEXT NOT NULL DEFAULT ''";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20240104' WHERE `name` = 'internal_version'";
 $db->query($sql);
