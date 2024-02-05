@@ -928,7 +928,7 @@ if (!empty($included['fields'])) {
                                                 }
                                             }
                                             $othertags = json_encode($othertags);
-                                            echo '<button type="button" class="btn btn-primary rounded-pill" style="margin-right:20px;"><strong><a style="color:white;" href="' . url_to('devicesCollection') . '?devices.tags=' . $tag . '">' . $tag . '</a>&nbsp;&nbsp;&nbsp;</strong><a href="#" class="delete_tags" style="color:white;" data-tags=\'' . $othertags . '\'><span class="badge text-bg-secondary"><i class="close white-text fas fa-times"></i></span></a></button>';
+                                            echo '<button type="button" class="btn btn-primary rounded-pill" style="margin-right:20px;"><strong><a style="color:white;" href="' . url_to('devicesCollection') . '?devices.tags=' . html_entity_decode($tag, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '">' . html_entity_decode($tag, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</a>&nbsp;&nbsp;&nbsp;</strong><a href="#" class="delete_tags" style="color:white;" data-tags=\'' . $othertags . '\'><span class="badge text-bg-secondary"><i class="close white-text fas fa-times"></i></span></a>';
                                         }
                                         ?>
                                 </div>
