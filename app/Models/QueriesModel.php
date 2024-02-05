@@ -138,10 +138,14 @@ class QueriesModel extends BaseModel
             $filter = "devices.org_id IN ({$user->org_list})";
             $type = 'devices';
         } else {
-            $words = explode(' ', $sql);
-            $tables = explode('.', $words[1]);
-            $filter = $tables[0] . ".org_id IN ({$user->org_list})";
-            $type = $tables[0];
+            $split1 = explode('.', $sql);
+            $split2 = explode(' ', $split1[0]);
+            $split3 = preg_split("/[^a-z_]/i", end($split2));
+            $filter = end($split3) . ".org_id IN ({$user->org_list})";
+            if (end($split3) === 'orgs') {
+                $filter = end($split3) . ".id IN ({$user->org_list})";
+            }
+            $type = end($split3);
         }
         $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
         $sql .= ' LIMIT ' . $instance->resp->meta->limit;
