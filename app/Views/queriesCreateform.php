@@ -29,6 +29,10 @@ include 'shared/create_functions.php';
                                     </div>
                                 </div>
 
+                                <?php if ($config->advanced_queries) { ?>
+                                <?= create_select('data[attributes][advanced]', __('Advanced'), '', $dictionary->attributes->create) ?>
+                                <?php } ?>
+
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][sql]"><?= __('SQL'); ?> <span style="color: #dc3545;">*</span></label>
@@ -72,6 +76,7 @@ include 'shared/create_functions.php';
 window.onload = function () {
     $(document).ready(function () {
         $("#data\\[attributes\\]\\[menu_display\\]").val("y");
+        $("#data\\[attributes\\]\\[advanced\\]").val("n");
     });
 }
 </script>
