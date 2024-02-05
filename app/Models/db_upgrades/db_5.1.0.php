@@ -15,6 +15,13 @@ if (!$db->fieldExists('tags', 'devices')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if (!$db->fieldExists('advanced', 'queries')) {
+    $sql = "ALTER TABLE `queries` ADD `advanced` enum('y','n') NOT NULL DEFAULT 'n' AFTER link";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 $sql = "UPDATE `configuration` SET `value` = CONCAT(`value`, ',devices.tags') WHERE `name` = 'devices_default_retrieve_columns' AND `value` NOT LIKE '%devices.tags%'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

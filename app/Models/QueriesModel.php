@@ -59,7 +59,7 @@ class QueriesModel extends BaseModel
         if (empty($data)) {
             return null;
         }
-        if (! empty($data->sql)) {
+        if (!empty($data->sql) and (empty($data->advanced) or $data->advanced === 'n')) {
             if (stripos($data->sql, 'update ') !== false or stripos($data->sql, 'update`') !== false) {
                 $error['message'] = 'SQL cannot contain UPDATE clause';
                 \Config\Services::session()->setFlashdata('error', json_encode($error));
@@ -137,6 +137,7 @@ class QueriesModel extends BaseModel
         if (stripos($sql, "SELECT devices") !== false and stripos($sql, "SELECT devices") === 0) {
             $filter = "devices.org_id IN ({$user->org_list})";
             $type = 'devices';
+            $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
         } else {
             $split1 = explode('.', $sql);
             $split2 = explode(' ', $split1[0]);
@@ -146,8 +147,12 @@ class QueriesModel extends BaseModel
                 $filter = end($split3) . ".id IN ({$user->org_list})";
             }
             $type = end($split3);
+            $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
         }
-        $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
+        if (!empty($instance->config->advanced_queries) and $instance->config->advanced_queries and $query->advanced === 'y') {
+            $sql = str_ireplace('@orgs', "({$user->org_list})", $sql);
+        }
+
         $sql .= ' LIMIT ' . $instance->resp->meta->limit;
         $query = $this->db->query($sql);
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
@@ -274,7 +279,8 @@ class QueriesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        if (! empty($data->sql)) {
+        $instance = & get_instance();
+        if (!empty($data->sql) and !$instance->config->advanced_queries) {
             if (stripos($data->sql, 'update ') !== false or stripos($data->sql, 'update`') !== false) {
                 $error = new \stdClass();
                 $error->level = 'error';
