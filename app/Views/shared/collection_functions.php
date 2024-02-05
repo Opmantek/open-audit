@@ -1,5 +1,10 @@
 <?php
 
+$GLOBALS['show_all'] = false;
+if (!empty($meta->total) and !empty($meta->limit) and $meta->total > $meta->limit and $meta->total < 500) {
+    $GLOBALS['show_all'] = $meta->total;
+}
+
 function collection_card_header(string $collection = '', string $icon = '', object $user = null, string $label = '', string $url = ''): string
 {
     $style = @$user->toolbar_style;
@@ -75,14 +80,23 @@ function collection_card_header(string $collection = '', string $icon = '', obje
         $defaults_button = '';
         if (in_array($collection, ['attributes', 'configuration', 'dashboards', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'queries', 'roles', 'rules', 'summaries', 'users', 'widgets'])) {
             if ($style === 'icontext') {
-                # $defaults_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\"><span style=\"margin-right:6px;\" class=\"{$icon}\"></span>" . __("Default Items") . "</a>";
                 $defaults_button = "<a id=\"button_default_items\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-gears text-primary\"></span>" . __("Default Items") . "</a>";
             } else if ($style === 'icon') {
-                # $defaults_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\"><span class=\"{$icon}\"></span></a>";
                 $defaults_button = "<a id=\"button_default_items\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\"><span class=\"fa-solid fa-gears text-primary\"></span></a>";
             } else {
                 $defaults_button = "<a id=\"button_default_items\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection.'Defaults') . "\">" . __("Default Items") . "</a>";
             }
+        }
+    }
+
+    $show_all_button = '';
+    if (!empty($GLOBALS['show_all']) and is_int($GLOBALS['show_all'])) {
+        if ($style === 'icontext') {
+            $show_all_button = "<a id=\"button_all\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Show All") . "\" href=\"" . url_to($collection.'Collection') . "?limit=" . $GLOBALS['show_all'] . "\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-eye text-primary\"></span>" . __("Show All") . "</a>";
+        } else if ($style === 'icon') {
+            $show_all_button = "<a id=\"button_all\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Show All") . "\" href=\"" . url_to($collection.'Collection') . "?limit=" . $GLOBALS['show_all'] . "\"><span class=\"fa-regular fa-eye text-primary\"></span></a>";
+        } else {
+            $show_all_button = "<a id=\"button_all\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Show All") . "\" href=\"" . url_to($collection.'Collection') . "?limit=" . $GLOBALS['show_all'] . "\">" . __("Show All") . "</a>";
         }
     }
 
@@ -94,6 +108,7 @@ function collection_card_header(string $collection = '', string $icon = '', obje
                             <div class=\"btn-group btn-group-sm float-end\" role=\"group\" id=\"oa_panel_buttons\">
                                 <div class=\"page-title-right\">
                                 $create_button
+                                $show_all_button
                                 $import_csv_button
                                 $import_json_button
                                 $export_csv_button

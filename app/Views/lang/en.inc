@@ -1342,6 +1342,7 @@ $GLOBALS["lang"]["Share Name"]="Share Name";
 $GLOBALS["lang"]["Shares"]="Shares";
 $GLOBALS["lang"]["Shelf"]="Shelf";
 $GLOBALS["lang"]["Shell"]="Shell";
+$GLOBALS["lang"]["Show All"]="Show All";
 $GLOBALS["lang"]["SID"]="SID";
 $GLOBALS["lang"]["Sid"]="Sid";
 $GLOBALS["lang"]["Sidebar"]="Sidebar";
