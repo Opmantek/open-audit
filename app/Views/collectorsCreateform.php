@@ -20,7 +20,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label class="form-label" for="data[attributes][resource]"><?= __('Type'); ?> <span style="color: #dc3545;">*</span></label>
+                                        <label class="form-label" for="data[attributes][type]"><?= __('Type'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]" required>
                                             <option value="collector"><?= __('Collector'); ?></option>
                                             <option value="stand-alone"><?= __('Stand-Alone'); ?></option>
