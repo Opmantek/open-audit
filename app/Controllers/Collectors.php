@@ -30,5 +30,16 @@ namespace App\Controllers;
  */
 class Collectors extends BaseController
 {
-
+    /**
+     * Return JSON
+     *
+     * @access public
+     * @return void
+     */
+    public function execute($id)
+    {
+        $this->resp->meta->format = 'json';
+        output($this);
+        return;
+    }
 }
