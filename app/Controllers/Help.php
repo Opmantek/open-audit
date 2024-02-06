@@ -62,6 +62,35 @@ class Help extends BaseController
     }
 
     /**
+     * The Welcome page
+     *
+     * @access public
+     * @return NULL
+     */
+    public function collector()
+    {
+        $tasksModel = new \App\Models\TasksModel();
+        $tasks = $tasksModel->collection();
+        foreach ($tasks as $task) {
+            if ($task->attributes->type === 'collector') {
+                $this->resp->data[] = $task;
+            }
+        }
+
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'data' => filter_response($this->resp->data),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('dashboardsCollector', [])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+    }
+
+    /**
      * The Features page
      *
      * @access public
