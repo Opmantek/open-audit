@@ -69,10 +69,13 @@ class Help extends BaseController
      */
     public function collector()
     {
+        if (empty($this->config->servers)) {
+            return redirect()->route('home');
+        }
         $tasksModel = new \App\Models\TasksModel();
-        $tasks = $tasksModel->collection();
+        $tasks = $tasksModel->listAll();
         foreach ($tasks as $task) {
-            if ($task->attributes->type === 'collector') {
+            if ($task->type === 'collector') {
                 $this->resp->data[] = $task;
             }
         }

@@ -81,7 +81,7 @@ $routes->get('help', 'Help::about', ['filter' => \App\Filters\Session::class, 'a
 $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
 $routes->get('prereq', 'Help::prereq', ['filter' => \App\Filters\Session::class, 'as' => 'prereq']);
 $routes->get('welcome', 'Help::welcome', ['filter' => \App\Filters\Session::class, 'as' => 'welcome']);
-$routes->get('dashboards/collector', 'Help::collector', ['filter' => \App\Filters\Session::class, 'as' => 'dashboardCollector']);
+$routes->get('collector', 'Help::collector', ['filter' => \App\Filters\Session::class, 'as' => 'dashboardCollector']);
 $routes->get('appLicenses', 'Help::licenses', ['filter' => \App\Filters\Session::class, 'as' => 'appLicenses']);
 $routes->get('getting_started', 'Help::gettingStarted', ['filter' => \App\Filters\Session::class, 'as' => 'getting_started']);
 $routes->get('discovery_issues/(:num)', 'Help::discoveryIssues/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveryIssues']);

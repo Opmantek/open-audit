@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
 $every = '';
-if (stripos($data[0]->{'attributes'}->{'hour'}, '*/') !== false) {
-    $every = str_replace('*/', '', $data[0]->{'attributes'}->{'hour'}) . ' hours';
+if (stripos($data[0]->{'hour'}, '*/') !== false) {
+    $every = str_replace('*/', '', $data[0]->{'hour'}) . ' hours';
 }
-if (stripos($data[0]->{'attributes'}->{'minute'}, '*/') !== false) {
-    $minute = str_replace('*/', '', $data[0]->{'attributes'}->{'minute'});
+if (stripos($data[0]->{'minute'}, '*/') !== false) {
+    $minute = str_replace('*/', '', $data[0]->{'minute'});
     if ($every != "") {
         $every .= ', ' . $minute . ' minutes';
     } else {
@@ -29,8 +29,8 @@ if (stripos($data[0]->{'attributes'}->{'minute'}, '*/') !== false) {
                         <p class="text-center"><br />
                             <?php if ($every != '') { ?>
                                 This collector requests tasks every <?= $every ?>.<br /><br />
-                                <?php if ($data[0]->{'attributes'}->{'last_run'} != "2000-01-01 00:00:00") { ?>
-                                    The last time this task was run was <?= $data[0]->{'attributes'}->{'last_run'}; ?>.<br /><br />
+                                <?php if ($data[0]->{'last_run'} != "2000-01-01 00:00:00") { ?>
+                                    The last time this task was run was <?= $data[0]->{'last_run'}; ?>.<br /><br />
                                 <?php } else { ?>
                                     This task has not yet been run.<br /><br />
                                 <?php } ?>

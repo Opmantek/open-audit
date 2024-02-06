@@ -119,7 +119,12 @@ class TasksModel extends BaseModel
     {
         $result = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
         $type = ucfirst($result->type);
-        $namespace = "\\App\\Models\\" . $type . "Model";
+        if ($type != 'Collector') {
+            $namespace = "\\App\\Models\\" . $type . "Model";
+        }
+        if ($type === 'Collector') {
+            $namespace = "\\App\\Models\\CollectorsModel";
+        }
         $typeModel = new $namespace;
         $included[strtolower($type)] = $typeModel->listUser();
 
