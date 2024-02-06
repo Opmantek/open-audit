@@ -854,7 +854,7 @@ if (!function_exists('response_get_id')) {
         } else {
             if ($collection === 'components') {
                 // We must have a numeric ID for components because we don't know which table the user is referencing here.
-                // If you need to ptovide a name, do it thus: components.type=processor&components.name=Intel Core...
+                // If you need to provide a name, do it thus: components.type=processor&components.name=Intel Core...
                 // That will give you a filtered collection
                 return null;
             }
@@ -884,15 +884,15 @@ if (!function_exists('response_get_id')) {
                         $id = null;
                     }
                 } else if ($collection === 'collectors') {
-                    $sql = "SELECT id FROM collectors WHERE uuid = ? ORDER BY id DESC LIMIT 1";
-                    $result = $db->query($sql, [$id])->getResult();
-                    if (!empty($result)) {
-                        log_message('debug', "ID to Name match in collectors (Provided UUID: $id, Database ID: " . intval($result[0]->id) . ").");
-                        $id = intval($result[0]->id);
-                    } else {
-                        log_message('warning', "No UUID match in collectors (Provided UUID: $id).");
-                        $id = null;
-                    }
+                    // $sql = "SELECT id FROM collectors WHERE uuid = ? ORDER BY id DESC LIMIT 1";
+                    // $result = $db->query($sql, [$id])->getResult();
+                    // if (!empty($result)) {
+                    //     log_message('debug', "ID to Name match in collectors (Provided UUID: $id, Database ID: " . intval($result[0]->id) . ").");
+                    //     $id = intval($result[0]->id);
+                    // } else {
+                    //     log_message('warning', "No UUID match in collectors (Provided UUID: $id).");
+                    //     $id = null;
+                    // }
                 } else if ($collection === 'devices') {
                     // devices
                     $sql = "SELECT id FROM devices WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
@@ -1252,6 +1252,10 @@ if (!function_exists('response_get_permission_id')) {
         } else if (!in_array($collection, response_valid_collections())) {
             $sql = "SELECT devices.org_id AS org_id FROM `{$collection}` LEFT JOIN devices ON {$collection}.device_id = devices.id WHERE {$collection}.id = ?";
             $result = $db->query($sql, [$id])->getResult();
+        }
+
+        if ($collection === 'collectors') {
+            return true;
         }
 
         if (count($result) === 0) {
