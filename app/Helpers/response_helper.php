@@ -241,7 +241,7 @@ if (!function_exists('response_create')) {
         }
 
         // If we're creating data (POST), we should have an access token (configuration depending)
-        if (!empty($response->meta->received_data)) {
+        if (!empty($response->meta->received_data) and !($response->meta->collection === 'collectors' and $response->meta->action === 'create')) {
             $session = \Config\Services::session();
             if ($response->meta->request_method === 'POST' && !empty($config->access_token_enable) && $config->access_token_enable === 'y') {
                 if (empty($response->meta->received_data->access_token)) {
