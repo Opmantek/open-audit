@@ -471,6 +471,11 @@ if (!function_exists('response_create')) {
             }
             if (!empty($output)) {
                 log_message('debug', 'Output: ' . json_encode($output));
+                $string = 'There is an issue with Enterprise functionality. Output below:';
+                foreach ($output as $line) {
+                    $string = $string . "<br>" . $line;
+                }
+                \Config\Services::session()->setFlashdata('error', $string);
             }
             $sql = "SELECT * FROM enterprise WHERE id = $id";
             $result = $db->query($sql)->getResult();
