@@ -90,8 +90,8 @@ class Logon extends Controller
             if ($format === 'html') {
                 return redirect()->to(site_url('logon'));
             }
-            header('HTTP/1.0 401 Unauthorized');
-            echo '{"message":"Credentials required"}';
+            $this->response->setStatusCode(401);
+            return $this->response->setJSON('{"message":"Credentials required"}');
         }
 
         $user = $logonModel->logon($username, $password);
@@ -125,8 +125,8 @@ class Logon extends Controller
         if ($format === 'html') {
             return redirect()->to(site_url('logon'));
         }
-        header('HTTP/1.0 401 Unauthorized');
-        echo '{"message":"Credentials required"}';
+        $this->response->setStatusCode(401);
+        return $this->response->setJSON('{"message":"Credentials required"}');
     }
 
     public function delete()
