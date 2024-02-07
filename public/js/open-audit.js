@@ -110,12 +110,26 @@ $(document).ready(function () {
         }
         data = JSON.stringify(data);
 
+        // We don't normally supply data-url, but in the case where our URL doesn't match (see Collector dashboard) we need to
+        if ($(this).attr("data-url")) {
+            $url = $(this).attr("data-url");
+        } else {
+            $url = id;
+        }
+        $redirect = "";
+        if ($(this).attr('data-redirect')) {
+            console.log($(this).attr('data-redirect'));
+            $redirect = $(this).attr('data-redirect');
+        }
         $.ajax({
             type: "PATCH",
-            url: id,
+            url: $url,
             contentType: "application/json",
             data: {data : data},
             success: function (data) {
+                if ($redirect) {
+                    window.location = $redirect;
+                }
                 $("#liveToastSuccess-header").text("Update Succeeded");
                 if (attribute == 'tags' && collection == 'devices') {
                     $("#liveToastSuccess-body").text(attribute + " has been updated. Refresh page to update.");

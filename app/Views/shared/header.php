@@ -93,7 +93,10 @@ if ($config->product !== 'community') {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarView" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Dashboards') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarView">
-                                <?php if (!empty($dashboards)) {
+                                <?php if (!empty($config->servers) and $config->product === 'enterprise') {
+                                    echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardCollector') . "\">" . __("Collector Dashboard") . "</a></li>\n";
+                                }
+                                if (!empty($dashboards)) {
                                     echo "\n";
                                     foreach ($dashboards as $dashboard) {
                                         if ($dashboard->type === 'dashboards' and $dashboard->attributes->name === 'Summary Dashboard') {

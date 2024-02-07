@@ -79,11 +79,20 @@ class Help extends BaseController
                 $this->resp->data[] = $task;
             }
         }
-
+        $configurationModel = new \App\Models\ConfigurationModel();
+        $configuration = $configurationModel->listAll();
+        foreach ($configuration as $item) {
+            if ($item->name === 'servers') {
+                $this->resp->meta->id = intval($item->id);
+                $this->resp->included = format_data(json_decode($item->value), 'servers');
+            }
+        }
+        $this->resp->meta->collection = 'configuration';
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
             'data' => filter_response($this->resp->data),
+            'included' => filter_response($this->resp->included),
             'meta' => filter_response($this->resp->meta),
             'orgs' => filter_response($this->orgsUser),
             'queries' => filter_response($this->queriesUser),
