@@ -193,6 +193,10 @@ class Collections extends BaseController
                 return true;
             } else {
                 if ($this->resp->meta->collection !== 'components') {
+                    if ($this->resp->meta->collection === 'collectors') {
+                        \Config\Services::session()->setFlashdata('success', "This server was registered as a Collector successfully.");
+                        return redirect()->route('dashboardCollector');
+                    }
                     \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
                     if ($this->resp->meta->collection === 'baselines_policies') {
                         return redirect()->route('baselinesRead', [$this->resp->meta->received_data->attributes->baseline_id]);
@@ -225,6 +229,9 @@ class Collections extends BaseController
                 output($this);
                 return true;
             } else {
+                if ($this->resp->meta->collection === 'collectors') {
+                    return redirect()->route('dashboardsExecute', [1]);
+                }
                 log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
                 if ($this->resp->meta->collection === 'components') {
                     $this->resp->meta->collection = 'devices';
