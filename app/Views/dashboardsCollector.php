@@ -3,15 +3,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
 $every = '';
-if (stripos($data[0]->{'hour'}, '*/') !== false) {
-    $every = str_replace('*/', '', $data[0]->{'hour'}) . ' hours';
-}
-if (stripos($data[0]->{'minute'}, '*/') !== false) {
-    $minute = str_replace('*/', '', $data[0]->{'minute'});
-    if ($every != "") {
-        $every .= ', ' . $minute . ' minutes';
-    } else {
-        $every = $minute . ' minutes';
+if (!empty($data[0]) and $included[0]->attributes->type === 'collector') {
+    if (stripos($data[0]->{'hour'}, '*/') !== false) {
+        $every = str_replace('*/', '', $data[0]->{'hour'}) . ' hours';
+    }
+    if (stripos($data[0]->{'minute'}, '*/') !== false) {
+        $minute = str_replace('*/', '', $data[0]->{'minute'});
+        if ($every != "") {
+            $every .= ', ' . $minute . ' minutes';
+        } else {
+            $every = $minute . ' minutes';
+        }
     }
 }
 ?>

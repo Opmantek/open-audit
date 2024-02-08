@@ -27,6 +27,9 @@ if ($config->product !== 'community') {
     $dashboard = (!empty($user->dashboard_id)) ? $user->dashboard_id : 1;
     $homepage = url_to('dashboardsExecute', $dashboard);
 }
+if (!empty($config->servers)) {
+    $homepage = url_to('dashboardCollector');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" class="h-100">
@@ -503,13 +506,18 @@ foreach ($config->modules as $module) {
 
                         <!-- User -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarUser" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">User: <?= htmlentities($user->name) ?></a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarUser" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('User') ?>: <?= htmlentities($user->name) ?></a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="<?= url_to('usersRead', $user->id) ?>"><?= __('Preferences'); ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('logoff') ?>" role="button"><?= __('Logout'); ?></a></li>
-                                <!--<li><a class="dropdown-item debug" href="#"><?= __('Debug'); ?></a></li>-->
                             </ul>
                         </li>
+
+                        <?php if (!empty($config->servers)) { ?>
+                        <li class="nav-item">
+                            <a href="<?= url_to('dashboardCollector') ?>" role="button" class="btn btn-primary"><?= $config->servers->type ?></a>
+                        </li>
+                        <?php } ?>
                     </ul>
                 </div>
             </div>
