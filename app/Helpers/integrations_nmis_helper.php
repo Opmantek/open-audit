@@ -741,7 +741,7 @@ if (!function_exists('integrations_update')) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($device));
             $output = curl_exec($ch);
             if (!is_string($output) || !strlen($output)) {
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could update device in NMIS.')";
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not update device in NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
