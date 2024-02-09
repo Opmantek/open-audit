@@ -30,6 +30,10 @@ include 'shared/create_functions.php';
                                     </div>
                                 </div>
 
+                                <div id="subnet">
+                                <?= create_text_field('data[attributes][subnet]', __('Subnet'), $dictionary->attributes->create) ?>
+                                </div>
+
                                 <div id="ad" style="display:none;">
                                 <?= create_text_field('data[attributes][ad_server]', __('Active Directory Server'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][ad_domain]', __('Active Directory Domain'), $dictionary->attributes->create) ?>
@@ -42,11 +46,6 @@ include 'shared/create_functions.php';
                                     <?= create_select('data[attributes][seed_restrict_to_private]', __('Restrict to Private'), [], $dictionary->attributes->create) ?>
                                 <?php } ?>
                                 </div>
-
-                                <div id="subnet">
-                                <?= create_text_field('data[attributes][subnet]', __('Subnet'), $dictionary->attributes->create) ?>
-                                </div>
-
 
                                 <?php
                                 $disabled = 'disabled';
@@ -153,7 +152,7 @@ window.onload = function () {
             } else if ($type == "seed") {
                 $("#ad").css("display", "none");
                 $("#seed").css("display", "block");
-                $("#subnet").css("display", "none");
+                $("#subnet").css("display", "block");
             }
         });
 

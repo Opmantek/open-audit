@@ -155,7 +155,6 @@ $(document).ready(function () {
                     return new bootstrap.Toast(toastEl)
                 });
                 toastList.forEach(toast => toast.show());
-                console.log(data);
                 $("#"+attribute).val($("#"+attribute).attr("data-original-value"));
 
             }
@@ -163,7 +162,6 @@ $(document).ready(function () {
         attribute = attribute.replace(/\|/g, '\\|'); /* for scan_options.open|filtered */
         attribute = attribute.replace(/\[/g, '\\['); /* for tasks.minute[] */
         attribute = attribute.replace(/\]/g, '\\]'); /* for tasks.minute[] */
-        $("#" + attribute.replace(/\./g, '\\.')).attr("data-original-value", value);
         $("#" + attribute.replace(/\./g, '\\.')).attr("disabled", true);
         $(".edit[data-attribute='" + attribute.replace(/\./g, '\\.') + "']").show();
         $(".submit[data-attribute='" + attribute.replace(/\./g, '\\.') + "']").hide();

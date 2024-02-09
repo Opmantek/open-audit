@@ -372,6 +372,78 @@ if (! function_exists('ip_address_to_db')) {
     }
 }
 
+if (! function_exists('subnet_validate')) {
+    # pass this function the $subnet string and it will check it is valid
+    function subnet_validate($subnet)
+    {
+        $error = new \stdClass();
+        $error->level = 'error';
+        $error->message = '';
+
+        if (!preg_match('/^[\d,\.,\/,-]*$/', $subnet)) {
+            $error->message = 'Invalid Subnet. Received (' . $subnet . ').';
+            log_message('error', $error->message);
+            $GLOBALS['stash'] = $error;
+            return '';
+        }
+        
+        if (strpos($subnet, '/') !== false and strpos($subnet, '-') !== false) {
+            // We cannot have both a range AND a slash
+            $error->message = 'A subnet cannot contain / and -. Received (' . $subnet . ').';
+            log_message('error', $error->message);
+            $GLOBALS['stash'] = $error;
+            return '';
+        }
+
+        if (substr_count($subnet, '.') !== 3) {
+            // We MUST have four octets (3x .)
+            $error->message = 'Subnet must contain four octets. Received (' . $subnet . ').';
+            log_message('error', $error->message);
+            $GLOBALS['stash'] = $error;
+            return '';
+        }
+
+        $net = explode('/', $subnet);
+        if (!empty($net[1])) {
+            // Validate the subnet mask
+            if ($net[1] < 1 or $net[1] > 32) {
+                $error->message = 'Subnet mask must be between 1 and 32. Received (' . $subnet . ').';
+                log_message('error', $error->message);
+                $GLOBALS['stash'] = $error;
+                return '';
+            }
+        }
+
+        $temp = explode('.', $net[0]);
+        for ($i=0; $i < count($temp); $i++) {
+            if (strpos($temp[$i], '-') !== false) {
+                $temp2 = explode('-', $temp[$i]);
+                if ($temp2[0] < 0 or $temp2[0] > 255) {
+                    $error->message = "Subnet octet " . ($i+1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
+                    log_message('error', $error->message);
+                    $GLOBALS['stash'] = $error;
+                    return '';
+                }
+                if ($temp2[1] < 0 or $temp2[1] > 255) {
+                    $error->message = "Subnet octet " . ($i+1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
+                    log_message('error', $error->message);
+                    $GLOBALS['stash'] = $error;
+                    return '';
+                }
+            }
+            if (strpos($temp[$i], '-') === false) {
+                if ($temp[$i] < 0 or $temp[$i] > 255) {
+                    $error->message = "Subnet octet " . ($i+1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
+                    log_message('error', $error->message);
+                    $GLOBALS['stash'] = $error;
+                    return '';
+                }
+            }
+        }
+        return $subnet;
+    }
+}
+
 if (! function_exists('dns_validate')) {
     # pass this function the $details object and it will check hostname, domain and fqdn
     # we need an ip or a hostname and a working DNS to get all details

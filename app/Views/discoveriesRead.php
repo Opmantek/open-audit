@@ -129,7 +129,17 @@ foreach ($included['discovery_scan_options'] as $item) {
                                     <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
                                     <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
                                     <?= read_field('type', $resource->type, $dictionary->columns->type) ?>
-                                    <?= read_field('subnet', $resource->subnet, $dictionary->columns->subnet, $update) ?>
+                                    <?php if ($resource->type === 'subnet' or $resource->type === 'seed') { ?>
+                                        <?= read_field('subnet', $resource->subnet, $dictionary->columns->subnet, $update) ?>
+                                    <?php } ?>
+                                    <?php if ($resource->type === 'seed') { ?>
+                                        <?= read_select('seed_restrict_to_subnet', $resource->seed_restrict_to_subnet, $dictionary->columns->seed_restrict_to_subnet, $update, __('Restrict to Subnet'), []) ?>
+                                        <?= read_select('seed_restrict_to_private', $resource->seed_restrict_to_private, $dictionary->columns->seed_restrict_to_private, $update, __('Restrict to Private'), []) ?>
+                                    <?php } ?>
+                                    <?php if ($resource->type === 'active directory') { ?>
+                                        <?= read_field('ad_domain', $resource->ad_domain, $dictionary->columns->ad_domain, $update) ?>
+                                        <?= read_field('ad_server', $resource->ad_server, $dictionary->columns->ad_server, $update) ?>
+                                    <?php } ?>
                                     <?= read_select('devices_assigned_to_org', $resource->devices_assigned_to_org, $dictionary->columns->devices_assigned_to_org, $update, __('Assign Devices to Organisation'), $orgs) ?>
                                     <?= read_select('devices_assigned_to_location', $resource->devices_assigned_to_location, $dictionary->columns->devices_assigned_to_location, $update, __('Assign Devices to Location'), $included['locations']) ?>
                                     <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>

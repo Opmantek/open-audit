@@ -91,14 +91,16 @@ class DiscoveriesModel extends BaseModel
         if (isset($data->device_id)) {
             $data->device_id = intval($data->device_id);
         }
-        if (! empty($data->discard)) {
+        if (!empty($data->discard)) {
             if ($data->discard !== 'n' && $data->discard !== 'y') {
                 unset($data->discard);
             }
         }
-        if (! empty($data->subnet)) {
-            if (! preg_match('/^[\d,\.,\/,-]*$/', $data->subnet)) {
-                $data->subnet = '';
+        if (!empty($data->subnet)) {
+            $data->subnet = subnet_validate($data->subnet);
+            if (empty($data->subnet)) {
+                \Config\Services::session()->setFlashdata('error', 'Discovery not created. ' . $GLOBALS['stash']->message);
+                return null;
             }
         }
         if (empty($data->match_options)) {
@@ -294,10 +296,15 @@ class DiscoveriesModel extends BaseModel
                 log_message('error', 'Missing or invalid field: seed_ip');
                 return null;
             }
-            if (empty($data->seed_restrict_to_subnet)) {
+            if (empty($data->subnet)) {
+                \Config\Services::session()->setFlashdata('error', 'Missing or invalid subnet provided to Discoveries::Create.');
+                log_message('error', 'Missing or invalid subnet provided to Discoveries::create.');
+                return null;
+            }
+            if (empty($data->seed_restrict_to_subnet) or $data->seed_restrict_to_subnet !== 'n') {
                 $data->seed_restrict_to_subnet = 'y';
             }
-            if (empty($data->seed_restrict_to_private)) {
+            if (empty($data->seed_restrict_to_private) or $data->seed_restrict_to_subnet !== 'n') {
                 $data->seed_restrict_to_private = 'y';
             }
         } else if ($data->type === 'cloud') {
@@ -1045,20 +1052,18 @@ class DiscoveriesModel extends BaseModel
         $error->level = 'error';
         $error->message = '';
 
-
         if (!empty($data->subnet)) {
-            if (!preg_match('/^[\d,\.,\/,-]*$/', $data->subnet)) {
-                $error->message = 'Discovery could not be updated - invalid Subnet supplied (' . $data->subnet . ').';
-                log_message('error', $error->message);
-                $GLOBALS['stash'] = $error;
+            $temp = $data->subnet;
+            $data->subnet = subnet_validate($data->subnet);
+            if (empty($data->subnet)) {
+                # \Config\Services::session()->setFlashdata('error', 'Discovery not updated. ' . $GLOBALS['stash']->message);
                 return false;
-            } else {
-                $data->description = 'Subnet - ' . $data->subnet;
             }
+            # $data->description = 'Subnet - ' . $data->subnet;
         }
 
         if (isset($data->ad_domain) and $data->ad_domain !== '') {
-            $data->description = 'Active Directory - ' . $data->ad_domain;
+            # $data->description = 'Active Directory - ' . $data->ad_domain;
         }
 
         if (isset($data->ad_server)) {
