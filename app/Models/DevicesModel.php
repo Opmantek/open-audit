@@ -158,10 +158,22 @@ class DevicesModel extends BaseModel
         if (empty($data->name)) {
             if (!empty($data->hostname)) {
                 $data->name = strtolower($data->hostname);
+                if (strpos($data->hostname, '.') !== false) {
+                    $temp = explode('.', $data->hostname);
+                    $data->name = $temp[0];
+                }
             } else if (!empty($data->sysName)) {
                 $data->name = strtolower($data->sysName);
+                if (strpos($data->sysName, '.') !== false) {
+                    $temp = explode('.', $data->sysName);
+                    $data->name = $temp[0];
+                }
             } else if (!empty($data->dns_hostname)) {
                 $data->name = strtolower($data->dns_hostname);
+                if (strpos($data->dns_hostname, '.') !== false) {
+                    $temp = explode('.', $data->dns_hostname);
+                    $data->name = $temp[0];
+                }
             } else if (!empty($data->ip)) {
                 $data->name = ip_address_from_db($data->ip);
             } else {
