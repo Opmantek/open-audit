@@ -160,7 +160,7 @@ class DiscoveryLogModel extends BaseModel
 
         // TODO - enable
         // If we are a collector, forward the log
-        if (!empty($instance->config->servers)) {
+        if (!empty($instance->config->servers) and !empty($instance->config->servers->type) and $instance->config->servers->type === 'collector') {
             $log = $newdata;
             $post_items = array();
             $post_items[] = 'type=discovery';
