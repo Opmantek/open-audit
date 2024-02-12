@@ -424,11 +424,10 @@ if (!function_exists('response_create')) {
         if (!empty($config->enterprise_binary) and $db->tableExists('enterprise')) {
             $function = $response->meta->collection . '_' . $response->meta->action;
             if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
-                !($function !== 'configuration_update' and ($response->meta->id !== $config->license_string_id or $response->meta->id !== $config->license_string_collector_id))) {
+                !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
-
             // We need Orgs for these, associated with the user, supply them here
             if ($response->meta->collection === 'reports' and $response->meta->action === 'execute') {
                 $response->meta->orgs = response_get_org_list($instance->user, 'devices');
@@ -508,7 +507,7 @@ if (!function_exists('response_create')) {
                 $db->query($sql);
             }
             if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
-                !($function !== 'configuration_update' and ($response->meta->id !== $config->license_string_id or $response->meta->id !== $config->license_string_collector_id))) {
+                !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
                 $response->meta->received_data = $received_data;
             }
             // TODO - Why does enterprise return this as a string?
