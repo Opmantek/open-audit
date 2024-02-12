@@ -42,6 +42,20 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$keys = $db->getIndexData('file');
+$file = false;
+foreach ($keys as $key) {
+    if ($key->name === 'name') {
+        $file = true;
+    }
+}
+if ($file) {
+    $sql = "CREATE INDEX `name` ON file (`name`)";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20240104' WHERE `name` = 'internal_version'";
 $db->query($sql);
