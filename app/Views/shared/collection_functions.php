@@ -126,9 +126,6 @@ function collection_card_header(string $collection = '', string $icon = '', obje
 function collection_button_read(string $collection = '', string $id = ''): string
 {
     $class="btn-primary";
-    if ($collection === 'devices') {
-        $class = "btn-devices";
-    }
     $return = "<td class=\"text-center\"><a title=\"" . __('View') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " " . $class . "\" href=\"" . url_to($collection.'Read', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>";
     return $return;
 }
