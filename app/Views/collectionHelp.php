@@ -98,7 +98,10 @@ if (in_array($meta->collection, ['dashboards', 'discoveries', 'groups', 'integra
                                     <td><?= $column->default ?></td>
                                     <td><?= $column->max_length ?></td>
                                     <td><?= $column->primary_key ?></td>
-                                    <td><?= @(str_replace("','", "', '", $column->values)) ?></td>
+                                    <td><?php
+                                    if (!empty($column->values)) {
+                                        (str_replace("','", "', '", $column->values));
+                                    } ?></td>
                                     <td class="text-center">
                                         <?php if (in_array($column->name, $dictionary->attributes->create)) { ?>
                                             <span class="fa fa-check text-success"></span>
