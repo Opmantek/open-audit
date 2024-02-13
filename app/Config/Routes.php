@@ -77,6 +77,7 @@ $routes->post('discoveries/(:num)/executeForm', 'Discoveries::executeCollector/$
 $routes->post('graph/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'graphReset']);
 
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
+$routes->get('api', 'Help::api', ['filter' => \App\Filters\Session::class, 'as' => 'api']);
 $routes->get('help', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'helpCollection']);
 $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
 $routes->get('prereq', 'Help::prereq', ['filter' => \App\Filters\Session::class, 'as' => 'prereq']);

@@ -62,6 +62,26 @@ class Help extends BaseController
     }
 
     /**
+     * The API documentation page
+     *
+     * @access public
+     * @return NULL
+     */
+    public function api()
+    {
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('helpApi', [])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+    }
+
+    /**
      * The Welcome page
      *
      * @access public

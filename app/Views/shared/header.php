@@ -148,6 +148,7 @@ if (!empty($config->servers)) {
                                         <?= menuItem('discoveries', 'r', $user, 'discoveriesCollection', __('List') . ' ' . __('Discoveries')) ?>
                                         <?= menuItem('discoveries', 'c', $user, 'discoveriesCreateForm', __('Create') . ' ' . __('Discoveries')) ?>
                                         <?= menuItem('discoveries', 'c', $user, 'discoveriesImportForm', __('Import') . ' ' . __('Discoveries')) ?>
+                                        <?= menuItem('discoveries', '', $user, 'discoveriesHelp', __('Learn About') . ' ' . __('Discoveries')) ?>
                                         <li><hr class="dropdown-divider"></li>
                                         <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('Global Discovery Options'), '?configuration.name=likediscovery_') ?>
                                         <?= menuItem('configuration', 'r', $user, 'configurationCollection', __('Discovery Match Options'), '?configuration.name=likematch_') ?>
@@ -456,11 +457,13 @@ if (!empty($config->servers)) {
                             <ul class="dropdown-menu" aria-labelledby="navbarHelp">
                                 <li><a class="dropdown-item" href="<?= url_to('about') ?>"><?= __('About') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('appLicenses') ?>"><?= __('Application Licenses') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('api') ?>"><?= __('API Documentation') ?></a></li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Defaults') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('attributes', '', $user, 'attributesDefaults', 'Attributes') ?>
                                         <?= menuItem('configuration', '', $user, 'configurationDefaults', 'Configuration') ?>
                                         <?= menuItem('dashboards', '', $user, 'dashboardsDefaults', 'Dashboards') ?>
+                                        <?= menuItem('discovery_scan_options', '', $user, 'discovery_scan_optionsDefaults', 'Dashboards') ?>
                                         <?= menuItem('fields', '', $user, 'fieldsDefaults', 'Fields') ?>
                                         <?= menuItem('groups', '', $user, 'groupsDefaults', 'Groups') ?>
                                         <?= menuItem('integrations', '', $user, 'integrationsDefaults', 'Integrations') ?>
@@ -469,6 +472,7 @@ if (!empty($config->servers)) {
                                         <?= menuItem('queries', '', $user, 'queriesDefaults', 'Queries') ?>
                                         <?= menuItem('roles', '', $user, 'rolesDefaults', 'Roles') ?>
                                         <?= menuItem('rules', '', $user, 'rulesDefaults', 'Rules') ?>
+                                        <?= menuItem('scripts', '', $user, 'scriptsDefaults', 'Scripts') ?>
                                         <?= menuItem('summaries', '', $user, 'summariesDefaults', 'Summaries') ?>
                                         <?= menuItem('users', '', $user, 'usersDefaults', 'Users') ?>
                                         <?= menuItem('widgets', '', $user, 'widgetsDefaults', 'Widgets') ?>

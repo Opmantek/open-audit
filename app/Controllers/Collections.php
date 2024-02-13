@@ -365,6 +365,11 @@ class Collections extends BaseController
      */
     public function help()
     {
+        $this->baseModel = model('App\Models\BaseModel');
+        $defaults = $this->baseModel->tableDefaults($this->resp->meta->collection);
+        $this->databaseModel = model('App\Models\DatabaseModel');
+        $data = $this->databaseModel->read($this->resp->meta->collection);
+
         $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
         return view('shared/header', [
             'config' => $this->config,
@@ -375,7 +380,7 @@ class Collections extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('collectionHelp', ['data' => $dictionary])
+            view('collectionHelp', ['data' => $data, 'dictionary' => $dictionary, 'defaults' => $defaults])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 

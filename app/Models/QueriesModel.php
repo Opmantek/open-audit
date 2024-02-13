@@ -366,6 +366,7 @@ class QueriesModel extends BaseModel
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->sql = 'Your SQL to select attributes that will populate this query.';
         $dictionary->columns->link = 'Unused.';
+        $dictionary->columns->advanced = 'Don\'t hold my hand, I know what I\'m doing. No filter and the ability to join custom tables.';
         $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the Report menu in the web interface.';
         $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

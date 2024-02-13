@@ -24,6 +24,7 @@
     U+FFFD;
 }
 
+
 html
 {
     font-size: 16px;
@@ -456,7 +457,11 @@ a.btn
 .dash-drop {
     border: 1px solid #adb5bd;
 }
-
+/* Shown on the Help pages for each Collection */
+.helpImage {
+    width:1100px;
+    cursor:zoom-in
+}
 
 
 /* TABLES */
