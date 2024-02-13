@@ -37,7 +37,7 @@ include 'shared/create_functions.php';
 
                                 <div id="div_options" style="display:none;"></div>
 
-                                <?php if (empty($config->servers)) { ?>
+                                <?php if (empty($config->servers) or (!empty($config->servers->type) and $config->servers->type === 'stand-alone')) { ?>
                                     <?php if (!empty($included['collectors'])) { ?>
                                         <div class="row" style="padding-top:16px;" id="div_collector" style="display:none;">
                                             <div class="offset-2 col-8" style="position:relative;">
@@ -59,7 +59,7 @@ include 'shared/create_functions.php';
 
                                 <?= create_text_field('data[attributes][first_run]', __('First Run'), $dictionary->attributes->create, '', 'date') ?>
 
-                                <?php if (!empty($config->servers)) { ?>
+                                <?php if (!empty($config->servers) and $config->servers->type === 'collector') { ?>
                                 <div class="row" style="padding-top:16px;" id="div_every">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][minute]" class="form-label"><?= __('Every') ?> <span style="color: #d9534f;">*</span></label>
@@ -78,7 +78,7 @@ include 'shared/create_functions.php';
                                 </div>
                                 <?php } ?>
 
-                                <?php if (empty($config->servers)) { ?>
+                                <?php if (empty($config->servers) or (!empty($config->servers->type) and $config->servers->type === 'stand-alone')) { ?>
                                 <div class="row" style="padding-top:16px;" id="div_minute">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][minute][]" class="form-label"><?= __('Minute') ?> <span style="color: #dc3545;">*</span></label><br />
@@ -94,7 +94,7 @@ include 'shared/create_functions.php';
                                 <?php } ?>
 
 
-                                <?php if (empty($config->servers)) { ?>
+                                <?php if (empty($config->servers) or (!empty($config->servers->type) and $config->servers->type === 'stand-alone')) { ?>
                                 <div class="row" style="padding-top:16px;" id="div_hour">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][hour][]" class="form-label"><?= __('Hour') ?> <span style="color: #dc3545;">*</span></label><br />
@@ -110,7 +110,7 @@ include 'shared/create_functions.php';
                                 <?php } ?>
 
 
-                                <?php if (empty($config->servers)) { ?>
+                                <?php if (empty($config->servers) or (!empty($config->servers->type) and $config->servers->type === 'stand-alone')) { ?>
                                 <div class="row" style="padding-top:16px;" id="div_day_of_month">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][day_of_month][]" class="form-label"><?= __('Day of Month') ?> <span style="color: #dc3545;">*</span></label><br />
@@ -125,7 +125,7 @@ include 'shared/create_functions.php';
                                 </div>
                                 <?php } ?>
 
-                                <?php if (empty($config->servers)) { ?>
+                                <?php if (empty($config->servers) or (!empty($config->servers->type) and $config->servers->type === 'stand-alone')) { ?>
                                 <div class="row" style="padding-top:16px;" id="div_month">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][month][]" class="form-label"><?= __('Month') ?> <span style="color: #dc3545;">*</span></label><br />
@@ -148,7 +148,7 @@ include 'shared/create_functions.php';
                                 </div>
                                 <?php } ?>
 
-                                <?php if (empty($config->servers)) { ?>
+                                <?php if (empty($config->servers) or (!empty($config->servers->type) and $config->servers->type === 'stand-alone')) { ?>
                                 <div class="row" style="padding-top:16px;" id="div_day_of_week">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][day_of_week][]" class="form-label"><?= __('Day Of Week') ?> <span style="color: #dc3545;">*</span></label><br />
