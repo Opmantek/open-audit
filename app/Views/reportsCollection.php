@@ -14,7 +14,6 @@ include 'shared/collection_functions.php';
                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"],[2,"asc"],[3,"asc"]]'>
                             <thead>
                                 <tr>
-                                    <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
                                     <th data-orderable="false" class="text-center"><?= __('Execute') ?></th>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {
@@ -28,7 +27,6 @@ include 'shared/collection_functions.php';
                             <?php if (!empty($data)) { ?>
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
-                                    <?= collection_button_read($meta->collection, $item->id) ?>
                                     <?= collection_button_execute($meta->collection, intval($item->id)) ?>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {
