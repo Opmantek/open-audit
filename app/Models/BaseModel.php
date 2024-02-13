@@ -14,7 +14,7 @@ class BaseModel extends Model
 {
     public function __construct()
     {
-        $this->sql_file = APPPATH . '../other/open-audit.sql';
+        #$this->sql_file = APPPATH . '../other/open-audit.sql';
     }
 
     /**
@@ -167,8 +167,7 @@ class BaseModel extends Model
             return false;
         }
 
-        $this->sql_file = APPPATH . '../other/open-audit.sql';
-        $sql_file = file($this->sql_file);
+        $sql_file = file(APPPATH . '../other/open-audit.sql');
         $count = count($sql_file);
         for ($i=0; $i < $count; $i++) {
             if (stripos($sql_file[$i], "INSERT INTO `{$table}` VALUES") !== false) {
@@ -197,7 +196,7 @@ class BaseModel extends Model
     public function tableDefaults(string $table = ''): array
     {
         $result = array();
-        $sql_file = file($this->sql_file);
+        $sql_file = file(APPPATH . '../other/open-audit.sql');
         $count = count($sql_file);
         for ($i=0; $i < $count; $i++) {
             if (stripos($sql_file[$i], "INSERT INTO `{$table}` VALUES") !== false) {
