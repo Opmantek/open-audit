@@ -220,7 +220,7 @@ class DatabaseModel extends BaseModel
             include "db_upgrades/db_3.0.1.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20190810) {
+        if (intval(config('Openaudit')->internal_version) < 20190401) {
             # upgrade for 3.0.2
             include "db_upgrades/db_3.0.2.php";
         }
