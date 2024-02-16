@@ -167,7 +167,7 @@ if (!empty($included['fields'])) {
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.manufacturer=" . urlencode($resource->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('manufacturer', $resource->manufacturer, '', $update, '', $link) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.os_group=" . urlencode($resource->os_group) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('os_group', $resource->os_group, '', false, __('OS Group'), $link) ?>
+                                            <?= read_field('os_group', $resource->os_group, '', $update, __('OS Group'), $link) ?>
                                             <?php if (!empty($resource->type) and stripos($resource->type, 'printer') !== false and !empty($resource->snmp_oid)) { ?>
                                                 <?= read_field('printer_color', $resource->printer_color, '', false, __('Color')) ?>
                                             <?php } ?>
@@ -178,7 +178,7 @@ if (!empty($included['fields'])) {
                                             <?= read_select('status', $resource->status, '', $update, __('Status'), $included['status']) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.model=" . urlencode($resource->model) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('model', $resource->model, '', $update, '', $link) ?>
-                                            <?= read_field('os_name', $resource->os_name, '', false, 'OS Name') ?>
+                                            <?= read_field('os_name', $resource->os_name, '', $update, 'OS Name') ?>
                                             <?php if (!empty($resource->type) and stripos($resource->type, 'printer') !== false and !empty($resource->snmp_oid)) { ?>
                                                 <?= read_field('printer_duplex', $resource->printer_duplex, '', false, __('Duplex')) ?>
                                             <?php } ?>
@@ -201,7 +201,7 @@ if (!empty($included['fields'])) {
                                             <?= read_field('hostname', $resource->hostname, '', $update) ?>
                                             <?= read_field('dns_name', $resource->dns_hostname, '', $update, __('DNS Hostname')) ?>
                                             <?= read_field('form_factor', $resource->form_factor, '', $update) ?>
-                                            <?= read_field('os_family', $resource->os_family, '', false, __('OS Family')) ?>
+                                            <?= read_field('os_family', $resource->os_family, '', $update, __('OS Family')) ?>
                                             <?= read_field('processor_count', $resource->processor_count, '', false, __('Processors')) ?>
                                             <?= read_field('uptime', $resource->uptime) ?>
                                         </div>
