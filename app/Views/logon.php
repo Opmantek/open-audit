@@ -90,7 +90,7 @@ include('shared/lang.php');
                             <div class="row">
                                 <div class="col-12">
                                     <div class="col-12 text-center">
-                                        <h1><img class="rounded-circle border border-white border-0" style="background: white; width:80px; padding-right:20px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Open-AudIT logo"> <span class="text-secondary">Open-AudIT</span></h1>
+                                        <h1><span class="text-secondary">Open-AudIT</span></h1>
                                     </div>
 
 
