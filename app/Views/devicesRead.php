@@ -937,7 +937,7 @@ if (!empty($included['fields'])) {
 
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="windows_section">
-                                <?= device_panel('Windows', $user->toolbar_style, $resource->id, '', $update); ?>
+                                <?= device_panel('windows', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                 <?php if (!empty($included['windows'])) { ?>
                                     <div class="row">
