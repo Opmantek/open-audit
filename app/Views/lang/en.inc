@@ -1,6 +1,11 @@
 <?php
 $GLOBALS["lang"]["!="]="!=";
 $GLOBALS["lang"]["&nbsp;"]="&nbsp;";
+$GLOBALS["lang"]["1"]="1";
+$GLOBALS["lang"]["2"]="2";
+$GLOBALS["lang"]["3"]="3";
+$GLOBALS["lang"]["4"]="4";
+$GLOBALS["lang"]["5"]="5";
 $GLOBALS["lang"]["<"]="<";
 $GLOBALS["lang"]["=<"]="=<";
 $GLOBALS["lang"]["=="]="==";
@@ -86,6 +91,7 @@ $GLOBALS["lang"]["Ambulance Station"]="Ambulance Station";
 $GLOBALS["lang"]["Android"]="Android";
 $GLOBALS["lang"]["Antivirus"]="Antivirus";
 $GLOBALS["lang"]["Apache"]="Apache";
+$GLOBALS["lang"]["API Documentation"]="API Documentation";
 $GLOBALS["lang"]["API Key required."]="API Key required.";
 $GLOBALS["lang"]["API Result"]="API Result";
 $GLOBALS["lang"]["Apple OSX"]="Apple OSX";
@@ -931,6 +937,7 @@ $GLOBALS["lang"]["Must Respond to Ping"]="Must Respond to Ping";
 $GLOBALS["lang"]["My A Org"]="My A Org";
 $GLOBALS["lang"]["My B Org"]="My B Org";
 $GLOBALS["lang"]["Mycount"]="Mycount";
+$GLOBALS["lang"]["MyField"]="MyField";
 $GLOBALS["lang"]["My Second Org"]="My Second Org";
 $GLOBALS["lang"]["MySQL"]="MySQL";
 $GLOBALS["lang"]["My Third Org"]="My Third Org";
