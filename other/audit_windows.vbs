@@ -4450,12 +4450,12 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
     oReg.EnumValues HKEY_LOCAL_MACHINE, strKeyPath, sql_instances, arrValueTypes
 
     if isnull(sql_instances) then
-    ' we did not return any instances - maybe SQL 2000 or SQL Express?
-    sql_instances = array("MSSQLSERVER")
+        ' we did not return any instances - maybe SQL 2000 or SQL Express?
+        sql_instances = array("MSSQLSERVER")
     else
-    For Each value In sql_instances
-    if debugging > "1" then wscript.echo "Instance: " & value end if
-    next
+        For Each value In sql_instances
+            if debugging > "1" then wscript.echo "Instance: " & value end if
+        next
     end if
 
     i = ""
@@ -4525,42 +4525,42 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
     if debugging > "1" then wscript.echo "SQL State: " & en_sql_server_state end if
 
     if ( (en_sql_server_state = "Running") and (((i = 1) or (i = 2)) or db_type = "SQL Server Express")) then
-    which_instance = ""
-    for each instance in sql_instances
-    if instance = "MSSQLSERVER" then which_instance = "MSSQLSERVER" end if
-    next
+        which_instance = ""
+        for each instance in sql_instances
+            if instance = "MSSQLSERVER" then which_instance = "MSSQLSERVER" end if
+        next
 
-    if ((which_instance = "") and (sql_instances(0) <> "")) then which_instance = sql_instances(0)
+        if ((which_instance = "") and (sql_instances(0) <> "")) then which_instance = sql_instances(0)
 
-    if ((db_type = "SQL Server") and (which_instance = "MSSQLSERVER")) then
-    strBaseConnection ="Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & ";DATABASE=master"
-    end if
+        if ((db_type = "SQL Server") and (which_instance = "MSSQLSERVER")) then
+            strBaseConnection ="Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & ";DATABASE=master"
+        end if
 
-    if ((db_type = "SQL Server") and (which_instance <> "MSSQLSERVER")) then
-    strBaseConnection ="Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & "\" & which_instance & ";DATABASE=master"
-    end if
+        if ((db_type = "SQL Server") and (which_instance <> "MSSQLSERVER")) then
+            strBaseConnection ="Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & "\" & which_instance & ";DATABASE=master"
+        end if
 
-    if ((db_type = "SQL Server Express") and (which_instance = "MSSQLSERVER")) then
-    strBaseConnection = "Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & "\SQLEXPRESS;Initial Catalog=master;"
-    end if
+        if ((db_type = "SQL Server Express") and (which_instance = "MSSQLSERVER")) then
+            strBaseConnection = "Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & "\SQLEXPRESS;Initial Catalog=master;"
+        end if
 
-    if ((db_type = "SQL Server Express") and (which_instance <> "MSSQLSERVER")) then
-    strBaseConnection = "Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & "\" & which_instance & ";Initial Catalog=master;"
-    end if
+        if ((db_type = "SQL Server Express") and (which_instance <> "MSSQLSERVER")) then
+            strBaseConnection = "Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & "\" & which_instance & ";Initial Catalog=master;"
+        end if
 
-    if debugging > "1" then wscript.echo "Which Instance: " & which_instance end if
-    if debugging > "1" then wscript.echo strBaseConnection end if
+        if debugging > "1" then wscript.echo "Which Instance: " & which_instance end if
+        if debugging > "1" then wscript.echo strBaseConnection end if
 
-    Set objDBConnection = CreateObject("ADODB.Connection")
-    on error resume next
-    objDBConnection.Open(strBaseConnection)
-    error_returned = Err.Number
-    objDBConnection.Close
-    on error goto 0
-    if (error_returned <> 0) then
-    if debugging > "1" then wscript.echo "Could not connect to SQL (possibly Express, SSRS, SSIS or SSAS)" end if
-    if debugging > "1" then wscript.echo "Description: " & error_description end if
-    end if
+        Set objDBConnection = CreateObject("ADODB.Connection")
+        on error resume next
+            objDBConnection.Open(strBaseConnection)
+            error_returned = Err.Number
+            objDBConnection.Close
+        on error goto 0
+        if (error_returned <> 0) then
+            if debugging > "1" then wscript.echo "Could not connect to SQL (possibly Express, SSRS, SSIS or SSAS)" end if
+            if debugging > "1" then wscript.echo "Description: " & error_description end if
+        end if
     end if
 
     server = server & "     <item>" & vbcrlf
