@@ -941,7 +941,11 @@ if (!empty($included['fields'])) {
                                 <div class="card-body">
                                 <?php if (!empty($included['windows'])) { ?>
                                     <div class="row">
+                                        <?php if ($included['windows'][0]->part_of_domain !== 'True') { ?>
+                                        <div class="col-6">
+                                        <?php } else { ?>
                                         <div class="col-4">
+                                        <?php } ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.registered_user=" . urlencode($included['windows'][0]->registered_user) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('registered_user', $included['windows'][0]->registered_user, '', false, '', $link) ?>
 
@@ -960,50 +964,50 @@ if (!empty($included['fields'])) {
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.install_directory=" . urlencode($included['windows'][0]->install_directory) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('install_directory', $included['windows'][0]->install_directory, '', false, '', $link) ?>
                                         </div>
+                                        <?php if ($included['windows'][0]->part_of_domain !== 'True') { ?>
+                                        <div class="col-6">
+                                        <?php } else { ?>
                                         <div class="col-4">
+                                        <?php } ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.boot_device=" . urlencode($included['windows'][0]->boot_device) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('boot_device', $included['windows'][0]->boot_device, '', false, '', $link) ?>
-
 
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.user_name=" . urlencode($included['windows'][0]->user_name) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('user_name', $included['windows'][0]->user_name, '', false, '', $link) ?>
 
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.service_pack=" . urlencode($included['windows'][0]->service_pack) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('service_pack', $included['windows'][0]->service_pack, '', false, '', $link) ?>
+
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.build_number=" . urlencode($included['windows'][0]->build_number) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?= read_field('build_number', $included['windows'][0]->build_number, '', false, '', $link) ?>
 
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.part_of_domain=" . urlencode($included['windows'][0]->part_of_domain) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('part_of_domain', $included['windows'][0]->part_of_domain, '', false, '', $link) ?>
 
+                                            <?php if ($included['windows'][0]->part_of_domain !== 'True') { ?>
+                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.workgroup=" . urlencode($included['windows'][0]->workgroup) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                                <?= read_field('workgroup', $included['windows'][0]->workgroup, '', false, '', $link) ?>
+                                            <?php } ?>
+                                        </div>
+                                        <?php if ($included['windows'][0]->part_of_domain === 'True') { ?>
+                                        <div class="col-4">
 
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_role=" . urlencode($included['windows'][0]->domain_role) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('domain_role', $included['windows'][0]->domain_role, '', false, '', $link) ?>
 
-
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_short=" . urlencode($included['windows'][0]->domain_short) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('domain_short', $included['windows'][0]->domain_short, '', false, '', $link) ?>
 
-
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.workgroup=" . urlencode($included['windows'][0]->workgroup) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('workgroup', $included['windows'][0]->workgroup, '', false, '', $link) ?>
-                                        </div>
-                                        <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.active_directory_ou=" . urlencode($included['windows'][0]->active_directory_ou) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('active_directory_ou', $included['windows'][0]->active_directory_ou, '', false, '', $link) ?>
-
 
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_controller_address=" . urlencode($included['windows'][0]->domain_controller_address) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('domain_controller_address', $included['windows'][0]->domain_controller_address, '', false, '', $link) ?>
 
-
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_controller_name=" . urlencode($included['windows'][0]->domain_controller_name) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('domain_controller_name', $included['windows'][0]->domain_controller_name, '', false, '', $link) ?>
-
-
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.service_pack=" . urlencode($included['windows'][0]->service_pack) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('service_pack', $included['windows'][0]->service_pack, '', false, '', $link) ?>
-
-
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.build_number=" . urlencode($included['windows'][0]->build_number) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('build_number', $included['windows'][0]->build_number, '', false, '', $link) ?>
                                         </div>
+                                        <?php } ?>
                                     </div>
                                 <?php } ?>
                                 </div>
