@@ -698,7 +698,8 @@ class ComponentsModel extends BaseModel
                     if (!isset($data[$i]->type)) {
                         $data[$i]->type = '';
                     }
-                    if (!isset($data[$i]->version) or $data[$i]->version !== '6') {
+                    $data[$i]->version = isset($data[$i]->version) ? intval($data[$i]->version) : 4;
+                    if ($data[$i]->version !== 4 and $data[$i]->version !== 6) {
                         $data[$i]->version = 4;
                     }
                     // If we have a CIDR, but no netmask, create it
