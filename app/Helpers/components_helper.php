@@ -134,6 +134,7 @@ function version_padded($version)
     if (empty($version)) {
         return '';
     }
+    $version = (string)$version;
     $version_padded = '';
     $pieces = array();
     $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $version);
