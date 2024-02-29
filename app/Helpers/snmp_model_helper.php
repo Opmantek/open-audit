@@ -269,8 +269,9 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.12356.101.1.4000': $device->model = 'Fortigate 400'; $device->type = 'firewall'; break;
             case '1.3.6.1.4.1.12356.101.1.40000': $device->model = 'Fortigate FGT4000'; $device->type = 'Firewall'; break;
             case '1.3.6.1.4.1.12356.101.1.4001': $device->model = 'Fortigate FGT400A'; $device->type = 'Firewall'; break;
-            case '1.3.6.1.4.1.12356.101.1.410': $device->model = 'Fortinet fgt40C'; $device->type = 'Firewall'; break;
-            case '1.3.6.1.4.1.12356.101.1.411': $device->model = 'Fortinet fwf40C'; $device->type = 'Firewall'; break;
+            case '1.3.6.1.4.1.12356.101.1.410': $device->model = 'Fortinet FGT40C'; $device->type = 'Firewall'; break;
+            case '1.3.6.1.4.1.12356.101.1.411': $device->model = 'Fortinet FWF40C'; $device->type = 'Firewall'; break;
+            case '1.3.6.1.4.1.12356.101.1.441': $device->model = 'Fortinet FGT40F'; $device->type = 'Firewall'; break;
             case '1.3.6.1.4.1.12356.101.1.46': $device->model = 'Fortinet FGT_VM64_AWSONDEMAND'; $device->type = 'firewall'; break;
             case '1.3.6.1.4.1.12356.101.1.500': $device->model = 'Fortigate FGT50A'; $device->type = 'firewall'; break;
             case '1.3.6.1.4.1.12356.101.1.5000': $device->model = 'Fortigate 500'; $device->type = 'firewall'; break;
