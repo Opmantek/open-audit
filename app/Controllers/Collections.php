@@ -445,7 +445,8 @@ class Collections extends BaseController
                 }
             }
 
-            if (($this->resp->meta->collection === 'dashboards' or $this->resp->meta->collection === 'scripts' or $this->resp->meta->collection === 'tasks') and empty($data->options)) {
+            #if (($this->resp->meta->collection === 'dashboards' or $this->resp->meta->collection === 'scripts' or $this->resp->meta->collection === 'tasks') and empty($data->options)) {
+            if (($this->resp->meta->collection === 'dashboards' or $this->resp->meta->collection === 'scripts') and empty($data->options)) {
                 $data->options = new \stdClass();
                 foreach ($data as $key => $value) {
                     if (strpos($key, 'options.') !== false) {

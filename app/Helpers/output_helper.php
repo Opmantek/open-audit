@@ -121,7 +121,8 @@ if (!function_exists('output')) {
 
 
         // Dashboards and Tasks both use a JSON string in the options column. Expand this.
-        if ($instance->resp->meta->collection === 'dashboards' or $instance->resp->meta->collection === 'scripts' or $instance->resp->meta->collection === 'tasks') {
+        #if ($instance->resp->meta->collection === 'dashboards' or $instance->resp->meta->collection === 'scripts' or $instance->resp->meta->collection === 'tasks') {
+        if ($instance->resp->meta->collection === 'dashboards' or $instance->resp->meta->collection === 'scripts') {
             $count = count($instance->resp->data);
             for ($i=0; $i < $count; $i++) {
                 foreach ($instance->resp->data[$i]->attributes->options as $key => $value) {
