@@ -46,7 +46,7 @@ if (!empty($included['fields'])) {
                                                     <li class="list-group-item section_toggle" data-section="discovery_log_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/discovery_log.svg" alt=""> <a href="#"><?= __('Discovery Log') ?></a><?= count_button(@$included['discovery_log']) ?></li>
                                                     <li class="list-group-item section_toggle" data-section="edit_log_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/edit_log.svg" alt=""> <a href="#"><?= __('Edit Log') ?></a><?= count_button(@$included['edit_log']) ?></li>
                                                     <li class="list-group-item section_toggle" data-section="fields_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/fields.svg" alt=""> <a href="#"><?= __('Fields') ?></a></li>
-                                                    <li class="list-group-item section_toggle" data-section="firstwave_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/opmantek_details.svg" alt=""> <a href="#"><?= __('FirstWave Details') ?></a></li>
+                                                    <li class="list-group-item section_toggle" data-section="firstwave_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/opmantek_details.svg" alt=""> <a href="#"><?= __('FirstWave') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="images_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/images.svg" alt=""> <a href="#"><?= __('Images') ?></a></li>
                                                     <?php if (!empty(@$included['ip'])) { ?>
                                                     <li class="list-group-item section_toggle" data-section="ip_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/ip.svg" alt=""> <a href="#"><?= __('IP Addresses') ?></a><?= count_button(@$included['ip']) ?></li>
@@ -292,7 +292,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="audit_log_section">
-                                <?=  device_panel('audit_log', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['audit_log']) ? count($included['audit_log']) : 0; ?>
+                                <?= device_panel('audit_log', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -352,7 +353,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="change_log_section">
-                                <?=  device_panel('change_log', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['change_log']) ? count($included['change_log']) : 0; ?>
+                                <?=  device_panel('change_log', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -434,7 +436,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="cluster_section">
-                                <?= device_panel('clusters', $user->toolbar_style, $resource->id, '', $update); ?>
+                                <?= device_panel('cluster', $user->toolbar_style, $resource->id, '', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -502,7 +504,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="discovery_log_section">
-                                <?=  device_panel('discovery_log', $user->toolbar_style, $resource->id, '', $update); ?>
+                                <?php $count = !empty($included['discovery_log']) ? count($included['discovery_log']) : 0; ?>
+                                <?=  device_panel('discovery_log', $user->toolbar_style, $resource->id, '', $update, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -554,7 +557,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="edit_log_section">
-                                <?=  device_panel('edit_log', $user->toolbar_style, $resource->id, '', $update); ?>
+                                <?php $count = !empty($included['edit_log']) ? count($included['edit_log']) : 0; ?>
+                                <?=  device_panel('edit_log', $user->toolbar_style, $resource->id, '', $update, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -642,7 +646,7 @@ if (!empty($included['fields'])) {
 
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="firstwave_section">
-                                <?=  device_panel('FirstWave', $user->toolbar_style, $resource->id, base_url() . 'icons/opmantek_details.svg', $update); ?>
+                                <?=  device_panel('firstwave', $user->toolbar_style, $resource->id, base_url() . 'icons/opmantek_details.svg', $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
@@ -779,7 +783,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="ip_section">
-                                <?=  device_panel('ip', $user->toolbar_style, $resource->id, base_url() . 'icons/ip.svg', $update); ?>
+                                <?php $count = !empty($included['ip']) ? count($included['ip']) : 0; ?>
+                                <?=  device_panel('ip', $user->toolbar_style, $resource->id, base_url() . 'icons/ip.svg', $update, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -892,7 +897,7 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="snmp_section">
-                                <?=  device_panel('SNMP', $user->toolbar_style, 0, base_url() . "icons/snmp_details.svg", $update); ?>
+                                <?=  device_panel('snmp', $user->toolbar_style, 0, base_url() . "icons/snmp_details.svg", $update); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
@@ -937,7 +942,7 @@ if (!empty($included['fields'])) {
 
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="windows_section">
-                                <?= device_panel('windows', $user->toolbar_style, $resource->id, '', $update); ?>
+                                <?= device_panel('windows', $user->toolbar_style, $resource->id, '', $update, 1); ?>
                                 <div class="card-body">
                                 <?php if (!empty($included['windows'])) { ?>
                                     <div class="row">
@@ -1014,7 +1019,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="bios_section">
-                                <?= device_panel('bios', $user->toolbar_style, $resource->id, '', $update); ?>
+                                <?php $count = !empty($included['bios']) ? count($included['bios']) : 0; ?>
+                                <?= device_panel('bios', $user->toolbar_style, $resource->id, '', $update, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <?php if (!empty($included['bios'])) { ?>
@@ -1038,7 +1044,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="disk_section">
-                                <?=  device_panel('disk', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['disk']) ? count($included['disk']) : 0; ?>
+                                <?=  device_panel('disk', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1082,7 +1089,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="memory_section">
-                                <?=  device_panel('memory', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['memory']) ? count($included['memory']) : 0; ?>
+                                <?=  device_panel('memory', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1129,7 +1137,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="module_section">
-                                <?=  device_panel('module', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['module']) ? count($included['module']) : 0; ?>
+                                <?=  device_panel('module', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1173,7 +1182,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="monitor_section">
-                                <?=  device_panel('monitor', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['monitor']) ? count($included['monitor']) : 0; ?>
+                                <?=  device_panel('monitor', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1209,7 +1219,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="motherboard_section">
-                                <?=  device_panel('motherboard', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['motherboard']) ? count($included['motherboard']) : 0; ?>
+                                <?=  device_panel('motherboard', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <?php if (!empty($included['motherboard'])) { ?>
@@ -1233,7 +1244,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="network_section">
-                                <?=  device_panel('network', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['network']) ? count($included['network']) : 0; ?>
+                                <?=  device_panel('network', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1284,7 +1296,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="optical_section">
-                                <?=  device_panel('optical', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['optical']) ? count($included['optical']) : 0; ?>
+                                <?=  device_panel('optical', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1316,7 +1329,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="partition_section">
-                                <?=  device_panel('partition', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['partition']) ? count($included['partition']) : 0; ?>
+                                <?=  device_panel('partition', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1358,7 +1372,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="processor_section">
-                                <?=  device_panel('processor', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['processor']) ? count($included['processor']) : 0; ?>
+                                <?=  device_panel('processor', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <?php if (!empty($included['processor'])) { ?>
@@ -1367,17 +1382,17 @@ if (!empty($included['fields'])) {
                                             <?= read_field('proc_manufacturer', $included['processor'][0]->manufacturer, '', false, __('Manufacturer'), $link) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?processor.description=" . urlencode($included['processor'][0]->description) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('proc_description', $included['processor'][0]->description, '', false, __('Description'), $link) ?>
+                                            <?= read_field('speed', number_format($included['processor'][0]->speed) . ' MHz') ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('speed', number_format($included['processor'][0]->speed) . ' MHz') ?>
                                             <?= read_field('architecture', $included['processor'][0]->architecture) ?>
                                             <?= read_field('socket', $included['processor'][0]->socket) ?>
+                                            <?= read_field('hyperthreading', $included['processor'][0]->hyperthreading) ?>
                                         </div>
                                         <div class="col-4">
                                             <?= read_field('physical_count', $included['processor'][0]->physical_count) ?>
                                             <?= read_field('core_count', $included['processor'][0]->core_count) ?>
                                             <?= read_field('logical_count', $included['processor'][0]->logical_count) ?>
-                                            <?= read_field('hyperthreading', $included['processor'][0]->hyperthreading) ?>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -1385,7 +1400,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="radio_section">
-                                <?=  device_panel('radio', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['radio']) ? count($included['radio']) : 0; ?>
+                                <?=  device_panel('radio', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1431,7 +1447,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="scsi_section">
-                                <?=  device_panel('scsi', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['scsi']) ? count($included['scsi']) : 0; ?>
+                                <?=  device_panel('scsi', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1463,7 +1480,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="sound_section">
-                                <?=  device_panel('sound', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['sound']) ? count($included['sound']) : 0; ?>
+                                <?=  device_panel('sound', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1493,7 +1511,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="usb_section">
-                                <?=  device_panel('usb', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['usb']) ? count($included['usb']) : 0; ?>
+                                <?=  device_panel('usb', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1533,7 +1552,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="video_section">
-                                <?=  device_panel('video', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['video']) ? count($included['video']) : 0; ?>
+                                <?=  device_panel('video', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1565,7 +1585,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="service_section">
-                                <?=  device_panel('service', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['service']) ? count($included['service']) : 0; ?>
+                                <?=  device_panel('service', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1599,7 +1620,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="software_section">
-                                <?=  device_panel('software', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['software']) ? count($included['software']) : 0; ?>
+                                <?=  device_panel('software', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1642,7 +1664,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="software_key_section">
-                                <?=  device_panel('software_key', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['software_key']) ? count($included['software_key']) : 0; ?>
+                                <?=  device_panel('software_key', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1674,7 +1697,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="certificate_section">
-                                <?=  device_panel('certificate', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['certificate']) ? count($included['certificate']) : 0; ?>
+                                <?=  device_panel('certificate', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1706,7 +1730,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="dns_section">
-                                <?=  device_panel('dns', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['dns']) ? count($included['dns']) : 0; ?>
+                                <?=  device_panel('dns', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1736,7 +1761,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="file_section">
-                                <?=  device_panel('file', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['file']) ? count($included['file']) : 0; ?>
+                                <?=  device_panel('file', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1774,7 +1800,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="log_section">
-                                <?=  device_panel('log', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['log']) ? count($included['log']) : 0; ?>
+                                <?=  device_panel('log', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1808,7 +1835,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="netstat_section">
-                                <?=  device_panel('netstat', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['netstat']) ? count($included['netstat']) : 0; ?>
+                                <?=  device_panel('netstat', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"],[3,"asc"]]'>
@@ -1840,7 +1868,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="nmap_section">
-                                <?=  device_panel('nmap', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['nmap']) ? count($included['nmap']) : 0; ?>
+                                <?=  device_panel('nmap', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1872,7 +1901,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="pagefile_section">
-                                <?=  device_panel('pagefile', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['pagefile']) ? count($included['pagefile']) : 0; ?>
+                                <?=  device_panel('pagefile', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1904,7 +1934,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="policy_section">
-                                <?=  device_panel('policy', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['policy']) ? count($included['policy']) : 0; ?>
+                                <?=  device_panel('policy', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1934,7 +1965,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="print_queue_section">
-                                <?=  device_panel('print_queue', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['print_queue']) ? count($included['print_queue']) : 0; ?>
+                                <?=  device_panel('print_queue', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1970,7 +2002,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="route_section">
-                                <?=  device_panel('route', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['route']) ? count($included['route']) : 0; ?>
+                                <?=  device_panel('route', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -2010,7 +2043,8 @@ if (!empty($included['fields'])) {
                                 <?php foreach ($included['server'] as $row) { ?>
                                 <div style="margin-bottom:20px;" class="card" id="<?= $row->name ?>_section">
                                     <?php $icon = base_url() . 'icons/' . $row->type . '.svg'; ?>
-                                    <?= device_panel('Server :: ' . $row->name, $user->toolbar_style, $resource->id, $icon); ?>
+                                    <?php $count = !empty($included['server']) ? count($included['server']) : 0; ?>
+                                    <?= device_panel('Server :: ' . $row->name, $user->toolbar_style, $resource->id, $icon, false, $count); ?>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-4">
@@ -2108,7 +2142,8 @@ if (!empty($included['fields'])) {
                             <?php } ?>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="share_section">
-                                <?=  device_panel('share', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['share']) ? count($included['share']) : 0; ?>
+                                <?=  device_panel('share', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -2142,7 +2177,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="task_section">
-                                <?=  device_panel('task', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['task']) ? count($included['task']) : 0; ?>
+                                <?=  device_panel('task', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -2178,7 +2214,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="user_section">
-                                <?=  device_panel('user', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['user']) ? count($included['user']) : 0; ?>
+                                <?=  device_panel('user', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -2264,7 +2301,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="user_group_section">
-                                <?=  device_panel('user_group', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['user_group']) ? count($included['user_group']) : 0; ?>
+                                <?=  device_panel('user_group', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -2296,7 +2334,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="variable_section">
-                                <?=  device_panel('variable', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['variable']) ? count($included['variable']) : 0; ?>
+                                <?=  device_panel('variable', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -2326,7 +2365,8 @@ if (!empty($included['fields'])) {
                             </div>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="vm_section">
-                                <?=  device_panel('vm', $user->toolbar_style, $resource->id); ?>
+                                <?php $count = !empty($included['vm']) ? count($included['vm']) : 0; ?>
+                                <?=  device_panel('vm', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
