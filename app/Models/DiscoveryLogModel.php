@@ -224,6 +224,12 @@ class DiscoveryLogModel extends BaseModel
             $this->db->query($sql, [$data->discovery_id]);
         }
 
+        // Make sure the discovery has a status of running if it hasn't finished as below
+        if (stripos($data->message, 'Discovery has finished.') === false and !empty($data->discovery_id)) {
+            $sql = "UPDATE `discoveries` SET `status` = 'running' WHERE `id` = ?";
+            $this->db->query($sql, [$data->discovery_id]);
+        }
+
         // If we have this string, mark the discovery as complete (think Collector marking a discovery as complete on the Server)
         if (stripos($data->message, 'Discovery has finished.') !== false and !empty($data->discovery_id)) {
             $sql = "UPDATE `discoveries` SET `status` = 'complete', `last_finished` = NOW(), `duration` = TIMEDIFF(`last_finished`, `last_run`) WHERE `id` = ?";
