@@ -276,7 +276,7 @@ function read_column_name(string $name = ''): string
     return $name;
 }
 
-function device_panel(string $name = '', string $toolbar = '', int $device_id = 0, string $icon = '', bool $update = false): string
+function device_panel(string $name = '', string $toolbar = '', int $device_id = 0, string $icon = '', bool $update = false, int $count = 0): string
 {
     if (empty($icon)) {
         $icon = base_url() . 'icons/' . strtolower($name) . '.svg';
@@ -285,7 +285,6 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
     $export_name = strtolower($temp[0]);
     if ($toolbar === 'icontext') {
         $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-circle-xmark\"></span>" . __("Close") . "</a>";
-
         $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>
         <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("View All") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span>" . __("View All") . "</a>";
     } else if ($toolbar === 'icon') {
@@ -321,7 +320,7 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
         }
     }
 
-    if (!in_array(strtolower($export_name), ['audit_log', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows']) or empty($device_id)) {
+    if (!in_array(strtolower($export_name), ['audit_log', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows']) or empty($device_id) or $count === 0) {
         $export_button = '';
     }
 
