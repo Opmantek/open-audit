@@ -178,18 +178,20 @@ if (!function_exists('output')) {
         }
 
         // Our header line
-        $data_order_columns = array();
-        $count = count($instance->resp->data);
-        for ($i=0; $i < $count; $i++) {
-            foreach ($instance->resp->data[$i]->attributes as $key => $value) {
-                if (!in_array($key, $data_order_columns)) {
-                    $data_order_columns[] = $key;
+        if (!empty($instance->resp->data)) {
+            $data_order_columns = array();
+            $count = count($instance->resp->data);
+            for ($i=0; $i < $count; $i++) {
+                foreach ($instance->resp->data[$i]->attributes as $key => $value) {
+                    if (!in_array($key, $data_order_columns)) {
+                        $data_order_columns[] = $key;
+                    }
                 }
             }
+            $instance->resp->meta->data_order = $data_order_columns;
+            $csv_header = $data_order_columns;
+            $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
         }
-        $instance->resp->meta->data_order = $data_order_columns;
-        $csv_header = $data_order_columns;
-        $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
 
         // Each individual data line
         $output_escape_csv = @$instance->config->output_escape_csv;
