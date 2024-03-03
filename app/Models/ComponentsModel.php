@@ -797,7 +797,9 @@ class ComponentsModel extends BaseModel
             $count = count($data);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($data[$i]->speed)) {
-                    $data[$i]->speed = intval(preg_replace('/[^\d.]/', '', $data[$i]->speed));
+                    if (!is_integer($data[$i]->speed)) {
+                        $data[$i]->speed = intval(preg_replace('/[^\d.]/', '', $data[$i]->speed));
+                    }
                 } else {
                     unset($data[$i]->speed);
                 }
