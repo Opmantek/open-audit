@@ -421,67 +421,69 @@ $item = @{}
 Clear-Variable -name item
 $item = @{}
 $item.physical_count = [int]$Win32_ComputerSystem.NumberOfProcessors
-$item.core_count = [int]$item.physical_count * $Win32_Processor[0].NumberOfEnabledCore
-$item.logical_count = [int]$item.core_count * $Win32_Processor[0].NumberOfLogicalProcessors
-$item.speed = $Win32_Processor[0].MaxClockSpeed
-$item.manufacturer = $Win32_Processor[0].Manufacturer
+$item.core_count = [int]$item.physical_count * $Win32_Processor.NumberOfEnabledCore
+$item.logical_count = [int]$item.core_count * $Win32_Processor.NumberOfLogicalProcessors
+$item.speed = $Win32_Processor.MaxClockSpeed
+$item.manufacturer = $Win32_Processor.Manufacturer
 $item.architecture = "Unknown"
-if ($Win32_Processor[0].Architecture -eq '0' ) { $item.architecture = 'x86' }
-if ($Win32_Processor[0].Architecture -eq '1' ) { $item.architecture = 'MIPS' }
-if ($Win32_Processor[0].Architecture -eq '2' ) { $item.architecture = 'Alpha' }
-if ($Win32_Processor[0].Architecture -eq '3' ) { $item.architecture = 'PowerPC' }
-if ($Win32_Processor[0].Architecture -eq '5' ) { $item.architecture = 'ARM' }
-if ($Win32_Processor[0].Architecture -eq '6' ) { $item.architecture = 'Itanium-based systems' }
-if ($Win32_Processor[0].Architecture -eq '9' ) { $item.architecture = 'x64' }
-$item.description = $Win32_Processor[0].Name
-$item.description = $item.description.Replace("(R)", "").Replace("(TM)", "").Replace("(r)", "").Replace("(tm)", "")
-$item.description = $item.description -replace '\s{2,}', ' '
+if ($Win32_Processor.Architecture -eq '0' ) { $item.architecture = 'x86' }
+if ($Win32_Processor.Architecture -eq '1' ) { $item.architecture = 'MIPS' }
+if ($Win32_Processor.Architecture -eq '2' ) { $item.architecture = 'Alpha' }
+if ($Win32_Processor.Architecture -eq '3' ) { $item.architecture = 'PowerPC' }
+if ($Win32_Processor.Architecture -eq '5' ) { $item.architecture = 'ARM' }
+if ($Win32_Processor.Architecture -eq '6' ) { $item.architecture = 'Itanium' }
+if ($Win32_Processor.Architecture -eq '9' ) { $item.architecture = 'x64' }
+$item.description = $Win32_Processor.Name
+if ($item.description -ne $null) {
+    $item.description = $item.description.Replace("(R)", "").Replace("(TM)", "").Replace("(r)", "").Replace("(tm)", "")
+    $item.description = $item.description -replace '\s{2,}', ' '
+}
 $item.socket = ''
-if ($Win32_Processor[0].UpgradeMethod -eq 1) { $item.socket = 'Other' }
-if ($Win32_Processor[0].UpgradeMethod -eq 2) { $item.socket = 'Unknown' }
-if ($Win32_Processor[0].UpgradeMethod -eq 3) { $item.socket = 'Daughter Board' }
-if ($Win32_Processor[0].UpgradeMethod -eq 4) { $item.socket = 'ZIF Socket' }
-if ($Win32_Processor[0].UpgradeMethod -eq 5) { $item.socket = 'Replaceable Piggy Back' }
-if ($Win32_Processor[0].UpgradeMethod -eq 6) { $item.socket = 'None' }
-if ($Win32_Processor[0].UpgradeMethod -eq 7) { $item.socket = 'LIF Socket' }
-if ($Win32_Processor[0].UpgradeMethod -eq 8) { $item.socket = 'Slot 1' }
-if ($Win32_Processor[0].UpgradeMethod -eq 9) { $item.socket = 'Slot 2' }
-if ($Win32_Processor[0].UpgradeMethod -eq 10) { $item.socket = '370 Pin Socket' }
-if ($Win32_Processor[0].UpgradeMethod -eq 11) { $item.socket = 'Slot A' }
-if ($Win32_Processor[0].UpgradeMethod -eq 12) { $item.socket = 'Slot M' }
-if ($Win32_Processor[0].UpgradeMethod -eq 13) { $item.socket = 'Socket 423' }
-if ($Win32_Processor[0].UpgradeMethod -eq 14) { $item.socket = 'Socket A (462)' }
-if ($Win32_Processor[0].UpgradeMethod -eq 15) { $item.socket = 'Socket 478' }
-if ($Win32_Processor[0].UpgradeMethod -eq 16) { $item.socket = 'Socket 754' }
-if ($Win32_Processor[0].UpgradeMethod -eq 17) { $item.socket = 'Socket 940' }
-if ($Win32_Processor[0].UpgradeMethod -eq 18) { $item.socket = 'Socket 939' }
-if ($Win32_Processor[0].UpgradeMethod -eq 19) { $item.socket = 'Socket mPGA 604' }
-if ($Win32_Processor[0].UpgradeMethod -eq 20) { $item.socket = 'Socket LGA 771' }
-if ($Win32_Processor[0].UpgradeMethod -eq 21) { $item.socket = 'Socket LGA 775' }
-if ($Win32_Processor[0].UpgradeMethod -eq 22) { $item.socket = 'Socket S1' }
-if ($Win32_Processor[0].UpgradeMethod -eq 23) { $item.socket = 'Socket AM2' }
-if ($Win32_Processor[0].UpgradeMethod -eq 24) { $item.socket = 'Socket F (1207)' }
-if ($Win32_Processor[0].UpgradeMethod -eq 25) { $item.socket = 'Socket LGA 1366' }
-if ($Win32_Processor[0].UpgradeMethod -eq 26) { $item.socket = 'Socket G34' }
-if ($Win32_Processor[0].UpgradeMethod -eq 27) { $item.socket = 'Socket AM3' }
-if ($Win32_Processor[0].UpgradeMethod -eq 28) { $item.socket = 'Socket C32' }
-if ($Win32_Processor[0].UpgradeMethod -eq 29) { $item.socket = 'Socket LGA 1156' }
-if ($Win32_Processor[0].UpgradeMethod -eq 30) { $item.socket = 'Socket LGA 1567' }
-if ($Win32_Processor[0].UpgradeMethod -eq 31) { $item.socket = 'Socket PGA 988A' }
-if ($Win32_Processor[0].UpgradeMethod -eq 32) { $item.socket = 'Socket BGA 1288' }
-if ($Win32_Processor[0].UpgradeMethod -eq 33) { $item.socket = 'Socket rPGA 988B' }
-if ($Win32_Processor[0].UpgradeMethod -eq 34) { $item.socket = 'Socket BGA 1023' }
-if ($Win32_Processor[0].UpgradeMethod -eq 35) { $item.socket = 'Socket BGA 1224' }
-if ($Win32_Processor[0].UpgradeMethod -eq 36) { $item.socket = 'Socket LGA 1155' }
-if ($Win32_Processor[0].UpgradeMethod -eq 37) { $item.socket = 'Socket LGA 1356' }
-if ($Win32_Processor[0].UpgradeMethod -eq 38) { $item.socket = 'Socket LGA 2011' }
-if ($Win32_Processor[0].UpgradeMethod -eq 39) { $item.socket = 'Socket FS1' }
-if ($Win32_Processor[0].UpgradeMethod -eq 40) { $item.socket = 'Socket FS2' }
-if ($Win32_Processor[0].UpgradeMethod -eq 41) { $item.socket = 'Socket FM1' }
-if ($Win32_Processor[0].UpgradeMethod -eq 42) { $item.socket = 'Socket FM2' }
-if ($Win32_Processor[0].UpgradeMethod -eq 43) { $item.socket = 'Socket LGA 2011-3' }
-if ($Win32_Processor[0].UpgradeMethod -eq 44) { $item.socket = 'Socket LGA 1356-3' }
-if ($Win32_Processor[0].UpgradeMethod -eq 185) { $item.socket = 'Socket P (478)' }
+if ($Win32_Processor.UpgradeMethod -eq 1) { $item.socket = 'Other' }
+if ($Win32_Processor.UpgradeMethod -eq 2) { $item.socket = 'Unknown' }
+if ($Win32_Processor.UpgradeMethod -eq 3) { $item.socket = 'Daughter Board' }
+if ($Win32_Processor.UpgradeMethod -eq 4) { $item.socket = 'ZIF Socket' }
+if ($Win32_Processor.UpgradeMethod -eq 5) { $item.socket = 'Replaceable Piggy Back' }
+if ($Win32_Processor.UpgradeMethod -eq 6) { $item.socket = 'None' }
+if ($Win32_Processor.UpgradeMethod -eq 7) { $item.socket = 'LIF Socket' }
+if ($Win32_Processor.UpgradeMethod -eq 8) { $item.socket = 'Slot 1' }
+if ($Win32_Processor.UpgradeMethod -eq 9) { $item.socket = 'Slot 2' }
+if ($Win32_Processor.UpgradeMethod -eq 10) { $item.socket = '370 Pin Socket' }
+if ($Win32_Processor.UpgradeMethod -eq 11) { $item.socket = 'Slot A' }
+if ($Win32_Processor.UpgradeMethod -eq 12) { $item.socket = 'Slot M' }
+if ($Win32_Processor.UpgradeMethod -eq 13) { $item.socket = 'Socket 423' }
+if ($Win32_Processor.UpgradeMethod -eq 14) { $item.socket = 'Socket A (462)' }
+if ($Win32_Processor.UpgradeMethod -eq 15) { $item.socket = 'Socket 478' }
+if ($Win32_Processor.UpgradeMethod -eq 16) { $item.socket = 'Socket 754' }
+if ($Win32_Processor.UpgradeMethod -eq 17) { $item.socket = 'Socket 940' }
+if ($Win32_Processor.UpgradeMethod -eq 18) { $item.socket = 'Socket 939' }
+if ($Win32_Processor.UpgradeMethod -eq 19) { $item.socket = 'Socket mPGA 604' }
+if ($Win32_Processor.UpgradeMethod -eq 20) { $item.socket = 'Socket LGA 771' }
+if ($Win32_Processor.UpgradeMethod -eq 21) { $item.socket = 'Socket LGA 775' }
+if ($Win32_Processor.UpgradeMethod -eq 22) { $item.socket = 'Socket S1' }
+if ($Win32_Processor.UpgradeMethod -eq 23) { $item.socket = 'Socket AM2' }
+if ($Win32_Processor.UpgradeMethod -eq 24) { $item.socket = 'Socket F (1207)' }
+if ($Win32_Processor.UpgradeMethod -eq 25) { $item.socket = 'Socket LGA 1366' }
+if ($Win32_Processor.UpgradeMethod -eq 26) { $item.socket = 'Socket G34' }
+if ($Win32_Processor.UpgradeMethod -eq 27) { $item.socket = 'Socket AM3' }
+if ($Win32_Processor.UpgradeMethod -eq 28) { $item.socket = 'Socket C32' }
+if ($Win32_Processor.UpgradeMethod -eq 29) { $item.socket = 'Socket LGA 1156' }
+if ($Win32_Processor.UpgradeMethod -eq 30) { $item.socket = 'Socket LGA 1567' }
+if ($Win32_Processor.UpgradeMethod -eq 31) { $item.socket = 'Socket PGA 988A' }
+if ($Win32_Processor.UpgradeMethod -eq 32) { $item.socket = 'Socket BGA 1288' }
+if ($Win32_Processor.UpgradeMethod -eq 33) { $item.socket = 'Socket rPGA 988B' }
+if ($Win32_Processor.UpgradeMethod -eq 34) { $item.socket = 'Socket BGA 1023' }
+if ($Win32_Processor.UpgradeMethod -eq 35) { $item.socket = 'Socket BGA 1224' }
+if ($Win32_Processor.UpgradeMethod -eq 36) { $item.socket = 'Socket LGA 1155' }
+if ($Win32_Processor.UpgradeMethod -eq 37) { $item.socket = 'Socket LGA 1356' }
+if ($Win32_Processor.UpgradeMethod -eq 38) { $item.socket = 'Socket LGA 2011' }
+if ($Win32_Processor.UpgradeMethod -eq 39) { $item.socket = 'Socket FS1' }
+if ($Win32_Processor.UpgradeMethod -eq 40) { $item.socket = 'Socket FS2' }
+if ($Win32_Processor.UpgradeMethod -eq 41) { $item.socket = 'Socket FM1' }
+if ($Win32_Processor.UpgradeMethod -eq 42) { $item.socket = 'Socket FM2' }
+if ($Win32_Processor.UpgradeMethod -eq 43) { $item.socket = 'Socket LGA 2011-3' }
+if ($Win32_Processor.UpgradeMethod -eq 44) { $item.socket = 'Socket LGA 1356-3' }
+if ($Win32_Processor.UpgradeMethod -eq 185) { $item.socket = 'Socket P (478)' }
 $processor_type = $item.socket
 $result.processor += $item
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
@@ -1550,15 +1552,18 @@ Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | W
     }
 
     $name = [string]$_.DisplayName
-    Get-Package -name "$name" | ForEach {
-        if ($_.MetaData["InstalledDate"][0] -ne $null) {
-            $item.installed_on = $_.MetaData["InstalledDate"][0]
-        }
-        if ($_.MetaData["InstallDate"][0] -ne $null) {
-            $item.installed_on = $_.MetaData["InstallDate"][0]
-        }
-        if ($_.MetaData["Date"][0] -ne $null) {
-            $item.installed_on = $_.MetaData["Date"][0]
+    $package = Get-Package -name "$name" -ErrorAction Ignore
+    if ($package -ne $null) {
+        $package | ForEach {
+            if ($_.MetaData["InstalledDate"][0] -ne $null) {
+                $item.installed_on = $_.MetaData["InstalledDate"][0]
+            }
+            if ($_.MetaData["InstallDate"][0] -ne $null) {
+                $item.installed_on = $_.MetaData["InstallDate"][0]
+            }
+            if ($_.MetaData["Date"][0] -ne $null) {
+                $item.installed_on = $_.MetaData["Date"][0]
+            }
         }
     }
     $result.software += $item
@@ -1606,15 +1611,18 @@ Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uni
     }
 
     $name = [string]$_.DisplayName
-    Get-Package -name "$name" | ForEach {
-        if ($_.MetaData["InstalledDate"][0] -ne $null) {
-            $item.installed_on = $_.MetaData["InstalledDate"][0]
-        }
-        if ($_.MetaData["InstallDate"][0] -ne $null) {
-            $item.installed_on = $_.MetaData["InstallDate"][0]
-        }
-        if ($_.MetaData["Date"][0] -ne $null) {
-            $item.installed_on = $_.MetaData["Date"][0]
+    $package = Get-Package -name "$name" -ErrorAction Ignore
+    if ($package -ne $null) {
+        $package | ForEach {
+            if ($_.MetaData["InstalledDate"][0] -ne $null) {
+                $item.installed_on = $_.MetaData["InstalledDate"][0]
+            }
+            if ($_.MetaData["InstallDate"][0] -ne $null) {
+                $item.installed_on = $_.MetaData["InstallDate"][0]
+            }
+            if ($_.MetaData["Date"][0] -ne $null) {
+                $item.installed_on = $_.MetaData["Date"][0]
+            }
         }
     }
     $result.software += $item
