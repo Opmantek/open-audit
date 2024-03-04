@@ -1631,6 +1631,9 @@ if (!empty($included['fields'])) {
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Version') ?></th>
                                                     <th><?= __('Publisher') ?></th>
+                                                    <?php if ($resource->os_group === 'Windows') { ?>
+                                                        <th><?= __('Type') ?>
+                                                    <?php } ?>
                                                     <th><?= __('Installed On') ?></th>
                                                     <th><?= __('Installed By') ?></th>
                                                 </tr>
@@ -1652,6 +1655,9 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->version ?></td>
                                                     <td><?= $row->publisher ?></td>
+                                                    <?php if ($resource->os_group === 'Windows') { ?>
+                                                        <td><?= $row->type ?></td>
+                                                    <?php } ?>
                                                     <td><?= $install_date ?></td>
                                                     <td><?= $row->installed_by ?></td>
                                                 </tr>
