@@ -112,10 +112,10 @@ class Discoveries extends BaseController
 
             $now = time();
             $next = intval(round(ceil(($now + 60) / 300) * 300));
-            $minute = date('i', $next);
-            $hour = date('H', $next);
-            $day_of_month = date('d', $next);
-            $month = date('m', $next);
+            $minute = intval(date('i', $next));
+            $hour = intval(date('H', $next));
+            $day_of_month = intval(date('d', $next));
+            $month = intval(date('m', $next));
 
             $sql = "INSERT INTO tasks (`name`, `org_id`, `description`, `sub_resource_id`, `uuid`, `enabled`, `type`, `minute`, `hour`, `day_of_month`, `month`, `day_of_week`, `first_run`, `edited_by`, `edited_date`) VALUES (?, ?, ?, ?, ?, 'y', 'discoveries', ?, ?, ?, ?, '*', '2000-01-01 12:00:00', ?, NOW())";
             $attributes = [
