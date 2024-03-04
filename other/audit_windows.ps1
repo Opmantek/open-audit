@@ -1641,6 +1641,53 @@ if ($debug -gt 0) {
     Write-Host "Software 3, $count entries took $totalSecs seconds"
 }
 
+
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+Get-WmiObject Win32_InstalledStoreProgram -ErrorAction Ignore | ForEach {
+    $item = @{}
+    $microsoft = 'n'
+    $item.name = [string]$_.Name
+    if ($item.name -like 'Microsoft*' -or $item.name -like 'Windows*' -or $item.name -like 'windows*' -or $item.name -like 'MicrosoftWindows*' -or $_.Vendor -like '*Microsoft Corporation*') {
+        $item.publisher = 'Microsoft Corporation'
+        $microsoft = 'y'
+    }
+    $name = $item.name
+    $name = $name.Replace('Microsoft.', '')
+    $name = $name.Replace('Windows.', '')
+    $name = $name.Replace('windows.', '')
+    $name = $name.Replace('MicrosoftWindows.', '')
+    $item.name = $name
+    if ($microsoft -eq 'n') {
+        $split = $item.name.Split('.')
+        $item.publisher = $split[0]
+        $item.name = $name.Replace($item.publisher + '.', '')
+    }
+    if ($item.name -eq '1527c705-839a-4832-9118-54d4Bd6a0c89') {
+        $item.name = 'FilePicker'
+    }
+    if ($item.name -eq 'c5e2524a-ea46-4f67-841f-6a9465d9d515') {
+        $item.name = 'FileExplorer'
+    }
+    if ($item.name -eq 'E2A4F912-2574-4A75-9BB0-0D023378592B') {
+        $item.name = 'AppResolver'
+    }
+    if ($item.name -eq 'F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE') {
+        $item.name = 'AddSuggestedFoldersToLibrary'
+    }
+
+    $item.version = $_.Version
+    $item.location = $_.__PATH
+    $item.type = "Windows Store App"
+    $result.software += $item
+    Clear-Variable -name item
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.software.count
+    Write-Host "Software 4, $count entries took $totalSecs seconds"
+}
+
+
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 Get-WmiObject Win32_QuickFixEngineering | ForEach {
     $item = @{}
@@ -1670,13 +1717,9 @@ Get-WmiObject Win32_QuickFixEngineering | ForEach {
     Clear-Variable -name item
 }
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-# if ($debug -gt 0) {
-#     $count = [int]$result.software.count
-#     Write-Host "Software, $count entries took $totalSecs seconds"
-# }
 if ($debug -gt 0) {
     $count = [int]$result.software.count
-    Write-Host "Software 4, $count entries took $totalSecs seconds"
+    Write-Host "Software 5, $count entries took $totalSecs seconds"
 }
 
 
