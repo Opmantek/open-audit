@@ -1841,15 +1841,15 @@ if (! function_exists('ip_audit')) {
                 $log->message = 'CREATE entry for ' . @$audit->system->name . ' (' . @$audit->system->ip . '), System ID ' . $audit->system->id;
                 $discoveryLogModel->create($log);
                 $audit->system->original_last_seen = '';
-                $log->device_id = $audit->system->id;
             } else {
                 // update an existing system
                 log_message('debug', 'UPDATE entry for ' . @$audit->system->name . ' (' . @$audit->system->ip . '), System ID ' . $audit->system->id);
                 $log->message = 'UPDATE entry for ' . @$audit->system->name . ' (' . @$audit->system->ip . '), System ID ' . $audit->system->id;
                 $discoveryLogModel->create($log);
                 $instance->devicesModel->update($audit->system->id, $audit->system);
-                $log->device_id = $audit->system->id;
             }
+            $log->device_id = intval($audit->system->id);
+            $device->id = intval($audit->system->id);
         }
 
         $sql = 'UPDATE `discovery_log` SET device_id = ? WHERE discovery_id = ? and ip = ?';
@@ -1920,73 +1920,58 @@ if (! function_exists('ip_audit')) {
             $discoveryLogModel->create($log);
 
             $device_json = new \StdClass();
-
-            if (!empty($device->id)) {
-                $device_json->system = new \StdClass();
-                foreach ($device as $key => $value) {
-                    if ($key !== 'id' and !empty($value)) {
-                        $device_json->system->{$key} = $value;
-                    }
-                }
-                $device_json->system->collector_uuid = $instance->config->uuid;
-                if (count($nmap_result) > 0) {
-                    $device_json->nmap = new \StdClass();
-                    $device_json->nmap = array();
-                    foreach ($nmap_result as $item) {
-                        $device_json->nmap[] = $item;
-                    }
-                }
-                if (isset($guests) and is_countable($guests) and count($guests) > 0) {
-                    $device_json->vm = new \StdClass();
-                    $device_json->vm = array();
-                    foreach ($guests as $item) {
-                        $device_json->vm[] = $item;
-                    }
-                }
-                if (isset($modules) and is_countable($modules) and count($modules) > 0) {
-                    $device_json->module = new \StdClass();
-                    $device_json->module = array();
-                    foreach ($modules as $item) {
-                        $device_json->module[] = $item;
-                    }
-                }
-                if (isset($ip) and is_countable($ip) and count($ip) > 0) {
-                    $device_json->ip = new \StdClass();
-                    $device_json->ip = array();
-                    foreach ($ip->item as $item) {
-                        $device_json->ip[] = $item;
-                    }
-                }
-                if (isset($network_interfaces) and is_countable($network_interfaces) and count($network_interfaces) > 0) {
-                    $device_json->network = new \StdClass();
-                    $device_json->network = array();
-                    foreach ($network_interfaces as $item) {
-                        $device_json->network[] = $item;
-                    }
-                }
-                unset($device_json->system->id);
-                unset($device_json->system->first_seen);
-                $device_json = json_encode($device_json);
-            }
-
-            if (!empty($audit->system->id)) {
-                unset($audit->system->id);
-                unset($audit->system->original_last_seen_by);
-                unset($audit->system->original_last_seen);
-                unset($audit->system->first_seen);
-                $audit->system->collector_uuid = $instance->config->uuid;
-                // $device_json = json_encode($audit);
-                foreach ($audit as $key => $value) {
-                    if ($key !== 'system') {
-                        $device_json->{$key} = $value;
-                    }
-                }
-                foreach ($audit->system as $key => $value) {
-                    if ($key !== 'id' and !empty($value)) {
-                        $device_json->system->{$key} = $value;
-                    }
+            $device_json->system = new \StdClass();
+            foreach ($device as $key => $value) {
+                if ($key !== 'id' and !empty($value)) {
+                    $device_json->system->{$key} = $value;
                 }
             }
+            $device_json->system->collector_uuid = $instance->config->uuid;
+            if (count($nmap_result) > 0) {
+                $device_json->nmap = array();
+                foreach ($nmap_result as $item) {
+                    $device_json->nmap[] = $item;
+                }
+            }
+            if (isset($guests) and is_countable($guests) and count($guests) > 0) {
+                $device_json->vm = array();
+                foreach ($guests as $item) {
+                    $device_json->vm[] = $item;
+                }
+            }
+            if (isset($modules) and is_countable($modules) and count($modules) > 0) {
+                $device_json->module = array();
+                foreach ($modules as $item) {
+                    $device_json->module[] = $item;
+                }
+            }
+            if (isset($ip) and is_countable($ip) and count($ip) > 0) {
+                $device_json->ip = array();
+                foreach ($ip->item as $item) {
+                    $device_json->ip[] = $item;
+                }
+            }
+            if (isset($network_interfaces) and is_countable($network_interfaces) and count($network_interfaces) > 0) {
+                $device_json->network = array();
+                foreach ($network_interfaces as $item) {
+                    $device_json->network[] = $item;
+                }
+            }
+            foreach ($audit as $key => $value) {
+                if ($key !== 'system' and is_countable($value) and count($value) > 0) {
+                    $device_json->{$key} = $value;
+                }
+            }
+            foreach ($audit->system as $key => $value) {
+                if ($key !== 'id' and !empty($value)) {
+                    $device_json->system->{$key} = $value;
+                }
+            }
+            unset($device_json->system->original_last_seen_by);
+            unset($device_json->system->original_last_seen);
+            unset($device_json->system->id);
+            unset($device_json->system->first_seen);
+            $device_json = json_encode($device_json);
 
             $url = $server->host . $server->community . '/index.php/input/devices';
             $data = array('data' => $device_json);
@@ -2016,7 +2001,7 @@ if (! function_exists('ip_audit')) {
                 $log->severity = 7;
                 $log->message = 'Result sent to ' . $server->host . '.';
                 $discoveryLogModel->create($log);
-                // log_message('info', 'Result sent to ' . $server->host . '.');
+                log_message('debug', 'Result sent to ' . $server->host . '.');
             }
         }
 
