@@ -2165,10 +2165,10 @@ if (! function_exists('discovery_check_finished')) {
                     $discoveryLogModel->create($log);
                     // If we are a collector and the discovery is an instant - delete it locally
                     $instance = & get_instance();
-                    if (!empty($instance->config->servers) and $instance->config->servers->type === 'collector' and strpos($result[0]->name, 'Instant Discovery') !== false) {
+                    if (!empty($instance->config->servers) and $instance->config->servers->type === 'collector') {
+                        log_message('info', 'Deleting discovery named: ' . $result[0]->name);
                         $sql = "DELETE FROM `discoveries` WHERE `id` = ?";
                         $db->query($sql, [$id]);
-                        log_message('info', 'Deleting discovery named: ' . $result[0]->name);
                     }
                 }
             }
