@@ -134,6 +134,7 @@ class RulesModel extends BaseModel
         $instance = & get_instance();
 
         helper('snmp_model');
+        helper('snmp_oid_helper');
         helper('mac_model');
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
