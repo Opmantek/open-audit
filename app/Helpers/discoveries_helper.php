@@ -1957,14 +1957,16 @@ if (! function_exists('ip_audit')) {
                     $device_json->network[] = $item;
                 }
             }
-            foreach ($audit as $key => $value) {
-                if ($key !== 'system' and is_countable($value) and count($value) > 0) {
-                    $device_json->{$key} = $value;
+            if (!empty($audit)) {
+                foreach ($audit as $key => $value) {
+                    if ($key !== 'system' and is_countable($value) and count($value) > 0) {
+                        $device_json->{$key} = $value;
+                    }
                 }
-            }
-            foreach ($audit->system as $key => $value) {
-                if ($key !== 'id' and !empty($value)) {
-                    $device_json->system->{$key} = $value;
+                foreach ($audit->system as $key => $value) {
+                    if ($key !== 'id' and !empty($value)) {
+                        $device_json->system->{$key} = $value;
+                    }
                 }
             }
             unset($device_json->system->original_last_seen_by);
@@ -2147,7 +2149,7 @@ if (! function_exists('discovery_check_finished')) {
             $result = $query->getResult();
             if (!empty($result[0]->count)) {
                 $count = intval($result[0]->count);
-                $sql = 'SELECT `ip_responding_count`, `status` FROM `discoveries` WHERE `id` = ?';
+                $sql = 'SELECT `name`, `ip_responding_count`, `status` FROM `discoveries` WHERE `id` = ?';
                 $result = $db->query($sql, [$id])->getResult();
                 $device_count = intval($result[0]->ip_responding_count);
                 $status = $result[0]->status;
@@ -2161,6 +2163,13 @@ if (! function_exists('discovery_check_finished')) {
                     $log->ip = '127.0.0.1';
                     unset($log->device_id);
                     $discoveryLogModel->create($log);
+                    // If we are a collector and the discovery is an instant - delete it locally
+                    $instance = & get_instance();
+                    if (!empty($instance->config->cervers) and $instance->config->servers->type === 'collector' and strpos($result[0]->name, 'Instant Discovery') !== false) {
+                        $sql = "DELETE FROM `discoveries` WHERE `id` = ?";
+                        $db->query($sql, [$id]);
+                        log_message('info', 'Deleting discovery named: ' . $result[0]->name);
+                    }
                 }
             }
         } else {
