@@ -1347,7 +1347,7 @@ if (! function_exists('ip_audit')) {
         $discoveryLogModel->create($log);
 
         // NOTE - The log helper will increase the count in discoveries.ip_discovered_count for us because Collector / Server
-        //      - It will match on the message string, so don't change without also changing log_helper
+        //      - It will match on the message string, so don't change without also changing DiscoveryLogModel
         if (!empty($ip_discovered_count)) {
             $log->message = 'Discovered device at ' . $device->ip;
             $discoveryLogModel->create($log);
@@ -1919,9 +1919,9 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
             $discoveryLogModel->create($log);
 
-            $device_json = '';
+            $device_json = new \StdClass();
+
             if (!empty($device->id)) {
-                $device_json = new \StdClass();
                 $device_json->system = new \StdClass();
                 foreach ($device as $key => $value) {
                     if ($key !== 'id' and !empty($value)) {
@@ -1975,7 +1975,17 @@ if (! function_exists('ip_audit')) {
                 unset($audit->system->original_last_seen);
                 unset($audit->system->first_seen);
                 $audit->system->collector_uuid = $instance->config->uuid;
-                $device_json = json_encode($audit);
+                // $device_json = json_encode($audit);
+                foreach ($audit as $key => $value) {
+                    if ($key !== 'system') {
+                        $device_json->{$key} = $value;
+                    }
+                }
+                foreach ($audit->system as $key => $value) {
+                    if ($key !== 'id' and !empty($value)) {
+                        $device_json->system->{$key} = $value;
+                    }
+                }
             }
 
             $url = $server->host . $server->community . '/index.php/input/devices';
