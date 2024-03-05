@@ -50,8 +50,8 @@ include 'shared/read_functions.php';
                                         <label for="authentication_protocol" class="form-label"><?= __('authentication_protocol') ?></label>
                                         <div class="input-group">
                                             <select class="form-select" id="credentials.authentication_protocol" name="credentials.authentication_protocol" data-original-value="<?= $resource->type ?>" disabled>
-                                                <option value="MD5">MD5</option>
-                                                <option value="SHA">SHA</option>
+                                                <option value="MD5" <?php if (!empty($resource->credentials->authentication_protocol) and $resource->credentials->authentication_protocol == 'MD5') { echo 'selected '; } ?>>MD5</option>
+                                                <option value="SHA" <?php if (!empty($resource->credentials->authentication_protocol) and $resource->credentials->authentication_protocol == 'SHA') { echo 'selected '; } ?>>SHA</option>
                                             </select>
                                             <?php if ($update) { ?>
                                             <div class="float-end" style="padding-left:4px;">
@@ -72,8 +72,8 @@ include 'shared/read_functions.php';
                                         <label for="privacy_protocol" class="form-label"><?= __('Privacy Protocol') ?></label>
                                         <div class="input-group">
                                             <select class="form-select" id="credentials.privacy_protocol" name="credentials.privacy_protocol" data-original-value="<?= $resource->type ?>" disabled>
-                                                <option value="AES">AES</option>
-                                                <option value="DES">DES</option>
+                                                <option value="AES" <?php if (!empty($resource->credentials->privacy_protocol) and $resource->credentials->privacy_protocol == 'AES') { echo 'selected '; } ?>>AES</option>
+                                                <option value="DES" <?php if (!empty($resource->credentials->privacy_protocol) and $resource->credentials->privacy_protocol == 'DES') { echo 'selected '; } ?>>DES</option>
                                             </select>
                                             <?php if ($update) { ?>
                                             <div class="float-end" style="padding-left:4px;">
@@ -92,9 +92,9 @@ include 'shared/read_functions.php';
                                         <label for="security_level" class="form-label"><?= __('Security Level') ?></label>
                                         <div class="input-group">
                                             <select class="form-select" id="credentials.security_level" name="credentials.security_level" data-original-value="<?= $resource->type ?>" disabled>
-                                                <option value="noAuthNoPriv">noAuthNoPriv</option>
-                                                <option value="authNoPriv">authNoPriv</option>
-                                                <option value="authPriv">authPriv</option>
+                                                <option value="noAuthNoPriv" <?php if (!empty($resource->credentials->security_level) and $resource->credentials->security_level == 'noAuthNoPriv') { echo 'selected '; } ?>>noAuthNoPriv</option>
+                                                <option value="authNoPriv" <?php if (!empty($resource->credentials->security_level) and $resource->credentials->security_level == 'authNoPriv') { echo 'selected '; } ?>>authNoPriv</option>
+                                                <option value="authPriv" <?php if (!empty($resource->credentials->security_level) and $resource->credentials->security_level == 'authPriv') { echo 'selected '; } ?>>authPriv</option>
                                             </select>
                                             <?php if ($update) { ?>
                                             <div class="float-end" style="padding-left:4px;">
