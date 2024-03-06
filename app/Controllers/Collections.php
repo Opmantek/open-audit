@@ -405,6 +405,8 @@ class Collections extends BaseController
         $file = $this->request->getFile('file_import');
         if (!$file->isValid()) {
             \Config\Services::session()->setFlashdata('error', 'File import error. ' . $file->getErrorString() . ' ' . $file->getError());
+            log_message('error', 'File import error. ' . $file->getErrorString() . ' ' . $file->getError());
+            return redirect()->route($this->resp->meta->collection.'Collection');
         }
         $csv = @array_map('str_getcsv', file($file->getTempName(), FILE_IGNORE_NEW_LINES));
         if (!$csv) {
