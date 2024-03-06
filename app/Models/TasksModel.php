@@ -87,7 +87,18 @@ class TasksModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        return null;
+        if (empty($data)) {
+            return null;
+        }
+        $data = $this->createFieldData('tasks', $data);
+        if (empty($data)) {
+            return null;
+        }
+        $this->builder->insert($data);
+        if ($this->sqlError($this->db->error())) {
+            return false;
+        }
+        return (intval($this->db->insertID()));
     }
 
     /**

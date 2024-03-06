@@ -446,6 +446,7 @@ if (!empty($config->servers)) {
                                     <ul class="dropdown-menu">
                                         <?= menuItem('tasks', 'r', $user, 'tasksCollection', __('List') . ' ' . __('Tasks')) ?>
                                         <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Create') . ' ' . __('Tasks')) ?>
+                                        <?= menuItem('tasks', 'c', $user, 'tasksImportForm', __('Import') . ' ' . __('Tasks')) ?>
                                         <?= menuItem('tasks', '', $user, 'tasksHelp', __('Learn About') . ' ' . __('Tasks')) ?>
                                     </ul>
                                 </li>
