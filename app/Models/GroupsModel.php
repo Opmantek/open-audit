@@ -123,14 +123,15 @@ class GroupsModel extends BaseModel
         $properties = implode(', ', $properties_new_array);
         $sql = str_ireplace('SELECT DISTINCT(devices.id) FROM devices', "SELECT {$properties} FROM devices", $sql);
         $filter = "devices.org_id IN ({$user->org_list})";
-        if (!empty($instance->resp->meta->requestor)) {
-            $filter = "devices.org_id IN ({$user->org_list}) AND devices.oae_manage = 'y'";
-        }
         $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
-        $sql .= ' ' . $instance->resp->meta->groupby . ' ' .
-                $instance->resp->meta->sort;
+        if (!empty($instance->resp->meta->groupby)) {
+            $sql = $sql . ' ' . $instance->resp->meta->groupby;
+        }
+        if (!empty($instance->resp->meta->sort)) {
+            $sql = $sql . ' ' . $instance->resp->meta->sort;
+        }
         if (!empty($instance->resp->meta->limit)) {
-            $sql .= ' LIMIT ' . $instance->resp->meta->limit;
+            $sql = $sql . ' LIMIT ' . $instance->resp->meta->limit;
         }
                 
         $query = $this->db->query($sql);
