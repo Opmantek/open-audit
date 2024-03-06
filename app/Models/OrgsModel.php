@@ -163,9 +163,9 @@ class OrgsModel extends BaseModel
         $org_list = array();
         if (empty($this->orgs)) {
             $sql = 'SELECT * FROM orgs';
-            $this->orgs = $this->db->query($sql)->getResult();
+            $orgs = $this->db->query($sql)->getResult();
         }
-        foreach ($this->orgs as $org) {
+        foreach ($orgs as $org) {
             if (intval($org->parent_id) === $id && intval($org->id) !== 1) {
                 $org_list[] = intval($org->id);
                 foreach ($this->getDescendants($org->id) as $org) {
