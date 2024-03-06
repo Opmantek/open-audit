@@ -314,7 +314,7 @@ class IntegrationsModel extends BaseModel
         $external_devices = integrations_collection($integration);
 
         if ($integration->debug) {
-            $message = 'EXTERNAL DEVICES - ' . json_encode($external_devices);
+            $message = 'EXTERNAL DEVICES - ' . count($external_devices);
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
             $this->db->query($sql, [$integration->id, microtime(true), $message]);
         }
@@ -381,10 +381,6 @@ class IntegrationsModel extends BaseModel
             $message = 'LOG - ' . json_encode($parameters->log);
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
             $this->db->query($sql, [$integration->id, microtime(true), $message]);
-
-            // $message = 'DEVICE - ' . json_encode($external_formatted_devices);
-            // $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
-            // $this->db->query($sql, [$integration->id, microtime(true), $message]);
         }
 
         foreach ($external_formatted_devices as $device) {
@@ -472,7 +468,7 @@ class IntegrationsModel extends BaseModel
                     $discover_devices[] = $device;
                 } else {
                     // insert
-                    log_message('debug', json_encode($device->devices));
+                    log_message('debug', 'Inserting: ' . json_encode($device->devices));
                     $device->devices->id = $devicesModel->create($device->devices);
                     if (!empty($device->devices->id)) {
                         $message = 'Device Created internally ID: ' . $device->devices->id . ', ' . $device->devices->name;
@@ -585,14 +581,14 @@ class IntegrationsModel extends BaseModel
         // Get local devices
         $local_devices = $this->getLocalDevices($integration);
         if ($integration->debug) {
-            $message = 'LOCAL DEVICES - ' . json_encode($local_devices);
+            $message = 'LOCAL DEVICES - ' . count($local_devices);
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
             $this->db->query($sql, [$integration->id, microtime(true), $message]);
         }
 
         $local_formatted_devices = $this->internalToExternal($integration, $local_devices);
         if ($integration->debug) {
-            $message = 'LOCAL FORMATTED DEVICES - ' . json_encode($local_formatted_devices);
+            $message = 'LOCAL FORMATTED DEVICES - ' . count($local_formatted_devices);
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
             $this->db->query($sql, [$integration->id, microtime(true), $message]);
         }
@@ -611,7 +607,7 @@ class IntegrationsModel extends BaseModel
         }
         $sql = "SELECT devices FROM integrations WHERE id = ?";
         $result = $this->db->query($sql, [$integration->id])->getResult();
-        $devices_array = json_decode($result[0]->devices);
+        $devices_array = (!empty($result[0]->devices)) ? json_decode($result[0]->devices) : array();
         $devices_array = array_merge($devices_array, $newdev);
         $devices_array = array_unique($devices_array);
         $devices_array = array_values($devices_array);
@@ -650,20 +646,20 @@ class IntegrationsModel extends BaseModel
             $this->db->query($sql, [$integration->id, microtime(true), $message]);
             // Create new devices externally
             if ($integration->debug and count($new_external_devices) > 0) {
-                $message = json_encode($new_external_devices);
+                $message = 'CREATING DEVICES - ' . count($new_external_devices);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                 $this->db->query($sql, [$integration->id, microtime(true), $message]);
             }
             $created_devices = integrations_create($integration, $new_external_devices);
             if ($integration->debug) {
-                $message = 'CREATED DEVICES - ' . json_encode($created_devices);
+                $message = 'CREATED DEVICES - ' . count($created_devices);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                 $this->db->query($sql, [$integration->id, microtime(true), $message]);
             }
             // Update local attributes from created devices
             $external_created_devices = $this->externalToInternal($integration, $created_devices);
             if ($integration->debug) {
-                $message = 'EXTERNAL CREATED DEVICES - ' . json_encode($external_created_devices);
+                $message = 'EXTERNAL CREATED DEVICES - ' . count($external_created_devices);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                 $this->db->query($sql, [$integration->id, microtime(true), $message]);
             }
@@ -774,11 +770,11 @@ class IntegrationsModel extends BaseModel
             $sql = "UPDATE integrations SET update_external_count = ? WHERE id = ?";
             $this->db->query($sql, [count($update_external_devices), $integration->id]);
 
-            if ($integration->debug and count($update_external_devices) > 0) {
-                $message = json_encode($update_external_devices);
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
-                $this->db->query($sql, [$integration->id, microtime(true), $message]);
-            }
+            // if ($integration->debug and count($update_external_devices) > 0) {
+            //     $message = json_encode($update_external_devices);
+            //     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+            //     $this->db->query($sql, [$integration->id, microtime(true), $message]);
+            // }
 
             integrations_update($integration, $update_external_devices);
         }
@@ -919,7 +915,8 @@ class IntegrationsModel extends BaseModel
         }
         // Select by Group
         if ($integration->attributes->select_internal_type === 'group') {
-            $device_ids = $groupsModel->execute($integration->attributes->select_internal_value, '');
+            $instance->user->org_list = implode(',', $orgs);
+            $device_ids = $groupsModel->execute(intval($integration->attributes->select_internal_attribute), $instance->user);
             $dev_ids = array();
             foreach ($device_ids as $device) {
                 $dev_ids[] = $device->attributes->{'devices.id'};
@@ -1023,8 +1020,10 @@ class IntegrationsModel extends BaseModel
                                         $credential->credentials = simpleDecrypt($credential->credentials);
                                         $credential->credentials = json_decode($credential->credentials);
                                     }
-                                    foreach ($credential->credentials as $key => $value) {
-                                        $device->credentials->{$credential->type . '_' . $key} = $value;
+                                    if (!empty($credential->credentials)) {
+                                        foreach ($credential->credentials as $key2 => $value2) {
+                                            $device->credentials->{$credential->type . '_' . $key2} = $value2;
+                                        }
                                     }
                                 }
                             }
