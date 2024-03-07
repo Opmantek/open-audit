@@ -35,3 +35,16 @@ include 'shared/collection_functions.php';
                 </div>
             </div>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function() {
+        $("#button_create").remove();
+        $("#button_import_csv").remove();
+        $("#button_import_json").remove();
+        $("#button_default_items").remove();
+        $("#button_export_json").attr("href", "<?= url_to('summariesExecute', $meta->id) ?>?format=json");
+        $("#button_export_csv").attr("href", "<?= url_to('summariesExecute', $meta->id) ?>?format=csv");
+    });
+}
+</script>
