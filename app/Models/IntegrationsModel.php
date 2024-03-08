@@ -902,7 +902,7 @@ class IntegrationsModel extends BaseModel
             $instance->user = new \stdClass();
         }
         if (empty($instance->user->org_list)) {
-            $instance->user->org_list = $orgs;
+            $instance->user->org_list = implode(',', $orgs);
         }
         helper('security');
 
@@ -915,7 +915,6 @@ class IntegrationsModel extends BaseModel
         }
         // Select by Group
         if ($integration->attributes->select_internal_type === 'group') {
-            $instance->user->org_list = implode(',', $orgs);
             $device_ids = $groupsModel->execute(intval($integration->attributes->select_internal_attribute), $instance->user);
             $dev_ids = array();
             foreach ($device_ids as $device) {
@@ -928,7 +927,7 @@ class IntegrationsModel extends BaseModel
         }
         // Select by Query
         if ($integration->attributes->select_internal_type === 'query') {
-            $devices = $queriesModel->execute($integration->attributes->select_internal_value, '');
+            $devices = $queriesModel->execute($integration->attributes->select_internal_attribute, $instance->user);
             $dev_ids = array();
             foreach ($devices as $device) {
                 if (!empty($device->attributes->{'devices.id'})) {
@@ -1089,6 +1088,18 @@ class IntegrationsModel extends BaseModel
             $sql = "SELECT id, name, ip, type, fqdn FROM devices WHERE id IN (" . implode(',', $device_ids) . ")";
             $devices = $this->db->query($sql)->getResult();
             $include['devices'] = format_data($devices, 'devices');
+        }
+
+        $sql = "SELECT `select_internal_type` FROM integrations WHERE id = ?";
+        $data = array(intval($id));
+        $type = $this->db->query($sql, [$id])->getResult()[0]->select_internal_type;
+        if ($type === 'query') {
+            $queries = model('App\Models\QueriesModel');
+            $include['queries'] = $queries->listUser();
+        }
+        if ($type === 'group') {
+            $groups = model('App\Models\GroupsModel');
+            $include['groups'] = $groups->listUser();
         }
         return $include;
     }
@@ -1366,6 +1377,16 @@ class IntegrationsModel extends BaseModel
                 $query[0]->credentials = simpleDecrypt($query[0]->credentials, config('Encryption')->key);
                 $query[0]->credentials = json_decode($query[0]->credentials);
             }
+        }
+        if ($query[0]->select_internal_type === 'group') {
+            $sql = "SELECT `name` FROM groups WHERE `id` = ?";
+            $data = array(intval($query[0]->select_internal_attribute));
+            $query[0]->{'groups.name'} = $this->db->query($sql, $data)->getResult()[0]->name;
+        }
+        if ($query[0]->select_internal_type === 'query') {
+            $sql = "SELECT `name` FROM queries WHERE `id` = ?";
+            $data = array(intval($query[0]->select_internal_attribute));
+            $query[0]->{'queries.name'} = $this->db->query($sql, $data)->getResult()[0]->name;
         }
         return format_data($query, 'integrations');
     }

@@ -142,25 +142,63 @@ if (!empty($resource->attributes->password)) {
                                                     <option value="none" <?php if ($resource->select_internal_type === 'none') { ?>selected<?php } ?>><?= __('None') ?></option>
                                                     <option value="attribute" <?php if ($resource->select_internal_type === 'attribute') { ?>selected<?php } ?>><?= __('Attribute') ?></option>
                                                     <option value="group" <?php if ($resource->select_internal_type === 'group') { ?>selected<?php } ?>><?= __('Group') ?></option>
-                                                    <option value="value" <?php if ($resource->select_internal_type === 'value') { ?>selected<?php } ?>><?= __('Value') ?></option>
+                                                    <option value="query" <?php if ($resource->select_internal_type === 'query') { ?>selected<?php } ?>><?= __('Query') ?></option>
                                                 </select>
-                                                <?php if ($update) { ?>
-                                                <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="select_internal_type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                    <div data-attribute="select_internal_type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                    <div data-attribute="select_internal_type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
-                                                </div>
-                                                <?php } ?>
                                             </div>
                                             <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="select_internal_type" data-dictionary="<?= $dictionary->columns->select_internal_type ?>"><span><br /></span></div>
                                         </div>
                                     </div>
 
+                                    <?php if ($resource->select_internal_type === 'group') { ?>
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label for="select_internal_attribute" class="form-label"><?= __('Group') ?></label>
+                                            <div class="input-group">
+                                                <select class="form-select" id="select_internal_attribute" name="select_internal_attribute" data-original-value="<?= $resource->select_internal_attribute ?>" disabled>
+                                                    <?php foreach ($included['groups'] as $group) { ?>
+                                                    <option value="<?= $group->id ?>" <?php if ($resource->select_internal_attribute == $group->id) { ?>selected<?php } ?>><?= $group->attributes->name ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                                <?php if ($update) { ?>
+                                                <div class="pull-right" style="padding-left:4px;">
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                </div>
+                                                <?php } ?>
+                                            </div>
+                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="select_internal_attribute" data-dictionary="<?= $dictionary->columns->select_internal_attribute ?>"><span><br /></span></div>
+                                        </div>
+                                    </div>
+                                    <?php } ?>
 
+                                    <?php if ($resource->select_internal_type === 'query') { ?>
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label for="select_internal_attribute" class="form-label"><?= __('Query') ?></label>
+                                            <div class="input-group">
+                                                <select class="form-select" id="select_internal_attribute" name="select_internal_attribute" data-original-value="<?= $resource->select_internal_attribute ?>" disabled>
+                                                    <?php foreach ($included['queries'] as $query) { ?>
+                                                    <option value="<?= $query->id ?>" <?php if ($resource->select_internal_attribute == $query->id) { ?>selected<?php } ?>><?= $query->attributes->name ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                                <?php if ($update) { ?>
+                                                <div class="pull-right" style="padding-left:4px;">
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                </div>
+                                                <?php } ?>
+                                            </div>
+                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="select_internal_attribute" data-dictionary="<?= $dictionary->columns->select_internal_attribute ?>"><span><br /></span></div>
+                                        </div>
+                                    </div>
+                                    <?php } ?>
 
-
-                                    <?= read_field('select_internal_attribute', $resource->{'select_internal_attribute'}, '', $update) ?>
-                                    <?= read_field('select_internal_value', $resource->{'select_internal_value'}, '', $update) ?>
+                                    <?php if ($resource->select_internal_type === 'attribute') { ?>
+                                        <?= read_field('select_internal_attribute', $resource->{'select_internal_attribute'}, '', $update, __('Attribute')) ?>
+                                        <?= read_field('select_internal_value', $resource->{'select_internal_value'}, '', $update, __('Value')) ?>
+                                    <?php } ?>
                                 </div>
                                 <div class="col-6">
                                     <?= read_select('create_external_from_internal', $resource->create_external_from_internal, $dictionary->columns->create_external_from_internal, $update, __('Create') . ' ' . $resource->type . ' ' . __('Devices from Open-AudIT')) ?>
