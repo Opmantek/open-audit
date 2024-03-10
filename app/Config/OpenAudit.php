@@ -28,6 +28,7 @@ class OpenAudit extends BaseConfig
     public string $enterprise_binary = '';
     public string $homepage = 'summaries';
     public string $nmis = '';
+    public string $product = 'community';
     public string $server_os = '';
     public string $server_platform = '';
     public bool $advanced_queries = true;
@@ -64,8 +65,7 @@ class OpenAudit extends BaseConfig
             $binaries = array(APPPATH . '../other/enterprise.exe');
         }
 
-        $nmis = "/usr/local/nmis9";
-        $this->nmis = (!empty(file_exists($nmis))) ? $nmis : '';
+        $nmis = (!empty(file_exists('/usr/local/nmis9'))) ? '/usr/local/nmis9' : '';
 
         $db = Database::connect();
         $query = $db->query('SELECT * FROM `configuration`');
@@ -85,14 +85,7 @@ class OpenAudit extends BaseConfig
                 $this->license_string_collector_id = intval($row->id);
             }
         }
-
-        if (!empty($this->oae_product)) {
-            $this->product = strtolower(str_replace('Open-AudIT ', '', $this->oae_product));
-        }
-        if (empty($this->product)) {
-            $this->product = 'community';
-        }
-
+        $this->product = 'community';
         if (!empty($this->servers)) {
             $this->servers = json_decode($this->servers);
         }
