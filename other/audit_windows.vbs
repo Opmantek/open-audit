@@ -123,8 +123,6 @@ ping_target = "n"
 system_id = ""
 last_seen_by = "audit"
 
-details_to_lower = "y"
-
 help = "n"
 
 hide_audit_window = "n"
@@ -222,9 +220,6 @@ For Each strArg in objArgs
 
             case "audit_win32_product"
             audit_win32_product = argvalue
-
-            case "details_to_lower"
-            details_to_lower = argvalue
 
             case "hide_audit_window"
             hide_audit_window = argvalue
@@ -328,10 +323,6 @@ if (help = "y") then
     wscript.echo "      *n - Tells the audit script to NOT query the win32_product class. It is recommended by Microsoft not to use this class as is causes Windows to check the integrity of all installed packages (resulting in 1035 events in the log) and can cause performance issues."
     wscript.echo "       y - Do query win32_product anyway and use the result to add to the list of installed software."
     wscript.echo ""
-    wscript.echo "  details_to_lower"
-    wscript.echo "      *y - Convert the hostname to lower."
-    wscript.echo "       n - Keep the hostname as per retrieved."
-    wscript.echo ""
     wscript.echo "  hide_audit_window"
     wscript.echo "      *n - Do not hide the audit script window when executing."
     wscript.echo "       y - Hide the audit script window when executing."
@@ -370,7 +361,6 @@ if debugging > "0" then
     wscript.echo "audit_store_software " & audit_store_software
     wscript.echo "create_file          " & create_file
     wscript.echo "debugging            " & debugging
-    wscript.echo "details_to_lower     " & details_to_lower
     wscript.echo "discovery_id         " & discovery_id
     wscript.echo "hide_audit_window    " & hide_audit_window
     wscript.echo "ldap                 " & ldap
@@ -782,12 +772,9 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
                     end if
 
                     system_hostname = objRecordSet.Fields("Name").Value
+                    system_hostname = lcase(system_hostname)
                     dns_hostname = objRecordSet.Fields("dnshostname").Value
-
-                    if details_to_lower = "y" then
-                        system_hostname = lcase(system_hostname)
-                        dns_hostname = lcase(dns_hostname)
-                    end if
+                    dns_hostname = lcase(dns_hostname)
 
                     strParams = "%comspec% /c NSlookup " & dns_hostname
                     if debugging > "1" then wscript.echo "Looking up DNS entry for " & dns_hostname end if
@@ -813,15 +800,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
                     next
                     computer_dns = replace(computer_dns, ".dc=", ".")
                     computer_dns = mid(computer_dns, 2)
-
-                    ' i = split(dns_hostname, ".")
-                    ' for j = 1 to ubound(i)
-                    '   computer_dns = computer_dns & "." & i(j)
-                    ' next
-
-                    if details_to_lower = "y" then
-                        computer_dns = lcase(computer_dns)
-                    end if
+                    computer_dns = lcase(computer_dns)
 
                     os_name = "Microsoft " & objRecordSet.Fields("operatingsystem").Value
                     family = os_family(objRecordSet.Fields("operatingsystem").Value)
@@ -981,7 +960,7 @@ for each objItem in colItems
     system_os_name = replace(system_os_name, "(R)", "")
     system_os_arch = objItem.OSArchitecture
     system_description = objItem.Description
-    if details_to_lower = "y" then system_description = lcase(system_description) end if
+    system_description = lcase(system_description)
     OSInstall = objItem.InstallDate
     OSInstall = Left(OSInstall, 8)
     OSInstallYear = Left(OSInstall, 4)
@@ -1031,9 +1010,7 @@ for each objItem in colItems
     'This is not used because it is not available on Win2000 or WinXP
     'system_hostname = LCase(objItem.DNSHostName)
     system_domain = objItem.Domain
-    if details_to_lower = "y" then
-        system_domain = lcase(system_domain)
-    end if
+    system_domain = lcase(system_domain)
 
     if (cint(windows_build_number) =< 3790) or (system_pc_num_processor = 0) then
         system_pc_num_processor = objItem.NumberOfProcessors
@@ -1065,7 +1042,7 @@ next
 if system_hostnme = "" then
     system_hostname = netbiosname
 end if
-if details_to_lower = "y" then system_hostname = lcase(system_hostname) end if
+system_hostname = lcase(system_hostname)
 
 
 if (cint(windows_build_number) > 5000) then
@@ -1112,10 +1089,8 @@ else
         windows_user_name = windows_user_name & windows_user_domain
     end if
 end if
-if details_to_lower = "y" then
-    windows_user_name = lcase(windows_user_name)
-    windows_user_domain = lcase(windows_user_domain)
-end if
+windows_user_name = lcase(windows_user_name)
+windows_user_domain = lcase(windows_user_domain)
 
 
 
@@ -1433,7 +1408,7 @@ else
     windows_active_directory_ou = ""
 end if
 
-if details_to_lower = "y" then windows_active_directory_ou = lcase(windows_active_directory_ou) end if
+windows_active_directory_ou = lcase(windows_active_directory_ou)
 
 if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (windows_user_work_1 > "") and use_active_directory = "y") then
     if (instr(windows_user_name, "@")) then
@@ -3093,11 +3068,9 @@ if audit_dns = "y" then
                 for each objitem2 in colitems2
                     full_name = split(objItem2.OwnerName, ".")
                     hostname = full_name(0)
+                    hostname = lcase(hostname)
                     dns_full_name = objItem2.OwnerName
-                    if details_to_lower = "y" then
-                        hostname = lcase(hostname)
-                        dns_full_name = lcase(dns_host_name)
-                    end if
+                    dns_full_name = lcase(dns_host_name)
                     dns_ip_address = ""
                     dns_ip_address = objItem2.IPAddress
                     if debugging > "2" then 
@@ -3865,9 +3838,7 @@ if (audit_software = "y") then
                         if (not isNull(message_retrieved)) then
                             if (InStr(message_retrieved, package_name) = 1) then
                                 package_installed_by = objItem.User
-                                if details_to_lower = "y" then
-                                    package_installed_by = lcase(package_installed_by)
-                                end if
+                                lcase(package_installed_by)
                                 package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
                                 package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
                                 exit for
@@ -3953,9 +3924,7 @@ if (audit_software = "y") then
                         if (not isNull(message_retrieved)) then
                             if (InStr(message_retrieved, package_name) = 1) then
                                 package_installed_by = objItem.User
-                                if details_to_lower = "y" then
-                                    package_installed_by = lcase(package_installed_by)
-                                end if
+                                lcase(package_installed_by)
                                 package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
                                 package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
                                 exit for
@@ -4079,9 +4048,7 @@ if (reg_node = "y") then
             if (not isNull(message_retrieved)) then
                 if (InStr(message_retrieved, package_name) = 1) then
                     package_installed_by = objItem.User
-                    if details_to_lower = "y" then
-                        package_installed_by = lcase(package_installed_by)
-                    end if
+                    package_installed_by = lcase(package_installed_by)
                     package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
                     package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
                     exit for
@@ -4223,9 +4190,7 @@ if address_width = "64" then
             if (not isNull(message_retrieved)) then
                 if (InStr(message_retrieved, package_name) = 1) then
                     package_installed_by = objItem.User
-                    if details_to_lower = "y" then
-                        package_installed_by = lcase(package_installed_by)
-                    end if
+                    package_installed_by = lcase(package_installed_by)
                     package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
                     package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
                     exit for
@@ -4288,7 +4253,7 @@ if (cint(windows_build_number) > 5000) then
     if (not isnull(colItems2)) then
         for each objItem2 in colItems2
             package_installed_by = objItem2.InstalledBy
-            if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
+            package_installed_by = lcase(package_installed_by)
             result.WriteText "      <item>" & vbcrlf
             result.WriteText "          <name>" & escape_xml(objItem2.HotFixID) & "</name>" & vbcrlf
             result.WriteText "          <install_date>" & escape_xml(objItem2.InstalledOn) & "</install_date>" & vbcrlf
@@ -4323,7 +4288,7 @@ for each objItem in colItems
     result.WriteText "      </item>" & vbcrlf
 
     service_name = objItem.Name
-    if details_to_lower = "y" then service_name = lcase(service_name) end if
+    service_name = lcase(service_name)
     test_name = lcase(service_name)
 
     select case test_name
