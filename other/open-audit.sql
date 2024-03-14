@@ -808,7 +808,7 @@ INSERT INTO `configuration` VALUES (NULL,'create_change_log_certificate','y','bo
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_disk','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the disk table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_dns','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the dns table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_file','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the file table.');
-INSERT INTO `configuration` VALUES (NULL,'create_change_log_ip','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the ip table.');
+INSERT INTO `configuration` VALUES (NULL,'create_change_log_ip','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the ip table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the log table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_memory','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the memory table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_module','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the module table.');
@@ -854,7 +854,7 @@ INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_certificate','n','bo
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_disk','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current disk data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_dns','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current dns data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_file','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current file data.');
-INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_ip','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current ip data.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_ip','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current ip data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_log','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current log data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_memory','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current memory data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_module','n','bool','y','system','2000-01-01 00:00:00','Should we delete non-current module data.');
@@ -947,7 +947,6 @@ INSERT INTO `configuration` VALUES (NULL,'license','','text','n','system','2000-
 INSERT INTO `configuration` VALUES (NULL,'license_string','','text','y','system','2000-01-01 00:00:00','The license string (or key) for Open-AudIT (if used).');
 INSERT INTO `configuration` VALUES (NULL,'license_string_collector','','text','y','system','2000-01-01 00:00:00','The license string (or key) for Open-AudIT Collectors (if used).');
 INSERT INTO `configuration` VALUES (NULL,'license_eula','','text','n','system','2000-01-01 00:00:00','The date of EULA acceptance.');
-INSERT INTO `configuration` VALUES (NULL,'product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
 INSERT INTO `configuration` VALUES (NULL,'oae_prompt','2015-06-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL,'output_escape_csv','y','bool','y','system','2000-01-01 00:00:00','Escape CSV output so Excel will not attempt to run contents.');
 INSERT INTO `configuration` VALUES (NULL,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.');
