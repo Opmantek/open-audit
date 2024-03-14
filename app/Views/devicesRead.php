@@ -211,16 +211,14 @@ if (!empty($included['fields'])) {
                                             <?= read_select('class', $resource->class, '', $update, __('Class'), $included['class']) ?>
                                             <?= read_field('os_version', $resource->os_version, '', false, __('OS Version')) ?>
                                             <?= read_field('memory_count', ($resource->memory_count / 1024 / 1024) . ' GB', '', false, __('Memory')) ?>
-                                            <?= read_field('last_seen', $resource->last_seen, '', false, __('Last Seen On')) ?>
+                                            <?= read_field('os_installation_date', $resource->os_installation_date, '', $update, __('OS Installed On')) ?>
                                         </div>
                                         <div class="col-4">
                                             <?= read_field('fqdn', $resource->fqdn, '', $update, __('FQDN')) ?>
                                             <?= read_field('dns_fqdn', $resource->dns_fqdn, '', $update, __('DNS FQDN')) ?>
                                             <?= read_field('function', $resource->function, '', $update) ?>
-                                            <?= read_field('os_installation_date', $resource->os_installation_date, '', $update, __('OS Installed On')) ?>
-                                            <!--
-                                            <?= read_select('oae_manage', $resource->oae_manage, '', $update, __('Manage in Enterprise'), []) ?>
-                                        -->
+                                            <?= read_field('first_seen', $resource->first_seen, '', false, __('First Seen On')) ?>
+                                            <?= read_field('last_seen', $resource->last_seen, '', false, __('Last Seen On')) ?>
                                             <?= read_field('last_seen_by', $resource->last_seen_by) ?>
                                         </div>
                                     </div>
