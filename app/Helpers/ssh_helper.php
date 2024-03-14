@@ -822,7 +822,7 @@ if (! function_exists('ssh_audit')) {
             'redhat_os_name' => 'cat /etc/redhat-release 2>/dev/null',
             'ubuntu_os_codename' => 'cat /etc/os-release 2>/dev/null | grep -i ^UBUNTU_CODENAME | cut -d= -f2 | cut -d\" -f2',
             'vmware_os_version' => 'uname -r 2>/dev/null',
-            'osx_os_version' => 'sw_vers 2>/dev/null | grep "ProductVersion:" | cut -f2',
+            'osx_os_version' => 'sw_vers 2>/dev/null | grep "ProductVersion:" | cut -d: -f2 | xargs 2>/dev/null',
             'ubiquiti_os' => 'cat /etc/motd 2>/dev/null | grep -i EdgeOS 2>/dev/null',
             'ubiquiti_os_version' => 'cat /etc/version 2>/dev/null',
             'ddwrt_os_name' => 'cat /etc/motd 2>/dev/null | grep -i DD-WRT 2>/dev/null',
@@ -1114,16 +1114,15 @@ if (! function_exists('ssh_audit')) {
             unset($result, $command);
         }
         unset($device->vmware_os_version);
-
-        if (strtolower($device->os_group) === 'darwin') {
+        if (trim(strtolower($device->os_group)) === 'darwin') {
+            $device->os_group = 'Apple';
             $device->type = 'computer';
             $device->os_family = 'Apple OSX';
             if (!empty($device->osx_os_version)) {
-                $device->os_name = 'Apple OSX ' . $device->osx_os_version;
-            } else {
-                $device->os_name = 'Apple OSX';
+                $device->os_name = 'MacOS ' . $device->osx_os_version;
             }
-            if (empty($device->os_version) && ! empty($device->osx_os_version)) {
+            unset($device->os_version);
+            if (!empty($device->osx_os_version)) {
                 $device->os_version = $device->osx_os_version;
             }
         }
@@ -1188,10 +1187,10 @@ if (! function_exists('ssh_audit')) {
         }
 
         // Type based on os_group = Linux (set to computer)
-        if (! empty($device->os_group) and $device->os_group === 'Linux' and empty($device->type) and ! empty($device->manufacturer) and $device->manufacturer !== 'Ubiquiti Networks Inc.') {
+        if (!empty($device->os_group) and $device->os_group === 'Linux' and empty($device->type) and !empty($device->manufacturer) and $device->manufacturer !== 'Ubiquiti Networks Inc.') {
             $device->type = 'computer';
         }
-        if (! empty($device->os_group) and stripos($device->os_group, 'BSD') !== false) {
+        if (!empty($device->os_group) and stripos($device->os_group, 'BSD') !== false) {
             $device->type = 'computer';
             $device->model = $device->bsd_model;
             $device->os_group = 'BSD';
@@ -1283,10 +1282,17 @@ if (! function_exists('ssh_audit')) {
                     $ssh_hostname = explode('.', $device->hostname);
                     if (trim(strtolower($sudo_temp_hostname[0])) === trim(strtolower($ssh_hostname[0]))) {
                         $device->use_sudo = true;
+                        $s_h_result = trim(strtolower($sudo_temp_hostname[0]));
+                    }
+                    foreach ($lines as $line) {
+                        if (trim(strtolower($line)) === trim(strtolower($ssh_hostname[0]))) {
+                            $device->use_sudo = true;
+                            $s_h_result = trim(strtolower($line));
+                        }
                     }
                     $log->command = trim((string)$command) . '; # hostname test using sudo';
                     $log->command_time_to_execute = (microtime(true) - $item_start);
-                    $log->command_output = 'sudo hostname: ' . $sudo_temp_hostname[0] . ', Device hostname: ' . $ssh_hostname[0];
+                    $log->command_output = 'sudo hostname: ' . $s_h_result . ', Device hostname: ' . $ssh_hostname[0];
                     $log->message = 'SSH command - sudo hostname';
                     if ($device->use_sudo) {
                         $log->command_status = 'success';

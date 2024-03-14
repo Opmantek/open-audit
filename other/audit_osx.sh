@@ -134,7 +134,7 @@ fi
 system_os_version=$(sw_vers | grep "ProductVersion:" | cut -d: -f2 | xargs)
 system_os_version_major=$(echo "$system_os_version" | cut -d. -f1)
 system_os_version_minor=$(echo "$system_os_version" | cut -d. -f2)
-system_os_name="OSX $system_os_version"
+system_os_name="MacOS $system_os_version"
 system_serial=$(system_profiler SPHardwareDataType | grep 'Serial Number (system):' | cut -d':' -f2 | sed 's/^ *//g')
 manufacturer_code=""
 if [[ ${#system_serial} = 11 ]]; then
@@ -158,6 +158,13 @@ if [ "$system_pc_os_arch" == "arm64" ]; then
 fi
 system_pc_date_os_installation=$(date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S")
 
+for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | cut -d":" -f2 | cut -d" " -f2); do
+    system_ip=`ipconfig getifaddr $line`
+    if [ -n "$system_ip" ]; then
+        break
+    fi
+done
+
 echo  "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo  "<system>" >> $xml_file
 echo  " <sys>" >> $xml_file
@@ -168,6 +175,7 @@ echo  "     <uuid>$system_uuid</uuid>" >> $xml_file
 echo  "     <hostname>$system_hostname</hostname>" >> $xml_file
 echo  "     <domain>$system_domain</domain>" >> $xml_file
 echo  "     <description></description>" >> $xml_file
+echo  "     <ip>$system_ip</ip>" >> $xml_file
 echo  "     <class></class>" >> $xml_file
 echo  "     <type>computer</type>" >> $xml_file
 echo  "     <os_group>Apple</os_group>" >> $xml_file

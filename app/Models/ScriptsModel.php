@@ -49,6 +49,7 @@ class ScriptsModel extends BaseModel
                 break;
             
             case 'darwin':
+            case 'apple':
                 $audit_script = 'audit_osx.sh';
                 $source_name = 'audit_osx_' . $timestamp . '.sh';
                 break;

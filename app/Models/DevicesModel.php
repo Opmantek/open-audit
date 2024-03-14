@@ -189,6 +189,20 @@ class DevicesModel extends BaseModel
         if (empty($data->org_id)) {
             $data->org_id = 1;
         }
+        if (!empty($data->last_seen)) {
+            $data->first_seen = $data->last_seen;
+        }
+        if (empty($data->last_seen)) {
+            $instance = get_instance();
+            $data->last_seen = $instance->config->timestamp;
+            $data->first_seen = $data->last_seen;
+        }
+        $lower = array('hostname', 'domain', 'fqdn', 'dns_hostname', 'dns_domain', 'dns_fqdn');
+        foreach ($lower as $column) {
+            if (!empty($data->{$column})) {
+                $data->{$column} =  strtolower($data->{$column});
+            }
+        }
         $data = $this->createFieldData('devices', $data);
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
@@ -817,6 +831,12 @@ class DevicesModel extends BaseModel
         }
         if (empty($data->timestamp)) {
             $data->timestamp = $instance->config->timestamp;
+        }
+        $lower = array('hostname', 'domain', 'fqdn', 'dns_hostname', 'dns_domain', 'dns_fqdn');
+        foreach ($lower as $column) {
+            if (!empty($data->{$column})) {
+                $data->{$column} =  strtolower($data->{$column});
+            }
         }
         // Get the lastest edit_log data
         $sql = "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE device_id = ? AND `db_table` = 'devices' GROUP BY db_column, weight, value, previous_value, source ORDER BY id";
