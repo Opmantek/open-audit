@@ -15,7 +15,7 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
  */
 
 $collections = array('agents','applications','attributes','baselines','baselines_policies','baselines_results','clouds','clusters','collectors', 'components',
-'configuration','connections','credentials','dashboards','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files',
+'configuration','connections','credentials','dashboards','devices','discoveries','discovery_log','discovery_scan_options','errors','executables','fields','files',
 'groups','integrations','ldap_servers','licenses','locations','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles',
 'rules','scripts','summaries','support','tasks','users','widgets');
 
