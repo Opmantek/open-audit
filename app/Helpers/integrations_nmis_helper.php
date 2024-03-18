@@ -874,7 +874,17 @@ if (!function_exists('integrations_create')) {
                 unlink($ckfile);
                 return array();
             }
-            $external_device = @json_decode($output);
+            try {
+                $external_device = json_decode($output);
+            } catch (Exception $e) {
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Invalid JSON in result from NMIS. Result: ' . (string)$output)";
+                $data = array($integration->id, microtime(true));
+                $query = $CI->db->query($sql, $data);
+                log_message('error', '[integrations_create] Invalid JSON in result from NMIS. Result: ' . (string)$output);
+                curl_close($ch);
+                unlink($ckfile);
+                return array();
+            }
             if (empty($external_device)) {
                 $message = '[integrations_create] No JSON in result from NMIS. Result: ' . (string)$output;
                 log_message('error', $message);
@@ -883,21 +893,21 @@ if (!function_exists('integrations_create')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return array();
-            } else {
-                if (empty($external_device->error)) {
-                    $external_devices[] = $external_device;
-                    $message = '[integrations_create] Device ' . $device->configuration->host . ' created in NMIS.';
-                    $count = count($external_devices);
-                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
-                    $db->query($sql, [$integration->id, microtime(true), $message]);
-                    if ($integration->attributes->debug) {
-                        $message = '[integrations_create] Received device creation data: ' . $output;
-                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
-                        $db->query($sql, [$integration->id, microtime(true), $message]);
-                    }
-                } else {
-                    $message = '[integrations_create] Error: ' . $external_device->error;
-                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+            }
+            if (!empty($external_device->error)) {
+                $message = '[integrations_create] Error: ' . $external_device->error;
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $db->query($sql, [$integration->id, microtime(true), $message]);
+            }
+            if (empty($external_device->error)) {
+                $external_devices[] = $external_device;
+                $message = '[integrations_create] Device ' . $device->configuration->host . ' created in NMIS.';
+                $count = count($external_devices);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                $db->query($sql, [$integration->id, microtime(true), $message]);
+                if ($integration->attributes->debug) {
+                    $message = '[integrations_create] Received device creation data: ' . $output;
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                     $db->query($sql, [$integration->id, microtime(true), $message]);
                 }
             }
