@@ -1,6 +1,20 @@
 <?php
 $output .= "Upgrade database to 5.2.0 commenced.\n\n";
 
+if ($db->fieldExists('user_id', 'change_log')) {
+    $sql = "ALTER TABLE `change_log` DROP `user_id`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('ack_by', 'change_log')) {
+    $sql = "ALTER TABLE `change_log` ADD `ack_by` varchar(200) NOT NULL DEFAULT ''";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 $sql = "DELETE FROM `configuration` WHERE `name` IN ('product', 'oae_product')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
