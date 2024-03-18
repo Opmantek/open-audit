@@ -9,7 +9,14 @@ if ($db->fieldExists('user_id', 'change_log')) {
 }
 
 if (!$db->fieldExists('ack_by', 'change_log')) {
-    $sql = "ALTER TABLE `change_log` ADD `ack_by` varchar(200) NOT NULL DEFAULT ''";
+    $sql = "ALTER TABLE `change_log` ADD `ack_by` varchar(200) NOT NULL DEFAULT '' AFTER `details`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('notes', 'change_log') and $db->fieldExists('note', 'change_log')) {
+    $sql = "ALTER TABLE `change_log` CHANGE `note` `notes` TEXT NOT NULL";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());

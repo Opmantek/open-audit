@@ -1277,7 +1277,7 @@ class ComponentsModel extends BaseModel
                     }
                     $alert_details = substr($alert_details, 0, -2);
                     $alert_details = "Item added to {$table} - {$alert_details}";
-                    $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)';
+                    $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`, `notes`) VALUES (?, ?, ?, ?, ?, ?, "")';
                     $query = $this->db->query($sql, [intval($device->id), "{$table}", intval($id), 'create', "{$alert_details}", "{$device->last_seen}"]);
                     // add a count to our chart table
                     $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '{$table}_create', " . intval($device->org_id) . ', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1';
@@ -1384,7 +1384,7 @@ class ComponentsModel extends BaseModel
                 }
                 $alert_details = substr($alert_details, 0, -2);
                 $alert_details = "Item removed from {$table} - {$alert_details}";
-                $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)';
+                $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`, `notes`) VALUES (?, ?, ?, ?, ?, ?, "")';
                 $query = $this->db->query($sql, [intval($device->id), "{$table}", intval($db_item->id), 'delete', "{$alert_details}", "{$device->last_seen}"]);
                 // add a count to our chart table
                 $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '{$table}_delete', " . intval($device->org_id) . ', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1';

@@ -561,7 +561,7 @@ CREATE TABLE `change_log` (
   `ack_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `external_link` varchar(200) NOT NULL DEFAULT '',
   `external_ident` varchar(200) NOT NULL DEFAULT '',
-  `note` varchar(200) NOT NULL DEFAULT '',
+  `notes` text NOT NULL,
   `change_id` int(10) unsigned DEFAULT NULL,
   `change_type` enum('','standard','normal','emergency','unauthorised') NOT NULL DEFAULT '',
   `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
