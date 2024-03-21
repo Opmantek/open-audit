@@ -410,7 +410,7 @@ class ScriptsModel extends BaseModel
             }
         }
 
-        if (!empty($instance->config->executables) and $instance->config->executables) {
+        if (!empty($instance->config->executables) and $instance->config->executables and $instance->config->product === 'enterprise') {
             if ($data->based_on === 'audit_linux.sh') {
                 $sql = "SELECT * FROM executables";
                 $result = $this->db->query($sql)->getResult();
@@ -423,8 +423,6 @@ class ScriptsModel extends BaseModel
                             $file = str_replace($find, $replace, $file);
                         }
                         if ($item->exclude === 'y') {
-                            #$replace = $find . "\nexclusions[" . ($item->id + 1) . ']="' . $path . '"';
-                            #$file = str_replace($find, $replace, $file);
                             $exclusions[] = $path;
                         }
                     }
