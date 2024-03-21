@@ -133,7 +133,6 @@ include('shared/lang.php');
                                         <div class="offset-2 col-8" style="position:relative;">
                                         <br><span class="text-secondary">Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a></span>
                                         </div>
-                                        <?php if (!empty($config->default_network_address) and strpos($config->default_network_address, '127.0.0.1') === false and strpos($config->default_network_address, 'localhost') === false and !empty($config->default_network_address)) { ?>
                                         <span align='center'>
                                             <br>
                                             <button id="audit" name="audit" type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#audit_select"><?= __('Audit My PC') ?></button>
@@ -157,11 +156,13 @@ include('shared/lang.php');
                                                     </form>
                                                 </div>
                                                 <br />
-                                                <?= __('The direct link for the script is') ?><br /><a href="#" id="go_link">#</a><br />
+                                                <?= __('The direct link for the script is') ?>&nbsp;<a href="#" id="go_link">#</a><br />
                                                 <?= __('You may want to copy and paste this URL in an email to your staff.') ?>
+                                                <?php if (stripos(base_url(), 'localhost') !== false or stripos(base_url(), '127.0.0') !== false) {
+                                                    echo __('<br><br><strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine.<br />If you need to audit other machines, please download the script from a remote machine, not the Open-AudIT server itself.');
+                                                } ?>
                                             </div>
                                         </span>
-                                        <?php } ?>
                                         <br>&nbsp;
                                     </div>
                                 </div>

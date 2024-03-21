@@ -358,7 +358,12 @@ class ScriptsModel extends BaseModel
             if (!empty($instance->config->default_network_address)) {
                 $options->url = $instance->config->default_network_address . 'index.php/input/devices';
             } else {
-                unset($options->url);
+                $baseURL = base_url();
+                if (!empty($baseURL)) {
+                    $options->url = $baseURL . 'index.php/input/devices';
+                } else {
+                    unset($options->url);
+                }
             }
         }
         $find = 'Configuration from web UI here';
