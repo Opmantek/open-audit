@@ -1109,6 +1109,26 @@ class ComponentsModel extends BaseModel
                         }
                     }
                 }
+                if (empty($virtual_machine->icon) and !empty($virtual_machine->os)) {
+                    if (stripos($virtual_machine->os, 'red hat') !== false) {
+                        $virtual_machine->icon = 'redhat';
+                    }
+                    if (stripos($virtual_machine->os, 'debian') !== false) {
+                        $virtual_machine->icon = 'debian';
+                    }
+                    if (stripos($virtual_machine->os, 'centos') !== false) {
+                        $virtual_machine->icon = 'centos';
+                    }
+                    if (stripos($virtual_machine->os, 'ubuntu') !== false) {
+                        $virtual_machine->icon = 'ubuntu';
+                    }
+                    if (stripos($virtual_machine->os, 'windows') !== false) {
+                        $virtual_machine->icon = 'windows';
+                    }
+                    if (empty($virtual_machine->icon) and stripos($virtual_machine->os, 'linux') !== false) {
+                        $virtual_machine->icon = 'linux';
+                    }
+                }
             }
         }
 

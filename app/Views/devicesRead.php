@@ -2416,7 +2416,7 @@ if (!empty($included['fields'])) {
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
-                                                    <th><?= __('View Device') ?></th>
+                                                    <th class="text-center"><?= __('Icon') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Type') ?></th>
                                                     <th><?= __('Memory') ?></th>
@@ -2434,7 +2434,7 @@ if (!empty($included['fields'])) {
                                                     } ?>
                                                 <tr>
                                                     <?= device_component_button_read('vm', $row->id) ?>
-                                                    <td><?= $row->icon ?></td>
+                                                    <td class="text-center"><?= $row->icon ?></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->type ?></td>
                                                     <td><?= $row->memory_count ?></td>
