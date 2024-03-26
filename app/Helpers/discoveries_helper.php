@@ -66,7 +66,7 @@ if (! function_exists('responding_ip_list')) {
     function responding_ip_list($discovery = null)
     {
         if (is_null($discovery)) {
-            return false;
+            return array();
         }
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
@@ -90,6 +90,13 @@ if (! function_exists('responding_ip_list')) {
                 $command = 'nmap -n -oG - -sP --exclude ' . $discovery->scan_options->exclude_ip . ' ' . $discovery->subnet;
             } else {
                 $command = 'nmap -n -oG - -sP ' . $discovery->subnet;
+                // NOTE - below is for Linux only and only in specific circumstances
+                //      - Fping doesn't have an exclude option
+                //      - Fping doesn't accept the same host formatting as Nmap, except for 1.2.3.4/5
+                // if (filter_var($discovery->subnet, FILTER_VALIDATE_IP)) {
+                //     $discovery->subnet = $discovery->subnet . '/32';
+                // }
+                // $command = 'fping -A -a -q -g -r 2 ' . $discovery->subnet . ' 2>&1';
             }
             if (php_uname('s') === 'Darwin') {
                 $command = '/usr/local/bin/' . $command;
@@ -103,13 +110,19 @@ if (! function_exists('responding_ip_list')) {
                         $ip_addresses[] = $temp[1];
                     }
                 }
+                // Caters to a single responding IP on each line, for fping or Nmap with piping to cut, et al
+                // foreach ($output as $line) {
+                //     if (filter_var($line, FILTER_VALIDATE_IP)) {
+                //         $ip_addresses[] = $line;
+                //     }
+                // }
             } else {
                 if (php_uname('s') === 'Windows NT' and empty($output)) {
                     log_message('error', 'No response from Nmap. Is the Apache Service running as a normal user?');
                 }
                 $log->command_output = json_encode($output);
                 $discoveryLogModel->create($log);
-                return false;
+                return array();
             }
         } else {
             if (!empty($discovery->scan_options->exclude_ip)) {
@@ -131,7 +144,7 @@ if (! function_exists('responding_ip_list')) {
                 }
             } else {
                 $discoveryLogModel->create($log);
-                return false;
+                return array();
             }
         }
         $log->command_output = 'Responding IPs: ' . @count($ip_addresses);
