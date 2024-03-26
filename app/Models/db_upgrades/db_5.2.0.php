@@ -1,6 +1,11 @@
 <?php
 $output .= "Upgrade database to 5.2.0 commenced.\n\n";
 
+$sql = "ALTER TABLE `bios` CHANGE `serial` `serial` VARCHAR(200) NOT NULL DEFAULT ''";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 if ($db->fieldExists('user_id', 'change_log')) {
     $sql = "ALTER TABLE `change_log` DROP `user_id`";
     $db->query($sql);
@@ -21,6 +26,21 @@ if (!$db->fieldExists('notes', 'change_log') and $db->fieldExists('note', 'chang
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
+
+$sql = "DELETE FROM `configuration` WHERE `name` IN ('product', 'oae_product')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `configuration` SET `value` = 'n' WHERE `name` = 'create_change_log_ip'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `configuration` SET `value` = 'y' WHERE `name` = 'delete_noncurrent_ip'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 if (!$db->tableExists('executables')) {
     $sql = "CREATE TABLE `executables` (
@@ -76,6 +96,11 @@ if (!$db->tableExists('executable')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+$sql = "ALTER TABLE `partition` CHANGE `mount_point` `mount_point` VARCHAR(200) NOT NULL DEFAULT ''";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "SELECT * FROM `roles`";
 $roles = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -93,21 +118,6 @@ foreach ($roles as $role) {
         $this->rolesModel->update(intval($role->id), $permissions);
     }
 }
-
-$sql = "DELETE FROM `configuration` WHERE `name` IN ('product', 'oae_product')";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
-$sql = "UPDATE `configuration` SET `value` = 'n' WHERE `name` = 'create_change_log_ip'";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
-$sql = "UPDATE `configuration` SET `value` = 'y' WHERE `name` = 'delete_noncurrent_ip'";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20240512' WHERE `name` = 'internal_version'";
