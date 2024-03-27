@@ -106,7 +106,7 @@ if ($style === 'icontext') {
                             <br>
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped">
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                                         <thead>
                                             <tr>
                                                 <th class="text-center"><?php echo __('View'); ?></th>
