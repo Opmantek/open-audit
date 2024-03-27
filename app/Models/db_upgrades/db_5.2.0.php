@@ -42,6 +42,16 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "ALTER TABLE `discovery_log` CHANGE `timestamp` `timestamp` datetime DEFAULT current_timestamp()";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "ALTER TABLE `enterprise` CHANGE `response` `response` mediumtext NOT NULL DEFAULT ''";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 if (!$db->tableExists('executables')) {
     $sql = "CREATE TABLE `executables` (
         `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

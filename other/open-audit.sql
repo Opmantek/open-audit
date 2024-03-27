@@ -1328,7 +1328,7 @@ CREATE TABLE `discovery_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `discovery_id` int(10) unsigned DEFAULT NULL,
   `device_id` int(10) unsigned DEFAULT NULL,
-  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `timestamp` datetime DEFAULT current_timestamp(),
   `severity` int(1) unsigned NOT NULL DEFAULT '5',
   `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
   `pid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1534,7 +1534,7 @@ DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `request` text NOT NULL,
-  `response` longtext NOT NULL,
+  `response` mediumtext NOT NULL DEFAULT '',
   `timestamp` datetime NOT NULL DEFAULT current_timestamp(),
   `output` mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
@@ -1557,36 +1557,36 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `executable`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-  CREATE TABLE `executable` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `device_id` int(10) unsigned DEFAULT NULL,
-    `current` enum('y','n') NOT NULL DEFAULT 'y',
-    `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-    `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-    `executable_id` int(10) unsigned DEFAULT NULL,
-    `name` varchar(200) NOT NULL DEFAULT '',
-    `full_name` text NOT NULL,
-    `description` varchar(1000) NOT NULL,
-    `package` varchar(1000) NOT NULL,
-    `size` int(10) unsigned NOT NULL DEFAULT '0',
-    `directory` text NOT NULL,
-    `hash` varchar(250) NOT NULL DEFAULT '',
-    `last_changed` varchar(100) NOT NULL DEFAULT '',
-    `meta_last_changed` varchar(100) NOT NULL DEFAULT '',
-    `permission` varchar(250) NOT NULL DEFAULT '',
-    `owner` varchar(100) NOT NULL DEFAULT '',
-    `group` varchar(100) NOT NULL DEFAULT '',
-    `type` varchar(100) NOT NULL DEFAULT '',
-    `version` varchar(100) NOT NULL DEFAULT '',
-    `inode` bigint(20) unsigned NOT NULL DEFAULT '0',
-    `ack_by` varchar(200) NOT NULL DEFAULT '',
-    `ack_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-    `notes` text NOT NULL,
-    PRIMARY KEY (`id`),
-    KEY `system_id` (`device_id`),
-    KEY `name` (`name`),
-    CONSTRAINT `executable_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+CREATE TABLE `executable` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `device_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `executable_id` int(10) unsigned DEFAULT NULL,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `full_name` text NOT NULL,
+  `description` varchar(1000) NOT NULL,
+  `package` varchar(1000) NOT NULL,
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `directory` text NOT NULL,
+  `hash` varchar(250) NOT NULL DEFAULT '',
+  `last_changed` varchar(100) NOT NULL DEFAULT '',
+  `meta_last_changed` varchar(100) NOT NULL DEFAULT '',
+  `permission` varchar(250) NOT NULL DEFAULT '',
+  `owner` varchar(100) NOT NULL DEFAULT '',
+  `group` varchar(100) NOT NULL DEFAULT '',
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `version` varchar(100) NOT NULL DEFAULT '',
+  `inode` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `ack_by` varchar(200) NOT NULL DEFAULT '',
+  `ack_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `notes` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`device_id`),
+  KEY `name` (`name`),
+  CONSTRAINT `executable_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1612,7 +1612,7 @@ CREATE TABLE `executables` (
   `path` text NOT NULL,
   `description` text NOT NULL,
   `os_family` varchar(50) NOT NULL DEFAULT '',
-  `exclude` enum('y', 'n') NOT NULL DEFAULT 'n',
+  `exclude` enum('y','n') NOT NULL DEFAULT 'n',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
