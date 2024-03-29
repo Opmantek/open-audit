@@ -157,16 +157,16 @@
         },
         {
             "name": "codeigniter4/framework",
-            "version": "v4.4.6",
+            "version": "v4.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/codeigniter4/framework.git",
-                "reference": "7d393f85e8410f16654fa9b486694ff68c354c99"
+                "reference": "e6a2f707966ac74e41918434c84b3fb9d8291562"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeigniter4/framework/zipball/7d393f85e8410f16654fa9b486694ff68c354c99",
-                "reference": "7d393f85e8410f16654fa9b486694ff68c354c99",
+                "url": "https://api.github.com/repos/codeigniter4/framework/zipball/e6a2f707966ac74e41918434c84b3fb9d8291562",
+                "reference": "e6a2f707966ac74e41918434c84b3fb9d8291562",
                 "shasum": ""
             },
             "require": {
@@ -228,7 +228,7 @@
                 "slack": "https://codeigniterchat.slack.com",
                 "source": "https://github.com/codeigniter4/CodeIgniter4"
             },
-            "time": "2024-02-24T02:42:57+00:00"
+            "time": "2024-03-29T04:23:09+00:00"
         },
         {
             "name": "firebase/php-jwt",
