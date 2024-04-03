@@ -149,7 +149,7 @@ class QueriesModel extends BaseModel
             $type = end($split3);
             $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
         }
-        if (!empty($instance->config->advanced_queries) and $instance->config->advanced_queries and $query->advanced === 'y') {
+        if (!empty($instance->config->advanced_queries) and $instance->config->advanced_queries and !empty($query->advanced) and $query->advanced === 'y') {
             $sql = str_ireplace('@orgs', "({$user->org_list})", $sql);
         }
 
