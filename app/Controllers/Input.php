@@ -42,9 +42,13 @@ class Input extends BaseController
 
         $request = $this->request;
         $input = $request->getPost('data');
+        if (empty($input)) {
+            log_message('error', 'Audit data is empty.');
+            return false;
+        }
         $device = audit_convert($input);
         if (!$device) {
-            log_message('error', 'Could not convert audit submission');
+            log_message('error', 'Could not convert audit submission.');
             return false;
         }
         include "include_process_device.php";
