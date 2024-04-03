@@ -88,8 +88,13 @@ if (! function_exists('responding_ip_list')) {
         if ($discovery->scan_options->ping === 'y') {
             if (!empty($discovery->scan_options->exclude_ip)) {
                 $command = 'nmap -n -oG - -sP --exclude ' . $discovery->scan_options->exclude_ip . ' ' . $discovery->subnet;
+                // NOTE - Below should be faster than 'normal' Nmap
+                // $command = 'nmap -n -oG - -sP -T5 --min-parallelism 100 --max-parallelism 256  --exclude ' . $discovery->scan_options->exclude_ip . ' ' . $discovery->subnet;
             } else {
                 $command = 'nmap -n -oG - -sP ' . $discovery->subnet;
+                // NOTE - Below should be faster than 'normal' Nmap
+                // $command = 'nmap -n -oG - -sP -T5 --min-parallelism 100 --max-parallelism 256 ' . $discovery->subnet;
+                //
                 // NOTE - below is for Linux only and only in specific circumstances
                 //      - Fping doesn't have an exclude option
                 //      - Fping doesn't accept the same host formatting as Nmap, except for 1.2.3.4/5
@@ -1820,7 +1825,7 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Matching device from audit result';
             $discoveryLogModel->create($log);
             $audit_device = deviceMatch($audit->system, intval($discovery->id), $discovery->match_options);
-            #$audit->system->discovery_id = $discovery->id;
+            $audit->system->discovery_id = $discovery->id;
             if (!empty($audit->system->id)) {
                 $log->device_id = $audit->system->id;
             }
@@ -1986,6 +1991,7 @@ if (! function_exists('ip_audit')) {
             unset($device_json->system->original_last_seen);
             unset($device_json->system->id);
             unset($device_json->system->first_seen);
+            $device_json->system->discovery_id = $discovery->id;
             $device_json = json_encode($device_json);
 
             $url = $server->host . $server->community . '/index.php/input/devices';
@@ -2008,6 +2014,7 @@ if (! function_exists('ip_audit')) {
                 // error
                 $log->severity = 4;
                 $log->message = 'Could not send result to ' . $url . ' - please check with your server administrator.';
+                $log->device_id = $device->id;
                 $discoveryLogModel->create($log);
                 $log->severity = 7;
                 log_message('error', 'Could not send result to ' . $url);
@@ -2015,6 +2022,7 @@ if (! function_exists('ip_audit')) {
                 // success
                 $log->severity = 7;
                 $log->message = 'Result sent to ' . $server->host . '.';
+                $log->device_id = $device->id;
                 $discoveryLogModel->create($log);
                 log_message('debug', 'Result sent to ' . $server->host . '.');
             }
@@ -2034,6 +2042,7 @@ if (! function_exists('ip_audit')) {
         $log->command_status = 'device complete';
         $log->command_time_to_execute = microtime(true)  - $start;
         $log->message = 'IP Audit finish on device ' . ip_address_from_db($device->ip);
+        $log->device_id = $device->id;
         $log->ip = ip_address_from_db($device->ip);
         $discoveryLogModel->create($log);
 

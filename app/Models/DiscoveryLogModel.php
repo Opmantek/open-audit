@@ -158,7 +158,6 @@ class DiscoveryLogModel extends BaseModel
         $this->builder->insert($newdata);
         $id = intval($this->db->insertID());
 
-        // TODO - enable
         // If we are a collector, forward the log
         if (!empty($instance->config->servers) and !empty($instance->config->servers->type) and $instance->config->servers->type === 'collector') {
             $log = $newdata;
