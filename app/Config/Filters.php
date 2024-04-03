@@ -68,4 +68,11 @@ class Filters extends BaseConfig
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
     public array $filters = [];
+
+    public function __construct()
+    {
+        if (stripos($_SERVER['SCRIPT_NAME'], 'scripts') and $_SERVER['SCRIPT_NAME'](haystack, 'download')) {
+            unset($this->globals['after']['toolbar']);
+        }
+    }
 }
