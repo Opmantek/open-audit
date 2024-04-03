@@ -47,7 +47,7 @@ class ComponentsModel extends BaseModel
         }
         if ($table === '') {
             // No components.type requested, return all the below
-            $tables = array('bios', 'certificate', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            $tables = array('bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         }
         $orgs = array();
         $count = count($resp->meta->filter);
@@ -67,7 +67,7 @@ class ComponentsModel extends BaseModel
             }
         }
         if (empty($tables)) {
-            if (!in_array($table, ['audit_log', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows'])) {
+            if (!in_array($table, ['audit_log', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows'])) {
                 # Invalid table
                 log_message('error', 'Invalid table provided to ComponentsModel::collection, ' . $table);
                 $_SESSION['error'] = 'Invalid table provided to ComponentsModel::collection, ' . htmlentities($table);
@@ -1109,6 +1109,26 @@ class ComponentsModel extends BaseModel
                         }
                     }
                 }
+                if (empty($virtual_machine->icon) and !empty($virtual_machine->os)) {
+                    if (stripos($virtual_machine->os, 'red hat') !== false) {
+                        $virtual_machine->icon = 'redhat';
+                    }
+                    if (stripos($virtual_machine->os, 'debian') !== false) {
+                        $virtual_machine->icon = 'debian';
+                    }
+                    if (stripos($virtual_machine->os, 'centos') !== false) {
+                        $virtual_machine->icon = 'centos';
+                    }
+                    if (stripos($virtual_machine->os, 'ubuntu') !== false) {
+                        $virtual_machine->icon = 'ubuntu';
+                    }
+                    if (stripos($virtual_machine->os, 'windows') !== false) {
+                        $virtual_machine->icon = 'windows';
+                    }
+                    if (empty($virtual_machine->icon) and stripos($virtual_machine->os, 'linux') !== false) {
+                        $virtual_machine->icon = 'linux';
+                    }
+                }
             }
         }
 
@@ -1277,7 +1297,7 @@ class ComponentsModel extends BaseModel
                     }
                     $alert_details = substr($alert_details, 0, -2);
                     $alert_details = "Item added to {$table} - {$alert_details}";
-                    $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)';
+                    $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`, `notes`) VALUES (?, ?, ?, ?, ?, ?, "")';
                     $query = $this->db->query($sql, [intval($device->id), "{$table}", intval($id), 'create', "{$alert_details}", "{$device->last_seen}"]);
                     // add a count to our chart table
                     $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '{$table}_create', " . intval($device->org_id) . ', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1';
@@ -1384,7 +1404,7 @@ class ComponentsModel extends BaseModel
                 }
                 $alert_details = substr($alert_details, 0, -2);
                 $alert_details = "Item removed from {$table} - {$alert_details}";
-                $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)';
+                $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`, `notes`) VALUES (?, ?, ?, ?, ?, ?, "")';
                 $query = $this->db->query($sql, [intval($device->id), "{$table}", intval($db_item->id), 'delete', "{$alert_details}", "{$device->last_seen}"]);
                 // add a count to our chart table
                 $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '{$table}_delete', " . intval($device->org_id) . ', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1';

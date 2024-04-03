@@ -550,7 +550,11 @@ class DiscoveriesModel extends BaseModel
 
         $sql = "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY id";
         $query = $this->db->query($sql, [$id]);
-        $included['discovery_log'] = $query->getResult();
+        $discovery_log = $query->getResult();
+        foreach ($discovery_log as $log) {
+            $log->ip_padded = ip_address_to_db($log->ip);
+        }
+        $included['discovery_log'] = $discovery_log;
 
         $discovery_scan_optionsModel = new \App\Models\DiscoveryScanOptionsModel();
         $included['discovery_scan_options'] = $discovery_scan_optionsModel->listUser();

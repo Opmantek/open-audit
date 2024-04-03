@@ -90,6 +90,15 @@ class TasksModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        $data->minute = implode(',', $data->minute);
+        $data->hour = implode(',', $data->hour);
+        $data->month = implode(',', $data->month);
+        $data->day_of_month = implode(',', $data->day_of_month);
+        $data->day_of_week = implode(',', $data->day_of_week);
+        if (empty($data->uuid)) {
+            $instance = & get_instance();
+            $data->uuid = $instance->config->uuid;
+        }
         $data = $this->createFieldData('tasks', $data);
         if (empty($data)) {
             return null;

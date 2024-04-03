@@ -1634,8 +1634,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Route count retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.4.24.3.0';
-            $temp = (!empty($route_count)) ? count($route_count) : 0;
-            $log->command_output = "Count is $temp";
+            $log->command_output = "Count is $route_count";
             $log->command_status = 'notice';
             if (!empty($route_count) && $route_count < $config_value) {
                 $retrieve_routes = 1;

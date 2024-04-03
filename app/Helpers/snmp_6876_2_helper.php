@@ -41,6 +41,7 @@ if (is_array($guest_name) and count($guest_name) > 0) {
         $guest->cpu = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.9.".$guest->vm_ident);
         $guest->status = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.6.".$guest->vm_ident);
         $guest->config_file = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.3.".$guest->vm_ident);
+        $guest->os = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.4.".$guest->vm_ident);
         $guest->vm_group = '';
         $guest->type = 'esx';
         $guests[] = $guest;

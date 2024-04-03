@@ -19,6 +19,9 @@ function match_columns($table)
     if ($table === 'dns') {
             $match_columns = array('ip', 'name', 'fqdn');
     }
+    if ($table === 'executable') {
+            $match_columns = array('full_name', 'hash', 'inode', 'last_changed');
+    }
     if ($table === 'file') {
             $match_columns = array('full_name', 'hash', 'inode', 'last_changed');
     }

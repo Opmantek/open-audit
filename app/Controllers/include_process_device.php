@@ -16,7 +16,7 @@ helper('macaddress');
 helper('utility');
 
 $log = new \stdClass();
-$log->discovery_id = null;
+$log->discovery_id = (!empty($device->system->discovery_id)) ? intval($device->system->discovery_id) : null;
 $log->device_id = null;
 $log->timestamp = null;
 $log->severity = 7;

@@ -126,7 +126,7 @@ if (!empty($included['fields'])) {
 
                                     <?php
                                     $show = false;
-                                    $sections = array('certificate', 'dns', 'file', 'ip', 'log', 'netstat', 'nmap', 'pagefile', 'policy', 'print_queue', 'route', 'share', 'task', 'user', 'user_group', 'variable', 'vm', 'windows');
+                                    $sections = array('certificate', 'dns', 'file', 'executable', 'ip', 'log', 'netstat', 'nmap', 'pagefile', 'policy', 'print_queue', 'route', 'share', 'task', 'user', 'user_group', 'variable', 'vm', 'windows');
                                     foreach ($sections as $section) {
                                         if (!empty($included[$section])) {
                                             $show = true;
@@ -1764,6 +1764,45 @@ if (!empty($included['fields'])) {
                                 </div>
                             </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="executable_section">
+                                <?php $count = !empty($included['exceutable']) ? count($included['executable']) : 0; ?>
+                                <?=  device_panel('executable', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Full Name') ?></th>
+                                                    <th><?= __('Description') ?></th>
+                                                    <th><?= __('Size') ?></th>
+                                                    <th><?= __('Last Changed') ?></th>
+                                                    <th><?= __('Owner') ?></th>
+                                                    <th><?= __('Permission') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['executable'])) {
+                                                foreach ($included['executable'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('executable', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->full_name ?></td>
+                                                    <td><?= $row->description ?></td>
+                                                    <td><?= $row->size ?></td>
+                                                    <td><?= $row->last_changed ?></td>
+                                                    <td><?= $row->owner ?></td>
+                                                    <td><?= $row->permission ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div style="margin-bottom:20px; display:none;" class="card" id="file_section">
                                 <?php $count = !empty($included['file']) ? count($included['file']) : 0; ?>
                                 <?=  device_panel('file', $user->toolbar_style, $resource->id, '', false, $count); ?>
@@ -2377,7 +2416,7 @@ if (!empty($included['fields'])) {
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
-                                                    <th><?= __('View Device') ?></th>
+                                                    <th class="text-center"><?= __('Icon') ?></th>
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Type') ?></th>
                                                     <th><?= __('Memory') ?></th>
@@ -2395,7 +2434,7 @@ if (!empty($included['fields'])) {
                                                     } ?>
                                                 <tr>
                                                     <?= device_component_button_read('vm', $row->id) ?>
-                                                    <td><?= $row->icon ?></td>
+                                                    <td class="text-center"><?= $row->icon ?></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->type ?></td>
                                                     <td><?= $row->memory_count ?></td>

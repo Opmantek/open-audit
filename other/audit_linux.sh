@@ -984,6 +984,7 @@ echo "	</sys>"
 
 
 
+
 ##################################
 # USB SECTION                    #
 ##################################
@@ -3625,6 +3626,68 @@ if [ "$busybox" = "n" ]; then
 		done
 	done
 	echo "	</file>" >> "$xml_file"
+fi
+
+
+########################################################
+# EXECUTABLES                                         #
+########################################################
+if [ "$debugging" -gt "0" ]; then
+	echo "Executable Files Info"
+fi
+if [ "$busybox" = "n" ]; then
+	echo "	<executable>" >> "$xml_file"
+	for dir in ${executables[@]}; do
+		for file in $(find "$dir" -type f | cut -d: -f1 | grep -Ev "$exclusions"); do
+
+			description=""
+			description=$(file -b "$file" | grep executable)
+			package=""
+
+			if [ -n "$description" ]; then
+				case $system_os_family in
+					'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
+						package=$(dpkg -S "$file" 2>/dev/null | cut -d: -f1)
+					;;
+					'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' )
+						package=$(rpm -qf "$file" 2>/dev/null )
+					;;
+				esac
+			fi
+
+			if [ -z "$package" ] && [ -n "$description" ]; then
+				file_size=$(stat --printf="%s" "$file")
+				file_directory=$(dirname "$file")
+				file_hash=$(sha1sum "$file" | cut -d" " -f1)
+				file_last_changed=$(stat -c %y "$file" | cut -d. -f1)
+				file_meta_last_changed=$(stat -c %z "$file" | cut -d. -f1)
+				file_permissions=$(stat -c "%a" "$file")
+				file_owner=$(ls -ld "$file" | awk '{print $3}')
+				file_group=$(ls -ld "$file" | awk '{print $4}')
+				inode=$(ls -li "$file" | awk '{print $1}')
+
+				file_name=$(basename "$file")
+				{
+				echo "		<item>"
+				echo "			<name>$(escape_xml "$file_name")</name>"
+				echo "			<full_name>$(escape_xml "$file")</full_name>"
+				echo "			<size>$(escape_xml "$file_size")</size>"
+				echo "			<directory>$(escape_xml "$file_directory")</directory>"
+				echo "			<description>$(escape_xml "$description")</description>"
+				echo "			<hash>$(escape_xml "$file_hash")</hash>"
+				echo "			<last_changed>$(escape_xml "$file_last_changed")</last_changed>"
+				echo "			<meta_last_changed>$(escape_xml "$file_meta_last_changed")</meta_last_changed>"
+				echo "			<permission>$(escape_xml "$file_permissions")</permission>"
+				echo "			<package>$(escape_xml "$package")</package>"
+				echo "			<owner>$(escape_xml "$file_owner")</owner>"
+				echo "			<group>$(escape_xml "$file_group")</group>"
+				echo "			<inode>$(escape_xml "$inode")</inode>"
+				echo "		</item>"
+				} >> "$xml_file"
+			fi
+		done
+	done
+	echo "	</executable>" >> "$xml_file"
 fi
 
 

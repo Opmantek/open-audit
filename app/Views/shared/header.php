@@ -165,6 +165,15 @@ if (!empty($config->servers)) {
                                         <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Schedule') . ' ' . __('Discoveries'), '?type=discoveries') ?>
                                     </ul>
                                 </li>
+                                <?php if (!empty($config->executables) and $config->executables) { ?>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Executables') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('executables', 'r', $user, 'executablesCollection', __('List') . ' ' . __('Executables')) ?>
+                                        <?= menuItem('executables', 'c', $user, 'executablesCreateForm', __('Create') . ' ' . __('Executables')) ?>
+                                        <?= menuItem('executables', '', $user, 'executablesHelp', __('Learn About') . ' ' . __('Executables')) ?>
+                                    </ul>
+                                </li>
+                                <?php } ?>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Files') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('files', 'r', $user, 'filesCollection', __('List') . ' ' . __('Files')) ?>

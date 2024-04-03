@@ -643,6 +643,17 @@ if (!function_exists('collections_list')) {
         $collections->discovery_scan_options->actions->professional = 'r';
         $collections->discovery_scan_options->actions->community = 'r';
 
+
+        $collections->executables = new \StdClass();
+        $collections->executables->icon = 'fa fa-file-code-o';
+        $collections->executables->name = 'Executables';
+        $collections->executables->edition = 'Enterprise';
+        $collections->executables->orgs = 'b';
+        $collections->executables->actions = new \stdClass();
+        $collections->executables->actions->enterprise = 'crud';
+        $collections->executables->actions->professional = '';
+        $collections->executables->actions->community = '';
+
         $collections->fields = new \StdClass();
         $collections->fields->icon = 'fa fa-comments-o';
         $collections->fields->name = 'Fields';

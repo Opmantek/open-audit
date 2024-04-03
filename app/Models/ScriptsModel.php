@@ -358,7 +358,12 @@ class ScriptsModel extends BaseModel
             if (!empty($instance->config->default_network_address)) {
                 $options->url = $instance->config->default_network_address . 'index.php/input/devices';
             } else {
-                unset($options->url);
+                $baseURL = base_url();
+                if (!empty($baseURL)) {
+                    $options->url = $baseURL . 'index.php/input/devices';
+                } else {
+                    unset($options->url);
+                }
             }
         }
         $find = 'Configuration from web UI here';
@@ -402,6 +407,30 @@ class ScriptsModel extends BaseModel
             if ($data->based_on === 'audit_windows.vbs') {
                 $replace = $find . "\ndim files(".count($options->files).')';
                 $file = str_replace($find, $replace, $file);
+            }
+        }
+
+        if (!empty($instance->config->executables) and $instance->config->executables and $instance->config->product === 'enterprise') {
+            if ($data->based_on === 'audit_linux.sh') {
+                $sql = "SELECT * FROM executables";
+                $result = $this->db->query($sql)->getResult();
+                $exclusions = array();
+                if (!empty($result)) {
+                    foreach ($result as $item) {
+                        $path = str_replace('\\', '\\\\', $item->path);
+                        if ($item->exclude === 'n') {
+                            $replace = $find . "\nexecutables[" . ($item->id + 1) . ']="' . $path . '"';
+                            $file = str_replace($find, $replace, $file);
+                        }
+                        if ($item->exclude === 'y') {
+                            $exclusions[] = $path;
+                        }
+                    }
+                }
+                if (!empty($exclusions)) {
+                    $replace = $find . "\nexclusions=\"" . implode('|', $exclusions) . "\"";
+                    $file = str_replace($find, $replace, $file);
+                }
             }
         }
 

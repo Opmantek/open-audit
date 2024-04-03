@@ -557,11 +557,11 @@ CREATE TABLE `change_log` (
   `db_row` int(10) unsigned NOT NULL DEFAULT '0',
   `db_action` enum('','create','update','delete') NOT NULL DEFAULT '',
   `details` text NOT NULL,
-  `user_id` int(10) unsigned DEFAULT NULL,
+  `ack_by` varchar(200) NOT NULL DEFAULT '',
   `ack_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `external_link` varchar(200) NOT NULL DEFAULT '',
   `external_ident` varchar(200) NOT NULL DEFAULT '',
-  `note` varchar(200) NOT NULL DEFAULT '',
+  `notes` text NOT NULL,
   `change_id` int(10) unsigned DEFAULT NULL,
   `change_type` enum('','standard','normal','emergency','unauthorised') NOT NULL DEFAULT '',
   `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -1328,7 +1328,7 @@ CREATE TABLE `discovery_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `discovery_id` int(10) unsigned DEFAULT NULL,
   `device_id` int(10) unsigned DEFAULT NULL,
-  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `timestamp` datetime DEFAULT current_timestamp(),
   `severity` int(1) unsigned NOT NULL DEFAULT '5',
   `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
   `pid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1534,7 +1534,7 @@ DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `request` text NOT NULL,
-  `response` longtext NOT NULL,
+  `response` mediumtext NOT NULL DEFAULT '',
   `timestamp` datetime NOT NULL DEFAULT current_timestamp(),
   `output` mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
@@ -1542,12 +1542,90 @@ CREATE TABLE `enterprise` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `edit_log`
+-- Dumping data for table `enterprise`
 --
 
 LOCK TABLES `enterprise` WRITE;
 /*!40000 ALTER TABLE `enterprise` DISABLE KEYS */;
 /*!40000 ALTER TABLE `enterprise` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `executable`
+--
+
+DROP TABLE IF EXISTS `executable`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `executable` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `device_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `executable_id` int(10) unsigned DEFAULT NULL,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `full_name` text NOT NULL,
+  `description` varchar(1000) NOT NULL,
+  `package` varchar(1000) NOT NULL,
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `directory` text NOT NULL,
+  `hash` varchar(250) NOT NULL DEFAULT '',
+  `last_changed` varchar(100) NOT NULL DEFAULT '',
+  `meta_last_changed` varchar(100) NOT NULL DEFAULT '',
+  `permission` varchar(250) NOT NULL DEFAULT '',
+  `owner` varchar(100) NOT NULL DEFAULT '',
+  `group` varchar(100) NOT NULL DEFAULT '',
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `version` varchar(100) NOT NULL DEFAULT '',
+  `inode` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `ack_by` varchar(200) NOT NULL DEFAULT '',
+  `ack_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `notes` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`device_id`),
+  KEY `name` (`name`),
+  CONSTRAINT `executable_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `executable`
+--
+
+LOCK TABLES `executable` WRITE;
+/*!40000 ALTER TABLE `executable` DISABLE KEYS */;
+/*!40000 ALTER TABLE `executable` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `executables`
+--
+
+DROP TABLE IF EXISTS `executables`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `executables` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `path` text NOT NULL,
+  `description` text NOT NULL,
+  `os_family` varchar(50) NOT NULL DEFAULT '',
+  `exclude` enum('y','n') NOT NULL DEFAULT 'n',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `executables`
+--
+
+LOCK TABLES `executables` WRITE;
+/*!40000 ALTER TABLE `executables` DISABLE KEYS */;
+/*!40000 ALTER TABLE `executables` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -3012,8 +3090,8 @@ CREATE TABLE `roles` (
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` VALUES (NULL,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (NULL,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (NULL,'user','A standard role that can read all endpoints that contain an org_id.','{\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"reports\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'user','A standard role that can read all endpoints that contain an org_id.','{\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"executables\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"reports\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (NULL,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;

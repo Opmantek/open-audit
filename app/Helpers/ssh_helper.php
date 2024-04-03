@@ -605,7 +605,9 @@ if (! function_exists('ssh_audit')) {
                 }
             } else if ($credential->type === 'ssh') {
                 log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
-                if ($ssh->login($credential->credentials->username, $credential->credentials->password)) {
+                // NOTE - Use @ below because some devices cause "Error reading from socket" and halt this process
+                // TODO - change to try / catch
+                if (@$ssh->login($credential->credentials->username, $credential->credentials->password)) {
                     $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
                     $discoveryLogModel->create($log);

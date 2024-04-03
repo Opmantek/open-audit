@@ -54,7 +54,7 @@ class Input extends BaseController
         include "include_process_device.php";
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \stdClass();
-        $log->discovery_id = null;
+        $log->discovery_id = (!empty($device->system->discovery_id)) ? intval($device->system->discovery_id) : null;
         $log->device_id = $device->system->id;
         $log->timestamp = null;
         $log->severity = 7;
