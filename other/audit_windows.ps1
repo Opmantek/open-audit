@@ -14,8 +14,12 @@ echo "Not ready for use"
 exit
 
 param (
-    [int]$debugging = 1
+    [int]$debugging = 1,
+    [string]$url = "http://localhost/open-audit/index.php/input/devices",
+    [string]$create_file = "n",
+    [string]$submit_online = "y"
 )
+
 $debug = $debugging
 
 $timer = [Diagnostics.Stopwatch]::StartNew()
@@ -61,12 +65,12 @@ if ($result.sys.os_name -like "*2000*") { $result.sys.os_family = "Windows 2000"
 if ($result.sys.os_name -like "* XP*") { $result.sys.os_family = "Windows XP" }
 if ($result.sys.os_name -like "*2003*") { $result.sys.os_family = "Windows 2003" }
 if ($result.sys.os_name -like "*Vista*") { $result.sys.os_family = "Windows Vista" }
-if ($result.sys.os_name -like "*2008*") { $result.sys.os_family = "Windows 2008" }
 if ($result.sys.os_name -like "*Windows 7*") { $result.sys.os_family = "Windows 7" }
 if ($result.sys.os_name -like "*Windows 8*") { $result.sys.os_family = "Windows 8" }
-if ($result.sys.os_name -like "*2012*") { $result.sys.os_family = "Windows 2012" }
 if ($result.sys.os_name -like "*Windows 10*") { $result.sys.os_family = "Windows 10" }
 if ($result.sys.os_name -like "*Windows 11*") { $result.sys.os_family = "Windows 11" }
+if ($result.sys.os_name -like "*2008*") { $result.sys.os_family = "Windows 2008" }
+if ($result.sys.os_name -like "*2012*") { $result.sys.os_family = "Windows 2012" }
 if ($result.sys.os_name -like "*2016*") { $result.sys.os_family = "Windows 2016" }
 if ($result.sys.os_name -like "*2019*") { $result.sys.os_family = "Windows 2019" }
 if ($result.sys.os_name -like "*2022*") { $result.sys.os_family = "Windows 2022" }
@@ -1747,6 +1751,135 @@ if ($debug -gt 0) {
 }
 
 
+
+
+
+
+
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+$result.netstat = @()
+$item = @{}
+# Get-NetTCPConnection -State Listen | Select-Object -Property *,@{'Name' = 'ProcessName';'Expression'={(Get-Process -Id $_.OwningProcess).Name}} | ForEach {
+Get-NetTCPConnection -State Listen | ForEach {
+    Clear-Variable -name item
+    $item = @{}
+    $item.protocol = "tcp"
+    $item.ip = $_.LocalAddress
+    $item.port = $_.LocalPort
+    $item.processId = $_.OwningProcess
+    Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
+        $item.program = $_.CommandLine
+    }
+    if ($item.program -eq $null) {
+        $item.program = ""
+    }
+    if ($item.port -ne "" -and $item.port -ne $null) {
+        # Added this check because in testing we managed to get an entry without a port or associated program
+        $result.netstat += $item
+    }
+}
+Get-NetUDPEndpoint | ForEach {
+    Clear-Variable -name item
+    $item = @{}
+    $item.protocol = "udp"
+    $item.ip = $_.LocalAddress
+    $item.port = $_.LocalPort
+    $item.processId = $_.OwningProcess
+    Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
+        $item.program = $_.CommandLine
+    }
+    if ($item.program -eq $null) {
+        $item.program = ""
+    }
+    if ($item.port -ne "" -and $item.port -ne $null) {
+        # Added this check because in testing we managed to get an entry without a port or associated program
+        $result.netstat += $item
+    }
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.netstat.count
+    Write-Host "Netstat, $count entries took $totalSecs seconds"
+}
+
+
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+$result.route = @()
+$item = @{}
+Get-NetRoute | Where-Object AddressFamily -eq "IPv4" | 
+    Where-Object NextHop -ne "0.0.0.0" | 
+    Where-Object NextHop -ne "127.0.0.1" | 
+    Where-Object NextHop -notin $ip_address_array | ForEach {
+
+    Clear-Variable -name item
+    $item = @{}
+    $item.DestinationPrefix = $_.DestinationPrefix
+    $item.destination = ""
+    $item.mask = ""
+    $item.metric = $_.RouteMetric
+    $item.next_hop = $_.NextHop
+    $item.protocol = $_.Protocol
+    switch ($_.TypeOfRoute) {
+        "1" { $item.type = "Other" }
+        "2" { $item.type = "Invalid" }
+        "3" { $item.type = "Direct" }
+        "4" { $item.type = "Indirect" }
+        default { $item.type = "Unknown" }
+    }
+    $split = $_.DestinationPrefix.Split('/')
+    $item.destination = $split[0]
+    $prefix = $split[1]
+    $bitString = ('1' * $prefix).PadRight(32, '0')
+    $ipString = [String]::Empty
+    for ( $i=0 ;$i -lt 32; $i+=8) {
+        $byteString = $bitString.Substring($i, 8)
+        $ipString += "$([Convert]::ToInt32($byteString, 2))."
+    }
+    $item.mask = $ipString.ToString().TrimEnd('.')
+
+    $result.route += $item
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.route.count
+    Write-Host "Route, $count entries took $totalSecs seconds"
+}
+
+
+$result = $result | ConvertTo-Json
+$result = $result -replace '[\u2019\u2018]', "'"
+$result = $result -replace '[\u201C\u201D]', '\"'
+
+if ($submit_online -eq "y") {
+    try {
+        $Response = Invoke-WebRequest -UseBasicParsing "$url" -Method POST -Body "data=$result"
+        $StatusCode = $Response.StatusCode
+    } catch {
+        $StatusCode = $_.Exception.Response.StatusCode.value__
+    }
+    if ($debug -gt 0) {
+        "Submission Status: $StatusCode"
+    }
+}
+
+if ($create_file -eq "y") {
+    $result | Out-File "output.json"
+}
+
+$timer.Stop()
+$totalSecs =  [math]::Round($timer.Elapsed.TotalSeconds,0)
+if ($debug -gt 0) {
+    Write-Host "Script took $totalSecs seconds to complete."
+}
+
+
+
+
+
+
+
+
+
 # $result.server = @()
 # Clear-Variable -name item
 # $item = @{}
@@ -1843,110 +1976,6 @@ if ($debug -gt 0) {
 
 #     $result.server += $item
 # }
-
-
-
-
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.netstat = @()
-$item = @{}
-# Get-NetTCPConnection -State Listen | Select-Object -Property *,@{'Name' = 'ProcessName';'Expression'={(Get-Process -Id $_.OwningProcess).Name}} | ForEach {
-Get-NetTCPConnection -State Listen | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.protocol = "tcp"
-    $item.ip = $_.LocalAddress
-    $item.port = $_.LocalPort
-    $item.processId = $_.OwningProcess
-    Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
-        $item.program = $_.CommandLine
-    }
-    if ($item.program -eq $null) {
-        $item.program = ""
-    }
-    if ($item.port -ne "" -and $item.port -ne $null) {
-        # Added this check because in testing we managed to get an entry without a port or associated program
-        $result.netstat += $item
-    }
-}
-Get-NetUDPEndpoint | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.protocol = "udp"
-    $item.ip = $_.LocalAddress
-    $item.port = $_.LocalPort
-    $item.processId = $_.OwningProcess
-    Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
-        $item.program = $_.CommandLine
-    }
-    if ($item.program -eq $null) {
-        $item.program = ""
-    }
-    if ($item.port -ne "" -and $item.port -ne $null) {
-        # Added this check because in testing we managed to get an entry without a port or associated program
-        $result.netstat += $item
-    }
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.netstat.count
-    Write-Host "Netstat, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.route = @()
-$item = @{}
-Get-NetRoute | Where-Object AddressFamily -eq "IPv4" | 
-    Where-Object NextHop -ne "0.0.0.0" | 
-    Where-Object NextHop -ne "127.0.0.1" | 
-    Where-Object NextHop -notin $ip_address_array | ForEach {
-
-    Clear-Variable -name item
-    $item = @{}
-    $item.DestinationPrefix = $_.DestinationPrefix
-    $item.destination = ""
-    $item.mask = ""
-    $item.metric = $_.RouteMetric
-    $item.next_hop = $_.NextHop
-    $item.protocol = $_.Protocol
-    switch ($_.TypeOfRoute) {
-        "1" { $item.type = "Other" }
-        "2" { $item.type = "Invalid" }
-        "3" { $item.type = "Direct" }
-        "4" { $item.type = "Indirect" }
-        default { $item.type = "Unknown" }
-    }
-    $split = $_.DestinationPrefix.Split('/')
-    $item.destination = $split[0]
-    $prefix = $split[1]
-    $bitString = ('1' * $prefix).PadRight(32, '0')
-    $ipString = [String]::Empty
-    for ( $i=0 ;$i -lt 32; $i+=8) {
-        $byteString = $bitString.Substring($i, 8)
-        $ipString += "$([Convert]::ToInt32($byteString, 2))."
-    }
-    $item.mask = $ipString.ToString().TrimEnd('.')
-
-    $result.route += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.route.count
-    Write-Host "Route, $count entries took $totalSecs seconds"
-}
-
-
-$result | ConvertTo-Json | Out-File "output.json"
-
-$timer.Stop()
-$totalSecs =  [math]::Round($timer.Elapsed.TotalSeconds,0)
-if ($debug -gt 0) {
-    Write-Host "Script took $totalSecs seconds to complete."
-}
-
 
 
 
