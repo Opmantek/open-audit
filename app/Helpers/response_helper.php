@@ -1113,7 +1113,6 @@ if (!function_exists('response_get_org_list')) {
             return;
         }
         switch ($collection) {
-            case 'agents':
             case 'applications':
             case 'baselines':
             case 'baselines_policies':
@@ -1157,6 +1156,7 @@ if (!function_exists('response_get_org_list')) {
                 log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
                 break;
 
+            case 'agents':
             case 'attributes':
             case 'dashboards':
             case 'discovery_scan_options':

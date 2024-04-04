@@ -25,6 +25,7 @@ $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::
 # These will match and then take precedence over the below route array
 
 $routes->post('agents/execute', 'Agents::execute', ['as' => 'agentsExecuteAll']);
+$routes->get('agents/(:any)/download', 'Agents::download/$1', ['as' => 'agentsDownload']);
 
 $routes->get('baselines/(:num)/execute', 'Baselines::executeForm/$1', ['filter' => \App\Filters\Session::class, 'as' => 'baselinesExecuteForm']);
 $routes->post('baselines/(:num)/execute', 'Baselines::execute/$1', ['filter' => \App\Filters\Session::class, 'as' => 'baselinesExecute']);
