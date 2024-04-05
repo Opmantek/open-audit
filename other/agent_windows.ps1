@@ -1,6 +1,9 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# powershell.exe Invoke-WebRequest -UseBasicParsing http://SERVER/open-audit/index.php/agents/windows/download -Outfile agent.ps1 -Method GET
+# powershell.exe -executionpolicy bypass -file .\agent.ps1 -install -debug 1
+
 param (
     [int]$debug = 0,
     [switch]$uninstall,
@@ -82,7 +85,7 @@ if ($install -eq $true) {
 
     $taskTrigger = New-ScheduledTaskTrigger -Daily -At 10am -RandomDelay 00:30:00
 
-    $taskAction = New-ScheduledTaskAction -Execute "PowerShell" -Argument "-NoProfile -ExecutionPolicy Bypass -File '$programPath\agent.ps1'" -WorkingDirectory $programPath
+    $taskAction = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$programPath\agent.ps1`"" -WorkingDirectory "$programPath"
 
     $taskDescription = "This task starts the agent and check-in with the server."
 
@@ -112,7 +115,7 @@ if ($install -eq $true) {
     Set-ItemProperty -Path $programReg -Name 'DisplayVersion' -Value $programVersion
     Set-ItemProperty -Path $programReg -Name 'InstallLocation' -Value 'C:\Program Files\Open-AudIT Agent'
     Set-ItemProperty -Path $programReg -Name 'Publisher' -Value 'FirstWave'
-    Set-ItemProperty -Path $programReg -Name 'UninstallString' -Value 'C:\Program Files\Open-AudIT Agent\agent.ps1 -uninstall'
+    Set-ItemProperty -Path $programReg -Name 'UninstallString' -Value "`"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`" -executionpolicy bypass -file `"$programPath\agent.ps1`" -uninstall"
     Set-ItemProperty -Path $programReg -Name 'URLInfoAbout' -Value 'http://www.open-audit.org'
     Set-ItemProperty -Path $programReg -Name 'URLUpdateInfo' -Value 'https://www.firstwave.com'
     Set-ItemProperty -Path $programReg -Name 'Version' -Value $programVersion
@@ -123,6 +126,9 @@ if ($install -eq $true) {
         Write-Host "Open-AudIT Agent installed."
         Write-Host
     }
+    # & "C:\Program Files\Open-AudIT Agent\agent.ps1" -debugging 1
+    # Invoke-Expression "&'C:\Program Files\Open-AudIT Agent\agent.ps1' -debugging 1"
+    exit;
 }
 
 if ($uninstall -eq $true) {
@@ -151,31 +157,76 @@ if ($uninstall -eq $true) {
         }
     }
     
-    # TODO - How to delete self?
+    $currentDir = Get-Location | Select -expand Path
+    if ($currentDir -eq "$programPath") {
+        cd ..
+    }
     if (Test-Path -Path $programPath) {
-        Write-Host "Please delete the 'C:\Program Files\Open-AudIT Agent' folder."
-        # try {
-        #     Remove-Item "$programPath\agent.ps1" -Force
-        #     if ($debug -eq 1) {
-        #         Write-Host "Program agent deleted."
-        #     }
-        # } catch {
-        #     Write-Host "ERROR - Could not delete $programPath\agent.ps1"
-        #     Write-error $_
-        # }
-        # try {
-        #     Remove-Item -LiteralPath $programPath -Force -Recurse
-        #     if ($debug -eq 1) {
-        #         Write-Host "Program directory key deleted."
-        #     }
-        # } catch {
-        #     Write-Host "ERROR - Could not delete $programPath"
-        #     Write-error $_
-        # }
+        try {
+            Remove-Item "$programPath\agent.ps1" -Force
+            if ($debug -eq 1) {
+                Write-Host "Program agent deleted."
+            }
+        } catch {
+            Write-Host "ERROR - Could not delete $programPath\agent.ps1"
+            Write-error $_
+            Write-Host "Please delete the 'C:\Program Files\Open-AudIT Agent' folder."
+        }
+        try {
+            Remove-Item -LiteralPath "$programPath\downloads" -Force -Recurse
+            if ($debug -eq 1) {
+                Write-Host "Download directory deleted."
+            }
+        } catch {
+            Write-Host "ERROR - Could not delete $programPath"
+            Write-error $_
+            Write-Host "Please delete the 'C:\Program Files\Open-AudIT Agent\download' folder."
+        }
+        try {
+            Remove-Item -LiteralPath $programPath -Force -Recurse
+            if ($debug -eq 1) {
+                Write-Host "Program directory deleted."
+            }
+        } catch {
+            Write-Host "ERROR - Could not delete $programPath"
+            Write-error $_
+            Write-Host "Please delete the 'C:\Program Files\Open-AudIT Agent' folder."
+        }
     }
     Write-Host "Open-AudIT Agent has been uninstalled."
     Write-Host
     exit
+}
+
+function Run-Audit {
+    if (Test-Path -Path ".\downloads") {
+        Write-Host "The path for downloads exists"
+    } else {
+        if ($debug -eq 1) {
+            Write-Host "Need to create downloads"
+        }
+        try {
+            New-Item -ItemType Directory -Path ".\downloads" -Force > $null
+            if ($debug -eq 1) {
+                Write-Host ".\downloads directory created."
+            }
+        } catch {
+            Write-Host "ERROR - Could not create .\downloads"
+            Write-error $_
+            exit
+        }
+    }
+    # TODO - Only download if instructed - should be in actions array
+    if ($debug -eq 1) {
+        Write-Host "Downloading audit script"
+    }
+    Invoke-WebRequest -UseBasicParsing "$($url)/scripts/windows-ps1/download" -Outfile ".\downloads\audit_windows.ps1" -Method GET
+    if ($debug -eq 1) {
+        Write-Host "Running audit script"
+        ./downloads/audit_windows.ps1 -debug 1
+    } else {
+        ./downloads/audit_windows.ps1
+    }
 }
 
 $post = @{}
@@ -202,5 +253,17 @@ if ($post.os_name -like "*2016*") { $post.os_family = "Windows 2016" }
 if ($post.os_name -like "*2019*") { $post.os_family = "Windows 2019" }
 if ($post.os_name -like "*2022*") { $post.os_family = "Windows 2022" }
 
-Invoke-WebRequest -UseBasicParsing "$($url)/agents/execute" -Method POST -Body ($post | ConvertTo-Json) -ContentType 'application/json'
+# TODO - get hash of audit_windows.ps1 (if it exists) in downloads
+
+$response = Invoke-WebRequest -UseBasicParsing "$($url)/agents/execute" -Method POST -Body ($post | ConvertTo-Json) -ContentType 'application/json'
+Write-Host $response.content
+
+$response = $response | ConvertFrom-Json
+
+foreach ($action in $response.actions) {
+    if ($action -eq 'audit') {
+        Run-Audit
+    }
+}
+
 
