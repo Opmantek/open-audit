@@ -10,14 +10,11 @@
 # Apps
 # https://learn.microsoft.com/en-us/windows/application-management/overview-windows-apps
 
-echo "Not ready for use"
-exit
-
 param (
-    [int]$debugging = 1,
-    [string]$url = "http://localhost/open-audit/index.php/input/devices",
-    [string]$create_file = "n",
-    [string]$submit_online = "y"
+    [int]$debugging = 0,
+    [string]$url = '',
+    [string]$create_file = 'n',
+    [string]$submit_online = 'y'
 )
 
 $debug = $debugging
