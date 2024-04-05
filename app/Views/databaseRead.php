@@ -20,6 +20,14 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                         <div class="col-6">
                             <?= read_field('name', $data[0]->id, '', false) ?>
                             <?= read_field('rowcount', $data[0]->attributes->count, '', false, __('Row Count')) ?>
+                            <?php
+                            if (isset($data[0]->attributes->current)) {
+                                echo read_field('current', $data[0]->attributes->current, '', false);
+                            }
+                            if (isset($data[0]->attributes->non_current)) {
+                                echo read_field('non_current', $data[0]->attributes->non_current, '', false);
+                            }
+                            ?>
 
                             <?php if ($data[0]->id === 'devices') { ?>
                                 <?php foreach ($data[0]->attributes->status as $status) { ?>

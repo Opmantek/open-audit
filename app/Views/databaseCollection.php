@@ -15,30 +15,21 @@ include 'shared/collection_functions.php';
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
-                                    <?php foreach ($meta->data_order as $key) {
-                                        if ($key === 'id' or $key === 'orgs.id') {
-                                            continue;
-                                        } ?>
-                                        <th><?= collection_column_name($key) ?></th>
-                                    <?php } ?>
+                                    <th><?= __('Name') ?>
+                                    <th><?= __('Rows') ?>
+                                    <th class="text-center"><?= __('Component Table') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                             <?php if (!empty($data)) { ?>
-                                <?php foreach ($data as $item) { ?>
-                                <tr>
-                                    <?= collection_button_read($meta->collection, $item->id) ?>
-                                    <?php foreach ($meta->data_order as $key) {
-                                        if ($key === 'id' or $key === 'orgs.id') {
-                                            continue;
-                                        }
-                                        if ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
-                                            echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
-                                        } else {
-                                            echo "<td>" . $item->attributes->{$key} . "</td>\n";
-                                        }
-                                        ?>
-                                    <?php } ?>
+                                <?php foreach ($data as $item) { ?><tr>
+                                    <?= collection_button_read($meta->collection, $item->id) . "\n" ?>
+                                    <td><?= $item->id ?></td>
+                                    <td><?= $item->attributes->count ?></td>
+                                    <td class="text-center"><?php
+                                    if (!empty($item->attributes->current_row)) {
+                                            echo "<span class=\"fa-solid fa-check text-oa-success\"></span>";
+                                    } ?></td>
                                 </tr>
                                 <?php } ?>
                             <?php } ?>
