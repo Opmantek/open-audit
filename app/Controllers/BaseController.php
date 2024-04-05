@@ -108,6 +108,10 @@ abstract class BaseController extends Controller
             // Anyone can download a script
             return;
         }
+        if (empty($this->user) and $this->controller === '\App\Controllers\Agents' and ($this->method === 'download' or $this->method === 'execute')) {
+            // Anyone can download an agent
+            return;
+        }
 
         $this->user = $this->usersModel->userValidate();
 
