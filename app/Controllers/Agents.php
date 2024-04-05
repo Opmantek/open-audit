@@ -53,7 +53,7 @@ class Agents extends BaseController
         $file = file_get_contents($filename);
         $file = str_replace("\r\n", "\n", $file);
         $file = str_replace("\r", "\n", $file);
-        $file = str_replace('$url = ""', '$url = "' . base_url() . '"', $file);
+        $file = str_replace("\$url = ''", "\$url = '" . base_url() . "index.php/'", $file);
         if (empty($file)) {
             \Config\Services::session()->setFlashdata('danger', 'Cannot download installer, please contact your Open-AudIT administrator.');
             return redirect()->route($this->config->homepage);
@@ -65,5 +65,23 @@ class Agents extends BaseController
         header('Content-Transfer-Encoding: binary');
         echo $file;
         return;
+    }
+
+    public function execute()
+    {
+        // $data = json_decode(file_get_contents('php://input'));
+        // print_r($data);
+        // echo "\n\n" . $data->hostname . "\n" . $data->os_family . "\n";
+        $agentResponse = new \stdClass();
+        $agentResponse->actions = array();
+        $device = json_decode(file_get_contents('php://input'));
+        $this->devicesModel = model('App\Models\DevicesModel');
+        $device->id = deviceMatch($device);
+        $agentResponse->device_id = $device->id;
+        #if (empty($device->id)) {
+            $agentResponse->actions[] = 'audit';
+            $agentResponse->actions[] = 'schedule';
+        #}
+        echo json_encode($agentResponse);
     }
 }
