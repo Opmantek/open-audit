@@ -63,7 +63,12 @@ class ScriptsModel extends BaseModel
                 $audit_script = 'audit_windows.vbs';
                 $source_name = 'audit_windows_' . $timestamp . '.vbs';
                 break;
-            
+
+            case 'windows-ps1':
+                $audit_script = 'audit_windows.ps1';
+                $source_name = 'audit_windows_' . $timestamp . '.ps1';
+                break;
+
             case 'sunos':
                 $audit_script = 'audit_solaris.sh';
                 $source_name = 'audit_solaris_' . $timestamp . '.sh';
@@ -291,30 +296,34 @@ class ScriptsModel extends BaseModel
             case 'esxi':
                 $audit_script = 'audit_esxi.sh';
                 break;
-            
+
             case 'linux':
                 $audit_script = 'audit_linux.sh';
                 break;
-            
+
             case 'darwin':
             case 'osx':
                 $audit_script = 'audit_osx.sh';
                 break;
-            
+
             case 'hpux':
             case 'hp-ux':
                 $audit_script = 'audit_hpux.sh';
                 break;
-            
+
             case 'windows':
                 $audit_script = 'audit_windows.vbs';
                 break;
-            
+
+            case 'windows-ps1':
+                $audit_script = 'audit_windows.ps1';
+                break;
+
             case 'solaris':
             case 'sunos':
                 $audit_script = 'audit_solaris.sh';
                 break;
-            
+
             default:
                 $audit_script = '';
                 break;
@@ -432,6 +441,10 @@ class ScriptsModel extends BaseModel
                     $file = str_replace($find, $replace, $file);
                 }
             }
+        }
+
+        if ($data->based_on === 'audit_windows.ps1') {
+            $file = str_replace("\$url = ''", "\$url = '" . base_url() . "index.php/input/devices'", $file);
         }
 
         // Force all line endings to be Unix style
