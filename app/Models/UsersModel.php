@@ -268,6 +268,62 @@ class UsersModel extends BaseModel
                 $user->orgs = json_decode($user->orgs);
                 $user->password = null;
             }
+
+
+
+            // Map the user to roles to collections
+            $userRoles = array();
+            foreach ($user->roles as $userRole) {
+                foreach ($instance->roles as $role) {
+                    if ($userRole === $role->name) {
+                        $permissions = json_decode($role->permissions);
+                        foreach ($permissions as $key => $value) {
+                            if (empty($userRoles[$key])) {
+                                $userRoles[$key] = $value;
+                            } else {
+                                if (!empty($value) and (empty($userRoles[$key]) or strpos($userRoles[$key], $value) === false)) {
+                                    $userRoles[$key] = $userRoles[$key] . $value;
+                                }
+                                if (empty($value)) {
+                                    log_message('warning', $userRole . '::' . $role->name . '::' . $key . ' has an empty value. You may wish to reset Roles to their defaults.');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $user->permissions = $userRoles;
+            if (empty($user->permissions['baselines_policies'])) {
+                $user->permissions['baselines_policies'] = $user->permissions['baselines'];
+            }
+            if (empty($user->permissions['baselines_results'])) {
+                $user->permissions['baselines_results'] = $user->permissions['baselines'];
+            }
+            if (empty($user->permissions['components'])) {
+                $user->permissions['components'] = $user->permissions['devices'];
+            }
+            if (empty($user->permissions['discovery_log'])) {
+                $user->permissions['discovery_log'] = $user->permissions['discoveries'];
+            }
+            if (empty($user->permissions['integrations_log']) and !empty($user->permissions['integrations'])) {
+                $user->permissions['integrations_log'] = $user->permissions['integrations'];
+            }
+            if (empty($user->permissions['integrations_rules']) and !empty($user->permissions['integrations'])) {
+                $user->permissions['integrations_rules'] = $user->permissions['integrations'];
+            }
+            if (empty($user->permissions['rack_devices'])) {
+                $user->permissions['rack_devices'] = $user->permissions['racks'];
+            }
+            if (empty($user->permissions['search'])) {
+                $user->permissions['search'] = $user->permissions['devices'];
+            }
+            if (empty($user->permissions['maps'])) {
+                $user->permissions['maps'] = 'r';
+            }
+            if (empty($user->permissions['support'])) {
+                $user->permissions['support'] = 'r';
+            }
+
             $access_token = '';
             if (!empty($session->get('access_token'))) {
                 $access_token = $session->get('access_token');
