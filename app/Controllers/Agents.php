@@ -95,7 +95,7 @@ class Agents extends BaseController
 
         $input = json_decode(file_get_contents('php://input'));
         $this->devicesModel = model('App\Models\DevicesModel');
-        $device = new \sdtClass();
+        $device = new \stdClass();
         if (!empty($input)) {
             $device_id = deviceMatch($input);
             $device = $this->devicesModel->read($device_id)[0];

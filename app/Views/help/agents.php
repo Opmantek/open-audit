@@ -23,6 +23,10 @@ $intro = '<p>Sometimes agentless discovery just doesn\'t fit your use-case. Mayb
     <li><strong>Audit</strong>: The agent should download a fresh copy of the audit script, run it and submit the result to the server.</li>
     <li><strong>Uninstall</strong>: After completing the above, uninstall the agent.</li>
     </ul></p>
-    <p>The agent and server are also intelligent enough to self-update the agent if a newer version is installed on the server (say after upgrading Open-AudIT).</p>';
+    <p>The agent and server are also intelligent enough to self-update the agent if a newer version is installed on the server (say after upgrading Open-AudIT).</p>
+    <br>
+    <h2>Installing</h2>
+    <p>Have your user open a command prompt (preferrably using \'Run as Administrator\'). Paste the below into the prompt to download the Agent.<br><code>powershell.exe Invoke-WebRequest -UseBasicParsing ' . base_url() . 'index.php/agents/windows/download -Outfile agent.ps1 -Method GET</code><br><br>Wait for it to complete, then paste in this next line to install the Agent.<br><code>powershell.exe -executionpolicy bypass -file .\agent.ps1 -install -debug 1</code><br>When complete, close the command window and you\'re done!</p>
+    <p><strong>NOTE</strong>: If your user does not have \'Run as Administrator\' rights, they can still download the agent (first command above) and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled.<br><code>powershell.exe -executionpolicy bypass -file .\agent.ps1 -debug 1</code><br><br></p>';
 
 $body = '<br>';

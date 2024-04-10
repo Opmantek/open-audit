@@ -341,8 +341,8 @@ class AgentsModel extends BaseModel
         $dictionary->columns->action_command = 'A command to run. When the agent is Windows based, this command is run from within the powershell agent.';
         $dictionary->columns->action_audit = 'Should we run an audit and submit it (y/n).';
         $dictionary->columns->action_uninstall = 'Should we uninstall the agent (y/n).';
-        $dictionary->columns->action_devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.';
-        $dictionary->columns->action_devices_assigned_to_org = "Any devices will be assigned to this Org if set. Links to <code>orgs.id</code>.";
+        $dictionary->columns->action_devices_assigned_to_location = 'Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.';
+        $dictionary->columns->action_devices_assigned_to_org = "Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.";
         $dictionary->columns->actions = 'Unused.'; #'A JSON object containing an array of attributes to change if the match occurs.';
 
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

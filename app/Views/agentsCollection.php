@@ -53,4 +53,12 @@ include 'shared/collection_functions.php';
                     </div>
                 </div>
             </div>
+            <br />
+            <div class="card">
+                <div class="card-header" style="height:46px;"><?= __('Installing') ?></div>
+                <div class="card-body">
+                    <p>Have your user open a command prompt (preferrably using 'Run as Administrator'). Paste the below into the prompt to download the Agent.<br><code>powershell.exe Invoke-WebRequest -UseBasicParsing <?= base_url()?>index.php/agents/windows/download -Outfile agent.ps1 -Method GET</code><br><br>Wait for it to complete, then paste in this next line to run and install the Agent.<br><code>powershell.exe -executionpolicy bypass -file .\agent.ps1 -install -debug 1</code><br><br>When complete, close the command window and you're done!</p>
+                    <p><strong>NOTE</strong>: If your user does not have 'Run as Administrator' rights, they can still download the agent (first command above) and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled.<br><code>powershell.exe -executionpolicy bypass -file .\agent.ps1 -debug 1</code><br><br></p>
+                </div>
+            </div>
         </main>
