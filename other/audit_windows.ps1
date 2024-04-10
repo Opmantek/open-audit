@@ -913,7 +913,14 @@ Get-WmiObject -Class Win32_Share -filter 'type = "0"' | Select Path, Name, Descr
   $item.description = $_.Description
   $item.size = 0
   if (($_.Path) -and $_.Path -ne "C:\WINNT" -and $_.Path -ne "C:\WINDOWS" -and $_.Path -ne "C:\" -and ($_.Path.ToCharArray() | Select-Object -First 1) -ne "\" -and $_.Path.Length -gt 3) {
-      $item.size = [Int]((Get-ChildItem -Path $_.Path -Recurse | Measure-Object -Sum Length).Sum / 1024 / 1024)
+      try {
+          $item.size = [Int]((Get-ChildItem -Path $_.Path -Recurse | Measure-Object -Sum Length).Sum / 1024 / 1024)
+      } catch {
+          $item.size = 0
+          if ($item.description -eq "") {
+              $item.description = "Cannot read folder size."
+          }
+      }
   }
   $share_permissions = ""
   Get-WmiObject -Class Win32_LogicalShareAccess | ForEach {
