@@ -1,6 +1,41 @@
 <?php
 $output .= "Upgrade database to 5.2.0 commenced.\n\n";
 
+$sql = "DROP TABLE IF EXISTS `agents`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "CREATE TABLE `agents` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT 'Default Agent',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `description` text NOT NULL,
+  `weight` int(10) unsigned NOT NULL DEFAULT 100,
+  `test_minutes` int(10) unsigned DEFAULT 1300,
+  `test_subnet` varchar(45) NOT NULL DEFAULT '',
+  `test_os` varchar(45) NOT NULL DEFAULT '',
+  `tests` text NOT NULL default'[]',
+  `action_download` varchar(2000) NOT NULL DEFAULT '',
+  `action_command` varchar(2000) NOT NULL DEFAULT '',
+  `action_devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
+  `action_devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
+  `action_audit` enum('y','n') NOT NULL DEFAULT 'y',
+  `action_uninstall` enum('y','n') NOT NULL DEFAULT 'n',
+  `actions` text NOT NULL default'[]',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `agents` VALUES (NULL, 'Default Agent', 1, 'Audit every day.', 100, 1300, '', '', '[]', '', '', null, null, 'y', 'n', '[]', 'system', '2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "ALTER TABLE `bios` CHANGE `serial` `serial` VARCHAR(200) NOT NULL DEFAULT ''";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
