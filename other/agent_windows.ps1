@@ -30,15 +30,16 @@ if ($help -eq $true) {
     exit
 }
 
-$currentPrincipal = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
-$isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-if (!$isAdmin) {
-    Write-Host "This installer should be run by an Administrator."
-    Write-Host "Click Start, type cmd, right-click 'Command Prompt' and click 'Run as administrator'."
-    exit
-}
-
 function Execute-Install {
+
+    $currentPrincipal = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
+    $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    if (!$isAdmin) {
+        Write-Host "This installer should be run by an Administrator."
+        Write-Host "Click Start, type cmd, right-click 'Command Prompt' and click 'Run as administrator'."
+        exit
+    }
+
     if ($debug -eq 1) {
         Write-Host "Installing into $programPath."
     }
@@ -132,6 +133,15 @@ function Execute-Install {
 }
 
 function Execute-Uninstall {
+
+    $currentPrincipal = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
+    $isAdmin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    if (!$isAdmin) {
+        Write-Host "This uninstaller should be run by an Administrator."
+        Write-Host "Click Start, type cmd, right-click 'Command Prompt' and click 'Run as administrator'."
+        exit
+    }
+
     if ($debug -eq 1) {
         Write-Host "Uninstalling Open-AudIT Agent version $programVersion."
     }
