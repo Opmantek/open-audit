@@ -450,7 +450,6 @@ if (!function_exists('collections_list')) {
     {
         $collections = new \stdClass();
 
-        # FIX ME
         $collections->agents = new \StdClass();
         $collections->agents->icon = 'fa-regular fa-comments';
         $collections->agents->name = 'Agents';

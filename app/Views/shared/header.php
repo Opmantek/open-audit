@@ -693,7 +693,11 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
     $instance = & get_instance();
     // Default to no access
     $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . $title . "</a></li>\n";
+    if (empty($instance->collections->{$collection})) {
+        return $return;
+    }
     if (empty($instance->collections->{$collection}->actions->{$instance->config->product})) {
+        $return = "<li><a class=\"dropdown-item greyout toast" . $instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
         return $return;
     }
     if (empty($instance->resp->meta->permission_requested)) {
@@ -701,7 +705,7 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
     }
     // Check if feature matches license
     if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) === false) {
-        $return = "<li><a class=\"dropdown-item greyout toast" .$instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
+        $return = "<li><a class=\"dropdown-item greyout toast" . $instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
     }
     // Check if user has permission and a license
     if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) !== false) {
