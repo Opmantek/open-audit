@@ -25,6 +25,11 @@ $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::
 # These will match and then take precedence over the below route array
 
 $routes->post('agents/execute', 'Agents::execute', ['as' => 'agentsExecuteAll']);
+$routes->post('agents/(:num)/execute', 'Agents::execute/$1', ['as' => 'agentsExecute']);
+# $routes->get('agents/execute', 'Agents::execute', ['as' => 'agentsExecuteAll']);
+# $routes->get('agents/(:num)/execute', 'Agents::execute/$1', ['as' => 'agentsExecute']);
+# NOTE - Below is only so we can ask for /download/agent_windows.ps1 and have it save with that name
+$routes->get('agents/(:any)/download/(:any)', 'Agents::download/$1');
 $routes->get('agents/(:any)/download', 'Agents::download/$1', ['as' => 'agentsDownload']);
 
 $routes->get('baselines/(:num)/execute', 'Baselines::executeForm/$1', ['filter' => \App\Filters\Session::class, 'as' => 'baselinesExecuteForm']);
