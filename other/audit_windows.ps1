@@ -14,7 +14,9 @@ param (
     [int]$debugging = 0,
     [string]$url = '',
     [string]$create_file = 'n',
-    [string]$submit_online = 'y'
+    [string]$submit_online = 'y',
+    [int]$location_id = 0,
+    [int]$org_id = 0
 )
 
 $debug = $debugging
@@ -86,6 +88,12 @@ $result.sys.org_id = ''
 $result.sys.cluster_name = ''
 $result.sys.last_seen_by = ''
 $result.sys.discovery_id = ''
+if ($org_id -ne 0) {
+    $result.sys.org_id = $org_id
+}
+if ($location_id -ne 0) {
+    $result.sys.location_id = $location_id
+}
 $itimer.Stop()
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
 if ($debug -gt 0) {
