@@ -321,7 +321,7 @@ class AgentsModel extends BaseModel
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
         $dictionary->sentence = 'Think \'if this, then that\' for devices with an Agent installed.';
 
-        $dictionary->about = '<p>Agents let you audit PCs without a discovery.</p>';
+        $dictionary->about = '<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It doesn\'t matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>';
 
         $dictionary->notes = '<p></p>';
 
@@ -333,17 +333,17 @@ class AgentsModel extends BaseModel
         $dictionary->columns->weight = 'A lower number means it will be applied before other rules.';
 
         $dictionary->columns->test_minutes = 'If this many or more minutes have passed since the device contacted the server, perform the actions.';
-        $dictionary->columns->test_subnet = 'If an agent reports in from this subnet, perform the actions.';
-        $dictionary->columns->test_os = 'If the agent OS Name (case insensitive) contains this string, perform the actions.';
-        $dictionary->columns->tests = 'A JSON object containing an array of attributes to match.';
+        $dictionary->columns->test_subnet = 'If an agent reports its primary IP is in this subnet, perform the actions.';
+        $dictionary->columns->test_os = 'If the agent OS family (case insensitive) contains this string, perform the actions.';
+        $dictionary->columns->tests = 'Unused.'; #'A JSON object containing an array of attributes to match.';
 
         $dictionary->columns->action_download = 'A URL to a file to download.';
-        $dictionary->columns->action_command = 'A command to run.';
+        $dictionary->columns->action_command = 'A command to run. When the agent is Windows based, this command is run from within the powershell agent.';
         $dictionary->columns->action_audit = 'Should we run an audit and submit it (y/n).';
         $dictionary->columns->action_uninstall = 'Should we uninstall the agent (y/n).';
         $dictionary->columns->action_devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.';
-        $dictionary->columns->action_devices_assigned_to_org = "Any devices will be assigned to this Org if set. If not set and they are a new device they are assigned to the 'org_id' of this agent. Links to <code>orgs.id</code>.";
-        $dictionary->columns->actions = 'A JSON object containing an array of attributes to change if the match occurs.';
+        $dictionary->columns->action_devices_assigned_to_org = "Any devices will be assigned to this Org if set. Links to <code>orgs.id</code>.";
+        $dictionary->columns->actions = 'Unused.'; #'A JSON object containing an array of attributes to change if the match occurs.';
 
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

@@ -65,10 +65,6 @@ include 'shared/read_functions.php';
                                     <h4 class="text-center"><?= __('About') ?></h4><br>
                                     <?= $dictionary->about ?>
                                 <?php } ?>
-                                <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                    <?= $dictionary->notes ?>
-                                <?php } ?>
                                 <?php if (!empty($dictionary->columns)) { ?>
                                     <?php $fields = array('name', 'org_id', 'resource', 'type', 'value', 'edited_by', 'edited_date') ?>
                                 <h4 class="text-center"><?= __('Fields') ?></h4><br>
