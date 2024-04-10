@@ -124,42 +124,18 @@ class AgentsModel extends BaseModel
         //     log_message('error', 'No script returned when ScriptsModel::download called with ID ' . $id);
         //     return null;
         // }
-        $filename = ROOTPATH . 'other/agent_windows_installer.ps1';
+        $filename = ROOTPATH . 'other/agent_windows.ps1';
         if (!file_exists($filename)) {
             log_message('error', "Script does not exist on filesystem for $filename.");
             return null;
         }
         $file = file_get_contents($filename);
-        # $options = $data->options;
-        // if (empty($options->url) or
-        //     $options->url ===  'http://open-audit/index.php/system/add_system' or
-        //     $options->url === 'https://open-audit/index.php/system/add_system' or
-        //     $options->url ===  'http://open-audit/index.php/input/devices' or
-        //     $options->url === 'https://open-audit/index.php/input/devices' or
-        //     $options->url ===  'http://localhost/open-audit/index.php/system/add_system' or
-        //     $options->url === 'https://localhost/open-audit/index.php/system/add_system' or
-        //     $options->url ===  'http://localhost/open-audit/index.php/input/devices' or
-        //     $options->url === 'https://localhost/open-audit/index.php/input/devices') {
-        //     // inject our default network address
-        //     if (!empty($instance->config->default_network_address)) {
-        //         $options->url = $instance->config->default_network_address . 'index.php/input/devices';
-        //     } else {
-        //         $baseURL = base_url();
-        //         if (!empty($baseURL)) {
-        //             $options->url = $baseURL . 'index.php/input/devices';
-        //         } else {
-        //             unset($options->url);
-        //         }
-        //     }
-        // }
-        // $find = 'Configuration from web UI here';
-
         // Force all line endings to be Unix style
         // Windows audit scripts with Unix line endings work
         // Unix audit scripts with Windows line endings do not work (bash for one, chokes)
         $file = str_replace("\r\n", "\n", $file);
         $file = str_replace("\r", "\n", $file);
-        #$file = str_replace('$url = ""', '$url = "' . $instance->config->default_network_address . '"', $file);
+        // Set our URL
         $file = str_replace('$url = ""', '$url = "' . base_url() . '"', $file);
         return $file;
     }
@@ -215,6 +191,8 @@ class AgentsModel extends BaseModel
     public function includedRead(int $id = 0): array
     {
         $included = array();
+        $locationsModel = new \App\Models\LocationsModel();
+        $included['locations'] = $locationsModel->listUser();
         return $included;
     }
 
@@ -266,6 +244,7 @@ class AgentsModel extends BaseModel
      */
     public function listAll(): array
     {
+        $this->builder->orderBy('weight');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
