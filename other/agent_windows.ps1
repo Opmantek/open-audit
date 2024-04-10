@@ -16,6 +16,7 @@ $url = ''
 $programVersion = '5.2.0'
 $programPath = 'C:\Program Files\Open-AudIT Agent'
 $programReg = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Open-AudIT Agent'
+$agentId = ''
 
 if ($help -eq $true) {
     Write-Host "This is the Open-AudIT Agent version $programVersion."
@@ -37,8 +38,7 @@ if (!$isAdmin) {
     exit
 }
 
-if ($install -eq $true) {
-    # Not running from standard directory, install
+function Execute-Install {
     if ($debug -eq 1) {
         Write-Host "Installing into $programPath."
     }
@@ -131,7 +131,7 @@ if ($install -eq $true) {
     exit;
 }
 
-if ($uninstall -eq $true) {
+function Execute-Uninstall {
     if ($debug -eq 1) {
         Write-Host "Uninstalling Open-AudIT Agent version $programVersion."
     }
@@ -198,7 +198,25 @@ if ($uninstall -eq $true) {
     exit
 }
 
-function Run-Audit {
+function Execute-Download($url) {
+    if ($url -eq $false -or $url -eq "") {
+        return
+    }
+    Write-Host "Downloading: $url"
+    $dest = $url.SubString($url.LastIndexOf('/') + 1)
+    Write-Host "Destination: $dest"
+    Invoke-WebRequest -UseBasicParsing "$($url)" -Outfile ".\downloads\$dest" -Method GET
+}
+
+function Execute-Command($command) {
+    if ($command -eq $false -or $command -eq "") {
+        return
+    }
+    Write-Host "Executing: $command"
+    iex "& $command"
+}
+
+function Execute-Audit($location_id, $org_id) {
     if (Test-Path -Path ".\downloads") {
         Write-Host "The path for downloads exists"
     } else {
@@ -221,18 +239,37 @@ function Run-Audit {
         Write-Host "Downloading audit script"
     }
     Invoke-WebRequest -UseBasicParsing "$($url)/scripts/windows-ps1/download" -Outfile ".\downloads\audit_windows.ps1" -Method GET
+    $command = "./downloads/audit_windows.ps1"
     if ($debug -eq 1) {
-        Write-Host "Running audit script"
-        ./downloads/audit_windows.ps1 -debug 1
-    } else {
-        ./downloads/audit_windows.ps1
+        $command = "$($command) -debugging 1"
     }
+    if ($location_id -ne 0) {
+        $command = "$($command) -location_id $location_id"
+    }
+    if ($org_id -ne 0) {
+        $command = "$($command) -org_id $org_id"
+    }
+    Write-Host "$($command)"
+    iex "& $command"
+}
+
+
+if ($install -eq $true) {
+    # Provided on the command line
+    Execute-Install
+}
+
+if ($uninstall -eq $true) {
+    # Provided on the command line
+    Execute-Uninstall
 }
 
 $post = @{}
+$post.version = $programVersion
 $post.hostname = hostname
 $post.uuid = Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID
 $post.serial =  Get-WmiObject -Class Win32_BIOS | Select-Object -ExpandProperty SerialNumber
+$post.ip = (Find-NetRoute -RemoteIPAddress "0.0.0.0" | % { $_.IPAddress })[0]
 $post.os_name = Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Caption
 $post.os_family = ""
 if ($post.os_name -like "*Server*") { $post.os_family = "Windows Server" }
@@ -254,16 +291,36 @@ if ($post.os_name -like "*2019*") { $post.os_family = "Windows 2019" }
 if ($post.os_name -like "*2022*") { $post.os_family = "Windows 2022" }
 
 # TODO - get hash of audit_windows.ps1 (if it exists) in downloads
+$filehash = Get-FileHash "$($programPath)\downloads\audit_windows.ps1"
+$post.audit_script_hash = $filehash.Hash
+#$write = $post | ConvertTo-Json
+#Write-Host $write
 
 $response = Invoke-WebRequest -UseBasicParsing "$($url)/agents/execute" -Method POST -Body ($post | ConvertTo-Json) -ContentType 'application/json'
 Write-Host $response.content
 
-$response = $response | ConvertFrom-Json
+$response = $response.content | ConvertFrom-Json
 
-foreach ($action in $response.actions) {
-    if ($action -eq 'audit') {
-        Run-Audit
+foreach ($command in $($response.actions.commands)) {
+    if ($command.PSobject.Properties.Name -contains "download") {
+        Write-Host "Download: $($command.download)"
+        Execute-Download $($command.download)
+    }
+    if ($command.PSobject.Properties.Name -contains "command") {
+        Write-Host "Command: $($command.command)"
+        Execute-Command $($command.command)
     }
 }
 
+Write-Host "Audit: $($response.actions.audit)"
+if ($response.actions.audit -eq $true) {
+    Write-Host "Auditing"
+    Execute-Audit -location_id $response.actions.location_id -org_id $response.actions.org_id
+}
+
+Write-Host "Uninstall: $($response.actions.uninstall)"
+if ($response.actions.uninstall -eq $true) {
+    Write-Host "Uninstalling"
+    Execute-Uninstall
+}
 
