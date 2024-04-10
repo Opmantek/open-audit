@@ -222,7 +222,6 @@ if (!empty($config->servers)) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarManage" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Manage') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarManage">
-                                <!--
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Agents') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('agents', 'r', $user, 'agentsCollection', __('List') . ' ' . __('Agents')) ?>
@@ -230,7 +229,6 @@ if (!empty($config->servers)) {
                                         <?= menuItem('agents', '', $user, 'agentsHelp', __('Learn About') . ' ' . __('Agents')) ?>
                                     </ul>
                                 </li>
-                                -->
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Applications') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('applications', 'r', $user, 'applicationsCollection', __('List') . ' ' . __('Applications')) ?>
