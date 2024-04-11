@@ -7,8 +7,9 @@ $intro = '<p>Sometimes agentless discovery just doesn\'t fit your use-case. Mayb
     <h2>How Does it Work?</h2>
     <p>Agents entries can be created that specify a duration, a network and an operating system. If all tests match, the server then asks the agent to perform actions. If any test is not set, it is excluded from the "all must match" requirement.<br><br>
     You can create multiple agents and have the server check one or all agent entries. You might (for example) specify one agent that says "If the agent IP is in this subnet, set the location_id of the device".<br><br>
-    Another example might be not running an audit at all, rather download a script and run it. If the agent is installed with admin rights, you can now manage your machines without opening <strong>any</strong> ports from it to the world.</p>
-    <p>We have tests for:
+    Another example might be not running an audit at all, rather download a script and run it. If the agent is installed with admin rights, you can now manage your machines without opening <strong>any</strong> ports from it to the world.</p>';
+
+$body = '<p>We have tests for:
     <ul>
     <li><strong>Minutes</strong>: If this many minutes (or more) have passed since the server last saw the device, pass.</li>
     <li><strong>Subnet</strong>: If the primary IP (as reported by the device) is in this subnet, pass.</li>
@@ -26,7 +27,12 @@ $intro = '<p>Sometimes agentless discovery just doesn\'t fit your use-case. Mayb
     <p>The agent and server are also intelligent enough to self-update the agent if a newer version is installed on the server (say after upgrading Open-AudIT).</p>
     <br>
     <h2>Installing</h2>
-    <p>Have your user open a command prompt (preferrably using \'Run as Administrator\'). Paste the below into the prompt to download the Agent.<br><code>powershell.exe Invoke-WebRequest -UseBasicParsing ' . base_url() . 'index.php/agents/windows/download -Outfile agent.ps1 -Method GET</code><br><br>Wait for it to complete, then paste in this next line to install the Agent.<br><code>powershell.exe -executionpolicy bypass -file .\agent.ps1 -install -debug 1</code><br>When complete, close the command window and you\'re done!</p>
-    <p><strong>NOTE</strong>: If your user does not have \'Run as Administrator\' rights, they can still download the agent (first command above) and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled.<br><code>powershell.exe -executionpolicy bypass -file .\agent.ps1 -debug 1</code><br><br></p>';
-
-$body = '<br>';
+    <p>Have your user open a command prompt (preferrably using \'Run as Administrator\'). Paste the below into the prompt to download the Agent.<br>
+    <code>powershell.exe Invoke-WebRequest -UseBasicParsing ' . base_url() . 'index.php/agents/windows/download -Outfile agent.ps1 -Method GET</code><br><br>
+    Wait for it to complete, then paste in this next line to install the Agent.<br>
+    <code>powershell.exe -executionpolicy bypass -file .\agent.ps1 -install -debug 1</code><br><br>
+    When complete, close the command window and you\'re done!</p>
+    <p><strong>NOTE</strong>: If your user does not have \'Run as Administrator\' rights, they can still download the agent (first command above) and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled.<br><code>powershell.exe -executionpolicy bypass -file .\agent.ps1 -debug 1</code><br><br></p>
+    <p><strong>NOTE #2</strong>: If you want to force your Agents to use a particular configuration, you can supply the ID of the agents entry to use, as below (replace $id with the number of the Agents entry). When this Agent is installed, it will check-in with the sevrer and <strong>only</strong> check that one individual Agent entry\'s attributes (tests and actions). This may be useful if you\'re an MSP - create an Agents entry for a particular customer and have their devices all use this entry, which assigns them to an Org and Location.<br>
+    <code>powershell.exe Invoke-WebRequest -UseBasicParsing ' . base_url() . 'index.php/agents/$id/download -Outfile agent.ps1 -Method GET</code><br><br>
+    ';
