@@ -202,14 +202,18 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 foreach ($roles as $role) {
+    $permissions = json_decode($role->permissions);
     if ($role->name === 'org_admin' or $role->name === 'user') {
-        $permissions = json_decode($role->permissions);
         if ($role->name === 'org_admin') {
             $permissions->executables = 'crud';
         }
         if ($role->name === 'user') {
-            $permissions->executable = 'r';
+            $permissions->executables = 'r';
         }
+        $this->rolesModel->update(intval($role->id), $permissions);
+    }
+    if ($role->name === 'admin' or $role->name === 'org_admin') {
+        $permissions->agents = 'crud';
         $this->rolesModel->update(intval($role->id), $permissions);
     }
 }

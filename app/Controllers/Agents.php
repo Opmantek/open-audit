@@ -61,6 +61,9 @@ class Agents extends BaseController
         if (!empty($id)) {
             $file = str_replace("\$agentId = ''", "\$agentId = '$id'", $file);
         }
+        if ($request->isSecure() and !empty($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
+            $file = str_replace("\$advanced = 'n'", "\$advanced = 'y'", $file);
+        }
         if (empty($file)) {
             \Config\Services::session()->setFlashdata('danger', 'Cannot download installer, please contact your Open-AudIT administrator.');
             return redirect()->route($this->config->homepage);
@@ -98,8 +101,11 @@ class Agents extends BaseController
         $device = new \stdClass();
         if (!empty($input)) {
             $device_id = deviceMatch($input);
-            $device = $this->devicesModel->read($device_id)[0];
-        } else {
+            if (!empty($device_id)) {
+                $device = $this->devicesModel->read($device_id)[0];
+            }
+        }
+        if (empty($input) or empty($device)) {
             $agentResponse->actions->audit = true;
             $input = new \stdClass();
             $input->version = '0';
@@ -140,7 +146,7 @@ class Agents extends BaseController
         // Loop throught the agents (or the single agent in an array)
         // If every condition in an agent entry passes, then set the actions
         $minutes = 0;
-        if (!empty($device)) {
+        if (!empty($device) and !empty($device->attributes->last_seen)) {
             $now = new \DateTime($this->config->timestamp);
             $dateDiff = $now->diff(new \DateTime($device->attributes->last_seen));
             $minutes = $dateDiff->days * 24 * 60;
@@ -171,17 +177,19 @@ class Agents extends BaseController
                     }
                 }
                 if ($testMinutes and $testNetwork and $testOs) {
-                    if (!empty($agent->action_download)) {
-                        $action = new \stdClass();
-                        $action->download = $agent->action_download;
-                        $agentResponse->actions->commands[] = $action;
-                        unset($action);
-                    }
-                    if (!empty($agent->action_command)) {
-                        $action = new \stdClass();
-                        $action->command = $agent->action_command;
-                        $agentResponse->actions->commands[] = $action;
-                        unset($action);
+                    if ($request->isSecure() and !empty($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
+                        if (!empty($agent->action_download)) {
+                            $action = new \stdClass();
+                            $action->download = $agent->action_download;
+                            $agentResponse->actions->commands[] = $action;
+                            unset($action);
+                        }
+                        if (!empty($agent->action_command)) {
+                            $action = new \stdClass();
+                            $action->command = $agent->action_command;
+                            $agentResponse->actions->commands[] = $action;
+                            unset($action);
+                        }
                     }
                     if (!empty($agent->action_devices_assigned_to_org)) {
                         $agentResponse->actions->org_id = intval($agent->action_devices_assigned_to_org);

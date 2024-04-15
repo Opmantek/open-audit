@@ -5,6 +5,14 @@ include 'shared/read_functions.php';
 if (!$update or $resource->editable !== 'y') {
     $update = false;
 }
+if ($resource->name === 'feature_agents_advanced') {
+    $request = \Config\Services::request();
+    $uri = $request->getUri();
+    $dictionary->notes = '<strong>WARNING</strong>: Enabling advanced agents means an agent can be instructed to download any file and execute any command. This comes with security risks. This configuration will <strong>only</strong> function when running Open-AudIT using HTTPS and a valid (Certificate Authority provided) certificate for ' . $uri->getHost();
+    if (!$request->isSecure()) {
+        $dictionary->notes .= '.<br><br>You do not have https enabled. Advanced agents will not run commands or download files.<br><br>';
+    }
+}
 ?>
         <main class="container-fluid">
             <div class="card">

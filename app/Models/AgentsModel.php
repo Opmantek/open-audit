@@ -204,7 +204,11 @@ class AgentsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $instance = & get_instance();
+        $locationsModel = new \App\Models\LocationsModel();
+        $include = array();
+        $include['locations'] = $locationsModel->listUser();
+        return $include;
     }
 
 

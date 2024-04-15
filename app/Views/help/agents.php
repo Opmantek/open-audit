@@ -27,7 +27,7 @@ $body = '<p>We have tests for:
     <p>The agent and server are also intelligent enough to self-update the agent if a newer version is installed on the server (say after upgrading Open-AudIT).</p>
     <br>
     <h2>Installing</h2>
-    <p>Have your user open a command prompt (preferrably using \'Run as Administrator\'). Paste the below into the prompt to download the Agent.<br>
+    <p>Have your user open a command prompt (using \'Run as Administrator\'). Paste the below into the prompt to download the Agent.<br>
     <code>powershell.exe Invoke-WebRequest -UseBasicParsing ' . base_url() . 'index.php/agents/windows/download -Outfile agent.ps1 -Method GET</code><br><br>
     Wait for it to complete, then paste in this next line to install the Agent.<br>
     <code>powershell.exe -executionpolicy bypass -file .\agent.ps1 -install -debug 1</code><br><br>

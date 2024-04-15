@@ -45,8 +45,10 @@ $output_count = 0;
                                 <br>
                                 <h3><?= __('Then') ?></h3>
                             </div>
-                            <?= read_field('action_download', $resource->action_download, $dictionary->columns->action_download, $update, __('Download a file from URL')) ?>
-                            <?= read_field('action_command', html_entity_decode($resource->action_command), $dictionary->columns->action_command, $update, __('Run this Command')) ?>
+                            <?php if (!empty($config->feature_agents_advanced) and $config->feature_agents_advanced === 'y') { ?>
+                                <?= read_field('action_download', $resource->action_download, $dictionary->columns->action_download, $update, __('Download a file from URL')) ?>
+                                <?= read_field('action_command', html_entity_decode($resource->action_command), $dictionary->columns->action_command, $update, __('Run this Command')) ?>
+                            <?php } ?>
                             <?= read_select('action_devices_assigned_to_location', $resource->action_devices_assigned_to_location, $dictionary->columns->action_devices_assigned_to_location, $update, __('Assign Device to Location'), $included['locations']) ?>
                             <?= read_select('action_devices_assigned_to_org', $resource->action_devices_assigned_to_org, $dictionary->columns->action_devices_assigned_to_org, $update, __('Assign Device to Organisation'), $orgs) ?>
                             <?= read_select('action_audit', $resource->action_audit, $dictionary->columns->action_audit, $update, __('Audit the Device'), array()) ?>
@@ -58,13 +60,12 @@ $output_count = 0;
                                     <h4 class="text-center"><?= __('About') ?></h4><br>
                                     <?= $dictionary->about ?>
                                 <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                    <?php $fields = array('name', 'org_id', 'description', 'weight', 'test_minutes', 'test_subnet', 'test_os', 'action_download', 'action_command', 'action_audit', 'action_uninstall', 'edited_by', 'edited_date') ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
-                                    <?php } ?>
-                                <?php } ?>
+                                <h4 class="text-center">Fields</h4><br>
+                                <?php foreach ($dictionary->columns as $key => $value) {
+                                    if ($value !== 'Unused.') {
+                                        echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
+                                    }
+                                } ?>
 
                         </div>
                     </div>
