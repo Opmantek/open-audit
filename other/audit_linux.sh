@@ -2823,7 +2823,7 @@ for service in /etc/init.d/* ; do
 		systemctl=$(which systemctl 2>/dev/null)
 		if [ -n "$systemctl" ]; then
 			# systemd is present - ask it
-			service_state=$(service "$service_name" status 2>/dev/null | grep " Active:" | awk '{ print $2 }')
+			service_state=$(systemctl show "$service_name" -p ActiveState | grep " Active:" | awk '{ print $2 }')
 			service_description=$(systemctl show "$service_name" -p Description | cut -d= -f2)
 			service_binary=$(systemctl show "$service_name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)
 		fi
