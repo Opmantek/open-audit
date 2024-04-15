@@ -997,6 +997,9 @@ INSERT INTO `configuration` VALUES (NULL,'rss_url','https://community.opmantek.c
 INSERT INTO `configuration` VALUES (NULL,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.');
 INSERT INTO `configuration` VALUES (NULL,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
 INSERT INTO `configuration` VALUES (NULL,'uuid',UUID(),'text','n','system','2000-01-01 00:00:00','The unique identfier of this Open-AudIT server.');
+INSERT INTO `configuration` VALUES (NULL,'feature_agents_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Agents to execute commands and download files.');
+INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.');
+INSERT INTO `configuration` VALUES (NULL,'feature_executables','n','bool','y','system','2000-01-01 00:00:00','Activate the linux based Executables feature.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 

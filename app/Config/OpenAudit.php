@@ -31,8 +31,6 @@ class OpenAudit extends BaseConfig
     public string $product = 'community';
     public string $server_os = '';
     public string $server_platform = '';
-    public bool $advanced_queries = true;
-    public bool $executables = false;
 
     public function __set($key, $value)
     {

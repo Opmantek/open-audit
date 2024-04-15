@@ -419,7 +419,7 @@ if (!function_exists('response_create')) {
         $permission_requested = $response->meta->permission_requested;
         if (!empty($config->enterprise_binary) and $db->tableExists('enterprise')) {
             $function = $response->meta->collection . '_' . $response->meta->action;
-            if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
+            if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
@@ -502,7 +502,7 @@ if (!function_exists('response_create')) {
                 $sql = "DELETE FROM enterprise WHERE DATE(timestamp) < SUBDATE(CURDATE(), 0)";
                 $db->query($sql);
             }
-            if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
+            if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
                 $response->meta->received_data = $received_data;
             }

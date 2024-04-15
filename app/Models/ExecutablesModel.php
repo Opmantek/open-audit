@@ -58,23 +58,7 @@ class ExecutablesModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data->path = str_replace("'", '', $data->path);
-        $data->path = str_replace('"', '', $data->path);
-        $data->path = str_replace(';', '', $data->path);
-        $data->path = str_replace("\n", '', $data->path);
-        $data = $this->createFieldData('executables', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
