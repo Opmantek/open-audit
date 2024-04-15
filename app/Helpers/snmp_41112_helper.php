@@ -29,7 +29,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (empty($details->model)) {
         $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.41112.1.10.1.3.2");
     }
-    if (stripos($details->model, 'AirFiber')) {
+    if (!empty($details->model) and stripos($details->model, 'AirFiber')) {
         $details->type = 'wireless link';
     }
     return($details);
