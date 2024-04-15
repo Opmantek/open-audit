@@ -174,7 +174,7 @@ class WidgetsModel extends BaseModel
                         $result[$i]->link = str_ireplace('@date', $result[$i]->date, $result[$i]->link);
                     }
                     if (isset($result[$i]->timestamp)) {
-                        $result[$i]->link = str_ireplace('@timestamp', $result[$i]->timestamp, $result[$i]->link);
+                        $result[$i]->link = str_ireplace('@timestamp', (string)$result[$i]->timestamp, $result[$i]->link);
                     }
                 }
 
