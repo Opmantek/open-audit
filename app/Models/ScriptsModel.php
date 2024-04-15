@@ -418,28 +418,25 @@ class ScriptsModel extends BaseModel
                 $file = str_replace($find, $replace, $file);
             }
         }
-
-        if (!empty($instance->config->executables) and $instance->config->executables and $instance->config->product === 'enterprise') {
-            if ($data->based_on === 'audit_linux.sh') {
-                $sql = "SELECT * FROM executables";
-                $result = $this->db->query($sql)->getResult();
-                $exclusions = array();
-                if (!empty($result)) {
-                    foreach ($result as $item) {
-                        $path = str_replace('\\', '\\\\', $item->path);
-                        if ($item->exclude === 'n') {
-                            $replace = $find . "\nexecutables[" . ($item->id + 1) . ']="' . $path . '"';
-                            $file = str_replace($find, $replace, $file);
-                        }
-                        if ($item->exclude === 'y') {
-                            $exclusions[] = $path;
-                        }
+        if ($data->based_on === 'audit_linux.sh' and !empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
+            $sql = "SELECT * FROM executables";
+            $result = $this->db->query($sql)->getResult();
+            $exclusions = array();
+            if (!empty($result)) {
+                foreach ($result as $item) {
+                    $path = str_replace('\\', '\\\\', $item->path);
+                    if ($item->exclude === 'n') {
+                        $replace = $find . "\nexecutables[" . ($item->id + 1) . ']="' . $path . '"';
+                        $file = str_replace($find, $replace, $file);
+                    }
+                    if ($item->exclude === 'y') {
+                        $exclusions[] = $path;
                     }
                 }
-                if (!empty($exclusions)) {
-                    $replace = $find . "\nexclusions=\"" . implode('|', $exclusions) . "\"";
-                    $file = str_replace($find, $replace, $file);
-                }
+            }
+            if (!empty($exclusions)) {
+                $replace = $find . "\nexclusions=\"" . implode('|', $exclusions) . "\"";
+                $file = str_replace($find, $replace, $file);
             }
         }
 
