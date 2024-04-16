@@ -71,14 +71,16 @@ class Filters extends BaseConfig
 
     public function __construct()
     {
-        if (stripos($_SERVER['REQUEST_URI'], 'scripts') and stripos($_SERVER['REQUEST_URI'], 'download')) {
-            $this->globals['after'] = array();
-        }
-        if (stripos($_SERVER['REQUEST_URI'], 'agents') and stripos($_SERVER['REQUEST_URI'], 'download')) {
-            $this->globals['after'] = array();
-        }
-        if (stripos($_SERVER['REQUEST_URI'], 'input') and stripos($_SERVER['REQUEST_URI'], 'devices')) {
-            $this->globals['after'] = array();
+        if (!empty($_SERVER['REQUEST_URI'])) {
+            if (stripos($_SERVER['REQUEST_URI'], 'scripts') and stripos($_SERVER['REQUEST_URI'], 'download')) {
+                $this->globals['after'] = array();
+            }
+            if (stripos($_SERVER['REQUEST_URI'], 'agents') and stripos($_SERVER['REQUEST_URI'], 'download')) {
+                $this->globals['after'] = array();
+            }
+            if (stripos($_SERVER['REQUEST_URI'], 'input') and stripos($_SERVER['REQUEST_URI'], 'devices')) {
+                $this->globals['after'] = array();
+            }
         }
     }
 }
