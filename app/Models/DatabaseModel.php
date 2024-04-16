@@ -335,6 +335,10 @@ class DatabaseModel extends BaseModel
             include "db_upgrades/db_5.1.0.php";
         }
 
+        if (intval(config('Openaudit')->internal_version) < 20240512) {
+            include "db_upgrades/db_5.2.0.php";
+        }
+
         $instance = & get_instance();
         $instance->data = $output;
         return true;
