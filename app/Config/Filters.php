@@ -71,7 +71,7 @@ class Filters extends BaseConfig
 
     public function __construct()
     {
-        if (stripos($_SERVER['SCRIPT_NAME'], 'scripts') and $_SERVER['SCRIPT_NAME'](haystack, 'download')) {
+        if (stripos($_SERVER['SCRIPT_NAME'], 'scripts') and stripos($_SERVER['SCRIPT_NAME'], 'download')) {
             unset($this->globals['after']['toolbar']);
         }
     }
