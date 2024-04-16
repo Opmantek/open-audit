@@ -1924,7 +1924,7 @@ if (! function_exists('ip_audit')) {
         // If we are configured as a collector, forward the information to the server
         if (!empty($instance->config->servers)) {
             $server = $instance->config->servers;
-            $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
+            $log->message = 'Sending result to ' . $server->host . ' because this server is a collector. Device:' . $device->name;
             $discoveryLogModel->create($log);
 
             $device_json = new \StdClass();
@@ -1938,37 +1938,47 @@ if (! function_exists('ip_audit')) {
             if (count($nmap_result) > 0) {
                 $device_json->nmap = array();
                 foreach ($nmap_result as $item) {
+                    unset($item->device_id);
                     $device_json->nmap[] = $item;
                 }
             }
             if (isset($guests) and is_countable($guests) and count($guests) > 0) {
                 $device_json->vm = array();
                 foreach ($guests as $item) {
+                    unset($item->device_id);
                     $device_json->vm[] = $item;
                 }
             }
             if (isset($modules) and is_countable($modules) and count($modules) > 0) {
                 $device_json->module = array();
                 foreach ($modules as $item) {
+                    unset($item->device_id);
                     $device_json->module[] = $item;
                 }
             }
             if (isset($ip) and is_countable($ip) and count($ip) > 0) {
                 $device_json->ip = array();
                 foreach ($ip->item as $item) {
+                    unset($item->device_id);
                     $device_json->ip[] = $item;
                 }
             }
             if (isset($network_interfaces) and is_countable($network_interfaces) and count($network_interfaces) > 0) {
                 $device_json->network = array();
                 foreach ($network_interfaces as $item) {
+                    unset($item->device_id);
                     $device_json->network[] = $item;
                 }
             }
             if (!empty($audit)) {
                 foreach ($audit as $key => $value) {
                     if ($key !== 'system' and is_countable($value) and count($value) > 0) {
-                        $device_json->{$key} = $value;
+                        unset($device_json->{$key});
+                        $device_json->{$key} = array();
+                        foreach ($value as $item) {
+                            unset($item->device_id);
+                            $device_json->{$key}[] = $item;
+                        }
                     }
                 }
                 foreach ($audit->system as $key => $value) {
