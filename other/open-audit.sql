@@ -16,6 +16,45 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `agents`
+--
+
+DROP TABLE IF EXISTS `agents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agents` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT 'Default Agent',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `description` text NOT NULL,
+  `weight` int(10) unsigned NOT NULL DEFAULT 100,
+  `test_minutes` int(10) unsigned DEFAULT 1300,
+  `test_subnet` varchar(45) NOT NULL DEFAULT '',
+  `test_os` varchar(45) NOT NULL DEFAULT '',
+  `tests` text NOT NULL default'[]',
+  `action_download` varchar(2000) NOT NULL DEFAULT '',
+  `action_command` varchar(2000) NOT NULL DEFAULT '',
+  `action_devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
+  `action_devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
+  `action_audit` enum('y','n') NOT NULL DEFAULT 'y',
+  `action_uninstall` enum('y','n') NOT NULL DEFAULT 'n',
+  `actions` text NOT NULL default'[]',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+--
+-- Dumping data for table `agents`
+--
+
+LOCK TABLES `agents` WRITE;
+/*!40000 ALTER TABLE `agents` DISABLE KEYS */;
+INSERT INTO `agents` VALUES (NULL, 'Default Agent', 1, 'Audit every day.', 100, 1300, '', '', '[]', '', '', null, null, 'y', 'n', '[]', 'system', '2000-01-01 00:00:00');
+/*!40000 ALTER TABLE `agents` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `application`
 --
 
@@ -894,7 +933,6 @@ INSERT INTO `configuration` VALUES (NULL,'devices_default_group_columns','device
 INSERT INTO `configuration` VALUES (NULL,'devices_default_retrieve_columns','devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.uuid,devices.hostname,devices.dns_hostname,devices.domain,devices.dns_domain,devices.dbus_identifier,devices.fqdn,devices.dns_fqdn,devices.description,devices.os_group,devices.os_family,devices.os_name,devices.os_version,devices.manufacturer,devices.model,devices.serial,devices.form_factor,devices.status,devices.environment,devices.class,devices.function,devices.org_id,devices.location_id,devices.snmp_oid,devices.sysDescr,devices.sysObjectID,devices.sysUpTime,devices.sysContact,devices.sysName,devices.sysLocation,devices.first_seen,devices.last_seen,devices.last_seen_by,devices.identification,devices.tags','text','y','system','2000-01-01 00:00:00','When requesting a list of devices, provide these columns.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_default_scan_option','1','number','y','system','2000-01-01 00:00:00','The default discovery options for Nmap.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_ip_exclude','','text','y','system','2000-01-01 00:00:00','Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
-INSERT INTO `configuration` VALUES (NULL,'discovery_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_linux_script_directory','/tmp/','text','y','system','2000-01-01 00:00:00','The directory the script is copied into on the target device.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_linux_script_permissions','700','text','y','system','2000-01-01 00:00:00','The permissions set on the audit_linux.sh script when it is copied to the target device.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.');
@@ -908,6 +946,7 @@ INSERT INTO `configuration` VALUES (NULL,'discovery_use_dns','y','bool','y','sys
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_ipmi','y','bool','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_org_id_match','n','bool','y','system','2000-01-01 00:00:00','When matching a device and assign_devices_to_org is set, use that attribute in the relevant match rules.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_wmi_timeout','900','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device from Linux via WMI.');
 INSERT INTO `configuration` VALUES (NULL,'display_version','5.1.0','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (NULL,'download_reports','n','bool','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports.');
 INSERT INTO `configuration` VALUES (NULL,'mail_domain','','text','y','system','2000-01-01 00:00:00','Email domain to use.');
@@ -958,6 +997,9 @@ INSERT INTO `configuration` VALUES (NULL,'rss_url','https://community.opmantek.c
 INSERT INTO `configuration` VALUES (NULL,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.');
 INSERT INTO `configuration` VALUES (NULL,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
 INSERT INTO `configuration` VALUES (NULL,'uuid',UUID(),'text','n','system','2000-01-01 00:00:00','The unique identfier of this Open-AudIT server.');
+INSERT INTO `configuration` VALUES (NULL,'feature_agents_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Agents to execute commands and download files.');
+INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.');
+INSERT INTO `configuration` VALUES (NULL,'feature_executables','n','bool','y','system','2000-01-01 00:00:00','Activate the linux based Executables feature.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3290,6 +3332,7 @@ INSERT INTO `scripts` VALUES (NULL,'audit_windows.vbs',1,'{\"submit_online\":\"y
 INSERT INTO `scripts` VALUES (NULL,'audit_esxi.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit ESXi config.','audit_esxi.sh','','system','2000-01-01 00:00:00');
 INSERT INTO `scripts` VALUES (NULL,'audit_solaris.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Solaris config.','audit_solaris.sh','','system','2000-01-01 00:00:00');
 INSERT INTO `scripts` VALUES (NULL,'audit_hpux.sh',1,'{\"submit_online\":\"n\",\"create_file\":\"y\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit HPUX config.','audit_hpux.sh','','system','2000-01-01 00:00:00');
+INSERT INTO `scripts` VALUES (NULL,'audit_windows.ps1',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Windows config.','audit_windows.ps1','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 

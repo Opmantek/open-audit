@@ -12,7 +12,7 @@ if ($meta->collection === 'discovery_scan_options') {
     $menu = 'Discover -> Discoveries';
 }
 $defaults = false;
-if (in_array($meta->collection, ['attributes', 'configuration', 'dashboards', 'discovery_scan_options', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'queries', 'roles', 'rules', 'scripts', 'summaries', 'users', 'widgets'])) {
+if (in_array($meta->collection, ['agents', 'attributes', 'configuration', 'dashboards', 'discovery_scan_options', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'queries', 'roles', 'rules', 'scripts', 'summaries', 'users', 'widgets'])) {
     $defaults = true;
 }
 $execute = false;

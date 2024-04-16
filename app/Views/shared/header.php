@@ -165,7 +165,7 @@ if (!empty($config->servers)) {
                                         <?= menuItem('tasks', 'c', $user, 'tasksCreateForm', __('Schedule') . ' ' . __('Discoveries'), '?type=discoveries') ?>
                                     </ul>
                                 </li>
-                                <?php if (!empty($config->executables) and $config->executables) { ?>
+                                <?php if (!empty($config->feature_executables) and $config->feature_executables === 'y') { ?>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Executables') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('executables', 'r', $user, 'executablesCollection', __('List') . ' ' . __('Executables')) ?>
@@ -222,7 +222,6 @@ if (!empty($config->servers)) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarManage" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Manage') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarManage">
-                                <!--
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Agents') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('agents', 'r', $user, 'agentsCollection', __('List') . ' ' . __('Agents')) ?>
@@ -230,7 +229,6 @@ if (!empty($config->servers)) {
                                         <?= menuItem('agents', '', $user, 'agentsHelp', __('Learn About') . ' ' . __('Agents')) ?>
                                     </ul>
                                 </li>
-                                -->
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Applications') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('applications', 'r', $user, 'applicationsCollection', __('List') . ' ' . __('Applications')) ?>
@@ -695,7 +693,11 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
     $instance = & get_instance();
     // Default to no access
     $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . $title . "</a></li>\n";
+    if (empty($instance->collections->{$collection})) {
+        return $return;
+    }
     if (empty($instance->collections->{$collection}->actions->{$instance->config->product})) {
+        $return = "<li><a class=\"dropdown-item greyout toast" . $instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
         return $return;
     }
     if (empty($instance->resp->meta->permission_requested)) {
@@ -703,7 +705,7 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
     }
     // Check if feature matches license
     if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) === false) {
-        $return = "<li><a class=\"dropdown-item greyout toast" .$instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
+        $return = "<li><a class=\"dropdown-item greyout toast" . $instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
     }
     // Check if user has permission and a license
     if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) !== false) {

@@ -149,7 +149,7 @@ class QueriesModel extends BaseModel
             $type = end($split3);
             $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
         }
-        if (!empty($instance->config->advanced_queries) and $instance->config->advanced_queries and !empty($query->advanced) and $query->advanced === 'y') {
+        if (!empty($instance->config->feature_queries_advanced) and $instance->config->feature_queries_advanced === 'y' and !empty($query->advanced) and $query->advanced === 'y') {
             $sql = str_ireplace('@orgs', "({$user->org_list})", $sql);
         }
 
@@ -280,7 +280,7 @@ class QueriesModel extends BaseModel
     public function update($id = null, $data = null): bool
     {
         $instance = & get_instance();
-        if (!empty($data->sql) and !$instance->config->advanced_queries) {
+        if (!empty($data->sql) and !$instance->config->feature_queries_advanced) {
             if (stripos($data->sql, 'update ') !== false or stripos($data->sql, 'update`') !== false) {
                 $error = new \stdClass();
                 $error->level = 'error';

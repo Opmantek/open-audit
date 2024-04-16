@@ -1282,6 +1282,7 @@ if (! function_exists('ssh_audit')) {
                     $hostname = trim((string)$lines[count($lines)-2]);
                     $sudo_temp_hostname = explode('.', $hostname);
                     $ssh_hostname = explode('.', $device->hostname);
+                    $s_h_result = '';
                     if (trim(strtolower($sudo_temp_hostname[0])) === trim(strtolower($ssh_hostname[0]))) {
                         $device->use_sudo = true;
                         $s_h_result = trim(strtolower($sudo_temp_hostname[0]));

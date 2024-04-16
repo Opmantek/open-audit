@@ -80,10 +80,6 @@ if (!function_exists('response_create')) {
             $request->header('Accept')
         );
 
-        if ($response->meta->collection === 'baselinesresults') {
-            $response->meta->collection = 'baselines_results';
-        }
-
         if ($response->meta->collection === 'collections') {
             $response->meta->collection = strtolower(html_entity_decode(urldecode($uri->getSegment(1))));
             if (empty($response->meta->collection)) {
@@ -423,7 +419,7 @@ if (!function_exists('response_create')) {
         $permission_requested = $response->meta->permission_requested;
         if (!empty($config->enterprise_binary) and $db->tableExists('enterprise')) {
             $function = $response->meta->collection . '_' . $response->meta->action;
-            if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
+            if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
@@ -506,7 +502,7 @@ if (!function_exists('response_create')) {
                 $sql = "DELETE FROM enterprise WHERE DATE(timestamp) < SUBDATE(CURDATE(), 0)";
                 $db->query($sql);
             }
-            if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
+            if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
                 $response->meta->received_data = $received_data;
             }
@@ -863,7 +859,9 @@ if (!function_exists('response_get_id')) {
                 return null;
             }
             $db = db_connect();
+            // TODO - have we already validate the action before calling this function? If so, remove
             $actions = response_valid_actions();
+            // TODO - have we already validate the collection before calling this function? If so, remove
             $collections = response_valid_collections();
             $no_org_id = array('chart', 'configuration', 'reports', 'roles');
             if (!in_array($id, $actions)) {
@@ -877,6 +875,7 @@ if (!function_exists('response_get_id')) {
                         log_message('debug', "ID to Name match in database (Provided ID: $id).");
                     }
                 } else if ($collection === 'baselines_policies') {
+                    // TODO - We have org_id in baselines_policies - remove this
                     // baselines_policies.baseline_id -> baselines.id -> baselines.org_id
                     $sql = "SELECT baselines_policies.id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) WHERE baselines_policies.name LIKE ? AND baselines.org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
                     $result = $db->query($sql, [$id])->getResult();
@@ -888,6 +887,7 @@ if (!function_exists('response_get_id')) {
                         $id = null;
                     }
                 } else if ($collection === 'collectors') {
+                    // TODO - remove this
                     // $sql = "SELECT id FROM collectors WHERE uuid = ? ORDER BY id DESC LIMIT 1";
                     // $result = $db->query($sql, [$id])->getResult();
                     // if (!empty($result)) {
@@ -898,6 +898,7 @@ if (!function_exists('response_get_id')) {
                     //     $id = null;
                     // }
                 } else if ($collection === 'devices') {
+                    // TODO - remove this
                     // devices
                     $sql = "SELECT id FROM devices WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
                     $result = $db->query($sql, [$id])->getResult();
@@ -1113,7 +1114,6 @@ if (!function_exists('response_get_org_list')) {
             return;
         }
         switch ($collection) {
-            case 'agents':
             case 'applications':
             case 'baselines':
             case 'baselines_policies':
@@ -1157,6 +1157,7 @@ if (!function_exists('response_get_org_list')) {
                 log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
                 break;
 
+            case 'agents':
             case 'attributes':
             case 'dashboards':
             case 'discovery_scan_options':

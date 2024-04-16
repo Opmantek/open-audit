@@ -108,61 +108,12 @@ abstract class BaseController extends Controller
             // Anyone can download a script
             return;
         }
+        if (empty($this->user) and $this->controller === '\App\Controllers\Agents' and ($this->method === 'download' or $this->method === 'execute')) {
+            // Anyone can download an agent
+            return;
+        }
 
         $this->user = $this->usersModel->userValidate();
-
-        // Map the user to roles to collections
-        $userRoles = array();
-        foreach ($this->user->roles as $userRole) {
-            foreach ($this->roles as $role) {
-                if ($userRole === $role->name) {
-                    $permissions = json_decode($role->permissions);
-                    foreach ($permissions as $key => $value) {
-                        if (empty($userRoles[$key])) {
-                            $userRoles[$key] = $value;
-                        } else {
-                            if (!empty($value) and (empty($userRoles[$key]) or strpos($userRoles[$key], $value) === false)) {
-                                $userRoles[$key] = $userRoles[$key] . $value;
-                            }
-                            if (empty($value)) {
-                                log_message('warning', $userRole . '::' . $role->name . '::' . $key . ' has an empty value. You may wish to reset Roles to their defaults.');
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        $this->user->permissions = $userRoles;
-        if (empty($this->user->permissions['baselines_policies'])) {
-            $this->user->permissions['baselines_policies'] = $this->user->permissions['baselines'];
-        }
-        if (empty($this->user->permissions['baselines_results'])) {
-            $this->user->permissions['baselines_results'] = $this->user->permissions['baselines'];
-        }
-        if (empty($this->user->permissions['components'])) {
-            $this->user->permissions['components'] = $this->user->permissions['devices'];
-        }
-        if (empty($this->user->permissions['discovery_log'])) {
-            $this->user->permissions['discovery_log'] = $this->user->permissions['discoveries'];
-        }
-        if (empty($this->user->permissions['integrations_log']) and !empty($this->user->permissions['integrations'])) {
-            $this->user->permissions['integrations_log'] = $this->user->permissions['integrations'];
-        }
-        if (empty($this->user->permissions['integrations_rules']) and !empty($this->user->permissions['integrations'])) {
-            $this->user->permissions['integrations_rules'] = $this->user->permissions['integrations'];
-        }
-        if (empty($this->user->permissions['rack_devices'])) {
-            $this->user->permissions['rack_devices'] = $this->user->permissions['racks'];
-        }
-        if (empty($this->user->permissions['search'])) {
-            $this->user->permissions['search'] = $this->user->permissions['devices'];
-        }
-        if (empty($this->user->permissions['maps'])) {
-            $this->user->permissions['maps'] = 'r';
-        }
-        if (empty($this->user->permissions['support'])) {
-            $this->user->permissions['support'] = 'r';
-        }
 
         if (intval($this->config->internal_version) < intval($this->config->appVersion)) {
             if ($router->controllerName() !== '\App\Controllers\Database' and $router->methodName() !== 'update') {

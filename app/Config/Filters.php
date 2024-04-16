@@ -74,5 +74,8 @@ class Filters extends BaseConfig
         if (stripos($_SERVER['SCRIPT_NAME'], 'scripts') and stripos($_SERVER['SCRIPT_NAME'], 'download')) {
             unset($this->globals['after']['toolbar']);
         }
+        if (stripos($_SERVER['SCRIPT_NAME'], 'agents') and $_SERVER['SCRIPT_NAME'](haystack, 'download')) {
+            unset($this->globals['after']['toolbar']);
+        }
     }
 }

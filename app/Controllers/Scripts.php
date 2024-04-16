@@ -44,6 +44,10 @@ class Scripts extends BaseController
         if (empty($id)) {
             return;
         }
+        $id = intval($id);
+        $request = \Config\Services::request();
+        $ip = $request->getIPAddress();
+        log_message('info', 'ACCESS:scripts:download:' . $id . ':' . $ip);
         $scriptContents = $this->scriptsModel->download($id);
         if ($scriptContents === false) {
             \Config\Services::session()->setFlashdata('danger', 'Cannot download script, please contact your Open-AudIT administrator.');

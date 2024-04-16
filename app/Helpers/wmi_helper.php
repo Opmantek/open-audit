@@ -140,13 +140,13 @@ if (! function_exists('execute_windows')) {
             $log->command = $command_string;
             $output = '';
             $log->message = 'Winexe 2 tested and failed, so using Winexe.';
-            $command_string = "timeout 15m " . $filepath . "/winexe-static -A " . $filename . " --uninstall //$ip \"$command\" 2>&1";
+            $command_string = "timeout " . $instance->config->discovery_wmi_timeout . "s " . $filepath . "/winexe-static -A " . $filename . " --uninstall //$ip \"$command\" 2>&1";
             $win = 'winexe-static';
             if ($return_var == 0) {
                 // Success, use SMB2
                 $log->severity = 7;
                 $log->message = 'Winexe 2 tested and working.';
-                $command_string = "timeout 15m " . $filepath . "/winexe-static-2 -A " . $filename . " --uninstall //$ip \"$command\" 2>&1";
+                $command_string = "timeout " . $instance->config->discovery_wmi_timeout . "s " . $filepath . "/winexe-static-2 -A " . $filename . " --uninstall //$ip \"$command\" 2>&1";
                 $win = 'winexe-static-2';
             }
             $discoveryLogModel->create($log);

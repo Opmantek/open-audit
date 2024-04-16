@@ -10,14 +10,13 @@
 # Apps
 # https://learn.microsoft.com/en-us/windows/application-management/overview-windows-apps
 
-echo "Not ready for use"
-exit
-
 param (
-    [int]$debugging = 1,
-    [string]$url = "http://localhost/open-audit/index.php/input/devices",
-    [string]$create_file = "n",
-    [string]$submit_online = "y"
+    [int]$debugging = 0,
+    [string]$url = '',
+    [string]$create_file = 'n',
+    [string]$submit_online = 'y',
+    [int]$location_id = 0,
+    [int]$org_id = 0
 )
 
 $debug = $debugging
@@ -89,6 +88,12 @@ $result.sys.org_id = ''
 $result.sys.cluster_name = ''
 $result.sys.last_seen_by = ''
 $result.sys.discovery_id = ''
+if ($org_id -ne 0) {
+    $result.sys.org_id = $org_id
+}
+if ($location_id -ne 0) {
+    $result.sys.location_id = $location_id
+}
 $itimer.Stop()
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
 if ($debug -gt 0) {
@@ -908,7 +913,14 @@ Get-WmiObject -Class Win32_Share -filter 'type = "0"' | Select Path, Name, Descr
   $item.description = $_.Description
   $item.size = 0
   if (($_.Path) -and $_.Path -ne "C:\WINNT" -and $_.Path -ne "C:\WINDOWS" -and $_.Path -ne "C:\" -and ($_.Path.ToCharArray() | Select-Object -First 1) -ne "\" -and $_.Path.Length -gt 3) {
-      $item.size = [Int]((Get-ChildItem -Path $_.Path -Recurse | Measure-Object -Sum Length).Sum / 1024 / 1024)
+      try {
+          $item.size = [Int]((Get-ChildItem -Path $_.Path -Recurse | Measure-Object -Sum Length).Sum / 1024 / 1024)
+      } catch {
+          $item.size = 0
+          if ($item.description -eq "") {
+              $item.description = "Cannot read folder size."
+          }
+      }
   }
   $share_permissions = ""
   Get-WmiObject -Class Win32_LogicalShareAccess | ForEach {

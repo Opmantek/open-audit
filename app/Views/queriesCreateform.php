@@ -29,7 +29,7 @@ include 'shared/create_functions.php';
                                     </div>
                                 </div>
 
-                                <?php if ($config->advanced_queries) { ?>
+                                <?php if (!empty($config->feature_queries_advanced) and $config->feature_queries_advanced === 'y') { ?>
                                 <?= create_select('data[attributes][advanced]', __('Advanced'), '', $dictionary->attributes->create) ?>
                                 <?php } ?>
 

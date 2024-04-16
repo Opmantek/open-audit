@@ -1,6 +1,41 @@
 <?php
 $output .= "Upgrade database to 5.2.0 commenced.\n\n";
 
+$sql = "DROP TABLE IF EXISTS `agents`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "CREATE TABLE `agents` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT 'Default Agent',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `description` text NOT NULL,
+  `weight` int(10) unsigned NOT NULL DEFAULT 100,
+  `test_minutes` int(10) unsigned DEFAULT 1300,
+  `test_subnet` varchar(45) NOT NULL DEFAULT '',
+  `test_os` varchar(45) NOT NULL DEFAULT '',
+  `tests` text NOT NULL default'[]',
+  `action_download` varchar(2000) NOT NULL DEFAULT '',
+  `action_command` varchar(2000) NOT NULL DEFAULT '',
+  `action_devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
+  `action_devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
+  `action_audit` enum('y','n') NOT NULL DEFAULT 'y',
+  `action_uninstall` enum('y','n') NOT NULL DEFAULT 'n',
+  `actions` text NOT NULL default'[]',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `agents` VALUES (NULL, 'Default Agent', 1, 'Audit every day.', 100, 1300, '', '', '[]', '', '', null, null, 'y', 'n', '[]', 'system', '2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "ALTER TABLE `bios` CHANGE `serial` `serial` VARCHAR(200) NOT NULL DEFAULT ''";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -27,7 +62,7 @@ if (!$db->fieldExists('notes', 'change_log') and $db->fieldExists('note', 'chang
     log_message('info', (string)$db->getLastQuery());
 }
 
-$sql = "DELETE FROM `configuration` WHERE `name` IN ('product', 'oae_product')";
+$sql = "DELETE FROM `configuration` WHERE `name` IN ('product', 'oae_product', 'discovery_limit')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -38,6 +73,46 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "UPDATE `configuration` SET `value` = 'y' WHERE `name` = 'delete_noncurrent_ip'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM configuration` WHERE name = 'discovery_wmi_timeout'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_wmi_timeout','900','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device from Linux via WMI.')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM configuration` WHERE name = 'feature_queries_advanced'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM configuration` WHERE name = 'feature_executables'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_executables','n','bool','y','system','2000-01-01 00:00:00','Activate the linux based Executables feature.')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM configuration` WHERE name = 'feature_agents_advanced'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_agents_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Agents to execute commands and download files.')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -111,20 +186,34 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM `scripts` WHERE `based_on` = 'audit_windows.ps1'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `scripts` VALUES (NULL,'audit_windows.ps1',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Windows config.','audit_windows.ps1','','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "SELECT * FROM `roles`";
 $roles = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 foreach ($roles as $role) {
+    $permissions = json_decode($role->permissions);
     if ($role->name === 'org_admin' or $role->name === 'user') {
-        $permissions = json_decode($role->permissions);
         if ($role->name === 'org_admin') {
             $permissions->executables = 'crud';
         }
         if ($role->name === 'user') {
-            $permissions->executable = 'r';
+            $permissions->executables = 'r';
         }
+        $this->rolesModel->update(intval($role->id), $permissions);
+    }
+    if ($role->name === 'admin' or $role->name === 'org_admin') {
+        $permissions->agents = 'crud';
         $this->rolesModel->update(intval($role->id), $permissions);
     }
 }

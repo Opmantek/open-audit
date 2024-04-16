@@ -85,23 +85,16 @@ if (! function_exists('responding_ip_list')) {
         //   -oG    Output in grappable format
         //   -      No filename, command line output for above
         //   -sP    Ping scan only
+        //   -T4    Aggressive scanning
+        //   --min-parallelism
+        //   --max-parallelism
+        //   --randomize-hosts
+
         if ($discovery->scan_options->ping === 'y') {
             if (!empty($discovery->scan_options->exclude_ip)) {
-                $command = 'nmap -n -oG - -sP --exclude ' . $discovery->scan_options->exclude_ip . ' ' . $discovery->subnet;
-                // NOTE - Below should be faster than 'normal' Nmap
-                // $command = 'nmap -n -oG - -sP -T5 --min-parallelism 100 --max-parallelism 256  --exclude ' . $discovery->scan_options->exclude_ip . ' ' . $discovery->subnet;
+                $command = 'nmap -n -oG - -sP -T4 --max-retries 2 --min-parallelism 200 --max-parallelism 256 --randomize-hosts --exclude ' . $discovery->scan_options->exclude_ip . ' ' . $discovery->subnet;
             } else {
-                $command = 'nmap -n -oG - -sP ' . $discovery->subnet;
-                // NOTE - Below should be faster than 'normal' Nmap
-                // $command = 'nmap -n -oG - -sP -T5 --min-parallelism 100 --max-parallelism 256 ' . $discovery->subnet;
-                //
-                // NOTE - below is for Linux only and only in specific circumstances
-                //      - Fping doesn't have an exclude option
-                //      - Fping doesn't accept the same host formatting as Nmap, except for 1.2.3.4/5
-                // if (filter_var($discovery->subnet, FILTER_VALIDATE_IP)) {
-                //     $discovery->subnet = $discovery->subnet . '/32';
-                // }
-                // $command = 'fping -A -a -q -g -r 2 ' . $discovery->subnet . ' 2>&1';
+                $command = 'nmap -n -oG - -sP -T4 --max-retries 2 --min-parallelism 200 --max-parallelism 256 --randomize-hosts ' . $discovery->subnet;
             }
             if (php_uname('s') === 'Darwin') {
                 $command = '/usr/local/bin/' . $command;
@@ -115,12 +108,6 @@ if (! function_exists('responding_ip_list')) {
                         $ip_addresses[] = $temp[1];
                     }
                 }
-                // Caters to a single responding IP on each line, for fping or Nmap with piping to cut, et al
-                // foreach ($output as $line) {
-                //     if (filter_var($line, FILTER_VALIDATE_IP)) {
-                //         $ip_addresses[] = $line;
-                //     }
-                // }
             } else {
                 if (php_uname('s') === 'Windows NT' and empty($output)) {
                     log_message('error', 'No response from Nmap. Is the Apache Service running as a normal user?');
@@ -786,6 +773,9 @@ if (! function_exists('ip_audit')) {
      */
     function ip_audit($ip_scan = null)
     {
+        helper('snmp');
+        helper('snmp_model');
+
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $discoveriesModel = new \App\Models\DiscoveriesModel();
         $componentsModel = new \App\Models\ComponentsModel();

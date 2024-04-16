@@ -91,6 +91,7 @@ window.onload = function () {
         $("#button_export_csv").remove();
         $("#button_import_json").remove();
         $("#button_export_json").remove();
+        $("#button_help").remove();
         $("#button_create").remove();
     });
 }

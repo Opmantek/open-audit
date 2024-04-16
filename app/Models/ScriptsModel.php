@@ -63,7 +63,12 @@ class ScriptsModel extends BaseModel
                 $audit_script = 'audit_windows.vbs';
                 $source_name = 'audit_windows_' . $timestamp . '.vbs';
                 break;
-            
+
+            case 'windows-ps1':
+                $audit_script = 'audit_windows.ps1';
+                $source_name = 'audit_windows_' . $timestamp . '.ps1';
+                break;
+
             case 'sunos':
                 $audit_script = 'audit_solaris.sh';
                 $source_name = 'audit_solaris_' . $timestamp . '.sh';
@@ -291,30 +296,34 @@ class ScriptsModel extends BaseModel
             case 'esxi':
                 $audit_script = 'audit_esxi.sh';
                 break;
-            
+
             case 'linux':
                 $audit_script = 'audit_linux.sh';
                 break;
-            
+
             case 'darwin':
             case 'osx':
                 $audit_script = 'audit_osx.sh';
                 break;
-            
+
             case 'hpux':
             case 'hp-ux':
                 $audit_script = 'audit_hpux.sh';
                 break;
-            
+
             case 'windows':
                 $audit_script = 'audit_windows.vbs';
                 break;
-            
+
+            case 'windows-ps1':
+                $audit_script = 'audit_windows.ps1';
+                break;
+
             case 'solaris':
             case 'sunos':
                 $audit_script = 'audit_solaris.sh';
                 break;
-            
+
             default:
                 $audit_script = '';
                 break;
@@ -409,29 +418,30 @@ class ScriptsModel extends BaseModel
                 $file = str_replace($find, $replace, $file);
             }
         }
-
-        if (!empty($instance->config->executables) and $instance->config->executables and $instance->config->product === 'enterprise') {
-            if ($data->based_on === 'audit_linux.sh') {
-                $sql = "SELECT * FROM executables";
-                $result = $this->db->query($sql)->getResult();
-                $exclusions = array();
-                if (!empty($result)) {
-                    foreach ($result as $item) {
-                        $path = str_replace('\\', '\\\\', $item->path);
-                        if ($item->exclude === 'n') {
-                            $replace = $find . "\nexecutables[" . ($item->id + 1) . ']="' . $path . '"';
-                            $file = str_replace($find, $replace, $file);
-                        }
-                        if ($item->exclude === 'y') {
-                            $exclusions[] = $path;
-                        }
+        if ($data->based_on === 'audit_linux.sh' and !empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
+            $sql = "SELECT * FROM executables";
+            $result = $this->db->query($sql)->getResult();
+            $exclusions = array();
+            if (!empty($result)) {
+                foreach ($result as $item) {
+                    $path = str_replace('\\', '\\\\', $item->path);
+                    if ($item->exclude === 'n') {
+                        $replace = $find . "\nexecutables[" . ($item->id + 1) . ']="' . $path . '"';
+                        $file = str_replace($find, $replace, $file);
+                    }
+                    if ($item->exclude === 'y') {
+                        $exclusions[] = $path;
                     }
                 }
-                if (!empty($exclusions)) {
-                    $replace = $find . "\nexclusions=\"" . implode('|', $exclusions) . "\"";
-                    $file = str_replace($find, $replace, $file);
-                }
             }
+            if (!empty($exclusions)) {
+                $replace = $find . "\nexclusions=\"" . implode('|', $exclusions) . "\"";
+                $file = str_replace($find, $replace, $file);
+            }
+        }
+
+        if ($data->based_on === 'audit_windows.ps1') {
+            $file = str_replace("\$url = ''", "\$url = '" . base_url() . "index.php/input/devices'", $file);
         }
 
         // Force all line endings to be Unix style

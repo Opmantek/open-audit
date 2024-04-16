@@ -115,535 +115,71 @@ class AgentsModel extends BaseModel
         return true;
     }
 
+    public function download(int $id = 0): ?string
+    {
+        $instance = & get_instance();
+        // $result = $this->read($id);
+        // $data = $result[0]->attributes;
+        // if (empty($data)) {
+        //     log_message('error', 'No script returned when ScriptsModel::download called with ID ' . $id);
+        //     return null;
+        // }
+        $filename = ROOTPATH . 'other/agent_windows.ps1';
+        if (!file_exists($filename)) {
+            log_message('error', "Script does not exist on filesystem for $filename.");
+            return null;
+        }
+        $file = file_get_contents($filename);
+        // Force all line endings to be Unix style
+        // Windows audit scripts with Unix line endings work
+        // Unix audit scripts with Windows line endings do not work (bash for one, chokes)
+        $file = str_replace("\r\n", "\n", $file);
+        $file = str_replace("\r", "\n", $file);
+        // Set our URL
+        $file = str_replace('$url = ""', '$url = "' . base_url() . '"', $file);
+        return $file;
+    }
+
     /**
      * [execute description]
      * @param  [type] $parameters MUST contain either a device ID or a device object, SHOULD contain an action, default is to update, SHOULD contain a discovery ID for logging
      * @return [type]             [description]
      */
-    public function execute(object $device = null, int $discovery_id = 0, string $action = 'update', int $id = 0)
+    public function execute()
     {
-        log_message('debug', 'RulesExecute called.');
-        $item_start = microtime(true);
-        helper('macaddress');
+        log_message('debug', 'AgentsExecute called.');
+        return;
+    }
 
-        if (empty($id) && empty($device)) {
-            log_message('error', 'RulesExecute called, but no device object or id passed.');
-            return;
+
+    public function getByOs(string $os = ''): ?int
+    {
+        switch (strtolower($os)) {
+            case 'linux':
+                $script = 'agent_installer_linux.sh';
+                break;
+            
+            case 'darwin':
+            case 'osx':
+                $script = 'agent_installer_apple.sh';
+                break;
+            
+            case 'windows':
+                $script = 'agent_installer_windows.ps1';
+                break;
+            
+            default:
+                $audit_script = '';
+                break;
         }
-
-        $instance = & get_instance();
-
-        helper('snmp_model');
-        helper('mac_model');
-        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
-
-        $log = new \stdClass();
-        $log->message = 'Running rules::execute function.';
-        $log->severity = 7;
-        $log->command_status = 'notice';
-        $log->file = 'm_rules';
-        $log->function = 'execute';
-        $log->command = 'Device Update ';
-
-        $device_sub = array();
-        if (!empty($device)) {
-            $device->where = 'supplied';
-            $log->command_output = json_encode($device);
-            $log->command = 'Device Input ';
+        $sql = "SELECT * FROM agents WHERE os = ? LIMIT 1";
+        $query = $this->db->query($sql, [$audit_script])->getResult();
+        if (empty($query[0]->id)) {
+            // Invalid OS
+            log_message('error', "Invalid OS provided to ScriptsModel::getByOs ($os).");
+            return null;
         }
-        $log->command .= "($action).";
-
-        if (!empty($id)) {
-            // Get our device
-            $log->command_output = "Device ID supplied: {$id}";
-            $log->command = 'Device ID Input ';
-            $sql = 'SELECT * FROM `devices` WHERE id = ?';
-            $result = $this->db->query($sql, [$id])->getResult();
-            if (!empty($result[0])) {
-                $device = $result[0];
-                $device->where = 'database';
-                // NOTE - Some of these are in the database and default to 0. Empty these.
-                if ($device->snmp_enterprise_id === 0) {
-                    $device->snmp_enterprise_id = '';
-                }
-                if ($device->os_bit === 0) {
-                    $device->os_bit = '';
-                }
-                if ($device->memory_count === 0) {
-                    $device->memory_count = '';
-                }
-                if ($device->processor_count === 0) {
-                    $device->processor_count = '';
-                }
-                if ($device->storage_count === 0) {
-                    $device->storage_count = '';
-                }
-                if ($device->switch_port === 0) {
-                    $device->switch_port = '';
-                }
-                $device->discovery_id = '';
-            } else {
-                log_message('error', "Could not retrieve data from devices table for ID: $id. Not running Rules function.");
-                $log->severity = 4;
-                $log->command_status = 'fail';
-                $log->message = "Could not retrieve data from devices table for ID: $id. Not running Rules function.";
-                $discoveryLogModel->create($log);
-                return $device;
-            }
-            // Get the first MAC Address because there is no mac stored in 'devices'
-            $sql = "SELECT `mac` FROM `network` WHERE device_id = ? and current = 'y' and `mac` != '' order by `mac` limit 1";
-            $result = $this->db->query($sql, [$id])->getResult();
-            if (!empty($result[0])) {
-                $device->mac_address = $result[0]->mac;
-            }
-        }
-
-        // Log down here because we may not have been passed a $device
-        $log->discovery_id = (!empty($discovery_id)) ? $discovery_id : '';
-        if (empty($log->discovery_id) and !empty($device->discovery_id)) {
-            $log->discovery_id = $device->discovery_id;
-        }
-        $log->device_id = (!empty($device->id)) ? intval($device->id) : '';
-        $log->ip = (!empty($device->ip)) ? ip_address_from_db($device->ip) : '';
-        $discoveryLogModel->create($log);
-
-        $id = (!empty($device->id)) ? $device->id : '';
-        // Discovery ID for logging
-        if (empty($discovery_id)) {
-            if (!empty($device->discovery_id)) {
-                $discovery_id = $device->discovery_id;
-            }
-        }
-
-        // NOTE - don't set the id or last_seen_by here as we test if empty after rules
-        //        have been run and only update if not empty (after adding id and last_seen_by).
-        $newdevice = new \stdClass();
-
-        // Details based on SNMP OID
-        if (!empty($device->snmp_oid)) {
-            $log_start = microtime(true);
-            $newdevice = get_details_from_oid($device->snmp_oid);
-            if (!empty($newdevice->type) or !empty($newdevice->model)) {
-                $temp = empty($newdevice->model) ? $newdevice->type : $newdevice->model;
-                $log->message = "Hit on \$device->snmp_oid {$device->snmp_oid} eq {$device->snmp_oid}";
-                $log->command = 'Rules Match - SNMP OID for  ' . $temp;
-                $log->command_output = json_encode($newdevice);
-                $log->command_time_to_execute = (microtime(true) - $log_start);
-                $discoveryLogModel->create($log);
-                foreach ($newdevice as $key => $value) {
-                    $device->{$key} = $value;
-                }
-            }
-        }
-
-        // Manufacturer based on MAC Address
-        if (!empty($device->mac_address) and empty($device->manufacturer)) {
-            $log_start = microtime(true);
-            $newdevice->manufacturer = get_manufacturer_from_mac($device->mac_address);
-            if (!empty($newdevice->manufacturer)) {
-                $log->message = "Hit on \$device->mac_address {$device->mac_address} st " . substr(strtolower($device->mac_address), 0, 8);
-                $log->command = 'Rules Match - Mac Address for ' . $newdevice->manufacturer;
-                $log->command_output = json_encode($newdevice);
-                $log->command_time_to_execute = (microtime(true) - $log_start);
-                $discoveryLogModel->create($log);
-                $device->manufacturer = $newdevice->manufacturer;
-            }
-        }
-
-        // Manufacturer based on SNMP Enterprise ID
-        if (!empty($device->snmp_enterprise_id) && empty($device->manufacturer)) {
-            $log_start = microtime(true);
-            $newdevice->manufacturer = get_manufacturer_from_oid($device->snmp_enterprise_id);
-            if (!empty($newdevice->manufacturer)) {
-                $log->message = 'Hit on $device->snmp_enterprise_id ' . $device->snmp_enterprise_id . ' eq ' . $device->snmp_enterprise_id;
-                $log->command = 'Rules Match - SNMP Enterprise Number for  ' . $newdevice->manufacturer;
-                $log->command_output = json_encode($newdevice);
-                $log->command_time_to_execute = (microtime(true) - $log_start);
-                $discoveryLogModel->create($log);
-                $device->manufacturer = $newdevice->manufacturer;
-            }
-        }
-
-        // Mac Description based on Manufacturer Code (derived from Serial)
-        if (!empty($device->manufacturer_code)) {
-            $log_start = microtime(true);
-            $newdevice->description = get_description_from_manufacturer_code($device->manufacturer_code);
-            if (!empty($newdevice->description)) {
-                $log->message .= " Hit on \$device->manufacturer_code " . $device->manufacturer_code . " eq " . $device->manufacturer_code;
-                $log->command = 'Rules Match - Mac Model into description';
-                $log->command_output = json_encode($newdevice->description);
-                $log->command_time_to_execute = (microtime(true) - $log_start);
-                $discoveryLogModel->create($log);
-                $device->description = $newdevice->description;
-            }
-        }
-
-        // TODO - Orgs
-        $sql = "SELECT * FROM `rules` ORDER BY weight ASC, id";
-        $rules = $this->db->query($sql)->getResult();
-
-        $other_tables = array();
-        foreach ($rules as $rule) {
-            $rule->inputs = json_decode($rule->inputs);
-            $rule->outputs = json_decode($rule->outputs);
-            foreach ($rule->inputs as $input) {
-                if (!$this->db->tableExists($input->table)) {
-                    $l = new \stdClass();
-                    $l->command_status = 'error';
-                    $l->discovery_id = $log->discovery_id;
-                    $l->ip = $log->ip;
-                    $l->message = 'Rule ' . $rule->id . ' specified a table that does not exist: ' . $input->table . '.';
-                    $l->command = json_encode($rule);
-                    $l->command_output = '';
-                    $discoveryLogModel->create($l);
-                    continue;
-                }
-                if ($input->table !== 'devices' and !in_array($input->table, $other_tables)) {
-                    $other_tables[] = $input->table;
-                }
-            }
-        }
-
-        foreach ($other_tables as $table) {
-            $sql = "SELECT * FROM `{$table}` WHERE device_id = ? AND current = 'y'";
-            $result = $this->db->query($sql, [$id])->getResult();
-            $device_sub[$table] = $result;
-        }
-        unset($other_tables);
-
-        // Special case the MAC as we might have it in the device entry, but not network table yet
-        if (!empty($device->mac_address) and empty($device_sub['network'])) {
-            $item = new \stdClass();
-            $item->mac = $device->mac_address;
-            $device_sub['network'] = array($item);
-        }
-
-        foreach ($rules as $rule) {
-            if (is_array($rule->inputs)) {
-                $input_count = count($rule->inputs);
-            } else {
-                // Log an error, but continue
-                $l = new \stdClass();
-                $l->command_status = 'error';
-                $l->discovery_id = $log->discovery_id;
-                $l->ip = $log->ip;
-                $l->message = 'Rule ' . $rule->id . ' inputs is not an array.';
-                $l->command = $rule->inputs;
-                $l->command_output = '';
-                $discoveryLogModel->create($l);
-                continue;
-            }
-            $hit = 0;
-            foreach ($rule->inputs as $input) {
-                if ($input->table === 'devices') {
-                    switch ($input->operator) {
-                        case 'eq':
-                            if (isset($device->{$input->attribute}) && (string)$device->{$input->attribute} === (string)$input->value) {
-                                if ((string)$input->value !== '') {
-                                    $log->message .= " Hit on {$input->attribute} " . $device->{$input->attribute} . ' eq ' . $input->value;
-                                } else {
-                                    $log->message .= " Hit on {$input->attribute} is empty";
-                                }
-                                $hit++;
-                            }
-                            break;
-
-                        case 'ne':
-                            if (!isset($device->{$input->attribute}) or (string)$device->{$input->attribute} !== (string)$input->value) {
-                                if ((string)$input->value !== '') {
-                                    $log->message .= " Hit on $input->attribute " . @$device->{$input->attribute} . " ne " . $input->value;
-                                } else {
-                                    $log->message .= " Hit on $input->attribute is not empty";
-                                }
-                                $hit++;
-                            }
-                            break;
-
-                        case 'gt':
-                            if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} > (string)$input->value) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " gt " . $input->value;
-                                $hit++;
-                            }
-                            break;
-
-                        case 'ge':
-                            if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} >= (string)$input->value) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " ge " . $input->value;
-                                $hit++;
-                            }
-                            break;
-
-                        case 'lt':
-                            if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} < (string)$input->value) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " lt " . $input->value;
-                                $hit++;
-                            }
-                            break;
-
-                        case 'le':
-                            if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} <= (string)$input->value) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " le" . $input->value;
-                                $hit++;
-                            }
-                            break;
-
-                        case 'li':
-                            if (isset($device->{$input->attribute}) and stripos((string)$device->{$input->attribute}, $input->value) !== false) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " li " . $input->value;
-                                $hit++;
-                            }
-                            break;
-
-                        case 'nl':
-                            if (isset($device->{$input->attribute}) and stripos((string)$device->{$input->attribute}, $input->value) === false) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " nl " . $input->value;
-                                $hit++;
-                            }
-                            break;
-
-                        case 'in':
-                            $values = explode(',', $input->value);
-                            if (isset($device->{$input->attribute}) and in_array((string)$device->{$input->attribute}, $values)) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " in " . $input->value;
-                                $hit++;
-                            }
-                            break;
-
-                        case 'ni':
-                            $values = explode(',', $input->value);
-                            if (!isset($device->{$input->attribute}) or !in_array((string)$device->{$input->attribute}, $values)) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " ni " . $input->value;
-                                $hit++;
-                            }
-                            break;
-
-                        case 'st':
-                            if (!empty($device->{$input->attribute}) and stripos((string)$device->{$input->attribute}, $input->value) === 0) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " st " . $input->value;
-                                $hit++;
-                            }
-                            break;
-
-                        case 're':
-                            if (isset($device->{$input->attribute}) and preg_match($input->value, $device->{$input->attribute})) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " re " . $input->value;
-                                $hit++;
-                            }
-                            break;
-
-                        default:
-                            if (isset($device->{$input->attribute}) and (string)$device->{$input->attribute} === (string)$input->value) {
-                                $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " default " . $input->value;
-                                $hit++;
-                            }
-                            break;
-                    }
-                } else {
-                    if (!empty($input->table) and !empty($device_sub[$input->table])) {
-                        switch ($input->operator) {
-                            case 'eq':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} === (string)$input->value) {
-                                        if ($input->value != '') {
-                                            $log->message .= " Hit on " . $input->table . " " .  "$input->attribute " .  $dsub->{$input->attribute} . " eq " .  $input->value . " for " .  $rule->name . ".";
-                                        } else {
-                                            $log->message .= " Hit on $dsub $input->attribute is empty";
-                                        }
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 'ne':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} !== (string)$input->value) {
-                                        if ($input->value != '') {
-                                            $log->message .= " Hit on " . $input->table . " $input->attribute " . $dsub->{$input->attribute} . " ne " . $input->value;
-                                        } else {
-                                            $log->message .= " Hit on " . $input->table . " $input->attribute is empty";
-                                        }
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 'gt':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} > (string)$input->value) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " gt " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 'ge':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} >= (string)$input->value) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " ge " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 'lt':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} < (string)$input->value) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " lt " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 'le':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} <= (string)$input->value) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " le" . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 'li':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (stripos((string)$dsub->{$input->attribute}, $input->value) !== false) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " li " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 'nl':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (stripos((string)$dsub->{$input->attribute}, $input->value) === false) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " nl " . $input->value ;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 'in':
-                                $values = explode(',', $input->value);
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (in_array((string)$dsub->{$input->attribute}, $values)) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " in " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 'ni':
-                                $values = explode(',', $input->value);
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (!in_array((string)$dsub->{$input->attribute}, $values)) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " ni " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 'st':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (stripos((string)$dsub->{$input->attribute}, $input->value) === 0) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " st " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-
-                            case 're':
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if (preg_match($input->value, (string)$dsub->{$input->attribute})) {
-                                        $log->message .= " Hit on " . $dsub->{$input->attribute} . " re " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-                            
-                            default:
-                                foreach ($device_sub[$input->table] as $dsub) {
-                                    if ((string)$dsub->{$input->attribute} == (string)$input->value) {
-                                        $log->message .= " Hit on " . $device->{$input->attribute} . " default " . $input->value;
-                                        $hit++;
-                                        break;
-                                    }
-                                }
-                                break;
-                        }
-                    }
-                }
-                if ($hit >= $input_count) {
-                    $attributes = new \stdClass();
-                    foreach ($rule->outputs as $output) {
-                        switch ($output->value_type) {
-                            case 'string':
-                                $newdevice->{$output->attribute} = (string)$output->value;
-                                break;
-                            
-                            case 'integer':
-                                $newdevice->{$output->attribute} = intval($output->value);
-                                break;
-                            
-                            case 'timestamp':
-                                if ($output->value == '') {
-                                    $newdevice->{$output->attribute} = $instance->config->timestamp;
-                                } else {
-                                    $newdevice->{$output->attribute} = intval($output->value);
-                                }
-                                break;
-                            
-                            default:
-                                $newdevice->{$output->attribute} = (string)$output->value;
-                                break;
-                        }
-                        $attributes->{$output->attribute} = $newdevice->{$output->attribute};
-                        $device->{$output->attribute} = $newdevice->{$output->attribute};
-                    }
-                    $log->message = trim((string)$log->message);
-                    $log->command = 'Rules Match - ' . $rule->name . ', ID: ' . $rule->id;
-                    $log->command_output = json_encode($attributes);
-                    $log->command_time_to_execute = (microtime(true) - $item_start);
-                    $discoveryLogModel->create($log);
-                }
-            }
-            $log->message = '';
-        }
-        unset($rules);
-
-        $log->message = 'Completed rules::execute function.';
-        $log->command = '';
-        $log->command_output = '';
-        $log->command_status = 'notice';
-        $discoveryLogModel->create($log);
-
-        if (count(get_object_vars($newdevice)) > 0) {
-            $newdevice->id = @$device->id;
-            if ($action == 'update') {
-                $newdevice->last_seen_by = 'rules';
-                $devicesModel = new \App\Models\DevicesModel();
-                $devicesModel->update($newdevice->id, $newdevice);
-                return false;
-            } else {
-                return $device;
-            }
-        } else {
-            if ($action == 'update') {
-                return false;
-            } else {
-                return $device;
-            }
-        }
+        return intval($query[0]->id);
     }
 
     /**
@@ -668,7 +204,11 @@ class AgentsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $instance = & get_instance();
+        $locationsModel = new \App\Models\LocationsModel();
+        $include = array();
+        $include['locations'] = $locationsModel->listUser();
+        return $include;
     }
 
 
@@ -708,6 +248,7 @@ class AgentsModel extends BaseModel
      */
     public function listAll(): array
     {
+        $this->builder->orderBy('weight');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -777,14 +318,14 @@ class AgentsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'weight', 'orgs.name', 'test_minutes', 'test_subnet', 'test_os', 'action_download', 'action_command', 'action_audit', 'action_uninstall');
+        $dictionary->attributes->collection = array('id', 'name', 'description');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
         $dictionary->sentence = 'Think \'if this, then that\' for devices with an Agent installed.';
 
-        $dictionary->about = '<p>Agents let you audit PCs without a discovery.</p>';
+        $dictionary->about = '<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It doesn\'t matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>';
 
         $dictionary->notes = '<p></p>';
 
@@ -796,17 +337,17 @@ class AgentsModel extends BaseModel
         $dictionary->columns->weight = 'A lower number means it will be applied before other rules.';
 
         $dictionary->columns->test_minutes = 'If this many or more minutes have passed since the device contacted the server, perform the actions.';
-        $dictionary->columns->test_subnet = 'If an agent reports in from this subnet, perform the actions.';
-        $dictionary->columns->test_os = 'If the agent OS Name (case insensitive) contains this string, perform the actions.';
-        $dictionary->columns->tests = 'A JSON object containing an array of attributes to match.';
+        $dictionary->columns->test_subnet = 'If an agent reports its primary IP is in this subnet, perform the actions.';
+        $dictionary->columns->test_os = 'If the agent OS family (case insensitive) contains this string, perform the actions.';
+        $dictionary->columns->tests = 'Unused.'; #'A JSON object containing an array of attributes to match.';
 
         $dictionary->columns->action_download = 'A URL to a file to download.';
-        $dictionary->columns->action_command = 'A command to run.';
+        $dictionary->columns->action_command = 'A command to run. When the agent is Windows based, this command is run from within the powershell agent.';
         $dictionary->columns->action_audit = 'Should we run an audit and submit it (y/n).';
         $dictionary->columns->action_uninstall = 'Should we uninstall the agent (y/n).';
-        $dictionary->columns->action_devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.';
-        $dictionary->columns->action_devices_assigned_to_org = "Any devices will be assigned to this Org if set. If not set and they are a new device they are assigned to the 'org_id' of this agent. Links to <code>orgs.id</code>.";
-        $dictionary->columns->actions = 'A JSON object containing an array of attributes to change if the match occurs.';
+        $dictionary->columns->action_devices_assigned_to_location = 'Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.';
+        $dictionary->columns->action_devices_assigned_to_org = "Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.";
+        $dictionary->columns->actions = 'Unused.'; #'A JSON object containing an array of attributes to change if the match occurs.';
 
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
