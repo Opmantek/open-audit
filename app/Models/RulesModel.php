@@ -134,7 +134,7 @@ class RulesModel extends BaseModel
         helper('mac_model');
         helper('macaddress');
         helper('snmp_model');
-        helper('snmp_oid_helper');
+        // helper('snmp_oid_helper');
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
         $log = new \stdClass();
@@ -265,18 +265,18 @@ class RulesModel extends BaseModel
         }
 
         // Manufacturer based on SNMP Enterprise ID
-        if (!empty($device->snmp_enterprise_id) && empty($device->manufacturer)) {
-            $log_start = microtime(true);
-            $newdevice->manufacturer = get_manufacturer_from_oid($device->snmp_enterprise_id);
-            if (!empty($newdevice->manufacturer)) {
-                $log->message = 'Hit on $device->snmp_enterprise_id ' . $device->snmp_enterprise_id . ' eq ' . $device->snmp_enterprise_id;
-                $log->command = 'Rules Match - SNMP Enterprise Number for  ' . $newdevice->manufacturer;
-                $log->command_output = json_encode($newdevice);
-                $log->command_time_to_execute = (microtime(true) - $log_start);
-                $discoveryLogModel->create($log);
-                $device->manufacturer = $newdevice->manufacturer;
-            }
-        }
+        // if (!empty($device->snmp_enterprise_id) && empty($device->manufacturer)) {
+        //     $log_start = microtime(true);
+        //     $newdevice->manufacturer = get_manufacturer_from_oid($device->snmp_enterprise_id);
+        //     if (!empty($newdevice->manufacturer)) {
+        //         $log->message = 'Hit on $device->snmp_enterprise_id ' . $device->snmp_enterprise_id . ' eq ' . $device->snmp_enterprise_id;
+        //         $log->command = 'Rules Match - SNMP Enterprise Number for  ' . $newdevice->manufacturer;
+        //         $log->command_output = json_encode($newdevice);
+        //         $log->command_time_to_execute = (microtime(true) - $log_start);
+        //         $discoveryLogModel->create($log);
+        //         $device->manufacturer = $newdevice->manufacturer;
+        //     }
+        // }
 
         // Mac Description based on Manufacturer Code (derived from Serial)
         if (!empty($device->manufacturer_code)) {
