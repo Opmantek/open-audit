@@ -773,6 +773,9 @@ if (! function_exists('ip_audit')) {
      */
     function ip_audit($ip_scan = null)
     {
+        helper('snmp');
+        helper('snmp_model');
+
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $discoveriesModel = new \App\Models\DiscoveriesModel();
         $componentsModel = new \App\Models\ComponentsModel();

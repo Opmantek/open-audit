@@ -122,9 +122,7 @@ class RulesModel extends BaseModel
      */
     public function execute(object $device = null, int $discovery_id = 0, string $action = 'update', int $id = 0)
     {
-        log_message('debug', 'RulesExecute called.');
         $item_start = microtime(true);
-        helper('macaddress');
 
         if (empty($id) && empty($device)) {
             log_message('error', 'RulesExecute called, but no device object or id passed.');
@@ -133,9 +131,10 @@ class RulesModel extends BaseModel
 
         $instance = & get_instance();
 
+        helper('mac_model');
+        helper('macaddress');
         helper('snmp_model');
         helper('snmp_oid_helper');
-        helper('mac_model');
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
         $log = new \stdClass();
