@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
+    $details->manufacturer = 'Juniper Networks, Inc.';
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.2636.3.1.3.0");
     return($details);
 };

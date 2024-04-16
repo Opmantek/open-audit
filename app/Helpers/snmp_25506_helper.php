@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
+    $details->manufacturer = 'H3c';
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1");
     return($details);
 };

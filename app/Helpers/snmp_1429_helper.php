@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
+    $details->manufacturer = 'Scientific-atlanta, Inc.';
     if ($oid == '1.3.6.1.4.1.1429.2.2.6.2') {
         $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.1429.2.2.4.1.7.0");
     }

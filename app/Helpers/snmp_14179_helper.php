@@ -11,6 +11,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $test = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.23.1.2.1.1.5.29.2");
     if ($test != '') {
         if (stripos($test, 'Cisco IOS Software') !== false) {
+            $details->manufacturer = 'Cisco Systems';
             $temp2 = explode(',', $test);
             foreach ($temp2 as $test2) {
                 if (strpos($test2, 'Version') !== false) {
@@ -27,13 +28,20 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     unset($test);
     # Cisco specific model OID
-    if ($details->model == '') { $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.13.1");
+    if (empty($details->model)) {
+        $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.13.1");
+    }
+    if (!empty($details->model)) {
+        $details->manufacturer = 'Cisco Systems';
     }
     # Generic Cisco serial
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1");
     # Second Generic Cisco serial
     if (empty($details->serial)) {
         $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1.0");
+    }
+    if (!empty($details->serial)) {
+        $details->manufacturer = 'Cisco Systems';
     }
     return($details);
 };

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
+    $details->manufacturer = 'Gigamon Systems Llc';
     $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.26866.2.2.0");
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.26866.2.8.0");
     $details->memory_count = intval(str_ireplace('mb', '', my_snmp_get($ip, $credentials, "1.3.6.1.4.1.26866.2.8.0")));

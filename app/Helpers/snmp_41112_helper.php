@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
+    $details->manufacturer = 'Ubiquiti Networks Inc.';
     $temp = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.25.4.2.1.5");
     if (!empty($temp) and count($temp) > 0) {
         foreach ($temp as $line) {

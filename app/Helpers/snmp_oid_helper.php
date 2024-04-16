@@ -2007,7 +2007,7 @@ if (!function_exists('get_manufacturer_from_oid')) {
 			case 1988: $manufacturer = 'Lycoming County Pa'; break;
 			case 1989: $manufacturer = 'Statens Institutions Styrelse Sis'; break;
 			case 1990: $manufacturer = 'Inware Solutions Inc.'; break;
-			case 1991: $manufacturer = 'Brocade Communication Systems, Inc. (formerly \'foundry Networks, Inc.\')'; break;
+			case 1991: $manufacturer = 'Brocade Communication Systems'; break;
 			case 1992: $manufacturer = 'Deutsche Bank'; break;
 			case 1993: $manufacturer = 'Xyratex'; break;
 			case 1994: $manufacturer = 'Bausch Datacom B.v.'; break;
@@ -4884,7 +4884,7 @@ if (!function_exists('get_manufacturer_from_oid')) {
 			case 4871: $manufacturer = 'Discoverycom'; break;
 			case 4872: $manufacturer = 'Bouygues Telecom'; break;
 			case 4873: $manufacturer = 'Seay Systems, Inc.'; break;
-			case 4874: $manufacturer = 'Juniper Networks/unisphere'; break;
+			case 4874: $manufacturer = 'Juniper Networks'; break;
 			case 4875: $manufacturer = 'Doubleclick Inc.'; break;
 			case 4876: $manufacturer = 'Eyestreet Software'; break;
 			case 4877: $manufacturer = 'Salon Press'; break;
@@ -30703,7 +30703,7 @@ if (!function_exists('get_manufacturer_from_oid')) {
 			case 30800: $manufacturer = 'Bee Ware Sa'; break;
 			case 30801: $manufacturer = 'Igus-its Gmbh'; break;
 			case 30802: $manufacturer = 'Firescope, Inc.'; break;
-			case 30803: $manufacturer = 'Vyatta, Inc.'; break;
+			case 30803: $manufacturer = 'Vyatta'; break;
 			case 30804: $manufacturer = 'Lattice Limited'; break;
 			case 30805: $manufacturer = 'Solegy Llc'; break;
 			case 30806: $manufacturer = 'Ipcenter.at'; break;
@@ -41012,7 +41012,7 @@ if (!function_exists('get_manufacturer_from_oid')) {
 			case 41109: $manufacturer = 'Trivu Media'; break;
 			case 41110: $manufacturer = 'Good Dog Design'; break;
 			case 41111: $manufacturer = '66 Vision Tech Co.,ltd'; break;
-			case 41112: $manufacturer = 'Ubiquiti Networks, Inc.'; break;
+			case 41112: $manufacturer = 'Ubiquiti Networks Inc.'; break;
 			case 41113: $manufacturer = 'Barnfind Technologies As'; break;
 			case 41114: $manufacturer = 'S2 Factory, Inc.'; break;
 			case 41115: $manufacturer = 'Glarner Kantonalbank'; break;

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
+    $details->manufacturer = 'American Power Conversion Corp.';
     $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.318.1.1.1.1.1.1.0");
     if (empty($details->model)) {
         $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.33.1.1.2.0");

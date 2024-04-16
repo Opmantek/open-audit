@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
+    $details->manufacturer = 'Qnap Systems, Inc';
     $details->type = 'nas';
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1");
     $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.7.1");

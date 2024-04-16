@@ -8,8 +8,8 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
-    $details->type = 'router';
     $details->manufacturer = 'Vyatta';
+    $details->type = 'router';
     $details->model = 'Vyatta Router';
     $details->os_group = 'Vyatta';
     $details->os_family = 'Vyatta VyOS';

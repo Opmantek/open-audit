@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
+    $details->manufacturer = 'Synology Inc.';
     $details->type = 'nas';
     $details->os_group = 'Linux';
     $details->os_family = 'Synology DSM';

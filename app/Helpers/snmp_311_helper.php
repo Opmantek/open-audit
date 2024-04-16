@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
+    $details->manufacturer = 'Microsoft';
     $details->type = 'computer';
     $details->model = '';
     $details->os_group = 'Windows';
