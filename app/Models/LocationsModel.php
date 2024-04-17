@@ -70,7 +70,7 @@ class LocationsModel extends BaseModel
     {
         $sql = 'SELECT buildings.*, orgs.name AS `orgs.name`, locations.name as `locations.name`, count(floors.id) as `floors_count` FROM `buildings` LEFT JOIN orgs ON (buildings.org_id = orgs.id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN floors ON (floors.building_id = buildings.id) WHERE buildings.location_id = ? GROUP BY buildings.id';
         $result = $this->db->query($sql, [$id]);
-        return format_data($query->getResult(), 'buildings');
+        return format_data($result->getResult(), 'buildings');
     }
 
     /**
