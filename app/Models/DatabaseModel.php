@@ -100,8 +100,7 @@ class DatabaseModel extends BaseModel
         if ($table === 'clouds' or $table === 'credential' or $table === 'credentials') {
             if ($instance->config->decrypt_credentials === 'y') {
                 for ($i=0; $i < $count; $i++) {
-                    $result[$i]->credentials = simpleDecrypt($result[$i]->credentials, config('Encryption')->key);
-                    $result[$i]->credentials = json_decode($result[$i]->credentials);
+                    $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
                 }
             }
         }

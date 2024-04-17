@@ -180,9 +180,9 @@ class ComponentsModel extends BaseModel
                 $this->db->query($sql, [intval($id), (string)$data->type]);
 
                 if (!empty($data->credentials) && is_string($data->credentials)) {
-                    $data->credentials = simpleEncrypt($data->credentials, config('Encryption')->key);
+                    $data->credentials = (string)simpleEncrypt($data->credentials, config('Encryption')->key);
                 } else {
-                    $data->credentials = simpleEncrypt(json_encode($data->credentials), config('Encryption')->key);
+                    $data->credentials = (string)simpleEncrypt(json_encode($data->credentials), config('Encryption')->key);
                 }
                 $sql = "INSERT INTO `credential` VALUES (null, ?, 'y', ?, ?, ?, ?, ?, NOW())";
                 $query = $this->db->query($sql, [$id, $data->name, $data->description, $data->type, $data->credentials, $instance->user->full_name]);

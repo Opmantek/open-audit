@@ -51,8 +51,7 @@ class CloudsModel extends BaseModel
             $count = count($query);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
-                    $query[$i]->credentials = simpleDecrypt($query[$i]->credentials, config('Encryption')->key);
-                    $query[$i]->credentials = json_decode($query[$i]->credentials);
+                    $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key));
                 }
             }
         }
@@ -72,9 +71,9 @@ class CloudsModel extends BaseModel
             return null;
         }
         if (! empty($data->credentials) && is_string($data->credentials)) {
-            $data->credentials = simpleEncrypt($data->credentials, config('Encryption')->key);
+            $data->credentials = (string)simpleEncrypt($data->credentials, config('Encryption')->key);
         } else {
-            $data->credentials = simpleEncrypt(json_encode($data->credentials), config('Encryption')->key);
+            $data->credentials = (string)simpleEncrypt(json_encode($data->credentials), config('Encryption')->key);
         }
         if (! empty($data->options)) {
             $data->options = json_encode($data->options);
@@ -320,8 +319,7 @@ class CloudsModel extends BaseModel
         }
         if ($config->decrypt_credentials === 'y') {
             if (!empty($cloud[0]->credentials)) {
-                $cloud[0]->credentials = simpleDecrypt($cloud[0]->credentials, config('Encryption')->key);
-                $cloud[0]->credentials = json_decode($cloud[0]->credentials);
+                $cloud[0]->credentials = json_decode(simpleDecrypt($cloud[0]->credentials, config('Encryption')->key));
             }
         }
         return format_data($cloud, 'clouds');

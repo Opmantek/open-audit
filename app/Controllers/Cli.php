@@ -272,8 +272,7 @@ class Cli extends Controller
         helper('security');
         helper('network');
         $db = db_connect();
-        $cloud->credentials = simpleDecrypt($cloud->credentials, config('Encryption')->key);
-        $cloud->credentials = json_decode($cloud->credentials);
+        $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key));
 
         $response = new stdClass();
         $projects = array();
@@ -567,8 +566,7 @@ class Cli extends Controller
         helper('security');
         helper('network');
         $db = db_connect();
-        $cloud->credentials = simpleDecrypt($cloud->credentials, config('Encryption')->key);
-        $cloud->credentials = json_decode($cloud->credentials);
+        $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key));
 
         $projects = array();
         $projects[0] = new stdClass();
@@ -796,8 +794,7 @@ class Cli extends Controller
         helper('security');
         helper('network');
         $db = db_connect();
-        $cloud->credentials = simpleDecrypt($cloud->credentials, config('Encryption')->key);
-        $cloud->credentials = json_decode($cloud->credentials, true);
+        $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key), true);
         $jsonKey = json_decode($cloud->credentials['json'], true);
 
 

@@ -51,8 +51,7 @@ class CredentialsModel extends BaseModel
             $count = count($query);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
-                    $query[$i]->credentials = simpleDecrypt($query[$i]->credentials, config('Encryption')->key);
-                    $query[$i]->credentials = json_decode($query[$i]->credentials);
+                    $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key));
                 }
             }
         }
@@ -72,9 +71,9 @@ class CredentialsModel extends BaseModel
             return null;
         }
         if (! empty($data->credentials) && is_string($data->credentials)) {
-            $data->credentials = simpleEncrypt($data->credentials, config('Encryption')->key);
+            $data->credentials = (string)simpleEncrypt($data->credentials, config('Encryption')->key);
         } else {
-            $data->credentials = simpleEncrypt(json_encode($data->credentials), config('Encryption')->key);
+            $data->credentials = (string)simpleEncrypt(json_encode($data->credentials), config('Encryption')->key);
         }
         $data = $this->createFieldData('credentials', $data);
         if (empty($data)) {
@@ -190,8 +189,7 @@ class CredentialsModel extends BaseModel
         $credentials = $query->getResult();
         if ($config->decrypt_credentials === 'y') {
             if (!empty($credentials[0]->credentials)) {
-                $credentials[0]->credentials = simpleDecrypt($credentials[0]->credentials, config('Encryption')->key);
-                $credentials[0]->credentials = json_decode($credentials[0]->credentials);
+                $credentials[0]->credentials = json_decode(simpleDecrypt($credentials[0]->credentials, config('Encryption')->key));
             }
         }
         return format_data($credentials, 'credentials');
