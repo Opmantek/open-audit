@@ -152,8 +152,9 @@ class QueriesModel extends BaseModel
         if (!empty($instance->config->feature_queries_advanced) and $instance->config->feature_queries_advanced === 'y' and !empty($query->advanced) and $query->advanced === 'y') {
             $sql = str_ireplace('@orgs', "({$user->org_list})", $sql);
         }
-
-        $sql .= ' LIMIT ' . $instance->resp->meta->limit;
+        if (!empty($instance->resp->meta->limit) and is_int($instance->resp->meta->limit)) {
+            $sql .= ' LIMIT ' . $instance->resp->meta->limit;
+        }
         $query = $this->db->query($sql);
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {

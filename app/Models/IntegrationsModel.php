@@ -927,7 +927,7 @@ class IntegrationsModel extends BaseModel
         }
         // Select by Query
         if ($integration->attributes->select_internal_type === 'query') {
-            $devices = $queriesModel->execute($integration->attributes->select_internal_attribute, $instance->user);
+            $devices = $queriesModel->execute(intval($integration->attributes->select_internal_attribute), $instance->user);
             $dev_ids = array();
             foreach ($devices as $device) {
                 if (!empty($device->attributes->{'devices.id'})) {

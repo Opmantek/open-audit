@@ -43,7 +43,7 @@ class Queue extends BaseController
         $this->devicesModel = new \App\Models\DevicesModel();
         $this->discoveriesModel = new \App\Models\DiscoveriesModel();
         $this->discoveryLogModel = new \App\Models\DiscoveryLogModel();
-        #$this->integrationsModel = new \App\Models\IntegrationsModel();
+        $this->integrationsModel = new \App\Models\IntegrationsModel();
         $this->locationsModel = new \App\Models\LocationsModel();
         $this->networksModel = new \App\Models\NetworksModel();
         $this->orgsModel = new \App\Models\OrgsModel();
@@ -54,7 +54,7 @@ class Queue extends BaseController
         helper('components');
         helper('device');
         helper('discoveries');
-        #helper('integrations_nmis');
+        helper('integrations_nmis');
         helper('mac_model');
         helper('network');
         helper('security');
