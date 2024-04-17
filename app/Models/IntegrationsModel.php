@@ -245,6 +245,7 @@ class IntegrationsModel extends BaseModel
         $devicesModel = new \App\Models\DevicesModel();
         $queueModel = new \App\Models\QueueModel();
         $rulesModel = new \App\Models\RulesModel();
+        $orgsModel = new \App\Models\OrgsModel();
         helper('device');
 
     //     $this->load->library('encrypt');
@@ -566,7 +567,7 @@ class IntegrationsModel extends BaseModel
             if (php_uname('s') !== 'Windows NT') {
                 // TODO - not cloud compatible because no 'instance' on the command line
                 $instance = '';
-                $command = 'php ' . APPPPATH . '../public/open-audit/index.php util queue > /dev/null 2>&1 &';
+                $command = 'php ' . APPPATH . '../public/open-audit/index.php util queue > /dev/null 2>&1 &';
                 if (php_uname('s') === 'Linux') {
                     $command = 'nohup ' . $command;
                 }
