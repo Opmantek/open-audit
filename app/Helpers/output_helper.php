@@ -29,10 +29,6 @@ if (!function_exists('output')) {
         $instance->resp->meta->time_elapsed = number_format(($instance->resp->meta->time_end - $instance->resp->meta->microtime), 2);
 
         switch ($instance->resp->meta->format) {
-            case 'datatables':
-                output_datatables($instance);
-                break;
-
             case 'csv':
                 output_csv($instance);
                 break;
@@ -49,14 +45,6 @@ if (!function_exists('output')) {
                 output_table($instance);
                 break;
 
-            case 'html_formatted':
-                output_html_formatted($instance);
-                break;
-
-            case 'table_formatted':
-                output_table_formatted($instance);
-                break;
-
             case 'xml':
                 output_xml($instance);
                 break;
@@ -67,10 +55,6 @@ if (!function_exists('output')) {
 
             case 'json_data':
                 output_json($instance);
-                break;
-
-            case 'rss':
-                output_rss($instance);
                 break;
 
             default:
