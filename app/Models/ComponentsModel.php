@@ -543,10 +543,11 @@ class ComponentsModel extends BaseModel
         if (!empty($instance->config->create_change_log) and $instance->config->create_change_log === 'n') {
             $create_change_log = false;
         }
-
         if (empty($match_columns)) {
             $match_columns = match_columns($table);
         }
+
+        helper('macaddress');
 
         $sql = 'SELECT last_seen, org_id FROM devices WHERE id = ?';
         $query = $this->db->query($sql, [$device->id]);
