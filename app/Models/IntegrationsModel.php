@@ -51,8 +51,7 @@ class IntegrationsModel extends BaseModel
             $count = count($query);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
-                    $query[$i]->credentials = simpleDecrypt($query[$i]->credentials, config('Encryption')->key);
-                    $query[$i]->credentials = json_decode($query[$i]->credentials);
+                    $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key));
                 }
             }
         }
@@ -81,7 +80,7 @@ class IntegrationsModel extends BaseModel
         }
 
         if (empty($data->type)) {
-            $data->type = '';
+            $data->type = 'nmis';
         }
 
         if (is_array($data->fields) or is_object($data->fields)) {
@@ -1013,11 +1012,10 @@ class IntegrationsModel extends BaseModel
                     $device->credentials = new \stdClass();
                     foreach ($credentials as $credential) {
                         if (is_array($retrieved_credentials)) {
-                            foreach ($retrieved_credentials as $key => $value) {
+                            foreach ($retrieved_credentials as $value) {
                                 if (intval($value) === intval($credential->id) && ! empty($credential->credentials)) {
                                     if (is_string($credential->credentials)) {
-                                        $credential->credentials = simpleDecrypt($credential->credentials);
-                                        $credential->credentials = json_decode($credential->credentials);
+                                        $credential->credentials = json_decode(simpleDecrypt($credential->credentials, config('Encryption')->key));
                                     }
                                     if (!empty($credential->credentials)) {
                                         foreach ($credential->credentials as $key2 => $value2) {
@@ -1039,7 +1037,7 @@ class IntegrationsModel extends BaseModel
                 foreach ($devices as $device) {
                     foreach ($credentials as $credential) {
                         if (intval($credential->device_id) === intval($device->id)) {
-                            $credential->credentials = json_decode(simpleDecrypt($credential->credentials));
+                            $credential->credentials = json_decode(simpleDecrypt($credential->credentials, config('Encryption')->key));
                             foreach ($credential->credentials as $key => $value) {
                                 $device->credentials->{$credential->type . '_' . $key} = $value;
                             }
@@ -1374,8 +1372,7 @@ class IntegrationsModel extends BaseModel
         }
         if ($config->decrypt_credentials === 'y') {
             if (!empty($query[0]->credentials)) {
-                $query[0]->credentials = simpleDecrypt($query[0]->credentials, config('Encryption')->key);
-                $query[0]->credentials = json_decode($query[0]->credentials);
+                $query[0]->credentials = json_decode(simpleDecrypt($query[0]->credentials, config('Encryption')->key));
             }
         }
         if ($query[0]->select_internal_type === 'group') {
@@ -1491,7 +1488,7 @@ class IntegrationsModel extends BaseModel
 
                 $credentials = new \stdClass();
                 $credentials->community = $device->credentials->snmp_community;
-                $credentials = (string)simpleEncrypt(json_encode($credentials));
+                $credentials = (string)simpleEncrypt(json_encode($credentials), config('Encryption')->key);
 
                 if (intval($result[0]->count) === 0) {
                     $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
@@ -1515,7 +1512,7 @@ class IntegrationsModel extends BaseModel
                 $credentials = new \stdClass();
                 $credentials->username = $device->credentials->windows_username;
                 $credentials->password = $device->credentials->windows_password;
-                $credentials = (string)simpleEncrypt(json_encode($credentials));
+                $credentials = (string)simpleEncrypt(json_encode($credentials), config('Encryption')->key);
 
                 if (intval($result[0]->count) === 0) {
                     $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp', ?, 'system', NOW())";
@@ -1549,7 +1546,7 @@ class IntegrationsModel extends BaseModel
                 if (!empty($credentials->privacy_passphrase)) {
                     $device->credentials->security_level = 'authPriv';
                 }
-                $credentials = (string)simpleEncrypt(json_encode($credentials));
+                $credentials = (string)simpleEncrypt(json_encode($credentials), config('Encryption')->key);
 
                 if (intval($result[0]->count) === 0) {
                     $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'snmp_v3', ?, 'system', NOW())";
@@ -1573,7 +1570,7 @@ class IntegrationsModel extends BaseModel
                 $credentials = new \stdClass();
                 $credentials->username = $device->credentials->ssh_username;
                 $credentials->password = $device->credentials->ssh_password;
-                $credentials = (string)simpleEncrypt(json_encode($credentials));
+                $credentials = (string)simpleEncrypt(json_encode($credentials), config('Encryption')->key);
 
                 if (intval($result[0]->count) === 0) {
                     $sql = "INSERT INTO credential VALUES (null, ?, 'y', ?, ?, 'ssh', ?, 'system', NOW())";
