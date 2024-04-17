@@ -29,7 +29,7 @@ if (is_array($guest_name) and count($guest_name) > 0) {
                 foreach ($guest_mac[0] as $k => $v) {
                     if ($v != '') {
                         $mk = str_replace(".1.3.6.1.4.1.6876.2.4.1.7.".$guest['id'].'.', '', $k);
-                        $guest->net[$mk]['mac'] = snmp_clean($v);
+                        $guest->net[$mk]['mac'] = $v;
                         $guest->net[$mk]['mac'] = strtolower(str_replace(" ", ":", $guest['net'][$mk]['mac']));
                         $guest->net[$mk]['desc'] = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.4.1.4.".$guest->vm_ident.".".$mk);
                     }
