@@ -69,9 +69,9 @@ window.onload = function () {
         <?php if (strpos($meta->query_string, 'configuration.name=likemail') !== false) { ?>
             <?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
                 $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-envelope text-primary\"></span><?= __("Test Email") ?></a>");
-            <?php } else if ($user->toolbar_style === 'icon') { ?>
+            <?php } elseif ($user->toolbar_style === 'icon') { ?>
                 $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><span class=\"fa-regular fa-envelope text-primary\"></span></a>");
-            <?php } else if ($user->toolbar_style === 'text') { ?>
+            <?php } elseif ($user->toolbar_style === 'text') { ?>
                 $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __("Test Email") ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><?= __("Test Email") ?></a>");
             <?php } ?>
         <?php } ?>

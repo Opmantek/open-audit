@@ -126,13 +126,13 @@ window.onload = function () {
             var $type = $(this).val();
             if ($type == "snmp") {
                 $("#options").html($snmp_text);
-            } else if ($type == "snmp_v3") {
+            } elseif ($type == "snmp_v3") {
                 $("#options").html($snmp_v3_text);
-            } else if ($type == "ssh") {
+            } elseif ($type == "ssh") {
                 $("#options").html($ssh_text);
-            } else if ($type == "ssh_key") {
+            } elseif ($type == "ssh_key") {
                 $("#options").html($ssh_key_text);
-            } else if ($type == "windows") {
+            } elseif ($type == "windows") {
                 $("#options").html($windows_text);
                 $("#data\\[attributes\\]\\[credentials\\]\\[username\\]").attr("placeholder", "username@domain");
             } else {

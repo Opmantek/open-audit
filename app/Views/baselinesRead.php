@@ -44,7 +44,7 @@ if ($style === 'icontext') {
 
     $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab"><span style="margin-right:6px;" class="fa fa-plus text-success" ></span>' . __('Add Policy') . '</a></li>';
     $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab"><span style="margin-right:6px;" class="fa fa-desktop text-success"></span>' . __('Add Policies from Device') . '</a></li>';
-} else if ($style === 'icon') {
+} elseif ($style === 'icon') {
     $details_button         = '<li class="nav-item" role="presentation"><a href="#details"  class="nav-link" id="details-tab" ><span title="' . __('Details') . '" style="margin-right:6px;" class="fa fa-eye text-success"></span></a></li>';
     $results_button         = '<li class="nav-item" role="presentation"><a href="#results"  class="nav-link" id="results-tab" ><span title="' . __('Results') . '" style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span></a></li>';
     $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" ><span title="' . __('Netstat Policies') . '" style="margin-right:6px;" class="fa-solid fa-diagram-project text-success"></span></a></li>';

@@ -24,13 +24,13 @@ $user->permissions['components'] = '';
                         if ($data[0]->type === 'user' and $key === 'keys') {
                             $resource->{$key} = html_entity_decode($resource->{$key});
                             echo read_text_box($key, $resource->{$key});
-                        } else if ($data[0]->type === 'share' and $key === 'users') {
+                        } elseif ($data[0]->type === 'share' and $key === 'users') {
                             $resource->{$key} = html_entity_decode($resource->{$key});
                             echo read_text_box($key, $resource->{$key});
-                        } else if ($data[0]->type === 'policy' and $key === 'options') {
+                        } elseif ($data[0]->type === 'policy' and $key === 'options') {
                             $resource->{$key} = html_entity_decode($resource->{$key});
                             echo read_text_box($key, $resource->{$key});
-                        } else if ($data[0]->type === 'change_log' and $key === 'db_row') {
+                        } elseif ($data[0]->type === 'change_log' and $key === 'db_row') {
                             $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('componentsRead', $value) . "?components.type=" . $data[0]->attributes->db_table . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
                             echo read_field($key, $resource->{$key}, '', false, $label, $link);
                         } else {

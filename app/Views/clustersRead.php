@@ -6,7 +6,7 @@ $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Devices') . '</a></li>';
-} else if ($style === 'icon') {
+} elseif ($style === 'icon') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="fa fa-desktop text-primary"></span></a></li>';
 } else {
@@ -129,7 +129,7 @@ if ($style === 'icontext') {
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="scaling" name="scaling" data-original-value="<?= $resource->{'scaling'} ?>" disabled>
                                                     <option value="" label=" " <?php if ($resource->{'scaling'} === '') { ?>selected<?php } ?>></option>
-                                                    <option value="auto"  <?php if ($resource->{'scaling'} === 'auto')  { ?>selected<?php } ?>><?= __('Auto') ?></option>
+                                                    <option value="auto" <?php if ($resource->{'scaling'} === 'auto')  { ?>selected<?php } ?>><?= __('Auto') ?></option>
                                                     <option value="fixed" <?php if ($resource->{'scaling'} === 'fixed') { ?>selected<?php } ?>><?= __('Fixed') ?></option>
                                                     <option value="other" <?php if ($resource->{'scaling'} === 'other') { ?>selected<?php } ?>><?= __('Other') ?></option>
                                                 </select>

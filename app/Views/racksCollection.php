@@ -38,7 +38,7 @@ include 'shared/collection_functions.php';
                                         }
                                         if ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
                                             echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'org_id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
-                                        } else if (in_array($key, $links)) {
+                                        } elseif (in_array($key, $links)) {
                                             echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . "." . $key . "=" . urlencode($item->attributes->{$key}) . "\">" . $item->attributes->{$key} . "</a></td>\n";
                                         } else {
                                             echo "<td>" . $item->attributes->{$key} . "</td>\n";

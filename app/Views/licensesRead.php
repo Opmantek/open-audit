@@ -6,7 +6,7 @@ $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
     $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-desktop text-primary"></span>' . __('Devices') . '</a></li>';
-} else if ($style === 'icon') {
+} elseif ($style === 'icon') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
     $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-desktop text-primary"></span>' . __('Devices') . '</a></li>';
 } else {

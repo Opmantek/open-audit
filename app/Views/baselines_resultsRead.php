@@ -38,7 +38,7 @@ if ($style === 'icontext') {
     if ($extra === 'device') {
         $single_device_button = '<li class="nav-item" role="presentation"><a href="#device" class="nav-link" id="device-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Result') . '</a></li>';
     }
-} else if ($style === 'icon') {
+} elseif ($style === 'icon') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
     $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Results') . '</a></li>';
     $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Results') . '</a></li>';
@@ -193,11 +193,11 @@ if ($style === 'icontext') {
                                         <?php if ($policy->table === 'software') { ?>
                                         <th><?= __('Name') ?></th>
                                         <th><?= __('Version') ?></th>
-                                        <?php } else if ($policy->table === 'netstat') { ?>
+                                        <?php } elseif ($policy->table === 'netstat') { ?>
                                         <th><?= __('Program') ?></th>
                                         <th><?= __('Protocol') ?></th>
                                         <th><?= __('Port') ?></th>
-                                        <?php } else if ($policy->table === 'user') { ?>
+                                        <?php } elseif ($policy->table === 'user') { ?>
                                         <th><?= __('Name') ?></th>
                                         <th><?= __('Type') ?></th>
                                         <th><?= __('Status') ?></th>
@@ -302,10 +302,10 @@ window.onload = function () {
         <?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
             $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_export_policy\" class=\"btn btn-light mb-2\" title=\"<?= __("Export by Policy") ?>\" href=\"<?= url_to('baselines_resultsExportPolicy', $resource->id) ?>\"><span style=\"margin-right:6px;\" class=\"fa fa-arrow-up-right-from-square\"></span><?= __("Export by Policy") ?></a>");
             $(".page-title-right").append("<a role=\"button\" id=\"button_export_device\" class=\"btn btn-light mb-2\" title=\"<?= __("Export by Device") ?>\" href=\"<?= url_to('baselines_resultsExportDevice', $resource->id) ?>\"><span style=\"margin-right:6px;\" class=\"fa fa-arrow-up-right-from-square\"></span><?= __("Export by Device") ?></a>");
-        <?php } else if ($user->toolbar_style === 'icon') { ?>
+        <?php } elseif ($user->toolbar_style === 'icon') { ?>
             $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_export_policy\" class=\"btn btn-light mb-2\" title=\"<?= __("Export by Policy") ?>\" href=\"<?= url_to('baselines_resultsExportPolicy', $resource->id) ?>\"><span style=\"margin-right:6px;\" class=\"fa fa-arrow-up-right-from-square\"></span></a>");
             $(".page-title-right").append("<a role=\"button\" id=\"button_export_device\" class=\"btn btn-light mb-2\" title=\"<?= __("Export by Device") ?>\" href=\"<?= url_to('baselines_resultsExportDevice', $resource->id) ?>\"><span style=\"margin-right:6px;\" class=\"fa fa-arrow-up-right-from-square\"></span></a>");
-        <?php } else if ($user->toolbar_style === 'text') { ?>
+        <?php } elseif ($user->toolbar_style === 'text') { ?>
             $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_export_policy\" class=\"btn btn-light mb-2\" title=\"<?= __("Export by Policy") ?>\" href=\"<?= url_to('baselines_resultsExportPolicy', $resource->id) ?>\"><?= __("Export by Policy") ?></a>");
             $(".page-title-right").append("<a role=\"button\" id=\"button_export_device\" class=\"btn btn-light mb-2\" title=\"<?= __("Export by Device") ?>\" href=\"<?= url_to('baselines_resultsExportDevice', $resource->id) ?>\"><?= __("Export by Device") ?></a>");
         <?php } ?>

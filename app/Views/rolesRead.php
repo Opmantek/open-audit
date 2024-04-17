@@ -9,7 +9,7 @@ $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
     $permissions_button = '<li class="nav-item" role="presentation"><a href="#permissions" class="nav-link" id="permissions-tab"><span style="margin-right:6px;" class="fa fa-user-shield text-primary" ></span>' . __('Permissions') . '</a></li>';
-} else if ($style === 'icon') {
+} elseif ($style === 'icon') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
     $permissions_button = '<li class="nav-item" role="presentation"><a href="#permissions" class="nav-link" id="permissions-tab"><span style="margin-right:6px;" title="' . __('Permissions') . '" class="fa fa-user-shield text-primary"></span></a></li>';
 } else {

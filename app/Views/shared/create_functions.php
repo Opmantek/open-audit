@@ -1,7 +1,7 @@
 <?php
 function create_card_header(string $collection = '', string $icon = '', object $user = null): string
 {
-    $style = @$user->toolbar_style;
+    $style = (!empty($user->toolbar_style)) ? $user->toolbar_style : '';
     $collection_title = __(ucwords(str_replace('_', ' ', $collection)));
     if ($collection_title === 'Ldap Servers') {
         $collection_title = 'LDAP Servers';
@@ -11,7 +11,7 @@ function create_card_header(string $collection = '', string $icon = '', object $
     if ($style === 'icontext') {
         $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __("List") . "</a>";
         $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
-    } else if ($style === 'icon') {
+    } elseif ($style === 'icon') {
         $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span></a>";
         $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span></a>";
     } else {

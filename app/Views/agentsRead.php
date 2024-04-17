@@ -6,7 +6,7 @@ $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $add_input = '<a id="add_inputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add If') . '"><span style="margin-right:6px;" class="fa fa-plus text-success"></span>' . __('Add If') . '</a>';
     $add_output = '<a id="add_outputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add Then') . '"><span style="margin-right:6px;" class="fa fa-plus text-success"></span>' . __('Add Then') . '</a>';
-} else if ($style === 'icon') {
+} elseif ($style === 'icon') {
     $add_input = '<a id="add_inputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add If') . '"><span style="margin-right:6px;" class="fa fa-plus text-success"></span></a>';
     $add_output = '<a id="add_outputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add Then') . '"><span style="margin-right:6px;" class="fa fa-plus text-success"></span></a>';
 } else {

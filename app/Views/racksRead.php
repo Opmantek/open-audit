@@ -9,7 +9,7 @@ if (!empty($config->maps_api_key) and ($config->product === 'professional' or $c
 
 if ($user->toolbar_style === 'icontext') {
     $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default"><a href="' . url_to('rack_devicesCreateForm') . '?rack_id=' . $resource->id . '"><span style="margin-right:6px;" class="fa-solid fa-computer text-success"></span>' . __('Add Device') . '</a></button></li>';
-} else if ($user->toolbar_style === 'icon') {
+} elseif ($user->toolbar_style === 'icon') {
     $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default"><span style="margin-right:6px;" class="fa-solid fa-computer text-success"></span></button></li>';
 } else {
     $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default">' . __('Add Device') . '</button></li>';
@@ -41,7 +41,7 @@ if ($resource->ru_start == 1) {
                     } else {
                         $icon = '';
                     }
-                } else if (!empty($device->attributes->{'devices.type'})) {
+                } elseif (!empty($device->attributes->{'devices.type'})) {
                     $temp = str_replace(' ', '_', $device->attributes->{'devices.type'});
                     $image = '<img alt="' . $device->attributes->{'devices.type'} . '" style="z-index:10;height:' . $imageheight. 'px;" src="/open-audit/device_images/' . $temp . '.svg" />';
                     if (!empty($device->attributes->{'devices.icon'})) {
@@ -111,7 +111,7 @@ if ($resource->ru_start == 1) {
                 if (!empty($device->attributes->{'image.filename'})) {
                     $image = '<img alt="' . $icon . '" style="max-width:90%;z-index:10;max-height:' . $imageheight. 'px;" src="/open-audit/custom_images/' . $device->attributes->{'image.filename'} . '" />';
                     $icon = '<img alt="' . $icon . '" src="/open-audit/device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
-                } else if (!empty($device->attributes->{'devices.type'})) {
+                } elseif (!empty($device->attributes->{'devices.type'})) {
                     $temp = str_replace(' ', '_', $device->attributes->{'devices.type'});
                     $image = '<img alt="' . $device->attributes->{'devices.type'} . '" style="z-index:10;height:' . $imageheight. 'px;" src="/open-audit/device_images/' . $temp . '.svg" />';
                     $icon = '<img alt="' . $icon . '" src="/open-audit/device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';

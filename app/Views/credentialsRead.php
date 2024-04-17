@@ -31,18 +31,18 @@ include 'shared/read_functions.php';
                             </div>
                             <?php if ($resource->type === 'snmp') {
                                 echo read_field('credentials.community', '', $dictionary->columns->community, $update, __('Community String'), '', '', 'password');
-                            } else if ($resource->type === 'ssh') {
+                            } elseif ($resource->type === 'ssh') {
                                 echo read_field('credentials.username', $resource->credentials->username, $dictionary->columns->username, $update, __('Username'));
                                 echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Password'), '', '', 'password');
-                            } else if ($resource->type === 'windows') {
+                            } elseif ($resource->type === 'windows') {
                                 echo read_field('credentials.username', $resource->credentials->username, $dictionary->columns->username, $update, __('Username'));
                                 echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Password'), '', '', 'password');
-                            } else if ($resource->type === 'ssh_key') {
+                            } elseif ($resource->type === 'ssh_key') {
                                 echo read_field('credentials.username', $resource->credentials->username, $dictionary->columns->username, $update, __('Username'));
                                 echo read_field('credentials.ssh_key', '', $dictionary->columns->ssh_key, $update, __('SSH Key'), '', '', 'password');
                                 echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Key Password (optional)'), '', '', 'password');
                                 echo read_field('credentials.sudo_password', '', $dictionary->columns->sudo_password, $update, __('Sudo Password (optional)'), '', '', 'password');
-                            } else if ($resource->type === 'snmp_v3') {
+                            } elseif ($resource->type === 'snmp_v3') {
 
                                 echo read_field('credentials.security_name', $resource->credentials->security_name, $dictionary->columns->security_name, $update, __('Security Name')); ?>
 

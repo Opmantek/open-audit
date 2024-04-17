@@ -12,7 +12,7 @@ if ($user->toolbar_style === 'icontext') {
     $geocode = '<li class="nav-item" role="presentation"><button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-default"><span style="margin-right:6px;" class="fa-solid fa-map text-success"></span>' . __('Create Geocode') . '</button></li>';
 
     $devices = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('devicesCollection') . '?devices.location_id=' . $resource->id . '"><span style="margin-right:6px;" class="fa-solid fa-desktop text-primary"></span>' . __('Devices') . '</a></li>';
-} else if ($user->toolbar_style === 'icon') {
+} elseif ($user->toolbar_style === 'icon') {
     $latlong = '<li class="nav-item" role="presentation"><button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-default"><span class="fa-solid fa-globe text-success"></span></button></li>';
 
     $geocode = '<li class="nav-item" role="presentation"><button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-default"><span class="fa-solid fa-map text-success"></span></button></li>';

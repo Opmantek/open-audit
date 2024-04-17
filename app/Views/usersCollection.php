@@ -37,14 +37,14 @@ include 'shared/collection_functions.php';
                                         }
                                         if ($key === 'email') {
                                             echo "<td><a href=\"mailto:" . $item->attributes->email . "\">" . $item->attributes->{$key} . "</a></td>\n";
-                                        } else if ($key === 'roles') {
+                                        } elseif ($key === 'roles') {
                                             // echo "<td>" . implode(', ', $item->attributes->roles) . "</td>\n";
                                             $roles = array();
                                             foreach ($item->attributes->roles as $role) {
                                                 $roles[] = "<a href=\"" . url_to('usersCollection') . "?users.roles=like" . $role . "\">" . $role . "</a>";
                                             }
                                             echo "<td>" . implode(', ', $roles) . "</td>\n";
-                                        } else if ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
+                                        } elseif ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
                                             echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
                                         } else {
                                             echo "<td>" . $item->attributes->{$key} . "</td>\n";

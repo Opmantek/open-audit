@@ -168,7 +168,7 @@ if (count($included['issues']) > 0) {
                                             <td class="col-md-1"><span style="display:none;"><?= $issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} ?><br />
                                             <?php if ($issue->{'devices.type'} === 'unknown') { ?>
                                                 <span class="text-danger"><em><?= $issue->{'devices.type'} ?></em></span>
-                                            <?php } else if ($issue->{'devices.type'} === 'unclassified') { ?>
+                                            <?php } elseif ($issue->{'devices.type'} === 'unclassified') { ?>
                                                 <span class="text-warning"><em><?= $issue->{'devices.type'} ?></em></span>
                                             <?php } else { ?>
                                                 <span class="text-success"><em><?= $issue->{'devices.type'} ?></em></span>

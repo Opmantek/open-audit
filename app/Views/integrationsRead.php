@@ -9,7 +9,7 @@ if ($style === 'icontext') {
     $fields_button =  '<li class="nav-item" role="presentation"><a href="#fields" class="nav-link" id="fields-tab" ><span style="margin-right:6px;" class="fa fa-comments-o text-success"></span>' . __('Fields') .  '</a></li>';
     $logs_button =    '<li class="nav-item" role="presentation"><a href="#logs" class="nav-link" id="logs-tab"   ><span style="margin-right:6px;" class="fa fa-bars text-primary"></span>' . __('Logs') .    '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary"></span>' . __('Devices') . '</a></li>';
-} else if ($style === 'icon') {
+} elseif ($style === 'icon') {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" title="' . __('Summary') . '" class="fa-regular fa-rectangle-list text-primary"></span></a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
     $fields_button =  '<li class="nav-item" role="presentation"><a href="#fields"  class="nav-link" id="fields-tab" ><span style="margin-right:6px;" title="' . __('Fields') .  '" class="fa fa-comments-o text-success"></span></a></li>';

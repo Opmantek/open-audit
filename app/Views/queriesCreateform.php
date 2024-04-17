@@ -30,7 +30,7 @@ include 'shared/create_functions.php';
                                 </div>
 
                                 <?php if (!empty($config->feature_queries_advanced) and $config->feature_queries_advanced === 'y') { ?>
-                                <?= create_select('data[attributes][advanced]', __('Advanced'), '', $dictionary->attributes->create) ?>
+                                    <?= create_select('data[attributes][advanced]', __('Advanced'), '', $dictionary->attributes->create) ?>
                                 <?php } ?>
 
                                 <div class="row" style="padding-top:16px;">

@@ -527,13 +527,13 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->timestamp ?></td>
                                                     <?php if ($row->command_status === 'warning') { ?>
                                                     <td class="text-center"><span class="text-warning"><?= __('Warning') ?></span></td>
-                                                    <?php } else if ($row->command_status === 'error') { ?>
+                                                    <?php } elseif ($row->command_status === 'error') { ?>
                                                     <td class="text-center"><span class="text-danger"><?= __('Error') ?></span></td>
-                                                    <?php } else if ($row->command_status === 'fail') { ?>
+                                                    <?php } elseif ($row->command_status === 'fail') { ?>
                                                     <td class="text-center"><span class="text-danger"><?= __('Fail') ?></span></td>
-                                                    <?php } else if ($row->command_status === 'success') { ?>
+                                                    <?php } elseif ($row->command_status === 'success') { ?>
                                                     <td class="text-center"><span class="text-success"><?= __('Success') ?></span></td>
-                                                    <?php } else if ($row->command_status === 'notice') { ?>
+                                                    <?php } elseif ($row->command_status === 'notice') { ?>
                                                     <td class="text-center"><span class="text-primary"><?= __('Notice') ?></span></td>
                                                     <?php } else { ?>
                                                     <td class="text-center"><?= $row->command_status ?></td>
@@ -1267,11 +1267,11 @@ if (!empty($included['fields'])) {
                                                     $speed = intval($row->speed);
                                                     if (intval($speed) < 1000) {
                                                         $speed = $speed . ' b/s';
-                                                    } else if ($speed > 1000 and $speed <= 1000000) {
+                                                    } elseif ($speed > 1000 and $speed <= 1000000) {
                                                         $speed = number_format($speed / 1000) . ' Kb/s';
-                                                    } else if ($speed > 1000000 and $speed <= 1000000000) {
+                                                    } elseif ($speed > 1000000 and $speed <= 1000000000) {
                                                         $speed = number_format($speed / 1000 / 1000) . ' Mb/s';
-                                                    } else if ($speed >= 1000000000) {
+                                                    } elseif ($speed >= 1000000000) {
                                                         $speed = number_format($speed / 1000 / 1000 / 1000) . ' Gb/s';
                                                     } ?>
                                                 <tr>
@@ -2102,7 +2102,7 @@ if (!empty($included['fields'])) {
                                                 <?php if ($row->type === 'web') {
                                                     $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.version_string=" . urlencode($row->version_string) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
                                                     echo read_field('version_string_' . $row->id, $row->version_string, '', false, '', $link);
-                                                } else if ($row->type === 'database') {
+                                                } elseif ($row->type === 'database') {
                                                     $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.status=" . urlencode($row->status) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
                                                     echo read_field('server_status_' . $row->id, $row->status, '', false, __('Status'), $link);
                                                 } ?>
@@ -2131,7 +2131,7 @@ if (!empty($included['fields'])) {
                                                                 <th><?= __('Instance') ?></th>
                                                                 <th><?= __('Path') ?></th>
                                                                 <th class="text-center"><?= __('View All') ?></th>
-                                                            <?php } else if ($row->type === 'database') { ?>
+                                                            <?php } elseif ($row->type === 'database') { ?>
                                                                 <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                                 <th><?= __('Name') ?></th>
                                                                 <th><?= __('Internal ID') ?></th>
@@ -2160,7 +2160,7 @@ if (!empty($included['fields'])) {
                                                                         <td><?= $server_item->path ?></td>
                                                                         <td class="text-center"><a role="button" class="btn btn-sm btn-primary" title="<?= __('View') ?>" href="<?=  url_to('componentsCollection') ?>?components.type=server_item&components.device_id=<?= $resource->id ?>"><span class="fa fa-eye text-primary"></span></a></td>
                                                                     </tr>
-                                                                <?php } else if ($row->type === 'database') { ?>
+                                                                <?php } elseif ($row->type === 'database') { ?>
                                                                     <tr>
                                                                         <?= device_component_button_read('server_item', $server_item->id) ?>
                                                                         <td><?= $server_item->name ?></td>
@@ -2499,7 +2499,7 @@ window.onload = function () {
     <?php if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
     $("#oa_panel_buttons").prepend('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish text-oa-success"></span>&nbsp;<?= __('Discover') ?></button></form>');
 
-    <?php } else if (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
+    <?php } elseif (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
     $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish text-oa-success"></span></button></form>');
 
     <?php } else { ?>

@@ -32,9 +32,9 @@ include 'shared/read_functions.php';
                                         }
                                         if ($key === 'devices.id') {
                                             echo collection_button_read('devices', $item->id);
-                                        } else if ($key === 'link') {
+                                        } elseif ($key === 'link') {
                                             echo "<td><a href=\"" . base_url() . 'index.php/' . $item->attributes->{$key} . "\" role=\"button\" class=\"btn btn-sm btn-primary\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></td>";
-                                        } else if ((strrpos($key, 'ip') === strlen($key)-2)) {
+                                        } elseif ((strrpos($key, 'ip') === strlen($key)-2)) {
                                             $padded_key = substr($key, 0, strpos($key, 'ip')) . 'ip_padded';
                                             if (!empty($item->attributes->{$padded_key})) {
                                                 echo '            <td><span style="display:none;">' . $item->attributes->{$padded_key} . '</span>' . $item->attributes->{$key} . "</td>\n";

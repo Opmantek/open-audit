@@ -102,9 +102,9 @@ window.onload = function () {
             var $type = $(this).val();
             if ($type == "amazon") {
                 $("#options").html($amazon);
-            } else if ($type == "microsoft") {
+            } elseif ($type == "microsoft") {
                 $("#options").html($microsoft);
-            } else if ($type == "google") {
+            } elseif ($type == "google") {
                 $("#options").html($google);
             } else {
                 $("#options").html("");

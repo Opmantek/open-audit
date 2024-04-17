@@ -8,7 +8,7 @@ if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
     $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"><span style="margin-right:6px;" class="fa fa-bars text-primary" ></span>' . __('Logs')    . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Devices') . '</a></li>';
-} else if ($style === 'icon') {
+} elseif ($style === 'icon') {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" title="' . __('Summary') . '" class="fa fa-eye text-primary"></span></a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
     $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"   ><span style="margin-right:6px;" title="' . __('Logs') .    '" class="fa fa-bars text-primary"></span></a></li>';
@@ -112,12 +112,12 @@ if ($style === 'icontext') {
                                     <?php if ($resource->type === 'amazon') {
                                         echo read_field('credentials.key', $resource->credentials->key, $dictionary->columns->key, $update, __('Credentials Key'));
                                         echo read_field('credentials.secret_key', '', $dictionary->columns->secret_key, $update, __('Credentials Secret'), '', 'password');
-                                    } else if ($resource->type === 'microsoft') {
+                                    } elseif ($resource->type === 'microsoft') {
                                         echo read_field('credentials.subscription_id', $resource->credentials->subscription_id, $dictionary->columns->subscription_id, $update, __('Subscription ID'));
                                         echo read_field('credentials.tenant_id', $resource->credentials->tenant_id, $dictionary->columns->tenant_id, $update, __('Tenant ID'));
                                         echo read_field('credentials.client_id', $resource->credentials->client_id, $dictionary->columns->client_id, $update, __('Client ID'));
                                         echo read_field('credentials.client_secret', '', $dictionary->columns->client_secret, $update, __('Client Secret'), '', '', 'password');
-                                    } else if ($resource->type === 'google') {
+                                    } elseif ($resource->type === 'google') {
                                         echo read_field('credentials.json', '', $dictionary->columns->json, $update, __("Google JSON Credentials"), '', '', 'password');
                                     } ?>
                                     <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>

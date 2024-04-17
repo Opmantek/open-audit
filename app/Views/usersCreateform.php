@@ -97,7 +97,7 @@ include 'shared/create_functions.php';
                                 <?php $do_not_show = array('id', 'dashboard_id', 'active', 'ldap', 'type', 'devices_default_display_columns', 'access_token', 'edited_by', 'edited_date'); ?>
                                 <?php foreach ($dictionary->columns as $key => $value) {
                                     if (!in_array($key, $do_not_show)) {
-                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
+                                        echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
                                     }
                                 } ?>
                             </div>

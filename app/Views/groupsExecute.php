@@ -35,7 +35,7 @@ include 'shared/collection_functions.php';
                                                 $collection = 'devices';
                                             }
                                             echo collection_button_read($collection, $item->id);
-                                        } else if ((strrpos($key, 'ip') === strlen($key)-2)) {
+                                        } elseif ((strrpos($key, 'ip') === strlen($key)-2)) {
                                             $padded_key = substr($key, 0, strpos($key, 'ip')) . 'ip_padded';
                                             if (!empty($item->attributes->{$padded_key})) {
                                                 echo '            <td><span style="display:none;">' . $item->attributes->{$padded_key} . '</span>' . $item->attributes->{$key} . "</td>\n";

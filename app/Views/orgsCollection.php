@@ -39,7 +39,7 @@ include 'shared/collection_functions.php';
                                         }
                                         if ($key === 'parent_name' and !empty($item->attributes->parent_id)) {
                                             echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?orgs.parent_id=" . $item->attributes->{'parent_id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
-                                        } else if ($key === 'type') {
+                                        } elseif ($key === 'type') {
                                             echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?orgs.type=" . $item->attributes->type . "\">" . $item->attributes->type . "</a></td>\n";
                                         } else {
                                             echo "<td>" . $item->attributes->{$key} . "</td>\n";

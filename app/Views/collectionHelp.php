@@ -38,7 +38,7 @@ if (in_array($meta->collection, ['dashboards', 'discoveries', 'groups', 'integra
                                     <?php
                                     if (!empty($config->enterprise_collections[$meta->collection])) { ?>
                                         <button class="btn btn-success"><?= __('Open-AudIT Enterprise') ?></button>
-                                    <?php } else if (!empty($config->professional_collections[$meta->collection])) { ?>
+                                    <?php } elseif (!empty($config->professional_collections[$meta->collection])) { ?>
                                         <button class="btn btn-primary"><?= __('Open-AudIT Professional') ?></button>
                                     <?php } else { ?>
                                         <button class="btn btn-warning"><?= __('Open-AudIT Community') ?></button>

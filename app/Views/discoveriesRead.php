@@ -12,7 +12,7 @@ if ($style === 'icontext') {
     $all_ips_button = '<li class="nav-item" role="presentation"><a href="#all_ips" class="nav-link" id="all_ips-tab"><span style="margin-right:6px;" class="fa-solid fa-network-wired text-primary"></span>' . __('ALL IPs') . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Devices') . '</a></li>';
     $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link" id="issues-tab" ><span style="margin-right:6px;" class="fa-solid fa-triangle-exclamation text-warning"></span>' . __('Issues')  . '</a></li>';
-} else if ($style === 'icon') {
+} elseif ($style === 'icon') {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" title="' . __('Summary') . '" class="fa-regular fa-rectangle-list text-primary"></span></a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
     $scan_op_button = '<li class="nav-item" role="presentation"><a href="#scan"    class="nav-link" id="scan_options-tab"><span style="margin-right:6px;" title="' . __('Scan Options') . '" class="fa-solid fa-wifi text-success"></span></a></li>';
@@ -36,7 +36,7 @@ if ($style === 'icontext') {
 
 if ($style === 'icontext') {
     $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __("Support") . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-comments text-primary\"></span>" . __("Support") . "</a>";
-} else if ($style === 'icon') {
+} elseif ($style === 'icon') {
     $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __("Support") . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\"><span class=\"fa-solid fa-person-circle-exclamation text-primary\"></span></a>";
 } else {
     $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __("Support") . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\">" . __("Support") . "</a>";
@@ -314,14 +314,14 @@ foreach ($included['discovery_scan_options'] as $item) {
                                 <div class="col-6">
                                     <br>
                                     <div class="offset-2 col-8">
-                                          <?php if (!empty($dictionary->columns)) { ?>
+                                    <?php if (!empty($dictionary->columns)) { ?>
                                         <h4 class="text-center"><?= __('Scan Options') ?></h4><br>
-                                            <?php foreach ($dictionary->columns as $key => $value) {
-                                                if (strpos($key, 'scan_options.') === 0) { ?>
-                                                    <code><?= str_replace('scan_options.', '', $key) ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
-                                                <?php } ?>
+                                        <?php foreach ($dictionary->columns as $key => $value) {
+                                            if (strpos($key, 'scan_options.') === 0) { ?>
+                                            <code><?= str_replace('scan_options.', '', $key) ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                             <?php } ?>
                                         <?php } ?>
+                                    <?php } ?>
                                     </div>
                                 </div>
                             </div>
@@ -342,7 +342,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= @$resource->scan_options->{$match} ?>" disabled>
                                                     <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
                                                     <option value="n" <?php if ($field === 'n') { echo 'selected'; } ?>><?= __('No')  ?></option>
-                                                    <option value=""  <?php if ($field === '')  { echo 'selected'; } ?>><?= __('Config Default, currently \'' . $config->{$match} . '\'') ?></option>
+                                                    <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently \'' . $config->{$match} . '\'') ?></option>
                                                 </select>
                                                 <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
@@ -360,10 +360,10 @@ foreach ($included['discovery_scan_options'] as $item) {
                                 <div class="col-6">
                                     <br>
                                     <div class="offset-2 col-8">
-                                          <?php if (!empty($dictionary->columns)) { ?>
-                                        <h4 class="text-center"><?= __('Match Options') ?></h4><br>
+                                        <?php if (!empty($dictionary->columns)) { ?>
+                                            <h4 class="text-center"><?= __('Match Options') ?></h4><br>
                                             <?php foreach ($matches as $key) { ?>
-                                            <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
+                                                <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                             <?php } ?>
                                         <?php } ?>
                                     </div>
@@ -401,11 +401,11 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     <td>
                                                     <?php if ($log->command_status === 'success') { ?>
                                                         <span class="text-success">
-                                                    <?php } else if ($log->command_status === 'fail') { ?>
+                                                    <?php } elseif ($log->command_status === 'fail') { ?>
                                                         <span class="text-danger">
-                                                    <?php } else if ($log->command_status === 'warning') { ?>
+                                                    <?php } elseif ($log->command_status === 'warning') { ?>
                                                         <span class="text-warning">
-                                                    <?php } else if ($log->command_status === 'notice') { ?>
+                                                    <?php } elseif ($log->command_status === 'notice') { ?>
                                                         <span class="text-info">
                                                     <?php } else { ?>
                                                         <span class="text-muted">
@@ -461,7 +461,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     <td><span style="display:none;"><?= ip_address_to_db($device->{'discovery_log.ip'}) ?></span><?= $device->{'discovery_log.ip'} ?><br />
                                                     <?php if ($device->{'devices.type'} === 'unknown') { ?>
                                                         <span class="text-danger"><i><?= $device->{'devices.type'} ?></i></span>
-                                                    <?php } else if ($device->{'devices.type'} === 'unclassified') { ?>
+                                                    <?php } elseif ($device->{'devices.type'} === 'unclassified') { ?>
                                                         <span class="text-warning"><i><?= $device->{'devices.type'} ?></i></span>
                                                     <?php } else { ?>
                                                         <span class="text-success"><i><?= $device->{'devices.type'} ?></i></span>
@@ -521,7 +521,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                             <br />
                                                             <?php if ($device->{'devices.type'} === 'unknown') { ?>
                                                                 <span class="text-danger"><i><?= $device->{'devices.type'} ?></i></span>
-                                                            <?php } else if ($device->{'devices.type'} === 'unclassified') { ?>
+                                                            <?php } elseif ($device->{'devices.type'} === 'unclassified') { ?>
                                                                 <span class="text-warning"><i><?= $device->{'devices.type'} ?></i></span>
                                                             <?php } else { ?>
                                                                 <span class="text-success"><i><?= $device->{'devices.type'} ?></i></span>

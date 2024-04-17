@@ -157,9 +157,9 @@ if (!empty($meta->query_string)) {
                                                 } else {
                                                     echo "                                    <td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:40px\" alt=\"" . $item->attributes->icon . "\"></td>\n";
                                                 }
-                                            } else if ($key === 'ip' and !empty($item->attributes->ip_padded)) {
+                                            } elseif ($key === 'ip' and !empty($item->attributes->ip_padded)) {
                                                 echo "                                    <td><span style=\"display:none;\">" . $item->attributes->ip_padded . "</span> " . $item->attributes->{$key} . " </td>\n";
-                                            } else if ($key === 'tags') {
+                                            } elseif ($key === 'tags') {
                                                 echo "<td>";
                                                 foreach ($item->attributes->tags as $tag) {
                                                     echo '                                    <button type="button" class="btn btn-xs btn-primary rounded-pill" style="margin-right:20px;">&nbsp;&nbsp;<strong><a style="color:white;" href="' . url_to('devicesCollection') . '?devices.tags=' . $tag . '">' . $tag . '</a>&nbsp;&nbsp;</button>';
@@ -189,7 +189,7 @@ if (!empty($meta->query_string)) {
 <?php
 if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
     $columns_button = '<span class="fa fa-list text-primary" aria-hidden="true" title="' . __('Columns') . '"></span>&nbsp;Columns';
-} else if ($user->toolbar_style === 'icon') {
+} elseif ($user->toolbar_style === 'icon') {
     $columns_button = '<span class="fa fa-list text-primary" aria-hidden="true" title="' . __('Columns') . '"></span>';
 } else {
     $columns_button = 'Columns';

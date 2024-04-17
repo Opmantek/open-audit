@@ -53,14 +53,14 @@ include 'shared/read_functions.php';
                                 </div>
                             </div>
                             <?php } else { ?>
-                            <?= read_field('primary', $resource->primary, $dictionary->columns->primary, $update) ?>
-                            <?= read_field('secondary', $resource->secondary, $dictionary->columns->secondary, $update) ?>
-                            <?= read_field('where', $resource->where, $dictionary->columns->where, $update) ?>
-                            <?= read_field('limit', $resource->limit, $dictionary->columns->limit, $update) ?>
+                                <?= read_field('primary', $resource->primary, $dictionary->columns->primary, $update) ?>
+                                <?= read_field('secondary', $resource->secondary, $dictionary->columns->secondary, $update) ?>
+                                <?= read_field('where', $resource->where, $dictionary->columns->where, $update) ?>
+                                <?= read_field('limit', $resource->limit, $dictionary->columns->limit, $update) ?>
                             <?php } ?>
-                            <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update) ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                                <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update) ?>
+                                <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
+                                <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>
                         <div class="col-6">
                             <br>
