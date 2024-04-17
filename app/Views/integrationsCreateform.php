@@ -27,6 +27,7 @@ if (php_uname('s') === 'Windows NT') {
                             <div class="col-md-6">
                             
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
+                                <input type="hidden" value="nmis" id="data[attributes][type]" name="data[attributes][type]" />
 
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
                                 <?= create_select('data[attributes][org_id]', __('Organisation'), $orgs, $dictionary->attributes->create) ?>
