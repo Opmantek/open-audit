@@ -879,7 +879,7 @@ if (!function_exists('integrations_create')) {
             } catch (Exception $e) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Invalid JSON in result from NMIS. Result: ' . (string)$output)";
                 $data = array($integration->id, microtime(true));
-                $query = $CI->db->query($sql, $data);
+                $query = $db->query($sql, $data);
                 log_message('error', '[integrations_create] Invalid JSON in result from NMIS. Result: ' . (string)$output);
                 curl_close($ch);
                 unlink($ckfile);
