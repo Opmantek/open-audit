@@ -118,7 +118,7 @@ class ScriptsModel extends BaseModel
                 }
             } else {
                 $source = false;
-                log_message('error', 'Could not retrieve script with ID ' . $id . '.');
+                log_message('error', 'Could not retrieve script based on ' . $audit_script . '.');
             }
         }
         return array($source, $audit_script);
