@@ -1359,7 +1359,8 @@ class DiscoveriesModel extends BaseModel
             $log->command_status = 'logs';
             $log->pid = getmypid();
             $log->message = 'Discovery process has been manually stopped.';
-            discovery_log($log);
+            $discoveryLogModel = model('DiscoveryLogModel');
+            $discoveryLogModel->create($log);
         }
 
         $data = $this->updateFieldData('discoveries', $data);
