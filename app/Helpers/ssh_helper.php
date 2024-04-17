@@ -108,7 +108,7 @@ if (! function_exists('scp')) {
                 $discoveryLogModel->create($log);
                 return false;
             }
-        } else if ($credentials->type === 'ssh') {
+        } elseif ($credentials->type === 'ssh') {
             $username = $credentials->credentials->username;
             $password = $credentials->credentials->password;
             $log->message = "Success, credentials named {$credentials->name} used to log in using sftp to {$ip}.";
@@ -258,7 +258,7 @@ if (! function_exists('scp_get')) {
                 $discoveryLogModel->create($log);
                 return false;
             }
-        } else if ($credentials->type === 'ssh') {
+        } elseif ($credentials->type === 'ssh') {
             $username = $credentials->credentials->username;
             $password = $credentials->credentials->password;
             try {
@@ -402,7 +402,7 @@ if (! function_exists('ssh_command')) {
                 $discoveryLogModel->create($log);
                 return false;
             }
-        } else if ($credentials->type === 'ssh') {
+        } elseif ($credentials->type === 'ssh') {
             if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
                 $username = $credentials->credentials->username;
                 $password = $credentials->credentials->password;
@@ -504,7 +504,7 @@ if (! function_exists('ssh_audit')) {
             $message = '(missing parameters object).';
             if (empty($parameters->credentials)) {
                 $message = '(missing credentials).';
-            } else if (empty($parameters->ip)) {
+            } elseif (empty($parameters->ip)) {
                 $message = '(missing device ip).';
             }
             log_message('error', 'Function ssh_audit called without correct params object ' . $message);
@@ -549,7 +549,7 @@ if (! function_exists('ssh_audit')) {
         if (filter_var($parameters->ip, FILTER_VALIDATE_IP)) {
             $ip = $parameters->ip;
         } else {
-            $log->message = 'Invalid IP supplied to ssh_audit function. Supplied IP is: ' . (string)$ip;
+            $log->message = 'Invalid IP supplied to ssh_audit function. Supplied IP is: ' . (string)$parameters->ip;
             $log->command_status = 'fail';
             $log->severity = 5;
             $discoveryLogModel->create($log);
@@ -574,6 +574,7 @@ if (! function_exists('ssh_audit')) {
         // if (!defined('NET_SSH2_LOGGING')) {
         //     define('NET_SSH2_LOGGING', SSH2::LOG_COMPLEX);
         // }
+        $password = '';
 
         foreach ($credentials as $credential) {
             $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
@@ -591,7 +592,7 @@ if (! function_exists('ssh_audit')) {
                     $log->command_status = 'success';
                     $discoveryLogModel->create($log);
                     $username = $credential->credentials->username;
-                    $password = @$credential->credentials->password;
+                    $password = (!empty($credential->credentials->password)) ? $credential->credentials->password : '';
                     if (!empty($credential->credentials->sudo_password)) {
                         $password = $credential->credentials->sudo_password;
                     }
@@ -603,7 +604,7 @@ if (! function_exists('ssh_audit')) {
                     $ssh->disconnect();
                     unset($ssh);
                 }
-            } else if ($credential->type === 'ssh') {
+            } elseif ($credential->type === 'ssh') {
                 log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
                 // NOTE - Use @ below because some devices cause "Error reading from socket" and halt this process
                 // TODO - change to try / catch
@@ -612,7 +613,7 @@ if (! function_exists('ssh_audit')) {
                     $log->command_status = 'success';
                     $discoveryLogModel->create($log);
                     $username = $credential->credentials->username;
-                    $password = @$credential->credentials->password;
+                    $password = (!empty($credential->credentials->password)) ? $credential->credentials->password : '';
                     break;
                 } else {
                     $log->message = "Credential set for SSH named {$credential->name} not working on {$ip}.";
@@ -1275,7 +1276,7 @@ if (! function_exists('ssh_audit')) {
                     $ssh->setTimeout(5);
                     $output = $ssh->read('assword');
                     if (stripos($output, 'assword') !== false) {
-                        $ssh->write($password."\n");
+                        $ssh->write($password . "\n");
                         $output = $ssh->read('[prompt]');
                     }
                     $lines = explode("\n", $output);

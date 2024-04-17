@@ -127,7 +127,7 @@ if (!function_exists('integrations_pre')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 if ($integration->log) {
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, check URL.')";
@@ -136,7 +136,7 @@ if (!function_exists('integrations_pre')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'redirect_url=') !== false) {
+            } elseif (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 if ($integration->log) {
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, check URL.')";
@@ -548,7 +548,7 @@ if (!function_exists('integrations_collection')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 $message = '[integrations_collection] Could not logon to NMIS, check URL.';
                 log_message('error', $message);
@@ -557,7 +557,7 @@ if (!function_exists('integrations_collection')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'redirect_url=') !== false) {
+            } elseif (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 $message = '[integrations_collection] Could not logon to NMIS, check URL.';
                 log_message('error', $message);
@@ -701,14 +701,14 @@ if (!function_exists('integrations_update')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'redirect_url=') !== false) {
+            } elseif (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -823,14 +823,14 @@ if (!function_exists('integrations_create')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'redirect_url=') !== false) {
+            } elseif (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -974,14 +974,14 @@ if (!function_exists('integrations_delete')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'redirect_url=') !== false) {
+            } elseif (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -1101,14 +1101,14 @@ if (!function_exists('integrations_post')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
                 // bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_post] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } else if (strpos($output, 'redirect_url=') !== false) {
+            } elseif (strpos($output, 'redirect_url=') !== false) {
                 // Likely a bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_post] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);

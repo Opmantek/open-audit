@@ -80,7 +80,7 @@ if (!function_exists('output')) {
     {
         if (!empty($instance->resp->meta->heading)) {
             $filename = $instance->resp->meta->heading;
-        } else if (!empty($instance->resp->meta->collection)) {
+        } elseif (!empty($instance->resp->meta->collection)) {
             $filename = $instance->resp->meta->collection;
         } else {
             $filename = 'openaudit';
@@ -551,7 +551,7 @@ if (!function_exists('output')) {
             foreach ($resp as &$item) {
                 $item = filter_response($item);
             }
-        } else if (is_string($resp)) {
+        } elseif (is_string($resp)) {
             $resp = htmlentities($resp, ENT_QUOTES, 'UTF-8');
             return $resp;
         } else {
@@ -565,7 +565,7 @@ if (!function_exists('output')) {
         helper('xml');
         if (!empty($instance->resp->meta->heading)) {
             $filename = $instance->resp->meta->heading;
-        } else if (!empty($instance->resp->meta->collection)) {
+        } elseif (!empty($instance->resp->meta->collection)) {
             $filename = $instance->resp->meta->collection;
         } else {
             $filename = 'openaudit';

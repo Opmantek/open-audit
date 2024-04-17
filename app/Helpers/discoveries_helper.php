@@ -375,7 +375,7 @@ if (! function_exists('get_nmap_version')) {
             $command_string = 'nmap --version';
             exec($command_string, $output, $return_var);
         }
-        if (!empty($output)) {
+        if (!empty($output) and is_array($output)) {
             foreach ($output as $line) {
                 if (stripos($line, 'Nmap version') !== false) {
                     $output = $line;
@@ -808,7 +808,7 @@ if (! function_exists('ip_audit')) {
         //     $detail = '';
         //     if (is_string($orig_ip_scan_details)) {
         //         $detail = ' JSON: ' . @$orig_ip_scan_details;
-        //     } else if (empty($ip_scan->details)) {
+        //     } elseif (empty($ip_scan->details)) {
         //         $detail = ' Empty object ip_scan->details.';
         //     }
         //     log_message('error', 'Bad JSON string ip_scan->details passed to ip_audit.' . $detail);
@@ -1376,7 +1376,7 @@ if (! function_exists('ip_audit')) {
                 $discoveryLogModel->create($log);
                 $log->command_status = 'notice';
                 $log->severity = 7;
-            } else if (is_array($temp)) {
+            } elseif (is_array($temp)) {
                 $audit_script = $temp[0];
                 $script_name = $temp[1];
             }
@@ -1597,12 +1597,12 @@ if (! function_exists('ip_audit')) {
                 $log->command_status = 'notice';
                 if ($credentials_ssh->credentials->username === 'root') {
                     $log->message = 'Running audit using root user.';
-                } else if (!empty($device->which_sudo) and !empty($device->use_sudo) and $device->use_sudo) {
+                } elseif (!empty($device->which_sudo) and !empty($device->use_sudo) and $device->use_sudo) {
                     $command = "{$device->which_sudo} " . $command;
                     $log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' with sudo, as per config.';
-                } else if (!empty($device->which_sudo) and (empty($device->use_sudo) or !$device->use_sudo)) {
+                } elseif (!empty($device->which_sudo) and (empty($device->use_sudo) or !$device->use_sudo)) {
                     $log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' without sudo, as sudo attempt failed.';
-                } else if (empty($device->which_sudo)) {
+                } elseif (empty($device->which_sudo)) {
                     $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
                 }
                 $log->command = $command;
@@ -1759,7 +1759,7 @@ if (! function_exists('ip_audit')) {
                     $log->command_output = '';
                     if (is_file($destination) and is_writable($destination) and @unlink($destination)) {
                         // delete success
-                    } else if (is_file($destination)) {
+                    } elseif (is_file($destination)) {
                         $log->severity = 4;
                         $log->command_status = 'fail';
                         $log->message = 'Could not delete audit result - likely permissions.';
@@ -1796,7 +1796,7 @@ if (! function_exists('ip_audit')) {
             $audit->system = audit_format_system($parameters);
             // We don't care what the audit result says is the "ip", we KNOW it's the IP we just used to discover this device
             $audit->system->ip = $device->ip;
-        } else if (!empty($audit_result)) {
+        } elseif (!empty($audit_result)) {
             log_message('error', 'Something went wrong - audit_result set, but audit is empty.');
         }
 
@@ -1894,7 +1894,7 @@ if (! function_exists('ip_audit')) {
         // if (!empty($instance->config->servers) or empty($audit->system->collector_uuid)) {
         //     if (!empty($audit->system->id)) {
         //         $dns_entries = $CI->m_devices_components->create_dns_entries((int)$audit->system->id);
-        //     } else if (!empty($device->id)) {
+        //     } elseif (!empty($device->id)) {
         //         $dns_entries = $CI->m_devices_components->create_dns_entries((int)$device->id);
         //     }
         //     if (!empty($audit->dns) and count($audit->dns) > 0) {
@@ -1913,7 +1913,7 @@ if (! function_exists('ip_audit')) {
         //         if (!empty($audit->system->id)) {
         //             $parameters->details = $audit->system;
         //             $CI->m_devices_components->process_component($parameters);
-        //         } else if (!empty($device->id)) {
+        //         } elseif (!empty($device->id)) {
         //             $parameters->details = $device;
         //             $CI->m_devices_components->process_component($parameters);
         //         }
@@ -2097,7 +2097,7 @@ if (! function_exists('ip_audit')) {
                             $log->command_output = 'IP ' . $value . ' found on device ' . $device->ip;
                             $log->function = 'ip_audit';
                             $discoveryLogModel->create($log);
-                        } else if ($discovery->seed_restrict_to_subnet === 'y' and ($testip < $discovery_network->host_min or $testip > $discovery_network->host_max)) {
+                        } elseif ($discovery->seed_restrict_to_subnet === 'y' and ($testip < $discovery_network->host_min or $testip > $discovery_network->host_max)) {
                             $log->severity = 7;
                             $log->message = 'IP ' . $value . ' detected, but not adding to device list as this is not in the discovery subnet.';
                             $log->command_output = 'IP ' . $value . ' found on device ' . $device->ip;

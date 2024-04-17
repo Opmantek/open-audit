@@ -105,13 +105,13 @@ function nmapSuid($setNotice = false)
         if (isset($output[0]) and $output[0] === 's') {
             $suid = 'y';
         }
-    } else if (file_exists('/usr/bin/nmap')) {
+    } elseif (file_exists('/usr/bin/nmap')) {
         $command_string = 'ls -lh /usr/bin/nmap | cut -d" " -f1 | cut -c4';
         exec($command_string, $output);
         if (isset($output[0]) and $output[0] === 's') {
             $suid = 'y';
         }
-    } else if (file_exists('/usr/local/bin/nmap')) {
+    } elseif (file_exists('/usr/local/bin/nmap')) {
         $command_string = 'ls -lh /usr/local/bin/nmap | cut -d" " -f1 | cut -c4';
         exec($command_string, $output);
         if (isset($output[0]) and $output[0] === 's') {
@@ -291,7 +291,7 @@ function format_data($result, $type)
                 $item->additional_items = json_decode($item->additional_items);
             }
             if (!empty($item->attributes)) {
-                $item->attributes = json_decode($item->attributes);
+                $item->attributes = json_decode((string)$item->attributes);
             }
             if (!empty($item->fields)) {
                 $item->fields = json_decode($item->fields);
@@ -366,11 +366,11 @@ function format_data($result, $type)
         $item->id = '';
         if (isset($entry->id) and $entry->id != '') {
             $item->id = intval($entry->id);
-        } else if (!empty($entry->{$type.".id"})) {
+        } elseif (!empty($entry->{$type.".id"})) {
             $item->id = intval($entry->{$type.".id"});
-        } else if (!empty($entry->{'devices.id'})) {
+        } elseif (!empty($entry->{'devices.id'})) {
             $item->id = intval($entry->{'devices.id'});
-        } else if ($type == 'errors') {
+        } elseif ($type == 'errors') {
             $item->id = $entry->code;
         }
         if ($type == 'widgets' and isset($entry->percent)) {
@@ -429,7 +429,7 @@ if (!function_exists('my_json_decode')) {
         }
 
         if (!empty($error_message)) {
-            log_message('error', strtolower(__METHOD__), $error_message);
+            log_message('error', strtolower(__METHOD__) . ' ' . $error_message);
         }
 
         if (!empty($json)) {

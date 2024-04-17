@@ -143,7 +143,7 @@ if (!function_exists('audit_convert')) {
                                         $new->{$k} = (string) $v;
                                     }
                                     $newitem->options = @json_encode($new);
-                                } else if ($key === 'keys' && $section === 'user') {
+                                } elseif ($key === 'keys' && $section === 'user') {
                                     $new = array();
                                     foreach ($value->key as $k => $v) {
                                         $new[] = (string)$v;
@@ -440,19 +440,19 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_uuid, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->uuid)) {
+            } elseif (empty($details->uuid)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_uuid, uuid not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->hostname)) {
+            } elseif (empty($details->hostname)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_uuid, hostname not set.';
                 $message->command_status = 'notice';
@@ -495,19 +495,19 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_dbus, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->dbus_identifier)) {
+            } elseif (empty($details->dbus_identifier)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_dbus, dbus_identifier not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->hostname)) {
+            } elseif (empty($details->hostname)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_dbus, hostname not set.';
                 $message->command_status = 'notice';
@@ -550,25 +550,25 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_serial, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->serial)) {
+            } elseif (empty($details->serial)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_serial, serial not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->hostname)) {
+            } elseif (empty($details->hostname)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_serial, hostname not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (in_array($details->serial, $invalid_strings)) {
+            } elseif (in_array($details->serial, $invalid_strings)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_serial, invalid serial.';
                 $message->command_status = 'notice';
@@ -621,13 +621,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_dbus, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->dbus_identifier)) {
+            } elseif (empty($details->dbus_identifier)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_dbus, dbus_identifier not set.';
                 $message->command_status = 'notice';
@@ -680,13 +680,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_dns_fqdn, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->dns_fqdn)) {
+            } elseif (empty($details->dns_fqdn)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_dns_fqdn, dns_fqdn not set.';
                 $message->command_status = 'notice';
@@ -739,13 +739,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_dns_hostname, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->dns_hostname)) {
+            } elseif (empty($details->dns_hostname)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_dns_hostname, dns_fqdn not set.';
                 $message->command_status = 'notice';
@@ -799,13 +799,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_fqdn, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->fqdn)) {
+            } elseif (empty($details->fqdn)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_fqdn, fqdn not set.';
                 $message->command_status = 'notice';
@@ -859,25 +859,25 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_serial_type, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->serial)) {
+            } elseif (empty($details->serial)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_serial_type, serial not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->type)) {
+            } elseif (empty($details->type)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_serial_type, type not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (in_array($details->serial, $invalid_strings)) {
+            } elseif (in_array($details->serial, $invalid_strings)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_serial_type, invalid serial.';
                 $message->command_status = 'notice';
@@ -931,19 +931,19 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_serial, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->serial)) {
+            } elseif (empty($details->serial)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_serial, serial not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (in_array($details->serial, $invalid_strings)) {
+            } elseif (in_array($details->serial, $invalid_strings)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_serial, invalid serial.';
                 $message->command_status = 'notice';
@@ -987,25 +987,25 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_sysname_serial, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->sysName)) {
+            } elseif (empty($details->sysName)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_sysname_serial, sysname not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->serial)) {
+            } elseif (empty($details->serial)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_sysname_serial, serial not set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (in_array($details->serial, $invalid_strings)) {
+            } elseif (in_array($details->serial, $invalid_strings)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_sysname_serial, invalid serial.';
                 $message->command_status = 'notice';
@@ -1054,13 +1054,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_sysname, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->sysName)) {
+            } elseif (empty($details->sysName)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_sysname, sysname not set.';
                 $message->command_status = 'notice';
@@ -1112,13 +1112,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_mac (ip table), device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->mac_address)) {
+            } elseif (empty($details->mac_address)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_mac (ip table), mac_address not set.';
                 $message->command_status = 'notice';
@@ -1170,13 +1170,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_mac (network table), device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->mac_address)) {
+            } elseif (empty($details->mac_address)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_mac (network table), mac_address not set.';
                 $message->command_status = 'notice';
@@ -1231,13 +1231,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_mac (network table) all, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->mac_address)) {
+            } elseif (empty($details->mac_address)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_mac (network table) all, mac_address not set.';
                 $message->command_status = 'notice';
@@ -1296,13 +1296,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_mac (ip) all, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->mac_addresses)) {
+            } elseif (empty($details->mac_addresses)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_mac (ip) all, mac_addresses not set.';
                 $message->command_status = 'notice';
@@ -1334,7 +1334,7 @@ if (! function_exists('deviceMatch')) {
                     $details->id = $row->id;
                     if (!empty($details->device_id)) {
                         $log->device_id = $details->id;
-                    } else if (!empty($details->id)) {
+                    } elseif (!empty($details->id)) {
                         $log->device_id = $details->id;
                     }
                     $message = new \StdClass();
@@ -1394,13 +1394,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_ip, device id already set';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->ip)) {
+            } elseif (empty($details->ip)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_ip, ip not set.';
                 $message->command_status = 'notice';
@@ -1453,13 +1453,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname, device id already set.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->hostname)) {
+            } elseif (empty($details->hostname)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname, hostname not set.';
                 $message->command_status = 'notice';
@@ -1527,13 +1527,13 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (!empty($details->id)) {
+            } elseif (!empty($details->id)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_ip_no_data, device id already set';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } else if (empty($details->ip)) {
+            } elseif (empty($details->ip)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_ip_no_data, ip not set.';
                 $message->command_status = 'notice';
@@ -1731,13 +1731,13 @@ function audit_format_system($parameters)
 
     if (!empty($parameters->discovery_id)) {
         $log->discovery_id = $parameters->discovery_id;
-    } else if (!empty($parameters->input->discovery_id)) {
+    } elseif (!empty($parameters->input->discovery_id)) {
         $log->discovery_id = $parameters->input->discovery_id;
     }
 
     if (!empty($parameters->ip)) {
         $log->ip = ip_address_from_db($parameters->ip);
-    } else if (!empty($parameters->input->ip)) {
+    } elseif (!empty($parameters->input->ip)) {
         $log->ip = ip_address_from_db($parameters->input->ip);
     }
 

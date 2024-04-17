@@ -143,17 +143,17 @@ $get_oid_details = function ($ip, $credentials, $oid) {
 
     # 3560
     if (empty($details->serial)) {
-        $details->serial = $my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1001");
+        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1001");
     }
 
     # ASR
     if (empty($details->os_version)) {
-        $details->os_version = $my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.7000");
+        $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.7000");
     }
 
     # 9300
     if (empty($details->os_name)) {
-        $details->os_name = $my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.249.1.1.1.1.2");
+        $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.249.1.1.1.1.2");
     }
 
     return($details);
