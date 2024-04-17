@@ -185,7 +185,7 @@ class Cli extends Controller
     public function executeIntegration($id)
     {
         $id = intval($id);
-        $IntegrationsModel = model('IntegrationsModel');
+        $integrationsModel = model('IntegrationsModel');
         $integrationsModel->queue(intval($id));
         $queueModel = model('App\Models\QueueModel');
         $queueModel->start();
@@ -262,15 +262,16 @@ class Cli extends Controller
     {
         if (empty($cloud)) {
             log_message('error', 'A request for the Amazon API was received, but no cloud data was present in the request.');
-            $response->errors = 'A request for the Amazon API was received, but no cloud data was present in the request.';
-            $response->meta->header = 400;
-            $response->setStatusCode($response->meta->header);
-            print_r(json_encode($response));
+            $this->response->setStatusCode(400);
             return;
         }
 
         helper('security');
         helper('network');
+        model('networks');
+        $networksModel = model('NetworksModel');
+        $networks = $networksModel->listAll();
+
         $db = db_connect();
         $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key));
 
@@ -487,13 +488,13 @@ class Cli extends Controller
                         $private_ip->netmask = '';
                         $private_ip->version = 4;
                         foreach ($networks as $network) {
-                            if ($network->attributes->external_ident === $interface['SubnetId']) {
-                                $temp = explode('\/', $network->attributes->network);
+                            if ($network->external_ident === $interface['SubnetId']) {
+                                $temp = explode('\/', $network->network);
                                 $private_ip->cidr = (!empty($temp[1])) ? $temp[1] : '';
                                 unset($temp);
-                                $private_ip->network = $network->attributes->network;
+                                $private_ip->network = $network->network;
                                 # translate 24 to 255.255.255.0, etc
-                                $details = network_details($network->attributes->network);
+                                $details = network_details($network->network);
                                 $private_ip->netmask = $details->netmask;
                                 unset($details);
                             }
@@ -556,10 +557,7 @@ class Cli extends Controller
     {
         if (empty($cloud)) {
             log_message('error', 'A request for the Microsoft API was received, but no cloud data was present in the request.');
-            $response->errors = 'A request for the Microsoft API was received, but no cloud data was present in the request.';
-            $response->meta->header = 400;
-            $response->setStatusCode($response->meta->header);
-            print_r(json_encode($response));
+            $this->response->setStatusCode(400);
             return;
         }
 
@@ -783,11 +781,8 @@ class Cli extends Controller
     public function google($cloud)
     {
         if (empty($cloud)) {
-            log_message('error', 'A request for the Amazon API was received, but no cloud data was present in the request.');
-            $response->errors = 'A request for the Amazon API was received, but no cloud data was present in the request.';
-            $response->meta->header = 400;
-            $response->setStatusCode($response->meta->header);
-            print_r(json_encode($response));
+            log_message('error', 'A request for the Google Cloud API was received, but no cloud data was present in the request.');
+            $this->response->setStatusCode(400);
             return;
         }
 

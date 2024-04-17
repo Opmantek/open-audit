@@ -119,7 +119,7 @@ class Queue extends BaseController
                     @exec($command, $output);
                     log_message('debug', $microtime . " Spawning process " . $command . " " . json_encode($output));
                     pclose(popen($command, 'r'));
-                } else if (php_uname('s') === 'Darwin') {
+                } elseif (php_uname('s') === 'Darwin') {
                     $command = 'php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
                     @exec($command, $output);
                     log_message('debug', $microtime . " Spawning process " . $command . " " . json_encode($output));

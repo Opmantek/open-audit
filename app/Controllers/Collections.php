@@ -340,7 +340,7 @@ class Collections extends BaseController
             $this->resp->meta->header = 500;
             if (!empty(\Config\Services::session()->getFlashdata('error'))) {
                 $this->resp->errors = \Config\Services::session()->getFlashdata('error');
-            } else if (!empty(\Config\Services::session()->getFlashdata('warning'))) {
+            } elseif (!empty(\Config\Services::session()->getFlashdata('warning'))) {
                 $this->resp->errors = \Config\Services::session()->getFlashdata('warning');
             } else {
                 $this->resp->errors = 'Item in ' . $this->resp->meta->collection . ' not deleted.';

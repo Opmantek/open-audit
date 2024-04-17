@@ -30,6 +30,13 @@ namespace App\Controllers;
  */
 class Agents extends BaseController
 {
+    /**
+     * Download an agent by ID or OS
+     *
+     * @param $id This can be the numeric database ID or the OS name
+     *
+     * @return void
+     */
     public function download($id)
     {
         $request = \Config\Services::request();
@@ -78,6 +85,14 @@ class Agents extends BaseController
         return;
     }
 
+    /**
+     * POST submission endpoint from remote agents
+     *
+     * @param $id NULL or a database ID
+     *
+     * @access public
+     * @return void
+     */
     public function execute($id = null)
     {
         // Do not use dot's here so we can compare to $input->version
@@ -172,7 +187,7 @@ class Agents extends BaseController
                     }
                 }
                 if (!empty($agent->test_os) and !empty($input->os_family)) {
-                    if (!stripos($input->os_family, $test_os)) {
+                    if (!stripos($input->os_family, $agent->test_os)) {
                         $testOs = false;
                     }
                 }

@@ -262,7 +262,7 @@ class Devices extends BaseController
         exec($command, $string, $return_var);
         if ($return_var !== 0) {
             log_message('error', 'Error importing from NMIS9 using NodeAdmin tool.');
-            log_message('error', $string);
+            log_message('error', json_encode($string));
             \Config\Services::session()->setFlashdata('error', 'Error importing from NMIS9 using NodeAdmin tool. ' . $string);
             return redirect()->route('devicesCollection');
         }
