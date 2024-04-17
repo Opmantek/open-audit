@@ -202,7 +202,7 @@ class BaselinesPoliciesModel extends BaseModel
                         $operator = "=";
                     }
                     if ($data->table === "software" and $column === "version") {
-                        $policy->name .= ' ' . $condition . ' ' . $row->version;
+                        $policy->name .= ' ' . $operator . ' ' . $row->version;
                     }
                     $policy->tests[] = array('column' => $column, 'operator' => $operator, 'value' => $row->{$column});
                 }
