@@ -11,7 +11,11 @@
         "phpseclib/phpseclib": "^3.0",
         "google/auth": "^1.28",
         "aws/aws-sdk-php": "^3.281",
-        "kint-php/kint": "^5.0"
+        "kint-php/kint": "^5.0",
+        "laminas/laminas-escaper": "2.12.0",
+        "psr/cache": "1.0.1",
+        "symfony/deprecation-contracts": "v2.5.2",
+        "doctrine/instantiator": "1.5.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",
