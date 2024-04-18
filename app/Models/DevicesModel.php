@@ -85,31 +85,31 @@ class DevicesModel extends BaseModel
                     $result[$i]->audit_class = 'fa fa-times text-danger';
                     $result[$i]->audit_text = 'Nmap discovered, data retrieval will be very limited.';
                 # NOT GOOD
-                } else if ($result[$i]->last_seen_by === 'nmap' and $result[$i]->type !== 'unclassified' and $result[$i]->type !== 'unknown') {
+                } elseif ($result[$i]->last_seen_by === 'nmap' and $result[$i]->type !== 'unclassified' and $result[$i]->type !== 'unknown') {
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Last discovery only Nmap worked. This may be an issue, or it may be a device of a type we cannot audit.';
-                } else if ($result[$i]->last_seen_by === 'cloud') {
+                } elseif ($result[$i]->last_seen_by === 'cloud') {
                     #$result[$i]->audit_class = 'fa fa-times text-info';
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Cloud import, data retrieval will be very limited.';
-                } else if ($result[$i]->last_seen_by === 'integrations') {
+                } elseif ($result[$i]->last_seen_by === 'integrations') {
                     #$result[$i]->audit_class = 'fa fa-times text-info';
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Integration import, data retrieval will be very limited.';
-                } else if ($result[$i]->type === 'computer' and ($result[$i]->last_seen_by === 'ssh' or $result[$i]->last_seen_by === 'windows' or $result[$i]->last_seen_by === 'wmi' or $result[$i]->last_seen_by === 'snmp')) {
+                } elseif ($result[$i]->type === 'computer' and ($result[$i]->last_seen_by === 'ssh' or $result[$i]->last_seen_by === 'windows' or $result[$i]->last_seen_by === 'wmi' or $result[$i]->last_seen_by === 'snmp')) {
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Partially discovered computer. Data retrieval limited.';
-                } else if ($result[$i]->last_seen_by === 'web form') {
+                } elseif ($result[$i]->last_seen_by === 'web form') {
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Manually created ' . $result[$i]->type . '. Data retrieval limited.';
                 # GOOD
-                } else if ($result[$i]->type === 'computer' and ($result[$i]->last_seen_by === 'audit_wmi' or $result[$i]->last_seen_by === 'audit_ssh')) {
+                } elseif ($result[$i]->type === 'computer' and ($result[$i]->last_seen_by === 'audit_wmi' or $result[$i]->last_seen_by === 'audit_ssh')) {
                     $result[$i]->audit_class = 'fa fa-check text-success';
                     $result[$i]->audit_text = 'Discovered and audited computer.';
-                } else if ($result[$i]->type === 'computer' and $result[$i]->last_seen_by === 'audit') {
+                } elseif ($result[$i]->type === 'computer' and $result[$i]->last_seen_by === 'audit') {
                     $result[$i]->audit_class = 'fa fa-check text-success';
                     $result[$i]->audit_text = 'Audited computer.';
-                } else if ($result[$i]->type !== 'computer' and !empty($result[$i]->snmp_oid)) {
+                } elseif ($result[$i]->type !== 'computer' and !empty($result[$i]->snmp_oid)) {
                     $result[$i]->audit_class = 'fa fa-check text-success';
                     $result[$i]->audit_text = 'Discovered and audited ' . $result[$i]->type . '.';
                 # BAD - FALLBACK
@@ -162,19 +162,19 @@ class DevicesModel extends BaseModel
                     $temp = explode('.', $data->hostname);
                     $data->name = $temp[0];
                 }
-            } else if (!empty($data->sysName)) {
+            } elseif (!empty($data->sysName)) {
                 $data->name = strtolower($data->sysName);
                 if (strpos($data->sysName, '.') !== false) {
                     $temp = explode('.', $data->sysName);
                     $data->name = $temp[0];
                 }
-            } else if (!empty($data->dns_hostname)) {
+            } elseif (!empty($data->dns_hostname)) {
                 $data->name = strtolower($data->dns_hostname);
                 if (strpos($data->dns_hostname, '.') !== false) {
                     $temp = explode('.', $data->dns_hostname);
                     $data->name = $temp[0];
                 }
-            } else if (!empty($data->ip)) {
+            } elseif (!empty($data->ip)) {
                 $data->name = ip_address_from_db($data->ip);
             } else {
                 $data->name = '';
@@ -260,7 +260,7 @@ class DevicesModel extends BaseModel
         if ($device->type !== 'unknown' && $device->type !== 'unclassified') {
             if ($device->type === 'computer' && $device->class !== '') {
                 $identification = ucfirst($device->class);
-            } else if ($device->type === 'computer' && $device->os_group !== '') {
+            } elseif ($device->type === 'computer' && $device->os_group !== '') {
                 $identification = 'Computer running ' . $device->os_group;
             } else {
                 if ($device->type !== 'iphone' && $device->type !== 'ipod' && $device->type !== 'ipad') {
@@ -796,7 +796,7 @@ class DevicesModel extends BaseModel
         if (!empty($data->discovery_id)) {
             $log->discovery_id = $data->discovery_id;
             $GLOBALS['discovery_id'] = $data->discovery_id;
-        } else if (!empty($GLOBALS['discovery_id'])) {
+        } elseif (!empty($GLOBALS['discovery_id'])) {
             $log->discovery_id = $GLOBALS['discovery_id'];
         } else {
             $log->discovery_id = '';

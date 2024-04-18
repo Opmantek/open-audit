@@ -214,7 +214,7 @@ class RulesModel extends BaseModel
         $log->device_id = (!empty($device->id)) ? intval($device->id) : '';
         if (!empty($ip)) {
             $log->ip = ip_address_from_db($ip);
-        } else if (!empty($device->ip)) {
+        } elseif (!empty($device->ip)) {
             $log->ip = ip_address_from_db($device->ip);
         } else {
             $log->ip = '';

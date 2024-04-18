@@ -122,7 +122,7 @@ class ComponentsModel extends BaseModel
         $device_ids = array();
         if (!empty($data->device_id)) {
             $device_ids[] = $data->device_id;
-        } else if (!empty($data->ids)) {
+        } elseif (!empty($data->ids)) {
             $device_ids = explode(',', $data->ids);
         }
         if (empty($device_ids)) {
@@ -303,7 +303,7 @@ class ComponentsModel extends BaseModel
                     \Config\Services::session()->setFlashdata('warning', "Cannot move the uploaded image file to $target.");
                     return null;
                 }
-            } else if (!empty($data->filename)) {
+            } elseif (!empty($data->filename)) {
                 $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
                 $this->db->query($sql, [$data->device_id, $data->name, $data->filename, $data->orientation, $instance->user->full_name]);
                 return true;
@@ -495,7 +495,7 @@ class ComponentsModel extends BaseModel
         $name = @$device->name;
         if (empty($name) and !empty($device->hostname)) {
             $name = $device->hostname;
-        } else if (!empty($device->ip)) {
+        } elseif (!empty($device->ip)) {
             $name = $device->ip;
         }
         if (!$this->db->tableExists($table)) {

@@ -226,7 +226,7 @@ class QueueModel extends BaseModel
             $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . "index.php queue start";
             log_message('debug', $command);
             pclose(popen($command, 'r'));
-        } else if (php_uname('s') === 'Darwin') {
+        } elseif (php_uname('s') === 'Darwin') {
             $command = 'php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
             log_message('debug', $command);
             @exec($command);

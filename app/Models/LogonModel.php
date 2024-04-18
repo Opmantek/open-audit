@@ -103,7 +103,7 @@ class LogonModel extends Model
                             log_message('error', $bind_string . ' at ' . $ldap_connect_string);
                             if ($error === 'Invalid credentials') {
                                 log_message('warning', 'Invalid user supplied credentials for LDAP server at ' . $ldap->host . ', skipping.');
-                            } else if ($error === "Can't contact LDAP server") {
+                            } elseif ($error === "Can't contact LDAP server") {
                                 log_message('error', 'LDAP server could not be reached at ' . $ldap->host . ', skipping.');
                             } else {
                                 log_message('error', 'Could not bind to LDAP server at ' . $ldap->host . ', skipping.');
@@ -319,7 +319,7 @@ class LogonModel extends Model
                                 }
                                 log_message('warning', $message);
                                 // \Config\Services::session()->setFlashdata('warning',  $message);
-                            } else if (empty($user->orgs)) {
+                            } elseif (empty($user->orgs)) {
                                 // The user exists in AD, but has no Open-AudIT Organisations
                                 $message = "User {$username} exists in LDAP ({$ldap->name}) and attempted to logon, but does not belong to any OA groups for Organisations.";
                                 if ($ldap->type === 'active directory') {
@@ -327,7 +327,7 @@ class LogonModel extends Model
                                 }
                                 log_message('warning', $message);
                                 // \Config\Services::session()->setFlashdata('warning',  $message);
-                            } else if (empty($user->roles)) {
+                            } elseif (empty($user->roles)) {
                                 // The user exists in AD, but has no Open-AudIT roles
                                 $message = "User {$username} exists in LDAP ({$ldap->name}) and attempted to logon, but does not belong to any OA groups for Roles.";
                                 if ($ldap->type === 'active directory') {

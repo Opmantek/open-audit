@@ -932,7 +932,7 @@ class IntegrationsModel extends BaseModel
             foreach ($devices as $device) {
                 if (!empty($device->attributes->{'devices.id'})) {
                     $dev_ids[] = intval($device->attributes->{'devices.id'});
-                } else if (!empty($device->attributes->{'id'})) {
+                } elseif (!empty($device->attributes->{'id'})) {
                     $dev_ids[] = intval($device->attributes->{'id'});
                 }
             }

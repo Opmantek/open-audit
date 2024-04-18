@@ -176,10 +176,10 @@ class BaselinesPoliciesModel extends BaseModel
             if ($data->table === 'software') {
                 $columns = array('name', 'version', 'version_padded');
                 $sql = "SELECT name, version, version_padded FROM software WHERE software.device_id = ? and current = 'y' and name != 'kernel' and name != 'kernel-devel' GROUP BY name, version, version_padded";
-            } else if ($data->table === 'netstat') {
+            } elseif ($data->table === 'netstat') {
                 $columns = array('protocol', 'program', 'port');
                 $sql = "SELECT protocol, program, port, CONCAT(`program`, ' on ', `port`, ' using ', `protocol`) AS `name` FROM netstat WHERE netstat.device_id = ? and current = 'y' GROUP BY protocol, program, port";
-            } else if ($data->table === 'user') {
+            } elseif ($data->table === 'user') {
                 $columns = array('name', 'status', 'type', 'password_expires', 'password_changeable', 'password_required');
                 $sql = "SELECT name, status, type, password_expires, password_changeable, password_required FROM user WHERE user.device_id = ? and current = 'y' GROUP BY name, status, type, password_expires, password_changeable, password_required";
             }

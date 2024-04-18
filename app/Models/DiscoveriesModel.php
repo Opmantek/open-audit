@@ -278,7 +278,7 @@ class DiscoveriesModel extends BaseModel
             } else {
                 $data->description = 'Subnet - ' . $data->subnet;
             }
-        } else if ($data->type === 'active directory') {
+        } elseif ($data->type === 'active directory') {
             if (empty($data->ad_server) or empty($data->ad_domain)) {
                 $temp = 'Active Directory Domain';
                 if (empty($data->ad_server)) {
@@ -290,7 +290,7 @@ class DiscoveriesModel extends BaseModel
             } else {
                 $data->description = 'Active Directory - ' . $data->ad_domain;
             }
-        } else if ($data->type === 'seed') {
+        } elseif ($data->type === 'seed') {
             if (empty($data->seed_ip)) {
                 \Config\Services::session()->setFlashdata('error', 'Missing or invalid field: seed_ip');
                 log_message('error', 'Missing or invalid field: seed_ip');
@@ -307,7 +307,7 @@ class DiscoveriesModel extends BaseModel
             if (empty($data->seed_restrict_to_private) or $data->seed_restrict_to_subnet !== 'n') {
                 $data->seed_restrict_to_private = 'y';
             }
-        } else if ($data->type === 'cloud') {
+        } elseif ($data->type === 'cloud') {
             // TODO
         } else {
             $data->description = '';
@@ -653,96 +653,96 @@ class DiscoveriesModel extends BaseModel
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="' . url_to('discoveryIssues', 1) . '">here</a>.';
             $issue->action = 'add credentials';
-        } else if (strpos($issue->{'output'}, 'ERROR: Failed to open connection - NT_STATUS_IO_TIMEOUT') !== false) {
+        } elseif (strpos($issue->{'output'}, 'ERROR: Failed to open connection - NT_STATUS_IO_TIMEOUT') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="' . url_to('discoveryIssues', 1) . '">here</a>.';
             $issue->action = 'add credentials';
-        } else if (strpos($issue->{'output'}, 'ERROR: Failed to open connection - NT_STATUS_CONNECTION_RESET') !== false) {
+        } elseif (strpos($issue->{'output'}, 'ERROR: Failed to open connection - NT_STATUS_CONNECTION_RESET') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'It is likely SMB1 was used in an attempt to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="' . url_to('discoveryIssues', 2) . '">here</a>.';
             $issue->action = '';
-        } else if (strpos($issue->{'output'}, 'ERROR: Failed to save ADMIN$/winexesvc.exe - NT_STATUS_ACCESS_DENIED') !== false) {
+        } elseif (strpos($issue->{'output'}, 'ERROR: Failed to save ADMIN$/winexesvc.exe - NT_STATUS_ACCESS_DENIED') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Are the ADMIN$ and IPC$ shares enabled? Check <a href="' . url_to('discoveryIssues', 3) . '">here</a>.';
             $issue->action = '';
-        } else if (strpos($issue->{'output'}, 'NT_STATUS_NO_LOGON_SERVERS') !== false) {
+        } elseif (strpos($issue->{'output'}, 'NT_STATUS_NO_LOGON_SERVERS') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Does the target PC has a DNS resolvable name? Is the machine on the domain? Check <a href="' . url_to('discoveryIssues', 4) . '">here</a>.';
             $issue->action = '';
-        } else if (strpos($issue->{'output'}, 'NT_STATUS_CONNECTION_REFUSED') !== false) {
+        } elseif (strpos($issue->{'output'}, 'NT_STATUS_CONNECTION_REFUSED') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Is the Windows firewall restricting incoming connections? Check <a href="' . url_to('discoveryIssues', 5) . '">here</a>.'; #We would try disabling the Windows Firewall, testing and seeing if it works. Then be sure to reenable the firewall. If it did work, create a new firewall rule to allow this connection.';
             $issue->action = '';
-        } else if (strpos($issue->{'output'}, 'NT_STATUS_NETLOGON_NOT_STARTED') !== false) {
+        } elseif (strpos($issue->{'output'}, 'NT_STATUS_NETLOGON_NOT_STARTED') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Is the network logon service is running on the target machine? Check <a href="' . url_to('discoveryIssues', 6) . '">here</a>.';
             $issue->action = '';
-        } else if (strpos($issue->{'output'}, 'NT_STATUS_ACCOUNT_EXPIRED') !== false) {
+        } elseif (strpos($issue->{'output'}, 'NT_STATUS_ACCOUNT_EXPIRED') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'The credentials have expired. Check <a href="' . url_to('discoveryIssues', 1) . '">here</a>.';
             $issue->action = 'add credentials';
-        } else if (strpos($issue->{'output'}, 'NT_STATUS_INVALID_PARAMETER') !== false) {
+        } elseif (strpos($issue->{'output'}, 'NT_STATUS_INVALID_PARAMETER') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'It is likely SMB1 was used in an attept to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="' . url_to('discoveryIssues', 2) . '">here</a>.';
             $issue->action = '';
-        } else if ($issue->output ==='["ERROR: UploadService failed - NT_STATUS_ACCESS_DENIED"]') {
+        } elseif ($issue->output ==='["ERROR: UploadService failed - NT_STATUS_ACCESS_DENIED"]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Are the ADMIN$ and IPC$ shares enabled? Check <a href="' . url_to('discoveryIssues', 3) . '">here</a>.';
             $issue->action = '';
-        } else if ($issue->output ==='["ERROR: StartService failed. NT_STATUS_CANT_WAIT."]') {
+        } elseif ($issue->output ==='["ERROR: StartService failed. NT_STATUS_CANT_WAIT."]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Most likely you are trying to audit a 32bit Windows machine. We support 64bit only for discovery (it\'s a winexe thing). You can copy the audit script to the target and run it manually until such time as you decommission the 32bit machine. Check <a href="' . url_to('discoveryIssues', 7) . '">here</a>.';
             $issue->action = '';
-        } else if ($issue->output ==='["ERROR: Failed to install service winexesvc - NT_STATUS_ACCESS_DENIED"]') {
+        } elseif ($issue->output ==='["ERROR: Failed to install service winexesvc - NT_STATUS_ACCESS_DENIED"]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'This likely means the user account being used does not have sufficient rights on the target machine. It may also be that the ADMIN$ share is not available on the target machine. Check <a href="' . url_to('discoveryIssues', 7) . '">here</a>.';
             $issue->action = 'add credentials';
-        } else if ($issue->output ==='["ERROR: StartService failed. NT_STATUS_PLUGPLAY_NO_DEVICE."]') {
+        } elseif ($issue->output ==='["ERROR: StartService failed. NT_STATUS_PLUGPLAY_NO_DEVICE."]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Does the target PC has a DNS resolvable name? Is the machine on the domain? Check <a href="' . url_to('discoveryIssues', 4) . '">here</a>.';
             $issue->action = '';
-        } else if (strpos($issue->{'output'}, 'STATUS_SHARING_VIOLATION') !== false) {
+        } elseif (strpos($issue->{'output'}, 'STATUS_SHARING_VIOLATION') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'This may be an issue on some Windows 7 and 2008 machines. We suggest a disk defrag on the target machine as a first step. See this <a href="https://support.microsoft.com/en-us/topic/-status-sharing-violation-error-message-when-you-try-to-open-a-highly-fragmented-file-on-a-computer-that-is-running-windows-7-or-windows-server-2008-r2-be899c3b-8c5a-c883-ce0d-055d258a9178" target="_blank">link</a>.';
             $issue->action = '';
-        } else if ($issue->output ==='["ERROR: CreateService failed. NT_STATUS_ACCESS_DENIED."]') {
+        } elseif ($issue->output ==='["ERROR: CreateService failed. NT_STATUS_ACCESS_DENIED."]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'It appears that the winexesvc.exe file has been copied to the target but the service could not be registered. Check your credentials and that they are of a machine Administrator account. Check <a href="' . url_to('discoveryIssues', 1) . '">here</a>.';
             $issue->action = '';
-        } else if ($issue->output ==='["ERROR: StartService failed. NT_STATUS_ACCESS_DENIED."]') {
+        } elseif ($issue->output ==='["ERROR: StartService failed. NT_STATUS_ACCESS_DENIED."]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'It appears that the winexesvc.exe file has been copied to the target and the service registered, however it fails to start. Check <a href="' . url_to('discoveryIssues', 8) . '">here</a>.';
             $issue->action = '';
-        } else if ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_NOT_SUPPORTED"]') {
+        } elseif ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_NOT_SUPPORTED"]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Most likely this is a result of attempting to connect using SMB2 to a Windows machine that only has SMB1 enabled. You should be using SMB2 as Microsoft has deprecated SMB1 due to security vulnerabilities.';
             $issue->action = '';
-        } else if ($issue->output ==='["",""]') {
+        } elseif ($issue->output ==='["",""]') {
             # Windows connection from Windows Open-AudIT server
             $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="' . url_to('discoveryIssues', 1) . '">here</a>.';
             $issue->action = 'add credentials';
-        } else if (strpos($issue->{'output'}, 'SSH detected but no valid SSH credentials') !== false) {
+        } elseif (strpos($issue->{'output'}, 'SSH detected but no valid SSH credentials') !== false) {
             # SSH connection from Open-AudIT server
             $issue->description = 'Check you have valid SSH credentials and that the Open-AudIT server IP is allowed to connect.';
             $issue->action = 'add credentials';
-        } else if (strpos($issue->{'output'}, 'SNMP detected, but no valid SNMP credentials') !== false) {
+        } elseif (strpos($issue->{'output'}, 'SNMP detected, but no valid SNMP credentials') !== false) {
             # SNMP connection from Open-AudIT server
             $issue->description = 'Check you have valid SNMP credentials and that the Open-AudIT server IP is allowed to connect.';
             $issue->action = 'add credentials';
-        } else if (strpos($issue->{'output'}, 'No management protocols for') !== false) {
+        } elseif (strpos($issue->{'output'}, 'No management protocols for') !== false) {
             # No management protcols and an unknown or unidentified device
             $issue->description = 'There are no open management ports to this device. This may be an issue or it may be a device of a type we cannot audit (in this case, please set the device type).';
             $issue->action = '';
-        } else if (strpos($issue->{'output'}, 'Could not SCP GET to') !== false) {
+        } elseif (strpos($issue->{'output'}, 'Could not SCP GET to') !== false) {
             $issue->description = 'Could not copy audit result from target to Open-AudIT Server. Check directory permissions.';
             $issue->action = '';
-        } else if (strpos($issue->{'output'}, 'Could not convert audit result from XML') !== false) {
+        } elseif (strpos($issue->{'output'}, 'Could not convert audit result from XML') !== false) {
             $issue->description = 'The audit result contains invalid XML. Please check the file. Consider increasing the configuration item discovery_ssh_timeout.';
             $issue->action = '';
-        } else if (strpos($issue->{'output'}, 'No credentials array passed to') !== false) {
+        } elseif (strpos($issue->{'output'}, 'No credentials array passed to') !== false) {
             $issue->description = 'Ensure you have credentials for this type.';
             $issue->action = 'add credentials';
-        } else if (strpos($issue->{'output'}, 'Could not retrieve audit script for') !== false) {
+        } elseif (strpos($issue->{'output'}, 'Could not retrieve audit script for') !== false) {
             $issue->description = 'The scripts directory at ' . ROOTPATH . 'other/scripts is not writable by the webserver. This must be fixed in order to create audit scripts to push to targets when running discovery.';
             if (php_uname('s') === 'Linux') {
                 $issue->description .= ' You should likely run chmod 777 ' . ROOTPATH . 'other/scripts.';
@@ -994,8 +994,8 @@ class DiscoveriesModel extends BaseModel
         }
         foreach (config('Openaudit') as $key => $value) {
             if (strpos($key, 'match_') !== false) {
-                if (empty($result[0]->match_options->{$key}) && ! empty($CI->config->config->{$key})) {
-                    $result[0]->match_options->{$key} = $CI->config->config->{$key};
+                if (empty($result[0]->match_options->{$key}) && ! empty(config('Openaudit')->{$key})) {
+                    $result[0]->match_options->{$key} = config('Openaudit')->{$key};
                 }
             }
         }
@@ -1348,7 +1348,7 @@ class DiscoveriesModel extends BaseModel
             $data->scan_options = json_encode($db_scan_options);
         }
 
-        if (! empty($data->killed)) {
+        if (!empty($data->killed)) {
             unset($data->killed);
             $log = new \stdClass();
             $log->discovery_id = $data->id;

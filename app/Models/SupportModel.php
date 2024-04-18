@@ -352,6 +352,7 @@ class SupportModel extends BaseModel
     public function getOs()
     {
         $data = new stdClass();
+        $return = array();
         if (php_uname('s') === 'Linux') {
             $data->os_name = 'linux';
             if (file_exists('/etc/os-release')) {

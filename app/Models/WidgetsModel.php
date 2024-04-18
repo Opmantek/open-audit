@@ -402,7 +402,7 @@ class WidgetsModel extends BaseModel
                     $filter = "devices.org_id IN ({$org_list}) AND devices.oae_manage = 'y'";
                 }
                 $sql = str_replace('@filter', $filter, $sql);
-            } else if (in_array($primary_table, $other_tables)) {
+            } elseif (in_array($primary_table, $other_tables)) {
                 $collection = $primary_table;
                 if ($collection !== 'orgs') {
                     $sql = str_replace('@filter', $primary_table . '.org_id IN (' . $org_list . ')', $sql);
@@ -422,7 +422,7 @@ class WidgetsModel extends BaseModel
                 }
                 $sql = str_replace('@filter', $filter, $sql);
             }
-        } else if (in_array($primary_table, $device_tables)) {
+        } elseif (in_array($primary_table, $device_tables)) {
             $collection = 'devices';
             $attribute = $widget->primary;
             $primary = "''";
@@ -456,7 +456,7 @@ class WidgetsModel extends BaseModel
             if (!empty($widget->limit)) {
                 $sql .= ' LIMIT ' . intval($widget->limit);
             }
-        } else if ($primary_table === 'devices') {
+        } elseif ($primary_table === 'devices') {
             $collection = 'devices';
             $attribute = $widget->primary;
             $primary = "''";
