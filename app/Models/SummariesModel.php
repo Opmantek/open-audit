@@ -106,8 +106,8 @@ class SummariesModel extends BaseModel
         }
         $tables = ' field audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
         $filter = '';
-        if (!empty($CI->response->meta->filter)) {
-            foreach ($CI->response->meta->filter as $filter_entry) {
+        if (!empty($instance->resp->meta->filter)) {
+            foreach ($instance->resp->meta->filter as $filter_entry) {
                 $filter .= ' AND ' . $filter_entry->name . ' ' . $filter_entry->operator . ' ' . '"' . $filter_entry->value . '"';
             }
         }
@@ -149,14 +149,14 @@ class SummariesModel extends BaseModel
         }
         if (!empty($set_count)) {
             if ($limit_upper == 8888888888) {
-                $CI->response->meta->filtered = count($result);
+                $instance->resp->meta->filtered = count($result);
             }
-            $CI->response->meta->total = count($result);
+            $instance->resp->meta->total = count($result);
         }
         if ($limit_upper != 8888888888) {
             $result = array_slice($result, $limit_lower, $limit_upper);
             if (!empty($set_count)) {
-                $CI->response->meta->filtered = count($result);
+                $instance->resp->meta->filtered = count($result);
             }
         }
         if (empty($result)) {
