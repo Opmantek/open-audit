@@ -746,7 +746,7 @@ class IntegrationsModel extends BaseModel
                                             $hit = true;
                                             if ($integration->debug) {
                                                 // TODO - ip not seeing in logs
-                                                $message = "Updating {$local_device->devices->ip} because {$ifield->external_field_name} == $test";
+                                                $message = "Updating {$local_device->name} at {$local_device->configuration->host} because {$ifield->external_field_name} == $test";
                                                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                                                 $this->db->query($sql, [$integration->id, microtime(true), $message]);
                                             }
