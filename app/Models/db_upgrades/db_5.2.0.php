@@ -183,20 +183,19 @@ log_message('info', (string)$db->getLastQuery());
 
 foreach ($roles as $role) {
     $permissions = json_decode($role->permissions);
-    if ($role->name === 'org_admin' or $role->name === 'user') {
+    if (!empty($permissions)) {
+        if ($role->name === 'admin') {
+            $permissions->agents = 'crud';
+            $permissions->executables = 'r';
+        }
         if ($role->name === 'org_admin') {
             $permissions->executables = 'crud';
+            $permissions->agents = 'crud';
         }
         if ($role->name === 'user') {
             $permissions->executables = 'r';
+            $permissions->agents = 'r';
         }
-        $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
-        $query = $db->query($sql, [json_encode($permissions), $role->id]);
-        $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-        log_message('info', (string)$db->getLastQuery());
-    }
-    if ($role->name === 'admin' or $role->name === 'org_admin') {
-        $permissions->agents = 'crud';
         $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
         $query = $db->query($sql, [json_encode($permissions), $role->id]);
         $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
