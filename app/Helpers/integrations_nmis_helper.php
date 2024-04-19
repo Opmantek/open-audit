@@ -757,7 +757,7 @@ if (!function_exists('integrations_update')) {
                 $message = '[integrations_update] Device ' . $device->configuration->host . ' updated in NMIS.';
                 $count = count($external_devices);
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
-                $db->query($sql, [$integration->id, microtime(true)]);
+                $db->query($sql, [$integration->id, microtime(true), $message]);
             }
         }
         unlink($ckfile);
