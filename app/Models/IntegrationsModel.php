@@ -462,7 +462,7 @@ class IntegrationsModel extends BaseModel
                     $message = 'Updating device ID: ' . $device->devices->id . ' for ' . $device->devices->name . ' in Open-AudIT.';
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                     $this->db->query($sql, [$integration->id, microtime(true), $message]);
-                    $devicesModel->update($temp_device);
+                    $devicesModel->update($temp_device->id, $temp_device);
                     $update++;
                     $device->devices->ip = ip_address_from_db($device->devices->ip);
                     $discover_devices[] = $device;
