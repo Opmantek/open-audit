@@ -451,15 +451,16 @@ class IntegrationsModel extends BaseModel
                     $sql = "SELECT omk_uuid FROM devices WHERE id = ?";
                     $result = $this->db->query($sql, [intval($device->devices->id)])->getResult();
                     foreach ($integration->attributes->fields as $field) {
+                        $message = 'Not updating device ID: ' . $device->devices->id . ' for ' . $device->devices->name . ' in Open-AudIT because no changed fields.';
                         if (($field->priority === 'external' or (empty($result[0]->uuid) and $integration->attributes->type === 'nmis')) and strpos($field->internal_field_name, 'devices.') !== false) {
                             // a regular field in Open-AudIT that we should update
                             $system_field = str_replace('devices.', '', $field->internal_field_name);
                             if (!empty($device->devices->{$system_field})) { # TODO - something better than not empty
                                 $temp_device->{$system_field} = $device->devices->{$system_field};
+                                $message = 'Updating device ID: ' . $device->devices->id . ' for ' . $device->devices->name . ' in Open-AudIT because ' . $system_field . ' is ' . $device->devices->{$system_field} . ' and priority is external.';
                             }
                         }
                     }
-                    $message = 'Updating device ID: ' . $device->devices->id . ' for ' . $device->devices->name . ' in Open-AudIT.';
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                     $this->db->query($sql, [$integration->id, microtime(true), $message]);
                     $devicesModel->update($temp_device->id, $temp_device);
@@ -746,7 +747,7 @@ class IntegrationsModel extends BaseModel
                                             $hit = true;
                                             if ($integration->debug) {
                                                 // TODO - ip not seeing in logs
-                                                $message = "Updating {$local_device->name} at {$local_device->configuration->host} because {$ifield->external_field_name} == $test";
+                                                $message = "Updating {$local_device->name} at {$local_device->configuration->host} in NMIS because {$ifield->external_field_name} == $test and priority is internal.";
                                                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
                                                 $this->db->query($sql, [$integration->id, microtime(true), $message]);
                                             }
@@ -770,12 +771,6 @@ class IntegrationsModel extends BaseModel
             $sql = "UPDATE integrations SET update_external_count = ? WHERE id = ?";
             $this->db->query($sql, [count($update_external_devices), $integration->id]);
 
-            // if ($integration->debug and count($update_external_devices) > 0) {
-            //     $message = json_encode($update_external_devices);
-            //     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
-            //     $this->db->query($sql, [$integration->id, microtime(true), $message]);
-            // }
-
             integrations_update($integration, $update_external_devices);
         }
 
@@ -795,7 +790,7 @@ class IntegrationsModel extends BaseModel
                                 $test2 = $this->getValue($external_device, $field->external_field_name);
                                 if ($test1 == $test2) {
                                     if ($integration->debug) {
-                                        $message = 'Removing ' . $external_device->name . ' delete from list.';
+                                        $message = 'Removing ' . $external_device->name . ' from delete list (not deleting this device in NMIS).';
                                         $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                                         $this->db->query($sql, [$integration->id, microtime(true), $message]);
                                     }
@@ -813,7 +808,7 @@ class IntegrationsModel extends BaseModel
                 integrations_delete($integration, $delete_external_devices);
             } else {
                 $message = '0 devices require deleting in ' . $integration->attributes->type . ' for ' . $integration->attributes->name . '.';
-                $sql = "/* m_integrations::execute */ " . "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
                 $this->db->query($sql, [$integration->id, microtime(true), $message]);
             }
         }
