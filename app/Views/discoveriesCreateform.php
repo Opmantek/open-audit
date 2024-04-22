@@ -145,11 +145,11 @@ window.onload = function () {
                 $("#ad").css("display", "none");
                 $("#seed").css("display", "none");
                 $("#subnet").css("display", "block");
-            } elseif ($type == "active directory") {
+            } else if ($type == "active directory") {
                 $("#ad").css("display", "block");
                 $("#seed").css("display", "none");
                 $("#subnet").css("display", "none");
-            } elseif ($type == "seed") {
+            } else if ($type == "seed") {
                 $("#ad").css("display", "none");
                 $("#seed").css("display", "block");
                 $("#subnet").css("display", "block");
