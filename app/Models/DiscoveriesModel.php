@@ -40,6 +40,10 @@ class DiscoveriesModel extends BaseModel
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
         }
+        $instance = & get_instance();
+        if ($instance->config->product  !== 'enterprise') {
+            $this->builder->where('discoveries.type !=', 'seed');
+        }
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
@@ -61,7 +65,6 @@ class DiscoveriesModel extends BaseModel
     {
         $instance = & get_instance();
         $instance->networksModel = new \App\Models\NetworksModel();
-
         if (empty($data)) {
             return null;
         }
@@ -73,6 +76,9 @@ class DiscoveriesModel extends BaseModel
         if ($data->type !== 'subnet' && $data->type !== 'active directory' && $data->type !== 'cloud' && $data->type !== 'integration' && $data->type !== 'seed') {
             log_message('error', 'Invalid type provided to Discoveries::create (' . $data->type . ')');
             \Config\Services::session()->setFlashdata('error', 'Invalid type provided to Discoveries::Create.');
+            return null;
+        }
+        if ($instance->config->product !== 'enterprise' and $data->type === 'seed') {
             return null;
         }
         if (empty($instance->config->discovery_default_scan_option)) {
@@ -775,6 +781,10 @@ class DiscoveriesModel extends BaseModel
         $this->builder->join('orgs', 'discoveries.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $instance = & get_instance();
+        if ($instance->config->product  !== 'enterprise') {
+            $this->builder->where('discoveries.type !=', 'seed');
+        }
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
