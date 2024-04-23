@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
+$instance = & get_instance();
 ?>
         <main class="container-fluid">
 
@@ -160,7 +161,11 @@ include 'shared/collection_functions.php';
                 </div>
                 <div class="card-body" id="advanced">
                     <div class="row">
-                        <?php $components = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard');
+                        <?php
+                        $components = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard');
+                        if (!empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
+                            $components = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'executable', 'ip', 'log', 'memory', 'module', 'monitor');
+                        }
                         foreach ($components as $component) { ?>
                         <div class="col-lg-1 text-center">
                             <div>
@@ -176,6 +181,9 @@ include 'shared/collection_functions.php';
                     <br>
                     <div class="row">
                         <?php $components = array('netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item');
+                        if (!empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
+                            $components = array('motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server');
+                        }
                         foreach ($components as $component) { ?>
                         <div class="col-lg-1 text-center">
                             <div>
@@ -191,6 +199,9 @@ include 'shared/collection_functions.php';
                     <br>
                     <div class="row">
                         <?php $components = array('service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+                        if (!empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
+                            $components = array('server_item', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+                        }
                         foreach ($components as $component) { ?>
                         <div class="col-lg-1 text-center">
                             <div>

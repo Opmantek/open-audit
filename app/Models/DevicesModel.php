@@ -356,8 +356,11 @@ class DevicesModel extends BaseModel
         $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
 
         $included = array();
-        // No executable, file, radio, san, scsi, usb
+        // No excecutable, file, radio, san, scsi, usb
         $current = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        if (!empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
+            $current = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'executable', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        }
 
         foreach ($current as $table) {
             $sql = "SELECT count(*) AS `count` FROM `$table` LEFT JOIN `devices` ON $table.device_id = devices.id WHERE devices.org_id IN (" . implode(',', $orgs) . ")";
