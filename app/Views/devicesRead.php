@@ -1784,14 +1784,20 @@ if (!empty($included['fields'])) {
                                             </thead>
                                             <tbody>
                                             <?php if (!empty($included['executable'])) {
-                                                foreach ($included['executable'] as $row) { ?>
+                                                foreach ($included['executable'] as $row) {
+                                                    if (intval($row->size > 1024)) {
+                                                        $size = number_format(intval($row->size / 1024), 0) . ' MB';
+                                                    } else {
+                                                        $size = $row->size . ' KB';
+                                                    }
+                                                    ?>
                                                 <tr>
                                                     <?= device_component_button_read('executable', $row->id) ?>
                                                     <td><?= $row->name ?></td>
-                                                    <td><?= $row->full_name ?></td>
+                                                    <td style="white-space: nowrap;"><?= $row->full_name ?></td>
                                                     <td><?= $row->description ?></td>
-                                                    <td><?= $row->size ?></td>
-                                                    <td><?= $row->last_changed ?></td>
+                                                    <td style="white-space: nowrap;"><span style="display:none;"><?= str_pad($row->size, 20, '0', STR_PAD_LEFT) ?></span><?= $size ?></td>
+                                                    <td style="white-space: nowrap;"><?= $row->last_changed ?></td>
                                                     <td><?= $row->owner ?></td>
                                                     <td><?= $row->permission ?></td>
                                                 </tr>
