@@ -101,7 +101,7 @@ class Agents extends BaseController
         $id = intval($id);
         $request = \Config\Services::request();
         $ip = $request->getIPAddress();
-        log_message('info', 'ACCESS:agents:download:' . $id . ':' . $ip);
+        log_message('info', 'ACCESS:agents:execute:' . $id . ':' . $ip);
         $this->agentsModel = new \App\Models\AgentsModel();
         $agentResponse = new \stdClass();
         $agentResponse->actions = new \stdClass();
@@ -120,7 +120,10 @@ class Agents extends BaseController
                 $device = $this->devicesModel->read($device_id)[0];
             }
         }
-        if (empty($input) or empty($device)) {
+        if (empty($device->id)) {
+            $agentResponse->actions->audit = true;
+        }
+        if (empty($input)) {
             $agentResponse->actions->audit = true;
             $input = new \stdClass();
             $input->version = '0';
@@ -129,22 +132,7 @@ class Agents extends BaseController
 
         // If we're not the current version, insert download agent and the command to update
         if (intval(str_replace('.', '', $input->version)) < $current_agent_version) {
-            $action = new \stdClass();
-            $download = '';
-            if (!empty($id)) {
-                $download = base_url() . "index.php/agents/$id/download";
-            } else {
-                if (stripos($input->os_family, 'Windows') !== false) {
-                    $download = base_url() . "index.php/agents/windows/download/agent_windows.ps1";
-                }
-            }
-            $action->download = $download;
-            $agentResponse->actions->commands[] = $action;
-            unset($action);
-            $action = new \stdClass();
-            $action->command = 'powershell.exe -executionpolicy bypass -file .\downloads\agent_windows.ps1 -install -debug 1';
-            $agentResponse->actions->commands[] = $action;
-            unset($action);
+            $agentResponse->actions->update = true;
         }
 
         // Get the agent or all agents
