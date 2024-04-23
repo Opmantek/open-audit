@@ -634,7 +634,7 @@ if (!function_exists('collections_list')) {
 
         $collections->discovery_scan_options = new \StdClass();
         $collections->discovery_scan_options->icon = 'fa fa-random';
-        $collections->discovery_scan_options->name = 'Scan Options';
+        $collections->discovery_scan_options->name = 'Discovery Scan Options';
         $collections->discovery_scan_options->edition = 'Enterprise';
         $collections->discovery_scan_options->orgs = 'b';
         $collections->discovery_scan_options->actions = new \stdClass();

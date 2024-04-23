@@ -243,6 +243,9 @@ class SummariesModel extends BaseModel
                 $collection->count = $count;
             }
         }
+        if (empty($instance->config->feature_executables) or $instance->config->feature_executables !== 'y') {
+            unset($collections->executables);
+        }
         $collections->maps->count = 1;
         $collections->reports->count = 12;
         $sql = "SELECT COUNT(*) AS `count` FROM `orgs` WHERE `id` IN (" . implode(',', $orgs) . ")";
