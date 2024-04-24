@@ -1491,7 +1491,7 @@ if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainR
         $item.description  = $_.Description
         $item.sid = if ($_.SID) { $_.SID } else { "" }
         $members = @()
-        Get-LocalGroupMember $_.Name | ForEach {
+        Get-LocalGroupMember $_.Name -ErrorAction Ignore | ForEach {
             $members += $_.Name
         }
         $item.members = [string]::join(", ", $members)
