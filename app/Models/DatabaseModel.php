@@ -160,6 +160,9 @@ class DatabaseModel extends BaseModel
 
     public function read(string $table = ''): array
     {
+        if (!$this->db->tableExists($table)) {
+            return array();
+        }
         $builder = $this->db->table($table);
         $item = new \stdClass();
         $item->id = $table;

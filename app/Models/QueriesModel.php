@@ -196,6 +196,12 @@ class QueriesModel extends BaseModel
                 $category->attributes->name = '&nbsp;';
             }
         }
+        $components = array('devices', 'bios', 'certificate', 'disk', 'dns', 'executable', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $included['tables'] = array();
+        $databaseModel = new \App\Models\DatabaseModel();
+        foreach ($components as $component) {
+            $included['tables'][$component] = $this->db->getFieldNames($component);
+        }
         return $included;
     }
 

@@ -32,7 +32,7 @@ include 'shared/create_functions.php';
                                 <?php if (!empty($config->feature_queries_advanced) and $config->feature_queries_advanced === 'y') { ?>
                                     <?= create_select('data[attributes][advanced]', __('Advanced'), '', $dictionary->attributes->create) ?>
                                 <?php } ?>
-
+                                <!--
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][sql]"><?= __('SQL'); ?> <span style="color: #dc3545;">*</span></label>
@@ -40,6 +40,59 @@ include 'shared/create_functions.php';
                                     </div>
                                 </div>
                                 <br>
+                                -->
+
+
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-4">
+                                        <label class="form-label" for="tables"><?= __('Tables'); ?></label>
+                                        <select class="form-select" multiple aria-label="tables" id="tables" name="tables" size="10">
+                                            <option selected>devices</option>
+                                            <option value="">------</option>
+                                            <?php foreach ($included['tables'] as $table => $fields) { if ($table !== 'devices') { ?>
+                                                <option value="<?= $table ?>"><?= $table ?></option>
+                                            <?php } } ?>
+                                        </select>
+                                    </div>
+                                    <!--
+                                    <div class="col-4">
+                                        <label class="form-label" for="attributes_devices"><?= __('Devices'); ?></label>
+                                        <select class="form-select" id="attributes_devices" name="attributes_devices" multiple aria-label="attributes_devices" size="10">
+                                        </select>
+                                    </div>
+                                    <div style="display:none;" class="col-4">
+                                        <label class="form-label" for="attributes_bios"><?= __('Bios'); ?></label>
+                                        <select class="form-select" id="attributes_bios" name="attributes_bios" multiple aria-label="attributes_bios" size="10">
+                                        </select>
+                                    </div>
+                                    -->
+                                    <?php foreach ($included['tables'] as $table => $fields) { ?>
+                                    <div style="display:none;" class="col-4" id="attributes_block_<?= $table ?>">
+                                        <label class="form-label" for="attributes_<?= $table ?>"><?= $table ?></label>
+                                        <select class="form-select" id="attributes_<?= $table ?>" name="attributes_<?= $table ?>" multiple aria-label="attributes_<?= $table ?>" size="10">
+                                        <?php foreach ($fields as $field) { ?>
+                                            <option value="<?= $table . '.' . $field ?>"><?= $field ?></option>
+                                        <?php } ?>
+                                        </select>
+                                    </div>
+                                    <?php } ?>
+                                </div>
+                                <br>
+
+
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-8">
+                                        <label class="form-label" for="select"><?= __('SELECT'); ?></label>
+                                        <textarea class="form-control" rows="4" name="select" id="select"></textarea>
+                                    </div>
+                                </div>
+                                <br>
+
+
+
+
+
+
                                 <div class="row">
                                     <div class="offset-2 col-8">
                                         <label for="submit" class="form-label">&nbsp;</label>
@@ -70,6 +123,8 @@ include 'shared/create_functions.php';
                     </div>
                 </div>
             </div>
+            <pre><?= print_r($included['tables']) ?>
+        </pre>
         </main>
 
 <script {csp-script-nonce}>
@@ -77,6 +132,25 @@ window.onload = function () {
     $(document).ready(function () {
         $("#data\\[attributes\\]\\[menu_display\\]").val("y");
         $("#data\\[attributes\\]\\[advanced\\]").val("n");
+        $('#attributes_block_devices').css("display", "block");
+        $('#tables').change(function(){
+            $("[id^=attributes_block_]").css("display", "none");
+            $("#attributes_block_" + $("#tables").val()).css("display", "block");
+            console.log('Displaying attributes_block_' + $("#tables").val());
+        });
+        $("[id^=attributes_]").change(function(){
+            var $field = $(this).val();
+            if ($field != "") {
+                console.log("Field is: " + $field);
+                $select = $("#select").val();
+                if ($select != "") {
+                    $newSelect = $select + ',' + $field;
+                } else {
+                    $newSelect = $field;
+                }
+                $("#select").val($newSelect);
+            }
+        });
     });
 }
 </script>
