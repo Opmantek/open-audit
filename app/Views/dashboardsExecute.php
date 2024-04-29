@@ -32,40 +32,51 @@ foreach ($checks as $key => $value) {
                         <?php if ($resource->sidebar === 'y') { ?>
                         <div class="col-3">
                              <ul class="list-group list-group-flush">
+                                <?php if (!empty($instance->user->permissions['devices']) and strpos($instance->user->permissions['devices'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-desktop"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>"><?= __('Devices') ?></a></div>
                                     </div>
                                 </li>
+                                <?php } ?>
                                 <?php if (!empty($summary_id)) { ?>
+                                    <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-laptop"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('summariesExecute', $summary_id) ?>"><?= __('Device Types') ?></a></div>
                                     </div>
                                 </li>
+                                    <?php } ?>
                                 <?php } ?>
                                 <?php if (!empty($os_systems_id)) { ?>
+                                    <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-tags"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('summariesExecute', $os_systems_id) ?>"><?= __('Operating Systems') ?></a></div>
                                     </div>
                                 </li>
+                                    <?php } ?>
                                 <?php } ?>
+                                <?php if (!empty($user->permissions['maps']) and strpos($user->permissions['maps'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-map-o"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('mapsCollection') ?>"><?= __('Map') ?></a></div>
                                     </div>
                                 </li>
+                                <?php } ?>
+                                <?php if (!empty($user->permissions['discoveries']) and strpos($user->permissions['discoveries'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-binoculars"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('discoveriesCollection') ?>"><?= __('Discoveries') ?></a></div>
                                     </div>
                                 </li>
+                                <?php } ?>
+                                <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-television"></span></div>
@@ -120,6 +131,7 @@ foreach ($checks as $key => $value) {
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('reportsExecute', 30002) ?>"><?= __('Devices Not Seen 90 Days') ?></a></div>
                                     </div>
                                 </li>
+                                <?php } ?>
 
                                 <?php if ($display) {
                                     echo "<li class=\"list-group-item\">\n"; ?>
@@ -237,25 +249,25 @@ window.onload = function () {
         $('.chart-raw-legend').css('overflow-y','visible');
 
         Highcharts.generictheme = {
-            // colors: ['#1f284f', '#4a3165', '#7a3671', '#a83a71', '#d14565', '#ef5c51', '#ff7e35', '#ffa600'],
+            colors: ['#1f284f', '#4a3165', '#7a3671', '#a83a71', '#d14565', '#ef5c51', '#ff7e35', '#ffa600'],
             chart: {
                 backgroundColor: '#fff',
             },
             title: {
                 style: {
-                    // color: '#404040',
+                    color: '#404040',
                     // font: '16px "Trebuchet MS", Verdana, sans-serif'
                 }
             },
             subtitle: {
                 style: {
-                    // color: '#404040',
+                    color: '#404040',
                     // font: '12px "Trebuchet MS", Verdana, sans-serif'
                 }
             },
             legend: {
                 itemStyle: {
-                    // color: '#404040',
+                    color: '#404040',
                     // font: '9pt Trebuchet MS, Verdana, sans-serif',
                 },
                 itemHoverStyle: {

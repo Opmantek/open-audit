@@ -560,6 +560,7 @@ foreach ($config->modules as $module) {
                     </div>
                     <div class="col-6 clearfix" style="padding-bottom: 2px; padding-top: 10px;">
                         <form class="float-end" method="post" action="<?= url_to('searchCreate') ?>">
+                            <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                             <div class="btn-group" role="group">
                                 <input type="hidden" name="data[access_token]" value="<?= $meta->access_token; ?>">
                                 <label style="padding-top:5px;">Search&nbsp;</label>
@@ -568,6 +569,7 @@ foreach ($config->modules as $module) {
                                 <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]'>
                                 <button class="btn btn-sm btn-outline-secondary" type="submit" title="Submit"><span class="fa fa-search" title="<?= __('Search') ?>"></span></button>
                             </div>
+                            <?php } ?>
                             <div class="btn-group" role="group">
                                 <div class="dropdown float-end">
                                     <button class="btn btn-sm dropdown-toggle btn-outline-secondary dash-drop" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">

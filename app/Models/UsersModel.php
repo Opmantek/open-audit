@@ -294,28 +294,28 @@ class UsersModel extends BaseModel
             }
             $user->permissions = $userRoles;
             if (empty($user->permissions['baselines_policies'])) {
-                $user->permissions['baselines_policies'] = $user->permissions['baselines'];
+                $user->permissions['baselines_policies'] = (!empty($user->permissions['baselines'])) ? $user->permissions['baselines'] : '';
             }
             if (empty($user->permissions['baselines_results'])) {
-                $user->permissions['baselines_results'] = $user->permissions['baselines'];
+                $user->permissions['baselines_results'] = (!empty($user->permissions['baselines'])) ? $user->permissions['baselines'] : '';
             }
             if (empty($user->permissions['components'])) {
-                $user->permissions['components'] = $user->permissions['devices'];
+                $user->permissions['components'] = (!empty($user->permissions['devices'])) ? $user->permissions['devices'] : '';
             }
             if (empty($user->permissions['discovery_log'])) {
-                $user->permissions['discovery_log'] = $user->permissions['discoveries'];
+                $user->permissions['discovery_log'] = (!empty($user->permissions['discoveries'])) ? $user->permissions['discoveries'] : '';
             }
-            if (empty($user->permissions['integrations_log']) and !empty($user->permissions['integrations'])) {
-                $user->permissions['integrations_log'] = $user->permissions['integrations'];
+            if (empty($user->permissions['integrations_log'])) {
+                $user->permissions['integrations_log'] = (!empty($user->permissions['integrations'])) ? $user->permissions['integrations'] : '';
             }
-            if (empty($user->permissions['integrations_rules']) and !empty($user->permissions['integrations'])) {
-                $user->permissions['integrations_rules'] = $user->permissions['integrations'];
+            if (empty($user->permissions['integrations_rules'])) {
+                $user->permissions['integrations_rules'] = (!empty($user->permissions['integrations'])) ? $user->permissions['integrations'] : '';
             }
             if (empty($user->permissions['rack_devices'])) {
-                $user->permissions['rack_devices'] = $user->permissions['racks'];
+                $user->permissions['rack_devices'] = (!empty($user->permissions['racks'])) ? $user->permissions['racks'] : '';
             }
             if (empty($user->permissions['search'])) {
-                $user->permissions['search'] = $user->permissions['devices'];
+                $user->permissions['search'] = (!empty($user->permissions['devices'])) ? $user->permissions['devices'] : '';
             }
             if (empty($user->permissions['maps'])) {
                 $user->permissions['maps'] = 'r';

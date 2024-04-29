@@ -113,7 +113,7 @@ if (!function_exists('response_create')) {
         // log_message('debug', 'UserPermission: ' . $instance->user->permissions[$response->meta->collection]);
 
         if ($response->meta->collection !== 'help') {
-            if (strpos($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action]) === false) {
+            if (empty($instance->user->permissions[$response->meta->collection]) or strpos($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action]) === false) {
                 $message = 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', but has no permission to do so.';
                 $response->errors = $message;
                 $response->meta->header = 403;
@@ -124,7 +124,7 @@ if (!function_exists('response_create')) {
                     exit();
                 } else {
                     \Config\Services::session()->setFlashdata('error', $message);
-                    header('Location: '. url_to('devicesCollection'));
+                    header('Location: '. url_to('home'));
                     exit();
                 }
             } else {
