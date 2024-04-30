@@ -101,10 +101,10 @@ function collection_card_header(string $collection = '', string $icon = '', obje
     }
 
     $return = "<div class=\"row\">
-                        <div class=\"col-4 clearfix\">
+                        <div class=\"col-3 clearfix\">
                                 <h6 style=\"padding-top:10px;\"><span class=\"{$icon} oa-icon\"></span>{$label}</h6>
                         </div>
-                        <div class=\"col-8 clearfix\">
+                        <div class=\"col-9 clearfix\">
                             <div class=\"btn-group btn-group-sm float-end\" role=\"group\" id=\"oa_panel_buttons\">
                                 <div class=\"page-title-right\">
                                 $create_button
