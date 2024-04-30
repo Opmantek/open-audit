@@ -106,10 +106,10 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     }
 
     $return = "<div class=\"row\">
-                        <div class=\"col-6 clearfix\">
+                        <div class=\"col-4 clearfix\">
                             <h6 style=\"padding-top:10px;\"><span class=\"{$icon} oa-icon\"></span>{$collection_title}</h6>
                         </div>
-                        <div class=\"col-6 clearfix\">
+                        <div class=\"col-8 clearfix\">
                             <div class=\"btn-group btn-group-sm float-end\" role=\"group\" id=\"oa_panel_buttons\">
                                 <div class=\"page-title-right\">
                                     $collection_button
