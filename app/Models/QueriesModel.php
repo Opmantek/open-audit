@@ -85,11 +85,60 @@ class QueriesModel extends BaseModel
                 return false;
             }
         }
-        $data = $this->createFieldData('queries', $data);
-        if (empty($data)) {
-            return null;
+
+        if (empty($data->sql) and !empty($_POST['select'])) {
+            # Build the query
+            $columns = array();
+            $tables = array();
+            if (!empty($_POST['select'])) {
+                foreach ($_POST['select'] as $column) {
+                    if (preg_match('/^[a-z_.]+$/', $column)) {
+                        $columns[] = $column;
+                    }
+                }
+                for ($i=0; $i < count($columns); $i++) {
+                    $tables[] = explode('.', $columns[$i])[0];
+                    $columns[$i] = $columns[$i] . ' AS `' . $columns[$i] . '`';
+                }
+                $sql = 'SELECT ' . implode(', ', $columns) . ' FROM devices ';
+                $tables = array_unique($tables);
+                foreach ($tables as $table) {
+                    if ($table !== 'devices') {
+                        $sql .= " LEFT JOIN $table ON ($table.device_id = devices.id AND $table.current = 'y')";
+                    }
+                }
+                $sql .= ' WHERE @filter';
+                $allowed_operators = array('=', '!=', 'LIKE', 'NOT LIKE', '>', '=>', '<', '=<', 'IN', 'NOT IN');
+                if (!empty($_POST['where'])) {
+                    foreach ($_POST['where'] as $where) {
+                        if (!empty($where['field'])) {
+                            if (preg_match('/^[a-z_.]+$/', $where['field'])) {
+                                if (in_array($where['operator'], $allowed_operators)) {
+                                    $sql .= ' AND ' . $where['field'] . ' ' . $where['operator'] . ' ' . $this->db->escape($where['value']);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!empty($_POST['group_by'])) {
+                    if (preg_match('/^[a-z_.]+$/', $_POST['group_by'])) {
+                        $sql .= ' GROUP BY ' . $_POST['group_by'];
+                    }
+                }
+                if (!empty($_POST['order_by'])) {
+                    if (preg_match('/^[a-z_.]+$/', $_POST['order_by'])) {
+                        $sql .= ' ORDER BY ' . $_POST['order_by'];
+                    }
+                }
+            }
+            $data->sql = $sql;
         }
-        $this->builder->insert($data);
+
+        if (!empty($data->sql)) {
+            $data = $this->createFieldData('queries', $data);
+            $this->builder->insert($data);
+        }
+
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return null;
