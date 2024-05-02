@@ -95,7 +95,7 @@ include 'shared/read_functions.php';
                                 <?= read_field('user_membership_attribute', $resource->user_membership_attribute, $dictionary->columns->user_membership_attribute, $update) ?>
                             <?php } ?>
                             <?= read_field('dn_account', $resource->dn_account, $dictionary->columns->dn_account, $update) ?>
-                            <?= read_field('dn_password', $resource->dn_password, $dictionary->columns->dn_password, $update) ?>
+                            <?= read_field('dn_password', '', $dictionary->columns->dn_password, $update) ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="lang" class="form-label"><?= __('Language') ?></label>
@@ -148,6 +148,15 @@ window.onload = function () {
         $("#use_auth").val("<?= $resource->use_auth ?>");
         $("#type").val("<?= $resource->type ?>");
         $("#lang").val("<?= $resource->lang ?>");
+
+
+        <?php if (isset($resource->dn_password)) {
+            if ($resource->dn_password !== '') { ?>
+                $("#dn_password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+            <?php } else { ?>
+                $("#dn_password").attr("placeholder", "<?= __("has not been set") ?>");
+            <?php }
+        } ?>
     });
 }
 </script>

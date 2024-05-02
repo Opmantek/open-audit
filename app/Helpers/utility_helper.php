@@ -299,6 +299,17 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'ldap_servers') {
+        foreach ($result as $item) {
+            if (!empty($item->dn_password)) {
+                $decrypted = simpleDecrypt($item->dn_password, config('Encryption')->key);
+                if (!empty($decrypted)) {
+                    $item->dn_password = $decrypted;
+                }
+            }
+        }
+    }
+
     if ($type === 'locations') {
         foreach ($result as $item) {
             if (!empty($item->options)) {

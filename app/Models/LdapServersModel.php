@@ -65,6 +65,9 @@ class LdapServersModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        if (!empty($data->dn_password)) {
+            $data->dn_password = simpleEncrypt($data->dn_password, config('Encryption')->key);
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
@@ -154,6 +157,13 @@ class LdapServersModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
+        $count = count($query);
+        for ($i=0; $i < $count; $i++) {
+            $decrypted = simpleDecrypt($query[$i]->dn_password, config('Encryption')->key);
+            if (!empty($decrypted)) {
+                $query[$i]->dn_password = $decrypted;
+            }
+        }
         return $query->getResult();
     }
 
@@ -196,6 +206,9 @@ class LdapServersModel extends BaseModel
     public function update($id = null, $data = null): bool
     {
         $data = $this->updateFieldData('ldap_servers', $data);
+        if (!empty($data->dn_password)) {
+            $data->dn_password = simpleEncrypt($data->dn_password, config('Encryption')->key);
+        }
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
         if ($this->sqlError($this->db->error())) {
