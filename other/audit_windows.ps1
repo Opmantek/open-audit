@@ -1763,10 +1763,59 @@ if ($debug -gt 0) {
 }
 
 
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+$result.server = @()
+$result.server_item = @()
+$item = @{}
+if ((Get-WindowsFeature Web-Server).InstallState -eq "Installed") {
+    # Get IIS details
+    Clear-Variable -name item
+    $item = @{}
+    $item.type = 'web';
+    $item.name = 'IIS';
+    $item.version = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$env:SystemRoot\system32\inetsrv\InetMgr.exe").ProductVersion
+    $service = Get-Service -Name W3SVC
+    $item.status = $service.Status.ToString()
+    $result.server += $item
 
-
-
-
+    # Get the individual websites now
+    Get-Website -ErrorAction Ignore | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        $item.type = 'website';
+        $item.name = $_.name;
+        $item.parent_name = 'IIS';
+        $item.id_internal = $_.id;
+        $item.status = [string]$_.state;
+        $item.path = $_.physicalPath;
+        $item.path = $item.path.replace("%SystemDrive%", "$Env:SystemDrive");
+        $bindings = $_.bindings.Collection.bindingInformation;
+        $item.ip = $($bindings -split ":")[0];
+        $item.port = $($bindings -split ":")[1];
+        $item.hostname = $($bindings -split ":")[2];
+        $item.size = [math]::ceiling((Get-ChildItem $item.path -force -Recurse -ErrorAction SilentlyContinue| measure Length -sum).sum / 1Mb);
+        $item.instance = $_.applicationPool;
+        $item.log_status = $_.logfile.enabled.ToString();
+        $item.log_format = $_.logfile.logFormat;
+        $item.log_path = $_.logfile.directory + "\W3SVC" + $_.id;
+        $item.log_rotation = '';
+        if ($_.logfile.period -eq 'MaxSize') {
+            if ($_.logfile.truncateSize -eq -1) {
+                $item.log_rotation = 'Unlimited file size';
+            } else {
+                $item.log_rotation = "When file size reaches $([int]($_.logfile.truncateSize / 1Mb)) MB";
+            }
+        } else {
+            $item.log_rotation = $_.logfile.period;
+        }
+        $result.server_item += $item
+    }
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.server_item.count
+    Write-Host "IIS, $count entries took $totalSecs seconds"
+}
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.netstat = @()
