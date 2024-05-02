@@ -1212,7 +1212,7 @@ if (! function_exists('ip_audit')) {
         }
 
         // update any ip addresses retrieved by SNMP
-        if (!empty($ip) and is_array($ip->item) and count($ip->item) > 0) {
+        if (!empty($ip->item) and is_array($ip->item) and count($ip->item) > 0) {
             $log->command_status = 'notice';
             $log->message = 'Processing found ip addresses for ' . $device->ip;
             $discoveryLogModel->create($log);
@@ -1956,7 +1956,7 @@ if (! function_exists('ip_audit')) {
                     $device_json->module[] = $item;
                 }
             }
-            if (isset($ip) and is_countable($ip) and count($ip) > 0) {
+            if (!empty($ip->item) and is_array($ip->item) and count($ip->item) > 0) {
                 $device_json->ip = array();
                 foreach ($ip->item as $item) {
                     unset($item->device_id);
