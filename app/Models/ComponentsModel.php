@@ -948,7 +948,7 @@ class ComponentsModel extends BaseModel
                         $data[$i]->name .= ' formatted ' . $data[$i]->format;
                     }
                 }
-                if (!empty($data[$i]->hard_drive_index)) {
+                if (isset($data[$i]->hard_drive_index) and ($data[$i]->hard_drive_index) > '') {
                     $data[$i]->name .= ' on device ' . $data[$i]->hard_drive_index;
                 }
             }
