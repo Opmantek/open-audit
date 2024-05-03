@@ -55,7 +55,7 @@ if (!function_exists('audit_convert')) {
                         for ($i=0; $i < count($audit->{$section}); $i++) {
                             if (!empty($audit->{$section}[$i])) {
                                 foreach ($audit->{$section}[$i] as $key => $value) {
-                                    if (empty($value)) {
+                                    if (isset($value) and ((is_int($value) and $value === 0) or (is_string($value) and $value === ''))) {
                                         unset($audit->{$section}[$i]->{$key});
                                     }
                                 }
