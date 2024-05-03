@@ -1796,11 +1796,11 @@ if ($debug -gt 0) {
 }
 
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.server = @()
 $result.server_item = @()
 $item = @{}
 if ((Get-WindowsFeature Web-Server).InstallState -eq "Installed") {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
     # Get IIS details
     Clear-Variable -name item
     $item = @{}
@@ -1815,39 +1815,82 @@ if ((Get-WindowsFeature Web-Server).InstallState -eq "Installed") {
     Get-Website -ErrorAction Ignore | ForEach {
         Clear-Variable -name item
         $item = @{}
-        $item.type = 'website';
-        $item.name = $_.name;
-        $item.parent_name = 'IIS';
-        $item.id_internal = $_.id;
-        $item.status = [string]$_.state;
-        $item.path = $_.physicalPath;
-        $item.path = $item.path.replace("%SystemDrive%", "$Env:SystemDrive");
-        $bindings = $_.bindings.Collection.bindingInformation;
-        $item.ip = $($bindings -split ":")[0];
-        $item.port = $($bindings -split ":")[1];
-        $item.hostname = $($bindings -split ":")[2];
-        $item.size = [math]::ceiling((Get-ChildItem $item.path -force -Recurse -ErrorAction SilentlyContinue| measure Length -sum).sum / 1Mb);
-        $item.instance = $_.applicationPool;
-        $item.log_status = $_.logfile.enabled.ToString();
-        $item.log_format = $_.logfile.logFormat;
-        $item.log_path = $_.logfile.directory + "\W3SVC" + $_.id;
-        $item.log_rotation = '';
+        $item.type = 'website'
+        $item.name = $_.name
+        $item.parent_name = 'IIS'
+        $item.id_internal = $_.id
+        $item.status = [string]$_.state
+        $item.path = $_.physicalPath
+        $item.path = $item.path.replace("%SystemDrive%", "$Env:SystemDrive")
+        $bindings = $_.bindings.Collection.bindingInformation
+        $item.ip = $($bindings -split ":")[0]
+        $item.port = $($bindings -split ":")[1]
+        $item.hostname = $($bindings -split ":")[2]
+        $item.size = [math]::ceiling((Get-ChildItem $item.path -force -Recurse -ErrorAction SilentlyContinue| measure Length -sum).sum / 1Mb)
+        $item.instance = $_.applicationPool
+        $item.log_status = $_.logfile.enabled.ToString()
+        $item.log_format = $_.logfile.logFormat
+        $item.log_path = $_.logfile.directory + "\W3SVC" + $_.id
+        $item.log_rotation = ''
         if ($_.logfile.period -eq 'MaxSize') {
             if ($_.logfile.truncateSize -eq -1) {
-                $item.log_rotation = 'Unlimited file size';
+                $item.log_rotation = 'Unlimited file size'
             } else {
-                $item.log_rotation = "When file size reaches $([int]($_.logfile.truncateSize / 1Mb)) MB";
+                $item.log_rotation = "When file size reaches $([int]($_.logfile.truncateSize / 1Mb)) MB"
             }
         } else {
             $item.log_rotation = $_.logfile.period;
         }
         $result.server_item += $item
     }
+    if ($debug -gt 0) {
+        $count = [int]$result.server_item.count
+        $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+        Write-Host "IIS, $count entries took $totalSecs seconds"
+    }
 }
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.server_item.count
-    Write-Host "IIS, $count entries took $totalSecs seconds"
+
+
+if ((Get-Service -name "MSSQLSERVER").Status -eq "Running") {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    Clear-Variable -name item
+    $item = @{}
+    $item.type = 'database'
+    $item.status = (Get-Service -name "MSSQLSERVER").Status.ToString()
+    $item.name = 'SQL Server'
+    $item.version = (Invoke-SqlCmd -query "SELECT SERVERPROPERTY('productversion')").Column1.ToString()
+    $item.edition = (Invoke-SqlCmd -query "SELECT SERVERPROPERTY('edition')").Column1.ToString()
+    $item.port = (Get-ItemProperty HKLM:\Software\Microsoft\MSSQLServer\MSSQLServer\SuperSocketNetLib\Tcp).TcpPort
+    $result.server += $item
+    $instances = [System.Data.Sql.SqlDataSourceEnumerator]::Instance.GetDataSources()
+    $count = 0
+    if ($instances -ne $null) {
+        $instances | ForEach {
+            if ($_.InstanceName -eq "") {
+                $instanceName = '.'
+            } else {
+                $instanceName = '.\' + $_.InstanceName
+            }
+            Get-SqlDatabase -ServerInstance $instanceName -ErrorAction SilentlyContinue | ForEach {
+                $count = $count + 1
+                Clear-Variable -name item
+                $item = @{}
+                $item.type = 'database'
+                $item.parent_name = 'SQL Server'
+                $item.name = $_.Name
+                $item.id_internal = $_.ID
+                $item.instance = $instanceName
+                $item.size = $_.size
+                $item.path = $_.PrimaryFilePath
+                $item.details_creation_date = $_.CreateDate
+                $result.server_item += $item
+            }
+        }
+    }
+    if ($debug -gt 0) {
+        $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+        Write-Host "SQL, $count entries took $totalSecs seconds"
+    }
 }
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
@@ -1965,111 +2008,3 @@ $totalSecs =  [math]::Round($timer.Elapsed.TotalSeconds,0)
 if ($debug -gt 0) {
     Write-Host "Script took $totalSecs seconds to complete."
 }
-
-
-
-
-
-
-
-
-
-# $result.server = @()
-# Clear-Variable -name item
-# $item = @{}
-# $item.version = Get-ItemProperty HKLM:\SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\CSDVersion -ErrorAction Ignore
-
-# if ($item.version -eq "" -or $item.version -eq $null) {
-#     $item.version = Get-ItemProperty HKLM:\SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\CurrentVersion -ErrorAction Ignore
-# }
-
-# if ($item.version -eq "" -or $item.version -eq $null) {
-#     $item.version = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\MSSQLSERVER\CurrentVersion\CurrentVersion" -ErrorAction Ignore
-# }
-
-# if ($item.version -eq "" -or $item.version -eq $null) {
-#     $item.version = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\SQLEXPRESS\MSSQLSERVER\CurrentVersion\CurrentVersion" -ErrorAction Ignore
-# }
-
-# if ($item.version -ne "" -and $item.version -ne $null) {
-#     $item.edition = ""
-
-#     # SQL 2014
-#     $item.edition = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL12.MSSQLSERVER\Setup\Edition" -ErrorAction Ignore
-
-#     # SQL 2008 R2
-#     if ($item.edition -eq "" -or $item.edition -eq $null) {
-#         $item.edition = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL10_50.MSSQLSERVER\Setup\Edition"  -ErrorAction Ignore
-#     }
-
-#     # SQL 2008
-#     if ($item.edition -eq "" -or $item.edition -eq $null) {
-#         $item.edition = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL10.MSSQLSERVER\Setup\Edition" -ErrorAction Ignore
-#     }
-
-#     # SQL 2005
-#     if ($item.edition -eq "" -or $item.edition -eq $null) {
-#         $item.edition = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\Setup","Edition" -ErrorAction Ignore
-#     }
-
-#     # SQL 2000
-#     if ($item.edition -eq "" -or $item.edition -eq $null) {
-#         $item.edition = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\Setup\Edition" -ErrorAction Ignore
-#     }
-
-#     # SQL 2000
-#     if ($item.edition -eq "" -or $item.edition -eq $null) {
-#         $item.edition = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\MSSQLServer\Setup\Edition" -ErrorAction Ignore
-#     }
-
-#     if ($item.edition -like "*express*") {
-#         $item.edition = "Express Edition"
-#     }
-
-#     $item.instances = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL\*"
-
-#     $loginMode = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\LoginMode"
-#     if ($loginMode -eq $null -or $loginMode -eq "") {
-#         $instance = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL\MSSQLSERVER"
-#         $loginMode = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\$instance\MSSQLServer\LoginMode"
-#     }
-
-#     if ($loginMode -eq $null -or $loginMode -eq "") {
-#         $loginMode = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\$instances[0]\MSSQLServer\LoginMode"
-#     }
-
-#     if ($loginMode -eq $null -or $loginMode -eq "") {
-#         $loginMode = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\MSSQLServer\LoginMode"
-#     }
-
-#     switch ($loginMode) {
-#         # If we hit this, because we don't have SQL credentials, we don't enumerate databases
-#         "0" { $item.login_type = "Allow SQL Server Authentication only" }
-
-#         "1" { $item.login_type = "Allow Windows Authentication only" }
-
-#         "2" { $item.login_type = "Allow Windows Authentication or SQL Server Authentication" }
-
-#         # If we hit this, we don't enumerate databases
-#         "9" { $item.login_type = "Security type unknown" }
-
-#         # If we hit this, we cannot log in to the DB Server, therefore, we don't enumerate databases
-#         default { $item.login_type = "Unknown" }
-#     }
-
-#     $item.port = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\SuperSocketNetLib\Tcp\TcpPort"
-#     if ($item.port -eq "" -or $item.port -eq $null) {
-#         $item.port = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\MSSQLServer\SuperSocketNetLib\Tcp\IPAll\TcpPort"
-#     }
-#     if ($item.port -eq "" -or $item.port -eq $null -and $item.edition -like "*express*") {
-#         $item.port = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\SQLEXPRESS\MSSQLServer\SuperSocketNetLib\Tcp\IPAll\TcpPort"
-#     }
-#     if ($item.port -eq "" -or $item.port -eq $null -and $item.edition -like "*express*") {
-#         $item.port = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\$instances[0]\MSSQLServer\SuperSocketNetLib\Tcp\IPAll\TcpPort"
-#     }
-
-#     $result.server += $item
-# }
-
-
-
