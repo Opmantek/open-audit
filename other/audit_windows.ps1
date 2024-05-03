@@ -1482,6 +1482,10 @@ if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainR
         $item.password_last_changed  = ""
         $item.last_logon = ""
         $item.user_home = ""
+
+        # Below breaks because Get-LocalGroupMember is broken
+        # https://superuser.com/questions/1131901/get-localgroupmember-generates-error-for-administrators-group
+        # https://github.com/PowerShell/PowerShell/issues/2996
         # $item.groups = Get-LocalGroup | Where-Object {  $item.sid -in ($_ | Get-LocalGroupMember | Select-Object -ExpandProperty "SID") } | Select-Object -ExpandProperty "Name"
 
         $Win32_UserProfile | ForEach {
