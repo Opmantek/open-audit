@@ -2107,7 +2107,7 @@ if (!empty($included['fields'])) {
                                                 <?= read_field('server_version_' . $row->id, $row->version, '', false, __('Version'), $link) ?>
                                                 <?php if ($row->type === 'web') {
                                                     $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.version_string=" . urlencode($row->version_string) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
-                                                    echo read_field('version_string_' . $row->id, $row->version_string, '', false, '', $link);
+                                                    echo read_field('version_string_' . $row->id, $row->version_string, '', false, __('Version String'), $link);
                                                 } elseif ($row->type === 'database') {
                                                     $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.status=" . urlencode($row->status) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
                                                     echo read_field('server_status_' . $row->id, $row->status, '', false, __('Status'), $link);
@@ -2122,7 +2122,11 @@ if (!empty($included['fields'])) {
                                         <br>
                                         <div class="row">
                                             <div class="col-12">
+                                                <?php if ($row->type === 'web') { ?>
                                                 <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                                <?php } else { ?>
+                                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[3,"asc"]]'>
+                                                <?php } ?>
                                                     <thead>
                                                         <tr>
                                                             <?php if ($row->type === 'web') { ?>
