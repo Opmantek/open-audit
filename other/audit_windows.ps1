@@ -115,7 +115,7 @@ $result.sys.processor_count = [int]($Win32_ComputerSystem.NumberOfProcessors)
 $result.sys.os_installation_date = [string]($Win32_OperatingSystem.ConvertToDateTime($Win32_OperatingSystem.InstallDate) -f "yyyy/MM/dd")
 $result.sys.org_id = ''
 $result.sys.cluster_name = ''
-$result.sys.last_seen_by = ''
+$result.sys.last_seen_by = 'audit'
 $result.sys.discovery_id = ''
 if ($org_id -ne 0) {
     $result.sys.org_id = $org_id
