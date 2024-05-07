@@ -864,7 +864,6 @@ Get-WmiObject -Class Win32_LogicalDisk -Filter 'DriveType = "2" or DriveType = "
     $item.description = $_.Caption
     $item.format = $_.FileSystem
     $item.free = [Math]::Round($_.FreeSpace / 1024 / 1024)
-    $item.hard_drive_index = ""
     $item.mount_point = $_.Caption
     $item.name = if ($_.VolumeName) { $_.VolumeName } else { "" }
     $item.serial = if ($_.VolumeSerialNumber) { $_.VolumeSerialNumber } else { "" }
@@ -1800,7 +1799,8 @@ if ($debug -gt 0) {
 $result.server = @()
 $result.server_item = @()
 $item = @{}
-if ((Get-WindowsFeature Web-Server).InstallState -eq "Installed") {
+$test = Get-Service -name "W3SVC" -ErrorAction Ignore
+if ($test.Status.ToString() -eq "Running") {
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     # Get IIS details
     Clear-Variable -name item
@@ -1851,9 +1851,10 @@ if ((Get-WindowsFeature Web-Server).InstallState -eq "Installed") {
     }
 }
 
-
-if ((Get-Service -name "MSSQLSERVER").Status -eq "Running") {
+$test = Get-Service -name "MSSQLSERVER"  -ErrorAction Ignore
+if ($test.Status.ToString() -eq "Running") {
     $itimer = [Diagnostics.Stopwatch]::StartNew()
+    # Get MSSQL details
     Clear-Variable -name item
     $item = @{}
     $item.type = 'database'
@@ -1863,6 +1864,8 @@ if ((Get-Service -name "MSSQLSERVER").Status -eq "Running") {
     $item.edition = (Invoke-SqlCmd -query "SELECT SERVERPROPERTY('edition')").Column1.ToString()
     $item.port = (Get-ItemProperty HKLM:\Software\Microsoft\MSSQLServer\MSSQLServer\SuperSocketNetLib\Tcp).TcpPort
     $result.server += $item
+
+    # Get the individual databases now
     $instances = [System.Data.Sql.SqlDataSourceEnumerator]::Instance.GetDataSources()
     $count = 0
     if ($instances -ne $null) {
@@ -1982,6 +1985,31 @@ if ($debug -gt 0) {
     $count = [int]$result.route.count
     Write-Host "Route, $count entries took $totalSecs seconds"
 }
+
+
+# Dell warranties if Dell Command | Monitor is installed
+# $itimer = [Diagnostics.Stopwatch]::StartNew()
+# $result.warranty = @()
+# $item = @{}
+# $DCIM_AssetWarrantyInformation = Get-CimInstance -Namespace root/DCIM/SYSMAN -Classname DCIM_AssetWarrantyInformation -ErrorAction Ignore
+# $DCIM_AssetWarrantyInformation | Foreach {
+#     Clear-Variable -name item
+#     $item = @{}
+#     $item.name = $_.Name
+#     $item.refreshed = $_.LastRefereshed
+#     $item.external_ident = $_.IdentifyingNumber
+#     $item.sku = $_.SKUNumber
+#     $item.start = [string]$_.WarrantyStartDate.Year + "-" + [string]$_.WarrantyStartDate.Month + "-" + [string]$_.WarrantyStartDate.Day
+#     $item.end = [string]$_.WarrantyEndDate.Year + "-" + [string]$_.WarrantyEndDate.Month + "-" + [string]$_.WarrantyEndDate.Day
+#     $item.duration = $_.WarrantyDuration
+#     $item.details = $_ | ConvertTo-Json
+#     $result.warranty += $item
+# }
+# $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+# if ($debug -gt 0) {
+#     $count = [int]$result.warranty.count
+#     Write-Host "Warranty, $count entries took $totalSecs seconds"
+# }
 
 
 $result = $result | ConvertTo-Json
