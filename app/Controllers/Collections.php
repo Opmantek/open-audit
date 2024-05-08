@@ -784,9 +784,39 @@ class Collections extends BaseController
         }
 
         if ($this->resp->meta->format !== 'html') {
-            if ($this->resp->meta->collection === 'devices' or !empty($this->resp->meta->requestor)) {
+            if ($this->resp->meta->collection === 'devices') {
                 $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
                 $this->resp->dictionary = $dictionary;
+                if ($this->resp->meta->format === 'json_data') {
+                    // Special case device as an audit result
+                    $components_array = array('bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+                    unset($this->resp->data[0]->attributes->id);
+                    unset($this->resp->data[0]->attributes->first_seen);
+                    unset($this->resp->data[0]->attributes->last_seen);
+                    foreach ($this->resp->data[0]->attributes as $key => $value) {
+                        if (empty($value)) {
+                            unset($this->resp->data[0]->attributes->{$key});
+                        }
+                    }
+                    $device = new stdClass();
+                    $device->sys = $this->resp->data[0]->attributes;
+                    $db = db_connect();
+                    foreach ($components_array as $table) {
+                        $sql = "SELECT * FROM `{$table}` WHERE device_id = ? AND current = 'y'";
+                        $result = $db->query($sql, [$this->resp->meta->id])->getResult();
+                        if (!empty($result)) {
+                            for ($i=0; $i < count($result); $i++) {
+                                unset($result[$i]->id);
+                                unset($result[$i]->device_id);
+                                unset($result[$i]->current);
+                                unset($result[$i]->first_seen);
+                                unset($result[$i]->last_seen);
+                            }
+                            $device->{$table} = $result;
+                        }
+                    }
+                    $this->resp->data = $device;
+                }
             }
             output($this);
             return true;
