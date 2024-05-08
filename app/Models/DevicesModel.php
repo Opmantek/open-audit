@@ -109,6 +109,9 @@ class DevicesModel extends BaseModel
                 } elseif ($result[$i]->type === 'computer' and $result[$i]->last_seen_by === 'audit') {
                     $result[$i]->audit_class = 'fa fa-check text-success';
                     $result[$i]->audit_text = 'Audited computer.';
+                } elseif ($result[$i]->type === 'san' and $result[$i]->last_seen_by === 'audit') {
+                    $result[$i]->audit_class = 'fa fa-check text-success';
+                    $result[$i]->audit_text = 'Audited SAN.';
                 } elseif ($result[$i]->type !== 'computer' and !empty($result[$i]->snmp_oid)) {
                     $result[$i]->audit_class = 'fa fa-check text-success';
                     $result[$i]->audit_text = 'Discovered and audited ' . $result[$i]->type . '.';
