@@ -718,6 +718,8 @@ class ComponentsModel extends BaseModel
                     }
                     // calculate the network this address is on
                     if ($data[$i]->version === 4 and !empty($data[$i]->ip)) {
+                        // DePad the IP before parsing
+                        $data[$i]->ip = ip_address_from_db($data[$i]->ip);
                         $temp_long = ip2long($data[$i]->netmask);
                         $temp_base = ip2long('255.255.255.255');
                         $temp_subnet = 32-log(($temp_long ^ $temp_base)+1, 2);
