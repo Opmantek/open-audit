@@ -8,7 +8,8 @@
                         </p>
                     </div>
                     <div class="col-4">
-                        <p class="text-end"><a style="color: #064cb3;" href="https://firstwave.com">Powered by Firstwave</a></p>
+                        <p class="text-end"><a style="color: #064cb3;" href="https://firstwave.com">Powered by Firstwave</a><br>
+                        <?= $config->device_count ?> devices licensed.</p>
                     </div>
                 </div>
             </div>
