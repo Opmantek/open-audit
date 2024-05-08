@@ -1640,6 +1640,12 @@ function reset_icons($id = '')
             if (strripos($details->os_name, 'amazon') !== false) {
                 $details->icon = 'amazon';
             }
+            if (strripos($details->os_name, 'alma') !== false) {
+                $details->icon = 'almalinux';
+            }
+            if (strripos($details->os_name, 'alpine') !== false) {
+                $details->icon = 'alpine linux';
+            }
             if (strripos($details->os_name, 'arch') !== false) {
                 $details->icon = 'arch';
             }
