@@ -43,8 +43,14 @@ class Widgets extends BaseController
         $this->resp->meta->name = $widget[0]->attributes->name;
         $this->resp->data = $this->widgetsModel->execute($this->resp->meta->id, $this->user);
         $this->resp->included = $widget;
-        $this->resp->meta->total = count($this->resp->data);
-        $this->resp->meta->filtered = count($this->resp->data);
+        $this->resp->meta->total = (!empty($this->resp->data) and is_countable($this->resp->data)) ? count($this->resp->data) : 0;
+        $this->resp->meta->filtered = (!empty($this->resp->data) and is_countable($this->resp->data)) ? count($this->resp->data) : 0;
+        if ($this->resp->data->type === 'pie') {
+            $this->resp->data->formatted = formatHighchartsPie($this->resp->data);
+        }
+        if ($this->resp->data->type === 'line') {
+            $this->resp->data->formatted = formatHighchartsLine($this->resp->data);
+        }
         if ($this->resp->meta->format !== 'html') {
             output($this);
             return true;
@@ -61,7 +67,7 @@ class Widgets extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view($this->resp->meta->collection . ucfirst($this->resp->meta->action), ['data' => filter_response($this->resp->data), 'meta' => filter_response($this->resp->meta)])
+            view($this->resp->meta->collection . ucfirst($this->resp->meta->action), ['data' => filter_response($this->resp->data), 'meta' => filter_response($this->resp->meta), 'included' => filter_response($this->resp->included)])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 }

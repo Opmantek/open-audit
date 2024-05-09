@@ -15,6 +15,7 @@ include 'shared/collection_functions.php';
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
+                                    <th data-orderable="false" class="text-center"><?= __('Execute') ?></th>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {
                                             continue;
@@ -31,6 +32,7 @@ include 'shared/collection_functions.php';
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
                                     <?= collection_button_read($meta->collection, $item->id) ?>
+                                    <?= collection_button_execute($meta->collection, intval($item->id)) ?>
                                     <?php $links = array('type', 'purpose', 'status', 'configuration', 'environment', 'scaling'); ?>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {
