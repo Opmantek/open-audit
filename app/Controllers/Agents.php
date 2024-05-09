@@ -19,11 +19,11 @@ namespace App\Controllers;
  */
 
 /**
- * Base Object Scripts
+ * Base Object Agents
  *
  * @access   public
  * @category Object
- * @package  Open-AudIT\Controller\Scripts
+ * @package  Open-AudIT\Controller\Agents
  * @author   Mark Unwin <mark.unwin@firstwave.com>
  * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  * @link     http://www.open-audit.org
