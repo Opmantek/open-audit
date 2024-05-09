@@ -105,16 +105,10 @@ class SummariesModel extends BaseModel
             $org_id = 'org_id';
         }
         $tables = ' field audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
-        $filter = '';
-        if (!empty($instance->resp->meta->filter)) {
-            foreach ($instance->resp->meta->filter as $filter_entry) {
-                $filter .= ' AND ' . $filter_entry->name . ' ' . $filter_entry->operator . ' ' . '"' . $filter_entry->value . '"';
-            }
-        }
         if (stripos($tables, $dashboard[0]->table) !== false) {
-            $sql = "SELECT " . $dashboard[0]->id . " AS `id`, COUNT(*) AS `count`, " . $dashboard[0]->table . "." . $dashboard[0]->column . " AS `name` FROM devices LEFT JOIN `" . $dashboard[0]->table . "` ON (devices.id = " . $dashboard[0]->table . ".device_id and " . $dashboard[0]->table . ".current = 'y') WHERE " . $dashboard[0]->table . "." . $dashboard[0]->column . " IS NOT NULL AND " . $dashboard[0]->table . "." . $dashboard[0]->column . " != '' AND devices.org_id IN (" . $instance->user->org_list . ")" . $filter . " GROUP BY " . $dashboard[0]->table . "." . $dashboard[0]->column;
+            $sql = "SELECT " . $dashboard[0]->id . " AS `id`, COUNT(*) AS `count`, " . $dashboard[0]->table . "." . $dashboard[0]->column . " AS `name` FROM devices LEFT JOIN `" . $dashboard[0]->table . "` ON (devices.id = " . $dashboard[0]->table . ".device_id and " . $dashboard[0]->table . ".current = 'y') WHERE " . $dashboard[0]->table . "." . $dashboard[0]->column . " IS NOT NULL AND " . $dashboard[0]->table . "." . $dashboard[0]->column . " != '' AND devices.org_id IN (" . $instance->user->org_list . ") GROUP BY " . $dashboard[0]->table . "." . $dashboard[0]->column;
         } else {
-            $sql = "SELECT " . $dashboard[0]->id . " AS `id`, COUNT(*) AS `count`, " . $dashboard[0]->column . " AS `name` FROM `" . $dashboard[0]->table . "` WHERE `$org_id` IN (" . $instance->user->org_list . ")" . $filter . " GROUP BY `" . $dashboard[0]->column . "`";
+            $sql = "SELECT " . $dashboard[0]->id . " AS `id`, COUNT(*) AS `count`, " . $dashboard[0]->column . " AS `name` FROM `" . $dashboard[0]->table . "` WHERE `$org_id` IN (" . $instance->user->org_list . ") GROUP BY `" . $dashboard[0]->column . "`";
         }
 
         $result = $this->db->query($sql)->getResult();
