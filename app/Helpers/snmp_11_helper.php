@@ -35,7 +35,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->serial = mb_convert_encoding($details->serial, "UTF-8", "ASCII");
     }
 
-    if ((strpos(strtolower($details->model), "laserjet") !== false) and (!isset($details->type) or $details->type == '' or $details->type == 'unknown')) {
+    if ((!empty($details->model) and (strpos(strtolower($details->model), "laserjet") !== false)) and (!isset($details->type) or $details->type == '' or $details->type == 'unknown')) {
         $details->type = "network printer";
     }
 
