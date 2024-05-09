@@ -948,7 +948,7 @@ if (!function_exists('snmp_audit')) {
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->message = 'Printer duplex retrieval for '.$ip;
                 $log->command = 'snmpwalk 1.3.6.1.2.1.43.13.4.1.10.1';
-                $log->command_output = (string)$temp_walk;
+                $log->command_output = json_encode($temp_walk);
                 $log->command_status = 'notice';
                 $discoveryLogModel->create($log);
                 unset($log->id, $log->command, $log->command_time_to_execute);
