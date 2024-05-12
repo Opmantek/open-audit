@@ -1800,7 +1800,7 @@ $result.server = @()
 $result.server_item = @()
 $item = @{}
 $test = Get-Service -name "W3SVC" -ErrorAction Ignore
-if ($test.Status.ToString() -eq "Running") {
+if ($test.Status -ne $null -and $test.Status.ToString() -eq "Running") {
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     # Get IIS details
     Clear-Variable -name item
@@ -1852,7 +1852,7 @@ if ($test.Status.ToString() -eq "Running") {
 }
 
 $test = Get-Service -name "MSSQLSERVER"  -ErrorAction Ignore
-if ($test.Status.ToString() -eq "Running") {
+if ($test.Status -ne $null -and $test.Status.ToString() -eq "Running") {
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     # Get MSSQL details
     Clear-Variable -name item
