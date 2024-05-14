@@ -70,6 +70,7 @@ class Input extends BaseController
         if (!empty($this->config->servers)) {
             $server = $this->config->servers;
 
+            $id = $device->system->id;
             unset($device->system->original_last_seen_by);
             unset($device->system->original_last_seen);
             unset($device->system->id);
@@ -96,7 +97,7 @@ class Input extends BaseController
                 // error
                 $log->severity = 4;
                 $log->message = 'Could not send result to ' . $url . ' - please check with your server administrator.';
-                $log->device_id = $device->id;
+                $log->device_id = $id;
                 $discoveryLogModel->create($log);
                 $log->severity = 7;
                 log_message('error', 'Could not send result to ' . $url);
@@ -104,7 +105,7 @@ class Input extends BaseController
                 // success
                 $log->severity = 7;
                 $log->message = 'Result sent to ' . $server->host . '.';
-                $log->device_id = $device->id;
+                $log->device_id = $id;
                 $discoveryLogModel->create($log);
                 log_message('debug', 'Result sent to ' . $server->host . '.');
             }
