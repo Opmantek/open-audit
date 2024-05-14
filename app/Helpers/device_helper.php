@@ -21,7 +21,11 @@ if (!function_exists('audit_convert')) {
         if (is_string($input)) {
             // See if we have stringified JSON
             $json = html_entity_decode($input);
-            if (mb_detect_encoding($json) !== 'UTF-8') {
+            // Remove non-printable characters
+            $json = preg_replace('/[[:^print:]]/', '', $json);
+            // Remove window control characters
+            $json = preg_replace('/[[:cntrl:]]/', '', $json);
+            if (mb_detect_encoding($json) !== 'UTF-8' and mb_detect_encoding($json) !== 'UTF-16' and mb_detect_encoding($json) !== 'UTF-16BE' and mb_detect_encoding($json) !== 'UTF-16LE') {
                 $json = mb_convert_encoding($json, 'UTF-8', mb_list_encodings());
             }
             $json = @json_decode($json);
