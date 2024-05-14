@@ -66,6 +66,50 @@ class Input extends BaseController
         $log->command_status = 'success';
         $log->display = 'y';
         $discoveryLogModel->create($log);
+
+        if (!empty($this->config->servers)) {
+            $server = $this->config->servers;
+
+            unset($device->system->original_last_seen_by);
+            unset($device->system->original_last_seen);
+            unset($device->system->id);
+            unset($device->system->first_seen);
+            $device_json = json_encode($device);
+
+            $url = $server->host . $server->community . '/index.php/input/devices';
+            $data = array('data' => $device_json);
+            // We must use the key 'http' even if we send the request to https://...
+            $options = array(
+                'http' => array(
+                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query($data)
+                ),
+                'ssl' => array (
+                    'verify_peer' => false,
+                    'verify_peer_name' => false
+                )
+            );
+            $context  = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);
+            if ($result === false) {
+                // error
+                $log->severity = 4;
+                $log->message = 'Could not send result to ' . $url . ' - please check with your server administrator.';
+                $log->device_id = $device->id;
+                $discoveryLogModel->create($log);
+                $log->severity = 7;
+                log_message('error', 'Could not send result to ' . $url);
+            } else {
+                // success
+                $log->severity = 7;
+                $log->message = 'Result sent to ' . $server->host . '.';
+                $log->device_id = $device->id;
+                $discoveryLogModel->create($log);
+                log_message('debug', 'Result sent to ' . $server->host . '.');
+            }
+        }
+
         return true;
     }
 
