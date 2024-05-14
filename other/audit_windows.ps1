@@ -151,7 +151,7 @@ Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\
     }
 }
 if ($Win32_ComputerSystem.PartOfDomain) {
-    $domain = Win32_ComputerSystem.Domain
+    $domain = $Win32_ComputerSystem | Select-Object -ExpandProperty Domain
     Get-WmiObject -Class Win32_NTDomain -filter "DomainName = '$domain'" | ForEach {
         $item.client_site_name = $_.ClientSiteName
         $item.domain_short = ""
