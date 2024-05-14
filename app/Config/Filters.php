@@ -78,6 +78,9 @@ class Filters extends BaseConfig
             if (stripos($_SERVER['REQUEST_URI'], 'agents') and stripos($_SERVER['REQUEST_URI'], 'download')) {
                 $this->globals['after'] = array();
             }
+            if (stripos($_SERVER['REQUEST_URI'], 'agents') and stripos($_SERVER['REQUEST_URI'], 'execute')) {
+                $this->globals['after'] = array();
+            }
             if (stripos($_SERVER['REQUEST_URI'], 'input') and stripos($_SERVER['REQUEST_URI'], 'devices')) {
                 $this->globals['after'] = array();
             }
