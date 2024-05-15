@@ -10,9 +10,9 @@ use Config\Database;
 
 class OpenAudit extends BaseConfig
 {
-    # leave for backwards compat $this->displayVersion = '5.2.1';
-    public string $displayVersion = '5.2.1';
-    public int $appVersion = 20240620;
+    # leave for backwards compat $this->displayVersion = '5.2.2';
+    public string $displayVersion = '5.2.2';
+    public int $appVersion = 20240621;
 
     public array $enterprise_collections = array('agents' => 'crud', 'applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'executables' => 'crud', 'integrations' => 'crud', 'racks' => 'crud', 'roles' => 'cu');
     public array $professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'tasks' => 'crud', 'widgets' => 'crud');
