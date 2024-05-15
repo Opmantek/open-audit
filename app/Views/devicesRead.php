@@ -941,32 +941,47 @@ if (!empty($included['fields'])) {
                             </div>
                             <?php } ?>
 
-                            <?php if ($config->product === 'enterprise') { ?>
+                            <?php if ($config->product === 'enterprise' and !empty($included['warranty'])) { ?>
                             <div style="margin-bottom:20px; display:none;" class="card" id="warranty_section">
                                 <?=  device_panel('warranty', $user->toolbar_style, 0, base_url() . "icons/warranty.svg", $update); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"],[3,"asc"]]'>
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Vendor') ?></th>
                                                     <th><?= __('Name') ?></th>
+                                                    <th><?= __('End Date') ?></th>
+                                                    <?php if ($included['warranty'][0]->vendor === 'Cisco') { ?>
                                                     <th><?= __('Description') ?></th>
-                                                    <th><?= __('Date') ?></th>
+                                                    <th><?= __('End OF Life Product ID') ?></th>
+                                                    <?php } ?>
+                                                    <?php if ($included['warranty'][0]->vendor === 'Dell') { ?>
+                                                    <th><?= __('Start Date') ?></th>
+                                                    <th><?= __('Entitlement Type') ?></th>
+                                                    <th><?= __('Ship Date') ?></th>
+                                                    <?php } ?>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            <?php if (!empty($included['warranty'])) {
-                                                foreach ($included['warranty'] as $row) { ?>
+                                            <?php foreach ($included['warranty'] as $row) { ?>
                                                 <tr>
                                                     <?= device_component_button_read('warranty', $row->id) ?>
                                                     <td><?= $row->vendor ?></td>
                                                     <td><?= $row->name ?></td>
+                                                    <td><?= $row->end_date ?></td>
+                                                    <?php if ($row->vendor === 'Cisco') { ?>
                                                     <td><?= $row->description ?></td>
-                                                    <td><?= $row->value ?></td>
+                                                    <td><?= $row->tag_1 ?></td>
+                                                    <?php } ?>
+                                                    <?php if ($row->vendor === 'Dell') { ?>
+                                                    <td><?= $row->start_date ?></td>
+                                                    <td><?= $row->tag_1 ?></td>
+                                                    <td><?= $row->tag_2 ?></td>
+                                                    <?php } ?>
+                                                    <?php ?>
                                                 </tr>
-                                                <?php } ?>
                                             <?php } ?>
                                             </tbody>
                                         </table>
