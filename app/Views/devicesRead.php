@@ -957,6 +957,9 @@ if (!empty($included['fields'])) {
                                                     <th><?= __('Description') ?></th>
                                                     <th><?= __('End OF Life Product ID') ?></th>
                                                     <?php } ?>
+                                                    <?php if ($included['warranty'][0]->vendor === 'HP') { ?>
+                                                    <th><?= __('Start Date') ?></th>
+                                                    <?php } ?>
                                                     <?php if ($included['warranty'][0]->vendor === 'Dell') { ?>
                                                     <th><?= __('Start Date') ?></th>
                                                     <th><?= __('Entitlement Type') ?></th>
@@ -975,12 +978,14 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->description ?></td>
                                                     <td><?= $row->tag_1 ?></td>
                                                     <?php } ?>
+                                                    <?php if ($row->vendor === 'HP') { ?>
+                                                    <td><?= $row->start_date ?></td>
+                                                    <?php } ?>
                                                     <?php if ($row->vendor === 'Dell') { ?>
                                                     <td><?= $row->start_date ?></td>
                                                     <td><?= $row->tag_1 ?></td>
                                                     <td><?= $row->tag_2 ?></td>
                                                     <?php } ?>
-                                                    <?php ?>
                                                 </tr>
                                             <?php } ?>
                                             </tbody>
