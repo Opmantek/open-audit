@@ -42,7 +42,15 @@ class Discoveries extends BaseController
         $collectorsModel = new \App\Models\CollectorsModel();
         $collectors = $collectorsModel->listUser();
         if (!empty($collectors)) {
-            return redirect()->route('discoveriesExecuteForm', [$id]);
+            $choose_collector = false;
+            foreach ($collectors as $collector) {
+                if (!empty($collector->attributes->type) and $collector->attributes->type === 'collector') {
+                    $choose_collector = true;
+                }
+            }
+            if ($choose_collector) {
+                return redirect()->route('discoveriesExecuteForm', [$id]);
+            }
         }
         $this->discoveriesModel->queue($id);
         $this->queueModel = model('App\Models\QueueModel');

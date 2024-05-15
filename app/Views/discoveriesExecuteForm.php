@@ -19,7 +19,9 @@ include 'shared/create_functions.php';
                                         <select class="form-select" name="data[attributes][uuid]" id="data[attributes][uuid]" required>
                                             <option value="<?= $config->uuid ?>"><?= __('Localhost') ?></option>
                                             <?php foreach ($included['collectors'] as $collector) { ?>
+                                                <?php if ($collector->attributes->type === 'collector') { ?>
                                             <option value="<?= $collector->attributes->uuid ?>"><?= $collector->attributes->name ?></option>
+                                                <?php } ?>
                                             <?php } ?>
                                         </select>
                                     </div>
