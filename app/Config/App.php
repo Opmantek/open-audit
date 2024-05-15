@@ -474,28 +474,28 @@ class App extends BaseConfig
             $this->CSPEnabled = false;
         }
 
-        // $timezone = '';
-        // $default = 'UTC';
-        // if ((string) php_uname('s') === 'Linux') {
-        //     // On many systems (Mac, for instance) "/etc/localtime" is a symlink
-        //     // to the file with the timezone info
-        //     if (@is_link('/etc/localtime')) {
-        //         // If it is, that file's name is actually the "Olsen" format timezone
-        //         $temp_file = @readlink('/etc/localtime');
-        //         $temp_pos = strpos($temp_file, 'zoneinfo');
-        //         if ($temp_pos) {
-        //             // When it is, it's in the "/usr/share/zoneinfo/" folder
-        //             $timezone = substr($temp_file, $temp_pos + strlen('zoneinfo/'));
-        //         }
-        //     } else {
-        //         // On other systems, like Ubuntu, there's file with the Olsen time right inside it.
-        //         $timezone = @file_get_contents('/etc/timezone');
-        //     }
-        //     if ((string)$timezone === '') {
-        //         $this->appTimezone = $default;
-        //     } else {
-        //         $this->appTimezone = $timezone;
-        //     }
-        // }
+        $timezone = '';
+        $default = 'UTC';
+        if ((string) php_uname('s') === 'Linux') {
+            // On many systems (Mac, for instance) "/etc/localtime" is a symlink
+            // to the file with the timezone info
+            if (@is_link('/etc/localtime')) {
+                // If it is, that file's name is actually the "Olsen" format timezone
+                $temp_file = @readlink('/etc/localtime');
+                $temp_pos = strpos($temp_file, 'zoneinfo');
+                if ($temp_pos) {
+                    // When it is, it's in the "/usr/share/zoneinfo/" folder
+                    $timezone = substr($temp_file, $temp_pos + strlen('zoneinfo/'));
+                }
+            } else {
+                // On other systems, like Ubuntu, there's file with the Olsen time right inside it.
+                $timezone = @file_get_contents('/etc/timezone');
+            }
+            if ((string)$timezone === '') {
+                $this->appTimezone = $default;
+            } else {
+                $this->appTimezone = $timezone;
+            }
+        }
     }
 }
