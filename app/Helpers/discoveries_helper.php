@@ -642,6 +642,8 @@ if (! function_exists('ip_scan')) {
             $log->command_output = json_encode($device);
             $log->command_time_to_execute = microtime(true) - $start;
             $discoveryLogModel->create($log);
+            $sql = "UPDATE discovery_log SET message = 'IP " . $log->ip . " not responding, ignoring.' WHERE discovery_id = ? AND message = 'IP " . $log->ip . " responding, adding to device list.'";
+            $query = $db->query($sql, [$discovery->id]);
             return null;
         }
 
