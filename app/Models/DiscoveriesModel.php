@@ -1436,6 +1436,7 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns->limit = 'The number of devices to limit this discovery to.';
         $dictionary->columns->match_options = 'A JSON document containing the required attributes overriding the default device match options.';
         $dictionary->columns->network_address = 'The URL the audit scripts should submit their result to.';
+        $dictionary->columns->require_port = 'Not normally used. If set, this requires the device to have an open port (as per Scan Options) to be considered responding. A MAC address, arp response or ping response is not considered sufficient to be considered responding. Useful if a router or firewall between the Open-AudIT server and target IP is responding to port scans on the IPs behalf.';
         $dictionary->columns->scan_options = 'A JSON document containing the required attributes overriding the chosen discovery_scan_options.';
         $dictionary->columns->seed_ip = 'The IP of the device to start a seed discovery with.';
         $dictionary->columns->seed_ping = 'For a seed discovery, should I ping the subnet before running the discovery.';

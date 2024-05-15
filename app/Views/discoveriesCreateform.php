@@ -65,6 +65,7 @@ include 'shared/create_functions.php';
 
                                 <?= create_select('data[attributes][devices_assigned_to_org]', __('Assign Devices to Organisation'), $orgs, $dictionary->attributes->create) ?>
                                 <?= create_select('data[attributes][devices_assigned_to_location]', __('Assign Devices to Location'), $included['locations'], $dictionary->attributes->create) ?>
+                                <?= create_select('data[attributes][require_port]', __('Require an Open Port'), [], $dictionary->attributes->create) ?>
 
                                 <br>
                                 <div class="row">
@@ -88,7 +89,7 @@ include 'shared/create_functions.php';
                                     echo html_entity_decode($dictionary->notes);
                                 } ?>
                                 <h4 class="text-center">Fields</h4><br>
-                                <?php $attributes = array('name', 'subnet', 'org_id', 'type', 'devices_assigned_to_org', 'devices_assigned_to_location', 'ad_server', 'ad_domain'); ?>
+                                <?php $attributes = array('name', 'subnet', 'org_id', 'type', 'devices_assigned_to_org', 'devices_assigned_to_location', 'require_port', 'ad_server', 'ad_domain'); ?>
                                 <?php foreach ($dictionary->columns as $key => $value) {
                                     if (in_array($key, $attributes)) {
                                         echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
@@ -128,6 +129,7 @@ window.onload = function () {
             $("#data\\[attributes\\]\\[seed_restrict_to_private\\]").val('y');
         <?php } ?>
 
+        $("#data\\[attributes\\]\\[require_port\\]").val('n');
 
 
         $("#data\\[attributes\\]\\[scan_options\\]\\[id\\]").val(<?= $config->discovery_default_scan_option ?>);

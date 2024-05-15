@@ -1323,6 +1323,7 @@ CREATE TABLE `discoveries` (
   `seed_ping` enum('y','n') NOT NULL DEFAULT 'y',
   `ad_domain` varchar(200) NOT NULL DEFAULT '',
   `ad_server` varchar(45) NOT NULL DEFAULT '',
+  `require_port` enum('y','n') NOT NULL DEFAULT 'n',
   `devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
   `devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
   `network_address` varchar(100) NOT NULL DEFAULT '',

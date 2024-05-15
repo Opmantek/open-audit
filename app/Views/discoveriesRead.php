@@ -140,6 +140,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         <?= read_field('ad_domain', $resource->ad_domain, $dictionary->columns->ad_domain, $update) ?>
                                         <?= read_field('ad_server', $resource->ad_server, $dictionary->columns->ad_server, $update) ?>
                                     <?php } ?>
+                                    <?= read_select('require_port', $resource->require_port, $dictionary->columns->require_port, $update, __('Require an Open Port'), []) ?>
                                     <?= read_select('devices_assigned_to_org', $resource->devices_assigned_to_org, $dictionary->columns->devices_assigned_to_org, $update, __('Assign Devices to Organisation'), $orgs) ?>
                                     <?= read_select('devices_assigned_to_location', $resource->devices_assigned_to_location, $dictionary->columns->devices_assigned_to_location, $update, __('Assign Devices to Location'), $included['locations']) ?>
                                     <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
@@ -157,7 +158,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <?= $dictionary->notes ?>
                                         <?php } ?>
                                         <?php if (!empty($dictionary->columns)) { ?>
-                                            <?php $fields = array('name', 'org_id', 'description', 'type', 'subnet', 'devices_assigned_to_org', 'devices_assigned_to_location', 'edited_by', 'edited_date') ?>
+                                            <?php $fields = array('name', 'org_id', 'description', 'type', 'subnet', 'require_port', 'devices_assigned_to_org', 'devices_assigned_to_location', 'edited_by', 'edited_date') ?>
                                         <h4 class="text-center"><?= __('Fields') ?></h4><br>
                                             <?php foreach ($fields as $key) { ?>
                                             <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>

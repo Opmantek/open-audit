@@ -633,13 +633,23 @@ if (! function_exists('ip_scan')) {
             $device['timestamp'] = $timestamp;
         }
 
+        $sql = "UPDATE discovery_log SET command_time_to_execute = ? WHERE message = 'IP " . $log->ip . " responding, adding to device list.' and discovery_id = ?";
+        $query = $db->query($sql, [$log->command_time_to_execute, $discovery->id]);
+
+        if (!empty($discovery->require_port) and $discovery->require_port === 'y' and empty($device['nmap_ports'])) {
+            $log->message = 'IP scan finish on device ' . $ip;
+            $log->command = 'No open ports detected but required for this discovery - halting on this IP.';
+            $log->command_output = json_encode($device);
+            $log->command_time_to_execute = microtime(true) - $start;
+            $discoveryLogModel->create($log);
+            return null;
+        }
+
         $log->message = 'IP scan finish on device ' . $ip;
         $log->command = 'Device details returned';
         $log->command_output = json_encode($device);
         $log->command_time_to_execute = microtime(true) - $start;
         $discoveryLogModel->create($log);
-        $sql = "UPDATE discovery_log SET command_time_to_execute = ? WHERE message = 'IP " . $log->ip . " responding, adding to device list.' and discovery_id = ?";
-        $query = $db->query($sql, [$log->command_time_to_execute, $discovery->id]);
         return($device);
     }
 }
