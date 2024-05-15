@@ -281,6 +281,11 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
     }
     $temp = explode(' ', $name);
     $export_name = strtolower($temp[0]);
+    $server = false;
+    if (stripos($name, 'Server') !== false) {
+        $server = $name;
+        $name = 'server';
+    }
     if ($toolbar === 'icontext') {
         $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-circle-xmark\"></span>" . __("Close") . "</a>";
         $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>
@@ -321,7 +326,9 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
     if (!in_array(strtolower($export_name), ['audit_log', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows']) or empty($device_id) or $count === 0) {
         $export_button = '';
     }
-
+    if ($server) {
+        $name = $server;
+    }
     $human_name = read_column_name($name);
     $header = '<div class="card-header">
         <div class="row">
