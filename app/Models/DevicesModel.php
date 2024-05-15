@@ -393,7 +393,7 @@ class DevicesModel extends BaseModel
         }
 
         $include = array();
-        $current = array('bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $current = array('bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
         foreach ($current as $table) {
             if (empty($resp_include) or in_array($table, $resp_include)) {
                 $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y'";

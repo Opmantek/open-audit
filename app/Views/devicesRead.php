@@ -59,6 +59,9 @@ if (!empty($included['fields'])) {
                                                     <?php if ($config->product === 'enterprise') { ?>
                                                     <li class="list-group-item section_toggle" data-section="tags_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/tags.svg" alt=""> <a href="#"><?= __('Tags') ?></a></li>
                                                     <?php } ?>
+                                                    <?php if ($config->product === 'enterprise' and !empty($included['warranty'])) { ?>
+                                                    <li class="list-group-item section_toggle" data-section="warranty_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/warranty.svg" alt=""> <a href="#"><?= __('Warranty') ?></a></li>
+                                                    <?php } ?>
                                                     <?php if (!empty($included['windows'])) { ?>
                                                     <li class="list-group-item section_toggle" data-section="windows_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/windows.svg" alt=""> <a href="#"><?= __('Windows') ?></a></li>
                                                     <?php } ?>
@@ -938,6 +941,39 @@ if (!empty($included['fields'])) {
                             </div>
                             <?php } ?>
 
+                            <?php if ($config->product === 'enterprise') { ?>
+                            <div style="margin-bottom:20px; display:none;" class="card" id="warranty_section">
+                                <?=  device_panel('warranty', $user->toolbar_style, 0, base_url() . "icons/warranty.svg", $update); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
+                                                    <th><?= __('Vendor') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Description') ?></th>
+                                                    <th><?= __('Date') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['warranty'])) {
+                                                foreach ($included['warranty'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('warranty', $row->id) ?>
+                                                    <td><?= $row->vendor ?></td>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->description ?></td>
+                                                    <td><?= $row->value ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php } ?>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="windows_section">
                                 <?= device_panel('windows', $user->toolbar_style, $resource->id, '', $update, 1); ?>
