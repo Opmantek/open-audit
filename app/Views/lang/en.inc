@@ -1231,6 +1231,7 @@ $GLOBALS["lang"]["removed from display, but has been set"]="removed from display
 $GLOBALS["lang"]["Report"]="Report";
 $GLOBALS["lang"]["Report on your devices, networks and more"]="Report on your devices, networks and more";
 $GLOBALS["lang"]["Reports"]="Reports";
+$GLOBALS["lang"]["Require an Open Port"]="Require an Open Port";
 $GLOBALS["lang"]["Required"]="Required";
 $GLOBALS["lang"]["Reset"]="Reset";
 $GLOBALS["lang"]["Reset All Data"]="Reset All Data";
