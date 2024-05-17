@@ -1112,84 +1112,31 @@ if (!function_exists('response_get_org_list')) {
     function response_get_org_list($user, $collection = '')
     {
         $org_list = array();
-
         $orgsModel = new \App\Models\OrgsModel();
         $orgs = $orgsModel->listAll();
-
         if (empty($collection) or empty($user)) {
             log_message('error', 'Either no collection or no user supplied.');
             return;
         }
-        switch ($collection) {
-            case 'applications':
-            case 'baselines':
-            case 'baselines_policies':
-            case 'baselines_results':
-            case 'charts':
-            case 'clouds':
-            case 'clusters':
-            case 'collectors':
-            case 'components':
-            case 'connections':
-            case 'credentials':
-            case 'devices':
-            case 'discoveries':
-            case 'discovery_log':
-            case 'integrations':
-            case 'integrations_log':
-            case 'integrations_rules':
-            case 'ldap_servers':
-            case 'licenses':
-            case 'locations':
-            case 'networks':
-            case 'orgs':
-            case 'rack_devices':
-            case 'racks':
-            case 'search':
-            case 'tasks':
-            case 'users':
-                $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
-                log_message('debug', 'Set org_list according to ' . $collection . ' for DESCENDANTS (' . implode(', ', $org_list) . ').');
-                break;
-
-            case 'configuration':
-            case 'database':
-            case 'errors':
-            case 'help':
-            case 'nmis':
-            case 'san':
-            case 'test':
-            case 'util':
-                $org_list = $user->orgs;
-                log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
-                break;
-
-            case 'agents':
-            case 'attributes':
-            case 'dashboards':
-            case 'discovery_scan_options':
-            case 'fields':
-            case 'files':
-            case 'groups':
-            case 'queries':
-            case 'reports':
-            case 'roles':
-            case 'rules':
-            case 'scripts':
-            case 'summaries':
-            case 'widgets':
-                $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
-                $org_list = array_unique(array_merge($org_list, $orgsModel->getUserAscendants($user->orgs, $orgs)));
-                $org_list[] = 1;
-                $org_list = array_unique($org_list);
-                asort($org_list);
-                log_message('debug', 'Set org_list according to ' . $collection . ' for PARENTS and DESCENDANTS (' . implode(', ', $org_list) . ').');
-                break;
-
-            default:
-                $org_list = $user->orgs;
-                log_message('debug', 'Set org_list according to ' . $collection . ' for USER DEFAULT (' . implode(', ', $org_list) . ').');
-                break;
+        $collections = new \Config\Collections();
+        if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'd') {
+            $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
+            log_message('debug', 'Set org_list according to ' . $collection . ' for DESCENDANTS (' . implode(', ', $org_list) . ').');
+        }
+        if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'u') {
+            $org_list = $user->orgs;
+            log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
+        }
+        if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'b') {
+            $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
+            $org_list = array_unique(array_merge($org_list, $orgsModel->getUserAscendants($user->orgs, $orgs)));
+            $org_list[] = 1;
+            $org_list = array_unique($org_list);
+            log_message('debug', 'Set org_list according to ' . $collection . ' for PARENTS and DESCENDANTS (' . implode(', ', $org_list) . ').');
+            asort($org_list);
+        }
+        if (empty($org_list)) {
+            $org_list = $user->orgs;
         }
         $org_list = implode(',', $org_list);
         return $org_list;
@@ -1506,7 +1453,12 @@ if (!function_exists('response_valid_collections')) {
      */
     function response_valid_collections()
     {
-        return array('agents','applications','attributes','baselines','baselines_policies','baselines_results','chart','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','executables','fields','files','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rules','scripts','search','sessions','summaries','support','tasks','users','widgets');
+        $collections = new \Config\Collections();
+        $return = array();
+        foreach ($collections as $collection => $value) {
+            $return[] = $collection;
+        }
+        return $return;
     }
 }
 

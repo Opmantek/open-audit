@@ -14,8 +14,6 @@ class OpenAudit extends BaseConfig
     public string $displayVersion = '5.2.2';
     public int $appVersion = 20240621;
 
-    public array $enterprise_collections = array('agents' => 'crud', 'applications' => 'cud', 'baselines' => 'crud', 'baselines_policies' => 'crud', 'baselines_results' => 'crud', 'clouds' => 'crud', 'collectors' => 'crud', 'dashboards' => 'cud', 'discovery_scan_options' => 'cud', 'files' => 'crud', 'executables' => 'crud', 'integrations' => 'crud', 'racks' => 'crud', 'roles' => 'cu');
-    public array $professional_collections = array('applications' => 'r', 'clusters' => 'crud', 'dashboards' => 'r', 'discovery_scan_options' => 'r', 'maps' => 'crud', 'rules' => 'crud', 'tasks' => 'crud', 'widgets' => 'crud');
     public float $microtime = 0;
     public int $collector_connect_timeout = 10;
     public int $collector_inactivity_timeout = 30;

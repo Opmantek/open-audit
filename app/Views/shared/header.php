@@ -691,18 +691,22 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
 {
     if (empty($permission)) {
         return "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
+        log_message('error', "menuItem, nothing in permission.");
     }
     $instance = & get_instance();
     // Default to no access
     $return = "<li><a class=\"dropdown-item greyout toastPermission\" href=\"#\">" . $title . "</a></li>\n";
     if (empty($instance->collections->{$collection})) {
+        log_message('error', "menuItem, nothing in instance->collections->{$collection}.");
         return $return;
     }
     if (empty($instance->collections->{$collection}->actions->{$instance->config->product})) {
+        log_message('error', "menuItem, nothing in instance->collections->{$collection}->actions->{$instance->config->product}.");
         $return = "<li><a class=\"dropdown-item greyout toast" . $instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
         return $return;
     }
     if (empty($instance->resp->meta->permission_requested)) {
+        log_message('error', "menuItem, no permission requested.");
         return $return;
     }
     // Check if feature matches license

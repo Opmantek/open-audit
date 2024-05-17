@@ -738,7 +738,6 @@ class DevicesModel extends BaseModel
         $this->builder->groupBy('devices.os_family');
         $this->builder->orderBy('devices.os_family');
         $query = $this->builder->get();
-        log_message('info', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }

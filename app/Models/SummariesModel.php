@@ -206,7 +206,7 @@ class SummariesModel extends BaseModel
     public function includedCollection(): array
     {
         $instance = & get_instance();
-        $collections = collections_list();
+        $collections = clone $instance->collections;
         foreach ($collections as $name => $collection) {
             if ($name !== 'reports') {
                 if (!$this->db->tableExists($name) or !$this->db->fieldExists('org_id', $name) and ($name !== 'orgs' and $name !== 'roles')) {
