@@ -387,6 +387,15 @@ if (!empty($config->servers)) {
                                         <?= menuItem('rules', '', $user, 'rulesHelp', __('Learn About') . ' ' . __('Rules')) ?>
                                     </ul>
                                 </li>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Security') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('security', 'r', $user, 'securityCollection', __('List') . ' ' . __('Security')) ?>
+                                        <?= menuItem('security', 'c', $user, 'securityCreateForm', __('Create') . ' ' . __('Security')) ?>
+                                        <?= menuItem('security', 'c', $user, 'securityImportForm', __('Import') . ' ' . __('Security')) ?>
+                                        <?= menuItem('security', '', $user, 'securityDefaults', __('Default') . ' ' . __('Security')) ?>
+                                        <?= menuItem('security', '', $user, 'securityHelp', __('Learn About') . ' ' . __('Security')) ?>
+                                    </ul>
+                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Summaries') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('summaries', 'r', $user, 'summariesCollection', __('List') . ' ' . __('Summaries')) ?>

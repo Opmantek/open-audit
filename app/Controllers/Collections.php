@@ -913,8 +913,6 @@ class Collections extends BaseController
         }
         $this->{$this->resp->meta->collection.'Model'}->reset();
         if ($this->resp->meta->format !== 'html') {
-            # Note the below data is only for Enterprise to accept data back after a POST
-            $this->resp->data[0] = 'Table reset';
             output($this);
             return true;
         } else {
