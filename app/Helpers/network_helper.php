@@ -541,7 +541,7 @@ function check_ip(string $ip = ''): bool
     $db = db_connect();
     $sql = "SELECT COUNT(id) AS count FROM networks WHERE ((-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1)) OR network = '" . $ip . "/32')";
     $result = $db->query($sql, [$ip])->getResult();
-    if (!empty($db->error())) {
+    if (!empty($db->error()->code)) {
         log_message('error', json_encode($db->error()));
         return false;
     }

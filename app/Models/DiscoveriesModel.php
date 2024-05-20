@@ -109,6 +109,9 @@ class DiscoveriesModel extends BaseModel
                 return null;
             }
         }
+        if (empty($data->require_port) or ($data->require_port !== 'n' && $data->require_port !== 'y')) {
+            $data->require_port = 'n';
+        }
         if (empty($data->match_options)) {
             $data->match_options = new \stdClass();
         }
