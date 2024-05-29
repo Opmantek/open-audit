@@ -35,7 +35,7 @@ class CollectorsModel extends BaseModel
         $this->builder->join('orgs', 'collectors.org_id = orgs.id', 'left');
         $this->builder->join('users', 'collectors.user_id = users.id', 'left');
         foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
+            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
             } else {
                 $this->builder->{$filter->function}($filter->name, $filter->value);

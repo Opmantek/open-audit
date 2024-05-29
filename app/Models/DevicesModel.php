@@ -45,7 +45,7 @@ class DevicesModel extends BaseModel
         $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
         $joined_tables = array();
         foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
+            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 if ($filter->name === 'devices.tags' and $filter->operator === '=') {
                     $filter->function = 'like';
                     $filter->operator = '';

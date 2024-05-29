@@ -40,7 +40,7 @@ class RacksModel extends BaseModel
         $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
         $this->builder->join('rack_devices', 'rack_devices.rack_id = racks.id', 'left');
         foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
+            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
             } else {
                 $this->builder->{$filter->function}($filter->name, $filter->value);

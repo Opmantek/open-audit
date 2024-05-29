@@ -32,7 +32,7 @@ class OrgsModel extends BaseModel
         $this->builder->join('orgs o2', 'orgs.parent_id = o2.id', 'left');
         $this->builder->join('devices', 'orgs.id = devices.org_id', 'left');
         foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
+            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
             } else {
                 $this->builder->{$filter->function}($filter->name, $filter->value);

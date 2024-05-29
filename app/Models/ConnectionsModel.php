@@ -40,7 +40,7 @@ class ConnectionsModel extends BaseModel
         $this->builder->join('devices dev_a', 'dev_a.id = connections.device_id_a', 'left');
         $this->builder->join('devices dev_b', 'dev_b.id = connections.device_id_b', 'left');
         foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
+            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
             } else {
                 $this->builder->{$filter->function}($filter->name, $filter->value);

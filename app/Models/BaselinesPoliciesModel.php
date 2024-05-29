@@ -35,7 +35,7 @@ class BaselinesPoliciesModel extends BaseModel
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
         $this->builder->join('baselines', $resp->meta->collection . '.baseline_id = baselines.id', 'left');
         foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
+            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
             } else {
                 $this->builder->{$filter->function}($filter->name, $filter->value);

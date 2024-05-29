@@ -642,20 +642,29 @@ if (!function_exists('response_get_query_filter')) {
 
                 if (strtolower(substr($query->value, 0, 8)) === 'not like') {
                     $query->value = substr($query->value, 8);
-                    $query->function = 'notLike';
+                    if (strpos($query->value, '%') === false) {
+                        $query->value = '%' . $query->value . '%';
+                    }
+                    $query->function = 'where';
                     $query->operator = 'not like';
                 }
 
                 if (strtolower(substr($query->value, 0, 5)) === '!like') {
                     $query->value = substr($query->value, 5);
-                    $query->function = 'notLike';
+                    if (strpos($query->value, '%') === false) {
+                        $query->value = '%' . $query->value . '%';
+                    }
+                    $query->function = 'where';
                     $query->operator = 'not like';
                 }
 
                 $operator = substr($query->value, 0, 4);
                 if (strtolower($operator) === 'like') {
                     $query->value = substr($query->value, 4);
-                    $query->function = 'like';
+                    if (strpos($query->value, '%') === false) {
+                        $query->value = '%' . $query->value . '%';
+                    }
+                    $query->function = 'where';
                     $query->operator = $operator;
                 }
 
