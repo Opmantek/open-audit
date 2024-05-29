@@ -705,7 +705,7 @@ if [ "$system_os_family" == "Common Base Linux Mariner" ]; then
 	system_os_name="Mariner Linux"
 fi
 
-if [[ "$system_os_family" == *"suse"* ]] || [[ "$system_os_family" == *"SUSE"* ]] || [[ "$system_os_family" == *"SuSE"* ]] || [[ "$system_os_family" == *"SuSe"* ]]; then
+if [[ "$system_os_family" == *"suse"* ]] || [[ "$system_os_family" == *"SUSE"* ]] || [[ "$system_os_family" == *"SuSE"* ]] || [[ "$system_os_family" == *"SuSe"* ]] || [[ "$system_os_family" == *"SLES"* ]]; then
 	system_os_family="Suse"
 	system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
 	system_os_name=$(grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
@@ -1509,7 +1509,7 @@ case $system_os_family in
 					tail -n +6 >>\
 					"$xml_file"
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' )
+		'CentOS' | 'RedHat' | 'Fedora' | 'Suse' | 'Amazon' )
 				service smb status > /dev/null 2>&1 &&\
 					sed -e '/^$/d' -e 's/^[ \t]*//' -e '/^[#;]/d' /etc/samba/smb.conf |\
 					grep -E "^\[|^comment|^path" |\
@@ -2671,7 +2671,7 @@ case $system_os_family in
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' )
+		'CentOS' | 'RedHat' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' )
 			rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
@@ -2803,7 +2803,7 @@ if [ "$system_os_family" = "Ubuntu" ] || [ "$system_os_family" = "Debian" ]; the
 	fi
 fi
 
-if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "SUSE" ] || [ "$system_os_family" = "Suse" ] || [ "$system_os_family" = "Amazon" ] || [ "$system_os_family" = "Mariner" ]; then
+if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "Suse" ] || [ "$system_os_family" = "Amazon" ] || [ "$system_os_family" = "Mariner" ]; then
 	INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
 fi
 
@@ -3649,7 +3649,7 @@ if [ "$busybox" = "n" ]; then
 					'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
 						package=$(dpkg -S "$file" 2>/dev/null | cut -d: -f1)
 					;;
-					'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' )
+					'CentOS' | 'RedHat' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' )
 						package=$(rpm -qf "$file" 2>/dev/null | grep "is not owned by any package")
 					;;
 				esac
