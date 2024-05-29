@@ -36,7 +36,6 @@ class DevicesModel extends BaseModel
         }
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
         $properties[] = "locations.name as `locations.name`";
         $properties[] = "locations.id as `locations.id`";
