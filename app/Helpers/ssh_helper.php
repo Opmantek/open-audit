@@ -62,7 +62,11 @@ if (! function_exists('scp')) {
         if (!empty($message)) {
             $log->message = $message;
             $log->severity = 3;
-            $discoveryLogModel->create($log);
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('warning', $log->message);
+            }
             $log->severity = 7;
             return false;
         }
@@ -85,7 +89,11 @@ if (! function_exists('scp')) {
         if (empty($ssh)) {
             $log->message = 'Could not instanciate SSH object to ' . $ip . ':' . $ssh_port . '.';
             $log->severity = 3;
-            $discoveryLogModel->create($log);
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('warning', $log->message);
+            }
             return false;
         }
         if ($timeout > 0) {
@@ -105,7 +113,11 @@ if (! function_exists('scp')) {
                 $log->message = "Failure, scp credentials named {$credentials->name} (key) not used to log in to {$ip}.";
                 $log->command_status = 'fail';
                 $log->command =  $ssh->getLog();
-                $discoveryLogModel->create($log);
+                if (!empty($parameters->discovery_id)) {
+                    $discoveryLogModel->create($log);
+                } else {
+                    log_message('warning', $log->message);
+                }
                 return false;
             }
         } elseif ($credentials->type === 'ssh') {
@@ -120,6 +132,11 @@ if (! function_exists('scp')) {
                 $log->command_status = 'fail';
                 $log->command =  $ssh->getLog();
                 $log->severity = 3;
+                if (!empty($parameters->discovery_id)) {
+                    $discoveryLogModel->create($log);
+                } else {
+                    log_message('warning', $log->message);
+                }
                 return false;
             }
             $discoveryLogModel->create($log);
@@ -127,7 +144,11 @@ if (! function_exists('scp')) {
             $log->message = 'No credentials of ssh or ssh_key passed to scp function.';
             $log->command_status = 'fail';
             $log->severity = 3;
-            $discoveryLogModel->create($log);
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('warning', $log->message);
+            }
             $log->severity = 7;
             return false;
         }
@@ -145,7 +166,11 @@ if (! function_exists('scp')) {
         $ssh->disconnect();
         unset($ssh);
         $log->command_time_to_execute = (microtime(true) - $item_start);
-        $discoveryLogModel->create($log);
+        if (!empty($parameters->discovery_id)) {
+            $discoveryLogModel->create($log);
+        } else {
+            log_message('debug', $log->message);
+        }
         unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
         return($status);
     }
@@ -205,7 +230,11 @@ if (! function_exists('scp_get')) {
             $log->message = $message;
             $log->command_status = 'fail';
             $log->severity = 3;
-            $discoveryLogModel->create($log);
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('warning', $log->message);
+            }
             $log->severity = 7;
             return false;
         }
@@ -233,7 +262,11 @@ if (! function_exists('scp_get')) {
         if (empty($ssh)) {
             $log->message = 'Could not instanciate SFTP to ' . $ip . ':' . $ssh_port . '.';
             $log->severity = 5;
-            $discoveryLogModel->create($log);
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('warning', $log->message);
+            }
             return false;
         }
         if ($timeout > 0) {
@@ -255,7 +288,11 @@ if (! function_exists('scp_get')) {
                 $log->command_status = 'issue';
                 $log->severity = 5;
                 $log->command_output = $ssh->getLog();
-                $discoveryLogModel->create($log);
+                if (!empty($parameters->discovery_id)) {
+                    $discoveryLogModel->create($log);
+                } else {
+                    log_message('warning', $log->message);
+                }
                 return false;
             }
         } elseif ($credentials->type === 'ssh') {
@@ -268,13 +305,21 @@ if (! function_exists('scp_get')) {
                 $log->command_output = json_encode($error);
                 $log->command_status = 'issue';
                 $log->severity = 5;
-                $discoveryLogModel->create($log);
+                if (!empty($parameters->discovery_id)) {
+                    $discoveryLogModel->create($log);
+                } else {
+                    log_message('warning', $log->message);
+                }
                 return false;
             }
         } else {
             $log->message = 'No credentials of ssh or ssh_key passed to scp_get function.';
             $log->severity = 5;
-            $discoveryLogModel->create($log);
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('warning', $log->message);
+            }
             $log->severity = 7;
             return false;
         }
@@ -286,26 +331,38 @@ if (! function_exists('scp_get')) {
             $output = $ssh->get($source, $destination);
         } catch (Exception $error) {
             $log->message = 'Attempt to copy file from ' . $ip . ' failed.';
-            $log->command = $output;
+            $log->command = @$output;
             $log->command_output = $ssh->getLog();
             $log->command_status = 'issue';
             $log->severity = 5;
-            $output = false;
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('debug', $log->message . ' Output: ' . $log->command_output);
+            }
+            return false;
         }
         $ssh->disconnect();
         unset($ssh);
         $log->command_time_to_execute = (microtime(true) - $item_start);
         if ($log->command_status === 'success') {
+            if (empty($output)) {
+                $log->command_output = 1;
+            }
             $log->message = 'Attempt to copy file from ' . $ip . ' succeeded.';
             $log->command_output = $output;
             $log->command_status = 'notice';
             $log->severity = 7;
-            if (empty($output)) {
-                $log->command_output = 1;
-            }
         }
-        $discoveryLogModel->create($log);
+        if (!empty($parameters->discovery_id)) {
+            $discoveryLogModel->create($log);
+        } else {
+            log_message('debug', $log->message);
+        }
         unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
+        if (empty($output)) {
+            $output = '';
+        }
         return($output);
     }
 }
@@ -358,14 +415,22 @@ if (! function_exists('ssh_command')) {
             $log->message = 'Invalid IP supplied to ssh_command function.';
             $log->severity = 5;
             $log->command_status = 'fail';
-            $discoveryLogModel->create($log);
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('warning', $log->message);
+            }
             return false;
         }
         if (!is_object($credentials)) {
             $log->message = 'No credentials supplied to ssh_command function.';
             $log->severity = 5;
             $log->command_status = 'fail';
-            $discoveryLogModel->create($log);
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('warning', $log->message);
+            }
             return false;
         }
 
@@ -376,7 +441,11 @@ if (! function_exists('ssh_command')) {
         if (empty($ssh)) {
             $log->message = 'Could not instanciate SSH object to ' . $ip . ':' . $ssh_port . '.';
             $log->severity = 3;
-            $discoveryLogModel->create($log);
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('warning', $log->message);
+            }
             $log->severity = 7;
             return false;
         }
@@ -399,7 +468,11 @@ if (! function_exists('ssh_command')) {
                 $log->command_output = $ssh->getLastError();
                 $log->command_status = 'fail';
                 $log->severity = 5;
-                $discoveryLogModel->create($log);
+                if (!empty($parameters->discovery_id)) {
+                    $discoveryLogModel->create($log);
+                } else {
+                    log_message('warning', $log->message);
+                }
                 return false;
             }
         } elseif ($credentials->type === 'ssh') {
@@ -412,14 +485,22 @@ if (! function_exists('ssh_command')) {
                 $log->command_output = json_encode($ssh->getLog());
                 $log->command_status = 'fail';
                 $log->severity = 5;
-                $discoveryLogModel->create($log);
+                if (!empty($parameters->discovery_id)) {
+                    $discoveryLogModel->create($log);
+                } else {
+                    log_message('warning', $log->message);
+                }
                 return false;
             }
         } else {
             $log->message = 'No credentials of ssh or ssh_key passed to ssh_command function.';
             $log->severity = 4;
             $log->command_status = 'fail';
-            $discoveryLogModel->create($log);
+            if (!empty($parameters->discovery_id)) {
+                $discoveryLogModel->create($log);
+            } else {
+                log_message('warning', $log->message);
+            }
             return false;
         }
 
@@ -467,7 +548,9 @@ if (! function_exists('ssh_command')) {
         $log->command_time_to_execute = (microtime(true) - $item_start);
         $log->command_output = @json_encode($result);
         $log->command_status = 'success';
-        $discoveryLogModel->create($log);
+        if (!empty($parameters->discovery_id)) {
+            $discoveryLogModel->create($log);
+        }
         unset($log);
         return($result);
     }
