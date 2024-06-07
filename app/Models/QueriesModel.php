@@ -204,6 +204,20 @@ class QueriesModel extends BaseModel
         if (!empty($instance->resp->meta->limit) and is_int($instance->resp->meta->limit)) {
             $sql .= ' LIMIT ' . $instance->resp->meta->limit;
         }
+
+        if ($query->name === 'Benchmarks Query') {
+            foreach ($instance->resp->meta->filter as $item) {
+                if ($item->name === 'devices.os_version') {
+                    $sql = str_replace('OSVERSION', preg_replace("/[^A-Za-z0-9\. ]/", '', $item->value), $sql);
+                }
+                if ($item->name === 'devices.os_family') {
+                    $sql = str_replace('OSFAMILY', preg_replace("/[^A-Za-z0-9 ]/", '', $item->value), $sql);
+                }
+            }
+            // Some failsafe entries
+            $sql = str_replace('OSVERSION', "7", $sql);
+            $sql = str_replace('OSFAMILY', "Redhat", $sql);
+        }
         $query = $this->db->query($sql);
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {

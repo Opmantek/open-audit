@@ -74,6 +74,26 @@ class Collections extends BaseConfig
         $this->baselines_results->actions->professional = '';
         $this->baselines_results->actions->community = '';
 
+        $this->benchmarks = new \StdClass();
+        $this->benchmarks->icon = 'fa-solid fa-shield-halved';
+        $this->benchmarks->name = 'Benchmarks';
+        $this->benchmarks->edition = 'Enterprise';
+        $this->benchmarks->orgs = 'b';
+        $this->benchmarks->actions = new \stdClass();
+        $this->benchmarks->actions->enterprise = 'crud';
+        $this->benchmarks->actions->professional = '';
+        $this->benchmarks->actions->community = '';
+
+        $this->benchmarks_exception = new \StdClass();
+        $this->benchmarks_exception->icon = 'fa-solid fa-wand-sparkles';
+        $this->benchmarks_exception->name = 'Benchmarks Exception';
+        $this->benchmarks_exception->edition = 'Enterprise';
+        $this->benchmarks_exception->orgs = 'b';
+        $this->benchmarks_exception->actions = new \stdClass();
+        $this->benchmarks_exception->actions->enterprise = 'crud';
+        $this->benchmarks_exception->actions->professional = '';
+        $this->benchmarks_exception->actions->community = '';
+
         $this->clouds = new \StdClass();
         $this->clouds->icon = 'fa fa-cloud';
         $this->clouds->name = 'Clouds';
@@ -424,25 +444,25 @@ class Collections extends BaseConfig
         $this->search->actions->professional = 'crud';
         $this->search->actions->community = 'crud';
 
-        $this->security = new \StdClass();
-        $this->security->icon = 'fa-solid fa-shield-halved';
-        $this->security->name = 'Security';
-        $this->security->edition = 'Enterprise';
-        $this->security->orgs = 'b';
-        $this->security->actions = new \stdClass();
-        $this->security->actions->enterprise = 'crud';
-        $this->security->actions->professional = '';
-        $this->security->actions->community = '';
+        // $this->security = new \StdClass();
+        // $this->security->icon = 'fa-solid fa-shield-halved';
+        // $this->security->name = 'Security';
+        // $this->security->edition = 'Enterprise';
+        // $this->security->orgs = 'b';
+        // $this->security->actions = new \stdClass();
+        // $this->security->actions->enterprise = 'crud';
+        // $this->security->actions->professional = '';
+        // $this->security->actions->community = '';
 
-        $this->security_policies = new \StdClass();
-        $this->security_policies->icon = 'fa-solid fa-shield-halved';
-        $this->security_policies->name = 'Security Policies';
-        $this->security_policies->edition = 'Enterprise';
-        $this->security_policies->orgs = 'b';
-        $this->security_policies->actions = new \stdClass();
-        $this->security_policies->actions->enterprise = 'crud';
-        $this->security_policies->actions->professional = '';
-        $this->security_policies->actions->community = '';
+        // $this->security_policies = new \StdClass();
+        // $this->security_policies->icon = 'fa-solid fa-shield-halved';
+        // $this->security_policies->name = 'Security Policies';
+        // $this->security_policies->edition = 'Enterprise';
+        // $this->security_policies->orgs = 'b';
+        // $this->security_policies->actions = new \stdClass();
+        // $this->security_policies->actions->enterprise = 'crud';
+        // $this->security_policies->actions->professional = '';
+        // $this->security_policies->actions->community = '';
 
         $this->summaries = new \StdClass();
         $this->summaries->icon = 'fa fa-pie-chart';

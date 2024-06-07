@@ -252,6 +252,15 @@ if (!empty($config->servers)) {
                                         <?= menuItem('baselines', '', $user, 'baselinesHelp', __('Learn About') . ' ' . __('Baselines')) ?>
                                     </ul>
                                 </li>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Benchmarks') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('benchmarks', 'r', $user, 'benchmarksCollection', __('List') . ' ' . __('Benchmarks')) ?>
+                                        <?= menuItem('benchmarks', 'c', $user, 'benchmarksCreateForm', __('Create') . ' ' . __('Benchmarks')) ?>
+                                        <?= menuItem('benchmarks', 'c', $user, 'benchmarksImportForm', __('Import') . ' ' . __('Benchmarks')) ?>
+                                        <?= menuItem('benchmarks', '', $user, 'benchmarksDefaults', __('Default') . ' ' . __('Benchmarks')) ?>
+                                        <?= menuItem('benchmarks', '', $user, 'benchmarksHelp', __('Learn About') . ' ' . __('Benchmarks')) ?>
+                                    </ul>
+                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Clusters') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('clusters', 'r', $user, 'clustersCollection', __('List') . ' ' . __('Clusters')) ?>
@@ -385,15 +394,6 @@ if (!empty($config->servers)) {
                                         <?= menuItem('rules', 'c', $user, 'rulesImportForm', __('Import') . ' ' . __('Rules')) ?>
                                         <?= menuItem('rules', '', $user, 'rulesDefaults', __('Default') . ' ' . __('Rules')) ?>
                                         <?= menuItem('rules', '', $user, 'rulesHelp', __('Learn About') . ' ' . __('Rules')) ?>
-                                    </ul>
-                                </li>
-                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Security') ?></a>
-                                    <ul class="dropdown-menu">
-                                        <?= menuItem('security', 'r', $user, 'securityCollection', __('List') . ' ' . __('Security')) ?>
-                                        <?= menuItem('security', 'c', $user, 'securityCreateForm', __('Create') . ' ' . __('Security')) ?>
-                                        <?= menuItem('security', 'c', $user, 'securityImportForm', __('Import') . ' ' . __('Security')) ?>
-                                        <?= menuItem('security', '', $user, 'securityDefaults', __('Default') . ' ' . __('Security')) ?>
-                                        <?= menuItem('security', '', $user, 'securityHelp', __('Learn About') . ' ' . __('Security')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Summaries') ?></a>
