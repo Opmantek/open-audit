@@ -55,7 +55,7 @@ if (!$db->tableExists('benchmarks_log')) {
         PRIMARY KEY (`id`),
         KEY `system_id` (`device_id`),
         KEY `benchmark_id` (`benchmark_id`),
-        CONSTRAINT `benchmark_id` FOREIGN KEY (`benchmark_id`) REFERENCES `benchmarks` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `benchmarks_log_benchmark_id` FOREIGN KEY (`benchmark_id`) REFERENCES `benchmarks` (`id`) ON DELETE CASCADE,
         CONSTRAINT `benchmarks_log_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
     $query = $db->query($sql);
