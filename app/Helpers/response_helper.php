@@ -986,15 +986,22 @@ if (!function_exists('response_get_ids')) {
         if (!empty($post)) {
             $device_ids = $post;
         }
-        if ($device_ids !== '') {
-            // Remove a trailing comma if we have one
-            if (substr($device_ids, -1) === ',') {
-                $device_ids = substr($device_ids, 0, -1);
-            }
-            // Set all values to int's
-            $temp = explode(',', $device_ids);
-            for ($i=0; $i < count($temp); $i++) {
-                $temp[$i] = intval($temp[$i]);
+        if (isset($device_ids)) {
+            if (is_string($device_ids)) {
+                // Remove a trailing comma if we have one
+                if (substr($device_ids, -1) === ',') {
+                    $device_ids = substr($device_ids, 0, -1);
+                }
+                // Set all values to int's
+                $temp = explode(',', $device_ids);
+                for ($i=0; $i < count($temp); $i++) {
+                    $temp[$i] = intval($temp[$i]);
+                }
+            } else if (is_array($device_ids)) {
+                $temp = $device_ids;
+            } else {
+                log_message('warn', 'Invalid item (not string or array) passed as device_ids.');
+                return '';
             }
             // Unique values only
             $temp = array_unique($temp);
@@ -1183,7 +1190,7 @@ if (!function_exists('response_get_permission_id')) {
             if (!empty($received_data[0]->component_type)) {
                 $component = $received_data[0]->component_type;
             } else {
-                log_message('error', 'Calling a components ' . $action . ' on URL for comonents requires components.type=$TYPE in the URL');
+                log_message('error', 'Calling a components ' . $action . ' on URL for components requires components.type=$TYPE in the URL');
                 return false;
             }
             if ($received_data[0]->component_type !== 'application' and $received_data[0]->component_type !== 'attachment' and $received_data[0]->component_type !== 'cluster' and $received_data[0]->component_type !== 'credential' and $received_data[0]->component_type !== 'image' and $received_data[0]->component_type !== 'rack_devices') {
