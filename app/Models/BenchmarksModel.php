@@ -349,6 +349,8 @@ class BenchmarksModel extends BaseModel
 
         $benchmark = $qp->find('h2')->next()->find('mark')->text();
         $i = 0;
+        $insert = 0;
+        $update = 0;
         foreach ($qp->find('tr.rule-overview-leaf') as $item) {
             $result = new stdClass();
             $result->benchmark = $benchmark;
@@ -391,6 +393,7 @@ class BenchmarksModel extends BaseModel
                         $exists = true;
                         if (empty($policy->description) or empty($policy->rationale) or empty($policy->remediation) or $policy->remediation === '[]') {
                             // Update (something)
+                            $update += 1;
                             if (empty($policy->description) and !empty($result->description)) {
                                 log_message('debug', 'Updating benchmark policy ' . $result->external_ident . ' description from ' . $device->attributes->name);
                                 log_message('debug', json_encode($policy));
@@ -415,16 +418,17 @@ class BenchmarksModel extends BaseModel
                 }
                 if ($exists === false) {
                     // Insert
+                    $insert += 1;
                     log_message('debug', 'Inserting benchmark policy ' . $result->external_ident . ' from ' . $device->attributes->name);
                     $sql = "INSERT INTO benchmarks_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, '', '')";
                     $this->db->query($sql, [$result->external_ident, $result->name, $result->severity, $result->description, $result->rationale, $result->remediation]);
                 }
             }
-        } # idm45661002217104
-        $this->logCreate($id, $device_id, 'info', 'Processing report file completed.');
-        log_message('debug', 'Processing report file for ' . $device->attributes->name . ' completed.');
-        log_message('info', 'Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+        }
+        $this->logCreate($id, $device_id, 'info', 'Processing report file completed. ' . $insert . ' inserted and ' . $update . ' updated policies.');
         $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+        log_message('debug', 'Processing report file for ' . $device->attributes->name . ' completed. ' . $insert . ' inserted and ' . $update . ' updated policies.');
+        log_message('debug', 'Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
         return[];
     }
 
