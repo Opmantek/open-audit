@@ -148,7 +148,7 @@ class OpenAudit extends BaseConfig
                     $this->device_count = intval($result->device_count);
                 }
             }
-            $query = $db->query("SELECT count(*) as device_count FROM `system` WHERE `type` NOT IN ('unknown', 'unclassified')");
+            $query = $db->query("SELECT count(*) as device_count FROM `system` WHERE `type` NOT IN ('unknown', 'unclassified') and ip != ''");
             if (!empty($query)) {
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
@@ -164,7 +164,7 @@ class OpenAudit extends BaseConfig
                     $this->device_count = intval($result->device_count);
                 }
             }
-            $query = $db->query("SELECT count(*) as device_count FROM `devices` WHERE `type` NOT IN ('unknown', 'unclassified')");
+            $query = $db->query("SELECT count(*) as device_count FROM `devices` WHERE `type` NOT IN ('unknown', 'unclassified') and ip != ''");
             if (!empty($query)) {
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
