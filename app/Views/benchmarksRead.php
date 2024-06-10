@@ -295,7 +295,7 @@ created from this guidance.
                         <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
                             <div class="row">
                                 <div class="table-responsive">
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]' id="devices_table">
                                         <thead>
                                             <tr>
                                                 <th style="text-align: center;"><?= __('View') ?></th>
@@ -306,21 +306,33 @@ created from this guidance.
                                                 <th style="text-align: center;"><?= __('OpenScap is Installed') ?></th>
                                                 <th style="text-align: center;"><?= __('Working Credentials') ?></th>
                                                 <th><?= __('Organisation') ?></th>
-                                                <th data-orderable="false" class="text-center"><?= __('Select') ?>
-                                                    <input aria-label="<?=__('Select All') ?>" type="checkbox" name="select_all" id="select_all">
+                                                <th data-orderable="false" class="text-center">
+                                                    <button style="margin-left:10px; display:none;" type="button" class="btn btn-sm btn-success float-end submit_devices" id="submit_devices"><?= __('Submit') ?></button>
+                                                    <button style="margin-left:10px; display:none;" type="button" class="btn btn-sm btn-danger float-end" id="cancel_devices"><?= __('Cancel') ?></button>
+                                                    <button style="margin-left:10px;" type="button" class="btn btn-sm btn-primary float-end" id="edit_devices"><?= __('Edit') ?></button>
+                                                    <button type="button" id="modalButton" class="btn btn-sm btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addDevicesModel" disabled><?= __('Add') ?></button>
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php if (!empty($included['devices'])) { ?>
-                                            <?php $devices_in_benchmark = json_decode($resource->devices); ?>
-                                            <?php foreach ($included['devices'] as $device) { ?>
-                                                <?php
-                                                $credentials = '';
-                                                if ($device->credentials === 'y') {
-                                                    $credentials = '<span class="fa-solid fa-check text-success"></span>';
-                                                }
-                                                ?>
+                                <?php
+                                    $devices_in = false;
+                                    $devices_out = false;
+                                    if (!empty($included['devices'])) {
+                                    $devices_in_benchmark = json_decode($resource->devices);
+                                    foreach ($included['devices'] as $device) {
+                                        $credentials = '';
+                                        if ($device->credentials === 'y') {
+                                            $credentials = '<span class="fa-solid fa-check text-success"></span>';
+                                        }
+                                        $device_in_benchmark = false;
+                                        if (is_array($devices_in_benchmark) and in_array($device->id, $devices_in_benchmark)) {
+                                            $device_in_benchmark = true;
+                                            $devices_in = true;
+                                        } else {
+                                            $devices_out = true;
+                                        }
+                                        if ($device_in_benchmark) { ?>
                                             <tr>
                                                 <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" href="<?= url_to('devicesRead', $device->id) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
                                                 <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsCollection') ?>?components.type=benchmark_result&components.device_id=<?= $device->id ?>&benchmark_result.benchmark_id=<?= $resource->id ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
@@ -330,15 +342,11 @@ created from this guidance.
                                                 <td style="text-align: center;"><?php if (!empty($device->{'software.name'})) { echo '<span class="fa-solid fa-check text-success"></span>'; } ?></td>
                                                 <td style="text-align: center;"><?= $credentials ?></td>
                                                 <td><?= $device->{'orgs.name'} ?>
-                                                <?php if (is_array($devices_in_benchmark) and in_array($device->id, $devices_in_benchmark)) {
-                                                    echo '<td style="text-align: center;"><input aria-label="' . __('Select') . '" type="checkbox" id="data[attributes][devices][' . $device->id . ']" value="' . $device->id . '" name="data[attributes][devices][' . $device->id . ']" checked disabled></td>';
-                                                    } else {
-                                                        echo '<td style="text-align: center;"><input aria-label="' . __('Select') . '" type="checkbox" id="data[attributes][devices][' . $device->id . ']" value="' . $device->id . '" name="data[attributes][devices][' . $device->id . ']" disabled></td>';
-                                                    }
-                                                ?>
+                                                <td style="text-align: center;"><input class="devices" aria-label="<?= __('Select') ?>" type="checkbox" id="data[attributes][devices][<?= $device->id ?>]" value="<?= $device->id ?>" name="data[attributes][devices][<?= $device->id ?>]" checked disabled></td>
                                             </tr>
-                                            <?php } ?>
-                                            <?php } ?>
+                                        <?php } ?>
+                                    <?php } ?>
+                                <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -395,6 +403,57 @@ created from this guidance.
             </div>
         </main>
 
+<?php if ($devices_out) { ?>
+<div class="modal modal-xl" tabindex="-1" id="addDevicesModel">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Add Devices</h5>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover" data-order='[[1,"asc"]]' id="add_devices_table">
+                    <thead>
+                        <tr>
+                            <th><?= __('Device') ?></th>
+                            <th style="text-align: center;"><?= __('OpenScap is Installed') ?></th>
+                            <th style="text-align: center;"><?= __('Working Credentials') ?></th>
+                            <th><?= __('Organisation') ?></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            <?php
+                foreach ($included['devices'] as $device) {
+                    $credentials = '';
+                    if ($device->credentials === 'y') {
+                        $credentials = '<span class="fa-solid fa-check text-success"></span>';
+                    }
+                    if (is_array($devices_in_benchmark) and !in_array($device->id, $devices_in_benchmark)) { ?>
+                        <tr>
+                            <td><strong><?= $device->name ?></strong><br><?= $device->ip ?></td>
+                            <td style="text-align: center;"><?php if (!empty($device->{'software.name'})) { echo '<span class="fa-solid fa-check text-success"></span>'; } ?></td>
+                            <td style="text-align: center;"><?= $credentials ?></td>
+                            <td><?= $device->{'orgs.name'} ?>
+                            <td style="text-align: center;"><input class="devices" aria-label="<?= __('Select') ?>" type="checkbox" id="data[attributes][devices][<?= $device->id ?>]" value="<?= $device->id ?>" name="data[attributes][devices][<?= $device->id ?>]"></td>
+                        </tr>
+                    <?php } ?>
+                <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-danger" data-bs-dismiss="modal"><?= __('Cancel') ?></button>
+            <button type="button" class="btn btn-success submit_devices"><?= __('Submit') ?></button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<?php } ?>
+
+
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
@@ -413,6 +472,56 @@ window.onload = function () {
 
         $(".nav-link").click(function(e) {
             window.scrollTo(0, 0);
+        });
+
+        <?php if ($devices_out) { ?>
+            $("#modalButton").removeAttr("disabled");
+        <?php } ?>
+
+
+        $("#edit_devices").click(function(e) {
+            $("#devices_table > tbody > tr > td > input").removeAttr("disabled");
+            $("#edit_devices").hide();
+            $("#submit_devices").show();
+            $("#cancel_devices").show();
+        });
+
+        $("#cancel_devices").click(function(e) {
+            $("#devices_table > tbody > tr > td > input").attr("disabled");
+            $("#edit_devices").show();
+            $("#submit_devices").hide();
+            $("#cancel_devices").hide();
+        });
+
+        $(".submit_devices").click(function(e) {
+            var data = {};
+            data["data"] = {};
+            data["data"]["id"] = <?= intval($resource->id) ?>;
+            data["data"]["type"] = 'benchmarks';
+            data["data"]["attributes"] = {};
+            data["data"]["attributes"]["devices"] = $('.devices:checkbox:checked').map(function() {
+                return this.value;
+            }).get();
+            data = JSON.stringify(data);
+            $.ajax({
+            type: "PATCH",
+            url: id,
+            contentType: "application/json",
+            data: {data : data},
+            success: function (data) {
+               window.location = id;
+            },
+            error: function (data) {
+                data = JSON.parse(data.responseText);
+                $("#liveToastFailure-header").text("Update Failed");
+                $("#liveToastFailure-body").text(data.message);
+                var toastElList = [].slice.call(document.querySelectorAll('.toast-failure'));
+                var toastList = toastElList.map(function(toastEl) {
+                    return new bootstrap.Toast(toastEl)
+                });
+                toastList.forEach(toast => toast.show());
+            }
+            });
         });
     });
 }

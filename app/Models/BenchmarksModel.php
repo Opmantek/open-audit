@@ -601,7 +601,15 @@ class BenchmarksModel extends BaseModel
     {
         // Accept our client data
         $data = $this->updateFieldData('benchmarks', $data);
-        # $data->blah = 123; # Our bad record for testing failing
+        if (isset($data->devices) and empty($data->devices)) {
+            $data->devices = '[]';
+        }
+        if (!empty($data->devices) and is_array($data->devices)) {
+            for ($i=0; $i < count($data->devices); $i++) {
+                $data->devices[$i] = intval($data->devices[$i]);
+            }
+            $data->devices = json_encode($data->devices);
+        }
         // And update the record
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
