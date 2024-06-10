@@ -134,3 +134,4 @@ nb-configuration.xml
 app/Attachments/*
 public/js/highcharts-9.3.1.min.js
 other/enterprise*
+other/ssg-results/*
