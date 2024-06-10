@@ -184,7 +184,7 @@ if (!function_exists('output')) {
                 $line_array = array();
                 foreach ($instance->resp->meta->data_order as $field) {
                     $value = '';
-                    if (!empty($item->attributes->$field)) {
+                    if (isset($item->attributes->$field)) {
                         $value = $item->attributes->$field;
                     }
                     if (is_string($value) or is_int($value)) {
