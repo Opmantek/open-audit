@@ -13472,6 +13472,8 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.9.6.1.84.24.2': $device->model = 'Cisco SF220-24P 24-Port 10/100 PoE Smart Plus Switch'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.6.1.84.48.1': $device->model = 'Cisco SF220-48 48-Port 10/100 Smart Plus Switch'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.6.1.84.48.2': $device->model = 'Cisco SF220-48P 48-Port 10/100 PoE Smart Plus Switch'; $device->type = 'switch'; break;
+            case '1.3.6.1.4.1.9.6.1.87.48.1': $device->model = 'Cisco Catalyst SF200-48'; $device->type = 'switch'; break;
+            case '1.3.6.1.4.1.9.6.1.87.48.2': $device->model = 'Cisco Catalyst SF200-48P'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.6.1.89.26.1': $device->model = 'Cisco SG220-26 26-Port Gigabit Smart Plus Switch'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.6.1.89.26.2': $device->model = 'Cisco SG220-26P 26-Port Gigabit PoE Smart Plus Switch'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.6.1.89.28.3': $device->model = 'Cisco SG220-28MP 28-Port Gigabit PoE Smart Plus Switch'; $device->type = 'switch'; break;
