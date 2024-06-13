@@ -19,21 +19,43 @@ if ($style === 'icontext') {
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
     $logs_button = '<li class="nav-item" role="presentation"><a href="#logs" class="nav-link" id="logs-tab">' . __('Logs') . '</a></li>';
 }
+$severities = array('low', 'medium', 'high', 'info', 'unknown');
+$outcomes = array('error', 'fail', 'fixed', 'informational', 'notapplicable', 'notchecked', 'pass', 'unknown');
+
 $results = new stdClass();
+foreach ($severities as $severity) {
+    $results->{$severity} = new \stdClass();
+    foreach ($outcomes as $outcome) {
+        $results->{$severity}->{$outcome} = 0;
+    }
+}
+
+$count = 0;
 foreach ($included['policies'] as $policy) {
     if (!isset($results->{$policy->severity})) {
         $results->{$policy->severity} = new \stdClass();
-        $results->{$policy->severity}->pass = 0;
-        $results->{$policy->severity}->fail = 0;
         $results->{$policy->severity}->error = 0;
+        $results->{$policy->severity}->fail = 0;
+        $results->{$policy->severity}->fixed = 0;
+        $results->{$policy->severity}->informational = 0;
         $results->{$policy->severity}->notapplicable = 0;
         $results->{$policy->severity}->notchecked = 0;
+        $results->{$policy->severity}->pass = 0;
         $results->{$policy->severity}->unknown = 0;
     }
     if (empty($results->{$policy->severity}->{$policy->result})) {
         $results->{$policy->severity}->{$policy->result} = 0;
     }
     $results->{$policy->severity}->{$policy->result} = $results->{$policy->severity}->{$policy->result} + intval($policy->count);
+    $count += 1;
+}
+$pass = 0;
+$fail = 0;
+$other = 0;
+foreach ($results as $key => $value) {
+    $pass = $pass + intval($value->pass);
+    $fail = $fail + intval($value->fail);
+    $other = $other + intval($value->error) + intval($value->notapplicable) + intval($value->notchecked) + intval($value->unknown) + intval($value->informational) + intval($value->fixed);
 }
 $device_count = 0;
 if (!empty(json_decode($resource->devices))) {
@@ -121,89 +143,163 @@ if (!empty($hour) and !empty($days)) {
                                     <br>
                                 </div>
                                 <div class="col-6">
-                                    <br>
+
+                                <div class="offset-1 col-10">
+                                    <br><br>
+                                        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="padding:1rem;">
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <strong>
+                                                        <span class="text-left"><?= $resource->type ?></span>
+                                                    </strong>
+                                                </div>
+                                                <div class="col-3 clearfix">
+                                                    <strong>
+                                                        <span class="float-end text-right"><?= $resource->os ?></span>
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <br>
+                                                    <img src="/open-audit/logos/<?= explode(' ',strtolower($resource->os))[0] ?>.svg" class="float-end imgshadow" alt=""style="width:75px;">
+                                                    <p>Do not attempt to implement any of the settings in this benchmark without first testing them in a non-operational environment. The creators of this benchmark assume no responsibility whatsoever for its use by other parties, and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <br>
+                                    <div class="offset-1 col-10">
+                                        <?php if ($count > 0) { ?>
+                                        <h3>Results</h3>
+                                        <div class="progress-stacked"  style="height: 2.5em">
+                                            <div class="progress" role="progressbar" aria-label="Pass" aria-valuenow="<?= $pass ?>" aria-valuemin="0" aria-valuemax="<?= $count ?>" style="width: <?= (($pass / $count) * 100) ?>%">
+                                                <div class="progress-bar bg-success fw-bold"  style="height: 2.5em"><?= $pass . ' ' . __('Passed') ?></div>
+                                            </div>
+                                            <div class="progress" role="progressbar" aria-label="Other" aria-valuenow="<?= $other ?>" aria-valuemin="0" aria-valuemax="<?= $count ?>" style="width: <?= (($other / $count) * 100) ?>%">
+                                                <div class="progress-bar bg-warning fw-bold"  style="height: 2.5em"><?= $other . ' ' . __('Others') ?></div>
+                                            </div>
+                                            <div class="progress" role="progressbar" aria-label="Fail" aria-valuenow="<?= $fail ?>" aria-valuemin="0" aria-valuemax="<?= $count ?>" style="width: <?= (($fail / $count) * 100) ?>%">
+                                                <div class="progress-bar bg-danger fw-bold"  style="height: 2.5em"><?= $fail . ' ' . __('Failed') ?></div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <h3>Severity of Failed Results</h3>
+                                        <div class="progress-stacked"  style="height: 2.5em">
+                                            <?php 
+                                            $fail_count = $results->low->fail + $results->medium->fail + $results->high->fail;
+                                            $low_fail_percent = 0;
+                                            $medium_fail_percent = 0;
+                                            $high_fail_percent = 0;
+                                            if (!empty($results->low->fail) and !empty($fail_count)) {
+                                                $low_fail_percent = ($results->low->fail / $fail_count) * 100;
+                                            }
+                                            if (!empty($results->medium->fail) and !empty($fail_count)) {
+                                                $medium_fail_percent = ($results->medium->fail / $fail_count) * 100;
+                                            }
+                                            if (!empty($results->high->fail) and !empty($fail_count)) {
+                                                $high_fail_percent = ($results->high->fail / $fail_count) * 100;
+                                            }
+                                            ?>
+                                            <div class="progress" role="progressbar" aria-label="Low" aria-valuenow="<?= $results->low->fail ?>" aria-valuemin="0" aria-valuemax="<?= $fail_count ?>" style="width: <?= $low_fail_percent ?>%">
+                                                <div class="progress-bar bg-success fw-bold"  style="height: 2.5em"><?= $results->low->fail . ' ' . __('Low') ?></div>
+                                            </div>
+                                            <div class="progress" role="progressbar" aria-label="Medium" aria-valuenow="<?= $results->medium->fail ?>" aria-valuemin="0" aria-valuemax="<?= $fail_count ?>" style="width: <?= $medium_fail_percent ?>%">
+                                                <div class="progress-bar bg-warning fw-bold"  style="height: 2.5em"><?= $results->medium->fail . ' ' . __('Medium') ?></div>
+                                            </div>
+                                            <div class="progress" role="progressbar" aria-label="High" aria-valuenow="<?= $results->high->fail ?>" aria-valuemin="0" aria-valuemax="<?= $fail_count ?>" style="width: <?= $high_fail_percent ?>%">
+                                                <div class="progress-bar bg-danger fw-bold"  style="height: 2.5em"><?= $results->high->fail . ' ' . __('High') ?></div>
+                                            </div>
+                                        </div>
+                                        <br><br>
+                                        <?php } ?>
+                                    </div>
+
+                                    <?php
+                                        foreach ($severities as $severity) {
+                                            foreach ($outcomes as $outcome) {
+                                                if ($results->{$severity}->{$outcome}  === 0) {
+                                                    $results->{$severity}->{$outcome} = '';
+                                                }
+                                            }
+                                        }
+                                    ?>
+
+
                                     <div class="offset-1 col-10">
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 15%;">Severity</th>
-                                                    <th style="width: 15%; text-align: right;"><?= __('Pass') ?></th>
-                                                    <th style="width: 15%; text-align: right;"><?= __('Fail') ?></th>
-                                                    <th style="width: 15%; text-align: right;"><?= __('Error') ?></th>
-                                                    <th style="width: 20%; text-align: right;"><?= __('Not Applicable') ?></th>
-                                                    <th style="width: 20%; text-align: right;"><?= __('Not Checked') ?></th>
-                                                    <th style="width: 20%; text-align: right;"><?= __('Unknown') ?></th>
+                                                    <th style="width: 10%;">Severity</th>
+                                                    <th style="width: 10%; text-align: center;"><abbr title="The target system or system component satisfied all the conditions of the rule."><?= __('Pass') ?></abbr></th>
+                                                    <th style="width: 10%; text-align: center;"><abbr title="The target system or system component did not satisfy at least one condition of the rule."><?= __('Fail') ?></abbr></th>
+                                                    <th style="width: 10%; text-align: center;"><abbr title="The checking engine could not complete the evaluation, therefore the status of the target's compliance with the rule is not certain. This could happen, for example, if a testing tool was run with insufficient privileges and could not gather all of the necessary information."><?= __('Error') ?></abbr></th>
+                                                    <th style="width: 20%; text-align: center;"><abbr title="The Rule was not applicable to the target of the test. For example, the Rule might have been specific to a different version of the target OS, or it might have been a test against a platform feature that was not installed."><?= __('Not Applicable') ?></abbr></th>
+                                                    <th style="width: 20%; text-align: center;"><abbr title="The Rule was not evaluated by the checking engine. This status is designed for Rule elements that have no check elements or that correspond to an unsupported checking system. It may also correspond to a status returned by a checking engine if the checking engine does not support the indicated check code."><?= __('Not Checked') ?></abbr></th>
+                                                    <th style="width: 10%; text-align: center;"><abbr title="The Rule had failed, but was then fixed (possibly by a tool that can automatically apply remediation, or possibly by the human auditor)."><?= __('Fixed') ?></abbr></th>
+                                                    <th style="width: 10%; text-align: center;"><abbr title="The Rule was checked, but the output from the checking engine is simply information for auditors or administrators; it is not a compliance category. This status value is designed for Rule elements whose main purpose is to extract information from the target rather than test the target."><?= __('Informational') ?></abbr></th>
+                                                    <th style="width: 20%; text-align: center;"><abbr title="The testing tool encountered some problem and the result is unknown. For example, a result of 'unknown' might be given if the testing tool was unable to interpret the output of the checking engine (the output has no meaning to the testing tool)."><?= __('Unknown') ?></abbr></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
                                                     <td class="text-success"><?= __('Low') ?></td>
-                                                    <td style="text-align: right;" class="text-success"><?= @$results->low->pass ?></td>
-                                                    <td style="text-align: right;" class="text-success"><?= @$results->low->fail ?></td>
-                                                    <td style="text-align: right;"><?= @$results->low->error ?></td>
-                                                    <td style="text-align: right;"><?= @$results->low->notapplicable ?></td>
-                                                    <td style="text-align: right;"><?= @$results->low->notchecked ?></td>
-                                                    <td style="text-align: right;"><?= @$results->low->unknown ?></td>
+                                                    <td style="text-align: center;" class="text-success"><?= $results->low->pass ?></td>
+                                                    <td style="text-align: center;" class="text-success"><?= $results->low->fail ?></td>
+                                                    <td style="text-align: center;"><?= $results->low->error ?></td>
+                                                    <td style="text-align: center;"><?= $results->low->notapplicable ?></td>
+                                                    <td style="text-align: center;"><?= $results->low->notchecked ?></td>
+                                                    <td style="text-align: center;"><?= $results->low->fixed ?></td>
+                                                    <td style="text-align: center;"><?= $results->low->informational ?></td>
+                                                    <td style="text-align: center;"><?= $results->low->unknown ?></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-warning"><?= __('Medium') ?></td>
-                                                    <td style="text-align: right;" class="text-success"><?= @$results->medium->pass ?></td>
-                                                    <td style="text-align: right;" class="text-warning"><?= @$results->medium->fail ?></td>
-                                                    <td style="text-align: right;"><?= @$results->medium->error ?></td>
-                                                    <td style="text-align: right;"><?= @$results->medium->notapplicable ?></td>
-                                                    <td style="text-align: right;"><?= @$results->medium->notchecked ?></td>
-                                                    <td style="text-align: right;"><?= @$results->medium->unknown ?></td>
+                                                    <td style="text-align: center;" class="text-success"><?= $results->medium->pass ?></td>
+                                                    <td style="text-align: center;" class="text-warning"><?= $results->medium->fail ?></td>
+                                                    <td style="text-align: center;"><?= $results->medium->error ?></td>
+                                                    <td style="text-align: center;"><?= $results->medium->notapplicable ?></td>
+                                                    <td style="text-align: center;"><?= $results->medium->notchecked ?></td>
+                                                    <td style="text-align: center;"><?= $results->medium->fixed ?></td>
+                                                    <td style="text-align: center;"><?= $results->medium->informational ?></td>
+                                                    <td style="text-align: center;"><?= $results->medium->unknown ?></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-danger"><?= __('High') ?></td>
-                                                    <td style="text-align: right;" class="text-success"><?= @$results->high->pass ?></td>
-                                                    <td style="text-align: right;" class="text-danger"><?= @$results->high->fail ?></td>
-                                                    <td style="text-align: right;"><?= @$results->high->error ?></td>
-                                                    <td style="text-align: right;"><?= @$results->high->notapplicable ?></td>
-                                                    <td style="text-align: right;"><?= @$results->high->notchecked ?></td>
-                                                    <td style="text-align: right;"><?= @$results->high->unknown ?></td>
+                                                    <td style="text-align: center;" class="text-success"><?= $results->high->pass ?></td>
+                                                    <td style="text-align: center;" class="text-danger"><?= $results->high->fail ?></td>
+                                                    <td style="text-align: center;"><?= $results->high->error ?></td>
+                                                    <td style="text-align: center;"><?= $results->high->notapplicable ?></td>
+                                                    <td style="text-align: center;"><?= $results->high->notchecked ?></td>
+                                                    <td style="text-align: center;"><?= $results->high->fixed ?></td>
+                                                    <td style="text-align: center;"><?= $results->high->informational ?></td>
+                                                    <td style="text-align: center;"><?= $results->high->unknown ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-primary"><?= __('Info') ?></td>
+                                                    <td style="text-align: center;" class="text-success"><?= $results->info->pass ?></td>
+                                                    <td style="text-align: center;" class="text-danger"><?= $results->info->fail ?></td>
+                                                    <td style="text-align: center;"><?= $results->info->error ?></td>
+                                                    <td style="text-align: center;"><?= $results->info->notapplicable ?></td>
+                                                    <td style="text-align: center;"><?= $results->info->notchecked ?></td>
+                                                    <td style="text-align: center;"><?= $results->info->fixed ?></td>
+                                                    <td style="text-align: center;"><?= $results->info->informational ?></td>
+                                                    <td style="text-align: center;"><?= $results->info->unknown ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-secondary"><?= __('Unknown') ?></td>
+                                                    <td style="text-align: center;" class="text-success"><?= $results->unknown->pass ?></td>
+                                                    <td style="text-align: center;" class="text-danger"><?= $results->unknown->fail ?></td>
+                                                    <td style="text-align: center;"><?= $results->unknown->error ?></td>
+                                                    <td style="text-align: center;"><?= $results->unknown->notapplicable ?></td>
+                                                    <td style="text-align: center;"><?= $results->unknown->notchecked ?></td>
+                                                    <td style="text-align: center;"><?= $results->unknown->fixed ?></td>
+                                                    <td style="text-align: center;"><?= $results->unknown->informational ?></td>
+                                                    <td style="text-align: center;"><?= $results->unknown->unknown ?></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
-
-                                    <div class="offset-2 col-8">
-                                    <br><br>
-                                    <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                                    Do not attempt to implement any of the settings in
-                                    this guide without first testing them in a non-operational environment. The
-                                    creators of this guidance assume no responsibility whatsoever for its use by
-                                    other parties, and makes no guarantees, expressed or implied, about its
-                                    quality, reliability, or any other characteristic.
-                                    </div>
-                                    <br><br>
-                                    This guide presents a catalog of security-relevant
-configuration settings for Red Hat Enterprise Linux 7. It is a rendering of
-content structured in the eXtensible Configuration Checklist Description Format (XCCDF)
-in order to support security automation.  The SCAP content is
-is available in the <code>scap-security-guide</code> package which is developed at
-
-    <a href="https://www.open-scap.org/security-policies/scap-security-guide">https://www.open-scap.org/security-policies/scap-security-guide</a>.
-<br><br>
-Providing system administrators with such guidance informs them how to securely
-configure systems under their control in a variety of network roles. Policy
-makers and baseline creators can use this catalog of settings, with its
-associated references to higher-level security control catalogs, in order to
-assist them in security baseline creation. This guide is a <em>catalog, not a
-checklist</em>, and satisfaction of every item is not likely to be possible or
-sensible in many operational scenarios. However, the XCCDF format enables
-granular selection and adjustment of settings, and their association with OVAL
-and OCIL content provides an automated checking capability. Transformations of
-this document, and its associated automated checking content, are capable of
-providing baselines that meet a diverse set of policy objectives. Some example
-XCCDF <em>Profiles</em>, which are selections of items that form checklists and
-can be used as baselines, are available with this guide. They can be
-processed, in an automated fashion, with tools that support the Security
-Content Automation Protocol (SCAP). The DISA STIG, which provides required
-settings for US Department of Defense systems, is one example of a baseline
-created from this guidance.
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
@@ -219,7 +315,6 @@ created from this guidance.
                                         <thead>
                                             <tr>
                                                 <th style="text-align: center;"><?= __('View') ?></th>
-                                                <!--<th style="text-align: center;"><?= __('Control ID') ?></th>-->
                                                 <th><?= __('Name') ?></th>
                                                 <th style="text-align: center;"><?= __('Severity') ?></th>
                                                 <th style="text-align: center;"><?= __('Pass') ?></th>
@@ -235,45 +330,55 @@ created from this guidance.
                                             <?php foreach ($included['policies'] as $policy) { ?>
                                                 <?php
                                                     $severity_class = 'btn-primary';
+                                                    $text_class = 'text-primary';
                                                     if ($policy->severity === 'medium') {
                                                         $severity_class = 'btn-warning';
+                                                        $text_class = 'text-warning';
                                                     }
                                                     if ($policy->severity === 'high') {
                                                         $severity_class = 'btn-danger';
+                                                        $text_class = 'text-danger';
                                                     }
                                                     if ($policy->severity === 'low') {
                                                         $severity_class = 'btn-success';
+                                                        $text_class = 'text-success';
                                                     }
                                                     $pass_button = '';
                                                     if (!empty($policy->pass)) {
                                                         $pass_button = '<button type="button" class="btn btn-success">' . $policy->pass . '</button>';
+                                                        $pass_button = '<span class="text-success fw-bold">' . $policy->pass . '</span>';
                                                     }
                                                     $fail_button = '';
                                                     if (!empty($policy->fail)) {
                                                         $fail_button = '<button type="button" class="btn btn-danger">' . $policy->fail . '</button>';
+                                                        $fail_button = '<span class="text-danger fw-bold">' . $policy->fail . '</span>';
                                                     }
                                                     $error_button = '';
                                                     if (!empty($policy->error)) {
                                                         $error_button = '<button type="button" class="btn btn-warning">' . $policy->error . '</button>';
+                                                        $error_button = '<span class="text-warning fw-bold">' . $policy->error . '</span>';
                                                     }
                                                     $notapplicable_button = '';
                                                     if (!empty($policy->notapplicable)) {
                                                         $notapplicable_button = '<button type="button" class="btn btn-primary">' . $policy->notapplicable . '</button>';
+                                                        $notapplicable_button = '<span class="text-primary fw-bold">' . $policy->notapplicable . '</span>';
                                                     }
                                                     $notchecked_button = '';
                                                     if (!empty($policy->notchecked)) {
                                                         $notchecked_button = '<button type="button" class="btn btn-primary">' . $policy->notchecked . '</button>';
+                                                        $notchecked_button = '<span class="text-primary fw-bold">' . $policy->notchecked . '</span>';
                                                     }
                                                     $unknown_button = '';
                                                     if (!empty($policy->unknown)) {
                                                         $unknown_button = '<button type="button" class="btn btn-primary">' . $policy->unknown . '</button>';
+                                                        $unknown_button = '<span class="text-primary fw-bold">' . $policy->unknown . '</span>';
                                                     }
                                                 ?>
                                             <tr>
-                                                <td class="text-center"><span style="display:none;"><?= $policy->id ?></span><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('componentsRead', $policy->id) ?>?components.type=benchmark_result"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
-                                                <!--<td style="text-align: center;"><?= $policy->external_ident ?></td>-->
+                                                <td class="text-center"><span style="display:none;"><?= $policy->{'benchmarks_policies.id'} ?></span><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('benchmarks_policiesRead', intval($policy->{'benchmarks_policies.id'})) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
                                                 <td><?= $policy->name ?></td>
-                                                <td style="text-align: center;"><button type="button" class="btn <?= $severity_class ?>"><?= $policy->severity ?></button></td>
+                                                <!--<td style="text-align: center;"><button type="button" class="btn <?= $severity_class ?>"><?= $policy->severity ?></button></td>-->
+                                                <td style="text-align: center;"><span class="<?= $text_class ?>"><?= $policy->severity ?></span></td>
                                                 <td style="text-align: center;"><?= $pass_button ?></td>
                                                 <td style="text-align: center;"><?= $fail_button ?></td>
                                                 <td style="text-align: center;"><?= $error_button ?></td>
@@ -306,6 +411,9 @@ created from this guidance.
                                                 <th style="text-align: center;"><?= __('OpenScap is Installed') ?></th>
                                                 <th style="text-align: center;"><?= __('Working Credentials') ?></th>
                                                 <th><?= __('Organisation') ?></th>
+                                                <th style="text-align: center;"><?= __('Pass') ?></th>
+                                                <th style="text-align: center;"><?= __('Other') ?></th>
+                                                <th style="text-align: center;"><?= __('Fail') ?></th>
                                                 <th data-orderable="false" class="text-center">
                                                     <button style="margin-left:10px; display:none;" type="button" class="btn btn-sm btn-success float-end submit_devices" id="submit_devices"><?= __('Submit') ?></button>
                                                     <button style="margin-left:10px; display:none;" type="button" class="btn btn-sm btn-danger float-end" id="cancel_devices"><?= __('Cancel') ?></button>
@@ -335,13 +443,16 @@ created from this guidance.
                                         if ($device_in_benchmark) { ?>
                                             <tr>
                                                 <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" href="<?= url_to('devicesRead', $device->id) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
-                                                <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsCollection') ?>?components.type=benchmark_result&components.device_id=<?= $device->id ?>&benchmark_result.benchmark_id=<?= $resource->id ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsCollection') ?>?components.type=benchmarks_result&components.device_id=<?= $device->id ?>&benchmarks_result.benchmark_id=<?= $resource->id ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
                                                 <td><strong><?= $device->name ?></strong></td>
                                                 <td><?= $device->ip ?></td>
                                                 <td><?= $device->os_family ?> <?= $device->os_version ?></td>
                                                 <td style="text-align: center;"><?php if (!empty($device->{'software.name'})) { echo '<span class="fa-solid fa-check text-success"></span>'; } ?></td>
                                                 <td style="text-align: center;"><?= $credentials ?></td>
                                                 <td><?= $device->{'orgs.name'} ?>
+                                                <td class="text-center text-success"><?= @$device->pass ?></td>
+                                                <td class="text-center text-warning"><?= intval(@$device->error + @$device->notapplicable + @$device->error + @$device->notchecked + @$device->unknown) ?></td>
+                                                <td class="text-center text-danger"><?= @$device->fail ?></td>
                                                 <td style="text-align: center;"><input class="devices" aria-label="<?= __('Select') ?>" type="checkbox" id="data[attributes][devices][<?= $device->id ?>]" value="<?= $device->id ?>" name="data[attributes][devices][<?= $device->id ?>]" checked disabled></td>
                                             </tr>
                                         <?php } ?>

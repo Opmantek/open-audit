@@ -10,7 +10,7 @@ function ssg_definitions()
 {
     \$ssg_definitions = array();\n\n";
 
-$dir = '/usr/local/open-audit/other/ssg/';
+$dir = '/usr/local/open-audit/other/ssg-definitions/';
 $files = scandir($dir);
 foreach ($files as $file) {
     if (strpos($file, 'xml') !== false) {

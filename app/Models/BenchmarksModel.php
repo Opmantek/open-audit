@@ -196,20 +196,27 @@ class BenchmarksModel extends BaseModel
         $devicesModel = model('App\Models\DevicesModel');
         $device = $devicesModel->read($device_id)[0];
 
+
+
+
+
         if (empty($device)) {
             log_message('error', 'Invalid device ID supplied to BenchmarksModel::execute.');
             $this->logCreate($id, $device_id, 'error', 'Invalid device ID supplied, ' . $device_id . '.');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
         if (empty($device->attributes->credentials)) {
             log_message('error', 'Device contains no credentials for BenchmarksModel::execute.');
             $this->logCreate($id, $device_id, 'error', 'Device contains no credentials.');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
         $credentials = json_decode($device->attributes->credentials);
         if (empty($credentials)) {
             log_message('error', 'Cannot decode credentials for BenchmarksModel::execute.');
             $this->logCreate($id, $device_id, 'error', 'Cannot decode credentials.');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
         $credentialsModel = model('App\Models\CredentialsModel');
@@ -221,6 +228,7 @@ class BenchmarksModel extends BaseModel
         }
         if (empty($retrieved_credentials)) {
             log_message('error', 'Device contains no suitable credentials for BenchmarksModel::execute.');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             $this->logCreate($id, $device_id, 'error', 'Device contains no suitable credentials.');
             return [];
         }
@@ -233,6 +241,7 @@ class BenchmarksModel extends BaseModel
         $output = ssh_command($parameters);
         if ($output === false) {
             log_message('error', 'SSH command failed for BenchmarksModel::execute on ' . $device->attributes->ip . '. Command: ' . $parameters->command);
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             $this->logCreate($id, $device_id, 'error', 'SSH command failed. Command: ' . $parameters->command . ' (see logfile for more info).');
             return [];
         }
@@ -246,7 +255,7 @@ class BenchmarksModel extends BaseModel
                     }
                 }
                 if (stripos($device->attributes->os_name, 'ubuntu') !== false) {
-                    $command = 'apt-get install -y openscap-scanner';
+                    $command = 'apt-get install -y libopenscap8';
                     if ($retrieved_credentials->attributes->credentials->username !== 'root') {
                         $command = 'sudo ' . $command;
                     }
@@ -266,10 +275,9 @@ class BenchmarksModel extends BaseModel
                     }
                 }
                 $this->logCreate($id, $device_id, 'info', $command);
-                log_message('info', $command);
+                log_message('debug', $command);
                 $parameters->command = $command;
                 $output = ssh_command($parameters);
-                log_message('debug', json_encode($output));
                 $this->logCreate($id, $device_id, 'info', 'OpenScap has now been installed.');
             } else {
                 $this->logCreate($id, $device_id, 'info', 'OpenScap is not installed, not installing, as per config.');
@@ -289,25 +297,28 @@ class BenchmarksModel extends BaseModel
         if (empty($file) or empty($profile)) {
             log_message('error', 'Failure, Could not derive benchmark for ' . $device->attributes->ip . ' from ' . $benchmark->attributes->type . ' and ' . $benchmark->attributes->os);
             $this->logCreate($id, $device_id, 'error', 'Could not derive benchmark from ' . $benchmark->attributes->type . ' and ' . $benchmark->attributes->os);
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
         $parameters->source = '/usr/local/open-audit/other/ssg-definitions/' . $file;
         $parameters->destination = $file;
         $output = scp($parameters);
         if ($output === false) {
-            $this->logCreate($id, $device_id, 'error', 'SCP issue running BenchmarksModel::execute on ' . $device->attributes->ip);
             log_message('error', 'SCP issue copying ' . $parameters->source . ' to ' . $parameters->destination . ' (see logfile for more info).');
+            $this->logCreate($id, $device_id, 'error', 'SCP issue running BenchmarksModel::execute on ' . $device->attributes->ip);
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
 
         $this->logCreate($id, $device_id, 'info', 'Defnition file copied to ' . $device->attributes->name . '.');
         $parameters->command = 'cd ~/; oscap xccdf eval --profile ' . $profile . ' --report report.html ' . $file;
-        log_message('info', 'oscap command: ' . $parameters->command);
+        log_message('debug', 'oscap command: ' . $parameters->command);
         $this->logCreate($id, $device_id, 'info', 'oscap command: ' . $parameters->command);
         $output = ssh_command($parameters);
         if ($output === false) {
             log_message('error', 'Could not execute osacp for BenchmarksModel::execute on ' . $device->attributes->ip);
             $this->logCreate($id, $device_id, 'error', 'Could not execute oscap (see logfile for more info).');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
         log_message('debug', 'oscap command completed.');
@@ -319,6 +330,7 @@ class BenchmarksModel extends BaseModel
         if ($output === false) {
             log_message('error', 'Could not retrieve report for BenchmarksModel::execute on ' . $device->attributes->ip);
             $this->logCreate($id, $device_id, 'error', 'Could not retrieve report (see logfile for more info).');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
         $this->logCreate($id, $device_id, 'info', 'Report file retrieved.');
@@ -344,17 +356,24 @@ class BenchmarksModel extends BaseModel
         $policies = $this->db->query($sql)->getResult();
 
         // Delete any existing results
-        $sql = "DELETE  from benchmarks_result WHERE benchmark_id = ? AND device_id = ?";
+        $sql = "DELETE from benchmarks_result WHERE benchmark_id = ? AND device_id = ?";
         $this->db->query($sql, [$id, $device_id]);
 
         $benchmark = $qp->find('h2')->next()->find('mark')->text();
         $i = 0;
         $insert = 0;
         $update = 0;
+        // Loop over all test results
         foreach ($qp->find('tr.rule-overview-leaf') as $item) {
+            log_message('debug', '');
+            log_message('debug', 'Processing item ' . $item->attr('data-tt-id') . ' for ' . $device->attributes->name);
             $result = new stdClass();
             $result->benchmark = $benchmark;
             $result->external_ident = $item->attr('data-tt-id');
+            $result->severity = '';
+            $result->result = '';
+            $result->description = '';
+            $result->rationale = '';
             foreach ($item->children() as $child) {
                 foreach ($child->children() as $temp) {
                     if (!empty($temp->attr('href'))) {
@@ -370,60 +389,106 @@ class BenchmarksModel extends BaseModel
                     $result->result = $child->text();
                 }
             }
+            log_message('debug', 'Initial details for ' . $result->external_ident);
             if (!empty($result->id)) {
-                $result->description = trim($qp->find('div[id="rule-detail-' . $result->id . '"]')->find('div.description')->innerhtml());
-                $result->rationale = trim($qp->find('div[id="rule-detail-' . $result->id . '"]')->find('div.rationale')->innerhtml());
-                $result->remediation_ansible = '';
-                $result->remediation_bash = '';
-
-                $result->remediation = array();
-                foreach ($qp->find('div[id="rule-detail-' . $result->id . '"]')->find('div.remediation') as $remediation) {
-                    $contents = $remediation->find('pre')->innerhtml();
-                    $contents = '<pre>' . @trim($contents) . '</pre>';
-                    $result->remediation[] = $contents;
-                }
-                $result->remediation = json_encode($result->remediation);
 
                 $sql = "INSERT INTO benchmarks_result VALUES (null, ?, 'y', ?, ?, ?, ?, ?)";
                 $this->db->query($sql, [$device_id, $instance->config->timestamp, $instance->config->timestamp, $id, $result->external_ident, $result->result]);
 
-                $exists = false;
-                foreach ($policies as $policy) {
-                    if ($result->external_ident === $policy->external_ident) {
-                        $exists = true;
-                        if (empty($policy->description) or empty($policy->rationale) or empty($policy->remediation) or $policy->remediation === '[]') {
-                            // Update (something)
-                            $update += 1;
-                            if (empty($policy->description) and !empty($result->description)) {
-                                log_message('debug', 'Updating benchmark policy ' . $result->external_ident . ' description from ' . $device->attributes->name);
-                                log_message('debug', json_encode($policy));
-                                $sql = "UPDATE benchmarks_policies SET description = ? WHERE external_ident = ?";
-                                $this->db->query($sql, [$result->description]);
-                            }
-                            if (empty($policy->rationale) and !empty($result->rationale)) {
-                                log_message('debug', 'Updating benchmark policy ' . $result->external_ident . ' rationale from ' . $device->attributes->name);
-                                log_message('debug', json_encode($policy));
-                                $sql = "UPDATE benchmarks_policies SET rationale = ? WHERE external_ident = ?";
-                                $this->db->query($sql, [$result->rationale]);
-                            }
-                            if ((empty($policy->remediation) or $policy->remediation === '[]') and !empty($result->remediation) and $result->remediation !== '[]') {
-                                log_message('debug', 'Updating benchmark policy ' . $result->external_ident . ' remediation from ' . $device->attributes->name);
-                                log_message('debug', json_encode($policy));
-                                $sql = "UPDATE benchmarks_policies SET remediation = ? WHERE external_ident = ?";
-                                $this->db->query($sql, [$result->remediation]);
-                            }
-                            continue;
-                        }
-                    }
+                $sql = "LOCK TABLES benchmarks_policies WRITE";
+                $this->db->query($sql);
+
+                $sql = "SELECT * FROM benchmarks_policies WHERE external_ident = ? ORDER BY id LIMIT 1";
+                $policies = $this->db->query($sql, [$result->external_ident])->getResult();
+                unset($policy);
+                if (!empty($policies[0])) {
+                    $policy = $policies[0];
                 }
-                if ($exists === false) {
+
+                if (empty($policy)) {
                     // Insert
                     $insert += 1;
                     log_message('debug', 'Inserting benchmark policy ' . $result->external_ident . ' from ' . $device->attributes->name);
-                    $sql = "INSERT INTO benchmarks_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, '', '')";
-                    $this->db->query($sql, [$result->external_ident, $result->name, $result->severity, $result->description, $result->rationale, $result->remediation]);
+                    $result->description = trim($qp->find('div[id="rule-detail-' . $result->id . '"]')->find('div.description')->innerhtml());
+                    $result->rationale = trim($qp->find('div[id="rule-detail-' . $result->id . '"]')->find('div.rationale')->innerhtml());
+                    $result->remediation = array();
+                    if ($result->result !== 'pass') {
+                        foreach ($qp->find('div[id="rule-detail-' . $result->id . '"]')->find('div.remediation') as $remediation) {
+                            $title = $remediation->find('a')->text();
+                            log_message('debug', '1 Title is: ' . $title);
+                            $title = str_replace(' ⇲', '', $title);
+                            log_message('debug', '2 Title is: ' . $title);
+                            if ($title === '(show)') {
+                                // Try another location for the name
+                                $title = $remediation->find('span.label')->text();
+                                $title = str_replace(':', '', $title);
+                                log_message('debug', '3 Title is: ' . $title);
+                            }
+                            $contents = $remediation->find('pre')->innerhtml();
+                            $contents = '<pre>' . @trim($contents) . '</pre>';
+                            $result->remediation[$title] = $contents;
+                        }
+                    }
+                    $result->remediation = json_encode($result->remediation);
+                    $this->db->transStart();
+                    $sql = "INSERT INTO benchmarks_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, '', '', ?, ?)";
+                    $this->db->query($sql, [$result->external_ident, $result->name, $result->severity, $result->description, $result->rationale, $result->remediation, $instance->config->timestamp, $id]);
+                    $this->db->transComplete();
+                    $sql = "UNLOCK TABLES";
+                    $this->db->query($sql);
+                }
+
+                if (!empty($policy)) {
+                    $sql = "UNLOCK TABLES";
+                    $this->db->query($sql);
+                    if (empty($policy->description) or empty($policy->rationale) or empty($policy->remediation) or $policy->remediation === '[]') {
+                        // Update
+                        if (empty($policy->description)) {
+                            $result->description = trim($qp->find('div[id="rule-detail-' . $result->id . '"]')->find('div.description')->innerhtml());
+                            if (!empty($result->description)) {
+                                $update += 1;
+                                log_message('debug', 'Updating benchmark policy ' . $result->external_ident . ' description from ' . $device->attributes->name);
+                                $sql = "UPDATE benchmarks_policies SET description = ?, edited_date = ?, edited_by = '$id' WHERE external_ident = ?";
+                                $this->db->query($sql, [$result->description, $instance->config->timestamp, $result->external_ident]);
+                            }
+                        }
+                        if (empty($policy->rationale)) {
+                            $result->rationale = trim($qp->find('div[id="rule-detail-' . $result->id . '"]')->find('div.rationale')->innerhtml());
+                            if (!empty($result->rationale)) {
+                                $update += 1;
+                                log_message('debug', 'Updating benchmark policy ' . $result->external_ident . ' rationale from ' . $device->attributes->name);
+                                $sql = "UPDATE benchmarks_policies SET rationale = ?, edited_date = ?, edited_by = '$id' WHERE external_ident = ?";
+                                $this->db->query($sql, [$result->rationale, $instance->config->timestamp, $result->external_ident]);
+                            }
+                        }
+                        if ((empty($policy->remediation) or $policy->remediation === '[]') and $result->result !== 'pass') {
+                            $result->remediation = array();
+                            foreach ($qp->find('div[id="rule-detail-' . $result->id . '"]')->find('div.remediation') as $remediation) {
+                                $title = $remediation->find('a')->text();
+                                $title = str_replace(' ⇲', '', $title);
+                                if ($title === '(show)') {
+                                    // Try another location for the name
+                                    $title = $remediation->find('span.label')->text();
+                                    $title = str_replace(':', '', $title);
+                                    log_message('debug', '3 Title is: ' . $title);
+                                }
+                                $contents = $remediation->find('pre')->innerhtml();
+                                $contents = '<pre>' . @trim($contents) . '</pre>';
+                                $result->remediation[$title] = $contents;
+                            }
+                            if (!empty($result->remediation)) {
+                                $update += 1;
+                                $result->remediation = json_encode($result->remediation);
+                                log_message('debug', 'Updating benchmark policy ' . $result->external_ident . ' remediation from ' . $device->attributes->name);
+                                $sql = "UPDATE benchmarks_policies SET remediation = ?, edited_date = ?, edited_by = ? WHERE external_ident = ?";
+                                $this->db->query($sql, [$result->remediation, $instance->config->timestamp, $id, $result->external_ident]);
+                            }
+                        }
+                    }
+                    continue;
                 }
             }
+            log_message('debug', 'Completed  item ' . $result->external_ident . ' for ' . $device->attributes->name);
         }
         $this->logCreate($id, $device_id, 'info', 'Processing report file completed. ' . $insert . ' inserted and ' . $update . ' updated policies.');
         $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
@@ -459,7 +524,7 @@ class BenchmarksModel extends BaseModel
     {
         $included = array();
         $benchmark = $this->read($id);
-        $sql = "SELECT benchmarks_result.*, GROUP_CONCAT(benchmarks_result.device_id), count(benchmarks_result.id) AS `count`, benchmarks_policies.name, benchmarks_policies.severity FROM benchmarks_result LEFT JOIN benchmarks_policies ON (benchmarks_result.external_ident = benchmarks_policies.external_ident) WHERE benchmarks_result.benchmark_id = 16 GROUP BY CONCAT(benchmarks_result.external_ident, benchmarks_result.result) ORDER BY benchmarks_result.external_ident";
+        $sql = "SELECT benchmarks_result.*, GROUP_CONCAT(benchmarks_result.device_id), count(benchmarks_result.id) AS `count`, benchmarks_policies.id as `benchmarks_policies.id`, benchmarks_policies.name, benchmarks_policies.severity FROM benchmarks_result LEFT JOIN benchmarks_policies ON (benchmarks_result.external_ident = benchmarks_policies.external_ident) WHERE benchmarks_result.benchmark_id = ? GROUP BY CONCAT(benchmarks_result.external_ident, benchmarks_result.result) ORDER BY benchmarks_result.external_ident";
         $rows = $this->db->query($sql, [$id])->getResult();
         $result = array();
         foreach ($rows as $row) {
@@ -477,12 +542,27 @@ class BenchmarksModel extends BaseModel
         $sql = str_replace('OSFAMILY', $os[0], $sql);
         $sql = str_replace('OSVERSION', $os[1], $sql);
         $devices = $this->db->query($sql, [$id])->getResult();
+
+        $alldevices = array();
         foreach ($devices as $device) {
             $device->credentials = 'n';
             if (stripos((string)$device->{'c1.type'}, 'ssh') !== false or stripos((string)$device->{'c2.type'}, 'ssh') !== false or stripos((string)$device->{'c3.type'}, 'ssh') !== false) {
                 $device->credentials = 'y';
             }
+            $alldevices[] = $device->id;
         }
+        $sql = "SELECT benchmarks_result.device_id, benchmarks_result.result, count(benchmarks_result.result) AS `count` FROM benchmarks_result WHERE device_id IN (" . implode(',', $alldevices) . ") GROUP BY benchmarks_result.device_id, benchmarks_result.result";
+        $alldevices = $this->db->query($sql)->getResult();
+        foreach ($alldevices as $alldevice) {
+            foreach ($devices as $device) {
+                if (intval($alldevice->device_id) === intval($device->id)) {
+                    $device->{$alldevice->result} = intval($alldevice->count);
+                }
+            }
+        }
+
+
+
         $included['devices'] = $devices;
         $sql = "SELECT * FROM tasks WHERE type = 'benchmarks' and sub_resource_id = ? LIMIT 1";
         $tasks = $this->db->query($sql, [$id])->getResult();

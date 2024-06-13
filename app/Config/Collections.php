@@ -94,6 +94,16 @@ class Collections extends BaseConfig
         $this->benchmarks_exception->actions->professional = '';
         $this->benchmarks_exception->actions->community = '';
 
+        $this->benchmarks_policies = new \StdClass();
+        $this->benchmarks_policies->icon = 'fa-solid fa-wand-sparkles';
+        $this->benchmarks_policies->name = 'Benchmarks Policies';
+        $this->benchmarks_policies->edition = 'Enterprise';
+        $this->benchmarks_policies->orgs = 'b';
+        $this->benchmarks_policies->actions = new \stdClass();
+        $this->benchmarks_policies->actions->enterprise = 'crud';
+        $this->benchmarks_policies->actions->professional = '';
+        $this->benchmarks_policies->actions->community = '';
+
         $this->clouds = new \StdClass();
         $this->clouds->icon = 'fa fa-cloud';
         $this->clouds->name = 'Clouds';

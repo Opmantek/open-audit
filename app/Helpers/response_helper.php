@@ -336,7 +336,7 @@ if (!function_exists('response_create')) {
             }
         }
 
-        if ($test and !in_array($response->meta->collection, ['configuration', 'database', 'discovery_log', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util'])) {
+        if ($test and !in_array($response->meta->collection, ['benchmarks_policies', 'configuration', 'database', 'discovery_log', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util'])) {
             $item = new \StdClass();
             $item->name = 'orgs.id';
             if ($response->meta->collection !== 'orgs') {
@@ -953,6 +953,16 @@ if (!function_exists('response_get_id')) {
                         log_message('warning', "No ID to Name match in $collection.");
                         $id = null;
                     }
+                } else if ($collection === 'benchmarks_policies') {
+                    $sql = "SELECT id FROM benchmarks_policies WHERE external_ident = ? ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id])->getResult();
+                    if (!empty($result)) {
+                        log_message('debug', "ID to ExternalIdent match in benchmarks_policies (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
+                        $id = intval($result[0]->id);
+                    } else {
+                        log_message('warning', "No ID to ExternalIdent match in benchmarks_policies (Provided ID: $id).");
+                        $id = null;
+                    }
                 } else if (in_array($collection, $collections)) {
                     $sql = "SELECT id FROM {$collection} WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
                     $result = $db->query($sql, [$id])->getResult();
@@ -1171,6 +1181,11 @@ if (!function_exists('response_get_permission_id')) {
 
         if ($collection === 'users' && $id === $user->id and in_array($action, ['read','update'])) {
             // Always allow a user to view their own user item
+            return true;
+        }
+
+        // No Orgs for these
+        if ($collection === 'benchmarks_policies') {
             return true;
         }
 

@@ -620,9 +620,12 @@ CREATE TABLE `benchmarks_policies` (
   `description` text NOT NULL,
   `rationale` text NOT NULL,
   `remediation` text NOT NULL,
-  `remediation_ansible` text NOT NULL,
-  `remediation_bash` text NOT NULL,
-  PRIMARY KEY (`id`)
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `created_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `created_by` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `external_ident` (`external_ident`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

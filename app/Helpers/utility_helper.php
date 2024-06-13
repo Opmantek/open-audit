@@ -263,6 +263,14 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'benchmarks_policies') {
+        foreach ($result as $item) {
+            if (!empty($item->remediation)) {
+                $item->remediation = json_decode($item->remediation);
+            }
+        }
+    }
+
     if ($type === 'dashboards') {
         foreach ($result as $item) {
             if (!empty($item->options)) {
