@@ -709,7 +709,7 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
         log_message('error', "menuItem, nothing in instance->collections->{$collection}.");
         return $return;
     }
-    if (empty($instance->collections->{$collection}->actions->{$instance->config->product})) {
+    if (!isset($instance->collections->{$collection}->actions->{$instance->config->product})) {
         log_message('error', "menuItem, nothing in instance->collections->{$collection}->actions->{$instance->config->product}.");
         $return = "<li><a class=\"dropdown-item greyout toast" . $instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
         return $return;

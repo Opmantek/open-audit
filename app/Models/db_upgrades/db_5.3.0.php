@@ -102,6 +102,24 @@ if (!$db->tableExists('benchmarks_result')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+$sql = "SELECT * FROM `roles`";
+$roles = $db->query($sql)->getResult();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+foreach ($roles as $role) {
+    $permissions = json_decode($role->permissions);
+    if (!empty($permissions)) {
+        if ($role->name === 'org_admin') {
+            $permissions->benchmarks = 'crud';
+        }
+        $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
+        $query = $db->query($sql, [json_encode($permissions), $role->id]);
+        $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+        log_message('info', (string)$db->getLastQuery());
+    }
+}
+
 
 
 // set our versions
