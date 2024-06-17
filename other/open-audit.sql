@@ -524,6 +524,7 @@ CREATE TABLE `benchmarks` (
   `type` varchar(200) NOT NULL DEFAULT '',
   `install` enum('y','n') NOT NULL DEFAULT 'y',
   `devices` text NOT NULL,
+  `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
