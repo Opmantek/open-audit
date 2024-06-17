@@ -456,13 +456,14 @@ if (! function_exists('ssh_command')) {
             } else {
                 $key = PublicKeyLoader::load($credentials->credentials->ssh_key);
             }
-            if ($ssh->login($credentials->credentials->username, $key)) {
+            try {
+                $ssh->login($credentials->credentials->username, $key);
                 $username = $credentials->credentials->username;
                 $password = @$credentials->credentials->password;
                 if (!empty($credentials->credentials->sudo_password)) {
                     $password = $credentials->credentials->sudo_password;
                 }
-            } else {
+            } catch (Exception $e) {
                 $log->message = "Failure, credentials named {$credentials->name} (key) not used to log in to {$ip}.";
                 $log->command = 'ssh login attempt to run - ' . $command;
                 $log->command_output = $ssh->getLastError();
@@ -471,15 +472,17 @@ if (! function_exists('ssh_command')) {
                 if (!empty($parameters->discovery_id)) {
                     $discoveryLogModel->create($log);
                 } else {
-                    log_message('warning', $log->message);
+                    log_message('warning', "Failure, credentials named {$credentials->name} (key) were rejected for {$ip} when attempting to run {$command}");
                 }
                 return false;
             }
+
         } elseif ($credentials->type === 'ssh') {
-            if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
+            try {
+                $ssh->login($credentials->credentials->username, $credentials->credentials->password);
                 $username = $credentials->credentials->username;
                 $password = $credentials->credentials->password;
-            } else {
+            } catch (Exception $e) {
                 $log->message = "Failure, credentials named {$credentials->name} not used to log in to {$ip}.";
                 $log->command = 'ssh login attempt to run - ' . $command;
                 $log->command_output = json_encode($ssh->getLog());
@@ -488,7 +491,7 @@ if (! function_exists('ssh_command')) {
                 if (!empty($parameters->discovery_id)) {
                     $discoveryLogModel->create($log);
                 } else {
-                    log_message('warning', $log->message);
+                    log_message('warning', "Failure, credentials named {$credentials->name} were rejected for {$ip} when attempting to run {$command}");
                 }
                 return false;
             }
