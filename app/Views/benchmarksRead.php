@@ -127,6 +127,7 @@ if (!empty($hour) and !empty($days)) {
                                             </div>
                                         </div>
                                     </div>
+                                    <?= read_field('last_run', $resource->last_run, '', false) ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
@@ -589,6 +590,9 @@ window.onload = function () {
             $("#modalButton").removeAttr("disabled");
         <?php } ?>
 
+        <?php if (ENVIRONMENT !== 'development') { ?>
+            $("#button_execute").hide();
+        <?php } ?>
 
         $("#edit_devices").click(function(e) {
             $("#devices_table > tbody > tr > td > input").removeAttr("disabled");

@@ -188,8 +188,13 @@ class Queue extends BaseController
             }
 
             if ($item->type === 'benchmarks') {
-                log_message('debug', $microtime . " " . "Executing Benchmark.");
-                $this->benchmarksModel->queue($details);
+                if (!empty($details->device_id)) {
+                    log_message('debug', $microtime . " " . "Executing Device Benchmark.");
+                    $this->benchmarksModel->execute(intval($details->id), intval($details->device_id));
+                } else {
+                    log_message('debug', $microtime . " " . "Executing Benchmark.");
+                    $this->benchmarksModel->queue(intval($details->id));
+                }
             }
         }
     }

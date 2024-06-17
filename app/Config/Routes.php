@@ -120,6 +120,7 @@ $routes->get('util/test_windows_client', 'Util::testWindowsClient');
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
 $routes->cli('tasks/execute', 'Cli::executeTasks', ['as' => 'executeTasks']);
+$routes->cli('benchmarks/(:num)/execute', 'Cli::executeBenchmark/$1', ['as' => 'executeBenchmark']);
 $routes->cli('discoveries/(:num)/execute', 'Cli::executeDiscovery/$1', ['as' => 'executeDiscovery']);
 $routes->cli('integrations/(:num)/execute', 'Cli::executeIntegration/$1', ['as' => 'executeIntegration']);
 $routes->cli('clouds/(:num)/execute', 'Cli::executeCloud/$1', ['as' => 'executeCloud']);

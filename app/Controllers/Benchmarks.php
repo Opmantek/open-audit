@@ -30,5 +30,29 @@ namespace App\Controllers;
  */
 class Benchmarks extends BaseController
 {
-
+    /**
+     * Execute a benchmark
+     *
+     * @access public
+     * @return void
+     */
+    public function execute($id)
+    {
+        $id = intval($id);
+        $queue = new \stdClass();
+        $queue->type = 'benchmarks';
+        $queue->id = $id;
+        #$this->benchmarksModel->queue($queue);
+        $this->benchmarksModel->queue($id);
+        $this->queueModel = model('App\Models\QueueModel');
+        $this->queueModel->start();
+        if ($this->resp->meta->format !== 'html') {
+            $this->resp->data = $this->benchmarksModel->read($id);
+            output($this);
+            return;
+        }
+        \Config\Services::session()->setFlashdata('success', 'Benchmark started.');
+        sleep(5);
+        return redirect()->route('benchmarksRead', [$id]);
+    }
 }

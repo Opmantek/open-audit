@@ -68,43 +68,7 @@ class BenchmarksModel extends BaseModel
      */
     public function create(object $data = null): ?int
     {
-        $instance = & get_instance();
-        if (empty($data)) {
-            return null;
-        }
-        $day_of_week = implode(',', $data->day_of_week);
-        $hour = implode(',', $data->hour);
-        if (!empty($data->devices)) {
-            $temp = array();
-            if (is_string($data->devices)) {
-                $data->devices = explode(',', $data->devices);
-            }
-            foreach ($data->devices as $device_id) {
-                $device_id = intval($device_id);
-                if (!empty($device_id)) {
-                    $temp[] = $device_id;
-                }
-            }
-            $data->devices = json_encode($temp);
-        }
-        $data = $this->createFieldData('benchmarks', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        $error = $this->sqlError($this->db->error());
-        if ($error) {
-            session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        $id = intval($this->db->insertID());
-        if (empty($id)) {
-            return false;
-        }
-        $sql = "INSERT INTO tasks VALUES (null, ?, ?, ?, ?, ?, 'y', 'benchmarks', 0, ?, '*', '*', ?, 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, ?, NOW())";
-        $this->db->query($sql, ['Benchmark - ' . $data->name, $data->org_id, 'Scheduled Benchmark', $id, $instance->config->uuid, $hour, $day_of_week, $instance->user->name]);
-
-        return ($id);
+        return null;
     }
 
     /**
@@ -133,46 +97,48 @@ class BenchmarksModel extends BaseModel
         return true;
     }
 
-    public function queue($details): array
+    public function queue(int $id = 0): bool
     {
-        if (empty($details) or empty($details->id)) {
-            return [];
+        $item = $this->read($id)[0];
+        if (empty($item)) {
+            log_message('error', "No benchmark retrieved with provided ID $id.");
+            return false;
         }
-        $benchmark = $this->read($details->id)[0];
-        if (empty($benchmark)) {
-            return [];
+        log_message('debug', json_encode($item));
+        if (empty($item->attributes->devices)) {
+            log_message('error', "No devices associated with benchmark ID $id.");
+            #$this->logCreate($id, 0, 'error', 'No devices associated with benchmark.');
+            #$this->logCreate($id, 0, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            return false;
         }
-        if (empty($details->device)) {
-            $instance = & get_instance();
-            $queueModel = model('App\Models\QueueModel');
-            $devices = json_decode($benchmark->attributes->devices);
-            if (empty($devices)) {
-                return [];
-            }
-            for ($i=0; $i < count($devices); $i++) { 
-                $devices[$i] = intval($devices[$i]);
-            }
-            // Only select devices in the list, that have credentials, that have been discovered by this server (collector)
-            $sql = "SELECT id, name, os_family, os_version, collector_uuid FROM devices WHERE id IN (" . implode(',', $devices) . ") and credentials != '' and credentials != '[]' and (collector_uuid = '' or collector_uuid = ?)";
-            #$sql = "SELECT id, name, os_family, os_version, collector_uuid FROM devices WHERE id IN (" . implode(',', $devices) . ")";
-            $my_devices = $this->db->query($sql, [$instance->config->uuid])->getResult();
-            if (empty($my_devices)) {
-                log_message('warning', 'No suitable devices in database, associated with benchmark.');
-            }
-            foreach ($my_devices as $device) {
-                $queue = new stdClass();
-                $queue->type = 'benchmarks';
-                $queue->org_id = $benchmark->attributes->org_id;
-                $queue->details = new stdClass();
-                $queue->details->id = $details->id;
-                $queue->details->device = $device->id;
-                $queueModel->create($queue);
-            }
+        $devices = json_decode($item->attributes->devices);
+        if (empty($devices)) {
+            return false;
         }
-        if (!empty($details->device)) {
-            $this->execute(intval($details->id), intval($details->device));
+        for ($i=0; $i < count($devices); $i++) {
+            $devices[$i] = intval($devices[$i]);
         }
-        return [];
+        // Only select devices in the list, that have credentials, that have been discovered by this server /collector
+        $instance = & get_instance();
+        $queueModel = model('App\Models\QueueModel');
+        $sql = "SELECT id, name, os_family, os_version, collector_uuid FROM devices WHERE id IN (" . implode(',', $devices) . ") and credentials != '' and credentials != '[]' and (collector_uuid = '' or collector_uuid = ?)";
+        $my_devices = $this->db->query($sql, [$instance->config->uuid])->getResult();
+        if (empty($my_devices)) {
+            log_message('error', "No suitable devices in database, associated with benchmark.");
+            #$this->logCreate($id, 0, 'error', 'No suitable devices in database, associated with benchmark.');
+            #$this->logCreate($id, 0, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            return false;
+        }
+        foreach ($my_devices as $device) {
+            $queue = new stdClass();
+            $queue->type = 'benchmarks';
+            $queue->org_id = $item->attributes->org_id;
+            $queue->details = new stdClass();
+            $queue->details->id = $id;
+            $queue->details->device_id = $device->id;
+            $queueModel->create($queue);
+        }
+        return true;
     }
 
     public function execute(int $id = 0, int $device_id = 0): array
@@ -228,8 +194,8 @@ class BenchmarksModel extends BaseModel
         }
         if (empty($retrieved_credentials)) {
             log_message('error', 'Device contains no suitable credentials for BenchmarksModel::execute.');
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             $this->logCreate($id, $device_id, 'error', 'Device contains no suitable credentials.');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
 
@@ -238,11 +204,12 @@ class BenchmarksModel extends BaseModel
         $parameters->ip = $device->attributes->ip;
         $parameters->credentials = $retrieved_credentials->attributes;
         $parameters->command = 'oscap version 2>/dev/null';
+        $parameters->timeout = 20; // 20 seconds to run oscap or fail silently (is not installed)
         $output = ssh_command($parameters);
         if ($output === false) {
             log_message('error', 'SSH command failed for BenchmarksModel::execute on ' . $device->attributes->ip . '. Command: ' . $parameters->command);
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             $this->logCreate($id, $device_id, 'error', 'SSH command failed. Command: ' . $parameters->command . ' (see logfile for more info).');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
         if (empty($output)) {
@@ -277,6 +244,7 @@ class BenchmarksModel extends BaseModel
                 $this->logCreate($id, $device_id, 'info', $command);
                 log_message('debug', $command);
                 $parameters->command = $command;
+                $parameters->timeout = 120; // 2 minutes to install openscap-scanner, et al
                 $output = ssh_command($parameters);
                 $this->logCreate($id, $device_id, 'info', 'OpenScap has now been installed.');
             } else {
@@ -314,6 +282,7 @@ class BenchmarksModel extends BaseModel
         $parameters->command = 'cd ~/; oscap xccdf eval --profile ' . $profile . ' --report report.html ' . $file;
         log_message('debug', 'oscap command: ' . $parameters->command);
         $this->logCreate($id, $device_id, 'info', 'oscap command: ' . $parameters->command);
+        $parameters->timeout = 600; // 10 minutes to execute oscap
         $output = ssh_command($parameters);
         if ($output === false) {
             log_message('error', 'Could not execute osacp for BenchmarksModel::execute on ' . $device->attributes->ip);
@@ -346,6 +315,8 @@ class BenchmarksModel extends BaseModel
         } catch (\QueryPath\Exception $e) {
             log_message('error', 'Cannot process report file. ' . $e);
             $this->logCreate($id, $device_id, 'error', 'Cannot process report file. Error: ' . $e);
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            return [];
         }
 
         $this->logCreate($id, $device_id, 'info', 'Processing report file.');
@@ -560,16 +531,7 @@ class BenchmarksModel extends BaseModel
                 }
             }
         }
-
-
-
         $included['devices'] = $devices;
-        $sql = "SELECT * FROM tasks WHERE type = 'benchmarks' and sub_resource_id = ? LIMIT 1";
-        $tasks = $this->db->query($sql, [$id])->getResult();
-        $included['task'] = '';
-        if (!empty($tasks[0])) {
-            $included['task'] = $tasks[0];
-        }
 
         $included['logs'] = array();
         $sql = 'SELECT benchmarks_log.*, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip` FROM benchmarks_log LEFT JOIN devices ON (benchmarks_log.device_id = devices.id) WHERE benchmarks_log.benchmark_id = ?';
@@ -722,7 +684,7 @@ class BenchmarksModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT enables you to compare your installed operating system\'s configuration to Best Practise standards.';
 
-        $dictionary->about = '<p>What I find remarkable is that this text has been the industry\'s standard dummy text ever since some printer in the 1500s took a galley of type and scrambled it to make a type specimen book; it has survived not only four centuries of letter-by-letter resetting but even the leap into electronic typesetting, essentially unchanged except for an occasional \'ing\' or \'y\' thrown in. It\'s ironic that when the then-understood Latin was scrambled, it became as incomprehensible as Greek; the phrase \'it\'s Greek to me\' and \'greeking\' have common semantic roots” (The editors published his letter in a correction headlined “Lorem Oopsum”)</p>';
+        $dictionary->about = '<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>';
 
         $dictionary->notes = '<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>';
 

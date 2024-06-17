@@ -171,6 +171,15 @@ class Cli extends Controller
         $db->query($sql);
     }
 
+    public function executeBenchmark($id)
+    {
+        $id = intval($id);
+        $benchmarksModel = model('BenchmarksModel');
+        $benchmarksModel->queue($id);
+        $queueModel = model('QueueModel');
+        $queueModel->start();
+    }
+
     public function executeDiscovery($id)
     {
         $id = intval($id);
