@@ -4,6 +4,39 @@
 include 'shared/collection_functions.php';
 ?>
         <main class="container-fluid">
+
+            <div class="card">
+                <div class="card-header" style="height:57px;">
+                    <div class="row">
+                        <div class="col-9 clearfix">
+                            <h6 style="padding-top:10px;"><span class="fa fa-sliders oa-icon"></span><?= __('Advanced') ?></h6>
+                        </div>
+                        <div class="col-3 clearfix pull-right">
+                            <div class="btn-group btn-group-sm float-end mb-2" role="group">
+                                <button class="btn btn-outline-secondary panel-button c_change_primary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down text-primary"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body collapse" id="advanced">
+                    <div class="row">
+                        <div class="col-4">
+                            <button type="button" class="btn btn-danger" style="min-width: 70px; margin-right:12px;"><?= ($included['potential_devices'] - $included['actual_devices']) ?></button>&nbsp;Devices are not being benchmarked.<br><br>
+                            <button type="button" class="btn btn-warning" style="min-width: 70px; margin-right:12px;"><?= $included['potential_devices'] ?></button>&nbsp;Devices could be benchmarked.<br><br>
+                            <button type="button" class="btn btn-success" style="min-width: 70px; margin-right:12px;"><?= $included['actual_devices'] ?></button>&nbsp;Devices are being benchmarked.<br>
+                        </div>
+                        <div class="col-4">
+                            Devices Not Being Benchmarked<br>
+                            <?php foreach ($included['devices'] as $key => $value) {
+                                $explode = explode(' ', $key); ?>
+                                <span><img style="width:3rem; margin-right:12px;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= strtolower($explode[0]) ?>.svg" alt="<?= $key ?>"><?= $value ?>x <?= $key ?></span><br>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+
             <div class="card">
                 <div class="card-header">
                     <?= collection_card_header($meta->collection, $meta->icon, $user, '', $meta->query_string) ?>
@@ -21,6 +54,7 @@ include 'shared/collection_functions.php';
                                         } ?>
                                         <th><?= collection_column_name($key) ?></th>
                                     <?php } ?>
+                                    <th data-orderable="false" class="text-center"><?= __('Results') ?></th>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
                                     <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
@@ -42,6 +76,29 @@ include 'shared/collection_functions.php';
                                         }
                                         ?>
                                     <?php } ?>
+                                    <?php
+                                        if (!empty($included['results'][$item->id])) {
+                                            $pass = (!empty($included['results'][$item->id]->pass)) ? $included['results'][$item->id]->pass : 0;
+                                            $fail = (!empty($included['results'][$item->id]->fail)) ? $included['results'][$item->id]->fail : 0;
+                                            $other = (!empty($included['results'][$item->id]->other)) ? $included['results'][$item->id]->other : 0;
+                                            $count = $pass + $fail + $other;
+                                            echo "<td>\n";
+                                            echo '                                        <div class="progress-stacked"  style="height: 2.5em">
+                                            <div class="progress" role="progressbar" aria-label="Pass" aria-valuenow="' .  $pass . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($pass / $count) * 100) . '%">
+                                                <div class="progress-bar bg-success fw-bold"  style="height: 2.5em">' . $pass . ' ' . __('Passed') . '</div>
+                                            </div>
+                                            <div class="progress" role="progressbar" aria-label="Other" aria-valuenow="' . $other . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($other / $count) * 100) . '%">
+                                                <div class="progress-bar bg-warning fw-bold"  style="height: 2.5em">' . $other . ' ' . __('Others') . '</div>
+                                            </div>
+                                            <div class="progress" role="progressbar" aria-label="Fail" aria-valuenow="' . $fail . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($fail / $count) * 100) . '%">
+                                                <div class="progress-bar bg-danger fw-bold"  style="height: 2.5em">' . $fail . ' ' . __('Failed') . '</div>
+                                            </div>
+                                        </div>';
+                                            echo '</td>';
+                                        } else {
+                                            echo "<td>No Result</td>";
+                                        }
+                                    ?>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>

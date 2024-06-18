@@ -491,6 +491,109 @@ class BenchmarksModel extends BaseModel
      * @param  int $id The ID of the requested item
      * @return array  An array of anything needed for screen output
      */
+    public function includedCollection(): array
+    {
+        $instance = & get_instance();
+        $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        $orgs = array_unique($orgs);
+        $orgs = implode(', ', $orgs);
+
+
+        $included = array();
+
+        $results = array();
+        $sql = "SELECT benchmark_id, result, COUNT(result) AS `count` FROM benchmarks_result GROUP BY result, benchmark_id ORDER BY benchmark_id";
+        $result = $this->db->query($sql)->getResult();
+        foreach ($result as $row) {
+            if (empty($results[$row->benchmark_id])) {
+                $results[$row->benchmark_id] = new \stdClass();
+                $results[$row->benchmark_id]->pass = 0;
+                $results[$row->benchmark_id]->fail = 0;
+                $results[$row->benchmark_id]->other = 0;
+
+            }
+            if ($row->result === 'pass') {
+                $results[$row->benchmark_id]->pass = $row->count;
+            }
+            if ($row->result === 'fail') {
+                $results[$row->benchmark_id]->fail = $row->count;
+            }
+            if ($row->result !== 'pass' and $row->result !== 'fail') {
+                $results[$row->benchmark_id]->other += $row->count;
+            }
+        }
+        $included['results'] = $results;
+
+        helper('ssg');
+        $unique_os = array();
+        $ssgs = ssg_definitions();
+        foreach ($ssgs as $ssg) {
+            $unique_os[$ssg->os_family . ' ' . $ssg->os_version] = $ssg->os_family . ' ' . $ssg->os_version;
+        }
+        #$sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, devices.credentials AS `devices.credentials`, software.name AS `software.name`, software.version AS `software.version`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, c1.type AS `c1.type`, c2.type AS `c2.type`, c3.type AS `c3.type` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = "openscap-scanner" AND software.current = "y") LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, "$[0]") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, "$[1]") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, "$[2]") = c3.id) WHERE devices.org_id IN (' . $orgs . ') AND ';
+
+        #$sql = 'SELECT COUNT(devices.id) AS `count` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = "openscap-scanner" AND software.current = "y") LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, "$[0]") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, "$[1]") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, "$[2]") = c3.id) WHERE devices.org_id IN (' . $orgs . ') AND ';
+
+        $sql = 'SELECT COUNT(devices.id) AS `count` FROM devices LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, "$[0]") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, "$[1]") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, "$[2]") = c3.id) WHERE devices.org_id IN (' . $orgs . ') AND ';
+        foreach ($unique_os as $os) {
+            $explode = explode(' ', $os);
+            $sql .= '(devices.os_family = ? AND devices.os_version LIKE ?) OR ';
+            $data[] = $explode[0];
+            $data[] = $explode[1] . '%';
+        }
+        $sql = substr($sql, 0, strlen($sql) - 3);
+        $result = $this->db->query($sql, $data)->getResult();
+        $included['potential_devices'] = $result[0]->count;
+
+        $actual_devices = array();
+        $sql = "SELECT devices FROM benchmarks WHERE org_id IN ($orgs)";
+        $results = $this->db->query($sql)->getResult();
+        foreach ($results as $result) {
+            if (!empty($result->devices)) {
+                $devices = json_decode($result->devices);
+                $actual_devices = array_merge($actual_devices, $devices);
+            }
+        }
+        $included['actual_devices'] = count(array_unique($actual_devices));
+        $included['benchmarks_for_os'] = $unique_os;
+
+        $good_devices = implode(', ', $actual_devices);
+        foreach ($unique_os as $os) {
+            $explode = explode(' ', $os);
+            $sql = "SELECT count(id) AS `count` FROM devices WHERE org_id IN ($orgs) AND os_family = ? AND os_version LIKE ? AND id NOT IN ($good_devices)";
+            $result = $this->db->query($sql, [$explode[0], $explode[1] . '%'])->getResult();
+            if (!empty($result[0]->count)) {
+                $included['devices'][$os] = $result[0]->count;
+            }
+        }
+
+        return $included;
+    }
+
+    /**
+     * Return an array containing arrays of related items to be stored in resp->included
+     *
+     * @param  int $id The ID of the requested item
+     * @return array  An array of anything needed for screen output
+     */
+    public function includedCreateForm(int $id = 0): array
+    {
+        $included = array();
+        helper('ssg');
+        $included['ssg_definitions'] = ssg_definitions();
+        $sql = "SELECT * FROM queries WHERE name = ? ORDER BY id LIMIT 1";
+        $query = $this->db->query($sql, ['Benchmarks Query'])->getResult();
+        $included['query'] = intval($query[0]->id);
+
+        return $included;
+    }
+
+    /**
+     * Return an array containing arrays of related items to be stored in resp->included
+     *
+     * @param  int $id The ID of the requested item
+     * @return array  An array of anything needed for screen output
+     */
     public function includedRead(int $id = 0): array
     {
         $included = array();
@@ -543,25 +646,6 @@ class BenchmarksModel extends BaseModel
 
         return $included;
     }
-
-    /**
-     * Return an array containing arrays of related items to be stored in resp->included
-     *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
-     */
-    public function includedCreateForm(int $id = 0): array
-    {
-        $included = array();
-        helper('ssg');
-        $included['ssg_definitions'] = ssg_definitions();
-        $sql = "SELECT * FROM queries WHERE name = ? ORDER BY id LIMIT 1";
-        $query = $this->db->query($sql, ['Benchmarks Query'])->getResult();
-        $included['query'] = intval($query[0]->id);
-
-        return $included;
-    }
-
 
     /**
      * Read the entire collection from the database that the user is allowed to read
