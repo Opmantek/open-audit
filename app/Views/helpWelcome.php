@@ -98,37 +98,37 @@ foreach ($ips as $ip) {
                         <div class="col-8 col-offset-2">
                             <div class="row d-flex align-items-center text-center">
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="windows" src="<?= base_url() ?>logos/windows.svg" />
+                                    <img class="img-fluid" alt="windows" src="<?= base_url() ?>logos/windows.svg" style="width:4rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="redhat" src="<?= base_url() ?>logos/redhat.svg" />
+                                    <img class="img-fluid" alt="redhat" src="<?= base_url() ?>logos/redhat.svg" style="width:5rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="ubuntu" src="<?= base_url() ?>logos/ubuntu.svg" />
+                                    <img class="img-fluid" alt="ubuntu" src="<?= base_url() ?>logos/ubuntu.svg" style="width:4rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="osx" src="<?= base_url() ?>logos/osx.svg" />
+                                    <img class="img-fluid" alt="osx" src="<?= base_url() ?>logos/osx.svg" style="width:3.5rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="esxi" src="<?= base_url() ?>logos/esxi.svg" />
+                                    <img class="img-fluid" alt="esxi" src="<?= base_url() ?>logos/esxi.svg" style="width:5rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="solaris" src="<?= base_url() ?>logos/solaris.svg" />
+                                    <img class="img-fluid" alt="solaris" src="<?= base_url() ?>logos/solaris.svg" style="width:5rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="hp-ux" src="<?= base_url() ?>logos/hp-ux.svg" />
+                                    <img class="img-fluid" alt="hp-ux" src="<?= base_url() ?>logos/hp-ux.svg" style="width:4.5rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="aix" src="<?= base_url() ?>logos/aix.svg" />
+                                    <img class="img-fluid" alt="aix" src="<?= base_url() ?>logos/aix.svg" style="width:4rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="centos" src="<?= base_url() ?>logos/centos.svg" />
+                                    <img class="img-fluid" alt="centos" src="<?= base_url() ?>logos/centos.svg" style="width:4rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="suse" src="<?= base_url() ?>logos/suse.svg" />
+                                    <img class="img-fluid" alt="suse" src="<?= base_url() ?>logos/suse.svg" style="width:4rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <img class="img-fluid" alt="debian" src="<?= base_url() ?>logos/debian.svg" />
+                                    <img class="img-fluid" alt="debian" src="<?= base_url() ?>logos/debian.svg" style="width:4rem;" />
                                 </div>
                                 <div class="col-1">
                                     <span class="text-center"><a target="_blank" href="https://community.opmantek.com/display/OA/Home">And so much more.</a></span>
