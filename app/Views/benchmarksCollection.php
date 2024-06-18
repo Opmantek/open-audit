@@ -20,17 +20,36 @@ include 'shared/collection_functions.php';
                 </div>
                 <div class="card-body collapse" id="advanced">
                     <div class="row">
-                        <div class="col-4">
+                        <div class="col-3">
                             <button type="button" class="btn btn-danger" style="min-width: 70px; margin-right:12px;"><?= ($included['potential_devices'] - $included['actual_devices']) ?></button>&nbsp;Devices are not being benchmarked.<br><br>
                             <button type="button" class="btn btn-warning" style="min-width: 70px; margin-right:12px;"><?= $included['potential_devices'] ?></button>&nbsp;Devices could be benchmarked.<br><br>
                             <button type="button" class="btn btn-success" style="min-width: 70px; margin-right:12px;"><?= $included['actual_devices'] ?></button>&nbsp;Devices are being benchmarked.<br>
                         </div>
-                        <div class="col-4">
-                            Devices Not Being Benchmarked<br>
-                            <?php foreach ($included['devices'] as $key => $value) {
-                                $explode = explode(' ', $key); ?>
-                                <span><img style="width:3rem; margin-right:12px;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= strtolower($explode[0]) ?>.svg" alt="<?= $key ?>"><?= $value ?>x <?= $key ?></span><br>
-                            <?php } ?>
+                        <div class="col-9">
+                            Devices Not Being Benchmarked<br><br>
+                            <div class="row">
+                                <?php
+                                $i = 0;
+                                foreach ($included['devices'] as $key => $value) {
+                                    $i++;
+                                    $explode = explode(' ', $key);
+                                    ?>
+                                    <div class="col-lg-1 text-center">
+                                        <div>
+                                            <a href="<?= url_to('devicesCollection') ?>?devices.os_family=<?= $explode[0] ?>&devices.os_version=LIKE<?= $explode[1] ?>%" class="position-relative">
+                                                <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= strtolower($explode[0]) ?>.svg" alt="<?= $explode[0] ?>">
+                                                <br><?= $key ?>
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $value ?></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <?php
+                                    if ($i === 12 or $i === 24 or $i === 36) {
+                                        echo "</div><br /><div class=\"row\">";
+                                    }
+                                }
+                                ?>
+                            </div>
                         </div>
                     </div>
                 </div>
