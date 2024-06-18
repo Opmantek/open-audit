@@ -2885,7 +2885,11 @@ for each objItem in colItems
             share_permissions = share_permissions & """" & account & """:[" & permission & "],"
         end if
     next
-    share_permissions = "{" & left(share_permissions, (len(share_permissions)-1)) & "}"
+    if len(share_permissions) > 0 then
+        share_permissions = "{" & left(share_permissions, (len(share_permissions)-1)) & "}"
+    else
+        share_permissions = "{}"
+    end if
     result_share = result_share & "         <users>" & escape_xml(share_permissions) & "</users>" & vbcrlf
 
     result_share = result_share & "     </item>" & vbcrlf
