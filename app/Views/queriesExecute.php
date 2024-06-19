@@ -42,7 +42,8 @@ include 'shared/read_functions.php';
                                                 echo "<td>" . $item->attributes->{$key} . "</td>\n";
                                             }
                                         } else {
-                                            echo "<td>" . $item->attributes->{$key} . "</td>\n";
+                                            // echo "<td>" . $item->attributes->{$key} . "</td>\n";
+                                            echo "<td>" . nl2br($item->attributes->{$key}) . "</td>\n";
                                         }
                                     }
                                     echo "</tr>\n";
