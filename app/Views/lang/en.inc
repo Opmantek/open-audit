@@ -175,6 +175,7 @@ $GLOBALS["lang"]["Based On"]="Based On";
 $GLOBALS["lang"]["Baseline"]="Baseline";
 $GLOBALS["lang"]["baselines"]="baselines";
 $GLOBALS["lang"]["Baselines"]="Baselines";
+$GLOBALS["lang"]["Baselines ID"]="Baselines ID";
 $GLOBALS["lang"]["Baselines Policies"]="Baselines Policies";
 $GLOBALS["lang"]["Baselines Policy"]="Baselines Policy";
 $GLOBALS["lang"]["Baselines Policy Details"]="Baselines Policy Details";
