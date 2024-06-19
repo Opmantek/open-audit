@@ -40,7 +40,7 @@ include 'shared/collection_functions.php';
                                         } elseif ($key === 'baselines.name') {
                                             echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".baseline_id=" . $item->attributes->{'baseline_id'} . "\">" . $item->attributes->{'baselines.name'} . "</a></td>\n";
                                         } else {
-                                            echo "<td>" . $item->attributes->{$key} . "</td>\n";
+                                            echo "<td>" . @$item->attributes->{$key} . "</td>\n";
                                         }
                                         ?>
                                     <?php } ?>

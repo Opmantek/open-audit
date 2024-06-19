@@ -47,7 +47,43 @@ class BaselinesPoliciesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'baselines_policies');
+        $result = $query->getResult();
+        for ($i = 0; $i < count($result); $i++) {
+            if ($result[$i]->table === 'software') {
+                $tests = json_decode($result[$i]->tests);
+                foreach ($tests as $test) {
+                    if ($test->column === 'name') {
+                        $result[$i]->detail_name = $test->value;
+                    }
+                    if ($test->column === 'version') {
+                        $result[$i]->detail = $test->value;
+                    }
+                }
+            }
+            if ($result[$i]->table === 'netstat') {
+                $tests = json_decode($result[$i]->tests);
+                foreach ($tests as $test) {
+                    if ($test->column === 'program') {
+                        $result[$i]->detail_name = $test->value;
+                    }
+                    if ($test->column === 'port') {
+                        $result[$i]->detail = $test->value;
+                    }
+                }
+            }
+            if ($result[$i]->table === 'user') {
+                $tests = json_decode($result[$i]->tests);
+                foreach ($tests as $test) {
+                    if ($test->column === 'name') {
+                        $result[$i]->detail_name = $test->value;
+                    }
+                    if ($test->column === 'status') {
+                        $result[$i]->detail = $test->value;
+                    }
+                }
+            }
+        }
+        return format_data($result, 'baselines_policies');
     }
 
     /**
@@ -481,7 +517,7 @@ class BaselinesPoliciesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'table', 'name', 'baselines.name', 'edited_by', 'edited_date');
+        $dictionary->attributes->collection = array('id', 'table', 'name', 'baselines.name', 'detail_name', 'detail', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
