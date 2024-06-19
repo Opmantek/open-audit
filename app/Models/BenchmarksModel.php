@@ -498,8 +498,24 @@ class BenchmarksModel extends BaseModel
         $orgs = array_unique($orgs);
         $orgs = implode(', ', $orgs);
 
-
         $included = array();
+
+
+        $sql = "SELECT * FROM queries WHERE name = ? ORDER BY id LIMIT 1";
+        $query = $this->db->query($sql, ['Benchmarks Query'])->getResult();
+        $included['benchmarks_query'] = intval($query[0]->id);
+
+        $sql = "SELECT * FROM queries WHERE name = ? ORDER BY id LIMIT 1";
+        $query = $this->db->query($sql, ['Devices Not in Benchmarks'])->getResult();
+        $included['devices_not_in_benchmarks'] = intval($query[0]->id);
+
+        $sql = "SELECT * FROM queries WHERE name = ? ORDER BY id LIMIT 1";
+        $query = $this->db->query($sql, ['Devices in Benchmarks'])->getResult();
+        $included['devices_in_benchmarks'] = intval($query[0]->id);
+
+        $sql = "SELECT * FROM queries WHERE name = ? ORDER BY id LIMIT 1";
+        $query = $this->db->query($sql, ['Devices Could be Benchmarked'])->getResult();
+        $included['devices_could_be_benchmarked'] = intval($query[0]->id);
 
         $results = array();
         $sql = "SELECT benchmark_id, result, COUNT(result) AS `count` FROM benchmarks_result GROUP BY result, benchmark_id ORDER BY benchmark_id";

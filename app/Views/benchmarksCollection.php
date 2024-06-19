@@ -18,14 +18,14 @@ include 'shared/collection_functions.php';
                         </div>
                     </div>
                 </div>
-                <div class="card-body collapse" id="advanced">
+                <div class="card-body" id="advanced">
                     <div class="row">
-                        <div class="col-3">
-                            <button type="button" class="btn btn-danger" style="min-width: 70px; margin-right:12px;"><?= ($included['potential_devices'] - $included['actual_devices']) ?></button>&nbsp;Devices are not being benchmarked.<br><br>
-                            <button type="button" class="btn btn-warning" style="min-width: 70px; margin-right:12px;"><?= $included['potential_devices'] ?></button>&nbsp;Devices could be benchmarked.<br><br>
-                            <button type="button" class="btn btn-success" style="min-width: 70px; margin-right:12px;"><?= $included['actual_devices'] ?></button>&nbsp;Devices are being benchmarked.<br>
+                        <div class="offset-1 col-3">
+                            <a href="<?= url_to('queriesExecute', $included['devices_not_in_benchmarks']) ?>" type="button" class="btn btn-danger" style="min-width: 70px; margin-right:12px;"><?= ($included['potential_devices'] - $included['actual_devices']) ?></a>&nbsp;Devices are not being benchmarked.<br><br>
+                            <a href="<?= url_to('queriesExecute', $included['devices_could_be_benchmarked']) ?>" type="button" class="btn btn-warning" style="min-width: 70px; margin-right:12px;"><?= $included['potential_devices'] ?></a>&nbsp;Devices could be benchmarked.<br><br>
+                            <a href="<?= url_to('queriesExecute', $included['devices_in_benchmarks']) ?>"  type="button" class="btn btn-success" style="min-width: 70px; margin-right:12px;"><?= $included['actual_devices'] ?></a>&nbsp;Devices are being benchmarked.<br>
                         </div>
-                        <div class="col-9">
+                        <div class="col-8">
                             Devices Not Being Benchmarked<br><br>
                             <div class="row">
                                 <?php
@@ -34,14 +34,12 @@ include 'shared/collection_functions.php';
                                     $i++;
                                     $explode = explode(' ', $key);
                                     ?>
-                                    <div class="col-lg-1 text-center">
-                                        <div>
-                                            <a href="<?= url_to('devicesCollection') ?>?devices.os_family=<?= $explode[0] ?>&devices.os_version=LIKE<?= $explode[1] ?>%" class="position-relative">
-                                                <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= strtolower($explode[0]) ?>.svg" alt="<?= $explode[0] ?>">
-                                                <br><?= $key ?>
-                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $value ?></span>
-                                            </a>
-                                        </div>
+                                    <div class="col-lg-1 text-center d-flex align-items-center">
+                                        <a href="<?= url_to('queriesExecute', $included['benchmarks_query']) ?>?devices.os_family=<?= $explode[0] ?>&devices.os_version=<?= $explode[1] ?>&isInBenchmark=n" class="position-relative">
+                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= strtolower($explode[0]) ?>.svg" alt="<?= $explode[0] ?>">
+                                            <br><?= $key ?>
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $value ?></span>
+                                        </a>
                                     </div>
                                     <?php
                                     if ($i === 12 or $i === 24 or $i === 36) {
@@ -107,7 +105,7 @@ include 'shared/collection_functions.php';
                                                 <div class="progress-bar bg-success fw-bold"  style="height: 2.5em">' . $pass . ' ' . __('Passed') . '</div>
                                             </div>
                                             <div class="progress" role="progressbar" aria-label="Other" aria-valuenow="' . $other . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($other / $count) * 100) . '%">
-                                                <div class="progress-bar bg-warning fw-bold"  style="height: 2.5em">' . $other . ' ' . __('Others') . '</div>
+                                                <div class="progress-bar bg-warning fw-bold"  style="height: 2.5em">' . $other . ' ' . __('Other') . '</div>
                                             </div>
                                             <div class="progress" role="progressbar" aria-label="Fail" aria-valuenow="' . $fail . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($fail / $count) * 100) . '%">
                                                 <div class="progress-bar bg-danger fw-bold"  style="height: 2.5em">' . $fail . ' ' . __('Failed') . '</div>
@@ -115,7 +113,7 @@ include 'shared/collection_functions.php';
                                         </div>';
                                             echo '</td>';
                                         } else {
-                                            echo "<td>No Result</td>";
+                                            echo "<td>" . __('No Results') . "</td>";
                                         }
                                     ?>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>

@@ -206,23 +206,45 @@ class QueriesModel extends BaseModel
         }
 
         if ($query->name === 'Benchmarks Query') {
-            foreach ($instance->resp->meta->filter as $item) {
-                if ($item->name === 'devices.os_version') {
-                    $sql = str_replace('OSVERSION', preg_replace("/[^A-Za-z0-9\. ]/", '', $item->value), $sql);
+            $request = \Config\Services::request();
+            if (!empty($request->getGet('devices_os_family'))) {
+                $sql = str_replace('OSFAMILY', preg_replace("/[^A-Za-z0-9 ]/", '', (string)$request->getGet('devices_os_family')), $sql);
+            }
+            if (!empty($request->getGet('devices_os_version'))) {
+                $sql = str_replace('OSVERSION', preg_replace("/[^A-Za-z0-9\. ]/", '', (string)$request->getGet('devices_os_version')), $sql);
+            }
+            if (empty($request->getGet('devices_os_family')) and empty($request->getGet('devices_os_version'))) {
+                $sql = str_replace('AND devices.os_family LIKE "OSFAMILY" AND devices.os_version LIKE "OSVERSION%"', '', $sql);
+            }
+
+            if (!empty($request->getGet('isInBenchmark'))) {
+                $actual_devices = array();
+                $sql2 = "SELECT devices FROM benchmarks WHERE org_id IN ($user->org_list)";
+                $results = $this->db->query($sql2)->getResult();
+                foreach ($results as $result) {
+                    if (!empty($result->devices)) {
+                        $devices = json_decode($result->devices);
+                        $actual_devices = array_merge($actual_devices, $devices);
+                    }
                 }
-                if ($item->name === 'devices.os_family') {
-                    $sql = str_replace('OSFAMILY', preg_replace("/[^A-Za-z0-9 ]/", '', $item->value), $sql);
+                $actual_devices = array_unique($actual_devices);
+                $actual_devices = implode(', ', $actual_devices);
+                if ($request->getGet('isInBenchmark') === 'n') {
+                    $sql = str_replace('LIMIT', " AND devices.id NOT IN ($actual_devices) LIMIT", $sql);
+                }
+                if ($request->getGet('isInBenchmark') === 'y') {
+                    $sql = str_replace('LIMIT', " AND devices.id IN ($actual_devices) LIMIT", $sql);
                 }
             }
-            // Some failsafe entries
-            $sql = str_replace('OSVERSION', "7", $sql);
-            $sql = str_replace('OSFAMILY', "Redhat", $sql);
+            log_message('debug', $sql);
+
         }
         $query = $this->db->query($sql);
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }
+
         $result = format_data($query->getResult(), $type);
         return $result;
     }

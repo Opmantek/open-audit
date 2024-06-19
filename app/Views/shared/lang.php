@@ -40,8 +40,8 @@ if (!function_exists('__')) {
                         @fclose($handle);
                     }
                 } else {
-                    log_message('error', "Language-Learning-Mode, but $language_file not writeable.");
-                    \Config\Services::session()->setFlashdata('error', "Language-Learning-Mode, but $language_file not writeable.");
+                    log_message('error', "Language-Learning-Mode, but $language_file not writeable. Want to write '" . $word . "'.");
+                    \Config\Services::session()->setFlashdata('error', "Language-Learning-Mode, but $language_file not writeable. Want to write '" . $word . "'.");
                     // echo "Language-Learning-Mode, but $language_file not writeable";
                     // die("Language-Learning-Mode, but $language_file not writeable");
                 }
