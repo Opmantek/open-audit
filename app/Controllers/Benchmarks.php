@@ -42,7 +42,6 @@ class Benchmarks extends BaseController
         $queue = new \stdClass();
         $queue->type = 'benchmarks';
         $queue->id = $id;
-        #$this->benchmarksModel->queue($queue);
         $this->benchmarksModel->queue($id);
         $this->queueModel = model('App\Models\QueueModel');
         $this->queueModel->start();
@@ -55,4 +54,5 @@ class Benchmarks extends BaseController
         sleep(5);
         return redirect()->route('benchmarksRead', [$id]);
     }
+
 }

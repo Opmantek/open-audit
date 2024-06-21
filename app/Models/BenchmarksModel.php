@@ -104,6 +104,8 @@ class BenchmarksModel extends BaseModel
             log_message('error', "No benchmark retrieved with provided ID $id.");
             return false;
         }
+        $sql = "UPDATE benchmarks SET last_run = NOW() WHERE id = ?";
+        $this->db->query($sql, [$id]);
         log_message('debug', json_encode($item));
         if (empty($item->attributes->devices)) {
             log_message('error', "No devices associated with benchmark ID $id.");
@@ -152,7 +154,7 @@ class BenchmarksModel extends BaseModel
             log_message('error', 'Invalid benchmark ID supplied to BenchmarksModel::execute.');
             return [];
         }
-        $instance = & get_instance();
+
         // Delete any existing logs
         $sql = "DELETE FROM benchmarks_log WHERE benchmark_id = ? and device_id = ?";
         $this->db->query($sql, [$id, $device_id]);
@@ -167,20 +169,20 @@ class BenchmarksModel extends BaseModel
 
 
         if (empty($device)) {
-            log_message('error', 'Invalid device ID supplied to BenchmarksModel::execute.');
+            log_message('error', 'Invalid device ID supplied to BenchmarksModel::execute. Supplied: ' . $device_id);
             $this->logCreate($id, $device_id, 'error', 'Invalid device ID supplied, ' . $device_id . '.');
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
         if (empty($device->attributes->credentials)) {
-            log_message('error', 'Device contains no credentials for BenchmarksModel::execute.');
+            log_message('error', 'Device contains no credentials for BenchmarksModel::execute from ' . $device->attributes->name);
             $this->logCreate($id, $device_id, 'error', 'Device contains no credentials.');
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
         $credentials = json_decode($device->attributes->credentials);
         if (empty($credentials)) {
-            log_message('error', 'Cannot decode credentials for BenchmarksModel::execute.');
+            log_message('error', 'Cannot decode credentials for BenchmarksModel::execute from ' . $device->attributes->name);
             $this->logCreate($id, $device_id, 'error', 'Cannot decode credentials.');
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
@@ -193,7 +195,7 @@ class BenchmarksModel extends BaseModel
             }
         }
         if (empty($retrieved_credentials)) {
-            log_message('error', 'Device contains no suitable credentials for BenchmarksModel::execute.');
+            log_message('error', 'Device contains no suitable credentials for BenchmarksModel::execute from ' . $device->attributes->name);
             $this->logCreate($id, $device_id, 'error', 'Device contains no suitable credentials.');
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
@@ -207,7 +209,7 @@ class BenchmarksModel extends BaseModel
         $parameters->timeout = 20; // 20 seconds to run oscap or fail silently (is not installed)
         $output = ssh_command($parameters);
         if ($output === false) {
-            log_message('error', 'SSH command failed for BenchmarksModel::execute on ' . $device->attributes->ip . '. Command: ' . $parameters->command);
+            log_message('error', 'SSH command failed for BenchmarksModel::execute on ' . $device->attributes->name . '. Command: ' . $parameters->command);
             $this->logCreate($id, $device_id, 'error', 'SSH command failed. Command: ' . $parameters->command . ' (see logfile for more info).');
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
@@ -230,22 +232,43 @@ class BenchmarksModel extends BaseModel
                 if (stripos($device->attributes->os_name, 'redhat') !== false or stripos($device->attributes->os_name, 'red hat') !== false or 
                     stripos($device->attributes->os_name, 'centos') !== false or
                     stripos($device->attributes->os_name, 'oracle') !== false) {
-                    $command = 'dnf install -y openscap-scanner';
+                    $command = 'yum install -y openscap-scanner';
                     if ($retrieved_credentials->attributes->credentials->username !== 'root') {
                         $command = 'sudo ' . $command;
                     }
                 }
                 if (stripos($device->attributes->os_name, 'suse') !== false) {
-                    $command = 'zypper install -y openscap-scanner';
+                    $command = 'zypper install -y openscap openscap-utils';
                     if ($retrieved_credentials->attributes->credentials->username !== 'root') {
                         $command = 'sudo ' . $command;
                     }
                 }
                 $this->logCreate($id, $device_id, 'info', $command);
-                log_message('debug', $command);
+                log_message('debug', $command . ' run on ' . $device->attributes->name);
                 $parameters->command = $command;
                 $parameters->timeout = 120; // 2 minutes to install openscap-scanner, et al
                 $output = ssh_command($parameters);
+                if ($output === false) {
+                    $this->logCreate($id, $device_id, 'warning', 'SSH command to install openscap failed, please check log file.');
+                    $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+                    return [];
+                }
+                // Now check it has actually been installed
+                $parameters->command = 'oscap version 2>/dev/null';
+                $parameters->timeout = 20; // 20 seconds to run oscap or fail silently (is not installed)
+                $output = ssh_command($parameters);
+                if ($output === false) {
+                    log_message('error', 'SSH command failed for BenchmarksModel::execute on ' . $device->attributes->name . '. Command: ' . $parameters->command);
+                    $this->logCreate($id, $device_id, 'error', 'SSH command failed. Command: ' . $parameters->command . ' (see logfile for more info).');
+                    $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+                    return [];
+                }
+                if (empty($output)) {
+                    log_message('error', 'Could not install openscap on ' . $device->attributes->name . '. Command: ' . $parameters->command);
+                    $this->logCreate($id, $device_id, 'warning', 'SSH command to install openscap failed, please check log file.');
+                    $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+                    return [];
+                }
                 $this->logCreate($id, $device_id, 'info', 'OpenScap has now been installed.');
             } else {
                 $this->logCreate($id, $device_id, 'info', 'OpenScap is not installed, not installing, as per config.');
@@ -263,7 +286,7 @@ class BenchmarksModel extends BaseModel
             }
         }
         if (empty($file) or empty($profile)) {
-            log_message('error', 'Failure, Could not derive benchmark for ' . $device->attributes->ip . ' from ' . $benchmark->attributes->type . ' and ' . $benchmark->attributes->os);
+            log_message('error', 'Failure, Could not derive benchmark for ' . $device->attributes->name . ' from ' . $benchmark->attributes->type . ' and ' . $benchmark->attributes->os);
             $this->logCreate($id, $device_id, 'error', 'Could not derive benchmark from ' . $benchmark->attributes->type . ' and ' . $benchmark->attributes->os);
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
@@ -272,7 +295,7 @@ class BenchmarksModel extends BaseModel
         $parameters->destination = $file;
         $output = scp($parameters);
         if ($output === false) {
-            log_message('error', 'SCP issue copying ' . $parameters->source . ' to ' . $parameters->destination . ' (see logfile for more info).');
+            log_message('error', 'SCP issue copying ' . $parameters->source . ' to ' . $parameters->destination . ' on ' . $device->attributes->name . ' (see logfile for more info).');
             $this->logCreate($id, $device_id, 'error', 'SCP issue running BenchmarksModel::execute on ' . $device->attributes->ip);
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
@@ -280,24 +303,24 @@ class BenchmarksModel extends BaseModel
 
         $this->logCreate($id, $device_id, 'info', 'Defnition file copied to ' . $device->attributes->name . '.');
         $parameters->command = 'cd ~/; oscap xccdf eval --profile ' . $profile . ' --report report.html ' . $file;
-        log_message('debug', 'oscap command: ' . $parameters->command);
+        log_message('debug', 'oscap command for ' . $device->attributes->name . ': ' . $parameters->command);
         $this->logCreate($id, $device_id, 'info', 'oscap command: ' . $parameters->command);
         $parameters->timeout = 600; // 10 minutes to execute oscap
         $output = ssh_command($parameters);
         if ($output === false) {
-            log_message('error', 'Could not execute osacp for BenchmarksModel::execute on ' . $device->attributes->ip);
+            log_message('error', 'Could not execute osacp for BenchmarksModel::execute on ' . $device->attributes->name);
             $this->logCreate($id, $device_id, 'error', 'Could not execute oscap (see logfile for more info).');
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
-        log_message('debug', 'oscap command completed.');
+        log_message('debug', 'oscap command completed on ' . $device->attributes->name);
         $this->logCreate($id, $device_id, 'info', 'oscap command completed.');
-        log_message('debug', json_encode($output));
+        # log_message('debug', json_encode($output));
         $parameters->source = 'report.html';
         $parameters->destination = '/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_report.html';
         $output = scp_get($parameters);
         if ($output === false) {
-            log_message('error', 'Could not retrieve report for BenchmarksModel::execute on ' . $device->attributes->ip);
+            log_message('error', 'Could not retrieve report for BenchmarksModel::execute on ' . $device->attributes->name);
             $this->logCreate($id, $device_id, 'error', 'Could not retrieve report (see logfile for more info).');
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
@@ -313,7 +336,7 @@ class BenchmarksModel extends BaseModel
         try {
             $qp = html5qp('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_report.html');
         } catch (\QueryPath\Exception $e) {
-            log_message('error', 'Cannot process report file. ' . $e);
+            log_message('error', 'Cannot process report file from ' . $device->attributes->name . '. ' . $e);
             $this->logCreate($id, $device_id, 'error', 'Cannot process report file. Error: ' . $e);
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
@@ -336,7 +359,7 @@ class BenchmarksModel extends BaseModel
         $update = 0;
         // Loop over all test results
         foreach ($qp->find('tr.rule-overview-leaf') as $item) {
-            log_message('debug', '');
+            # log_message('debug', '');
             log_message('debug', 'Processing item ' . $item->attr('data-tt-id') . ' for ' . $device->attributes->name);
             $result = new stdClass();
             $result->benchmark = $benchmark;
@@ -360,11 +383,10 @@ class BenchmarksModel extends BaseModel
                     $result->result = $child->text();
                 }
             }
-            log_message('debug', 'Initial details for ' . $result->external_ident);
             if (!empty($result->id)) {
 
-                $sql = "INSERT INTO benchmarks_result VALUES (null, ?, 'y', ?, ?, ?, ?, ?)";
-                $this->db->query($sql, [$device_id, $instance->config->timestamp, $instance->config->timestamp, $id, $result->external_ident, $result->result]);
+                $sql = "INSERT INTO benchmarks_result VALUES (null, ?, 'y', NOW(), NOW(), ?, ?, ?)";
+                $this->db->query($sql, [$device_id, $id, $result->external_ident, $result->result]);
 
                 $sql = "LOCK TABLES benchmarks_policies WRITE";
                 $this->db->query($sql);
@@ -386,14 +408,11 @@ class BenchmarksModel extends BaseModel
                     if ($result->result !== 'pass') {
                         foreach ($qp->find('div[id="rule-detail-' . $result->id . '"]')->find('div.remediation') as $remediation) {
                             $title = $remediation->find('a')->text();
-                            log_message('debug', '1 Title is: ' . $title);
                             $title = str_replace(' ⇲', '', $title);
-                            log_message('debug', '2 Title is: ' . $title);
                             if ($title === '(show)') {
                                 // Try another location for the name
                                 $title = $remediation->find('span.label')->text();
                                 $title = str_replace(':', '', $title);
-                                log_message('debug', '3 Title is: ' . $title);
                             }
                             $contents = $remediation->find('pre')->innerhtml();
                             $contents = '<pre>' . @trim($contents) . '</pre>';
@@ -402,8 +421,8 @@ class BenchmarksModel extends BaseModel
                     }
                     $result->remediation = json_encode($result->remediation);
                     $this->db->transStart();
-                    $sql = "INSERT INTO benchmarks_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, '', '', ?, ?)";
-                    $this->db->query($sql, [$result->external_ident, $result->name, $result->severity, $result->description, $result->rationale, $result->remediation, $instance->config->timestamp, $id]);
+                    $sql = "INSERT INTO benchmarks_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, '', '', NOW(), ?)";
+                    $this->db->query($sql, [$result->external_ident, $result->name, $result->severity, $result->description, $result->rationale, $result->remediation, $id]);
                     $this->db->transComplete();
                     $sql = "UNLOCK TABLES";
                     $this->db->query($sql);
@@ -419,8 +438,8 @@ class BenchmarksModel extends BaseModel
                             if (!empty($result->description)) {
                                 $update += 1;
                                 log_message('debug', 'Updating benchmark policy ' . $result->external_ident . ' description from ' . $device->attributes->name);
-                                $sql = "UPDATE benchmarks_policies SET description = ?, edited_date = ?, edited_by = '$id' WHERE external_ident = ?";
-                                $this->db->query($sql, [$result->description, $instance->config->timestamp, $result->external_ident]);
+                                $sql = "UPDATE benchmarks_policies SET description = ?, edited_date = NOW(), edited_by = '$id' WHERE external_ident = ?";
+                                $this->db->query($sql, [$result->description, $result->external_ident]);
                             }
                         }
                         if (empty($policy->rationale)) {
@@ -428,8 +447,8 @@ class BenchmarksModel extends BaseModel
                             if (!empty($result->rationale)) {
                                 $update += 1;
                                 log_message('debug', 'Updating benchmark policy ' . $result->external_ident . ' rationale from ' . $device->attributes->name);
-                                $sql = "UPDATE benchmarks_policies SET rationale = ?, edited_date = ?, edited_by = '$id' WHERE external_ident = ?";
-                                $this->db->query($sql, [$result->rationale, $instance->config->timestamp, $result->external_ident]);
+                                $sql = "UPDATE benchmarks_policies SET rationale = ?, edited_date = NOW(), edited_by = '$id' WHERE external_ident = ?";
+                                $this->db->query($sql, [$result->rationale, $result->external_ident]);
                             }
                         }
                         if ((empty($policy->remediation) or $policy->remediation === '[]') and $result->result !== 'pass') {
@@ -441,7 +460,7 @@ class BenchmarksModel extends BaseModel
                                     // Try another location for the name
                                     $title = $remediation->find('span.label')->text();
                                     $title = str_replace(':', '', $title);
-                                    log_message('debug', '3 Title is: ' . $title);
+                                    #log_message('debug', '3 Title is: ' . $title);
                                 }
                                 $contents = $remediation->find('pre')->innerhtml();
                                 $contents = '<pre>' . @trim($contents) . '</pre>';
@@ -451,8 +470,8 @@ class BenchmarksModel extends BaseModel
                                 $update += 1;
                                 $result->remediation = json_encode($result->remediation);
                                 log_message('debug', 'Updating benchmark policy ' . $result->external_ident . ' remediation from ' . $device->attributes->name);
-                                $sql = "UPDATE benchmarks_policies SET remediation = ?, edited_date = ?, edited_by = ? WHERE external_ident = ?";
-                                $this->db->query($sql, [$result->remediation, $instance->config->timestamp, $id, $result->external_ident]);
+                                $sql = "UPDATE benchmarks_policies SET remediation = ?, edited_date = NOW(), edited_by = ? WHERE external_ident = ?";
+                                $this->db->query($sql, [$result->remediation, $id, $result->external_ident]);
                             }
                         }
                     }
@@ -464,7 +483,7 @@ class BenchmarksModel extends BaseModel
         $this->logCreate($id, $device_id, 'info', 'Processing report file completed. ' . $insert . ' inserted and ' . $update . ' updated policies.');
         $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
         log_message('debug', 'Processing report file for ' . $device->attributes->name . ' completed. ' . $insert . ' inserted and ' . $update . ' updated policies.');
-        log_message('debug', 'Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+        log_message('debug', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB used for ' . $device->attributes->name);
         return[];
     }
 
@@ -776,7 +795,7 @@ class BenchmarksModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'type', 'os', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'type', 'os', 'last_run', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
@@ -797,6 +816,7 @@ class BenchmarksModel extends BaseModel
         $dictionary->columns->type = 'The benchmark type.';
         $dictionary->columns->install = 'Should we install Open-Scap on the target machine.';
         $dictionary->columns->devices = '';
+        $dictionary->columns->last_run = '';
         $dictionary->columns->remediation = '';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

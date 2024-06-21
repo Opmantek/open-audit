@@ -44,6 +44,92 @@ use GuzzleHttp\HandlerStack;
  */
 class Cli extends Controller
 {
+
+
+
+    public function testBenchmarks()
+    {
+        helper('components');
+        helper('device');
+        helper('discoveries');
+        helper('integrations_nmis');
+        helper('mac_model');
+        helper('network');
+        helper('security');
+        helper('ssg');
+        helper('ssh');
+        helper('utility');
+        helper('wmi');
+
+        $benchmarksModel = model('BenchmarksModel');
+        $definitions = ssg_definitions();
+
+        $db = db_connect();
+
+        // $os_family = 'Debian';
+        // $os_version = '12';
+        // $os = $os_family . ' ' . $os_version;
+        // $device_id = 7039;
+
+        // $os_family = 'RedHat';
+        // $os_version = '8';
+        // $os = $os_family . ' ' . $os_version;
+        // $device_id = 6964;
+
+        // $os_family = 'RedHat';
+        // $os_version = '9';
+        // $os = $os_family . ' ' . $os_version;
+        // $device_id = 7040;
+
+        // $os_family = 'SLES';
+        // $os_version = '15';
+        // $os = $os_family . ' ' . $os_version;
+        // $device_id = 7038;
+
+        // $os_family = 'Ubuntu';
+        // $os_version = '20.04';
+        // $os = $os_family . ' ' . $os_version;
+        // $device_id = 7042;
+
+        // $os_family = 'Ubuntu';
+        // $os_version = '22.04';
+        // $os = $os_family . ' ' . $os_version;
+        // $device_id = 7037;
+
+        $devices = '[' . $device_id . ']';
+
+        log_message('debug', 'Deleting benchmark results.');
+        $sql = "DELETE FROM benchmarks_result WHERE benchmark_id IN (SELECT id FROM benchmarks WHERE os = '$os')";
+        $db->query($sql);
+        log_message('debug', (string)$db->getLastQuery());
+
+        log_message('debug', 'Deleting benchmarks.');
+        $sql = "DELETE FROM benchmarks WHERE os = '$os'";
+        $db->query($sql);
+        log_message('debug', (string)$db->getLastQuery());
+
+        log_message('debug', 'Inserting benchmarks.');
+        foreach ($definitions as $definition) {
+            if ($definition->os_family === $os_family and $definition->os_version === $os_version) {
+                $sql = "INSERT INTO benchmarks VALUES (null, ?, 1, '', ?, ?, 'y', ?, '2000-01-01 00:00:00', 'Administrator', NOW())";
+                $db->query($sql, [$definition->title, $os, $definition->title, $devices]);
+                log_message('debug', (string)$db->getLastQuery());
+            }
+        }
+
+        $sql = "SELECT * FROM benchmarks WHERE os = '$os'";
+        $benchmarks = $db->query($sql)->getResult();
+
+        foreach ($benchmarks as $benchmark) {
+            $id = intval($benchmark->id);
+            log_message('debug', 'Executing benchmark: ' . $benchmark->name);
+            $sql = "UPDATE benchmarks SET last_run = NOW() WHERE id = ?";
+            $db->query($sql, [$id]);
+            $benchmarksModel->execute($id, $device_id);
+            log_message('debug', 'Completed benchmark: ' . $benchmark->name);
+        }
+    }
+
     /**
      * Rotate the logs
      *
