@@ -306,9 +306,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             $placeholder = 'Not Set';
                                         }
                                         if ($config->product === 'enterprise') {
-                                            echo read_field('scan_options' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, $value, '', $placeholder);
+                                            echo read_field('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, $value, '', $placeholder);
                                         } else {
-                                            echo read_field('scan_options' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, false, $value, '', $placeholder);
+                                            echo read_field('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, false, $value, '', $placeholder);
                                         }
                                     } ?>
                                 </div>
