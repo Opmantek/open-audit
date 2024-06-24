@@ -84,15 +84,15 @@ class Collections extends BaseConfig
         $this->benchmarks->actions->professional = '';
         $this->benchmarks->actions->community = '';
 
-        $this->benchmarks_exception = new \StdClass();
-        $this->benchmarks_exception->icon = 'fa-solid fa-wand-sparkles';
-        $this->benchmarks_exception->name = 'Benchmarks Exception';
-        $this->benchmarks_exception->edition = 'Enterprise';
-        $this->benchmarks_exception->orgs = 'b';
-        $this->benchmarks_exception->actions = new \stdClass();
-        $this->benchmarks_exception->actions->enterprise = 'crud';
-        $this->benchmarks_exception->actions->professional = '';
-        $this->benchmarks_exception->actions->community = '';
+        $this->benchmarks_exceptions = new \StdClass();
+        $this->benchmarks_exceptions->icon = 'fa-solid fa-wand-sparkles';
+        $this->benchmarks_exceptions->name = 'Benchmarks Exception';
+        $this->benchmarks_exceptions->edition = 'Enterprise';
+        $this->benchmarks_exceptions->orgs = 'b';
+        $this->benchmarks_exceptions->actions = new \stdClass();
+        $this->benchmarks_exceptions->actions->enterprise = 'crud';
+        $this->benchmarks_exceptions->actions->professional = '';
+        $this->benchmarks_exceptions->actions->community = '';
 
         $this->benchmarks_policies = new \StdClass();
         $this->benchmarks_policies->icon = 'fa-solid fa-wand-sparkles';

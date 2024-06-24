@@ -18,12 +18,13 @@ include 'shared/collection_functions.php';
                         </div>
                     </div>
                 </div>
-                <div class="card-body" id="advanced">
+                <div class="card-body collapse show" id="advanced">
                     <div class="row">
                         <div class="offset-1 col-3">
-                            <a href="<?= url_to('queriesExecute', $included['devices_not_in_benchmarks']) ?>" type="button" class="btn btn-danger" style="min-width: 70px; margin-right:12px;"><?= ($included['potential_devices'] - $included['actual_devices']) ?></a>&nbsp;Devices are not being benchmarked.<br><br>
-                            <a href="<?= url_to('queriesExecute', $included['devices_could_be_benchmarked']) ?>" type="button" class="btn btn-warning" style="min-width: 70px; margin-right:12px;"><?= $included['potential_devices'] ?></a>&nbsp;Devices could be benchmarked.<br><br>
-                            <a href="<?= url_to('queriesExecute', $included['devices_in_benchmarks']) ?>"  type="button" class="btn btn-success" style="min-width: 70px; margin-right:12px;"><?= $included['actual_devices'] ?></a>&nbsp;Devices are being benchmarked.<br>
+                            <a href="<?= url_to('queriesExecute', $included['devices_not_in_benchmarks']) ?>" type="button" class="btn btn-danger" style="min-width: 70px; margin-right:12px;"><?= ($included['potential_devices'] - $included['actual_devices']) ?></a>&nbsp;<?= __('Devices are not being benchmarked.') ?><br><br>
+                            <a href="<?= url_to('queriesExecute', $included['devices_could_be_benchmarked']) ?>" type="button" class="btn btn-warning" style="min-width: 70px; margin-right:12px;"><?= $included['potential_devices'] ?></a>&nbsp;<?= __('Devices could be benchmarked.') ?><br><br>
+                            <a href="<?= url_to('queriesExecute', $included['devices_in_benchmarks']) ?>"  type="button" class="btn btn-success" style="min-width: 70px; margin-right:12px;"><?= $included['actual_devices'] ?></a>&nbsp;<?= __('Devices are being benchmarked.') ?><br><br>
+                            <a href="<?= url_to('benchmarks_exceptionsCollection') ?>"  type="button" class="btn btn-primary" style="min-width: 70px; margin-right:12px;"><?= $included['exceptions'] ?></a>&nbsp;<?= __('Policies have exceptions.') ?><br><br>
                         </div>
                         <div class="col-8">
                             Devices Not Being Benchmarked<br><br>
@@ -34,7 +35,7 @@ include 'shared/collection_functions.php';
                                     $i++;
                                     $explode = explode(' ', $key);
                                     ?>
-                                    <div class="col-lg-1 text-center d-flex align-items-center">
+                                    <div class="col-lg-2 text-center d-flex align-items-center">
                                         <a href="<?= url_to('queriesExecute', $included['benchmarks_query']) ?>?devices.os_family=<?= $explode[0] ?>&devices.os_version=<?= $explode[1] ?>&isInBenchmark=n" class="position-relative">
                                             <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= strtolower($explode[0]) ?>.svg" alt="<?= $explode[0] ?>">
                                             <br><?= $key ?>
@@ -42,7 +43,7 @@ include 'shared/collection_functions.php';
                                         </a>
                                     </div>
                                     <?php
-                                    if ($i === 12 or $i === 24 or $i === 36) {
+                                    if ($i === 6 or $i === 12 or $i === 18 or $i === 24) {
                                         echo "</div><br /><div class=\"row\">";
                                     }
                                 }

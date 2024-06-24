@@ -229,7 +229,7 @@ class BenchmarksModel extends BaseModel
                         $command = 'sudo ' . $command;
                     }
                 }
-                if (stripos($device->attributes->os_name, 'redhat') !== false or stripos($device->attributes->os_name, 'red hat') !== false or 
+                if (stripos($device->attributes->os_name, 'redhat') !== false or stripos($device->attributes->os_name, 'red hat') !== false or stripos($device->attributes->os_name, 'rhel') !== false or
                     stripos($device->attributes->os_name, 'centos') !== false or
                     stripos($device->attributes->os_name, 'oracle') !== false) {
                     $command = 'yum install -y openscap-scanner';
@@ -302,7 +302,8 @@ class BenchmarksModel extends BaseModel
         }
 
         $this->logCreate($id, $device_id, 'info', 'Defnition file copied to ' . $device->attributes->name . '.');
-        $parameters->command = 'cd ~/; oscap xccdf eval --profile ' . $profile . ' --report report.html ' . $file;
+        $microtime = microtime(true);
+        $parameters->command = 'cd ~/; oscap xccdf eval --profile ' . $profile . ' --report ' . $device_id . '_' . $id .  '_' . $microtime . '_report.html ' . $file;
         log_message('debug', 'oscap command for ' . $device->attributes->name . ': ' . $parameters->command);
         $this->logCreate($id, $device_id, 'info', 'oscap command: ' . $parameters->command);
         $parameters->timeout = 600; // 10 minutes to execute oscap
@@ -316,8 +317,8 @@ class BenchmarksModel extends BaseModel
         log_message('debug', 'oscap command completed on ' . $device->attributes->name);
         $this->logCreate($id, $device_id, 'info', 'oscap command completed.');
         # log_message('debug', json_encode($output));
-        $parameters->source = 'report.html';
-        $parameters->destination = '/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_report.html';
+        $parameters->source = $device_id . '_' . $id .  '_' . $microtime . '_report.html';
+        $parameters->destination = '/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html';
         $output = scp_get($parameters);
         if ($output === false) {
             log_message('error', 'Could not retrieve report for BenchmarksModel::execute on ' . $device->attributes->name);
@@ -353,13 +354,33 @@ class BenchmarksModel extends BaseModel
         $sql = "DELETE from benchmarks_result WHERE benchmark_id = ? AND device_id = ?";
         $this->db->query($sql, [$id, $device_id]);
 
+        $sql = "SELECT * FROM benchmarks_exceptions";
+        $rows = $this->db->query($sql)->getResult();
+        $exceptions = array();
+        foreach ($rows as $row) {
+            $exception = new stdClass();
+            $exception->devices = array();
+            if (!empty($row->devices)) {
+                $exception->devices = json_decode($row->devices);
+            }
+            $exception->benchmarks = array();
+            if (!empty($row->benchmarks)) {
+                $exception->benchmarks = json_decode($row->benchmarks);
+            }
+            $exceptions[$row->external_ident] = $exception;
+        }
+
+
         $benchmark = $qp->find('h2')->next()->find('mark')->text();
         $i = 0;
         $insert = 0;
         $update = 0;
         // Loop over all test results
         foreach ($qp->find('tr.rule-overview-leaf') as $item) {
-            # log_message('debug', '');
+            if (isset($exceptions[$item->attr('data-tt-id')]) and ((empty($exceptions[$item->attr('data-tt-id')]->devices) or in_array($device_id, $exceptions[$item->attr('data-tt-id')]->devices) and (empty($exceptions[$item->attr('data-tt-id')]->benchmarks) or in_array($id, $exceptions[$item->attr('data-tt-id')]->benchmarks))))) {
+                log_message('debug', 'Not processing item ' . $item->attr('data-tt-id') . ' for ' . $device->attributes->name . ' because in exceptions.');
+                continue;
+            }
             log_message('debug', 'Processing item ' . $item->attr('data-tt-id') . ' for ' . $device->attributes->name);
             $result = new stdClass();
             $result->benchmark = $benchmark;
@@ -519,6 +540,9 @@ class BenchmarksModel extends BaseModel
 
         $included = array();
 
+        $sql = "SELECT COUNT(id) AS `count` FROM benchmarks_exceptions";
+        $query = $this->db->query($sql)->getResult();
+        $included['exceptions'] = intval($query[0]->count);
 
         $sql = "SELECT * FROM queries WHERE name = ? ORDER BY id LIMIT 1";
         $query = $this->db->query($sql, ['Benchmarks Query'])->getResult();
@@ -678,6 +702,9 @@ class BenchmarksModel extends BaseModel
         for ($i=0; $i < count($included['logs']); $i++) { 
             $included['logs'][$i]->{'devices.ip'} = ip_address_from_db($included['logs'][$i]->{'devices.ip'});
         }
+
+        $sql = "SELECT * FROM benchmarks_exceptions";
+        $included['exceptions'] = $this->db->query($sql)->getResult();
 
         return $included;
     }

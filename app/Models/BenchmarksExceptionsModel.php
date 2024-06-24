@@ -61,6 +61,11 @@ class BenchmarksExceptionsModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+
+        // Remove any existing results using this external_ident
+        $sql = "DELETE FROM benchmarks_result WHERE external_ident = ?";
+        $this->db->query($sql, [$data->external_ident]);
+
         $data = $this->createFieldData('benchmarks_exceptions', $data);
         if (empty($data)) {
             return null;
@@ -268,8 +273,8 @@ class BenchmarksExceptionsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name');
-        $dictionary->attributes->create = array('name','org_id');
+        $dictionary->attributes->collection = array('id', 'external_ident', 'benchmarks', 'devices');
+        $dictionary->attributes->create = array('org_id', 'external_ident', 'benchmarks', 'devices');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
         $dictionary->attributes->update = $this->updateFields($collection);
@@ -282,21 +287,11 @@ class BenchmarksExceptionsModel extends BaseModel
 
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
-        $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
-        $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->benchmarks_id = 'Links to <code>benchmarks.id</code>.';
         $dictionary->columns->external_ident = 'The ID from the imported benchmark policy.';
-        $dictionary->columns->ident = '';
-        $dictionary->columns->weight = '';
-        $dictionary->columns->severity = '';
-        $dictionary->columns->version = '';
-        $dictionary->columns->notes = '';
-        $dictionary->columns->fix_notes = '';
-        $dictionary->columns->fix_id = '';
-        $dictionary->columns->check = '';
-        $dictionary->columns->commands = '';
-        $dictionary->columns->commands_pass = '';
+        $dictionary->columns->benchmarks = 'An array of <code>benchmarks.id</code>.';
+        $dictionary->columns->devices = 'An array of <code>devices.id</code>.';
+        $dictionary->columns->exception_reason = 'Why do we exclude this policy?';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

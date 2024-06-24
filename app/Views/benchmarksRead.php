@@ -324,6 +324,7 @@ if (!empty($hour) and !empty($days)) {
                                                 <th style="text-align: center;"><?= __('Not Applicable') ?></th>
                                                 <th style="text-align: center;"><?= __('Not Checked') ?></th>
                                                 <th style="text-align: center;"><?= __('Unknown') ?></th>
+                                                <th style="text-align: center;"><?= __('Exceptions') ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -386,6 +387,20 @@ if (!empty($hour) and !empty($days)) {
                                                 <td style="text-align: center;"><?= $notapplicable_button ?></td>
                                                 <td style="text-align: center;"><?= $notchecked_button ?></td>
                                                 <td style="text-align: center;"><?= $unknown_button ?></td>
+                                                <?php
+                                                    $show = true;
+                                                    if (!empty($included['exceptions'])) {
+                                                        foreach ($included['exceptions'] as $exception) {
+                                                            if ($exception->external_ident === $policy->{'external_ident'}) {
+                                                                $show = false;
+                                                            }
+                                                        }
+                                                    }
+                                                    if ($show) { ?>
+                                                <td class="text-center"><button title="<?= __('Add Exception') ?>" role="button" class="btn btn-sm btn-success add_exception" value="<?= $policy->{'external_ident'} ?>"><?= __('Add') ?></button></td>
+                                            <?php } else { ?>
+                                                <td class="text-center"><button title="<?= __('Remove Exception') ?>" role="button" class="btn btn-sm btn-danger add_exception" value="<?= $policy->{'external_ident'} ?>"><?= __('Remove') ?></button></td>
+                                            <?php } ?>
                                             </tr>
                                             <?php } ?>
                                             <?php } ?>
@@ -594,6 +609,46 @@ window.onload = function () {
             $("#button_execute").hide();
         <?php } ?>
 
+
+        $(".add_exception").click(function(e) {
+            var data = {};
+            data["type"] = 'benchmarks_exceptions';
+            data["access_token"] = '<?= $meta->access_token ?>';
+            data["attributes"] = {};
+            data["attributes"]["org_id"] = <?= intval($resource->org_id) ?>;
+            data["attributes"]["external_ident"] = this.value;
+            data["attributes"]["benchmarks"] = '[]';
+            data["attributes"]["devices"] = '[]';
+            data["attributes"]["exemption_reason"] = '';
+
+            // data = JSON.stringify(data);
+            $.ajax({
+                type: "POST",
+                url: "<?= url_to('benchmarks_exceptionsCreate') ?>",
+                data: {data : data},
+                success: function (data) {
+                    $("#liveToastSuccess-header").text("Exception Added");
+                    $("#liveToastSuccess-body").text("Any results for this exception have been removed. Refresh to update page.");
+                    var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
+                    var toastList = toastElList.map(function(toastEl) {
+                        return new bootstrap.Toast(toastEl)
+                    });
+                    toastList.forEach(toast => toast.show());
+                },
+                error: function (data) {
+                    data = JSON.parse(data.responseText);
+                    $("#liveToastFailure-header").text("Exception Failed");
+                    $("#liveToastFailure-body").text(data.message);
+                    var toastElList = [].slice.call(document.querySelectorAll('.toast-failure'));
+                    var toastList = toastElList.map(function(toastEl) {
+                        return new bootstrap.Toast(toastEl)
+                    });
+                    toastList.forEach(toast => toast.show());
+                }
+            });
+
+        });
+
         $("#edit_devices").click(function(e) {
             $("#devices_table > tbody > tr > td > input").removeAttr("disabled");
             $("#edit_devices").hide();
@@ -619,23 +674,23 @@ window.onload = function () {
             }).get();
             data = JSON.stringify(data);
             $.ajax({
-            type: "PATCH",
-            url: id,
-            contentType: "application/json",
-            data: {data : data},
-            success: function (data) {
-               window.location = id;
-            },
-            error: function (data) {
-                data = JSON.parse(data.responseText);
-                $("#liveToastFailure-header").text("Update Failed");
-                $("#liveToastFailure-body").text(data.message);
-                var toastElList = [].slice.call(document.querySelectorAll('.toast-failure'));
-                var toastList = toastElList.map(function(toastEl) {
-                    return new bootstrap.Toast(toastEl)
-                });
-                toastList.forEach(toast => toast.show());
-            }
+                type: "PATCH",
+                url: id,
+                contentType: "application/json",
+                data: {data : data},
+                success: function (data) {
+                   window.location = id;
+                },
+                error: function (data) {
+                    data = JSON.parse(data.responseText);
+                    $("#liveToastFailure-header").text("Update Failed");
+                    $("#liveToastFailure-body").text(data.message);
+                    var toastElList = [].slice.call(document.querySelectorAll('.toast-failure'));
+                    var toastList = toastElList.map(function(toastEl) {
+                        return new bootstrap.Toast(toastEl)
+                    });
+                    toastList.forEach(toast => toast.show());
+                }
             });
         });
     });
