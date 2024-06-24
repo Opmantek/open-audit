@@ -177,6 +177,12 @@ if (!function_exists('response_create')) {
                 $os = explode('|', $output[1]);
                 $response->meta->server_platform = $os[0];
             }
+            if (!stripos($response->meta->server_platform, 'server')) {
+                // Throw a warning, unsupported OS
+                $message = 'Open-AudiT requires Windows Server to run successfully. Please reinstall on a supported server operating system.';
+                log_message('error', $message);
+                $response->errors = $message;
+            }
         } else {
             $command = 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2';
             exec($command, $output);
