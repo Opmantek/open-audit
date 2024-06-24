@@ -72,6 +72,11 @@ class Cli extends Controller
         // $device_id = 7039;
 
         // $os_family = 'RedHat';
+        // $os_version = '7';
+        // $os = $os_family . ' ' . $os_version;
+        // $device_id = 7043;
+
+        // $os_family = 'RedHat';
         // $os_version = '8';
         // $os = $os_family . ' ' . $os_version;
         // $device_id = 6964;
@@ -95,6 +100,10 @@ class Cli extends Controller
         // $os_version = '22.04';
         // $os = $os_family . ' ' . $os_version;
         // $device_id = 7037;
+
+        if (empty($device_id)) {
+            return;
+        }
 
         $devices = '[' . $device_id . ']';
 
