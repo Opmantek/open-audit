@@ -542,36 +542,32 @@ LOCK TABLES `benchmarks` WRITE;
 /*!40000 ALTER TABLE `benchmarks` ENABLE KEYS */;
 UNLOCK TABLES;
 
--- Table structure for table `benchmarks_exception`
+-- Table structure for table `benchmarks_exceptions`
 --
 
-DROP TABLE IF EXISTS `benchmarks_exception`;
+DROP TABLE IF EXISTS `benchmarks_exceptions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `benchmarks_exception` (
+CREATE TABLE `benchmarks_exceptions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `device_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `benchmark_id` int(10) unsigned DEFAULT NULL,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `external_ident` varchar(200) NOT NULL DEFAULT '',
+  `benchmarks` text NOT NULL,
+  `devices` text NOT NULL,
   `exemption_reason` varchar(2000) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `benchmark_id` (`benchmark_id`),
-  CONSTRAINT `benchmark_id` FOREIGN KEY (`benchmark_id`) REFERENCES `benchmarks` (`id`) ON DELETE CASCADE
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `benchmarks_exception`
+-- Dumping data for table `benchmarks_exceptions`
 --
 
-LOCK TABLES `benchmarks_exception` WRITE;
-/*!40000 ALTER TABLE `benchmarks_exception` DISABLE KEYS */;
-/*!40000 ALTER TABLE `benchmarks_exception` ENABLE KEYS */;
+LOCK TABLES `benchmarks_exceptions` WRITE;
+/*!40000 ALTER TABLE `benchmarks_exceptions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `benchmarks_exceptions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -3300,7 +3296,7 @@ CREATE TABLE `roles` (
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` VALUES (NULL,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"executables\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (NULL,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"benchmarks\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"benchmarks\":\"crud\",\"benchmarks_exceptions\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (NULL,'user','A standard role that can read all endpoints that contain an org_id.','{\"agents\":\"r\",\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"executables\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"reports\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (NULL,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;

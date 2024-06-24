@@ -23,22 +23,18 @@ if (!$db->tableExists('benchmarks')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-if (!$db->tableExists('benchmarks_exception')) {
-    $sql = "CREATE TABLE `benchmarks_exception` (
-        `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-        `device_id` int(10) unsigned DEFAULT NULL,
-        `current` enum('y','n') NOT NULL DEFAULT 'y',
-        `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-        `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-        `benchmark_id` int(10) unsigned DEFAULT NULL,
-        `external_ident` varchar(200) NOT NULL DEFAULT '',
-        `exemption_reason` varchar(2000) NOT NULL DEFAULT '',
-        `edited_by` varchar(200) NOT NULL DEFAULT '',
-        `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-        PRIMARY KEY (`id`),
-        KEY `benchmark_id` (`benchmark_id`),
-        CONSTRAINT `benchmark_id` FOREIGN KEY (`benchmark_id`) REFERENCES `benchmarks` (`id`) ON DELETE CASCADE
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
+if (!$db->tableExists('benchmarks_exceptions')) {
+    $sql = "CREATE TABLE `benchmarks_exceptions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `external_ident` varchar(200) NOT NULL DEFAULT '',
+  `benchmarks` text NOT NULL,
+  `devices` text NOT NULL,
+  `exemption_reason` varchar(2000) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -113,6 +109,9 @@ foreach ($roles as $role) {
     if (!empty($permissions)) {
         if ($role->name === 'org_admin') {
             $permissions->benchmarks = 'crud';
+        }
+        if ($role->name === 'org_admin') {
+            $permissions->benchmarks_exceptions = 'crud';
         }
         $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
         $query = $db->query($sql, [json_encode($permissions), $role->id]);
