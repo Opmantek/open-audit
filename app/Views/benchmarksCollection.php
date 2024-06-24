@@ -24,7 +24,9 @@ include 'shared/collection_functions.php';
                             <a href="<?= url_to('queriesExecute', $included['devices_not_in_benchmarks']) ?>" type="button" class="btn btn-danger" style="min-width: 70px; margin-right:12px;"><?= ($included['potential_devices'] - $included['actual_devices']) ?></a>&nbsp;<?= __('Devices are not being benchmarked.') ?><br><br>
                             <a href="<?= url_to('queriesExecute', $included['devices_could_be_benchmarked']) ?>" type="button" class="btn btn-warning" style="min-width: 70px; margin-right:12px;"><?= $included['potential_devices'] ?></a>&nbsp;<?= __('Devices could be benchmarked.') ?><br><br>
                             <a href="<?= url_to('queriesExecute', $included['devices_in_benchmarks']) ?>"  type="button" class="btn btn-success" style="min-width: 70px; margin-right:12px;"><?= $included['actual_devices'] ?></a>&nbsp;<?= __('Devices are being benchmarked.') ?><br><br>
-                            <a href="<?= url_to('benchmarks_exceptionsCollection') ?>"  type="button" class="btn btn-primary" style="min-width: 70px; margin-right:12px;"><?= $included['exceptions'] ?></a>&nbsp;<?= __('Policies have exceptions.') ?><br><br>
+                            <?php if (!empty($included['exceptions'])) { ?>
+                                <a href="<?= url_to('benchmarks_exceptionsCollection') ?>"  type="button" class="btn btn-primary" style="min-width: 70px; margin-right:12px;"><?= $included['exceptions'] ?></a>&nbsp;<?= __('Policies have exceptions.') ?><br><br>
+                            <?php } ?>
                         </div>
                         <div class="col-8">
                             Devices Not Being Benchmarked<br><br>
