@@ -20,14 +20,21 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->os_cpe_name = '';
     $details->os_cpe_version = '';
 
-    $i = explode("$", my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.5"));
+    // $i = explode("$", my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.5"));
+    $temp = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.5");
+    if (!empty($temp) and is_array($temp)) {
+        $i = explode("$", $temp);
+    }
+    if (empty($i) or ! is_array($i)) {
+        $i = array();
+    }
     if (!empty($i[1])) {
         $details->os_version = trim((string)$i[1]);
         $details->os_cpe_version = str_replace($details->os_version, '(', '\(');
         $details->os_cpe_version = str_replace($details->os_cpe_version, ')', '\)');
     }
     $i = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.7");
-    if (stripos($i, "IOS") !== false) {
+    if (stripos((string)$i, "IOS") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS';
         $details->os_name = "Cisco IOS ".$details->os_version;
@@ -51,7 +58,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->os_name = "Cisco IOS ".$details->os_version;
         $details->os_cpe_name = 'ios';
     }
-    if (stripos($i, "Catalyst Operating") !== false) {
+    if (stripos((string)$i, "Catalyst Operating") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco Catalyst OS';
         $details->os_name = "Cisco Catalyst OS ".$details->os_version;
@@ -128,7 +135,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     # Cisco NxOS serial
     if (empty($details->serial)) {
         $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.369.1.1.1");
-        $details->serial = str_replace('VDH=', '', $details->serial);
+        $details->serial = str_replace('VDH=', '', (string)$details->serial);
     }
 
     # 3560
