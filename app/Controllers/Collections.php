@@ -172,7 +172,13 @@ class Collections extends BaseController
             $id = intval($this->resp->meta->id);
         }
 
-        if (empty($this->resp->meta->id)) {
+        if (empty($this->resp->meta->id) and empty($this->resp->meta->received_data->attributes)) {
+            $message = 'You must supply data attributes when creating an item in ' . @$this->resp->meta->collection . '.';
+            log_message('error', $message);
+            $this->resp->errors = $message;
+        }
+
+        if (empty($this->resp->meta->id) and !empty($this->resp->meta->received_data->attributes)) {
             $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
         }
 
