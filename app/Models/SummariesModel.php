@@ -251,7 +251,7 @@ class SummariesModel extends BaseModel
         unset($collections->baselines_policies);
         unset($collections->baselines_results);
         unset($collections->rack_devices);
-        unset($collections->benchmarks_policies);
+        unset($collections->benchmarks_exceptions);
 
         $included = array();
         $included['collections'] = $collections;
