@@ -121,28 +121,28 @@ foreach ($roles as $role) {
 }
 
 $sql = "DELETE FROM queries WHERE `name` = 'Benchmarks Query'";
-$db->query($sql)->getResult();
+$db->query($sql);
 
 $sql = "INSERT INTO `queries` VALUES (null,1,'Benchmarks Query','','n','For use in benchmarks (do not edit or delete)','SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, devices.credentials AS `devices.credentials`, software.name AS `software.name`, software.version AS `software.version`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, c1.type AS `c1.type`, c2.type AS `c2.type`, c3.type AS `c3.type` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = \'openscap-scanne\' AND software.current = \'y\') LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, \'$[0]\') = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, \'$[1]\') = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, \'$[2]\') = c3.id) WHERE @filter AND devices.os_family LIKE \'OSFAMILY\' AND devices.os_version LIKE \'OSVERSION%\'','','n','system','2000-01-01 00:00:00')";
-$db->query($sql)->getResult();
+$db->query($sql);
 
 $sql = "DELETE FROM queries WHERE `name` = 'Devices Not in Benchmarks'";
-$db->query($sql)->getResult();
+$db->query($sql);
 
 $sql = "INSERT INTO `queries` VALUES (null,1,'Devices Not in Benchmarks','','n','For use in benchmarks (do not edit or delete)','SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version` FROM devices WHERE @filter AND ((devices.os_family LIKE \'centos\' AND (devices.os_version LIKE \'7%\' OR devices.os_version LIKE \'8%\')) OR (devices.os_family LIKE \'debian\' AND devices.os_version LIKE \'12%\') OR (devices.os_family LIKE \'redhat\' AND (devices.os_version LIKE \'7%\' OR devices.os_version LIKE \'8%\' OR devices.os_version LIKE \'9%\')) OR (devices.os_family LIKE \'sles\' AND (devices.os_version LIKE \'15%\')) OR (devices.os_family LIKE \'suse\' AND (devices.os_version LIKE \'15%\')) OR (devices.os_family LIKE \'ubuntu\' AND (devices.os_version LIKE \'20.04%\' OR devices.os_version LIKE \'22.04%\' OR devices.os_version LIKE \'24.04%\'))) AND devices.id NOT IN (SELECT JSON_VALUE(benchmarks.devices, \'$[*]\') FROM benchmarks) GROUP BY devices.id','','n','system','2000-01-01 00:00:00')";
-$db->query($sql)->getResult();
+$db->query($sql);
 
 $sql = "DELETE FROM queries WHERE `name` = 'Devices in Benchmarks'";
-$db->query($sql)->getResult();
+$db->query($sql);
 
 $sql = "INSERT INTO `queries` VALUES (null,1,'Devices in Benchmarks','','n','For use in benchmarks (do not edit or delete)','SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, CONCAT(\'<a href=\"../../benchmarks/\', benchmarks.id, \'\">\', benchmarks.name, \'</a>\') AS `benchmarks_name` FROM benchmarks LEFT JOIN devices ON (JSON_CONTAINS(benchmarks.devices, devices.id, \'$\')) WHERE @filter GROUP BY devices.id, benchmarks.id','','y','system','2000-01-01 00:00:00')";
-$db->query($sql)->getResult();
+$db->query($sql);
 
 $sql = "DELETE FROM queries WHERE `name` = 'Devices Could be Benchmarked'";
-$db->query($sql)->getResult();
+$db->query($sql);
 
 $sql = "INSERT INTO `queries` VALUES (null,1,'Devices Could be Benchmarked','','n','For use in benchmarks (do not edit or delete)', 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, CONCAT(\'<a href=\"../../benchmarks/\', benchmarks.id, \'\">\', benchmarks.name, \'</a>\') AS `benchmarks_name` FROM devices LEFT JOIN benchmarks ON (JSON_CONTAINS(benchmarks.devices, devices.id, \'$\')) WHERE @filter AND ((devices.os_family LIKE \'centos\' AND (devices.os_version LIKE \'7%\' OR devices.os_version LIKE \'8%\')) OR (devices.os_family LIKE \'debian\' AND devices.os_version LIKE \'12%\') OR (devices.os_family LIKE \'redhat\' AND (devices.os_version LIKE \'7%\' OR devices.os_version LIKE \'8%\' OR devices.os_version LIKE \'9%\')) OR (devices.os_family LIKE \'sles\' AND (devices.os_version LIKE \'15%\')) OR (devices.os_family LIKE \'suse\' AND (devices.os_version LIKE \'15%\')) OR (devices.os_family LIKE \'ubuntu\' AND (devices.os_version LIKE \'20.04%\' OR devices.os_version LIKE \'22.04%\' OR devices.os_version LIKE \'24.04%\'))) GROUP BY devices.id, benchmarks.id','','y','system','2000-01-01 00:00:00')";
-$db->query($sql)->getResult();
+$db->query($sql);
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '2024810' WHERE `name` = 'internal_version'";
