@@ -131,6 +131,7 @@ log_message('info', (string)$db->getLastQuery());
 
 $sql = "DELETE FROM queries WHERE `name` = 'Devices Not in Benchmarks'";
 $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null,1,'Devices Not in Benchmarks','','n','For use in benchmarks (do not edit or delete)','SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version` FROM devices WHERE @filter AND ((devices.os_family LIKE \'centos\' AND (devices.os_version LIKE \'7%\' OR devices.os_version LIKE \'8%\')) OR (devices.os_family LIKE \'debian\' AND devices.os_version LIKE \'12%\') OR (devices.os_family LIKE \'redhat\' AND (devices.os_version LIKE \'7%\' OR devices.os_version LIKE \'8%\' OR devices.os_version LIKE \'9%\')) OR (devices.os_family LIKE \'sles\' AND (devices.os_version LIKE \'15%\')) OR (devices.os_family LIKE \'suse\' AND (devices.os_version LIKE \'15%\')) OR (devices.os_family LIKE \'ubuntu\' AND (devices.os_version LIKE \'20.04%\' OR devices.os_version LIKE \'22.04%\' OR devices.os_version LIKE \'24.04%\'))) AND devices.id NOT IN (SELECT JSON_VALUE(benchmarks.devices, \'$[*]\') FROM benchmarks) GROUP BY devices.id','','n','system','2000-01-01 00:00:00')";
@@ -159,7 +160,7 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 // set our versions
-$sql = "UPDATE `configuration` SET `value` = '2024810' WHERE `name` = 'internal_version'";
+$sql = "UPDATE `configuration` SET `value` = '20240810' WHERE `name` = 'internal_version'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
