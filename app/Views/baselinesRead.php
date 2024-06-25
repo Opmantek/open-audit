@@ -41,6 +41,7 @@ if ($style === 'icontext') {
     $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" ><span style="margin-right:6px;" class="fa-solid fa-diagram-project text-success"></span>' . __('Netstat Policies') . '</a></li>';
     $software_policy_button = '<li class="nav-item" role="presentation"><a href="#software" class="nav-link" id="software-tab"><span style="margin-right:6px;" class="fa-solid fa-box-open text-success" ></span>' . __('Software Policies') . '</a></li>';
     $user_policy_button =     '<li class="nav-item" role="presentation"><a href="#user"     class="nav-link" id="user-tab"    ><span style="margin-right:6px;" class="fa-regular fa-user text-success"></span>' . __('User Policies') . '</a></li>';
+    $all_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCollection') . '?baselines_policies.baseline_id=' . $meta->id . '" class="nav-link"><span style="margin-right:6px;" class="fa fa-area-chart text-success"></span>' . __('All Policies') . '</a></li>';
 
     $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab"><span style="margin-right:6px;" class="fa fa-plus text-success" ></span>' . __('Add Policy') . '</a></li>';
     $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab"><span style="margin-right:6px;" class="fa fa-desktop text-success"></span>' . __('Add Policies from Device') . '</a></li>';
@@ -50,6 +51,7 @@ if ($style === 'icontext') {
     $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" ><span title="' . __('Netstat Policies') . '" style="margin-right:6px;" class="fa-solid fa-diagram-project text-success"></span></a></li>';
     $software_policy_button = '<li class="nav-item" role="presentation"><a href="#software" class="nav-link" id="software-tab"><span title="' . __('Software Policies') . '" style="margin-right:6px;" class="fa-solid fa-box-open text-success"></span></a></li>';
     $user_policy_button =     '<li class="nav-item" role="presentation"><a href="#user"     class="nav-link" id="user-tab"    ><span title="' . __('User Policies') . '" style="margin-right:6px;" class="fa-regular fa-user text-success"></span></a></li>';
+    $all_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCollection') . '?baselines_policies.baseline_id=' . $meta->id . '" class="nav-link"><span style="margin-right:6px;" class="fa fa-area-chart text-success"></span></a></li>';
     $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab"><span title="' . __('Add Policy') . '" style="margin-right:6px;" class="fa fa-plus text-success" ></span></a></li>';
     $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab"><span title="' . __('Add Policies from Device') . '" style="margin-right:6px;" class="fa fa-desktop text-success" ></span></a></li>';
 } else {
@@ -58,6 +60,7 @@ if ($style === 'icontext') {
     $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" >' . __('Netstat Policies') . '</a></li>';
     $software_policy_button = '<li class="nav-item" role="presentation"><a href="#software" class="nav-link" id="software-tab">' . __('Software Policies') . '</a></li>';
     $user_policy_button =     '<li class="nav-item" role="presentation"><a href="#user"     class="nav-link" id="user-tab"    >' . __('User Policies') . '</a></li>';
+    $all_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCollection') . '?baselines_policies.baseline_id=' . $meta->id . '" class="nav-link">' . __('All Policies') . '</a></li>';
 
     $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab">' . __('Add Policy') . '</a></li>';
     $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab">' . __('Add Policies from Device') . '</a></li>';
@@ -70,13 +73,14 @@ if ($style === 'icontext') {
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
-                        <div class="col-8 offset-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
+                        <div class="col-10 offset-1" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
                             <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                                 <?= $details_button ?>
                                 <?= $results_button ?>
                                 <?= $netstat_policy_button ?>
                                 <?= $software_policy_button ?>
                                 <?= $user_policy_button ?>
+                                <?= $all_policy_button ?>
                                 <?= $add_policy_button ?>
                                 <?= $add_policy_from_device_button ?>
                             </ul>

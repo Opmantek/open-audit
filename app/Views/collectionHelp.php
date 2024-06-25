@@ -19,6 +19,8 @@ $execute = false;
 if (in_array($meta->collection, ['dashboards', 'discoveries', 'groups', 'integrations', 'queries', 'summaries'])) {
     $execute = true;
 }
+$instance = & get_instance();
+$edition = $instance->collections->{$meta->collection}->edition;
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -36,9 +38,9 @@ if (in_array($meta->collection, ['dashboards', 'discoveries', 'groups', 'integra
                                 </div>
                                 <div class="col-4 text-center">
                                     <?php
-                                    if (!empty($config->enterprise_collections[$meta->collection])) { ?>
+                                    if ($edition === 'Enterprise') { ?>
                                         <button class="btn btn-success"><?= __('Open-AudIT Enterprise') ?></button>
-                                    <?php } elseif (!empty($config->professional_collections[$meta->collection])) { ?>
+                                    <?php } elseif ($edition === 'Professional') { ?>
                                         <button class="btn btn-primary"><?= __('Open-AudIT Professional') ?></button>
                                     <?php } else { ?>
                                         <button class="btn btn-warning"><?= __('Open-AudIT Community') ?></button>

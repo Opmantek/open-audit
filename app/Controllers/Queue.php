@@ -38,6 +38,7 @@ class Queue extends BaseController
         #$auditlogModel = new \App\Models\AuditLogModel();
         $integrationsModel = new \App\Models\IntegrationsModel();
 
+        $this->benchmarksModel = new \App\Models\BenchmarksModel();
         $this->componentsModel = new \App\Models\ComponentsModel();
         $this->credentialsModel = new \App\Models\CredentialsModel();
         $this->devicesModel = new \App\Models\DevicesModel();
@@ -184,6 +185,16 @@ class Queue extends BaseController
 
             if ($item->type === 'integrations') {
                 $integrationsModel->execute($details->integrations_id);
+            }
+
+            if ($item->type === 'benchmarks') {
+                if (!empty($details->device_id)) {
+                    log_message('debug', $microtime . " " . "Executing Device Benchmark.");
+                    $this->benchmarksModel->execute(intval($details->id), intval($details->device_id));
+                } else {
+                    log_message('debug', $microtime . " " . "Executing Benchmark.");
+                    $this->benchmarksModel->queue(intval($details->id));
+                }
             }
         }
     }

@@ -83,7 +83,7 @@ abstract class BaseController extends Controller
         $this->usersModel = model('App\Models\UsersModel');
 
         $this->roles = $this->rolesModel->listAll();
-        $this->collections = collections_list();
+        $this->collections = new \Config\Collections();
 
         if (!defined('CHARSET')) {
             define('CHARSET', 'UTF-8');

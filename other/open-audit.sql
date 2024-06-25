@@ -25,24 +25,25 @@ DROP TABLE IF EXISTS `agents`;
 CREATE TABLE `agents` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT 'Default Agent',
-  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
-  `weight` int(10) unsigned NOT NULL DEFAULT 100,
+  `weight` int(10) unsigned NOT NULL DEFAULT '100',
   `test_minutes` int(10) unsigned DEFAULT 1300,
   `test_subnet` varchar(45) NOT NULL DEFAULT '',
   `test_os` varchar(45) NOT NULL DEFAULT '',
-  `tests` text NOT NULL default'[]',
+  `tests` text NOT NULL DEFAULT '[]',
   `action_download` varchar(2000) NOT NULL DEFAULT '',
   `action_command` varchar(2000) NOT NULL DEFAULT '',
   `action_devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
   `action_devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
   `action_audit` enum('y','n') NOT NULL DEFAULT 'y',
   `action_uninstall` enum('y','n') NOT NULL DEFAULT 'n',
-  `actions` text NOT NULL default'[]',
+  `actions` text NOT NULL DEFAULT '[]',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `agents`
@@ -505,6 +506,164 @@ CREATE TABLE `baselines_results` (
 LOCK TABLES `baselines_results` WRITE;
 /*!40000 ALTER TABLE `baselines_results` DISABLE KEYS */;
 /*!40000 ALTER TABLE `baselines_results` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `benchmarks`
+--
+
+DROP TABLE IF EXISTS `benchmarks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `benchmarks` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `os` varchar(200) NOT NULL DEFAULT '',
+  `type` varchar(200) NOT NULL DEFAULT '',
+  `install` enum('y','n') NOT NULL DEFAULT 'y',
+  `devices` text NOT NULL,
+  `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  CONSTRAINT `benchmarks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `benchmarks`
+--
+
+LOCK TABLES `benchmarks` WRITE;
+/*!40000 ALTER TABLE `benchmarks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `benchmarks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+-- Table structure for table `benchmarks_exceptions`
+--
+
+DROP TABLE IF EXISTS `benchmarks_exceptions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `benchmarks_exceptions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `external_ident` varchar(200) NOT NULL DEFAULT '',
+  `benchmarks` text NOT NULL,
+  `devices` text NOT NULL,
+  `exemption_reason` varchar(2000) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `benchmarks_exceptions`
+--
+
+LOCK TABLES `benchmarks_exceptions` WRITE;
+/*!40000 ALTER TABLE `benchmarks_exceptions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `benchmarks_exceptions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `benchmarks_log`
+--
+
+DROP TABLE IF EXISTS `benchmarks_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `benchmarks_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `benchmark_id` int(10) unsigned DEFAULT NULL,
+  `device_id` int(10) unsigned DEFAULT NULL,
+  `timestamp` datetime DEFAULT current_timestamp(),
+  `severity` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
+  `message` text NOT NULL,
+  `command_output` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`device_id`),
+  KEY `benchmark_id` (`benchmark_id`),
+  CONSTRAINT `benchmarks_log_benchmark_id` FOREIGN KEY (`benchmark_id`) REFERENCES `benchmarks` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `benchmarks_log_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `benchmarks_log`
+--
+
+LOCK TABLES `benchmarks_log` WRITE;
+/*!40000 ALTER TABLE `benchmarks_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `benchmarks_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `benchmarks_policies`
+--
+
+DROP TABLE IF EXISTS `benchmarks_policies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `benchmarks_policies` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `external_ident` varchar(200) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `severity` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `rationale` text NOT NULL,
+  `remediation` text NOT NULL,
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `created_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `created_by` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `external_ident` (`external_ident`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `benchmarks_policies`
+--
+
+LOCK TABLES `benchmarks_policies` WRITE;
+/*!40000 ALTER TABLE `benchmarks_policies` DISABLE KEYS */;
+/*!40000 ALTER TABLE `benchmarks_policies` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `benchmarks_result`
+--
+
+DROP TABLE IF EXISTS `benchmarks_result`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `benchmarks_result` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `device_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `benchmark_id` int(10) unsigned DEFAULT NULL,
+  `external_ident` varchar(200) NOT NULL DEFAULT '',
+  `result` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`device_id`),
+  CONSTRAINT `benchmarks_result_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `benchmarks_result`
+--
+
+LOCK TABLES `benchmarks_result` WRITE;
+/*!40000 ALTER TABLE `benchmarks_result` DISABLE KEYS */;
+/*!40000 ALTER TABLE `benchmarks_result` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2934,6 +3093,10 @@ INSERT INTO `queries` VALUES (39,1,'Expiring Certificates (action immediately)',
 INSERT INTO `queries` VALUES (40,1,'Expiring Certificates (action soon)','Server','y','Certificates expiring between 8 and 32 days','SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN devices ON (certificate.device_id = devices.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > DATE(NOW() + INTERVAL 8 DAY) AND certificate.valid_to < DATE(NOW() + INTERVAL 32 day)','','n','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (41,1,'Expiring Certificates (action later)','Server','y','Certificates expiring between 32 and 92 days','SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN devices ON (certificate.device_id = devices.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to > DATE(NOW() + INTERVAL 32 DAY) AND certificate.valid_to < DATE(NOW() + INTERVAL 92 day)','','n','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (42,1,'Expired Certificates','Server','y','Expired certificates','SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, certificate.name AS `certificate.name`, certificate.valid_to AS `certificate.valid_to` FROM certificate LEFT JOIN devices ON (certificate.device_id = devices.id AND certificate.current = \'y\') WHERE @filter AND certificate.valid_to < DATE(NOW())','','n','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (43,1,'Benchmarks Query','','n','For use in benchmarks (do not edit or delete)','SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, devices.credentials AS `devices.credentials`, software.name AS `software.name`, software.version AS `software.version`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, c1.type AS `c1.type`, c2.type AS `c2.type`, c3.type AS `c3.type` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = \'openscap-scanne\' AND software.current = \'y\') LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, \'$[0]\') = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, \'$[1]\'") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, \'$[2]\') = c3.id) WHERE @filter AND devices.os_family LIKE \'OSFAMILY\' AND devices.os_version LIKE \'OSVERSION%\'','','n','system','2000-01-01 00:00:00')
+INSERT INTO `queries` VALUES (44,1,'Devices Not in Benchmarks','','n','For use in benchmarks (do not edit or delete)','SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version` FROM devices WHERE @filter AND ((devices.os_family LIKE \'centos\' AND (devices.os_version LIKE \'7%\' OR devices.os_version LIKE \'8%\')) OR (devices.os_family LIKE \'debian\' AND devices.os_version LIKE \'12%\') OR (devices.os_family LIKE \'redhat\' AND (devices.os_version LIKE \'7%\' OR devices.os_version LIKE \'8%\' OR devices.os_version LIKE \'9%\')) OR (devices.os_family LIKE \'sles\' AND (devices.os_version LIKE \'15%\')) OR (devices.os_family LIKE \'suse\' AND (devices.os_version LIKE \'15%\')) OR (devices.os_family LIKE \'ubuntu\' AND (devices.os_version LIKE \'20.04%\' OR devices.os_version LIKE \'22.04%\' OR devices.os_version LIKE \'24.04%\'))) AND devices.id NOT IN (SELECT JSON_VALUE(benchmarks.devices, \'$[*]\') FROM benchmarks) GROUP BY devices.id','','n','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (45,1,'Devices in Benchmarks','','n','For use in benchmarks (do not edit or delete)','SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, CONCAT(\'<a href="../../benchmarks/\', benchmarks.id, \'">\', benchmarks.name, \'</a>\') AS `benchmarks_name` FROM benchmarks LEFT JOIN devices ON (JSON_CONTAINS(benchmarks.devices, devices.id, \'$\')) WHERE @filter GROUP BY devices.id, benchmarks.id','','y','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (46,1,'Devices Could be Benchmarked','','n','For use in benchmarks (do not edit or delete)', 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, CONCAT(\'<a href="../../benchmarks/\', benchmarks.id, \'">\', benchmarks.name, \'</a>\') AS `benchmarks_name` FROM devices LEFT JOIN benchmarks ON (JSON_CONTAINS(benchmarks.devices, devices.id, \'$\')) WHERE @filter AND ((devices.os_family LIKE \'centos\' AND (devices.os_version LIKE \'7%\' OR devices.os_version LIKE \'8%\')) OR (devices.os_family LIKE \'debian\' AND devices.os_version LIKE \'12%\') OR (devices.os_family LIKE \'redhat\' AND (devices.os_version LIKE \'7%\' OR devices.os_version LIKE \'8%\' OR devices.os_version LIKE \'9%\')) OR (devices.os_family LIKE \'sles\' AND (devices.os_version LIKE \'15%\')) OR (devices.os_family LIKE \'suse\' AND (devices.os_version LIKE \'15%\')) OR (devices.os_family LIKE \'ubuntu\' AND (devices.os_version LIKE \'20.04%\' OR devices.os_version LIKE \'22.04%\' OR devices.os_version LIKE \'24.04%\'))) GROUP BY devices.id, benchmarks.id','','y','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `queries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3133,7 +3296,7 @@ CREATE TABLE `roles` (
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` VALUES (NULL,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"executables\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (NULL,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"benchmarks\":\"crud\",\"benchmarks_exceptions\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (NULL,'user','A standard role that can read all endpoints that contain an org_id.','{\"agents\":\"r\",\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"executables\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"reports\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (NULL,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;

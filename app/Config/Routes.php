@@ -14,10 +14,11 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
  * --------------------------------------------------------------------
  */
 
-$collections = array('agents','applications','attributes','baselines','baselines_policies','baselines_results','clouds','clusters','collectors', 'components',
-'configuration','connections','credentials','dashboards','devices','discoveries','discovery_log','discovery_scan_options','errors','executables','fields','files',
-'groups','integrations','ldap_servers','licenses','locations','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles',
-'rules','scripts','summaries','support','tasks','users','widgets');
+$config_collections = new \Config\Collections();
+$collections = array();
+foreach ($config_collections as $col => $value) {
+    $collections[] = (string)$col;
+}
 
 # The default route
 $routes->get('/', 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => 'home']);
@@ -119,6 +120,8 @@ $routes->get('util/test_windows_client', 'Util::testWindowsClient');
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
 $routes->cli('tasks/execute', 'Cli::executeTasks', ['as' => 'executeTasks']);
+$routes->cli('benchmarks/(:num)/execute', 'Cli::executeBenchmark/$1', ['as' => 'executeBenchmark']);
+#$routes->cli('benchmarks/test', 'Cli::testBenchmarks');
 $routes->cli('discoveries/(:num)/execute', 'Cli::executeDiscovery/$1', ['as' => 'executeDiscovery']);
 $routes->cli('integrations/(:num)/execute', 'Cli::executeIntegration/$1', ['as' => 'executeIntegration']);
 $routes->cli('clouds/(:num)/execute', 'Cli::executeCloud/$1', ['as' => 'executeCloud']);
@@ -187,6 +190,7 @@ foreach ($collections as $collection) {
     # bulk update
     $routes->patch($collection, 'Collections::bulkUpdate/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'BulkUpdate']);
 }
+
 
 /*
  * --------------------------------------------------------------------

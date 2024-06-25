@@ -47,7 +47,7 @@ class ComponentsModel extends BaseModel
         }
         if ($table === '') {
             // No components.type requested, return all the below
-            $tables = array('bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+            $tables = array('benchmarks_result', 'bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
         }
         $orgs = array();
         $count = count($resp->meta->filter);
@@ -67,7 +67,7 @@ class ComponentsModel extends BaseModel
             }
         }
         if (empty($tables)) {
-            if (!in_array($table, ['audit_log', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
+            if (!in_array($table, ['audit_log', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
                 # Invalid table
                 log_message('error', 'Invalid table provided to ComponentsModel::collection, ' . $table);
                 $_SESSION['error'] = 'Invalid table provided to ComponentsModel::collection, ' . htmlentities($table);
@@ -76,6 +76,12 @@ class ComponentsModel extends BaseModel
             $sql = "SELECT `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) $device_sql LIMIT " . $resp->meta->limit;
             if ($instance->config->device_known > $instance->config->device_license and $instance->config->device_license > 0) {
                 $sql = "SELECT `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN $table ON devices.id = $table.device_id WHERE devices.type NOT IN ('unknown', 'unclassified') AND devices.org_id IN (" . implode(',', $orgs) . ") AND $table.id IS NOT NULL ORDER BY devices.id LIMIT " . $instance->config->device_license . ") as D2 on $table.device_id = D2.id WHERE devices.org_id IN (" . implode(',', $orgs) . ") $device_sql LIMIT " . $resp->meta->limit;
+            }
+            if ($table === 'benchmarks_result') {
+                $sql = "SELECT `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name`, benchmarks_policies.id AS `benchmarks_policies.id` FROM `$table` LEFT JOIN benchmarks_policies ON benchmarks_result.external_ident = benchmarks_policies.external_ident LEFT JOIN `devices` ON `$table`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN $table ON devices.id = $table.device_id LEFT JOIN benchmarks_policies ON benchmarks_result.external_ident = benchmarks_policies.external_ident WHERE devices.type NOT IN ('unknown', 'unclassified') AND devices.org_id IN (" . implode(',', $orgs) . ") AND $table.id IS NOT NULL ORDER BY devices.id LIMIT " . $instance->config->device_license . ") as D2 on $table.device_id = D2.id WHERE devices.org_id IN (" . implode(',', $orgs) . ") $device_sql LIMIT " . $resp->meta->limit;
+
+                #$sql = "SELECT `benchmarks_result`.*, devices.id AS `devices.id`, devices.name AS `devices.name`, benchmarks_policies.id AS `benchmarks_policies.id` FROM `benchmarks_result` LEFT JOIN benchmarks_policies ON benchmarks_result.external_ident = benchmarks_policies.external_ident LEFT JOIN `devices` ON `benchmarks_result`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN benchmarks_result ON devices.id = benchmarks_result.device_id WHERE devices.type NOT IN ('unknown', 'unclassified') AND benchmarks_result.id IS NOT NULL ORDER BY devices.id) as D2 on benchmarks_result.device_id = D2.id WHERE benchmarks_result.device_id = 7033";
+
             }
             $query = $this->db->query($sql, [implode(',', $orgs)]);
             if ($this->sqlError($this->db->error())) {

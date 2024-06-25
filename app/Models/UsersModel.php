@@ -285,7 +285,8 @@ class UsersModel extends BaseModel
                                     $userRoles[$key] = $userRoles[$key] . $value;
                                 }
                                 if (empty($value)) {
-                                    log_message('warning', $userRole . '::' . $role->name . '::' . $key . ' has an empty value. You may wish to reset Roles to their defaults.');
+                                    // Do not log as some collections will not have been populated for a given role
+                                    // log_message('warning', $userRole . '::' . $role->name . '::' . $key . ' has an empty value. You may wish to reset Roles to their defaults.');
                                 }
                             }
                         }

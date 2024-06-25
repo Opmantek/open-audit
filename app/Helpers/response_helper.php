@@ -64,9 +64,14 @@ if (!function_exists('response_create')) {
         $get_format = $request->getGet('format');
         if ($response->meta->request_method === 'CLI') {
             // Check if we've been passed a format on the CLI
-            foreach ($uri->getPath() as $segment) {
-                if (strpos($segment, 'format=') !== false) {
-                    $get_format = str_replace('format=', '', $segment);
+            $getPath = $uri->getPath();
+            log_message('debug', gettype($getPath));
+            log_message('debug', json_encode($getPath));
+            if (!empty($getPath)) {
+                foreach ($getPath as $segment) {
+                    if (strpos($segment, 'format=') !== false) {
+                        $get_format = str_replace('format=', '', $segment);
+                    }
                 }
             }
             // Set format to JSON if nothing or invalid format passed
@@ -171,6 +176,12 @@ if (!function_exists('response_create')) {
             if (!empty($output[1])) {
                 $os = explode('|', $output[1]);
                 $response->meta->server_platform = $os[0];
+            }
+            if (!stripos($response->meta->server_platform, 'server')) {
+                // Throw a warning, unsupported OS
+                $message = 'Open-AudiT requires Windows Server to run successfully. Please reinstall on a supported server operating system.';
+                log_message('error', $message);
+                $response->errors = $message;
             }
         } else {
             $command = 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2';
@@ -336,7 +347,7 @@ if (!function_exists('response_create')) {
             }
         }
 
-        if ($test and !in_array($response->meta->collection, ['configuration', 'database', 'discovery_log', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util'])) {
+        if ($test and !in_array($response->meta->collection, ['benchmarks_policies', 'configuration', 'database', 'discovery_log', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util'])) {
             $item = new \StdClass();
             $item->name = 'orgs.id';
             if ($response->meta->collection !== 'orgs') {
@@ -419,7 +430,7 @@ if (!function_exists('response_create')) {
         $permission_requested = $response->meta->permission_requested;
         if (!empty($config->enterprise_binary) and $db->tableExists('enterprise')) {
             $function = $response->meta->collection . '_' . $response->meta->action;
-            if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
+            if (!in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
@@ -506,7 +517,7 @@ if (!function_exists('response_create')) {
                 $sql = "DELETE FROM enterprise WHERE DATE(timestamp) < SUBDATE(CURDATE(), 0)";
                 $db->query($sql);
             }
-            if (!in_array($function, array("baselines_create", "baselines_execute", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
+            if (!in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
                 $response->meta->received_data = $received_data;
             }
@@ -962,6 +973,16 @@ if (!function_exists('response_get_id')) {
                         log_message('warning', "No ID to Name match in $collection.");
                         $id = null;
                     }
+                } else if ($collection === 'benchmarks_policies') {
+                    $sql = "SELECT id FROM benchmarks_policies WHERE external_ident = ? ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id])->getResult();
+                    if (!empty($result)) {
+                        log_message('debug', "ID to ExternalIdent match in benchmarks_policies (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
+                        $id = intval($result[0]->id);
+                    } else {
+                        log_message('warning', "No ID to ExternalIdent match in benchmarks_policies (Provided ID: $id).");
+                        $id = null;
+                    }
                 } else if (in_array($collection, $collections)) {
                     $sql = "SELECT id FROM {$collection} WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
                     $result = $db->query($sql, [$id])->getResult();
@@ -995,15 +1016,22 @@ if (!function_exists('response_get_ids')) {
         if (!empty($post)) {
             $device_ids = $post;
         }
-        if ($device_ids !== '') {
-            // Remove a trailing comma if we have one
-            if (substr($device_ids, -1) === ',') {
-                $device_ids = substr($device_ids, 0, -1);
-            }
-            // Set all values to int's
-            $temp = explode(',', $device_ids);
-            for ($i=0; $i < count($temp); $i++) {
-                $temp[$i] = intval($temp[$i]);
+        if (isset($device_ids)) {
+            if (is_string($device_ids)) {
+                // Remove a trailing comma if we have one
+                if (substr($device_ids, -1) === ',') {
+                    $device_ids = substr($device_ids, 0, -1);
+                }
+                // Set all values to int's
+                $temp = explode(',', $device_ids);
+                for ($i=0; $i < count($temp); $i++) {
+                    $temp[$i] = intval($temp[$i]);
+                }
+            } else if (is_array($device_ids)) {
+                $temp = $device_ids;
+            } else {
+                log_message('warn', 'Invalid item (not string or array) passed as device_ids.');
+                return '';
             }
             // Unique values only
             $temp = array_unique($temp);
@@ -1121,84 +1149,31 @@ if (!function_exists('response_get_org_list')) {
     function response_get_org_list($user, $collection = '')
     {
         $org_list = array();
-
         $orgsModel = new \App\Models\OrgsModel();
         $orgs = $orgsModel->listAll();
-
         if (empty($collection) or empty($user)) {
             log_message('error', 'Either no collection or no user supplied.');
             return;
         }
-        switch ($collection) {
-            case 'applications':
-            case 'baselines':
-            case 'baselines_policies':
-            case 'baselines_results':
-            case 'charts':
-            case 'clouds':
-            case 'clusters':
-            case 'collectors':
-            case 'components':
-            case 'connections':
-            case 'credentials':
-            case 'devices':
-            case 'discoveries':
-            case 'discovery_log':
-            case 'integrations':
-            case 'integrations_log':
-            case 'integrations_rules':
-            case 'ldap_servers':
-            case 'licenses':
-            case 'locations':
-            case 'networks':
-            case 'orgs':
-            case 'rack_devices':
-            case 'racks':
-            case 'search':
-            case 'tasks':
-            case 'users':
-                $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
-                log_message('debug', 'Set org_list according to ' . $collection . ' for DESCENDANTS (' . implode(', ', $org_list) . ').');
-                break;
-
-            case 'configuration':
-            case 'database':
-            case 'errors':
-            case 'help':
-            case 'nmis':
-            case 'san':
-            case 'test':
-            case 'util':
-                $org_list = $user->orgs;
-                log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
-                break;
-
-            case 'agents':
-            case 'attributes':
-            case 'dashboards':
-            case 'discovery_scan_options':
-            case 'fields':
-            case 'files':
-            case 'groups':
-            case 'queries':
-            case 'reports':
-            case 'roles':
-            case 'rules':
-            case 'scripts':
-            case 'summaries':
-            case 'widgets':
-                $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
-                $org_list = array_unique(array_merge($org_list, $orgsModel->getUserAscendants($user->orgs, $orgs)));
-                $org_list[] = 1;
-                $org_list = array_unique($org_list);
-                asort($org_list);
-                log_message('debug', 'Set org_list according to ' . $collection . ' for PARENTS and DESCENDANTS (' . implode(', ', $org_list) . ').');
-                break;
-
-            default:
-                $org_list = $user->orgs;
-                log_message('debug', 'Set org_list according to ' . $collection . ' for USER DEFAULT (' . implode(', ', $org_list) . ').');
-                break;
+        $collections = new \Config\Collections();
+        if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'd') {
+            $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
+            log_message('debug', 'Set org_list according to ' . $collection . ' for DESCENDANTS (' . implode(', ', $org_list) . ').');
+        }
+        if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'u') {
+            $org_list = $user->orgs;
+            log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
+        }
+        if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'b') {
+            $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
+            $org_list = array_unique(array_merge($org_list, $orgsModel->getUserAscendants($user->orgs, $orgs)));
+            $org_list[] = 1;
+            $org_list = array_unique($org_list);
+            log_message('debug', 'Set org_list according to ' . $collection . ' for PARENTS and DESCENDANTS (' . implode(', ', $org_list) . ').');
+            asort($org_list);
+        }
+        if (empty($org_list)) {
+            $org_list = $user->orgs;
         }
         $org_list = implode(',', $org_list);
         return $org_list;
@@ -1229,6 +1204,11 @@ if (!function_exists('response_get_permission_id')) {
             return true;
         }
 
+        // No Orgs for these
+        if ($collection === 'benchmarks_policies') {
+            return true;
+        }
+
         $org_list = explode(',', $user->org_list);
 
         if ($collection === 'orgs') {
@@ -1245,7 +1225,7 @@ if (!function_exists('response_get_permission_id')) {
             if (!empty($received_data[0]->component_type)) {
                 $component = $received_data[0]->component_type;
             } else {
-                log_message('error', 'Calling a components ' . $action . ' on URL for comonents requires components.type=$TYPE in the URL');
+                log_message('error', 'Calling a components ' . $action . ' on URL for components requires components.type=$TYPE in the URL');
                 return false;
             }
             if ($received_data[0]->component_type !== 'application' and $received_data[0]->component_type !== 'attachment' and $received_data[0]->component_type !== 'cluster' and $received_data[0]->component_type !== 'credential' and $received_data[0]->component_type !== 'image' and $received_data[0]->component_type !== 'rack_devices') {
@@ -1515,7 +1495,12 @@ if (!function_exists('response_valid_collections')) {
      */
     function response_valid_collections()
     {
-        return array('agents','applications','attributes','baselines','baselines_policies','baselines_results','chart','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','executables','fields','files','groups','help','integrations','integrations_log','integrations_rules','ldap_servers','licenses','locations','logs','maps','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rules','scripts','search','sessions','summaries','support','tasks','users','widgets');
+        $collections = new \Config\Collections();
+        $return = array();
+        foreach ($collections as $collection => $value) {
+            $return[] = $collection;
+        }
+        return $return;
     }
 }
 

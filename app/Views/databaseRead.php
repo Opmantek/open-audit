@@ -122,7 +122,7 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                                         <td><?= $column->default ?></td>
                                         <td><?= $column->max_length ?></td>
                                         <td><?= $column->primary_key ?></td>
-                                        <td><?= @html_entity_decode($column->values) ?></td>
+                                        <td><?php if (!empty($column->values)) { echo html_entity_decode($column->values); } ?></td>
                                         <td><?= @$dictionary->columns->{$column->name} ?></td>
                                     </tr>
                                     <?php } ?>

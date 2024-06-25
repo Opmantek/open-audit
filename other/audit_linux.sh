@@ -567,7 +567,13 @@ system_os_group="Linux"
 # system_os_name=$(lsb_release -ds 2>/dev/null | tr -d '"' | head -n1)
 # system_os_version=$(lsb_release -rs 2>/dev/null | tr -d '"')
 system_os_family=$(cat /etc/os-release 2>/dev/null | grep -i ^NAME | cut -d= -f2 | cut -d\" -f2)
-system_os_name=$(cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2)
+if [ -f "/etc/redhat-release" ]; then
+	# To cater to a RHEL 7 machine that has RHEL in /etc/os-release PRETTY_NAME
+	system_os_name=$(cat /etc/redhat-release 2>/dev/null)
+fi
+if [ -z "$system_os_name" ]; then
+	system_os_name=$(cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2)
+fi
 system_os_version=$(cat /etc/os-release 2>/dev/null | grep -i ^VERSION_ID | cut -d= -f2 | cut -d\" -f2)
 system_manufacturer=""
 system_model=""

@@ -106,7 +106,8 @@ class Collections extends BaseController
             // $this->collectorsModel = new \App\Models\CollectorsModel;
             // $this->resp->included['collectors'] = $this->collectorsModel->listUser();
         }
-        if ($this->resp->meta->collection === 'clouds' or
+        if ($this->resp->meta->collection === 'benchmarks' or
+            $this->resp->meta->collection === 'clouds' or
             $this->resp->meta->collection === 'devices' or
             $this->resp->meta->collection === 'discoveries' or
             $this->resp->meta->collection === 'networks' or
@@ -171,7 +172,13 @@ class Collections extends BaseController
             $id = intval($this->resp->meta->id);
         }
 
-        if (empty($this->resp->meta->id)) {
+        if (empty($this->resp->meta->id) and empty($this->resp->meta->received_data->attributes)) {
+            $message = 'You must supply data attributes when creating an item in ' . @$this->resp->meta->collection . '.';
+            log_message('error', $message);
+            $this->resp->errors = $message;
+        }
+
+        if (empty($this->resp->meta->id) and !empty($this->resp->meta->received_data->attributes)) {
             $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
         }
 
@@ -913,8 +920,6 @@ class Collections extends BaseController
         }
         $this->{$this->resp->meta->collection.'Model'}->reset();
         if ($this->resp->meta->format !== 'html') {
-            # Note the below data is only for Enterprise to accept data back after a POST
-            $this->resp->data[0] = 'Table reset';
             output($this);
             return true;
         } else {
