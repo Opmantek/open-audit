@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 $permissions = array('c','r','u','d');
-$endpoints = array('agents','applications','attributes','baselines','benchmarks','benchmarks_exceptions','charts','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','executables','fields','files','groups','integrations','ldap_servers','licenses','locations','networks','orgs','queries','racks','rack_devices','roles','rules','scripts','search','summaries','tasks','users','widgets');
+$endpoints = array('agents','applications','attributes','baselines','benchmarks','benchmarks_exceptions','benchmarks_policies','charts','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','executables','fields','files','groups','integrations','ldap_servers','licenses','locations','networks','orgs','queries','racks','rack_devices','roles','rules','scripts','search','summaries','tasks','users','widgets');
 $item_permissions = $resource->permissions;
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
