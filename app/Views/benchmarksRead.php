@@ -107,8 +107,6 @@ if (!empty($hour) and !empty($days)) {
                     </div>
                     <br>
 
-
-
                     <div class="tab-content">
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row">
@@ -605,10 +603,15 @@ window.onload = function () {
             $("#modalButton").removeAttr("disabled");
         <?php } ?>
 
-        <?php if (ENVIRONMENT !== 'development') { ?>
-            $("#button_execute").hide();
-        <?php } ?>
-
+        $("#button_execute").click(function(e) {
+            $("#liveToastSuccess-header").text("Please Wait");
+            $("#liveToastSuccess-body").text("Executing a benchmark can take several minutes, please be patient. See the Logs tab on the next page.");
+            var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
+            var toastList = toastElList.map(function(toastEl) {
+                return new bootstrap.Toast(toastEl)
+            });
+            toastList.forEach(toast => toast.show());
+        });
 
         $(".add_exception").click(function(e) {
             var data = {};
