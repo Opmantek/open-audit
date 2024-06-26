@@ -90,7 +90,6 @@ class BenchmarksPoliciesModel extends BaseModel
     }
 
     /**
-     * Run the SQL definition and return the provided properties or the devices.id list
      * @param  integer $id The ID of the group
      * @return array       An array of standard formatted devices, or an empty array
      */
@@ -107,9 +106,13 @@ class BenchmarksPoliciesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
+        $instance = & get_instance();
+        $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        $orgs = array_unique($orgs);
+        $orgs = implode(', ', $orgs);
+
         $included = array();
-        # TODO - a restrict to users orgs (devices.org_id) only
-        $sql = " SELECT benchmarks.name AS `benchmarks.name`, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, benchmarks_result.id AS `benchmarks_result.id`, benchmarks_result.result AS `benchmarks_result.result` FROM benchmarks_policies LEFT JOIN benchmarks_result ON benchmarks_policies.external_ident = benchmarks_result.external_ident LEFT JOIN devices ON benchmarks_result.device_id = devices.id LEFT JOIN benchmarks ON benchmarks.id = benchmarks_result.benchmark_id WHERE benchmarks_result.external_ident = benchmarks_policies.external_ident AND benchmarks_policies.id = ?";
+        $sql = "SELECT benchmarks.name AS `benchmarks.name`, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, benchmarks_result.id AS `benchmarks_result.id`, benchmarks_result.result AS `benchmarks_result.result` FROM benchmarks_policies LEFT JOIN benchmarks_result ON benchmarks_policies.external_ident = benchmarks_result.external_ident LEFT JOIN devices ON benchmarks_result.device_id = devices.id LEFT JOIN benchmarks ON benchmarks.id = benchmarks_result.benchmark_id WHERE devices.org_id IN ($orgs) AND benchmarks_result.external_ident = benchmarks_policies.external_ident AND benchmarks_policies.id = ?";
         $included['devices'] = $this->db->query($sql, [$id])->getResult();
 
         return $included;

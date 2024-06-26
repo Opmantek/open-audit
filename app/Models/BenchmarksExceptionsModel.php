@@ -98,51 +98,12 @@ class BenchmarksExceptionsModel extends BaseModel
     }
 
     /**
-     * Run the SQL definition and return the provided properties or the devices.id list
      * @param  integer $id The ID of the group
      * @return array       An array of standard formatted devices, or an empty array
      */
     public function execute(int $id = 0, object $user = null): array
     {
-        $instance = & get_instance();
-        $properties = $instance->config->devices_default_group_columns;
-        $result = $this->builder->getWhere(['id' => intval($id)])->getResult();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        if (empty($result)) {
-            log_message('error', 'Failed to retrieve group');
-            return array();
-        }
-        $group = $result[0];
-        $sql = trim((string)$group->sql);
-        if (strpos($sql, ';') === strlen($sql)-1) {
-            $sql = substr($sql, 0, strlen($sql)-1);
-            $sql = trim((string)$sql);
-        }
-        $properties_array = explode(',', $properties);
-        $properties_new_array = array();
-        foreach ($properties_array as $property) {
-            $properties_new_array[] = "{$property} AS `{$property}`";
-        }
-        $properties = implode(', ', $properties_new_array);
-        $sql = str_ireplace('SELECT DISTINCT(devices.id) FROM devices', "SELECT {$properties} FROM devices", $sql);
-        $filter = "devices.org_id IN ({$user->org_list})";
-        $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
-        if (!empty($instance->resp->meta->groupby)) {
-            $sql = $sql . ' ' . $instance->resp->meta->groupby;
-        }
-        if (!empty($instance->resp->meta->sort)) {
-            $sql = $sql . ' ' . $instance->resp->meta->sort;
-        }
-        if (!empty($instance->resp->meta->limit)) {
-            $sql = $sql . ' LIMIT ' . $instance->resp->meta->limit;
-        }
-                
-        $query = $this->db->query($sql);
-        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
-        $result = format_data($query->getResult(), 'devices');
-        return $result;
+        return array();
     }
 
     /**

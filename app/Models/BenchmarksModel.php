@@ -291,6 +291,8 @@ class BenchmarksModel extends BaseModel
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
+
+        // Copy the definition file
         $parameters->source = '/usr/local/open-audit/other/ssg-definitions/' . $file;
         $parameters->destination = $file;
         $output = scp($parameters);
@@ -300,9 +302,10 @@ class BenchmarksModel extends BaseModel
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
-
         $this->logCreate($id, $device_id, 'info', 'Defnition file copied to ' . $device->attributes->name . '.');
         $microtime = microtime(true);
+
+        // Run oscap
         $parameters->command = 'cd ~/; oscap xccdf eval --profile ' . $profile . ' --report ' . $device_id . '_' . $id .  '_' . $microtime . '_report.html ' . $file;
         log_message('debug', 'oscap command for ' . $device->attributes->name . ': ' . $parameters->command);
         $this->logCreate($id, $device_id, 'info', 'oscap command: ' . $parameters->command);
@@ -316,7 +319,8 @@ class BenchmarksModel extends BaseModel
         }
         log_message('debug', 'oscap command completed on ' . $device->attributes->name);
         $this->logCreate($id, $device_id, 'info', 'oscap command completed.');
-        # log_message('debug', json_encode($output));
+
+        // Copy the result
         $parameters->source = $device_id . '_' . $id .  '_' . $microtime . '_report.html';
         $parameters->destination = '/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html';
         $output = scp_get($parameters);
@@ -328,12 +332,21 @@ class BenchmarksModel extends BaseModel
         }
         $this->logCreate($id, $device_id, 'info', 'Report file retrieved.');
 
+        // Delete the result file on the target
+        $parameters->command = 'rm ~/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html ' . $file;
+        log_message('debug', 'rm command for ' . $device->attributes->name . ': ' . $parameters->command);
+        $this->logCreate($id, $device_id, 'info', 'rm command: ' . $parameters->command);
+        $parameters->timeout = 10; // 10 seconds to execute rm
+        $output = ssh_command($parameters);
+        if ($output === false) {
+            log_message('error', 'Could not execute rm for BenchmarksModel::execute on ' . $device->attributes->name);
+            $this->logCreate($id, $device_id, 'error', 'Could not execute rm (see logfile for more info).');
+            // Do not exit/return as we should have a local copy of the result file which we can still process
+        }
+        log_message('debug', 'rm command completed on ' . $device->attributes->name);
+        $this->logCreate($id, $device_id, 'info', 'rm command completed.');
 
-
-
-
-
-
+        // Process the result file
         try {
             $qp = html5qp('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_report.html');
         } catch (\QueryPath\Exception $e) {
@@ -354,7 +367,13 @@ class BenchmarksModel extends BaseModel
         $sql = "DELETE from benchmarks_result WHERE benchmark_id = ? AND device_id = ?";
         $this->db->query($sql, [$id, $device_id]);
 
-        $sql = "SELECT * FROM benchmarks_exceptions";
+        // Get any exceptions
+        $orgs = array();
+        $orgs[] = $benchmark->attributes->org_id;
+        $orgs = array_unique(array_merge($orgs, $instance->orgsModel->getUserDescendants($orgs, $instance->orgs)));
+        $orgs = array_unique($orgs);
+        $orgs = implode(', ', $orgs);
+        $sql = "SELECT * FROM benchmarks_exceptions WHERE org_id IN ($orgs)";
         $rows = $this->db->query($sql)->getResult();
         $exceptions = array();
         foreach ($rows as $row) {
@@ -540,7 +559,7 @@ class BenchmarksModel extends BaseModel
 
         $included = array();
 
-        $sql = "SELECT COUNT(id) AS `count` FROM benchmarks_exceptions";
+        $sql = "SELECT COUNT(id) AS `count` FROM benchmarks_exceptions WHERE benchmarks_exceptions.org_id IN ($orgs)";
         $query = $this->db->query($sql)->getResult();
         $included['exceptions'] = intval($query[0]->count);
 
@@ -561,7 +580,7 @@ class BenchmarksModel extends BaseModel
         $included['devices_could_be_benchmarked'] = intval($query[0]->id);
 
         $results = array();
-        $sql = "SELECT benchmark_id, result, COUNT(result) AS `count` FROM benchmarks_result GROUP BY result, benchmark_id ORDER BY benchmark_id";
+        $sql = "SELECT benchmark_id, result, COUNT(result) AS `count` FROM benchmarks_result LEFT JOIN benchmarks ON benchmarks_result.benchmark_id = benchmarks.id WHERE benchmarks.org_id IN ($orgs) GROUP BY result, benchmark_id ORDER BY benchmark_id";
         $result = $this->db->query($sql)->getResult();
         foreach ($result as $row) {
             if (empty($results[$row->benchmark_id])) {
@@ -655,6 +674,11 @@ class BenchmarksModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
+        $instance = & get_instance();
+        $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        $orgs = array_unique($orgs);
+        $orgs = implode(', ', $orgs);
+
         $included = array();
         $benchmark = $this->read($id);
         $sql = "SELECT benchmarks_result.*, GROUP_CONCAT(benchmarks_result.device_id), count(benchmarks_result.id) AS `count`, benchmarks_policies.id as `benchmarks_policies.id`, benchmarks_policies.name, benchmarks_policies.severity FROM benchmarks_result LEFT JOIN benchmarks_policies ON (benchmarks_result.external_ident = benchmarks_policies.external_ident) WHERE benchmarks_result.benchmark_id = ? GROUP BY CONCAT(benchmarks_result.external_ident, benchmarks_result.result) ORDER BY benchmarks_result.external_ident";
@@ -669,8 +693,8 @@ class BenchmarksModel extends BaseModel
             }
         }
         $included['policies'] = $result;
-        # $sql = "SELECT devices.id, devices.name, devices.ip, devices.os_family, devices.os_version, devices.credentials AS `devices.credentials`, software.name AS `software.name`, software.version AS `software.version`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, c1.type AS `c1.type`, c2.type AS `c2.type`, c3.type AS `c3.type`, benchmarks_result.benchmark_id FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = 'openscap-scanner' AND software.current = 'y') LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, \"\$[0]\") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, \"\$[1]\") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, \"\$[2]\") = c3.id) LEFT JOIN benchmarks_result ON (devices.id = benchmarks_result.device_id) WHERE devices.os_family LIKE 'OSFAMILY' AND devices.os_version LIKE 'OSVERSION%' GROUP BY devices.id";
-        $sql = "SELECT devices.id, devices.name, devices.ip, devices.os_family, devices.os_version, devices.credentials AS `devices.credentials`, software.name AS `software.name`, software.version AS `software.version`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, c1.type AS `c1.type`, c2.type AS `c2.type`, c3.type AS `c3.type` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = 'openscap-scanner' AND software.current = 'y') LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, \"\$[0]\") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, \"\$[1]\") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, \"\$[2]\") = c3.id) WHERE devices.os_family LIKE 'OSFAMILY' AND devices.os_version LIKE 'OSVERSION%' GROUP BY devices.id";
+
+        $sql = "SELECT devices.id, devices.name, devices.ip, devices.os_family, devices.os_version, devices.credentials AS `devices.credentials`, software.name AS `software.name`, software.version AS `software.version`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, c1.type AS `c1.type`, c2.type AS `c2.type`, c3.type AS `c3.type` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = 'openscap-scanner' AND software.current = 'y') LEFT JOIN `orgs` ON (devices.org_id = orgs.id AND orgs.id IN ($orgs)) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, \"\$[0]\") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, \"\$[1]\") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, \"\$[2]\") = c3.id) WHERE devices.os_family LIKE 'OSFAMILY' AND devices.os_version LIKE 'OSVERSION%' GROUP BY devices.id";
         $os = explode(' ', $benchmark[0]->attributes->os);
         $sql = str_replace('OSFAMILY', $os[0], $sql);
         $sql = str_replace('OSVERSION', $os[1], $sql);
