@@ -1603,6 +1603,7 @@ $GLOBALS["lang"]["Test Subnet"]="Test Subnet";
 $GLOBALS["lang"]["Text"]="Text";
 $GLOBALS["lang"]["The direct link for the script is"]="The direct link for the script is";
 $GLOBALS["lang"]["Then"]="Then";
+$GLOBALS["lang"]["The Open-AudIT API"]="The Open-AudIT API";
 $GLOBALS["lang"]["Thing"]="Thing";
 $GLOBALS["lang"]["This column is required by Open-AudIT to create an item of this type"]="This column is required by Open-AudIT to create an item of this type";
 $GLOBALS["lang"]["This feature requires a Professional or an Enterprise license."]="This feature requires a Professional or an Enterprise license.";
