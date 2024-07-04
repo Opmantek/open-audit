@@ -208,10 +208,13 @@ class QueriesModel extends BaseModel
         if ($query->name === 'Benchmarks Query') {
             $request = \Config\Services::request();
             if (!empty($request->getGet('devices_os_family'))) {
-                $sql = str_replace('OSFAMILY', preg_replace("/[^A-Za-z0-9 ]/", '', (string)$request->getGet('devices_os_family')), $sql);
+                $sql = str_replace('OSFAMILY', preg_replace("/[^A-Za-z0-9 %]/", '', (string)$request->getGet('devices_os_family')), $sql);
             }
             if (!empty($request->getGet('devices_os_version'))) {
                 $sql = str_replace('OSVERSION', preg_replace("/[^A-Za-z0-9\. ]/", '', (string)$request->getGet('devices_os_version')), $sql);
+            }
+            if (empty($request->getGet('devices_os_version'))) {
+                $sql = str_replace('OSVERSION', '', $sql);
             }
             if (empty($request->getGet('devices_os_family')) and empty($request->getGet('devices_os_version'))) {
                 $sql = str_replace('AND devices.os_family LIKE "OSFAMILY" AND devices.os_version LIKE "OSVERSION%"', '', $sql);
@@ -237,7 +240,6 @@ class QueriesModel extends BaseModel
                 }
             }
             log_message('debug', $sql);
-
         }
         $query = $this->db->query($sql);
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
