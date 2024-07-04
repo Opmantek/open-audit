@@ -1232,7 +1232,6 @@ class DiscoveriesModel extends BaseModel
                 $GLOBALS['stash'] = $error;
                 return false;
             } else {
-                $db_scan_options->timeout = intval($db_scan_options->timeout);
                 $db_scan_options->timeout = $data->scan_options->timeout;
             }
         }
@@ -1243,7 +1242,6 @@ class DiscoveriesModel extends BaseModel
                 $GLOBALS['stash'] = $error;
                 return false;
             } else {
-                $db_scan_options->timing = intval($db_scan_options->timing);
                 $db_scan_options->timing = $data->scan_options->timing;
             }
         }
@@ -1254,7 +1252,6 @@ class DiscoveriesModel extends BaseModel
                 $GLOBALS['stash'] = $error;
                 return false;
             } else {
-                $db_scan_options->nmap_tcp_ports = intval($db_scan_options->nmap_tcp_ports);
                 $db_scan_options->nmap_tcp_ports = $data->scan_options->nmap_tcp_ports;
             }
         }
@@ -1265,7 +1262,6 @@ class DiscoveriesModel extends BaseModel
                 $GLOBALS['stash'] = $error;
                 return false;
             } else {
-                $db_scan_options->nmap_udp_ports = intval($db_scan_options->nmap_udp_ports);
                 $db_scan_options->nmap_udp_ports = $data->scan_options->nmap_udp_ports;
             }
         }
