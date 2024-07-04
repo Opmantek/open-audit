@@ -179,6 +179,10 @@ class OpenAudit extends BaseConfig
             }
         }
 
+        if (php_uname('s') === 'Darwin') {
+            $this->enterprise_binary = '/opt/homebrew/bin/perl /usr/local/oac/enterprise.pl';
+        }
+
         $modules = array();
         $apps = array();
         $this->commercial_dir = '';
