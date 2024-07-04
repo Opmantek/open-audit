@@ -50,6 +50,7 @@ if (!empty($config->servers)) {
         <script {csp-script-nonce} defer src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/fa-v4-shims.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/apexcharts.js') ?>"></script>
 
         <!-- CSS -->
         <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">

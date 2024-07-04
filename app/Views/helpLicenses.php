@@ -64,6 +64,10 @@ Open-AudIT when downloaded from FirstWave may include the following libraries an
             <td><a href="<?= url_to('appLicenses') ?>?license=mit">MIT</a></td>
         </tr>
         <tr>
+            <td>ApexCharts</td>
+            <td><a href="<?= url_to('appLicenses') ?>?license=mit">MIT</a></td>
+        </tr>
+        <tr>
             <td>Newaita Reborn Icons</td>
             <td><a href="<?= url_to('appLicenses') ?>?license=gpl">GPL</a></td>
         </tr>
