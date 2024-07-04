@@ -32,21 +32,23 @@ include 'shared/collection_functions.php';
                             Devices Not Being Benchmarked<br><br>
                             <div class="row">
                                 <?php
-                                $i = 0;
-                                foreach ($included['devices'] as $key => $value) {
-                                    $i++;
-                                    $explode = explode(' ', $key);
-                                    ?>
-                                    <div class="col-lg-2 text-center d-flex align-items-center">
-                                        <a href="<?= url_to('queriesExecute', $included['benchmarks_query']) ?>?devices.os_family=<?= $explode[0] ?>&devices.os_version=<?= $explode[1] ?>&isInBenchmark=n" class="position-relative">
-                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= strtolower($explode[0]) ?>.svg" alt="<?= $explode[0] ?>">
-                                            <br><?= $key ?>
-                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $value ?></span>
-                                        </a>
-                                    </div>
-                                    <?php
-                                    if ($i === 6 or $i === 12 or $i === 18 or $i === 24) {
-                                        echo "</div><br /><div class=\"row\">";
+                                if (!empty($included['devices'])) {
+                                    $i = 0;
+                                    foreach ($included['devices'] as $key => $value) {
+                                        $i++;
+                                        $explode = explode(' ', $key);
+                                        ?>
+                                        <div class="col-lg-2 text-center d-flex align-items-center">
+                                            <a href="<?= url_to('queriesExecute', $included['benchmarks_query']) ?>?devices.os_family=<?= $explode[0] ?>&devices.os_version=<?= $explode[1] ?>&isInBenchmark=n" class="position-relative">
+                                                <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= strtolower($explode[0]) ?>.svg" alt="<?= $explode[0] ?>">
+                                                <br><?= $key ?>
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $value ?></span>
+                                            </a>
+                                        </div>
+                                        <?php
+                                        if ($i === 6 or $i === 12 or $i === 18 or $i === 24) {
+                                            echo "</div><br /><div class=\"row\">";
+                                        }
                                     }
                                 }
                                 ?>
@@ -103,27 +105,27 @@ include 'shared/collection_functions.php';
                                         ?>
                                     <?php } ?>
                                     <?php
-                                        if (!empty($included['results'][$item->id])) {
-                                            $pass = (!empty($included['results'][$item->id]->pass)) ? $included['results'][$item->id]->pass : 0;
-                                            $fail = (!empty($included['results'][$item->id]->fail)) ? $included['results'][$item->id]->fail : 0;
-                                            $other = (!empty($included['results'][$item->id]->other)) ? $included['results'][$item->id]->other : 0;
-                                            $count = $pass + $fail + $other;
-                                            echo "<td>\n";
-                                            echo '                                        <div class="progress-stacked"  style="height: 2.5em">
-                                            <div class="progress" role="progressbar" aria-label="Pass" aria-valuenow="' .  $pass . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($pass / $count) * 100) . '%">
-                                                <div class="progress-bar bg-success fw-bold"  style="height: 2.5em">' . $pass . ' ' . __('Passed') . '</div>
-                                            </div>
-                                            <div class="progress" role="progressbar" aria-label="Other" aria-valuenow="' . $other . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($other / $count) * 100) . '%">
-                                                <div class="progress-bar bg-warning fw-bold"  style="height: 2.5em">' . $other . ' ' . __('Other') . '</div>
-                                            </div>
-                                            <div class="progress" role="progressbar" aria-label="Fail" aria-valuenow="' . $fail . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($fail / $count) * 100) . '%">
-                                                <div class="progress-bar bg-danger fw-bold"  style="height: 2.5em">' . $fail . ' ' . __('Failed') . '</div>
-                                            </div>
-                                        </div>';
-                                            echo '</td>';
-                                        } else {
-                                            echo "<td>" . __('No Results') . "</td>";
-                                        }
+                                    if (!empty($included['results'][$item->id])) {
+                                        $pass = (!empty($included['results'][$item->id]->pass)) ? $included['results'][$item->id]->pass : 0;
+                                        $fail = (!empty($included['results'][$item->id]->fail)) ? $included['results'][$item->id]->fail : 0;
+                                        $other = (!empty($included['results'][$item->id]->other)) ? $included['results'][$item->id]->other : 0;
+                                        $count = $pass + $fail + $other;
+                                        echo "<td>\n";
+                                        echo '                                        <div class="progress-stacked"  style="height: 2.5em">
+                                        <div class="progress" role="progressbar" aria-label="Pass" aria-valuenow="' .  $pass . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($pass / $count) * 100) . '%">
+                                            <div class="progress-bar bg-success fw-bold"  style="height: 2.5em">' . $pass . ' ' . __('Passed') . '</div>
+                                        </div>
+                                        <div class="progress" role="progressbar" aria-label="Other" aria-valuenow="' . $other . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($other / $count) * 100) . '%">
+                                            <div class="progress-bar bg-warning fw-bold"  style="height: 2.5em">' . $other . ' ' . __('Other') . '</div>
+                                        </div>
+                                        <div class="progress" role="progressbar" aria-label="Fail" aria-valuenow="' . $fail . '" aria-valuemin="0" aria-valuemax="' . $count . '" style="width: ' . (($fail / $count) * 100) . '%">
+                                            <div class="progress-bar bg-danger fw-bold"  style="height: 2.5em">' . $fail . ' ' . __('Failed') . '</div>
+                                        </div>
+                                    </div>';
+                                        echo '</td>';
+                                    } else {
+                                        echo "<td>" . __('No Results') . "</td>";
+                                    }
                                     ?>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
