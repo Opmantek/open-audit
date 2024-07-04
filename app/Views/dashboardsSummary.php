@@ -170,7 +170,7 @@ $instance = & get_instance();
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:4rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
+                                    <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/<?= $component ?>.svg" alt="<?= $component ?>">
                                     <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
                                 </a>
@@ -188,7 +188,7 @@ $instance = & get_instance();
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:4rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
+                                    <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/<?= $component ?>.svg" alt="<?= $component ?>">
                                     <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
                                 </a>
@@ -206,7 +206,7 @@ $instance = & get_instance();
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:4rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
+                                    <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/<?= $component ?>.svg" alt="<?= $component ?>">
                                     <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
                                 </a>

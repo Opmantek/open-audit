@@ -768,7 +768,7 @@ if (!empty($included['fields'])) {
                                             <?php if (!empty($included['image'])) {
                                                 foreach ($included['image'] as $row) { ?>
                                                 <tr>
-                                                    <td class="text-center"><a href="/open-audit/custom_images/<?= $row->filename ?>"><img src="/open-audit/custom_images/<?= $row->filename ?>" width="200px" /></a></td>
+                                                    <td class="text-center"><a href="<?= $meta->baseurl ?>custom_images/<?= $row->filename ?>"><img src="<?= $meta->baseurl ?>custom_images/<?= $row->filename ?>" width="200px" /></a></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->filename ?></td>
                                                     <td><?= $row->edited_by ?></td>

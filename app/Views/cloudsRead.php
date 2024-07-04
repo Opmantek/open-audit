@@ -194,7 +194,7 @@ if ($style === 'icontext') {
                                             <?php foreach ($included['devices'] as $device) { ?>
                                             <tr>
                                                     <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $device->{'devices.id'}) ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
-                                                <td class="text-center"><img style="width:30px;" src="/open-audit/device_images/<?= $device->{'devices.icon'} ?>.svg" alt=""/></td>
+                                                <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $device->{'devices.icon'} ?>.svg" alt=""/></td>
                                                 <td><span style="display:none;"><?= $device->{'devices.padded_ip'} ?></span><?= $device->{'devices.ip'} ?></td>
                                                 <td><?= $device->{'devices.name'} ?></td>
                                                 <td><?= $device->{'devices.os_group'} ?></td>

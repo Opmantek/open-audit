@@ -175,7 +175,7 @@ if (count($included['issues']) > 0) {
                                             <?php } ?>
                                             </td>
                                             <?php if ($issue->{'devices.icon'}) { ?>
-                                            <td class="text-center"><img width="30" src="/open-audit/device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""/></td>
+                                            <td class="text-center"><img width="30" src="<?= $meta->baseurl ?>device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""/></td>
                                             <?php } else { ?>
                                             <td class="text-center"></td>
                                             <?php } ?>

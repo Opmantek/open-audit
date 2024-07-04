@@ -233,7 +233,7 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $c
                     <tfoot>
                         <tr>
                             <td class="text-center"><a class="btn btn-default" target="_blank" href="<?= url_to('configurationReadLicense') ?>"><?= __('Restore my Licenses') ?></a></td>
-                            <td class="text-center"><a class="btn <?= $btnCom ?>"  data-bs-dismiss="modal" <?= $btnComStyle ?> href="/open-audit/index.php"><?= $btnComText ?></a></td>
+                            <td class="text-center"><a class="btn <?= $btnCom ?>"  data-bs-dismiss="modal" <?= $btnComStyle ?> href="<?= $meta->baseurl ?>index.php"><?= $btnComText ?></a></td>
                             <td class="text-center"><a class="btn <?= $btnFre ?>" <?= $btnFreStyle ?> href="<?= url_to('configurationReadLicense') ?>"><?= $btnFreText ?></a></td>
                             <td class="text-center"><a class="btn <?= $btnPro ?>" <?= $btnProStyle ?> href="https://firstwave.com/products/network-discovery-and-inventory-software/"><?= $btnProText ?></a></td>
                             <td class="text-center"><a class="btn <?= $btnEnt ?>" <?= $btnEntStyle ?> href="https://firstwave.com/products/network-discovery-and-inventory-software/"><?= $btnEntText ?></a></td>

@@ -56,7 +56,7 @@ if (!empty($meta->query_string)) {
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:4rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
+                                    <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/<?= $component ?>.svg" alt="<?= $component ?>">
                                     <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
                                 </a>
@@ -74,7 +74,7 @@ if (!empty($meta->query_string)) {
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:4rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
+                                    <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/<?= $component ?>.svg" alt="<?= $component ?>">
                                     <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
                                 </a>
@@ -92,7 +92,7 @@ if (!empty($meta->query_string)) {
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:4rem;" class="img-responsive center-block" src="/open-audit/icons/<?= $component ?>.svg" alt="<?= $component ?>">
+                                    <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/<?= $component ?>.svg" alt="<?= $component ?>">
                                     <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
                                 </a>
@@ -336,7 +336,7 @@ window.onload = function () {
             data = JSON.stringify(data);
             $.ajax({
                 type: "PATCH",
-                url: "/open-audit/index.php/users/<?= $user->id ?>",
+                url: "<?= $meta->baseurl ?>index.php/users/<?= $user->id ?>",
                 contentType: "application/json",
                 data: {data : data},
                 success: function (data) {
@@ -370,7 +370,7 @@ window.onload = function () {
             data = JSON.stringify(data);
             $.ajax({
                 type: "PATCH",
-                url: "/open-audit/index.php/users/<?= $user->id ?>",
+                url: "<?= $meta->baseurl ?>index.php/users/<?= $user->id ?>",
                 contentType: "application/json",
                 data: {data : data},
                 success: function (data) {

@@ -115,7 +115,7 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $c
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td class=" "><a href="/omk/open-audit/features/changes">Configuration Change Detection and Reporting</a></td>
+                                        <td class=" "><a href="#">Configuration Change Detection and Reporting</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>

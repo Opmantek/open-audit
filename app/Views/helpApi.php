@@ -22,11 +22,11 @@ include 'shared/collection_functions.php';
 <br>
 <h2>Access Model</h2>
 <p>The API uses a cookie. You can request a cookie by sending a POST to the URL below, containing the username and password attributes and values:<br>
-<code>http://{server}/open-audit/index.php/logon</code></p>
+<code><?= $meta->baseurl ?>index.php/logon</code></p>
 
 <br>
 <h1>Collections</h1>
-<p>All collections URLs are of the format <code>http://{server}/open-audit/index.php/{collection}</code></p>
+<p>All collections URLs are of the format <code><?= $meta->baseurl ?>index.php/{collection}</code></p>
 
 <br>
 <h2>API Routes</h2>
@@ -332,7 +332,7 @@ You can also specify properties using the below format.<br>
         <tbody>
             <tr>
                 <td>GET</td>
-                <td>http://{server}/open-audit/index.php/devices</td>
+                <td><?= $meta->baseurl ?>index.php/devices</td>
                 <td>Return a collection of devices with the default set of columns (devices.id, devices.icon, devices.type, devices.name, devices.ip, devices.dns_fqdn, devices.identification, devices.description, devices.manufacturer, devices.os_family, devices.status)</td>
             </tr>
             <tr>
@@ -343,7 +343,7 @@ You can also specify properties using the below format.<br>
             <tr>
                 <td>GET</td>
                 <td>/components?components.type={componentName}</td>
-                <td>To return all items for a component type. If you wanted all software you would use http://{server}/open-audit/index.php/components/components.type=software</td>
+                <td>To return all items for a component type. If you wanted all software you would use <?= $meta->baseurl ?>index.php/components/components.type=software</td>
             </tr>
             <tr>
                 <td>GET</td>
@@ -395,7 +395,7 @@ You can also specify properties using the below format.<br>
         <tbody>
             <tr>
                 <td>GET</td>
-                <td>http://{server}/open-audit/index.php/devices</td>
+                <td><?= $meta->baseurl ?>index.php/devices</td>
                 <td>Retrieve all devices with the standard columns</td>
                 <td><br/></td>
             </tr>
@@ -437,20 +437,20 @@ You can also specify properties using the below format.<br>
 <br>
 <h3>CURL Examples</h3>
 Logging in<br>
-<code>curl --cookie-jar cookies.txt --form password=password --form username=admin http://{server}/open-audit/index.php/logon</code>
+<code>curl --cookie-jar cookies.txt --form password=password --form username=admin <?= $meta->baseurl ?>index.php/logon</code>
 <br><br>
 
 Creating Credentials</br>
-<code>curl -X POST -b cookies.txt http://{server}/open-audit/index.php/credentials -d &quot;data[attributes][name]=test_creds&amp;data[attributes][org_id]=1&amp;data[attributes][type]=ssh&amp;data[attributes][credentials][username]=my_new_user&amp;data[attributes][credentials][password]=my_new_password&quot;</code>
+<code>curl -X POST -b cookies.txt <?= $meta->baseurl ?>index.php/credentials -d &quot;data[attributes][name]=test_creds&amp;data[attributes][org_id]=1&amp;data[attributes][type]=ssh&amp;data[attributes][credentials][username]=my_new_user&amp;data[attributes][credentials][password]=my_new_password&quot;</code>
 <br><br>
 
 Retrieving a List of Credentials<br>
-<code>curl -X GET -b cookies.txt http://{server}/open-audit/index.php/credentials</code>
+<code>curl -X GET -b cookies.txt <?= $meta->baseurl ?>index.php/credentials</code>
 <br><br>
 
 Update attributes<br>
 NOTE - The curly brackets in the data filed should be used as-is (not replaced as per other examples above).<br>
-<code>curl -X PATCH -b cookies.txt -d 'data={&quot;data&quot;:{&quot;id&quot;:&quot;3&quot;,&quot;type&quot;:&quot;devices&quot;,&quot;attributes&quot;:{&quot;description&quot;:&quot;Test Description&quot;}}}' http://{server}/open-audit/index.php/devices/3</code>
+<code>curl -X PATCH -b cookies.txt -d 'data={&quot;data&quot;:{&quot;id&quot;:&quot;3&quot;,&quot;type&quot;:&quot;devices&quot;,&quot;attributes&quot;:{&quot;description&quot;:&quot;Test Description&quot;}}}' <?= $meta->baseurl ?>index.php/devices/3</code>
 <br><br>
 
 

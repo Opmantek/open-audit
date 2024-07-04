@@ -10,7 +10,7 @@ if (empty($data[0]->attributes->longitude)) {
     $data[0]->attributes->longitude = '153.425705';
 }
 ?>
-<link type="text/css" rel="stylesheet" href="/open-audit/css/map.css" />
+<link type="text/css" rel="stylesheet" href="<?= $meta->baseurl ?>css/map.css" />
 <style {csp-style-nonce}>
 img[src*="gstatic.com/"] img[src*="googleapis.com/"] {
     max-width: none;
@@ -110,9 +110,9 @@ window.onload = function () {
                 $i += 1;
                 $icon = strtolower(str_replace(' ', '_', $key->attributes->type));
                 if ($i === 1) { ?>
-                    ['<?= $key->attributes->name ?>', <?= $key->attributes->latitude ?>, <?= $key->attributes->longitude ?>, <?= $i ?>, '<?= $table ?>', '/open-audit/images/map_icons/32_<?= $icon ?>.png']
+                    ['<?= $key->attributes->name ?>', <?= $key->attributes->latitude ?>, <?= $key->attributes->longitude ?>, <?= $i ?>, '<?= $table ?>', '<?= $meta->baseurl ?>images/map_icons/32_<?= $icon ?>.png']
                 <?php } else { ?>
-                    ,['<?= $key->attributes->name ?>', <?= $key->attributes->latitude ?>, <?= $key->attributes->longitude ?>, <?= $i ?>, '<?= $table ?>', '/open-audit/images/map_icons/32_<?= $icon ?>.png']
+                    ,['<?= $key->attributes->name ?>', <?= $key->attributes->latitude ?>, <?= $key->attributes->longitude ?>, <?= $i ?>, '<?= $table ?>', '<?= $meta->baseurl ?>images/map_icons/32_<?= $icon ?>.png']
                 <?php }
             }
         } ?>

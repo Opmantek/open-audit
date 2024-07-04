@@ -35,17 +35,17 @@ if ($resource->ru_start == 1) {
 
 
                 if (!empty($device->attributes->{'image.filename'})) {
-                    $image = '<img alt="' . $icon . '" style="max-width:90%;max-height:' . $imageheight. 'px;" src="/open-audit/custom_images/' . $device->attributes->{'image.filename'} . '" />';
+                    $image = '<img alt="' . $icon . '" style="max-width:90%;max-height:' . $imageheight. 'px;" src="<?= $meta->baseurl ?>custom_images/' . $device->attributes->{'image.filename'} . '" />';
                     if (!empty($device->attributes->{'devices.icon'})) {
-                        $icon = '<img alt="' . $icon . '" src="/open-audit/device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
+                        $icon = '<img alt="' . $icon . '" src="' . $meta->baseurl . 'device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
                     } else {
                         $icon = '';
                     }
                 } elseif (!empty($device->attributes->{'devices.type'})) {
                     $temp = str_replace(' ', '_', $device->attributes->{'devices.type'});
-                    $image = '<img alt="' . $device->attributes->{'devices.type'} . '" style="z-index:10;height:' . $imageheight. 'px;" src="/open-audit/device_images/' . $temp . '.svg" />';
+                    $image = '<img alt="' . $device->attributes->{'devices.type'} . '" style="z-index:10;height:' . $imageheight. 'px;" src="<?= $meta->baseurl ?>device_images/' . $temp . '.svg" />';
                     if (!empty($device->attributes->{'devices.icon'})) {
-                        $icon = '<img alt="' . $icon . '" src="/open-audit/device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
+                        $icon = '<img alt="' . $icon . '" src="<?= $meta->baseurl ?>device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
                     } else {
                         $icon = '';
                     }
@@ -109,12 +109,12 @@ if ($resource->ru_start == 1) {
                 $icon = (empty($icon) and !empty($device->attributes->{'devices.type'})) ? $device->attributes->{'devices.type'} : '';
 
                 if (!empty($device->attributes->{'image.filename'})) {
-                    $image = '<img alt="' . $icon . '" style="max-width:90%;z-index:10;max-height:' . $imageheight. 'px;" src="/open-audit/custom_images/' . $device->attributes->{'image.filename'} . '" />';
-                    $icon = '<img alt="' . $icon . '" src="/open-audit/device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
+                    $image = '<img alt="' . $icon . '" style="max-width:90%;z-index:10;max-height:' . $imageheight. 'px;" src="' . $meta->baseurl . 'custom_images/' . $device->attributes->{'image.filename'} . '" />';
+                    $icon = '<img alt="' . $icon . '" src="<?= $meta->baseurl ?>device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
                 } elseif (!empty($device->attributes->{'devices.type'})) {
                     $temp = str_replace(' ', '_', $device->attributes->{'devices.type'});
-                    $image = '<img alt="' . $device->attributes->{'devices.type'} . '" style="z-index:10;height:' . $imageheight. 'px;" src="/open-audit/device_images/' . $temp . '.svg" />';
-                    $icon = '<img alt="' . $icon . '" src="/open-audit/device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
+                    $image = '<img alt="' . $device->attributes->{'devices.type'} . '" style="z-index:10;height:' . $imageheight. 'px;" src="' . $meta->baseurl . 'device_images/' . $temp . '.svg" />';
+                    $icon = '<img alt="' . $icon . '" src="<?= $meta->baseurl ?>device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
                 } else {
                     $image = '';
                     $icon = '';

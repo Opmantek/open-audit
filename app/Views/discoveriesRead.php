@@ -458,7 +458,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <?php if (!empty($device->{'devices.id'})) { ?>
                                                 <tr>
                                                     <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $device->{'devices.id'}) ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
-                                                    <td class="text-center"><img style="width:30px;" src="/open-audit/device_images/<?= $device->{'devices.icon'} ?>.svg" alt=""/></td>
+                                                    <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $device->{'devices.icon'} ?>.svg" alt=""/></td>
                                                     <td><span style="display:none;"><?= ip_address_to_db($device->{'discovery_log.ip'}) ?></span><?= $device->{'discovery_log.ip'} ?><br />
                                                     <?php if ($device->{'devices.type'} === 'unknown') { ?>
                                                         <span class="text-danger"><i><?= $device->{'devices.type'} ?></i></span>
@@ -513,7 +513,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     </td>
                                                     <td class="text-center">
                                                         <?php if (!empty($device->{'devices.icon'})) { ?>
-                                                            <img style="width:30px;" src="/open-audit/device_images/<?= $device->{'devices.icon'} ?>.svg" alt=""/>
+                                                            <img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $device->{'devices.icon'} ?>.svg" alt=""/>
                                                         <?php } ?>
                                                     </td>
                                                     <td>
@@ -583,7 +583,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 } ?>
                                                 <tr>
                                                     <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= $link ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
-                                                    <td class="text-center"><img style="width:30px;" src="/open-audit/device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""/></td>
+                                                    <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""/></td>
                                                     <td><span style="display:none;"><?= @$issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
                                                     <td><?= $issue->{'devices.name'} ?></td>
                                                     <td><?= $issue->{'output'} . '<br>' . html_entity_decode($issue->{'description'}) ?></td>

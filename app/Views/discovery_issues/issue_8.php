@@ -7,7 +7,7 @@
 
 <p>Windows may also have blocked the service from starting. On the target start the Windows Security applet and ensure the WinExeSvc executable is allowed to run (click Allow on Device and then Start Actions).</p>
 
-<img src="/open-audit/images/winexesvc_allow_01.png" alt="Allow WinExeSvc to run" /><br />
+<img src="<?= $meta->baseurl ?>images/winexesvc_allow_01.png" alt="Allow WinExeSvc to run" /><br />
 
 <?php
 include('wmi_intro.php');

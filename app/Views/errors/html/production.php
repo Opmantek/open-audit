@@ -24,7 +24,7 @@ if (php_uname('s') === 'Windows NT') {
 
         <!-- <p class="lead"><?= lang('Errors.weHitASnag') ?></p> -->
 
-        <p class="lead">Please <a href="mailto:support@opmantek.com">email</a> the file <?= $logfile ?> and (if you can access) the result of the <a href="/open-audit/index.php/support?format=json_data" target="_blank">Support Output<a> along with a description of what you were doing at the time of this error to FirstWave.</p>
+        <p class="lead">Please <a href="mailto:support@opmantek.com">email</a> the file <?= $logfile ?> and (if you can access) the result of the <a href="<?= $meta->baseurl ?>index.php/support?format=json_data" target="_blank">Support Output<a> along with a description of what you were doing at the time of this error to FirstWave.</p>
 
     </div>
 

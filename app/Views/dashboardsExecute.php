@@ -223,7 +223,7 @@ window.onload = function () {
             data = JSON.stringify(data);
             $.ajax({
                 type: "PATCH",
-                url: "/open-audit/index.php/users/" + <?= $user->id ?>,
+                url: "<?= url_to('usersRead', $user->id) ?>",
                 contentType: "application/json",
                 data: {data : data},
                 success: function (data) {

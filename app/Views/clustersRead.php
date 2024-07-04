@@ -305,7 +305,7 @@ if ($style === 'icontext') {
                                             <?php $memory = round(($item->attributes->{'devices.memory_count'} / 1024 / 1024), 2) . ' GB'; ?>
                                         <tr>
                                             <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
-                                            <td class="text-center"><img src="/open-audit/device_images/<?= $item->attributes->{'devices.icon'} ?>.svg" style="border-width:0px; width:24px; height:24px" title="<?= __('Icon') ?>" alt="<?= __('Icon') ?>" /></td>
+                                            <td class="text-center"><img src="<?= $meta->baseurl ?>device_images/<?= $item->attributes->{'devices.icon'} ?>.svg" style="border-width:0px; width:24px; height:24px" title="<?= __('Icon') ?>" alt="<?= __('Icon') ?>" /></td>
                                             <td><?= $item->attributes->{'cluster.role'} ?></td>
                                             <td><?= $item->attributes->{'devices.name'} ?></td>
                                             <td><span style="display:none;"><?= $item->attributes->{'devices.ip_padded'} ?></span><?= $item->attributes->{'devices.ip'} ?></td>
@@ -348,7 +348,7 @@ if ($style === 'icontext') {
                                     <tbody>
                                         <?php foreach ($included['guests'] as $item) { ?>
                                             <?php $memory = round(($item->attributes->{'vm.memory_count'} / 1024), 2) . ' GB'; ?>
-                                            <?php $icon = (!empty($item->attributes->{'guest.icon'})) ? '<img src="/open-audit/device_images/' . $item->attributes->{'guest.icon'} . '.svg" style="border-width:0px; width:24px; height:24px" title="' . __('Icon') . '" alt="' . __('Icon') . '" />' : ''; ?>
+                                            <?php $icon = (!empty($item->attributes->{'guest.icon'})) ? '<img src="<?= $meta->baseurl ?>device_images/' . $item->attributes->{'guest.icon'} . '.svg" style="border-width:0px; width:24px; height:24px" title="' . __('Icon') . '" alt="' . __('Icon') . '" />' : ''; ?>
                                         <tr>
                                             <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'vm.guest_device_id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
                                             <td class="text-center"><?= $icon ?></td>
