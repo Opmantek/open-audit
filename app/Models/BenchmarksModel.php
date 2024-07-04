@@ -155,6 +155,8 @@ class BenchmarksModel extends BaseModel
             return [];
         }
 
+        $instance = & get_instance();
+
         // Delete any existing logs
         $sql = "DELETE FROM benchmarks_log WHERE benchmark_id = ? and device_id = ?";
         $this->db->query($sql, [$id, $device_id]);
@@ -424,7 +426,6 @@ class BenchmarksModel extends BaseModel
                 }
             }
             if (!empty($result->id)) {
-
                 $sql = "INSERT INTO benchmarks_result VALUES (null, ?, 'y', NOW(), NOW(), ?, ?, ?)";
                 $this->db->query($sql, [$device_id, $id, $result->external_ident, $result->result]);
 
@@ -588,7 +589,6 @@ class BenchmarksModel extends BaseModel
                 $results[$row->benchmark_id]->pass = 0;
                 $results[$row->benchmark_id]->fail = 0;
                 $results[$row->benchmark_id]->other = 0;
-
             }
             if ($row->result === 'pass') {
                 $results[$row->benchmark_id]->pass = $row->count;
@@ -638,7 +638,11 @@ class BenchmarksModel extends BaseModel
         $good_devices = implode(', ', $actual_devices);
         foreach ($unique_os as $os) {
             $explode = explode(' ', $os);
-            $sql = "SELECT count(id) AS `count` FROM devices WHERE org_id IN ($orgs) AND os_family = ? AND os_version LIKE ? AND id NOT IN ($good_devices)";
+            if (!empty($good_devices)) {
+                $sql = "SELECT count(id) AS `count` FROM devices WHERE org_id IN ($orgs) AND os_family = ? AND os_version LIKE ? AND id NOT IN ($good_devices)";
+            } else {
+                $sql = "SELECT count(id) AS `count` FROM devices WHERE org_id IN ($orgs) AND os_family = ? AND os_version LIKE ?";
+            }
             $result = $this->db->query($sql, [$explode[0], $explode[1] . '%'])->getResult();
             if (!empty($result[0]->count)) {
                 $included['devices'][$os] = $result[0]->count;
@@ -708,8 +712,11 @@ class BenchmarksModel extends BaseModel
             }
             $alldevices[] = $device->id;
         }
-        $sql = "SELECT benchmarks_result.device_id, benchmarks_result.result, count(benchmarks_result.result) AS `count` FROM benchmarks_result WHERE device_id IN (" . implode(',', $alldevices) . ") GROUP BY benchmarks_result.device_id, benchmarks_result.result";
-        $alldevices = $this->db->query($sql)->getResult();
+        if (!empty($alldevices)) {
+            $sql = "SELECT benchmarks_result.device_id, benchmarks_result.result, count(benchmarks_result.result) AS `count` FROM benchmarks_result WHERE device_id IN (" . implode(',', $alldevices) . ") GROUP BY benchmarks_result.device_id, benchmarks_result.result";
+            log_message('debug', $sql);
+            $alldevices = $this->db->query($sql)->getResult();
+        }
         foreach ($alldevices as $alldevice) {
             foreach ($devices as $device) {
                 if (intval($alldevice->device_id) === intval($device->id)) {
@@ -723,7 +730,7 @@ class BenchmarksModel extends BaseModel
         $sql = 'SELECT benchmarks_log.*, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip` FROM benchmarks_log LEFT JOIN devices ON (benchmarks_log.device_id = devices.id) WHERE benchmarks_log.benchmark_id = ?';
         $included['logs'] = $this->db->query($sql, [$id])->getResult();
 
-        for ($i=0; $i < count($included['logs']); $i++) { 
+        for ($i=0; $i < count($included['logs']); $i++) {
             $included['logs'][$i]->{'devices.ip'} = ip_address_from_db($included['logs'][$i]->{'devices.ip'});
         }
 
@@ -846,7 +853,7 @@ class BenchmarksModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'type', 'os', 'last_run', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'os', 'last_run');
         $dictionary->attributes->create = array('name','org_id','type'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
