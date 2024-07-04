@@ -920,5 +920,13 @@ function ssg_definitions()
     $item->benchmark = 'xccdf_org.ssgproject.content_profile_stig';
     $ssg_definitions[] = $item;
 
+    $item = new \stdClass();
+    $item->os_family = 'Windows 11';
+    $item->os_version = '';
+    $item->title = 'Microsoft Windows 11 STIG';
+    $item->file = 'WindowsClient-11-1.6.xml';
+    $item->benchmark = 'Microsoft_Windows_11_STIG';
+    $ssg_definitions[] = $item;
+
     return $ssg_definitions;
 }
