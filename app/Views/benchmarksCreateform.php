@@ -132,7 +132,11 @@ window.onload = function () {
         <?php
         $oss = [];
         foreach ($included['ssg_definitions'] as $ssg) {
-            $oss[] = $ssg->os_family . ' ' . $ssg->os_version;
+            if (strpos($ssg->os_family, 'Windows') !== false) {
+                $oss[] = $ssg->os_family;
+            } else {
+                $oss[] = $ssg->os_family . ' ' . $ssg->os_version;
+            }
         }
         $oss = array_unique($oss);
         foreach ($oss as $os) {
@@ -150,15 +154,15 @@ window.onload = function () {
             }
             
             <?php
-                foreach ($oss as $os) {
-                    echo "        if ($(\"#data\\\\[attributes\\\\]\\\\[os\\\\]\").val() == '$os') {\n";
-                    foreach ($included['ssg_definitions'] as $ssg) {
-                        if ($ssg->os_family . ' ' . $ssg->os_version === $os) {
-                            echo "            \$(\"#data\\\\[attributes\\\\]\\\\[type\\\\]\").append(\$('<option>', { value: '$ssg->title', text: '$ssg->title' }));\n        ";
-                        }
+            foreach ($oss as $os) {
+                echo "        if ($(\"#data\\\\[attributes\\\\]\\\\[os\\\\]\").val() == '$os') {\n";
+                foreach ($included['ssg_definitions'] as $ssg) {
+                    if ($ssg->os_family . ' ' . $ssg->os_version === $os or $ssg->os_family === $os) {
+                        echo "            \$(\"#data\\\\[attributes\\\\]\\\\[type\\\\]\").append(\$('<option>', { value: '$ssg->title', text: '$ssg->title' }));\n        ";
                     }
-                    echo "        }\n";
                 }
+                echo "        }\n";
+            }
             ?>
             var str = $("#data\\[attributes\\]\\[os\\]").val();
             var ret = str.split(" ");
@@ -190,9 +194,12 @@ window.onload = function () {
             $("#devicesTable").empty();
             $value = $("#data\\[attributes\\]\\[os\\]").val();
             $properties = "?devices.os_family=" + $value.replace(' ', '&devices.os_version=') + "&format=json";
+            if ($value.indexOf('Windows') !== -1) {
+                $properties = "?devices.os_family=" + $value + "%25&devices.os_version=&format=json";
+            }
             $.ajax({
                 type: "GET",
-                url: '/open-audit/index.php/queries/<?= $included['query'] ?>/execute' + $properties,
+                url: '<?= base_url()?>index.php/queries/<?= $included['query'] ?>/execute' + $properties,
                 success: function (data) {
                     populate_device_table(data.data);
                 },
@@ -217,7 +224,7 @@ window.onload = function () {
                     credentials = '<span class="fa-solid fa-check text-success"><\/span>';
                 }
                 $("#devicesTable").append('<tr>\
-                <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" href="/open-audit/index.php/devices/' + device.id + '"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-desktop" aria-hidden="true"><\/span><\/a><\/td>\
+                <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" href="<?= $meta->baseurl ?>index.php/devices/' + device.id + '"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-desktop" aria-hidden="true"><\/span><\/a><\/td>\
                 <td><strong>' + device.attributes['devices.name'] + '<\/strong><\/td>\
                 <td>' + device.attributes['devices.ip'] + '<\/td>\
                 <td>' + device.attributes['devices.os_family'] + ' ' + device.attributes['devices.os_version'] + '<\/td>\
