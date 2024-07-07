@@ -220,11 +220,13 @@ if (php_uname('s') === 'Windows NT') {
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="row" style="padding-top:16px;">
-                                        <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="data[attributes][select_external_attribute]" class="form-label"><?= __('Attribute') ?></label><br />
-                                            <select class="form-select" name="data[attributes][select_external_attribute]" id="data[attributes][select_external_attribute]" aria-label="<?= __('Attribute') ?>">
-                                            </select>
+                                    <div id="select_external_attribute">
+                                        <div class="row" style="padding-top:16px;">
+                                            <div class="offset-2 col-8" style="position:relative;">
+                                                <label for="data[attributes][select_external_attribute]" class="form-label"><?= __('Attribute') ?></label><br />
+                                                <select class="form-select" name="data[attributes][select_external_attribute]" id="data[attributes][select_external_attribute]" aria-label="<?= __('Attribute') ?>">
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div id="select_external_value">
@@ -480,6 +482,13 @@ window.onload = function () {
             field_count = field_count + 1;
         });
 
+        for (i = 0; i < field_count; i++) {
+            if ($("#data\\[attributes\\]\\[fields\\]\\[" + i + "\\]\\[external_field_name\\]").val() > "" && $("#data\\[attributes\\]\\[fields\\]\\[" + i + "\\]\\[external_field_name\\]").val() !== 'name') {
+                $('#data\\[attributes\\]\\[select_external_attribute\\]').append("<option value=\"" + $("#data\\[attributes\\]\\[fields\\]\\[" + i + "\\]\\[external_field_name\\]").val() + "\">" + $("#data\\[attributes\\]\\[fields\\]\\[" + i + "\\]\\[external_field_name\\]").val() + "</option>");
+            }
+        }
+        $('#data\\[attributes\\]\\[select_external_attribute\\]').append("<option value=\"name\">name</option>");
+
         $('#data\\[attributes\\]\\[select_internal_type\\]').change(function (e) {
             $('#data\\[attributes\\]\\[select_internal_attribute\\]').empty();
             if ($(this).val() == 'query') {
@@ -535,7 +544,7 @@ window.onload = function () {
             val = $(this).val();
             found = false;
             for (i = 0; i < field_count; i++) {
-                if (val == $("#data\\\[attributes\\\]\\\[fields\\\]\\\[" + i + "\\\]\\\[external_field_name\\\]").val()) {
+                if (val == $("#data\\[attributes\\]\\[fields\\]\\[" + i + "\\]\\[external_field_name\\]").val()) {
                     found = true;
                 }
             }
