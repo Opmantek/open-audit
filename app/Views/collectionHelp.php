@@ -52,6 +52,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
 
                             <?= @$body ?>
 
+                            <?php if ($meta->collection !== 'components') { ?>
                             <h2><?= __('Creating') ?></h2>
                             <p>An entry can be created using the web interface if the current user logged in has a role that contains the <?= $meta->collection ?>::create permission.<br><br>
                                 Go to menu: <?= $menu ?> -> <?= $title ?> -> <a href="<?= url_to($meta->collection . 'CreateForm') ?>">Create <?= $title ?></a>. Also can be created from the Attributes View, using the "Create" button.</p>
@@ -78,49 +79,53 @@ $edition = $instance->collections->{$meta->collection}->edition;
                             <?php } ?>
 
                             <h2><?= __('Database Definition') ?></h2>
-                    <div class="table-responsive">
-                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <td><?= __('Name') ?></td>
-                                    <td><?= __('Type') ?></td>
-                                    <td><?= __('Default') ?></td>
-                                    <td><?= __('Max Length') ?></td>
-                                    <td><?= __('Primary Key') ?></td>
-                                    <td><?= __('Valid Values') ?></td>
-                                    <td class="text-center"><?= __('Required') ?> <span style="color: #dc3545;">*</span></td>
-                                    <td><?= __('Description') ?></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($data[0]->attributes->columns as $column) { ?>
-                                <tr>
-                                    <td><?= $column->name ?></td>
-                                    <td><?= $column->type ?></td>
-                                    <td><?= $column->default ?></td>
-                                    <td><?= $column->max_length ?></td>
-                                    <td><?= $column->primary_key ?></td>
-                                    <td><?php
-                                    if (!empty($column->values)) {
-                                        (str_replace("','", "', '", $column->values));
-                                    } ?></td>
-                                    <td class="text-center">
-                                        <?php if (in_array($column->name, $dictionary->attributes->create)) { ?>
-                                            <span class="fa fa-check text-success"></span>
+                            <div class="table-responsive">
+                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <td><?= __('Name') ?></td>
+                                            <td><?= __('Type') ?></td>
+                                            <td><?= __('Default') ?></td>
+                                            <td><?= __('Max Length') ?></td>
+                                            <td><?= __('Primary Key') ?></td>
+                                            <td><?= __('Valid Values') ?></td>
+                                            <td class="text-center"><?= __('Required') ?> <span style="color: #dc3545;">*</span></td>
+                                            <td><?= __('Description') ?></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($data[0]->attributes->columns as $column) { ?>
+                                        <tr>
+                                            <td><?= $column->name ?></td>
+                                            <td><?= $column->type ?></td>
+                                            <td><?= $column->default ?></td>
+                                            <td><?= $column->max_length ?></td>
+                                            <td><?= $column->primary_key ?></td>
+                                            <td><?php
+                                            if (!empty($column->values)) {
+                                                (str_replace("','", "', '", $column->values));
+                                            } ?></td>
+                                            <td class="text-center">
+                                                <?php if (in_array($column->name, $dictionary->attributes->create)) { ?>
+                                                    <span class="fa fa-check text-success"></span>
+                                                <?php } ?>
+                                            </td>
+                                            <?php if (!empty($dictionary->columns->{$column->name})) { ?>
+                                                <?php if (is_string($dictionary->columns->{$column->name})) { ?>
+                                                <td><?= $dictionary->columns->{$column->name} ?></td>
+                                                <?php } else { ?>
+                                                <td><pre><?= json_encode($dictionary->columns->{$column->name}) ?></td>
+                                                <?php } ?>
+                                            <?php } else { ?>
+                                                <td></td>
+                                            <?php } ?>
+                                        </tr>
                                         <?php } ?>
-                                    </td>
-                                    <?php if (is_string($dictionary->columns->{$column->name})) { ?>
-                                    <td><?= $dictionary->columns->{$column->name} ?></td>
-                                    <?php } else { ?>
-                                    <td><pre><?= json_encode($dictionary->columns->{$column->name}) ?></td>
-                                    <?php } ?>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p><br><span style="color: #dc3545;">*</span>&nbsp;<?= __('Note') ?> - <?= __('This column is required by Open-AudIT to create an item of this type') ?></p>
-
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p><br><span style="color: #dc3545;">*</span>&nbsp;<?= __('Note') ?> - <?= __('This column is required by Open-AudIT to create an item of this type') ?></p>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
