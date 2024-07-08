@@ -246,7 +246,6 @@ class WidgetsModel extends BaseModel
                 foreach ($result as $row) {
                     if (empty($widget->link)) {
                         $row->name = strtotime($row->date);
-                        #$row->link = 'devices?sub_resource=change_log&change_log.db_table=' . $widget->primary . '&change_log.db_action=' . $widget->secondary . '&change_log.timestamp=LIKE' . $row->date;
                         $row->link = 'components?components.type=change_log&change_log.db_table=' . $widget->primary . '&change_log.db_action=' . $widget->secondary . '&change_log.timestamp=LIKE' . $row->date;
                     } else {
                         $row->link = $widget->link;

@@ -429,6 +429,8 @@ if (!function_exists('response_create')) {
         $db = db_connect();
         $permission_requested = $response->meta->permission_requested;
         if (!empty($config->enterprise_binary) and $db->tableExists('enterprise')) {
+            $query_string = $response->meta->query_string;
+            unset($response->meta->query_string);
             $function = $response->meta->collection . '_' . $response->meta->action;
             if (!in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
@@ -531,6 +533,7 @@ if (!function_exists('response_create')) {
             }
             unset($response->meta->user_details);
             unset($response->meta->config);
+            $response->meta->query_string = $query_string;
         } else {
             $config->license = 'none';
             $config->product = 'community';
