@@ -31,7 +31,7 @@ if (!empty($data[0]) and $included[0]->attributes->type === 'collector') {
                             <div class="btn-group btn-group-sm float-end" role="group" id="oa_panel_buttons">
                                 <div class="page-title-right">
                                     <input type="text" class="form-control" id="value" value="" data-original-value="" style="display:none;">
-                                    <button type="button" class="btn btn-light mb-2 submit"  data-url="configuration/<?= $meta->id ?>" data-redirect="<?= BASEURL ?>" data-attribute="value" data-original-value="" title="<?= __("Decommission") ?>"><?= __("Decommission") ?></button>
+                                    <button type="button" class="btn btn-light mb-2 submit"  data-url="configuration/<?= $meta->id ?>" data-redirect="<?= base_url() ?>" data-attribute="value" data-original-value="" title="<?= __("Decommission") ?>"><?= __("Decommission") ?></button>
                                 </div>
                             </div>
                         </div>
