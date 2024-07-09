@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
 $user->permissions['components'] = '';
-if ($data[0]->type === 'benchmarks_result') {
+if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
     for ($i=0; $i < count($data); $i++) {
         unset($data[$i]->attributes->first_seen);
         unset($data[$i]->attributes->last_seen);

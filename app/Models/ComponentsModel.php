@@ -1254,6 +1254,7 @@ class ComponentsModel extends BaseModel
             }
             // we have looped through the database items
             // INSERT because the $flag is set to insert
+            // TODO - rewrite this using the columns as retrieved from the DB table and a $data array
             if ($flag === 'insert') {
                 $data_item->device_id  = $device->id;
                 $data_item->current  = 'y';
