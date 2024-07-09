@@ -327,7 +327,7 @@ class IntegrationsModel extends BaseModel
                 // The (possibly) remote system has itself as a device, see if we can determine an actual IP
                 if (stripos($integration->attributes->attributes->url, '127.0.0.1') !== false or stripos($integration->attributes->attributes->url, 'localhost') !== false) {
                     // We're talking to ourselves
-                    $ip = explode(',', $instance->config->ip);
+                    $ip = explode(',', server_ip());
                     if (!empty($ip[0])) {
                         $device->devices->ip = $ip[0];
                     }
@@ -873,7 +873,7 @@ class IntegrationsModel extends BaseModel
                     $device->devices->ip = gethostbyname($device->devices->ip);
                 }
                 $fqdn = @gethostbyaddr($device->devices->ip);
-                if (empty($device->devices->dns_fqdn) and strpos($fqdn, '.') !== false) {
+                if (empty($device->devices->dns_fqdn) and !empty($fqdn) and strpos($fqdn, '.') !== false) {
                     $device->devices->dns_fqdn = $fqdn;
                 }
             }
