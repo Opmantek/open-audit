@@ -2558,7 +2558,7 @@ CREATE TABLE `monitor` (
   `manufacture_date` varchar(20) NOT NULL DEFAULT '',
   `size` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `aspect_ratio` varchar(5) NOT NULL DEFAULT '',
-  `edid_version` varchar(50) NOT NULL DEFAULT '',
+  `interface` varchar(100) NOT NULL DEFAULT '',
   `cost_code` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),

@@ -1249,6 +1249,7 @@ if (!empty($included['fields'])) {
                                                     <th><?= __('Serial') ?></th>
                                                     <th><?= __('Manufacture Date') ?></th>
                                                     <th><?= __('Size') ?></th>
+                                                    <th><?= __('Description') ?></th>
                                                     <th><?= __('Aspect Ratio') ?></th>
                                                 </tr>
                                             </thead>
@@ -1262,6 +1263,7 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->serial ?></td>
                                                     <td><?= $row->manufacture_date ?></td>
                                                     <td><?= $row->size ?></td>
+                                                    <td><?= $row->description ?></td>
                                                     <td><?= $row->aspect_ratio ?></td>
                                                 </tr>
                                                 <?php } ?>

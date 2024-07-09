@@ -1,6 +1,20 @@
 <?php
 $output .= "Upgrade database to 5.3.0 commenced.\n\n";
 
+if ($db->fieldExists('edid_version', 'monitor')) {
+    $sql = "ALTER TABLE `monitor` DROP `edid_version`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('interface', 'monitor')) {
+    $sql = "ALTER TABLE `monitor` ADD `interface` varchar(100) NOT NULL DEFAULT '' AFTER `aspect_ratio`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 if (!$db->tableExists('benchmarks')) {
     $sql = "CREATE TABLE `benchmarks` (
         `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

@@ -27,6 +27,13 @@ if ($debug -gt 0) {
     Write-Host "Starting Audit"
 }
 
+function Get-LittleEndianInt($array, $index) {
+    $temp = @(0) * 4
+    [Array]::Copy($array, $index, $temp, 0, 4)
+    [Array]::Reverse($temp)
+    [System.BitConverter]::ToInt32($temp, 0)
+}
+
 $Win32_BIOS = Get-WmiObject -Class Win32_BIOS
 $Win32_ComputerSystem = Get-WmiObject -Class Win32_ComputerSystem
 $Win32_ComputerSystemProduct = Get-WmiObject -Class Win32_ComputerSystemProduct
@@ -692,87 +699,163 @@ if ($debug -gt 0) {
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.monitor = @()
 $item = @{}
-$Win32_DesktopMonitor | ForEach {
-  Clear-Variable -name item
-  $item = @{}
-  $item.model = $_.Caption
-  $item.device = $_.PNPDeviceID
-  $item.manufacturer = $_.MonitorManufacturer
-  if ( $_.MonitorManufacturer -eq 'ACR') { $item.manufacturer = 'Acer' }
-  if ( $_.MonitorManufacturer -eq 'ACT') { $item.manufacturer = 'Targa' }
-  if ( $_.MonitorManufacturer -eq 'ADI') { $item.manufacturer = 'ADI' }
-  if ( $_.MonitorManufacturer -eq 'AOC') { $item.manufacturer = 'AOC International' }
-  if ( $_.MonitorManufacturer -eq 'API') { $item.manufacturer = 'Acer' }
-  if ( $_.MonitorManufacturer -eq 'APP') { $item.manufacturer = 'Apple' }
-  if ( $_.MonitorManufacturer -eq 'ART') { $item.manufacturer = 'ArtMedia' }
-  if ( $_.MonitorManufacturer -eq 'AST') { $item.manufacturer = 'AST Research' }
-  if ( $_.MonitorManufacturer -eq 'CPL') { $item.manufacturer = 'Compal' }
-  if ( $_.MonitorManufacturer -eq 'CPQ') { $item.manufacturer = 'Compaq' }
-  if ( $_.MonitorManufacturer -eq 'CTX') { $item.manufacturer = 'Chuntex' }
-  if ( $_.MonitorManufacturer -eq 'DEC') { $item.manufacturer = 'Digital Equipment Corporation' }
-  if ( $_.MonitorManufacturer -eq 'DEL') { $item.manufacturer = 'Dell' }
-  if ( $_.MonitorManufacturer -eq 'Dell Inc.') { $item.manufacturer = 'Dell' }
-  if ( $_.MonitorManufacturer -like '*Dell Inc.*') { $item.manufacturer = 'Dell' }
-  if ( $_.MonitorManufacturer -eq 'DPC') { $item.manufacturer = 'Delta' }
-  if ( $_.MonitorManufacturer -eq 'DWE') { $item.manufacturer = 'Daewoo' }
-  if ( $_.MonitorManufacturer -eq 'ECS') { $item.manufacturer = 'Elitegroup Computer Systems' }
-  if ( $_.MonitorManufacturer -eq 'EIZ') { $item.manufacturer = 'EIZO' }
-  if ( $_.MonitorManufacturer -eq 'EPI') { $item.manufacturer = 'Envision' }
-  if ( $_.MonitorManufacturer -eq 'FCM') { $item.manufacturer = 'Funai' }
-  if ( $_.MonitorManufacturer -eq 'FUS') { $item.manufacturer = 'Fujitsu' }
-  if ( $_.MonitorManufacturer -eq 'GSM') { $item.manufacturer = 'LG Electronics' }
-  if ( $_.MonitorManufacturer -eq 'GWY') { $item.manufacturer = 'Gateway 2000' }
-  if ( $_.MonitorManufacturer -eq 'HEI') { $item.manufacturer = 'Hyundai' }
-  if ( $_.MonitorManufacturer -eq 'HIT') { $item.manufacturer = 'Hitachi' }
-  if ( $_.MonitorManufacturer -eq 'HSD') { $item.manufacturer = 'Hanns.G' }
-  if ( $_.MonitorManufacturer -eq 'HSL') { $item.manufacturer = 'Hansol Electronics' }
-  if ( $_.MonitorManufacturer -eq 'HTC') { $item.manufacturer = 'Hitachi' }
-  if ( $_.MonitorManufacturer -eq 'HWP') { $item.manufacturer = 'Hewlett Packard' }
-  if ( $_.MonitorManufacturer -eq 'IBM') { $item.manufacturer = 'IBM' }
-  if ( $_.MonitorManufacturer -eq 'ICL') { $item.manufacturer = 'Fujitsu' }
-  if ( $_.MonitorManufacturer -eq 'IVM') { $item.manufacturer = 'Idek Iiyama' }
-  if ( $_.MonitorManufacturer -eq 'KFC') { $item.manufacturer = 'KFC Computek' }
-  if ( $_.MonitorManufacturer -eq 'LEN') { $item.manufacturer = 'Lenovo' }
-  if ( $_.MonitorManufacturer -eq 'LGD') { $item.manufacturer = 'LG Display' }
-  if ( $_.MonitorManufacturer -eq 'LKM') { $item.manufacturer = 'ADLAS / AZALEA' }
-  if ( $_.MonitorManufacturer -eq 'LNK') { $item.manufacturer = 'LINK Technologies' }
-  if ( $_.MonitorManufacturer -eq 'LTN') { $item.manufacturer = 'Lite-On' }
-  if ( $_.MonitorManufacturer -eq 'MAG') { $item.manufacturer = 'MAG InnoVision' }
-  if ( $_.MonitorManufacturer -eq 'MAX') { $item.manufacturer = 'Maxdata Computer' }
-  if ( $_.MonitorManufacturer -eq 'MEI') { $item.manufacturer = 'Panasonic' }
-  if ( $_.MonitorManufacturer -eq 'MEL') { $item.manufacturer = 'Mitsubishi Electronics' }
-  if ( $_.MonitorManufacturer -eq 'MIR') { $item.manufacturer = 'Miro' }
-  if ( $_.MonitorManufacturer -eq 'MTC') { $item.manufacturer = 'MITAC' }
-  if ( $_.MonitorManufacturer -eq 'NAN') { $item.manufacturer = 'NANAO' }
-  if ( $_.MonitorManufacturer -eq 'NEC') { $item.manufacturer = 'NEC' }
-  if ( $_.MonitorManufacturer -eq 'NOK') { $item.manufacturer = 'Nokia' }
-  if ( $_.MonitorManufacturer -eq 'OQI') { $item.manufacturer = 'Optiquest' }
-  if ( $_.MonitorManufacturer -eq 'PBN') { $item.manufacturer = 'Packard Bell' }
-  if ( $_.MonitorManufacturer -eq 'PGS') { $item.manufacturer = 'Princeton Graphic Systems' }
-  if ( $_.MonitorManufacturer -eq 'PHL') { $item.manufacturer = 'Philips' }
-  if ( $_.MonitorManufacturer -eq 'PNP') { $item.manufacturer = 'Plug n Play (Microsoft)' }
-  if ( $_.MonitorManufacturer -eq 'REL') { $item.manufacturer = 'Relisys' }
-  if ( $_.MonitorManufacturer -eq 'SAM') { $item.manufacturer = 'Samsung' }
-  if ( $_.MonitorManufacturer -eq 'SEC') { $item.manufacturer = 'Samsung' }
-  if ( $_.MonitorManufacturer -eq 'SHP') { $item.manufacturer = 'Sharp' }
-  if ( $_.MonitorManufacturer -eq 'SMI') { $item.manufacturer = 'Smile' }
-  if ( $_.MonitorManufacturer -eq 'SMC') { $item.manufacturer = 'Samtron' }
-  if ( $_.MonitorManufacturer -eq 'SNI') { $item.manufacturer = 'Siemens Nixdorf' }
-  if ( $_.MonitorManufacturer -eq 'SNY') { $item.manufacturer = 'Sony Corporation' }
-  if ( $_.MonitorManufacturer -eq 'SPT') { $item.manufacturer = 'Sceptre' }
-  if ( $_.MonitorManufacturer -eq 'SRC') { $item.manufacturer = 'Shamrock Technology' }
-  if ( $_.MonitorManufacturer -eq 'STN') { $item.manufacturer = 'Samtron' }
-  if ( $_.MonitorManufacturer -eq 'STP') { $item.manufacturer = 'Sceptre' }
-  if ( $_.MonitorManufacturer -eq 'TAT') { $item.manufacturer = 'Tatung' }
-  if ( $_.MonitorManufacturer -eq 'TRL') { $item.manufacturer = 'Royal Information Company' }
-  if ( $_.MonitorManufacturer -eq 'TOS') { $item.manufacturer = 'Toshiba' }
-  if ( $_.MonitorManufacturer -eq 'TSB') { $item.manufacturer = 'Toshiba' }
-  if ( $_.MonitorManufacturer -eq 'UNM') { $item.manufacturer = 'Unisys' }
-  if ( $_.MonitorManufacturer -eq 'VSC') { $item.manufacturer = 'ViewSonic' }
-  if ( $_.MonitorManufacturer -eq 'WTC') { $item.manufacturer = 'Wen Technology' }
-  if ( $_.MonitorManufacturer -eq 'ZCM') { $item.manufacturer = 'Zenith Data Systems' }
-  if ( $_.MonitorManufacturer -eq '___') { $item.manufacturer = 'Targa' }
-  $result.monitor += $item
+$monitors = Get-WmiObject WMIMonitorID -Namespace root\wmi | Sort -Descending
+ForEach ($monitor in $monitors) {
+    Clear-Variable -name item
+    $item = @{}
+    $thisMonitor = (Get-WmiObject Win32_PnPEntity -Filter "Service='monitor'" | Where-Object {$monitor.InstanceName.TrimEnd('0').TrimEnd('_') -contains $_.DeviceID})
+    $item.device = $thisMonitor.deviceid
+    $path = "HKLM:\SYSTEM\CurrentControlSet\Enum\" + $item.device + "\Device Parameters"
+    $edid = (Get-ItemProperty $path EDID -ErrorAction SilentlyContinue).EDID
+    $HorizontalSize = $edid[21]
+    $VerticalSize = $edid[22]
+    $item.size = [Math]::Round([Math]::Sqrt($HorizontalSize*$HorizontalSize + $VerticalSize*$VerticalSize) / 2.54)
+    $item.model = ""
+    for ($i = 54; $i -lt 109; $i += 18) {
+        if ((Get-LittleEndianInt $edid $i) -eq 0xff) {
+            for ($j = $i+5; $edid[$j] -ne 10 -and $j -lt $i+18; $j++) { $item.serial += [char]$edid[$j] }
+        }
+        if ((Get-LittleEndianInt $edid $i) -eq 0xfc) {
+            for ($j = $i+5; $edid[$j] -ne 10 -and $j -lt $i+18; $j++) { $item.model += [char]$edid[$j] }
+        }
+    }
+    $res = Get-WmiObject WmiMonitorListedSupportedSourceModes -Namespace root\wmi | Where-Object {$_.InstanceName -eq $monitor.InstanceName}
+    $pmsmi = $res.PreferredMonitorSourceModeIndex
+    $item.description = [string]$res.MonitorSourceModes[$pmsmi].HorizontalActivePixels + " x " + [string]$res.MonitorSourceModes[$pmsmi].VerticalActivePixels
+    $item.aspect_ratio = ""
+    $item.aspect_ratio = switch ($item.description) {
+        {@("854 x 450", "1280 x 720", "1366 x 768", "1920 x 1080", "2048 x 1152", "3840 x 2160", "7680 x 4320", "15360 x 8640") -contains $_ } { "16:9" }
+        {@("320 x 240", "640 x 480", "768 x 576", "800 x 600", "1024 x 768", "1400 x 1050", "1600 x 1200", "2048 x 1536", "4096 x 3072") -contains $_ } { "4:3" }
+        {@("320 x 200", "1280 x 800", "1680 x 1050", "1920 x 1200", "2220 x 1080", "2560 x 1600", "3840 x 2400") -contains $_ } { "16:10" }
+        {@("720 x 480", "1152 x 768", "1440 x 960", "2560 x 1440") -contains $_ } { "3:2" }
+        {@("800 x 480", "1280 x 768") -contains $_ } { "5:3" }
+        {@("1280 x 1024", "2560 x 2048", "3200 x 1800") -contains $_ } { "5:4" }
+        {@("1920 x 800", "2560 x 1080", "2880 x 1200", "3440 x 1440", "3840 x 1600", "5160 x 2160", "4320 x 1800", "5120 x 2160", "5760 x 2400", "6880 x 2880", "7680 x 3200", "7680 x 3240", "8640 x 3600", "10240 x 4320") -contains $_ } { "21:9" }
+        default { "" }
+    }
+    if ($item.aspect_ratio -eq "" -and $item.description -contains "10240 x ") {
+        $item.aspect_ratio = "16:9"
+    }
+    if ($item.aspect_ratio -eq "" -and $item.description -contains "2048 x ") {
+        $item.aspect_ratio = "16:9"
+    }
+    $interface = (Get-WMIObject WmiMonitorConnectionParams -NameSpace root\wmi | Where-Object {$_.InstanceName -eq $monitor.InstanceName})
+    $item.interface = Switch ($interface.VideoOutputTechnology){
+        "-2" { "Uninitialized" }
+        "-1" { "Unknown" }
+        "0"  { "VGA" }
+        "1"  { "SVGA" }
+        "2"  { "Composite" }
+        "3"  { "Component" }
+        "4"  { "DVI" }
+        "5"  { "HDMI" }
+        "6"  { "LVDS" }
+        "8"  { "D_IPN" }
+        "9"  { "SDI" }
+        "10" { "DisplayPort-External" }
+        "11" { "DisplayPort-Embedded" }
+        "12" { "UDI-External" }
+        "13" { "UDI-Embedded" }
+        "14" { "SDTV-Dongle" }
+        "15" { "MiraCast" }
+        "2147483648" { "Laptop Internal" }
+        default { $interface.VideoOutputTechnology }
+    }
+    $manufacturer = ($monitor.ManufacturerName -notmatch 0 | ForEach{[char]$_}) -join "";
+    $item.manufacturer = switch ($manufacturer) {
+        "___" { "Targa" }
+        "ACR" { "Acer" }
+        "ACT" { "Targa" }
+        "ADI" { "ADI" }
+        "AOC" { "AOC International" }
+        "API" { "Acer" }
+        "APP" { "Apple" }
+        "ART" { "ArtMedia" }
+        "AST" { "AST Research" }
+        "AUO" { "AU Optronics" }
+        "BMM" { "BMM" }
+        "BNQ" { "BenQ Corporation" }
+        "BOE" { "BOE Display Technology" }
+        "CPL" { "Compal" }
+        "CPQ" { "Compaq" }
+        "CTX" { "Chuntex" }
+        "DEC" { "Digital Equipment Corporation" }
+        "DEL" { "Dell" }
+        "DPC" { "Delta" }
+        "DWE" { "Daewoo" }
+        "ECS" { "Elitegroup Computer Systems" }
+        "EIZ" { "EIZO" }
+        "EPI" { "Envision" }
+        "FCM" { "Funai" }
+        "FUS" { "Fujitsu" }
+        "GSM" { "LG Electronics" }
+        "GWY" { "Gateway 2000" }
+        "HEI" { "Hyundai" }
+        "HIQ" { "Hyundai ImageQuest" }
+        "HIT" { "Hitachi" }
+        "HPN" { "Hewlett Packard" }
+        "HSD" { "Hanns.G" }
+        "HSL" { "Hansol Electronics" }
+        "HTC" { "Hitachi" }
+        "HWP" { "Hewlett Packard" }
+        "IBM" { "IBM" }
+        "ICL" { "Fujitsu" }
+        "IFS" { "InFocus" }
+        "IQT" { "Hyundai" }
+        "IVM" { "Idek Iiyama" }
+        "KDS" { "KDS USA" }
+        "KFC" { "KFC Computek" }
+        "LEN" { "Lenovo" }
+        "LGD" { "LG Display" }
+        "LKM" { "ADLAS / AZALEA" }
+        "LNK" { "LINK Technologies" }
+        "LPL" { "LG Philips" }
+        "LTN" { "Lite-On" }
+        "MAG" { "MAG InnoVision" }
+        "MAX" { "Maxdata Computer" }
+        "MEI" { "Panasonic" }
+        "MEL" { "Mitsubishi Electronics" }
+        "MIR" { "Miro" }
+        "MTC" { "MITAC" }
+        "NAN" { "NANAO" }
+        "NEC" { "NEC" }
+        "NOK" { "Nokia" }
+        "NVD" { "Nvidia" }
+        "OQI" { "Optiquest" }
+        "PBN" { "Packard Bell" }
+        "PCK" { "Daewoo" }
+        "PDC" { "Polaroid" }
+        "PGS" { "Princeton Graphic Systems" }
+        "PHL" { "Philips" }
+        "PNP" { "Plug n Play (Microsoft)" }
+        "PRT" { "Princeton" }
+        "REL" { "Relisys" }
+        "SAM" { "Samsung" }
+        "SEC" { "Samsung" }
+        "SHP" { "Sharp" }
+        "SMC" { "Samtron" }
+        "SMI" { "Smile" }
+        "SNI" { "Siemens Nixdorf" }
+        "SNY" { "Sony Corporation" }
+        "SPT" { "Sceptre" }
+        "SRC" { "Shamrock Technology" }
+        "STN" { "Samtron" }
+        "STP" { "Sceptre" }
+        "TAT" { "Tatung" }
+        "TOS" { "Toshiba" }
+        "TRL" { "Royal Information Company" }
+        "TSB" { "Toshiba" }
+        "UNM" { "Unisys" }
+        "VSC" { "ViewSonic" }
+        "WTC" { "Wen Technology" }
+        "ZCM" { "Zenith Data Systems" }
+        default { $manufacturer }
+    }
+    $item.device = ([System.Text.Encoding]::UTF8.GetString($monitor.ProductCodeID)) -replace "`0", ""
+    $year = $monitor.YearOfManufacture
+    $week = $monitor.WeekOfManufacture
+    $item.manufacture_date = ((get-date -Date "$year/01/01").AddDays((7*$week))).ToString("MM/yyyy")
+    $result.monitor += $item
 }
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
 if ($debug -gt 0) {
