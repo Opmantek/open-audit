@@ -37,13 +37,11 @@ function Get-LittleEndianInt($array, $index) {
 $Win32_BIOS = Get-WmiObject -Class Win32_BIOS
 $Win32_ComputerSystem = Get-WmiObject -Class Win32_ComputerSystem
 $Win32_ComputerSystemProduct = Get-WmiObject -Class Win32_ComputerSystemProduct
-$Win32_DesktopMonitor = Get-WmiObject -Class Win32_DesktopMonitor
 $Win32_OperatingSystem = Get-WmiObject -Class Win32_OperatingSystem
 $Win32_PhysicalMemory = Get-WmiObject -Class Win32_PhysicalMemory
 $Win32_Processor = Get-WmiObject -Class Win32_Processor
 $Win32_SystemEnclosure = Get-WmiObject -Class Win32_SystemEnclosure
 $Win32_BaseBoard = Get-WmiObject -Class Win32_BaseBoard
-$MSStorageDriver = Get-WmiObject -Class MSStorageDriver_FailurePredictStatus -ErrorAction Ignore
 $Win32_LogicalDiskToPartition = Get-WmiObject -Class Win32_LogicalDiskToPartition
 $Win32_MappedLogicalDisk = Get-WmiObject -Class Win32_MappedLogicalDisk -ErrorAction Ignore
 $Win32_NetworkAdapter = Get-WmiObject -Class Win32_NetworkAdapter -ErrorAction Ignore
@@ -892,40 +890,28 @@ Get-WmiObject -Class Win32_DiskDrive | ForEach {
     $item.device = $_.DeviceID
     $item.manufacturer = $_.Manufacturer
     $item.caption = $_.Caption
-    $item.index = $_.Index
-    $item.interface_type = $_.InterfaceType
+    $item.hard_drive_index = $_.Index
     $item.scsi_logical_unit = $_.SCSITargetId
     $item.model = $_.Model
     if ($item.model.IndexOf("VMware") -eq 0) { $item.model = "VMware Virtual Disk" }
     $item.serial = $_.SerialNumber
-    $item.pnp_id = ($_.PNPDeviceID + "_0")
-    $item.pnp_id = $item.pnp_id.ToLower()
     $item.firmware = if ($_.FirmwareRevision) { $_.FirmwareRevision } Else { "" }
     $item.serial = if ($_.SerialNumber) { $_.SerialNumber } Else { "" }
     $item.size = [Math]::Round($_.size / 1024 / 1024)
     $item.partitions = $_.Partitions
-    if ($item.manufacturer -eq "(Standard disk drives)") {
-        $model = $item.model.ToLower();
-        if ($model.IndexOf("hitachi") -eq 0) { $item.manufacturer = "Hitachi" }
-        if ($model.IndexOf("maxtor") -eq 0) { $item.manufacturer = "Maxtor" }
-        if ($model.IndexOf("sandisk") -eq 0) { $item.manufacturer = "SanDisk" }
-        if ($model.IndexOf("st") -eq 0) { $item.manufacturer = "Seagate" }
-        if ($model.IndexOf("wdc") -eq 0) { $item.manufacturer = "Western Digital" }
-        if ($model.IndexOf("wd ") -eq 0) { $item.manufacturer = "Western Digital" }
-        if ($model.IndexOf("vmware") -eq 0) { $item.manufacturer = "VMware" }
-    }
-    $item.status = "Not available"
-    if ( $MSStorageDriver ) {
-        $MSStorageDriver | ForEach {
-            if ($_.InstanceName.ToLower() -eq $item.pnp_id) {
-                if ($_.PredictFailure -And $_.Active) {
-                    $item.status = $_.PredictFailure + " because of " + $_.Reason
-                } else {
-                    $item.status = "OK"
-                }
-            }
-        }
-    }
+    $model = $item.model.ToLower();
+    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("hitachi") -eq 0) { $item.manufacturer = "Hitachi" }
+    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("maxtor") -eq 0) { $item.manufacturer = "Maxtor" }
+    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("sandisk") -eq 0) { $item.manufacturer = "SanDisk" }
+    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("toshiba") -eq 0) { $item.manufacturer = "Toshiba" }
+    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("st") -eq 0) { $item.manufacturer = "Seagate" }
+    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wdc") -eq 0) { $item.manufacturer = "Western Digital" }
+    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wd ") -eq 0) { $item.manufacturer = "Western Digital" }
+    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("vmware") -eq 0) { $item.manufacturer = "VMware" }
+    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf(" wdc ") -ne -1) { $item.manufacturer = "Western Digital" }
+    $PhysicalDisk = (Get-PhysicalDisk | Where-Object {$_.DeviceId -eq $_.Index})
+    $item.interface_type = $PhysicalDisk.BusType
+    $item.status = $PhysicalDisk.HealthStatus
     $result.disk += $item
 }
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
@@ -1552,7 +1538,7 @@ $item = @{}
 $Win32_UserProfile = Get-WmiObject Win32_UserProfile
 $LocalUser = Get-LocalUser
 if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainRole -ne 5)) {
-    Get-WmiObject Win32_UserAccount -Filter "Name = 'Administrator'" | ForEach {
+    Get-WmiObject Win32_UserAccount | ForEach {
         Clear-Variable -name item
         $item = @{}
         $item.caption = $_.Caption
@@ -2099,6 +2085,7 @@ if ($debug -gt 0) {
 
 
 $result = $result | ConvertTo-Json
+$result = $result -replace '[\u0026]', "&"
 $result = $result -replace '[\u2019\u2018]', "'"
 $result = $result -replace '[\u201C\u201D]', '\"'
 
