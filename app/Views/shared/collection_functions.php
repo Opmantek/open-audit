@@ -132,7 +132,7 @@ function collection_button_read(string $collection = '', string $id = ''): strin
 
 function collection_button_execute(string $collection = '', int $id = 0): string
 {
-    $return = "<td class=\"text-center\"><a title=\"" . __('Execute') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-success\" href=\"" . url_to($collection.'Execute', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('Execute') . "\" class=\"fa fa-play\" aria-hidden=\"true\"></span></a></td>";
+    $return = "<td class=\"text-center\"><a title=\"" . __('Execute') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-success execute_button\" href=\"" . url_to($collection.'Execute', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('Execute') . "\" class=\"fa fa-play\" aria-hidden=\"true\"></span></a></td>";
     return $return;
 }
 

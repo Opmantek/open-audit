@@ -1,6 +1,22 @@
 /* inline edit */
 $(document).ready(function () {
 
+    $(document).on('click', '.execute_button', function (e) {
+        href = $(this).prop("href");
+        console.log(href);
+        $(this).prop("href", "#");
+        $(this).addClass("disabled");
+        $("#liveToastSuccess-header").text("Please Wait");
+        $("#liveToastSuccess-body").text("Executing, please wait.");
+        var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
+        var toastList = toastElList.map(function(toastEl) {
+            return new bootstrap.Toast(toastEl)
+        });
+        toastList.forEach(toast => toast.show());
+        window.location = href;
+    });
+
+
     /* select all devices on /devices for bulk edit */
     $('#select_all').click(function () {
         $(':checkbox').each(function () { this.checked = !this.checked; });
