@@ -220,6 +220,7 @@ if (!empty($included['fields'])) {
                                             <?= read_field('fqdn', $resource->fqdn, '', $update, __('FQDN')) ?>
                                             <?= read_field('dns_fqdn', $resource->dns_fqdn, '', $update, __('DNS FQDN')) ?>
                                             <?= read_field('function', $resource->function, '', $update) ?>
+                                            <?= read_field('uuid', $resource->uuid, '', false, __('UUID')) ?>
                                             <?= read_field('first_seen', $resource->first_seen, '', false, __('First Seen On')) ?>
                                             <?= read_field('last_seen', $resource->last_seen, '', false, __('Last Seen On')) ?>
                                             <?= read_field('last_seen_by', $resource->last_seen_by) ?>
