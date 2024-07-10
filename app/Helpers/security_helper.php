@@ -24,7 +24,7 @@ function simpleDecrypt(string $message = '', string $key = ''): string
     try {
         // Use the Sodium Compat library
         // $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, $nonce, $nonce, $key);
-        $plaintext = crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, $nonce, $nonce, $key);
+        $plaintext = ParagonIE_Sodium_Compat::crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, $nonce, $nonce, $key);
     } catch (Exception $e) {
         log_message('error', 'simpleDecrypt error: ' . json_encode($e));
         return '';
@@ -45,6 +45,6 @@ function simpleEncrypt(string $message = '', string $key = ''): string
     $nonce = random_bytes(24);
     // Use the Sodium Compat library
     // $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $nonce, $nonce, $key);
-    $encrypted = crypto_aead_xchacha20poly1305_ietf_encrypt($message, $nonce, $nonce, $key);
+    $encrypted = ParagonIE_Sodium_Compat::crypto_aead_xchacha20poly1305_ietf_encrypt($message, $nonce, $nonce, $key);
     return bin2hex($nonce . $encrypted);
 }
