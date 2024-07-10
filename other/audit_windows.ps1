@@ -909,7 +909,8 @@ Get-WmiObject -Class Win32_DiskDrive | ForEach {
     if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wd ") -eq 0) { $item.manufacturer = "Western Digital" }
     if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("vmware") -eq 0) { $item.manufacturer = "VMware" }
     if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf(" wdc ") -ne -1) { $item.manufacturer = "Western Digital" }
-    $PhysicalDisk = (Get-PhysicalDisk | Where-Object {$_.DeviceId -eq $_.Index})
+    $index = $_.Index
+    $PhysicalDisk = (Get-PhysicalDisk | Where-Object {$_.DeviceId -eq $index})
     $item.interface_type = $PhysicalDisk.BusType
     $item.status = $PhysicalDisk.HealthStatus
     $result.disk += $item
