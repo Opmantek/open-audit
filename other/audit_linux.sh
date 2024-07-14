@@ -2230,15 +2230,19 @@ IFS="$NEWLINEIFS";
 for line in $(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Status}}" 2>/dev/null); do
 	vm_ident=$(echo "$line" | awk '{print $1}')
 	name=$(echo "$line" | awk '{print $2}')
-	status=$(echo "$line" | awk '{print $3}')
-	uuid=""
+	status=$(echo "$line" | awk '{print $4}')
+	uuid=$(echo "$line" | awk '{print $1}')
+	config_file=$(echo "$line" | awk '{print $3}')
+	uuid=$(echo "$line" | awk '{print $1}')
 	vm_result=$vm_result"
 		<item>
 			<vm_ident>$(escape_xml "$vm_ident")</vm_ident>
-			<name>$(escape_xml "$name")</name>
-			<status>$(escape_xml "$status")</status>
-			<uuid>$(escape_xml "$uuid")</uuid>
-			<type>docker</type>
+         <name>$(escape_xml "$name")</name>
+         <status>$(escape_xml "$status")</status>
+         <uuid>$(escape_xml "$uuid")</uuid>
+         <config_file>$(escape_xml "$config_file")</config_file>
+         <type>docker</type>
+         <icon>docker</icon>
 		</item>"
 done
 
@@ -2277,6 +2281,7 @@ if [ -n "$guests" ]; then
 			<cpu_count>"$(escape_xml "$guest_cpu_count")"</cpu_count>
 			<config_file>"$(escape_xml "$guest_config_file")"</config_file>
 			<type>proxmox</type>
+			<icon>proxmox</icon>
 		</item>"
 		fi
 	done
@@ -2307,6 +2312,7 @@ if [ -n "$lxcguests" ]; then
 			<cpu_count>"$(escape_xml "$guest_cpu_count")"</cpu_count>
 			<config_file>"$(escape_xml "$guest_config_dir${guest_id}.conf")"</config_file>
 			<type>lxc</type>
+			<icon>lxc</icon>
 		</item>"
 	done
 fi
