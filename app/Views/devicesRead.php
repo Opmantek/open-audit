@@ -1415,8 +1415,8 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->type ?></td>
                                                     <td><?= $row->mount_point ?></td>
                                                     <td><?= number_format($row->size / 1000) ?> GB</td>
-                                                    <td><?= number_format($row->used / 1000) ?> GB</td>
                                                     <td><?= number_format($row->free / 1000) ?> GB</td>
+                                                    <td><?= number_format($row->used / 1000) ?> GB</td>
                                                     <td><?= $row->format ?></td>
                                                     <td><?= $row->serial ?></td>
                                                 </tr>
