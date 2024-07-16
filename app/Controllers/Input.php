@@ -34,6 +34,71 @@ use CodeIgniter\HTTP\RequestInterface;
 class Input extends BaseController
 {
 
+    public function benchmarks()
+    {
+        $db = db_connect();
+        $request = $this->request;
+
+        $input = file_get_contents('php://input');
+        if (empty($input)) {
+            log_message('error', 'Benchmark data is empty.');
+            return false;
+        }
+        // See if we have stringified JSON
+        $json = html_entity_decode($input);
+        // Remove non-printable characters
+        $json = preg_replace('/[[:^print:]]/', '', $json);
+        // Remove window control characters
+        $json = preg_replace('/[[:cntrl:]]/', '', $json);
+        if (mb_detect_encoding($json) !== 'UTF-8' and mb_detect_encoding($json) !== 'UTF-16' and mb_detect_encoding($json) !== 'UTF-16BE' and mb_detect_encoding($json) !== 'UTF-16LE') {
+            $json = mb_convert_encoding($json, 'UTF-8', mb_list_encodings());
+        }
+        try {
+            $json = json_decode($json);
+        } catch (Exception $e) {
+            log_message('error', 'Benchmark data is invalid JSON.');
+            log_message('error', 'Last error: ' .json_last_error_msg());
+            return false;
+        }
+        $json->device_id = intval($json->device_id);
+        $json->benchmark_id = intval($json->benchmark_id);
+        if (empty($json->device_id)) {
+            log_message('error', 'Invalid device id');
+            return false;
+        }
+        if (empty($json->benchmark_id)) {
+            log_message('error', 'Invalid benchmark id');
+            return false;
+        }
+        $devicesModel = model('App\Models\DevicesModel');
+        $device = $devicesModel->read($json->device_id)[0];
+        if (empty($device)) {
+            log_message('error', 'Invalid device ID supplied to Input::benchmarks. Supplied: ' . $json->device_id);
+            $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'error', Invalid device ID supplied, $device_id', '')";
+            $db->query($sql);
+            $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'error', Completed. Memory: " . round((memory_get_peak_usage(false)/1024/1024), 3) . " MiB', '')";
+            $db->query($sql);
+            return;
+        }
+        $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Processing report file.', '')";
+        $db->query($sql);
+
+        $sql = "DELETE FROM benchmarks_result WHERE device_id = ? AND benchmark_id = ?";
+        $db->query($sql, [$json->device_id, $json->benchmark_id]);
+
+        foreach ($json->result as $result) {
+            $sql = "INSERT INTO benchmarks_result VALUES (NULL, ?, 'y', NOW(), NOW(), ?, ?, ?)";
+            $db->query($sql, [$json->device_id, $json->benchmark_id, trim($result->external_ident), $result->result]);
+            // echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+        }
+
+        #$sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Processing report file completed. ' . intval(count($json->result)) . ' inserted.', '')";
+        $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Processing report file completed.', '')";
+        $db->query($sql);
+            $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Completed. Memory: " . round((memory_get_peak_usage(false)/1024/1024), 3) . " MiB', '')";
+        $db->query($sql);
+    }
+
     public function devices()
     {
         # TODO - check for allowed network

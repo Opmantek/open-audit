@@ -289,6 +289,7 @@ if (!empty($config->servers)) {
                                         <?= menuItem('devices', 'r', $user, 'devicesCollection', __('List') . ' ' . __('Devices')) ?>
                                         <?= menuItem('devices', 'c', $user, 'devicesCreateForm', __('Import') . ' ' . __('Devices') . ' ' . __('from Audit Script Result')) ?>
                                         <?= menuItem('devices', 'c', $user, 'devicesImportNMISForm', __('Import') . ' ' . __('Devices') . ' ' . __('from NMIS')) ?>
+                                        <?= menuItem('devices', '', $user, 'devicesHelp', __('Learn About') . ' ' . __('Devices')) ?>
                                         <li><hr class="dropdown-divider"></li>
                                         <?= menuItem('devices', 'c', $user, 'devicesExampleForm', __('Import') . ' ' . __('Example Devices')) ?>
                                         <?= menuItem('devices', 'c', $user, 'devicesDeleteForm', __('Delete') . ' ' . __('Example Devices')) ?>

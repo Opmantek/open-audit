@@ -205,9 +205,11 @@ class Devices extends BaseController
 
     public function example()
     {
+        set_time_limit(300);
         $db = db_connect();
         $count = 0;
-        $files = glob(APPPATH . '/../other/example_devices/*.{xml,json}', GLOB_BRACE);
+        #$files = glob(APPPATH . '/../other/example_devices/*.{xml,json}', GLOB_BRACE);
+        $files = glob('/Users/mark/audits/*.{xml,json}', GLOB_BRACE);
         $this->config->discovery_use_dns = 'n';
         foreach ($files as $file) {
             $device = file_get_contents($file);
@@ -215,6 +217,9 @@ class Devices extends BaseController
                 continue;
             }
             $device = audit_convert($device);
+            $logname = (!empty($device->system->hostname)) ? $device->system->hostname : ((!empty($device->system->ip)) ? $device->system->ip : $file);
+            log_message('info', 'Importing device ' . $logname);
+            unset($logname);
             if (!$device) {
                 log_message('error', 'Could not convert example result file ' . $file . '.');
                 \Config\Services::session()->setFlashdata('fail', 'Could not convert example result file ' . $file . '.');

@@ -92,7 +92,7 @@ class BenchmarksModel extends BaseModel
         $this->db->query($sql, [$id]);
         $sql = "DELETE FROM benchmarks_result WHERE benchmark_id = ?";
         $this->db->query($sql, [$id]);
-        $sql = "DELETE FROM benchmarks_exception WHERE benchmark_id = ?";
+        $sql = "DELETE FROM benchmarks_exceptions WHERE benchmark_id = ?";
         $this->db->query($sql, [$id]);
         return true;
     }
@@ -295,7 +295,7 @@ class BenchmarksModel extends BaseModel
         }
 
         // Copy the definition file
-        $parameters->source = '/usr/local/open-audit/other/ssg-definitions/' . $file;
+        $parameters->source = '/usr/local/open-audit/public/ssg-definitions/' . $file;
         $parameters->destination = $file;
         $output = scp($parameters);
         if ($output === false) {
@@ -606,18 +606,21 @@ class BenchmarksModel extends BaseModel
         $unique_os = array();
         $ssgs = ssg_definitions();
         foreach ($ssgs as $ssg) {
-            $unique_os[$ssg->os_family . ' ' . $ssg->os_version] = $ssg->os_family . ' ' . $ssg->os_version;
+            $unique_os[trim($ssg->os_family . ' ' . $ssg->os_version)] = trim($ssg->os_family . ' ' . $ssg->os_version);
         }
+        log_message('debug', json_encode($unique_os));
         #$sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, devices.credentials AS `devices.credentials`, software.name AS `software.name`, software.version AS `software.version`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, c1.type AS `c1.type`, c2.type AS `c2.type`, c3.type AS `c3.type` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = "openscap-scanner" AND software.current = "y") LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, "$[0]") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, "$[1]") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, "$[2]") = c3.id) WHERE devices.org_id IN (' . $orgs . ') AND ';
 
         #$sql = 'SELECT COUNT(devices.id) AS `count` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = "openscap-scanner" AND software.current = "y") LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, "$[0]") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, "$[1]") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, "$[2]") = c3.id) WHERE devices.org_id IN (' . $orgs . ') AND ';
 
         $sql = 'SELECT COUNT(devices.id) AS `count` FROM devices LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, "$[0]") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, "$[1]") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, "$[2]") = c3.id) WHERE devices.org_id IN (' . $orgs . ') AND ';
+        $data = array();
         foreach ($unique_os as $os) {
             $explode = explode(' ', $os);
-            $sql .= '(devices.os_family = ? AND devices.os_version LIKE ?) OR ';
+            $sql .= '(devices.os_family = ? AND devices.os_version LIKE ?) OR devices.os_family = ? OR ';
             $data[] = $explode[0];
             $data[] = $explode[1] . '%';
+            $data[] = $os;
         }
         $sql = substr($sql, 0, strlen($sql) - 3);
         $result = $this->db->query($sql, $data)->getResult();
@@ -639,11 +642,11 @@ class BenchmarksModel extends BaseModel
         foreach ($unique_os as $os) {
             $explode = explode(' ', $os);
             if (!empty($good_devices)) {
-                $sql = "SELECT count(id) AS `count` FROM devices WHERE org_id IN ($orgs) AND os_family = ? AND os_version LIKE ? AND id NOT IN ($good_devices)";
+                $sql = "SELECT count(id) AS `count` FROM devices WHERE org_id IN ($orgs) AND ((os_family = ? AND os_version LIKE ?) OR os_family = ?) AND id NOT IN ($good_devices)";
             } else {
-                $sql = "SELECT count(id) AS `count` FROM devices WHERE org_id IN ($orgs) AND os_family = ? AND os_version LIKE ?";
+                $sql = "SELECT count(id) AS `count` FROM devices WHERE org_id IN ($orgs) AND ((os_family = ? AND os_version LIKE ?) OR os_family = ?)";
             }
-            $result = $this->db->query($sql, [$explode[0], $explode[1] . '%'])->getResult();
+            $result = $this->db->query($sql, [$explode[0], $explode[1] . '%', $os])->getResult();
             if (!empty($result[0]->count)) {
                 $included['devices'][$os] = $result[0]->count;
             }
@@ -698,23 +701,32 @@ class BenchmarksModel extends BaseModel
         }
         $included['policies'] = $result;
 
-        $sql = "SELECT devices.id, devices.name, devices.ip, devices.os_family, devices.os_version, devices.credentials AS `devices.credentials`, software.name AS `software.name`, software.version AS `software.version`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, c1.type AS `c1.type`, c2.type AS `c2.type`, c3.type AS `c3.type` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = 'openscap-scanner' AND software.current = 'y') LEFT JOIN `orgs` ON (devices.org_id = orgs.id AND orgs.id IN ($orgs)) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, \"\$[0]\") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, \"\$[1]\") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, \"\$[2]\") = c3.id) WHERE devices.os_family LIKE 'OSFAMILY' AND devices.os_version LIKE 'OSVERSION%' GROUP BY devices.id";
-        $os = explode(' ', $benchmark[0]->attributes->os);
-        $sql = str_replace('OSFAMILY', $os[0], $sql);
-        $sql = str_replace('OSVERSION', $os[1], $sql);
-        $devices = $this->db->query($sql, [$id])->getResult();
-
         $alldevices = array();
-        foreach ($devices as $device) {
-            $device->credentials = 'n';
-            if (stripos((string)$device->{'c1.type'}, 'ssh') !== false or stripos((string)$device->{'c2.type'}, 'ssh') !== false or stripos((string)$device->{'c3.type'}, 'ssh') !== false) {
+        if (stripos($benchmark[0]->attributes->type, 'Windows') !== false) {
+            $sql = "SELECT devices.id, devices.name, devices.ip, devices.os_family, devices.os_version, devices.credentials AS `devices.credentials`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name` FROM devices LEFT JOIN `orgs` ON (devices.org_id = orgs.id AND orgs.id IN ($orgs)) WHERE devices.os_family = '" . $benchmark[0]->attributes->os . "' GROUP BY devices.id";
+                $devices = $this->db->query($sql, [$id])->getResult();
+            foreach ($devices as $device) {
                 $device->credentials = 'y';
+                $alldevices[] = $device->id;
             }
-            $alldevices[] = $device->id;
+        } else {
+            $sql = "SELECT devices.id, devices.name, devices.ip, devices.os_family, devices.os_version, devices.credentials AS `devices.credentials`, software.name AS `software.name`, software.version AS `software.version`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, c1.type AS `c1.type`, c2.type AS `c2.type`, c3.type AS `c3.type` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = 'openscap-scanner' AND software.current = 'y') LEFT JOIN `orgs` ON (devices.org_id = orgs.id AND orgs.id IN ($orgs)) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, \"\$[0]\") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, \"\$[1]\") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, \"\$[2]\") = c3.id) WHERE devices.os_family LIKE 'OSFAMILY' AND devices.os_version LIKE 'OSVERSION%' GROUP BY devices.id";
+            $os = explode(' ', $benchmark[0]->attributes->os);
+            $sql = str_replace('OSFAMILY', $os[0], $sql);
+            $sql = str_replace('OSVERSION', $os[1], $sql);
+            $devices = $this->db->query($sql, [$id])->getResult();
+            foreach ($devices as $device) {
+                $device->credentials = 'n';
+                if (stripos((string)$device->{'c1.type'}, 'ssh') !== false or stripos((string)$device->{'c2.type'}, 'ssh') !== false or stripos((string)$device->{'c3.type'}, 'ssh') !== false) {
+                    $device->credentials = 'y';
+                }
+                $alldevices[] = $device->id;
+            }
         }
+
+
         if (!empty($alldevices)) {
             $sql = "SELECT benchmarks_result.device_id, benchmarks_result.result, count(benchmarks_result.result) AS `count` FROM benchmarks_result WHERE device_id IN (" . implode(',', $alldevices) . ") GROUP BY benchmarks_result.device_id, benchmarks_result.result";
-            log_message('debug', $sql);
             $alldevices = $this->db->query($sql)->getResult();
         }
         foreach ($alldevices as $alldevice) {
