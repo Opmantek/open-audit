@@ -95,8 +95,8 @@ class Agents extends BaseController
      */
     public function execute($id = null)
     {
-        // Do not use dot's here so we can compare to $input->version
-        $current_agent_version = 520;
+        // Do not use dot's here so we can compare to (intval)$input->version
+        $current_agent_version = 530;
 
         $id = intval($id);
         $request = \Config\Services::request();
@@ -134,6 +134,11 @@ class Agents extends BaseController
         if (intval(str_replace('.', '', $input->version)) < $current_agent_version) {
             $agentResponse->actions->update = true;
         }
+
+        // $agentResponse->actions->update = true;
+        // $agentResponse->actions->benchmark = "WindowsClient-11-1.6.xml";
+        // $agentResponse->actions->benchmark_id = 2;
+        // $agentResponse->actions->device_id = $device_id;
 
         // Get the agent or all agents
         $agents = array();

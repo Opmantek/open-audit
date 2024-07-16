@@ -94,6 +94,7 @@ $routes->get('appLicenses', 'Help::licenses', ['filter' => \App\Filters\Session:
 $routes->get('getting_started', 'Help::gettingStarted', ['filter' => \App\Filters\Session::class, 'as' => 'getting_started']);
 $routes->get('discovery_issues/(:num)', 'Help::discoveryIssues/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveryIssues']);
 
+$routes->post('input/benchmarks', 'Input::benchmarks');
 $routes->post('input/devices', 'Input::devices');
 $routes->post('input/logs', 'Input::logs');
 
