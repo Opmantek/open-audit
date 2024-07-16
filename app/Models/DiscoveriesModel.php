@@ -1473,8 +1473,8 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns->{'scan_options.timing'} = 'The Nmap timing preset.';
         $dictionary->columns->{'scan_options.nmap_tcp_ports'} = 'Scan the Nmap top number of TCP ports.';
         $dictionary->columns->{'scan_options.nmap_udp_ports'} = 'Scan the Nmap top number of UDP ports.';
-        $dictionary->columns->{'scan_options.tcp_ports'} = 'A list of custom TCP ports to scan.';
-        $dictionary->columns->{'scan_options.udp_ports'} = 'A list of custom UDP ports to scan.';
+        $dictionary->columns->{'scan_options.tcp_ports'} = 'A list of custom TCP ports to scan (22 is SSH, 135 is WMI, 62078 is iPhone sync).';
+        $dictionary->columns->{'scan_options.udp_ports'} = 'A list of custom UDP ports to scan (161 is SNMP).';
         $dictionary->columns->{'scan_options.timeout'} = 'How long should Nmap wait for a response, per device.';
         $dictionary->columns->{'scan_options.exclude_tcp_ports'} = 'Do not scan these TCP ports.';
         $dictionary->columns->{'scan_options.exclude_udp_ports'} = 'Do not scan these UDP ports.';
