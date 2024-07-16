@@ -9,7 +9,10 @@ param (
     [switch]$uninstall,
     [switch]$install,
     [switch]$audit,
-    [switch]$help
+    [switch]$help,
+    [string]$benchmark,
+    [int]$benchmark_id,
+    [int]$device_id
 )
 
 $url = ''
@@ -69,6 +72,296 @@ function Execute-Audit($location_id, $org_id) {
         Write-Host "$($command)"
     }
     iex "& $command"
+}
+
+function Execute-Benchmark($benchmark, $benchmark_id, $device_id) {
+    if ($debug -eq 1) {
+        Write-Host "Executing benchmark"
+    }
+
+    if ($debug -eq 1) {
+        Write-Host "Setting execution policy"
+    }
+    # Set the execution policy
+    $result = Set-ExecutionPolicy Bypass -Scope Localmachine 2>&1
+    if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+        Write-Host "Command Output: $result"
+    }
+    # Get the execution policy
+    $result = Get-ExecutionPolicy 2>&1
+    if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+        Write-Host "Command Output: $result"
+    }
+    if ($result -ne "Bypass") {
+        Write-Host "Cannot execute, we require the execution policy to be set to Bypass."
+        exit
+    }
+
+    if ($debug -eq 1) {
+        Write-Host "Activate PackageManagement"
+    }
+    $result = Import-Module PackageManagement -RequiredVersion 1.0.0.1
+    if ($debug -eq 1 -and $result -ne $null -and [string]$result -ne "") {
+        Write-Host "Command Output: $result"
+    }
+
+    # Add NuGet
+    if ($debug -eq 1) {
+        Write-Host "Adding NuGet"
+    }
+    $result = Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+    if ($debug -eq 1 -and $result -ne $null -and [string]$result -ne "") {
+        Write-Host "Command Output: $result"
+    }
+
+    # Add the PSGallery repository
+    $result = Get-PSRepository -name PSGallery 2>Out-Null
+    if ($result -eq $null) {
+        if ($debug -eq 1) {
+            Write-Host "Adding PSGallery"
+        }
+        $result = Set-PSRepository -name PSGallery 2>&1
+        if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+            Write-Host "Command Output: $result"
+        }
+    }
+
+    # Install PowerSTIG
+    if (Get-Module -ListAvailable -Name PowerSTIG) {
+        # It is already installed
+    } else {
+        if ($debug -eq 1) {
+            Write-Host "Installing module PowerSTIG"
+        }
+        $result = Install-Module PowerSTIG 2>&1
+        if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+            Write-Host "Command Output: $result"
+        }
+    }
+
+    # Get the ConfigManager object
+    # if ($debug -eq 1) {
+    #     Write-Host "Getting DSCLocalConfigurationManager"
+    # }
+    # $result = Get-DSCLocalConfigurationManager 2>&1
+    # if ($debug -eq 1) {
+    #     Write-Host "Command Output: $result"
+    #     Write-Host "Getting DscResource -Module PowerSTIG"
+    # }
+
+    # Import the PowerSTIG module
+    $result = Get-DscResource -Module PowerSTIG 2>&1
+    if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+        Write-Host "Command Output: $result"
+    }
+
+    # Get the name of the public profile
+    if ($debug -eq 1) {
+        Write-Host "Getting InterfaceAlias"
+    }
+    $result = $(Get-NetConnectionProfile | Select InterfaceAlias).InterfaceAlias
+    if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+        Write-Host "Command Output: $result"
+        Write-Host "Setting NetConnectionProfile with $result to Private"
+    }
+    if ($result -eq $null) {
+        Write-Host "Cannot execute, no InterfaceAlias retrieved."
+        exit
+    }
+
+    # Update the InterfaceAlias parameter with the name of the profile from above
+    $result = Set-NetConnectionProfile -InterfaceAlias $result -NetworkCategory Private 2>&1
+    if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+        Write-Host "Command Output: $result"
+    }
+
+    # Update the WSMAN MaxEnvelopeSizekb
+    if ($debug -eq 1) {
+        Write-Host "Setting MaxEnvelopeSizekb to 8192"
+    }
+    $result = Set-Item -Path WSMan:\localhost\MaxEnvelopeSizekb -Value 8192 2>&1
+    if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+        Write-Host "Command Output: $result"
+    }
+
+    # Run winrm quickconfig
+    if ($debug -eq 1) {
+        Write-Host "Running winrm quickconfig"
+    }
+    $result = winrm quickconfig 2>&1
+    if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+        Write-Host "Command Output: $result"
+    }
+
+    $ssg_url = $url.replace("index.php", "ssg-definitions")
+    $ssg_url = "$($ssg_url)$($benchmark)"
+    if ($debug -eq 1) {
+        Write-Host "Downloading benchmark: $ssg_url"
+    }
+    Invoke-WebRequest -UseBasicParsing "$($ssg_url)" -Outfile ".\$($benchmark)" -Method GET
+
+    if ($benchmark -like 'WindowsClient-10*') {
+        $config = 'WindowsClient BaseLine {
+            OsVersion     = "10"
+            StigVersion   = "2.9"
+            SkipRule      = @("V-253261","V-253427.a","V-253427.b","V-253427.c","V-253427.d","V-253429.a","V-253429.b","V-253430.a","V-253430.b","V-253435","V-253436")
+            # OrgSettings = "$PSScriptRoot\$($benchmark).default.xml"
+        }'
+    }
+    if ($benchmark -like 'WindowsClient-11*') {
+        $config = 'WindowsClient BaseLine {
+            OsVersion     = "11"
+            StigVersion   = "1.6"
+            SkipRule      = @("V-253261","V-253427.a","V-253427.b","V-253427.c","V-253427.d","V-253429.a","V-253429.b","V-253430.a","V-253430.b","V-253435","V-253436")
+            # OrgSettings = "$PSScriptRoot\$($benchmark).default.xml"
+        }'
+    }
+    if ($benchmark -like 'WindowsServer-2016*') {
+        $config = 'WindowsServer BaseLine {
+            OsVersion     = "2016"
+            StigVersion   = "2.8"
+            SkipRule      = @("V-253261","V-253427.a","V-253427.b","V-253427.c","V-253427.d","V-253429.a","V-253429.b","V-253430.a","V-253430.b","V-253435","V-253436")
+            # OrgSettings = "$PSScriptRoot\$($benchmark).default.xml"
+        }'
+    }
+    if ($benchmark -like 'WindowsServer-2019*') {
+        $config = 'WindowsServer BaseLine {
+            OsVersion     = "2019"
+            StigVersion   = "2.9"
+            SkipRule      = @("V-253261","V-253427.a","V-253427.b","V-253427.c","V-253427.d","V-253429.a","V-253429.b","V-253430.a","V-253430.b","V-253435","V-253436")
+            # OrgSettings = "$PSScriptRoot\$($benchmark).default.xml"
+        }'
+    }
+    if ($benchmark -like 'WindowsServer-2022*') {
+        $config = 'WindowsServer BaseLine {
+            OsVersion     = "2022"
+            StigVersion   = "1.5"
+            SkipRule      = @("V-253261","V-253427.a","V-253427.b","V-253427.c","V-253427.d","V-253429.a","V-253429.b","V-253430.a","V-253430.b","V-253435","V-253436")
+            # OrgSettings = "$PSScriptRoot\$($benchmark).default.xml"
+        }'
+    }
+
+
+    # Add STIGTest.ps1
+    if ($debug -eq 1) {
+        Write-Host "Add STIGTest.ps1"
+    }
+    $content = 'configuration STIGTest
+{
+    param
+    (
+        [parameter()]
+        [string]
+        $NodeName = "localhost"
+    )
+
+    Import-DscResource -ModuleName PowerStig
+
+    Node $NodeName
+    {
+        ' + $config + '
+    }
+}
+
+STIGTest'
+
+    Set-Content -Path "C:\Program Files\Open-AudIT Agent\STIGTest.ps1" -Value "$($content)"
+
+    $benchmark_result = @{}
+    $benchmark_result.benchmark_id = $benchmark_id
+    $benchmark_result.device_id = $device_id
+    $benchmark_result.result = @()
+
+    # Build DSC
+    if ($debug -eq 1) {
+        Write-Host "Build DSC"
+    }
+
+    Invoke-Expression -Command ".\STIGTest -ComputerName localhost -Detailed" 3>&1 | Tee-Object -Variable DscResults
+    # $benchmark_notchecked = @()
+    # $DscResults | ForEach {
+    #     $item = @{}
+    #     if ($_ -like "*V-*") {
+    #         $item.result = "notchecked"
+    #         [string]$external = $_
+    #         $external_i = $external.split(':')[1]
+    #         if ($external_i -ne $null) {
+    #             $external_id = $external_i.split('/')[0]
+    #             if ($external_id -ne $null) {
+    #                 $external_ident = $external_id.trim()
+    #                 if ($external_ident -like "*V-*") {
+    #                     $item.external_ident = $external_ident
+    #                     $benchmark_result.result += $item
+    #                     $benchmark_notchecked += $item
+    #                 }
+    #             }
+    #         }
+    #     }
+    #     Clear-Variable -name item
+    # }
+
+    # Install Module
+    $result = Install-Module DSCEA -Scope CurrentUser 2>&1
+    if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+        Write-Host "Command Output: $result"
+    }
+
+    # Start STIG
+    if ($debug -eq 1) {
+        Write-Host "Start STIG"
+    }
+    $result = Start-DSCEAscan -MofFile .\STIGTest\localhost.mof -ComputerName localhost -OutputPath .\
+    if ($debug -eq 1 -and [string]$result -ne "" -and $result -ne $null) {
+        Write-Host "Command Output: $result"
+    }
+
+    $audit = Import-Clixml -Path "$result"
+    $audit.Compliance[0].ResourcesInDesiredState | ForEach {
+        $item = @{}
+        $item.result = "pass"
+        $external_ident = $_.InstanceName.Split("]")
+        $external_ident = $external_ident[0].Split("[")
+        [bool] $add = $true
+        # $benchmark_notchecked | ForEach {
+        #     if ($_.external_ident -eq $external_ident) {
+        #         $add = $false
+        #     }
+        # }
+        if ($add -eq $true) {
+            $item.external_ident = $external_ident
+            if ($item.external_ident -like "V-*") {
+                $benchmark_result.result += $item
+            }
+        }
+        Clear-Variable -name item
+    }
+    $audit.Compliance[0].ResourcesNotInDesiredState | ForEach {
+        $item = @{}
+        $item.result = "fail"
+        $external_ident = $_.InstanceName.Split("]")
+        $external_ident = $external_ident[0].Split("[")
+        [bool] $add = $true
+        # $benchmark_notchecked | ForEach {
+        #     if ($_.external_ident -eq $external_ident) {
+        #         $add = $false
+        #     }
+        # }
+        if ($add -eq $true) {
+            $item.external_ident = $external_ident
+            if ($item.external_ident -like "V-*") {
+                $benchmark_result.result += $item
+            }
+        }
+        Clear-Variable -name item
+    }
+
+    # Submit Result
+    $submit_url = "$($url)input/benchmarks"
+    if ($debug -eq 1) {
+        Write-Host "Submitting result to $submit_url"
+    }
+    $benchmarks_response = Invoke-WebRequest -UseBasicParsing "$($submit_url)" -Method POST -Body ($benchmark_result | ConvertTo-Json) -ContentType 'application/json'
+    Write-Host $benchmarks_response.Status
 }
 
 function Execute-Command($command) {
@@ -272,8 +565,8 @@ function Execute-Uninstall {
 }
 
 function Execute-Update {
-    powershell.exe Invoke-WebRequest -UseBasicParsing "$($url)" -Outfile ".\downloads\agent.ps1" -Method GET
-    mv ".\downloads\agent.ps1" "..\"
+    powershell.exe Invoke-WebRequest -UseBasicParsing "$($url)/agents/windows/download" -Outfile ".\downloads\agent.ps1" -Method GET
+    Move-item -Path 'C:\Program Files\Open-AudIT Agent\downloads\agent.ps1' -destination 'C:\Program Files\Open-AudIT Agent\agent.ps1' -force
 }
 
 if ($audit -eq $true) {
@@ -290,6 +583,12 @@ if ($install -eq $true) {
 if ($uninstall -eq $true) {
     # Provided on the command line
     Execute-Uninstall
+    exit
+}
+
+if ($benchmark -ne "") {
+    # Provided on the command line
+    Execute-Benchmark $benchmark
     exit
 }
 
@@ -365,3 +664,12 @@ if ($response.actions.update -eq $true) {
     }
     Execute-Update
 }
+
+Write-Host "Benchmark: $($response.actions.benchmark)"
+if ($response.actions.benchmark -ne "") {
+    if ($debug -eq 1) {
+        Write-Host "Benchmarking"
+    }
+    Execute-Benchmark $response.actions.benchmark -benchmark_id $response.actions.benchmark_id -device_id $response.actions.device_id
+}
+
