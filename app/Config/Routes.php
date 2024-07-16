@@ -86,6 +86,7 @@ $routes->post('graph/reset', 'Collections::reset', ['filter' => \App\Filters\Ses
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
 $routes->get('api', 'Help::api', ['filter' => \App\Filters\Session::class, 'as' => 'api']);
 $routes->get('help', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'helpCollection']);
+$routes->get('faq', 'Help::faq', ['filter' => \App\Filters\Session::class, 'as' => 'helpFAQ']);
 $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
 $routes->get('prereq', 'Help::prereq', ['filter' => \App\Filters\Session::class, 'as' => 'prereq']);
 $routes->get('welcome', 'Help::welcome', ['filter' => \App\Filters\Session::class, 'as' => 'welcome']);
@@ -93,6 +94,7 @@ $routes->get('collector', 'Help::collector', ['filter' => \App\Filters\Session::
 $routes->get('appLicenses', 'Help::licenses', ['filter' => \App\Filters\Session::class, 'as' => 'appLicenses']);
 $routes->get('getting_started', 'Help::gettingStarted', ['filter' => \App\Filters\Session::class, 'as' => 'getting_started']);
 $routes->get('discovery_issues/(:num)', 'Help::discoveryIssues/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveryIssues']);
+
 
 $routes->post('input/benchmarks', 'Input::benchmarks');
 $routes->post('input/devices', 'Input::devices');

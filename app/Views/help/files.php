@@ -25,4 +25,9 @@ files[1]="/etc/init.d/"
 The audit script will use the files[ ] array and retrieve the file details.<br>
 If you would like to use the script outside of Discovery we have created another endpoint called "scripts". See the documentation here - <a href="' . url_to('scriptsHelp') . '">Scripts</a>.</p>';
 
-$body = '<br>';
+$body = '<h2>Enabling the Feature Under Windows</h2>
+<p>There is no need to do anything if you\'re running Open-AudIT on a Linux server.<br>
+<br>
+Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.<br>
+<br>
+See our page on enabling <a href="' . url_to('helpFAQ') . '?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>';

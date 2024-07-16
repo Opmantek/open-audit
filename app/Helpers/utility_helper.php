@@ -53,7 +53,7 @@ function nmapInstalled($setNotice = false)
         }
         unset($test_path);
         if ($nmap_installed === 'n' and $setNotice) {
-            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
+            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a href='" . url_to('helpFAQ') ."?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
         }
     }
     if (php_uname('s') !== 'Windows NT') {
@@ -76,7 +76,7 @@ function nmapInstalled($setNotice = false)
             }
         }
         if ($nmap_installed === 'n' and $setNotice) {
-            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Please install it using your package manager.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
+            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Please install it using your package manager.<br />Please see <a href='" . url_to('helpFAQ') ."?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
         }
     }
     return $nmap_installed;
@@ -119,7 +119,7 @@ function nmapSuid($setNotice = false)
         }
     }
     if ($suid === 'n' and $setNotice) {
-        \Config\Services::session()->setFlashdata('error', "WARNING - Nmap SUID not set.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to configure it.");
+        \Config\Services::session()->setFlashdata('error', "WARNING - Nmap SUID not set.<br />Please see <a href='" . url_to('helpFAQ') ."?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to configure it.");
     }
     return $suid;
 }

@@ -77,7 +77,7 @@ if ($user->toolbar_style === 'icontext') {
                                 <?php if ($disabled === 'disabled') { ?>
                                 <div class="container-fluid">
                                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                        <?= __('No Google Maps API Key present, you will not be able to display the map') ?>
+                                        <?= __('No Google Maps API Key present, you will not be able to display the map.') . ' See <a href="' . url_to('helpFAQ') . '?name=Google Maps API Key">here</a>.' ?>
                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                     </div>
                                 </div>

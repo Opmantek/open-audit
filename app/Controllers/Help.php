@@ -143,6 +143,32 @@ class Help extends BaseController
     }
 
     /**
+     * The FAQ pages
+     *
+     * @access public
+     * @return NULL
+     */
+    public function faq()
+    {
+        #$request = \Config\Services::request();
+        $name = $this->request->getGet('name');
+        $valid_names = array('Creating a Query', 'Running Open-AudIT Apache Service Under Windows', 'Google Maps API Key');
+        if (!in_array($name, $valid_names)) {
+            redirect('home');
+        }
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('helpFAQ', ['name' => $name])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+    }
+
+    /**
      * The Features page
      *
      * @access public

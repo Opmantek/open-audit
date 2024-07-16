@@ -149,7 +149,7 @@ class LocationsModel extends BaseModel
     {
         $instance = & get_instance();
         if (empty($instance->config->maps_api_key)) {
-            \Config\Services::session()->setFlashdata('warning', 'Google Maps API key required to retrieve lat/long and display map. See <a href="https://community.opmantek.com/display/opCommon/Google+Maps+API+Key" target="_blank">here</a>.');
+            \Config\Services::session()->setFlashdata('warning', 'Google Maps API key required to retrieve lat/long and display map. See <a href="' . url_to('helpFAQ') . '?name=Google+Maps+API+Key">here</a>.');
         }
         $attributesModel = new \App\Models\AttributesModel();
         $include = array();
