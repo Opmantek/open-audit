@@ -920,13 +920,45 @@ function ssg_definitions()
     $item->benchmark = 'xccdf_org.ssgproject.content_profile_stig';
     $ssg_definitions[] = $item;
 
-    $item = new \stdClass();
-    $item->os_family = 'Windows 11';
-    $item->os_version = '';
-    $item->title = 'Microsoft Windows 11 STIG';
-    $item->file = 'WindowsClient-11-1.6.xml';
-    $item->benchmark = 'Microsoft_Windows_11_STIG';
-    $ssg_definitions[] = $item;
+    // $item = new \stdClass();
+    // $item->os_family = 'Windows 10';
+    // $item->os_version = '';
+    // $item->title = 'Microsoft Windows 10 STIG';
+    // $item->file = 'WindowsClient-10-2.9.xml';
+    // $item->benchmark = 'Microsoft_Windows_10_STIG';
+    // $ssg_definitions[] = $item;
+
+    // $item = new \stdClass();
+    // $item->os_family = 'Windows 11';
+    // $item->os_version = '';
+    // $item->title = 'Microsoft Windows 11 STIG';
+    // $item->file = 'WindowsClient-11-1.6.xml';
+    // $item->benchmark = 'Microsoft_Windows_11_STIG';
+    // $ssg_definitions[] = $item;
+
+    // $item = new \stdClass();
+    // $item->os_family = 'Windows 2016';
+    // $item->os_version = '';
+    // $item->title = 'Microsoft Windows 2016 STIG';
+    // $item->file = 'WindowsServer-2016-MS-2.8.xml';
+    // $item->benchmark = 'Microsoft_Windows_Server_2016_STIG';
+    // $ssg_definitions[] = $item;
+
+    // $item = new \stdClass();
+    // $item->os_family = 'Windows 2019';
+    // $item->os_version = '';
+    // $item->title = 'Microsoft Windows 2019 STIG';
+    // $item->file = 'WindowsServer-2019-MS-2.9.xml';
+    // $item->benchmark = 'Microsoft_Windows_Server_2019_STIG';
+    // $ssg_definitions[] = $item;
+
+    // $item = new \stdClass();
+    // $item->os_family = 'Windows 2022';
+    // $item->os_version = '';
+    // $item->title = 'Microsoft Windows 2022 STIG';
+    // $item->file = 'WindowsServer-2022-MS-1.5.xml';
+    // $item->benchmark = 'Microsoft_Windows_Server_2022_STIG';
+    // $ssg_definitions[] = $item;
 
     return $ssg_definitions;
 }
