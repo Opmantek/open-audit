@@ -168,6 +168,10 @@ window.onload = function () {
             var ret = str.split(" ");
             $("#data\\[attributes\\]\\[os_family\\]").val(ret[0]);
             $("#data\\[attributes\\]\\[os_version\\]").val(ret[1]);
+            if (ret[0] == 'Windows') {
+                $("#data\\[attributes\\]\\[hour\\]\\[\\]").attr("disabled", true);
+
+            }
         });
 
         $name = '';
@@ -222,6 +226,11 @@ window.onload = function () {
                 if (device.attributes['c1.type'].includes('ssh') || device.attributes['c2.type'].includes('ssh') || device.attributes['c3.type'].includes('ssh')) {
                     disabled = '<td style="text-align: center;"><input aria-label="<?= __('Select') ?>" type="checkbox" id="data[attributes][devices][' + device.id + ']" value="' + device.id + '" name="data[attributes][devices][' + device.id + ']" checked><\/td>';
                     credentials = '<span class="fa-solid fa-check text-success"><\/span>';
+                }
+                if (device.attributes['devices.os_family'].indexOf('Windows') !== -1) {
+                    installed = 'N/A';
+                    credentials = 'N/A';
+                    disabled = '<td style="text-align: center;"><input aria-label="<?= __('Select') ?>" type="checkbox" id="data[attributes][devices][' + device.id + ']" value="' + device.id + '" name="data[attributes][devices][' + device.id + ']" checked><\/td>';
                 }
                 $("#devicesTable").append('<tr>\
                 <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" href="<?= $meta->baseurl ?>index.php/devices/' + device.id + '"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-desktop" aria-hidden="true"><\/span><\/a><\/td>\
