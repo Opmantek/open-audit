@@ -7,7 +7,7 @@ include 'shared/collection_functions.php';
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h6 style="padding-top:10px;"><span class="fa fa-binoculars oa-icon"></span><?= $title ?></h6>
+                    <h6 style="padding-top:10px;"><span class="fa fa-regular fa-circle-question oa-icon"></span><?= __('Frequently Asked Questions') ?></h6>
                 </div>
                 <div class="card-body">
                     <div class="row">

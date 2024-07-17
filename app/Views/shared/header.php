@@ -498,7 +498,7 @@ if (!empty($config->servers)) {
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Home"><?= __('Documentation') ?></a></li>
-                                <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Open-AudIT+FAQ"><?= __('FAQ') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('helpFAQ') ?>?name=FAQ"><?= __('FAQ') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('features') ?>"><?= __('Features') ?></a></li>
                                 <li><a class="dropdown-item" href="https://community.opmantek.com/display/OA/Getting+Started"><?= __('Getting Started') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('supportCollection') ?>"><?= __('Support') ?></a></li>

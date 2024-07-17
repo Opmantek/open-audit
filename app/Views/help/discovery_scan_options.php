@@ -22,14 +22,18 @@ Open-AudIT Enterprise has the ability to choose from a pre-defined list of disco
 <br>
 The default discovery scan option is the UltraFast set.<br>
 <br>
-<br>
-If a device is individually discovered using the "Discover Device" link on the device details page, we first check if this device has been discovered previously (by Discovery) and if so, use the discovery options from that scan. If it has not been previously discovered, we revert to the configuration item discovery_default_scan_option the settings.<br><br>';
+If a device is individually discovered using the "Discover Device" link on the device details page, we first check if this device has been discovered previously (by Discovery) and if so, use the discovery options from that scan. If it has not been previously discovered, we revert to the configuration item discovery_default_scan_option the settings.<br><br>
+';
 
 $body = '
+<h2>Filtered Ports</h2>
+<p>Networks respond differently depending on how they\'re configured. Some routers and/or firewalls can respond "on behalf" of IPs on the other side of their interfaces to the Open-AudIT Server. It is quite common to see Nmap report a probe for SNMP (UDP port 161) to respond as open|filtered for devices that do and do not exist. This is misleading as there is no device at that IP, yet it ends up with a device entry in the database. 99.9% of the time, it is not Open-AudIT, nor even Nmap, but the network causing this issue. Now that we have the options to treat open|filtered ports as either open or closed, we can eliminate a lot of this confusion. Enterprise users even have the option to change this on a per discovery basis (more than just using the Medium (Classic) item, as above).<br><br></p>
+
 <h2>Creating a Discovery Scan Options entry</h2>
 <br>
 <p>Discovery Scan Options are just another item collection. Enterprise users can create, read, update and delete entries as required. Professional users can read all entries, but not create new entries, update existing entries or delete entries. Community users have no GUI that allows access to this collection.</p>
 <br>
+<h2>Attributes</h2>
 <p>The attributes for discovery scan options are as below.</p>
 <br>
 <table class="table">
@@ -87,7 +91,7 @@ $body = '
         </tr>
         <tr>
             <td><br/></td>
-            <td><strong><em>The below fields can be overwritten by an individual discovery, while still &quot;using&quot; a discovery_scan_options item for these if they\'re not set in the discovery (changed as at 4.0.3, see above).<br/></em></strong></td>
+            <td><strong><em>The below fields can be overwritten by an individual discovery, while still &quot;using&quot; a discovery_scan_options item for these if they\'re not set in the discovery.<br/></em></strong></td>
         </tr>
         <tr>
             <td>timeout</td>
@@ -111,4 +115,37 @@ $body = '
         </tr>
     </tbody>
 </table><br><br>
+<h2>Discovery Scan Types</h2>
+The Discovery Scan Options we ship are detailed in the table below. As above, Enterprise users can create more of these or edit the shipped items.<br><br>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Attribute</th>
+            <th>UltraFast</th>
+            <th>SuperFast</th>
+            <th>Fast</th>
+            <th>Medium (Classic)</th>
+            <th>Medium</th>
+            <th>Slow</th>
+            <th>UltraSlow</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td><em>Approximate</em> time in seconds for remote IP scan</td><td>1</td><td>5</td><td>40</td><td>90</td><td>100</td><td>240</td><td>1200</td></tr>
+        <tr><td>Must Respond to Ping</td><td>y</td><td>y</td><td>y</td><td>n</td><td>y</td><td>y</td><td>n</td></tr>
+        <tr><td>Use Service Version Detection</td><td>n</td><td>n</td><td>n</td><td>n</td><td>n</td><td>y</td><td>y</td></tr>
+        <tr><td>Consider Filtered Ports as Open</td><td>n</td><td>n</td><td>n</td><td>y</td><td>n</td><td>y</td><td>y</td></tr>
+        <tr><td>Timing</td><td>T4</td><td>T4</td><td>T4</td><td>T4</td><td>T4</td><td>T3</td><td>T2</td></tr>
+        <tr><td>Top Nmap TCP Ports</td><td>&nbsp;</td><td>10</td><td>100</td><td>1000</td><td>1000</td><td>1000</td><td>1000</td></tr>
+        <tr><td>Top Nmap UDP Ports</td><td>&nbsp;</td><td>10</td><td>100</td><td>&nbsp;</td><td>100</td><td>100</td><td>1000</td></tr>
+        <tr><td>Custom TCP Ports</td><td>22,135,62078</td><td>62078</td><td>62078</td><td>62078</td><td>62078</td><td>62078</td><td>62078</td></tr>
+        <tr><td>Custom UDP Ports</td><td>161</td><td>&nbsp;</td><td>&nbsp;</td><td>161</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>Exclude TCP Ports</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>Exclude UDP Ports</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td><span>Timeout per Host</span></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>Exclude IP (address, range, subnet)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>Custom SSH Port</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+    </tbody>
+</table>
+<br><br>
 ';

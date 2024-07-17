@@ -9,6 +9,7 @@ $intro = '<p>An Org (organization) is the owner of most items in collections wit
     <br>
     Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc, etc.<br>
     <br>
-    Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, most of the time (not always) they also have access to that Orgs descendants.</p><br>';
+    Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, most of the time (not always) they also have access to that Orgs descendants.</p>
+    <p>For more information, see <a href="' . url_to('helpFAQ') . '?name=Users, Roles and Orgs">Users, Roles and Orgs</a>.</p><br>';
 
 include('users_roles_orgs.php');

@@ -152,7 +152,7 @@ class Help extends BaseController
     {
         #$request = \Config\Services::request();
         $name = $this->request->getGet('name');
-        $valid_names = array('Creating a Query', 'Running Open-AudIT Apache Service Under Windows', 'Google Maps API Key');
+        $valid_names = array('Bulk Editing Device Attributes', 'Creating a Query', 'Credentials for Amazon AWS used in Cloud Discovery', 'Credentials for Microsoft Azure used in Cloud Discovery', 'FAQ', 'Google Maps API Key', 'Running Open-AudIT Apache Service Under Windows', 'Troubleshooting LDAP Logins');
         if (!in_array($name, $valid_names)) {
             redirect('home');
         }

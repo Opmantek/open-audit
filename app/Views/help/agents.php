@@ -1,13 +1,15 @@
 <?php
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
-
+$request = \Config\Services::request();
+$uri = $request->getUri();
 $intro = '<p>Sometimes agentless discovery just doesn\'t fit your use-case. Maybe your PCs have tight firewalls. Maybe they\'re not on the network when your discoveries are scheduled. Maybe they\'re used by remote workers. Whatever the case, this is where an agent can help. Install it on the target machine and it will \'check-in\' with your Open-AudIT server on a schedule and accept tasks. The most common task the server requests is for the agent to audit itself and send the result.</p>
     <br>
     <h2>How Does it Work?</h2>
     <p>Agents entries can be created that specify a duration, a network and an operating system. If all tests match, the server then asks the agent to perform actions. If any test is not set, it is excluded from the "all must match" requirement.<br><br>
     You can create multiple agents and have the server check one or all agent entries. You might (for example) specify one agent that says "If the agent IP is in this subnet, set the location_id of the device".<br><br>
-    Another example might be not running an audit at all, rather download a script and run it. If the agent is installed with admin rights, you can now manage your machines without opening <strong>any</strong> ports from it to the world.</p>';
+    Another example might be not running an audit at all, rather download a script and run it. If the agent is installed with admin rights, you can now manage your machines without opening <strong>any</strong> ports from it to the world.</p>
+    <p>Enabling advanced agents means an agent can be instructed to download any file and execute any command. <strong>WARNING</strong>: This comes with security risks. This configuration will <strong>only</strong> function when running Open-AudIT using HTTPS and a valid (Certificate Authority provided) certificate for ' . $uri->getHost() . '. To enable this, edit the configuration item for <a href="' . url_to('configurationRead', 'feature_agents_advanced') . '">feature_agents_advanced</a>.</p>';
 
 $body = '<p>We have tests for:
     <ul>

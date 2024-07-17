@@ -24,31 +24,31 @@ SQL not containing this condition will result in the widget failing to be execut
 The SQL cannot contain <strong>WHERE @filter OR</strong>. That SQL will not be executed, however <strong>WHERE @filter AND</strong> queries are allowed.<br>
 <br>
 An example widget SQL showing devices counted per location.<br>
-<pre>SELECT locations.name as `name`,
-    locations.id AS `description`,
-    count(devices.id) AS `count`
-FROM locations LEFT JOIN devices ON (locations.id = devices.location_id)
-WHERE @filter
-GROUP BY locations.name
-</pre>
+<code>SELECT locations.name as `name`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;locations.id AS `description`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;count(devices.id) AS `count`<br>
+FROM locations LEFT JOIN devices ON (locations.id = devices.location_id)<br>
+WHERE @filter<br>
+GROUP BY locations.name;<br>
+</code>
 <br>
 More elaborate SQL can used to group attributes within a range. Below shows the SQL for devices not seen in a pie chart grouped by last seen date ranges.<br>
-<pre>
-SELECT IF ( devices.last_seen = "2000-01-01", "unknown", ( IF ( devices.last_seen < DATE(NOW() - INTERVAL 180 day), "180 Days or more",
-( IF ( devices.last_seen < DATE(NOW() - INTERVAL 150 day), "150-180 days", ( IF ( devices.last_seen < DATE(NOW() - INTERVAL 120 day), "120-150 days",
-( IF ( devices.last_seen < DATE(NOW() - INTERVAL 90 day), "90-120 days", ( IF ( devices.last_seen < DATE(NOW() - INTERVAL 60 day), "60-90 days",
-( IF ( devices.last_seen < DATE(NOW() - INTERVAL 30 day), "30-60 days", "7-30 days" ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_name`,
-IF ( devices.last_seen = "2000-01-01", "devices.last_seen=",
-( IF ( devices.last_seen < DATE(NOW() - INTERVAL 180 day), CONCAT("devices.last_seen=<", DATE(NOW() - INTERVAL 180 day)),
-( IF ( devices.last_seen < DATE(NOW() - INTERVAL 150 day), CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 180 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 150 day)),
-( IF ( devices.last_seen < DATE(NOW() - INTERVAL 120 day), CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 150 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 120 day)),
-( IF ( devices.last_seen < DATE(NOW() - INTERVAL 90 day), CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 120 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 90 day)),
-( IF ( devices.last_seen < DATE(NOW() - INTERVAL 60 day), CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 90 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 60 day)),
-( IF ( devices.last_seen < DATE(NOW() - INTERVAL 30 day), CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 60 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 30 day)),
-CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 30 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 7 day))) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`,
-count(devices.id) AS `count`
-FROM system
-WHERE @filter AND DATE(devices.last_seen) < DATE(NOW() - INTERVAL 7 day)
-GROUP BY `my_name` ORDER BY devices.last_seen;
-</pre>
+<code>
+SELECT IF ( devices.last_seen = "2000-01-01", "unknown", ( IF ( devices.last_seen < DATE(NOW() - INTERVAL 180 day), "180 Days or more",<br>
+&nbsp;( IF ( devices.last_seen < DATE(NOW() - INTERVAL 150 day), "150-180 days", ( IF ( devices.last_seen < DATE(NOW() - INTERVAL 120 day), "120-150 days",<br>
+&nbsp;&nbsp;( IF ( devices.last_seen < DATE(NOW() - INTERVAL 90 day), "90-120 days", ( IF ( devices.last_seen < DATE(NOW() - INTERVAL 60 day), "60-90 days",<br>
+&nbsp;&nbsp;&nbsp;( IF ( devices.last_seen < DATE(NOW() - INTERVAL 30 day), "30-60 days", "7-30 days" ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_name`,<br>
+IF ( devices.last_seen = "2000-01-01", "devices.last_seen=",<br>
+&nbsp;( IF ( devices.last_seen < DATE(NOW() - INTERVAL 180 day), CONCAT("devices.last_seen=<", DATE(NOW() - INTERVAL 180 day)),<br>
+&nbsp;&nbsp;( IF ( devices.last_seen < DATE(NOW() - INTERVAL 150 day), CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 180 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 150 day)),<br>
+&nbsp;&nbsp;&nbsp;( IF ( devices.last_seen < DATE(NOW() - INTERVAL 120 day), CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 150 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 120 day)),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;( IF ( devices.last_seen < DATE(NOW() - INTERVAL 90 day), CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 120 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 90 day)),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( IF ( devices.last_seen < DATE(NOW() - INTERVAL 60 day), CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 90 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 60 day)),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( IF ( devices.last_seen < DATE(NOW() - INTERVAL 30 day), CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 60 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 30 day)),<br>
+&nbsp;CONCAT("devices.last_seen=>", DATE(NOW() - INTERVAL 30 day), "&devices.last_seen=<", DATE(NOW() - INTERVAL 7 day))) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`,<br>
+&nbsp;count(devices.id) AS `count`<br>
+FROM devices<br>
+WHERE @filter AND DATE(devices.last_seen) < DATE(NOW() - INTERVAL 7 day)<br>
+GROUP BY `my_name` ORDER BY devices.last_seen;<br>
+</code>
 <br>';

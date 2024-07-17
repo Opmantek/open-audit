@@ -16,6 +16,9 @@ $intro = '<p>Discoveries are entries that enable you to run a discovery upon a n
 ';
 
 $body = '
+<h2>Assigning Discovered Devices</h2>
+<p>If you set the values for <code>devices_assigned_to_org</code> and/or <code>devices_assigned_to_location</code> you will assign any found devices to that Org or Location.</p>
+<br>
     <h2>Subnet Discoveries</h2>
     <p>When a subnet discovery is executed it first runs, if selected, an Nmap ping scan on the range or IP addresses. Any device responding will be port scanned. If an Nmap ping scan is not requested, each IP is individually port scanned. Which ports? That is determined by the <a href="' . url_to('discovery_scan_optionsHelp') . '">Discovery Scan Options</a> chosen. From there if a port for WMI, SSH or SNMP is detected responding the device is further queried using <a href="' . url_to('credentialsHelp') . '">Credentials</a>.</p>
     <p>Once you click the execute button, Open-AudIT will spawn a process to initiate the discovery and return the user to the discovery details page. The newly spawned process takes the configured discovery options and executes Nmap commands to determine the initial list of IP addresses to be scanned (or queries Active Directory if that type is used). Each IP to be scanned is placed into a queue. Once the initial process has completed (and there are IPs to be scanned in the queue) a number of processes will be spawned to further scan each IP in parallel. This number of processes is configurable in the configuration, edit the attribute "queue_limit". By default this is set to 20.</p>
