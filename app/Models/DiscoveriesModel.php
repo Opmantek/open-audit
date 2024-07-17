@@ -827,12 +827,12 @@ class DiscoveriesModel extends BaseModel
                 log_message('error', "Cannot find Nmap.");
             }
         }
-        #if (php_uname('s') === 'Windows NT') {
-            #if (strtolower(get_current_user()) === 'system' or exec('whoami') === 'nt authority\system') {
+        if (php_uname('s') === 'Windows NT') {
+            if (strtolower(get_current_user()) === 'system' or exec('whoami') === 'nt authority\system') {
                 $warning = 'The Apache service is running as SYSTEM. Discoveries will not function. Please see this wiki page and make the configuration change. <a href="' . url_to('helpFAQ') . '?name=Running+Open-AudIT+Apache+Service+Under+Windows">Running Open-AudIT Apache Service Under Windows</a>.';
                 log_message('error', 'PHP process is owned by "nt authority\system" on Windows');
-            #}
-        #}
+            }
+        }
         if (!empty($warning)) {
             \Config\Services::session()->setFlashdata('warning', $warning);
         }
