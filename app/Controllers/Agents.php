@@ -6,6 +6,12 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Models\AgentsModel;
+use Config\Services;
+use DateTime;
+use Exception;
+use stdClass;
+
 /**
  * PHP version 7.4
  *
@@ -33,13 +39,13 @@ class Agents extends BaseController
     /**
      * Download an agent by ID or OS
      *
-     * @param $id This can be the numeric database ID or the OS name
+     * @param $id Can be the numeric database ID or the OS name
      *
      * @return void
      */
-    public function download($id)
+    public function download($id = null)
     {
-        $request = \Config\Services::request();
+        $request = Services::request();
         $ip = $request->getIPAddress();
         log_message('info', 'ACCESS:agents:download::' . $ip);
         if (empty($this->agentsModel)) {
@@ -65,14 +71,14 @@ class Agents extends BaseController
         $file = str_replace("\r\n", "\n", $file);
         $file = str_replace("\r", "\n", $file);
         $file = str_replace("\$url = ''", "\$url = '" . base_url() . "index.php/'", $file);
-        if (!empty($id)) {
+        if ($id !== null) {
             $file = str_replace("\$agentId = ''", "\$agentId = '$id'", $file);
         }
-        if ($request->isSecure() and !empty($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
+        if ($request->isSecure() and isset($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
             $file = str_replace("\$advanced = 'n'", "\$advanced = 'y'", $file);
         }
         if (empty($file)) {
-            \Config\Services::session()->setFlashdata('danger', 'Cannot download installer, please contact your Open-AudIT administrator.');
+            Services::session()->setFlashdata('danger', 'Cannot download installer, please contact your Open-AudIT administrator.');
             return redirect()->route($this->config->homepage);
         }
         header('Cache-Control: public');
@@ -82,7 +88,6 @@ class Agents extends BaseController
         header('Content-Type: text');
         header('Content-Transfer-Encoding: binary');
         echo $file;
-        return;
     }
 
     /**
@@ -92,19 +97,20 @@ class Agents extends BaseController
      *
      * @access public
      * @return void
+     * @throws Exception
      */
     public function execute($id = null)
     {
         // Do not use dot's here so we can compare to (intval)$input->version
         $current_agent_version = 530;
 
-        $id = intval($id);
-        $request = \Config\Services::request();
+        $id = (int)$id;
+        $request = Services::request();
         $ip = $request->getIPAddress();
         log_message('info', 'ACCESS:agents:execute:' . $id . ':' . $ip);
-        $this->agentsModel = new \App\Models\AgentsModel();
-        $agentResponse = new \stdClass();
-        $agentResponse->actions = new \stdClass();
+        $this->agentsModel = new AgentsModel();
+        $agentResponse = new stdClass();
+        $agentResponse->actions = new stdClass();
         $agentResponse->actions->commands = array();
         $agentResponse->actions->audit = false;
         $agentResponse->actions->org_id = 0;
@@ -113,7 +119,7 @@ class Agents extends BaseController
 
         $input = json_decode(file_get_contents('php://input'));
         $this->devicesModel = model('App\Models\DevicesModel');
-        $device = new \stdClass();
+        $device = new stdClass();
         if (!empty($input)) {
             $device_id = deviceMatch($input);
             if (!empty($device_id)) {
@@ -125,7 +131,7 @@ class Agents extends BaseController
         }
         if (empty($input)) {
             $agentResponse->actions->audit = true;
-            $input = new \stdClass();
+            $input = new stdClass();
             $input->version = '0';
             $input->os_family = 'windows';
         }
@@ -155,8 +161,18 @@ class Agents extends BaseController
         // If every condition in an agent entry passes, then set the actions
         $minutes = 0;
         if (!empty($device) and !empty($device->attributes->last_seen)) {
-            $now = new \DateTime($this->config->timestamp);
-            $dateDiff = $now->diff(new \DateTime($device->attributes->last_seen));
+            try {
+                $now = new DateTime($this->config->timestamp);
+            } catch (Exception $e) {
+                log_message('error', $e->getMessage());
+                exit(1);
+            }
+            try {
+                $dateDiff = $now->diff(new DateTime($device->attributes->last_seen));
+            } catch (Exception $e) {
+                log_message('error', $e->getMessage());
+                exit(1);
+            }
             $minutes = $dateDiff->days * 24 * 60;
             $minutes += $dateDiff->h * 60;
             $minutes += $dateDiff->i;
@@ -179,21 +195,19 @@ class Agents extends BaseController
                         $testNetwork = false;
                     }
                 }
-                if (!empty($agent->test_os) and !empty($input->os_family)) {
-                    if (!stripos($input->os_family, $agent->test_os)) {
-                        $testOs = false;
-                    }
+                if (!empty($agent->test_os) and !empty($input->os_family) and !stripos($input->os_family, $agent->test_os)) {
+                    $testOs = false;
                 }
                 if ($testMinutes and $testNetwork and $testOs) {
-                    if ($request->isSecure() and !empty($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
+                    if ($request->isSecure() and isset($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
                         if (!empty($agent->action_download)) {
-                            $action = new \stdClass();
+                            $action = new stdClass();
                             $action->download = $agent->action_download;
                             $agentResponse->actions->commands[] = $action;
                             unset($action);
                         }
                         if (!empty($agent->action_command)) {
-                            $action = new \stdClass();
+                            $action = new stdClass();
                             $action->command = $agent->action_command;
                             $agentResponse->actions->commands[] = $action;
                             unset($action);
@@ -215,7 +229,7 @@ class Agents extends BaseController
             }
         }
         // If we didn't retrieve any agents, just tell the remote host to audit itself
-        // A fallback incase all agent entries are deleted
+        // A fallback in case all agent entries are deleted
         if (empty($agents)) {
             $agentResponse->actions->audit = true;
         }
