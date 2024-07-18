@@ -447,9 +447,11 @@ function Execute-Install {
 
     $taskDescription = "This task starts the agent and check-in with the server."
 
-    $taskSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable 
+    $taskPrinciple = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount -RunLevel Highest
 
-    $taskRegister = Register-ScheduledTask 'Open-AudIT Agent' -Action $taskAction -Trigger $taskTrigger -RunLevel Highest -Description $taskDescription -Settings $taskSettings -Force
+    $taskSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 60)
+
+    $taskRegister = Register-ScheduledTask -Force -TaskName 'Open-AudIT Agent' -Action $taskAction -Trigger $taskTrigger -Description $taskDescription -Settings $taskSettings -Principal $taskPrinciple
 
     if ($taskRegister -eq $false) {
         if ($debug -eq 1) {
@@ -565,8 +567,38 @@ function Execute-Uninstall {
 }
 
 function Execute-Update {
+    # Update the actual agent script
     powershell.exe Invoke-WebRequest -UseBasicParsing "$($url)/agents/windows/download" -Outfile ".\downloads\agent.ps1" -Method GET
     Move-item -Path 'C:\Program Files\Open-AudIT Agent\downloads\agent.ps1' -destination 'C:\Program Files\Open-AudIT Agent\agent.ps1' -force
+
+    # Recreate our scheduled task. By default at 10am with an up to 30 minute delay
+    $taskExists = Get-ScheduledTask | Where-Object {$_.TaskName -eq "Open-AudIT Agent" }
+
+    if ($taskExists) {
+       $test = Unregister-ScheduledTask -TaskName "Open-AudIT Agent" -Confirm:$false
+    }
+
+    $taskTrigger = New-ScheduledTaskTrigger -Daily -At 10am -RandomDelay 00:30:00
+
+    $taskAction = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$programPath\agent.ps1`"" -WorkingDirectory "$programPath"
+
+    $taskDescription = "This task starts the agent and check-in with the server."
+
+    $taskPrinciple = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+
+    $taskSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RunOnlyIfNetworkAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 60)
+
+    $taskRegister = Register-ScheduledTask -Force -TaskName 'Open-AudIT Agent' -Action $taskAction -Trigger $taskTrigger -Description $taskDescription -Settings $taskSettings -Principal $taskPrinciple
+
+    if ($taskRegister -eq $false) {
+        if ($debug -eq 1) {
+            Write-Host "Scheduled task not created."
+        }
+    } else {
+        if ($debug -eq 1) {
+            Write-Host "Task created successfully."
+        }
+    }
 }
 
 if ($audit -eq $true) {
@@ -666,7 +698,7 @@ if ($response.actions.update -eq $true) {
 }
 
 Write-Host "Benchmark: $($response.actions.benchmark)"
-if ($response.actions.benchmark -ne "") {
+if ([string]$response.actions.benchmark -ne "") {
     if ($debug -eq 1) {
         Write-Host "Benchmarking"
     }
