@@ -121,10 +121,10 @@ class BenchmarksModel extends BaseModel
             $devices[$i] = intval($devices[$i]);
         }
         // Only select devices in the list, that have credentials, that have been discovered by this server /collector
-        $instance = & get_instance();
+        $config = new \Config\OpenAudit();
         $queueModel = model('App\Models\QueueModel');
         $sql = "SELECT id, name, os_family, os_version, collector_uuid FROM devices WHERE id IN (" . implode(',', $devices) . ") and credentials != '' and credentials != '[]' and (collector_uuid = '' or collector_uuid = ?)";
-        $my_devices = $this->db->query($sql, [$instance->config->uuid])->getResult();
+        $my_devices = $this->db->query($sql, [$config->uuid])->getResult();
         if (empty($my_devices)) {
             log_message('error', "No suitable devices in database, associated with benchmark.");
             #$this->logCreate($id, 0, 'error', 'No suitable devices in database, associated with benchmark.');
@@ -350,13 +350,23 @@ class BenchmarksModel extends BaseModel
 
         // Process the result file
         try {
-            $qp = html5qp('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_report.html');
+            $qp = html5qp('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html');
         } catch (\QueryPath\Exception $e) {
             log_message('error', 'Cannot process report file from ' . $device->attributes->name . '. ' . $e);
             $this->logCreate($id, $device_id, 'error', 'Cannot process report file. Error: ' . $e);
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
+
+        try {
+            unlink('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html'); 
+        } catch (e) {
+            log_message('error', 'Cannot delete report file from open-audit/other/ssg-results. '. $e);
+            $this->logCreate($id, $device_id, 'error', 'Cannot delete report file. Error: ' . $e);
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            return [];
+        }
+        log_message('debug', 'rm command on localhost for ' . $device->attributes->name . ': ' . $parameters->command);
 
         $this->logCreate($id, $device_id, 'info', 'Processing report file.');
         log_message('debug', 'Processing report file for ' . $device->attributes->name);
@@ -396,6 +406,7 @@ class BenchmarksModel extends BaseModel
         $i = 0;
         $insert = 0;
         $update = 0;
+        $total = 0;
         // Loop over all test results
         foreach ($qp->find('tr.rule-overview-leaf') as $item) {
             if (isset($exceptions[$item->attr('data-tt-id')]) and ((empty($exceptions[$item->attr('data-tt-id')]->devices) or in_array($device_id, $exceptions[$item->attr('data-tt-id')]->devices) and (empty($exceptions[$item->attr('data-tt-id')]->benchmarks) or in_array($id, $exceptions[$item->attr('data-tt-id')]->benchmarks))))) {
@@ -403,6 +414,7 @@ class BenchmarksModel extends BaseModel
                 continue;
             }
             log_message('debug', 'Processing item ' . $item->attr('data-tt-id') . ' for ' . $device->attributes->name);
+            $total += 1;
             $result = new stdClass();
             $result->benchmark = $benchmark;
             $result->external_ident = $item->attr('data-tt-id');
@@ -521,7 +533,7 @@ class BenchmarksModel extends BaseModel
             }
             log_message('debug', 'Completed  item ' . $result->external_ident . ' for ' . $device->attributes->name);
         }
-        $this->logCreate($id, $device_id, 'info', 'Processing report file completed. ' . $insert . ' inserted and ' . $update . ' updated policies.');
+        $this->logCreate($id, $device_id, 'info', 'Processing report file completed. ' . $insert . ' inserted and ' . $update . ' updated policies for ' . $total . ' results.');
         $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
         log_message('debug', 'Processing report file for ' . $device->attributes->name . ' completed. ' . $insert . ' inserted and ' . $update . ' updated policies.');
         log_message('debug', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB used for ' . $device->attributes->name);
@@ -808,6 +820,7 @@ class BenchmarksModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
+        helper('utility');
         return format_data($query->getResult(), 'benchmarks');
     }
 
