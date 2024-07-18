@@ -40,6 +40,17 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         }
     }
 
+    $device_reset_button = "\n";
+    if ($collection === 'devices' and !empty($id) and strpos($user->permissions[$collection], 'u') !== false) {
+        if ($style === 'icontext') {
+            $device_reset_button = "<button id=\"button_reset\" type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Reset") . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rotate-right text-warning\"></span>" . __("Reset") . "</button>";
+        } elseif ($style === 'icon') {
+            $device_reset_button = "<button id=\"button_reset\" type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Reset") . "\"><span class=\"fa-solid fa-rotate-right text-warning\"></span></button>";
+        } else {
+            $device_reset_button = "<button id=\"button_reset\" type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Reset") . "\">" . __("Reset") . "</button>";
+        }
+    }
+
     $export_csv_button = '';
     if ($collection === 'queries' and !empty($id)) {
         if ($style === 'icontext') {
@@ -115,6 +126,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
                                     $collection_button
                                     $download_button
                                     $create_button
+                                    $device_reset_button
                                     $delete_button
                                     $export_button
                                     $export_csv_button

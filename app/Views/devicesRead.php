@@ -2581,6 +2581,35 @@ window.onload = function () {
         $("#tags_control").css('display', 'block');
     });
 
+    $('#button_reset').click(function (){
+        if (confirm("<?= __('Should I remove all non-current data from this device?') ?>")) {
+            $.ajax({
+                type: "PATCH",
+                url: "<?= base_url() ?>devices/<?= $resource->id ?>/reset",
+                contentType: "application/json",
+                data: {},
+                success: function (data) {
+                    $("#liveToastSuccess-header").text("Reset Succeeded");
+                    $("#liveToastSuccess-body").text("Reload to view updated device.");
+                    var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
+                    var toastList = toastElList.map(function(toastEl) {
+                        return new bootstrap.Toast(toastEl)
+                    });
+                    toastList.forEach(toast => toast.show());
+                },
+                error: function (data) {
+                    // data = JSON.parse(data.responseText);
+                    $("#liveToastFailure-header").text("Update Failed");
+                    $("#liveToastFailure-body").text("Please check the logfile.");
+                    var toastElList = [].slice.call(document.querySelectorAll('.toast-failure'));
+                    var toastList = toastElList.map(function(toastEl) {
+                        return new bootstrap.Toast(toastEl)
+                    });
+                    toastList.forEach(toast => toast.show());
+                }
+            });
+        }
+    })
 
 }
 </script>

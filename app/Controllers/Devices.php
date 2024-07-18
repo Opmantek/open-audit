@@ -468,4 +468,21 @@ class Devices extends BaseController
         \Config\Services::session()->setFlashdata('success', $this->resp->meta->total . ' devices imported (' . $this->resp->meta->inserted . ' inserted and ' . $this->resp->meta->updated . ' updated).');
         return redirect()->to(site_url() . '/devices?devices.last_seen=' . $this->config->timestamp . '&devices.last_seen_by=nmis&properties=devices.id,devices.icon,devices.type,devices.name,nmis_name,devices.ip,devices.nmis_business_service,devices.nmis_group,devices.nmis_role,devices.nmis_notes');
     }
+
+    public function reset($id = null)
+    {
+        $id = (int)$id;
+        $db = db_connect();
+        $tables = array('bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+        foreach ($tables as $table) {
+            $sql = "DELETE FROM `$table` WHERE device_id = ? and current = 'n'";
+            $db->query($sql, [$id]);
+            log_message('debug', str_replace("\n", " ", (string)$db->getLastQuery()));
+            $sql = "DELETE FROM `change_log` WHERE device_id = ? and db_table = ?";
+            $db->query($sql, [$id, $table]);
+            log_message('debug', str_replace("\n", " ", (string)$db->getLastQuery()));
+        }
+        echo json_encode($this->resp);
+        return;
+    }
 }
