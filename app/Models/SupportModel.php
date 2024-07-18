@@ -267,6 +267,15 @@ class SupportModel extends BaseModel
             unset($output);
             unset($command_string);
 
+            // Is /tmp mounted noexec?
+            $command_string = "grep ' /tmp ' /proc/mounts 2>/dev/null | grep noexec";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data->prereq->tmp_noexec = trim($output[0]);
+            }
+            unset($output);
+            unset($command_string);
+
             // OS Timezone
             if ($data->os->name === 'Linux (Redhat)') {
                 if (file_exists('/etc/sysconfig/clock')) {
