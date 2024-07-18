@@ -57,8 +57,10 @@ if (!empty($device->system->os_installation_date)) {
     $device->system->os_installation_date = date("Y-m-d", strtotime($device->system->os_installation_date));
 }
 
+$status = '';
 if (empty($id)) {
     // insert a new system
+    $status = 'created';
     $device->system->first_seen = $device->system->last_seen;
     log_message('debug', 'Creating device start');
     $device->system->id = $devicesModel->create($device->system);
@@ -80,6 +82,7 @@ if (empty($id)) {
     log_message('debug', 'Update discovery log finish');
 } else {
     // update an existing system
+    $status = 'updated';
     // log_message('info', 'UPDATE entry for ' . $device->system->hostname . ', ID ' . $device->system->id);
     $log->message = 'UPDATE entry for ' . @$device->system->hostname . ', ID ' . $device->system->id;
     $log->device_id = $device->system->id;

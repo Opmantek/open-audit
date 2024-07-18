@@ -151,7 +151,8 @@ class Devices extends BaseController
                 return true;
             }
             if ($this->resp->meta->format === 'html') {
-                \Config\Services::session()->setFlashdata('success', "Item in devices created successfully.");
+                $status = (!empty($status)) ? $status : 'created';
+                \Config\Services::session()->setFlashdata('success', "Item in devices $status successfully.");
                 return redirect()->route('devicesRead', [$id]);
             }
         }
