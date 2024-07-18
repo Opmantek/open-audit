@@ -13,7 +13,7 @@ if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
 }
 
 // Increase the memory limit
-ini_set('memory_limit', '10240M');
+ini_set('memory_limit', '1024M');
 
 // Path to the front controller (this file)
 define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR);
