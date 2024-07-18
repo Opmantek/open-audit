@@ -258,6 +258,15 @@ class SupportModel extends BaseModel
             unset($output);
             unset($command_string);
 
+            // SELinux status
+            $command_string = 'sestatus 2>&1 | grep " status: " | cut -d: -f2';
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data->prereq->selinux = trim($output[0]);
+            }
+            unset($output);
+            unset($command_string);
+
             // OS Timezone
             if ($data->os->name === 'Linux (Redhat)') {
                 if (file_exists('/etc/sysconfig/clock')) {
