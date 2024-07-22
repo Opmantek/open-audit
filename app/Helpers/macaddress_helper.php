@@ -26942,6 +26942,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
             case 'c8:7d:77': $manufacturer = 'Shenzhen Kingtech Communication Equipment Co.,ltd'; break;
             case 'c8:7e:75': $manufacturer = 'Samsung Electronics'; break;
             case 'c8:7e:a1': $manufacturer = 'Tcl Moka International Limited'; break;
+            case 'c8:7f:54': $manufacturer = 'Asustek Computer Inc.'; break;
             case 'c8:83:14': $manufacturer = 'Tempo Communications'; break;
             case 'c8:84:39': $manufacturer = 'Sunrise Technologies'; break;
             case 'c8:84:47': $manufacturer = 'Beautiful Enterprise Co., Ltd'; break;
