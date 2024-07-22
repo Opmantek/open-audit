@@ -894,7 +894,6 @@ Get-WmiObject -Class Win32_DiskDrive | ForEach {
     $item.scsi_logical_unit = $_.SCSITargetId
     $item.model = $_.Model
     if ($item.model.IndexOf("VMware") -eq 0) { $item.model = "VMware Virtual Disk" }
-    $item.serial = $_.SerialNumber
     $item.firmware = if ($_.FirmwareRevision) { $_.FirmwareRevision } Else { "" }
     $item.serial = if ($_.SerialNumber) { $_.SerialNumber } Else { "" }
     $item.size = [Math]::Round($_.size / 1024 / 1024)
@@ -908,7 +907,6 @@ Get-WmiObject -Class Win32_DiskDrive | ForEach {
     if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wdc") -eq 0) { $item.manufacturer = "Western Digital" }
     if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wd ") -eq 0) { $item.manufacturer = "Western Digital" }
     if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("vmware") -eq 0) { $item.manufacturer = "VMware" }
-    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf(" wdc ") -ne -1) { $item.manufacturer = "Western Digital" }
     $index = $_.Index
     $PhysicalDisk = (Get-PhysicalDisk | Where-Object {$_.DeviceId -eq $index})
     $item.interface_type = $PhysicalDisk.BusType
@@ -1844,6 +1842,42 @@ if ($debug -gt 0) {
     Write-Host "Software 5, $count entries took $totalSecs seconds"
 }
 
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+Get-WmiObject Win32_OptionalFeature -ErrorAction Ignore | WHERE {$_.InstallState -eq 1} | ForEach {
+    $item = @{}
+    $item.name = $_.Caption
+    $item.version = ""
+    if ($_.InstallDate -ne "" -and $_.InstallDate -ne $null) {
+        $item.installed_on = $_.InstallDate
+    }
+    $item.publisher = "Microsoft Corporation"
+    $item.type = "Optional Feature"
+    $result.software += $item
+    Clear-Variable -name item
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.software.count
+    Write-Host "Software 6, $count entries took $totalSecs seconds"
+}
+
+
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+Get-WindowsFeature -ErrorAction Ignore | WHERE Installed | Select Name, Description, @{name='Version';expression={"{0}.{1}" -f $_.AdditionalInfo.MajorVersion,$_.AdditionalInfo.MinorVersion }} | ForEach {
+    $item = @{}
+    $item.name = $_.DisplayName
+    $item.description = $_.Description
+    $item.version = $_.Version
+    $item.publisher = "Microsoft Corporation"
+    $item.type = "Optional Feature"
+    $result.software += $item
+    Clear-Variable -name item
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.software.count
+    Write-Host "Software 7, $count entries took $totalSecs seconds"
+}
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.service = @()
