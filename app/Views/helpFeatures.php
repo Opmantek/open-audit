@@ -94,7 +94,6 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $c
                                     <tr>
                                         <th class="">Features</th>
                                         <th class="text-center">Community</th>
-                                        <th class="text-center">Free License</th>
                                         <th class="text-center">Professional</th>
                                         <th class="text-center">Enterprise</th>
                                     </tr>
@@ -103,126 +102,174 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $c
                                     <tr>
                                         <td class=" "><a href="<?= url_to('discoveriesHelp') ?>">Network Discovery</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('scriptsHelp') ?>">Device and Software and Hardware Auditing</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('componentsHelp') ?>">Database Server Discovery</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('componentsHelp') ?>">Web Server Discovery</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('componentsHelp') ?>">File Share Discovery</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="#">Configuration Change Detection and Reporting</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('licensesHelp') ?>">Software License Reporting</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('fieldsHelp') ?>">Custom Fields</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="#">Data Export - CSV, XML, JSON</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('mapsHelp') ?>">Geographical Maps</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f;; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('clustersHelp') ?>">Clusters and Reporting</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f;; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('dashboardsHelp') ?>">Interactive Dashboards</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f;; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('api') ?>">JSON API</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f;; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('tasksHelp') ?>">Scheduling - discovery, reporting &amp; more</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('reportsHelp') ?>">Time based Reporting</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('agentsHelp') ?>">Optional Agent Based Auditing</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td class=" "><a href="<?= url_to('baselinesHelp') ?>">Baselines for device comparison</a></td>
+                                        <td class=" "><a href="<?= url_to('applicationsHelp') ?>">Application Definitions</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('baselinesHelp') ?>">Baselines for Device Comparison</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('benchmarksHelp') ?>">Benchmarks for Best Practise Configuration</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('cloudsHelp') ?>">Cloud Discovery and Auditing</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('collectorsHelp') ?>">Collectors for Remote Discovery</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('rolesHelp') ?>">Configurable Role Based Access Control (RBAC)</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('ldap_serversHelp') ?>">RBAC for Active Directory and openLDAP</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('widgetsHelp') ?>">Dashboard Widgets</a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('discovery_scan_optionsHelp') ?>">Customisable Scanning Options per Discovery</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('filesHelp') ?>">File Auditing</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('racksHelp') ?>">Rack Management and Reporting</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('supportHelp') ?>">Commercial Support</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
-                                        <td class="text-center" style="<?= $highlightFre ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="<?= url_to('devicesHelp') ?>">Devices</a></td>
                                         <td class=" ">&nbsp;</td>
-                                        <td class="text-center"><?= __('Free for 20 Devices') ?></td>
                                         <td class="text-center"><?= __('From 500 Devices') ?></td>
                                         <td class="text-center"><?= __('From 100 Devices') ?></td>
                                     </tr>
