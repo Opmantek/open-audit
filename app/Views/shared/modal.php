@@ -100,7 +100,7 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $c
                             <th class="text-center">Enterprise</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="font-size:0.8em;">
                         <tr>
                             <td class=" "><a href="<?= url_to('discoveriesHelp') ?>">Network Discovery</a></td>
                             <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
