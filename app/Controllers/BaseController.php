@@ -115,7 +115,7 @@ abstract class BaseController extends Controller
 
         $this->user = $this->usersModel->userValidate();
 
-        if (intval($this->config->internal_version) < intval($this->config->appVersion)) {
+        if ((int)$this->config->internal_version < $this->config->appVersion) {
             if ($router->controllerName() !== '\App\Controllers\Database' and $router->methodName() !== 'update') {
                 header('Location: ' . url_to('databaseUpdate'));
                 exit;

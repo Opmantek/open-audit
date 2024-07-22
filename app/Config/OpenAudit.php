@@ -70,28 +70,34 @@ class OpenAudit extends BaseConfig
         foreach ($result as $row) {
             $this->{$row->name} = $row->value;
             if ($row->type === 'number') {
-                $this->{$row->name} = intval($row->value);
+                $this->{$row->name} = (int)$row->value;
             }
             if ($row->name === 'oae_prompt') {
-                $this->oae_prompt_id = intval($row->id);
+                $this->oae_prompt_id = (int)$row->id;
             }
             if ($row->name === 'license_string') {
-                $this->license_string_id = intval($row->id);
+                $this->license_string_id = (int)$row->id;
             }
             if ($row->name === 'license_eula') {
-                $this->license_eula_id = intval($row->id);
+                $this->license_eula_id = (int)$row->id;
             }
             if ($row->name === 'license_string_collector') {
-                $this->license_string_collector_id = intval($row->id);
+                $this->license_string_collector_id = (int)$row->id;
             }
         }
         $this->product = 'community';
-        if (!empty($this->servers)) {
-            $this->servers = json_decode($this->servers);
+        try {
+            $this->servers = json_decode($this->servers, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', $e->getMessage());
+            $this->servers = '';
         }
 
-        if (!empty($this->license_eula)) {
-            $this->license_eula = json_decode($this->license_eula);
+        try {
+            $this->license_eula = json_decode($this->license_eula, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', $e->getMessage());
+            $this->license_eula = '';
         }
 
         if (empty($this->page_size)) {
@@ -141,18 +147,19 @@ class OpenAudit extends BaseConfig
         }
 
         if ($this->internal_version < 20230615) {
+            # TODO - remove this and just set both to 0
             $query = $db->query('SELECT count(*) as device_count FROM `system`');
             if (!empty($query)) {
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
-                    $this->device_count = intval($result->device_count);
+                    $this->device_count = (int)$result->device_count;
                 }
             }
             $query = $db->query("SELECT count(*) as device_count FROM `system` WHERE `type` NOT IN ('unknown', 'unclassified') and ip != ''");
             if (!empty($query)) {
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
-                    $this->device_known = intval($result->device_count);
+                    $this->device_known = (int)$result->device_count;
                 }
             }
         }
@@ -161,14 +168,14 @@ class OpenAudit extends BaseConfig
             if (!empty($query)) {
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
-                    $this->device_count = intval($result->device_count);
+                    $this->device_count = (int)$result->device_count;
                 }
             }
             $query = $db->query("SELECT count(*) as device_count FROM `devices` WHERE `type` NOT IN ('unknown', 'unclassified') and ip != ''");
             if (!empty($query)) {
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
-                    $this->device_known = intval($result->device_count);
+                    $this->device_known = (int)$result->device_count;
                 }
             }
         }
@@ -193,8 +200,10 @@ class OpenAudit extends BaseConfig
         }
         if (file_exists($this->commercial_dir . '/conf/opCommon.json')) {
             $omkConfig = file_get_contents($this->commercial_dir . '/conf/opCommon.json');
-            if (!empty($omkConfig)) {
-                $omkConfig = json_decode($omkConfig);
+            try {
+                $omkConfig = json_decode($omkConfig, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', $e->getMessage());
             }
             if (!empty($omkConfig->omkd->load_applications)) {
                 $apps = $omkConfig->omkd->load_applications;
@@ -203,12 +212,12 @@ class OpenAudit extends BaseConfig
 
         $opLicense = $this->commercial_dir . "/bin/oplicense-cli.pl";
         $modules[] = (object)array("name" => "Applications", "url" => (file_exists($this->commercial_dir)) ? "/omk" : "");
-        $modules[] = (object)array("name" => "opCharts", "url" => (in_array('opCharts', $apps)) ? "/omk/opCharts" : "https://firstwave.com/products/interactive-dashboards-and-charts/");
-        $modules[] = (object)array("name" => "opEvents", "url" => (in_array('opEvents', $apps)) ? "/omk/opEvents/" : "https://firstwave.com/products/centralized-log-and-event-management/");
-        $modules[] = (object)array("name" => "opConfig", "url" => (in_array('opConfig', $apps)) ? "/omk/opConfig" : "https://firstwave.com/products/network-configuration-management/");
-        $modules[] = (object)array("name" => "opHA", "url" => (in_array('opHA', $apps)) ? "/omk/opHA" : "https://firstwave.com/products/distributed-network-management/");
-        $modules[] = (object)array("name" => "opReports", "url" => (in_array('opReports', $apps)) ? "/omk/opReports/" : "https://firstwave.com/products/advanced-analysis-and-reporting/");
-        $modules[] = (object)array("name" => "opAddress", "url" => (in_array('opAddress', $apps)) ? "/omk/opAddress/" : "https://firstwave.com/products/ip-address-audit-and-management/");
+        $modules[] = (object)array("name" => "opCharts", "url" => (in_array('opCharts', $apps, false)) ? "/omk/opCharts" : "https://firstwave.com/products/interactive-dashboards-and-charts/");
+        $modules[] = (object)array("name" => "opEvents", "url" => (in_array('opEvents', $apps, false)) ? "/omk/opEvents/" : "https://firstwave.com/products/centralized-log-and-event-management/");
+        $modules[] = (object)array("name" => "opConfig", "url" => (in_array('opConfig', $apps, false)) ? "/omk/opConfig" : "https://firstwave.com/products/network-configuration-management/");
+        $modules[] = (object)array("name" => "opHA", "url" => (in_array('opHA', $apps, false)) ? "/omk/opHA" : "https://firstwave.com/products/distributed-network-management/");
+        $modules[] = (object)array("name" => "opReports", "url" => (in_array('opReports', $apps, false)) ? "/omk/opReports/" : "https://firstwave.com/products/advanced-analysis-and-reporting/");
+        $modules[] = (object)array("name" => "opAddress", "url" => (in_array('opAddress', $apps, false)) ? "/omk/opAddress/" : "https://firstwave.com/products/ip-address-audit-and-management/");
         $modules[] = (object)array("name" => "opLicensing", "url" => (file_exists($opLicense)) ? "/omk/opLicense" : "");
         $modules[] = (object)array("name" => "NMIS", "url" => (file_exists($nmis . '/cgi-bin/nmiscgi.pl')) ? "/cgi-nmis9/nmiscgi.pl" : "https://firstwave.com/products/network-management-information-system/");
         $modules[] = (object)array("name" => "Other Modules", "url" => "https://firstwave.com");
