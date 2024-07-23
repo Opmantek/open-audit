@@ -487,7 +487,7 @@ function Execute-Install {
         Write-Host
     }
     # & "C:\Program Files\Open-AudIT Agent\agent.ps1" -debugging 1
-    # Invoke-Expression "&'C:\Program Files\Open-AudIT Agent\agent.ps1' -debugging 1"
+    Invoke-Expression "&'C:\Program Files\Open-AudIT Agent\agent.ps1' -debugging 1"
     exit;
 }
 
