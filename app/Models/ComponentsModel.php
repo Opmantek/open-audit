@@ -627,6 +627,11 @@ class ComponentsModel extends BaseModel
         if ((string)$table === 'disk') {
             $count = count($data);
             for ($i=0; $i < $count; $i++) {
+                if (empty($data[$i]->size)) {
+                    $data[$i]->size = 0;
+                } else {
+                    $data[$i]->size = intval($data[$i]->size);
+                }
                 if (empty($data[$i]->manufacturer) or $data[$i]->manufacturer === '(Standard disk drives)') {
                     $data[$i]->manufacturer = '';
                 }
@@ -815,6 +820,11 @@ class ComponentsModel extends BaseModel
                 if (empty($data[$i]->name) and ! empty($data[$i]->tag)) {
                     $data[$i]->name = $data[$i]->tag;
                 }
+                if (empty($data[$i]->size)) {
+                    $data[$i]->size = 0;
+                } else {
+                    $data[$i]->size = intval($data[$i]->size);
+                }
             }
         }
 
@@ -960,6 +970,8 @@ class ComponentsModel extends BaseModel
                 }
                 if (empty($data[$i]->size)) {
                     $data[$i]->size = 0;
+                } else {
+                    $data[$i]->size = intval($data[$i]->size);
                 }
             }
         }
