@@ -679,7 +679,7 @@ if (!function_exists('response_get_query_filter')) {
                         $query->value = '%' . $query->value . '%';
                     }
                     $query->function = 'where';
-                    $query->operator = $operator;
+                    $query->operator = 'like';
                 }
 
                 $operator = substr($query->value, 0, 2);
