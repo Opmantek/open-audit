@@ -487,7 +487,7 @@ function Execute-Install {
         Write-Host
     }
     # & "C:\Program Files\Open-AudIT Agent\agent.ps1" -debugging 1
-    Invoke-Expression "&'C:\Program Files\Open-AudIT Agent\agent.ps1' -debugging 1"
+    Invoke-Expression "&'C:\Program Files\Open-AudIT Agent\agent.ps1' -debug 1"
     exit;
 }
 
@@ -673,6 +673,14 @@ if ($advanced -eq 'y') {
     }
 }
 
+Write-Host "Update: $($response.actions.update)"
+if ($response.actions.update -eq $true) {
+    if ($debug -eq 1) {
+        Write-Host "Updating"
+    }
+    Execute-Update
+}
+
 Write-Host "Audit: $($response.actions.audit)"
 if ($response.actions.audit -eq $true) {
     if ($debug -eq 1) {
@@ -687,14 +695,6 @@ if ($response.actions.uninstall -eq $true) {
         Write-Host "Uninstalling"
     }
     Execute-Uninstall
-}
-
-Write-Host "Update: $($response.actions.update)"
-if ($response.actions.update -eq $true) {
-    if ($debug -eq 1) {
-        Write-Host "Updating"
-    }
-    Execute-Update
 }
 
 Write-Host "Benchmark: $($response.actions.benchmark)"
