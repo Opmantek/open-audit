@@ -81,7 +81,6 @@ class ComponentsModel extends BaseModel
                 $sql = "SELECT `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name`, benchmarks_policies.id AS `benchmarks_policies.id` FROM `$table` LEFT JOIN benchmarks_policies ON benchmarks_result.external_ident = benchmarks_policies.external_ident LEFT JOIN `devices` ON `$table`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN $table ON devices.id = $table.device_id LEFT JOIN benchmarks_policies ON benchmarks_result.external_ident = benchmarks_policies.external_ident WHERE devices.type NOT IN ('unknown', 'unclassified') AND devices.org_id IN (" . implode(',', $orgs) . ") AND $table.id IS NOT NULL ORDER BY devices.id LIMIT " . $instance->config->device_license . ") as D2 on $table.device_id = D2.id WHERE devices.org_id IN (" . implode(',', $orgs) . ") $device_sql LIMIT " . $resp->meta->limit;
 
                 #$sql = "SELECT `benchmarks_result`.*, devices.id AS `devices.id`, devices.name AS `devices.name`, benchmarks_policies.id AS `benchmarks_policies.id` FROM `benchmarks_result` LEFT JOIN benchmarks_policies ON benchmarks_result.external_ident = benchmarks_policies.external_ident LEFT JOIN `devices` ON `benchmarks_result`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN benchmarks_result ON devices.id = benchmarks_result.device_id WHERE devices.type NOT IN ('unknown', 'unclassified') AND benchmarks_result.id IS NOT NULL ORDER BY devices.id) as D2 on benchmarks_result.device_id = D2.id WHERE benchmarks_result.device_id = 7033";
-
             }
             $query = $this->db->query($sql, [implode(',', $orgs)]);
             if ($this->sqlError($this->db->error())) {
@@ -958,6 +957,9 @@ class ComponentsModel extends BaseModel
                 }
                 if (isset($data[$i]->hard_drive_index) and ($data[$i]->hard_drive_index) > '') {
                     $data[$i]->name .= ' on device ' . $data[$i]->hard_drive_index;
+                }
+                if (empty($data[$i]->size)) {
+                    $data[$i]->size = 0;
                 }
             }
         }
