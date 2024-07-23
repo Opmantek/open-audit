@@ -1863,32 +1863,34 @@ if ($debug -gt 0) {
 
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
-Get-WindowsFeature -ErrorAction Ignore | WHERE Installed | Select DisplayName, Description, @{name='Version';expression={"{0}.{1}" -f $_.AdditionalInfo.MajorVersion,$_.AdditionalInfo.MinorVersion }} | ForEach {
-    $item = @{}
-    $item.name = $_.DisplayName
-    $item.description = $_.Description
-    $item.version = $_.Version
-    $item.publisher = "Microsoft Corporation"
-    $item.type = "Windows Feature"
-    $test = $false
-    for ($i = 0; $i -lt $result.software.Length; $i++) {
-        if ($result.software[$i].name -eq $item.name) {
-            $test = $true
-            if ([string]$item.version -ne "" -and [string]$result.software[$i].version -eq "") {
-                # We already have this, likely from Win32_OptionalFeature above. Add the version.
-                $result.software[$i].Version = $item.version
+if (Get-Command "get-WindowsFeature" -errorAction SilentlyContinue) { 
+    Get-WindowsFeature -ErrorAction Ignore | WHERE Installed | Select DisplayName, Description, @{name='Version';expression={"{0}.{1}" -f $_.AdditionalInfo.MajorVersion,$_.AdditionalInfo.MinorVersion }} | ForEach {
+        $item = @{}
+        $item.name = $_.DisplayName
+        $item.description = $_.Description
+        $item.version = $_.Version
+        $item.publisher = "Microsoft Corporation"
+        $item.type = "Windows Feature"
+        $test = $false
+        for ($i = 0; $i -lt $result.software.Length; $i++) {
+            if ($result.software[$i].name -eq $item.name) {
+                $test = $true
+                if ([string]$item.version -ne "" -and [string]$result.software[$i].version -eq "") {
+                    # We already have this, likely from Win32_OptionalFeature above. Add the version.
+                    $result.software[$i].Version = $item.version
+                }
             }
         }
+        if ($test -eq $false) {
+            $result.software += $item
+        }
+        Clear-Variable -name item
     }
-    if ($test -eq $false) {
-        $result.software += $item
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.software.count
+        Write-Host "Software 7, $count entries took $totalSecs seconds"
     }
-    Clear-Variable -name item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.software.count
-    Write-Host "Software 7, $count entries took $totalSecs seconds"
 }
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
