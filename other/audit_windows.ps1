@@ -1846,6 +1846,9 @@ $itimer = [Diagnostics.Stopwatch]::StartNew()
 Get-WmiObject Win32_OptionalFeature -ErrorAction Ignore | WHERE {$_.InstallState -eq 1} | ForEach {
     $item = @{}
     $item.name = $_.Caption
+    if ($item.name -eq "") {
+        $item.name = $_.name
+    }
     $item.version = ""
     if ($_.InstallDate -ne "" -and $_.InstallDate -ne $null) {
         $item.installed_on = $_.InstallDate
@@ -1875,8 +1878,8 @@ if (Get-Command "get-WindowsFeature" -errorAction SilentlyContinue) {
         for ($i = 0; $i -lt $result.software.Length; $i++) {
             if ($result.software[$i].name -eq $item.name) {
                 $test = $true
-                if ([string]$item.version -ne "" -and [string]$result.software[$i].version -eq "") {
-                    # We already have this, likely from Win32_OptionalFeature above. Add the version.
+                if ([string]$item.version -ne "" -and [string]$item.version -ne "0.0" -and [string]$result.software[$i].version -eq "") {
+                    # We already have this, likely from Win32_OptionalFeature above. Add the version if it's set and not 0.0.
                     $result.software[$i].Version = $item.version
                 }
             }
