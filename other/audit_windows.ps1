@@ -449,6 +449,34 @@ if ($debug -gt 0) {
 
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
+$result.certificate = @()
+$item = @{}
+Get-ChildItem -Recurse Cert: -ErrorAction Ignore | WHERE FriendlyName -ne "" | Select FriendlyName, SerialNumber, Issuer, NotAfter, NotBefore, SignatureAlgorithm, Version, @{Name='NotAfterFormatted';Expression={Get-Date -Date $_.NotAfter -Uformat "%Y-%m-%d %R"}}, @{Name='NotBeforeFormatted';Expression={Get-Date -Date $_.NotBefore -Uformat "%Y-%m-%d %R"}} | ForEach {
+    $item = @{}
+    $item.name = $_.FriendlyName
+    $item.serial = $_.SerialNumber
+    $item.issuer = $_.Issuer
+    $item.valid_from_raw = [string]$_.NotBefore
+    $item.valid_from = $_.NotBeforeFormatted
+    $item.valid_to_raw = [string]$_.NotAfter
+    $item.valid_to = $_.NotAfterFormatted
+    $item.encryption = ""
+    $item.algorithm = $_.SignatureAlgorithm
+    $item.version = $_.Version
+
+    if ($item.name -ne $null) {
+        $result.certificate += $item
+    }
+    Clear-Variable -name item
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.certificate.count
+    Write-Host "Certificate, $count entries took $totalSecs seconds"
+}
+
+
+$itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.scsi = @()
 $item = @{}
 Get-WmiObject -Class Win32_SCSIController | ForEach {
