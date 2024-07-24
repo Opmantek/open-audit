@@ -24,7 +24,15 @@ $debug = $debugging
 $timer = [Diagnostics.Stopwatch]::StartNew()
 
 if ($debug -gt 0) {
+    Write-Host "================"
     Write-Host "Starting Audit"
+    Write-Host "================"
+    Write-Host "CreateFile: $create_file"
+    Write-Host "SubmitOnline: $submit_online"
+    Write-Host "Location: $location_id"
+    Write-Host "Organisation: $org_id"
+    Write-Host "Debug: $debugging"
+    Write-Host "================"
 }
 
 function Get-LittleEndianInt($array, $index) {
