@@ -3662,7 +3662,7 @@ if [ "$busybox" = "n" ]; then
 						package=$(dpkg -S "$file" 2>/dev/null | cut -d: -f1)
 					;;
 					'CentOS' | 'RedHat' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' )
-						package=$(rpm -qf "$file" 2>/dev/null | grep "is not owned by any package")
+						package=$(rpm -qf "$file" 2>/dev/null | grep -v "is not owned by any package")
 					;;
 				esac
 			fi
