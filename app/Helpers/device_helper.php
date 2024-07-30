@@ -28,12 +28,7 @@ if (!function_exists('audit_convert')) {
             if (mb_detect_encoding($json) !== 'UTF-8' and mb_detect_encoding($json) !== 'UTF-16' and mb_detect_encoding($json) !== 'UTF-16BE' and mb_detect_encoding($json) !== 'UTF-16LE') {
                 $json = mb_convert_encoding($json, 'UTF-8', mb_list_encodings());
             }
-            try {
-                $json = json_decode($json, false, 512, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                // Likely this is XML and not JSON
-                // log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-            }
+            $json = @json_decode($json);
             if ($json) {
                 $audit = new \StdClass();
                 if (!empty($json->sys)) {
@@ -113,11 +108,7 @@ if (!function_exists('audit_convert')) {
             }
             if (!empty($xml)) {
                 $newxml = json_encode($xml);
-                try {
-                    $newxml = json_decode($newxml, false, 512, JSON_THROW_ON_ERROR);
-                } catch (\JsonException $e) {
-                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                }
+                $newxml = json_decode($newxml);
                 $audit = new \StdClass();
                 $audit->system = new \StdClass();
                 if (!empty($newxml->sys)) {
@@ -145,11 +136,7 @@ if (!function_exists('audit_convert')) {
                             foreach ($item as $key => $value) {
                                 if ($key === 'options' && $section === 'policy') {
                                     $json = false;
-                                    try {
-                                        $json = json_decode((string)$value, false, 512, JSON_THROW_ON_ERROR);
-                                    } catch (\JsonException $e) {
-                                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                                    }
+                                    $json = @json_decode((string)$value);
                                     if (!empty($json)) {
                                         $values = $json;
                                     } else {

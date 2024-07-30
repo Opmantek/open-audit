@@ -30,8 +30,8 @@ if (!function_exists('generate_token')) {
             return false;
         }
 
-        $bin = (!empty($json->{'directories'}->{'<omk_base>'}) ? $json->{'directories'}->{'<omk_base>'} . '/bin/' : '';
-        $token = (!empty($json->{'authentication'}->{'auth_token_key'}[0]) ? $json->{'authentication'}->{'auth_token_key'}[0] : '';
+        $bin = (!empty($json->{'directories'}->{'<omk_base>'})) ? $json->{'directories'}->{'<omk_base>'} . '/bin/' : '';
+        $token = (!empty($json->{'authentication'}->{'auth_token_key'}[0])) ? $json->{'authentication'}->{'auth_token_key'}[0] : '';
         if (empty($token)) {
             log_message('error', 'Config file attribute auth_token_key is empty');
             return false;

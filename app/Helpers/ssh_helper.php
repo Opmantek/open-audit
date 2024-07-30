@@ -476,7 +476,6 @@ if (! function_exists('ssh_command')) {
                 }
                 return false;
             }
-
         } elseif ($credentials->type === 'ssh') {
             try {
                 $ssh->login($credentials->credentials->username, $credentials->credentials->password);
@@ -977,7 +976,8 @@ if (! function_exists('ssh_audit')) {
             if (stripos($temp1, 'COMMAND NOT RECOGNIZED')) {
                 $temp1 = '';
             }
-            if ($item === 'solaris_domain' && $temp1 === '(none)') {
+            // if ($item === 'solaris_domain' && $temp1 === '(none)') {
+            if ($temp1 === '(none)') {
                 $temp1 = '';
             }
             if (!empty($temp1)) {
