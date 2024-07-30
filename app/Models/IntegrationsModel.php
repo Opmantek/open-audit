@@ -51,7 +51,11 @@ class IntegrationsModel extends BaseModel
             $count = count($query);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
-                    $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key));
+                    try {
+                        $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $e) {
+                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    }
                 }
             }
         }
@@ -110,7 +114,11 @@ class IntegrationsModel extends BaseModel
         }
         $id = $this->db->insertID();
         $integration = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
-        $integration->fields = json_decode($integration->fields);
+        try {
+            $integration->fields = json_decode($integration->fields, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
 
         if ($integration->discovery_run === 'y') {
@@ -197,7 +205,11 @@ class IntegrationsModel extends BaseModel
     public function deleteFields(int $id = 0, object $data = null): bool
     {
         $integration = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
-        $fields = json_decode($integration->fields);
+        try {
+            $fields = json_decode($integration->fields, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         $update = false;
         $count = count($fields);
         for ($i=0; $i < $count; $i++) {
@@ -608,7 +620,15 @@ class IntegrationsModel extends BaseModel
         }
         $sql = "SELECT devices FROM integrations WHERE id = ?";
         $result = $this->db->query($sql, [$integration->id])->getResult();
-        $devices_array = (!empty($result[0]->devices)) ? json_decode($result[0]->devices) : array();
+        $devices_array = array();
+        if (!empty($result[0]->devices)) {
+            try {
+                $devices_array = json_decode($result[0]->devices, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                $devices_array = array();
+            }
+        }
         $devices_array = array_merge($devices_array, $newdev);
         $devices_array = array_unique($devices_array);
         $devices_array = array_values($devices_array);
@@ -1004,14 +1024,22 @@ class IntegrationsModel extends BaseModel
             $credentials = $query->getResult();
             if (is_array($credentials)) {
                 foreach ($devices as $device) {
-                    $retrieved_credentials = (!empty($device->credentials)) ? @json_decode($device->credentials) : '';
+                    try {
+                        $retrieved_credentials = json_decode($device->credentials, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $e) {
+                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    }
                     $device->credentials = new \stdClass();
                     foreach ($credentials as $credential) {
                         if (is_array($retrieved_credentials)) {
                             foreach ($retrieved_credentials as $value) {
                                 if (intval($value) === intval($credential->id) && ! empty($credential->credentials)) {
                                     if (is_string($credential->credentials)) {
-                                        $credential->credentials = json_decode(simpleDecrypt($credential->credentials, config('Encryption')->key));
+                                        try {
+                                            $credential->credentials = json_decode(simpleDecrypt($credential->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+                                        } catch (\JsonException $e) {
+                                            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                                        }
                                     }
                                     if (!empty($credential->credentials)) {
                                         foreach ($credential->credentials as $key2 => $value2) {
@@ -1033,7 +1061,11 @@ class IntegrationsModel extends BaseModel
                 foreach ($devices as $device) {
                     foreach ($credentials as $credential) {
                         if (intval($credential->device_id) === intval($device->id)) {
-                            $credential->credentials = json_decode(simpleDecrypt($credential->credentials, config('Encryption')->key));
+                            try {
+                                $credential->credentials = json_decode(simpleDecrypt($credential->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $e) {
+                                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                            }
                             foreach ($credential->credentials as $key => $value) {
                                 $device->credentials->{$credential->type . '_' . $key} = $value;
                             }
@@ -1077,7 +1109,11 @@ class IntegrationsModel extends BaseModel
         $sql = "SELECT `devices` FROM integrations WHERE id = ?";
         $data = array(intval($id));
         $result = $this->db->query($sql, [$id])->getResult();
-        $device_ids = @json_decode($result[0]->devices);
+        try {
+            $device_ids = json_decode($result[0]->devices, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         if (!empty($device_ids)) {
             $sql = "SELECT id, name, ip, type, fqdn FROM devices WHERE id IN (" . implode(',', $device_ids) . ")";
             $devices = $this->db->query($sql)->getResult();
@@ -1126,7 +1162,11 @@ class IntegrationsModel extends BaseModel
                 $config_file_contents = file_get_contents($instance->config->commercial_dir . '/conf/opCommon.json');
             }
             if (!empty($config_file_contents)) {
-                $config = json_decode($config_file_contents);
+                try {
+                    $config = json_decode($config_file_contents, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (!empty($config->authentication->auth_method_1) and $config->authentication->auth_method_1 === 'token') {
                 $auth = 'auth_method_1';
@@ -1368,7 +1408,11 @@ class IntegrationsModel extends BaseModel
         }
         if ($config->decrypt_credentials === 'y') {
             if (!empty($query[0]->credentials)) {
-                $query[0]->credentials = json_decode(simpleDecrypt($query[0]->credentials, config('Encryption')->key));
+                try {
+                    $query[0]->credentials = json_decode(simpleDecrypt($query[0]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
         if ($query[0]->select_internal_type === 'group') {
@@ -1425,12 +1469,20 @@ class IntegrationsModel extends BaseModel
         if (empty($integration->attributes)) {
             $integration->attributes = new \stdClass();
         } else {
-            $integration->attributes = json_decode($integration->attributes);
+            try {
+                $integration->attributes = json_decode($integration->attributes, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         if (empty($integration->fields)) {
             $integration->fields = new \stdClass();
         } else {
-            $integration->fields = json_decode($integration->fields);
+            try {
+                $integration->fields = json_decode($integration->fields, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
 
         if (!empty($data->attributes)) {

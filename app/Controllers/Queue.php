@@ -91,7 +91,12 @@ class Queue extends BaseController
             log_message('debug', $microtime . " POPed item " . json_encode($item));
 
             if (!empty($item->details) && is_string($item->details)) {
-                $details = @json_decode($item->details);
+                try {
+                    $details = json_decode($item->details, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    exit(1);
+                }
                 log_message('debug', $microtime . " POPed item details " . json_encode($details));
             }
 

@@ -236,10 +236,18 @@ function format_data($result, $type)
     if ($type === 'agents') {
         foreach ($result as $item) {
             if (!empty($item->inputs)) {
-                $item->inputs = json_decode($item->inputs);
+                try {
+                    $item->inputs = json_decode($item->inputs, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (!empty($item->outputs)) {
-                $item->outputs = json_decode($item->outputs);
+                try {
+                    $item->outputs = json_decode($item->outputs, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -247,7 +255,11 @@ function format_data($result, $type)
     if ($type === 'baselines_policies') {
         foreach ($result as $item) {
             if (!empty($item->tests)) {
-                $item->tests = json_decode($item->tests);
+                try {
+                    $item->tests = json_decode($item->tests, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -255,10 +267,18 @@ function format_data($result, $type)
     if ($type === 'baselines_results') {
         foreach ($result as $item) {
             if (!empty($item->baseline)) {
-                $item->baseline = json_decode($item->baseline);
+                try {
+                    $item->baseline = json_decode($item->baseline, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (!empty($item->result)) {
-                $item->result = json_decode($item->result);
+                try {
+                    $item->result = json_decode($item->result, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -266,7 +286,11 @@ function format_data($result, $type)
     if ($type === 'benchmarks_policies') {
         foreach ($result as $item) {
             if (!empty($item->remediation)) {
-                $item->remediation = json_decode($item->remediation);
+                try {
+                    $item->remediation = json_decode($item->remediation, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -274,7 +298,11 @@ function format_data($result, $type)
     if ($type === 'dashboards') {
         foreach ($result as $item) {
             if (!empty($item->options)) {
-                $item->options = json_decode($item->options);
+                try {
+                    $item->options = json_decode($item->options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -282,13 +310,25 @@ function format_data($result, $type)
     if ($type === 'discoveries') {
         foreach ($result as $item) {
             if (!empty($item->scan_options)) {
-                $item->scan_options = json_decode($item->scan_options);
+                try {
+                    $item->scan_options = json_decode($item->scan_options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (!empty($item->match_options)) {
-                $item->match_options = json_decode($item->match_options);
+                try {
+                    $item->match_options = json_decode($item->match_options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (!empty($item->command_options)) {
-                $item->command_options = json_decode($item->command_options);
+                try {
+                    $item->command_options = json_decode($item->command_options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -296,13 +336,25 @@ function format_data($result, $type)
     if ($type === 'integrations') {
         foreach ($result as $item) {
             if (!empty($item->additional_items)) {
-                $item->additional_items = json_decode($item->additional_items);
+                try {
+                    $item->additional_items = json_decode($item->additional_items, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (!empty($item->attributes)) {
-                $item->attributes = json_decode((string)$item->attributes);
+                try {
+                    $item->attributes = json_decode((string)$item->attributes, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (!empty($item->fields)) {
-                $item->fields = json_decode($item->fields);
+                try {
+                    $item->fields = json_decode($item->fields, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -321,7 +373,11 @@ function format_data($result, $type)
     if ($type === 'locations') {
         foreach ($result as $item) {
             if (!empty($item->options)) {
-                $item->options = json_decode($item->options);
+                try {
+                    $item->options = json_decode($item->options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -329,7 +385,11 @@ function format_data($result, $type)
     if ($type === 'networks') {
         foreach ($result as $item) {
             if (!empty($item->options)) {
-                $item->options = json_decode($item->options);
+                try {
+                    $item->options = json_decode($item->options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -337,7 +397,11 @@ function format_data($result, $type)
     if ($type === 'roles') {
         foreach ($result as $item) {
             if (!empty($item->permissions)) {
-                $item->permissions = json_decode($item->permissions);
+                try {
+                    $item->permissions = json_decode($item->permissions, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -345,10 +409,18 @@ function format_data($result, $type)
     if ($type === 'rules') {
         foreach ($result as $item) {
             if (!empty($item->inputs)) {
-                $item->inputs = json_decode($item->inputs);
+                try {
+                    $item->inputs = json_decode($item->inputs, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (!empty($item->outputs)) {
-                $item->outputs = json_decode($item->outputs);
+                try {
+                    $item->outputs = json_decode($item->outputs, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -356,7 +428,11 @@ function format_data($result, $type)
     if ($type === 'scripts') {
         foreach ($result as $item) {
             if (!empty($item->options)) {
-                $item->options = json_decode($item->options);
+                try {
+                    $item->options = json_decode($item->options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -364,7 +440,11 @@ function format_data($result, $type)
     if ($type === 'tasks') {
         foreach ($result as $item) {
             if (!empty($item->options)) {
-                $item->options = json_decode($item->options);
+                try {
+                    $item->options = json_decode($item->options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }
@@ -372,10 +452,18 @@ function format_data($result, $type)
     if ($type === 'users') {
         foreach ($result as $item) {
             if (!empty($item->roles)) {
-                $item->roles = json_decode($item->roles);
+                try {
+                    $item->roles = json_decode($item->roles, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (!empty($item->orgs)) {
-                $item->orgs = json_decode($item->orgs);
+                try {
+                    $item->orgs = json_decode($item->orgs, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
     }

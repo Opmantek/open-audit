@@ -264,8 +264,16 @@ class UsersModel extends BaseModel
             $result = $query->getResult();
             if (!empty($result[0])) {
                 $user = $result[0];
-                $user->roles = json_decode($user->roles);
-                $user->orgs = json_decode($user->orgs);
+                try {
+                    $user->roles = json_decode($user->roles, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
+                try {
+                    $user->orgs = json_decode($user->orgs, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
                 $user->password = null;
             }
 

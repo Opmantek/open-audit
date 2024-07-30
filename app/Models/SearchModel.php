@@ -30,12 +30,20 @@ class SearchModel extends BaseModel
         $instance = & get_instance();
         $value = $instance->resp->meta->received_data->attributes->value;
         if (!empty($instance->resp->meta->received_data->attributes->columns)) {
-            $columns = json_decode($instance->resp->meta->received_data->attributes->columns);
+            try {
+                $columns = json_decode($instance->resp->meta->received_data->attributes->columns, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         } else {
             $columns = '';
         }
         if (!empty($instance->resp->meta->received_data->attributes->tables)) {
-            $tables = json_decode($instance->resp->meta->received_data->attributes->tables);
+            try {
+                $tables = json_decode($instance->resp->meta->received_data->attributes->tables, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         } else {
             $tables = '';
         }

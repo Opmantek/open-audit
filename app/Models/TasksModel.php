@@ -310,7 +310,11 @@ class TasksModel extends BaseModel
                     return null;
                 }
                 if (!empty($result[0]->options)) {
-                    $existing = json_decode($result[0]->options);
+                    try {
+                        $existing = json_decode($result[0]->options, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $e) {
+                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    }
                 }
             }
             $new = new \stdClass();

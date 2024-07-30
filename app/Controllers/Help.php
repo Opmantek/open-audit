@@ -104,7 +104,13 @@ class Help extends BaseController
         foreach ($configuration as $item) {
             if ($item->name === 'servers') {
                 $this->resp->meta->id = intval($item->id);
-                $this->resp->included = format_data(json_decode($item->value), 'servers');
+                try {
+                    $temp = json_decode($item->value, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    $temp = array();
+                }
+                $this->resp->included = format_data($temp, 'servers');
             }
         }
         $this->resp->meta->collection = 'configuration';

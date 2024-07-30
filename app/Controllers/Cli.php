@@ -346,8 +346,12 @@ class Cli extends Controller
             log_message('error', 'Could not retrieve device submission');
             return false;
         }
-        $input = json_decode($result[0]->response);
-        log_message('error', json_last_error_msg());
+        try {
+            $input = json_decode($result[0]->response, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            $input = new stdClass();
+        }
         $input->system = $input->attributes;
         $device = audit_convert(json_encode($input));
         if (!$device) {
@@ -377,7 +381,12 @@ class Cli extends Controller
         $networks = $networksModel->listAll();
 
         $db = db_connect();
-        $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key));
+        try {
+            $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            exit(1);
+        }
 
         $response = new stdClass();
         $projects = array();
@@ -668,7 +677,11 @@ class Cli extends Controller
         helper('security');
         helper('network');
         $db = db_connect();
-        $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key));
+        try {
+            $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
 
         $projects = array();
         $projects[0] = new stdClass();
@@ -695,8 +708,11 @@ class Cli extends Controller
             'client_secret' => $cloud->credentials->client_secret,
             'resource' => 'https://management.azure.com'], 'headers' => ['Accept' => 'application/json'], 'http_errors' => false]);
         $body = $response->getBody();
-        $json = json_decode($body);
-
+        try {
+            $json = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         if (empty($json)) {
             log_message('error', 'Invalid JSON returned when requesting token.');
             $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Invalid JSON returned when requesting token.')";
@@ -717,7 +733,11 @@ class Cli extends Controller
         $url = 'https://management.azure.com/subscriptions/' . $cloud->credentials->subscription_id . '/locations?api-version=2016-06-01';
         $response = $client->get($url, ['Authorization' => $token, 'headers' => ['Accept' => 'application/json'], 'http_errors' => false]);
         $body = $response->getBody();
-        $json = json_decode($body);
+        try {
+            $json = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         if (empty($json)) {
             log_message('error', 'Invalid JSON returned when requesting locations.');
             $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Invalid JSON returned when requesting locations.')";
@@ -746,7 +766,11 @@ class Cli extends Controller
         $url = 'https://management.azure.com/subscriptions/' . $cloud->credentials->subscription_id . '/providers/Microsoft.Network/virtualNetworks?api-version=2018-08-01';
         $response = $client->get($url, ['Authorization' => $token, 'headers' => ['Accept' => 'application/json'], 'http_errors' => false]);
         $body = $response->getBody();
-        $json = json_decode($body);
+        try {
+            $json = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         if (empty($json)) {
             log_message('error', 'Invalid JSON returned when requesting networks.');
             $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Invalid JSON returned when requesting networks.')";
@@ -791,7 +815,11 @@ class Cli extends Controller
         $url = 'https://management.azure.com/subscriptions/' . $cloud->credentials->subscription_id . '/providers/Microsoft.Compute/virtualMachines?api-version=2017-12-01';
         $response = $client->get($url, ['Authorization' => $token, 'headers' => ['Accept' => 'application/json'], 'http_errors' => false]);
         $body = $response->getBody();
-        $instances = json_decode($body);
+        try {
+            $instances = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         if (empty($instances)) {
             log_message('error', 'Invalid JSON returned when requesting instances.');
             $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Invalid JSON returned when requesting instances.')";
@@ -805,7 +833,11 @@ class Cli extends Controller
         $url = 'https://management.azure.com/subscriptions/' . $cloud->credentials->subscription_id . '/providers/Microsoft.Network/publicIPAddresses?api-version=2018-04-01';
         $response = $client->get($url, ['Authorization' => $token, 'headers' => ['Accept' => 'application/json'], 'http_errors' => false]);
         $body = $response->getBody();
-        $ip = json_decode($body);
+        try {
+            $ip = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         if (empty($ip)) {
             log_message('error', 'Invalid JSON returned when requesting ip.');
             $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Invalid JSON returned when requesting ip.')";
@@ -893,8 +925,16 @@ class Cli extends Controller
         helper('security');
         helper('network');
         $db = db_connect();
-        $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key), true);
-        $jsonKey = json_decode($cloud->credentials['json'], true);
+        try {
+            $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
+        try {
+            $jsonKey = json_decode($cloud->credentials['json'], true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
 
 
         $projects = array();
@@ -929,14 +969,26 @@ class Cli extends Controller
 
         // make the request
         $response = $client->get('compute/v1/projects/' . $jsonKey['project_id'] . '/zones') or die('Could not create response');
-        $zones = json_decode((string)$response->getBody());
+        try {
+            $zones = json_decode((string)$response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         $inZones = array();
 
         $response = $client->get('compute/v1/projects/' . $jsonKey['project_id'] . '/aggregated/instances') or die('Could not create response');
-        $instances = json_decode((string)$response->getBody());
+        try {
+            $instances = json_decode((string)$response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
 
         $response = $client->get('compute/v1/projects/' . $jsonKey['project_id'] . '/aggregated/subnetworks') or die('Could not create response');
-        $networks = json_decode((string)$response->getBody());
+        try {
+            $networks = json_decode((string)$response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
 
         foreach ($instances->items as $each) {
             if (!empty($each->instances)) {

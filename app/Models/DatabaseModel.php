@@ -100,7 +100,11 @@ class DatabaseModel extends BaseModel
         if ($table === 'clouds' or $table === 'credential' or $table === 'credentials') {
             if ($instance->config->decrypt_credentials === 'y') {
                 for ($i=0; $i < $count; $i++) {
-                    $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
+                    try {
+                        $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $e) {
+                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    }
                 }
             }
         }
@@ -111,8 +115,16 @@ class DatabaseModel extends BaseModel
         }
         if ($table === 'discoveries') {
             for ($i=0; $i < $count; $i++) {
-                $result[$i]->scan_options = json_decode($result[$i]->scan_options);
-                $result[$i]->match_options = json_decode($result[$i]->match_options);
+                try {
+                    $result[$i]->scan_options = json_decode($result[$i]->scan_options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
+                try {
+                    $result[$i]->match_options = json_decode($result[$i]->match_options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
                 unset($result[$i]->command_options);
             }
         }

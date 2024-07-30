@@ -54,10 +54,9 @@ class Input extends BaseController
             $json = mb_convert_encoding($json, 'UTF-8', mb_list_encodings());
         }
         try {
-            $json = json_decode($json);
-        } catch (Exception $e) {
-            log_message('error', 'Benchmark data is invalid JSON.');
-            log_message('error', 'Last error: ' .json_last_error_msg());
+            $json = json_decode($json, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             return false;
         }
         $json->device_id = intval($json->device_id);

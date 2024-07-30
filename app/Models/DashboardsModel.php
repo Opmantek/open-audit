@@ -198,7 +198,11 @@ class DashboardsModel extends BaseModel
             $dashboard = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
             $existing = new stdClass();
             if (!empty($dashboard->options)) {
-                $existing = json_decode($dashboard->options);
+                try {
+                    $existing = json_decode($dashboard->options, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (!empty($data->options->layout)) {
                 $existing->layout = $data->options->layout;

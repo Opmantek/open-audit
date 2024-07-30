@@ -275,7 +275,11 @@ class Devices extends BaseController
         if (is_array($string)) {
             $string = implode('', $string);
         }
-        $nodes = json_decode($string, true);
+        try {
+            $nodes = json_decode($string, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         unset($string);
         unset($command);
         unset($return_var);

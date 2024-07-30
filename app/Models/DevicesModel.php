@@ -125,7 +125,12 @@ class DevicesModel extends BaseModel
         if (isset($result[0]->tags)) {
             for ($i=0; $i < $count; $i++) {
                 if (!empty($result[$i]->tags)) {
-                    $result[$i]->tags = @json_decode($result[$i]->tags);
+                    try {
+                        $result[$i]->tags = json_decode($result[$i]->tags, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $e) {
+                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                        $result[$i]->tags = array();
+                    }
                 }
                 if (empty($result[$i]->tags)) {
                     $result[$i]->tags = array();
@@ -644,17 +649,29 @@ class DevicesModel extends BaseModel
         $device = $query->getResult();
         if (isset($device[0]->tags)) {
             if (!empty($device[0]->tags)) {
-                $device[0]->tags = @json_decode($device[0]->tags);
+                try {
+                    $device[0]->tags = json_decode($device[0]->tags, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (empty($device[0]->tags)) {
                 $device[0]->tags = array();
             }
         }
         if (!empty($device[0]->instance_tags)) {
-            $device[0]->instance_tags = json_decode($device[0]->instance_tags);
+            try {
+                $device[0]->instance_tags = json_decode($device[0]->instance_tags, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         if (!empty($device[0]->instance_options)) {
-            $device[0]->instance_options = json_decode($device[0]->instance_options);
+            try {
+                $device[0]->instance_options = json_decode($device[0]->instance_options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         return format_data($device, 'devices');
     }

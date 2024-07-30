@@ -170,7 +170,11 @@ class ScriptsModel extends BaseModel
             $data->options = new \stdClass();
         }
         if (!empty($data->options) and is_string($data->options)) {
-            $data->options = json_decode($data->options);
+            try {
+                $data->options = json_decode($data->options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         $options = scripts_options();
         foreach ($data->options as $name => $value) {

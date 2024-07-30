@@ -51,7 +51,11 @@ class CloudsModel extends BaseModel
             $count = count($query);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
-                    $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key));
+                    try {
+                        $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $e) {
+                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    }
                 }
             }
         }
@@ -310,7 +314,11 @@ class CloudsModel extends BaseModel
         }
         $cloud = $query->getResult();
         if (!empty($cloud[0]->options)) {
-            $cloud[0]->options = json_decode($cloud[0]->options);
+            try {
+                $cloud[0]->options = json_decode($cloud[0]->options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         } else {
             $cloud[0]->options = new \stdClass();
             $cloud[0]->options->ssh = 'y';
@@ -319,7 +327,11 @@ class CloudsModel extends BaseModel
         }
         if ($config->decrypt_credentials === 'y') {
             if (!empty($cloud[0]->credentials)) {
-                $cloud[0]->credentials = json_decode(simpleDecrypt($cloud[0]->credentials, config('Encryption')->key));
+                try {
+                    $cloud[0]->credentials = json_decode(simpleDecrypt($cloud[0]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
         }
         return format_data($cloud, 'clouds');
@@ -358,7 +370,11 @@ class CloudsModel extends BaseModel
             foreach ($data->credentials as $key => $value) {
                     $received_credentials->$key = $value;
             }
-            $existing_credentials = json_decode(simpleDecrypt($get_result[0]->credentials, config('Encryption')->key));
+            try {
+                $existing_credentials = json_decode(simpleDecrypt($get_result[0]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
             $new_credentials = new \stdClass();
             foreach ($existing_credentials as $key => $value) {
                 if (!empty($received_credentials->$key)) {

@@ -116,7 +116,11 @@ class Logon extends Controller
                 $user->org_id = intval($user->org_id);
             }
             if (!empty($user->roles)) {
-                $user->roles = json_decode($user->roles);
+                try {
+                    $user->roles = json_decode($user->roles, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             print_r(json_encode($user));
             exit;

@@ -117,7 +117,13 @@ class Agents extends BaseController
         $agentResponse->actions->location_id = 0;
         $agentResponse->actions->uninstall = false;
 
-        $input = json_decode(file_get_contents('php://input'));
+        try {
+            $input = json_decode(file_get_contents('php://input'), false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            exit(1);
+        }
+
         $this->devicesModel = model('App\Models\DevicesModel');
         $device = new stdClass();
         if (!empty($input)) {

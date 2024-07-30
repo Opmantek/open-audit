@@ -255,7 +255,11 @@ class Database extends BaseController
             }
             $item = new \stdClass();
             if (!empty($eula->value) and $eula->value !== '') {
-                $item = json_decode($eula->value);
+                try {
+                    $item = json_decode($eula->value, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             if (is_null($item)) {
                 $item = new stdClass();

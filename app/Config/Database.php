@@ -83,7 +83,13 @@ class Database extends Config
         }
         if (file_exists(APPPATH . 'Config/Database.json')) {
             $file_contents = file_get_contents(APPPATH . 'Config/Database.json');
-            $json = json_decode($file_contents);
+            if (!empty($file->contents)) {
+                try {
+                    $json = json_decode($file_contents, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
+            }
             if (!empty($json)) {
                 foreach ($json as $key => $value) {
                     $this->default[$key] = $value;

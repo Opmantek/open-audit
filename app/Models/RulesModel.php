@@ -298,22 +298,32 @@ class RulesModel extends BaseModel
 
         $other_tables = array();
         foreach ($rules as $rule) {
-            $rule->inputs = json_decode($rule->inputs);
-            $rule->outputs = json_decode($rule->outputs);
-            foreach ($rule->inputs as $input) {
-                if (!$this->db->tableExists($input->table)) {
-                    $l = new \stdClass();
-                    $l->command_status = 'error';
-                    $l->discovery_id = $log->discovery_id;
-                    $l->ip = $log->ip;
-                    $l->message = 'Rule ' . $rule->id . ' specified a table that does not exist: ' . $input->table . '.';
-                    $l->command = json_encode($rule);
-                    $l->command_output = '';
-                    $discoveryLogModel->create($l);
-                    continue;
-                }
-                if ($input->table !== 'devices' and !in_array($input->table, $other_tables)) {
-                    $other_tables[] = $input->table;
+            try {
+                $rule->inputs = json_decode($rule->inputs, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
+            try {
+                $rule->outputs = json_decode($rule->outputs, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
+            if (!empty($rule->inputs)) {
+                foreach ($rule->inputs as $input) {
+                    if (!$this->db->tableExists($input->table)) {
+                        $l = new \stdClass();
+                        $l->command_status = 'error';
+                        $l->discovery_id = $log->discovery_id;
+                        $l->ip = $log->ip;
+                        $l->message = 'Rule ' . $rule->id . ' specified a table that does not exist: ' . $input->table . '.';
+                        $l->command = json_encode($rule);
+                        $l->command_output = '';
+                        $discoveryLogModel->create($l);
+                        continue;
+                    }
+                    if ($input->table !== 'devices' and !in_array($input->table, $other_tables)) {
+                        $other_tables[] = $input->table;
+                    }
                 }
             }
         }

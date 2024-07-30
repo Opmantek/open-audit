@@ -23,9 +23,15 @@ if (!function_exists('generate_token')) {
             log_message('error', 'Could not parse config file.');
             return false;
         }
-        $json = @json_decode($json);
-        $bin = @$json->{'directories'}->{'<omk_base>'} . '/bin/';
-        $token = @$json->{'authentication'}->{'auth_token_key'}[0];
+        try {
+            $json = json_decode($json, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            return false;
+        }
+
+        $bin = (!empty($json->{'directories'}->{'<omk_base>'}) ? $json->{'directories'}->{'<omk_base>'} . '/bin/' : '';
+        $token = (!empty($json->{'authentication'}->{'auth_token_key'}[0]) ? $json->{'authentication'}->{'auth_token_key'}[0] : '';
         if (empty($token)) {
             log_message('error', 'Config file attribute auth_token_key is empty');
             return false;
@@ -167,8 +173,11 @@ if (!function_exists('integrations_pre')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $external_locations = @json_decode($output);
-
+        try {
+            $external_locations = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         if (empty($external_locations)) {
             if ($integration->log) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No locations returned from NMIS, output: " . (string)$output . ".')";
@@ -314,8 +323,11 @@ if (!function_exists('integrations_pre')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $pollers = @json_decode($output);
-
+        try {
+            $pollers = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         if (empty($pollers)) {
             if ($integration->log) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No pollers returned from NMIS.')";
@@ -345,8 +357,11 @@ if (!function_exists('integrations_pre')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $groups = @json_decode($output);
-
+        try {
+            $groups = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         if (empty($groups)) {
             if ($integration->log) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No groups returned from NMIS.')";
@@ -376,7 +391,11 @@ if (!function_exists('integrations_pre')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $roles = @json_decode($output);
+        try {
+            $roles = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
 
         if (empty($roles)) {
             if ($integration->log) {
@@ -407,7 +426,11 @@ if (!function_exists('integrations_pre')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $customers_retrieved = @json_decode($output);
+        try {
+            $customers_retrieved = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         $customers = array();
 
         if (empty($customers_retrieved)) {
@@ -440,8 +463,11 @@ if (!function_exists('integrations_pre')) {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
-
-        $business_services_retrieved = @json_decode($output);
+        try {
+            $business_services_retrieved = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         $business_services = array();
 
         if (empty($business_services_retrieved)) {
@@ -597,7 +623,11 @@ if (!function_exists('integrations_collection')) {
             unlink($ckfile);
             return array();
         }
-        $external_devices = json_decode($output);
+        try {
+            $external_devices = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         if (empty($external_devices)) {
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_collection] No devices returned from NMIS.')";
             $db->query($sql, [$integration->id, microtime(true)]);
@@ -875,8 +905,11 @@ if (!function_exists('integrations_create')) {
                 return array();
             }
             try {
-                $external_device = json_decode($output);
-            } catch (Exception $e) {
+                $external_device = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
+            if (empty($external_device)) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Invalid JSON in result from NMIS. Result: ' . (string)$output)";
                 $data = array($integration->id, microtime(true));
                 $query = $db->query($sql, $data);
@@ -1135,7 +1168,11 @@ if (!function_exists('integrations_post')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $external_locations = @json_decode($output);
+        try {
+            $external_locations = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
 
         if (empty($external_locations)) {
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_post] No locations returned from NMIS, output: " . (string)$output . ".')";
@@ -1275,7 +1312,11 @@ if (!function_exists('integrations_post')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $pollers = @json_decode($output);
+        try {
+            $pollers = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
 
         if (empty($pollers)) {
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_post] No pollers returned from NMIS.')";
@@ -1302,7 +1343,11 @@ if (!function_exists('integrations_post')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $groups = @json_decode($output);
+        try {
+            $groups = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
 
         if (empty($groups)) {
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_post] No groups returned from NMIS.')";
@@ -1330,7 +1375,11 @@ if (!function_exists('integrations_post')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $roles = @json_decode($output);
+        try {
+            $roles = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
 
         if (empty($roles)) {
             $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_post] No roles returned from NMIS.')";
@@ -1358,7 +1407,11 @@ if (!function_exists('integrations_post')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $customers_retrieved = @json_decode($output);
+        try {
+            $customers_retrieved = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         $customers = array();
 
         if (empty($customers_retrieved)) {
@@ -1388,7 +1441,11 @@ if (!function_exists('integrations_post')) {
         curl_setopt($ch, CURLOPT_HEADER, false);
         $output = curl_exec($ch);
         curl_close($ch);
-        $business_services_retrieved = @json_decode($output);
+        try {
+            $business_services_retrieved = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        }
         $business_services = array();
 
         if (empty($business_services_retrieved)) {

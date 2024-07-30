@@ -179,7 +179,7 @@ if (!function_exists('response_create')) {
             }
             if (!stripos($response->meta->server_platform, 'server')) {
                 // Throw a warning, unsupported OS
-                $message = 'Open-AudiT requires Windows Server to run successfully. Please reinstall on a supported server operating system.';
+                $message = 'Open-AudIT requires Windows Server to run successfully. Please reinstall on a supported server operating system.';
                 log_message('error', $message);
                 $response->errors = $message;
             }
@@ -492,14 +492,16 @@ if (!function_exists('response_create')) {
             $sql = "SELECT * FROM enterprise WHERE id = $id";
             $result = $db->query($sql)->getResult();
             // Convert the response
-            $r = @json_decode($result[0]->response);
-            if (!empty($r)) {
-                $response = $r;
-            }
-            if (empty($r)) {
+            try {
+                $r = json_decode($result[0]->response, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
                 \Config\Services::session()->setFlashdata('error', 'There is an issue with Enterprise functionality. Please contact <a target="_blank" href="https://firstwave.com">FirstWave</a> for support.');
                 log_message('error', 'Could not decode JSON response from enterprise.');
                 log_message('error', "Response: " . @$result[0]->response . "\n");
+            }
+            if (!empty($r)) {
+                $response = $r;
             }
             $response->meta->permission_requested = $permission_requested;
             if (!empty($response->meta->license)) {
@@ -559,22 +561,38 @@ if (!function_exists('response_get_data')) {
                 $summary = 'Set received data according to POST (form).';
                 $received_data = $_POST['data'];
                 $received_data = json_encode($received_data);
-                $received_data = json_decode($received_data);
+                try {
+                    $received_data = json_decode($received_data, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
                 $data_supplied_by = 'form';
                 if (!empty($received_data->json) and is_string($received_data->json)) {
-                    $received_data->json = json_decode($received_data->json);
+                    try {
+                        $received_data->json = json_decode($received_data->json, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $e) {
+                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    }
                 }
             } else if (!empty($post)) {
                 $summary = 'Set received data according to POST (json).';
                 // This is straight JSON submitted data in a string
-                $received_data = @json_decode($post);
+                try {
+                    $received_data = json_decode($post, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
                 $data_supplied_by = 'json';
             }
         }
         if ($request_method === 'PATCH') {
             #$data_json = urldecode(str_replace('data=', '', file_get_contents('php://input')));
             $data_json = $patch;
-            $data_object = json_decode($data_json);
+            try {
+                $data_object = json_decode($data_json, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
             $options = @$data_object->data->attributes->options;
             if (empty($data_object)) {
                 // do nothing

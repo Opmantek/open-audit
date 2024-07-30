@@ -41,7 +41,11 @@ class SupportModel extends BaseModel
 
         $config = clone $instance->config;
         if (!empty($config->modules) and is_string($config->modules)) {
-            $config->modules = json_decode($config->modules);
+            try {
+                $config->modules = json_decode($config->modules, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         $modules = array();
         if (!empty($config->modules)) {

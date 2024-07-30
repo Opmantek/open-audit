@@ -226,7 +226,11 @@ class QueriesModel extends BaseModel
                 $results = $this->db->query($sql2)->getResult();
                 foreach ($results as $result) {
                     if (!empty($result->devices)) {
-                        $devices = json_decode($result->devices);
+                        try {
+                            $devices = json_decode($result->devices, false, 512, JSON_THROW_ON_ERROR);
+                        } catch (\JsonException $e) {
+                            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                        }
                         $actual_devices = array_merge($actual_devices, $devices);
                     }
                 }

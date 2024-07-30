@@ -38,7 +38,11 @@ class QueueModel extends BaseModel
         if (!empty($result) and is_array($result)) {
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->details)) {
-                    $result[$i]->details = json_decode($result[$i]->details);
+                    try {
+                        $result[$i]->details = json_decode($result[$i]->details, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $e) {
+                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    }
                     foreach ($result[$i]->details as $key => $value) {
                         $result[$i]->{'details.'.$key} = $value;
                     }
@@ -66,7 +70,11 @@ class QueueModel extends BaseModel
             return null;
         }
         if (is_string($data->details)) {
-            $data->details = json_decode($data->details);
+            try {
+                $data->details = json_decode($data->details, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         $org_id = (!empty($data->details->org_id)) ? intval($data->details->org_id) : 1;
         $name = (!empty($data->details->name)) ? $data->details->name : '';

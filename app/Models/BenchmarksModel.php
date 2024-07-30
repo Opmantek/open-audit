@@ -106,15 +106,16 @@ class BenchmarksModel extends BaseModel
         }
         $sql = "UPDATE benchmarks SET last_run = NOW() WHERE id = ?";
         $this->db->query($sql, [$id]);
-        log_message('debug', json_encode($item));
         if (empty($item->attributes->devices)) {
             log_message('error', "No devices associated with benchmark ID $id.");
             #$this->logCreate($id, 0, 'error', 'No devices associated with benchmark.');
             #$this->logCreate($id, 0, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return false;
         }
-        $devices = json_decode($item->attributes->devices);
-        if (empty($devices)) {
+        try {
+            $devices = json_decode($item->attributes->devices, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             return false;
         }
         for ($i=0; $i < count($devices); $i++) {
@@ -182,8 +183,10 @@ class BenchmarksModel extends BaseModel
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
-        $credentials = json_decode($device->attributes->credentials);
-        if (empty($credentials)) {
+        try {
+            $credentials = json_decode($device->attributes->credentials, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             log_message('error', 'Cannot decode credentials for BenchmarksModel::execute from ' . $device->attributes->name);
             $this->logCreate($id, $device_id, 'error', 'Cannot decode credentials.');
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
@@ -359,7 +362,7 @@ class BenchmarksModel extends BaseModel
         }
 
         try {
-            unlink('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html'); 
+            unlink('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html');
         } catch (e) {
             log_message('error', 'Cannot delete report file from open-audit/other/ssg-results. '. $e);
             $this->logCreate($id, $device_id, 'error', 'Cannot delete report file. Error: ' . $e);
@@ -392,11 +395,19 @@ class BenchmarksModel extends BaseModel
             $exception = new stdClass();
             $exception->devices = array();
             if (!empty($row->devices)) {
-                $exception->devices = json_decode($row->devices);
+                try {
+                    $exception->devices = json_decode($row->devices, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             $exception->benchmarks = array();
             if (!empty($row->benchmarks)) {
-                $exception->benchmarks = json_decode($row->benchmarks);
+                try {
+                    $exception->benchmarks = json_decode($row->benchmarks, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             $exceptions[$row->external_ident] = $exception;
         }
@@ -620,7 +631,6 @@ class BenchmarksModel extends BaseModel
         foreach ($ssgs as $ssg) {
             $unique_os[trim($ssg->os_family . ' ' . $ssg->os_version)] = trim($ssg->os_family . ' ' . $ssg->os_version);
         }
-        log_message('debug', json_encode($unique_os));
         #$sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, devices.credentials AS `devices.credentials`, software.name AS `software.name`, software.version AS `software.version`, orgs.id AS `orgs.id`, orgs.name AS `orgs.name`, c1.type AS `c1.type`, c2.type AS `c2.type`, c3.type AS `c3.type` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = "openscap-scanner" AND software.current = "y") LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, "$[0]") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, "$[1]") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, "$[2]") = c3.id) WHERE devices.org_id IN (' . $orgs . ') AND ';
 
         #$sql = 'SELECT COUNT(devices.id) AS `count` FROM devices LEFT JOIN `software` ON (devices.id = software.device_id AND software.name = "openscap-scanner" AND software.current = "y") LEFT JOIN `orgs` ON (devices.org_id = orgs.id) LEFT JOIN credentials c1 ON (JSON_EXTRACT(devices.credentials, "$[0]") = c1.id) LEFT JOIN credentials c2 ON (JSON_EXTRACT(devices.credentials, "$[1]") = c2.id) LEFT JOIN credentials c3 ON (JSON_EXTRACT(devices.credentials, "$[2]") = c3.id) WHERE devices.org_id IN (' . $orgs . ') AND ';
@@ -643,8 +653,14 @@ class BenchmarksModel extends BaseModel
         $results = $this->db->query($sql)->getResult();
         foreach ($results as $result) {
             if (!empty($result->devices)) {
-                $devices = json_decode($result->devices);
-                $actual_devices = array_merge($actual_devices, $devices);
+                try {
+                    $devices = json_decode($result->devices, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
+                if (!empty($devices)) {
+                    $actual_devices = array_merge($actual_devices, $devices);
+                }
             }
         }
         $included['actual_devices'] = count(array_unique($actual_devices));

@@ -116,7 +116,11 @@ class DiscoveriesModel extends BaseModel
             $data->match_options = new \stdClass();
         }
         if (is_string($data->match_options)) {
-            $data->match_options = json_decode($data->match_options);
+            try {
+                $data->match_options = json_decode($data->match_options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         $match_options = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
         foreach ($match_options as $match_option) {
@@ -128,7 +132,11 @@ class DiscoveriesModel extends BaseModel
             }
         }
         if (!empty($data->scan_options) && is_string($data->scan_options)) {
-            $data->scan_options = json_decode($data->scan_options);
+            try {
+                $data->scan_options = json_decode($data->scan_options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         if (empty($data->scan_options)) {
             $data->scan_options = new \stdClass();
@@ -456,7 +464,11 @@ class DiscoveriesModel extends BaseModel
         $result = $this->db->query($sql, [$device_id])->getResult();
         if (!empty($result)) {
             for ($i=0; $i < count($result); $i++) {
-                $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
+                try {
+                    $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
             }
             $credentials = $result;
             $retrieved_types[] = 'Device specific';
@@ -466,14 +478,22 @@ class DiscoveriesModel extends BaseModel
         $result = $this->db->query($sql, $device_id)->getResult();
         // $result[0]->credentials is a string. A JSON encoded array of integers referring to credentials.id
         if (!empty($result[0]->credentials)) {
-            $temp = @json_decode($result[0]->credentials);
+            try {
+                $temp = json_decode($result[0]->credentials, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
             if (!empty($temp)) {
                 $id_list = implode(', ', $temp);
                 $sql = "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE id IN (" . $id_list . ')';
                 $result = $this->db->query($sql)->getResult();
-                if (! empty($result)) {
+                if (!empty($result)) {
                     for ($i=0; $i < count($result); $i++) {
-                        $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
+                        try {
+                            $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+                        } catch (\JsonException $e) {
+                            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                        }
                     }
                     $credentials = array_merge($credentials, $result);
                 }
@@ -948,13 +968,21 @@ class DiscoveriesModel extends BaseModel
             $result[0]->scan_options = new \stdClass();
         }
         if (is_string($result[0]->scan_options)) {
-            $result[0]->scan_options = json_decode($result[0]->scan_options);
+            try {
+                $result[0]->scan_options = json_decode($result[0]->scan_options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         if (empty($result[0]->match_options)) {
             $result[0]->match_options = new \stdClass();
         }
         if (is_string($result[0]->match_options)) {
-            $result[0]->match_options = json_decode($result[0]->match_options);
+            try {
+                $result[0]->match_options = json_decode($result[0]->match_options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         if (!isset($result[0]->scan_options->id) or !is_numeric($result[0]->scan_options->id)) {
             if (!empty($instance->config->discovery_default_scan_option)) {
@@ -990,7 +1018,11 @@ class DiscoveriesModel extends BaseModel
             $discovery_scan_options->command_options = new \stdClass();
         }
         if (is_string($discovery_scan_options->command_options)) {
-            $discovery_scan_options->command_options = json_decode($discovery_scan_options->command_options);
+            try {
+                $discovery_scan_options->command_options = json_decode($discovery_scan_options->command_options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         unset($discovery_scan_options->command_options);
         foreach ($discovery_scan_options as $key => $value) {
@@ -1003,7 +1035,11 @@ class DiscoveriesModel extends BaseModel
             $result[0]->match_options = '{}';
         }
         if (is_string($result[0]->match_options)) {
-            $result[0]->match_options =json_decode($result[0]->match_options);
+            try {
+                $result[0]->match_options =json_decode($result[0]->match_options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         foreach (config('Openaudit') as $key => $value) {
             if (strpos($key, 'match_') !== false) {
@@ -1146,13 +1182,21 @@ class DiscoveriesModel extends BaseModel
             $db_discovery->scan_options = new \stdClass();
         }
         if (is_string($db_discovery->scan_options)) {
-            $db_scan_options = json_decode($db_discovery->scan_options);
+            try {
+                $db_scan_options = json_decode($db_discovery->scan_options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
         if (empty($db_discovery->match_options)) {
             $db_discovery->match_options = new \stdClass();
         }
         if (is_string($db_discovery->match_options)) {
-            $db_match_options = json_decode($db_discovery->match_options);
+            try {
+                $db_match_options = json_decode($db_discovery->match_options, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
         }
 
         if (isset($data->scan_options->id)) {

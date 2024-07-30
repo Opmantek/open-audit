@@ -50,35 +50,53 @@ class BaselinesPoliciesModel extends BaseModel
         $result = $query->getResult();
         for ($i = 0; $i < count($result); $i++) {
             if ($result[$i]->table === 'software') {
-                $tests = json_decode($result[$i]->tests);
-                foreach ($tests as $test) {
-                    if ($test->column === 'name') {
-                        $result[$i]->detail_name = $test->value;
-                    }
-                    if ($test->column === 'version') {
-                        $result[$i]->detail = $test->value;
+                try {
+                    $tests = json_decode($result[$i]->tests, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
+                if (!empty($tests)) {
+                    foreach ($tests as $test) {
+                        if ($test->column === 'name') {
+                            $result[$i]->detail_name = $test->value;
+                        }
+                        if ($test->column === 'version') {
+                            $result[$i]->detail = $test->value;
+                        }
                     }
                 }
             }
             if ($result[$i]->table === 'netstat') {
-                $tests = json_decode($result[$i]->tests);
-                foreach ($tests as $test) {
-                    if ($test->column === 'program') {
-                        $result[$i]->detail_name = $test->value;
-                    }
-                    if ($test->column === 'port') {
-                        $result[$i]->detail = $test->value;
+                try {
+                    $tests = json_decode($result[$i]->tests, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
+                if (!empty($tests)) {
+                    foreach ($tests as $test) {
+                        if ($test->column === 'program') {
+                            $result[$i]->detail_name = $test->value;
+                        }
+                        if ($test->column === 'port') {
+                            $result[$i]->detail = $test->value;
+                        }
                     }
                 }
             }
             if ($result[$i]->table === 'user') {
-                $tests = json_decode($result[$i]->tests);
-                foreach ($tests as $test) {
-                    if ($test->column === 'name') {
-                        $result[$i]->detail_name = $test->value;
-                    }
-                    if ($test->column === 'status') {
-                        $result[$i]->detail = $test->value;
+                try {
+                    $tests = json_decode($result[$i]->tests, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
+                if (!empty($tests)) {
+                    foreach ($tests as $test) {
+                        if ($test->column === 'name') {
+                            $result[$i]->detail_name = $test->value;
+                        }
+                        if ($test->column === 'status') {
+                            $result[$i]->detail = $test->value;
+                        }
                     }
                 }
             }

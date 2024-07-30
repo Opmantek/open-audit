@@ -85,19 +85,24 @@ class OpenAudit extends BaseConfig
                 $this->license_string_collector_id = (int)$row->id;
             }
         }
+
         $this->product = 'community';
-        try {
-            $this->servers = json_decode($this->servers, false, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            log_message('error', $e->getMessage());
-            $this->servers = '';
+        if (!empty($this->servers)) {
+            try {
+                $this->servers = json_decode($this->servers, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                $this->servers = '';
+            }
         }
 
-        try {
-            $this->license_eula = json_decode($this->license_eula, false, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            log_message('error', $e->getMessage());
-            $this->license_eula = '';
+        if (!empty($this->license_eula)) {
+            try {
+                $this->license_eula = json_decode($this->license_eula, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                $this->license_eula = '';
+            }
         }
 
         if (empty($this->page_size)) {
@@ -203,7 +208,7 @@ class OpenAudit extends BaseConfig
             try {
                 $omkConfig = json_decode($omkConfig, false, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
-                log_message('error', $e->getMessage());
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             }
             if (!empty($omkConfig->omkd->load_applications)) {
                 $apps = $omkConfig->omkd->load_applications;

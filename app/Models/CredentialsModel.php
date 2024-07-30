@@ -51,7 +51,11 @@ class CredentialsModel extends BaseModel
             $count = count($query);
             for ($i=0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
-                    $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key));
+                    try {
+                        $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $e) {
+                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    }
                 }
             }
         }
@@ -225,7 +229,11 @@ class CredentialsModel extends BaseModel
             foreach ($data->credentials as $key => $value) {
                     $received_credentials->$key = $value;
             }
-            $existing_credentials = json_decode(simpleDecrypt($get_result[0]->credentials, config('Encryption')->key));
+            try {
+                $existing_credentials = json_decode(simpleDecrypt($get_result[0]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
             $new_credentials = new \stdClass();
             foreach ($existing_credentials as $key => $value) {
                 if (!empty($received_credentials->$key)) {

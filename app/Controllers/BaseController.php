@@ -150,21 +150,33 @@ abstract class BaseController extends Controller
         if (!empty($this->resp->meta->received_data)) {
             $data = json_encode($this->resp->meta->received_data);
             if ($this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds' or $this->resp->meta->collection === 'components') {
-                $data = json_decode($data);
+                try {
+                    $data = json_decode($data, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
                 if (!empty($data->attributes->credentials)) {
                     $data->attributes->credentials = 'Removed for logging';
                 }
                 $data = json_encode($data);
             }
             if ($this->resp->meta->collection === 'integrations') {
-                $data = json_decode($data);
+                try {
+                    $data = json_decode($data, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
                 if (!empty($data->attributes->attributes)) {
                     $data->attributes->attributes = 'Removed for logging';
                 }
                 $data = json_encode($data);
             }
             if ($this->resp->meta->collection === 'users') {
-                $data = json_decode($data);
+                try {
+                    $data = json_decode($data, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
                 if (!empty($data->attributes->password)) {
                     $data->attributes->password = 'Removed for logging';
                 }

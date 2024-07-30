@@ -52,7 +52,11 @@ class BaselinesResultsModel extends BaseModel
         $count = count($result);
         for ($i=0; $i < $count; $i++) {
             if (!empty($result[$i]->result)) {
-                $json = json_decode($result[$i]->result);
+                try {
+                    $json = json_decode($result[$i]->result, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
                 unset($json->device_list);
                 unset($json->policy);
                 $result[$i]->result = json_encode($json);
