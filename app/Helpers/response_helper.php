@@ -1266,6 +1266,11 @@ if (!function_exists('response_get_permission_id')) {
         }
 
         if ($collection === 'discovery_log') {
+            $sql = "SELECT * FROM discovery_log WHERE id = ?";
+            $result = $db->query($sql, [$id])->getResult();
+            if (is_null($result[0]->discovery_id) and $action === 'read') {
+                return true;
+            }
             $sql = "SELECT discoveries.org_id FROM discoveries LEFT JOIN discovery_log ON (discoveries.id = discovery_log.discovery_id) WHERE discovery_log.id = ?";
             $result = $db->query($sql, [$id])->getResult();
         } else if (in_array($collection, response_valid_collections())) {
