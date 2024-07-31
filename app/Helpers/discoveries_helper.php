@@ -1818,8 +1818,7 @@ if (! function_exists('ip_audit')) {
             $instance->rulesModel->execute($audit->system, intval($discovery->id), 'return', intval($audit->system->id));
         } else {
             log_message('debug', 'rulesModel::execute::update because audit script result does not exist for ' . $device->ip);
-            # $instance->rulesModel->execute(null, intval($discovery->id), 'update', intval($device->id));
-            $instance->rulesModel->execute($device, intval($discovery->id), 'update', intval($device->id));
+            $instance->rulesModel->execute($device, intval($discovery->id), 'update');
         }
 
         if (!empty($audit)) {
