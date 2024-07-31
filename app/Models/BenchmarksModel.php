@@ -361,15 +361,17 @@ class BenchmarksModel extends BaseModel
             return [];
         }
 
-        try {
-            unlink('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html');
-        } catch (e) {
-            log_message('error', 'Cannot delete report file from open-audit/other/ssg-results. '. $e);
-            $this->logCreate($id, $device_id, 'error', 'Cannot delete report file. Error: ' . $e);
+        if (file_exists('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html')) {
+            log_message('debug', 'rm command on localhost for ' . $device->attributes->name . ': ' . $parameters->command);
+            @unlink('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html');
+        }
+
+        if (file_exists('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html')) {
+            log_message('error', 'Cannot delete report file from open-audit/other/ssg-results.');
+            $this->logCreate($id, $device_id, 'error', 'Cannot delete report file. /usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html');
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
-        log_message('debug', 'rm command on localhost for ' . $device->attributes->name . ': ' . $parameters->command);
 
         $this->logCreate($id, $device_id, 'info', 'Processing report file.');
         log_message('debug', 'Processing report file for ' . $device->attributes->name);
