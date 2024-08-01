@@ -80,6 +80,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+        $("#hostname").focus();
         <?php if (!empty($meta->filter[0]->name) and $meta->filter[0]->name === 'rack_id') { ?>
             $('#data\\[attributes\\]\\[rack_id\\]').val('<?= $meta->filter[0]->value ?>');
         <?php } ?>

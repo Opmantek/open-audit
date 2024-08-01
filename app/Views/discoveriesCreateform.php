@@ -123,6 +123,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         <?php if ($config->product === 'enterprise') { ?>
             $("#data\\[attributes\\]\\[seed_restrict_to_subnet\\]").val('y');
             $("#data\\[attributes\\]\\[seed_restrict_to_private\\]").val('y');

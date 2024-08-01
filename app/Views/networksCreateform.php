@@ -69,6 +69,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $("#data\\[attributes\\]\\[type\\]").val("Local Area Network");
     });
 }

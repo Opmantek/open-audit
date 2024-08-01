@@ -125,6 +125,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $("#data\\[attributes\\]\\[user_dn\\]").val('cn=@username,ou=people');
         $("#data\\[attributes\\]\\[version\\]").val('3');
         $("#data\\[attributes\\]\\[port\\]").val('389');

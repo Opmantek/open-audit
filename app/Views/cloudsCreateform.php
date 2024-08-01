@@ -92,6 +92,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         var $microsoft = '<?= create_text_field('data[attributes][credentials][subscription_id]', __('Subscription ID'), $dictionary->attributes->create) ?><?= create_text_field('data[attributes][credentials][tenant_id]', __('Tennant ID'), $dictionary->attributes->create) ?><?= create_text_field('data[attributes][credentials][client_id]', __('Client ID'), $dictionary->attributes->create) ?><?= create_text_field('data[attributes][credentials][client_secret]', __('Client Secret'), $dictionary->attributes->create) ?>';
 
         var $amazon = '<?= create_text_field('data[attributes][credentials][key]', __('Key'), $dictionary->attributes->create) ?><?= create_text_field('data[attributes][credentials][secret_key]', __('Secret Key'), $dictionary->attributes->create) ?>';

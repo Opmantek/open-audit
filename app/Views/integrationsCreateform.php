@@ -278,7 +278,7 @@ if (php_uname('s') === 'Windows NT') {
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
-
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $("#data\\[attributes\\]\\[select_internal_value\\]").val("y");
         $("#data\\[attributes\\]\\[delete_external_from_internal\\]").val("n");
 

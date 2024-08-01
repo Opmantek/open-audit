@@ -105,6 +105,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         <?php if (!empty($org_id)) { ?>
         $('#data\\[attributes\\]\\[org_id\\]').val('<?= $org_id ?>');
         <?php } ?>

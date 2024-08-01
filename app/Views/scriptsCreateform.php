@@ -114,6 +114,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $('#data\\[attributes\\]\\[org_id\\]').val('1');
 
         create_file_text = '                                <div class="row" style="padding-top:16px;">\

@@ -74,6 +74,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function(){
+        $("#data\\[attributes\\]\\[name\\]").focus();
         var $snmp_text = '<?= create_text_field('data[attributes][credentials][community]', __('Community String'), $dictionary->attributes->create, '', 'password') ?>';
 
         var $snmp_v3_text = '<?= create_text_field('data[attributes][credentials][security_name]', __('Security Name'), $dictionary->attributes->create) ?>\

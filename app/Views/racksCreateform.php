@@ -156,6 +156,7 @@ $tooltip = '<a href="#" style="color: #16325c;" class="float-end" data-bs-contai
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $("#data\\[attributes\\]\\[ru_height\\]").val(42);
         $("#data\\[attributes\\]\\[row_position\\]").val(1);
         $("#data\\[attributes\\]\\[physical_height\\]").val(2000);

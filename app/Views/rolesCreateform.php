@@ -95,6 +95,7 @@ $permissions = array('c', 'r', 'u', 'd');
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         function select_all_click($permission) {
             $(':checkbox').each(
                 function () {

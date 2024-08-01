@@ -111,6 +111,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $("#data\\[attributes\\]\\[tcp_ports\\]").val('22,135,62078');
         $("#data\\[attributes\\]\\[udp_ports\\]").val('161');
         $("#data\\[attributes\\]\\[ssh_ports\\]").val('22');

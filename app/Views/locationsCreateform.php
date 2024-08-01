@@ -60,6 +60,7 @@ foreach ($included['types'] as $type) {
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $("#data\\[attributes\\]\\[type\\]").val("Office");
     });
 }

@@ -128,6 +128,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $('#data\\[attributes\\]\\[install\\]').val('y');
         <?php
         $oss = [];

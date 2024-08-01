@@ -214,6 +214,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $("#data\\[attributes\\]\\[menu_display\\]").val("y");
         $("#data\\[attributes\\]\\[advanced\\]").val("n");
         $('#attributes_block_devices').css("display", "block");

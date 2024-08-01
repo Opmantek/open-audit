@@ -52,3 +52,11 @@ foreach ($included['types'] as $type) {
                 </div>
             </div>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function () {
+        $("#data\\[attributes\\]\\[name\\]").focus();
+    });
+}
+</script>

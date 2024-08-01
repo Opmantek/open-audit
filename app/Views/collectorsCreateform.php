@@ -71,6 +71,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $("#data\\[attributes\\]\\[name\\]").val("<?= @$_SERVER['SERVER_NAME'] ?>");
         $("#data\\[attributes\\]\\[os\\]").val("<?= $config->server_platform ?>");
         $("#data\\[attributes\\]\\[uuid\\]").val("<?= $config->uuid ?>");

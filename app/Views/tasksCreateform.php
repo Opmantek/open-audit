@@ -203,7 +203,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
-
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $("#data\\[attributes\\]\\[enabled\\]").val('y');
         $('#data\\[attributes\\]\\[first_run\\]').val('2001-01-01');
 

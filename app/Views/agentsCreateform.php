@@ -67,16 +67,15 @@ include 'shared/create_functions.php';
             </div>
         </main>
 
-
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $("#data\\[attributes\\]\\[weight\\]").val(100);
         $("#data\\[attributes\\]\\[action_audit\\]").val('y');
         $("#data\\[attributes\\]\\[action_uninstall\\]").val('n');
         $('#data\\[attributes\\]\\[action_devices_assigned_to_location\\] option[value=""]').text("");
         $('#data\\[attributes\\]\\[action_devices_assigned_to_org\\] option[value=""]').text("");
-
     });
 }
 </script>

@@ -77,6 +77,7 @@ include 'shared/create_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+        $("#data\\[attributes\\]\\[name\\]").focus();
         $(document).on('change', "#data\\[attributes\\]\\[resource\\]", function () {
             $("#data\\[attributes\\]\\[type\\]").children().remove();
             if ($("#data\\[attributes\\]\\[resource\\]").val() == 'devices') {
