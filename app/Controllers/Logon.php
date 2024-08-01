@@ -44,6 +44,27 @@ class Logon extends Controller
         if (!empty($session->get('user_id'))) {
             return redirect()->to(site_url('summaries'));
         }
+        $db = db_connect();
+        $sql = "SELECT * FROM discoveries WHERE id = 1";
+        $result = $db->query($sql)->getResult();
+        if (empty($result[0]->subnet)) {
+            helper('network');
+            $ips = server_ip();
+            $ips = explode(',', $ips);
+            $subnet = '';
+            foreach ($ips as $ip) {
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) and !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) {
+                    $ip = explode('.', $ip);
+                    $ip[3] = 0;
+                    $ip = implode('.', $ip);
+                    $subnet = $ip . '/24';
+                    break;
+                }
+            }
+            $sql = "UPDATE `discoveries` SET `subnet` = ?, `description` = 'Subnet - $subnet', `edited_by` = 'system', `edited_date` = NOW() WHERE id = 1";
+            $db->query($sql, [$subnet]);
+            log_message('info', 'Default discovery subnet auto-populated with ' . $subnet . '.');
+        }
         return view('logon', ['config' => new \Config\OpenAudit()]);
     }
 
