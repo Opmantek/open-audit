@@ -472,12 +472,14 @@ class ScriptsModel extends BaseModel
         $files = $filesModel->listUser();
         $filtered_files = array();
         $included['files'] = array();
-        foreach ($files as $file) {
-            if ($script[0]->attributes->based_on === 'audit_windows.vbs' and strpos($file->attributes->path, '/') !== 0) {
-                $included['files'][] = $file;
-            }
-            if ($script[0]->attributes->based_on !== 'audit_windows.vbs' and strpos($file->attributes->path, '/') === 0) {
-                $included['files'][] = $file;
+        if ($script[0]->attributes->based_on !== 'audit_windows.ps1') {
+            foreach ($files as $file) {
+                if ($script[0]->attributes->based_on === 'audit_windows.vbs' and strpos($file->attributes->path, '/') !== 0) {
+                    $included['files'][] = $file;
+                }
+                if ($script[0]->attributes->based_on !== 'audit_windows.vbs' and strpos($file->attributes->path, '/') === 0) {
+                    $included['files'][] = $file;
+                }
             }
         }
         return $included;

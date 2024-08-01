@@ -221,6 +221,7 @@ if (!function_exists('scripts_collectios_options')) {
             $options_scripts['audit_osx.sh'] = array('submit_online', 'create_file', 'url', 'debugging', 'org_id');
             $options_scripts['audit_solaris.sh'] = array('submit_online', 'create_file', 'url', 'debugging', 'org_id', 'system_id');
             $options_scripts['audit_windows.vbs'] = array('audit_dns', 'audit_mount_point', 'audit_netstat', 'audit_software', 'audit_win32_product', 'create_file', 'debugging', 'details_to_lower', 'hide_audit_window', 'ignore_invalid_ssl', 'ldap', 'ldap_seen_date', 'ldap_seen_days', 'org_id', 'ping_target', 'san_audit', 'san_discover', 'self_delete', 'strcomputer', 'strpass', 'struser', 'submit_online', 'system_id', 'url', 'use_proxy', 'windows_user_work_1', 'windows_user_work_2');
+            $options_scripts['audit_windows.ps1'] = array();
 
             return $options_scripts;
     }
