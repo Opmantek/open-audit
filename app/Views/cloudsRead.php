@@ -241,13 +241,6 @@ window.onload = function () {
                 $("#credentials\\.secret_key").attr("placeholder", "<?= __("has not been set") ?>");
             <?php }
         } ?>
-    });
-}
-</script>
-
-<script {csp-script-nonce}>
-window.onload = function () {
-    $(document).ready(function () {
 
         var hash = window.location.hash;
         if (hash == "") {
