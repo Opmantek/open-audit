@@ -323,6 +323,7 @@ $GLOBALS["lang"]["Commands"]="Commands";
 $GLOBALS["lang"]["Command Status"]="Command Status";
 $GLOBALS["lang"]["Command Time To Execute"]="Command Time To Execute";
 $GLOBALS["lang"]["Comments"]="Comments";
+$GLOBALS["lang"]["Common Ports"]="Common Ports";
 $GLOBALS["lang"]["Community"]="Community";
 $GLOBALS["lang"]["Community Questions"]="Community Questions";
 $GLOBALS["lang"]["Community String"]="Community String";

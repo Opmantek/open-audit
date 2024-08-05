@@ -323,6 +323,11 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <?php } ?>
                                         <?php } ?>
                                     <?php } ?>
+                                    <h4 class="text-center"><?= __('Common Ports') ?></h4><br>
+                                    <code>TCP 22</code>: SSH, typically used by Linux and Unix based machines.<br><br>
+                                    <code>TCP 135</code>: Windows remote procedure call.<br><br>
+                                    <code>TCP 62078</code>: IOS (Apple) lockdown / sync port.<br><br>
+                                    <code>UDP 161</code>: SNMP, typically used by network devices (switches, routers, et al).<br><br>
                                     </div>
                                 </div>
                             </div>
