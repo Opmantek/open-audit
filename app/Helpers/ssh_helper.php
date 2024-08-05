@@ -169,7 +169,12 @@ if (! function_exists('scp')) {
         if (!empty($parameters->discovery_id)) {
             $discoveryLogModel->create($log);
         } else {
-            log_message('debug', $log->message);
+            if ($status === false) {
+                log_message('error', $log->message . ' FAILED.');
+            } else {
+                log_message('debug', $log->message . ' succeeded.');
+                // log_message('debug', $log->command);
+            }
         }
         unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
         return($status);
