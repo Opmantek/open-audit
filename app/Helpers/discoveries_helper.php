@@ -973,7 +973,7 @@ if (! function_exists('ip_audit')) {
             // if collection == credentials, not an individual device acssociated credential
             if (!empty($credentials_snmp)) {
                 $ip_discovered_count = 1;
-                if ($credentials_snmp->foreign === 'credentials') {
+                if (!empty($credentials_snmp->foreign) and $credentials_snmp->foreign === 'credentials') {
                     $device->credentials[] = intval($credentials_snmp->id);
                 }
             }
@@ -1065,7 +1065,7 @@ if (! function_exists('ip_audit')) {
                     // Add this credential sets ID to device->credentials
                     // if collection == credentials, not an individual device acssociated credential
                     $credentials_ssh = $ssh_details->credentials;
-                    if ($credentials_ssh->foreign === 'credentials') {
+                    if (!empty($credentials_ssh->foreign) and $credentials_ssh->foreign === 'credentials') {
                         $device->credentials[] = intval($credentials_ssh->id);
                     }
                 }
@@ -1110,7 +1110,7 @@ if (! function_exists('ip_audit')) {
             $ip_discovered_count = 1;
             // Add this credential sets ID to device->credentials
             // if collection == credentials, not an individual device acssociated credential
-            if ($credentials_windows->foreign === 'credentials') {
+            if (!empty($credentials_windows->foreign) and $credentials_windows->foreign === 'credentials') {
                 $device->credentials[] = intval($credentials_windows->id);
             }
         }
