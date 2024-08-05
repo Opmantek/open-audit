@@ -236,14 +236,16 @@ class QueriesModel extends BaseModel
                 }
                 $actual_devices = array_unique($actual_devices);
                 $actual_devices = implode(', ', $actual_devices);
-                if ($request->getGet('isInBenchmark') === 'n') {
-                    $sql = str_replace('LIMIT', " AND devices.id NOT IN ($actual_devices) LIMIT", $sql);
-                }
-                if ($request->getGet('isInBenchmark') === 'y') {
-                    $sql = str_replace('LIMIT', " AND devices.id IN ($actual_devices) LIMIT", $sql);
+                if (!empty($actual_devices)) {
+                    if ($request->getGet('isInBenchmark') === 'n') {
+                        $sql = str_replace('LIMIT', " AND devices.id NOT IN ($actual_devices) LIMIT", $sql);
+                    }
+                    if ($request->getGet('isInBenchmark') === 'y') {
+                        $sql = str_replace('LIMIT', " AND devices.id IN ($actual_devices) LIMIT", $sql);
+                    }
                 }
             }
-            log_message('debug', $sql);
+            // log_message('debug', $sql);
         }
         $query = $this->db->query($sql);
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
