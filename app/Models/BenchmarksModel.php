@@ -311,14 +311,17 @@ class BenchmarksModel extends BaseModel
         $microtime = microtime(true);
 
         // Run oscap
-        $parameters->command = 'cd ~/; oscap xccdf eval --profile ' . $profile . ' --report ' . $device_id . '_' . $id .  '_' . $microtime . '_report.html ' . $file;
+        $parameters->command = 'cd ~/; oscap xccdf eval --profile ' . $profile . ' --report ' . $device_id . '_' . $id .  '_' . $microtime . '_report.html ' . $file . ' 2>&1';
         log_message('debug', 'oscap command for ' . $device->attributes->name . ': ' . $parameters->command);
         $this->logCreate($id, $device_id, 'info', 'oscap command: ' . $parameters->command);
         $parameters->timeout = 600; // 10 minutes to execute oscap
         $output = ssh_command($parameters);
+        $command_output = $output;
         if ($output === false) {
-            log_message('error', 'Could not execute osacp for BenchmarksModel::execute on ' . $device->attributes->name);
+            log_message('error', 'Could not execute oscap for BenchmarksModel::execute on ' . $device->attributes->name);
+            log_message('error', json_encode($command_output));
             $this->logCreate($id, $device_id, 'error', 'Could not execute oscap (see logfile for more info).');
+            $this->logCreate($id, $device_id, 'warning', json_encode($command_output));
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
@@ -331,7 +334,10 @@ class BenchmarksModel extends BaseModel
         $output = scp_get($parameters);
         if ($output === false) {
             log_message('error', 'Could not retrieve report for BenchmarksModel::execute on ' . $device->attributes->name);
+            log_message('error', json_encode($command_output));
             $this->logCreate($id, $device_id, 'error', 'Could not retrieve report (see logfile for more info).');
+            $this->logCreate($id, $device_id, 'error', 'SCP: '. json_encode($output));
+            $this->logCreate($id, $device_id, 'warning', 'OSCAP: ' . json_encode($command_output));
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
@@ -345,21 +351,35 @@ class BenchmarksModel extends BaseModel
         $output = ssh_command($parameters);
         if ($output === false) {
             log_message('error', 'Could not execute rm for BenchmarksModel::execute on ' . $device->attributes->name);
+            log_message('error', json_encode($command_output));
             $this->logCreate($id, $device_id, 'error', 'Could not execute rm (see logfile for more info).');
+            $this->logCreate($id, $device_id, 'error', 'RM: '. json_encode($output));
             // Do not exit/return as we should have a local copy of the result file which we can still process
         }
         log_message('debug', 'rm command completed on ' . $device->attributes->name);
         $this->logCreate($id, $device_id, 'info', 'rm command completed.');
 
         // Process the result file
-        try {
-            $qp = html5qp('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html');
-        } catch (\QueryPath\Exception $e) {
-            log_message('error', 'Cannot process report file from ' . $device->attributes->name . '. ' . $e);
-            $this->logCreate($id, $device_id, 'error', 'Cannot process report file. Error: ' . $e);
+        if (file_exists('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html')) {
+            try {
+                $qp = html5qp('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html');
+            } catch (\QueryPath\Exception $e) {
+                log_message('error', 'Cannot process report file from ' . $device->attributes->name . '. ' . $e);
+                log_message('error', json_encode($command_output));
+                $this->logCreate($id, $device_id, 'error', 'Cannot process report file. Error: ' . $e);
+                $this->logCreate($id, $device_id, 'warning', 'OSCAP: ' . json_encode($command_output));
+                $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+                return [];
+            }
+        } else {
+            log_message('error', 'File: /usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html does not exist.');
+            log_message('error', json_encode($command_output));
+            $this->logCreate($id, $device_id, 'error', 'File: /usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html does not exist.');
+            $this->logCreate($id, $device_id, 'warning', 'OSCAP: ' . json_encode($command_output));
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
+        log_message('debug', 'File loaded for processing.');
 
         if (file_exists('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html')) {
             log_message('debug', 'rm command on localhost for ' . $device->attributes->name . ': ' . $parameters->command);
