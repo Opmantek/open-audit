@@ -1326,6 +1326,21 @@ if (! function_exists('ip_audit')) {
             }
         }
 
+        if ($device->type !== 'computer' and !empty($device->os_version) and !empty($device->os_name)) {
+            $sql = "SELECT COUNT(*) AS `count` FROM software WHERE device_id = ?";
+            $result = $db->query($sql, [$device->id])->getResult();
+            if (intval($result[0]->count) < 2) {
+                // We have one or no entries in software - insert this
+                $software = new stdCLass();
+                $software->name = $device->os_name;
+                $software->version = $device->os_version;
+                $log->command_status = 'notice';
+                $log->message = 'Processing Software OS for ' . $device->ip;
+                $discoveryLogModel->create($log);
+                $componentsModel->upsert('software', $device, [$software]);
+            }
+        }
+
         // Now run our rules to update the device if any match
         $instance->rulesModel->execute(null, intval($discovery->id), 'update', intval($device->id));
 
