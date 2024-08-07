@@ -1996,6 +1996,10 @@ if (! function_exists('ip_audit')) {
                     $device_json->network[] = $item;
                 }
             }
+            if (!empty($software)) {
+                $device_json->software = array();
+                $device_json->software[] = $software;
+            }
             if (!empty($audit)) {
                 foreach ($audit as $key => $value) {
                     if ($key !== 'system' and is_countable($value) and count($value) > 0) {
