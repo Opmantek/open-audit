@@ -46,6 +46,7 @@ Don\'t forget you have granular control over what users can see and do using Rol
 		<tr style="vertical-align:top;">
 			<td>
 				applications<br>
+				auth<br>
 				baselines<br>
 				baselines_policies<br>
 				buildings<br>
@@ -59,7 +60,6 @@ Don\'t forget you have granular control over what users can see and do using Rol
 				discovery_log<br>
 				floors<br>
 				integrations<br>
-				ldap_servers<br>
 				licenses<br>
 				locations<br>
 				logs<br>
@@ -101,7 +101,7 @@ Don\'t forget you have granular control over what users can see and do using Rol
 </table>
 <br>&nbsp;<br>&nbsp;
 <h2>Active Directory and OpenLDAP</h2>
-<p>Both forms of <a href="' . url_to('ldap_serversHelp') . '">LDAP</a> (Active Directory and OpenLDAP) can be used for user authentication (is the users name and password correct) as well as user authorization (what roles and orgs does a user have).<br>
+<p>Both forms of <a href="' . url_to('authHelp') . '">LDAP</a> (Active Directory and OpenLDAP) can be used for user authentication (is the users name and password correct) as well as user authorization (what roles and orgs does a user have).<br>
 <br>
 If a user is not in the configured LDAP but is in Open-AudIT (eg: the \'admin\' user), Open-AudIT will fallback to using itself for both authentication and authorization.<br>
 <br>

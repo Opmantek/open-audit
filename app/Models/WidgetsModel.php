@@ -353,7 +353,7 @@ class WidgetsModel extends BaseModel
     {
         $device_tables = array('bios','connections','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','task','user','user_group','variable','video','vm','warranty','windows');
 
-        $other_tables = array('agents','attributes','collectors','connections','credentials','dashboards','discoveries','fields','files','groups','ldap_servers','licenses','locations','networks','orgs','queries','scripts','summaries','tasks','users','widgets');
+        $other_tables = array('agents','attributes','auth','collectors','connections','credentials','dashboards','discoveries','fields','files','groups','licenses','locations','networks','orgs','queries','scripts','summaries','tasks','users','widgets');
 
         $sql = '';
         $group_by = $widget->group_by;

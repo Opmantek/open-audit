@@ -359,7 +359,7 @@ function format_data($result, $type)
         }
     }
 
-    if ($type === 'ldap_servers') {
+    if ($type === 'auth') {
         foreach ($result as $item) {
             if (!empty($item->dn_password)) {
                 $decrypted = simpleDecrypt($item->dn_password, config('Encryption')->key);

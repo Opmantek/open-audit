@@ -8,13 +8,13 @@ namespace App\Models;
 
 use \stdClass;
 
-class LdapServersModel extends BaseModel
+class AuthModel extends BaseModel
 {
 
     public function __construct()
     {
         $this->db = db_connect();
-        $this->builder = $this->db->table('ldap_servers');
+        $this->builder = $this->db->table('auth');
         # Use the below to execute BaseModel::__construct
         # parent::__construct();
     }
@@ -61,7 +61,7 @@ class LdapServersModel extends BaseModel
         if (empty($data)) {
             return null;
         }
-        $data = $this->createFieldData('ldap_servers', $data);
+        $data = $this->createFieldData('auth', $data);
         if (empty($data)) {
             return null;
         }
@@ -133,17 +133,17 @@ class LdapServersModel extends BaseModel
         }
 
         $properties = array();
-        $properties[] = 'ldap_servers.*';
+        $properties[] = 'auth.*';
         $properties[] = 'orgs.name as `orgs.name`';
         $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'ldap_servers.org_id = orgs.id', 'left');
+        $this->builder->join('orgs', 'auth.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'ldap_servers');
+        return format_data($query->getResult(), 'auth');
     }
 
     /**
@@ -180,7 +180,7 @@ class LdapServersModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'ldap_servers');
+        return format_data($query->getResult(), 'auth');
     }
 
     /**
@@ -190,7 +190,7 @@ class LdapServersModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('ldap_servers')) {
+        if ($this->tableReset('auth')) {
             return true;
         }
         return false;
@@ -205,7 +205,7 @@ class LdapServersModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        $data = $this->updateFieldData('ldap_servers', $data);
+        $data = $this->updateFieldData('auth', $data);
         if (!empty($data->dn_password)) {
             $data->dn_password = simpleEncrypt($data->dn_password, config('Encryption')->key);
         }
@@ -226,7 +226,7 @@ class LdapServersModel extends BaseModel
     {
         $instance = & get_instance();
 
-        $collection = 'ldap_servers';
+        $collection = 'auth';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
         $dictionary->columns = new stdClass();
@@ -240,7 +240,7 @@ class LdapServersModel extends BaseModel
 
         $dictionary->sentence = '';
 
-        $dictionary->about = '<p>Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate a user and in addition, to create a user account using assigned roles and orgs based on LDAP group membership.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '<p>If using Active Directory, you do not need to populate the <code>user_dn</code> or <code>user_membership_attribute</code> attributes. These are used by OpenLDAP only.<br /><br />If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access. Use the <code>dn_account</code> and <code>dn_password</code> to configure this.<br /><br /><strong>Examples</strong><br /><br />If you need to configure OpenLDAP access for your users and a given users access DN is normally <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> then you should set base_dn to <code>dc=your,dc=domain,dc=com</code> and user_dn to <code>uid=@username@@domain,cn=People</code>. The special words @username and @domain will be replaced by the login details provided by your user on the login page.<br /><br />If you need to configure Active Directory access, you can usually use the example of <code>cn=Users,dc=your,dc=domain,dc=com</code> for your base_dn. here is no need to set user_dn.<br /><br />These are only examples. You may need to adjust these attributes to suit your particular LDAP.<br /><br /></p>';
 
@@ -249,22 +249,20 @@ class LdapServersModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->lang = 'The default language assigned to any user created by this LDAP server.';
-        $dictionary->columns->host = 'The ip address of the LDAP server.';
+        $dictionary->columns->use_authentication = "Should we use this method to authenticate user credentials. Set to 'y' or 'n'.";
+        $dictionary->columns->use_authorisation = "Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to 'y' or 'n'.";
+        $dictionary->columns->lang = 'The default language assigned to any user created by this method.';
+        $dictionary->columns->host = 'The ip address of the Auth method.';
         $dictionary->columns->port = "Default of 389. Normally 636 used for Active Directory LDAPS.";
-        $dictionary->columns->secure = "Do you want to use LDAP or LDAPS. Set to 'y' or 'n'.";
-        $dictionary->columns->domain = "The regular domain notation of your LDAP. Eg - 'open-audit.lan'.";
-        $dictionary->columns->type = "One of either 'active directory' or 'openldap'";
-        $dictionary->columns->version = "Default of '3'";
-        $dictionary->columns->base_dn = 'The base path from which to search for Users.';
-        $dictionary->columns->user_dn = 'Used by OpenLDAP only.';
-        $dictionary->columns->user_membership_attribute = 'Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.';
-        $dictionary->columns->use_auth = "Should we use this LDAP server to authenticate user credentials. Set to 'y' or 'n'.";
-        $dictionary->columns->use_discovery = "Unused.";
-        $dictionary->columns->use_people = "Should we use this LDAP server to to populate people. Set to 'y' or 'n'.";
-        $dictionary->columns->use_roles = "Should we use this LDAP server to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to 'y' or 'n'.";
-        $dictionary->columns->dn_account = 'If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.';
-        $dictionary->columns->dn_password = 'The password for the dn_account attribute.';
+        $dictionary->columns->secure = "Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.";
+        $dictionary->columns->domain = "The regular domain notation of your directory. Eg - 'open-audit.lan'.";
+        $dictionary->columns->type = "One of either 'active directory' or 'openldap'.";
+        $dictionary->columns->version = "Default of '3' for LDAP and Active Directory.";
+        $dictionary->columns->ldap_base_dn = 'The base path from which to search for Users.';
+        $dictionary->columns->ldap_dn_account = 'If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.';
+        $dictionary->columns->ldap_dn_password = 'The password for the dn_account attribute.';
+        $dictionary->columns->openldap_user_dn = 'Used by OpenLDAP only.';
+        $dictionary->columns->openldap_user_membership_attribute = 'Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

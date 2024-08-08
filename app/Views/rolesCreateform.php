@@ -2,7 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
-$endpoints = array('agents','applications','attributes','baselines','benchmarks','benchmarks_exceptions','benchmarks_policies','charts','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','executables','fields','files','groups','integrations','ldap_servers','licenses','locations','networks','orgs','queries','racks','reports','roles','rules','scripts','search','summaries','tasks','users','widgets');
+$endpoints = array('agents','applications','attributes','auth','baselines','benchmarks','benchmarks_exceptions','benchmarks_policies','charts','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','executables','fields','files','groups','integrations','licenses','locations','networks','orgs','queries','racks','reports','roles','rules','scripts','search','summaries','tasks','users','widgets');
 $permissions = array('c', 'r', 'u', 'd');
 ?>
         <main class="container-fluid">

@@ -324,16 +324,6 @@ class Collections extends BaseConfig
         $this->integrations_rules->actions->professional = '';
         $this->integrations_rules->actions->community = '';
 
-        $this->ldap_servers = new \StdClass();
-        $this->ldap_servers->icon = 'fa fa-key';
-        $this->ldap_servers->name = 'LDAP Servers';
-        $this->ldap_servers->edition = 'Community';
-        $this->ldap_servers->orgs = 'd';
-        $this->ldap_servers->actions = new \stdClass();
-        $this->ldap_servers->actions->enterprise = 'crud';
-        $this->ldap_servers->actions->professional = 'crud';
-        $this->ldap_servers->actions->community = 'crud';
-
         $this->licenses = new \StdClass();
         $this->licenses->icon = 'fa fa-leanpub';
         $this->licenses->name = 'Licenses';

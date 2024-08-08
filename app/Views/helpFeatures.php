@@ -232,7 +232,7 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $c
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td class=" "><a href="<?= url_to('ldap_serversHelp') ?>">RBAC for Active Directory and openLDAP</a></td>
+                                        <td class=" "><a href="<?= url_to('authHelp') ?>">RBAC for Active Directory and openLDAP</a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="fa fa-times" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="fa fa-check" style="color:#5cb85c;"></i></td>

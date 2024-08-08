@@ -59,7 +59,7 @@ if ($collection === "groups") {
                 <tr><td>"1","Test Group","Ubuntu Machines","SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND os_family LIKE \'Ubuntu\'","y"</td></tr>';
 }
 
-if ($collection === "ldap_servers") {
+if ($collection === "auth") {
     $sample = ' <tr><td>"name","org_id","lang","host","domain","refresh","use_roles"</td></tr>
                 <tr><td>"My LDAP Server","1","en","192.168.1.120","open-audit.com","24","y"</td></tr>';
 }
@@ -96,7 +96,7 @@ if ($collection === "queries") {
 
 if ($collection === "roles") {
     $sample = ' <tr><td>"name","description","permissions"</td></tr>
-                <tr><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">"admin","This role can change global options.","{\'attributes\':\'crud\',\'baselines\':\'crud\',\'configuration\':\'crud\',\'database\':\'crud\',\'errors\':\'r\',\'groups\':\'crud\',\'ldap_servers\':\'crud\',\'logs\':\'crud\',\'nmis\':\'crud\',\'queries\':\'crud\',\'roles\':\'crud\',\'search\':\'crud\',\'sessions\':\'crud\',\'summaries\':\'crud\'}"</td></tr>';
+                <tr><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">"admin","This role can change global options.","{\'attributes\':\'crud\',\'auth\':\'crud\',\'baselines\':\'crud\',\'configuration\':\'crud\',\'database\':\'crud\',\'errors\':\'r\',\'groups\':\'crud\',\'logs\':\'crud\',\'nmis\':\'crud\',\'queries\':\'crud\',\'roles\':\'crud\',\'search\':\'crud\',\'sessions\':\'crud\',\'summaries\':\'crud\'}"</td></tr>';
     $extra = "The field 'permissions' is stored as a JSON object. You should use single quotes in the JSON (the import routine will convert them).</p><p>For an example, use the web interface to create a role and then go to menu -> Admin -> Database -> List Tables and click on Roles. Then export to CSV.";
 }
 

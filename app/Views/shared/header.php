@@ -453,11 +453,11 @@ if (!empty($config->servers)) {
                                         <?= menuItem('database', 'r', $user, 'databaseCompare', 'Compare Database Schema') ?>
                                     </ul>
                                 </li>
-                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('LDAP Servers') ?></a>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Auth') ?></a>
                                     <ul class="dropdown-menu">
-                                        <?= menuItem('ldap_servers', 'r', $user, 'ldap_serversCollection', __('List') . ' ' . __('LDAP Servers')) ?>
-                                        <?= menuItem('ldap_servers', 'c', $user, 'ldap_serversCreateForm', __('Create') . ' ' . __('LDAP Servers')) ?>
-                                        <?= menuItem('ldap_servers', '', $user, 'ldap_serversHelp', __('Learn About') . ' ' . __('LDAP Servers')) ?>
+                                        <?= menuItem('auth', 'r', $user, 'authCollection', __('List') . ' ' . __('Auth Methods')) ?>
+                                        <?= menuItem('auth', 'c', $user, 'authCreateForm', __('Create') . ' ' . __('Auth Methods')) ?>
+                                        <?= menuItem('auth', '', $user, 'authHelp', __('Learn About') . ' ' . __('Auth Methods')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Tasks') ?></a>
