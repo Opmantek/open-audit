@@ -24,7 +24,7 @@ class LogonModel extends Model
         }
 
         $db = db_connect();
-        $sql = "SELECT * FROM ldap_servers";
+        $sql = "SELECT * FROM auth";
         $ldapServers = $db->query($sql)->getResult();
 
         $sql = "SELECT * FROM roles";
@@ -45,7 +45,7 @@ class LogonModel extends Model
                 $user->domain = explode('@', $username)[1];
             }
             if (!empty($user->domain)) {
-                $sql = 'SELECT * FROM ldap_servers WHERE domain LIKE ?';
+                $sql = 'SELECT * FROM auth WHERE domain LIKE ?';
                 $ldapServers = $db->query($sql, [$user->domain])->getResult();
             }
             if (!empty($ldapServers)) {
@@ -55,11 +55,11 @@ class LogonModel extends Model
                 log_message('debug', count($ldapServers) . ' LDAP servers retrieved from database.');
                 // We have configured ldapServers - validate
                 foreach ($ldapServers as $ldap) {
-                    if ($ldap->type !== 'active directory' && $ldap->type !== 'openldap') {
+                    if ($ldap->type !== 'active directory' and $ldap->type !== 'openldap') {
                         log_message('error', 'An invalid LDAP server type was supplied (' . $ldap->type . '), skipping.');
                         continue;
                     }
-                    if (!empty($ldap->use_auth) && $ldap->use_auth === 'n') {
+                    if (empty($ldap->use_authentication) or $ldap->use_authentication !== 'y') {
                         log_message('info', $ldap->name . ' not configured to use authentication, skipping.');
                         continue;
                     }
@@ -82,13 +82,13 @@ class LogonModel extends Model
                     }
 
                     // If we're not using Roles, get the from the DB->user or move on
-                    if (strtolower($ldap->use_roles) !== 'y') {
+                    if (strtolower($ldap->use_authorisation) !== 'y') {
                         $sql = "SELECT * FROM users WHERE name = ? AND active = 'y' LIMIT 1";
                         $users = $db->query($sql, [$username])->getResult();
                         if (count($users) === 1) {
                             return $users[0];
                         } else {
-                            log_message('info',"User {$username} in LDAP {$ldap->name} but not in Open-AudIT and not using LDAP for roles. Trying next LDAP Server.");
+                            log_message('info', "User {$username} in LDAP {$ldap->name} but not in Open-AudIT and not using LDAP for roles. Trying next LDAP Server.");
                             // Skip the rest of this ldap server as there may be other ldap server's we use for roles.
                             break;
                         }
@@ -151,8 +151,8 @@ class LogonModel extends Model
                     if ($ldap->type === 'openldap') {
                         foreach ($roles as $role) {
                             if (!empty($role->ad_group)) {
-                                $ldap->filter = "(&(cn={$role->ad_group})({$ldap->user_membership_attribute}={$user->uid}))";
-                                if ($result = @ldap_search($ldap_connection, $ldap->base_dn, $ldap->filter)) {
+                                $ldap->filter = "(&(cn={$role->ad_group})({$ldap->openldap_user_membership_attribute}={$user->uid}))";
+                                if ($result = @ldap_search($ldap_connection, $ldap->ldap_base_dn, $ldap->filter)) {
                                     $entries = @ldap_get_entries($ldap_connection, $result);
                                     if (!empty($entries[0]['cn'][0])) {
                                         $user->roles[] = $role->name;
@@ -169,8 +169,8 @@ class LogonModel extends Model
                         }
                         foreach ($orgs as $org) {
                             if (!empty($org->ad_group)) {
-                                $ldap->filter = "(&(cn={$org->ad_group})({$ldap->user_membership_attribute}={$user->uid}))";
-                                if ($result = ldap_search($ldap_connection, $ldap->base_dn, $ldap->filter)) {
+                                $ldap->filter = "(&(cn={$org->ad_group})({$ldap->openldap_user_membership_attribute}={$user->uid}))";
+                                if ($result = ldap_search($ldap_connection, $ldap->ldap_base_dn, $ldap->filter)) {
                                     $entries = ldap_get_entries($ldap_connection, $result);
                                     if (!empty($entries[0]['cn'][0])) {
                                         $user->orgs[] = intval($org->id);
@@ -275,7 +275,8 @@ class LogonModel extends Model
         return false;
     }
 
-    public function my_ldap_connect($ldap) {
+    public function my_ldap_connect($ldap)
+    {
         ldap_set_option(null, LDAP_OPT_NETWORK_TIMEOUT, 5);
         ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
         ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, 0);
@@ -293,7 +294,8 @@ class LogonModel extends Model
         return $ldap_connection;
     }
 
-    public function my_ldap_bind($ldap, $ldap_connection, $user) {
+    public function my_ldap_bind($ldap, $ldap_connection, $user)
+    {
         $bind_string = '';
         $bind_password = '';
         if ($ldap->type === 'active directory') {
@@ -306,8 +308,8 @@ class LogonModel extends Model
             $bind = @ldap_bind($ldap_connection, $bind_string, $bind_password);
         }
         if ($ldap->type === 'openldap') {
-            $bind_string = str_replace('@username', $user->full, $ldap->user_dn);
-            $bind_string = str_replace('@domain', $user->domain, $bind_string) . ',' . $ldap->base_dn;
+            $bind_string = str_replace('@username', $user->full, $ldap->openldap_user_dn);
+            $bind_string = str_replace('@domain', $user->domain, $bind_string) . ',' . $ldap->ldap_base_dn;
             $bind_password = $user->password;
             $bind = @ldap_bind($ldap_connection, $bind_string, $bind_password);
         }
@@ -326,47 +328,47 @@ class LogonModel extends Model
                 log_message('error', 'Could not bind to LDAP server at ' . $ldap->host . ', skipping.');
             }
             return false;
-        } else {
-            log_message('debug', 'Successful bind using credentials for LDAP server at ' . $ldap->connect_string . ' : ' . $bind_string);
         }
-        $ldap->dn_password = (string)simpleDecrypt($ldap->dn_password, config('Encryption')->key);
-        if (!empty($ldap->dn_account) && empty($ldap->dn_password)) {
+        log_message('debug', 'Successful bind using credentials for LDAP server at ' . $ldap->connect_string . ' : ' . $bind_string);
+        $ldap->dn_password = (string)simpleDecrypt($ldap->ldap_dn_password, config('Encryption')->key);
+        if (!empty($ldap->ldap_dn_account) && empty($ldap->ldap_dn_password)) {
             log_message('warning', 'DN Account set, but no DN Password.');
         }
-        if (!empty($ldap->dn_account) and !empty($ldap->dn_password)) {
-            $bind_string = $ldap->dn_account;
-            $bind_password = $ldap->dn_password;
+        if (!empty($ldap->ldap_dn_account) and !empty($ldap->ldap_dn_password)) {
+            $bind_string = $ldap->ldap_dn_account;
+            $bind_password = $ldap->ldap_dn_password;
             $bind = @ldap_bind($ldap_connection, $bind_string, $bind_password);
             if (empty($bind)) {
                 log_message('error', 'Invalid DN supplied credentials for LDAP server at ' . $ldap->host . ', skipping');
                 return false;
-            } else {
-                log_message('info', 'Bound to LDAP using supplied dn details: ' . $ldap->dn_account);
             }
+            log_message('info', 'Bound to LDAP using supplied dn details: ' . $ldap->ldap_dn_account);
         }
         return $bind;
     }
 
-    public function my_ldap_search($ldap, $ldap_connection, $user) {
+    public function my_ldap_search($ldap, $ldap_connection, $user)
+    {
         if ($ldap->type === 'active directory') {
             $ldap->filter = '(samaccountname=' . $user->name . ')';
         }
         if ($ldap->type === 'openldap') {
-            $ldap->filter = '(' . $ldap->user_dn . ')';
+            $ldap->filter = '(' . $ldap->openldap_user_dn . ')';
             $ldap->filter = str_replace('@username', $user->name, $ldap->filter);
             $ldap->filter = str_replace('@domain', $user->domain, $ldap->filter);
-            $temp = explode(',', $ldap->user_dn);
+            $temp = explode(',', $ldap->openldap_user_dn);
             for ($i=0; $i < count($temp); $i++) {
                 if (stripos($temp[$i], '@username') !== false) {
                     $ldap->filter = '(' . str_replace('@username', $user->name, $temp[$i]) . ')';
                 }
             }
         }
-        $result = @ldap_search($ldap_connection, $ldap->base_dn, $ldap->filter);
+        $result = @ldap_search($ldap_connection, $ldap->ldap_base_dn, $ldap->filter);
         return $result;
     }
 
-    public function my_ldap_get_entries($ldap, $ldap_connection, $result, $user) {
+    public function my_ldap_get_entries($ldap, $ldap_connection, $result, $user)
+    {
         $entries = @ldap_get_entries($ldap_connection, $result);
         if (empty($entries)) {
             return false;
@@ -375,35 +377,33 @@ class LogonModel extends Model
         return $entries;
     }
 
-        public function my_user($user, $ldap, $entries) {
-            // NOTE - attribute order must match SQL schema order
-            $thisuser = new stdClass();
-            $thisuser->name = $user->full;
-            $thisuser->org_id = intval($ldap->org_id);
-            $thisuser->password = '';
-            $thisuser->full_name = @(string)$entries[0]['givenname'][0] . ' ' . @(string)$entries[0]['sn'][0];
-            $thisuser->email = @(string)$entries[0]['mail'][0];
-            $thisuser->roles = array();
-            $thisuser->orgs = array();
-            $thisuser->lang = (string)$ldap->lang;
-            $thisuser->active = 'y';
-            $thisuser->ldap = '';
-            if ($ldap->type === 'active directory') {
-                $thisuser->ldap = @(string)$entries[0]['distinguishedname'][0];
-            }
-            if ($ldap->type === 'openldap') {
-                $thisuser->ldap = @(string)$entries[0]['dn'];
-            }
-            $thisuser->type = 'user';
-            $thisuser->dashboard_id = 1;
-            $thisuser->devices_default_display_columns = '';
-            $thisuser->access_token = '';
-            $thisuser->edited_by = 'system';
-            $thisuser->edited_by = 'system';
-            $thisuser->uid = @(string)$entries[0]['uid'][0];
-            return $thisuser;
+    public function my_user($user, $ldap, $entries)
+    {
+        // NOTE - attribute order must match SQL schema order
+        $thisuser = new stdClass();
+        $thisuser->name = $user->full;
+        $thisuser->org_id = intval($ldap->org_id);
+        $thisuser->password = '';
+        $thisuser->full_name = @(string)$entries[0]['givenname'][0] . ' ' . @(string)$entries[0]['sn'][0];
+        $thisuser->email = @(string)$entries[0]['mail'][0];
+        $thisuser->roles = array();
+        $thisuser->orgs = array();
+        $thisuser->lang = (string)$ldap->lang;
+        $thisuser->active = 'y';
+        $thisuser->ldap = '';
+        if ($ldap->type === 'active directory') {
+            $thisuser->ldap = @(string)$entries[0]['distinguishedname'][0];
         }
-
-
-
+        if ($ldap->type === 'openldap') {
+            $thisuser->ldap = @(string)$entries[0]['dn'];
+        }
+        $thisuser->type = 'user';
+        $thisuser->dashboard_id = 1;
+        $thisuser->devices_default_display_columns = '';
+        $thisuser->access_token = '';
+        $thisuser->edited_by = 'system';
+        $thisuser->edited_by = 'system';
+        $thisuser->uid = @(string)$entries[0]['uid'][0];
+        return $thisuser;
     }
+}
