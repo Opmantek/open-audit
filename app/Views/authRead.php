@@ -14,6 +14,44 @@ include 'shared/read_functions.php';
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
                             <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
+                            <div class="row" style="padding-top:16px;">
+                                <div class="offset-2 col-8" style="position:relative;">
+                                    <label for="use_authentication" class="form-label"><?= __('Use for Authentication') ?></label>
+                                    <div class="input-group">
+                                        <select class="form-select" id="use_authentication" name="use_authentication" data-original-value="<?= $resource->use_authentication ?>" disabled>
+                                            <option value="n"><?= __('No') ?></option>
+                                            <option value="y"><?= __('Yes') ?></option>
+                                        </select>
+                                        <?php if ($update) { ?>
+                                        <div class="float-end" style="padding-left:4px;">
+                                            <div data-attribute="use_authentication" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                            <div data-attribute="use_authentication" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                            <div data-attribute="use_authentication" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="use_authentication" data-dictionary="<?= $dictionary->columns->use_authentication ?>"><span><br></span></div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top:16px;">
+                                <div class="offset-2 col-8" style="position:relative;">
+                                    <label for="use_authorisation" class="form-label"><?= __('Use for Authorisation') ?></label>
+                                    <div class="input-group">
+                                        <select class="form-select" id="use_authorisation" name="use_authorisation" data-original-value="<?= $resource->use_authorisation ?>" disabled>
+                                            <option value="n"><?= __('No') ?></option>
+                                            <option value="y"><?= __('Yes') ?></option>
+                                        </select>
+                                        <?php if ($update) { ?>
+                                        <div class="float-end" style="padding-left:4px;">
+                                            <div data-attribute="use_authorisation" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                            <div data-attribute="use_authorisation" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                            <div data-attribute="use_authorisation" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="use_authorisation" data-dictionary="<?= $dictionary->columns->use_authorisation ?>"><span><br></span></div>
+                                </div>
+                            </div>
                             <?= read_field('domain', $resource->domain, $dictionary->columns->domain, $update) ?>
                             <?= read_field('host', $resource->host, $dictionary->columns->host, $update) ?>
                             <?= read_field('port', $resource->port, $dictionary->columns->port, $update) ?>
@@ -37,44 +75,6 @@ include 'shared/read_functions.php';
                                     <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="secure" data-dictionary="<?= $dictionary->columns->secure ?>"><span><br></span></div>
                                 </div>
                             </div>
-                            <div class="row" style="padding-top:16px;">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="use_roles" class="form-label"><?= __('Use LDAP for Roles') ?></label>
-                                    <div class="input-group">
-                                        <select class="form-select" id="use_roles" name="use_roles" data-original-value="<?= $resource->use_roles ?>" disabled>
-                                            <option value="n"><?= __('No') ?></option>
-                                            <option value="y"><?= __('Yes') ?></option>
-                                        </select>
-                                        <?php if ($update) { ?>
-                                        <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="use_roles" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="use_roles" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="use_roles" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
-                                        </div>
-                                        <?php } ?>
-                                    </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="use_roles" data-dictionary="<?= $dictionary->columns->use_roles ?>"><span><br></span></div>
-                                </div>
-                            </div>
-                            <div class="row" style="padding-top:16px;">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="use_auth" class="form-label"><?= __('Use LDAP for Authentication') ?></label>
-                                    <div class="input-group">
-                                        <select class="form-select" id="use_auth" name="use_auth" data-original-value="<?= $resource->use_auth ?>" disabled>
-                                            <option value="n"><?= __('No') ?></option>
-                                            <option value="y"><?= __('Yes') ?></option>
-                                        </select>
-                                        <?php if ($update) { ?>
-                                        <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="use_auth" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="use_auth" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="use_auth" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
-                                        </div>
-                                        <?php } ?>
-                                    </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="use_auth" data-dictionary="<?= $dictionary->columns->use_auth ?>"><span><br></span></div>
-                                </div>
-                            </div>
                         </div>
                         <div class="col-4">
                             <div class="row" style="padding-top:16px;">
@@ -89,13 +89,13 @@ include 'shared/read_functions.php';
                                     <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                 </div>
                             </div>
-                            <?= read_field('base_dn', $resource->base_dn, $dictionary->columns->base_dn, $update) ?>
+                            <?= read_field('ldap_base_dn', $resource->ldap_base_dn, $dictionary->columns->ldap_base_dn, $update) ?>
                             <?php if ($resource->type === 'openldap') { ?>
-                                <?= read_field('user_dn', $resource->user_dn, $dictionary->columns->user_dn, $update) ?>
-                                <?= read_field('user_membership_attribute', $resource->user_membership_attribute, $dictionary->columns->user_membership_attribute, $update) ?>
+                                <?= read_field('openldap_user_dn', $resource->openldap_user_dn, $dictionary->columns->openldap_user_dn, $update) ?>
+                                <?= read_field('openldap_user_membership_attribute', $resource->openldap_user_membership_attribute, $dictionary->columns->openldap_user_membership_attribute, $update) ?>
                             <?php } ?>
-                            <?= read_field('dn_account', $resource->dn_account, $dictionary->columns->dn_account, $update) ?>
-                            <?= read_field('dn_password', '', $dictionary->columns->dn_password, $update) ?>
+                            <?= read_field('ldap_dn_account', $resource->ldap_dn_account, $dictionary->columns->ldap_dn_account, $update) ?>
+                            <?= read_field('ldap_dn_password', '', $dictionary->columns->ldap_dn_password, $update) ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="lang" class="form-label"><?= __('Language') ?></label>
@@ -144,17 +144,17 @@ include 'shared/read_functions.php';
 window.onload = function () {
     $(document).ready(function() {
         $("#secure").val("<?= $resource->secure ?>");
-        $("#use_roles").val("<?= $resource->use_roles ?>");
-        $("#use_auth").val("<?= $resource->use_auth ?>");
+        $("#use_authorisation").val("<?= $resource->use_authorisation ?>");
+        $("#use_authentication").val("<?= $resource->use_authentication ?>");
         $("#type").val("<?= $resource->type ?>");
         $("#lang").val("<?= $resource->lang ?>");
 
 
-        <?php if (isset($resource->dn_password)) {
-            if ($resource->dn_password !== '') { ?>
-                $("#dn_password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+        <?php if (isset($resource->ldap_dn_password)) {
+            if ($resource->ldap_dn_password !== '') { ?>
+                $("#ldap_dn_password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
             <?php } else { ?>
-                $("#dn_password").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#ldap_dn_password").attr("placeholder", "<?= __("has not been set") ?>");
             <?php }
         } ?>
     });

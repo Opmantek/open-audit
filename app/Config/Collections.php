@@ -44,15 +44,15 @@ class Collections extends BaseConfig
         $this->attributes->actions->professional = 'crud';
         $this->attributes->actions->community = 'crud';
 
-        $this->authentication = new \StdClass();
-        $this->authentication->icon = 'fa fa-key';
-        $this->authentication->name = 'LDAP Servers';
-        $this->authentication->edition = 'Community';
-        $this->authentication->orgs = 'd';
-        $this->authentication->actions = new \stdClass();
-        $this->authentication->actions->enterprise = 'crud';
-        $this->authentication->actions->professional = 'crud';
-        $this->authentication->actions->community = 'crud';
+        $this->auth = new \StdClass();
+        $this->auth->icon = 'fa fa-key';
+        $this->auth->name = 'LDAP Servers';
+        $this->auth->edition = 'Community';
+        $this->auth->orgs = 'd';
+        $this->auth->actions = new \stdClass();
+        $this->auth->actions->enterprise = 'crud';
+        $this->auth->actions->professional = 'crud';
+        $this->auth->actions->community = 'crud';
 
         $this->baselines = new \StdClass();
         $this->baselines->icon = 'fa fa-line-chart';

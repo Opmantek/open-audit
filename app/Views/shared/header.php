@@ -433,6 +433,13 @@ if (!empty($config->servers)) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle " href="#" id="navbarAdmin" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Admin') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarAdmin">
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Auth') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('auth', 'r', $user, 'authCollection', __('List') . ' ' . __('Auth Methods')) ?>
+                                        <?= menuItem('auth', 'c', $user, 'authCreateForm', __('Create') . ' ' . __('Auth Methods')) ?>
+                                        <?= menuItem('auth', '', $user, 'authHelp', __('Learn About') . ' ' . __('Auth Methods')) ?>
+                                    </ul>
+                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Collectors') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('collectors', 'r', $user, 'collectorsCollection', __('List') . ' ' . __('collectors')) ?>
@@ -451,13 +458,6 @@ if (!empty($config->servers)) {
                                     <ul class="dropdown-menu">
                                         <?= menuItem('database', 'r', $user, 'databaseCollection', __('List') . ' ' . __('Database Tables')) ?>
                                         <?= menuItem('database', 'r', $user, 'databaseCompare', 'Compare Database Schema') ?>
-                                    </ul>
-                                </li>
-                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Auth') ?></a>
-                                    <ul class="dropdown-menu">
-                                        <?= menuItem('auth', 'r', $user, 'authCollection', __('List') . ' ' . __('Auth Methods')) ?>
-                                        <?= menuItem('auth', 'c', $user, 'authCreateForm', __('Create') . ' ' . __('Auth Methods')) ?>
-                                        <?= menuItem('auth', '', $user, 'authHelp', __('Learn About') . ' ' . __('Auth Methods')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Tasks') ?></a>

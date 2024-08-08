@@ -233,7 +233,7 @@ class AuthModel extends BaseModel
 
         $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'type', 'description', 'orgs.name');
-        $dictionary->attributes->create = array('name','org_id','lang','host','port','secure','domain','type','version','use_auth','use_roles','refresh');
+        $dictionary->attributes->create = array('name','org_id','lang','host','port','secure','domain','type','version','use_authentication','use_authorisation');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
         $dictionary->attributes->update = $this->updateFields($collection);
