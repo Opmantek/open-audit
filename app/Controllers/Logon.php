@@ -2,7 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-declare(strict_types=1);
+#declare(strict_types=1);
 
 namespace App\Controllers;
 
@@ -13,6 +13,9 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use \Config\Services;
+use \League\OAuth2\Client;
+
+#[\AllowDynamicProperties]
 
 /**
  * PHP version 7.4
@@ -40,6 +43,7 @@ class Logon extends Controller
 {
     public function createForm()
     {
+        log_message('info', 'In Logon::createForm');
         $session = session();
         if (!empty($session->get('user_id'))) {
             return redirect()->to(site_url('summaries'));
@@ -181,5 +185,80 @@ class Logon extends Controller
             }
         }
         echo $json;
+    }
+
+    public function redirect($type = '')
+    {
+        log_message('debug', 'In Logon::redirect');
+        $this->session = \Config\Services::session();
+        if ($type === 'github') {
+            $provider = new \League\OAuth2\Client\Provider\Github([
+                'clientId'          => 'Ov23liFAMiUUPXedsEO0',
+                'clientSecret'      => 'd701d2bb1a05342bfa725d90d03913024968ef46',
+                'redirectUri'       => 'http://localhost:8080/index.php/auth',
+            ]);
+            $options = [
+                'state' => 'OPTIONAL_CUSTOM_CONFIGURED_STATE',
+                'scope' => ['user','user:email','repo']
+            ];
+            $authUrl = $provider->getAuthorizationUrl($options);
+            $_SESSION['oauth2state'] = $provider->getState();
+            log_message('info', 'Redirect to GitHub logon URL of ' . $authUrl);
+            #header('Location: ' . $authUrl);
+            $this->response->setStatusCode(302);
+            $this->response->setHeader('Location', $authUrl);
+            return;
+        }
+    }
+
+    public function auth()
+    {
+        log_message('debug', 'In Logon::auth');
+        $this->session = \Config\Services::session();
+        $db = db_connect();
+
+        $provider = new \League\OAuth2\Client\Provider\Github([
+            'clientId'          => 'Ov23liFAMiUUPXedsEO0',
+            'clientSecret'      => 'd701d2bb1a05342bfa725d90d03913024968ef46',
+            'redirectUri'       => 'http://localhost:8080/index.php/auth',
+        ]);
+
+        // Check given state against previously stored one to mitigate CSRF attack
+        if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
+            log_message('warning', 'Unsetting oauth2state');
+            unset($_SESSION['oauth2state']);
+            exit('Invalid state');
+        }
+
+        // We should be logged on
+        log_message('warning', 'Try to get an access token (using the authorization code grant)');
+        // Try to get an access token (using the authorization code grant)
+        $token = $provider->getAccessToken('authorization_code', [
+            'code' => $_GET['code']
+        ]);
+        log_message('warning', 'We have run getAccessToken.');
+        log_message('warning', 'Token: ' . json_encode($token));
+        // Optional: Now you have a token you can look up a users profile data
+        log_message('warning', 'Now try to getResourceOwner.');
+        try {
+            // We got an access token, let's now get the user's details
+            $user = $provider->getResourceOwner($token);
+            log_message('warning', 'User: ' . json_encode($user));
+
+            // Use these details to create a new profile
+            #printf('Hello %s!', $user->getNickname());
+        } catch (Exception $e) {
+            // Failed to get user details
+            exit('Oh dear...');
+        }
+        $user = $user->toArray();
+        $sql = "SELECT * FROM users WHERE name = ? ORDER BY `id` LIMIT 1";
+        $users = $db->query($sql, [$user['login']])->getResult();
+        if (!empty($users[0]->id)) {
+            $session->set('user_id', $users[0]->id);
+            return redirect()->to(url_to('home'));
+        }
+        log_message('warning', 'GutHub used to login but users login does not exist in Open-AudIT.');
+        return redirect()->to(site_url('logon'));
     }
 }
