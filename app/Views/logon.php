@@ -95,27 +95,49 @@ include('shared/lang.php');
 
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
-                                        <div class="offset-4 col-4" style="position:relative;">
+                                        <div class="offset-3 col-6" style="position:relative;">
                                             <label class="form-label text-secondary" for="username">Username</label>
                                             <input class="form-control" type="text" id="username" name="username" />
                                         </div>
                                     </div> 
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
-                                        <div class="offset-4 col-4" style="position:relative;">
+                                        <div class="offset-3 col-6" style="position:relative;">
                                             <label class="form-label text-secondary" for="password">Password</label>
                                             <input class="form-control" type="password" id="password" name="password" />
                                         </div>
                                     </div> 
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
-                                        <div class="offset-4 col-4" style="position:relative;">
+                                        <div class="offset-3 col-6" style="position:relative;">
                                             <label class="form-label" for="submit"></label>
                                                 <?php $disabled = '';
                                                 if (empty($config->internal_version)) {
                                                     $disabled = 'disabled';
                                                 } ?>
-                                            <button type="submit" class="btn btn-primary" id="submit" name="submit" <?php echo $disabled; ?>>Submit</button>
+                                            <button type="submit" class="btn btn-primary float-start" id="submit" name="submit" <?php echo $disabled; ?>>Submit</button>
+                                            <?php
+                                            if (!empty($methods)) {
+                                                foreach ($methods as $method) {
+                                                    switch ($method) {
+                                                        case 'github':
+                                                            $logo = 'fa-brands fa-github';
+                                                            break;
+
+                                                        case 'okta':
+                                                            $logo = 'fa-solid fa-o';
+                                                            break;
+                                                        
+                                                        default:
+                                                            $logo = '';
+                                                            break;
+                                                    }
+                                                    echo '<a href="/index.php/logon/' . $method . '"><button type="button" class="btn btn-primary float-end" style="margin-left:10px;"><i class="' . $logo . '" style="padding-right:10px"></i>Logon with ' . $method . '</button></a>';
+                                                }
+                                            }
+                                            ?>
+                                            
+                                            <!-- <a href="/index.php/logon/okta"><button type="button" class="btn btn-primary float-end" id="github" name="github">Logon with Okta</button></a>-->
                                         </div>
                                     </div>
 

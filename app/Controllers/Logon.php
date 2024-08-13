@@ -13,7 +13,9 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use \Config\Services;
+
 use \League\OAuth2\Client;
+use \Foxworth42\OAuth2\Client\Provider\Okta;
 
 #[\AllowDynamicProperties]
 
@@ -43,7 +45,6 @@ class Logon extends Controller
 {
     public function createForm()
     {
-        log_message('info', 'In Logon::createForm');
         $session = session();
         if (!empty($session->get('user_id'))) {
             return redirect()->to(site_url('summaries'));
@@ -69,7 +70,17 @@ class Logon extends Controller
             $db->query($sql, [$subnet]);
             log_message('info', 'Default discovery subnet auto-populated with ' . $subnet . '.');
         }
-        return view('logon', ['config' => new \Config\OpenAudit()]);
+        $authModel = model('AuthModel');
+        $authMethods = $authModel->listAll();
+        $methods = array();
+        foreach ($authMethods as $auth) {
+            if (!empty($auth->type) and $auth->type !== 'openldap' and $auth->type !== 'active directory') {
+                if ($auth->use_authentication === 'y') {
+                    $methods[] = $auth->type;
+                }
+            }
+        }
+        return view('logon', ['config' => new \Config\OpenAudit(), 'methods' => $methods]);
     }
 
     public function create()
@@ -187,78 +198,66 @@ class Logon extends Controller
         echo $json;
     }
 
-    public function redirect($type = '')
+    public function redirect(string $type = '')
     {
-        log_message('debug', 'In Logon::redirect');
+        if (empty($type)) {
+            return redirect()->to(site_url('logon'));
+        }
+        helper('auth');
         $this->session = \Config\Services::session();
-        if ($type === 'github') {
-            $provider = new \League\OAuth2\Client\Provider\Github([
-                'clientId'          => 'Ov23liFAMiUUPXedsEO0',
-                'clientSecret'      => 'd701d2bb1a05342bfa725d90d03913024968ef46',
-                'redirectUri'       => 'http://localhost:8080/index.php/auth',
-            ]);
-            $options = [
-                'state' => 'OPTIONAL_CUSTOM_CONFIGURED_STATE',
-                'scope' => ['user','user:email','repo']
-            ];
-            $authUrl = $provider->getAuthorizationUrl($options);
-            $_SESSION['oauth2state'] = $provider->getState();
-            log_message('info', 'Redirect to GitHub logon URL of ' . $authUrl);
-            #header('Location: ' . $authUrl);
+        $authModel = model('App\Models\AuthModel');
+        $authEntries = $authModel->listAll();
+        $auth = '';
+        foreach ($authEntries as $item) {
+            if ($item->type === $type) {
+                $auth = $item;
+                break;
+            }
+        }
+        if (empty($auth)) {
+            return redirect()->to(site_url('logon'));
+        }
+        if ($type === 'github' and $auth->type === 'github') {
+            $authUrl = github_redirect($auth);
+            if (empty($authUrl)) {
+                return redirect()->to(site_url('logon'));
+            }
             $this->response->setStatusCode(302);
             $this->response->setHeader('Location', $authUrl);
             return;
         }
+        if ($type === 'okta' and $auth->type === 'okta') {
+            $authUrl = okta_redirect($auth);
+            if (empty($authUrl)) {
+                return redirect()->to(site_url('logon'));
+            }
+            $this->response->setStatusCode(302);
+            $this->response->setHeader('Location', $authUrl);
+            return;
+        }
+        return redirect()->to(site_url('logon'));
     }
 
-    public function auth()
+    public function auth(string $type = '')
     {
-        log_message('debug', 'In Logon::auth');
+        helper('auth');
         $this->session = \Config\Services::session();
-        $db = db_connect();
-
-        $provider = new \League\OAuth2\Client\Provider\Github([
-            'clientId'          => 'Ov23liFAMiUUPXedsEO0',
-            'clientSecret'      => 'd701d2bb1a05342bfa725d90d03913024968ef46',
-            'redirectUri'       => 'http://localhost:8080/index.php/auth',
-        ]);
-
-        // Check given state against previously stored one to mitigate CSRF attack
-        if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
-            log_message('warning', 'Unsetting oauth2state');
-            unset($_SESSION['oauth2state']);
-            exit('Invalid state');
+        $authModel = model('App\Models\AuthModel');
+        $authEntries = $authModel->listAll();
+        foreach ($authEntries as $item) {
+            if ($item->type === $type) {
+                $auth = $item;
+                break;
+            }
         }
-
-        // We should be logged on
-        log_message('warning', 'Try to get an access token (using the authorization code grant)');
-        // Try to get an access token (using the authorization code grant)
-        $token = $provider->getAccessToken('authorization_code', [
-            'code' => $_GET['code']
-        ]);
-        log_message('warning', 'We have run getAccessToken.');
-        log_message('warning', 'Token: ' . json_encode($token));
-        // Optional: Now you have a token you can look up a users profile data
-        log_message('warning', 'Now try to getResourceOwner.');
-        try {
-            // We got an access token, let's now get the user's details
-            $user = $provider->getResourceOwner($token);
-            log_message('warning', 'User: ' . json_encode($user));
-
-            // Use these details to create a new profile
-            #printf('Hello %s!', $user->getNickname());
-        } catch (Exception $e) {
-            // Failed to get user details
-            exit('Oh dear...');
+        if (empty($auth)) {
+            return redirect()->to(site_url('logon'));
         }
-        $user = $user->toArray();
-        $sql = "SELECT * FROM users WHERE name = ? ORDER BY `id` LIMIT 1";
-        $users = $db->query($sql, [$user['login']])->getResult();
-        if (!empty($users[0]->id)) {
-            $session->set('user_id', $users[0]->id);
-            return redirect()->to(url_to('home'));
+        if (!empty($auth) and $type === 'github') {
+            return redirect()->to(github_auth($auth, @$this->request->getIPAddress()));
         }
-        log_message('warning', 'GutHub used to login but users login does not exist in Open-AudIT.');
-        return redirect()->to(site_url('logon'));
+        if (!empty($auth) and $type === 'okta') {
+            return redirect()->to(okta_auth($auth, @$this->request->getIPAddress()));
+        }
     }
 }

@@ -24,7 +24,7 @@ class LogonModel extends Model
         }
 
         $db = db_connect();
-        $sql = "SELECT * FROM auth";
+        $sql = "SELECT * FROM auth WHERE `type` IN ('active directory', 'openldap')";
         $ldapServers = $db->query($sql)->getResult();
 
         $sql = "SELECT * FROM roles";

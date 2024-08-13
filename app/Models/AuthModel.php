@@ -58,6 +58,7 @@ class AuthModel extends BaseModel
      */
     public function create($data = null): ?int
     {
+        helper('security');
         if (empty($data)) {
             return null;
         }
@@ -67,6 +68,9 @@ class AuthModel extends BaseModel
         }
         if (!empty($data->dn_password)) {
             $data->dn_password = simpleEncrypt($data->dn_password, config('Encryption')->key);
+        }
+        if (!empty($data->client_secret)) {
+            $data->client_secret = simpleEncrypt($data->client_secret, config('Encryption')->key);
         }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
@@ -153,18 +157,30 @@ class AuthModel extends BaseModel
      */
     public function listAll(): array
     {
+        helper('security');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        $count = count($query);
+        $result = $query->getResult();
+        $count = count($result);
         for ($i=0; $i < $count; $i++) {
-            $decrypted = simpleDecrypt($query[$i]->dn_password, config('Encryption')->key);
+            $decrypted = '';
+            if (!empty($result[$i]->dn_password)) {
+                $decrypted = simpleDecrypt($result[$i]->dn_password, config('Encryption')->key);
+            }
             if (!empty($decrypted)) {
-                $query[$i]->dn_password = $decrypted;
+                $result[$i]->dn_password = $decrypted;
+            }
+            $decrypted = '';
+            if (!empty($result[$i]->client_secret)) {
+                $decrypted = simpleDecrypt($result[$i]->client_secret, config('Encryption')->key);
+            }
+            if (!empty($decrypted)) {
+                $result[$i]->client_secret = $decrypted;
             }
         }
-        return $query->getResult();
+        return $result;
     }
 
     /**
@@ -209,6 +225,9 @@ class AuthModel extends BaseModel
         if (!empty($data->dn_password)) {
             $data->dn_password = simpleEncrypt($data->dn_password, config('Encryption')->key);
         }
+        if (!empty($data->client_secret)) {
+            $data->client_secret = simpleEncrypt($data->client_secret, config('Encryption')->key);
+        }
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
         if ($this->sqlError($this->db->error())) {
@@ -233,7 +252,7 @@ class AuthModel extends BaseModel
 
         $dictionary->attributes = new stdClass();
         $dictionary->attributes->collection = array('id', 'name', 'type', 'description', 'orgs.name');
-        $dictionary->attributes->create = array('name','org_id','lang','host','port','secure','domain','type','version','use_authentication','use_authorisation');
+        $dictionary->attributes->create = array('name','org_id','type','use_authentication','use_authorisation');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
         $dictionary->attributes->update = $this->updateFields($collection);
@@ -242,7 +261,7 @@ class AuthModel extends BaseModel
 
         $dictionary->about = '<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
-        $dictionary->notes = '<p>If using Active Directory, you do not need to populate the <code>user_dn</code> or <code>user_membership_attribute</code> attributes. These are used by OpenLDAP only.<br /><br />If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access. Use the <code>dn_account</code> and <code>dn_password</code> to configure this.<br /><br /><strong>Examples</strong><br /><br />If you need to configure OpenLDAP access for your users and a given users access DN is normally <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> then you should set base_dn to <code>dc=your,dc=domain,dc=com</code> and user_dn to <code>uid=@username@@domain,cn=People</code>. The special words @username and @domain will be replaced by the login details provided by your user on the login page.<br /><br />If you need to configure Active Directory access, you can usually use the example of <code>cn=Users,dc=your,dc=domain,dc=com</code> for your base_dn. here is no need to set user_dn.<br /><br />These are only examples. You may need to adjust these attributes to suit your particular LDAP.<br /><br /></p>';
+        $dictionary->notes = '<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you\'re using OpenLDAP), you can use another account which does have this access. Use the <code>dn_account</code> and <code>dn_password</code> to configure this.<br /><br /><strong>Examples</strong><br /><br />If you need to configure OpenLDAP access for your users and a given users access DN is normally <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> then you should set base_dn to <code>dc=your,dc=domain,dc=com</code> and user_dn to <code>uid=@username@@domain,cn=People</code>. The special words @username and @domain will be replaced by the login details provided by your user on the login page.<br /><br />If you need to configure Active Directory access, you can usually use the example of <code>cn=Users,dc=your,dc=domain,dc=com</code> for your base_dn.<br /><br />These are only examples. You may need to adjust these attributes to suit your particular LDAP.<br /><br />Github and Okta can only be used for authentication. This means you will need to create those users in Open-AudIT and assign the required roles and orgs. Once done, the users can login using Github or Okta.<br><br>For Github users, you will need set their username in Open-AudIT to their \'login\' attribute from Github. For Okta users, you will need set their username in Open-AudIT to their \'name\' attribute from Okta. If you do not know these fields, they should try logging on using Github/Okta and you will see the failure reported in the log, along with the required attri</p>';
 
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
@@ -263,6 +282,10 @@ class AuthModel extends BaseModel
         $dictionary->columns->ldap_dn_password = 'The password for the dn_account attribute.';
         $dictionary->columns->openldap_user_dn = 'Used by OpenLDAP only.';
         $dictionary->columns->openldap_user_membership_attribute = 'Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.';
+        $dictionary->columns->client_ident = 'Commonly referred to as the clientId.';
+        $dictionary->columns->client_secret = 'Commonly referred to as the clientSecret.';
+        $dictionary->columns->redirect_uri = 'This will auto-populate.';
+        $dictionary->columns->issuer = 'Specific to OKTA.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

@@ -252,6 +252,23 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'auth') {
+        foreach ($result as $item) {
+            if (!empty($item->dn_password)) {
+                $decrypted = simpleDecrypt($item->dn_password, config('Encryption')->key);
+                if (!empty($decrypted)) {
+                    $item->dn_password = $decrypted;
+                }
+            }
+            if (!empty($item->client_secret)) {
+                $decrypted = simpleDecrypt($item->client_secret, config('Encryption')->key);
+                if (!empty($decrypted)) {
+                    $item->client_secret = $decrypted;
+                }
+            }
+        }
+    }
+
     if ($type === 'baselines_policies') {
         foreach ($result as $item) {
             if (!empty($item->tests)) {
@@ -354,17 +371,6 @@ function format_data($result, $type)
                     $item->fields = json_decode($item->fields, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                }
-            }
-        }
-    }
-
-    if ($type === 'auth') {
-        foreach ($result as $item) {
-            if (!empty($item->dn_password)) {
-                $decrypted = simpleDecrypt($item->dn_password, config('Encryption')->key);
-                if (!empty($decrypted)) {
-                    $item->dn_password = $decrypted;
                 }
             }
         }

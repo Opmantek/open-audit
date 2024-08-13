@@ -21,7 +21,8 @@
         "paragonie/sodium_compat": "^1",
         "paragonie/random_compat": "^1",
         "league/oauth2-client": "^2.7",
-        "league/oauth2-github": "^3.1"
+        "league/oauth2-github": "^3.1",
+        "foxworth42/oauth2-okta": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e7fe64f045ce02e8bfbad4f783ec97eb",
+    "content-hash": "923104083205e8dfaa325be5187f6f18",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -362,6 +362,60 @@
                 "source": "https://github.com/firebase/php-jwt/tree/v6.10.0"
             },
             "time": "2023-12-01T16:26:39+00:00"
+        },
+        {
+            "name": "foxworth42/oauth2-okta",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/foxworth42/oauth2-okta.git",
+                "reference": "cc520ddba9ba1735cec6215f247e0588993b562f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/foxworth42/oauth2-okta/zipball/cc520ddba9ba1735cec6215f247e0588993b562f",
+                "reference": "cc520ddba9ba1735cec6215f247e0588993b562f",
+                "shasum": ""
+            },
+            "require": {
+                "league/oauth2-client": "^2.0",
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "^7.0",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Foxworth42\\OAuth2\\Client\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ed Walker",
+                    "email": "github@foxwire.org"
+                }
+            ],
+            "description": "Okta OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
+            "keywords": [
+                "Authentication",
+                "authorization",
+                "client",
+                "oauth",
+                "oauth2",
+                "okta"
+            ],
+            "support": {
+                "issues": "https://github.com/foxworth42/oauth2-okta/issues",
+                "source": "https://github.com/foxworth42/oauth2-okta/tree/v1.0.4"
+            },
+            "time": "2024-04-02T17:41:34+00:00"
         },
         {
             "name": "google/auth",
