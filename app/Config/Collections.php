@@ -46,7 +46,7 @@ class Collections extends BaseConfig
 
         $this->auth = new \StdClass();
         $this->auth->icon = 'fa fa-key';
-        $this->auth->name = 'LDAP Servers';
+        $this->auth->name = 'Auth';
         $this->auth->edition = 'Community';
         $this->auth->orgs = 'd';
         $this->auth->actions = new \stdClass();
