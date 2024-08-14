@@ -826,7 +826,7 @@ if (! function_exists('wmi_command')) {
         if (php_uname('s') == 'Windows NT') {
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
-            $domain = $temp[1];
+            $domain = @$temp[1];
             if ($domain != '') {
                 $domain .= '\\';
             }
