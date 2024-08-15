@@ -1196,8 +1196,8 @@ INSERT INTO `configuration` VALUES (NULL,'page_size','1000','number','y','system
 INSERT INTO `configuration` VALUES (NULL,'process_netstat_windows_dns','n','bool','y','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
 INSERT INTO `configuration` VALUES (NULL,'queue_count','0','number','n','system','2000-01-01 00:00:00','The current number of concurrent device scans running.');
 INSERT INTO `configuration` VALUES (NULL,'queue_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should run.');
-INSERT INTO `configuration` VALUES (NULL,'rss_enable','y','bool','y','system','2000-01-01 00:00:00','Enable the RSS feed.');
-INSERT INTO `configuration` VALUES (NULL,'rss_url','https://community.opmantek.com/rss/OA.xml','text','y','system','2000-01-01 00:00:00','The RSS feed URL.');
+INSERT INTO `configuration` VALUES (NULL,'rss_enable','n','bool','y','system','2000-01-01 00:00:00','Enable the RSS feed.');
+INSERT INTO `configuration` VALUES (NULL,'rss_url','https://docs.community.firstwave.com/wiki/createrssfeed.action?types=page&types=blogpost&spaces=OA&sort=modified&maxResults=10&timeSpan=10&showContent=true','text','y','system','2000-01-01 00:00:00','The RSS feed URL.');
 INSERT INTO `configuration` VALUES (NULL,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.');
 INSERT INTO `configuration` VALUES (NULL,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
 INSERT INTO `configuration` VALUES (NULL,'uuid',UUID(),'text','n','system','2000-01-01 00:00:00','The unique identfier of this Open-AudIT server.');

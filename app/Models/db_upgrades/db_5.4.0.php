@@ -44,6 +44,15 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "UPDATE `configuration` SET `value` = 'n' WHERE `name` = 'rss_enable'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `configuration` SET `value` = 'https://docs.community.firstwave.com/wiki/createrssfeed.action?types=page&types=blogpost&spaces=OA&sort=modified&maxResults=10&timeSpan=10&showContent=true' WHERE `name` = 'rss_url'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20240810' WHERE `name` = 'internal_version'";
