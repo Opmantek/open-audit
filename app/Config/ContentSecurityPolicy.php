@@ -47,7 +47,7 @@ class ContentSecurityPolicy extends BaseConfig
      *
      * @var string|string[]|null
      */
-    public $defaultSrc = "'self' maps.googleapis.com community.opmantek.com";
+    public $defaultSrc = "'self' maps.googleapis.com community.opmantek.com docs.community.firstwave.com";
 
     /**
      * Lists allowed scripts' URLs.
@@ -93,7 +93,7 @@ class ContentSecurityPolicy extends BaseConfig
      * @var string|string[]
      */
     # public $connectSrc = 'self';
-    public $connectSec = "'self' opmantek.com community.opmantek.com services.opmantek.com maps.googleapis.com";
+    public $connectSrc = "'self' opmantek.com community.opmantek.com services.opmantek.com maps.googleapis.com docs.community.firstwave.com";
 
     /**
      * Specifies the origins that can serve web fonts.

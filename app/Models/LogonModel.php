@@ -50,7 +50,7 @@ class LogonModel extends Model
             }
             if (!empty($ldapServers)) {
                 # Added so we do not fail when checking self-signed certificates
-                # See here - https://community.opmantek.com/display/OA/Troubleshooting+LDAP+logins
+                # See here - https://docs.community.firstwave.com/wiki/spaces/OA/pages/3163949406/Troubleshooting+LDAP+logins
                 putenv('LDAPTLS_REQCERT=never');
                 log_message('debug', count($ldapServers) . ' LDAP servers retrieved from database.');
                 // We have configured ldapServers - validate

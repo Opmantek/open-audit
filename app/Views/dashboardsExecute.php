@@ -158,7 +158,7 @@ foreach ($checks as $key => $value) {
                                 <li class="list-group-item"></li>
                             </ul>
                             <ul class="list-group list-group-flush fadenews" id="newsfeed">
-                                <li class="list-group-item">From the <a style="text-decoration:none;" target="_blank" href="https://community.opmantek.com/display/OA/Home">Open-AudIT wiki</a>.<br />&nbsp;</li>
+                                <li class="list-group-item">From the <a style="text-decoration:none;" target="_blank" href="https://docs.community.firstwave.com/wiki/spaces/OA">Open-AudIT wiki</a>.<br />&nbsp;</li>
                             </ul>
                                 <?php } ?>
                         </div>
