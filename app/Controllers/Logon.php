@@ -217,6 +217,15 @@ class Logon extends Controller
         if (empty($auth)) {
             return redirect()->to(site_url('logon'));
         }
+        if ($type === 'azure' and $auth->type === 'azure') {
+            $authUrl = azure_redirect($auth);
+            if (empty($authUrl)) {
+                return redirect()->to(site_url('logon'));
+            }
+            $this->response->setStatusCode(302);
+            $this->response->setHeader('Location', $authUrl);
+            return;
+        }
         if ($type === 'github' and $auth->type === 'github') {
             $authUrl = github_redirect($auth);
             if (empty($authUrl)) {

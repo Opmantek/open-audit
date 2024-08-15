@@ -24,6 +24,7 @@ include 'shared/create_functions.php';
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]" required>
                                             <option value="" selected><?= __('Choose') ?></option>
                                             <option value="active directory"><?= ('Active Directory') ?></option>
+                                            <option value="azure"><?= ('Azure') ?></option>
                                             <option value="github"><?= ('Github') ?></option>
                                             <option value="okta"><?= ('Okta') ?></option>
                                             <option value="openldap"><?= ('OpenLDAP') ?></option>
@@ -138,11 +139,13 @@ window.onload = function () {
         <?php
         $fields_ad = array('use_authentication', 'use_authorisation', 'domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'lang', 'ldap_dn_account', 'ldap_dn_password');
 
-        $fields_openldap = array('use_authentication', 'use_authorisation', 'domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'lang','openldap_user_dn', 'openldap_user_membership_attribute', 'ldap_dn_account', 'ldap_dn_password');
+        $fields_azure = array('use_authentication', 'client_ident', 'client_secret', 'issuer', 'redirect_uri');
 
         $fields_github = array('use_authentication', 'client_ident', 'client_secret', 'redirect_uri');
 
         $fields_okta = array('use_authentication', 'client_ident', 'client_secret', 'issuer', 'redirect_uri');
+
+        $fields_openldap = array('use_authentication', 'use_authorisation', 'domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'lang','openldap_user_dn', 'openldap_user_membership_attribute', 'ldap_dn_account', 'ldap_dn_password');
 
         $fields_all = array('client_ident', 'client_secret', 'redirect_uri', 'issuer', 'use_authentication', 'use_authorisation', 'domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'openldap_user_dn', 'openldap_user_membership_attribute', 'ldap_dn_account', 'ldap_dn_password', 'lang');
         echo "\n";
@@ -172,18 +175,19 @@ window.onload = function () {
                 }
                 ?>
             }
-            if ($("#data\\[attributes\\]\\[type\\]").val() == 'openldap') {
+            if ($("#data\\[attributes\\]\\[type\\]").val() == 'azure') {
                 <?php
                 echo "\n";
                 foreach ($fields_all as $field) {
-                    if (!in_array($field, $fields_openldap)) {
+                    if (!in_array($field, $fields_azure)) {
                         echo "              \$(\"#" . $field . "_div\").hide();\n";
                     }
                 }
-                foreach ($fields_openldap as $field) {
+                foreach ($fields_azure as $field) {
                     echo "              \$(\"#" . $field . "_div\").show();\n";
                 }
                 ?>
+                $("#data\\[attributes\\]\\[redirect_uri\\]").val('<?= base_url() . 'logon/azure/auth' ?>');
             }
             if ($("#data\\[attributes\\]\\[type\\]").val() == 'github') {
                 <?php
@@ -212,6 +216,19 @@ window.onload = function () {
                 }
                 ?>
                 $("#data\\[attributes\\]\\[redirect_uri\\]").val('<?= base_url() . 'logon/okta/auth' ?>');
+            }
+            if ($("#data\\[attributes\\]\\[type\\]").val() == 'openldap') {
+                <?php
+                echo "\n";
+                foreach ($fields_all as $field) {
+                    if (!in_array($field, $fields_openldap)) {
+                        echo "              \$(\"#" . $field . "_div\").hide();\n";
+                    }
+                }
+                foreach ($fields_openldap as $field) {
+                    echo "              \$(\"#" . $field . "_div\").show();\n";
+                }
+                ?>
             }
         });
     });
