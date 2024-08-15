@@ -209,8 +209,7 @@ class Devices extends BaseController
         set_time_limit(300);
         $db = db_connect();
         $count = 0;
-        #$files = glob(APPPATH . '/../other/example_devices/*.{xml,json}', GLOB_BRACE);
-        $files = glob('/Users/mark/audits/*.{xml,json}', GLOB_BRACE);
+        $files = glob(APPPATH . '/../other/example_devices/*.{xml,json}', GLOB_BRACE);
         $this->config->discovery_use_dns = 'n';
         foreach ($files as $file) {
             $device = file_get_contents($file);
