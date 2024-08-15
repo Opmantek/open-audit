@@ -46,7 +46,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                         <button class="btn btn-warning"><?= __('Open-AudIT Community') ?></button>
                                     <?php } ?>
                                     <br /><br />
-                                    <img class="img-fluid helpImage" src="<?= base_url() . '/images/' . $meta->collection ?>.png" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <img class="img-fluid helpImage" src="<?= base_url() . 'images/' . $meta->collection ?>.png" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 </div>
                             </div>
 

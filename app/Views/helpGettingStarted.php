@@ -23,7 +23,7 @@ include 'shared/collection_functions.php';
                                 Organisations can extend and enhance the level of detail that is stored against every discovered device using custom fields and the open core allows for easy integration into CMDB, event management and ticketing systems.<br />
                                 <br />
                                 <br />
-                                <a href="https://community.opmantek.com/display/OA/Home" target="_blank">Online Docs</a>
+                                <a href="https://docs.community.firstwave.com/wiki/spaces/OA" target="_blank">Online Docs</a>
                                 <br />
                             </p>
                         </div>

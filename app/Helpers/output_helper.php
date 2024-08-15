@@ -305,7 +305,7 @@ if (!function_exists('output')) {
         for ($i=0; $i<count($data->result); $i++) {
             $item = new \stdClass();
             $item->y = intval($data->result[$i]->count);
-            $item->url = base_url() . str_replace('@date', $data->result[$i]->date, $data->result[$i]->link);
+            $item->url = base_url() . 'index.php/' . str_replace('@date', $data->result[$i]->date, $data->result[$i]->link);
             $item->tooltip = date_format(date_create($data->result[$i]->date), 'D, M j Y');
             $dataset->data[] = $item;
             if ($i === 0) {
@@ -372,7 +372,7 @@ if (!function_exists('output')) {
                 $slice->name = 'NoData';
             }
             $slice->y = intval($data->result[$i]->count);
-            $slice->url = base_url() . $data->result[$i]->link;
+            $slice->url = base_url() . 'index.php/' . $data->result[$i]->link;
             $item->data[] = $slice;
         }
         $output->series[] = $item;

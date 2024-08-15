@@ -153,7 +153,7 @@ include('shared/lang.php');
 
                                     <div class="row">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                        <br><span class="text-secondary">Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a></span>
+                                        <br><span class="text-secondary">Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://docs.community.firstwave.com/wiki/spaces/OA'>https://docs.community.firstwave.com/wiki/spaces/OA</a></span>
                                         </div>
                                         <span align='center'>
                                             <br>

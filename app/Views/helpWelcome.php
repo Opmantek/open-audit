@@ -77,7 +77,7 @@ foreach ($ips as $ip) {
                                             <?= __('Read our online documentation on the Open-AudIT Wiki.') ?>
                                         </div>
                                         <div class="card-footer">
-                                            <a target="_blank" role="button" class="btn btn-default btn-lg" href="https://community.opmantek.com/display/OA/Home"><?= __('Online Documentation') ?></a>
+                                            <a target="_blank" role="button" class="btn btn-default btn-lg" href="https://docs.community.firstwave.com/wiki/spaces/OA"><?= __('Online Documentation') ?></a>
                                         </div>
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@ foreach ($ips as $ip) {
                                             <?= __('Ask the Community for help or contribute answers for others.') ?>
                                         </div>
                                         <div class="card-footer">
-                                            <a target="_blank" role="button" class="btn btn-default btn-lg" href="https://community.opmantek.com/questions"><?= __('Community Questions') ?></a>
+                                            <a target="_blank" role="button" class="btn btn-default btn-lg" href="https://docs.community.firstwave.com/wiki/display/OA/customcontent/list/ac%3Acom.atlassian.confluence.plugins.confluence-questions%3Aquestion?ac.com.atlassian.confluence.plugins.confluence-questions.path=/questions-bootstrap"><?= __('Community Questions') ?></a>
                                         </div>
                                     </div>
                                 </div>
@@ -131,7 +131,7 @@ foreach ($ips as $ip) {
                                     <img class="img-fluid" alt="debian" src="<?= base_url() ?>logos/debian.svg" style="width:4rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <span class="text-center"><a target="_blank" href="https://community.opmantek.com/display/OA/Home">And so much more.</a></span>
+                                    <span class="text-center"><a target="_blank" href="https://docs.community.firstwave.com/wiki/spaces/OA">And so much more.</a></span>
                                 </div>
                             </div>
                         </div>
