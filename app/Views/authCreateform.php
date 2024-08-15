@@ -24,9 +24,11 @@ include 'shared/create_functions.php';
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]" required>
                                             <option value="" selected><?= __('Choose') ?></option>
                                             <option value="active directory"><?= ('Active Directory') ?></option>
+                                            <?php if ($config->product === 'enterprise') { ?>
                                             <option value="azure"><?= ('Azure') ?></option>
                                             <option value="github"><?= ('Github') ?></option>
                                             <option value="okta"><?= ('Okta') ?></option>
+                                            <?php } ?>
                                             <option value="openldap"><?= ('OpenLDAP') ?></option>
                                         </select>
                                     </div>
