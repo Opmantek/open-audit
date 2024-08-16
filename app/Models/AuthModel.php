@@ -286,6 +286,7 @@ class AuthModel extends BaseModel
         $dictionary->columns->client_secret = 'Commonly referred to as the clientSecret.';
         $dictionary->columns->redirect_uri = 'This will auto-populate.';
         $dictionary->columns->issuer = 'Specific to OKTA.';
+        $dictionary->columns->tenant = 'Specific to Azure.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

@@ -141,7 +141,7 @@ window.onload = function () {
         <?php
         $fields_ad = array('use_authentication', 'use_authorisation', 'domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'lang', 'ldap_dn_account', 'ldap_dn_password');
 
-        $fields_azure = array('use_authentication', 'client_ident', 'client_secret', 'issuer', 'redirect_uri');
+        $fields_azure = array('use_authentication', 'client_ident', 'client_secret', 'tenant', 'redirect_uri');
 
         $fields_github = array('use_authentication', 'client_ident', 'client_secret', 'redirect_uri');
 

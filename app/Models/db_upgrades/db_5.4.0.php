@@ -25,6 +25,7 @@ if (!$db->tableExists('auth')) {
   `client_secret` varchar(2000) NOT NULL DEFAULT '',
   `redirect_uri` varchar(200) NOT NULL DEFAULT '',
   `issuer` varchar(2000) NOT NULL DEFAULT '',
+  `tenant` varchar(2000) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
