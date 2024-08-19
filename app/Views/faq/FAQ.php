@@ -3,16 +3,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $title = __('Help and Frequently Asked Questions');
+$files = array_diff(scandir(APPPATH . 'Views/faq'), array('.', '..'));
 
-$intro = '<p>
+$intro = '<p>';
+foreach ($files as $file) {
+    $intro .= '<a href="' . url_to('helpFAQ') . '?name=' . str_replace('.php', '', $file) . '">' . str_replace('.php', '', $file) . '</a><br>';
+}
 
-<a href="' . url_to('helpFAQ') . '?name=Bulk Editing Device Attributes">Bulk Editing Device Attributes</a><br>
-<a href="' . url_to('helpFAQ') . '?name=Creating a Query">Creating a Query</a><br>
-<a href="' . url_to('helpFAQ') . '?name=Credentials for Amazon AWS used in Cloud Discovery">Credentials for Amazon AWS used in Cloud Discovery</a><br>
-<a href="' . url_to('helpFAQ') . '?name=Credentials for Microsoft Azure used in Cloud Discovery">Credentials for Microsoft Azure used in Cloud Discovery</a><br>
-<a href="' . url_to('helpFAQ') . '?name=Google Maps API Key">Google Maps API Key</a><br>
-<a href="' . url_to('helpFAQ') . '?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a><br>
-<a href="' . url_to('helpFAQ') . '?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br>
+$intro .= '
 <br>
 
 <h2>Opening a Support Ticket?</h2>

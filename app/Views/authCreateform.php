@@ -26,7 +26,7 @@ include 'shared/create_functions.php';
                                             <option value="active directory"><?= ('Active Directory') ?></option>
                                             <?php if ($config->product === 'enterprise') { ?>
                                             <option value="azure"><?= ('Azure') ?></option>
-                                            <option value="github"><?= ('Github') ?></option>
+                                            <!--<option value="github"><?= ('Github') ?></option>-->
                                             <option value="okta"><?= ('Okta') ?></option>
                                             <?php } ?>
                                             <option value="openldap"><?= ('OpenLDAP') ?></option>
@@ -48,6 +48,7 @@ include 'shared/create_functions.php';
 
                                 <?= create_text_field('data[attributes][client_ident]', __('Client ID'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][client_secret]', __('Client Secret'), $dictionary->attributes->create) ?>
+                                <?= create_text_field('data[attributes][tenant]', __('Tenant'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][redirect_uri]', __('Redirect URI'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][issuer]', __('Issuer'), $dictionary->attributes->create) ?>
 
@@ -149,7 +150,7 @@ window.onload = function () {
 
         $fields_openldap = array('use_authentication', 'use_authorisation', 'domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'lang','openldap_user_dn', 'openldap_user_membership_attribute', 'ldap_dn_account', 'ldap_dn_password');
 
-        $fields_all = array('client_ident', 'client_secret', 'redirect_uri', 'issuer', 'use_authentication', 'use_authorisation', 'domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'openldap_user_dn', 'openldap_user_membership_attribute', 'ldap_dn_account', 'ldap_dn_password', 'lang');
+        $fields_all = array('client_ident', 'client_secret', 'tenant', 'redirect_uri', 'issuer', 'use_authentication', 'use_authorisation', 'domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'openldap_user_dn', 'openldap_user_membership_attribute', 'ldap_dn_account', 'ldap_dn_password', 'lang');
         echo "\n";
         foreach ($fields_all as $field) {
             echo "      \$(\"#" . $field . "_div\").hide();\n";
