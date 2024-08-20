@@ -239,7 +239,6 @@ class QueueModel extends BaseModel
             log_message('debug', $command);
             @exec($command);
         } else {
-            // $command = 'nohup php ' . $this->config->config['base_path'] . '/www/open-audit/index.php util queue > /dev/null 2>&1 &';
             $command = 'nohup php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
             log_message('debug', $command);
             @exec($command);
