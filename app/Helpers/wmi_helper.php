@@ -171,8 +171,8 @@ if (! function_exists('execute_windows')) {
 
         if (php_uname('s') == 'Windows NT') {
             $password = str_replace('"', '\"', $credentials->credentials->password);
-            $command_string  = $instance->config->base_path . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . $password . '" cmd /c "' . $command . '"';
-            $log->command    = $instance->config->base_path . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . '*******' . '" cmd /c "' . $command . '"';
+            $command_string  = ROOTPATH . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . $password . '" cmd /c "' . $command . '"';
+            $log->command    = ROOTPATH . '\\other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . '*******' . '" cmd /c "' . $command . '"';
             exec($command_string, $output, $return_var);
             $log->message = 'Running command script on ' . $ip;
             $log->command_output = json_encode($output);
@@ -693,6 +693,11 @@ if (!function_exists('copy_from_windows')) {
 
         if (php_uname('s') == 'Windows NT') {
             $password = str_replace('"', '\"', $credentials->credentials->password);
+            $username = $credentials->credentials->username;
+
+            $command      = 'net use "\\\\' . $ip . '\\admin$" /u:' . $username . ' "' . $password . '"';
+            $log->command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $username . ' "' . '*******' . '"';
+            $output = '';
 
             exec($command, $output, $return_var);
             $log->command_status = 'fail';
