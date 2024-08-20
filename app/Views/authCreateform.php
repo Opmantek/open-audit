@@ -2,6 +2,14 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
+$test = '';
+if (strpos(base_url(), 'https:') === false) {
+    $test = '<p><div class="container-fluid"><div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>IMPORTANT</strong>, you <i>must</i> be using https on your Open-AudIT server to use Entra for Auth. Please configure Apache to use <strong>https</strong> before configuring Entra for auth.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div></p>';
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -25,7 +33,7 @@ include 'shared/create_functions.php';
                                             <option value="" selected><?= __('Choose') ?></option>
                                             <option value="active directory"><?= ('Active Directory') ?></option>
                                             <?php if ($config->product === 'enterprise') { ?>
-                                            <option value="azure"><?= ('Azure') ?></option>
+                                            <option value="entra"><?= ('Entra') ?></option>
                                             <!--<option value="github"><?= ('Github') ?></option>-->
                                             <option value="okta"><?= ('Okta') ?></option>
                                             <?php } ?>
@@ -123,6 +131,7 @@ include 'shared/create_functions.php';
                                 } ?>
                                 <?php if (! empty($dictionary->notes)) {
                                     echo "<h4 class=\"text-center\">Notes</h4><br>";
+                                    echo $test;
                                     echo html_entity_decode($dictionary->notes);
                                 } ?>
                                 <h4 class="text-center">Fields</h4><br>
@@ -142,7 +151,7 @@ window.onload = function () {
         <?php
         $fields_ad = array('use_authentication', 'use_authorisation', 'domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'lang', 'ldap_dn_account', 'ldap_dn_password');
 
-        $fields_azure = array('use_authentication', 'client_ident', 'client_secret', 'tenant', 'redirect_uri');
+        $fields_entra = array('use_authentication', 'client_ident', 'client_secret', 'tenant', 'redirect_uri');
 
         $fields_github = array('use_authentication', 'client_ident', 'client_secret', 'redirect_uri');
 
@@ -178,19 +187,19 @@ window.onload = function () {
                 }
                 ?>
             }
-            if ($("#data\\[attributes\\]\\[type\\]").val() == 'azure') {
+            if ($("#data\\[attributes\\]\\[type\\]").val() == 'entra') {
                 <?php
                 echo "\n";
                 foreach ($fields_all as $field) {
-                    if (!in_array($field, $fields_azure)) {
+                    if (!in_array($field, $fields_entra)) {
                         echo "              \$(\"#" . $field . "_div\").hide();\n";
                     }
                 }
-                foreach ($fields_azure as $field) {
+                foreach ($fields_entra as $field) {
                     echo "              \$(\"#" . $field . "_div\").show();\n";
                 }
                 ?>
-                $("#data\\[attributes\\]\\[redirect_uri\\]").val('<?= base_url() . 'logon/azure/auth' ?>');
+                $("#data\\[attributes\\]\\[redirect_uri\\]").val('<?= base_url() . 'logon/entra/auth' ?>');
             }
             if ($("#data\\[attributes\\]\\[type\\]").val() == 'github') {
                 <?php

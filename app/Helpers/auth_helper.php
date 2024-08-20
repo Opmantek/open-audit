@@ -4,13 +4,13 @@
 
 declare(strict_types=1);
 
-function azure_redirect(object $auth): string
+function entra_redirect(object $auth): string
 {
     $session = \Config\Services::session();
     $provider = new \TheNetworg\OAuth2\Client\Provider\Azure([
         'clientId'          => $auth->client_ident,
         'clientSecret'      => $auth->client_secret,
-        'redirectUri'       => base_url() . 'logon/azure/auth',
+        'redirectUri'       => base_url() . 'logon/entra/auth',
         'scopes'            => ['openid'],
         'defaultEndPointVersion' => '2.0'
     ]);
@@ -37,7 +37,7 @@ function azure_redirect(object $auth): string
     #$_SESSION['OAuth2.state'] = $provider->getState();
 }
 
-function azure_auth(object $auth, string $ip = ''): string
+function entra_auth(object $auth, string $ip = ''): string
 {
     $session = \Config\Services::session();
     log_message('debug', json_encode($_GET));
@@ -54,7 +54,7 @@ function azure_auth(object $auth, string $ip = ''): string
     $provider = new \TheNetworg\OAuth2\Client\Provider\Azure([
         'clientId'          => $auth->client_ident,
         'clientSecret'      => $auth->client_secret,
-        'redirectUri'       => base_url() . 'logon/azure/auth',
+        'redirectUri'       => base_url() . 'logon/entra/auth',
         'scopes'            => ['openid'],
         'defaultEndPointVersion' => '2.0'
     ]);
@@ -69,13 +69,13 @@ function azure_auth(object $auth, string $ip = ''): string
             'code' => $_GET['code'],
         ]);
     } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
-        log_message('warning', 'Could not getAccessToken from Azure for ' . $ip . '. ' . $e->getMessage());
+        log_message('warning', 'Could not getAccessToken from Entra for ' . $ip . '. ' . $e->getMessage());
         return site_url('logon');
     }
     try {
         $user = $provider->getResourceOwner($token);
     } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
-        log_message('warning', 'Could not getResourceOwner from Azure for ' . $ip . '. ' . $e->getMessage());
+        log_message('warning', 'Could not getResourceOwner from Entra for ' . $ip . '. ' . $e->getMessage());
         return site_url('logon');
     }
     // $me = $provider->get($provider->getRootMicrosoftGraphUri($token) . '/v1.0/me', $token);

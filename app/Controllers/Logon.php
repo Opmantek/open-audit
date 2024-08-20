@@ -217,8 +217,8 @@ class Logon extends Controller
         if (empty($auth)) {
             return redirect()->to(site_url('logon'));
         }
-        if ($type === 'azure' and $auth->type === 'azure') {
-            $authUrl = azure_redirect($auth);
+        if ($type === 'entra' and $auth->type === 'entra') {
+            $authUrl = entra_redirect($auth);
             if (empty($authUrl)) {
                 return redirect()->to(site_url('logon'));
             }
@@ -262,8 +262,8 @@ class Logon extends Controller
         if (empty($auth)) {
             return redirect()->to(site_url('logon'));
         }
-        if (!empty($auth) and $type === 'azure') {
-            return redirect()->to(azure_auth($auth, @$this->request->getIPAddress()));
+        if (!empty($auth) and $type === 'entra') {
+            return redirect()->to(entra_auth($auth, @$this->request->getIPAddress()));
         }
         if (!empty($auth) and $type === 'github') {
             return redirect()->to(github_auth($auth, @$this->request->getIPAddress()));

@@ -120,7 +120,7 @@ include('shared/lang.php');
                                             if (!empty($methods)) {
                                                 foreach ($methods as $method) {
                                                     switch ($method) {
-                                                        case 'azure':
+                                                        case 'entra':
                                                             $logo = 'fa-brands fa-microsoft';
                                                             break;
 

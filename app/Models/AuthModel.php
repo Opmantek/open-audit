@@ -263,7 +263,7 @@ class AuthModel extends BaseModel
 
         $dictionary->notes = '<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you\'re using OpenLDAP), you can use another account which does have this access. Use the <code>dn_account</code> and <code>dn_password</code> to configure this.<br /><br /><strong>Helpful Documentation</strong><br /><br />
         <a href="' . url_to('authHelp') . '">General Auth Help</a><br><br>
-        <a href="' . url_to('helpFAQ') . '?name=Using Azure AD for Auth">Using Azure AD for Auth</a><br><br>
+        <a href="' . url_to('helpFAQ') . '?name=Using Entra for Auth">Using Entra for Auth</a><br><br>
         <a href="' . url_to('helpFAQ') . '?name=Using OKTA for Auth">Using OKTA for Auth</a><br><br>
         <a href="' . url_to('helpFAQ') . '?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br><br>
         <a href="' . url_to('helpFAQ') . '?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br><br></p>';

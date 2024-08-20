@@ -5,7 +5,7 @@ include 'shared/read_functions.php';
 $fields = new \stdClass();
 $fields->{'active directory'} = array('domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'lang');
 
-$fields->azure = array('client_ident', 'client_secret', 'redirect_uri', 'tenant');
+$fields->entra = array('client_ident', 'client_secret', 'redirect_uri', 'tenant');
 
 $fields->openldap = array('domain', 'host', 'port', 'version', 'secure', 'ldap_base_dn', 'lang','openldap_user_dn', 'openldap_user_membership_attribute');
 

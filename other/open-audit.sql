@@ -431,7 +431,7 @@ CREATE TABLE `auth` (
   `host` varchar(200) NOT NULL DEFAULT '',
   `port` varchar(200) NOT NULL DEFAULT '389',
   `domain` varchar(200) NOT NULL DEFAULT '',
-  `type` enum('active directory','azure','openldap','github','okta') NOT NULL DEFAULT 'active directory',
+  `type` enum('active directory','entra','openldap','github','okta') NOT NULL DEFAULT 'active directory',
   `version` int(1) unsigned NOT NULL DEFAULT '3',
   `ldap_base_dn` varchar(200) NOT NULL DEFAULT '',
   `ldap_dn_account` varchar(200) NOT NULL DEFAULT '',
