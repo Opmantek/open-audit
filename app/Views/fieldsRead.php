@@ -69,6 +69,26 @@ include 'shared/read_functions.php';
 window.onload = function () {
     $(document).ready(function() {
         $("#type").val("<?= $resource->type ?>");
+
+        // Prevent any characters except alphanumeric, dash and underscore
+        $("#name").keydown(function (e){
+            var k = e.keyCode || e.which;
+            var ok = k >= 65 && k <= 90 || // A-Z
+                k >= 96 && k <= 105 || // a-z
+                k >= 35 && k <= 40 || // arrows
+                k == 9 || //tab
+                k == 46 || //del
+                k == 8 || // backspaces
+                k == 173 || // dash
+                k == 109 || // numpad minus
+                (e.shiftKey && k == 173) || // underscore
+                (!e.shiftKey && k >= 48 && k <= 57); // only 0-9
+
+            if(!ok || (e.ctrlKey && e.altKey)){
+                e.preventDefault();
+            }
+        });
+
     });
 }
 </script>
