@@ -265,7 +265,8 @@ class AuthModel extends BaseModel
         <a href="' . url_to('authHelp') . '">General Auth Help</a><br><br>
         <a href="' . url_to('helpFAQ') . '?name=Using Azure AD for Auth">Using Azure AD for Auth</a><br><br>
         <a href="' . url_to('helpFAQ') . '?name=Using OKTA for Auth">Using OKTA for Auth</a><br><br>
-        <a href="' . url_to('helpFAQ') . '?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br><br></p>';
+        <a href="' . url_to('helpFAQ') . '?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br><br>
+        <a href="' . url_to('helpFAQ') . '?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br><br></p>';
 
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
