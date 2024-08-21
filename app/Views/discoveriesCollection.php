@@ -102,7 +102,7 @@ if (count($included['issues']) > 0) {
                                         <input disabled title="<?= __('Queued Items') ?>" type="text" class="form-control"  id="queue_items" name="queue_items" value="<?= $included['queue_items'] ?>">
                                         <span class="pull-right">
                                             <?php if (strpos($user->permissions['configuration'], 'u') !== false and $included['queue_items'] > 0) { ?>
-                                            <a id="delete_queue" href="#" role="button" class="btn btn-default" title="<?= __('Discovery Queue Limit') ?>"><span style="width:1rem;" class="fa fa-trash" aria-hidden="true"></span></a>
+                                            <a id="delete_queue" href="#" role="button" class="btn btn-default" title="<?= __('All Queued Items') ?>"><span style="width:1rem;" class="fa fa-trash" aria-hidden="true"></span></a>
                                             <?php } ?>
                                             <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="The number of discovery queue items waiting to be processed.">?</button>
                                         </span>
