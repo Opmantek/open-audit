@@ -118,7 +118,7 @@ if (! function_exists('execute_windows')) {
             }
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
-            $domain = $temp[1];
+            $domain = @$temp[1];
             unset($temp);
             $command_string = 'winexe -U ' . $domain . '/' . $username . '%' . $credentials->credentials->password . ' //' . $ip . ' \'' . $command . '\'';
             $log->command   = 'winexe -U ' . $domain . '/' . $username . '%' . '******' .                            ' //' . $ip . ' \'' . $command . '\'';
@@ -245,7 +245,7 @@ if (! function_exists('copy_to_windows')) {
             $timestamp = date('Y_m_d_H_i_s');
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
-            $domain = $temp[1];
+            $domain = @$temp[1];
             unset($temp);
             $password = $credentials->credentials->password;
             if (!is_dir('/private/tmp')) {
@@ -581,7 +581,7 @@ if (!function_exists('copy_from_windows')) {
             $timestamp = date('Y_m_d_H_i_s');
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
-            $domain = $temp[1];
+            $domain = @$temp[1];
             unset($temp);
             $password = $credentials->credentials->password;
             if (!is_dir('/private/tmp')) {
