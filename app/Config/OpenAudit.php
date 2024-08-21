@@ -143,6 +143,19 @@ class OpenAudit extends BaseConfig
                 $os = explode('|', $output[1]);
                 $this->server_platform = $os[0];
             }
+        } else if ($this->server_os === 'Darwin') {
+            $this->server_platform = 'MacOS';
+            $command = "sw_vers | grep \"ProductVersion:\" | cut -d: -f2 | xargs";
+            exec($command, $output);
+            if (!empty($output[0])) {
+                $this->server_platform .= ' ' . $output[0];
+                unset($output);
+            }
+            $command = "awk '/SOFTWARE LICENSE AGREEMENT FOR macOS/' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print \$NF}' | awk '{print substr(\$0, 0, length(\$0)-1)}'";
+            exec($command, $output);
+            if (!empty($output[0])) {
+                $this->server_platform .= ' ' . $output[0];
+            }
         } else {
             $command = 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2';
             exec($command, $output);
