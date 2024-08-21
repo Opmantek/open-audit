@@ -87,7 +87,6 @@ if (!empty($audit_status)) {
     $column = new \stdClass();
     $column->title = __('Audit Status');
     $column->data = 'audit_status';
-    $column->targets = [$i];
     $column->className = "text-center";
     $columns[] = $column;
 }
@@ -96,7 +95,6 @@ if (!empty($audit_status)) {
 $column = new \stdClass();
 $column->title = __('Details');
 $column->data = 'id';
-$column->targets = [$i];
 $column->className = "text-center";
 $columns[] = $column;
 
@@ -104,7 +102,6 @@ $columns[] = $column;
 $column = new \stdClass();
 $column->title = __('Icon');
 $column->data = 'icon';
-$column->targets = [$i];
 $column->className = "text-center";
 $columns[] = $column;
 
