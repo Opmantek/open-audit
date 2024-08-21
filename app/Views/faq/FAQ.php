@@ -5,9 +5,11 @@
 $title = __('Help and Frequently Asked Questions');
 $files = array_diff(scandir(APPPATH . 'Views/faq'), array('.', '..'));
 
-$intro = '<p>';
+$intro = '<p>Don\'t forget there is a mountain of documentation on the wiki, <a href="https://docs.community.firstwave.com/wiki/spaces/OA/overview" target="_blank">here</a>.<br><br>';
 foreach ($files as $file) {
-    $intro .= '<a href="' . url_to('helpFAQ') . '?name=' . str_replace('.php', '', $file) . '">' . str_replace('.php', '', $file) . '</a><br>';
+    if ($file !== 'FAQ.php') {
+        $intro .= '<a href="' . url_to('helpFAQ') . '?name=' . str_replace('.php', '', $file) . '">' . str_replace('.php', '', $file) . '</a><br>';
+    }
 }
 
 $intro .= '
