@@ -170,12 +170,6 @@ if (!function_exists('response_create')) {
         }
         $response->meta->server_app_version = $config->display_version;
         $response->meta->server_platform = $config->server_platform;
-        if ($config->server_os === 'Windows NT' and !stripos($config->server_platform, 'server')) {
-            $message = 'Warning - Running Open-AudIT on Windows on a non-server OS will cause discoveries to fail. Please install on Windows Server. More information <a href="' . url_to('helpFAQ') . '?name=Windows Server">here</a>.';
-            log_message('error', 'Open-AudIT requires Windows Server to run successfully. Please reinstall on a supported server operating system.');
-            $response->errors = $message;
-        }
-
         $response->meta->sort = '';
         if (!empty($GLOBALS['timer_start'])) {
             $response->meta->time_start = $GLOBALS['timer_start'];
