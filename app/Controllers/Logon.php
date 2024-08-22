@@ -70,17 +70,24 @@ class Logon extends Controller
             $db->query($sql, [$subnet]);
             log_message('info', 'Default discovery subnet auto-populated with ' . $subnet . '.');
         }
-        $authModel = model('AuthModel');
-        $authMethods = $authModel->listAll();
         $methods = array();
-        foreach ($authMethods as $auth) {
-            if (!empty($auth->type) and $auth->type !== 'openldap' and $auth->type !== 'active directory') {
-                if ($auth->use_authentication === 'y') {
-                    $methods[] = $auth->type;
+        if ($db->tableExists('auth')) {
+            $authModel = model('AuthModel');
+            $authMethods = $authModel->listAll();
+            foreach ($authMethods as $auth) {
+                if (!empty($auth->type) and $auth->type !== 'openldap' and $auth->type !== 'active directory') {
+                    if ($auth->use_authentication === 'y') {
+                        $methods[] = $auth->type;
+                    }
                 }
             }
         }
-        return view('logon', ['config' => new \Config\OpenAudit(), 'methods' => $methods]);
+        $config =  new \Config\OpenAudit();
+        $alert = '';
+        if (!$db->tableExists('auth') and intval($config->internal_version) < 20240822) {
+            $alert = 'Active Directory and openLDAP logins will not work until the database has been upgraded.<br>Please logon with a <i>local</i> \'admin\' user, to upgrade the database.';
+        }
+        return view('logon', ['config' => new \Config\OpenAudit(), 'methods' => $methods, 'alert' => $alert]);
     }
 
     public function create()

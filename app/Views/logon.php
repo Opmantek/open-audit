@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include('shared/lang.php');
+
 ?>
 <!DOCTYPE html>
 <html lang="en" class="h-100">
@@ -107,6 +108,17 @@ include('shared/lang.php');
                                             <input class="form-control" type="password" id="password" name="password" />
                                         </div>
                                     </div> 
+
+                                    <?php if (!empty($alert)) { ?>
+                                    <div class="row" style="padding-top:16px; padding-bottom:4px;">
+                                        <div class="offset-3 col-6 container-fluid">
+                                            <div class="alert alert-danger alert-dismissable fade show" role="alert">
+                                                <?= $alert ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php } ?>
+
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
                                         <div class="offset-3 col-6" style="position:relative;">
