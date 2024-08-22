@@ -615,7 +615,7 @@ foreach ($config->modules as $module) {
             <br>
         </div>
 
-        <?php if ($config->server_os === 'Windows NT' and !stripos($config->server_platform, 'server')) { ?>
+        <?php if ($config->server_os !== 'Windows NT' and !stripos($config->server_platform, 'server')) { ?>
         <div class="container-fluid">
             <div class="alert alert-danger alert-dismissable fade show" role="alert">
                 Warning - Running Open-AudIT on Windows on a non-server OS will cause discoveries to fail. Please install on Windows Server. More information <a href="<?= url_to('helpFAQ') ?>?name=Windows Server">here</a>.

@@ -40,7 +40,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `auth` (SELECT id, name, org_id, description, use_auth, use_roles, lang, secure, host, port, domain, type, version, base_dn, dn_account, dn_password, user_dn, user_membership_attribute, edited_by, edited_date FROM ldap_servers)";
+$sql = "INSERT INTO `auth` (SELECT id, name, org_id, description, use_auth, use_roles, lang, secure, host, port, domain, type, version, base_dn, dn_account, dn_password, user_dn, user_membership_attribute, '', '', '', '', '', edited_by, edited_date FROM ldap_servers)";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -56,7 +56,7 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 // set our versions
-$sql = "UPDATE `configuration` SET `value` = '20240810' WHERE `name` = 'internal_version'";
+$sql = "UPDATE `configuration` SET `value` = '20240822' WHERE `name` = 'internal_version'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -67,5 +67,5 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $output .= "Upgrade database to 5.4.0 completed.\n\n";
-config('Openaudit')->internal_version = 20240810;
+config('Openaudit')->internal_version = 20240822;
 config('Openaudit')->display_version = '5.4.0';

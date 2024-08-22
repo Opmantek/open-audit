@@ -24,7 +24,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <mark.unwin@firstwave.com>
-# @version   GIT: Open-AudIT_5.3.0
+# @version   GIT: Open-AudIT_5.4.0
 # @copyright Copyright (c) 2022, Firstwave
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -74,7 +74,7 @@ self_delete='n'
 debugging=2
 
 # Version
-version="5.3.0"
+version="5.4.0"
 
 discovery_id=""
 
