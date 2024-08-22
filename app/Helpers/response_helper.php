@@ -169,26 +169,11 @@ if (!function_exists('response_create')) {
             $response->meta->requestor = (string)$_SERVER['HTTP_REQUESTOR'];
         }
         $response->meta->server_app_version = $config->display_version;
-        $response->meta->server_platform = php_uname('s');
-        if ($response->meta->server_platform === 'Windows NT') {
-            $command = 'wmic os get name';
-            exec($command, $output);
-            if (!empty($output[1])) {
-                $os = explode('|', $output[1]);
-                $response->meta->server_platform = $os[0];
-            }
-            if (!stripos($response->meta->server_platform, 'server')) {
-                // Throw a warning, unsupported OS
-                $message = 'Open-AudIT requires Windows Server to run successfully. Please reinstall on a supported server operating system.';
-                log_message('error', $message);
-                $response->errors = $message;
-            }
-        } else {
-            $command = 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2';
-            exec($command, $output);
-            if (!empty($output[0])) {
-                $response->meta->server_platform = $output[0];
-            }
+        $response->meta->server_platform = $config->server_platform;
+        if ($config->server_os === 'Windows NT' and !stripos($config->server_platform, 'server')) {
+            $message = 'Warning - Running Open-AudIT on Windows on a non-server OS will cause discoveries to fail. Please install on Windows Server. More information <a href="' . url_to('helpFAQ') . '?name=Windows Server">here</a>.';
+            log_message('error', 'Open-AudIT requires Windows Server to run successfully. Please reinstall on a supported server operating system.');
+            $response->errors = $message;
         }
 
         $response->meta->sort = '';
