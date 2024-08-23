@@ -339,7 +339,9 @@ class BenchmarksModel extends BaseModel
             log_message('error', 'Could not retrieve report for BenchmarksModel::execute on ' . $device->attributes->name);
             log_message('error', json_encode($command_output));
             $this->logCreate($id, $device_id, 'error', 'Could not retrieve report (see logfile for more info).');
-            $this->logCreate($id, $device_id, 'error', 'SCP: '. json_encode($output));
+            $this->logCreate($id, $device_id, 'error', 'SCP Source: '. $parameters->source);
+            $this->logCreate($id, $device_id, 'error', 'SCP Destination: '. $parameters->destination);
+            $this->logCreate($id, $device_id, 'error', 'SCP Output: '. json_encode($output));
             $this->logCreate($id, $device_id, 'warning', 'OSCAP: ' . json_encode($command_output));
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
@@ -366,7 +368,7 @@ class BenchmarksModel extends BaseModel
 
         $result_file = '/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html';
         if ($config->server_os === 'Windows NT') {
-            $result_file = 'c:\\open-audit\\other\\ssg-results\\' . $device_id . '_' . $id .  '_' . $microtime . '_report.html';
+            $result_file = 'c:\\xampp\\open-audit\\other\\ssg-results\\' . $device_id . '_' . $id .  '_' . $microtime . '_report.html';
         }
         if (file_exists($result_file)) {
             try {
