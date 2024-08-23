@@ -157,6 +157,7 @@ class BenchmarksModel extends BaseModel
         }
 
         $instance = & get_instance();
+        $config = new \Config\OpenAudit();
 
         // Delete any existing logs
         $sql = "DELETE FROM benchmarks_log WHERE benchmark_id = ? and device_id = ?";
@@ -166,10 +167,6 @@ class BenchmarksModel extends BaseModel
 
         $devicesModel = model('App\Models\DevicesModel');
         $device = $devicesModel->read($device_id)[0];
-
-
-
-
 
         if (empty($device)) {
             log_message('error', 'Invalid device ID supplied to BenchmarksModel::execute. Supplied: ' . $device_id);
@@ -299,6 +296,9 @@ class BenchmarksModel extends BaseModel
 
         // Copy the definition file
         $parameters->source = '/usr/local/open-audit/public/ssg-definitions/' . $file;
+        if ($config->server_os === 'Windows NT') {
+            $parameters->source = 'c:\\xampp\\open-audit\\public\\ssg-definitions/' . $file;
+        }
         $parameters->destination = $file;
         $output = scp($parameters);
         if ($output === false) {
@@ -331,6 +331,9 @@ class BenchmarksModel extends BaseModel
         // Copy the result
         $parameters->source = $device_id . '_' . $id .  '_' . $microtime . '_report.html';
         $parameters->destination = '/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html';
+        if ($config->server_os === 'Windows NT') {
+            $parameters->destination = 'c:\\xampp\\open-audit\\other\\ssg-results\\' . $device_id . '_' . $id .  '_' . $microtime . '_report.html';
+        }
         $output = scp_get($parameters);
         if ($output === false) {
             log_message('error', 'Could not retrieve report for BenchmarksModel::execute on ' . $device->attributes->name);
@@ -344,7 +347,7 @@ class BenchmarksModel extends BaseModel
         $this->logCreate($id, $device_id, 'info', 'Report file retrieved.');
 
         // Delete the result file on the target
-        $parameters->command = 'rm ~/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html ' . $file;
+        $parameters->command = 'rm ~/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html ';
         log_message('debug', 'rm command for ' . $device->attributes->name . ': ' . $parameters->command);
         $this->logCreate($id, $device_id, 'info', 'rm command: ' . $parameters->command);
         $parameters->timeout = 10; // 10 seconds to execute rm
@@ -360,9 +363,14 @@ class BenchmarksModel extends BaseModel
         $this->logCreate($id, $device_id, 'info', 'rm command completed.');
 
         // Process the result file
-        if (file_exists('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html')) {
+
+        $result_file = '/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html';
+        if ($config->server_os === 'Windows NT') {
+            $result_file = 'c:\\open-audit\\other\\ssg-results\\' . $device_id . '_' . $id .  '_' . $microtime . '_report.html';
+        }
+        if (file_exists($result_file)) {
             try {
-                $qp = html5qp('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html');
+                $qp = html5qp($result_file);
             } catch (\QueryPath\Exception $e) {
                 log_message('error', 'Cannot process report file from ' . $device->attributes->name . '. ' . $e);
                 log_message('error', json_encode($command_output));
@@ -372,23 +380,23 @@ class BenchmarksModel extends BaseModel
                 return [];
             }
         } else {
-            log_message('error', 'File: /usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html does not exist.');
+            log_message('error', 'File: ' . $result_file . ' does not exist.');
             log_message('error', json_encode($command_output));
-            $this->logCreate($id, $device_id, 'error', 'File: /usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html does not exist.');
+            $this->logCreate($id, $device_id, 'error', 'File: ' . $result_file . ' does not exist.');
             $this->logCreate($id, $device_id, 'warning', 'OSCAP: ' . json_encode($command_output));
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
         log_message('debug', 'File loaded for processing.');
 
-        if (file_exists('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html')) {
+        if (file_exists($result_file)) {
             log_message('debug', 'rm command on localhost for ' . $device->attributes->name . ': ' . $parameters->command);
-            @unlink('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html');
+            @unlink($result_file);
         }
 
-        if (file_exists('/usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html')) {
+        if (file_exists($result_file)) {
             log_message('error', 'Cannot delete report file from open-audit/other/ssg-results.');
-            $this->logCreate($id, $device_id, 'error', 'Cannot delete report file. /usr/local/open-audit/other/ssg-results/' . $device_id . '_' . $id .  '_' . $microtime . '_report.html');
+            $this->logCreate($id, $device_id, 'error', 'Cannot delete report file. ' . $result_file);
             $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
             return [];
         }
