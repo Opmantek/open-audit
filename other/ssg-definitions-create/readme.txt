@@ -1,0 +1,1 @@
+These files should be moved to ../public/ssg-definitions and executed to update the helper(s).
