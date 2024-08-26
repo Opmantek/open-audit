@@ -1744,9 +1744,16 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Attempt to delete temp audit script succeeded';
             $log->command_status = 'notice';
             $log->command = "unlink('" . $temp_audit_script ."')";
-            try {
-                unlink($temp_audit_script);
-            } catch (Exception $error) {
+            $test = false;
+            if ($instance->config->server_os === 'Windows NT') {
+                $temp = explode(DIRECTORY_SEPARATOR, $temp_audit_script);
+                $filename = end($temp);
+                $test = @unlink(ROOTPATH . 'other' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . $filename);
+            }
+            if ($instance->config->server_os !== 'Windows NT') {
+                $test = @unlink($temp_audit_script);
+            }
+            if (!$test) {
                 $log->severity = 4;
                 $log->message = 'Could not delete temp audit script';
                 $log->command_status = 'fail';
@@ -1784,16 +1791,15 @@ if (! function_exists('ip_audit')) {
                     $log->command_status = 'success';
                     $log->command = "unlink('" . $destination . "')";
                     $log->command_output = '';
-                    if (is_file($destination) and is_writable($destination) and @unlink($destination)) {
-                        // delete success
-                    } elseif (is_file($destination)) {
-                        $log->severity = 4;
-                        $log->command_status = 'fail';
-                        $log->message = 'Could not delete audit result - likely permissions.';
-                    } else {
-                        $log->severity = 4;
-                        $log->command_status = 'fail';
-                        $log->message = 'Could not delete audit result - reason unknown.';
+                    if (is_file($destination) and is_writable($destination)) {
+                        try {
+                            unlink($destination);
+                        } catch (Exception $error) {
+                            $log->severity = 4;
+                            $log->message = 'Could not delete audit result - ' . $destination;
+                            $log->command_status = 'fail';
+                            $log->command_output = json_encode($error);
+                        }
                     }
                     $discoveryLogModel->create($log);
                 }
