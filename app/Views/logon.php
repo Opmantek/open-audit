@@ -35,6 +35,18 @@ include('shared/lang.php');
             window.onload = function () {
                 $(document).ready(function () {
 
+                    var checkurl = "https://services.opmantek.com/api/versioncheck/Open-AudIT/<?= $config->display_version ?>";
+                    $.getJSON(checkurl, function (data) {
+                        if(data.status === 1){
+                            // console.log("up to date");
+                        } else if (data.status === 0){
+                            // console.log("request fail");
+                        } else {
+                            // console.log("out of date");
+                            $("#default_text").html("Open-AudIT " + data.version + " was released on " + data.date + ".<br>Download your updated version from <a href=\"https://firstwave.com\">https://firstwave.com</a>.<br>View the release notes on the <a href=\"" + data.releasenotes + "\">wiki</a>.");
+                        }
+                    });
+
                     <?php if ($config->device_count === 0) { ?>
                     $("#username").val("admin");
                     $("#password").val("password");
@@ -126,8 +138,13 @@ include('shared/lang.php');
                                                 <?php $disabled = '';
                                                 if (empty($config->internal_version)) {
                                                     $disabled = 'disabled';
-                                                } ?>
-                                            <button type="submit" class="btn btn-primary float-start" id="submit" name="submit" <?php echo $disabled; ?>>Submit</button>
+                                                }
+                                                $class = 'float-center';
+                                                if (!empty($methods)) {
+                                                    $class = 'float-start';
+                                                }
+                                                ?>
+                                            <button type="submit" class="btn btn-primary <?= $class ?>" id="submit" name="submit" <?= $disabled; ?>>Submit</button>
                                             <?php
                                             if (!empty($methods)) {
                                                 foreach ($methods as $method) {
@@ -148,12 +165,12 @@ include('shared/lang.php');
                                                             $logo = '';
                                                             break;
                                                     }
-                                                    echo '<a href="/index.php/logon/' . $method . '"><button type="button" class="btn btn-primary float-end" style="margin-left:10px;"><i class="' . $logo . '" style="padding-right:10px"></i>Logon with ' . $method . '</button></a>';
+                                                    if ($logo !== '') {
+                                                        echo '<a href="/index.php/logon/' . $method . '"><button type="button" class="btn btn-primary float-end" style="margin-left:10px;"><i class="' . $logo . '" style="padding-right:10px"></i>Logon with ' . $method . '</button></a>';
+                                                    }
                                                 }
                                             }
                                             ?>
-                                            
-                                            <!-- <a href="/index.php/logon/okta"><button type="button" class="btn btn-primary float-end" id="github" name="github">Logon with Okta</button></a>-->
                                         </div>
                                     </div>
 
@@ -169,7 +186,7 @@ include('shared/lang.php');
 
                                     <div class="row">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                        <br><span class="text-secondary">Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://docs.community.firstwave.com/wiki/spaces/OA'>https://docs.community.firstwave.com/wiki/spaces/OA</a></span>
+                                        <br><span id="default_text" class="text-secondary">Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://docs.community.firstwave.com/wiki/spaces/OA'>https://docs.community.firstwave.com/wiki/spaces/OA</a></span>
                                         </div>
                                         <span align='center'>
                                             <br>
@@ -195,10 +212,12 @@ include('shared/lang.php');
                                                 </div>
                                                 <br />
                                                 <?= __('The direct link for the script is') ?>&nbsp;<a href="#" id="go_link">#</a><br />
-                                                <?= __('You may want to copy and paste this URL in an email to your staff.') ?>
                                                 <?php if (stripos(base_url(), 'localhost') !== false or stripos(base_url(), '127.0.0') !== false) {
-                                                    echo __('<br><br><strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine.<br />If you need to audit other machines, please download the script from a remote machine, not the Open-AudIT server itself.');
-                                                } ?>
+                                                    echo __('<br><strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.');
+                                                } else {
+                                                    echo __('You may want to copy and paste this URL in an email to your staff.');
+                                                }
+                                                ?>
                                             </div>
                                         </span>
                                         <br>&nbsp;
