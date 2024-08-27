@@ -166,7 +166,7 @@ include('shared/lang.php');
                                                             break;
                                                     }
                                                     if ($logo !== '') {
-                                                        echo '<a href="/index.php/logon/' . $method . '"><button type="button" class="btn btn-primary float-end" style="margin-left:10px;"><i class="' . $logo . '" style="padding-right:10px"></i>Logon with ' . $method . '</button></a>';
+                                                        echo '<a href="' . base_url() . 'index.php/logon/' . $method . '"><button type="button" class="btn btn-primary float-end" style="margin-left:10px;"><i class="' . $logo . '" style="padding-right:10px"></i>Logon with ' . $method . '</button></a>';
                                                     }
                                                 }
                                             }
