@@ -7,7 +7,7 @@ $GLOBALS["lang"]["3"]="3";
 $GLOBALS["lang"]["4"]="4";
 $GLOBALS["lang"]["5"]="5";
 $GLOBALS["lang"]["<"]="<";
-$GLOBALS["lang"]["<br><br><strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine.<br />If you need to audit other machines, please download the script from a remote machine, not the Open-AudIT server itself."]="<br><br><strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine.<br />If you need to audit other machines, please download the script from a remote machine, not the Open-AudIT server itself.";
+$GLOBALS["lang"]["<br><strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself."]="<br><strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.";
 $GLOBALS["lang"]["=<"]="=<";
 $GLOBALS["lang"]["=="]="==";
 $GLOBALS["lang"][">"]=">";
