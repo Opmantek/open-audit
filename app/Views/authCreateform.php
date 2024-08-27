@@ -199,7 +199,7 @@ window.onload = function () {
                     echo "              \$(\"#" . $field . "_div\").show();\n";
                 }
                 ?>
-                $("#data\\[attributes\\]\\[redirect_uri\\]").val('<?= base_url() . 'logon/entra/auth' ?>');
+                $("#data\\[attributes\\]\\[redirect_uri\\]").val('<?= base_url() . 'index.php/logon/entra/auth' ?>');
             }
             if ($("#data\\[attributes\\]\\[type\\]").val() == 'github') {
                 <?php
@@ -213,7 +213,7 @@ window.onload = function () {
                     echo "              \$(\"#" . $field . "_div\").show();\n";
                 }
                 ?>
-                $("#data\\[attributes\\]\\[redirect_uri\\]").val('<?= base_url() . 'logon/github/auth' ?>');
+                $("#data\\[attributes\\]\\[redirect_uri\\]").val('<?= base_url() . 'index.php/logon/github/auth' ?>');
             }
             if ($("#data\\[attributes\\]\\[type\\]").val() == 'okta') {
                 <?php
@@ -227,7 +227,7 @@ window.onload = function () {
                     echo "              \$(\"#" . $field . "_div\").show();\n";
                 }
                 ?>
-                $("#data\\[attributes\\]\\[redirect_uri\\]").val('<?= base_url() . 'logon/okta/auth' ?>');
+                $("#data\\[attributes\\]\\[redirect_uri\\]").val('<?= base_url() . 'index.php/logon/okta/auth' ?>');
             }
             if ($("#data\\[attributes\\]\\[type\\]").val() == 'openldap') {
                 <?php
