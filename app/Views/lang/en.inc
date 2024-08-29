@@ -540,6 +540,7 @@ $GLOBALS["lang"]["Devices Selected from Open-AudIT"]="Devices Selected from Open
 $GLOBALS["lang"]["Devices Serial"]="Devices Serial";
 $GLOBALS["lang"]["Devices Status"]="Devices Status";
 $GLOBALS["lang"]["Device Status"]="Device Status";
+$GLOBALS["lang"]["Device Status: deleted"]="Device Status: deleted";
 $GLOBALS["lang"]["Device Status: production"]="Device Status: production";
 $GLOBALS["lang"]["Devices Type"]="Devices Type";
 $GLOBALS["lang"]["Devices Updated in "]="Devices Updated in ";
