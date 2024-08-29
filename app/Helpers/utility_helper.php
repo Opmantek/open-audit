@@ -306,7 +306,8 @@ function format_data($result, $type)
                 try {
                     $item->remediation = json_decode($item->remediation, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
-                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    // Not logging below as this does appear to work, even though it always throws an exception
+                    // log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
                 }
             }
         }

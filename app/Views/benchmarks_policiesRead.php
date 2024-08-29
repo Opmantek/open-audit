@@ -100,7 +100,7 @@ include 'shared/read_functions.php';
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
                                             <div class="input-group">
-                                                <span style="word-break: break-all;"><?= html_entity_decode(html_entity_decode($value)) ?></span>
+                                                <span style="word-break: break-all;"><?= urldecode(html_entity_decode(html_entity_decode($value))) ?></span>
                                             </div>
                                         </div>
                                     </div>
