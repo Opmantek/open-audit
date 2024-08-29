@@ -2028,6 +2028,9 @@ if (! function_exists('ip_audit')) {
             unset($device_json->system->id);
             unset($device_json->system->first_seen);
             $device_json->system->discovery_id = $discovery->id;
+            if (!empty($instance->config->servers->type) and $instance->config->servers->type === 'stand-alone') {
+                unset($device_json->system->discovery_id);
+            }
             $device_json = json_encode($device_json);
 
             $url = $server->host . $server->community . '/index.php/input/devices';
