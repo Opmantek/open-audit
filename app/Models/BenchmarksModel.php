@@ -92,8 +92,8 @@ class BenchmarksModel extends BaseModel
         $this->db->query($sql, [$id]);
         $sql = "DELETE FROM benchmarks_result WHERE benchmark_id = ?";
         $this->db->query($sql, [$id]);
-        $sql = "DELETE FROM benchmarks_exceptions WHERE benchmark_id = ?";
-        $this->db->query($sql, [$id]);
+        // $sql = "DELETE FROM benchmarks_exceptions WHERE benchmark_id = ?";
+        // $this->db->query($sql, [$id]);
         return true;
     }
 
@@ -808,6 +808,10 @@ class BenchmarksModel extends BaseModel
 
         $sql = "SELECT * FROM benchmarks_exceptions";
         $included['exceptions'] = $this->db->query($sql)->getResult();
+
+        $sql = "SELECT * FROM tasks WHERE type = 'benchmarks' AND sub_resource_id = ?";
+        $temp = $this->db->query($sql, [$id])->getResult();
+        $included['task'] = (!empty($temp[0])) ? $temp[0] : null;
 
         return $included;
     }
