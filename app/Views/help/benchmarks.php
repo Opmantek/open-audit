@@ -18,3 +18,24 @@ $body = '<h2>Help</h2>
     <p>Not every computer will be able to successfully complete a benchmark. We have seen in some fail in testing for reasons beyond our control. The logs should help point you in the right direction for these items.<br><br></p>
     <h2>Warning</h2>
     <p>As per the OpenSCAP benchmarks - <i>Do not attempt to implement any of the settings in this benchmark without first testing them in a non-operational environment. The creators of this benchmark assume no responsibility whatsoever for its use by other parties, and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.</i><br><br>Seriously, don\'t blindly start "fixing" issues revealed after running a benchmark without first thoroughly testing in a non-production, identical environment.<br><br></p>';
+
+helper('ssg_helper');
+$ssgs = ssg_definitions();
+$body .= '<h2>Available Benchmarks</h2><p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>OS</th>
+            <th>Benchmark</th>
+        </tr>
+    </thead>
+    <tbody>';
+$os = 'CentOS7';
+foreach ($ssgs as $ssg) {
+    if ($ssg->os_family . $ssg->os_version !== $os) {
+        $os = $ssg->os_family . $ssg->os_version;
+        $body .= "\n        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
+    }
+    $body .= "\n        <tr><td>" . $ssg->os_family . ' ' . $ssg->os_version . '</td><td>' . $ssg->title . '</td><tr>';
+}
+$body .= '</tbody></table><br><br>';
