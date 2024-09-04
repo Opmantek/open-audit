@@ -169,7 +169,7 @@ include 'shared/collection_functions.php';
                     </div>
                 </div>
             </div>
-            </main>
+        </main>
 
 <script {csp-script-nonce}>
 window.onload = function () {

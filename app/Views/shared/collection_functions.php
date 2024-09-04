@@ -187,3 +187,26 @@ function collection_column_name(string $name = ''): string
     $name = __($name);
     return $name;
 }
+
+function collection_intro_header(string $heading, string $collection, string $icon, string $intro, string $body): string
+{
+    $return = '<br><br>
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-3 clearfix">
+                            <h6 style="padding-top:10px;"><span class="' . $icon . ' oa-icon"></span>' . $heading . '</h6>
+                        </div>
+                        <div class="col-9 clearfix">
+                            <div class="btn-group btn-group-sm float-end" role="group" id="oa_panel_buttons">
+                                <div class="page-title-right">
+                                    <a role="button" class="btn btn-light mb-2" title="' . __('Help') . '" href="' . url_to($collection.'Help') . '"><span style="margin-right:6px;" class="fa fa-question text-primary"></span>' . __('Help') . '</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">';
+    $return .= @$intro . @$body . '</div></div>';
+    return $return;
+}

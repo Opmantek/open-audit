@@ -41,7 +41,7 @@ include 'shared/collection_functions.php';
                                         ?>
                                     <?php } ?>
                                     <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) {
-                                        if ($item->id < 8) {
+                                        if ($item->id < 9) {
                                             echo "<td></td>\n";
                                         } else {
                                             echo collection_button_delete(intval($item->id)) . "\n";

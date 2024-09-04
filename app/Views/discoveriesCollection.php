@@ -253,6 +253,12 @@ if (count($included['issues']) > 0) {
                     </div>
                 </div>
             </div>
+            <?php
+            if (count($data) === 2) {
+                @include 'help/'. $meta->collection . '.php';
+                echo collection_intro_header('Introduction to ' . $meta->heading, $meta->collection, $meta->icon, @$intro, @$body);
+            }
+            ?>
         </main>
 
 
