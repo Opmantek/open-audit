@@ -2,8 +2,8 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-$intro = '<p>The Executables feature scans the disk of a device as part of the audit and checks that every executable file is known to the package manager. Because it uses the package meneger, the feature applies to Linux target devices only, and further than that, only rpm or deb based distributions. Anything Redhat or Debian based should work.</p>
-    <p>By default we scan all items in /usr, but this is of course configurable. Any files foudn in this manner are stored in the \'executable\' table as per any other device component.
+$intro = '<p>The Executables feature scans the disk of a device as part of the audit and checks that every executable file is known to the package manager. Because it uses the package manager, the feature applies to Linux target devices only, and further than that, only rpm or deb based distributions. Anything Redhat or Debian based should work.</p>
+    <p>Any files found in this manner are stored in the \'executable\' table as per any other device component.
     <p>This feature, because it has the ability to affect target devices more than usual must be manually enabled. To enable this feature, change the configuration item feature_executables to \'yes\'.';
 
 $body = '<h2>How Does it Work?</h2>
