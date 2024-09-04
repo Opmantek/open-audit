@@ -1844,10 +1844,10 @@ if (!empty($included['fields'])) {
                                             <tbody>
                                             <?php if (!empty($included['executable'])) {
                                                 foreach ($included['executable'] as $row) {
-                                                    if (intval($row->size > 1024)) {
-                                                        $size = number_format(intval($row->size / 1024), 0) . ' MB';
+                                                    if (intval($row->size > 1048576)) {
+                                                        $size = number_format(intval($row->size / 1024 / 1024)) . ' MB';
                                                     } else {
-                                                        $size = $row->size . ' KB';
+                                                        $size = number_format(intval($row->size / 1024))  . ' KB';
                                                     }
                                                     ?>
                                                 <tr>
