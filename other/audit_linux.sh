@@ -944,6 +944,12 @@ if [ -z "$kernel_version" ]; then
 	kernel_version=$(hostnamectl 2>/dev/null | grep "Kernel" | cut -d: -f2 | cut -d" " -f3)
 fi
 
+last_os_update=$(stat -c %y /var/lib/apt/periodic/update-success-stamp | cut -d. -f1)
+if [ -z "$last_os_update" ]; then
+	lou=$(rpm -qa --last | head -1 | awk '{printf $2" "$3" "$4" "$5" "$6" "$7}')
+	last_os_update=$(date -d "$lou" +"%Y-%m-%d %H:%m:%S")
+fi
+
 #'''''''''''''''''''''''''''''''''
 #' Write to the audit file       '
 #'''''''''''''''''''''''''''''''''
@@ -979,6 +985,7 @@ echo "		<processor_count>$(escape_xml "$system_pc_total_threads")</processor_cou
 echo "		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>"
 echo "		<org_id>$(escape_xml "$org_id")</org_id>"
 echo "		<dbus_identifier>$(escape_xml "$dbus_identifier")</dbus_identifier>"
+echo "		<last_os_update>$(escape_xml "$last_os_update")</last_os_update>"
 if [ -n "$instance_ident" ]; then
 echo "		<instance_ident>$(escape_xml "$instance_ident")</instance_ident>"
 fi

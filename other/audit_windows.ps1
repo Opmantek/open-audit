@@ -19,6 +19,8 @@ param (
     [int]$org_id = 0
 )
 
+$version="5.5.0"
+
 $debug = $debugging
 
 $timer = [Diagnostics.Stopwatch]::StartNew()
@@ -57,7 +59,7 @@ $Win32_NetworkAdapter = Get-WmiObject -Class Win32_NetworkAdapter -ErrorAction I
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result = @{}
 $result.sys = @{}
-$result.sys.script_version = '5.3.0'
+$result.sys.script_version = $version
 $result.sys.id = ''
 $result.sys.uuid = $Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID
 $result.sys.name = hostname
@@ -126,11 +128,21 @@ $result.sys.os_bit = ($Win32_Processor | Select AddressWidth)[0].AddressWidth
 $result.sys.os_arch = $Win32_OperatingSystem.OSArchitecture
 $result.sys.memory_count = [math]::Ceiling($Win32_ComputerSystem.TotalPhysicalMemory / 1024 / 1024 / 1024)
 $result.sys.processor_count = [int]($Win32_ComputerSystem.NumberOfProcessors)
-$result.sys.os_installation_date = [string]($Win32_OperatingSystem.ConvertToDateTime($Win32_OperatingSystem.InstallDate) -f "yyyy/MM/dd")
+$result.sys.os_installation_date = [string](Get-Date -Date $Win32_OperatingSystem.ConvertToDateTime($Win32_OperatingSystem.InstallDate) -Uformat "%Y-%m-%d")
 $result.sys.org_id = ''
 $result.sys.cluster_name = ''
 $result.sys.last_seen_by = 'audit'
 $result.sys.discovery_id = ''
+
+(New-Object -com "Microsoft.Update.AutoUpdate"). Results | ForEach {
+    if ($_.LastSearchSuccessDate -ne $null -and $_.LastSearchSuccessDate -ne "") {
+        $result.sys.last_os_update = [string](Get-Date -Date $_.LastSearchSuccessDate -Uformat "%Y-%m-%d %T")
+    }
+}
+
+$result.sys
+exit
+
 if ($org_id -ne 0) {
     $result.sys.org_id = $org_id
 }

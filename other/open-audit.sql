@@ -1480,6 +1480,7 @@ CREATE TABLE `devices` (
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen_by` varchar(150) NOT NULL DEFAULT '',
   `last_user` varchar(150) NOT NULL DEFAULT '',
+  `last_os_update` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `omk_uuid` text NOT NULL,
   `collector_uuid` text NOT NULL,
   `credentials` text NOT NULL,
