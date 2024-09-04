@@ -2450,10 +2450,10 @@ if [ "$system_os_family" != "Arch" ]; then
 fi
 # Puppet facts
 if [ -n "$(which facter 2>/dev/null)" ]; then
-    exclusions=" system_uptime memoryfree memoryfree_mb sshdsakey sshfp_dsa sshfp_rsa sshrsakey swapfree swapfree_mb system_uptime "
+    puppet_exclusions=" system_uptime memoryfree memoryfree_mb sshdsakey sshfp_dsa sshfp_rsa sshrsakey swapfree swapfree_mb system_uptime "
     for variable in $(facter -p); do
         name=$( echo "$variable" | cut -d" " -f1 )
-        if [ -z "$(echo "$exclusions" | grep " $name ")" ]; then
+        if [ -z "$(echo "$puppet_exclusions" | grep " $name ")" ]; then
             value=$(echo "$variable" | cut -d" " -f3-)
             echo "      <item>" >> "$xml_file"
             echo "          <program>facter</program>" >> "$xml_file"
@@ -3650,8 +3650,11 @@ fi
 if [ "$busybox" = "n" ]; then
 	echo "	<executable>" >> "$xml_file"
 	for dir in ${executables[@]}; do
-		for file in $(find "$dir" -type f | cut -d: -f1 | grep -Ev "$exclusions"); do
-
+		command="find \"$dir\" -type f | cut -d: -f1"
+		if [ -n "$exclusions" ]; then
+			command="$command | grep -Ev \"$exclusions\""
+		fi
+		for file in $(eval "$command"); do
 			description=""
 			description=$(file -b "$file" | grep executable)
 			package=""
