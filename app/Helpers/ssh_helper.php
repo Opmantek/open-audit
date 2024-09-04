@@ -157,9 +157,9 @@ if (! function_exists('scp')) {
         $log->command = 'sftp ' . $source . ' to ' . @$username . '@' . $ip . ':' . $destination;
         $log->command_status = 'success';
         $log->message = 'Copy file to ' . $ip;
+        $log->command_output = ' ';
         if ($ssh->put($destination, $source, SFTP::SOURCE_LOCAL_FILE) === false) {
-            $log->command = '';
-            $log->command_output = $ssh->getLog();
+            $log->command_output = json_encode($ssh->getLog());
             $log->command_status = 'fail';
             $status = false;
         }

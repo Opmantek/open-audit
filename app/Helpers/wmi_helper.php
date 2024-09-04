@@ -803,6 +803,7 @@ if (! function_exists('wmi_command')) {
         $log->discovery_id = $discovery_id;
         $log->ip = $ip;
         $log->message = 'Using credentials named ' . $credentials->name;
+        $item_start = microtime(true);
 
         if (php_uname('s') == 'Linux') {
             $filepath = APPPATH . '../other';
@@ -810,7 +811,6 @@ if (! function_exists('wmi_command')) {
             $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //".$ip." \"wmic $command\" 2>&1";
             $log->command   = $command_string;
             $log->message = 'Using credentials named ' . $credentials->name . ' to execute command using winexe-static-2';
-            $item_start = microtime(true);
             exec($command_string, $return['output'], $return['status']);
             // if ($return['status'] != '0') {
             //     $log->command_time_to_execute = (microtime(true) - $item_start);

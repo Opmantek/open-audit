@@ -1576,6 +1576,9 @@ if (! function_exists('ip_audit')) {
             if (substr($destination, -1) !== '/') {
                 $destination .= '/';
             }
+            if ($device->os_group === 'Windows') {
+                $destination = '';
+            }
             $destination .= $script_name;
             $parameters = new \StdClass();
             $parameters->ip = $device->ip;
@@ -1595,25 +1598,27 @@ if (! function_exists('ip_audit')) {
                 $log->message = '';
                 $log->command_status = 'notice';
             } else {
-                // Successfully copied the audit script, now chmod it
-                $command = 'chmod ' . $instance->config->discovery_linux_script_permissions . ' ' . $destination;
-                // No use testing for a result as a chmod produces no output
-                $parameters = new \StdClass();
-                $parameters->discovery_id = $discovery->id;
-                $parameters->ip = $device->ip;
-                $parameters->credentials = $credentials_ssh;
-                $parameters->command = $command;
-                $parameters->ssh_port = $ip_scan->ssh_port;
-                $test = ssh_command($parameters);
-                if ($test === false) {
-                    $log->severity = 3;
-                    $log->message = 'Could not chmod script on ' . $device->ip;
-                    $log->command_status = 'fail';
-                    $discoveryLogModel->create($log);
-                    $log->severity = 7;
-                    $log->message = '';
-                    $log->command_status = 'notice';
-                    $audit_script = '';
+                if ($device->os_group !== 'Windows') {
+                    // Successfully copied the audit script, now chmod it
+                    $command = 'chmod ' . $instance->config->discovery_linux_script_permissions . ' ' . $destination;
+                    // No use testing for a result as a chmod produces no output
+                    $parameters = new \StdClass();
+                    $parameters->discovery_id = $discovery->id;
+                    $parameters->ip = $device->ip;
+                    $parameters->credentials = $credentials_ssh;
+                    $parameters->command = $command;
+                    $parameters->ssh_port = $ip_scan->ssh_port;
+                    $test = ssh_command($parameters);
+                    if ($test === false) {
+                        $log->severity = 3;
+                        $log->message = 'Could not chmod script on ' . $device->ip;
+                        $log->command_status = 'fail';
+                        $discoveryLogModel->create($log);
+                        $log->severity = 7;
+                        $log->message = '';
+                        $log->command_status = 'notice';
+                        $audit_script = '';
+                    }
                 }
             }
             unset($destination);
@@ -1631,6 +1636,9 @@ if (! function_exists('ip_audit')) {
                     $log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' without sudo, as sudo attempt failed.';
                 } elseif (empty($device->which_sudo)) {
                     $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
+                }
+                if ($device->os_group === 'Windows') {
+                    $command = 'cscript ' . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
                 }
                 $log->command = $command;
                 $discoveryLogModel->create($log);
@@ -1715,6 +1723,9 @@ if (! function_exists('ip_audit')) {
                     }
                     // Delete the remote file
                     $command = 'rm ' . $audit_file;
+                    if ($device->os_group === 'Windows') {
+                        $command = 'del ' . $audit_file;
+                    }
                     $temp = 0;
                     if (!empty($device->which_sudo) and ! empty($device->use_sudo) and $credentials_ssh->credentials->username !== 'root') {
                         // add sudo, we need this if we have run the audit using sudo
