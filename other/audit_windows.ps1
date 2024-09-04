@@ -1645,6 +1645,117 @@ if ($debug -gt 0) {
 }
 
 
+[Flags()] enum ProductState
+{
+    Off         = 0x0000
+    On          = 0x1000
+    Snoozed     = 0x2000
+    Expired     = 0x3000
+}
+
+[Flags()] enum SignatureStatus
+{
+    UpToDate     = 0x00
+    OutOfDate    = 0x10
+}
+
+[Flags()] enum ProductOwner
+{
+    NonMs        = 0x000
+    Windows      = 0x100
+}
+
+[Flags()] enum ProductFlags
+{
+    SignatureStatus = 0x00F0
+    ProductOwner    = 0x0F00
+    ProductState    = 0xF000
+}
+
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+$result.antivirus = @()
+$item = @{}
+Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntiVirusProduct -ErrorAction Ignore | ForEach {
+    Clear-Variable -name item
+    $item = @{}
+    [UInt32]$state = $_.productState
+    $item.name = $_.displayName
+    $item.executable = $_.pathToSignedProductExe
+    $item.reportable = $_.pathToSignedReportingExe
+    $item.owner = [string]([ProductOwner]($state -band [ProductFlags]::ProductOwner))
+    $item.state = [string]([ProductState]($state -band [ProductFlags]::ProductState))
+    $item.status = [string]([SignatureStatus]($state -band [ProductFlags]::SignatureStatus))
+    $result.antivirus += $item
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.route.count
+    Write-Host "AntiVirus, $count entries took $totalSecs seconds"
+}
+
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+$result.firewall = @()
+$item = @{}
+$fwStatus = 'On'
+Get-CimInstance -Namespace root/SecurityCenter2 -ClassName FirewallProduct -ErrorAction Ignore | ForEach {
+    Clear-Variable -name item
+    $item = @{}
+    [UInt32]$state = $_.productState
+    $item.name = $_.displayName
+    $item.executable = $_.pathToSignedProductExe
+    $item.reportable = $_.pathToSignedReportingExe
+    $item.owner = [string]([ProductOwner]($state -band [ProductFlags]::ProductOwner))
+    $item.state = [string]([ProductState]($state -band [ProductFlags]::ProductState))
+    $item.status = [string]([SignatureStatus]($state -band [ProductFlags]::SignatureStatus))
+    $result.firewall += $item
+    if ($item.state -eq 'On') {
+        $fwStatus = 'Off';
+    }
+}
+
+Clear-Variable -name item
+$fw = 'false'
+Get-WmiObject Win32_Service | ForEach {
+    if ($_.DisplayName -eq "Windows Defender Firewall") {
+        $executable = $_.PathName
+        $fw ='true'
+    }
+}
+if ($fw -eq 'true') {
+    $item = @{}
+    $item.name = 'Windows Defender Firewall'
+    $item.executable = $executable
+    $item.reportable = ''
+    $item.owner = 'Windows'
+    $item.state = $fwStatus
+    $item.status = ''
+    $result.firewall += $item
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.route.count
+    Write-Host "Firewall, $count entries took $totalSecs seconds"
+}
+
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+$result.firewall_rule = @()
+$item = @{}
+Get-NetFirewallRule -ErrorAction Ignore | ForEach {
+    Clear-Variable -name item
+    $item = @{}
+    $item.name = [string]$_.DisplayName
+    $item.direction = [string]$_.Direction
+    $item.action = [string]$_.Action
+    $item.enabled = [string]$_.Enabled
+    $item.profile = [string]$_.Profile
+    $result.firewall_rule += $item
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.route.count
+    Write-Host "Firewall Rules, $count entries took $totalSecs seconds"
+}
+
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.software = @()
 $item = @{}
