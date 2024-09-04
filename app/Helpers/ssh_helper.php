@@ -558,15 +558,15 @@ if (! function_exists('ssh_command')) {
             return false;
         }
         if (empty($result)) {
-            if (!empty($parameters->discovery_id)) {
-                $log->command_time_to_execute = ($item_end - $item_start);
-                $log->command_status = 'warning';
-                $log->command_output = '';
-                $log->message = 'SSH command produced no output.';
-                $discoveryLogModel->create($log);
-            }
-            log_message('warning', 'SSH command produced no output from ' . $ip);
-            return false;
+            // if (!empty($parameters->discovery_id)) {
+            //     $log->command_time_to_execute = ($item_end - $item_start);
+            //     $log->command_status = 'warning';
+            //     $log->command_output = '';
+            //     $log->message = 'SSH command produced no output.';
+            //     $discoveryLogModel->create($log);
+            // }
+            // log_message('warning', 'SSH command produced no output from ' . $ip);
+            // return false;
         }
         for ($i=0; $i < count($result); $i++) {
             $result[$i] = trim((string)$result[$i]);
