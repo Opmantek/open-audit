@@ -78,13 +78,16 @@ $result.sys.uuid = $Win32_ComputerSystemProduct | Select-Object -ExpandProperty 
 $result.sys.name = hostname
 $result.sys.hostname = hostname
 $result.sys.domain = $Win32_ComputerSystem | Select-Object -ExpandProperty Domain
+if ($result.sys.domain -eq 'WORKGROUP') {
+    $result.sys.domain = ''
+}
 $result.sys.ip = (Find-NetRoute -RemoteIPAddress "0.0.0.0" | % { $_.IPAddress })[0]
 $result.sys.description = $Win32_OperatingSystem | Select-Object -ExpandProperty Description
 $result.sys.type = 'computer'
 $result.sys.icon = 'windows'
 $result.sys.os_group = 'Windows'
 $result.sys.os_name = $Win32_OperatingSystem.Caption
-$result.sys.os_family = ""
+$result.sys.os_family = ''
 if ($result.sys.os_name -like "*Server*") { $result.sys.os_family = "Windows Server" }
 if ($result.sys.os_name -like "* 95*") { $result.sys.os_name_family = "Windows 95" }
 if ($result.sys.os_name -like "* 98*") { $result.sys.os_family = "Windows 98" }
@@ -110,18 +113,18 @@ $result.sys.uptime = Get-WmiObject -Class Win32_PerfFormattedData_PerfOS_System 
 $form_factor = ($Win32_SystemEnclosure | Select ChassisTypes)[0].ChassisTypes[0]
 if ([int]$form_factor -eq 1  ) { $result.sys.form_factor = 'Other' }
 if ([int]$form_factor -eq 2  ) { $result.sys.form_factor = 'Unknown' }
-if ([int]$form_factor -eq 3  ) { $result.sys.form_factor = 'Desktop' }
-if ([int]$form_factor -eq 4  ) { $result.sys.form_factor = 'Low Profile Desktop' }
-if ([int]$form_factor -eq 5  ) { $result.sys.form_factor = 'Pizza Box' }
-if ([int]$form_factor -eq 6  ) { $result.sys.form_factor = 'Mini Tower' }
-if ([int]$form_factor -eq 7  ) { $result.sys.form_factor = 'Tower' }
-if ([int]$form_factor -eq 8  ) { $result.sys.form_factor = 'Portable' }
-if ([int]$form_factor -eq 9  ) { $result.sys.form_factor = 'Laptop' }
-if ([int]$form_factor -eq 10 ) { $result.sys.form_factor = 'Notebook' }
+if ([int]$form_factor -eq 3  ) { $result.sys.form_factor = 'Desktop'; $result.sys.class = 'desktop' }
+if ([int]$form_factor -eq 4  ) { $result.sys.form_factor = 'Low Profile Desktop'; $result.sys.class = 'desktop' }
+if ([int]$form_factor -eq 5  ) { $result.sys.form_factor = 'Pizza Box'; $result.sys.class = 'desktop' }
+if ([int]$form_factor -eq 6  ) { $result.sys.form_factor = 'Mini Tower'; $result.sys.class = 'desktop' }
+if ([int]$form_factor -eq 7  ) { $result.sys.form_factor = 'Tower'; $result.sys.class = 'desktop' }
+if ([int]$form_factor -eq 8  ) { $result.sys.form_factor = 'Portable'; $result.sys.class = 'laptop' }
+if ([int]$form_factor -eq 9  ) { $result.sys.form_factor = 'Laptop'; $result.sys.class = 'laptop' }
+if ([int]$form_factor -eq 10 ) { $result.sys.form_factor = 'Notebook'; $result.sys.class = 'laptop' }
 if ([int]$form_factor -eq 11 ) { $result.sys.form_factor = 'Hand Held' }
 if ([int]$form_factor -eq 12 ) { $result.sys.form_factor = 'Docking Station' }
 if ([int]$form_factor -eq 13 ) { $result.sys.form_factor = 'All in One' }
-if ([int]$form_factor -eq 14 ) { $result.sys.form_factor = 'Sub Notebook' }
+if ([int]$form_factor -eq 14 ) { $result.sys.form_factor = 'Sub Notebook'; $result.sys.class = 'laptop' }
 if ([int]$form_factor -eq 15 ) { $result.sys.form_factor = 'Space-Saving' }
 if ([int]$form_factor -eq 16 ) { $result.sys.form_factor = 'Lunch Box' }
 if ([int]$form_factor -eq 17 ) { $result.sys.form_factor = 'Main System Chassis' }
@@ -130,16 +133,19 @@ if ([int]$form_factor -eq 19 ) { $result.sys.form_factor = 'SubChassis' }
 if ([int]$form_factor -eq 20 ) { $result.sys.form_factor = 'Bus Expansion Chassis' }
 if ([int]$form_factor -eq 21 ) { $result.sys.form_factor = 'Peripheral Chassis' }
 if ([int]$form_factor -eq 22 ) { $result.sys.form_factor = 'Storage Chassis' }
-if ([int]$form_factor -eq 23 ) { $result.sys.form_factor = 'Rack Mount Chassis' }
+if ([int]$form_factor -eq 23 ) { $result.sys.form_factor = 'Rack Mount Chassis'; $result.sys.class = 'server' }
 if ([int]$form_factor -eq 24 ) { $result.sys.form_factor = 'Sealed-Case PC'}
-if ([int]$form_factor -eq 30 ) { $result.sys.form_factor = 'Tablet'}
-if ([int]$form_factor -eq 31 ) { $result.sys.form_factor = 'Convertible'}
-if ([int]$form_factor -eq 32 ) { $result.sys.form_factor = 'Detachable'}
+if ([int]$form_factor -eq 30 ) { $result.sys.form_factor = 'Tablet'; $result.sys.class = 'tablet' }
+if ([int]$form_factor -eq 31 ) { $result.sys.form_factor = 'Convertible'; $result.sys.class = 'laptop' }
+if ([int]$form_factor -eq 32 ) { $result.sys.form_factor = 'Detachable'; $result.sys.class = 'laptop' }
 if ([int]$form_factor -eq 35 ) { $result.sys.form_factor = 'Mini PC'}
 
 $result.sys.os_bit = ($Win32_Processor | Select AddressWidth)[0].AddressWidth
 $result.sys.os_arch = $Win32_OperatingSystem.OSArchitecture
-$result.sys.memory_count = [math]::Ceiling($Win32_ComputerSystem.TotalPhysicalMemory / 1024 / 1024 / 1024)
+$result.sys.memory_count = [int64]0
+$Win32_PhysicalMemory | ForEach {
+    $result.sys.memory_count = [int64]$result.sys.memory_count + ([int64]$_.Capacity / 1024)
+}
 $result.sys.processor_count = [int]($Win32_ComputerSystem.NumberOfProcessors)
 $result.sys.os_installation_date = [string](Get-Date -Date $Win32_OperatingSystem.ConvertToDateTime($Win32_OperatingSystem.InstallDate) -Uformat "%Y-%m-%d")
 $result.sys.org_id = ''
@@ -536,8 +542,8 @@ if ($Win32_Processor[0] -ne $null) {
     $processor = $Win32_Processor
 }
 $item.physical_count = [int]$Win32_ComputerSystem.NumberOfProcessors
-$item.core_count = $item.physical_count * [int]$processor.NumberOfEnabledCore
-$item.logical_count = $item.core_count * [int]$processor.NumberOfLogicalProcessors
+$item.core_count = $item.physical_count * [int]$processor.NumberOfCores
+$item.logical_count = $item.physical_count * [int]$processor.NumberOfLogicalProcessors
 $item.speed = $processor.MaxClockSpeed
 $item.manufacturer = $processor.Manufacturer
 $item.architecture = "Unknown"
@@ -1161,7 +1167,7 @@ if ($debug -gt 0) {
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.network = @()
 $item = @{}
-Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter "IPEnabled = True or (ServiceName<>'' AND ServiceName<>'AsyncMac' AND ServiceName<>'VMnetx' AND ServiceName<>'VMnetadapter' AND ServiceName<>'Rasl2tp' AND ServiceName<>'msloop' AND ServiceName<>'PptpMiniport' AND ServiceName<>'Raspti' AND ServiceName<>'NDISWan' AND ServiceName<>'NdisWan4' AND ServiceName<>'RasPppoe' AND ServiceName<>'NdisIP' AND ServiceName<>'tunmp' AND Description<>'PPP Adapter.') AND MACAddress is not NULL" | ForEach {
+Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter "IPEnabled = True or (ServiceName<>'' AND ServiceName<>'vwifimp' AND ServiceName<>'AsyncMac' AND ServiceName<>'VMnetx' AND ServiceName<>'VMnetadapter' AND ServiceName<>'Rasl2tp' AND ServiceName<>'msloop' AND ServiceName<>'PptpMiniport' AND ServiceName<>'Raspti' AND ServiceName<>'NDISWan' AND ServiceName<>'NdisWan4' AND ServiceName<>'RasPppoe' AND ServiceName<>'NdisIP' AND ServiceName<>'tunmp' AND Description<>'PPP Adapter.') AND MACAddress is not NULL" | ForEach {
     Clear-Variable -name item
     $item = @{}
     $item.dns_server = ""
@@ -1182,16 +1188,25 @@ Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter "IPEnabled = True
     $item.net_wins_secondary = if ($_.WINSSecondaryServer) { $_.WINSSecondaryServer } Else { "" }
     $Win32_NetworkAdapter | ForEach {
         if ($item.net_index -eq $_.index) {
-            $item.adapter_type = $_.AdapterType
+            $item.type = $_.AdapterType
             $item.manufacturer = $_.Manufacturer
             $item.model = $_.ProductName
-            $item.connection_id = $_.NetConnectionID
+            $item.connection = $_.NetConnectionID
             $item.connection_status = $_.NetConnectionStatus
-            $item.speed = 0
-            if ($_.NetConnectionStatus -eq "2" -or $_.NetConnectionStatus -eq "9") {
-                # Found a connected NIC: detecting link speed
-                $item.speed = $_.Speed
-            }
+            $item.speed = if ($_.MaxSpeed) { [int]$_.MaxSpeed } else { 0 }
+            if ($item.connection_status -eq 0 ) { $item.connection_status = "Disconnected" }
+            if ($item.connection_status -eq 1 ) { $item.connection_status = "Connecting" }
+            if ($item.connection_status -eq 2 ) { $item.connection_status = "Connected" }
+            if ($item.connection_status -eq 3 ) { $item.connection_status = "Disconnecting" }
+            if ($item.connection_status -eq 4 ) { $item.connection_status = "Hardware not present" }
+            if ($item.connection_status -eq 5 ) { $item.connection_status = "Hardware disabled" }
+            if ($item.connection_status -eq 6 ) { $item.connection_status = "Hardware malfunction" }
+            if ($item.connection_status -eq 7 ) { $item.connection_status = "Media disconnected" }
+            if ($item.connection_status -eq 8 ) { $item.connection_status = "Authenticating" }
+            if ($item.connection_status -eq 9 ) { $item.connection_status = "Authentication succeeded" }
+            if ($item.connection_status -eq 10 ) { $item.connection_status = "Authentication failed" }
+            if ($item.connection_status -eq 11 ) { $item.connection_status = "Invalid address" }
+            if ($item.connection_status -eq 12 ) { $item.connection_status = "Credentials required" }
         }
     }
     $result.network += $item
@@ -1259,6 +1274,7 @@ Get-WmiObject Win32_USBControllerDevice | %{[wmi]($_.Dependent)} | ForEach {
     if ($_.Description.ToLower() -notlike '*bluetooth*') {
         $item = @{}
         $item.name = $_.name
+        $item.class = $_.PNPClass
         $item.availability = $_.Availability
         switch ($_.Availability) {
             "1" { $item.availability = "1 - Other" }
