@@ -15,8 +15,11 @@ param (
     [string]$url = '',
     [string]$create_file = 'n',
     [string]$submit_online = 'y',
+    [string]$last_seen_by = '',
     [int]$location_id = 0,
-    [int]$org_id = 0
+    [int]$org_id = 0,
+    [int]$system_id = 0,
+    [int]$discovery_id = 0
 )
 
 $version="5.5.0"
@@ -24,6 +27,12 @@ $version="5.5.0"
 $debug = $debugging
 
 $timer = [Diagnostics.Stopwatch]::StartNew()
+
+$file = "output.json"
+if ($discovery_id -ne 0) {
+    $file = hostname
+    $file = $file + "-" + [string](Get-Date -Uformat "%Y%m%d%H%M%S") + ".json"
+}
 
 if ($debug -gt 0) {
     Write-Host "================"
@@ -34,6 +43,8 @@ if ($debug -gt 0) {
     Write-Host "Location: $location_id"
     Write-Host "Organisation: $org_id"
     Write-Host "Debug: $debugging"
+    Write-Host "SystemID: $system_id"
+    Write-Host "File  $file"
     Write-Host "================"
 }
 
@@ -60,7 +71,9 @@ $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result = @{}
 $result.sys = @{}
 $result.sys.script_version = $version
-$result.sys.id = ''
+if ($system_id -ne 0) {
+    $result.sys.id = $system_id
+}
 $result.sys.uuid = $Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID
 $result.sys.name = hostname
 $result.sys.hostname = hostname
@@ -132,16 +145,19 @@ $result.sys.os_installation_date = [string](Get-Date -Date $Win32_OperatingSyste
 $result.sys.org_id = ''
 $result.sys.cluster_name = ''
 $result.sys.last_seen_by = 'audit'
+if ($last_seen_by -ne '') {
+    $result.sys.last_seen_by = $last_seen_by
+}
 $result.sys.discovery_id = ''
+if ($discovery_id -ne 0) {
+    $result.sys.discovery_id = $discovery_id
+}
 
 (New-Object -com "Microsoft.Update.AutoUpdate"). Results | ForEach {
     if ($_.LastSearchSuccessDate -ne $null -and $_.LastSearchSuccessDate -ne "") {
         $result.sys.last_os_update = [string](Get-Date -Date $_.LastSearchSuccessDate -Uformat "%Y-%m-%d %T")
     }
 }
-
-$result.sys
-exit
 
 if ($org_id -ne 0) {
     $result.sys.org_id = $org_id
@@ -2313,7 +2329,7 @@ if ($submit_online -eq "y") {
 }
 
 if ($create_file -eq "y") {
-    $result | Out-File "output.json"
+    $result | Out-File $file
 }
 
 $timer.Stop()
