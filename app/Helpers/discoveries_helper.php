@@ -1390,7 +1390,11 @@ if (! function_exists('ip_audit')) {
 
         $script_name = '';
         if (!empty($credentials_windows) or ! empty($credentials_ssh)) {
-            $temp = $instance->scriptsModel->build(strtolower($device->os_group));
+            $os_group = strtolower($device->os_group);
+            if ($os_group === 'windows') {
+                $os_group = 'windows-ps1';
+            }
+            $temp = $instance->scriptsModel->build(strtolower($os_group));
             if (empty($temp)) {
                 $log->command_output = 'Could not retrieve audit script for ' . strtolower($device->os_group) . ', check ' . ROOTPATH . 'other/scripts is writable.';
                 $log->command_status = 'issue';
@@ -1638,7 +1642,8 @@ if (! function_exists('ip_audit')) {
                     $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
                 }
                 if ($device->os_group === 'Windows') {
-                    $command = 'cscript ' . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
+                    #$command = 'cscript ' . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
+                    $command = 'powershell -executionpolicy bypass -file ' . $script_name . ' -submit_online n -create_file y -debugging 1 -system_id ' . $device->id . ' -last_seen_by audit_ssh -discovery_id ' . $discovery->id;
                 }
                 $log->command = $command;
                 $discoveryLogModel->create($log);
