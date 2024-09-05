@@ -1010,13 +1010,7 @@ Get-WmiObject -Class Win32_LogicalDisk -Filter 'DriveType = "2" or DriveType = "
     $item.used = [Math]::Round($item.size - $item.free)
     $Win32_LogicalDiskToPartition | ForEach {
         if ($_.Dependent.IndexOf($item.device) -ne "null") {
-            $replace = "\\" + $_.PSComputerName + "\root\cimv2:Win32_DiskPartition.DeviceID="
-            $item.device = $_.Antecedent.Replace($replace, "")
-            $item.device = $item.device.Replace('"', "")
-            $temp = $item.device.Split("#")
-            $temp1 = $temp[1]
-            $temp1 = $temp1.Split(",")
-            $item.hard_drive_index = [int]$temp1[0]
+            $item.hard_drive_index = ((($_.Antecedent.split('"'))[1].split('#'))[1].split(','))[0]
         }
     }
   $result.partition += $item
