@@ -1415,11 +1415,11 @@ if (! function_exists('ip_audit')) {
 
         // Audit Windows using script
         if ($ip_scan->wmi_status === 'true' and ! empty($credentials_windows) and ! empty($audit_script)) {
-            // We do not support auditing windows using the script over SSH at this time
             $ip_scan->ssh_status = 'false';
             $log->message = 'Starting windows script audit for ' . $device->ip;
             $discoveryLogModel->create($log);
-            $destination = 'audit_windows.vbs';
+            # $destination = 'audit_windows.vbs';
+            $destination = 'audit_windows.ps1';
             $output = false;
             if (php_uname('s') === 'Windows NT' and ! empty($instance->config->discovery_use_vintage_service) and $instance->config->discovery_use_vintage_service === 'y') {
                 // Windows Server (likely) running on the LocalSystem account.
@@ -1475,10 +1475,12 @@ if (! function_exists('ip_audit')) {
                 // Unix or Windows default - Remotely run script on target device
                 // Copy the audit script to admin$
                 $copy = false;
-                $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $audit_script, 'audit_windows.vbs', $discovery->id);
+                # $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $audit_script, 'audit_windows.vbs', $discovery->id);
+                $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $audit_script, 'audit_windows.ps1', $discovery->id);
                 $output = false;
                 if ($copy) {
-                    $command = 'cscript ' . $device->install_dir . '\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=' . $device->id . ' discovery_id=' . $discovery->id;
+                    # $command = 'cscript ' . $device->install_dir . '\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=' . $device->id . ' discovery_id=' . $discovery->id;
+                    $command = 'powershell  -executionpolicy bypass -file ' . $device->install_dir . '\\audit_windows.ps1 -submit_online n -create_file y -debugging 1 -last_seen_by audit_wmi -system_id ' . $device->id . ' -discovery_id ' . $discovery->id;
                     $output = execute_windows($device->ip, $credentials_windows, $command, $discovery->id);
                     if (empty($output)) {
                         $log->severity = 3;
@@ -1505,19 +1507,23 @@ if (! function_exists('ip_audit')) {
                     }
                 }
             }
-            if (!empty($audit_file) and ! empty($output)) {
+            if (!empty($audit_file) and !empty($output)) {
                 $copy = false;
-                $temp = explode('\\', $audit_file);
-                $destination = $filepath . '/scripts/' . end($temp);
+                #$temp = explode('\\', $audit_file);
+                #$destination = $filepath . '/scripts/' . end($temp);
+                $temp = 'c:\\Windows\\System32\\' . $audit_file;
+                $destination = $filepath . '/scripts/' . $audit_file;
                 if (php_uname('s') === 'Windows NT') {
-                    $destination = $filepath . '\\scripts\\' . end($temp);
+                    #$destination = $filepath . '\\scripts\\' . end($temp);
+                    $destination = $filepath . '\\scripts\\' . $temp;
                 }
                 if (php_uname('s') === 'Windows NT' and exec('whoami') === 'nt authority\system' and ! empty($instance->config->discovery_use_vintage_service) and $instance->config->discovery_use_vintage_service === 'y') {
                     if (rename($audit_file, $destination)) {
                         $copy = true;
                     }
                 } else {
-                    $copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $discovery->id);
+                    #$copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $discovery->id);
+                    $copy = copy_from_windows($device->ip, $credentials_windows, 'System32\\' . $audit_file, $destination, $discovery->id);
                 }
                 if ($copy === true) {
                     $audit_result = file_get_contents($destination);
@@ -1525,7 +1531,7 @@ if (! function_exists('ip_audit')) {
                     if (empty($audit_result)) {
                         $log->severity = 3;
                         $log->command_time_to_execute = '';
-                        $log->message = 'Could not open audit result on localhost for ' . $device->ip . '. Cannot process audit result.';
+                        $log->message = 'Could not open audit result (empty file) on localhost for ' . $device->ip . '. Cannot process audit result.';
                         $log->command_output = $destination;
                         $log->command_status = 'fail';
                         $discoveryLogModel->create($log);
@@ -1545,7 +1551,8 @@ if (! function_exists('ip_audit')) {
                     // no need to delete the remote file
                 } else {
                     // delete the remote audit result
-                    delete_windows_result($device->ip, $credentials_windows, 'admin$', end($temp), $discovery->id);
+                    # delete_windows_result($device->ip, $credentials_windows, 'admin$', end($temp), $discovery->id);
+                    delete_windows_result($device->ip, $credentials_windows, 'admin$', 'System32\\' . $audit_file, $discovery->id);
                 }
             } else {
                 $log->severity = 3;
@@ -1664,7 +1671,7 @@ if (! function_exists('ip_audit')) {
                 // $log->command_status = 'notice';
             }
             $audit_result = '';
-            if ($audit_script !== '' and ! empty($result) and gettype($result) === 'array') {
+            if ($audit_script !== '' and !empty($result) and gettype($result) === 'array') {
                 $audit_file = '';
                 foreach ($result as $line) {
                     if (strpos($line, 'File  ') !== false) {

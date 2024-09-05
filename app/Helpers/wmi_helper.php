@@ -551,6 +551,7 @@ if (!function_exists('copy_from_windows')) {
         $log = new \StdClass();
         $log->file = 'wmi_helper';
         $log->function = 'copy_from_windows';
+        $log->discovery_id = $discovery_id;
 
         if (empty($ip)) {
             log_message('error', 'No IP supplied to wmi_helper::copy_from_windows');
