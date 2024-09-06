@@ -7,6 +7,9 @@ declare(strict_types=1);
 function match_columns($table)
 {
     $match_columns = array();
+    if ($table === 'antivirus') {
+            $match_columns = array('name');
+    }
     if ($table === 'bios') {
             $match_columns = array('manufacturer', 'model', 'serial', 'smversion', 'version');
     }
@@ -24,6 +27,9 @@ function match_columns($table)
     }
     if ($table === 'file') {
             $match_columns = array('full_name', 'hash', 'inode', 'last_changed');
+    }
+    if ($table === 'firewall') {
+            $match_columns = array('name');
     }
     if ($table === 'log') {
             $match_columns = array('name', 'file_name', 'overwrite');

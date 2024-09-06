@@ -100,7 +100,7 @@ if (!empty($included['fields'])) {
 
                                     <?php
                                     $show = false;
-                                    $sections = array('server', 'service', 'software', 'software_key');
+                                    $sections = array('antivirus', 'firewall', 'server', 'service', 'software', 'software_key');
                                     foreach ($sections as $section) {
                                         if (!empty($included[$section])) {
                                             $show = true;
@@ -1632,6 +1632,76 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->manufacturer ?></td>
                                                     <td><?= $row->size ?></td>
                                                     <td><?= $row->device ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="antivirus_section">
+                                <?php $count = !empty($included['antivirus']) ? count($included['antivirus']) : 0; ?>
+                                <?=  device_panel('antivirus', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Status') ?></th>
+                                                    <th><?= __('State') ?></th>
+                                                    <th><?= __('Executable') ?></th>
+                                                    <th><?= __('Reportable') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['antivirus'])) {
+                                                foreach ($included['antivirus'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('antivirus', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->status ?></td>
+                                                    <td><?= $row->state ?></td>
+                                                    <td><?= $row->executable ?></td>
+                                                    <td><?= $row->reportable ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="firewall_section">
+                                <?php $count = !empty($included['firewall']) ? count($included['firewall']) : 0; ?>
+                                <?=  device_panel('firewall', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Status') ?></th>
+                                                    <th><?= __('State') ?></th>
+                                                    <th><?= __('Executable') ?></th>
+                                                    <th><?= __('Reportable') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['firewall'])) {
+                                                foreach ($included['firewall'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('firewall', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->status ?></td>
+                                                    <td><?= $row->state ?></td>
+                                                    <td><?= $row->executable ?></td>
+                                                    <td><?= $row->reportable ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>

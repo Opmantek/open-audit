@@ -1766,7 +1766,7 @@ if ($fw -eq 'true') {
     $item.reportable = ''
     $item.owner = 'Windows'
     $item.state = $fwStatus
-    $item.status = ''
+    $item.status = 'UpToDate'
     $result.firewall += $item
 }
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
