@@ -2647,14 +2647,14 @@ for each objPartition In colPartitions
     set colLinks = objWMIService.ExecQuery("Select * FROM Win32_LogicalDiskToPartition",,32)
     error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_LogicalDiskToPartition)" : audit_wmi_fails = audit_wmi_fails & "Win32_LogicalDiskToPartition " : end if
     for each colLink in colLinks
-    if (inStr(colLink.Dependent, objPartition.DeviceID) > 0) then
-    partition_device_id_array = split(colLink.Antecedent, """")
-    partition_device_id = partition_device_id_array(1)
-    disk_index_array = split(partition_device_id, "#")
-    disk_index_new = disk_index_array(1)
-    partition_disk_index = mid(disk_index_new, 1, instr(disk_index_new, ",")-1)
-    disk_index_new = ""
-    end if
+        if (inStr(colLink.Dependent, objPartition.DeviceID) > 0) then
+            partition_device_id_array = split(colLink.Antecedent, """")
+            partition_device_id = partition_device_id_array(1)
+            disk_index_array = split(partition_device_id, "#")
+            disk_index_new = disk_index_array(1)
+            partition_disk_index = mid(disk_index_new, 1, instr(disk_index_new, ",")-1)
+            disk_index_new = ""
+        end if
     next
 
 
