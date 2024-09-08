@@ -645,6 +645,13 @@ table.dataTable > thead .sorting_desc_disabled::after
     .card-body {
         color: white;
     }
+    .modal-body {
+        color: white;
+    }
+    .form-control {
+        color: var(--bs-secondary-color);
+        opacity: 1;
+    }
     .form-control:disabled, .form-control[readonly] {
         opacity: 1;
         background-color: #333;
