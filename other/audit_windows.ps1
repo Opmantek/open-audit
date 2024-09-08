@@ -34,6 +34,11 @@ if ($discovery_id -ne 0) {
     $file = $file + "-" + [string](Get-Date -Uformat "%Y%m%d%H%M%S") + ".json"
 }
 
+# For developers only to save time when testing other items as these take a while
+$audit_software = 'y'
+$audit_netstat = 'y'
+$audit_firewall_rule = 'y'
+
 if ($debug -gt 0) {
     Write-Host "================"
     Write-Host "Starting Audit"
@@ -1766,7 +1771,7 @@ if ($fw -eq 'true') {
     $item.reportable = ''
     $item.owner = 'Windows'
     $item.state = $fwStatus
-    $item.status = 'UpToDate'
+    $item.status = ''
     $result.firewall += $item
 }
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
@@ -1778,21 +1783,39 @@ if ($debug -gt 0) {
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.firewall_rule = @()
 $item = @{}
-Get-NetFirewallRule -ErrorAction Ignore | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.name = [string]$_.DisplayName
-    $item.direction = [string]$_.Direction
-    $item.action = [string]$_.Action
-    $item.enabled = [string]$_.Enabled
-    $item.profile = [string]$_.Profile
-    $result.firewall_rule += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.route.count
-    Write-Host "Firewall Rules, $count entries took $totalSecs seconds"
-}
+
+if ($audit_firewall_rule -eq 'y') {
+    # Only run when Windows Firewall is On
+    if ($fwstatus -eq "On") {
+        # Only run when executing as an Agent because it takes too long for a discovery
+        if ($file -eq "output.json") {
+            Get-NetFirewallRule | Select-Object DisplayName, InstanceID, DisplayGroup, Description, Enabled, Profile, Direction, Action, RuleGroup, @{Name='LocalPort';Expression={($PSItem | Get-NetFirewallPortFilter).LocalPort}}, @{Name='RemotePort';Expression={($PSItem | Get-NetFirewallPortFilter).RemotePort}}, @{Name='RemoteAddress';Expression={($PSItem | Get-NetFirewallAddressFilter).RemoteAddress}}, @{Name='Protocol';Expression={($PSItem | Get-NetFirewallPortFilter).Protocol}} | ForEach {
+                Clear-Variable -name item
+                $item = @{}
+                $item.name = [string]$_.DisplayName
+                $item.external_ident = [string]$_.InstanceID
+                $item.group = [string]$_.DisplayGroup
+                $item.description = [string]$_.Description
+                $item.enabled = [string]$_.Enabled
+                $item.profile = [string]$_.Profile
+                $item.direction = [string]$_.Direction
+                $item.action = [string]$_.Action
+                $item.local_port = [string]$_.LocalPort
+                $item.remote_port = [string]$_.RemotePort
+                $item.remote_address = [string]$_.RemoteAddress
+                $item.protocol = [string]$_.Protocol
+                $item.rule_group = [string]$_.RuleGroup
+                $item.firewall = 'Windows Defender'
+                $result.firewall_rule += $item
+            }
+            $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+            if ($debug -gt 0) {
+                $count = [int]$result.firewall_rule.count
+                Write-Host "Firewall Rules, $count entries took $totalSecs seconds"
+            }
+        }
+    }
+} # End of audit_firewall_rule
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.software = @()
@@ -1826,260 +1849,262 @@ if ($debug -gt 0) {
     Write-Host "Software 1, 3 entries took $totalSecs seconds"
 }
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne '' -and $_.DisplayName -ne $null } | ForEach {
-    $item = @{}
-    $item.name = $_.DisplayName
-    $item.version = ""
-    if ($_.DisplayVersion -ne "" -and $_.DisplayVersion -ne $null) {
-        $item.version = $_.DisplayVersion
-    }
-    if ($_.InstallLocation -ne "" -and $_.InstallLocation -ne $null) {
-        $item.location = $_.InstallLocation
-    }
-    if ($_.InstallDate -ne "" -and $_.InstallDate -ne $null) {
-        $item.install_date = $_.InstallDate
-    }
-    $item.url = ""
-    if ($_.URLInfoAbout -ne "" -and $_.URLInfoAbout -ne $null) {
-        $item.url = $_.URLInfoAbout
-    }
-    if ($item.url -eq "" -and $_.URLUpdateInfo -ne "" -and $_.URLUpdateInfo -ne $null) {
-        $item.url = $_.URLUpdateInfo
-    }
-    if ($_.UninstallString -ne "" -and $_.UninstallString -ne $null) {
-        $item.uninstall  = $_.UninstallString.Trim('"')
-    }
-    if ($_.Publisher -ne "" -and $_.Publisher -ne $null) {
-        $item.publisher  = $_.Publisher
-    }
-    if ($_.Comments -ne "" -and $_.Comments -ne $null) {
-        $item.comments  = $_.Comments
-    }
-    if ($_.InstallSource -ne "" -and $_.InstallSource -ne $null) {
-        $item.installsource  = $_.InstallSource
-    }
-    if ($_.SystemComponent -ne "" -and $_.SystemComponent -ne $null) {
-        $item.system_component  = $_.SystemComponent
-    }
-
-    $name = [string]$_.DisplayName
-    $package = Get-Package -name "$name" -ErrorAction Ignore
-    if ($package -ne $null) {
-        $package | ForEach {
-            if ($_.MetaData["InstalledDate"][0] -ne $null) {
-                $item.installed_on = $_.MetaData["InstalledDate"][0]
-            }
-            if ($_.MetaData["InstallDate"][0] -ne $null) {
-                $item.installed_on = $_.MetaData["InstallDate"][0]
-            }
-            if ($_.MetaData["Date"][0] -ne $null) {
-                $item.installed_on = $_.MetaData["Date"][0]
-            }
-        }
-    }
-    $result.software += $item
-    Clear-Variable -name item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.software.count
-    Write-Host "Software 2, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne '' -and $_.DisplayName -ne $null } | ForEach {
-    $item = @{}
-    $item.name = $_.DisplayName
-    $item.version = $_.DisplayVersion
-    if ($_.InstallLocation -ne "" -and $_.InstallLocation -ne $null) {
-        $item.location = $_.InstallLocation
-    }
-    if ($_.InstallDate -ne "" -and $_.InstallDate -ne $null) {
-        $item.install_date = $_.InstallDate
-    }
-    $item.url = ""
-    if ($_.URLInfoAbout -ne "" -and $_.URLInfoAbout -ne $null) {
-        $item.url = $_.URLInfoAbout
-    }
-    if ($item.url -eq "" -and $_.URLUpdateInfo -ne "" -and $_.URLUpdateInfo -ne $null) {
-        $item.url = $_.URLUpdateInfo
-    }
-    if ($_.UninstallString -ne "" -and $_.UninstallString -ne $null) {
-        $item.uninstall  = $_.UninstallString.Trim('"')
-    }
-    if ($_.Publisher -ne "" -and $_.Publisher -ne $null) {
-        $item.publisher  = $_.Publisher
-    }
-    if ($_.Comments -ne "" -and $_.Comments -ne $null) {
-        $item.comments  = $_.Comments
-    }
-    if ($_.InstallSource -ne "" -and $_.InstallSource -ne $null) {
-        $item.installsource  = $_.InstallSource
-    }
-    if ($_.SystemComponent -ne "" -and $_.SystemComponent -ne $null) {
-        $item.system_component  = $_.SystemComponent
-    }
-
-    $name = [string]$_.DisplayName
-    $package = Get-Package -name "$name" -ErrorAction Ignore
-    if ($package -ne $null) {
-        $package | ForEach {
-            if ($_.MetaData["InstalledDate"][0] -ne $null) {
-                $item.installed_on = $_.MetaData["InstalledDate"][0]
-            }
-            if ($_.MetaData["InstallDate"][0] -ne $null) {
-                $item.installed_on = $_.MetaData["InstallDate"][0]
-            }
-            if ($_.MetaData["Date"][0] -ne $null) {
-                $item.installed_on = $_.MetaData["Date"][0]
-            }
-        }
-    }
-    $result.software += $item
-    Clear-Variable -name item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.software.count
-    Write-Host "Software 3, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-Get-WmiObject Win32_InstalledStoreProgram -ErrorAction Ignore | ForEach {
-    $item = @{}
-    $microsoft = 'n'
-    $item.name = [string]$_.Name
-    if ($item.name -like 'Microsoft*' -or $item.name -like 'Windows*' -or $item.name -like 'windows*' -or $item.name -like 'MicrosoftWindows*' -or $_.Vendor -like '*Microsoft Corporation*') {
-        $item.publisher = 'Microsoft Corporation'
-        $microsoft = 'y'
-    }
-    $name = $item.name
-    $name = $name.Replace('Microsoft.', '')
-    $name = $name.Replace('Windows.', '')
-    $name = $name.Replace('windows.', '')
-    $name = $name.Replace('MicrosoftWindows.', '')
-    $item.name = $name
-    if ($microsoft -eq 'n') {
-        $split = $item.name.Split('.')
-        $item.publisher = $split[0]
-        $item.name = $name.Replace($item.publisher + '.', '')
-    }
-    if ($item.name -eq '1527c705-839a-4832-9118-54d4Bd6a0c89') {
-        $item.name = 'FilePicker'
-    }
-    if ($item.name -eq 'c5e2524a-ea46-4f67-841f-6a9465d9d515') {
-        $item.name = 'FileExplorer'
-    }
-    if ($item.name -eq 'E2A4F912-2574-4A75-9BB0-0D023378592B') {
-        $item.name = 'AppResolver'
-    }
-    if ($item.name -eq 'F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE') {
-        $item.name = 'AddSuggestedFoldersToLibrary'
-    }
-
-    $item.version = $_.Version
-    $item.location = $_.__PATH
-    $item.type = "Windows Store App"
-    $result.software += $item
-    Clear-Variable -name item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.software.count
-    Write-Host "Software 4, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-Get-WmiObject Win32_QuickFixEngineering | ForEach {
-    $item = @{}
-    $item.name = $_.HotFixID
-    $item.version = $_.DisplayVersion
-    if ($item.version -eq $null) {
-        $item.version = ""
-    }
-    if ($_.InstallDate -ne "" -and $_.InstallDate -ne $null) {
-        $item.installed_on = $_.InstallDate
-    }
-    if ($_.InstalledBy -ne "" -and $_.InstalledBy -ne $null) {
-        $item.installed_by = $_.InstalledBy
-    }
-    $item.publisher = "Microsoft Corporation"
-    $item.type = "update"
-    $name = $_.HotFixID
-    Get-Package | Where-Object name -like "*$name*" | ForEach {
-        if ($_.MetaData["SupportUrl"][0] -ne $null) {
-            $item.url = $_.MetaData["SupportUrl"][0]
-        }
-        if ($_.Name -ne "" -and $_.Name -ne $null) {
-            $item.comment = $_.name
-        }
-    }
-    $result.software += $item
-    Clear-Variable -name item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.software.count
-    Write-Host "Software 5, $count entries took $totalSecs seconds"
-}
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-Get-WmiObject Win32_OptionalFeature -ErrorAction Ignore | WHERE {$_.InstallState -eq 1} | ForEach {
-    $item = @{}
-    $item.name = $_.Caption
-    if ($item.name -eq "") {
-        $item.name = $_.name
-    }
-    $item.version = ""
-    if ($_.InstallDate -ne "" -and $_.InstallDate -ne $null) {
-        $item.installed_on = $_.InstallDate
-    }
-    $item.publisher = "Microsoft Corporation"
-    $item.type = "Optional Feature"
-    $result.software += $item
-    Clear-Variable -name item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.software.count
-    Write-Host "Software 6, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-if (Get-Command "get-WindowsFeature" -errorAction SilentlyContinue) { 
-    Get-WindowsFeature -ErrorAction Ignore | WHERE Installed | Select DisplayName, Description, @{name='Version';expression={"{0}.{1}" -f $_.AdditionalInfo.MajorVersion,$_.AdditionalInfo.MinorVersion }} | ForEach {
+if ($audit_software -eq 'y') {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne '' -and $_.DisplayName -ne $null } | ForEach {
         $item = @{}
         $item.name = $_.DisplayName
-        $item.description = $_.Description
-        $item.version = $_.Version
-        $item.publisher = "Microsoft Corporation"
-        $item.type = "Windows Feature"
-        $test = $false
-        for ($i = 0; $i -lt $result.software.Length; $i++) {
-            if ($result.software[$i].name -eq $item.name) {
-                $test = $true
-                if ([string]$item.version -ne "" -and [string]$item.version -ne "0.0" -and [string]$result.software[$i].version -eq "") {
-                    # We already have this, likely from Win32_OptionalFeature above. Add the version if it's set and not 0.0.
-                    $result.software[$i].Version = $item.version
+        $item.version = ""
+        if ($_.DisplayVersion -ne "" -and $_.DisplayVersion -ne $null) {
+            $item.version = $_.DisplayVersion
+        }
+        if ($_.InstallLocation -ne "" -and $_.InstallLocation -ne $null) {
+            $item.location = $_.InstallLocation
+        }
+        if ($_.InstallDate -ne "" -and $_.InstallDate -ne $null) {
+            $item.install_date = $_.InstallDate
+        }
+        $item.url = ""
+        if ($_.URLInfoAbout -ne "" -and $_.URLInfoAbout -ne $null) {
+            $item.url = $_.URLInfoAbout
+        }
+        if ($item.url -eq "" -and $_.URLUpdateInfo -ne "" -and $_.URLUpdateInfo -ne $null) {
+            $item.url = $_.URLUpdateInfo
+        }
+        if ($_.UninstallString -ne "" -and $_.UninstallString -ne $null) {
+            $item.uninstall  = $_.UninstallString.Trim('"')
+        }
+        if ($_.Publisher -ne "" -and $_.Publisher -ne $null) {
+            $item.publisher  = $_.Publisher
+        }
+        if ($_.Comments -ne "" -and $_.Comments -ne $null) {
+            $item.comments  = $_.Comments
+        }
+        if ($_.InstallSource -ne "" -and $_.InstallSource -ne $null) {
+            $item.installsource  = $_.InstallSource
+        }
+        if ($_.SystemComponent -ne "" -and $_.SystemComponent -ne $null) {
+            $item.system_component  = $_.SystemComponent
+        }
+
+        $name = [string]$_.DisplayName
+        $package = Get-Package -name "$name" -ErrorAction Ignore
+        if ($package -ne $null) {
+            $package | ForEach {
+                if ($_.MetaData["InstalledDate"][0] -ne $null) {
+                    $item.installed_on = $_.MetaData["InstalledDate"][0]
+                }
+                if ($_.MetaData["InstallDate"][0] -ne $null) {
+                    $item.installed_on = $_.MetaData["InstallDate"][0]
+                }
+                if ($_.MetaData["Date"][0] -ne $null) {
+                    $item.installed_on = $_.MetaData["Date"][0]
                 }
             }
         }
-        if ($test -eq $false) {
-            $result.software += $item
-        }
+        $result.software += $item
         Clear-Variable -name item
     }
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.software.count
-        Write-Host "Software 7, $count entries took $totalSecs seconds"
+        Write-Host "Software 2, $count entries took $totalSecs seconds"
     }
-}
+
+
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne '' -and $_.DisplayName -ne $null } | ForEach {
+        $item = @{}
+        $item.name = $_.DisplayName
+        $item.version = $_.DisplayVersion
+        if ($_.InstallLocation -ne "" -and $_.InstallLocation -ne $null) {
+            $item.location = $_.InstallLocation
+        }
+        if ($_.InstallDate -ne "" -and $_.InstallDate -ne $null) {
+            $item.install_date = $_.InstallDate
+        }
+        $item.url = ""
+        if ($_.URLInfoAbout -ne "" -and $_.URLInfoAbout -ne $null) {
+            $item.url = $_.URLInfoAbout
+        }
+        if ($item.url -eq "" -and $_.URLUpdateInfo -ne "" -and $_.URLUpdateInfo -ne $null) {
+            $item.url = $_.URLUpdateInfo
+        }
+        if ($_.UninstallString -ne "" -and $_.UninstallString -ne $null) {
+            $item.uninstall  = $_.UninstallString.Trim('"')
+        }
+        if ($_.Publisher -ne "" -and $_.Publisher -ne $null) {
+            $item.publisher  = $_.Publisher
+        }
+        if ($_.Comments -ne "" -and $_.Comments -ne $null) {
+            $item.comments  = $_.Comments
+        }
+        if ($_.InstallSource -ne "" -and $_.InstallSource -ne $null) {
+            $item.installsource  = $_.InstallSource
+        }
+        if ($_.SystemComponent -ne "" -and $_.SystemComponent -ne $null) {
+            $item.system_component  = $_.SystemComponent
+        }
+
+        $name = [string]$_.DisplayName
+        $package = Get-Package -name "$name" -ErrorAction Ignore
+        if ($package -ne $null) {
+            $package | ForEach {
+                if ($_.MetaData["InstalledDate"][0] -ne $null) {
+                    $item.installed_on = $_.MetaData["InstalledDate"][0]
+                }
+                if ($_.MetaData["InstallDate"][0] -ne $null) {
+                    $item.installed_on = $_.MetaData["InstallDate"][0]
+                }
+                if ($_.MetaData["Date"][0] -ne $null) {
+                    $item.installed_on = $_.MetaData["Date"][0]
+                }
+            }
+        }
+        $result.software += $item
+        Clear-Variable -name item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.software.count
+        Write-Host "Software 3, $count entries took $totalSecs seconds"
+    }
+
+
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    Get-WmiObject Win32_InstalledStoreProgram -ErrorAction Ignore | ForEach {
+        $item = @{}
+        $microsoft = 'n'
+        $item.name = [string]$_.Name
+        if ($item.name -like 'Microsoft*' -or $item.name -like 'Windows*' -or $item.name -like 'windows*' -or $item.name -like 'MicrosoftWindows*' -or $_.Vendor -like '*Microsoft Corporation*') {
+            $item.publisher = 'Microsoft Corporation'
+            $microsoft = 'y'
+        }
+        $name = $item.name
+        $name = $name.Replace('Microsoft.', '')
+        $name = $name.Replace('Windows.', '')
+        $name = $name.Replace('windows.', '')
+        $name = $name.Replace('MicrosoftWindows.', '')
+        $item.name = $name
+        if ($microsoft -eq 'n') {
+            $split = $item.name.Split('.')
+            $item.publisher = $split[0]
+            $item.name = $name.Replace($item.publisher + '.', '')
+        }
+        if ($item.name -eq '1527c705-839a-4832-9118-54d4Bd6a0c89') {
+            $item.name = 'FilePicker'
+        }
+        if ($item.name -eq 'c5e2524a-ea46-4f67-841f-6a9465d9d515') {
+            $item.name = 'FileExplorer'
+        }
+        if ($item.name -eq 'E2A4F912-2574-4A75-9BB0-0D023378592B') {
+            $item.name = 'AppResolver'
+        }
+        if ($item.name -eq 'F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE') {
+            $item.name = 'AddSuggestedFoldersToLibrary'
+        }
+
+        $item.version = $_.Version
+        $item.location = $_.__PATH
+        $item.type = "Windows Store App"
+        $result.software += $item
+        Clear-Variable -name item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.software.count
+        Write-Host "Software 4, $count entries took $totalSecs seconds"
+    }
+
+
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    Get-WmiObject Win32_QuickFixEngineering | ForEach {
+        $item = @{}
+        $item.name = $_.HotFixID
+        $item.version = $_.DisplayVersion
+        if ($item.version -eq $null) {
+            $item.version = ""
+        }
+        if ($_.InstallDate -ne "" -and $_.InstallDate -ne $null) {
+            $item.installed_on = $_.InstallDate
+        }
+        if ($_.InstalledBy -ne "" -and $_.InstalledBy -ne $null) {
+            $item.installed_by = $_.InstalledBy
+        }
+        $item.publisher = "Microsoft Corporation"
+        $item.type = "update"
+        $name = $_.HotFixID
+        Get-Package | Where-Object name -like "*$name*" | ForEach {
+            if ($_.MetaData["SupportUrl"][0] -ne $null) {
+                $item.url = $_.MetaData["SupportUrl"][0]
+            }
+            if ($_.Name -ne "" -and $_.Name -ne $null) {
+                $item.comment = $_.name
+            }
+        }
+        $result.software += $item
+        Clear-Variable -name item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.software.count
+        Write-Host "Software 5, $count entries took $totalSecs seconds"
+    }
+
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    Get-WmiObject Win32_OptionalFeature -ErrorAction Ignore | WHERE {$_.InstallState -eq 1} | ForEach {
+        $item = @{}
+        $item.name = $_.Caption
+        if ($item.name -eq "") {
+            $item.name = $_.name
+        }
+        $item.version = ""
+        if ($_.InstallDate -ne "" -and $_.InstallDate -ne $null) {
+            $item.installed_on = $_.InstallDate
+        }
+        $item.publisher = "Microsoft Corporation"
+        $item.type = "Optional Feature"
+        $result.software += $item
+        Clear-Variable -name item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.software.count
+        Write-Host "Software 6, $count entries took $totalSecs seconds"
+    }
+
+
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    if (Get-Command "get-WindowsFeature" -errorAction SilentlyContinue) { 
+        Get-WindowsFeature -ErrorAction Ignore | WHERE Installed | Select DisplayName, Description, @{name='Version';expression={"{0}.{1}" -f $_.AdditionalInfo.MajorVersion,$_.AdditionalInfo.MinorVersion }} | ForEach {
+            $item = @{}
+            $item.name = $_.DisplayName
+            $item.description = $_.Description
+            $item.version = $_.Version
+            $item.publisher = "Microsoft Corporation"
+            $item.type = "Windows Feature"
+            $test = $false
+            for ($i = 0; $i -lt $result.software.Length; $i++) {
+                if ($result.software[$i].name -eq $item.name) {
+                    $test = $true
+                    if ([string]$item.version -ne "" -and [string]$item.version -ne "0.0" -and [string]$result.software[$i].version -eq "") {
+                        # We already have this, likely from Win32_OptionalFeature above. Add the version if it's set and not 0.0.
+                        $result.software[$i].Version = $item.version
+                    }
+                }
+            }
+            if ($test -eq $false) {
+                $result.software += $item
+            }
+            Clear-Variable -name item
+        }
+        $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+        if ($debug -gt 0) {
+            $count = [int]$result.software.count
+            Write-Host "Software 7, $count entries took $totalSecs seconds"
+        }
+    }
+} # End of audit_software
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.service = @()
@@ -2206,51 +2231,53 @@ if ($test.Status -ne $null -and $test.Status.ToString() -eq "Running") {
     }
 }
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.netstat = @()
-$item = @{}
-# Get-NetTCPConnection -State Listen | Select-Object -Property *,@{'Name' = 'ProcessName';'Expression'={(Get-Process -Id $_.OwningProcess).Name}} | ForEach {
-Get-NetTCPConnection -State Listen | ForEach {
-    Clear-Variable -name item
+if ($audit_netstat -eq 'y') {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.netstat = @()
     $item = @{}
-    $item.protocol = "tcp"
-    $item.ip = $_.LocalAddress
-    $item.port = $_.LocalPort
-    $item.processId = $_.OwningProcess
-    Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
-        $item.program = $_.CommandLine
+    # Get-NetTCPConnection -State Listen | Select-Object -Property *,@{'Name' = 'ProcessName';'Expression'={(Get-Process -Id $_.OwningProcess).Name}} | ForEach {
+    Get-NetTCPConnection -State Listen | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        $item.protocol = "tcp"
+        $item.ip = $_.LocalAddress
+        $item.port = $_.LocalPort
+        $item.processId = $_.OwningProcess
+        Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
+            $item.program = $_.CommandLine
+        }
+        if ($item.program -eq $null) {
+            $item.program = ""
+        }
+        if ($item.port -ne "" -and $item.port -ne $null) {
+            # Added this check because in testing we managed to get an entry without a port or associated program
+            $result.netstat += $item
+        }
     }
-    if ($item.program -eq $null) {
-        $item.program = ""
+    Get-NetUDPEndpoint | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        $item.protocol = "udp"
+        $item.ip = $_.LocalAddress
+        $item.port = $_.LocalPort
+        $item.processId = $_.OwningProcess
+        Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
+            $item.program = $_.CommandLine
+        }
+        if ($item.program -eq $null) {
+            $item.program = ""
+        }
+        if ($item.port -ne "" -and $item.port -ne $null) {
+            # Added this check because in testing we managed to get an entry without a port or associated program
+            $result.netstat += $item
+        }
     }
-    if ($item.port -ne "" -and $item.port -ne $null) {
-        # Added this check because in testing we managed to get an entry without a port or associated program
-        $result.netstat += $item
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.netstat.count
+        Write-Host "Netstat, $count entries took $totalSecs seconds"
     }
-}
-Get-NetUDPEndpoint | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.protocol = "udp"
-    $item.ip = $_.LocalAddress
-    $item.port = $_.LocalPort
-    $item.processId = $_.OwningProcess
-    Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
-        $item.program = $_.CommandLine
-    }
-    if ($item.program -eq $null) {
-        $item.program = ""
-    }
-    if ($item.port -ne "" -and $item.port -ne $null) {
-        # Added this check because in testing we managed to get an entry without a port or associated program
-        $result.netstat += $item
-    }
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.netstat.count
-    Write-Host "Netstat, $count entries took $totalSecs seconds"
-}
+} # End of audit_netstat
 
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()

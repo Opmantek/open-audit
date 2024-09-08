@@ -31,6 +31,9 @@ function match_columns($table)
     if ($table === 'firewall') {
             $match_columns = array('name');
     }
+    if ($table === 'firewall_rule') {
+            $match_columns = array('name', 'profile', 'enabled', 'direction', 'action', 'local_port', 'remote_port', 'firewall');
+    }
     if ($table === 'log') {
             $match_columns = array('name', 'file_name', 'overwrite');
     }

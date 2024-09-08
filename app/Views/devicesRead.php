@@ -100,7 +100,7 @@ if (!empty($included['fields'])) {
 
                                     <?php
                                     $show = false;
-                                    $sections = array('antivirus', 'firewall', 'server', 'service', 'software', 'software_key');
+                                    $sections = array('antivirus', 'firewall', 'firewall_rule', 'server', 'service', 'software', 'software_key');
                                     foreach ($sections as $section) {
                                         if (!empty($included[$section])) {
                                             $show = true;
@@ -1702,6 +1702,45 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->state ?></td>
                                                     <td><?= $row->executable ?></td>
                                                     <td><?= $row->reportable ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="firewall_rule_section">
+                                <?php $count = !empty($included['firewall_rule']) ? count($included['firewall_rule']) : 0; ?>
+                                <?=  device_panel('firewall_rule', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Profile') ?></th>
+                                                    <th><?= __('Enabled') ?></th>
+                                                    <th><?= __('Direction') ?></th>
+                                                    <th><?= __('Action') ?></th>
+                                                    <th><?= __('Local Port') ?></th>
+                                                    <th><?= __('Remote Port') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['firewall_rule'])) {
+                                                foreach ($included['firewall_rule'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('firewall_rule', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->profile ?></td>
+                                                    <td><?= $row->enabled ?></td>
+                                                    <td><?= $row->direction ?></td>
+                                                    <td><?= $row->action ?></td>
+                                                    <td><?= $row->local_port ?></td>
+                                                    <td><?= $row->remote_port ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>

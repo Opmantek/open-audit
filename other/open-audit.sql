@@ -2090,6 +2090,51 @@ LOCK TABLES `firewall` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `firewall_rule`
+--
+
+DROP TABLE IF EXISTS `firewall_rule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `firewall_rule` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `device_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `action` varchar(100) NOT NULL DEFAULT '',
+  `direction` varchar(100) NOT NULL DEFAULT '',
+  `enabled` varchar(100) NOT NULL DEFAULT '',
+  `external_ident` varchar(100) NOT NULL DEFAULT '',
+  `group` varchar(100) NOT NULL DEFAULT '',
+  `local_port` varchar(100) NOT NULL DEFAULT '',
+  `profile` varchar(100) NOT NULL DEFAULT '',
+  `protocol` varchar(100) NOT NULL DEFAULT '',
+  `remote_address` varchar(100) NOT NULL DEFAULT '',
+  `remote_port` varchar(100) NOT NULL DEFAULT '',
+  `rule_group` varchar(100) NOT NULL DEFAULT '',
+  `firewall` varchar(100) NOT NULL DEFAULT 'Windows Defender',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`device_id`),
+  KEY `first_seen` (`first_seen`),
+  KEY `last_seen` (`last_seen`),
+  KEY `name` (`name`),
+  CONSTRAINT `firewall_rule_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `firewall_rule`
+--
+
+LOCK TABLES `firewall_rule` WRITE;
+/*!40000 ALTER TABLE `firewall_rule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `firewall_rule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `graph`
 --
 
