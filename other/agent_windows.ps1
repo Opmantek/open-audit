@@ -315,8 +315,8 @@ STIGTest'
         Write-Host "Command Output: $result"
     }
 
-    $audit = Import-Clixml -Path "$result"
-    $audit.Compliance[0].ResourcesInDesiredState | ForEach {
+    $auditc = Import-Clixml -Path "$result"
+    $auditc.Compliance[0].ResourcesInDesiredState | ForEach {
         $item = @{}
         $item.result = "pass"
         $external_ident = $_.InstanceName.Split("]")
@@ -335,7 +335,7 @@ STIGTest'
         }
         Clear-Variable -name item
     }
-    $audit.Compliance[0].ResourcesNotInDesiredState | ForEach {
+    $auditc.Compliance[0].ResourcesNotInDesiredState | ForEach {
         $item = @{}
         $item.result = "fail"
         $external_ident = $_.InstanceName.Split("]")
