@@ -116,6 +116,13 @@ if (!$db->tableExists('packages')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if ($db->tableExists('ldap_servers')) {
+    $sql = "DROP TABLE `ldap_servers`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 if (!$db->fieldExists('last_os_update', 'devices')) {
     $sql = "ALTER TABLE `devices` ADD last_os_update datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `last_user`";
     $db->query($sql);
