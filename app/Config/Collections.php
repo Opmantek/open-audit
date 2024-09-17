@@ -467,7 +467,7 @@ class Collections extends BaseConfig
         $this->support = new \StdClass();
         $this->support->icon = 'fa-solid fa-headset';
         $this->support->name = 'Support';
-        $this->support->edition = 'Professional';
+        $this->support->edition = 'Community';
         $this->support->orgs = 'b';
         $this->support->actions = new \stdClass();
         $this->support->actions->enterprise = 'crud';
