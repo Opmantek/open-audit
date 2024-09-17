@@ -70,6 +70,44 @@ class Logon extends Controller
             $db->query($sql, [$subnet]);
             log_message('info', 'Default discovery subnet auto-populated with ' . $subnet . '.');
         }
+
+        // get the server OS
+        $server_os = php_uname('s');
+
+        if ($server_os === 'Windows NT') {
+            $command = 'wmic os get name';
+            exec($command, $output);
+            if (!empty($output[1])) {
+                $os = explode('|', $output[1]);
+                $server_platform = $os[0];
+            }
+        } else if ($server_os === 'Darwin') {
+            $server_platform = 'MacOS';
+            $command = "sw_vers | grep \"ProductVersion:\" | cut -d: -f2 | xargs";
+            exec($command, $output);
+            if (!empty($output[0])) {
+                $server_platform .= ' ' . $output[0];
+                unset($output);
+            }
+            $command = "awk '/SOFTWARE LICENSE AGREEMENT FOR macOS/' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print \$NF}' | awk '{print substr(\$0, 0, length(\$0)-1)}'";
+            exec($command, $output);
+            if (!empty($output[0])) {
+                $server_platform .= ' ' . $output[0];
+            }
+        } else {
+            $command = 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2';
+            exec($command, $output);
+            if (!empty($output[0])) {
+                $server_platform = $output[0];
+            }
+        }
+        $sql = 'UPDATE configuration SET value = ? WHERE name = "server_os"';
+        $db->query($sql, [$server_os]);
+        log_message('info', 'Config auto-populated with ServerOS ' . $server_os . '.');
+        $sql = 'UPDATE configuration SET value = ? WHERE name = "server_platform"';
+        $db->query($sql, [$server_platform]);
+        log_message('info', 'Config auto-populated with ServerPlatform ' . $server_platform . '.');
+
         $methods = array();
         if ($db->tableExists('auth')) {
             $authModel = model('AuthModel');
