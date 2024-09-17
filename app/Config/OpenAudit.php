@@ -86,7 +86,10 @@ class OpenAudit extends BaseConfig
             }
         }
 
-        $this->product = 'community';
+        if (empty($this->product) or empty($this->license_string)) {
+            $this->product = 'community';
+            $this->license_footer = '';
+        }
         if (!empty($this->servers)) {
             try {
                 $this->servers = json_decode($this->servers, false, 512, JSON_THROW_ON_ERROR);

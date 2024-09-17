@@ -68,6 +68,11 @@ class DevicesModel extends BaseModel
         }
         $this->builder->orderBy('mycount');
         $this->builder->orderBy($resp->meta->sort);
+        if (!empty($instance->config->license_limit) and $resp->meta->limit > $instance->config->license_limit) {
+            $resp->meta->limit = $instance->config->license_limit;
+            log_message('warning', 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.');
+            $_SESSION['warning'] = 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.';
+        }
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
         # log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));

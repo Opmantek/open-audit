@@ -628,7 +628,7 @@ foreach ($config->modules as $module) {
             try {
                 $json = json_decode($_SESSION['error'], false, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
-                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                $_SESSION['error'] = (string)$_SESSION['error'];
             } ?>
         <div class="container-fluid">
             <div class="alert alert-danger alert-dismissable fade show" role="alert">
