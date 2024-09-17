@@ -2111,6 +2111,9 @@ if (!function_exists('format_mac')) {
      */
     function format_mac($mac_address)
     {
+        if (empty($mac_address) or !is_string($mac_address)) {
+            return '';
+        }
         // set to lower case
         $mac_address = strtolower($mac_address);
         // remove any quotes
