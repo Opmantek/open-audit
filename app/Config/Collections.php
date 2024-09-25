@@ -374,6 +374,16 @@ class Collections extends BaseConfig
         $this->orgs->actions->professional = 'crud';
         $this->orgs->actions->community = 'crud';
 
+        $this->packages = new \StdClass();
+        $this->packages->icon = 'fa-solid fa-box-open';
+        $this->packages->name = 'Packages';
+        $this->packages->edition = 'Enterprise';
+        $this->packages->orgs = 'd';
+        $this->packages->actions = new \stdClass();
+        $this->packages->actions->enterprise = 'crud';
+        $this->packages->actions->professional = 'r';
+        $this->packages->actions->community = 'r';
+
         $this->queries = new \StdClass();
         $this->queries->icon = 'fa fa-table';
         $this->queries->name = 'Queries';

@@ -398,6 +398,20 @@ if (!empty($config->servers)) {
                                         <?= menuItem('rules', '', $user, 'rulesHelp', __('Learn About') . ' ' . __('Rules')) ?>
                                     </ul>
                                 </li>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Software') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('AntiVirus Software'), '?packages.type=antivirus') ?>
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Firewall Software'), '?packages.type=firewall') ?>
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Approved Software'), '?packages.type=approved') ?>
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Banned Software'), '?packages.type=banned') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Linux Software'), '?os=Linux') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('MacOS Software'), '?os=MacOS') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Windows Software'), '?os=Windows') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesImportForm', __('Import') . ' ' . __('Software')) ?>
+                                        <?= menuItem('orgs', '', $user, 'packagesDefaults', __('Default') . ' ' . __('Software')) ?>
+                                        <?= menuItem('orgs', '', $user, 'packagesHelp', __('Learn About') . ' ' . __('Software')) ?>
+                                    </ul>
+                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Summaries') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('summaries', 'r', $user, 'summariesCollection', __('List') . ' ' . __('Summaries')) ?>

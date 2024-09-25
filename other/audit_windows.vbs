@@ -1518,9 +1518,12 @@ for each objItem in colItems
     windows_time_daylight = objItem.DaylightName
 next
 
+oreg.getstringvalue hkey_local_machine, "Software\Microsoft\Windows NT\CurrentVersion", "UBR", build_number
+build_number = windows_build_number & "." & build_number
+
 result.WriteText "  <windows>" & vbcrlf
 result.WriteText "      <item>" & vbcrlf
-result.WriteText "          <build_number>" & escape_xml(windows_build_number) & "</build_number>" & vbcrlf
+result.WriteText "          <build_number>" & escape_xml(build_number) & "</build_number>" & vbcrlf
 result.WriteText "          <user_name>" & escape_xml(windows_user_name) & "</user_name>" & vbcrlf
 result.WriteText "          <client_site_name>" & escape_xml(windows_client_site_name) & "</client_site_name>" & vbcrlf
 result.WriteText "          <domain_short>" & escape_xml(domain_nb) & "</domain_short>" & vbcrlf
