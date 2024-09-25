@@ -1033,8 +1033,8 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.1916.2.4': $device->model = 'Summit 4'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.1916.2.40': $device->model = 'Summit 24e2'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.1916.2.41': $device->model = 'Summit 24e2'; $device->type = 'switch'; break;
+            case '1.3.6.1.4.1.1916.2.443': $device->model = '5520-24X-FabricEngine'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.1916.2.471': $device->model = '5420M-16MW-32P-4YE'; $device->type = 'switch'; break;
-            case '1.3.6.1.4.1.1916.2.472': $device->model = 'ExtremeSwitching 5520-48T'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.1916.2.472': $device->model = 'ExtremeSwitching 5520-48T'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.1916.2.5': $device->model = 'Summit 4 Fx'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.1916.2.53': $device->model = 'Summit 200-24'; $device->type = 'switch'; break;
