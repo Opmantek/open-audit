@@ -1041,6 +1041,14 @@ if (! function_exists('ip_audit')) {
             $ip_scan->ssh_status = 'false';
         }
 
+        if (stripos($device->os_name, 'extreme networks') !== false) {
+            $log->message = 'Extreme Networks device setting SSH status to false for ' . $device->ip;
+            $log->severity = 5;
+            $discoveryLogModel->create($log);
+            $log->severity = 7;
+            $ip_scan->ssh_status = 'false';
+        }
+
         // SSH Audit
         $credentials_ssh = false;
 
