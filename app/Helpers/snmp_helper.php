@@ -723,10 +723,12 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             if (!empty($new_details)) {
                 foreach ($new_details as $key => $value) {
-                    $details->$key = $value;
-                    $log->command = $key;
-                    $log->command_output = $value;
-                    $discoveryLogModel->create($log);
+                    if (!empty($value)) {
+                        $details->$key = $value;
+                        $log->command = $key;
+                        $log->command_output = $value;
+                        $discoveryLogModel->create($log);
+                    }
                 }
             }
             unset($log->id, $log->command, $log->command_output, $log->command_time_to_execute);
