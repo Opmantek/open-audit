@@ -35,12 +35,27 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->serial = mb_convert_encoding($details->serial, "UTF-8", "ASCII");
     }
 
-    if ((!empty($details->model) and (strpos(strtolower($details->model), "laserjet") !== false)) and (!isset($details->type) or $details->type == '' or $details->type == 'unknown')) {
+    if ((!empty($details->model) and (stripos($details->model, "laserjet") !== false)) and (!isset($details->type) or $details->type == '' or $details->type == 'unknown')) {
         $details->type = "network printer";
     }
 
     if (!empty($temp_model)) {
         $details->model = $temp_model;
+    }
+
+    if (empty($details->os_version)) {
+        $details->os_version = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.10.1');
+    }
+    if (empty($details->os_version)) {
+        # ProCurve J4903A Switch 2824, revision I.10.107, ROM I.08.07 (/sw/code/build/mako)
+        $sysDescr = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.1.1.0');
+        if (stripos($sysDescr, 'revision ') !== false) {
+            $revision = stripos($sysDescr, 'revision');
+            $sysDescr = substr($sysDescr, $revision);
+            $split = explode(',', $sysDescr);
+            $split2 = explode(' ', $split[0]);
+            $details->os_version = !empty($split2[1]) ? $split2[1] : '';
+        }
     }
 
     return($details);
