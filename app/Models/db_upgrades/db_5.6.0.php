@@ -1,6 +1,13 @@
 <?php
 $output .= "Upgrade database to 5.6.0 commenced.\n\n";
 
+if (!$db->fieldExists('service_tag', 'devices')) {
+    $sql = "ALTER TABLE `devices` ADD `service_tag` varchar(100) NOT NULL DEFAULT '' AFTER `manufacturer_code`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 if (!$db->tableExists('antivirus')) {
     $sql = "CREATE TABLE `antivirus` (
       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

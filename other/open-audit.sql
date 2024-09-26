@@ -1427,6 +1427,7 @@ CREATE TABLE `devices` (
   `attached_device_id` int(10) unsigned DEFAULT NULL,
   `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `manufacturer_code` varchar(200) NOT NULL DEFAULT '',
+  `service_tag` varchar(100) NOT NULL DEFAULT '',
   `model` varchar(200) NOT NULL DEFAULT '',
   `serial` varchar(200) NOT NULL DEFAULT '',
   `uptime` varchar(50) NOT NULL DEFAULT '',
