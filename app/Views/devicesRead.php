@@ -215,6 +215,7 @@ if (!empty($included['fields'])) {
                                             <?= read_field('os_version', $resource->os_version, '', false, __('OS Version')) ?>
                                             <?= read_field('memory_count', ($resource->memory_count / 1024 / 1024) . ' GB', '', false, __('Memory')) ?>
                                             <?= read_field('os_installation_date', $resource->os_installation_date, '', $update, __('OS Installed On')) ?>
+                                            <?= read_field('service_tag', $resource->service_tag, '', '', __('Service Tag')) ?>
                                         </div>
                                         <div class="col-4">
                                             <?= read_field('fqdn', $resource->fqdn, '', $update, __('FQDN')) ?>
