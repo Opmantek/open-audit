@@ -117,12 +117,8 @@ class PackagesModel extends BaseModel
             $orgs[] = 1;
             $orgs = array_unique($orgs);
             if ($_GET['os'] === 'Windows') {
-                // $sql = "SELECT DISTINCT software.name AS `name`, packages.type AS `type` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN packages ON (software.name LIKE CONCAT('%', packages.software_name, '%')) WHERE devices.org_id IN (" . implode(',', $orgs) . ") AND devices.os_group = 'Windows' IS NOT NULL ORDER BY software.name";
                 $sql = "SELECT DISTINCT software.name AS `name`, packages.type AS `type`, packages.software_name AS `packages entry`, count(software.id) AS `found`, packages.id AS `id` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN packages ON (software.name LIKE packages.software_name) WHERE devices.org_id IN (" . implode(',', $orgs) . ") AND devices.os_group = 'Windows' IS NOT NULL GROUP BY software.name, packages.type ORDER BY software.name";
                 $return['software'] = $this->db->query($sql)->getResult();
-                // foreach ($rows as $row) {
-                //     $return['software'][] = $row;
-                // }
             }
         }
         return $return;
