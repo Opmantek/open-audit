@@ -203,6 +203,8 @@ class Dashboards extends BaseController
         $included['windows_22_build']->red_id = 0;
         $included['windows_22_build']->green_id = 0;
 
+        $included['unknown_devices'] = array();
+
         $queriesModel = new \App\Models\QueriesModel();
         $queries = $queriesModel->listUser();
 
@@ -577,6 +579,28 @@ class Dashboards extends BaseController
             $query = $queriesModel->execute($query_id, $this->user);
             if (!empty($query)) {
                 $included['windows_22_build']->red = count($query);
+            }
+        }
+        unset($devices);
+        unset($query_id);
+
+        foreach ($queries as $query) {
+            if ($query->attributes->name === 'Unknown Devices Found in the last 7 Days') {
+                $query_id = $query->id;
+            }
+        }
+        if (!empty($query_id)) {
+            $query = $queriesModel->execute($query_id, $this->user);
+            if (!empty($query)) {
+                // echo "<pre>";
+                // print_r($query);
+                // exit;
+                foreach ($query as $item) {
+                    $i = new \stdClass();
+                    $i->count = intval($item->attributes->count);
+                    $i->date = $item->attributes->date;
+                    $included['unknown_devices'][] = $i;
+                }
             }
         }
         unset($devices);

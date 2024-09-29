@@ -254,11 +254,6 @@ $colour = '';
                                         <a href="<?= url_to('queriesExecute', $included['software']->red_id) ?>"><button class="btn btn-danger" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3"><?= $included['software']->red ?></span></button></a>&nbsp;
                                         <a href="<?= url_to('queriesExecute', $included['software']->yellow_id) ?>"><button class="btn btn-warning" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3"><?= $included['software']->yellow ?></span></button></a>&nbsp;
                                         <a href="<?= url_to('queriesExecute', $included['software']->green_id) ?>"><button class="btn btn-success" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3"><?= $included['software']->green ?></span></button></a>
-                                        <!--
-                                        <a href="<?= url_to('queriesExecute', $included['software']->red_id) ?>"><button class="btn btn-light" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3 text-danger"><?= $included['software']->red ?></span></button></a>&nbsp;
-                                        <a href="<?= url_to('queriesExecute', $included['software']->yellow_id) ?>"><button class="btn btn-light" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3 text-warning"><?= $included['software']->yellow ?></span></button></a>&nbsp;
-                                        <a href="<?= url_to('queriesExecute', $included['software']->green_id) ?>"><button class="btn btn-light" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3 text-success"><?= $included['software']->green ?></span></button></a>
-                                        -->
                                     </h4>
                                     <p><small class="text-body-secondary">Banned / Ignored / Approved</small><br><br><br></p>
                                 </div>
@@ -312,8 +307,15 @@ $colour = '';
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
+                            <div class="row h-100">
+                                <!--<div class="col-4 text-center <?= $colour ?> h-100">
+                                </div>-->
+                                <div class="col-12" id="chart">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </main>
@@ -323,6 +325,73 @@ window.onload = function () {
     $(document).ready(function () {
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+        <?php
+        $counts = array();
+        $dates = array();
+        foreach ($included['unknown_devices'] as $item) {
+            $counts[] = $item->count;
+            $dates[] = $item->date;
+        }
+        ?>
+
+        var options = {
+            series: [{
+                name: 'Devices',
+                data: <?= json_encode($counts) ?>
+            }],
+            chart: {
+                height: 140,
+                type: 'line',
+                events: {
+                    click(event, chartContext, opts) {
+                        if (opts.config.series[opts.seriesIndex].data[opts.dataPointIndex] > 0) {
+                            return document.location.href = '/devices?devices.last_seen=LIKE' + opts.config.xaxis.categories[opts.dataPointIndex] + '%&devices.type=in("unknown","unidentified")';
+                        }
+                    }
+                }
+            },
+            forecastDataPoints: {
+                count: 0
+            },
+            stroke: {
+                width: 5,
+                curve: 'smooth'
+            },
+            xaxis: {
+                type: 'datetime',
+                categories: <?= json_encode($dates) ?>,
+                tickAmount: 5,
+                labels: {
+                    formatter: function(value, timestamp, opts) {
+                        return opts.dateFormatter(new Date(timestamp), 'dd MMM')
+                    }
+                }
+            },
+            title: {
+                text: 'Unknown Devices Found 7 Days',
+                align: 'left',
+                style: {
+                    fontSize: "18px",
+                    color: '#666'
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    gradientToColors: ['#da4453', '#ed5565'],
+                    shadeIntensity: 1,
+                    type: 'horizontal',
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 100, 100, 100]
+                },
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
     });
 }
 </script>
