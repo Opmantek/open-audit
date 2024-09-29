@@ -3586,6 +3586,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.2590.1.1.1.2.1.240': $device->model = 'Minolta 211 PCL'; $device->type = 'network printer'; break;
             case '1.3.6.1.4.1.2603.5.1.26': $device->model = 'SG9500'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.2603.5.1.27': $device->model = 'SGVE'; $device->type = 'network device'; break;
+            case '1.3.6.1.4.1.2604.5': $device->model = ''; $device->type = 'firewall'; break;
             case '1.3.6.1.4.1.2620.1.6.123.1.1': $device->model = 'UTM-1450'; $device->type = 'firewall'; break;
             case '1.3.6.1.4.1.2620.1.6.123.1.10': $device->model = 'Power-15070'; $device->type = 'firewall'; break;
             case '1.3.6.1.4.1.2620.1.6.123.1.100': $device->model = '3800'; $device->type = 'firewall'; break;
