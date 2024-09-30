@@ -6805,6 +6805,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.9.1.242': $device->model = 'Cisco BPX Ses'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.1.243': $device->model = 'Cisco IGX Ses'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.244': $device->model = 'Cisco Local Director'; $device->type = 'network device'; break;
+            case '1.3.6.1.4.1.9.1.2443': $device->model = 'C1111-8P'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.2445': $device->model = 'C1111-8PLTELA'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.2446': $device->model = 'C1111-8PWE'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.2446': $device->model = 'C1111-8PWE'; $device->type = 'router'; break;
