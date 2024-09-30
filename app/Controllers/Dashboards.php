@@ -592,9 +592,6 @@ class Dashboards extends BaseController
         if (!empty($query_id)) {
             $query = $queriesModel->execute($query_id, $this->user);
             if (!empty($query)) {
-                // echo "<pre>";
-                // print_r($query);
-                // exit;
                 foreach ($query as $item) {
                     $i = new \stdClass();
                     $i->count = intval($item->attributes->count);
