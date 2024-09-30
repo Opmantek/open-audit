@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class BaselinesPoliciesModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -427,7 +427,7 @@ class BaselinesPoliciesModel extends BaseModel
                 $attributes = array('protocol', 'program', 'port');
                 foreach ($attributes as $attribute) {
                     if (isset($data->tests->{$attribute})) {
-                        for ($i=0; $i < count($existing_tests); $i++) {
+                        for ($i = 0; $i < count($existing_tests); $i++) {
                             if ($existing_tests[$i]->column === $attribute) {
                                 $existing_tests[$i]->value = $data->tests->{$attribute};
                             }
@@ -438,31 +438,31 @@ class BaselinesPoliciesModel extends BaseModel
 
             if ($existing_policy->table === 'software') {
                 if (isset($data->tests->name)) {
-                    for ($i=0; $i < count($existing_tests); $i++) {
+                    for ($i = 0; $i < count($existing_tests); $i++) {
                         if ($existing_tests[$i]->column === 'name') {
                             $existing_tests[$i]->value = $data->tests->name;
                         }
                     }
                 }
                 if (isset($data->tests->operator)) {
-                    for ($i=0; $i < count($existing_tests); $i++) {
+                    for ($i = 0; $i < count($existing_tests); $i++) {
                         if ($existing_tests[$i]->column === 'version') {
                             $existing_tests[$i]->operator = $data->tests->operator;
                         }
                     }
-                    for ($i=0; $i < count($existing_tests); $i++) {
+                    for ($i = 0; $i < count($existing_tests); $i++) {
                         if ($existing_tests[$i]->column === 'version_padded') {
                             $existing_tests[$i]->operator = $data->tests->operator;
                         }
                     }
                 }
                 if (isset($data->tests->version)) {
-                    for ($i=0; $i < count($existing_tests); $i++) {
+                    for ($i = 0; $i < count($existing_tests); $i++) {
                         if ($existing_tests[$i]->column === 'version') {
                             $existing_tests[$i]->value = $data->tests->version;
                         }
                     }
-                    for ($i=0; $i < count($existing_tests); $i++) {
+                    for ($i = 0; $i < count($existing_tests); $i++) {
                         if ($existing_tests[$i]->column === 'version_padded') {
                             $existing_tests[$i]->value = $this->versionPadded($data->tests->version);
                         }
@@ -474,7 +474,7 @@ class BaselinesPoliciesModel extends BaseModel
                 $attributes = array('name', 'status', 'type', 'password_expires', 'password_changeable', 'password_required');
                 foreach ($attributes as $attribute) {
                     if (isset($data->tests->{$attribute})) {
-                        for ($i=0; $i < count($existing_tests); $i++) {
+                        for ($i = 0; $i < count($existing_tests); $i++) {
                             if ($existing_tests[$i]->column === $attribute) {
                                 $existing_tests[$i]->value = $data->tests->{$attribute};
                             }
@@ -512,7 +512,7 @@ class BaselinesPoliciesModel extends BaseModel
                     if (strlen($p) > 10) {
                         $version_padded .= $p;
                     } else {
-                        $version_padded .= mb_substr("00000000000000000000".$p, -10);
+                        $version_padded .= mb_substr("00000000000000000000" . $p, -10);
                     }
                 }
             }

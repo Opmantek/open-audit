@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class GroupsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -111,8 +111,8 @@ class GroupsModel extends BaseModel
         }
         $group = $result[0];
         $sql = trim((string)$group->sql);
-        if (strpos($sql, ';') === strlen($sql)-1) {
-            $sql = substr($sql, 0, strlen($sql)-1);
+        if (strpos($sql, ';') === strlen($sql) - 1) {
+            $sql = substr($sql, 0, strlen($sql) - 1);
             $sql = trim((string)$sql);
         }
         $properties_array = explode(',', $properties);
@@ -133,7 +133,7 @@ class GroupsModel extends BaseModel
         if (!empty($instance->resp->meta->limit)) {
             $sql = $sql . ' LIMIT ' . $instance->resp->meta->limit;
         }
-                
+
         $query = $this->db->query($sql);
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         $result = format_data($query->getResult(), 'devices');

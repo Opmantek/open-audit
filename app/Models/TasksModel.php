@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class TasksModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -48,14 +48,14 @@ class TasksModel extends BaseModel
             return array();
         }
         $result = $query->getResult();
-        for ($i=0; $i < count($result); $i++) {
+        for ($i = 0; $i < count($result); $i++) {
             // SubResources
             if (!empty($result[$i]->type) and $this->db->tableExists($result[$i]->type)) {
                 $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
                 $data_result = $this->db->query($sql, [$result[$i]->sub_resource_id])->getResult();
                 if (!empty($data_result[0]->name)) {
-                    $result[$i]->{$result[$i]->type.'.id'} = $data_result[0]->id;
-                    $result[$i]->{$result[$i]->type.'.name'} = $data_result[0]->name;
+                    $result[$i]->{$result[$i]->type . '.id'} = $data_result[0]->id;
+                    $result[$i]->{$result[$i]->type . '.name'} = $data_result[0]->name;
                     $result[$i]->sub_resource_name = $data_result[0]->name;
                 } else {
                     $result[$i]->sub_resource_name = '';
@@ -145,7 +145,7 @@ class TasksModel extends BaseModel
         if ($type === 'Collector') {
             $namespace = "\\App\\Models\\CollectorsModel";
         }
-        $typeModel = new $namespace;
+        $typeModel = new $namespace();
         $included[strtolower($type)] = $typeModel->listUser();
 
         if ($type === 'Baselines') {
@@ -253,13 +253,13 @@ class TasksModel extends BaseModel
             return array();
         }
         if ($result !== false) {
-            for ($i=0; $i < count($result); $i++) {
+            for ($i = 0; $i < count($result); $i++) {
                 if ($result[$i]->type !== 'reports' && $result[$i]->type !== 'collector') {
                     $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
                     $data_result = $this->db->query($sql, [$result[$i]->sub_resource_id])->getResult();
                     if (!empty($data_result[0]->name)) {
-                        $result[$i]->{$result[$i]->type.'.id'} = $data_result[0]->id;
-                        $result[$i]->{$result[$i]->type.'.name'} = $data_result[0]->name;
+                        $result[$i]->{$result[$i]->type . '.id'} = $data_result[0]->id;
+                        $result[$i]->{$result[$i]->type . '.name'} = $data_result[0]->name;
                         $result[$i]->sub_resource_name = $data_result[0]->name;
                     } else {
                         $result[$i]->sub_resource_name = '';

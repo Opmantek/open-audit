@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class AuthModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -164,7 +164,7 @@ class AuthModel extends BaseModel
         }
         $result = $query->getResult();
         $count = count($result);
-        for ($i=0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             $decrypted = '';
             if (!empty($result[$i]->dn_password)) {
                 $decrypted = simpleDecrypt($result[$i]->dn_password, config('Encryption')->key);

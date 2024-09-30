@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class QueriesModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -96,7 +96,7 @@ class QueriesModel extends BaseModel
                         $columns[] = $column;
                     }
                 }
-                for ($i=0; $i < count($columns); $i++) {
+                for ($i = 0; $i < count($columns); $i++) {
                     $tables[] = explode('.', $columns[$i])[0];
                     $columns[$i] = $columns[$i] . ' AS `' . $columns[$i] . '`';
                 }
@@ -179,8 +179,8 @@ class QueriesModel extends BaseModel
         }
         $query = $query->getResult()[0];
         $sql = trim((string)$query->sql);
-        if (strpos($sql, ';') === strlen($sql)-1) {
-            $sql = substr($sql, 0, strlen($sql)-1);
+        if (strpos($sql, ';') === strlen($sql) - 1) {
+            $sql = substr($sql, 0, strlen($sql) - 1);
             $sql = trim((string)$sql);
         }
         if (stripos($sql, "SELECT devices") !== false and stripos($sql, "SELECT devices") === 0) {

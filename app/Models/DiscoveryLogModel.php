@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,13 +7,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
-
+use stdClass;
 use CodeIgniter\Database\RawSql;
 
 class DiscoveryLogModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -125,7 +124,7 @@ class DiscoveryLogModel extends BaseModel
             case 7:
                 $data->severity_text = 'debug';
                 break;
-            
+
             default:
                 $data->severity_text = 'debug';
                 break;
@@ -148,7 +147,7 @@ class DiscoveryLogModel extends BaseModel
             $sql = "UPDATE `discoveries` SET `status` = 'running', `ip_all_count` = 0, `ip_responding_count` = 0, `ip_scanned_count` = 0, `ip_discovered_count` = 0, `ip_audited_count` = 0, `last_run` = NOW(), `last_log` = NOW() WHERE id = ?";
             $this->db->query($sql, [$data->discovery_id]);
         }
- 
+
         $newdata = new \stdClass();
         foreach ($this->db->getFieldData('discovery_log') as $field) {
             $newdata->{$field->name} = @$data->{$field->name};

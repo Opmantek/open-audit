@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class CloudsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -49,7 +49,7 @@ class CloudsModel extends BaseModel
         }
         if ($config->decrypt_credentials === 'y') {
             $count = count($query);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
                     try {
                         $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
@@ -224,7 +224,7 @@ class CloudsModel extends BaseModel
         $query = $this->db->query($sql, [$id]);
         $devices = $query->getResult();
         $count = count($devices);
-        for ($i=0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             $devices[$i]->{'devices.padded_ip'} = $devices[$i]->{'devices.ip'};
             $devices[$i]->{'devices.ip'} = ip_address_from_db($devices[$i]->{'devices.ip'});
             $included['stats']->devices_retrieved += 1;

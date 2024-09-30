@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,14 +7,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
-use \DateTime;
-use \DateInterval;
-use \DatePeriod;
+use stdClass;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 
 class WidgetsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -159,7 +159,7 @@ class WidgetsModel extends BaseModel
                     $row->timestamp = strtotime($row->date);
                 }
                 usort($result, array($this,'compareTimestamp'));
-                for ($i=0; $i < count($result); $i++) {
+                for ($i = 0; $i < count($result); $i++) {
                     $result[$i]->link = $widget->link;
                     if (isset($result[$i]->name)) {
                         $result[$i]->link = str_ireplace('@name', $result[$i]->name, $result[$i]->link);
@@ -188,7 +188,7 @@ class WidgetsModel extends BaseModel
                 } else {
                     $start = date('Y-m-d', strtotime($result[0]->date));
                     $begin = new \DateTime($start);
-                    $i = count($result)-1;
+                    $i = count($result) - 1;
                     $end = new DateTime($result[$i]->date);
                     $interval = DateInterval::createFromDateString('1 day');
                     $period = new DatePeriod($begin, $interval, $end);
@@ -197,7 +197,7 @@ class WidgetsModel extends BaseModel
                 foreach ($period as $dt) {
                     $the_date = $dt->format('Y-m-d');
                     $add_row = true;
-                    for ($i=0; $i < count($result); $i++) {
+                    for ($i = 0; $i < count($result); $i++) {
                         if (!empty($result[$i]->date) and $result[$i]->date == $the_date) {
                             $add_row = false;
                             $result[$i]->timestamp = strtotime($the_date);
@@ -278,7 +278,7 @@ class WidgetsModel extends BaseModel
                 $the_date = $dt->format('Y-m-d');
                 $add_row = true;
                 if (!empty($result)) {
-                    for ($i=0; $i < count($result); $i++) {
+                    for ($i = 0; $i < count($result); $i++) {
                         if (!empty($result[$i]->date) and $result[$i]->date == $the_date) {
                             $add_row = false;
                             $result[$i]->timestamp = strtotime($the_date);
@@ -495,7 +495,7 @@ class WidgetsModel extends BaseModel
         }
         $result = $this->db->query($sql)->getResult();
         if (!empty($result)) {
-            for ($i=0; $i < count($result); $i++) {
+            for ($i = 0; $i < count($result); $i++) {
                 if (empty($result[$i]->name) and empty($result[$i]->count)) {
                     unset($result[$i]);
                 }
@@ -508,7 +508,7 @@ class WidgetsModel extends BaseModel
         // We need to allow for grouping using a column name that is NOT 'name' as this can clash with existing schema.
         //   In this case (always in custom SQL), you should use my_name instead
         if (!empty($result)) {
-            for ($i=0; $i < count($result); $i++) {
+            for ($i = 0; $i < count($result); $i++) {
                 foreach ($result[$i] as $key => $value) {
                     if (strpos($key, 'my_') === 0) {
                         $new_key = str_replace('my_', '', $key);
@@ -517,14 +517,14 @@ class WidgetsModel extends BaseModel
                     }
                 }
             }
-            for ($i=0; $i < count($result); $i++) {
+            for ($i = 0; $i < count($result); $i++) {
                 $total_count += intval($result[$i]->count);
                 if (intval($result[$i]->count) === 0 and is_null($result[$i]->name)) {
                     unset($result[$i]);
                 }
             }
             $result = array_values($result);
-            for ($i=0; $i < count($result); $i++) {
+            for ($i = 0; $i < count($result); $i++) {
                 if (!empty($result[$i]->count) and !empty($total_count)) {
                     $result[$i]->percent = intval(($result[$i]->count / $total_count) * 100);
                 } else {

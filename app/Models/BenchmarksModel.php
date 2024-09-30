@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,20 +7,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
-
-use \Config\Services;
-
+use stdClass;
+use Config\Services;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Crypt\RSA;
 use phpseclib3\Net\SFTP;
 use phpseclib3\Net\SSH2;
-
 use Masterminds\HTML5;
 
 class BenchmarksModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -109,7 +106,7 @@ class BenchmarksModel extends BaseModel
         if (empty($item->attributes->devices)) {
             log_message('error', "No devices associated with benchmark ID $id.");
             #$this->logCreate($id, 0, 'error', 'No devices associated with benchmark.');
-            #$this->logCreate($id, 0, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            #$this->logCreate($id, 0, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return false;
         }
         try {
@@ -118,7 +115,7 @@ class BenchmarksModel extends BaseModel
             log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             return false;
         }
-        for ($i=0; $i < count($devices); $i++) {
+        for ($i = 0; $i < count($devices); $i++) {
             $devices[$i] = intval($devices[$i]);
         }
         // Only select devices in the list, that have credentials, that have been discovered by this server /collector
@@ -129,7 +126,7 @@ class BenchmarksModel extends BaseModel
         if (empty($my_devices)) {
             log_message('error', "No suitable devices in database, associated with benchmark.");
             #$this->logCreate($id, 0, 'error', 'No suitable devices in database, associated with benchmark.');
-            #$this->logCreate($id, 0, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            #$this->logCreate($id, 0, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return false;
         }
         foreach ($my_devices as $device) {
@@ -171,13 +168,13 @@ class BenchmarksModel extends BaseModel
         if (empty($device)) {
             log_message('error', 'Invalid device ID supplied to BenchmarksModel::execute. Supplied: ' . $device_id);
             $this->logCreate($id, $device_id, 'error', 'Invalid device ID supplied, ' . $device_id . '.');
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
         if (empty($device->attributes->credentials)) {
             log_message('error', 'Device contains no credentials for BenchmarksModel::execute from ' . $device->attributes->name);
             $this->logCreate($id, $device_id, 'error', 'Device contains no credentials.');
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
         try {
@@ -186,7 +183,7 @@ class BenchmarksModel extends BaseModel
             log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             log_message('error', 'Cannot decode credentials for BenchmarksModel::execute from ' . $device->attributes->name);
             $this->logCreate($id, $device_id, 'error', 'Cannot decode credentials.');
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
         $credentialsModel = model('App\Models\CredentialsModel');
@@ -199,7 +196,7 @@ class BenchmarksModel extends BaseModel
         if (empty($retrieved_credentials)) {
             log_message('error', 'Device contains no suitable credentials for BenchmarksModel::execute from ' . $device->attributes->name);
             $this->logCreate($id, $device_id, 'error', 'Device contains no suitable credentials.');
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
 
@@ -213,7 +210,7 @@ class BenchmarksModel extends BaseModel
         if ($output === false) {
             log_message('error', 'SSH command failed for BenchmarksModel::execute on ' . $device->attributes->name . '. Command: ' . $parameters->command);
             $this->logCreate($id, $device_id, 'error', 'SSH command failed. Command: ' . $parameters->command . ' (see logfile for more info).');
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
         if (empty($output)) {
@@ -231,9 +228,13 @@ class BenchmarksModel extends BaseModel
                         $command = 'sudo ' . $command;
                     }
                 }
-                if (stripos($device->attributes->os_name, 'redhat') !== false or stripos($device->attributes->os_name, 'red hat') !== false or stripos($device->attributes->os_name, 'rhel') !== false or
+                if (
+                    stripos($device->attributes->os_name, 'redhat') !== false or
+                    stripos($device->attributes->os_name, 'red hat') !== false or
+                    stripos($device->attributes->os_name, 'rhel') !== false or
                     stripos($device->attributes->os_name, 'centos') !== false or
-                    stripos($device->attributes->os_name, 'oracle') !== false) {
+                    stripos($device->attributes->os_name, 'oracle') !== false
+                ) {
                     $command = 'yum install -y openscap-scanner';
                     if ($retrieved_credentials->attributes->credentials->username !== 'root') {
                         $command = 'sudo ' . $command;
@@ -252,7 +253,7 @@ class BenchmarksModel extends BaseModel
                 $output = ssh_command($parameters);
                 if ($output === false) {
                     $this->logCreate($id, $device_id, 'warning', 'SSH command to install openscap failed, please check log file.');
-                    $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+                    $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
                     return [];
                 }
                 // Now check it has actually been installed
@@ -262,13 +263,13 @@ class BenchmarksModel extends BaseModel
                 if ($output === false) {
                     log_message('error', 'SSH command failed for BenchmarksModel::execute on ' . $device->attributes->name . '. Command: ' . $parameters->command);
                     $this->logCreate($id, $device_id, 'error', 'SSH command failed. Command: ' . $parameters->command . ' (see logfile for more info).');
-                    $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+                    $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
                     return [];
                 }
                 if (empty($output)) {
                     log_message('error', 'Could not install openscap on ' . $device->attributes->name . '. Command: ' . $parameters->command);
                     $this->logCreate($id, $device_id, 'warning', 'SSH command to install openscap failed, please check log file.');
-                    $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+                    $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
                     return [];
                 }
                 $this->logCreate($id, $device_id, 'info', 'OpenScap has now been installed.');
@@ -290,7 +291,7 @@ class BenchmarksModel extends BaseModel
         if (empty($file) or empty($profile)) {
             log_message('error', 'Failure, Could not derive benchmark for ' . $device->attributes->name . ' from ' . $benchmark->attributes->type . ' and ' . $benchmark->attributes->os);
             $this->logCreate($id, $device_id, 'error', 'Could not derive benchmark from ' . $benchmark->attributes->type . ' and ' . $benchmark->attributes->os);
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
 
@@ -304,7 +305,7 @@ class BenchmarksModel extends BaseModel
         if ($output === false) {
             log_message('error', 'SCP issue copying ' . $parameters->source . ' to ' . $parameters->destination . ' on ' . $device->attributes->name . ' (see logfile for more info).');
             $this->logCreate($id, $device_id, 'error', 'SCP issue running BenchmarksModel::execute on ' . $device->attributes->ip);
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
         $this->logCreate($id, $device_id, 'info', 'Defnition file copied to ' . $device->attributes->name . '.');
@@ -322,7 +323,7 @@ class BenchmarksModel extends BaseModel
             log_message('error', json_encode($command_output));
             $this->logCreate($id, $device_id, 'error', 'Could not execute oscap (see logfile for more info).');
             $this->logCreate($id, $device_id, 'warning', json_encode($command_output));
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
         log_message('debug', 'oscap command completed on ' . $device->attributes->name);
@@ -339,11 +340,11 @@ class BenchmarksModel extends BaseModel
             log_message('error', 'Could not retrieve report for BenchmarksModel::execute on ' . $device->attributes->name);
             log_message('error', json_encode($command_output));
             $this->logCreate($id, $device_id, 'error', 'Could not retrieve report (see logfile for more info).');
-            $this->logCreate($id, $device_id, 'error', 'SCP Source: '. $parameters->source);
-            $this->logCreate($id, $device_id, 'error', 'SCP Destination: '. $parameters->destination);
-            $this->logCreate($id, $device_id, 'error', 'SCP Output: '. json_encode($output));
+            $this->logCreate($id, $device_id, 'error', 'SCP Source: ' . $parameters->source);
+            $this->logCreate($id, $device_id, 'error', 'SCP Destination: ' . $parameters->destination);
+            $this->logCreate($id, $device_id, 'error', 'SCP Output: ' . json_encode($output));
             $this->logCreate($id, $device_id, 'warning', 'OSCAP: ' . json_encode($command_output));
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
         $this->logCreate($id, $device_id, 'info', 'Report file retrieved.');
@@ -358,7 +359,7 @@ class BenchmarksModel extends BaseModel
             log_message('error', 'Could not execute rm for BenchmarksModel::execute on ' . $device->attributes->name);
             log_message('error', json_encode($command_output));
             $this->logCreate($id, $device_id, 'error', 'Could not execute rm (see logfile for more info).');
-            $this->logCreate($id, $device_id, 'error', 'RM: '. json_encode($output));
+            $this->logCreate($id, $device_id, 'error', 'RM: ' . json_encode($output));
             // Do not exit/return as we should have a local copy of the result file which we can still process
         }
         log_message('debug', 'rm command completed on ' . $device->attributes->name);
@@ -378,7 +379,7 @@ class BenchmarksModel extends BaseModel
                 log_message('error', json_encode($command_output));
                 $this->logCreate($id, $device_id, 'error', 'Cannot process report file. Error: ' . $e);
                 $this->logCreate($id, $device_id, 'warning', 'OSCAP: ' . json_encode($command_output));
-                $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+                $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
                 return [];
             }
         } else {
@@ -386,7 +387,7 @@ class BenchmarksModel extends BaseModel
             log_message('error', json_encode($command_output));
             $this->logCreate($id, $device_id, 'error', 'File: ' . $result_file . ' does not exist.');
             $this->logCreate($id, $device_id, 'warning', 'OSCAP: ' . json_encode($command_output));
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
         log_message('debug', 'File loaded for processing.');
@@ -399,7 +400,7 @@ class BenchmarksModel extends BaseModel
         if (file_exists($result_file)) {
             log_message('error', 'Cannot delete report file from open-audit/other/ssg-results.');
             $this->logCreate($id, $device_id, 'error', 'Cannot delete report file. ' . $result_file);
-            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+            $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return [];
         }
 
@@ -577,9 +578,9 @@ class BenchmarksModel extends BaseModel
             log_message('debug', 'Completed  item ' . $result->external_ident . ' for ' . $device->attributes->name);
         }
         $this->logCreate($id, $device_id, 'info', 'Processing report file completed. ' . $insert . ' inserted and ' . $update . ' updated policies for ' . $total . ' results.');
-        $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB');
+        $this->logCreate($id, $device_id, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
         log_message('debug', 'Processing report file for ' . $device->attributes->name . ' completed. ' . $insert . ' inserted and ' . $update . ' updated policies.');
-        log_message('debug', 'Completed. Memory: ' . round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB used for ' . $device->attributes->name);
+        log_message('debug', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB used for ' . $device->attributes->name);
         return[];
     }
 
@@ -802,7 +803,7 @@ class BenchmarksModel extends BaseModel
         $sql = 'SELECT benchmarks_log.*, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip` FROM benchmarks_log LEFT JOIN devices ON (benchmarks_log.device_id = devices.id) WHERE benchmarks_log.benchmark_id = ?';
         $included['logs'] = $this->db->query($sql, [$id])->getResult();
 
-        for ($i=0; $i < count($included['logs']); $i++) {
+        for ($i = 0; $i < count($included['logs']); $i++) {
             $included['logs'][$i]->{'devices.ip'} = ip_address_from_db($included['logs'][$i]->{'devices.ip'});
         }
 
@@ -901,7 +902,7 @@ class BenchmarksModel extends BaseModel
             $data->devices = '[]';
         }
         if (!empty($data->devices) and is_array($data->devices)) {
-            for ($i=0; $i < count($data->devices); $i++) {
+            for ($i = 0; $i < count($data->devices); $i++) {
                 $data->devices[$i] = intval($data->devices[$i]);
             }
             $data->devices = json_encode($data->devices);

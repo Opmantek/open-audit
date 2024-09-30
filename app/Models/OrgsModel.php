@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class OrgsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -143,7 +143,7 @@ class OrgsModel extends BaseModel
     public function getAscendants(int $id = 0)
     {
         $orgs = $this->getAscendant($id);
-        for ($i=0; $i < count($orgs); $i++) {
+        for ($i = 0; $i < count($orgs); $i++) {
             if (intval($orgs[$i]) === $id) {
                 unset($orgs[$i]);
             }
@@ -280,7 +280,7 @@ class OrgsModel extends BaseModel
 
         foreach ($csv as $key => $value) {
             $item = new \stdClass();
-            for ($i=0; $i < count($value); $i++) {
+            for ($i = 0; $i < count($value); $i++) {
                 $item->{@$header[$i]} = @$value[$i];
             }
             // Check user is auth on org_id

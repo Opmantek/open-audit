@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class QueueModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -36,7 +36,7 @@ class QueueModel extends BaseModel
         $query = $this->db->query($sql);
         $result = $query->getResult();
         if (!empty($result) and is_array($result)) {
-            for ($i=0; $i < count($result); $i++) {
+            for ($i = 0; $i < count($result); $i++) {
                 if (!empty($result[$i]->details)) {
                     try {
                         $result[$i]->details = json_decode($result[$i]->details, false, 512, JSON_THROW_ON_ERROR);
@@ -44,7 +44,7 @@ class QueueModel extends BaseModel
                         log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
                     }
                     foreach ($result[$i]->details as $key => $value) {
-                        $result[$i]->{'details.'.$key} = $value;
+                        $result[$i]->{'details.' . $key} = $value;
                     }
                 } else {
                     $result[$i]->details = new \stdClass();

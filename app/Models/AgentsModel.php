@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class AgentsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -158,16 +158,16 @@ class AgentsModel extends BaseModel
             case 'linux':
                 $script = 'agent_installer_linux.sh';
                 break;
-            
+
             case 'darwin':
             case 'osx':
                 $script = 'agent_installer_apple.sh';
                 break;
-            
+
             case 'windows':
                 $script = 'agent_installer_windows.ps1';
                 break;
-            
+
             default:
                 $audit_script = '';
                 break;

@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class ScriptsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -36,29 +36,29 @@ class ScriptsModel extends BaseModel
                 $audit_script = 'audit_aix.sh';
                 $source_name = 'audit_aix_' . $timestamp . '.sh';
                 break;
-            
+
             case 'vmkernel':
             case 'vmware':
                 $audit_script = 'audit_esxi.sh';
                 $source_name = 'audit_esxi_' . $timestamp . '.sh';
                 break;
-            
+
             case 'linux':
                 $audit_script = 'audit_linux.sh';
                 $source_name = 'audit_linux_' . $timestamp . '.sh';
                 break;
-            
+
             case 'darwin':
             case 'apple':
                 $audit_script = 'audit_osx.sh';
                 $source_name = 'audit_osx_' . $timestamp . '.sh';
                 break;
-            
+
             case 'osx':
                 $audit_script = 'audit_osx.sh';
                 $source_name = 'audit_osx_' . $timestamp . '.sh';
                 break;
-            
+
             case 'windows':
                 $audit_script = 'audit_windows.vbs';
                 $source_name = 'audit_windows_' . $timestamp . '.vbs';
@@ -73,7 +73,7 @@ class ScriptsModel extends BaseModel
                 $audit_script = 'audit_solaris.sh';
                 $source_name = 'audit_solaris_' . $timestamp . '.sh';
                 break;
-            
+
             default:
                 $audit_script = '';
                 $source_name = '';
@@ -294,7 +294,7 @@ class ScriptsModel extends BaseModel
             case 'aix':
                 $audit_script = 'audit_aix.sh';
                 break;
-            
+
             case 'vmkernel':
             case 'vmware':
             case 'esxi':
@@ -358,7 +358,8 @@ class ScriptsModel extends BaseModel
         }
         $file = file_get_contents($filename);
         $options = $data->options;
-        if (empty($options->url) or
+        if (
+            empty($options->url) or
             $options->url ===  'http://open-audit/index.php/system/add_system' or
             $options->url === 'https://open-audit/index.php/system/add_system' or
             $options->url ===  'http://open-audit/index.php/input/devices' or
@@ -366,7 +367,8 @@ class ScriptsModel extends BaseModel
             $options->url ===  'http://localhost/open-audit/index.php/system/add_system' or
             $options->url === 'https://localhost/open-audit/index.php/system/add_system' or
             $options->url ===  'http://localhost/open-audit/index.php/input/devices' or
-            $options->url === 'https://localhost/open-audit/index.php/input/devices') {
+            $options->url === 'https://localhost/open-audit/index.php/input/devices'
+        ) {
             // inject our default network address
             if (!empty($instance->config->default_network_address)) {
                 $options->url = $instance->config->default_network_address . 'index.php/input/devices';
@@ -407,18 +409,18 @@ class ScriptsModel extends BaseModel
             foreach (array_reverse($options->files) as $key => $value) {
                 if ($data->based_on !== 'audit_windows.vbs') {
                     $value = str_replace('\\', '\\\\', $value);
-                    $replace = $find . "\nfiles[".intval($key+1).']="' . $value . '"';
+                    $replace = $find . "\nfiles[" . intval($key + 1) . ']="' . $value . '"';
                 } else {
                     if (strpos($value, '/') === 0) {
                         // skip this file as it starts with /, hence is a Unix style path
                     } else {
-                        $replace = $find . "\nfiles(".intval($key+1).')="' . $value . '"';
+                        $replace = $find . "\nfiles(" . intval($key + 1) . ')="' . $value . '"';
                     }
                 }
                 $file = str_replace($find, $replace, $file);
             }
             if ($data->based_on === 'audit_windows.vbs') {
-                $replace = $find . "\ndim files(".count($options->files).')';
+                $replace = $find . "\ndim files(" . count($options->files) . ')';
                 $file = str_replace($find, $replace, $file);
             }
         }
@@ -676,7 +678,7 @@ class ScriptsModel extends BaseModel
         $options['audit_win32_product']->type = 'select';
         $options['audit_win32_product']->values = 'y,n';
 
-        $options['create_file'] = new stdClass;
+        $options['create_file'] = new stdClass();
         $options['create_file']->name = 'create_file';
         $options['create_file']->default = 'n';
         $options['create_file']->help = 'Should we create a file based on the audit result.';
@@ -690,7 +692,7 @@ class ScriptsModel extends BaseModel
         $options['debugging']->type = 'select';
         $options['debugging']->values = '0,1,2,3';
 
-        $options['details_to_lower'] = new stdClass;
+        $options['details_to_lower'] = new stdClass();
         $options['details_to_lower']->name = 'details_to_lower';
         $options['details_to_lower']->default = 'y';
         $options['details_to_lower']->help = 'Should we convert the hostname to lower.';

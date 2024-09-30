@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class DevicesModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -29,7 +29,7 @@ class DevicesModel extends BaseModel
         $instance = & get_instance();
         $properties = $resp->meta->properties;
         $count = count($properties);
-        for ($i=0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             if (strpos($properties[$i], 'devices.') === false) {
                 $properties[$i] = $properties[$i] . ' AS `' . $properties[$i] . '`';
             }
@@ -83,7 +83,7 @@ class DevicesModel extends BaseModel
         $count = count($result);
 
         if (isset($result[0]->type) and isset($result[0]->last_seen_by) and $instance->config->product !== 'community') {
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 # BAD
                 if ($result[$i]->last_seen_by === 'nmap' and ($result[$i]->type === 'unclassified' or $result[$i]->type === 'unknown')) {
                     $result[$i]->audit_class = 'fa fa-times text-danger';
@@ -128,7 +128,7 @@ class DevicesModel extends BaseModel
         }
 
         if (isset($result[0]->tags)) {
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (!empty($result[$i]->tags)) {
                     try {
                         $result[$i]->tags = json_decode($result[$i]->tags, false, 512, JSON_THROW_ON_ERROR);
@@ -416,7 +416,7 @@ class DevicesModel extends BaseModel
 
         if (!empty($include['ip'])) {
             $count = count($include['ip']);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 $include['ip'][$i]->ip_padded = $include['ip'][$i]->ip;
                 $include['ip'][$i]->ip = ip_address_from_db($include['ip'][$i]->ip);
             }
@@ -763,7 +763,7 @@ class DevicesModel extends BaseModel
             return array();
         }
         $include['os'] = format_data($query->getResult(), 'devices');
-        for ($i=0; $i < count($include['os']); $i++) {
+        for ($i = 0; $i < count($include['os']); $i++) {
             if (file_exists(ROOTPATH . 'public/device_images/' . strtolower(str_replace(' ', '_', $include['os'][$i]->attributes->os_family)) . '.svg')) {
                 $include['os'][$i]->attributes->icon = strtolower(str_replace(' ', '_', $include['os'][$i]->attributes->os_family));
             }
@@ -881,7 +881,7 @@ class DevicesModel extends BaseModel
                     // get the current weight from the edit_log
                     $previous_weight = 10000;
                     $count = count($edit_log);
-                    for ($i=0; $i < $count; $i++) {
+                    for ($i = 0; $i < $count; $i++) {
                         if ($edit_log[$i]->db_column === $key) {
                             $previous_weight = intval($edit_log[$i]->weight);
                         }
@@ -967,7 +967,7 @@ class DevicesModel extends BaseModel
         }
 
         // Check and update any custom fields, if the supplied data key name == the fields.name
-        $fieldsModel = new \App\Models\FieldsModel;
+        $fieldsModel = new \App\Models\FieldsModel();
         // TODO - can we restrict this to only those fields from discoveries.org_id and lower by populating listUser([], $orgs) ?
         //      - The incoming data may be from a user (web interface) a discovery or an audit.
         $fields = $fieldsModel->listAll();

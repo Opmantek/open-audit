@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,13 +7,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
-
+use stdClass;
 use CodeIgniter\Model;
 
 class LogonModel extends Model
 {
-
     public function logon($username = '', $password = '')
     {
         helper('security');
@@ -263,7 +262,7 @@ class LogonModel extends Model
                 // the SHA256 from the end of the hash
                 $valid_hash = substr($db_user->password, 64, 64);
                 // hash the password being tested
-                $test_hash = hash('sha256', $salt.$password);
+                $test_hash = hash('sha256', $salt . $password);
                 // if the hashes are exactly the same, the password is valid
                 if ($test_hash === $valid_hash) {
                     // A match - update the password to the new style
@@ -360,7 +359,7 @@ class LogonModel extends Model
             $ldap->filter = str_replace('@username', $user->name, $ldap->filter);
             $ldap->filter = str_replace('@domain', $user->domain, $ldap->filter);
             $temp = explode(',', $ldap->openldap_user_dn);
-            for ($i=0; $i < count($temp); $i++) {
+            for ($i = 0; $i < count($temp); $i++) {
                 if (stripos($temp[$i], '@username') !== false) {
                     $ldap->filter = '(' . str_replace('@username', $user->name, $temp[$i]) . ')';
                 }

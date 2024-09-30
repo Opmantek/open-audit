@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class SearchModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -53,7 +53,7 @@ class SearchModel extends BaseModel
         if (isset($tables[0]) && $tables[0] === 'devices' && isset($columns[0]) && $columns[0] === 'name' && isset($columns[1]) && $columns[1] === 'ip') {
             // make our padded IP
             $temp = explode('.', $value);
-            for ($i=0; $i < count($temp); $i++) {
+            for ($i = 0; $i < count($temp); $i++) {
                 if (empty($temp[$i])) {
                     $temp[$i] = '%';
                 } else {
@@ -79,8 +79,8 @@ class SearchModel extends BaseModel
                     if ($column !== 'id' && $column !== 'device_id' && $column !== 'current' && $column !== 'first_seen' && $column !== 'last_seen') {
                         if ($column === 'ip') {
                             $temp = explode('.', $value);
-                            for ($i=0; $i < count($temp); $i++) {
-                                $temp[$i] = substr('000'.$temp[$i], -3);
+                            for ($i = 0; $i < count($temp); $i++) {
+                                $temp[$i] = substr('000' . $temp[$i], -3);
                             }
                             $temp_value = implode('.', $temp);
                             $sql .= "`{$table}`.`{$column}` LIKE \"%{$temp_value}%\" OR ";
@@ -99,8 +99,8 @@ class SearchModel extends BaseModel
                         foreach ($item as $item_key => $item_value) {
                             if ($item_key === 'ip') {
                                 $temp = explode('.', $value);
-                                for ($i=0; $i < count($temp); $i++) {
-                                    $temp[$i] = substr('000'.$temp[$i], -3);
+                                for ($i = 0; $i < count($temp); $i++) {
+                                    $temp[$i] = substr('000' . $temp[$i], -3);
                                 }
                                 $temp_value = implode('.', $temp);
                             } else {
@@ -128,8 +128,8 @@ class SearchModel extends BaseModel
             foreach ($columns as $column) {
                 if ($column === 'ip') {
                     $temp = explode('.', $value);
-                    for ($i=0; $i < count($temp); $i++) {
-                        $temp[$i] = substr('000'.$temp[$i], -3);
+                    for ($i = 0; $i < count($temp); $i++) {
+                        $temp[$i] = substr('000' . $temp[$i], -3);
                     }
                     $temp_value = implode('.', $temp);
                 } else {
@@ -146,8 +146,8 @@ class SearchModel extends BaseModel
                     foreach ($item as $item_key => $item_value) {
                         if ($item_key === 'ip') {
                             $temp = explode('.', $value);
-                            for ($i=0; $i < count($temp); $i++) {
-                                $temp[$i] = substr('000'.$temp[$i], -3);
+                            for ($i = 0; $i < count($temp); $i++) {
+                                $temp[$i] = substr('000' . $temp[$i], -3);
                             }
                             $temp_value = implode('.', $temp);
                         } else {

@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class RulesModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -594,7 +594,7 @@ class RulesModel extends BaseModel
                                     }
                                 }
                                 break;
-                            
+
                             default:
                                 foreach ($device_sub[$input->table] as $dsub) {
                                     if ((string)$dsub->{$input->attribute} == (string)$input->value) {
@@ -614,11 +614,11 @@ class RulesModel extends BaseModel
                             case 'string':
                                 $newdevice->{$output->attribute} = (string)$output->value;
                                 break;
-                            
+
                             case 'integer':
                                 $newdevice->{$output->attribute} = intval($output->value);
                                 break;
-                            
+
                             case 'timestamp':
                                 if ($output->value == '') {
                                     $newdevice->{$output->attribute} = $instance->config->timestamp;
@@ -626,7 +626,7 @@ class RulesModel extends BaseModel
                                     $newdevice->{$output->attribute} = intval($output->value);
                                 }
                                 break;
-                            
+
                             default:
                                 $newdevice->{$output->attribute} = (string)$output->value;
                                 break;
