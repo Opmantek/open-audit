@@ -363,6 +363,20 @@ if (!empty($config->servers)) {
                                         <?= menuItem('orgs', '', $user, 'orgsHelp', __('Learn About') . ' ' . __('Orgs')) ?>
                                     </ul>
                                 </li>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Packages') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('AntiVirus Packages'), '?packages.type=antivirus') ?>
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Firewall Packages'), '?packages.type=firewall') ?>
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Approved Packages'), '?packages.type=approved') ?>
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Banned Packages'), '?packages.type=banned') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Linux Packages'), '?os=Linux') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('MacOS Packages'), '?os=MacOS') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Windows Packages'), '?os=Windows') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesImportForm', __('Import') . ' ' . __('Packages')) ?>
+                                        <?= menuItem('orgs', '', $user, 'packagesDefaults', __('Default') . ' ' . __('Packages')) ?>
+                                        <?= menuItem('orgs', '', $user, 'packagesHelp', __('Learn About') . ' ' . __('Packages')) ?>
+                                    </ul>
+                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Queries') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('queries', 'r', $user, 'queriesCollection', __('List') . ' ' . __('Queries')) ?>
@@ -396,20 +410,6 @@ if (!empty($config->servers)) {
                                         <?= menuItem('rules', 'c', $user, 'rulesImportForm', __('Import') . ' ' . __('Rules')) ?>
                                         <?= menuItem('rules', '', $user, 'rulesDefaults', __('Default') . ' ' . __('Rules')) ?>
                                         <?= menuItem('rules', '', $user, 'rulesHelp', __('Learn About') . ' ' . __('Rules')) ?>
-                                    </ul>
-                                </li>
-                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Software') ?></a>
-                                    <ul class="dropdown-menu">
-                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('AntiVirus Software'), '?packages.type=antivirus') ?>
-                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Firewall Software'), '?packages.type=firewall') ?>
-                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Approved Software'), '?packages.type=approved') ?>
-                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Banned Software'), '?packages.type=banned') ?>
-                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Linux Software'), '?os=Linux') ?>
-                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('MacOS Software'), '?os=MacOS') ?>
-                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Windows Software'), '?os=Windows') ?>
-                                        <?= menuItem('orgs', 'c', $user, 'packagesImportForm', __('Import') . ' ' . __('Software')) ?>
-                                        <?= menuItem('orgs', '', $user, 'packagesDefaults', __('Default') . ' ' . __('Software')) ?>
-                                        <?= menuItem('orgs', '', $user, 'packagesHelp', __('Learn About') . ' ' . __('Software')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Summaries') ?></a>
