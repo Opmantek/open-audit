@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -20,7 +21,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
                 }
             }
             if ($version != '') {
-                $details->os_name = 'Cisco IOS '.$version;
+                $details->os_name = 'Cisco IOS ' . $version;
             } else {
                 $details->os_name = 'Cisco IOS (unknown verison)';
             }

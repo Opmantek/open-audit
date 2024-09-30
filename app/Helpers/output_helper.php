@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -91,7 +92,7 @@ if (!function_exists('output')) {
         // Credentials Clouds both use an encrypted JSON string in the credentials column. Expand this.
         if ($instance->resp->meta->collection === 'credentials' or $instance->resp->meta->collection === 'credential' or $instance->resp->meta->collection === 'clouds') {
             $count = count($instance->resp->data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 foreach ($instance->resp->data[$i]->attributes->credentials as $key => $value) {
                     if (is_string($instance->resp->data[$i]->attributes->credentials->{$key})) {
                         $instance->resp->data[$i]->attributes->{'credentials.' . $key} = $value;
@@ -108,7 +109,7 @@ if (!function_exists('output')) {
         #if ($instance->resp->meta->collection === 'dashboards' or $instance->resp->meta->collection === 'scripts' or $instance->resp->meta->collection === 'tasks') {
         if ($instance->resp->meta->collection === 'dashboards' or $instance->resp->meta->collection === 'scripts') {
             $count = count($instance->resp->data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 foreach ($instance->resp->data[$i]->attributes->options as $key => $value) {
                     if (is_string($instance->resp->data[$i]->attributes->options->{$key})) {
                         $instance->resp->data[$i]->attributes->{'options.' . $key} = $value;
@@ -123,7 +124,7 @@ if (!function_exists('output')) {
         // Discoveries use a JSON string in the scan_options, match_options and command_options columns. Expand these.
         if ($instance->resp->meta->collection === 'discoveries') {
             $count = count($instance->resp->data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 // Command Options (not used)
                 unset($instance->resp->data[$i]->attributes->command_options);
 
@@ -165,7 +166,7 @@ if (!function_exists('output')) {
         if (!empty($instance->resp->data)) {
             $data_order_columns = array();
             $count = count($instance->resp->data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 foreach ($instance->resp->data[$i]->attributes as $key => $value) {
                     if (!in_array($key, $data_order_columns)) {
                         $data_order_columns[] = $key;
@@ -302,7 +303,7 @@ if (!function_exists('output')) {
         $dataset->color = '#333333';
         $dataset->data = array();
         $sub_title_text = '';
-        for ($i=0; $i<count($data->result); $i++) {
+        for ($i = 0; $i < count($data->result); $i++) {
             $item = new \stdClass();
             $item->y = intval($data->result[$i]->count);
             $item->url = base_url() . 'index.php/' . str_replace('@date', $data->result[$i]->date, $data->result[$i]->link);
@@ -311,7 +312,7 @@ if (!function_exists('output')) {
             if ($i === 0) {
                 $sub_title_text = date_format(date_create($data->result[$i]->date), 'D, M j') . ' to ';
             }
-            if ($i === count($data->result)-1) {
+            if ($i === count($data->result) - 1) {
                 $sub_title_text = $sub_title_text . date_format(date_create($data->result[$i]->date), 'D, M j Y' . '.');
             }
             $output->xAxis->categories[] = date_format(date_create($data->result[$i]->date), 'j M');
@@ -365,7 +366,7 @@ if (!function_exists('output')) {
         $item->name = @$data->dataset_title;
         $item->colorByPoint = true;
         $item->data = array();
-        for ($i=0; $i<count($data->result); $i++) {
+        for ($i = 0; $i < count($data->result); $i++) {
             $slice = new \StdClass();
             $slice->name = $data->result[$i]->name;
             if (empty($slice->name)) {
@@ -444,7 +445,7 @@ if (!function_exists('output')) {
         $item->name = $resp->included[0]->attributes->dataset_title;
         $item->colorByPoint = true;
         $item->data = array();
-        for ($i=0; $i<count($resp->data); $i++) {
+        for ($i = 0; $i < count($resp->data); $i++) {
             $slice = new \StdClass();
             $slice->name = $resp->data[$i]->attributes->name;
             if (empty($slice->name)) {
@@ -519,7 +520,7 @@ if (!function_exists('output')) {
         $dataset->color = '#333333';
         $dataset->data = array();
         $sub_title_text = '';
-        for ($i=0; $i<count($resp->data); $i++) {
+        for ($i = 0; $i < count($resp->data); $i++) {
             $item = new \StdClass();
             $item->y = intval($resp->data[$i]->attributes->count);
             # $item->url = '../' . str_replace('@date', $resp->data[$i]->attributes->date, $resp->included[0]->attributes->link);
@@ -529,7 +530,7 @@ if (!function_exists('output')) {
             if ($i === 0) {
                 $sub_title_text = date_format(date_create($resp->data[$i]->attributes->date), 'D, M j') . ' to ';
             }
-            if ($i === count($resp->data)-1) {
+            if ($i === count($resp->data) - 1) {
                 $sub_title_text = $sub_title_text . date_format(date_create($resp->data[$i]->attributes->date), 'D, M j Y' . '.');
             }
             $output->xAxis->categories[] = date_format(date_create($resp->data[$i]->attributes->date), 'j M');
@@ -603,7 +604,7 @@ if (!function_exists('output')) {
     {
         $link = '?';
         if (!empty($query_parameters)) {
-            for ($i=0; $i < count($query_parameters); $i++) {
+            for ($i = 0; $i < count($query_parameters); $i++) {
                 if (!empty($query_parameters[$i]->name)) {
                     if (empty($query_parameters[$i]->operator) or $query_parameters[$i]->operator == '=') {
                         $query_parameters[$i]->operator = '';
@@ -612,7 +613,7 @@ if (!function_exists('output')) {
                 }
             }
         }
-        $link = substr($link, 0, strlen($link)-1);
+        $link = substr($link, 0, strlen($link) - 1);
         return $link;
     }
 

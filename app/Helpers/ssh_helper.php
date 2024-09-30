@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -522,14 +523,14 @@ if (! function_exists('ssh_command')) {
             $result = $ssh->exec($command);
             $result = explode("\n", $result);
             // remove the last line as it's always blank
-            unset($result[count($result)-1]);
+            unset($result[count($result) - 1]);
         } else {
             // Using sudo - need to input in response to password prompt
             $ssh->setTimeout(1);
             $ssh->write($command . "\n");
             $output = $ssh->read('assword');
             if (stripos($output, 'assword') !== false) {
-                $ssh->write($password."\n");
+                $ssh->write($password . "\n");
                 $output = $ssh->read('[prompt]');
             }
             while (true) {
@@ -568,7 +569,7 @@ if (! function_exists('ssh_command')) {
             // log_message('warning', 'SSH command produced no output from ' . $ip);
             // return false;
         }
-        for ($i=0; $i < count($result); $i++) {
+        for ($i = 0; $i < count($result); $i++) {
             $result[$i] = trim((string)$result[$i]);
             # Special Case
             if (stripos($result[$i], 'Exiting as other audits are currently running.') !== false) {
@@ -1060,8 +1061,15 @@ if (! function_exists('ssh_audit')) {
                     if (!empty($explode[3])) {
                         $item_mac = strtolower($explode[3]);
                     }
-                    if (!empty($item_mac) && stripos($item_mac, ':') !== false && $item_mac !== 'ff:ff:ff:ff:ff:ff' &&
-                            ! empty($item_ip) && stripos($item_ip, '.') !== false && $item_ip !== '255.255.255.255' && filter_var($item_ip, FILTER_VALIDATE_IP)) {
+                    if (
+                        !empty($item_mac) and
+                        stripos($item_mac, ':') !== false and
+                        $item_mac !== 'ff:ff:ff:ff:ff:ff' and
+                        !empty($item_ip) and
+                        stripos($item_ip, '.') !== false and
+                        $item_ip !== '255.255.255.255' and
+                        filter_var($item_ip, FILTER_VALIDATE_IP)
+                    ) {
                         $device->ips_found[$item_mac] = $item_ip;
                     }
                 }
@@ -1376,9 +1384,11 @@ if (! function_exists('ssh_audit')) {
         }
 
         if ($username !== 'root') {
-            if (($instance->config->discovery_linux_use_sudo === 'y' and strtolower($device->os_group) === 'linux') or
+            if (
+                ($instance->config->discovery_linux_use_sudo === 'y' and strtolower($device->os_group) === 'linux') or
                 ($instance->config->discovery_sunos_use_sudo === 'y' and strtolower($device->os_group) === 'sunos') or
-                (strtolower($device->os_group) !== 'linux' && strtolower($device->os_group) !== 'sunos')) {
+                (strtolower($device->os_group) !== 'linux' && strtolower($device->os_group) !== 'sunos')
+            ) {
                 if (!empty($device->which_sudo)) {
                     $item_start = microtime(true);
                     $command = $device->which_sudo . ' hostname 2>/dev/null';
@@ -1395,7 +1405,7 @@ if (! function_exists('ssh_audit')) {
                         $output = $ssh->read('[prompt]');
                     }
                     $lines = explode("\n", $output);
-                    $hostname = trim((string)$lines[count($lines)-2]);
+                    $hostname = trim((string)$lines[count($lines) - 2]);
                     $sudo_temp_hostname = explode('.', $hostname);
                     $ssh_hostname = explode('.', $device->hostname);
                     $s_h_result = '';
@@ -1439,11 +1449,11 @@ if (! function_exists('ssh_audit')) {
                 $ssh->write($command);
                 $output = $ssh->read('assword');
                 if (stripos($output, 'assword') !== false) {
-                    $ssh->write($password."\n");
+                    $ssh->write($password . "\n");
                     $output = $ssh->read('[prompt]');
                 }
                 $lines = explode("\n", $output);
-                $device->uuid = trim((string)$lines[count($lines)-2]);
+                $device->uuid = trim((string)$lines[count($lines) - 2]);
                 if ($device->uuid === ':' or strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
                     $device->uuid = '';
                 }
@@ -1468,11 +1478,11 @@ if (! function_exists('ssh_audit')) {
                     $ssh->write($command);
                     $output = $ssh->read('assword');
                     if (stripos($output, 'assword') !== false) {
-                        $ssh->write($password."\n");
+                        $ssh->write($password . "\n");
                         $output = $ssh->read('[prompt]');
                     }
                     $lines = explode("\n", $output);
-                    $device->uuid = trim((string)$lines[count($lines)-2]);
+                    $device->uuid = trim((string)$lines[count($lines) - 2]);
                     if (stripos($device->uuid, 'cat /sys/class/dmi/id/product_uuid 2>/dev/null') !== false) {
                         $device->uuid = '';
                     }
@@ -1511,7 +1521,7 @@ if (! function_exists('ssh_audit')) {
                 $device->uuid = '';
             }
             $log->message = 'SSH command';
-            $log->command = trim((string)$command) .'; # uuid';
+            $log->command = trim((string)$command) . '; # uuid';
             $log->command_time_to_execute = (microtime(true) - $item_start);
             if (!empty($device->uuid)) {
                 $log->command_output = $device->uuid;

@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -18,7 +19,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (!empty($temp_model)) {
         $temp_array = explode('_', $temp_model);
         if ($temp_array[0] != '') {
-            $details->model = $temp_array[0].' Program Receiver';
+            $details->model = $temp_array[0] . ' Program Receiver';
         }
     }
     unset($temp_model);

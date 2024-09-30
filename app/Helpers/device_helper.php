@@ -1,9 +1,9 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 declare(strict_types=1);
-
 
 if (!function_exists('audit_convert')) {
     function audit_convert(string $input)
@@ -56,7 +56,7 @@ if (!function_exists('audit_convert')) {
                 }
                 foreach ($audit as $section => $something) {
                     if ($section !== 'system' && $section !== 'sys') {
-                        for ($i=0; $i < count($audit->{$section}); $i++) {
+                        for ($i = 0; $i < count($audit->{$section}); $i++) {
                             if (!empty($audit->{$section}[$i])) {
                                 foreach ($audit->{$section}[$i] as $key => $value) {
                                     if (isset($value) and ((is_int($value) and $value === 0) or (is_string($value) and $value === ''))) {
@@ -593,9 +593,11 @@ if (! function_exists('deviceMatch')) {
             $query = $db->query($sql, $data);
             $row = $query->getRow();
             if (!empty($row->id)) {
-                if ((empty($details->org_id)) or
+                if (
+                    (empty($details->org_id)) or
                     (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                ) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -652,9 +654,11 @@ if (! function_exists('deviceMatch')) {
             $query = $db->query($sql, $data);
             $row = $query->getRow();
             if (!empty($row->id)) {
-                if ((empty($details->org_id)) or
+                if (
+                    (empty($details->org_id)) or
                     (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                ) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -711,9 +715,11 @@ if (! function_exists('deviceMatch')) {
             $query = $db->query($sql, $data);
             $row = $query->getRow();
             if (!empty($row->id)) {
-                if ((empty($details->org_id)) or
+                if (
+                    (empty($details->org_id)) or
                     (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                ) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -766,14 +772,16 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_fqdn) === 'y' && empty($details->id) && ! empty($details->fqdn)) {
             $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.fqdn LIKE ? AND devices.status != 'deleted' LIMIT 1";
-            
+
             $data = array("{$details->fqdn}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
             if (!empty($row->id)) {
-                if ((empty($details->org_id)) or
+                if (
+                    (empty($details->org_id)) or
                     (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                ) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -826,14 +834,16 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_serial_type) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->type) && ! in_array($details->serial, $invalid_strings)) {
             $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.serial LIKE ? AND devices.type LIKE ? AND devices.status != 'deleted' LIMIT 1";
-            
+
             $data = array("{$details->serial}", "{$details->type}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
             if (!empty($row->id)) {
-                if ((empty($details->org_id)) or
+                if (
+                    (empty($details->org_id)) or
                     (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                ) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -898,14 +908,16 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! in_array($details->serial, $invalid_strings)) {
             $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.serial LIKE ? AND devices.status != 'deleted' LIMIT 1";
-            
+
             $data = array("{$details->serial}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
             if (!empty($row->id)) {
-                if ((empty($details->org_id)) or
+                if (
+                    (empty($details->org_id)) or
                     (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                ) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -964,7 +976,7 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_sysname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->sysName) && ! in_array($details->serial, $invalid_strings)) {
             $sql = "SELECT devices.id FROM devices WHERE devices.sysName LIKE ? AND devices.serial LIKE ? AND devices.status != 'deleted' LIMIT 1";
-            
+
             $data = array("{$details->sysName}", "{$details->serial}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
@@ -1026,14 +1038,16 @@ if (! function_exists('deviceMatch')) {
 
         if (strtolower($match->match_sysname) === 'y' && empty($details->id) && ! empty($details->sysName)) {
             $sql = "SELECT devices.id, devices.org_id FROM devices WHERE (devices.sysName LIKE ?) AND devices.status != 'deleted'";
-            
+
             $data = array("{$details->sysName}");
             $query = $db->query($sql, $data);
             $row = $query->getRow();
             if (!empty($row->id)) {
-                if ((empty($details->org_id)) or
+                if (
+                    (empty($details->org_id)) or
                     (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                ) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -1327,14 +1341,16 @@ if (! function_exists('deviceMatch')) {
             // first check the ip table as any existing devices that have been seen
             // by more than just Nmap will have an entry here
             $sql = "SELECT devices.id, devices.org_id FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') WHERE ip.ip LIKE ? AND ip.ip NOT LIKE '127%' AND ip.ip NOT LIKE '1::%' AND devices.status != 'deleted' LIMIT 1";
-            
+
             $data = array(ip_address_to_db($details->ip));
             $query = $db->query($sql, $data);
             $row = $query->getRow();
             if (!empty($row->id)) {
-                if ((empty($details->org_id)) or
+                if (
+                    (empty($details->org_id)) or
                     (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                ) {
                     $details->id = $row->id;
                     if (!empty($details->device_id)) {
                         $log->device_id = $details->id;
@@ -1360,14 +1376,16 @@ if (! function_exists('deviceMatch')) {
             // next check the devices table for a ip match
             if (empty($details->id)) {
                 $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.ip = ? AND devices.ip NOT LIKE '127%' AND devices.ip NOT LIKE '1::%' AND devices.status != 'deleted'";
-                
+
                 $data = array(ip_address_to_db($details->ip));
                 $query = $db->query($sql, $data);
                 $row = $query->getRow();
                 if (!empty($row->id)) {
-                    if ((empty($details->org_id)) or
+                    if (
+                        (empty($details->org_id)) or
                         (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                        (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                        (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                    ) {
                         $details->id = $row->id;
                         $log->device_id = $details->id;
                         $message = new \StdClass();
@@ -1425,9 +1443,11 @@ if (! function_exists('deviceMatch')) {
             $query = $db->query($sql, $data);
             $row = $query->getRow();
             if (!empty($row->id)) {
-                if ((empty($details->org_id)) or
+                if (
+                    (empty($details->org_id)) or
                     (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                    (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                ) {
                     $details->id = $row->id;
                     $log->device_id = $details->id;
                     $message = new \StdClass();
@@ -1493,14 +1513,16 @@ if (! function_exists('deviceMatch')) {
                 # $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.ip LIKE ? AND devices.ip NOT LIKE '127%' AND devices.ip NOT LIKE '1::%' AND devices.status != 'deleted' and (devices.type = 'unknown' or devices.type = 'unclassified') and devices.serial = ''";
 
                 $sql = "SELECT devices.id, devices.org_id FROM devices LEFT JOIN edit_log ON (devices.id = edit_log.device_id) WHERE devices.ip LIKE ? AND devices.ip NOT LIKE '127%' AND devices.ip NOT LIKE '1::%' AND devices.status != 'deleted' and ((devices.type = 'unknown' or devices.type = 'unclassified') or (edit_log.previous_value IN ('unclassified', 'unknown') and edit_log.source = 'user' and devices.type = edit_log.value)) and devices.serial = ''";
-                
+
                 $data = array(ip_address_to_db($details->ip));
                 $query = $db->query($sql, $data);
                 $row = $query->getRow();
                 if (!empty($row->id)) {
-                    if ((empty($details->org_id)) or
+                    if (
+                        (empty($details->org_id)) or
                         (!empty($details->org_id) and $details->org_id == $row->org_id and ! empty($instance->config->discovery_use_org_id_match) and $instance->config->discovery_use_org_id_match === 'y') or
-                        (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')) {
+                        (empty($instance->config->discovery_use_org_id_match) or $instance->config->discovery_use_org_id_match === 'n')
+                    ) {
                         $details->id = $row->id;
                         $log->device_id = $details->id;
                         $message = new \StdClass();
@@ -1904,7 +1926,7 @@ function audit_format_system($parameters)
         $input->vm_uuid = str_ireplace('-', ' ', $input->vm_uuid);
         $input->vm_uuid = strtolower($input->vm_uuid);
         $input->vm_uuid = str_ireplace(' ', '', $input->vm_uuid);
-        $input->vm_uuid = substr($input->vm_uuid, 0, 8) . '-'. substr($input->vm_uuid, 8, 4) . '-' . substr($input->vm_uuid, 12, 4) . '-' . substr($input->vm_uuid, 16, 4) . '-' . substr($input->vm_uuid, 20, 12);
+        $input->vm_uuid = substr($input->vm_uuid, 0, 8) . '-' . substr($input->vm_uuid, 8, 4) . '-' . substr($input->vm_uuid, 12, 4) . '-' . substr($input->vm_uuid, 16, 4) . '-' . substr($input->vm_uuid, 20, 12);
         $log->severity = 7;
         $log->message = 'Windows VMware style serial detected, creating vm_uuid.';
         $log->command_output .= ' -> ' . $input->vm_uuid;

@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -31,9 +32,11 @@ if (! function_exists('is_private_ip')) {
     {
         $ip = ip_address_to_db($ip);
         $private = false;
-        if (($ip >= '010.000.000.000' and $ip <= '010.255.255.255') ||
+        if (
+            ($ip >= '010.000.000.000' and $ip <= '010.255.255.255') ||
             ($ip >= '172.016.000.000' and $ip <= '172.031.255.255') ||
-            ($ip >= '192.168.000.000' and $ip <= '192.168.255.255')) {
+            ($ip >= '192.168.000.000' and $ip <= '192.168.255.255')
+        ) {
             $private = true;
         }
         return $private;
@@ -155,7 +158,7 @@ if (! function_exists('network_details')) {
         $bin_net = str_pad(mb_substr($bin_host, 0, intval($cdr_nmask)), 32, '0');
         $bin_first = str_pad(mb_substr($bin_net, 0, 31), 32, '1');
         $bin_last = str_pad(mb_substr($bin_bcast, 0, 31), 32, '0');
-        $host_total = bindec(str_pad("", (32-$cdr_nmask), '1')) - 1;
+        $host_total = bindec(str_pad("", (32 - $cdr_nmask), '1')) - 1;
         if ($host_total <= 0) {
             //Takes care of 31 and 32 bit masks.
             $bin_first = "N/A";
@@ -169,20 +172,20 @@ if (! function_exists('network_details')) {
         //Determine Class
         if (preg_match('/^0/', $bin_net)) {
             $class = "A";
-            $dotbin_net = "0".mb_substr(dotbin($bin_net, $cdr_nmask), 1);
+            $dotbin_net = "0" . mb_substr(dotbin($bin_net, $cdr_nmask), 1);
         } elseif (preg_match('/^10/', $bin_net)) {
             $class = "B";
-            $dotbin_net = "10".mb_substr(dotbin($bin_net, $cdr_nmask), 2);
+            $dotbin_net = "10" . mb_substr(dotbin($bin_net, $cdr_nmask), 2);
         } elseif (preg_match('/^110/', $bin_net)) {
             $class = "C";
-            $dotbin_net = "110".mb_substr(dotbin($bin_net, $cdr_nmask), 3);
+            $dotbin_net = "110" . mb_substr(dotbin($bin_net, $cdr_nmask), 3);
         } elseif (preg_match('/^1110/', $bin_net)) {
             $class = "D";
-            $dotbin_net = "1110".mb_substr(dotbin($bin_net, $cdr_nmask), 4);
+            $dotbin_net = "1110" . mb_substr(dotbin($bin_net, $cdr_nmask), 4);
             $special = "Class D = Multicast Address Space.";
         } else {
             $class = "E";
-            $dotbin_net = "1111".mb_substr(dotbin($bin_net, $cdr_nmask), 4);
+            $dotbin_net = "1111" . mb_substr(dotbin($bin_net, $cdr_nmask), 4);
             $special = "Class E = Experimental Address Space.";
         }
 
@@ -243,7 +246,7 @@ if (! function_exists('bintodq')) {
             return $binin;
         }
         $binin = explode(".", chunk_split($binin, 8, "."));
-        for ($i = 0; $i<4; $i++) {
+        for ($i = 0; $i < 4; $i++) {
             $dq[$i] = bindec($binin[$i]);
         }
         return implode(".", $dq);
@@ -285,9 +288,9 @@ if (! function_exists('dotbin')) {
         }
         $oct = rtrim(chunk_split($binin, 8, "."), ".");
         if ($cdr_nmask > 0) {
-            $offset = sprintf("%u", $cdr_nmask/8) + $cdr_nmask;
+            $offset = sprintf("%u", $cdr_nmask / 8) + $cdr_nmask;
 
-            return mb_substr($oct, 0, $offset)."&nbsp;&nbsp;&nbsp;".mb_substr($oct, $offset);
+            return mb_substr($oct, 0, $offset) . "&nbsp;&nbsp;&nbsp;" . mb_substr($oct, $offset);
         } else {
             return $oct;
         }
@@ -299,7 +302,7 @@ if (! function_exists('dqtobin')) {
     {
         if (!empty($dqin)) {
             $dq = explode(".", $dqin);
-            for ($i = 0; $i<4; $i++) {
+            for ($i = 0; $i < 4; $i++) {
                 $bin[$i] = str_pad(decbin(intval($dq[$i])), 8, "0", STR_PAD_LEFT);
             }
             return implode("", $bin);
@@ -344,7 +347,7 @@ if (! function_exists('ip_address_from_db')) {
                 if (!isset($myip[3]) or $myip[3] == "") {
                     $myip[3] = "0";
                 }
-                $ip = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
+                $ip = $myip[0] . '.' . $myip[1] . '.' . $myip[2] . '.' . $myip[3];
             }
             if (stripos($ip, ':') !== false) {
                 // this is an ip v6 address
@@ -364,11 +367,11 @@ if (! function_exists('ip_address_to_db')) {
                 if (filter_var($ip, FILTER_VALIDATE_IP)) {
                     // this is an ip v4 address
                     $myip = explode(".", $ip);
-                    $myip[0] = mb_substr("000".$myip[0], -3);
-                    $myip[1] = mb_substr("000".$myip[1], -3);
-                    $myip[2] = mb_substr("000".$myip[2], -3);
-                    $myip[3] = mb_substr("000".$myip[3], -3);
-                    $ip = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
+                    $myip[0] = mb_substr("000" . $myip[0], -3);
+                    $myip[1] = mb_substr("000" . $myip[1], -3);
+                    $myip[2] = mb_substr("000" . $myip[2], -3);
+                    $myip[3] = mb_substr("000" . $myip[3], -3);
+                    $ip = $myip[0] . '.' . $myip[1] . '.' . $myip[2] . '.' . $myip[3];
                 } else {
                     $ip = '';
                 }
@@ -397,7 +400,7 @@ if (! function_exists('subnet_validate')) {
             $GLOBALS['stash'] = $error;
             return '';
         }
-        
+
         if (strpos($subnet, '/') !== false and strpos($subnet, '-') !== false) {
             // We cannot have both a range AND a slash
             $error->message = 'A subnet cannot contain / and -. Received (' . $subnet . ').';
@@ -426,17 +429,17 @@ if (! function_exists('subnet_validate')) {
         }
 
         $temp = explode('.', $net[0]);
-        for ($i=0; $i < count($temp); $i++) {
+        for ($i = 0; $i < count($temp); $i++) {
             if (strpos($temp[$i], '-') !== false) {
                 $temp2 = explode('-', $temp[$i]);
                 if ($temp2[0] < 0 or $temp2[0] > 255) {
-                    $error->message = "Subnet octet " . ($i+1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
+                    $error->message = "Subnet octet " . ($i + 1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
                     log_message('error', $error->message);
                     $GLOBALS['stash'] = $error;
                     return '';
                 }
                 if ($temp2[1] < 0 or $temp2[1] > 255) {
-                    $error->message = "Subnet octet " . ($i+1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
+                    $error->message = "Subnet octet " . ($i + 1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
                     log_message('error', $error->message);
                     $GLOBALS['stash'] = $error;
                     return '';
@@ -444,7 +447,7 @@ if (! function_exists('subnet_validate')) {
             }
             if (strpos($temp[$i], '-') === false) {
                 if ($temp[$i] < 0 or $temp[$i] > 255) {
-                    $error->message = "Subnet octet " . ($i+1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
+                    $error->message = "Subnet octet " . ($i + 1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
                     log_message('error', $error->message);
                     $GLOBALS['stash'] = $error;
                     return '';

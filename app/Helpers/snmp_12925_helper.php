@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -13,7 +14,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (strpos($sysDescr, 'HP_3PAR') !== false) {
         $details->type = 'san';
         $explode = explode(',', $sysDescr);
-        for ($i=0; $i < count($explode); $i++) {
+        for ($i = 0; $i < count($explode); $i++) {
             if (strpos($explode[$i], 'HP_3PAR') !== false) {
                 $details->model = trim($explode[$i]);
             }

@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -129,7 +130,7 @@ if (!function_exists('response_create')) {
                     exit();
                 } else {
                     \Config\Services::session()->setFlashdata('error', $message);
-                    header('Location: '. url_to('home'));
+                    header('Location: ' . url_to('home'));
                     exit();
                 }
             } else {
@@ -242,7 +243,7 @@ if (!function_exists('response_create')) {
                         exit();
                     } else {
                         \Config\Services::session()->setFlashdata('error', $message);
-                        header('Location: ' . url_to($response->meta->collection.'Collection'));
+                        header('Location: ' . url_to($response->meta->collection . 'Collection'));
                         exit();
                     }
                 # } else if (!in_array($response->meta->received_data->access_token, $instance->user->access_token)) {
@@ -258,7 +259,7 @@ if (!function_exists('response_create')) {
                         exit();
                     } else {
                         \Config\Services::session()->setFlashdata('error', $message);
-                        header('Location: ' . url_to($response->meta->collection.'Collection'));
+                        header('Location: ' . url_to($response->meta->collection . 'Collection'));
                         exit();
                     }
                 }
@@ -396,7 +397,7 @@ if (!function_exists('response_create')) {
                 if (empty($_SESSION['error'])) {
                     \Config\Services::session()->setFlashdata('error', $message);
                 }
-                header('Location: ' . url_to($response->meta->collection.'Collection'));
+                header('Location: ' . url_to($response->meta->collection . 'Collection'));
                 exit();
             }
         }
@@ -416,8 +417,10 @@ if (!function_exists('response_create')) {
             $query_string = $response->meta->query_string;
             unset($response->meta->query_string);
             $function = $response->meta->collection . '_' . $response->meta->action;
-            if (!in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
-                !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
+            if (
+                !in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
+                !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))
+            ) {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
@@ -505,8 +508,10 @@ if (!function_exists('response_create')) {
                 $sql = "DELETE FROM enterprise WHERE DATE(timestamp) < SUBDATE(CURDATE(), 0)";
                 $db->query($sql);
             }
-            if (!in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
-                !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))) {
+            if (
+                !in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
+                !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))
+            ) {
                 $response->meta->received_data = $received_data;
             }
             if ($function === 'configuration_update' and $response->meta->id === $config->license_eula_id) {
@@ -650,7 +655,7 @@ if (!function_exists('response_get_query_filter')) {
                 $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $query->name);
                 $query->function = 'where';
                 $query->operator = '';
-                $query->value = str_replace($query->name.'=', '', $item);
+                $query->value = str_replace($query->name . '=', '', $item);
 
                 if (strtolower(substr($query->value, 0, 8)) === 'not like') {
                     $query->value = substr($query->value, 8);
@@ -699,7 +704,7 @@ if (!function_exists('response_get_query_filter')) {
                     $query->operator = '=';
                 }
 
-                if (substr($query->value, 0, 3) === 'in(' && strpos($query->value, ')') === strlen($query->value)-1) {
+                if (substr($query->value, 0, 3) === 'in(' && strpos($query->value, ')') === strlen($query->value) - 1) {
                     $query->value = substr($query->value, 2);
                     $query->function = 'whereIn';
                     $query->operator = 'in';
@@ -717,7 +722,7 @@ if (!function_exists('response_get_query_filter')) {
                     }
                 }
 
-                if (is_string($query->value) and substr($query->value, 0, 6) === 'notin(' && strpos($query->value, ')') === strlen($query->value)-1) {
+                if (is_string($query->value) and substr($query->value, 0, 6) === 'notin(' && strpos($query->value, ')') === strlen($query->value) - 1) {
                     $query->value = substr($query->value, 5);
                     $query->function = 'whereNotIn';
                     $query->operator = 'not in';
@@ -737,7 +742,7 @@ if (!function_exists('response_get_query_filter')) {
 
                 // Accept first_seen, last_seen, edited_date and timestamp as numeric unix_timestamp's and convert them to a local timestamp string
                 // TODO - what if we have one of these attributes and our value is in a LIKE array, ie, not a string
-                $item = substr($query->name, strpos($query->name, '.')+1);
+                $item = substr($query->name, strpos($query->name, '.') + 1);
                 if (($item === 'first_seen' or $item === 'last_seen' or $item === 'when' or $item === 'edited_date' or $item === 'timestamp') && is_numeric($query->value)) {
                     if ($query->operator === 'like' or $query->operator === 'not like') {
                         $query->value = str_replace('%', '', $query->value);
@@ -758,7 +763,7 @@ if (!function_exists('response_get_query_filter')) {
             }
         }
         if (!empty($filter)) {
-            log_message('debug', strtoupper($type) .': ' . json_encode($filter));
+            log_message('debug', strtoupper($type) . ': ' . json_encode($filter));
         }
         return $filter;
     }
@@ -1025,7 +1030,7 @@ if (!function_exists('response_get_ids')) {
                 }
                 // Set all values to int's
                 $temp = explode(',', $device_ids);
-                for ($i=0; $i < count($temp); $i++) {
+                for ($i = 0; $i < count($temp); $i++) {
                     $temp[$i] = intval($temp[$i]);
                 }
             } else if (is_array($device_ids)) {
@@ -1374,13 +1379,13 @@ if (!function_exists('response_get_properties')) {
             // }
         }
         if ($properties === 'all' or $properties === '*') {
-            $properties = $collection . '.' . implode(','.$collection.'.', $db->getFieldNames($collection));
+            $properties = $collection . '.' . implode(',' . $collection . '.', $db->getFieldNames($collection));
             $summary = 'Set properties to TABLE ALL.';
         }
         if (!empty($properties)) {
             // Validate the properties are database columns
             $properties = explode(',', $properties);
-            for ($i=0; $i < count($properties); $i++) {
+            for ($i = 0; $i < count($properties); $i++) {
                 if (strpos($properties[$i], '.') !== false) {
                     $temp = explode('.', $properties[$i]);
                     if (!$db->tableExists($temp[0])) {
@@ -1451,7 +1456,7 @@ if (!function_exists('response_get_sort')) {
         $sort = str_replace('+', '', $sort);
         if (!empty($sort)) {
             $properties = explode(',', $sort);
-            for ($i=0; $i < count($properties); $i++) {
+            for ($i = 0; $i < count($properties); $i++) {
                 $field = $properties[$i];
                 if (substr($field, 0, 1) === '-') {
                     $field = substr($field, 1);
