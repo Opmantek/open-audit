@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,7 +7,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use \stdClass;
+use stdClass;
 
 /**
  * PHP version 7.4
@@ -282,7 +283,7 @@ class Devices extends BaseController
         unset($string);
         unset($command);
         unset($return_var);
-        for ($i=0; $i < count($nodes); $i++) {
+        for ($i = 0; $i < count($nodes); $i++) {
             $nodes[$i]['org_id'] = intval($this->resp->meta->received_data->attributes->org_id);
             $nodes[$i]['location_id'] = intval($this->resp->meta->received_data->attributes->location_id);
         }

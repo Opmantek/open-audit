@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -7,14 +8,9 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
-
-use \FilesystemIterator;
-
-use \stdClass;
-
-
+use FilesystemIterator;
+use stdClass;
 use Aws\Ec2\Ec2Client;
-
 use Google\Auth\CredentialsLoader;
 use Google\Auth\Middleware\AuthTokenMiddleware;
 use GuzzleHttp\Client;
@@ -44,9 +40,6 @@ use GuzzleHttp\HandlerStack;
  */
 class Cli extends Controller
 {
-
-
-
     public function testBenchmarks()
     {
         helper('components');
@@ -167,12 +160,12 @@ class Cli extends Controller
         }
         arsort($thefiles);
         foreach ($thefiles as $key => $value) {
-            $logMessage = 'keep these key: ' . $key .' value: '. $value;
+            $logMessage = 'keep these key: ' . $key . ' value: ' . $value;
             if ($keep < $count) {
-                $logMessage = 'unlink these key: ' . $key .' value: '. $value;
+                $logMessage = 'unlink these key: ' . $key . ' value: ' . $value;
                 $killme = $logPath . DIRECTORY_SEPARATOR . $key;
                 if (!unlink($killme)) {
-                    log_message('info', 'unable to unlink '. $killme);
+                    log_message('info', 'unable to unlink ' . $killme);
                 }
             }
             log_message('info', $logMessage);

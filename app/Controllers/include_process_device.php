@@ -1,10 +1,11 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 declare(strict_types=1);
 
-$networksModel = new \App\Models\NetworksModel;
+$networksModel = new \App\Models\NetworksModel();
 $devicesModel = new \App\Models\DevicesModel();
 $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 $componentsModel = new \App\Models\ComponentsModel();

@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -211,7 +212,7 @@ abstract class BaseController extends Controller
             $collection = str_replace(' ', '', $collection);
         }
         $namespace = "\\App\\Models\\" . $collection . "Model";
-        $this->{strtolower($this->resp->meta->collection) . "Model"} = new $namespace;
+        $this->{strtolower($this->resp->meta->collection) . "Model"} = new $namespace();
 
         $this->resp->meta->icon = $this->collections->{strtolower($this->resp->meta->collection)}->icon;
 
@@ -230,10 +231,12 @@ abstract class BaseController extends Controller
             $this->dashboards = $this->dashboardsModel->listUser();
         }
 
-        if ($this->resp->meta->format === 'html' and
+        if (
+            $this->resp->meta->format === 'html' and
             $this->resp->meta->action !== 'help' and
             $this->resp->meta->action !== 'dictionary' and
-            $this->resp->meta->action !== 'defaults') {
+            $this->resp->meta->action !== 'defaults'
+        ) {
             $action = $this->resp->meta->permission_requested[$this->resp->meta->action];
 
             if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {

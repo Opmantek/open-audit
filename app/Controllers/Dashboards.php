@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -106,9 +107,9 @@ class Dashboards extends BaseController
         }
         if (empty($this->resp->data)) {
             \Config\Services::session()->setFlashdata('error', 'No data returned when running query.');
-            return redirect()->route($this->resp->meta->collection.'Collection');
+            return redirect()->route($this->resp->meta->collection . 'Collection');
         }
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         $template = $this->resp->meta->collection . ucfirst($this->resp->meta->action);
         $update = false;
         if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false and strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, 'u') !== false) {

@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -49,7 +50,7 @@ class Groups extends BaseController
         }
         if (empty($this->resp->data)) {
             \Config\Services::session()->setFlashdata('error', 'No data returned when running query.');
-            return redirect()->route($this->resp->meta->collection.'Collection');
+            return redirect()->route($this->resp->meta->collection . 'Collection');
         }
         return view('shared/header', [
             'config' => $this->config,

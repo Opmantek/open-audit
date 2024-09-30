@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -30,7 +31,6 @@ namespace App\Controllers;
  */
 class Queries extends BaseController
 {
-
     /**
      * Execute a query
      *
@@ -50,7 +50,7 @@ class Queries extends BaseController
         }
         if (empty($this->resp->data)) {
             \Config\Services::session()->setFlashdata('error', 'No data returned when running query.');
-            return redirect()->route($this->resp->meta->collection.'Collection');
+            return redirect()->route($this->resp->meta->collection . 'Collection');
         }
         if ($query[0]->attributes->advanced !== 'y') {
             $this->resp->data = filter_response($this->resp->data);

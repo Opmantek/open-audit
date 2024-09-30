@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -12,10 +13,9 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
-use \Config\Services;
-
-use \League\OAuth2\Client;
-use \Foxworth42\OAuth2\Client\Provider\Okta;
+use Config\Services;
+use League\OAuth2\Client;
+use Foxworth42\OAuth2\Client\Provider\Okta;
 
 #[\AllowDynamicProperties]
 
@@ -81,7 +81,7 @@ class Logon extends Controller
                 $os = explode('|', $output[1]);
                 $server_platform = $os[0];
             }
-        } else if ($server_os === 'Darwin') {
+        } elseif ($server_os === 'Darwin') {
             $server_platform = 'MacOS';
             $command = "sw_vers | grep \"ProductVersion:\" | cut -d: -f2 | xargs";
             exec($command, $output);
