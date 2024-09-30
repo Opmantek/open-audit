@@ -282,11 +282,11 @@ if (!function_exists('my_snmp_get')) {
                 break;
             
             default:
-                return false;
+                return '';
                 break;
         }
         if (empty($string) && $string !== '0') {
-            return false;
+            return '';
         }
         if ($string === '""') {
             $string = '';
@@ -351,11 +351,11 @@ if (!function_exists('my_snmp_walk')) {
                 break;
             
             default:
-                return false;
+                return array();
                 break;
         }
         if (! is_array($array)) {
-            return false;
+            return array();
         }
         foreach ($array as $key => $value) {
             $value = $value;
@@ -423,11 +423,11 @@ if (!function_exists('my_snmp_real_walk')) {
                 break;
             
             default:
-                return false;
+                return array();
                 break;
         }
         if (! is_array($array)) {
-            return false;
+            return array();
         }
         foreach ($array as $key => $value) {
             $value = $value;
@@ -2166,6 +2166,9 @@ if (!function_exists('ip_enabled')) {
      */
     function ip_enabled($ip_enabled)
     {
+        if (empty($ip_enabled)) {
+            return 'up';
+        }
         switch ($ip_enabled) {
             case '1':
                 $ip_enabled = 'up';
@@ -2212,6 +2215,9 @@ if (!function_exists('if_admin_status')) {
      */
     function if_admin_status($ifadminstatus)
     {
+        if (empty($ifadminstatus)) {
+            return 'up';
+        }
         switch ($ifadminstatus) {
             case '1':
                 $ifadminstatus = 'up';
@@ -2242,6 +2248,9 @@ if (!function_exists('interface_type')) {
      */
     function interface_type($int_type)
     {
+        if (empty($int_type)) {
+            return '';
+        }
         $temp = (string) intval($int_type);
         if ($int_type !== $temp) {
             $int_type = substr($int_type, strpos($int_type, '(')+1);
