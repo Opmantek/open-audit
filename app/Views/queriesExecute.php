@@ -17,9 +17,13 @@ include 'shared/read_functions.php';
                                 <?php foreach ($data[0]->attributes as $key => $value) {
                                     if (strrpos($key, 'ip_padded') === strlen($key)-9) {
                                         continue;
-                                    } ?>
-                                <th><?= collection_column_name($key) ?></th>
-                                <?php } ?>
+                                    }
+                                    if (strpos($key, '.id') !== false) {
+                                        echo '<th class="text-center">' . collection_column_name($key) . "</th>\n";
+                                    } else {
+                                        echo '<th>' . collection_column_name($key) . "</th>\n";
+                                    }
+                                } ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,6 +36,9 @@ include 'shared/read_functions.php';
                                         }
                                         if ($key === 'devices.id') {
                                             echo collection_button_read('devices', $item->id);
+                                        } elseif (strpos($key, '.id') !== false) {
+                                            $temp = explode('.', $key);
+                                            echo collection_button_read($temp[0], $item->attributes->{$key});
                                         } elseif ($key === 'link') {
                                             echo "<td><a href=\"" . base_url() . 'index.php/' . $item->attributes->{$key} . "\" role=\"button\" class=\"btn btn-sm btn-primary\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></td>";
                                         } elseif ((strrpos($key, 'ip') === strlen($key)-2)) {
