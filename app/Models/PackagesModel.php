@@ -230,7 +230,7 @@ class PackagesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'type', 'description', 'orgs.name', 'edited_by', 'edited_date');
+        $dictionary->attributes->collection = array('id', 'name', 'type', 'software_name', 'os', 'description', 'orgs.name', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
@@ -257,7 +257,7 @@ class PackagesModel extends BaseModel
         $dictionary->columns->end_of_life  = 'The software end-of-life date.';
         $dictionary->columns->end_of_service_life  = 'The software end-of-service-life date.';
         $dictionary->columns->type  = 'One of: antivirus, backup, firewall, approved, banned, ignored or other.';
-        $dictionary->columns->os  = 'The OS this package should be reported against. Blank for all. Use the percent sign % as a wildcard. Will be tested against os_family, os_group and os_name in that order.';
+        $dictionary->columns->os  = 'The OS this package should be reported against. Blank for all. Use the percent sign % as a wildcard. Will be tested against os_group, os_family and os_name in that order.';
         $dictionary->columns->sql  = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

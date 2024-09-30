@@ -37,8 +37,6 @@ include 'shared/collection_functions.php';
                                         }
                                         if ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
                                             echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
-                                        } else if ($key === 'packages.type' or $key === 'type') {
-                                            echo "<td><img src=\"" . $meta->baseurl . "icons/" . $item->attributes->{$key} . ".svg\" class=\"img-fluid\" style=\"width: 2em;\" alt=\"" . $item->attributes->{$key} . "\"><span style=\"display:none;\">" . $item->attributes->{$key} . "</span></td>\n";
                                         } else {
                                             echo "<td>" . $item->attributes->{$key} . "</td>\n";
                                         }

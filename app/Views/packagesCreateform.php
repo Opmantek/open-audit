@@ -35,7 +35,9 @@ include 'shared/create_functions.php';
                                 </div>
 
                                 <?= create_text_field('data[attributes][software_name]', __('Software Name'), $dictionary->attributes->create) ?>
+                                <!--
                                 <?= create_text_field('data[attributes][software_version]', __('Software Version'), $dictionary->attributes->create) ?>
+                                -->
 
                                 <br>
                                 <div class="row">
