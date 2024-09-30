@@ -200,7 +200,8 @@ function format_data($result, $type)
                 $item->$key = intval($value);
             } elseif ((strrpos((string)$key, 'ip') === strlen((string)$key)-2) or
                     (strrpos((string)$key, 'next_hop') === strlen((string)$key)-8) or
-                    (strrpos((string)$key, 'destination') === strlen((string)$key)-11)) {
+                    (strrpos((string)$key, 'destination') === strlen((string)$key)-11) or
+                    (string)$key === 'Device IP') {
                 $temp_name = $key . '_padded';
                 $item->$temp_name = ip_address_from_db($value);
                 $item->$temp_name = ip_address_to_db($item->$temp_name);
