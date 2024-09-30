@@ -1,4 +1,5 @@
 <?php
+
 /*
 class.Diff.php
 
@@ -16,7 +17,6 @@ namespace App\Helpers;
 // A class containing functions for computing diffs and formatting the output.
 class Diff
 {
-
   // define the constants
     const UNMODIFIED = 0;
     const DELETED    = 1;
@@ -53,13 +53,13 @@ class Diff
 
         // skip any common prefix
         while ($start <= $end1 && $start <= $end2 and $sequence1[$start] == $sequence2[$start]) {
-            $start ++;
+            $start++;
         }
 
         // skip any common suffix
         while ($end1 >= $start and $end2 >= $start and $sequence1[$end1] == $sequence2[$end2]) {
-            $end1 --;
-            $end2 --;
+            $end1--;
+            $end2--;
         }
 
         // compute the table of longest common subsequence lengths
@@ -70,11 +70,11 @@ class Diff
 
         // generate the full diff
         $diff = array();
-        for ($index = 0; $index < $start; $index ++) {
+        for ($index = 0; $index < $start; $index++) {
             $diff[] = array($sequence1[$index], self::UNMODIFIED);
         }
         while (count($partialDiff) > 0) $diff[] = array_pop($partialDiff);
-        for ($index = $end1 + 1; $index < ($compareCharacters ? strlen($sequence1) : count($sequence1)); $index ++) {
+        for ($index = $end1 + 1; $index < ($compareCharacters ? strlen($sequence1) : count($sequence1)); $index++) {
             $diff[] = array($sequence1[$index], self::UNMODIFIED);
         }
 
@@ -115,11 +115,11 @@ class Diff
         $table = array(array_fill(0, $length2 + 1, 0));
 
         // loop over the rows
-        for ($index1 = 1; $index1 <= $length1; $index1 ++) {
+        for ($index1 = 1; $index1 <= $length1; $index1++) {
             // create the new row
             $table[$index1] = array(0);
             // loop over the columns
-            for ($index2 = 1; $index2 <= $length2; $index2 ++) {
+            for ($index2 = 1; $index2 <= $length2; $index2++) {
                 // store the longest common subsequence length
                 if ($sequence1[$index1 + $start - 1] == $sequence2[$index2 + $start - 1]) {
                     $table[$index1][$index2] = $table[$index1 - 1][$index2 - 1] + 1;
@@ -153,16 +153,16 @@ class Diff
             if ($index1 > 0 && $index2 > 0 and $sequence1[$index1 + $start - 1] == $sequence2[$index2 + $start - 1]) {
                 // update the diff and the indices
                 $diff[] = array($sequence1[$index1 + $start - 1], self::UNMODIFIED);
-                $index1 --;
-                $index2 --;
+                $index1--;
+                $index2--;
             } elseif ($index2 > 0 and $table[$index1][$index2] == $table[$index1][$index2 - 1]) {
                 // update the diff and the indices
                 $diff[] = array($sequence2[$index2 + $start - 1], self::INSERTED);
-                $index2 --;
+                $index2--;
             } else {
                 // update the diff and the indices
                 $diff[] = array($sequence1[$index1 + $start - 1], self::DELETED);
-                $index1 --;
+                $index1--;
             }
         }
         // return the diff
@@ -200,7 +200,7 @@ class Diff
         $string .= $separator;
         // return the string
         return $string;
-  }
+    }
 
   /* Returns a diff as an HTML string, where unmodified lines are contained
    * within 'span' elements, deletions are contained within 'del' elements, and
@@ -210,34 +210,33 @@ class Diff
    * $separator - the separator between lines; this optional parameter defaults
    *              to '<br>'
    */
-  public static function toHTML($diff, $separator = '<br>'){
+    public static function toHTML($diff, $separator = '<br>')
+    {
 
-    // initialise the HTML
-    $html = '';
+        // initialise the HTML
+        $html = '';
 
-    // loop over the lines in the diff
-    foreach ($diff as $line){
-
-      // extend the HTML with the line
-      switch ($line[1]){
-        case self::UNMODIFIED : $element = 'span'; break;
-        case self::DELETED    : $element = 'del';  break;
-        case self::INSERTED   : $element = 'ins';  break;
-      }
-      $html .=
-          '<' . $element . '>'
-          . htmlspecialchars($line[0])
-          . '</' . $element . '>';
-
-      // extend the HTML with the separator
-      $html .= $separator;
-
+        // loop over the lines in the diff
+        foreach ($diff as $line) {
+        // extend the HTML with the line
+            switch ($line[1]) {
+                case self::UNMODIFIED:
+                    $element = 'span';
+                    break;
+                case self::DELETED:
+                    $element = 'del';
+                    break;
+                case self::INSERTED:
+                    $element = 'ins';
+                    break;
+            }
+            $html .= '<' . $element . '>' . htmlspecialchars($line[0]) . '</' . $element . '>';
+            // extend the HTML with the separator
+            $html .= $separator;
+        }
+        // return the HTML
+        return $html;
     }
-
-    // return the HTML
-    return $html;
-
-  }
 
   /* Returns a diff as an HTML table. The parameters are:
    *
@@ -247,75 +246,66 @@ class Diff
    * $separator   - the separator between lines; this optional parameter
    *                defaults to '<br>'
    */
-  public static function toTable($diff, $indentation = '', $separator = '<br>'){
+    public static function toTable($diff, $indentation = '', $separator = '<br>')
+    {
 
-    // initialise the HTML
-    $html = $indentation . "<table class=\"diff\">\n";
+        // initialise the HTML
+        $html = $indentation . "<table class=\"diff\">\n";
 
-    // loop over the lines in the diff
-    $index = 0;
-    while ($index < count($diff)){
+        // loop over the lines in the diff
+        $index = 0;
+        while ($index < count($diff)) {
+            // determine the line type
+            switch ($diff[$index][1]) {
+                // display the content on the left and right
+                case self::UNMODIFIED:
+                    $leftCell =
+                    self::getCellContent($diff, $indentation, $separator, $index, self::UNMODIFIED);
+                    $rightCell = $leftCell;
+                    break;
 
-      // determine the line type
-      switch ($diff[$index][1]){
+                // display the deleted on the left and inserted content on the right
+                case self::DELETED:
+                    $leftCell =
+                    self::getCellContent($diff, $indentation, $separator, $index, self::DELETED);
+                    $rightCell =
+                    self::getCellContent($diff, $indentation, $separator, $index, self::INSERTED);
+                    break;
 
-        // display the content on the left and right
-        case self::UNMODIFIED:
-          $leftCell =
-              self::getCellContent(
-                  $diff, $indentation, $separator, $index, self::UNMODIFIED);
-          $rightCell = $leftCell;
-          break;
+                // display the inserted content on the right
+                case self::INSERTED:
+                    $leftCell = '';
+                    $rightCell =
+                    self::getCellContent($diff, $indentation, $separator, $index, self::INSERTED);
+                    break;
+            }
 
-        // display the deleted on the left and inserted content on the right
-        case self::DELETED:
-          $leftCell =
-              self::getCellContent(
-                  $diff, $indentation, $separator, $index, self::DELETED);
-          $rightCell =
-              self::getCellContent(
-                  $diff, $indentation, $separator, $index, self::INSERTED);
-          break;
-
-        // display the inserted content on the right
-        case self::INSERTED:
-          $leftCell = '';
-          $rightCell =
-              self::getCellContent(
-                  $diff, $indentation, $separator, $index, self::INSERTED);
-          break;
-
-      }
-
-      // extend the HTML with the new row
-      $html .=
-          $indentation
-          . "  <tr>\n"
-          . $indentation
-          . '    <td class="diff'
-          . ($leftCell == $rightCell
-              ? 'Unmodified'
-              : ($leftCell == '' ? 'Blank' : 'Deleted'))
-          . '">'
-          . $leftCell
-          . "</td>\n"
-          . $indentation
-          . '    <td class="diff'
-          . ($leftCell == $rightCell
-              ? 'Unmodified'
-              : ($rightCell == '' ? 'Blank' : 'Inserted'))
-          . '">'
-          . $rightCell
-          . "</td>\n"
-          . $indentation
-          . "  </tr>\n";
-
+            // extend the HTML with the new row
+            $html .=
+              $indentation
+              . "  <tr>\n"
+              . $indentation
+              . '    <td class="diff'
+              . ($leftCell == $rightCell
+                  ? 'Unmodified'
+                  : ($leftCell == '' ? 'Blank' : 'Deleted'))
+              . '">'
+              . $leftCell
+              . "</td>\n"
+              . $indentation
+              . '    <td class="diff'
+              . ($leftCell == $rightCell
+                  ? 'Unmodified'
+                  : ($rightCell == '' ? 'Blank' : 'Inserted'))
+              . '">'
+              . $rightCell
+              . "</td>\n"
+              . $indentation
+              . "  </tr>\n";
+        }
+        // return the HTML
+        return $html . $indentation . "</table>\n";
     }
-
-    // return the HTML
-    return $html . $indentation . "</table>\n";
-
-  }
 
   /* Returns the content of the cell, for use in the toTable function. The
    * parameters are:
@@ -326,27 +316,16 @@ class Diff
    * $index       - the current index, passes by reference
    * $type        - the type of line
    */
-  private static function getCellContent(
-      $diff, $indentation, $separator, &$index, $type){
-
-    // initialise the HTML
-    $html = '';
-
-    // loop over the matching lines, adding them to the HTML
-    while ($index < count($diff) && $diff[$index][1] == $type){
-      $html .=
-          '<span>'
-          . htmlspecialchars($diff[$index][0])
-          . '</span>'
-          . $separator;
-      $index ++;
+    private static function getCellContent($diff, $indentation, $separator, &$index, $type)
+    {
+        // initialise the HTML
+        $html = '';
+        // loop over the matching lines, adding them to the HTML
+        while ($index < count($diff) && $diff[$index][1] == $type) {
+            $html .= '<span>' . htmlspecialchars($diff[$index][0]) . '</span>' . $separator;
+            $index++;
+        }
+        // return the HTML
+        return $html;
     }
-
-    // return the HTML
-    return $html;
-
-  }
-
 }
-
-?>

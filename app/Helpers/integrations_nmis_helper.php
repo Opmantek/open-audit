@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -40,7 +41,7 @@ if (!function_exists('generate_token')) {
             $message = 'One of the auth methods must be set to token for NMIS integrations to work without a username and password.';
             log_message('error', $message);
         }
-        $files = array(ROOTPATH . 'other/generate_auth_token.pl', $bin.'generate_auth_token.exe', $bin.'generate_auth_token.pl');
+        $files = array(ROOTPATH . 'other/generate_auth_token.pl', $bin . 'generate_auth_token.exe', $bin . 'generate_auth_token.pl');
         foreach ($files as $file) {
             if (file_exists($file)) {
                 log_message('debug', 'Using ' . $file . ' to generate token.');
@@ -649,7 +650,7 @@ if (!function_exists('integrations_collection')) {
         if ($integration->attributes->select_external_type === 'attribute') {
             foreach ($external_devices as $key => $value) {
                 $value = array_reduce(explode('.', $integration->attributes->select_external_attribute), function ($previous, $current) {
-                    return isset($previous->$current) && !empty($previous->$current)? $previous->$current: null;
+                    return isset($previous->$current) && !empty($previous->$current) ? $previous->$current : null;
                 }, $value);
                 if ((string)$value !== (string)$integration->attributes->select_external_value) {
                     unset($external_devices[$key]);

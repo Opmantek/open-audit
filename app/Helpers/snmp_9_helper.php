@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -40,56 +41,56 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (stripos((string)$i, "IOS") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS';
-        $details->os_name = "Cisco IOS ".$details->os_version;
+        $details->os_name = "Cisco IOS " . $details->os_version;
         $details->os_cpe_name = 'ios';
     }
     if (stripos($details->description, "Cisco IOS Software") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS';
-        $details->os_name = "Cisco IOS ".$details->os_version;
+        $details->os_name = "Cisco IOS " . $details->os_version;
         $details->os_cpe_name = 'ios';
     }
     if (stripos($details->description, "IOS-XE Software") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS-XE';
-        $details->os_name = "Cisco IOS-XE ".$details->os_version;
+        $details->os_name = "Cisco IOS-XE " . $details->os_version;
         $details->os_cpe_name = 'ios_xe';
     }
     if (stripos($details->description, "Cisco Internetwork Operating System Software") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS';
-        $details->os_name = "Cisco IOS ".$details->os_version;
+        $details->os_name = "Cisco IOS " . $details->os_version;
         $details->os_cpe_name = 'ios';
     }
     if (stripos((string)$i, "Catalyst Operating") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS ".$details->os_version;
+        $details->os_name = "Cisco Catalyst OS " . $details->os_version;
         $details->os_cpe_name = 'ios_xe';
     }
     if (stripos($details->description, "Catalyst") !== false and stripos($details->description, "L3 Switch Software") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS ".$details->os_version;
+        $details->os_name = "Cisco Catalyst OS " . $details->os_version;
         $details->os_cpe_name = 'ios_xe';
     }
     if (stripos($details->description, "Cisco Systems WS-C") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS ".$details->os_version;
+        $details->os_name = "Cisco Catalyst OS " . $details->os_version;
         $details->os_cpe_name = 'ios_xe';
     }
     if (stripos($details->description, "Cisco Systems, Inc. WS-C") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS ".$details->os_version;
+        $details->os_name = "Cisco Catalyst OS " . $details->os_version;
         $details->os_cpe_name = 'ios_xe';
     }
     if (empty($details->os_group)) {
         if (stripos($details->description, 'NX-OS')) {
             $details->os_group = 'Cisco';
             $details->os_family = 'Cisco Nexus OS';
-            $details->os_name = "Cisco Nexus OS ".$details->os_version;
+            $details->os_name = "Cisco Nexus OS " . $details->os_version;
             $details->os_cpe_name = 'nx-os';
         }
     }

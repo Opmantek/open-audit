@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -16,7 +17,7 @@ function simpleDecrypt(string $message = '', string $key = ''): string
     if (empty($message) or empty($key)) {
         return '';
     }
-    $key = mb_substr("00000000000000000000000000000000".$key, -32);
+    $key = mb_substr("00000000000000000000000000000000" . $key, -32);
     $message = hex2bin($message);
     $nonce = mb_substr($message, 0, 24, '8bit');
     $ciphertext = mb_substr($message, 24, strlen($message), '8bit');
@@ -41,7 +42,7 @@ function simpleDecrypt(string $message = '', string $key = ''): string
  */
 function simpleEncrypt(string $message = '', string $key = ''): string
 {
-    $key = mb_substr("00000000000000000000000000000000".$key, -32);
+    $key = mb_substr("00000000000000000000000000000000" . $key, -32);
     $nonce = random_bytes(24);
     // Use the Sodium Compat library
     // $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $nonce, $nonce, $key);

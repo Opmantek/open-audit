@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -158,7 +159,7 @@ function version_padded($version)
                 if (strlen($p) > 10) {
                     $version_padded .= $p;
                 } else {
-                    $version_padded .= mb_substr("00000000000000000000".$p, -10);
+                    $version_padded .= mb_substr("00000000000000000000" . $p, -10);
                 }
             }
         }
@@ -823,7 +824,7 @@ if (! function_exists('weight')) {
             case 'nmap':
                 $weight = 6000;
                 break;
-            
+
             default:
                 $weight = 10000;
                 break;

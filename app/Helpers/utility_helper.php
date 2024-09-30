@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -53,7 +54,7 @@ function nmapInstalled($setNotice = false)
         }
         unset($test_path);
         if ($nmap_installed === 'n' and $setNotice) {
-            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a href='" . url_to('helpFAQ') ."?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
+            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a href='" . url_to('helpFAQ') . "?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
         }
     }
     if (php_uname('s') !== 'Windows NT') {
@@ -76,7 +77,7 @@ function nmapInstalled($setNotice = false)
             }
         }
         if ($nmap_installed === 'n' and $setNotice) {
-            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Please install it using your package manager.<br />Please see <a href='" . url_to('helpFAQ') ."?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
+            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Please install it using your package manager.<br />Please see <a href='" . url_to('helpFAQ') . "?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
         }
     }
     return $nmap_installed;
@@ -119,7 +120,7 @@ function nmapSuid($setNotice = false)
         }
     }
     if ($suid === 'n' and $setNotice) {
-        \Config\Services::session()->setFlashdata('error', "WARNING - Nmap SUID not set.<br />Please see <a href='" . url_to('helpFAQ') ."?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to configure it.");
+        \Config\Services::session()->setFlashdata('error', "WARNING - Nmap SUID not set.<br />Please see <a href='" . url_to('helpFAQ') . "?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to configure it.");
     }
     return $suid;
 }
@@ -192,16 +193,20 @@ function format_data($result, $type)
             if (in_array($column, $names)) {
                 // If we have one of the above named columns, it is an integer
                 $item->$key = intval($value);
-            } elseif ((strrpos((string)$key, '_id') === strlen((string)$key)-3) or
-                        (strrpos((string)$key, '_count') === strlen((string)$key)-6) or
-                        (strrpos((string)$key, '_percent') === strlen((string)$key)-8) or
-                        (strrpos((string)$key, '_size') === strlen((string)$key)-5)) {
+            } elseif (
+                (strrpos((string)$key, '_id') === strlen((string)$key) - 3) or
+                (strrpos((string)$key, '_count') === strlen((string)$key) - 6) or
+                (strrpos((string)$key, '_percent') === strlen((string)$key) - 8) or
+                (strrpos((string)$key, '_size') === strlen((string)$key) - 5)
+            ) {
                 // If the name of the key ends with any of the above, it is an integer
                 $item->$key = intval($value);
-            } elseif ((strrpos((string)$key, 'ip') === strlen((string)$key)-2) or
-                    (strrpos((string)$key, 'next_hop') === strlen((string)$key)-8) or
-                    (strrpos((string)$key, 'destination') === strlen((string)$key)-11) or
-                    (string)$key === 'Device IP') {
+            } elseif (
+                (strrpos((string)$key, 'ip') === strlen((string)$key) - 2) or
+                (strrpos((string)$key, 'next_hop') === strlen((string)$key) - 8) or
+                (strrpos((string)$key, 'destination') === strlen((string)$key) - 11) or
+                (string)$key === 'Device IP'
+            ) {
                 $temp_name = $key . '_padded';
                 $item->$temp_name = ip_address_from_db($value);
                 $item->$temp_name = ip_address_to_db($item->$temp_name);
@@ -210,16 +215,16 @@ function format_data($result, $type)
                     unset($item->$temp_name);
                 }
             }
-            if (strrpos((string)$key, 'device_id') === strlen((string)$key)-9) {
+            if (strrpos((string)$key, 'device_id') === strlen((string)$key) - 9) {
                 $item->{'devices.id'} = intval($value);
             }
-            if (strrpos((string)$key, 'org_id') === strlen((string)$key)-6) {
+            if (strrpos((string)$key, 'org_id') === strlen((string)$key) - 6) {
                 $item->{'orgs.id'} = intval($value);
             }
-            if (strrpos((string)$key, 'location_id') === strlen((string)$key)-11) {
+            if (strrpos((string)$key, 'location_id') === strlen((string)$key) - 11) {
                 $item->{'locations.id'} = intval($value);
             }
-            if ($key === 'ip' or strrpos((string)$key, '.ip') === strlen((string)$key)-3 or strrpos((string)$key, '_ip') === strlen((string)$key)-3) {
+            if ($key === 'ip' or strrpos((string)$key, '.ip') === strlen((string)$key) - 3 or strrpos((string)$key, '_ip') === strlen((string)$key) - 3) {
                 $item->{$key . '_padded'} = $value;
                 $item->{$key} = ip_address_from_db($value);
             }
@@ -482,8 +487,8 @@ function format_data($result, $type)
         $item->id = '';
         if (isset($entry->id) and $entry->id != '') {
             $item->id = intval($entry->id);
-        } elseif (!empty($entry->{$type.".id"})) {
-            $item->id = intval($entry->{$type.".id"});
+        } elseif (!empty($entry->{$type . ".id"})) {
+            $item->id = intval($entry->{$type . ".id"});
         } elseif (!empty($entry->{'devices.id'})) {
             $item->id = intval($entry->{'devices.id'});
         } elseif ($type == 'errors') {

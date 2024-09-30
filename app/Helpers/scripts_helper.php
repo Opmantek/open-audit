@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -52,7 +53,7 @@ if (!function_exists('scripts_options')) {
         $options['audit_win32_product']->type = 'select';
         $options['audit_win32_product']->values = 'y,n';
 
-        $options['create_file'] = new stdClass;
+        $options['create_file'] = new \stdClass();
         $options['create_file']->name = 'create_file';
         $options['create_file']->default = 'n';
         $options['create_file']->help = 'Should we create a file based on the audit result.';
@@ -66,7 +67,7 @@ if (!function_exists('scripts_options')) {
         $options['debugging']->type = 'select';
         $options['debugging']->values = '0,1,2,3';
 
-        $options['details_to_lower'] = new stdClass;
+        $options['details_to_lower'] = new \stdClass();
         $options['details_to_lower']->name = 'details_to_lower';
         $options['details_to_lower']->default = 'y';
         $options['details_to_lower']->help = 'Should we convert the hostname to lower.';

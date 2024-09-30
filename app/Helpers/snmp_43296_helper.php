@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -29,7 +30,7 @@ $get_modules = function ($ip, $credentials, $discovery_id, $device_id) {
         foreach ($modules_list as $key => $value) {
             $module = new \StdClass();
             $index = str_replace('.1.3.6.1.4.1.43296.3.1.5.1.1.', '', $key);
-            $module->description = 'Line Card - ' . $value . ' - ' . $names['.1.3.6.1.4.1.43296.3.1.5.1.2.'.$index];
+            $module->description = 'Line Card - ' . $value . ' - ' . $names['.1.3.6.1.4.1.43296.3.1.5.1.2.' . $index];
             $module->module_index = $index;
             $module->object_ident = $key;
             $module->contained_in = '';
@@ -61,14 +62,14 @@ $get_modules = function ($ip, $credentials, $discovery_id, $device_id) {
         foreach ($modules_list as $key => $value) {
             $module = new \StdClass();
             $index = str_replace('.1.3.6.1.4.1.43296.3.1.6.1.1.', '', $key);
-            $module->description = 'Module - ' . $value . ' - ' . $names['.1.3.6.1.4.1.43296.3.1.6.1.2.'.$index];
+            $module->description = 'Module - ' . $value . ' - ' . $names['.1.3.6.1.4.1.43296.3.1.6.1.2.' . $index];
             $module->module_index = $index;
             $module->object_ident = $key;
-            $module->contained_in = $boards['.1.3.6.1.4.1.43296.3.1.6.1.3.'.$index];
+            $module->contained_in = $boards['.1.3.6.1.4.1.43296.3.1.6.1.3.' . $index];
             $module->class = '9';
             $module->class_text = 'module';
             $module->hardware_revision = '';
-            $module->firmware_revision = $functions['.1.3.6.1.4.1.43296.3.1.6.1.4.'.$index];
+            $module->firmware_revision = $functions['.1.3.6.1.4.1.43296.3.1.6.1.4.' . $index];
             $module->software_revision = '';
             $module->serial = '';
             $module->asset_ident = '';
@@ -87,7 +88,7 @@ $get_modules = function ($ip, $credentials, $discovery_id, $device_id) {
         foreach ($modules_list as $key => $value) {
             $module = new \StdClass();
             $index = str_replace('.1.3.6.1.4.1.43296.3.3.1.1.', '', $key);
-            $module->description = 'Power Supply - ' . $value . ' - ' . $names['.1.3.6.1.4.1.43296.3.3.1.2.'.$index];
+            $module->description = 'Power Supply - ' . $value . ' - ' . $names['.1.3.6.1.4.1.43296.3.3.1.2.' . $index];
             $module->module_index = $index;
             $module->object_ident = $key;
             $module->contained_in = '';
@@ -116,7 +117,7 @@ $get_modules = function ($ip, $credentials, $discovery_id, $device_id) {
         foreach ($modules_list as $key => $value) {
             $module = new \StdClass();
             $index = str_replace('.1.3.6.1.4.1.43296.3.4.1.2.', '', $key);
-            $module->description = 'Port - ' . $value . ' - ' . $names['.1.3.6.1.4.1.43296.3.4.1.3.'.$index] . ' at ' . $speeds['.1.3.6.1.4.1.43296.3.4.1.9.'.$index] . ' Mpbs';
+            $module->description = 'Port - ' . $value . ' - ' . $names['.1.3.6.1.4.1.43296.3.4.1.3.' . $index] . ' at ' . $speeds['.1.3.6.1.4.1.43296.3.4.1.9.' . $index] . ' Mpbs';
             $module->module_index = $index;
             $module->object_ident = $key;
             $module->contained_in = '';

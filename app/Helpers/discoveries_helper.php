@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -453,7 +454,7 @@ if (! function_exists('ip_scan')) {
                 $discoveryLogModel->create($log);
                 // Log end of audit for this IP
                 $log->command = 'Peak Memory';
-                $log->command_output = round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB';
+                $log->command_output = round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB';
                 $log->command_status = 'device complete';
                 $log->command_time_to_execute = microtime(true)  - $start;
                 $log->message = 'IP scan finish on device ' . ip_address_from_db($ip);
@@ -736,7 +737,7 @@ if (! function_exists('check_nmap_output')) {
                             }
                             $ssh_ports = explode(',', $discovery->scan_options->ssh_ports);
                             foreach ($ssh_ports as $ssh_port) {
-                                if ($keywords[0] === $ssh_port.'/tcp') {
+                                if ($keywords[0] === $ssh_port . '/tcp') {
                                     $device['ssh_status'] = 'true';
                                     $log->message = 'Host ' . $ip . ' is up, received custom ssh port ' . $keywords[0] . ' ' . $status . ') response';
                                 }
@@ -1027,13 +1028,15 @@ if (! function_exists('ip_audit')) {
         if (empty($device->manufacturer)) {
             $device->manufacturer = '';
         }
-        if (!empty($device->type)
+        if (
+                !empty($device->type)
                 and $device->type !== 'computer'
                 and $device->type !== 'unknown'
                 and $device->type !== 'unclassified'
                 and stripos($device->os_name, 'dd-wrt') === false
                 and stripos($device->manufacturer, 'Ubiquiti') === false
-                and stripos($device->manufacturer, 'Synology') === false) {
+                and stripos($device->manufacturer, 'Synology') === false
+        ) {
             $log->message = 'Not a computer and not a DD-WRT or Ubiquiti or Synology device setting SSH status to false for ' . $device->ip;
             $log->severity = 5;
             $discoveryLogModel->create($log);
@@ -1774,7 +1777,7 @@ if (! function_exists('ip_audit')) {
             $log->severity = 7;
             $log->message = 'Attempt to delete temp audit script succeeded';
             $log->command_status = 'notice';
-            $log->command = "unlink('" . $temp_audit_script ."')";
+            $log->command = "unlink('" . $temp_audit_script . "')";
             $test = false;
             if ($instance->config->server_os === 'Windows NT') {
                 $temp = explode(DIRECTORY_SEPARATOR, $temp_audit_script);
@@ -2108,7 +2111,7 @@ if (! function_exists('ip_audit')) {
         $instance->devicesModel->setIdentification($device->id);
 
         $log->command = 'Peak Memory';
-        $log->command_output = round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB';
+        $log->command_output = round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB';
         $log->command_status = 'device complete';
         $log->command_time_to_execute = microtime(true)  - $start;
         $log->message = 'IP Audit finish on device ' . ip_address_from_db($device->ip);

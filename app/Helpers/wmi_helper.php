@@ -1,19 +1,21 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 declare(strict_types=1);
 
-
 if (! function_exists('windows_credentials')) {
     /**
      * Test Windows credentials.
-     * @param     string ip            The target device's ip address
-     * @param     array  credentials   An array of credentials objects
-     * @param     int    discovery_id  The ID of the discovery being run
-     * @return    false|object         A credentials object with an additional flag for 'sudo' and root, or false
+     *
+     * @param string $ip           The target device's ip address
+     * @param array  $credentials  An array of credentials objects
+     * @param int    $discovery_id The ID of the discovery being run
+     *
+     * @return false|object         A credentials object with an additional flag for 'sudo' and root, or false
      */
-    function windows_credentials(string $ip = '', array $credentials = array(), int $discovery_id = null)
+    function windows_credentials(string $ip = '', array $credentials = array(), int $discovery_id = null): bool | object
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
@@ -30,7 +32,7 @@ if (! function_exists('windows_credentials')) {
             return false;
         }
         if (empty($ip) or !filter_var($ip, FILTER_VALIDATE_IP)) {
-            log_message('warning', 'No IP passed or bad IP to windows_credentials ('. $ip . ').');
+            log_message('warning', 'No IP passed or bad IP to windows_credentials (' . $ip . ').');
             return false;
         }
         $log->ip = $ip;
@@ -68,13 +70,15 @@ if (! function_exists('windows_credentials')) {
 if (! function_exists('execute_windows')) {
     /**
      * Execute a command on a Windows device.
-     * @param     string ip            The target device's ip address
-     * @param     object credentials   The credentials object
-     * @param     string command       The command to be run using SSH
-     * @param     int    discovery_id  The ID of the discovery being run
-     * @return    false|array          An array containing the output and status flag, or false
+     *
+     * @param string $ip           The target device's ip address
+     * @param object $credentials  The credentials object
+     * @param string $command      The command to be run using SSH
+     * @param int    $discovery_id The ID of the discovery being run
+     *
+     * @return false|array          An array containing the output and status flag, or false
      */
-    function execute_windows(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null)
+    function execute_windows(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null): bool | array
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \stdClass();
@@ -194,15 +198,17 @@ if (! function_exists('execute_windows')) {
 if (! function_exists('copy_to_windows')) {
     /**
      * Copy a file to the target Windows device (usually the audit script).
-     * @param     string ip            The target device's ip address
-     * @param     object credentials   The credentials object containing the username and password
-     * @param     string share         Our share to use
-     * @param     string source        Where to take the file from
-     * @param     string destination   Where to copy the file to
-     * @param     int    discovery_id  The ID of the discovery being run
-     * @return    bool                 True or False depending on success
+     *
+     * @param string $ip           The target device's ip address
+     * @param object $credentials  The credentials object containing the username and password
+     * @param string $share        Our share to use
+     * @param string $source       Where to take the file from
+     * @param string $destination  Where to copy the file to
+     * @param int    $discovery_id The ID of the discovery being run
+     *
+     * @return bool True or False depending on success
      */
-    function copy_to_windows(string $ip = '', object $credentials = null, string $share = '', string $source = '', string $destination = '', int $discovery_id = null)
+    function copy_to_windows(string $ip = '', object $credentials = null, string $share = '', string $source = '', string $destination = '', int $discovery_id = null): bool
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
@@ -283,7 +289,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command = '';
 
             $log->command = "copy($source, '/tmp/$timestamp/$destination')";
-            if (copy($source, '/tmp/'.$timestamp.'/'.$destination) or die('Could not copy ' . $source . ' to /tmp/' . $timestamp . '/' . $destination)) {
+            if (copy($source, '/tmp/' . $timestamp . '/' . $destination) or die('Could not copy ' . $source . ' to /tmp/' . $timestamp . '/' . $destination)) {
                 $log->message = 'Attempt to copy ' . $destination . ' in wmi_helper::copy_to_windows succeeded.';
                 $discoveryLogModel->create($log);
             } else {
@@ -294,7 +300,7 @@ if (! function_exists('copy_to_windows')) {
             }
             $log->command = '';
 
-            $command = 'umount /private/tmp/'.$timestamp;
+            $command = 'umount /private/tmp/' . $timestamp;
             $log->command = $command;
             exec($command, $output, $return_var);
             if ($return_var != 0) {
@@ -326,7 +332,7 @@ if (! function_exists('copy_to_windows')) {
             }
             $log->command = '';
             $filename = credentials_file($ip, $credentials);
-            $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+            $command = 'smbclient -m SMB2 \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
             $log->command = $command;
             exec($command, $output, $return_var);
             if ($return_var == 0) {
@@ -341,7 +347,7 @@ if (! function_exists('copy_to_windows')) {
                 $log->command_output = json_encode($output);
                 $log->severity = 7;
                 $discoveryLogModel->create($log);
-                $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+                $command = 'smbclient \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
                 $log->command = $command;
                 exec($command, $output, $return_var);
                 if ($return_var == 0) {
@@ -379,7 +385,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command_status = 'fail';
             $log->message = 'Net Use';
             $log->command_output = json_encode($output);
-            if ($output[0] === 'The command completed successfully.' or $return_var === 0) {
+            if ((!empty($output) and is_array($output) and $output[0] === 'The command completed successfully.') or $return_var === 0) {
                 $log->command_status = 'success';
             }
             $discoveryLogModel->create($log);
@@ -391,7 +397,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command_status = 'fail';
             $log->message = 'Copy to ' . $ip;
             $log->command_output = json_encode($output);
-            if (stripos($output[0], 'file(s) copied.') !== false or $return_var === 0) {
+            if ((!empty($output) and is_array($output) and stripos($output[0], 'file(s) copied.') !== false) or $return_var === 0) {
                 $log->command_status = 'success';
                 $return = true;
             }
@@ -404,7 +410,7 @@ if (! function_exists('copy_to_windows')) {
             $log->command_status = 'fail';
             $log->message = 'Net Use Delete';
             $log->command_output = json_encode($output);
-            if (stripos($output[0], 'was deleted successfully') !== false or $return_var === 0) {
+            if ((!empty($output) and is_array($output) and stripos($output[0], 'was deleted successfully') !== false) or $return_var === 0) {
                 $log->command_status = 'success';
             }
             $discoveryLogModel->create($log);
@@ -422,14 +428,16 @@ if (! function_exists('copy_to_windows')) {
 if (! function_exists('delete_windows_result')) {
     /**
      * Delete the audit result from a Windows device.
-     * @param     string ip            The target device's ip address
-     * @param     object credentials   The credentials object containing the username and password
-     * @param     string share         Our share to use
-     * @param     string file          The remote file to delete
-     * @param     int    discovery_id  The ID of the discovery being run
-     * @return    bool                 True or False depending on success
+     *
+     * @param string $ip           The target device's ip address
+     * @param object $credentials  The credentials object containing the username and password
+     * @param string $share        Our share to use
+     * @param string $file         The remote file to delete
+     * @param int    $discovery_id The ID of the discovery being run
+     *
+     * @return bool True or False depending on success
      */
-    function delete_windows_result(string $ip = '', object $credentials = null, string $share = '', string $file = '', int $discovery_id = null)
+    function delete_windows_result(string $ip = '', object $credentials = null, string $share = '', string $file = '', int $discovery_id = null): bool
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
@@ -506,7 +514,7 @@ if (! function_exists('delete_windows_result')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            # Must have paexec
+            // Must have paexec
             if (!file_exists(APPPATH . '..\\other\\paexec.exe')) {
                 $log->message = 'You must have paexec.exe in ' . APPPATH . '..\\open-audit\\other\\';
                 $log->command = '';
@@ -539,13 +547,16 @@ if (! function_exists('delete_windows_result')) {
 if (!function_exists('copy_from_windows')) {
     /**
      * Copy a file from Windows to the Open-AudIT server (usually the audit result file).
-     * @param     string $ip          The target device's ip address
-     * @param     object $credentials The credential set
-     * @param     string $source      The source on the target
-     * @param     string $destination The local destination
-     * @return    bool                True or False depending on success
+     *
+     * @param string $ip           The target device's ip address
+     * @param object $credentials  The credential set
+     * @param string $source       The source on the target
+     * @param string $destination  The local destination
+     * @param int    $discovery_id The ID of the discovery being run
+     *
+     * @return bool True or False depending on success
      */
-    function copy_from_windows(string $ip = '', object $credentials = null, string $source = '', string $destination = '', int $discovery_id = null)
+    function copy_from_windows(string $ip = '', object $credentials = null, string $source = '', string $destination = '', int $discovery_id = null): bool
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
@@ -614,7 +625,7 @@ if (!function_exists('copy_from_windows')) {
             }
             $log->message = 'Attempt to mount admin$ share in wmi_helper::copy_from_windows succeeded.';
             $discoveryLogModel->create($log);
-            if (!copy($source, '/tmp/'.$timestamp.'/'.$destination)) {
+            if (!copy($source, '/tmp/' . $timestamp . '/' . $destination)) {
                 log_message('error', 'Could not copy ' . $source . ' to /tmp/' . $timestamp . '/' . $destination);
                 $log->message = 'Attempt to copy ' . $destination . ' in wmi_helper::copy_from_windows failed.';
                 $log->severity = 5;
@@ -625,8 +636,8 @@ if (!function_exists('copy_from_windows')) {
             $log->message = 'Attempt to copy ' . $destination . ' in wmi_helper::copy_from_windows succeeded.';
             $discoveryLogModel->create($log);
 
-            $command =      'umount /private/tmp/'.$timestamp;
-            $log->command = 'umount /private/tmp/'.$timestamp;
+            $command = 'umount /private/tmp/' . $timestamp;
+            $log->command = 'umount /private/tmp/' . $timestamp;
             exec($command, $output, $return_var);
             if ($return_var != 0) {
                 $log->message = 'Attempt to unmount /private/tmp/' . $timestamp . ' in wmi_helper::copy_from_windows failed.';
@@ -651,7 +662,7 @@ if (!function_exists('copy_from_windows')) {
                 return false;
             }
             $filename = credentials_file($ip, $credentials);
-            $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -A ' . $filename . ' -c "get ' . $source . ' ' . $destination . ' 2>&1"';
+            $command = 'smbclient -m SMB2 \\\\\\\\' . $ip . '\\\\admin\$ -A ' . $filename . ' -c "get ' . $source . ' ' . $destination . ' 2>&1"';
             $log->command = $command;
             $output = '';
             exec($command, $output, $return_var);
@@ -670,7 +681,7 @@ if (!function_exists('copy_from_windows')) {
             $log->command_output = json_encode($output);
             $log->severity = 7;
             $discoveryLogModel->create($log);
-            $command = 'smbclient \\\\\\\\'.$ip.'\\\\admin\$ -A ' . $filename . ' -c "get ' . $source . ' ' . $destination . ' 2>&1"';
+            $command = 'smbclient \\\\\\\\' . $ip . '\\\\admin\$ -A ' . $filename . ' -c "get ' . $source . ' ' . $destination . ' 2>&1"';
             $log->command = $command;
             exec($command, $output, $return_var);
             $log->command_output = json_encode($output);
@@ -750,12 +761,15 @@ if (!function_exists('copy_from_windows')) {
 if (! function_exists('wmi_command')) {
     /**
      * Execute a Windows command on the target Windows device.
-     * @param     string ip           The target device's ip address
-     * @param     object credentials  The credentials object containing the username and password
-     * @param     string command      The command to be run
-     * @return    bool|array          An array containing the output and status flag, or false
+     *
+     * @param string $ip           The target device's ip address
+     * @param object $credentials  The credentials object containing the username and password
+     * @param string $command      The command to be run
+     * @param int    $discovery_id The ID of the discovery being run
+     *
+     * @return bool|array An array containing the output and status flag, or false
      */
-    function wmi_command(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null)
+    function wmi_command(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null): bool | array
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
@@ -809,7 +823,7 @@ if (! function_exists('wmi_command')) {
         if (php_uname('s') == 'Linux') {
             $filepath = APPPATH . '../other';
             $filename = credentials_file($ip, $credentials);
-            $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //".$ip." \"wmic $command\" 2>&1";
+            $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //" . $ip . " \"wmic $command\" 2>&1";
             $log->command   = $command_string;
             $log->message = 'Using credentials named ' . $credentials->name . ' to execute command using winexe-static-2';
             exec($command_string, $return['output'], $return['status']);
@@ -838,10 +852,12 @@ if (! function_exists('wmi_command')) {
             }
             unset($temp);
             $password = $credentials->credentials->password;
-            # $ doesn't require escaping
-            # ' doesn't require escaping when using "password"
-            # " doesn't seem to work even when escaped using \"
-            # | can only be escaped by "
+            /*
+            $ doesn't require escaping
+            ' doesn't require escaping when using "password"
+            " doesn't seem to work even when escaped using \"
+            | can only be escaped by "
+            */
             if ((strpos($password, '"') !== false) and (strpos($password, "'") !== false)) {
                 $log->severity = 5;
                 $log->message = 'Incompatible password (cannot have " or \' in a wmic password).';
@@ -851,8 +867,8 @@ if (! function_exists('wmi_command')) {
             }
             $log->message = 'Attempting to execute command';
             $log->severity = 7;
-            $log->command = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"' . '*******' . '" ' . $command;
-            $command =      '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"' . $password . '" ' . $command;
+            $log->command = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain . $username . '" /password:"' . '*******' . '" ' . $command;
+            $command =      '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain . $username . '" /password:"' . $password . '" ' . $command;
             $item_start = microtime(true);
             exec($command, $return['output'], $return['status']);
             if (empty($return['output'][0])) {
@@ -876,12 +892,14 @@ if (! function_exists('wmi_command')) {
 if (!function_exists('windows_ips_found')) {
     /**
      * Retrieve the known IP and Mac addresses from a Windows device's arp table.
-     * @param     string ip            The target device's ip address
-     * @param     object credentials   The credentials object containing the username and password
-     * @param     int    discovery_id  The ID of the discovery being run
-     * @return    bool|array           An array of discovered IP Addresses, or false
+     *
+     * @param string $ip           The target device's ip address
+     * @param object $credentials  The credentials object containing the username and password
+     * @param int    $discovery_id The ID of the discovery being run
+     *
+     * @return bool|array An array of discovered IP Addresses, or false
      */
-    function windows_ips_found(string $ip = '', object $credentials = null, int $discovery_id = null)
+    function windows_ips_found(string $ip = '', object $credentials = null, int $discovery_id = null): bool | array
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \stdClass();
@@ -927,11 +945,13 @@ if (!function_exists('windows_ips_found')) {
 if (!function_exists('credentials_file')) {
     /**
      * Create our credentials file on disk and return the full path + filename.
-     * @param     string ip           The target device's ip address
-     * @param     object credentials  The credentials object containing the username and password
-     * @return    string              The path and filename
+     *
+     * @param string $ip          The target device's ip address
+     * @param object $credentials The credentials object containing the username and password
+     *
+     * @return string The path and filename
      */
-    function credentials_file(string $ip = '', $credentials = null)
+    function credentials_file(string $ip = '', $credentials = null): string
     {
         $filename = str_replace('.', '', microtime());
         $filename = str_replace(' ', '', $filename);
@@ -956,12 +976,14 @@ if (!function_exists('credentials_file')) {
 if (!function_exists('wmi_audit')) {
     /**
      * Our main function to directly retrieve and store attributes from Windows devices.
-     * @param     string ip            The target device's ip address
-     * @param     object credentials   The credentials object containing the username and password
-     * @param     int    discovery_id  The ID of the discovery being run
-     * @return    object               The populated device
+     *
+     * @param string $ip           The target device's ip address
+     * @param object $credentials  The credentials object containing the username and password
+     * @param int    $discovery_id The ID of the discovery being run
+     *
+     * @return object               The populated device
      */
-    function wmi_audit(string $ip = '', object $credentials = null, int $discovery_id = null)
+    function wmi_audit(string $ip = '', object $credentials = null, int $discovery_id = null): object
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
