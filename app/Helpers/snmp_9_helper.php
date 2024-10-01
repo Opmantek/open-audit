@@ -58,6 +58,13 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->os_name = "Cisco IOS-XE " . $details->os_version;
         $details->os_cpe_name = 'ios_xe';
     }
+    if (stripos($details->description, "Cisco Controller") !== false) {
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco IOS-XE';
+        $temp = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.1");
+        $details->os_name = (!empty($temp)) ? "Cisco IOS-XE " . $details->os_version : 'Cisco IOS-XE';
+        $details->os_cpe_name = 'ios_xe';
+    }
     if (stripos($details->description, "Cisco Internetwork Operating System Software") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS';
@@ -167,6 +174,11 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     # 9300
     if (empty($details->os_name)) {
         $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.249.1.1.1.1.2");
+    }
+
+    # Wireless Access Controller 9800
+    if (empty($details->os_version)) {
+        $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.1");
     }
 
     return($details);

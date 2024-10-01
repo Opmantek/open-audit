@@ -614,7 +614,8 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.141.1.1.29': $device->model = 'InfiniStream 2900'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.141.1.1.2990': $device->model = 'InfiniStream 2990'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.1411.102': $device->model = 'Juniper EX2500'; $device->type = 'switch'; break;
-            case '1.3.6.1.4.1.14179.1.1.4.3': $device->model = '4402 WLAN Controller'; $device->type = 'wap'; $device->os_group = 'Cisco'; $device->os_family = 'Cisco IOS'; break;
+            case '1.3.6.1.4.1.14179.1.1.4.3': $device->model = '4402 WLAN Controller'; $device->type = 'wac'; $device->os_group = 'Cisco'; $device->os_family = 'Cisco IOS'; break;
+            case '1.3.6.1.4.1.14179.1.1.4.4': $device->model = 'WS-SVC-WISM-1-K9 WLAN Controller'; $device->type = 'wac'; $device->os_group = 'Cisco'; $device->os_family = 'Cisco IOS'; break;
             case '1.3.6.1.4.1.1429.2.1.6.1.0.2.0.1': $device->model = 'WebSTAR DPC2100 Series'; $device->type = 'cable modem'; break;
             case '1.3.6.1.4.1.1429.2.2.6.2': $device->model = 'D98xx Program Receiver'; $device->type = 'satellite receiver'; break;
             case '1.3.6.1.4.1.14501': $device->model = 'ISG'; $device->type = 'gateway'; break;
@@ -6174,7 +6175,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.9.1.1066': $device->model = 'Cisco UC520'; $device->type = 'voip gateway'; break;
             case '1.3.6.1.4.1.9.1.1067': $device->model = 'Cisco Catalyst 2975 GS48PSL'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.1.1068': $device->model = 'Cisco Catalyst C2975 Stack'; $device->type = 'switch'; break;
-            case '1.3.6.1.4.1.9.1.1069': $device->model = 'Cisco 5500 Wlc'; $device->type = 'router'; break;
+            case '1.3.6.1.4.1.9.1.1069': $device->model = 'Cisco 5500 Wlc'; $device->type = 'wac'; break;
             case '1.3.6.1.4.1.9.1.107': $device->model = 'Cisco LS 1010'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.1.1070': $device->model = 'Cisco SR 520T1'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.1071': $device->model = 'Cisco Pwr C3900Poe'; break;

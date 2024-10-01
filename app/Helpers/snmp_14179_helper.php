@@ -44,5 +44,16 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (!empty($details->serial)) {
         $details->manufacturer = 'Cisco Systems';
     }
+
+    $details->description = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
+    if (!empty($details->description) and stripos($details->description, "Cisco Controller") !== false) {
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco IOS-XE';
+        $temp = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.1");
+        $details->os_version = (!empty($temp)) ? $temp : '';
+        $details->os_name = (!empty($temp)) ? "Cisco IOS-XE " . $temp : 'Cisco IOS-XE';
+        $details->os_cpe_name = 'ios_xe';
+    }
+
     return($details);
 };
