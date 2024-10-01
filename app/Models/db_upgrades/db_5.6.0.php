@@ -2,6 +2,77 @@
 
 $output .= "Upgrade database to 5.6.0 commenced.\n\n";
 
+
+
+if (!$db->fieldExists('circuit_status', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `circuit_status` varchar(100) NOT NULL DEFAULT '' AFTER `service_identifier`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+
+if (!$db->fieldExists('speed', 'connections') and !$db->fieldExists('speed_a_down', 'connections')) {
+    $sql = "ALTER TABLE `connections` CHANGE `speed` `speed_down_a` float(7,3) NOT NULL DEFAULT '0.000'";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('speed_up_a', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_down_a`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('speed_down_b', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `speed_down_b` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_up_a`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('speed_up_b', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `speed_up_b` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_down_b`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('site_hours_a', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `site_hours_a` varchar(200) NOT NULL DEFAULT '' AFTER `ip_address_internal_a`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('site_hours_b', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `site_hours_b` varchar(200) NOT NULL DEFAULT '' AFTER `site_hours_a`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('site_contact_a', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `site_contact_a` varchar(200) NOT NULL DEFAULT '' AFTER `site_hours_b`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('site_contact_b', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `site_contact_b` varchar(200) NOT NULL DEFAULT '' AFTER `site_contact_a`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('service_level_a', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `service_level_a` varchar(200) NOT NULL DEFAULT '' AFTER `site_contact_b`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('service_level_b', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `service_level_b` varchar(200) NOT NULL DEFAULT '' AFTER `service_level_a`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 if (!$db->fieldExists('service_tag', 'devices')) {
     $sql = "ALTER TABLE `devices` ADD `service_tag` varchar(100) NOT NULL DEFAULT '' AFTER `manufacturer_code`";
     $db->query($sql);
