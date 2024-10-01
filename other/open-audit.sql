@@ -314,6 +314,7 @@ INSERT INTO `attributes` VALUES (NULL,1,'devices','type','VoIP Gateway','voip ga
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','VoIP Phone','voip phone','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','VPN Terminator','vpn terminator','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','WAN Accelerator','wan accelerator','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','WAC (Wireless Access Controller)','wac','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','WAP (Wireless Access Point)','wap','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','WDM (Wavelength Division Multiplexer)','wdm','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Web Cache','web cache','system','2000-01-01 00:00:00');

@@ -1,4 +1,5 @@
 <?php
+
 $output .= "Upgrade database to 5.6.0 commenced.\n\n";
 
 if (!$db->fieldExists('service_tag', 'devices')) {
@@ -116,8 +117,6 @@ if (!$db->tableExists('packages')) {
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
-
-
 
     $sql = "INSERT INTO `packages` (SELECT id, name, org_id, description, org_descendants, purchase_count, used_count, match_string, software_name, software_version, expiry_date, end_of_life, end_of_service_life, 'license','Windows','', edited_by, edited_date FROM `licenses`)";
     $db->query($sql);
@@ -735,6 +734,16 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'server_platform','','text','n','system','2000-01-01 00:00:00','The OS Platform Open-AudIT is running on (this server).')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM attributes WHERE name = 'WAC (Wireless Access Controller)'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','WAC (Wireless Access Controller)','wac','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
