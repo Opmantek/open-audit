@@ -1231,15 +1231,15 @@ if (!function_exists('snmp_audit')) {
                 $module = new \StdClass();
                 $module->description = $value;
                 $module->module_index = str_replace('.1.3.6.1.2.1.47.1.1.1.1.2.', '', $key);
-                $module->object_ident = $temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.3.'.$module->module_index];
-                $module->contained_in = $temp_contained_in['.1.3.6.1.2.1.47.1.1.1.1.4.'.$module->module_index];
-                $module->class = $temp_class['.1.3.6.1.2.1.47.1.1.1.1.5.'.$module->module_index];
-                $module->hardware_revision = $temp_hardware_revision['.1.3.6.1.2.1.47.1.1.1.1.8.'.$module->module_index];
-                $module->firmware_revision = $temp_firmware_revision['.1.3.6.1.2.1.47.1.1.1.1.9.'.$module->module_index];
-                $module->software_revision = $temp_software_revision['.1.3.6.1.2.1.47.1.1.1.1.10.'.$module->module_index];
-                $module->serial = $temp_serial_number['.1.3.6.1.2.1.47.1.1.1.1.11.'.$module->module_index];
-                $module->asset_ident = $temp_asset_id['.1.3.6.1.2.1.47.1.1.1.1.15.'.$module->module_index];
-                $module->is_fru = $temp_is_fru['.1.3.6.1.2.1.47.1.1.1.1.16.'.$module->module_index];
+                $module->object_ident = (!empty($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.3.' . $module->module_index])) ? $temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.3.' . $module->module_index] : '';
+                $module->contained_in = (!empty($temp_contained_in['.1.3.6.1.2.1.47.1.1.1.1.4.' . $module->module_index])) ? $temp_contained_in['.1.3.6.1.2.1.47.1.1.1.1.4.' . $module->module_index] : '';
+                $module->class = (!empty($temp_class['.1.3.6.1.2.1.47.1.1.1.1.5.' . $module->module_index])) ? $temp_class['.1.3.6.1.2.1.47.1.1.1.1.5.' . $module->module_index] : '';
+                $module->hardware_revision = (!empty($temp_hardware_revision['.1.3.6.1.2.1.47.1.1.1.1.8.' . $module->module_index])) ? $temp_hardware_revision['.1.3.6.1.2.1.47.1.1.1.1.8.' . $module->module_index] : '';
+                $module->firmware_revision = (!empty($temp_firmware_revision['.1.3.6.1.2.1.47.1.1.1.1.9.' . $module->module_index])) ? $temp_firmware_revision['.1.3.6.1.2.1.47.1.1.1.1.9.' . $module->module_index] : '';
+                $module->software_revision = (!empty($temp_software_revision['.1.3.6.1.2.1.47.1.1.1.1.10.' . $module->module_index])) ? $temp_software_revision['.1.3.6.1.2.1.47.1.1.1.1.10.' . $module->module_index] : '';
+                $module->serial = (!empty($temp_serial_number['.1.3.6.1.2.1.47.1.1.1.1.11.' . $module->module_index])) ? $temp_serial_number['.1.3.6.1.2.1.47.1.1.1.1.11.' . $module->module_index] : '';
+                $module->asset_ident = (!empty($temp_asset_id['.1.3.6.1.2.1.47.1.1.1.1.15.' . $module->module_index])) ? $temp_asset_id['.1.3.6.1.2.1.47.1.1.1.1.15.' . $module->module_index] : '';
+                $module->is_fru = (!empty($temp_is_fru['.1.3.6.1.2.1.47.1.1.1.1.16.' . $module->module_index])) ? $temp_is_fru['.1.3.6.1.2.1.47.1.1.1.1.16.' . $module->module_index] : '';
 
                 if ((string)$module->is_fru === '1') {
                     $module->is_fru = 'y';
