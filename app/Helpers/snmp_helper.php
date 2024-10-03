@@ -334,30 +334,66 @@ if (!function_exists('my_snmp_walk')) {
     {
         $timeout = 30000000;
         $retries = 0;
-        switch ($credentials->credentials->version) {
-            case '1':
-                $array = @snmpwalk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
-                break;
-
-            case '2':
-                $array = @snmp2_walk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
-                break;
-
-            case '3':
-                $sec_name = $credentials->credentials->security_name ?: '';
-                $sec_level = $credentials->credentials->security_level ?: '';
-                $auth_protocol = $credentials->credentials->authentication_protocol ?: '';
-                $auth_passphrase = $credentials->credentials->authentication_passphrase ?: '';
-                $priv_protocol = $credentials->credentials->privacy_protocol ?: '';
-                $priv_passphrase = $credentials->credentials->privacy_passphrase ?: '';
-                $array = @snmp3_walk($ip, $sec_name, $sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, $priv_passphrase, $oid, $timeout, $retries);
-                break;
-
-            default:
-                return false;
-                break;
+        if (!in_array(intval($credentials->credentials->version), [1,2,3])) {
+            log_message('error', 'Invalid SNMP version passed to my_snmp_real_walk');
+            return false;
         }
-        if (! is_array($array)) {
+        if (intval($credentials->credentials->version) === 1) {
+            $array = @snmpwalk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
+        }
+        if (intval($credentials->credentials->version) === 2) {
+            // $array = @snmp2_walk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
+            try {
+                $array = snmp2_walk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
+            } catch (Exception $e) {
+                log_message('debug', 'Attempted PHP SNMP walk (v2) for ' . $oid . ' on ' . $ip . ' resulted in FALSE being returned.');
+            }
+            if (empty($array) and php_uname('s') !== 'Windows NT') {
+                log_message('debug', 'Attempting command line SNMP walk (v2) for ' . $oid . ' on ' . $ip . '.');
+                $timeout = 300000000;
+                $array = array();
+                $command = 'snmpwalk -v2c -On -c ' . escapeshellarg($credentials->credentials->community) . ' ' . escapeshellarg($ip) . ' ' . escapeshellarg($oid);
+                log_message('debug', $command);
+                exec($command, $output, $return_var);
+                log_message('debug', 'CommandOutput: ' . json_encode($output));
+                foreach ($output as $line) {
+                    log_message('debug', 'line: ' . $line);
+                    $temp = explode(' = ', $line);
+                    log_message('debug', 'temp: ' . json_encode($temp));
+                    $thisOid = substr($temp[0], 1);
+                    log_message('debug', 'oid: ' . $thisOid);
+                    $value = '';
+                    if (strpos($temp[1], ':') !== false) {
+                        $values = explode(':', $temp[1]);
+                        log_message('debug', 'values: ' . json_encode($values));
+                        unset($values[0]);
+                        log_message('debug', 'values: ' . json_encode($values));
+                        $value = trim(implode(':', $values), ' "');
+                        log_message('debug', 'value: ' . $value);
+                    }
+                    $array[] = $value;
+                }
+                if (empty($array)) {
+                    log_message('debug', 'Attempted command line SNMP walk (v2) for ' . $oid . ' on ' . $ip . ' failed.');
+                } else {
+                    log_message('debug', 'Attempted command line SNMP walk (v2) for ' . $oid . ' on ' . $ip . ' succeeded.');
+                }
+            }
+            if (empty($array)) {
+                return false;
+            }
+        }
+        if (intval($credentials->credentials->version) === 3) {
+            $sec_name = $credentials->credentials->security_name ?: '';
+            $sec_level = $credentials->credentials->security_level ?: '';
+            $auth_protocol = $credentials->credentials->authentication_protocol ?: '';
+            $auth_passphrase = $credentials->credentials->authentication_passphrase ?: '';
+            $priv_protocol = $credentials->credentials->privacy_protocol ?: '';
+            $priv_passphrase = $credentials->credentials->privacy_passphrase ?: '';
+            $array = @snmp3_walk($ip, $sec_name, $sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, $priv_passphrase, $oid, $timeout, $retries);
+        }
+        if (!is_array($array)) {
+            log_message('debug', 'Attempted SNMP walk (v' . $credentials->credentials->version . ') for ' . $oid . ' on ' . $ip . ' resulted in FALSE being returned.');
             return false;
         }
         foreach ($array as $key => $value) {
@@ -408,30 +444,68 @@ if (!function_exists('my_snmp_real_walk')) {
     {
         $timeout = 30000000;
         $retries = 0;
-        switch ($credentials->credentials->version) {
-            case '1':
-                $array = @snmprealwalk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
-                break;
-
-            case '2':
-                $array = @snmp2_real_walk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
-                break;
-
-            case '3':
-                $sec_name = $credentials->credentials->security_name ?: '';
-                $sec_level = $credentials->credentials->security_level ?: '';
-                $auth_protocol = $credentials->credentials->authentication_protocol ?: '';
-                $auth_passphrase = $credentials->credentials->authentication_passphrase ?: '';
-                $priv_protocol = $credentials->credentials->privacy_protocol ?: '';
-                $priv_passphrase = $credentials->credentials->privacy_passphrase ?: '';
-                $array = @snmp3_real_walk($ip, $sec_name, $sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, $priv_passphrase, $oid, $timeout, $retries);
-                break;
-
-            default:
-                return false;
-                break;
+        if (!in_array(intval($credentials->credentials->version), [1,2,3])) {
+            log_message('error', 'Invalid SNMP version passed to my_snmp_real_walk');
+            return false;
         }
-        if (! is_array($array)) {
+        if (intval($credentials->credentials->version) === 1) {
+            $array = @snmprealwalk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
+        }
+        if (intval($credentials->credentials->version) === 2) {
+            // $array = @snmp2_real_walk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
+            try {
+                $array = snmp2_real_walk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
+            } catch (Exception $e) {
+                log_message('debug', 'Attempted PHP SNMP real walk (v2) for ' . $oid . ' on ' . $ip . ' resulted in FALSE being returned.');
+            }
+            if (empty($array) and php_uname('s') !== 'Windows NT') {
+                // log_message('debug', 'Attempting command line SNMP walk (v2) for ' . $oid . ' on ' . $ip . '.');
+                $timeout = 300000000;
+                $array = array();
+                $command = 'snmpwalk -v2c -On -c ' . escapeshellarg($credentials->credentials->community) . ' ' . escapeshellarg($ip) . ' ' . escapeshellarg($oid);
+                // log_message('debug', $command);
+                exec($command, $output, $return_var);
+                // log_message('debug', 'CommandOutput: ' . json_encode($output));
+                foreach ($output as $line) {
+                    // log_message('debug', 'line: ' . $line);
+                    $temp = explode(' = ', $line);
+                    // log_message('debug', 'temp: ' . json_encode($temp));
+                    $thisOid = substr($temp[0], 1);
+                    // log_message('debug', 'oid: ' . $thisOid);
+                    $value = '';
+                    if (strpos($temp[1], ':') !== false) {
+                        $values = explode(':', $temp[1]);
+                        log_message('debug', 'values: ' . json_encode($values));
+                        unset($values[0]);
+                        log_message('debug', 'values: ' . json_encode($values));
+                        $value = trim(implode(':', $values), ' "');
+                        log_message('debug', 'value: ' . $value);
+                    }
+                    $array[$thisOid] = $value;
+                }
+                if (empty($array)) {
+                    log_message('debug', 'Attempted command line SNMP real walk (v2) for ' . $oid . ' on ' . $ip . ' failed.');
+                } else {
+                    log_message('debug', 'Attempted command line SNMP real walk (v2) for ' . $oid . ' on ' . $ip . ' succeeded.');
+                }
+            }
+            if (empty($array)) {
+                return false;
+            }
+        }
+
+        if (intval($credentials->credentials->version) === 3) {
+            $sec_name = $credentials->credentials->security_name ?: '';
+            $sec_level = $credentials->credentials->security_level ?: '';
+            $auth_protocol = $credentials->credentials->authentication_protocol ?: '';
+            $auth_passphrase = $credentials->credentials->authentication_passphrase ?: '';
+            $priv_protocol = $credentials->credentials->privacy_protocol ?: '';
+            $priv_passphrase = $credentials->credentials->privacy_passphrase ?: '';
+            $array = @snmp3_real_walk($ip, $sec_name, $sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, $priv_passphrase, $oid, $timeout, $retries);
+        }
+
+        if (!is_array($array)) {
+            log_message('debug', 'Attempted SNMP real walk (v' . $credentials->credentials->version . ') for ' . $oid . ' on ' . $ip . ' resulted in FALSE being returned.');
             return false;
         }
         foreach ($array as $key => $value) {
@@ -539,6 +613,7 @@ if (!function_exists('snmp_audit')) {
         $guests = array();
         $modules = array();
         $radios = array();
+        $access_points = array();
 
         $details->ip = (string)$ip;
         $details->manufacturer = '';
@@ -748,6 +823,258 @@ if (!function_exists('snmp_audit')) {
 
         $rulesModel = new \App\Models\RulesModel();
         $details = $rulesModel->execute($details, $discovery_id, 'return');
+
+
+        // Cisco Access Points attached to a Wireless Access Controller
+        // https://oidref.com/1.3.6.1.4.1.14179.2.2.1.1
+        // https://mibs.observium.org/mib/AIRESPACE-WIRELESS-MIB/
+        snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+        $apMac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.1');
+        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+        if (!empty($apMac) and is_array($apMac)) {
+            foreach ($apMac as $key => $value) {
+                $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.1.', '', $key);
+                $access_points[$id] = new \stdClass();
+                $access_points[$id]->mac = format_mac($value);
+            }
+
+            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+            $apEmac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.33');
+            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+            if (!empty($apEmac) and is_array($apEmac)) {
+                foreach ($apEmac as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.33.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->ethernet_mac = format_mac($value);
+                }
+            }
+
+            $apModel = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.16');
+            if (!empty($apModel) and is_array($apModel)) {
+                foreach ($apModel as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.16.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->model = $value;
+                }
+            }
+
+            $apSerial = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.17');
+            if (!empty($apSerial) and is_array($apSerial)) {
+                foreach ($apSerial as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.17.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->serial = $value;
+                }
+            }
+
+            $apIp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.19');
+            if (!empty($apIp) and is_array($apIp)) {
+                foreach ($apIp as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.19.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->ip = $value;
+                }
+            }
+
+            $apNetMask = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.26');
+            if (!empty($apNetMask) and is_array($apNetMask)) {
+                foreach ($apNetMask as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.26.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->netmask = $value;
+                }
+            }
+
+            $apGateway = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.27');
+            if (!empty($apGateway) and is_array($apGateway)) {
+                foreach ($apGateway as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.27.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->gateway = $value;
+                }
+            }
+
+            $apName = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.3');
+            if (!empty($apName) and is_array($apName)) {
+                foreach ($apName as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.3.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->name = $value;
+                }
+            }
+
+            $apIosVersion = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.31');
+            if (!empty($apIosVersion) and is_array($apIosVersion)) {
+                foreach ($apIosVersion as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.31.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->ios_version = $value;
+                }
+            }
+
+            $apLocation = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.4');
+            if (!empty($apLocation) and is_array($apLocation)) {
+                foreach ($apLocation as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.4.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->location = $value;
+                }
+            }
+
+            $apPortNumber = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.13');
+            if (!empty($apPortNumber) and is_array($apPortNumber)) {
+                foreach ($apPortNumber as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.13.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->port_number = $value;
+                }
+            }
+
+            $apStatus = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.6');
+            if (!empty($apStatus) and is_array($apStatus)) {
+                foreach ($apStatus as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.6.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    switch (intval($value)) {
+                        case 1:
+                            $value = 'associated';
+                            break;
+
+                        case 2:
+                            $value = 'disassociating';
+                            break;
+
+                        case 3:
+                            $value = 'downloading';
+                            break;
+
+                        default:
+                            $value = 'unknown';
+                            break;
+                    }
+                    $access_points[$id]->status = $value;
+                }
+            }
+
+            $apSoftwareVersion = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.8');
+            if (!empty($apSoftwareVersion) and is_array($apSoftwareVersion)) {
+                foreach ($apSoftwareVersion as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.8.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->software_version = $value;
+                }
+            }
+
+            $apType = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.22');
+            if (!empty($apType) and is_array($apType)) {
+                foreach ($apType as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.22.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->type_numeric = $value;
+                    $access_points[$id]->type = ap_type(intval($value));
+                }
+            }
+        }
+
+        // // https://mibs.observium.org/mib/CISCO-LWAPP-AP-MIB
+        // // https://oidref.com/1.3.6.1.4.1.9.9.513.1.1.1
+        // #snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+        // $apMac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.2');
+        // #snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+        // if (!empty($apMac) and is_array($apMac)) {
+        //     foreach ($apMac as $key => $value) {
+        //         $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.2.', '', $key);
+        //         $access_points[$id] = new \stdClass();
+        //         $access_points[$id]->mac = $value;
+        //     }
+        //     $apName = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.5');
+        //     if (!empty($apName) and is_array($apName)) {
+        //         foreach ($apName as $key => $value) {
+        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.5.', '', $key);
+        //             if (empty($access_points[$id])) {
+        //                 $access_points[$id] = new \stdClass();
+        //             }
+        //             $access_points[$id]->name = $value;
+        //         }
+        //     }
+        //     $apLocation = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.49');
+        //     if (!empty($appLocation) and is_array($appLocation)) {
+        //         foreach ($apLocation as $key => $value) {
+        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.49.', '', $key);
+        //             if (empty($access_points[$id])) {
+        //                 $access_points[$id] = new \stdClass();
+        //             }
+        //             $access_points[$id]->location = $value;
+        //         }
+        //     }
+        //     $apPort = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.39');
+        //     if (!empty($apPort) and is_array($apPort)) {
+        //         foreach ($apPort as $key => $value) {
+        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.39.', '', $key);
+        //             if (empty($access_points[$id])) {
+        //                 $access_points[$id] = new \stdClass();
+        //             }
+        //             $access_points[$id]->port = $value;
+        //         }
+        //     }
+        //     $apFloorLabel = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.65');
+        //     if (!empty($apFloorLabel) and is_array($apFloorLabel)) {
+        //         foreach ($apFloorLabel as $key => $value) {
+        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.65.', '', $key);
+        //             if (empty($access_points[$id])) {
+        //                 $access_points[$id] = new \stdClass();
+        //             }
+        //             $access_points[$id]->floor_label = $value;
+        //         }
+        //     }
+        //     $apCountry = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.3.1.1');
+        //     if (!empty($apCountry) and is_array($apCountry)) {
+        //         foreach ($apCountry as $key => $value) {
+        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.3.1.1.', '', $key);
+        //             if (empty($access_points[$id])) {
+        //                 $access_points[$id] = new \stdClass();
+        //             }
+        //             $access_points[$id]->country = $value;
+        //         }
+        //     }
+        //     $apClientCount = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.72');
+        //     if (!empty($apClientCount) and is_array($apClientCount)) {
+        //         foreach ($apClientCount as $key => $value) {
+        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.72.', '', $key);
+        //             if (empty($access_points[$id])) {
+        //                 $access_points[$id] = new \stdClass();
+        //             }
+        //             $access_points[$id]->client_count = intval($value);
+        //         }
+        //     }
+        //     log_message('debug', "AP: " . json_encode($access_points));
+        // }
 
         // Ubiquiti specific items to determine manufacturer
         $temp_services = my_snmp_walk($ip, $credentials, '1.3.6.1.2.1.1.9.1.3');
@@ -1299,7 +1626,7 @@ if (!function_exists('snmp_audit')) {
         }
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-        // network intereface details
+        // network interface details
         $interfaces = array();
         $interfaces_filtered = array();
         $item_start = microtime(true);
@@ -1347,30 +1674,32 @@ if (!function_exists('snmp_audit')) {
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            // Check if we have any speeds greater than a 32bit int.
-            $temp = false;
-            foreach ($speeds as $key => $value) {
-                if ((string)$value === '4294967295') {
-                    $temp = true;
-                }
-            }
-            if ($temp) {
-                $item_start = microtime(true);
-                $high_speeds = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.31.1.1.1.15');
-                $log->command_time_to_execute = (microtime(true) - $item_start);
-                $log->message = 'HighSpeeds retrieval for ' . $ip;
-                $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.15';
-                $count = (!empty($high_speeds)) ? count($high_speeds) : 0;
-                $log->command_output = 'Count is ' . $count;
-                $log->command_status = 'notice';
-                $discoveryLogModel->create($log);
-                unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+            if (!empty($speeds) and is_array($speeds)) {
+                // Check if we have any speeds greater than a 32bit int.
+                $temp = false;
                 foreach ($speeds as $key => $value) {
                     if ((string)$value === '4294967295') {
-                        $temp = explode('.', $key);
-                        $temp_id = end($temp);
-                        if (intval($high_speeds['.1.3.6.1.2.1.31.1.1.1.15.' . $temp_id]) > 0) {
-                            $speeds[$key] = intval($high_speeds['.1.3.6.1.2.1.31.1.1.1.15.' . $temp_id]) * 1000000;
+                        $temp = true;
+                    }
+                }
+                if ($temp) {
+                    $item_start = microtime(true);
+                    $high_speeds = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.31.1.1.1.15');
+                    $log->command_time_to_execute = (microtime(true) - $item_start);
+                    $log->message = 'HighSpeeds retrieval for ' . $ip;
+                    $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.15';
+                    $count = (!empty($high_speeds)) ? count($high_speeds) : 0;
+                    $log->command_output = 'Count is ' . $count;
+                    $log->command_status = 'notice';
+                    $discoveryLogModel->create($log);
+                    unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+                    foreach ($speeds as $key => $value) {
+                        if ((string)$value === '4294967295') {
+                            $temp = explode('.', $key);
+                            $temp_id = end($temp);
+                            if (intval($high_speeds['.1.3.6.1.2.1.31.1.1.1.15.' . $temp_id]) > 0) {
+                                $speeds[$key] = intval($high_speeds['.1.3.6.1.2.1.31.1.1.1.15.' . $temp_id]) * 1000000;
+                            }
                         }
                     }
                 }
@@ -1790,6 +2119,7 @@ if (!function_exists('snmp_audit')) {
             $new_ip = null;
         }
 
+
         // Virtual Guests
         if (intval($details->snmp_enterprise_id) === 6876) {
             if (file_exists(APPPATH . '/Helpers/snmp_6876_2_helper.php')) {
@@ -2107,7 +2437,7 @@ if (!function_exists('snmp_audit')) {
 
 
         unset($log);
-        $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $return_ips, 'routes' => $routes, 'radio' => $radios, 'ips_found' => $ips_found);
+        $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $return_ips, 'routes' => $routes, 'radio' => $radios, 'ips_found' => $ips_found, 'access_points' => $access_points);
         return($return_array);
     }
 }
@@ -2121,6 +2451,7 @@ if (!function_exists('format_mac')) {
     function format_mac($mac_address)
     {
         if (empty($mac_address) or !is_string($mac_address)) {
+            log_('debug', 'No string supplied to format_mac, returning blank.');
             return '';
         }
         // set to lower case
@@ -2242,6 +2573,500 @@ if (!function_exists('if_admin_status')) {
         return $ifadminstatus;
     }
 }
+
+
+if (!function_exists('ap_type')) {
+    /**
+     * [interface_type description]
+     * @param  [type] $int_type [description]
+     * @return [type]           [description]
+     */
+    function ap_type($ap_type)
+    {
+        if (intval($ap_type) != $ap_type) {
+            log_message('info', 'Invalid variable passed to snmp_helper::ap_type. Type:' . gettype($ap_type) . ' Value:' . $ap_type);
+            return 'unknown';
+        }
+
+        switch ($ap_type) {
+            case '1':
+                $value = 'ap1000';
+                break;
+
+            case '2':
+                $value = 'ap1030';
+                break;
+
+            case '3':
+                $value = 'mimo';
+                break;
+
+            case '4':
+                $value = 'unknown';
+                break;
+
+            case '5':
+                $value = 'ap1100';
+                break;
+
+            case '6':
+                $value = 'ap1130';
+                break;
+
+            case '7':
+                $value = 'ap1240';
+                break;
+
+            case '8':
+                $value = 'ap1200';
+                break;
+
+            case '9':
+                $value = 'ap1310';
+                break;
+
+            case '10':
+                $value = 'ap1500';
+                break;
+
+            case '11':
+                $value = 'ap1250';
+                break;
+
+            case '12':
+                $value = 'ap1505';
+                break;
+
+            case '13':
+                $value = 'ap3201';
+                break;
+
+            case '14':
+                $value = 'ap1520';
+                break;
+
+            case '15':
+                $value = 'ap800';
+                break;
+
+            case '16':
+                $value = 'ap1140';
+                break;
+
+            case '17':
+                $value = 'ap800agn';
+                break;
+
+            case '18':
+                $value = 'ap3500i';
+                break;
+
+            case '19':
+                $value = 'ap3500e';
+                break;
+
+            case '20':
+                $value = 'ap1260';
+                break;
+
+            case '21':
+                $value = 'ap1040';
+                break;
+
+            case '22':
+                $value = 'ap1550';
+                break;
+
+            case '23':
+                $value = 'ap602i';
+                break;
+
+            case '24':
+                $value = 'ap3500p';
+                break;
+
+            case '25':
+                $value = 'ap802gn';
+                break;
+
+            case '26':
+                $value = 'ap802agn';
+                break;
+
+            case '27':
+                $value = 'ap3600i';
+                break;
+
+            case '28':
+                $value = 'ap3600e';
+                break;
+
+            case '29':
+                $value = 'ap2600i';
+                break;
+
+            case '30':
+                $value = 'ap2600e';
+                break;
+
+            case '31':
+                $value = 'ap802hagn';
+                break;
+
+            case '32':
+                $value = 'ap1600i';
+                break;
+
+            case '33':
+                $value = 'ap1600e';
+                break;
+
+            case '34':
+                $value = 'ap702e';
+                break;
+
+            case '35':
+                $value = 'ap702i';
+                break;
+
+            case '36':
+                $value = 'ap3600p';
+                break;
+
+            case '37':
+                $value = 'ap1530i';
+                break;
+
+            case '38':
+                $value = 'ap1530e';
+                break;
+
+            case '39':
+                $value = 'ap3700e';
+                break;
+
+            case '40':
+                $value = 'ap3700i';
+                break;
+
+            case '41':
+                $value = 'ap3700p';
+                break;
+
+            case '42':
+                $value = 'ap2700e';
+                break;
+
+            case '43':
+                $value = 'ap2700i';
+                break;
+
+            case '44':
+                $value = 'ap702w';
+                break;
+
+            case '45':
+                $value = 'wap2600i';
+                break;
+
+            case '46':
+                $value = 'wap2600e';
+                break;
+
+            case '47':
+                $value = 'wap1600i';
+                break;
+
+            case '48':
+                $value = 'wap1600e';
+                break;
+
+            case '49':
+                $value = 'wap702i';
+                break;
+
+            case '50':
+                $value = 'wap702e';
+                break;
+
+            case '51':
+                $value = 'ap1700i';
+                break;
+
+            case '52':
+                $value = 'ap1700e';
+                break;
+
+            case '53':
+                $value = 'ap1570e';
+                break;
+
+            case '54':
+                $value = 'ap1570i';
+                break;
+
+            case '55':
+                $value = 'ap1852e';
+                break;
+
+            case '56':
+                $value = 'ap1852i';
+                break;
+
+            case '57':
+                $value = 'ap1832i';
+                break;
+
+            case '58':
+                $value = 'ap752t';
+                break;
+
+            case '59':
+                $value = 'apmr24';
+                break;
+
+            case '60':
+                $value = 'ap3702';
+                break;
+
+            case '61':
+                $value = 'ap1802i';
+                break;
+
+            case '62':
+                $value = 'ap1810w';
+                break;
+
+            case '63':
+                $value = 'apoeap1810';
+                break;
+
+            case '64':
+                $value = 'ap3802e';
+                break;
+
+            case '65':
+                $value = 'ap3802i';
+                break;
+
+            case '66':
+                $value = 'ap3802p';
+                break;
+
+            case '67':
+                $value = 'ap3802q';
+                break;
+
+            case '68':
+                $value = 'ap2802e';
+                break;
+
+            case '69':
+                $value = 'ap2802i';
+                break;
+
+            case '70':
+                $value = 'ap2802q';
+                break;
+
+            case '71':
+                $value = 'ap1815w';
+                break;
+
+            case '72':
+                $value = 'apoeap1815';
+                break;
+
+            case '73':
+                $value = 'ap1815I';
+                break;
+
+            case '74':
+                $value = 'ap1562e';
+                break;
+
+            case '75':
+                $value = 'ap1562i';
+                break;
+
+            case '76':
+                $value = 'ap1562d';
+                break;
+
+            case '77':
+                $value = 'ap1562ps';
+                break;
+
+            case '78':
+                $value = 'ap1800I';
+                break;
+
+            case '79':
+                $value = 'ap1800S';
+                break;
+
+            case '80':
+                $value = 'ap1815M';
+                break;
+
+            case '81':
+                $value = 'ap1542D';
+                break;
+
+            case '82':
+                $value = 'ap1542I';
+                break;
+
+            case '83':
+                $value = 'ap1100ac';
+                break;
+
+            case '84':
+                $value = 'ap1101ac';
+                break;
+
+            case '85':
+                $value = 'ap1582e';
+                break;
+
+            case '86':
+                $value = 'ap1582i';
+                break;
+
+            case '87':
+                $value = 'ap1542E2';
+                break;
+
+            case '88':
+                $value = 'ap1542E4';
+                break;
+
+            case '89':
+                $value = 'ap9117I';
+                break;
+
+            case '90':
+                $value = 'ap9115AXI';
+                break;
+
+            case '91':
+                $value = 'ap9115AXE';
+                break;
+
+            case '92':
+                $value = 'ap1840I';
+                break;
+
+            case '93':
+                $value = 'ap9120AXI';
+                break;
+
+            case '94':
+                $value = 'ap9120AXE';
+                break;
+
+            case '95':
+                $value = 'ap9120AXP';
+                break;
+
+            case '97':
+                $value = 'iw6300HD';
+                break;
+
+            case '98':
+                $value = 'iw6300HA';
+                break;
+
+            case '99':
+                $value = 'iw6300HW';
+                break;
+
+            case '100':
+                $value = 'esw6300';
+                break;
+
+            case '101':
+                $value = 'ap9130AXI';
+                break;
+
+            case '102':
+                $value = 'ap9130AXE';
+                break;
+
+            case '110':
+                $value = 'pwifiac2';
+                break;
+
+            case '115':
+                $value = 'ap9136I';
+                break;
+
+            case '116':
+                $value = 'wpwifi6';
+                break;
+
+            case '129':
+                $value = 'isr1101ax';
+                break;
+
+            case '130':
+                $value = 'cw9162I';
+                break;
+
+            case '131':
+                $value = 'cw9164I';
+                break;
+
+            case '132':
+                $value = 'cw9166I';
+                break;
+
+            case '133':
+                $value = 'iw9167eh';
+                break;
+
+            case '134':
+                $value = 'cw9166D1';
+                break;
+
+            case '135':
+                $value = 'iw9165DH';
+                break;
+
+            case '136':
+                $value = 'iw9167ih';
+                break;
+
+            case '137':
+                $value = 'cw9163E';
+                break;
+
+            case '138':
+                $value = 'cw9178I';
+                break;
+
+            case '139':
+                $value = 'iw9165E';
+                break;
+
+            case '140':
+                $value = 'cw9176I';
+                break;
+
+            case '141':
+                $value = 'cw9176D';
+                break;
+
+            default:
+                $value = 'unknown';
+                break;
+        }
+        return $value;
+    }
+}
+
+
+
 
 if (!function_exists('interface_type')) {
     /**

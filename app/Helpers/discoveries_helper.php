@@ -1019,6 +1019,9 @@ if (! function_exists('ip_audit')) {
             if (!empty($temp_array['ips_found'])) {
                 $ips_found = $temp_array['ips_found'];
             }
+            if (!empty($temp_array['access_points'])) {
+                $access_points = $temp_array['access_points'];
+            }
         }
 
         // Set these here before testing them below
@@ -1311,6 +1314,14 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Processing found radios for ' . $device->ip;
             $discoveryLogModel->create($log);
             $componentsModel->upsert('radio', $device, $radio);
+        }
+
+        // insert any found access points from SNMP
+        if (isset($access_points) and is_array($access_points) and count($access_points) > 0) {
+            $log->command_status = 'notice';
+            $log->message = 'Processing found access_points for ' . $device->ip;
+            $discoveryLogModel->create($log);
+            $componentsModel->upsert('access_point', $device, $access_points);
         }
 
         // process and store the Nmap data

@@ -2,6 +2,35 @@
 
 $output .= "Upgrade database to 5.6.0 commenced.\n\n";
 
+if (!$db->table_exists('access_point')) {
+    $sql = "CREATE TABLE `access_point` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `device_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `serial` varchar(200) NOT NULL DEFAULT '',
+  `mac` varchar(200) NOT NULL DEFAULT '',
+  `ethernet_mac` varchar(200) NOT NULL DEFAULT '',
+  `model` varchar(200) NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `netmask` varchar(30) NOT NULL DEFAULT '',
+  `gateway` varchar(100) NOT NULL DEFAULT '',
+  `location` varchar(255) NOT NULL DEFAULT '',
+  `status` varchar(100) NOT NULL DEFAULT '',
+  `software_version` varchar(100) NOT NULL DEFAULT '',
+  `ios_version` varchar(100) NOT NULL DEFAULT '',
+  `type` varchar(200) NOT NULL DEFAULT '',
+  `port_number` int(10) unsigned DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`device_id`),
+  CONSTRAINT `access_point_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 
 if (!$db->fieldExists('circuit_status', 'connections')) {

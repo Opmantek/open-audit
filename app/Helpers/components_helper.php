@@ -8,6 +8,9 @@ declare(strict_types=1);
 function match_columns($table)
 {
     $match_columns = array();
+    if ($table === 'access_point') {
+            $match_columns = array('mac', 'serial', 'software_version', 'ios_version', 'location');
+    }
     if ($table === 'antivirus') {
             $match_columns = array('name');
     }
