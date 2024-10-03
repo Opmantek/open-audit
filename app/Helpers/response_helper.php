@@ -808,7 +808,7 @@ if (!function_exists('response_get_format')) {
             $format = 'json';
             log_message('warning', $summary);
         } else {
-            log_message('debug', $summary);
+            // log_message('debug', $summary);
         }
         return $format;
     }
@@ -878,11 +878,11 @@ if (!function_exists('response_get_id')) {
             return null;
         }
         if (is_numeric($id)) {
-            if (is_integer($id)) {
-                log_message('debug', "Integer ID supplied (Provided ID: $id).");
-            } else {
-                log_message('debug', "Numeric ID supplied (Provided ID: $id).");
-            }
+            // if (is_integer($id)) {
+            //     log_message('debug', "Integer ID supplied (Provided ID: $id).");
+            // } else {
+            //     log_message('debug', "Numeric ID supplied (Provided ID: $id).");
+            // }
             return intval($id);
         } else {
             if ($collection === 'components') {
@@ -1164,18 +1164,18 @@ if (!function_exists('response_get_org_list')) {
         $collections = new \Config\Collections();
         if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'd') {
             $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
-            log_message('debug', 'Set org_list according to ' . $collection . ' for DESCENDANTS (' . implode(', ', $org_list) . ').');
+            // log_message('debug', 'Set org_list according to ' . $collection . ' for DESCENDANTS (' . implode(', ', $org_list) . ').');
         }
         if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'u') {
             $org_list = $user->orgs;
-            log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
+            // log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
         }
         if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'b') {
             $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
             $org_list = array_unique(array_merge($org_list, $orgsModel->getUserAscendants($user->orgs, $orgs)));
             $org_list[] = 1;
             $org_list = array_unique($org_list);
-            log_message('debug', 'Set org_list according to ' . $collection . ' for PARENTS and DESCENDANTS (' . implode(', ', $org_list) . ').');
+            // log_message('debug', 'Set org_list according to ' . $collection . ' for PARENTS and DESCENDANTS (' . implode(', ', $org_list) . ').');
             asort($org_list);
         }
         if (empty($org_list)) {
@@ -1425,9 +1425,9 @@ if (!function_exists('response_get_properties')) {
             // something was filtered
             $summary = 'Set properties according to FILTERING.';
         }
-        if (!empty($properties)) {
-            log_message('debug', $summary . ' (' . $properties . ')');
-        }
+        // if (!empty($properties)) {
+        //     log_message('debug', $summary . ' (' . $properties . ')');
+        // }
         return $properties;
     }
 }
