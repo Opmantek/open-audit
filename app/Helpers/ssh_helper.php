@@ -701,8 +701,17 @@ if (! function_exists('ssh_audit')) {
                 } else {
                     $key = PublicKeyLoader::load($credential->credentials->ssh_key);
                 }
-
-                if ($ssh->login($credential->credentials->username, $key)) {
+                try {
+                    $test = $ssh->login($credential->credentials->username, $key);
+                } catch (Exception $e) {
+                    $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
+                    $log->command_status = 'notice';
+                    $discoveryLogModel->create($log);
+                    $ssh->disconnect();
+                    unset($ssh);
+                }
+                // if ($ssh->login($credential->credentials->username, $key)) {
+                if (!empty($test)) {
                     $log->message = "Valid credentials for {$credential->type} named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
                     $discoveryLogModel->create($log);
@@ -723,7 +732,18 @@ if (! function_exists('ssh_audit')) {
                 log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
                 // NOTE - Use @ below because some devices cause "Error reading from socket" and halt this process
                 // TODO - change to try / catch
-                if (@$ssh->login($credential->credentials->username, $credential->credentials->password)) {
+
+                try {
+                    $test = $ssh->login($credential->credentials->username, $credential->credentials->password);
+                } catch (Exception $e) {
+                    $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
+                    $log->command_status = 'notice';
+                    $discoveryLogModel->create($log);
+                    $ssh->disconnect();
+                    unset($ssh);
+                }
+                // if (@$ssh->login($credential->credentials->username, $credential->credentials->password)) {
+                if (!empty($test)) {
                     $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
                     $discoveryLogModel->create($log);
@@ -751,8 +771,17 @@ if (! function_exists('ssh_audit')) {
         }
 
         $device = new \StdClass();
+        try {
+            $windows_os_name = $ssh->exec('wmic os get name');
+        } catch (Exception $e) {
+            $log->message = "Unsuccessful SSH command attempt, aborting SSH connection.";
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
+            $ssh->disconnect();
+            unset($ssh);
+            return false;
+        }
 
-        $windows_os_name = $ssh->exec('wmic os get name');
         if (stripos($windows_os_name, 'Microsoft Windows') !== false) {
             $device->type = 'computer';
             $device->os_group = 'Windows';
@@ -793,7 +822,6 @@ if (! function_exists('ssh_audit')) {
                 $log->command_status = 'notice';
             }
             $discoveryLogModel->create($log);
-
 
             $temp = $ssh->exec('wmic computersystem get name');
             $temp = str_replace('Name', '', $temp);
