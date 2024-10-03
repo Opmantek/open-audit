@@ -310,6 +310,7 @@ class LocationsModel extends BaseModel
         $dictionary->columns->notes = 'Unused.';
         $dictionary->columns->tags = 'Unused.';
         $dictionary->columns->phone = 'The locations phone.';
+        $dictionary->columns->contact = 'Details of who is usually contactable at this site.';
         $dictionary->columns->picture = 'Unused.';
         $dictionary->columns->external_ident = 'The externally referenced location ID. Usually populated by Cloud audits.';
         $dictionary->columns->options = 'Unused.';

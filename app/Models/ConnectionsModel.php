@@ -293,8 +293,6 @@ class ConnectionsModel extends BaseModel
         $dictionary->columns->ip_address_internal_b = 'The IP of the internal interface.';
         $dictionary->columns->site_hours_a = 'The usual hours of operation at this site.';
         $dictionary->columns->site_hours_b = 'The usual hours of operation at this site.';
-        $dictionary->columns->site_contact_a = 'Who is usually contactable at this site.';
-        $dictionary->columns->site_contact_b = 'Who is usually contactable at this site.';
         $dictionary->columns->service_level_a = 'An indication of the level of service required by this site.';
         $dictionary->columns->service_level_b = 'An indication of the level of service required by this site.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

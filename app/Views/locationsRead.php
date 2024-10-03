@@ -59,7 +59,7 @@ if ($user->toolbar_style === 'icontext') {
                             } ?>
                         </div>
                         <div class="col-4">
-                            <?php $attributes = array('latitude', 'longitude', 'geo', 'city', 'state', 'postcode', 'country', 'phone', 'external_ident');
+                            <?php $attributes = array('latitude', 'longitude', 'geo', 'city', 'state', 'postcode', 'country', 'phone', 'contact', 'external_ident');
                             foreach ($attributes as $attribute) {
                                 $link_button = '';
                                 if (in_array($attribute, ['city', 'state', 'postcode', 'country'])) {
@@ -91,7 +91,7 @@ if ($user->toolbar_style === 'icontext') {
                                     <?= $dictionary->notes ?>
                                 <?php } ?>
                                 <?php if (!empty($dictionary->columns)) { ?>
-                                    <?php $fields = array('name', 'org_id', 'description', 'type', 'room', 'suite', 'level', 'address', 'city', 'state', 'postcode', 'country', 'phone', 'latitude', 'longitude', 'edited_by', 'edited_date') ?>
+                                    <?php $fields = array('name', 'org_id', 'description', 'type', 'room', 'suite', 'level', 'address', 'city', 'state', 'postcode', 'country', 'phone', 'contact', 'latitude', 'longitude', 'edited_by', 'edited_date') ?>
                                 <h4 class="text-center"><?= __('Fields') ?></h4><br>
                                     <?php foreach ($fields as $key) { ?>
                                     <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>

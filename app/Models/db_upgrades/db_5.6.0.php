@@ -48,18 +48,6 @@ if (!$db->fieldExists('site_hours_b', 'connections')) {
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
-if (!$db->fieldExists('site_contact_a', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `site_contact_a` varchar(200) NOT NULL DEFAULT '' AFTER `site_hours_b`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-if (!$db->fieldExists('site_contact_b', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `site_contact_b` varchar(200) NOT NULL DEFAULT '' AFTER `site_contact_a`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
 if (!$db->fieldExists('service_level_a', 'connections')) {
     $sql = "ALTER TABLE `connections` ADD `service_level_a` varchar(200) NOT NULL DEFAULT '' AFTER `site_contact_b`";
     $db->query($sql);
@@ -68,6 +56,13 @@ if (!$db->fieldExists('service_level_a', 'connections')) {
 }
 if (!$db->fieldExists('service_level_b', 'connections')) {
     $sql = "ALTER TABLE `connections` ADD `service_level_b` varchar(200) NOT NULL DEFAULT '' AFTER `service_level_a`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('contact', 'locations')) {
+    $sql = "ALTER TABLE `locations` ADD `contact` varchar(250) NOT NULL DEFAULT '' AFTER `phone`";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());

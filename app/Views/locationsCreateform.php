@@ -14,7 +14,7 @@ foreach ($included['types'] as $type) {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
@@ -47,7 +47,7 @@ foreach ($included['types'] as $type) {
                                     echo html_entity_decode($dictionary->notes);
                                 } ?>
                                 <h4 class="text-center">Fields</h4><br>
-                                <?php foreach (array('name', 'org_id', 'description', 'type', 'room', 'suite', 'level', 'address', 'city', 'state', 'postcode', 'country', 'phone', 'latitude', 'longitude') as $attribute) {
+                                <?php foreach (array('name', 'org_id', 'description', 'type', 'room', 'suite', 'level', 'address', 'city', 'state', 'postcode', 'country', 'phone', 'contact', 'latitude', 'longitude') as $attribute) {
                                     echo "<code>$attribute:</code> " . html_entity_decode($dictionary->columns->{$attribute}) . "<br><br>";
                                 } ?>
                             </div>

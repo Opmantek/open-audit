@@ -79,7 +79,19 @@ if ($style === 'icontext') {
                             <div class="row">
                                 <div class="col-6">
                                     <?= read_select('location_id_a', $resource->location_id_a, $dictionary->columns->location_id_a, $update, __('Location A'), $included['locations']) ?>
-                                    <?php $fields = array('service_level_a', 'site_hours_a', 'site_contact_a', 'speed_down_a', 'speed_up_a', 'device_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a'); ?>
+                                    <?php
+                                    foreach ($included['locations'] as $location) {
+                                        if (intval($location->id) === intval($resource->location_id_a)) {
+                                            $value = $location->attributes->address . ', ' . $location->attributes->city . ', ' . $location->attributes->state . ', ' . $location->attributes->country;
+                                            echo read_field('address', $value, '', '', '');
+                                            $value = (!empty($location->attributes->contact)) ? $location->attributes->contact : '';
+                                            $value .= (!empty($location->attributes->phone) and !empty($value)) ? ' on ' . $location->attributes->phone : '';
+                                            $value .= (!empty($location->attributes->phone) and empty($value)) ? $location->attributes->phone : '';
+                                            echo read_field('contact', $value, '', '', '');
+                                        }
+                                    }
+                                    ?>
+                                    <?php $fields = array('service_level_a', 'site_hours_a', 'speed_up_a', 'speed_down_a', 'device_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a'); ?>
                                     <?php foreach ($fields as $field) {
                                         $link = '';
                                         if ($field === 'device_id_a') {
@@ -101,7 +113,7 @@ if ($style === 'icontext') {
                                         <?php if (!empty($dictionary->columns)) { ?>
                                         <h4 class="text-center"><?= __('Fields') ?></h4><br>
 
-                                            <?php $fields = array('location_id_a', 'service_level_a', 'site_hours_a', 'site_contact_a', 'speed_down_a', 'speed_up_a', 'device_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a') ?>
+                                            <?php $fields = array('location_id_a', 'service_level_a', 'site_hours_a', 'speed_up_a', 'speed_down_a', 'device_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a') ?>
                                             <?php foreach ($fields as $key) { ?>
                                                 <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                             <?php } ?>
@@ -116,7 +128,14 @@ if ($style === 'icontext') {
                             <div class="row">
                                 <div class="col-6">
                                     <?= read_select('location_id_b', $resource->location_id_b, $dictionary->columns->location_id_b, $update, __('Location B'), $included['locations']) ?>
-                                    <?php $fields = array('service_level_b', 'site_hours_b', 'site_contact_b', 'speed_down_b', 'speed_up_b', 'device_id_b', 'line_number_b', 'ip_address_external_b', 'ip_address_internal_b'); ?>
+                                    <?php
+                                    foreach ($included['locations'] as $location) {
+                                        if ($location->id === $resource->location_id_b) {
+                                            echo read_field('contact', $location->address, '', '', '');
+                                        }
+                                    }
+                                    ?>
+                                    <?php $fields = array('service_level_b', 'site_hours_b', 'speed_up_b', 'speed_down_b', 'device_id_b', 'line_number_b', 'ip_address_external_b', 'ip_address_internal_b'); ?>
                                     <?php foreach ($fields as $field) {
                                         $link = '';
                                         if ($field === 'device_id_b') {
@@ -138,7 +157,7 @@ if ($style === 'icontext') {
                                         <?php if (!empty($dictionary->columns)) { ?>
                                         <h4 class="text-center"><?= __('Fields') ?></h4><br>
 
-                                            <?php $fields = array('location_id_b', 'site_hours_b', 'site_contact_b', 'service_level_b', 'speed_down_b', 'speed_up_b', 'device_id_b', 'line_number_b', 'ip_address_external_b', 'ip_address_internal_b') ?>
+                                            <?php $fields = array('location_id_b', 'site_hours_b', 'service_level_b', 'speed_up_b', 'speed_down_b', 'device_id_b', 'line_number_b', 'ip_address_external_b', 'ip_address_internal_b') ?>
                                             <?php foreach ($fields as $key) { ?>
                                                 <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                             <?php } ?>
