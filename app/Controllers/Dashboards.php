@@ -170,6 +170,8 @@ class Dashboards extends BaseController
 
         $included['devices_os_updates'] = new \stdClass();
         $included['devices_os_updates']->green = 0;
+        $included['devices_os_updates']->green_id = 0;
+        $included['devices_os_updates']->red = 0;
         $included['devices_os_updates']->red_id = 0;
 
         $included['devices_not_seen'] = new \stdClass();
