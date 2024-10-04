@@ -1562,9 +1562,9 @@ if (error_returned = 0) then
             if (objAntiVirusProduct.ProductState = "393472" or objAntiVirusProduct.ProductState = "266240" _
                 or objAntiVirusProduct.ProductState = "331776" or objAntiVirusProduct.ProductState = "397568" _
                 or Mid(AvStatus, 2, 2) = "10" Or Mid(AvStatus, 2, 2) = "11" or mid(AvStatus, 5, 2) = "10" or Mid(AvStatus, 5, 2) = "11") then
-                result.WriteText "          <state>On</name>" & vbcrlf
+                result.WriteText "          <state>On</state>" & vbcrlf
             else
-                result.WriteText "          <state>Off</name>" & vbcrlf
+                result.WriteText "          <state>Off</state>" & vbcrlf
             end if
             if Mid(AvStatus, 4, 2) = "00" then
                 result.WriteText "          <status>UpToDate</status>" & vbcrlf
@@ -1577,6 +1577,7 @@ if (error_returned = 0) then
                 result.WriteText "          <owner>NonMs</owner>" & vbcrlf
             end if
         next
+        result.WriteText "      </item>" & vbcrlf
         result.WriteText "  </antivirus>" & vbcrlf
     end if
 end if
