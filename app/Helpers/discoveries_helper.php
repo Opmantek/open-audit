@@ -1413,7 +1413,7 @@ if (! function_exists('ip_audit')) {
         $script_name = '';
         if (!empty($credentials_windows) or ! empty($credentials_ssh)) {
             $os_group = strtolower($device->os_group);
-            if ($os_group === 'windows') {
+            if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and $os_group === 'windows') {
                 $os_group = 'windows-ps1';
             }
             $temp = $instance->scriptsModel->build(strtolower($os_group));
@@ -1440,8 +1440,10 @@ if (! function_exists('ip_audit')) {
             $ip_scan->ssh_status = 'false';
             $log->message = 'Starting windows script audit for ' . $device->ip;
             $discoveryLogModel->create($log);
-            # $destination = 'audit_windows.vbs';
-            $destination = 'audit_windows.ps1';
+            $destination = 'audit_windows.vbs';
+            if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
+                $destination = 'audit_windows.ps1';
+            }
             $output = false;
             if (php_uname('s') === 'Windows NT' and ! empty($instance->config->discovery_use_vintage_service) and $instance->config->discovery_use_vintage_service === 'y') {
                 // Windows Server (likely) running on the LocalSystem account.
@@ -1497,12 +1499,18 @@ if (! function_exists('ip_audit')) {
                 // Unix or Windows default - Remotely run script on target device
                 // Copy the audit script to admin$
                 $copy = false;
-                # $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $audit_script, 'audit_windows.vbs', $discovery->id);
-                $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $audit_script, 'audit_windows.ps1', $discovery->id);
+                if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
+                    $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $audit_script, 'audit_windows.ps1', $discovery->id);
+                } else {
+                    $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $audit_script, 'audit_windows.vbs', $discovery->id);
+                }
                 $output = false;
                 if ($copy) {
-                    # $command = 'cscript ' . $device->install_dir . '\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=' . $device->id . ' discovery_id=' . $discovery->id;
-                    $command = 'powershell  -executionpolicy bypass -file ' . $device->install_dir . '\\audit_windows.ps1 -submit_online n -create_file y -debugging 1 -last_seen_by audit_wmi -system_id ' . $device->id . ' -discovery_id ' . $discovery->id;
+                    if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
+                        $command = 'powershell  -executionpolicy bypass -file ' . $device->install_dir . '\\audit_windows.ps1 -submit_online n -create_file y -debugging 1 -last_seen_by audit_wmi -system_id ' . $device->id . ' -discovery_id ' . $discovery->id;
+                    } else {
+                        $command = 'cscript ' . $device->install_dir . '\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=' . $device->id . ' discovery_id=' . $discovery->id;
+                    }
                     $output = execute_windows($device->ip, $credentials_windows, $command, $discovery->id);
                     if (empty($output)) {
                         $log->severity = 3;
@@ -1531,21 +1539,30 @@ if (! function_exists('ip_audit')) {
             }
             if (!empty($audit_file) and !empty($output)) {
                 $copy = false;
-                #$temp = explode('\\', $audit_file);
-                #$destination = $filepath . '/scripts/' . end($temp);
-                $temp = 'c:\\Windows\\System32\\' . $audit_file;
-                $destination = $filepath . '/scripts/' . $audit_file;
+                if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
+                    $temp = 'c:\\Windows\\System32\\' . $audit_file;
+                    $destination = $filepath . '/scripts/' . $audit_file;
+                } else {
+                    $temp = explode('\\', $audit_file);
+                    $destination = $filepath . '/scripts/' . end($temp);
+                }
                 if (php_uname('s') === 'Windows NT') {
-                    #$destination = $filepath . '\\scripts\\' . end($temp);
-                    $destination = $filepath . '\\scripts\\' . $temp;
+                    if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
+                        $destination = $filepath . '\\scripts\\' . $temp;
+                    } else {
+                        $destination = $filepath . '\\scripts\\' . end($temp);
+                    }
                 }
                 if (php_uname('s') === 'Windows NT' and exec('whoami') === 'nt authority\system' and ! empty($instance->config->discovery_use_vintage_service) and $instance->config->discovery_use_vintage_service === 'y') {
                     if (rename($audit_file, $destination)) {
                         $copy = true;
                     }
                 } else {
-                    #$copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $discovery->id);
-                    $copy = copy_from_windows($device->ip, $credentials_windows, 'System32\\' . $audit_file, $destination, $discovery->id);
+                    if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
+                        $copy = copy_from_windows($device->ip, $credentials_windows, 'System32\\' . $audit_file, $destination, $discovery->id);
+                    } else {
+                        $copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $discovery->id);
+                    }
                 }
                 if ($copy === true) {
                     $audit_result = file_get_contents($destination);
@@ -1573,8 +1590,11 @@ if (! function_exists('ip_audit')) {
                     // no need to delete the remote file
                 } else {
                     // delete the remote audit result
-                    # delete_windows_result($device->ip, $credentials_windows, 'admin$', end($temp), $discovery->id);
-                    delete_windows_result($device->ip, $credentials_windows, 'admin$', 'System32\\' . $audit_file, $discovery->id);
+                    if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
+                        delete_windows_result($device->ip, $credentials_windows, 'admin$', 'System32\\' . $audit_file, $discovery->id);
+                    } else {
+                        delete_windows_result($device->ip, $credentials_windows, 'admin$', end($temp), $discovery->id);
+                    }
                 }
             } else {
                 $log->severity = 3;
@@ -1671,8 +1691,11 @@ if (! function_exists('ip_audit')) {
                     $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
                 }
                 if ($device->os_group === 'Windows') {
-                    #$command = 'cscript ' . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
-                    $command = 'powershell -executionpolicy bypass -file ' . $script_name . ' -submit_online n -create_file y -debugging 1 -system_id ' . $device->id . ' -last_seen_by audit_ssh -discovery_id ' . $discovery->id;
+                    if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
+                        $command = 'powershell -executionpolicy bypass -file ' . $script_name . ' -submit_online n -create_file y -debugging 1 -system_id ' . $device->id . ' -last_seen_by audit_ssh -discovery_id ' . $discovery->id;
+                    } else {
+                        $command = 'cscript ' . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
+                    }
                 }
                 $log->command = $command;
                 $discoveryLogModel->create($log);
