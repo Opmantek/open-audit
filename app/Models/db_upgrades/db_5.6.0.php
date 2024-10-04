@@ -687,7 +687,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (NULL,1,'Devices Without OS Updates for more than 14 Days','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_os_update != '2000-01-01 00:00:00', devices.last_os_update, '') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 14 DAY) AND (os_group = 'Linux' OR os_group = 'Windows')\",'','y','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Devices Without OS Updates for more than 14 Days','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_os_update != '2000-01-01 00:00:00', devices.last_os_update, '') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 14 DAY) AND devices.last_os_update != '2000-01-01 00:00:00' AND devices.last_os_update != '' AND (os_group = 'Linux' OR os_group = 'Windows')\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
