@@ -2,7 +2,7 @@
 
 $output .= "Upgrade database to 5.6.0 commenced.\n\n";
 
-if (!$db->table_exists('access_point')) {
+if (!$db->tableExists('access_point')) {
     $sql = "CREATE TABLE `access_point` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -48,7 +48,11 @@ if (!$db->fieldExists('speed', 'connections') and !$db->fieldExists('speed_a_dow
     log_message('info', (string)$db->getLastQuery());
 }
 if (!$db->fieldExists('speed_up_a', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_down_a`";
+    if ($db->fieldExists('speed_down_a', 'connections')) {
+        $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_down_a`";
+    } else {
+        $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed`";
+    }
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -78,7 +82,7 @@ if (!$db->fieldExists('site_hours_b', 'connections')) {
     log_message('info', (string)$db->getLastQuery());
 }
 if (!$db->fieldExists('service_level_a', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `service_level_a` varchar(200) NOT NULL DEFAULT '' AFTER `site_contact_b`";
+    $sql = "ALTER TABLE `connections` ADD `service_level_a` varchar(200) NOT NULL DEFAULT '' AFTER `site_hours_b`";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -560,9 +564,9 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 if (!empty($result)) {
     $permissions = json_decode($result[0]->permissions);
-    $premissions->packages = 'crud';
+    $permissions->packages = 'crud';
     $sql = 'UPDATE roles SET permissions = ? WHERE id = ?';
-    $db->query($sql, [$permissions, $result[0]->id]);
+    $db->query($sql, [json_encode($permissions), $result[0]->id]);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
@@ -574,9 +578,9 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 if (!empty($result)) {
     $permissions = json_decode($result[0]->permissions);
-    $premissions->packages = 'r';
+    $permissions->packages = 'r';
     $sql = 'UPDATE roles SET permissions = ? WHERE id = ?';
-    $db->query($sql, [$permissions, $result[0]->id]);
+    $db->query($sql, [json_encode($permissions), $result[0]->id]);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
