@@ -95,7 +95,11 @@ if ($style === 'icontext') {
                                     <?php foreach ($fields as $field) {
                                         $link = '';
                                         if ($field === 'device_id_a') {
-                                            $link = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesRead', $resource->{'device_id_a'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                            $href = '';
+                                            if (!empty($resource->{'device_id_a'})) {
+                                                $href = url_to('devicesRead', intval($resource->{'device_id_a'}));
+                                            }
+                                            $link = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"$href\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
                                             if (!empty($resource->{$field})) {
                                                 $resource->{$field} = $resource->{$field} . ' (' . $resource->{'devices.device_name_a'} . ')';
                                             } else {
@@ -130,8 +134,13 @@ if ($style === 'icontext') {
                                     <?= read_select('location_id_b', $resource->location_id_b, $dictionary->columns->location_id_b, $update, __('Location B'), $included['locations']) ?>
                                     <?php
                                     foreach ($included['locations'] as $location) {
-                                        if ($location->id === $resource->location_id_b) {
-                                            echo read_field('contact', $location->address, '', '', '');
+                                        if (intval($location->id) === intval($resource->location_id_b)) {
+                                            $value = $location->attributes->address . ', ' . $location->attributes->city . ', ' . $location->attributes->state . ', ' . $location->attributes->country;
+                                            echo read_field('address', $value, '', '', '');
+                                            $value = (!empty($location->attributes->contact)) ? $location->attributes->contact : '';
+                                            $value .= (!empty($location->attributes->phone) and !empty($value)) ? ' on ' . $location->attributes->phone : '';
+                                            $value .= (!empty($location->attributes->phone) and empty($value)) ? $location->attributes->phone : '';
+                                            echo read_field('contact', $value, '', '', '');
                                         }
                                     }
                                     ?>
@@ -139,7 +148,11 @@ if ($style === 'icontext') {
                                     <?php foreach ($fields as $field) {
                                         $link = '';
                                         if ($field === 'device_id_b') {
-                                            $link = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesRead', $resource->{'device_id_b'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                            $href = '';
+                                            if (!empty($resource->{'device_id_b'})) {
+                                                $href = url_to('devicesRead', intval($resource->{'device_id_b'}));
+                                            }
+                                            $link = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"$href\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
                                             if (!empty($resource->{$field})) {
                                                 $resource->{$field} = $resource->{$field} . ' (' . $resource->{'devices.device_name_b'} . ')';
                                             } else {
