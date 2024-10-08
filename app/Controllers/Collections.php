@@ -434,6 +434,7 @@ class Collections extends BaseController
         $count_update = 0;
         $count_update_fail = 0;
         $id = array();
+        $this->locationsModel = model('App\Models\LocationsModel');
         for ($i = 1; $i < $row_count; $i++) {
             $data = new stdClass();
             for ($j = 0; $j < $column_count; $j++) {
@@ -445,6 +446,66 @@ class Collections extends BaseController
             foreach ($data as $key => $value) {
                 $data->{$key} = str_replace("\\n", "\n", $value);
                 $data->{$key} = str_replace("\\r", "\r", $data->{$key});
+            }
+
+            if (!empty($data->{'orgs.name'}) and $this->resp->meta->collection !== 'orgs' and empty($data->{'orgs.id'}) and empty($data->org_id)) {
+                // Lookup the Org by name and assign the org_id
+                if (empty($orgs)) {
+                    $orgs = $this->orgsModel->listUser();
+                }
+                foreach ($orgs as $org) {
+                    if ($data->{'orgs.name'} === $org->attributes->name) {
+                        $data->{'org_id'} = $org->id;
+                    }
+                }
+            }
+
+            if (!empty($data->{'orgs.name'}) and $this->resp->meta->collection === 'orgs' and empty($data->{'orgs.id'}) and empty($data->parent_id)) {
+                // Lookup the Org by name and assign the org_id
+                if (empty($orgs)) {
+                    $orgs = $this->orgsModel->listUser();
+                }
+                foreach ($orgs as $org) {
+                    if ($data->{'orgs.name'} === $org->attributes->name) {
+                        $data->{'parent_id'} = $org->id;
+                    }
+                }
+            }
+
+            if (!empty($data->{'locations.name'}) and in_array($this->resp->meta->collection, ['devices', 'networks', 'racks']) and empty($data->{'locations.id'}) and empty($data->location_id)) {
+                // Lookup the Org by name and assign the org_id
+                if (empty($locations)) {
+                    $locations = $this->locationsModel->listUser();
+                }
+                foreach ($locations as $location) {
+                    if ($data->{'locations.name'} === $location->attributes->name) {
+                        $data->{'location_id'} = $location->id;
+                    }
+                }
+            }
+
+            if (!empty($data->{'locations.name_a'}) and $this->resp->meta->collection === 'connections' and empty($data->location_id_a)) {
+                // Lookup the Org by name and assign the org_id
+                if (empty($locations)) {
+                    $locations = $this->locationsModel->listUser();
+                }
+                foreach ($locations as $location) {
+                    if ($data->{'locations.name_a'} === $location->attributes->name) {
+                        $data->{'location_id_a'} = $location->id;
+                    }
+                }
+            }
+
+            if (!empty($data->{'locations.name_b'}) and $this->resp->meta->collection === 'connections' and empty($data->location_id_b)) {
+                // Lookup the Org by name and assign the org_id
+                if (empty($locations)) {
+                    $locations = $this->locationsModel->listUser();
+                }
+                foreach ($locations as $location) {
+                    if ($data->{'locations.name_b'} === $location->attributes->name) {
+                        $data->{'location_id_b'} = $location->id;
+                    }
+                }
             }
 
             if (($this->resp->meta->collection === 'credential' or $this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds') and empty($data->credentials)) {
