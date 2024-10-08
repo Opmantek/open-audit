@@ -33,6 +33,14 @@ if (!$db->tableExists('access_point')) {
 }
 
 
+if (!$db->fieldExists('build_number_full', 'windows')) {
+    $sql = "ALTER TABLE `windows` ADD `build_number_full` varchar(100) NOT NULL DEFAULT '' AFTER `build_number`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+
 if (!$db->fieldExists('circuit_status', 'connections')) {
     $sql = "ALTER TABLE `connections` ADD `circuit_status` varchar(100) NOT NULL DEFAULT '' AFTER `service_identifier`";
     $db->query($sql);
@@ -41,7 +49,7 @@ if (!$db->fieldExists('circuit_status', 'connections')) {
 }
 
 
-if (!$db->fieldExists('speed', 'connections') and !$db->fieldExists('speed_a_down', 'connections')) {
+if (!$db->fieldExists('speed', 'connections') and !$db->fieldExists('speed_down_a', 'connections')) {
     $sql = "ALTER TABLE `connections` CHANGE `speed` `speed_down_a` float(7,3) NOT NULL DEFAULT '0.000'";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -70,7 +78,7 @@ if (!$db->fieldExists('speed_up_b', 'connections')) {
     log_message('info', (string)$db->getLastQuery());
 }
 if (!$db->fieldExists('site_hours_a', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `site_hours_a` varchar(200) NOT NULL DEFAULT '' AFTER `ip_address_internal_a`";
+    $sql = "ALTER TABLE `connections` ADD `site_hours_a` varchar(200) NOT NULL DEFAULT '' AFTER `ip_address_internal_b`";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());

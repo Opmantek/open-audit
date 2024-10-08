@@ -41,7 +41,7 @@ CREATE TABLE `access_point` (
   `software_version` varchar(100) NOT NULL DEFAULT '',
   `ios_version` varchar(100) NOT NULL DEFAULT '',
   `type` varchar(200) NOT NULL DEFAULT '',
-  `port_number` int(10) unsigned DEFAULT 0,
+  `port_number` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `access_point_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
@@ -4637,6 +4637,7 @@ CREATE TABLE `windows` (
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `name` varchar(200) NOT NULL DEFAULT '',
   `build_number` varchar(20) NOT NULL DEFAULT '',
+  `build_number_full` varchar(100) NOT NULL DEFAULT '',
   `user_name` varchar(100) NOT NULL DEFAULT '',
   `client_site_name` varchar(100) NOT NULL DEFAULT '',
   `domain_short` varchar(100) NOT NULL DEFAULT '',
