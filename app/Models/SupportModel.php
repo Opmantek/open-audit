@@ -122,6 +122,8 @@ class SupportModel extends BaseModel
         $data->webserver->script_name = @$_SERVER['SCRIPT_NAME'];
         $data->webserver->server_name = @$_SERVER['SERVER_NAME'];
         $data->webserver->current_url = current_url();
+        $data->webserver->user_get_current_user = get_current_user();
+        $data->webserver->user_whoami = exec('whoami');
 
         $data->php->display_errors = ini_get('display_errors');
         $data->php->error_log = ini_get('error_log');
