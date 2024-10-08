@@ -1295,11 +1295,14 @@ if (!function_exists('snmp_audit')) {
                     $log->command_time_to_execute = (microtime(true) - $item_start);
                     $log->message = 'Manufacturer retrieval for ' . $ip;
                     $log->command = 'snmpwalk 1.3.6.1.2.1.43.8.2.1.14.1';
-                    $log->command_output = (string)$hex;
+                    $log->command_output = '';
+                    if (!empty($hex)) {
+                        $log->command_output = @json_encode($hex);
+                    }
                     $log->command_status = 'notice';
                     $discoveryLogModel->create($log);
                     unset($log->id, $log->command, $log->command_time_to_execute);
-                    if (count($hex) > 0) {
+                    if (!empty($hex) and is_array($hex) and count($hex) > 0) {
                         if (isset($hex[1])) {
                             if (mb_strpos($hex[1], 'Hex-STRING: ') !== false) {
                                 $hex[1] = str_replace('Hex-STRING: ', '', $hex[1]);
