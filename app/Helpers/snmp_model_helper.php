@@ -613,6 +613,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.1397.2.29': $device->model = '1150'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.141.1.1.29': $device->model = 'InfiniStream 2900'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.141.1.1.2990': $device->model = 'InfiniStream 2990'; $device->type = 'network device'; break;
+            case '1.3.6.1.4.1.141.1.1.3000': $device->model = 'NP-3000H'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.1411.102': $device->model = 'Juniper EX2500'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.14179.1.1.4.3': $device->model = '4402 WLAN Controller'; $device->type = 'wac'; $device->os_group = 'Cisco'; $device->os_family = 'Cisco IOS'; break;
             case '1.3.6.1.4.1.14179.1.1.4.4': $device->model = 'WS-SVC-WISM-1-K9 WLAN Controller'; $device->type = 'wac'; $device->os_group = 'Cisco'; $device->os_family = 'Cisco IOS'; break;
@@ -4865,6 +4866,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.3902.3.600.3.1.724': $device->model = 'ZXR10 5960'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.40614': $device->model = 'iStars'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.4096': $device->model = 'payShield 10K-S'; $device->type = 'network device'; break;
+            case '1.3.6.1.4.1.411': $device->model = 'UAP-FlexHD'; $device->type = 'access point'; break;
             case '1.3.6.1.4.1.41112': $device->model = 'UAP-FlexHD'; $device->type = 'access point'; break;
             case '1.3.6.1.4.1.41916.3.2.18': $device->model = 'ISR 1100-4G'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.41916.3.2.19': $device->model = 'ISR 1100-6G'; $device->type = 'router'; break;
