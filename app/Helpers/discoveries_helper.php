@@ -1181,7 +1181,7 @@ if (! function_exists('ip_audit')) {
         // See if we have a Mac Address for the device's IP
         if (!empty($network_interfaces) and empty($device->mac_address)) {
             foreach ($network_interfaces as $interface) {
-                if ($interface->ip === $device->ip) {
+                if (!empty($interface->ip) and !empty($device->ip) and $interface->ip === $device->ip) {
                     $device->mac_address = $interface->mac;
                     $device->subnet = $interface->subnet;
                 }
