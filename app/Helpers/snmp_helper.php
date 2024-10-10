@@ -151,15 +151,23 @@ if (!function_exists('snmp_credentials')) {
                             ' -X ' . escapeshellarg('XXXX') .
                             ' ' . $ip . ' ' . $oid;
                     $result = '';
-                    $session = new SNMP(SNMP::VERSION_3, $ip, $credential->credentials->security_name, $timeout, $retries);
+                    $security_name =                !empty($credential->credentials->security_name) ? $credential->credentials->security_name : '';
+                    $security_level =               !empty($credential->credentials->security_level) ? $credential->credentials->security_level : '';
+                    $authentication_protocol =      !empty($credential->credentials->authentication_protocol) ? $credential->credentials->authentication_protocol : '';
+                    $authentication_passphrase =    !empty($credential->credentials->authentication_passphrase) ? $credential->credentials->authentication_passphrase : '';
+                    $privacy_protocol =             !empty($credential->credentials->privacy_protocol) ? $credential->credentials->privacy_protocol : '';
+                    $privacy_passphrase =           !empty($credential->credentials->privacy_passphrase) ? $credential->credentials->privacy_passphrase : '';
+                    $context_name =                 !empty($credential->credentials->context_name) ? $credential->credentials->context_name : '';
+                    $context_engine_id =            !empty($credential->credentials->context_engine_id) ? $credential->credentials->context_engine_id : '';
+                    $session = new SNMP(SNMP::VERSION_3, $ip, $security_name, $timeout, $retries);
                     $session->setSecurity(
-                        $credential->credentials->security_level,
-                        $credential->credentials->authentication_protocol,
-                        $credential->credentials->authentication_passphrase,
-                        $credential->credentials->privacy_protocol,
-                        $credential->credentials->privacy_passphrase,
-                        '',
-                        ''
+                        $security_level,
+                        $authentication_protocol,
+                        $authentication_passphrase,
+                        $privacy_protocol,
+                        $privacy_passphrase,
+                        $context_name,
+                        $context_engine_id
                     );
                     $result = @$session->get($oid);
                     $session->close();
@@ -253,6 +261,72 @@ if (!function_exists('snmp_credentials')) {
 }
 
 
+function my_snmp_get_command($ip, $credentials, $oid)
+{
+    $array = array();
+    if (intval($credentials->credentials->version) === 1) {
+        $command = 'snmpget -v1 -On -c ' . escapeshellarg($credentials->credentials->community) . ' ' . escapeshellarg($ip) . ' ' . escapeshellarg($oid);
+        exec($command, $output, $return_var);
+        foreach ($output as $line) {
+            $temp = explode(' = ', $line);
+            $thisOid = substr($temp[0], 1);
+            $value = '';
+            if (strpos($temp[1], ':') !== false) {
+                $values = explode(':', $temp[1]);
+                unset($values[0]);
+                $value = trim(implode(':', $values), ' "');
+            }
+            $string = $value;
+        }
+    }
+    if (intval($credentials->credentials->version) === 2) {
+        $command = 'snmpget -v2c -On -c ' . escapeshellarg($credentials->credentials->community) . ' ' . escapeshellarg($ip) . ' ' . escapeshellarg($oid);
+        exec($command, $output, $return_var);
+        foreach ($output as $line) {
+            $temp = explode(' = ', $line);
+            $thisOid = substr($temp[0], 1);
+            $value = '';
+            if (strpos($temp[1], ':') !== false) {
+                $values = explode(':', $temp[1]);
+                unset($values[0]);
+                $value = trim(implode(':', $values), ' "');
+            }
+            $string = $value;
+        }
+    }
+    if (intval($credentials->credentials->version) === 3) {
+        $security_level =               !empty($credentials->credentials->security_level) ?             ' -l ' . escapeshellarg($credentials->credentials->security_level) : '';
+        $security_name =                !empty($credentials->credentials->security_name) ?              ' -u ' . escapeshellarg($credentials->credentials->security_name) : '';
+        $authentication_protocol =      !empty($credentials->credentials->authentication_protocol) ?    ' -a ' . escapeshellarg($credentials->credentials->authentication_protocol) : '';
+        $authentication_passphrase =    !empty($credentials->credentials->authentication_passphrase) ?  ' -A ' . escapeshellarg($credentials->credentials->authentication_passphrase) : '';
+        $privacy_protocol =             !empty($credentials->credentials->privacy_protocol) ?           ' -x ' . escapeshellarg($credentials->credentials->privacy_protocol) : '';
+        $privacy_passphrase =           !empty($credentials->credentials->privacy_passphrase) ?         ' -X ' . escapeshellarg($credentials->credentials->privacy_passphrase) : '';
+        $context_name =                 !empty($credentials->credentials->context_name) ?               ' -n ' . escapeshellarg($credentials->credentials->context_name) : '';
+        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg($credentials->credentials->context_engine_id) : '';
+        $command = 'snmpget -v3 -On ' . $security_level . $security_name . $authentication_protocol . $authentication_passphrase . $privacy_protocol . $privacy_passphrase . $context_name . $context_engine_id . ' ' . $ip . ' ' . $oid;
+        exec($command, $output, $return_var);
+        $array = array();
+        foreach ($output as $line) {
+            $temp = explode(' = ', $line);
+            $thisOid = substr($temp[0], 1);
+            $value = '';
+            if (strpos($temp[1], ':') !== false) {
+                $values = explode(':', $temp[1]);
+                unset($values[0]);
+                $value = trim(implode(':', $values), ' "');
+            }
+            $string = $value;
+        }
+    }
+
+    if (empty($string) or $string === false) {
+        log_message('debug', 'SNMPv' . $credentials->credentials->version . ' get using command line for ' . $oid . ' not working on ' . $ip);
+        return array();
+    }
+    return $string;
+}
+
+
 if (!function_exists('my_snmp_get')) {
     /**
      * [my_snmp_get description]
@@ -266,62 +340,53 @@ if (!function_exists('my_snmp_get')) {
         $timeout = 1000000;
         $retries = 0;
         $string = '';
-        if (empty($credentials->credentials->version) or ($credentials->credentials->version !== 1 && $credentials->credentials->version !== 2 && $credentials->credentials->version !== 3)) {
+
+        if (empty($credentials->credentials->version) or !in_array(intval($credentials->credentials->version), [1,2,3])) {
             $credentials->credentials->version = 2;
         }
+
         if (intval($credentials->credentials->version) === 1) {
-            try {
-                $string = snmpget($ip, $credentials->credentials->community, $oid, $timeout, $retries);
-            } catch (Exception $e) {
-                log_message('debug', 'SNMPv1 get for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $e->getMessage());
-            }
+            $session = new SNMP(SNMP::VERSION_1, $ip, $credentials->credentials->community, $timeout, $retries);
         }
         if (intval($credentials->credentials->version) === 2) {
-            try {
-                $string = snmp2_get($ip, $credentials->credentials->community, $oid, $timeout, $retries);
-            } catch (Exception $e) {
-                log_message('debug', 'SNMPv2 get for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $e->getMessage());
-            }
+            $session = new SNMP(SNMP::VERSION_2c, $ip, $credentials->credentials->community, $timeout, $retries);
         }
         if (intval($credentials->credentials->version) === 3) {
-            $security_name = $credentials->credentials->security_name ?: '';
-            $security_level = $credentials->credentials->security_level ?: '';
-            $authentication_protocol = $credentials->credentials->authentication_protocol ?: '';
-            $authentication_passphrase = $credentials->credentials->authentication_passphrase ?: '';
-            $privacy_protocol = $credentials->credentials->privacy_protocol ?: '';
-            $privacy_passphrase = $credentials->credentials->privacy_passphrase ?: '';
-            $context = $credentials->credentials->context ?: '';
-            if (!empty($context) and php_uname('s') !== 'Windows NT') {
-                $command = 'snmpget -v3 -On' .
-                                ' -l ' . escapeshellarg($security_level)  .
-                                ' -u ' . escapeshellarg($security_name) .
-                                ' -a ' . escapeshellarg($authentication_protocol) .
-                                ' -A ' . escapeshellarg($authentication_passphrase) .
-                                ' -x ' . escapeshellarg($privacy_protocol) .
-                                ' -X ' . escapeshellarg($privacy_passphrase) .
-                                ' -n ' . escapeshellarg($context) .
-                                ' ' . $ip . ' ' . $oid;
-                exec($command, $output, $return_var);
-                foreach ($output as $line) {
-                    $temp = explode(' = ', $line);
-                    $value = '';
-                    if (strpos($temp[1], ':') !== false) {
-                        $values = explode(':', $temp[1]);
-                        unset($values[0]);
-                        $value = trim(implode(':', $values), ' "');
-                    }
-                    $string = $value;
-                }
-                if (empty($array)) {
-                    log_message('debug', 'SNMPv3 get using command line for ' . $oid . ' not working on ' . $ip);
-                }
-            } else {
-                try {
-                    $string = snmp3_get($ip, $security_name, $security_level, $authentication_protocol, $authentication_passphrase, $privacy_protocol, $privacy_passphrase, $oid, $timeout, $retries);
-                } catch (Exception $e) {
-                    log_message('debug', 'SNMPv3 get for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $e->getMessage());
-                }
+            $security_name =                !empty($credentials->credentials->security_name) ?              $credentials->credentials->security_name : '';
+            $security_level =               !empty($credentials->credentials->security_level) ?             $credentials->credentials->security_level : '';
+            $authentication_protocol =      !empty($credentials->credentials->authentication_protocol) ?    $credentials->credentials->authentication_protocol : '';
+            $authentication_passphrase =    !empty($credentials->credentials->authentication_passphrase) ?  $credentials->credentials->authentication_passphrase : '';
+            $privacy_protocol =             !empty($credentials->credentials->privacy_protocol) ?           $credentials->credentials->privacy_protocol : '';
+            $privacy_passphrase =           !empty($credentials->credentials->privacy_passphrase) ?         $credentials->credentials->privacy_passphrase : '';
+            $context_name =                 !empty($credentials->credentials->context_name) ?               $credentials->credentials->context_name : '';
+            $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          $credentials->credentials->context_engine_id : '';
+            $session = new SNMP(SNMP::VERSION_3, $ip, $security_name, $timeout, $retries);
+            $session->setSecurity(
+                $security_level,
+                $authentication_protocol,
+                $authentication_passphrase,
+                $privacy_protocol,
+                $privacy_passphrase,
+                $context_name,
+                $context_engine_id
+            );
+        }
+        $session->exceptions_enabled = SNMP::ERRNO_ANY;
+        $error = '';
+        try {
+            $string = $session->get($oid);
+        } catch (Exception $e) {
+            $error = (string)$session->getError();
+            if (stripos($error, 'No Such Object available on this agent at this OID') === false and stripos($error, 'No Such Instance currently exists at this OID') === false) {
+                log_message('debug', 'SNMPv' . $credentials->credentials->version . ' get for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $error);
             }
+        }
+        $session->close();
+        unset($session);
+
+        if (php_uname('s') !== 'Windows NT' and stripos($error, 'No response from ' . $ip) !== false) {
+            // Try a command line request
+            $string = my_snmp_get_command($ip, $credentials, $oid);
         }
 
         if (empty($string) && $string !== '0') {
@@ -360,6 +425,71 @@ if (!function_exists('my_snmp_get')) {
     }
 }
 
+function my_snmp_walk_command($ip, $credentials, $oid)
+{
+    $array = array();
+    if (intval($credentials->credentials->version) === 1) {
+        $command = 'snmpwalk -v1 -On -c ' . escapeshellarg($credentials->credentials->community) . ' ' . escapeshellarg($ip) . ' ' . escapeshellarg($oid);
+        exec($command, $output, $return_var);
+        foreach ($output as $line) {
+            $temp = explode(' = ', $line);
+            $thisOid = substr($temp[0], 1);
+            $value = '';
+            if (strpos($temp[1], ':') !== false) {
+                $values = explode(':', $temp[1]);
+                unset($values[0]);
+                $value = trim(implode(':', $values), ' "');
+            }
+            $array[] = $value;
+        }
+    }
+    if (intval($credentials->credentials->version) === 2) {
+        $command = 'snmpwalk -v2c -On -c ' . escapeshellarg($credentials->credentials->community) . ' ' . escapeshellarg($ip) . ' ' . escapeshellarg($oid);
+        exec($command, $output, $return_var);
+        foreach ($output as $line) {
+            $temp = explode(' = ', $line);
+            $thisOid = substr($temp[0], 1);
+            $value = '';
+            if (strpos($temp[1], ':') !== false) {
+                $values = explode(':', $temp[1]);
+                unset($values[0]);
+                $value = trim(implode(':', $values), ' "');
+            }
+            $array[] = $value;
+        }
+    }
+    if (intval($credentials->credentials->version) === 3) {
+        $security_level =               !empty($credentials->credentials->security_level) ?             ' -l ' . escapeshellarg($credentials->credentials->security_level) : '';
+        $security_name =                !empty($credentials->credentials->security_name) ?              ' -u ' . escapeshellarg($credentials->credentials->security_name) : '';
+        $authentication_protocol =      !empty($credentials->credentials->authentication_protocol) ?    ' -a ' . escapeshellarg($credentials->credentials->authentication_protocol) : '';
+        $authentication_passphrase =    !empty($credentials->credentials->authentication_passphrase) ?  ' -A ' . escapeshellarg($credentials->credentials->authentication_passphrase) : '';
+        $privacy_protocol =             !empty($credentials->credentials->privacy_protocol) ?           ' -x ' . escapeshellarg($credentials->credentials->privacy_protocol) : '';
+        $privacy_passphrase =           !empty($credentials->credentials->privacy_passphrase) ?         ' -X ' . escapeshellarg($credentials->credentials->privacy_passphrase) : '';
+        $context_name =                 !empty($credentials->credentials->context_name) ?               ' -n ' . escapeshellarg($credentials->credentials->context_name) : '';
+        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg($credentials->credentials->context_engine_id) : '';
+        $command = 'snmpwalk -v3 -On ' . $security_level . $security_name . $authentication_protocol . $authentication_passphrase . $privacy_protocol . $privacy_passphrase . $context_name . $context_engine_id . ' ' . $ip . ' ' . $oid;
+        exec($command, $output, $return_var);
+        $array = array();
+        foreach ($output as $line) {
+            $temp = explode(' = ', $line);
+            $thisOid = substr($temp[0], 1);
+            $value = '';
+            if (strpos($temp[1], ':') !== false) {
+                $values = explode(':', $temp[1]);
+                unset($values[0]);
+                $value = trim(implode(':', $values), ' "');
+            }
+            $array[] = $value;
+        }
+    }
+
+    if (empty($array) or !is_array($array)) {
+        log_message('notice', 'SNMPv' . $credentials->credentials->version . ' walk using command line for ' . $oid . ' not working on ' . $ip);
+        return array();
+    }
+    return $array;
+}
+
 if (!function_exists('my_snmp_walk')) {
     /**
      * [my_snmp_walk description]
@@ -372,90 +502,60 @@ if (!function_exists('my_snmp_walk')) {
     {
         $timeout = 30000000;
         $retries = 0;
-        if (!in_array(intval($credentials->credentials->version), [1,2,3])) {
-            log_message('error', 'Invalid SNMP version passed to my_snmp_real_walk');
+        $array = array();
+
+        if (empty($credentials->credentials->version) or !in_array(intval($credentials->credentials->version), [1,2,3])) {
+            log_message('error', 'Invalid SNMP version passed to my_snmp_walk');
             return false;
         }
         if (intval($credentials->credentials->version) === 1) {
-            try {
-                $array = snmpwalk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
-            } catch (Exception $e) {
-                log_message('debug', 'SNMPv1 walk for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $e->getMessage());
-            }
+            $session = new SNMP(SNMP::VERSION_1, $ip, $credentials->credentials->community, $timeout, $retries);
         }
         if (intval($credentials->credentials->version) === 2) {
-            try {
-                $array = snmp2_walk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
-            } catch (Exception $e) {
-                log_message('debug', 'SNMPv2 walk for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $e->getMessage());
-            }
-            if (empty($array) and php_uname('s') !== 'Windows NT') {
-                $timeout = 300000000;
-                $array = array();
-                $command = 'snmpwalk -v2c -On -c ' . escapeshellarg($credentials->credentials->community) . ' ' . escapeshellarg($ip) . ' ' . escapeshellarg($oid);
-                exec($command, $output, $return_var);
-                foreach ($output as $line) {
-                    $temp = explode(' = ', $line);
-                    $thisOid = substr($temp[0], 1);
-                    $value = '';
-                    if (strpos($temp[1], ':') !== false) {
-                        $values = explode(':', $temp[1]);
-                        unset($values[0]);
-                        $value = trim(implode(':', $values), ' "');
-                    }
-                    $array[] = $value;
-                }
-                if (empty($array)) {
-                    log_message('debug', 'SNMPv2 walk using command line for ' . $oid . ' not working on ' . $ip);
-                }
-            }
-            if (empty($array)) {
-                return false;
-            }
+            $session = new SNMP(SNMP::VERSION_2c, $ip, $credentials->credentials->community, $timeout, $retries);
         }
         if (intval($credentials->credentials->version) === 3) {
-            $security_name = $credentials->credentials->security_name ?: '';
-            $security_level = $credentials->credentials->security_level ?: '';
-            $authentication_protocol = $credentials->credentials->authentication_protocol ?: '';
-            $authentication_passphrase = $credentials->credentials->authentication_passphrase ?: '';
-            $privacy_protocol = $credentials->credentials->privacy_protocol ?: '';
-            $privacy_passphrase = $credentials->credentials->privacy_passphrase ?: '';
-            $context = $credentials->credentials->context ?: '';
-            if (!empty($context) and php_uname('s') !== 'Windows NT') {
-                $command = 'snmpwalk -v3 -On' .
-                                ' -l ' . escapeshellarg($security_level)  .
-                                ' -u ' . escapeshellarg($security_name) .
-                                ' -a ' . escapeshellarg($authentication_protocol) .
-                                ' -A ' . escapeshellarg($authentication_passphrase) .
-                                ' -x ' . escapeshellarg($privacy_protocol) .
-                                ' -X ' . escapeshellarg($privacy_passphrase) .
-                                ' -n ' . escapeshellarg($context) .
-                                ' ' . $ip . ' ' . $oid;
-                exec($command, $output, $return_var);
-                $array = array();
-                foreach ($output as $line) {
-                    $temp = explode(' = ', $line);
-                    $thisOid = substr($temp[0], 1);
-                    $value = '';
-                    if (strpos($temp[1], ':') !== false) {
-                        $values = explode(':', $temp[1]);
-                        unset($values[0]);
-                        $value = trim(implode(':', $values), ' "');
-                    }
-                    $array[] = $value;
-                }
-                if (empty($array)) {
-                    log_message('debug', 'SNMPv3 walk using command line for ' . $oid . ' not working on ' . $ip);
-                }
-            } else {
-                try {
-                    $array = snmp3_walk($ip, $security_name, $security_level, $authentication_protocol, $authentication_passphrase, $privacy_protocol, $privacy_passphrase, $oid, $timeout, $retries);
-                } catch (Exception $e) {
-                    log_message('debug', 'SNMPv3 walk for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $e->getMessage());
-                }
+            $security_name =                !empty($credentials->credentials->security_name) ?              $credentials->credentials->security_name : '';
+            $security_level =               !empty($credentials->credentials->security_level) ?             $credentials->credentials->security_level : '';
+            $authentication_protocol =      !empty($credentials->credentials->authentication_protocol) ?    $credentials->credentials->authentication_protocol : '';
+            $authentication_passphrase =    !empty($credentials->credentials->authentication_passphrase) ?  $credentials->credentials->authentication_passphrase : '';
+            $privacy_protocol =             !empty($credentials->credentials->privacy_protocol) ?           $credentials->credentials->privacy_protocol : '';
+            $privacy_passphrase =           !empty($credentials->credentials->privacy_passphrase) ?         $credentials->credentials->privacy_passphrase : '';
+            $context_name =                 !empty($credentials->credentials->context_name) ?               $credentials->credentials->context_name : '';
+            $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          $credentials->credentials->context_engine_id : '';
+            $session = new SNMP(SNMP::VERSION_3, $ip, $security_name, $timeout, $retries);
+            $session->setSecurity(
+                $security_level,
+                $authentication_protocol,
+                $authentication_passphrase,
+                $privacy_protocol,
+                $privacy_passphrase,
+                $context_name,
+                $context_engine_id
+            );
+        }
+        $session->exceptions_enabled = SNMP::ERRNO_ANY;
+        $error = '';
+        try {
+            $array = $session->walk($oid);
+        } catch (Exception $e) {
+            $error = (string)$session->getError();
+            if (stripos($error, 'No Such Object available on this agent at this OID') === false and stripos($error, 'No Such Instance currently exists at this OID') === false) {
+                log_message('debug', 'SNMPv' . $credentials->credentials->version . ' walk for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $error);
             }
         }
-        if (!is_array($array)) {
+        if (!empty($array)) {
+            $array = array_values($array);
+        }
+        $session->close();
+        unset($session);
+
+        if (php_uname('s') !== 'Windows NT' and stripos($error, 'No response from ' . $ip) !== false) {
+            // Try a command line request
+            $array = my_snmp_walk_command($ip, $credentials, $oid);
+        }
+
+        if (empty($array) or !is_array($array)) {
             log_message('debug', 'Attempted SNMP walk (v' . $credentials->credentials->version . ') for ' . $oid . ' on ' . $ip . ' resulted in FALSE being returned.');
             return false;
         }
@@ -495,6 +595,70 @@ if (!function_exists('my_snmp_walk')) {
 }
 
 
+function my_snmp_real_walk_command($ip, $credentials, $oid)
+{
+    $array = array();
+    if (intval($credentials->credentials->version) === 1) {
+        $command = 'snmpwalk -v1 -On -c ' . escapeshellarg($credentials->credentials->community) . ' ' . escapeshellarg($ip) . ' ' . escapeshellarg($oid);
+        exec($command, $output, $return_var);
+        foreach ($output as $line) {
+            $temp = explode(' = ', $line);
+            $thisOid = substr($temp[0], 1);
+            $value = '';
+            if (strpos($temp[1], ':') !== false) {
+                $values = explode(':', $temp[1]);
+                unset($values[0]);
+                $value = trim(implode(':', $values), ' "');
+            }
+            $array[$thisOid] = $value;
+        }
+    }
+    if (intval($credentials->credentials->version) === 2) {
+        $command = 'snmpwalk -v2c -On -c ' . escapeshellarg($credentials->credentials->community) . ' ' . escapeshellarg($ip) . ' ' . escapeshellarg($oid);
+        exec($command, $output, $return_var);
+        foreach ($output as $line) {
+            $temp = explode(' = ', $line);
+            $thisOid = substr($temp[0], 1);
+            $value = '';
+            if (strpos($temp[1], ':') !== false) {
+                $values = explode(':', $temp[1]);
+                unset($values[0]);
+                $value = trim(implode(':', $values), ' "');
+            }
+            $array[$thisOid] = $value;
+        }
+    }
+    if (intval($credentials->credentials->version) === 3) {
+        $security_level =               !empty($credentials->credentials->security_level) ?             ' -l ' . escapeshellarg($credentials->credentials->security_level) : '';
+        $security_name =                !empty($credentials->credentials->security_name) ?              ' -u ' . escapeshellarg($credentials->credentials->security_name) : '';
+        $authentication_protocol =      !empty($credentials->credentials->authentication_protocol) ?    ' -a ' . escapeshellarg($credentials->credentials->authentication_protocol) : '';
+        $authentication_passphrase =    !empty($credentials->credentials->authentication_passphrase) ?  ' -A ' . escapeshellarg($credentials->credentials->authentication_passphrase) : '';
+        $privacy_protocol =             !empty($credentials->credentials->privacy_protocol) ?           ' -x ' . escapeshellarg($credentials->credentials->privacy_protocol) : '';
+        $privacy_passphrase =           !empty($credentials->credentials->privacy_passphrase) ?         ' -X ' . escapeshellarg($credentials->credentials->privacy_passphrase) : '';
+        $context_name =                 !empty($credentials->credentials->context_name) ?               ' -n ' . escapeshellarg($credentials->credentials->context_name) : '';
+        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg($credentials->credentials->context_engine_id) : '';
+        $command = 'snmpwalk -v3 -On ' . $security_level . $security_name . $authentication_protocol . $authentication_passphrase . $privacy_protocol . $privacy_passphrase . $context_name . $context_engine_id . ' ' . $ip . ' ' . $oid;
+        exec($command, $output, $return_var);
+        foreach ($output as $line) {
+            $temp = explode(' = ', $line);
+            $thisOid = substr($temp[0], 1);
+            $value = '';
+            if (strpos($temp[1], ':') !== false) {
+                $values = explode(':', $temp[1]);
+                unset($values[0]);
+                $value = trim(implode(':', $values), ' "');
+            }
+            $array[$thisOid] = $value;
+        }
+    }
+
+    if (empty($array) or !is_array($array)) {
+        log_message('notice', 'SNMPv' . $credentials->credentials->version . ' real walk using command line for ' . $oid . ' not working on ' . $ip);
+        return array();
+    }
+    return $array;
+}
+
 if (!function_exists('my_snmp_real_walk')) {
     /**
      * [my_snmp_real_walk description]
@@ -507,91 +671,57 @@ if (!function_exists('my_snmp_real_walk')) {
     {
         $timeout = 30000000;
         $retries = 0;
-        if (!in_array(intval($credentials->credentials->version), [1,2,3])) {
+        $array = array();
+
+        if (empty($credentials->credentials->version) or !in_array(intval($credentials->credentials->version), [1,2,3])) {
             log_message('error', 'Invalid SNMP version passed to my_snmp_real_walk');
             return false;
         }
         if (intval($credentials->credentials->version) === 1) {
-            try {
-                $array = snmprealwalk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
-            } catch (Exception $e) {
-                log_message('debug', 'SNMPv1 real walk for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $e->getMessage());
-            }
+            $session = new SNMP(SNMP::VERSION_1, $ip, $credentials->credentials->community, $timeout, $retries);
         }
         if (intval($credentials->credentials->version) === 2) {
-            try {
-                $array = snmp2_real_walk($ip, $credentials->credentials->community, $oid, $timeout, $retries);
-            } catch (Exception $e) {
-                log_message('debug', 'SNMPv2 real walk for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $e->getMessage());
-            }
-            if (empty($array) and php_uname('s') !== 'Windows NT') {
-                $array = array();
-                $command = 'snmpwalk -v2c -On -c ' . escapeshellarg($credentials->credentials->community) . ' ' . escapeshellarg($ip) . ' ' . escapeshellarg($oid);
-                exec($command, $output, $return_var);
-                foreach ($output as $line) {
-                    $temp = explode(' = ', $line);
-                    $thisOid = substr($temp[0], 1);
-                    $value = '';
-                    if (strpos($temp[1], ':') !== false) {
-                        $values = explode(':', $temp[1]);
-                        unset($values[0]);
-                        $value = trim(implode(':', $values), ' "');
-                    }
-                    $array[$thisOid] = $value;
-                }
-                if (empty($array)) {
-                    log_message('debug', 'SNMPv2 real walk using command line for ' . $oid . ' not working on ' . $ip);
-                }
-            }
-            if (empty($array)) {
-                return false;
-            }
+            $session = new SNMP(SNMP::VERSION_2c, $ip, $credentials->credentials->community, $timeout, $retries);
         }
-
         if (intval($credentials->credentials->version) === 3) {
-            $security_name = $credentials->credentials->security_name ?: '';
-            $security_level = $credentials->credentials->security_level ?: '';
-            $authentication_protocol = $credentials->credentials->authentication_protocol ?: '';
-            $authentication_passphrase = $credentials->credentials->authentication_passphrase ?: '';
-            $privacy_protocol = $credentials->credentials->privacy_protocol ?: '';
-            $privacy_passphrase = $credentials->credentials->privacy_passphrase ?: '';
-            $context = $credentials->credentials->context ?: '';
-            if (!empty($context) and php_uname('s') !== 'Windows NT') {
-                $command = 'snmpwalk -v3 -On' .
-                                ' -l ' . escapeshellarg($security_level)  .
-                                ' -u ' . escapeshellarg($security_name) .
-                                ' -a ' . escapeshellarg($authentication_protocol) .
-                                ' -A ' . escapeshellarg($authentication_passphrase) .
-                                ' -x ' . escapeshellarg($privacy_protocol) .
-                                ' -X ' . escapeshellarg($privacy_passphrase) .
-                                ' -n ' . escapeshellarg($context) .
-                                ' ' . $ip . ' ' . $oid;
-                exec($command, $output, $return_var);
-                foreach ($output as $line) {
-                    $temp = explode(' = ', $line);
-                    $thisOid = substr($temp[0], 1);
-                    $value = '';
-                    if (strpos($temp[1], ':') !== false) {
-                        $values = explode(':', $temp[1]);
-                        unset($values[0]);
-                        $value = trim(implode(':', $values), ' "');
-                    }
-                    $array[$thisOid] = $value;
-                }
-                if (empty($array)) {
-                    log_message('debug', 'SNMPv3 real walk using command line for ' . $oid . ' not working on ' . $ip);
-                }
-            } else {
-                try {
-                    $array = snmp3_real_walk($ip, $security_name, $security_level, $authentication_protocol, $authentication_passphrase, $privacy_protocol, $privacy_passphrase, $oid, $timeout, $retries);
-                } catch (Exception $e) {
-                    log_message('debug', 'SNMPv3 real walk for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $e->getMessage());
-                }
+            $security_name =                !empty($credentials->credentials->security_name) ?              $credentials->credentials->security_name : '';
+            $security_level =               !empty($credentials->credentials->security_level) ?             $credentials->credentials->security_level : '';
+            $authentication_protocol =      !empty($credentials->credentials->authentication_protocol) ?    $credentials->credentials->authentication_protocol : '';
+            $authentication_passphrase =    !empty($credentials->credentials->authentication_passphrase) ?  $credentials->credentials->authentication_passphrase : '';
+            $privacy_protocol =             !empty($credentials->credentials->privacy_protocol) ?           $credentials->credentials->privacy_protocol : '';
+            $privacy_passphrase =           !empty($credentials->credentials->privacy_passphrase) ?         $credentials->credentials->privacy_passphrase : '';
+            $context_name =                 !empty($credentials->credentials->context_name) ?               $credentials->credentials->context_name : '';
+            $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          $credentials->credentials->context_engine_id : '';
+            $session = new SNMP(SNMP::VERSION_3, $ip, $security_name, $timeout, $retries);
+            $session->setSecurity(
+                $security_level,
+                $authentication_protocol,
+                $authentication_passphrase,
+                $privacy_protocol,
+                $privacy_passphrase,
+                $context_name,
+                $context_engine_id
+            );
+        }
+        $session->exceptions_enabled = SNMP::ERRNO_ANY;
+        $error = '';
+        try {
+            $array = $session->walk($oid);
+        } catch (Exception $e) {
+            $error = (string)$session->getError();
+            if (stripos($error, 'No Such Object available on this agent at this OID') === false and stripos($error, 'No Such Instance currently exists at this OID') === false) {
+                log_message('debug', 'SNMPv' . $credentials->credentials->version . ' real walk for ' . $oid . ' not working on ' . $ip . '. Exception: ' . $error);
             }
         }
+        $session->close();
+        unset($session);
 
-        if (!is_array($array)) {
-            log_message('debug', 'Attempted SNMP real walk (v' . $credentials->credentials->version . ') for ' . $oid . ' on ' . $ip . ' resulted in FALSE being returned.');
+        if (php_uname('s') !== 'Windows NT' and stripos($error, 'No response from ' . $ip) !== false) {
+            // Try a command line request
+            $array = my_snmp_real_walk_command($ip, $credentials, $oid);
+        }
+
+        if (empty($array) or !is_array($array)) {
             return false;
         }
         foreach ($array as $key => $value) {
@@ -914,9 +1044,18 @@ if (!function_exists('snmp_audit')) {
         // Cisco Access Points attached to a Wireless Access Controller
         // https://oidref.com/1.3.6.1.4.1.14179.2.2.1.1
         // https://mibs.observium.org/mib/AIRESPACE-WIRELESS-MIB/
+        $item_start = microtime(true);
         snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
         $apMac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.1');
         snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'Access Point MAC Address retrieval for ' . $ip;
+        $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.1';
+        $log->command_output = json_encode($apMac);
+        $log->command_status = 'notice';
+        $discoveryLogModel->create($log);
+        unset($log->id, $log->command, $log->command_time_to_execute);
+
         if (!empty($apMac) and is_array($apMac)) {
             foreach ($apMac as $key => $value) {
                 $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.1.', '', $key);
@@ -924,9 +1063,17 @@ if (!function_exists('snmp_audit')) {
                 $access_points[$id]->mac = format_mac($value);
             }
 
+            $item_start = microtime(true);
             snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
             $apEmac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.33');
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point eMAC Address retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.33';
+            $log->command_output = json_encode($apEmac);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
+            unset($log->id, $log->command, $log->command_time_to_execute);
             if (!empty($apEmac) and is_array($apEmac)) {
                 foreach ($apEmac as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.33.', '', $key);
@@ -937,7 +1084,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apModel = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.16');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point model retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.16';
+            $log->command_output = json_encode($apModel);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apModel) and is_array($apModel)) {
                 foreach ($apModel as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.16.', '', $key);
@@ -948,7 +1102,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apSerial = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.17');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point serial retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.17';
+            $log->command_output = json_encode($apSerial);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apSerial) and is_array($apSerial)) {
                 foreach ($apSerial as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.17.', '', $key);
@@ -959,7 +1120,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apIp = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.19');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point IP retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.19';
+            $log->command_output = json_encode($apIp);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apIp) and is_array($apIp)) {
                 foreach ($apIp as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.19.', '', $key);
@@ -970,7 +1138,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apNetMask = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.26');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point netmask retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.26';
+            $log->command_output = json_encode($apNetMask);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apNetMask) and is_array($apNetMask)) {
                 foreach ($apNetMask as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.26.', '', $key);
@@ -981,7 +1156,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apGateway = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.27');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point gateway retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.27';
+            $log->command_output = json_encode($apGateway);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apGateway) and is_array($apGateway)) {
                 foreach ($apGateway as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.27.', '', $key);
@@ -992,7 +1174,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apName = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.3');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point name retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.3';
+            $log->command_output = json_encode($apName);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apName) and is_array($apName)) {
                 foreach ($apName as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.3.', '', $key);
@@ -1003,7 +1192,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apIosVersion = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.31');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point version retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.31';
+            $log->command_output = json_encode($apIosVersion);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apIosVersion) and is_array($apIosVersion)) {
                 foreach ($apIosVersion as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.31.', '', $key);
@@ -1014,7 +1210,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apLocation = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.4');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point location retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.4';
+            $log->command_output = json_encode($apLocation);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apLocation) and is_array($apLocation)) {
                 foreach ($apLocation as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.4.', '', $key);
@@ -1025,7 +1228,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apPortNumber = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.13');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point port number retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.13';
+            $log->command_output = json_encode($apPortNumber);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apPortNumber) and is_array($apPortNumber)) {
                 foreach ($apPortNumber as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.13.', '', $key);
@@ -1036,7 +1246,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apStatus = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.6');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point status retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.6';
+            $log->command_output = json_encode($apStatus);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apStatus) and is_array($apStatus)) {
                 foreach ($apStatus as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.6.', '', $key);
@@ -1064,7 +1281,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apSoftwareVersion = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.8');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point software version retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.8';
+            $log->command_output = json_encode($apSoftwareVersion);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apSoftwareVersion) and is_array($apSoftwareVersion)) {
                 foreach ($apSoftwareVersion as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.8.', '', $key);
@@ -1075,7 +1299,14 @@ if (!function_exists('snmp_audit')) {
                 }
             }
 
+            $item_start = microtime(true);
             $apType = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.22');
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'Access Point type retrieval for ' . $ip;
+            $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.22';
+            $log->command_output = json_encode($apType);
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
             if (!empty($apType) and is_array($apType)) {
                 foreach ($apType as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.22.', '', $key);
@@ -1163,7 +1394,14 @@ if (!function_exists('snmp_audit')) {
         // }
 
         // Ubiquiti specific items to determine manufacturer
+        $item_start = microtime(true);
         $temp_services = my_snmp_walk($ip, $credentials, '1.3.6.1.2.1.1.9.1.3');
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'Services retrieval for ' . $ip;
+        $log->command = 'snmpwalk 1.3.6.1.2.1.1.9.1.3';
+        $log->command_output = json_encode($temp_services);
+        $log->command_status = 'notice';
+        $discoveryLogModel->create($log);
         if (!empty($temp_services)) {
             foreach ($temp_services as $line) {
                 if (strpos($line, 'Ubiquiti') !== false) {
@@ -1765,7 +2003,6 @@ if (!function_exists('snmp_audit')) {
 
             if (!empty($speeds) and is_array($speeds)) {
                 // Check if we have any speeds greater than a 32bit int.
-                log_message('debug', json_encode($speeds));
                 $temp = false;
                 foreach ($speeds as $key => $value) {
                     if ((string)$value === '4294967295') {
@@ -1781,7 +2018,6 @@ if (!function_exists('snmp_audit')) {
                     $count = (!empty($high_speeds)) ? count($high_speeds) : 0;
                     $log->command_output = 'Count is ' . $count;
                     $log->command_status = 'notice';
-                    log_message('debug', json_encode($high_speeds));
                     $discoveryLogModel->create($log);
                     unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
                     foreach ($speeds as $key => $value) {
