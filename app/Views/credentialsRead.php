@@ -43,7 +43,6 @@ include 'shared/read_functions.php';
                                 echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Key Password (optional)'), '', '', 'password');
                                 echo read_field('credentials.sudo_password', '', $dictionary->columns->sudo_password, $update, __('Sudo Password (optional)'), '', '', 'password');
                             } elseif ($resource->type === 'snmp_v3') {
-
                                 echo read_field('credentials.security_name', $resource->credentials->security_name, $dictionary->columns->security_name, $update, __('Security Name')); ?>
 
                                 <div class="row" style="padding-top:16px;">
@@ -109,6 +108,8 @@ include 'shared/read_functions.php';
                                     </div>
                                 </div>
                                 <?php echo read_field('credentials.privacy_passphrase', '', $dictionary->columns->privacy_passphrase, $update, __('Privacy Passphrase'), '', '', 'password'); ?>
+                                <?php echo read_field('credentials.context_name', '', $dictionary->columns->context_name, $update, __('Context Name')); ?>
+                                <?php echo read_field('credentials.context_engine_id', '', $dictionary->columns->context_engine_id, $update, __('Context Engine ID')); ?>
 
                             <?php } ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>

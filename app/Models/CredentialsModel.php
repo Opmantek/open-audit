@@ -299,6 +299,8 @@ class CredentialsModel extends BaseModel
         $dictionary->columns->privacy_protocol = 'The SNMP v3 Privacy Protocol.';
         $dictionary->columns->security_level = 'The SNMP v3 Security Level.';
         $dictionary->columns->security_name = 'The SNMP v3 Security Name.';
+        $dictionary->columns->context_name = 'The SNMPv3 context Name (optional).';
+        $dictionary->columns->context_engine_id = 'The SNMPv3 context Engine ID (optional).';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

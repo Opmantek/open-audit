@@ -11,7 +11,7 @@ include 'shared/create_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
@@ -115,7 +115,9 @@ window.onload = function () {
                                         </div>\
                                     </div>\
                                     \
-                                    <?= create_text_field('data[attributes][credentials][privacy_passphrase]', __('Privacy Passphrase'), $dictionary->attributes->create, '', 'password') ?>';
+                                    <?= create_text_field('data[attributes][credentials][privacy_passphrase]', __('Privacy Passphrase'), $dictionary->attributes->create, '', 'password') ?>\
+                                    <?= create_text_field('data[attributes][credentials][context_name]', __('Context Name'), $dictionary->attributes->create) ?>\
+                                    <?= create_text_field('data[attributes][credentials][context_engine_id]', __('Context Engine ID'), $dictionary->attributes->create) ?>';
 
         var $ssh_text = '<?= create_text_field('data[attributes][credentials][username]', __('Username'), $dictionary->attributes->create) . create_text_field('data[attributes][credentials][password]', __('Password'), $dictionary->attributes->create, '', 'password') ?>';
 
