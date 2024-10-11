@@ -10,6 +10,7 @@ declare(strict_types=1);
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
     $details->manufacturer = 'Netscout Systems, Inc.';
-    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.141.1.9.0");
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.141.61.1.0");
+    $details->type = 'sensor';
     return($details);
 };
