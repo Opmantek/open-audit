@@ -901,6 +901,12 @@ class DevicesModel extends BaseModel
                 }
             }
         }
+        if (in_array($source, ['nmap', 'ssh', 'snmp', 'cloud', 'wmi', 'windows', 'audit_wmi', 'audit_windows', 'audit']) and $db_entry->status !== 'production') {
+            // We discovered a device, set its status to production
+            $update_device->status = 'production';
+            $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'devices', ?, ?, ?, ?)";
+            $query = $this->db->query($sql, [$user_id, $id, $source, 2000, 'status', $data->timestamp, 'production', $db_entry->status]);
+        }
         // Add our non-edit_log compared attributes to the data to be updated
         foreach ($data as $key => $value) {
             if ($key !== 'id' && in_array($key, $disallowed_fields)) {
@@ -1041,6 +1047,7 @@ class DevicesModel extends BaseModel
         $dictionary->columns->description = @$instance->dictionary->description;
         $dictionary->columns->org_id = @$instance->dictionary->org_id;
         $dictionary->columns->uuid = 'Retrieved from the device - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostsvc/hostsummary, HP-UX:machinfo, Solaris:smbios, AIX:uname.';
+        $dictionary->columns->status = 'Normally \'production\'.';
         $dictionary->columns->last_seen = 'The last time that Open-AudIT retrieved details of this device.';
         $dictionary->columns->last_seen_by = 'The process that was used last to retrieve details about the device';
         return $dictionary;
