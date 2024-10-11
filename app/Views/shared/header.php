@@ -496,7 +496,8 @@ if (!empty($config->servers)) {
                                         <?= menuItem('attributes', '', $user, 'attributesDefaults', 'Attributes') ?>
                                         <?= menuItem('configuration', '', $user, 'configurationDefaults', 'Configuration') ?>
                                         <?= menuItem('dashboards', '', $user, 'dashboardsDefaults', 'Dashboards') ?>
-                                        <?= menuItem('discovery_scan_options', '', $user, 'discovery_scan_optionsDefaults', 'Dashboards') ?>
+                                        <?= menuItem('discoveries', '', $user, 'discoveriesDefaults', 'Discoveries') ?>
+                                        <?= menuItem('discovery_scan_options', '', $user, 'discovery_scan_optionsDefaults', 'Discovery Scan Options') ?>
                                         <?= menuItem('fields', '', $user, 'fieldsDefaults', 'Fields') ?>
                                         <?= menuItem('groups', '', $user, 'groupsDefaults', 'Groups') ?>
                                         <?= menuItem('integrations', '', $user, 'integrationsDefaults', 'Integrations') ?>
@@ -571,9 +572,9 @@ foreach ($config->modules as $module) {
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="<?= url_to('home') ?>" class="link-secondary">Home</a></li>
                                 <?php if (empty($meta->breadcrumbs)) { ?>
-                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Collection') ?>" class="link-secondary"><?= @ucwords(str_replace('_', ' ', $meta->collection)) ?></a></li>
+                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Collection') ?>" class="link-secondary"><?= @ucwords(str_replace('_', ' ', $meta->collection)) ?></a></li>
                                     <?php if (($meta->action === 'read' or $meta->action === 'execute') and !empty($name)) { ?>
-                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Read', $meta->id) ?>" class="link-secondary"><?= $name ?></a></li>
+                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Read', $meta->id) ?>" class="link-secondary"><?= $name ?></a></li>
                                     <?php }
                                 } else {
                                     foreach ($meta->breadcrumbs as $breadcrumb) { ?>
