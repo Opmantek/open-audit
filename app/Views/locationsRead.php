@@ -33,7 +33,7 @@ if ($user->toolbar_style === 'icontext') {
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
-                        <div class="col-4 offset-4">
+                        <div class="col-8 offset-2">
                             <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                                 <?= $latlong ?>
                                 <?= $geocode ?>
