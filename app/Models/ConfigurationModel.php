@@ -136,6 +136,12 @@ class ConfigurationModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return false;
         }
+        $sql = "SELECT * FROM configuration WHERE id = ?";
+        $result = $this->db->query($sql, [$id])->getResult();
+        if (!empty($result[0]->name) and $result[0]->name === 'license_string') {
+            $sql = "UPDATE configuration SET value = '' WHERE name IN ('license', 'license_limit', 'license_eula', 'license_footer')";
+            $this->db->query($sql);
+        }
         return true;
     }
 

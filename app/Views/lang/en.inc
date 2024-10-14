@@ -545,6 +545,7 @@ $GLOBALS["lang"]["Devices Found Yesterday"]="Devices Found Yesterday";
 $GLOBALS["lang"]["Devices from Open-AudIT"]="Devices from Open-AudIT";
 $GLOBALS["lang"]["Devices Icon"]="Devices Icon";
 $GLOBALS["lang"]["Devices ID"]="Devices ID";
+$GLOBALS["lang"]["Devices  ID"]="Devices  ID";
 $GLOBALS["lang"]["Devices IDentification"]="Devices IDentification";
 $GLOBALS["lang"]["Devices in Running State"]="Devices in Running State";
 $GLOBALS["lang"]["Devices in Stopped State"]="Devices in Stopped State";
