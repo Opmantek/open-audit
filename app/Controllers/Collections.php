@@ -82,7 +82,7 @@ class Collections extends BaseController
         $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
         $this->resp->meta->filtered = count($this->resp->data);
 
-        if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total) {
+        if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['warning'])) {
             $_SESSION['success'] = 'Result limited to ' . $this->resp->meta->filtered . ' items as requested. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '.';
         }
 
