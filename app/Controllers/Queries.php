@@ -57,6 +57,7 @@ class Queries extends BaseController
         }
         return view('shared/header', [
             'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
             'dictionary' => $this->queriesModel->dictionary(),
             'meta' => filter_response($this->resp->meta),
             'orgs' => filter_response($this->orgsUser),
