@@ -537,10 +537,11 @@ foreach ($config->modules as $module) {
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
 <?php if (empty($config->license) or $config->license === 'none') { ?>
-                                <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Activate Free License')?></a></li>
+                                <li><a class="dropdown-item" href='#' data-bs-toggle="modal" data-bs-target="#modalCompareLicense"><?= __('Activate Free License')?></a></li>
+<?php } else { ?>
+                                <li><a class="dropdown-item" href='#' data-bs-toggle="modal" data-bs-target="#modalCompareLicense"><?= __('Buy More Licenses')?></a></li>
 <?php } ?>
                                 <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Manage Licenses')?></a></li>
-                                <li><a class="dropdown-item buy_more_licenses" href='#' data-bs-toggle="modal" data-bs-target="#myModalLicense"><?= __('Buy More Licenses')?></a></li>
                             </ul>
                         </li>
 
@@ -770,4 +771,4 @@ function get_user_permission($collection, $action, $user)
     return false;
 }
 
-include('modal.php');
+include('modalCompareLicense.php');
