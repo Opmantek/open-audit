@@ -252,8 +252,9 @@ class QueriesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-
-        $result = format_data($query->getResult(), $type);
+        $result = $query->getResult();
+        $result = formatQuery($result);
+        $result = format_data($result, $type);
         return $result;
     }
 

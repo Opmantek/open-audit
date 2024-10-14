@@ -34,6 +34,7 @@ class DevicesModel extends BaseModel
                 $properties[$i] = $properties[$i] . ' AS `' . $properties[$i] . '`';
             }
         }
+        $properties[] = "devices.id as `devices.id`";
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
@@ -68,11 +69,11 @@ class DevicesModel extends BaseModel
         }
         $this->builder->orderBy('mycount');
         $this->builder->orderBy($resp->meta->sort);
-        if (!empty($instance->config->license_limit) and $resp->meta->limit > $instance->config->license_limit) {
-            $resp->meta->limit = $instance->config->license_limit;
-            log_message('warning', 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.');
-            $_SESSION['warning'] = 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.';
-        }
+        // if (!empty($instance->config->license_limit) and $resp->meta->limit > $instance->config->license_limit) {
+        //     $resp->meta->limit = $instance->config->license_limit;
+        //     log_message('warning', 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.');
+        //     $_SESSION['warning'] = 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.';
+        // }
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
         # log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));
@@ -80,6 +81,7 @@ class DevicesModel extends BaseModel
             return array();
         }
         $result = $query->getResult();
+        $result = formatQuery($result);
         $count = count($result);
 
         if (isset($result[0]->type) and isset($result[0]->last_seen_by) and $instance->config->product !== 'community') {
