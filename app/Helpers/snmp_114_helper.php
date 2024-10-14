@@ -11,7 +11,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
     $details->manufacturer = 'Synernetics, Inc.';
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43.47.1.1.3.1.10.1");
-    if ($details->serial == '') {
+    if (empty($details->serial)) {
         $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43.10.27.1.1.1.13.1");
     }
     return($details);

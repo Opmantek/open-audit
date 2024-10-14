@@ -45,7 +45,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (empty($details->os_version)) {
         # PowerConnect 6248, 3.3.18.1, VxWorks 6.5
         $sysDescr = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.1.1.0');
-        if (stripos($sysDescr, 'VXWorks') !== false and substr_count($sysDescr, ', ') === 2) {
+        if (!empty($sysDescr) and stripos($sysDescr, 'VXWorks') !== false and substr_count($sysDescr, ', ') === 2) {
             $split = explode(',', $sysDescr);
             $details->os_version = trim($split[1]);
         }

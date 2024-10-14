@@ -10,7 +10,7 @@ declare(strict_types=1);
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
     $test = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.23.1.2.1.1.5.29.2");
-    if ($test != '') {
+    if (!empty($test)) {
         if (stripos($test, 'Cisco IOS Software') !== false) {
             $details->manufacturer = 'Cisco Systems';
             $temp2 = explode(',', $test);

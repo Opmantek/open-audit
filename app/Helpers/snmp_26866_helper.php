@@ -12,6 +12,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->manufacturer = 'Gigamon Systems Llc';
     $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.26866.2.2.0");
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.26866.2.8.0");
-    $details->memory_count = intval(str_ireplace('mb', '', my_snmp_get($ip, $credentials, "1.3.6.1.4.1.26866.2.8.0")));
+    $temp = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.26866.2.8.0");
+    if (!empty($temp)) {
+        $details->memory_count = intval(str_ireplace('mb', '', $temp));
+    }
+    unset($temp);
     return($details);
 };

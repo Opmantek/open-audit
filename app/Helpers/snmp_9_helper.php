@@ -42,7 +42,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     # Cisco NxOS serial
     if (empty($details->serial)) {
         $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.369.1.1.1");
-        $details->serial = str_replace('VDH=', '', (string)$details->serial);
+        $details->serial = !empty($details->serial) ? str_replace('VDH=', '', (string)$details->serial) : '';
     }
 
     # 3560
@@ -76,7 +76,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
 
     if (!empty($details->os_version)) {
-        $details->os_cpe_version = $details->os_version;
+        $details->os_cpe_version = !empty($details->os_version) ? $details->os_version . '';
         if (strpos($details->os_cpe_version, '(') !== false) {
             $details->os_cpe_version = str_replace($details->os_cpe_version, '(', '\(');
         }
@@ -84,6 +84,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
             $details->os_cpe_version = str_replace($details->os_cpe_version, ')', '\)');
         }
     }
+    $details->os_version = !empty($details->os_version) ? $details->os_version : '';
     $i = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.7");
     if (stripos((string)$i, "IOS") !== false) {
         $details->os_group = 'Cisco';
