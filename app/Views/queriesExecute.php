@@ -55,7 +55,6 @@ include 'shared/read_functions.php';
                                         } elseif ($key === 'devices.icon') {
                                             echo "<td class=\"text-center\"><img style=\"width:40px\" src=\"" . base_url() . "device_images/" . $item->attributes->{$key} . ".svg\" alt=\"\"></td>\n";
                                         } else {
-                                            // echo "<td>" . $item->attributes->{$key} . "</td>\n";
                                             echo "<td>" . nl2br($item->attributes->{$key}) . "</td>\n";
                                         }
                                     }
