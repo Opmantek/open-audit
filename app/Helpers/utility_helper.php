@@ -508,12 +508,13 @@ function format_data($result, $type)
 function formatQuery(array $result = array()): array
 {
     $instance = & get_instance();
-    $device_count = $instance->config->device_known;
+    $device_count = $instance->config->device_count;
+    $device_known = $instance->config->device_known;
     $license_limit = $instance->config->license_limit;
     if (empty($license_limit)) {
         return $result;
     }
-    if (!empty($result[0]->{'devices.id'}) and ($device_count > intval($license_limit * 1.1))) {
+    if (!empty($result[0]->{'devices.id'}) and ($device_known > intval($license_limit * 1.1))) {
         $devices = array();
         foreach ($result as $row) {
             $devices[] = intval($row->{'devices.id'});
