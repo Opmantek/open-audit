@@ -3,7 +3,6 @@
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
-
 use Config\Database;
 
 #[\AllowDynamicProperties]
@@ -145,7 +144,7 @@ class OpenAudit extends BaseConfig
                     $this->device_count = (int)$result->device_count;
                 }
             }
-            $query = $db->query("SELECT count(*) as device_count FROM `system` WHERE `type` NOT IN ('unknown', 'unclassified') and ip != ''");
+            $query = $db->query("SELECT count(*) as device_count FROM `system` WHERE `type` NOT IN ('unknown', 'unclassified') and ip != '' AND status NOT IN ('deleted', 'retired')");
             if (!empty($query)) {
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
@@ -161,7 +160,7 @@ class OpenAudit extends BaseConfig
                     $this->device_count = (int)$result->device_count;
                 }
             }
-            $query = $db->query("SELECT count(*) as device_count FROM `devices` WHERE `type` NOT IN ('unknown', 'unclassified') and ip != ''");
+            $query = $db->query("SELECT count(*) as device_count FROM `devices` WHERE `type` NOT IN ('unknown', 'unclassified') and ip != '' AND status NOT IN ('deleted', 'retired')");
             if (!empty($query)) {
                 $result = $query->getRow();
                 if (!empty($result->device_count)) {
