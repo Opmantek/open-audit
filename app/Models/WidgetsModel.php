@@ -63,7 +63,29 @@ class WidgetsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), $resp->meta->collection);
+        $result = $query->getResult();
+        foreach ($result as $widget) {
+            $widget->{'queries.primary_query_name'} = '';
+            $widget->{'queries.secondary_query_name'} = '';
+            $widget->{'queries.ternary_query_name'} = '';
+            if ($widget->type === 'traffic') {
+                $sql = "SELECT name FROM queries WHERE id = " . intval($widget->primary);
+                $name = $this->db->query($sql)->getResult();
+                $widget->{'queries.primary_query_name'} = !empty($name[0]->name) ? $name[0]->name : '';
+                unset($name);
+
+                $sql = "SELECT name FROM queries WHERE id = " . intval($widget->secondary);
+                $name = $this->db->query($sql)->getResult();
+                $widget->{'queries.secondary_query_name'} = !empty($name[0]->name) ? $name[0]->name : '';
+                unset($name);
+
+                $sql = "SELECT name FROM queries WHERE id = " . intval($widget->ternary);
+                $name = $this->db->query($sql)->getResult();
+                $widget->{'queries.ternary_query_name'} = !empty($name[0]->name) ? $name[0]->name : '';
+                unset($name);
+            }
+        }
+        return format_data($result, $resp->meta->collection);
     }
 
     /**
@@ -99,6 +121,9 @@ class WidgetsModel extends BaseModel
 
     public function execute(int $id = 0, object $user = null)
     {
+        if (empty($id)) {
+            return new \stdClass();
+        }
         $instance = & get_instance();
         $widget = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
         if ($widget->type === 'pie') {
@@ -106,6 +131,9 @@ class WidgetsModel extends BaseModel
         }
         if ($widget->type === 'line') {
             $widget->result = $this->lineData($widget, $instance->user->org_list);
+        }
+        if ($widget->type === 'traffic') {
+            $widget->result = $this->trafficData($widget, $instance->user->org_list);
         }
         #$result = format_data($result, 'widgets');
         return ($widget);
@@ -119,7 +147,13 @@ class WidgetsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        return array();
+        $included = array();
+        $widget = $this->read($id)[0];
+        if ($widget->attributes->type === 'traffic') {
+            $queriesModel = new \App\Models\QueriesModel();
+            $included['queries'] = $queriesModel->listUser();
+        }
+        return $included;
     }
 
     /**
@@ -130,7 +164,9 @@ class WidgetsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        return array();
+        $queriesModel = new \App\Models\QueriesModel();
+        $included['queries'] = $queriesModel->listUser();
+        return $included;
     }
 
     /**
@@ -321,6 +357,7 @@ class WidgetsModel extends BaseModel
         $this->builder->join('orgs', 'widgets.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->orderBy('widgets.name');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -588,6 +625,66 @@ class WidgetsModel extends BaseModel
     }
 
     /**
+     * Produce the data for the Traffic Light widget
+     * @param  [type] $widget   [description]
+     * @param  [type] $org_list [description]
+     * @return [type]           [description]
+     */
+    private function trafficData(object $widget, $org_list)
+    {
+        $user = new stdClass();
+        $user->org_list = $org_list;
+
+        $name = preg_replace("/[^A-Za-z0-9]/", '', $widget->name);
+
+        $result = new \stdClass();
+        $result->title = $widget->dataset_title;
+        $result->secondary_text = $widget->group_by;
+        $result->icon = $widget->where;
+        $result->red = '';
+        $result->yellow = '';
+        $result->green = '';
+        $result->red_id = !empty($widget->primary) ? intval($widget->primary) : '';
+        $result->yellow_id = !empty($widget->secondary) ? intval($widget->secondary) : '';
+        $result->green_id = !empty($widget->ternary) ? intval($widget->ternary) : '';
+
+        $queriesModel = new \App\Models\QueriesModel();
+
+        if (!empty($result->red_id)) {
+            $query = $queriesModel->execute(intval($result->red_id), $user);
+            $result->red = 0;
+            if (!empty($query)) {
+                $result->red = count($query);
+            }
+        }
+
+        if (!empty($result->yellow_id)) {
+            $query = $queriesModel->execute(intval($result->yellow_id), $user);
+            $result->yellow = 0;
+            if (!empty($query)) {
+                $result->yellow = count($query);
+            }
+        }
+
+        if (!empty($result->green_id)) {
+            $query = $queriesModel->execute(intval($result->green_id), $user);
+            $result->green = 0;
+            if (!empty($query)) {
+                $result->green = count($query);
+            }
+        }
+        if ($result->red > 0) {
+            $result->colour = 'text-bg-danger';
+        } else if ($result->yellow > 0) {
+            $result->colour = 'text-bg-warning';
+        } else {
+            $result->colour = 'text-bg-success';
+        }
+
+        return $result;
+    }
+
+    /**
      * Update an individual item in the database
      *
      * @param  object  $data The data attributes
@@ -614,7 +711,7 @@ class WidgetsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'type', 'primary', 'secondary', 'description', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'type', 'primary', 'secondary', 'ternary', 'description', 'orgs.name');
         $dictionary->attributes->create = array('name','org_id','type');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
@@ -632,14 +729,14 @@ class WidgetsModel extends BaseModel
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->table = 'The primary database table upon which to base this widget.';
-        $dictionary->columns->primary = 'The fully qualified column upon which to group by.';
-        $dictionary->columns->secondary = 'The optional secondary column.';
-        $dictionary->columns->ternary = 'The optional third column.';
-        $dictionary->columns->where = 'Any required filter.';
+        $dictionary->columns->primary = 'The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.';
+        $dictionary->columns->secondary = 'The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.';
+        $dictionary->columns->ternary = 'The optional third column. NOTE: When type = traffic, this represents the green query id.';
+        $dictionary->columns->where = 'Any required filter. NOTE: When type = traffic, this represents the font-awesome icon.';
         $dictionary->columns->limit = 'Limit the query to the first X items.';
         $dictionary->columns->options = 'Unused.';
-        $dictionary->columns->group_by = 'This is generally the primary column, unless otherwise configured.';
-        $dictionary->columns->type = "Can be 'line' or 'pie'.";
+        $dictionary->columns->group_by = 'This is generally the primary column, unless otherwise configured. NOTE: When type = traffic, this represents the secondary text.';
+        $dictionary->columns->type = "Can be 'line', 'pie' or 'traffic'.";
         $dictionary->columns->dataset_title = 'The text for the bottom of the chart in a line chart (only).';
         $dictionary->columns->sql = "For advanced entry of a raw SQL query. As per Queries, you must include 'WHERE @filter AND' in your SQL.";
         $dictionary->columns->link = 'The template for the link to be generated per result line.';

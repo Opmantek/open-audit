@@ -177,7 +177,11 @@ class QueriesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        $query = $query->getResult()[0];
+        $temp = $query->getResult();
+        if (empty($temp[0])) {
+            return array();
+        }
+        $query = $temp[0];
         $sql = trim((string)$query->sql);
         if (strpos($sql, ';') === strlen($sql) - 1) {
             $sql = substr($sql, 0, strlen($sql) - 1);
@@ -335,6 +339,7 @@ class QueriesModel extends BaseModel
         $this->builder->join('orgs', 'queries.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->orderBy('queries.name');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
