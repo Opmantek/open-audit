@@ -346,7 +346,6 @@ if (!function_exists('my_snmp_get')) {
         }
         if (intval($credentials->credentials->version) === 1) {
             $session = new SNMP(SNMP::VERSION_1, $ip, $credentials->credentials->community, $timeout, $retries);
-
         }
         if (intval($credentials->credentials->version) === 2) {
             $session = new SNMP(SNMP::VERSION_2c, $ip, $credentials->credentials->community, $timeout, $retries);
@@ -558,7 +557,6 @@ if (!function_exists('my_snmp_walk')) {
         if (empty($array) or !is_array($array)) {
             log_message('debug', 'Attempted SNMP walk (v' . $credentials->credentials->version . ') for ' . $oid . ' on ' . $ip . ' resulted in FALSE being returned.');
             return false;
->>>>>>> packages
         }
         foreach ($array as $key => $value) {
             $value = $value;
@@ -724,7 +722,6 @@ if (!function_exists('my_snmp_real_walk')) {
 
         if (empty($array) or !is_array($array)) {
             return false;
->>>>>>> packages
         }
         foreach ($array as $key => $value) {
             $value = $value;
