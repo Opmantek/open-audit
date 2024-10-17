@@ -2,6 +2,13 @@
 
 $output .= "Upgrade database to 5.6.0 commenced.\n\n";
 
+if ($db->tableExists('ldap_servers')) {
+    $sql = "DROP TABLE `ldap_servers`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 if (!$db->tableExists('access_point')) {
     $sql = "CREATE TABLE `access_point` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -32,89 +39,6 @@ if (!$db->tableExists('access_point')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-
-if (!$db->fieldExists('build_number_full', 'windows')) {
-    $sql = "ALTER TABLE `windows` ADD `build_number_full` varchar(100) NOT NULL DEFAULT '' AFTER `build_number`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-
-
-if (!$db->fieldExists('circuit_status', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `circuit_status` varchar(100) NOT NULL DEFAULT '' AFTER `service_identifier`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-
-
-if (!$db->fieldExists('speed', 'connections') and !$db->fieldExists('speed_down_a', 'connections')) {
-    $sql = "ALTER TABLE `connections` CHANGE `speed` `speed_down_a` float(7,3) NOT NULL DEFAULT '0.000'";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-if (!$db->fieldExists('speed_up_a', 'connections')) {
-    if ($db->fieldExists('speed_down_a', 'connections')) {
-        $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_down_a`";
-    } else {
-        $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed`";
-    }
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-if (!$db->fieldExists('speed_down_b', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `speed_down_b` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_up_a`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-if (!$db->fieldExists('speed_up_b', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `speed_up_b` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_down_b`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-if (!$db->fieldExists('site_hours_a', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `site_hours_a` varchar(200) NOT NULL DEFAULT '' AFTER `ip_address_internal_b`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-if (!$db->fieldExists('site_hours_b', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `site_hours_b` varchar(200) NOT NULL DEFAULT '' AFTER `site_hours_a`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-if (!$db->fieldExists('service_level_a', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `service_level_a` varchar(200) NOT NULL DEFAULT '' AFTER `site_hours_b`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-if (!$db->fieldExists('service_level_b', 'connections')) {
-    $sql = "ALTER TABLE `connections` ADD `service_level_b` varchar(200) NOT NULL DEFAULT '' AFTER `service_level_a`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-
-if (!$db->fieldExists('contact', 'locations')) {
-    $sql = "ALTER TABLE `locations` ADD `contact` varchar(250) NOT NULL DEFAULT '' AFTER `phone`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-
-if (!$db->fieldExists('service_tag', 'devices')) {
-    $sql = "ALTER TABLE `devices` ADD `service_tag` varchar(100) NOT NULL DEFAULT '' AFTER `manufacturer_code`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
 
 if (!$db->tableExists('antivirus')) {
     $sql = "CREATE TABLE `antivirus` (
@@ -198,6 +122,133 @@ if (!$db->tableExists('firewall_rule')) {
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
+
+if (!$db->fieldExists('last_os_update', 'devices')) {
+    $sql = "ALTER TABLE `devices` ADD last_os_update datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `last_user`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+$sql = "ALTER TABLE `widgets` CHANGE `type` `type` enum('line','pie','traffic','') DEFAULT 'line' AFTER `description`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "ALTER TABLE `widgets` CHANGE `group_by` `group_by` varchar(100) NOT NULL DEFAULT '' AFTER `dataset_title`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+if (!$db->fieldExists('build_number_full', 'windows')) {
+    $sql = "ALTER TABLE `windows` ADD `build_number_full` varchar(100) NOT NULL DEFAULT '' AFTER `build_number`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('circuit_status', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `circuit_status` varchar(100) NOT NULL DEFAULT '' AFTER `service_identifier`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('speed', 'connections') and !$db->fieldExists('speed_down_a', 'connections')) {
+    $sql = "ALTER TABLE `connections` CHANGE `speed` `speed_down_a` float(7,3) NOT NULL DEFAULT '0.000'";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('speed_up_a', 'connections')) {
+    if ($db->fieldExists('speed_down_a', 'connections')) {
+        $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_down_a`";
+    } else {
+        $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed`";
+    }
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('speed_down_b', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `speed_down_b` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_up_a`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('speed_up_b', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `speed_up_b` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_down_b`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('site_hours_a', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `site_hours_a` varchar(200) NOT NULL DEFAULT '' AFTER `ip_address_internal_b`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('site_hours_b', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `site_hours_b` varchar(200) NOT NULL DEFAULT '' AFTER `site_hours_a`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('service_level_a', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `service_level_a` varchar(200) NOT NULL DEFAULT '' AFTER `site_hours_b`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+if (!$db->fieldExists('service_level_b', 'connections')) {
+    $sql = "ALTER TABLE `connections` ADD `service_level_b` varchar(200) NOT NULL DEFAULT '' AFTER `service_level_a`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('contact', 'locations')) {
+    $sql = "ALTER TABLE `locations` ADD `contact` varchar(250) NOT NULL DEFAULT '' AFTER `phone`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('service_tag', 'devices')) {
+    $sql = "ALTER TABLE `devices` ADD `service_tag` varchar(100) NOT NULL DEFAULT '' AFTER `manufacturer_code`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+$sql = "DELETE FROM attributes WHERE name = 'WAC (Wireless Access Controller)'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','WAC (Wireless Access Controller)','wac','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM attributes WHERE name = 'SDN Controller'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','SDN Controller','sdn controller','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM rules WHERE name = 'Class based on Form Factor and OS (Virtual Windows Client)'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `rules` VALUES (null,'Class based on Form Factor and OS (Virtual Windows Client)',1,'Set the class based on the form factor and OS.',100,'[{\"table\":\"devices\",\"attribute\":\"form_factor\",\"operator\":\"eq\",\"value\":\"Virtual\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"operator\":\"eq\",\"value\":\"Windows\"},{\"table\":\"devices\",\"attribute\":\"os_name\",\"operator\":\"nl\",\"value\":\"%Server%\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"class\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"devices\",\"attribute\":\"class\",\"value\":\"virtual desktop\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 
 if (!$db->tableExists('packages')) {
     $sql = "CREATE TABLE `packages` (
@@ -552,20 +603,6 @@ if (!$db->tableExists('packages')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-if ($db->tableExists('ldap_servers')) {
-    $sql = "DROP TABLE `ldap_servers`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-
-if (!$db->fieldExists('last_os_update', 'devices')) {
-    $sql = "ALTER TABLE `devices` ADD last_os_update datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `last_user`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-
 $sql = "SELECT id, permissions FROM roles WHERE name = 'org_admin'";
 $result = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -594,15 +631,7 @@ if (!empty($result)) {
 }
 unset($result);
 
-$sql = "DELETE FROM dashboards WHERE name = 'Security Dashboard' AND edited_by = 'system'";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
-$sql = "INSERT INTO `dashboards` VALUES (null,'Security Dashboard',1,'org',0,'Security Information','n','[]','system','2000-01-01 00:00:00')";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+$queries = array();
 
 $sql = "DELETE FROM queries WHERE name = 'Windows Clients With AntiVirus' AND edited_by = 'system'";
 $db->query($sql);
@@ -611,6 +640,7 @@ log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1, 'Windows Clients With AntiVirus','software','n','', \"SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.user_name AS `windows.user_name`, antivirus.status AS `antivirus.status`, antivirus.state AS `antivirus.state`, antivirus.name AS `antivirus.name` FROM devices LEFT JOIN antivirus ON (devices.id = antivirus.device_id AND antivirus.current = 'y') LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (devices.id = windows.device_id AND windows.current = 'y') WHERE @filter AND antivirus.status = 'UpToDate' AND antivirus.state = 'On' AND (devices.os_family LIKE 'Windows 10' or devices.os_family LIKE 'Windows 11')\",  '','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['wcwa'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
@@ -621,6 +651,7 @@ log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1, 'Windows Clients Without AntiVirus','software','n','', \"SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.user_name AS `windows.user_name` FROM devices LEFT JOIN antivirus ON (devices.id = antivirus.device_id AND antivirus.current = 'y') LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (devices.id = windows.device_id AND windows.current = 'y') WHERE @filter AND antivirus.status IS NULL AND (devices.os_family LIKE 'Windows 10' or devices.os_family LIKE 'Windows 11') GROUP BY devices.id ORDER BY devices.name\",  '','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['wcwoa'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
@@ -631,6 +662,7 @@ log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1, 'Windows Clients With AntiVirus Not UpToDate','software','n','', \"SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.user_name AS `windows.user_name`, antivirus.status AS `antivirus.status`, antivirus.state AS `antivirus.state`, antivirus.name AS `antivirus.name`, MIN( CASE WHEN (antivirus.status = 'On' AND antivirus.state = 'OutOfDate') THEN 1 WHEN (antivirus.status = 'Off' AND antivirus.status = 'UpToDate') THEN 2 WHEN (antivirus.status = 'Off' AND antivirus.state = 'OutOfDate') THEN 3 END) AS `preferred` FROM devices LEFT JOIN antivirus ON (devices.id = antivirus.device_id AND antivirus.current = 'y') LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (devices.id = windows.device_id AND windows.current = 'y') WHERE @filter AND devices.id NOT IN (SELECT device_id FROM antivirus WHERE antivirus.status = 'UpToDate' AND antivirus.state = 'On') AND antivirus.status IS NOT NULL AND (devices.os_family LIKE 'Windows 10' or devices.os_family LIKE 'Windows 11') GROUP BY devices.id\",  '','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['wcwua'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
@@ -641,6 +673,7 @@ log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Clients With Firewall','software','n','',\"SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.user_name AS `windows.user_name`, firewall.state AS `firewall.state`, firewall.name AS `firewall.name` FROM devices LEFT JOIN firewall ON (devices.id = firewall.device_id AND firewall.current = 'y') LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (devices.id = windows.device_id AND windows.current = 'y') WHERE @filter AND firewall.state = 'On' AND (devices.os_family LIKE 'Windows 10' or devices.os_family LIKE 'Windows 11')\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['wcwf'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
@@ -651,6 +684,7 @@ log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Clients Without Firewall','software','n','',\"SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.user_name AS `windows.user_name` FROM devices LEFT JOIN firewall ON (devices.id = firewall.device_id AND firewall.current = 'y') LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (devices.id = windows.device_id AND windows.current = 'y') WHERE @filter AND firewall.status IS NULL AND (devices.os_family LIKE 'Windows 10' or devices.os_family LIKE 'Windows 11') GROUP BY devices.id ORDER BY devices.name\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['wcwof'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
@@ -661,40 +695,88 @@ log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Clients With Firewall Disabled','software','n','',\"SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.user_name AS `windows.user_name`, firewall.status AS `firewall.status`, firewall.state AS `firewall.state`, firewall.name AS `firewall.name`, MIN( CASE WHEN (firewall.status = 'On') THEN 1 WHEN (firewall.status != 'On') THEN 2 END) AS `preferred` FROM devices LEFT JOIN firewall ON (devices.id = firewall.device_id AND firewall.current = 'y') LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (devices.id = windows.device_id AND windows.current = 'y') WHERE @filter AND devices.id NOT IN (SELECT device_id FROM firewall WHERE firewall.status = 'UpToDate' AND firewall.state = 'On') AND firewall.status IS NOT NULL AND (devices.os_family LIKE 'Windows 10' or devices.os_family LIKE 'Windows 11') GROUP BY devices.id\",'','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['wcwuf'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows Servers Firewalls Installed' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Servers Firewalls Installed','software','n','',\"SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, software.name AS `software.name`, software.version AS `software.version` FROM devices LEFT JOIN software ON (software.device_id = devices.id AND software.current = 'y') LEFT JOIN locations ON (devices.location_id = locations.id) RIGHT JOIN packages ON (software.name LIKE packages.software_name AND devices.os_group LIKE packages.os) WHERE @filter AND devices.id IS NOT NULL AND packages.type = 'firewall' AND devices.os_name LIKE '%Windows Server%' GROUP BY devices.id\",'','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['wsfwi'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows Servers AntiVirus Installed' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Servers AntiVirus Installed','software','n','',\"SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, software.name AS `software.name`, software.version AS `software.version` FROM devices LEFT JOIN software ON (software.device_id = devices.id AND software.current = 'y') LEFT JOIN locations ON (devices.location_id = locations.id) RIGHT JOIN packages ON (software.name LIKE packages.software_name AND devices.os_group LIKE packages.os) WHERE @filter AND devices.id IS NOT NULL AND packages.type = 'antivirus' AND devices.os_name LIKE '%Windows Server%' GROUP BY devices.id\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['wsavi'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows Servers Firewalls Not Installed' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Servers Firewalls Not Installed','software','n','',\"SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.id NOT IN (SELECT devices.id FROM devices LEFT JOIN software ON (software.device_id = devices.id AND software.current = 'y') RIGHT JOIN packages ON (software.name LIKE packages.software_name AND devices.os_group LIKE packages.os) WHERE devices.id IS NOT NULL AND packages.type = 'firewall' AND devices.os_name LIKE '%Server%') AND devices.os_name LIKE '%Windows Server%' GROUP BY devices.id\",'','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['wsfwni'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows Servers AntiVirus Not Installed' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Servers AntiVirus Not Installed','software','n','',\"SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.id NOT IN (SELECT devices.id FROM devices LEFT JOIN software ON (software.device_id = devices.id AND software.current = 'y') RIGHT JOIN packages ON (software.name LIKE packages.software_name AND devices.os_group LIKE packages.os) WHERE devices.id IS NOT NULL AND packages.type = 'antivirus' AND devices.os_name LIKE '%Server%') AND devices.os_name LIKE '%Windows Server%' GROUP BY devices.id\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['wsavni'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Banned Software' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Banned Software','Software','n','',\"SELECT devices.id AS `devices.id`, packages.id AS `packages.id`, devices.name AS `Device Name`, devices.ip AS `Device IP`, devices.domain AS `Device Domain`, locations.name AS `Location Name`, software.name AS `Installed Software Name`, packages.software_name AS `Banned Software Name`, devices.os_name AS `Device OS Name`, packages.os AS `Banned Software OS` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN software ON (software.device_id = devices.id AND software.current = 'y') RIGHT JOIN packages ON (software.name LIKE packages.software_name) WHERE @filter AND devices.id IS NOT NULL AND packages.type = 'banned' AND (devices.os_group LIKE CONCAT('%', packages.os, '%') OR devices.os_family LIKE CONCAT('%', packages.os, '%') OR devices.os_name LIKE CONCAT('%', packages.os, '%')) GROUP BY devices.id\",'','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['softbanned'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Approved Software' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Approved Software','Software','n','',\"SELECT devices.id AS `devices.id`, packages.id AS `packages.id`, devices.name AS `Device Name`, devices.ip AS `Device IP`, devices.domain AS `Device Domain`, locations.name AS `Location Name`, software.name AS `Installed Software Name`, packages.software_name AS `Approved Software Name`, devices.os_name AS `Device OS Name`, packages.os AS `Approved Software OS` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN software ON (software.device_id = devices.id AND software.current = 'y') RIGHT JOIN packages ON (software.name LIKE packages.software_name) WHERE @filter AND devices.id IS NOT NULL AND packages.type = 'approved' AND (devices.os_group LIKE CONCAT('%', packages.os, '%') OR devices.os_family LIKE CONCAT('%', packages.os, '%') OR devices.os_name LIKE CONCAT('%', packages.os, '%')) GROUP BY devices.id\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['softapproved'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Ignored Software' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Ignored Software','Software','n','',\"SELECT devices.id AS `devices.id`, packages.id AS `packages.id`, devices.name AS `Device Name`, devices.ip AS `Device IP`, devices.domain AS `Device Domain`, locations.name AS `Location Name`, software.name AS `Installed Software Name`, packages.software_name AS `Ignored Software Name`, devices.os_name AS `Device OS Name`, packages.os AS `Ignored Software OS` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN software ON (software.device_id = devices.id AND software.current = 'y') RIGHT JOIN packages ON (software.name LIKE packages.software_name) WHERE @filter AND devices.id IS NOT NULL AND packages.type = 'ignored' AND (devices.os_group LIKE CONCAT('%', packages.os, '%') OR devices.os_family LIKE CONCAT('%', packages.os, '%') OR devices.os_name LIKE CONCAT('%', packages.os, '%')) GROUP BY devices.id\",'','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['softignored'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Devices Without OS Updates for more than 14 Days' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -704,130 +786,475 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM queries WHERE name = 'Windows Devices Seen less than 7 Days ago' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Devices Seen less than 7 Days ago','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, devices.last_seen AS `devices.last_seen`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.os_group = 'Windows' AND devices.last_seen > DATE(NOW() - INTERVAL 7 DAY)\",'','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['wdnsl7'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Any Devices Seen less than 7 Days ago' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Any Devices Seen less than 7 Days ago','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, devices.last_seen AS `devices.last_seen`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_seen > DATE(NOW() - INTERVAL 7 DAY)\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['adnsl7'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows Devices Not Seen for more than 7 Days' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Devices Not Seen for more than 7 Days','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_seen != '2000-01-01 00:00:00', devices.last_seen, '') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.os_group = 'Windows' AND devices.last_seen < DATE(NOW() - INTERVAL 7 DAY)\",'','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['wdnsm7'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Any Devices Not Seen for more than 7 Days' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Any Devices Not Seen for more than 7 Days','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_seen != '2000-01-01 00:00:00', devices.last_seen, '') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_seen < DATE(NOW() - INTERVAL 7 DAY)\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['adnsm7'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows Devices Not Seen for more than 30 Days' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Devices Not Seen for more than 30 Days','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_seen != '2000-01-01 00:00:00', devices.last_seen, '') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.os_group = 'Windows' AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)\",'','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['wdnsm30'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Any Devices Not Seen for more than 30 Days' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Any Devices Not Seen for more than 30 Days','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_seen != '2000-01-01 00:00:00', devices.last_seen, '') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['adnsm30'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 10 All' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 10 All','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND devices.os_family = 'Windows 10'\",  '','n','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['w10all'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 10 Latest Build' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 10 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/release-information',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '19045.4894' AND devices.os_family = 'Windows 10'\", '','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['w10lb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 10 Not Latest Build' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 10 Not Latest Build','Software','n','Use the same build number as Windows 10 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '19045.4894' AND devices.os_family = 'Windows 10'\",'','n','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['w10nlb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 11 All' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 11 All','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND devices.os_family = 'Windows 11'\",  '','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['w11all'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 11 Latest Build' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 11 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '22631.4169' AND devices.os_family = 'Windows 11'\", '','n','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['w11lb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 11 Not Latest Build' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 11 Not Latest Build','Software','n','Use the same build number as Windows 11 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '22631.4169' AND devices.os_family = 'Windows 11'\", '','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['w11nlb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 2019 All' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2019 All','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND devices.os_family = 'Windows 2019'\",  '','n','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['w2019all'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 2019 Latest Build' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2019 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '17763.6293' AND devices.os_family = 'Windows 2019'\",'','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['w2019lb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 2019 Not Latest Build' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2019 Not Latest Build','Software','n','Use the same build number as Windows 2019 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '17763.6293' AND devices.os_family = 'Windows 2019'\",'','n','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['w2019nlb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 2022 All' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2022 All','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND devices.os_family = 'Windows 2022'\",  '','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['w2022all'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 2022 Latest Build' AND edited_by = 'system'";
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2022 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '20348.2700' AND devices.os_family = 'Windows 2022'\",'','n','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['w2022lb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Windows 2022 Not Latest Build' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2022 Not Latest Build','Software','n','Use the same build number as Windows 2022 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '20348.2700' AND devices.os_family = 'Windows 2022'\",'','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['w2022nlb'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM queries WHERE name = 'Unknown Devices Found in the last 7 Days' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (null, 1,'Unknown Devices Found in the last 7 Days','Software','n','',\"WITH RECURSIVE DateRange AS (SELECT DATE(DATE_ADD(NOW(), INTERVAL -7 DAY)) AS StartDate UNION ALL SELECT DATE(DATE_ADD(StartDate, INTERVAL 1 DAY)) FROM DateRange WHERE StartDate < NOW()) SELECT StartDate AS `date`, IF(COUNT(devices.id) > 0, COUNT(devices.id), 0) AS `count` FROM DateRange LEFT JOIN change_log ON (DateRange.StartDate = DATE(change_log.timestamp) AND change_log.db_table = 'devices' AND change_log.db_action = 'create' AND DATE(change_log.timestamp) > DATE_SUB(NOW(), INTERVAL 7 DAY)) LEFT JOIN devices ON (change_log.device_id = devices.id AND devices.type IN ('unknown', 'unidentified') AND devices.org_id IN @orgs) GROUP BY DateRange.StartDate ORDER BY DateRange.StartDate\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['udl7'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM queries WHERE name = 'Windows Shares Writable by Everyone' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Shares Writable by Everyone','Software','n','',\"SELECT devices.id AS `devices.id`, share.id AS `share.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, share.name AS `share.name`, share.path AS `share.path`, locations.name AS `locations.name`, windows.user_name AS `windows.user_name` FROM devices LEFT JOIN share ON (devices.id = share.device_id AND share.current = 'y') LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (devices.id = windows.device_id AND windows.current = 'y') WHERE @filter AND JSON_CONTAINS(users, '{\\\"Everyone\\\": [\\\"Write\\\"]}', '$')\",'','y','system','2000-01-01 00:00:00')";
 $db->query($sql);
+$queries['winshares'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM queries WHERE name = 'Windows Clients Without OS Updates for more than 14 Days' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Clients Without OS Updates for more than 14 Days','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_os_update != '2000-01-01 00:00:00', devices.last_os_update, '') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 14 DAY) AND devices.last_os_update != '' AND devices.last_os_update != '2000-01-01 00:00:00' AND os_family IN ('Windows 10', 'Windows 11')\",'','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['wcosup'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','SDN Controller','sdn controller','system','2000-01-01 00:00:00')";
+$sql = "DELETE FROM queries WHERE name = 'Windows Servers Without OS Updates for more than 14 Days' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Servers Without OS Updates for more than 14 Days','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_os_update != '2000-01-01 00:00:00', devices.last_os_update, '') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 14 DAY) AND devices.last_os_update != '' AND devices.last_os_update != '2000-01-01 00:00:00' AND os_family IN ('Windows 2019', 'Windows 2022')\",'','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['wsosup'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM queries WHERE name = 'Linux Without OS Updates for more than 14 Days' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Linux Without OS Updates for more than 14 Days','Software','n','',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_os_update != '2000-01-01 00:00:00', devices.last_os_update, '') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 14 DAY) AND devices.last_os_update != '' AND devices.last_os_update != '2000-01-01 00:00:00' AND os_group = 'Linux'\",'','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$queries['linosup'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+# Widgets for the new dashboard
+$widgets = array();
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows Clients AntiVirus Status' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `rules` VALUES (null,'Class based on Form Factor and OS (Virtual Windows Client)',1,'Set the class based on the form factor and OS.',100,'[{\"table\":\"devices\",\"attribute\":\"form_factor\",\"operator\":\"eq\",\"value\":\"Virtual\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"operator\":\"eq\",\"value\":\"Windows\"},{\"table\":\"devices\",\"attribute\":\"os_name\",\"operator\":\"nl\",\"value\":\"%Server%\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"class\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"devices\",\"attribute\":\"class\",\"value\":\"virtual desktop\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Clients AntiVirus Status',1,'Windows Clients AntiVirus Status.','traffic','',?,?,?,'ANTIVIRUS','Windows 10 & 11','fa-solid fa-shield-virus',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['wcwoa'], $queries['wcwua'], $queries['wcwa']]);
+$widgets['wcav'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows Clients Firewall Status' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` CHANGE `type` `type` enum('line','pie','traffic','') DEFAULT 'line' AFTER `description`";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Clients Firewall Status',1,'','traffic','',?,?,?,'FIREWALL','Windows 10 & 11','fa-solid fa-shield-halved',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['wcwof'], $queries['wcwuf'], $queries['wcwf']]);
+$widgets['wcfw'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows 11 Latest Build' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` CHANGE `group_by` `group_by` varchar(100) NOT NULL DEFAULT '' AFTER `dataset_title`";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows 11 Latest Build',1,'','traffic','',?,'',?,'LATEST BUILD WINDOWS 11','Without / With the latest Windows 11','fa-brands fa-windows',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['w11nlb'], $queries['w11lb']]);
+$widgets['w11lb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows 10 Latest Build' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'product'";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows 10 Latest Build',1,'','traffic','',?,'',?,'LATEST BUILD WINDOWS 10','Without / With the latest Windows 10','fa-brands fa-windows',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['w10nlb'], $queries['w10lb']]);
+$widgets['w10lb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows 2019 Server Latest Build' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows 2019 Server Latest Build',1,'','traffic','',?,'',?,'LATEST BUILD SERVER 2019','Without / With the latest Windows 2019','fa-brands fa-windows',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['w2019nlb'], $queries['w2019lb']]);
+$widgets['w2019lb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows 2022 Server Latest Build' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows 2022 Server Latest Build',1,'','traffic','',?,'',?,'LATEST BUILD SERVER 2022','Without / With the latest Windows 2022','fa-brands fa-windows',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['w2022nlb'], $queries['w2022lb']]);
+$widgets['w2022lb'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows Server Firewall Status' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Server Firewall Status',1,'','traffic','',?,'',?,'FIREWALL','Windows Server','fa-solid fa-shield-halved',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['wsfwni'], $queries['wsfwi']]);
+$widgets['wsfw'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows Server AntiVirus Status' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Server AntiVirus Status',1,'','traffic','',?,'',?,'ANTIVIRUS','Windows Server','fa-solid fa-shield-virus',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['wsavni'], $queries['wsavi']]);
+$widgets['wsav'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Software' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `widgets` VALUES (null,'Software',1,'','traffic','',?,?,?,'SOFTWARE','Banned / Ignored / Approved','fa-solid fa-box-open',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['softbanned'], $queries['softignored'], $queries['softapproved']]);
+$widgets['software'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows Client Devices Without OS Updates' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Client Devices Without OS Updates',1,'','traffic','',?,'','','CLIENT OS UPDATES','Windows 10 & 11, Last Checked For Updates > 2 weeks','fa-solid fa-download',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['wcosup']]);
+$widgets['wcosup'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Devices Not Seen for 30 / 7 / Less than 7 Days' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+$sql = "INSERT INTO `widgets` VALUES (null,'Devices Not Seen for 30 / 7 / Less than 7 Days',1,'','traffic','',?,?,?,'DEVICES NOT SEEN','Not Seen for 30 / 7 / Less than 7 Days','fa-solid fa-computer',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['adnsm30'], $queries['adnsm7'], $queries['adnsl7']]);
+$widgets['dnsm30'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Open Windows Shares' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `widgets` VALUES (null,'Open Windows Shares',1,'','traffic','',?,'','','WORLD WRITABLE SHARES','Anyone can write here','fa-regular fa-folder-open',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['winshares']]);
+$widgets['winshares'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows Server Devices Without OS Updates' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Server Devices Without OS Updates',1,'','traffic','',?,'','','SERVER OS UPDATES','Windows 2019 & 2022, Last Checked For Updates > 2 weeks','fa-solid fa-download',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['wsosup']]);
+$widgets['wsosup'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+$sql = "DELETE FROM widgets WHERE name = 'Windows Devices Not Seen' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Devices Not Seen',1,'','traffic','',?,?,?,'WINDOWS DEVICES NOT SEEN','Not Seen for 30+, 7+ and less than 7 Days','fa-brands fa-windows',0,'','','','system','2001-01-01 00:00:00')";
+$db->query($sql, [$queries['wdnsm30'], $queries['wdnsm7'], $queries['wdnsl7']]);
+$widgets['wdnsm30'] = $db->insertID();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+# The new Windows Security Dashboard
+$options = new \stdClass();
+$options->layout = '4x4';
+$options->widget_count = 16;
+$options->widgets = array();
+
+$options->widgets[] = (object) ['size' => 1, 'position' => 1, 'widget_id' => $widgets['wcav']];
+$options->widgets[] = (object) ['size' => 1, 'position' => 2, 'widget_id' => $widgets['wcfw']];
+$options->widgets[] = (object) ['size' => 1, 'position' => 3, 'widget_id' => $widgets['w10lb']];
+$options->widgets[] = (object) ['size' => 1, 'position' => 4, 'widget_id' => $widgets['w11lb']];
+
+$options->widgets[] = (object) ['size' => 1, 'position' => 5, 'widget_id' => $widgets['wsav']];
+$options->widgets[] = (object) ['size' => 1, 'position' => 6, 'widget_id' => $widgets['wsfw']];
+$options->widgets[] = (object) ['size' => 1, 'position' => 7, 'widget_id' => $widgets['w2019lb']];
+$options->widgets[] = (object) ['size' => 1, 'position' => 8, 'widget_id' => $widgets['w2022lb']];
+
+$options->widgets[] = (object) ['size' => 1, 'position' => 9, 'widget_id' => $widgets['wcosup']];
+$options->widgets[] = (object) ['size' => 1, 'position' => 10, 'widget_id' => $widgets['wsosup']];
+$options->widgets[] = (object) ['size' => 1, 'position' => 11, 'widget_id' => $widgets['software']];
+$options->widgets[] = (object) ['size' => 1, 'position' => 12, 'widget_id' => $widgets['winshares']];
+
+$options->widgets[] = (object) ['size' => 1, 'position' => 13, 'widget_id' => $widgets['wdnsm30']];
+
+
+$sql = "DELETE FROM dashboards WHERE name = 'Windows Security Dashboard' AND edited_by = 'system'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `dashboards` VALUES (null,'Windows Security Dashboard',1,'org',0,'Windows Security Information','n',?,'system','2000-01-01 00:00:00')";
+$db->query($sql, [json_encode($options)]);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
+$sql = "DELETE FROM `configuration` WHERE name = 'product'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -837,7 +1264,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'license_footer'";
+$sql = "DELETE FROM `configuration` WHERE name = 'license_footer'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -847,7 +1274,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'license_limit'";
+$sql = "DELETE FROM `configuration` WHERE name = 'license_limit'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -857,7 +1284,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'server_os'";
+$sql = "DELETE FROM `configuration` WHERE name = 'server_os'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -867,7 +1294,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'server_platform'";
+$sql = "DELETE FROM `configuration` WHERE name = 'server_platform'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -877,7 +1304,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'feature_powershell_audit'";
+$sql = "DELETE FROM `configuration` WHERE name = 'feature_powershell_audit'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -887,15 +1314,13 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM attributes WHERE name = 'WAC (Wireless Access Controller)'";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','WAC (Wireless Access Controller)','wac','system','2000-01-01 00:00:00')";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+
+
+
+
+
+
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '202411012' WHERE `name` = 'internal_version'";
