@@ -7,7 +7,7 @@ include 'shared/read_functions.php';
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $meta->name) ?>
+                    <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $meta->name, $meta->action) ?>
                 </div>
                 <div class="card-body">
                     <?php if (!empty($data)) { ?>

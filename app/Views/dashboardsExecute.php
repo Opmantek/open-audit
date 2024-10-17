@@ -248,6 +248,7 @@ window.onload = function () {
             });
         });
 
+        $("#button_export_json").remove();
         $("#button_execute").remove();
         $(".delete_link").remove();
 

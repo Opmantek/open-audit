@@ -2,11 +2,13 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
-$item = new \stdClass();
-$item->id = 0;
-$item->attributes = new stdClass();
-$item->attributes->name = '';
-array_unshift($included['queries'], $item);
+if (!empty($included['queries'])) {
+    $item = new \stdClass();
+    $item->id = 0;
+    $item->attributes = new stdClass();
+    $item->attributes->name = '';
+    array_unshift($included['queries'], $item);
+}
 ?>
         <main class="container-fluid">
             <div class="card">

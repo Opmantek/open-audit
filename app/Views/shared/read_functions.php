@@ -52,13 +52,13 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     }
 
     $export_csv_button = '';
-    if ($collection === 'queries' and !empty($id)) {
+    if ($action === 'execute' and ($collection === 'groups' or $collection === 'queries' or $collection === 'summaries')) {
         if ($style === 'icontext') {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('queriesExecute', $id) . "?format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>";
         } elseif ($style === 'icon') {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('queriesExecute', $id) . "?format=csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
         } else {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('queriesExecute', $id) . "?format=csv\">" . __("Export CSV") . "</a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\">" . __("Export CSV") . "</a>";
         }
     }
 
@@ -96,19 +96,13 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\">" . __("Help") . "</a>";
     }
 
-    if ($action === 'execute') {
+    if ($action === 'execute' and $collection !== 'database') {
         if ($style === 'icontext') {
-            if ($collection !== 'database') {
-                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export JSON") . "</a>";
-            }
+            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export JSON") . "</a>";
         } elseif ($style === 'icon') {
-            if ($collection !== 'database') {
-                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
-            }
+            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
         } else {
-            if ($collection !== 'database') {
-                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\">" . __("Export JSON") . "</a>";
-            }
+            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\">" . __("Export JSON") . "</a>";
         }
     }
 
@@ -140,11 +134,11 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     $download_button = '';
     if ($collection === 'scripts' and !empty($id)) {
         if ($style === 'icontext') {
-            $export_csv_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-download text-primary\"></span>" . __("Download") . "</a>";
+            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-download_button text-primary\"></span>" . __("Download") . "</a>";
         } elseif ($style === 'icon') {
-            $export_csv_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span class=\"fa fa-download text-primary\"></span></a>";
+            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span class=\"fa fa-download text-primary\"></span></a>";
         } else {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\">" . __("Download") . "</a>";
+            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\">" . __("Download") . "</a>";
         }
     }
 

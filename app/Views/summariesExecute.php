@@ -2,11 +2,12 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
+include 'shared/read_functions.php';
 ?>
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= collection_card_header($meta->collection, $meta->icon, $user, $meta->name) ?>
+                    <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $meta->name, $meta->action) ?>
                 </div>
                 <div class="card-body">
                     <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable">
@@ -43,8 +44,6 @@ window.onload = function () {
         $("#button_import_csv").remove();
         $("#button_import_json").remove();
         $("#button_default_items").remove();
-        $("#button_export_json").attr("href", "<?= url_to('summariesExecute', $meta->id) ?>?format=json");
-        $("#button_export_csv").attr("href", "<?= url_to('summariesExecute', $meta->id) ?>?format=csv");
     });
 }
 </script>
