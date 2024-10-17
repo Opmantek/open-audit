@@ -1518,7 +1518,7 @@ for each objItem in colItems
     windows_time_daylight = objItem.DaylightName
 next
 
-oreg.getstringvalue hkey_local_machine, "Software\Microsoft\Windows NT\CurrentVersion", "UBR", build_number
+oReg.GetDWORDValue hkey_local_machine, "Software\Microsoft\Windows NT\CurrentVersion", "UBR", build_number
 build_number = windows_build_number & "." & build_number
 
 result.WriteText "  <windows>" & vbcrlf
