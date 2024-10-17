@@ -1613,10 +1613,11 @@ if ($debug -gt 0) {
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.user = @()
 $item = @{}
-$Win32_UserProfile = Get-WmiObject Win32_UserProfile
-$LocalUser = Get-LocalUser
+$Win32_UserProfile = Get-WmiObject Win32_UserProfile -ErrorAction Ignore
+$Win32_UserAccount = Get-WmiObject Win32_UserAccount -ErrorAction Ignore
+$LocalUser = Get-LocalUser -ErrorAction Ignore
 if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainRole -ne 5)) {
-    Get-WmiObject Win32_UserAccount | ForEach {
+    $Win32_UserAccount | ForEach {
         Clear-Variable -name item
         $item = @{}
         $item.caption = $_.Caption
