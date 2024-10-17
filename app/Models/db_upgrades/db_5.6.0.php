@@ -868,7 +868,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 10 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/release-information',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '19045.4894' AND devices.os_family = 'Windows 10'\", '','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 10 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/release-information',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '19045.5011' AND devices.os_family = 'Windows 10'\", '','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $queries['w10lb'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -879,7 +879,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 10 Not Latest Build','Software','n','Use the same build number as Windows 10 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '19045.4894' AND devices.os_family = 'Windows 10'\",'','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 10 Not Latest Build','Software','n','Use the same build number as Windows 10 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '19045.5011' AND devices.os_family = 'Windows 10'\",'','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $queries['w10nlb'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -901,7 +901,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 11 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '22631.4169' AND devices.os_family = 'Windows 11'\", '','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 11 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '26100.2033' AND devices.os_family = 'Windows 11'\", '','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $queries['w11lb'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -912,7 +912,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 11 Not Latest Build','Software','n','Use the same build number as Windows 11 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '22631.4169' AND devices.os_family = 'Windows 11'\", '','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 11 Not Latest Build','Software','n','Use the same build number as Windows 11 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '26100.2033' AND devices.os_family = 'Windows 11'\", '','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $queries['w11nlb'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -934,7 +934,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2019 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '17763.6293' AND devices.os_family = 'Windows 2019'\",'','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2019 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '17763.6414' AND devices.os_family = 'Windows 2019'\",'','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $queries['w2019lb'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -945,7 +945,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2019 Not Latest Build','Software','n','Use the same build number as Windows 2019 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '17763.6293' AND devices.os_family = 'Windows 2019'\",'','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2019 Not Latest Build','Software','n','Use the same build number as Windows 2019 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '17763.6414' AND devices.os_family = 'Windows 2019'\",'','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $queries['w2019nlb'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -967,7 +967,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2022 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '20348.2700' AND devices.os_family = 'Windows 2022'\",'','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2022 Latest Build','Software','n','https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number = '20348.2762' AND devices.os_family = 'Windows 2022'\",'','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $queries['w2022lb'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -978,7 +978,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2022 Not Latest Build','Software','n','Use the same build number as Windows 2022 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '20348.2700' AND devices.os_family = 'Windows 2022'\",'','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (null, 1,'Windows 2022 Not Latest Build','Software','n','Use the same build number as Windows 2022 Latest Build.',\"SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = 'y') WHERE @filter AND windows.build_number < '20348.2762' AND devices.os_family = 'Windows 2022'\",'','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $queries['w2022nlb'] = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
