@@ -65,11 +65,11 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     $read_button = '';
     if ($action === 'execute') {
         if ($style === 'icontext') {
-            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Read") . "\" href=\"" . url_to($collection . 'Read', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span>" . __("Read") . "</a>";
+            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Details") . "\" href=\"" . url_to($collection . 'Read', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span>" . __("Details") . "</a>";
         } elseif ($style === 'icon') {
-            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Read") . "\" href=\"" . url_to($collection . 'Read', $id) . "\"><span class=\"fa fa-eye text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
+            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Details") . "\" href=\"" . url_to($collection . 'Read', $id) . "\"><span class=\"fa fa-eye text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
         } else {
-            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Read") . "\" href=\"" . url_to($collection . 'Read', $id) . "\">" . __("Read") . "</a>";
+            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Details") . "\" href=\"" . url_to($collection . 'Read', $id) . "\">" . __("Details") . "</a>";
         }
     }
 
