@@ -1,6 +1,6 @@
 <?php
 
-function read_card_header(string $collection = '', string $id = '', string $icon = '', object $user = null, string $name = ''): string
+function read_card_header(string $collection = '', string $id = '', string $icon = '', object $user = null, string $name = '', string $action = 'read'): string
 {
     $style = (!empty($user->toolbar_style)) ? $user->toolbar_style : '';
     $collection_title = __(ucwords(str_replace('_', ' ', $collection)));
@@ -62,6 +62,17 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         }
     }
 
+    $read_button = '';
+    if ($action === 'execute') {
+        if ($style === 'icontext') {
+            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Read") . "\" href=\"" . url_to($collection . 'Read', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span>" . __("Read") . "</a>";
+        } elseif ($style === 'icon') {
+            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Read") . "\" href=\"" . url_to($collection . 'Read', $id) . "\"><span class=\"fa fa-eye text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
+        } else {
+            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Read") . "\" href=\"" . url_to($collection . 'Read', $id) . "\">" . __("Read") . "</a>";
+        }
+    }
+
     $collection_button = "";
     $export_button = "";
     $help_button = "";
@@ -85,6 +96,22 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\">" . __("Help") . "</a>";
     }
 
+    if ($action === 'execute') {
+        if ($style === 'icontext') {
+            if ($collection !== 'database') {
+                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export JSON") . "</a>";
+            }
+        } elseif ($style === 'icon') {
+            if ($collection !== 'database') {
+                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
+            }
+        } else {
+            if ($collection !== 'database') {
+                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\">" . __("Export JSON") . "</a>";
+            }
+        }
+    }
+
     $execute_button = "\n";
     if (($collection === 'baselines' or $collection === 'benchmarks' or $collection === 'clouds' or $collection === 'dashboards' or $collection === 'discoveries' or $collection === 'groups' or $collection === 'integrations' or $collection === 'queries' or $collection === 'summaries' or $collection === 'tasks' or $collection === 'widgets') and !empty($id)) {
         if ($style === 'icontext') {
@@ -95,6 +122,10 @@ function read_card_header(string $collection = '', string $id = '', string $icon
             $execute_button = "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2 execute_button\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection . 'Execute', $id) . "\">" . __("Execute") . "</a>";
         }
     }
+    if ($action === 'execute') {
+        $execute_button = "\n";
+    }
+
     $add_device_button = "\n";
     if (($collection === 'clusters') and !empty($id)) {
         if ($style === 'icontext') {
@@ -124,6 +155,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
                         <div class=\"col-4 clearfix text-center\">
                             <div class=\"btn-group btn-group-sm\" role=\"group\" id=\"oa_panel_buttons\">
                                 <div class=\"page-title-middle\">
+                                    $read_button
                                     $execute_button
                                     $add_device_button
                                     $download_button
