@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class ComponentsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -30,7 +30,7 @@ class ComponentsModel extends BaseModel
         $result = array();
         $count = count($resp->meta->filter);
         $instance = & get_instance();
-        for ($i=0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             if ($resp->meta->filter[$i]->name === 'type' or $resp->meta->filter[$i]->name === 'components.type') {
                 // The request has populated components.type=memory or components.type=memory,processor - get those into the $table variable
                 if (strpos($resp->meta->filter[$i]->value, ',') !== false) {
@@ -47,11 +47,11 @@ class ComponentsModel extends BaseModel
         }
         if ($table === '') {
             // No components.type requested, return all the below
-            $tables = array('antivirus', 'benchmarks_result', 'bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+            $tables = array('access_point', 'antivirus', 'benchmarks_result', 'bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
         }
         $orgs = array();
         $count = count($resp->meta->filter);
-        for ($i=0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             if ($resp->meta->filter[$i]->name === 'components.org_id') {
                 $resp->meta->filter[$i]->name = 'devices.org_id';
                 $orgs = $resp->meta->filter[$i]->value;
@@ -60,14 +60,14 @@ class ComponentsModel extends BaseModel
         $device_sql = '';
         $device_id = null;
         $count = count($resp->meta->filter);
-        for ($i=0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             if ($resp->meta->filter[$i]->name === 'components.device_id') {
                 $device_sql = " AND `$table`.device_id = " . intval($resp->meta->filter[$i]->value);
                 $device_id = intval($resp->meta->filter[$i]->value);
             }
         }
         if (empty($tables)) {
-            if (!in_array($table, ['antivirus', 'audit_log', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
+            if (!in_array($table, ['access_point', 'antivirus', 'audit_log', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
                 # Invalid table
                 log_message('error', 'Invalid table provided to ComponentsModel::collection, ' . $table);
                 $_SESSION['error'] = 'Invalid table provided to ComponentsModel::collection, ' . htmlentities($table);
@@ -181,7 +181,7 @@ class ComponentsModel extends BaseModel
         if ($data->component_type === 'credential') {
             foreach ($device_ids as $id) {
                 // we only store a SINGLE credential set of each type per device - delete any existing
-                $sql ='DELETE FROM `credential` WHERE `device_id` = ? AND `type` = ?';
+                $sql = 'DELETE FROM `credential` WHERE `device_id` = ? AND `type` = ?';
                 $this->db->query($sql, [intval($id), (string)$data->type]);
 
                 if (!empty($data->credentials) && is_string($data->credentials)) {
@@ -286,7 +286,7 @@ class ComponentsModel extends BaseModel
                 $filetypes = array('image/png', 'image/jpeg', '');
                 $extensions = array('jpg', 'jpeg', 'png');
                 $temp = explode('.', $filename);
-                $extension = strtolower($temp[count($temp)-1]);
+                $extension = strtolower($temp[count($temp) - 1]);
                 if (!in_array($mime_type, $filetypes) or !in_array($extension, $extensions)) {
                     unlink($_FILES['attachment']['tmp_name']);
                     log_message('warning', 'Only jpg and png files are accepted (' . $extension . ') (' . $mime_type . ')');
@@ -505,7 +505,7 @@ class ComponentsModel extends BaseModel
         }
         if (!$this->db->tableExists($table)) {
             $name = (!empty($device->name)) ? $device->name : @$device->ip;
-            log_message('error', 'ComponentsModel::upsert - Table supplied does not exist (' . @$table . ') for '. $name);
+            log_message('error', 'ComponentsModel::upsert - Table supplied does not exist (' . @$table . ') for ' . $name);
             return false;
         }
         if (empty($device->id)) {
@@ -569,7 +569,7 @@ class ComponentsModel extends BaseModel
 
         foreach ($match_columns as $match_column) {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (isset($data[$i]) and !isset($data[$i]->{$match_column})) {
                     $data[$i]->$match_column = '';
                 }
@@ -579,7 +579,7 @@ class ComponentsModel extends BaseModel
         // BIOS
         if ((string)$table === 'bios') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 // `description` changed to `model`
                 if (empty($data[$i]->model) and !empty($data[$i]->description)) {
                     $data[$i]->model = $data[$i]->description;
@@ -604,7 +604,7 @@ class ComponentsModel extends BaseModel
             // Format the dates to our standard
             if ($device->os_group === 'Linux') {
                 $count = count($data);
-                for ($i=0; $i < $count; $i++) {
+                for ($i = 0; $i < $count; $i++) {
                     if (! empty($data[$i]->valid_from_raw)) {
                         $from = strtotime($data[$i]->valid_from_raw);
                         $data[$i]->valid_from = '';
@@ -626,7 +626,7 @@ class ComponentsModel extends BaseModel
         // DISK
         if ((string)$table === 'disk') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (empty($data[$i]->size)) {
                     $data[$i]->size = 0;
                 } else {
@@ -698,9 +698,9 @@ class ComponentsModel extends BaseModel
 
         // IP ADDRESS
         if ((string)$table === 'ip') {
-            $networksModel = new \App\Models\NetworksModel;
+            $networksModel = new \App\Models\NetworksModel();
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (!empty($data[$i])) {
                     // some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
                     $data[$i]->mac = strtolower($data[$i]->mac);
@@ -732,7 +732,7 @@ class ComponentsModel extends BaseModel
                         $data[$i]->ip = ip_address_from_db($data[$i]->ip);
                         $temp_long = ip2long($data[$i]->netmask);
                         $temp_base = ip2long('255.255.255.255');
-                        $temp_subnet = 32-log(($temp_long ^ $temp_base)+1, 2);
+                        $temp_subnet = 32 - log(($temp_long ^ $temp_base) + 1, 2);
                         $temp_net = network_details($data[$i]->ip . '/' . $temp_subnet);
                         if (isset($temp_net->network) and $temp_net->network !== '') {
                             $data[$i]->network = $temp_net->network . '/' . $temp_subnet;
@@ -754,7 +754,7 @@ class ComponentsModel extends BaseModel
                             $mymac = explode(':', $data[$i]->mac);
                             $count = count($mymac);
                             for ($j = 0; $j < $count; $j++) {
-                                $mymac[$j] = mb_substr('00'.$mymac[$j], -2);
+                                $mymac[$j] = mb_substr('00' . $mymac[$j], -2);
                             }
                             if ($count > 0) {
                                 $data[$i]->mac = implode(':', $mymac);
@@ -808,7 +808,7 @@ class ComponentsModel extends BaseModel
         // MEMORY
         if ((string)$table === 'memory') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (!empty($data[$i]->speed)) {
                     if (!is_integer($data[$i]->speed)) {
                         $data[$i]->speed = intval(preg_replace('/[^\d.]/', '', $data[$i]->speed));
@@ -831,7 +831,7 @@ class ComponentsModel extends BaseModel
         // MONITOR
         if ((string)$table === 'monitor') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 // new DERIVED column `name`
                 if (empty($data[$i]->name)) {
                     $data[$i]->name = trim(@$data[$i]->manufacturer . ' ' . @$data[$i]->model);
@@ -842,7 +842,7 @@ class ComponentsModel extends BaseModel
         // MOTHERBOARD
         if ((string)$table === 'motherboard') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 // new DERIVED column `name`
                 if (empty($data[$i]->name)) {
                     $data[$i]->name = trim(@$data[$i]->manufacturer . ' ' . @$data[$i]->model);
@@ -853,7 +853,7 @@ class ComponentsModel extends BaseModel
         // NETSTAT
         if ((string)$table === 'netstat') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 // new DERIVED column `name`
                 if (empty($data[$i]->name)) {
                     $data[$i]->name = trim(@$data[$i]->program . ' on ' . @$data[$i]->ip . ' ' . @$data[$i]->protocol . ' port ' . @$data[$i]->port);
@@ -903,7 +903,7 @@ class ComponentsModel extends BaseModel
             // some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
             // populate the manufacturer (if not already) using the MAC prefix
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (isset($data[$i]->mac)) {
                     $data[$i]->mac = strtolower($data[$i]->mac);
                 } else {
@@ -917,7 +917,7 @@ class ComponentsModel extends BaseModel
                 }
             }
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 // new DERIVED column `name`
                 if (empty($data[$i]->name)) {
                     $data[$i]->name = trim(@$data[$i]->manufacturer . ' ' . @$data[$i]->model);
@@ -928,7 +928,7 @@ class ComponentsModel extends BaseModel
         // NMAP
         if ((string)$table === 'nmap') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 // new DERIVED column `name`
                 if (empty($data[$i]->name)) {
                     $data[$i]->name = trim(@$data[$i]->program . ' on ' . @$data[$i]->ip . ' ' . @$data[$i]->protocol . ' port ' . @$data[$i]->port);
@@ -939,7 +939,7 @@ class ComponentsModel extends BaseModel
         // PAGEFILE
         if ((string)$table === 'pagefile') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 $data[$i]->initial_size = abs(intval($data[$i]->initial_size));
                 $data[$i]->max_size = abs(intval($data[$i]->max_size));
             }
@@ -952,7 +952,7 @@ class ComponentsModel extends BaseModel
                 $match_columns[] = 'description';
             }
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 // new DERIVED column `name`
                 $data[$i]->name = $data[$i]->mount_type;
                 if (!empty($data[$i]->mount_point)) {
@@ -999,7 +999,7 @@ class ComponentsModel extends BaseModel
         // ROUTE
         if ((string)$table === 'route') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 $temp = @dqtobin($data[$i]->mask);
                 $temp = @bintocdr($temp);
                 $data[$i]->name = trim(@$data[$i]->destination . '/' . $temp . ' via ' . @$data[$i]->next_hop);
@@ -1009,7 +1009,7 @@ class ComponentsModel extends BaseModel
         // SCSI
         if ((string)$table === 'scsi') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 $data[$i]->name = @$data[$i]->model;
             }
         }
@@ -1017,7 +1017,7 @@ class ComponentsModel extends BaseModel
         // SERVER
         if ((string)$table === 'server') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (isset($data[$i]->version) and $data[$i]->version !== '' and $data[$i]->type === 'database') {
                     $data[$i]->version_string = get_sql_server_version_string($data[$i]->version);
                 }
@@ -1029,7 +1029,7 @@ class ComponentsModel extends BaseModel
         // Blank will not match as the database column is an int with a default of 0
         if ((string)$table === 'server_item') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (empty($data[$i]->port)) {
                     $data[$i]->port = 0;
                 }
@@ -1055,7 +1055,7 @@ class ComponentsModel extends BaseModel
         // SOFTWARE
         if ((string)$table === 'software') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (isset($data[$i]->version) and $data[$i]->version !== '') {
                     $data[$i]->version_padded = version_padded($data[$i]->version);
                 } else {
@@ -1073,7 +1073,7 @@ class ComponentsModel extends BaseModel
         // SOUND
         if ((string)$table === 'sound') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 $data[$i]->name = trim(@$data[$i]->manufacturer . ' ' . @$data[$i]->model);
             }
         }
@@ -1081,7 +1081,7 @@ class ComponentsModel extends BaseModel
         // USER
         if ((string)$table === 'user') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 // Ensure we have a keys item.
                 //       Should be a JSON array (if populated) or an empty string (if not populated, ie: here).
                 // We use an empty string because of existing entries on an upgraded database.
@@ -1097,7 +1097,7 @@ class ComponentsModel extends BaseModel
         // VIDEO
         if ((string)$table === 'video') {
             $count = count($data);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 $data[$i]->name = trim(@$data[$i]->manufacturer . ' ' . @$data[$i]->model);
             }
         }
@@ -1186,7 +1186,7 @@ class ComponentsModel extends BaseModel
                     // and test if the variables match
                     if (isset($data_item->{$match_columns[$i]}) and isset($output_item->{$match_columns[$i]}) and (string)$data_item->{$match_columns[$i]} === (string)$output_item->{$match_columns[$i]}) {
                         // they match so increment the count
-                        $match_count ++;
+                        $match_count++;
                     }
                 }
                 if ($match_count === (count($match_columns))) {
@@ -1218,7 +1218,7 @@ class ComponentsModel extends BaseModel
                 $count = count($match_columns);
                 for ($i = 0; $i < $count; $i++) {
                     if (isset($data_item->{$match_columns[$i]}) and isset($db_item->{$match_columns[$i]}) and (string)$data_item->{$match_columns[$i]} === (string)$db_item->{$match_columns[$i]} and $db_item->updated !== 'y') {
-                        $match_count ++;
+                        $match_count++;
                     }
                 }
                 if ($match_count === (count($match_columns))) {
@@ -1459,7 +1459,7 @@ class ComponentsModel extends BaseModel
         $dictionary->attributes->fieldsMeta = array();
         $dictionary->attributes->update = array();
 
-        $dictionary->about = '<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: bios, certificate, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>';
+        $dictionary->about = '<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, bios, certificate, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>';
 
         $dictionary->notes = '<p></p>';
 

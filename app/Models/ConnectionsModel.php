@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class ConnectionsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -276,17 +276,25 @@ class ConnectionsModel extends BaseModel
         $dictionary->columns->service_type = 'ADSL, HFC, ISDN, etc.';
         $dictionary->columns->product_name = 'The name provided by the provider.';
         $dictionary->columns->service_identifier = 'The ID provided by the provider.';
-        $dictionary->columns->speed = 'Usually Mb/s.';
-        $dictionary->columns->location_id_a = 'The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>.';
+        $dictionary->columns->circuit_status = 'Your description of the status of this connection (provisioned, retired, etc).';
+        $dictionary->columns->speed_down_a = 'Usually Mb/s, to Location A.';
+        $dictionary->columns->speed_up_a = 'Usually Mb/s, from Location A.';
+        $dictionary->columns->speed_down_b = 'Usually Mb/s, to Location B.';
+        $dictionary->columns->speed_up_b = 'Usually Mb/s, from Location B.';
+        $dictionary->columns->location_id_a = 'The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the \'FROM\' location.';
         $dictionary->columns->device_id_a = 'The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.';
         $dictionary->columns->line_number_a = 'The line number assigned by the provider to the line at this end of the connection.';
         $dictionary->columns->ip_address_external_a = 'The IP of the external interface.';
         $dictionary->columns->ip_address_internal_a = 'The IP of the internal interface.';
-        $dictionary->columns->location_id_b = 'The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>.';
+        $dictionary->columns->location_id_b = 'The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the \'TO\' location.';
         $dictionary->columns->device_id_b = 'The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.';
         $dictionary->columns->line_number_b = 'The line number assigned by the provider to the line at this end of the connection.';
         $dictionary->columns->ip_address_external_b = 'The IP of the external interface.';
         $dictionary->columns->ip_address_internal_b = 'The IP of the internal interface.';
+        $dictionary->columns->site_hours_a = 'The usual hours of operation at this site.';
+        $dictionary->columns->site_hours_b = 'The usual hours of operation at this site.';
+        $dictionary->columns->service_level_a = 'An indication of the level of service required by this site.';
+        $dictionary->columns->service_level_b = 'An indication of the level of service required by this site.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

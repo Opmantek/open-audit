@@ -363,6 +363,20 @@ if (!empty($config->servers)) {
                                         <?= menuItem('orgs', '', $user, 'orgsHelp', __('Learn About') . ' ' . __('Orgs')) ?>
                                     </ul>
                                 </li>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Packages') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('AntiVirus Packages'), '?packages.type=antivirus') ?>
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Firewall Packages'), '?packages.type=firewall') ?>
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Approved Packages'), '?packages.type=approved') ?>
+                                        <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Banned Packages'), '?packages.type=banned') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Linux Packages'), '?os=Linux') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('MacOS Packages'), '?os=MacOS') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Windows Packages'), '?os=Windows') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesImportForm', __('Import') . ' ' . __('Packages')) ?>
+                                        <?= menuItem('orgs', '', $user, 'packagesDefaults', __('Default') . ' ' . __('Packages')) ?>
+                                        <?= menuItem('orgs', '', $user, 'packagesHelp', __('Learn About') . ' ' . __('Packages')) ?>
+                                    </ul>
+                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Queries') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('queries', 'r', $user, 'queriesCollection', __('List') . ' ' . __('Queries')) ?>
@@ -482,7 +496,8 @@ if (!empty($config->servers)) {
                                         <?= menuItem('attributes', '', $user, 'attributesDefaults', 'Attributes') ?>
                                         <?= menuItem('configuration', '', $user, 'configurationDefaults', 'Configuration') ?>
                                         <?= menuItem('dashboards', '', $user, 'dashboardsDefaults', 'Dashboards') ?>
-                                        <?= menuItem('discovery_scan_options', '', $user, 'discovery_scan_optionsDefaults', 'Dashboards') ?>
+                                        <?= menuItem('discoveries', '', $user, 'discoveriesDefaults', 'Discoveries') ?>
+                                        <?= menuItem('discovery_scan_options', '', $user, 'discovery_scan_optionsDefaults', 'Discovery Scan Options') ?>
                                         <?= menuItem('fields', '', $user, 'fieldsDefaults', 'Fields') ?>
                                         <?= menuItem('groups', '', $user, 'groupsDefaults', 'Groups') ?>
                                         <?= menuItem('integrations', '', $user, 'integrationsDefaults', 'Integrations') ?>
@@ -522,10 +537,11 @@ foreach ($config->modules as $module) {
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
 <?php if (empty($config->license) or $config->license === 'none') { ?>
-                                <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Activate Free License')?></a></li>
+                                <li><a class="dropdown-item" href='#' data-bs-toggle="modal" data-bs-target="#modalCompareLicense"><?= __('Activate Free License')?></a></li>
+<?php } else { ?>
+                                <li><a class="dropdown-item" href='#' data-bs-toggle="modal" data-bs-target="#modalCompareLicense"><?= __('Buy More Licenses')?></a></li>
 <?php } ?>
                                 <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Manage Licenses')?></a></li>
-                                <li><a class="dropdown-item buy_more_licenses" href='#' data-bs-toggle="modal" data-bs-target="#myModalLicense"><?= __('Buy More Licenses')?></a></li>
                             </ul>
                         </li>
 
@@ -557,9 +573,9 @@ foreach ($config->modules as $module) {
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="<?= url_to('home') ?>" class="link-secondary">Home</a></li>
                                 <?php if (empty($meta->breadcrumbs)) { ?>
-                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Collection') ?>" class="link-secondary"><?= @ucwords(str_replace('_', ' ', $meta->collection)) ?></a></li>
+                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Collection') ?>" class="link-secondary"><?= @ucwords(str_replace('_', ' ', $meta->collection)) ?></a></li>
                                     <?php if (($meta->action === 'read' or $meta->action === 'execute') and !empty($name)) { ?>
-                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection.'Read', $meta->id) ?>" class="link-secondary"><?= $name ?></a></li>
+                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Read', $meta->id) ?>" class="link-secondary"><?= $name ?></a></li>
                                     <?php }
                                 } else {
                                     foreach ($meta->breadcrumbs as $breadcrumb) { ?>
@@ -755,4 +771,4 @@ function get_user_permission($collection, $action, $user)
     return false;
 }
 
-include('modal.php');
+include('modalCompareLicense.php');

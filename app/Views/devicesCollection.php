@@ -107,19 +107,21 @@ $columns[] = $column;
 
 // All the retrieved data columns
 $do_not_show = array('id', 'device_id', 'orgs.id', 'icon');
-foreach ($dataSet[0] as $key => $value) {
-    if (in_array($key, $do_not_show)) {
-        continue;
+if (!empty($dataSet[0])) {
+    foreach ($dataSet[0] as $key => $value) {
+        if (in_array($key, $do_not_show)) {
+            continue;
+        }
+        $column = new \stdClass();
+        $column->title = collection_column_name($key);
+        $column->data = str_replace('.', '__', $key);
+        $column->visible = (in_array($key, $display_columns)) ? true : false;
+        if ($column->visible) {
+            $myColumns[] = $column->data;
+        }
+        $column->name = $key;
+        $columns[] = $column;
     }
-    $column = new \stdClass();
-    $column->title = collection_column_name($key);
-    $column->data = str_replace('.', '__', $key);
-    $column->visible = (in_array($key, $display_columns)) ? true : false;
-    if ($column->visible) {
-        $myColumns[] = $column->data;
-    }
-    $column->name = $key;
-    $columns[] = $column;
 }
 
 // Select (if permitted)
@@ -223,6 +225,7 @@ if (strpos($user->permissions[$meta->collection], 'd') !== false) {
                 </div>
                 <div class="card-body">
                     <br>
+                    <?php if (!empty($data)) { ?>
                     <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
                         <div class="table-responsive">
                             <?php if (!empty($audit_status)) {
@@ -234,6 +237,14 @@ if (strpos($user->permissions[$meta->collection], 'd') !== false) {
                             </table>
                         </div>
                     </form>
+                    <?php } else { ?>
+                        <div class="container-fluid">
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <?= __('No Devices Returned') ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
         </main>

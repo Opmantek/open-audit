@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,7 +7,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class DatabaseModel extends BaseModel
 {
@@ -24,7 +25,7 @@ class DatabaseModel extends BaseModel
             $item->type = 'database';
             $item->id = $table;
             $item->attributes = new \stdClass();
-            
+
             $sql = 'SELECT COUNT(*) AS `count` FROM `' . $table . '`';
             $query = $this->db->query($sql);
             $result = $query->getResult();
@@ -37,7 +38,7 @@ class DatabaseModel extends BaseModel
                 $result = $query->getResult();
                 $item->attributes->current_row = true;
                 $item->attributes->current = intval($result[0]->count);
-                $item->attributes->non_current = intval($item->attributes->count -$item->attributes->current);
+                $item->attributes->non_current = intval($item->attributes->count - $item->attributes->current);
             } else {
                 $item->attributes->current_row = false;
             }
@@ -99,7 +100,7 @@ class DatabaseModel extends BaseModel
         // Credentials Clouds both use an encrypted JSON string in the credentials column. Decode this.
         if ($table === 'clouds' or $table === 'credential' or $table === 'credentials') {
             if ($instance->config->decrypt_credentials === 'y') {
-                for ($i=0; $i < $count; $i++) {
+                for ($i = 0; $i < $count; $i++) {
                     try {
                         $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
                     } catch (\JsonException $e) {
@@ -109,12 +110,12 @@ class DatabaseModel extends BaseModel
             }
         }
         if ($table === 'dashboards' or $table === 'scripts' or $table === 'tasks') {
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 $result[$i]->options = json_decode($result[$i]->options);
             }
         }
         if ($table === 'discoveries') {
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 try {
                     $result[$i]->scan_options = json_decode($result[$i]->scan_options, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {

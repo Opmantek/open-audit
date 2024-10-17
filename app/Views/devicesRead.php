@@ -71,7 +71,7 @@ if (!empty($included['fields'])) {
                                     </div>
                                     <?php
                                     $show = false;
-                                    $sections = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'partition', 'processor', 'radio', 'san', 'scsi', 'sound', 'usb', 'video');
+                                    $sections = array('access_point', 'bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'partition', 'processor', 'radio', 'san', 'scsi', 'sound', 'usb', 'video');
                                     foreach ($sections as $section) {
                                         if (!empty($included[$section])) {
                                             $show = true;
@@ -215,6 +215,7 @@ if (!empty($included['fields'])) {
                                             <?= read_field('os_version', $resource->os_version, '', false, __('OS Version')) ?>
                                             <?= read_field('memory_count', ($resource->memory_count / 1024 / 1024) . ' GB', '', false, __('Memory')) ?>
                                             <?= read_field('os_installation_date', $resource->os_installation_date, '', $update, __('OS Installed On')) ?>
+                                            <?= read_field('service_tag', $resource->service_tag, '', '', __('Service Tag')) ?>
                                         </div>
                                         <div class="col-4">
                                             <?= read_field('fqdn', $resource->fqdn, '', $update, __('FQDN')) ?>
@@ -668,7 +669,7 @@ if (!empty($included['fields'])) {
 
 
                                     <?php if (!empty($included['nmis_fields'])) {
-                                        for ($i=0; $i < 3; $i++) {
+                                        for ($i = 0; $i < 3; $i++) {
                                             $field = $included['nmis_fields'][$i];
                                             if ($field->{'type'} == 'list') {
                                                 $values = array();
@@ -707,7 +708,7 @@ if (!empty($included['fields'])) {
                                         <div class="col-4">
 
                                     <?php if (!empty($included['nmis_fields'])) {
-                                        for ($i=3; $i < count($included['nmis_fields']); $i++) {
+                                        for ($i = 3; $i < count($included['nmis_fields']); $i++) {
                                             $field = $included['nmis_fields'][$i];
                                             if (!in_array($field->name, $firstwave_fields)) {
                                                 continue;
@@ -1073,6 +1074,49 @@ if (!empty($included['fields'])) {
                                 </div>
                             </div>
 
+                            <div style="margin-bottom:20px; display:none;" class="card" id="access_point_section">
+                                <?php $count = !empty($included['access_point']) ? count($included['access_point']) : 0; ?>
+                                <?=  device_panel('access_point', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Model') ?></th>
+                                                    <th><?= __('Serial') ?></th>
+                                                    <th><?= __('MAC') ?></th>
+                                                    <th><?= __('IP') ?></th>
+                                                    <th><?= __('Location') ?></th>
+                                                    <th><?= __('Status') ?></th>
+                                                    <th><?= __('IOS Version') ?></th>
+                                                    <th><?= __('Software Version') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['access_point'])) {
+                                                foreach ($included['access_point'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('access_point', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->model ?></td>
+                                                    <td><?= $row->serial ?></td>
+                                                    <td><?= $row->mac ?></td>
+                                                    <td><?= $row->ip ?></td>
+                                                    <td><?= $row->location ?></td>
+                                                    <td><?= $row->status ?></td>
+                                                    <td><?= $row->ios_version ?></td>
+                                                    <td><?= $row->software_version ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div style="margin-bottom:20px; display:none;" class="card" id="bios_section">
                                 <?php $count = !empty($included['bios']) ? count($included['bios']) : 0; ?>
                                 <?= device_panel('bios', $user->toolbar_style, $resource->id, '', $update, $count); ?>
@@ -1130,7 +1174,7 @@ if (!empty($included['fields'])) {
                                                     <td><?= $row->model_family ?></td>
                                                     <td><?= $row->caption ?></td>
                                                     <td><?= $row->serial ?></td>
-                                                    <td><?= number_format($row->size/1024) ?> GB</td>
+                                                    <td><?= number_format($row->size / 1024) ?> GB</td>
                                                     <td><?= $row->status ?></td>
                                                     <td><?= $row->interface_type ?></td>
                                                     <td><?= $row->firmware ?></td>

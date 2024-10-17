@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class CredentialsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -49,7 +49,7 @@ class CredentialsModel extends BaseModel
         }
         if ($config->decrypt_credentials === 'y') {
             $count = count($query);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
                     try {
                         $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
@@ -299,6 +299,8 @@ class CredentialsModel extends BaseModel
         $dictionary->columns->privacy_protocol = 'The SNMP v3 Privacy Protocol.';
         $dictionary->columns->security_level = 'The SNMP v3 Security Level.';
         $dictionary->columns->security_name = 'The SNMP v3 Security Name.';
+        $dictionary->columns->context_name = 'The SNMPv3 context Name (optional).';
+        $dictionary->columns->context_engine_id = 'The SNMPv3 context Engine ID (optional).';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

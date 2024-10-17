@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class HelpModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -147,7 +147,7 @@ class HelpModel extends BaseModel
         $dictionary->attributes->collection = array();
         $dictionary->attributes->create = array();
         $dictionary->attributes->fields = array();
-        $dictionary->attributes->fieldsMeta =array();
+        $dictionary->attributes->fieldsMeta = array();
         $dictionary->attributes->update = array();
 
         $dictionary->sentence = "Amazing support from FirstWave - or the community if you like. It's the no excuses, no exceptions, can-do way of thinking that our staff bring to work every day. Your complete satisfaction is our priority. Anything less is simply unacceptable.";

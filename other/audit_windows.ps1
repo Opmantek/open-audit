@@ -37,7 +37,7 @@ if ($discovery_id -ne 0) {
 # For developers only to save time when testing other items as these take a while
 $audit_software = 'y'
 $audit_netstat = 'y'
-$audit_firewall_rule = 'y'
+$audit_firewall_rule = 'n'
 
 if ($debug -gt 0) {
     Write-Host "================"
@@ -185,7 +185,7 @@ if ($debug -gt 0) {
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.windows = @()
 $item = @{}
-$item.build_number = [int]$Win32_OperatingSystem.BuildNumber
+$item.build_number = [string]$Win32_OperatingSystem.BuildNumber + "." + [string]$(Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion' UBR).UBR
 $item.user_name = ""
 Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI | ForEach {
     if ($_.LastLoggedOnUser -ne $null -and $_.LastLoggedOnUser -ne "") {
@@ -1613,10 +1613,11 @@ if ($debug -gt 0) {
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.user = @()
 $item = @{}
-$Win32_UserProfile = Get-WmiObject Win32_UserProfile
-$LocalUser = Get-LocalUser
+$Win32_UserProfile = Get-WmiObject Win32_UserProfile -ErrorAction Ignore
+$Win32_UserAccount = Get-WmiObject Win32_UserAccount -ErrorAction Ignore
+$LocalUser = Get-LocalUser -ErrorAction Ignore
 if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainRole -ne 5)) {
-    Get-WmiObject Win32_UserAccount | ForEach {
+    $Win32_UserAccount | ForEach {
         Clear-Variable -name item
         $item = @{}
         $item.caption = $_.Caption
@@ -1825,6 +1826,17 @@ $item.version = $Win32_OperatingSystem.Version
 $item.publisher = "Microsoft Corporation"
 $item.description = "Operating System"
 $result.software += $item
+
+Get-WmiObject Win32_Service | ForEach {
+    if ($_.DisplayName -eq "Windows Defender Firewall" -and $_.State -eq "Running") {
+        $item = @{}
+        $item.name = 'Windows Defender Firewall'
+        $item.version = $Win32_OperatingSystem.Version
+        $item.publisher = 'Microsoft Corporation'
+        $item.url = 'https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/'
+        $result.software += $item
+    }
+}
 
 Clear-Variable -name item
 $item = @{}

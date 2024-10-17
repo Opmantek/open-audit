@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class SummariesModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -127,7 +127,7 @@ class SummariesModel extends BaseModel
             case 'devices':
                 $collection = 'devices';
                 break;
-            
+
             default:
                 $collection = 'devices';
                 break;
@@ -137,8 +137,8 @@ class SummariesModel extends BaseModel
         } else {
             $properties = 'devices.id,devices.icon,devices.type,devices.name,devices.domain,devices.ip,devices.os_family,devices.status';
         }
-        $link = url_to($collection.'Collection') . '?' . $dashboard[0]->table . '.' . $dashboard[0]->column . '=';
-        for ($i=0; $i < count($result); $i++) {
+        $link = url_to($collection . 'Collection') . '?' . $dashboard[0]->table . '.' . $dashboard[0]->column . '=';
+        for ($i = 0; $i < count($result); $i++) {
             $result[$i]->attributes->link = $link . urlencode($result[$i]->attributes->name) . '&properties=' . $properties;
         }
         if (!empty($set_count)) {

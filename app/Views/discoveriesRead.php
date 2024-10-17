@@ -425,11 +425,14 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                         <?php if ($log->command_output !== '') { ?>
                                                         <br><strong><em><?= __('Output') ?>: </em></strong><span class="output"><?= str_replace(',', ', ', $log->command_output) ?></span>
                                                         <?php } ?>
-                                                        <?php if (strpos($log->message, 'Nmap Command') !== false or
-                                                                    stripos($log->message, 'IP Scan finish') !== false or
-                                                                    stripos($log->message, 'IP Audit Finish') !== false or
-                                                                    stripos($log->message, 'Updating discovery log with non-responding IPs') !== false or
-                                                                    stripos($log->message, 'Nmap response scanning completed') !== false) { ?>
+                                                        <?php
+                                                        if (
+                                                            strpos($log->message, 'Nmap Command') !== false or
+                                                            stripos($log->message, 'IP Scan finish') !== false or
+                                                            stripos($log->message, 'IP Audit Finish') !== false or
+                                                            stripos($log->message, 'Updating discovery log with non-responding IPs') !== false or
+                                                            stripos($log->message, 'Nmap response scanning completed') !== false
+                                                        ) { ?>
                                                         <br><strong><em><?= __('Time to execute') ?>: </em></strong><?= (!empty($log->command_time_to_execute)) ? round($log->command_time_to_execute, 2) : '0.00' ?> seconds.
                                                         <?php } ?>
                                                     </td>
@@ -631,7 +634,7 @@ window.onload = function () {
             window.scrollTo(0, 0);
         });
 
-        $(".page-title-right").append('<?= $support_button ?>');
+        $(".page-title-middle").append('<?= $support_button ?>');
     });
 }
 </script>

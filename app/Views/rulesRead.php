@@ -72,7 +72,7 @@ include 'shared/read_functions.php';
                                                         <option value="lt"><?= __('less than') ?></option>
                                                         <option value="le"><?= __('less or equals') ?></option>
                                                         <option value="st"><?= __('starts with') ?></option>
-                                                        <option value="li"><?= __('contains') ?></option>
+                                                        <option value="li"><?= __('like') ?></option>
                                                         <option value="nl"><?= __('not like') ?></option>
                                                         <option value="in"><?= __('in') ?></option>
                                                         <option value="ni"><?= __('not in') ?></option>

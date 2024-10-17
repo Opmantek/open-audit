@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class IntegrationsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -49,7 +49,7 @@ class IntegrationsModel extends BaseModel
         }
         if ($config->decrypt_credentials === 'y') {
             $count = count($query);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (!empty($query[$i]->credentials)) {
                     try {
                         $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
@@ -212,13 +212,15 @@ class IntegrationsModel extends BaseModel
         }
         $update = false;
         $count = count($fields);
-        for ($i=0; $i < $count; $i++) {
-            if ($fields[$i]->internal_field_name === $data->internal_field_name and
+        for ($i = 0; $i < $count; $i++) {
+            if (
+                $fields[$i]->internal_field_name === $data->internal_field_name and
                 $fields[$i]->external_field_name === $data->external_field_name and
                 $fields[$i]->external_field_type === $data->external_field_type and
                 $fields[$i]->default_value === $data->default_value and
                 $fields[$i]->priority === $data->priority and
-                $fields[$i]->matching_attribute === $data->matching_attribute) {
+                $fields[$i]->matching_attribute === $data->matching_attribute
+            ) {
                 unset($fields[$i]);
                 $update = true;
             }
@@ -854,7 +856,7 @@ class IntegrationsModel extends BaseModel
             foreach ($integration->attributes->fields as $field) {
                 if (empty($field->internal_field_name)) {
                     $temp = explode('.', $field->external_field_name);
-                    $field->internal_field_name = 'fields.' . $integration->attributes->type . '_' . $temp[count($temp)-1];
+                    $field->internal_field_name = 'fields.' . $integration->attributes->type . '_' . $temp[count($temp) - 1];
                 }
 
                 if (!empty($field->internal_field_name)) {
@@ -867,7 +869,7 @@ class IntegrationsModel extends BaseModel
                     // TODO - This only accounts for two levels deep
                     if (empty($newdevice->{$int[0]}->{$int[1]})) {
                         $newdevice->{$int[0]}->{$int[1]} = array_reduce(explode('.', $field->external_field_name), function ($previous, $current) {
-                            return isset($previous->$current) && !empty($previous->$current)? $previous->$current: null;
+                            return isset($previous->$current) && !empty($previous->$current) ? $previous->$current : null;
                         }, $device);
                         if (empty($newdevice->{$int[0]}->{$int[1]}) and $field->default_value === '') {
                             unset($newdevice->{$int[0]}->{$int[1]});
@@ -1080,7 +1082,7 @@ class IntegrationsModel extends BaseModel
     public function getValue($device, $field)
     {
         $value = @array_reduce(explode('.', $field), function ($previous, $current) {
-            return isset($previous->$current) && !empty($previous->$current) ? $previous->$current: null;
+            return isset($previous->$current) && !empty($previous->$current) ? $previous->$current : null;
         }, $device);
         if (isset($value)) {
             return $value;
@@ -1198,7 +1200,7 @@ class IntegrationsModel extends BaseModel
         // return $return_field_name;
         $return_field_name = '';
         $explode = explode('.', $field_name);
-        $return_field_name = $type . '_' . $explode[count($explode)-1];
+        $return_field_name = $type . '_' . $explode[count($explode) - 1];
         return $return_field_name;
     }
 
@@ -1649,7 +1651,7 @@ class IntegrationsModel extends BaseModel
                     $field_name = str_replace('fields.', '', $field->internal_field_name);
                     if (empty($field_name)) {
                         $external_field = explode('.', $field->external_field_name);
-                        $field_name = $integration->attributes->type . '_' . $external_field[count($external_field)-1];
+                        $field_name = $integration->attributes->type . '_' . $external_field[count($external_field) - 1];
                     }
                     $id = 0;
                     foreach ($all_fields as $temp_field) {

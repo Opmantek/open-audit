@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     // Test for a NextHop device
-    $nextHop = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.32015.0.0");
-    if (!empty($nextHop)) {
+    $temp = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.32015.0.0");
+    if (!empty($temp)) {
         $details = new \StdClass();
         $details->model = 'Next Hop';
         $details->manufacturer = 'ExtraHop Networks, Inc.';
         $details->type = 'Network Device';
-        $details->os_version = $nextHop;
+        $details->os_version = $temp;
         return($details);
     }
     return;

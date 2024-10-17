@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,7 +7,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use \stdClass;
+use stdClass;
 
 /**
  * PHP version 7.4
@@ -32,7 +33,6 @@ use \stdClass;
  */
 class Collections extends BaseController
 {
-
     /**
      * Update a list of items
      *
@@ -46,7 +46,7 @@ class Collections extends BaseController
         }
         $ids = explode(',', $this->resp->meta->received_data->ids);
         foreach ($ids as $id) {
-            $status = $this->{$this->resp->meta->collection.'Model'}->update($id, $this->resp->meta->received_data->attributes);
+            $status = $this->{$this->resp->meta->collection . 'Model'}->update($id, $this->resp->meta->received_data->attributes);
         }
         if ($status) {
             output($this);
@@ -82,7 +82,7 @@ class Collections extends BaseController
         $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
         $this->resp->meta->filtered = count($this->resp->data);
 
-        if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total) {
+        if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['warning'])) {
             $_SESSION['success'] = 'Result limited to ' . $this->resp->meta->filtered . ' items as requested. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '.';
         }
 
@@ -90,7 +90,7 @@ class Collections extends BaseController
             $_SESSION['success'] = 'Result limited to ' . $this->config->page_size . ' items as per configuration. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '. You can change this in the configuration, <a href="' . url_to('configurationRead', 'page_size') . '">here</a>.';
         }
 
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         if (empty($this->resp->meta->properties[0]) or $this->resp->meta->properties[0] === $this->resp->meta->collection . '.*') {
             $this->resp->meta->data_order = $dictionary->attributes->collection;
         } else {
@@ -106,12 +106,14 @@ class Collections extends BaseController
             // $this->collectorsModel = new \App\Models\CollectorsModel;
             // $this->resp->included['collectors'] = $this->collectorsModel->listUser();
         }
-        if ($this->resp->meta->collection === 'benchmarks' or
+        if (
+            $this->resp->meta->collection === 'benchmarks' or
             $this->resp->meta->collection === 'clouds' or
             $this->resp->meta->collection === 'devices' or
             $this->resp->meta->collection === 'discoveries' or
             $this->resp->meta->collection === 'networks' or
-            $this->resp->meta->collection === 'summaries') {
+            $this->resp->meta->collection === 'summaries'
+        ) {
             $this->resp->included = array_merge($this->resp->included, $this->{strtolower($this->resp->meta->collection) . "Model"}->includedCollection());
         }
 
@@ -211,7 +213,7 @@ class Collections extends BaseController
                     if ($this->resp->meta->collection === 'rack_devices') {
                         return redirect()->route('racksRead', [$this->resp->meta->received_data->attributes->rack_id]);
                     }
-                    return redirect()->route($this->resp->meta->collection.'Read', [$id]);
+                    return redirect()->route($this->resp->meta->collection . 'Read', [$id]);
                 } else {
                     $collection = 'device';
                     if (stripos($this->resp->meta->query_string, 'type=') !== false) {
@@ -243,7 +245,7 @@ class Collections extends BaseController
                 if ($this->resp->meta->collection === 'components') {
                     $this->resp->meta->collection = 'devices';
                 }
-                return redirect()->route($this->resp->meta->collection.'Collection');
+                return redirect()->route($this->resp->meta->collection . 'Collection');
             }
         }
     }
@@ -268,7 +270,7 @@ class Collections extends BaseController
         }
         $this->resp->included = $this->{strtolower($this->resp->meta->collection) . 'Model'}->includedCreateForm();
         $this->resp->included['orgs'] = $this->orgsModel->listUser();
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         if ($this->resp->meta->format !== 'html') {
             $this->resp->dictionary = $dictionary;
             output($this);
@@ -299,7 +301,7 @@ class Collections extends BaseController
         $defaults = $this->baseModel->tableDefaults($this->resp->meta->collection);
         $this->databaseModel = model('App\Models\DatabaseModel');
         $data = $this->databaseModel->read($this->resp->meta->collection);
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         if ($this->resp->meta->format !== 'html') {
             $this->resp->dictionary_rows = $this->databaseModel->read($this->resp->meta->collection);
             $this->resp->dictionary = $dictionary;
@@ -337,7 +339,7 @@ class Collections extends BaseController
             output($this);
             exit();
         }
-        if ($this->{$this->resp->meta->collection.'Model'}->delete($this->resp->meta->id)) {
+        if ($this->{$this->resp->meta->collection . 'Model'}->delete($this->resp->meta->id)) {
             \Config\Services::session()->setFlashdata('success', 'Item in ' . $this->resp->meta->collection . ' deleted.');
             $temp = new stdClass();
             $temp->type = $this->resp->meta->collection;
@@ -361,7 +363,7 @@ class Collections extends BaseController
 
     public function dictionary($model)
     {
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         echo json_encode($dictionary);
     }
 
@@ -377,7 +379,7 @@ class Collections extends BaseController
         $this->databaseModel = model('App\Models\DatabaseModel');
         $data = $this->databaseModel->read($this->resp->meta->collection);
 
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -413,7 +415,7 @@ class Collections extends BaseController
         if (!$file->isValid()) {
             \Config\Services::session()->setFlashdata('error', 'File import error. ' . $file->getErrorString() . ' ' . $file->getError());
             log_message('error', 'File import error. ' . $file->getErrorString() . ' ' . $file->getError());
-            return redirect()->route($this->resp->meta->collection.'Collection');
+            return redirect()->route($this->resp->meta->collection . 'Collection');
         }
         $csv = @array_map('str_getcsv', file($file->getTempName(), FILE_IGNORE_NEW_LINES));
         if (!$csv) {
@@ -422,7 +424,7 @@ class Collections extends BaseController
                 return;
             }
             \Config\Services::session()->setFlashdata('error', 'CSV error.');
-            return redirect()->route($this->resp->meta->collection.'Collection');
+            return redirect()->route($this->resp->meta->collection . 'Collection');
         }
         $attributes = $csv[0];
         $row_count = count($csv);
@@ -432,9 +434,10 @@ class Collections extends BaseController
         $count_update = 0;
         $count_update_fail = 0;
         $id = array();
-        for ($i=1; $i < $row_count; $i++) {
+        $this->locationsModel = model('App\Models\LocationsModel');
+        for ($i = 1; $i < $row_count; $i++) {
             $data = new stdClass();
-            for ($j=0; $j < $column_count; $j++) {
+            for ($j = 0; $j < $column_count; $j++) {
                 $data->{$attributes[$j]} = $csv[$i][$j];
             }
             if ($this->resp->meta->collection === 'devices' and empty($data->last_seen_by)) {
@@ -443,6 +446,66 @@ class Collections extends BaseController
             foreach ($data as $key => $value) {
                 $data->{$key} = str_replace("\\n", "\n", $value);
                 $data->{$key} = str_replace("\\r", "\r", $data->{$key});
+            }
+
+            if (!empty($data->{'orgs.name'}) and $this->resp->meta->collection !== 'orgs' and empty($data->{'orgs.id'}) and empty($data->org_id)) {
+                // Lookup the Org by name and assign the org_id
+                if (empty($orgs)) {
+                    $orgs = $this->orgsModel->listUser();
+                }
+                foreach ($orgs as $org) {
+                    if ($data->{'orgs.name'} === $org->attributes->name) {
+                        $data->{'org_id'} = $org->id;
+                    }
+                }
+            }
+
+            if (!empty($data->{'orgs.name'}) and $this->resp->meta->collection === 'orgs' and empty($data->{'orgs.id'}) and empty($data->parent_id)) {
+                // Lookup the Org by name and assign the org_id
+                if (empty($orgs)) {
+                    $orgs = $this->orgsModel->listUser();
+                }
+                foreach ($orgs as $org) {
+                    if ($data->{'orgs.name'} === $org->attributes->name) {
+                        $data->{'parent_id'} = $org->id;
+                    }
+                }
+            }
+
+            if (!empty($data->{'locations.name'}) and in_array($this->resp->meta->collection, ['devices', 'networks', 'racks']) and empty($data->{'locations.id'}) and empty($data->location_id)) {
+                // Lookup the Org by name and assign the org_id
+                if (empty($locations)) {
+                    $locations = $this->locationsModel->listUser();
+                }
+                foreach ($locations as $location) {
+                    if ($data->{'locations.name'} === $location->attributes->name) {
+                        $data->{'location_id'} = $location->id;
+                    }
+                }
+            }
+
+            if (!empty($data->{'locations.name_a'}) and $this->resp->meta->collection === 'connections' and empty($data->location_id_a)) {
+                // Lookup the Org by name and assign the org_id
+                if (empty($locations)) {
+                    $locations = $this->locationsModel->listUser();
+                }
+                foreach ($locations as $location) {
+                    if ($data->{'locations.name_a'} === $location->attributes->name) {
+                        $data->{'location_id_a'} = $location->id;
+                    }
+                }
+            }
+
+            if (!empty($data->{'locations.name_b'}) and $this->resp->meta->collection === 'connections' and empty($data->location_id_b)) {
+                // Lookup the Org by name and assign the org_id
+                if (empty($locations)) {
+                    $locations = $this->locationsModel->listUser();
+                }
+                foreach ($locations as $location) {
+                    if ($data->{'locations.name_b'} === $location->attributes->name) {
+                        $data->{'location_id_b'} = $location->id;
+                    }
+                }
             }
 
             if (($this->resp->meta->collection === 'credential' or $this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds') and empty($data->credentials)) {
@@ -491,7 +554,7 @@ class Collections extends BaseController
             }
 
             if (!empty($data->id)) {
-                $test = $this->{$this->resp->meta->collection.'Model'}->update(intval($data->id), $data);
+                $test = $this->{$this->resp->meta->collection . 'Model'}->update(intval($data->id), $data);
                 if (!empty($test)) {
                     $id[] = $data->id;
                     $count_update += 1;
@@ -499,7 +562,7 @@ class Collections extends BaseController
                     $count_update_fail += 1;
                 }
             } else {
-                $test = $this->{$this->resp->meta->collection.'Model'}->create($data);
+                $test = $this->{$this->resp->meta->collection . 'Model'}->create($data);
                 if (!empty($test)) {
                     $id[] = $test;
                     $count_create += 1;
@@ -526,14 +589,14 @@ class Collections extends BaseController
                         $message .= $count_create_fail . ' ' . $this->resp->meta->collection . ' failed to create.<br />';
                         $message .= $count_update_fail . ' ' . $this->resp->meta->collection . ' failed to update.';
                         \Config\Services::session()->setFlashdata('success', $message);
-                        return redirect()->route($this->resp->meta->collection.'Collection');
+                        return redirect()->route($this->resp->meta->collection . 'Collection');
                     } else {
                         $message = "1 Item in {$this->resp->meta->collection} created successfully.";
                         if ($count_update === 1) {
                             $message = "1 Item in {$this->resp->meta->collection} updated successfully.";
                         }
                         \Config\Services::session()->setFlashdata('success', $message);
-                        return redirect()->route($this->resp->meta->collection.'Read', [$id[0]]);
+                        return redirect()->route($this->resp->meta->collection . 'Read', [$id[0]]);
                     }
                 } else {
                     \Config\Services::session()->setFlashdata('success', ucwords($this->resp->meta->received_data->attributes->component_type) . " created successfully.");
@@ -551,7 +614,7 @@ class Collections extends BaseController
                 return true;
             } else {
                 log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
-                return redirect()->route($this->resp->meta->collection.'Collection');
+                return redirect()->route($this->resp->meta->collection . 'Collection');
             }
         }
     }
@@ -576,7 +639,7 @@ class Collections extends BaseController
         }
         $this->databaseModel = model('App\Models\DatabaseModel');
         $this->resp->data = $this->databaseModel->read($this->resp->meta->collection);
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -611,7 +674,7 @@ class Collections extends BaseController
         }
         $this->databaseModel = new \App\Models\DatabaseModel();
         $this->resp->data = $this->databaseModel->read($this->resp->meta->collection);
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -664,7 +727,7 @@ class Collections extends BaseController
         $count_update_fail = 0;
         if (empty($this->resp->meta->received_data->json) or json_encode($this->resp->meta->received_data->json) === '[""]') {
             \Config\Services::session()->setFlashdata('error', 'No data (or invalid JSON) provided. No ' . $this->resp->meta->collection . ' created.');
-            return redirect()->route($this->resp->meta->collection.'Collection');
+            return redirect()->route($this->resp->meta->collection . 'Collection');
         }
         foreach ($this->resp->meta->received_data->json as $item) {
             if (!empty($item->id)) {
@@ -720,14 +783,14 @@ class Collections extends BaseController
                         $message .= $count_create_fail . ' ' . $this->resp->meta->collection . ' failed to create.<br />';
                         $message .= $count_update_fail . ' ' . $this->resp->meta->collection . ' failed to update.';
                         \Config\Services::session()->setFlashdata('success', $message);
-                        return redirect()->route($this->resp->meta->collection.'Collection');
+                        return redirect()->route($this->resp->meta->collection . 'Collection');
                     } else {
                         $message = "1 Item in {$this->resp->meta->collection} created successfully.";
                         if ($count_update === 1) {
                             $message = "1 Item in {$this->resp->meta->collection} updated successfully.";
                         }
                         \Config\Services::session()->setFlashdata('success', $message);
-                        return redirect()->route($this->resp->meta->collection.'Read', [$id[0]]);
+                        return redirect()->route($this->resp->meta->collection . 'Read', [$id[0]]);
                     }
                 } else {
                     \Config\Services::session()->setFlashdata('success', ucwords($this->resp->meta->received_data->attributes->component_type) . " created successfully.");
@@ -746,7 +809,7 @@ class Collections extends BaseController
             } else {
                 log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
                 \Config\Services::session()->setFlashdata('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
-                return redirect()->route($this->resp->meta->collection.'Collection');
+                return redirect()->route($this->resp->meta->collection . 'Collection');
             }
         }
     }
@@ -774,15 +837,15 @@ class Collections extends BaseController
         if ($this->resp->meta->collection !== 'database') {
             $this->resp->meta->id = intval($this->resp->meta->id);
         }
-        $this->resp->data = $this->{$this->resp->meta->collection.'Model'}->read($this->resp->meta->id);
-        $this->resp->meta->total = count($this->{$this->resp->meta->collection.'Model'}->listUser());
+        $this->resp->data = $this->{$this->resp->meta->collection . 'Model'}->read($this->resp->meta->id);
+        $this->resp->meta->total = count($this->{$this->resp->meta->collection . 'Model'}->listUser());
         $this->resp->meta->filtered = count($this->resp->data);
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         if ($this->resp->meta->collection === 'database') {
             $filename = str_replace(' ', '', ucwords(str_replace('_', ' ', $this->resp->meta->id)));
             if (file_exists(APPPATH . '/Models/' . $filename . 'Model.php')) {
                 $namespace = "\\App\\Models\\" . $filename . "Model";
-                $IdModel = new $namespace;
+                $IdModel = new $namespace();
                 $dictionary =  $IdModel->dictionary();
                 if ($this->resp->meta->id === 'integrations') {
                     $dictionary->columns->attributes = 'A JSON encoded set of details for accessing the external system.';
@@ -792,7 +855,7 @@ class Collections extends BaseController
 
         if ($this->resp->meta->format !== 'html') {
             if ($this->resp->meta->collection === 'devices') {
-                $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
+                $this->resp->included = $this->{$this->resp->meta->collection . 'Model'}->includedRead($this->resp->meta->id);
                 $this->resp->dictionary = $dictionary;
                 if ($this->resp->meta->format === 'json_data') {
                     // Special case device as an audit result
@@ -812,7 +875,7 @@ class Collections extends BaseController
                         $sql = "SELECT * FROM `{$table}` WHERE device_id = ? AND current = 'y'";
                         $result = $db->query($sql, [$this->resp->meta->id])->getResult();
                         if (!empty($result)) {
-                            for ($i=0; $i < count($result); $i++) {
+                            for ($i = 0; $i < count($result); $i++) {
                                 unset($result[$i]->id);
                                 unset($result[$i]->device_id);
                                 unset($result[$i]->current);
@@ -831,7 +894,7 @@ class Collections extends BaseController
             if (empty($this->resp->data)) {
                 log_message('warning', 'Invalid ID provided to read function. ID: ' . $this->resp->meta->id . ', collection: ' . $this->resp->meta->collection);
                 \Config\Services::session()->setFlashdata('warning', 'Invalid ID provided to ' . $this->resp->meta->collection . ' read function (ID: ' . $this->resp->meta->id . ')');
-                return redirect()->route($this->resp->meta->collection.'Collection');
+                return redirect()->route($this->resp->meta->collection . 'Collection');
             }
             if ($this->resp->meta->collection === 'baselines_results') {
                 $this->resp->meta->breadcrumbs = array();
@@ -879,7 +942,7 @@ class Collections extends BaseController
             if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false and strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, 'u') !== false) {
                 $update = true;
             }
-            $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedRead($this->resp->meta->id);
+            $this->resp->included = $this->{$this->resp->meta->collection . 'Model'}->includedRead($this->resp->meta->id);
             $template = $this->resp->meta->collection . ucfirst($this->resp->meta->action);
             if (!empty($export)) {
                 $template = 'collectionExport';
@@ -918,12 +981,12 @@ class Collections extends BaseController
             output($this);
             exit();
         }
-        $this->{$this->resp->meta->collection.'Model'}->reset();
+        $this->{$this->resp->meta->collection . 'Model'}->reset();
         if ($this->resp->meta->format !== 'html') {
             output($this);
             return true;
         } else {
-            return redirect()->route($this->resp->meta->collection.'Collection');
+            return redirect()->route($this->resp->meta->collection . 'Collection');
         }
     }
 
@@ -950,7 +1013,7 @@ class Collections extends BaseController
             output($this);
             return;
         }
-        if ($this->{$this->resp->meta->collection.'Model'}->update($this->resp->meta->received_data->id, $this->resp->meta->received_data->attributes)) {
+        if ($this->{$this->resp->meta->collection . 'Model'}->update($this->resp->meta->received_data->id, $this->resp->meta->received_data->attributes)) {
             output($this);
         } else {
             $this->response->setStatusCode(400);

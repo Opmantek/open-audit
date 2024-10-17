@@ -613,6 +613,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.1397.2.29': $device->model = '1150'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.141.1.1.29': $device->model = 'InfiniStream 2900'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.141.1.1.2990': $device->model = 'InfiniStream 2990'; $device->type = 'network device'; break;
+            case '1.3.6.1.4.1.141.1.1.3000': $device->model = 'NP-3000H'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.1411.102': $device->model = 'Juniper EX2500'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.14179.1.1.4.3': $device->model = '4402 WLAN Controller'; $device->type = 'wac'; $device->os_group = 'Cisco'; $device->os_family = 'Cisco IOS'; break;
             case '1.3.6.1.4.1.14179.1.1.4.4': $device->model = 'WS-SVC-WISM-1-K9 WLAN Controller'; $device->type = 'wac'; $device->os_group = 'Cisco'; $device->os_family = 'Cisco IOS'; break;
@@ -4865,6 +4866,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.3902.3.600.3.1.724': $device->model = 'ZXR10 5960'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.40614': $device->model = 'iStars'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.4096': $device->model = 'payShield 10K-S'; $device->type = 'network device'; break;
+            case '1.3.6.1.4.1.411': $device->model = 'UAP-FlexHD'; $device->type = 'access point'; break;
             case '1.3.6.1.4.1.41112': $device->model = 'UAP-FlexHD'; $device->type = 'access point'; break;
             case '1.3.6.1.4.1.41916.3.2.18': $device->model = 'ISR 1100-4G'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.41916.3.2.19': $device->model = 'ISR 1100-6G'; $device->type = 'router'; break;
@@ -6359,7 +6361,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.9.1.1276': $device->model = 'Cisco ASA Sm1sy'; $device->type = 'firewall'; break;
             case '1.3.6.1.4.1.9.1.1277': $device->model = 'Cisco ASA Sm1'; $device->type = 'firewall'; break;
             case '1.3.6.1.4.1.9.1.1278': $device->model = 'Cisco Catalyst 2960 cPD8TT'; $device->type = 'switch'; break;
-            case '1.3.6.1.4.1.9.1.1279': $device->model = 'Cisco AIR Ct2504K9'; $device->type = 'wap'; break;
+            case '1.3.6.1.4.1.9.1.1279': $device->model = 'Cisco AIR Ct2504K9'; $device->type = 'wac'; break;
             case '1.3.6.1.4.1.9.1.128': $device->model = 'Cisco 775'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.1280': $device->model = 'Cisco ISM AXP'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.1281': $device->model = 'Cisco SMAXP'; break;
@@ -6773,7 +6775,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.9.1.2339': $device->model = 'ISR 4321B'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.2339': $device->model = 'ISR 4321B'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.234': $device->model = 'Cisco IGX 8430'; $device->type = 'router'; break;
-            case '1.3.6.1.4.1.9.1.2349': $device->model = 'Cisco NCS 5508'; $device->type = 'chassis'; break;
+            case '1.3.6.1.4.1.9.1.2348': $device->model = 'ASR1001-HX'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.2349': $device->model = 'NCS 5508'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.235': $device->model = 'Cisco IGX 8450'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.2350': $device->model = 'Cisco NCS 5501-SE'; $device->type = 'chassis'; break;
@@ -6910,6 +6912,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.9.1.2529': $device->model = 'C1117-4PMWE'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.2529': $device->model = 'C1117-4PMWE'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.253': $device->model = 'Cisco 6260'; $device->type = 'router'; break;
+            case '1.3.6.1.4.1.9.1.2530': $device->model = 'Cisco C9800'; $device->type = 'wac'; break;
             case '1.3.6.1.4.1.9.1.2532': $device->model = 'C1112-8P'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.2532': $device->model = 'C1112-8P'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.2533': $device->model = 'C1112-8PLTEEA'; $device->type = 'router'; break;

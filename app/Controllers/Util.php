@@ -8,8 +8,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
-
-use \stdClass;
+use stdClass;
 
 /**
  * PHP version 7.4

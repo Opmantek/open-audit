@@ -11,7 +11,7 @@ include 'shared/create_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
@@ -19,17 +19,28 @@ include 'shared/create_functions.php';
                                 <?= create_text_field('data[attributes][description]', __('Description'), $dictionary->attributes->create) ?>
                                 <?= create_select('data[attributes][sidebar]', __('Sidebar'), [], $dictionary->attributes->create) ?>
 
-                                <?php for ($i = 1; $i <= 6; $i++) { ?>
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-8" style="position:relative;">
+                                        <label for="data[attributes][options][layout]" class="form-label"><?= __('Layout') ?></label><br />
+                                        <select class="form-select" name="data[attributes][options][layout]" id="data[attributes][options][layout]">
+                                            <option value="3x2">3 x 2</option>
+                                            <option value="4x2">4 x 2</option>
+                                            <option value="4x3">4 x 3</option>
+                                            <option value="4x4">4 x 4</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <?php for ($i = 1; $i <= 16; $i++) { ?>
                                     <?= create_select('data[attributes][options][widgets][' . $i . '][widget_id]', __('Widget # ') . $i, $included['widgets'], $dictionary->attributes->create) ?>
                                 <?php } ?>
 
 
-                                <?php for ($i = 1; $i <= 6; $i++) { ?>
+                                <?php for ($i = 1; $i <= 16; $i++) { ?>
                                 <input type="hidden" name="data[attributes][options][widgets][<?= $i ?>][size]" id="data[attributes][options][widgets][<?= $i ?>][size]" value="1" />
                                 <input type="hidden" name="data[attributes][options][widgets][<?= $i ?>][position]" id="data[attributes][options][widgets][<?= $i ?>][position]" value="<?= $i ?>" />
                                 <?php } ?>
-                                <input type="hidden" id="data[attributes][options][layout]" name="data[attributes][options][layout]" value="3x2" />
-                                <input type="hidden" id="data[attributes][options][widget_count]" name="data[attributes][options][widget_count]" value="6" />
+                                <input type="hidden" id="data[attributes][options][widget_count]" name="data[attributes][options][widget_count]" value="" />
 
                                 <br>
                                 <div class="row">

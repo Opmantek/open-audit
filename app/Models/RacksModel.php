@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class RacksModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -55,7 +55,7 @@ class RacksModel extends BaseModel
         }
         $racks = $query->getResult();
         $count = count($racks);
-        for ($i=0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             if (empty($racks[$i]->ru_height)) {
                 $racks[$i]->ru_height = 0;
             }
@@ -66,7 +66,7 @@ class RacksModel extends BaseModel
             $spaces = array();
             $space = 0;
             if (!empty($devices)) {
-                for ($j=0; $j < $height; $j++) {
+                for ($j = 0; $j < $height; $j++) {
                     $hit = false;
                     foreach ($devices as $device) {
                         if (intval($device->position) === $j or (intval($device->position) < $j and (intval($device->position) + intval($device->height)) >= $j)) {

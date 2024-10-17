@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class BaselinesResultsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -50,7 +50,7 @@ class BaselinesResultsModel extends BaseModel
         }
         $result = $query->getResult();
         $count = count($result);
-        for ($i=0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             if (!empty($result[$i]->result)) {
                 try {
                     $json = json_decode($result[$i]->result, false, 512, JSON_THROW_ON_ERROR);

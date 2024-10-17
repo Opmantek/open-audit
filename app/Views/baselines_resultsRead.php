@@ -68,7 +68,7 @@ if ($style === 'icontext') {
                 <div class="card-body">
 
                     <div class="row text-center">
-                        <div class="col-10 offset-1">
+                        <div class="col-8 offset-2">
                             <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                                 <?= $details_button ?>
                                 <?= $policy_button ?>
@@ -268,7 +268,7 @@ if ($style === 'icontext') {
                                             <td><?= $row->test3 ?></td>
                                             <td class="text-center">
                                                 <span style="display:none"><?= $row->status ?></span>
-                                            <?php if ($row->status ==='fail') { ?>
+                                            <?php if ($row->status === 'fail') { ?>
                                                 <button class="btn btn-sm btn-danger"><span style="width:1rem;" class="fa fa-xmark" aria-hidden="true"></span></button>
                                             <?php } else { ?>
                                                 <button class="btn btn-sm btn-success"><span style="width:1rem;" class="fa fa-check" aria-hidden="true"></span></button>

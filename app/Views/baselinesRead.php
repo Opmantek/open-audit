@@ -225,7 +225,7 @@ if ($style === 'icontext') {
                                     <tr>
                                         <td class="text-center"><a title="<?= __('Baselines Policy Details') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('baselines_policiesRead', $policy->attributes->id) ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
                                         <?php foreach ($policy->attributes->tests as $test) {
-                                            if ($test->column ==='name') { ?>
+                                            if ($test->column === 'name') { ?>
                                                 <td><?= $test->{'value'} ?></td>
                                             <?php }
                                             if ($test->column == 'version') { ?>

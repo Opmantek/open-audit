@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class DiscoveriesModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -339,7 +339,7 @@ class DiscoveriesModel extends BaseModel
                 if (!$test) {
                     // This IP is not in any existing subnets - insert a /30
                     // TODO - account for Org ID in existing as check_ip returns only true/false, and does not acount for orgs
-                    $temp = network_details($data->subnet.'/30');
+                    $temp = network_details($data->subnet . '/30');
                     $network = new \stdClass();
                     $network->name = $temp->network . '/' . $temp->network_slash;
                     $network->network = $temp->network . '/' . $temp->network_slash;
@@ -463,7 +463,7 @@ class DiscoveriesModel extends BaseModel
         $sql = 'SELECT * FROM `credential` WHERE `device_id` = ?';
         $result = $this->db->query($sql, [$device_id])->getResult();
         if (!empty($result)) {
-            for ($i=0; $i < count($result); $i++) {
+            for ($i = 0; $i < count($result); $i++) {
                 try {
                     $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
@@ -488,7 +488,7 @@ class DiscoveriesModel extends BaseModel
                 $sql = "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE id IN (" . $id_list . ')';
                 $result = $this->db->query($sql)->getResult();
                 if (!empty($result)) {
-                    for ($i=0; $i < count($result); $i++) {
+                    for ($i = 0; $i < count($result); $i++) {
                         try {
                             $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
                         } catch (\JsonException $e) {
@@ -512,7 +512,7 @@ class DiscoveriesModel extends BaseModel
         $sql = "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE `org_id` IN (" . $org_list . ')';
         $result = $this->db->query($sql)->getResult();
         if (!empty($result)) {
-            for ($i=0; $i < count($result); $i++) {
+            for ($i = 0; $i < count($result); $i++) {
                 $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials, config('Encryption')->key));
             }
             $credentials = array_merge($credentials, $result);
@@ -642,7 +642,7 @@ class DiscoveriesModel extends BaseModel
     {
         $sql = "SELECT discovery_log.id AS `discovery_log.id`, `discovery_log`.`discovery_id` AS `discovery_id`, `discoveries`.`name` AS `discovery_name`, `devices`.`ip` AS `devices.ip`, `devices`.`id` as `devices.id`, `devices`.`type` AS `devices.type`, `devices`.`icon` AS `devices.icon`, `devices`.`name` AS `devices.name`, `discovery_log`.`ip` AS `discovery_log.ip`, `discovery_log`.`message` AS `discovery_log.message`, `discovery_log`.`command_output` AS `output`, `discoveries`.`name` AS `discoveries.name` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` LEFT JOIN `devices` ON `discovery_log`.`device_id` = `devices`.`id` WHERE `command_status` = 'issue' AND `discoveries`.`id` = $id AND discoveries.name IS NOT NULL GROUP BY `discovery_log`.`device_id`, `command_output` ORDER BY discovery_log.id DESC";
         $issues = $this->db->query($sql)->getResult();
-        for ($i=0; $i < count($issues); $i++) {
+        for ($i = 0; $i < count($issues); $i++) {
             // Derive the description and action
             $issues[$i] = $this->issueMap($issues[$i]);
             // Format the IP
@@ -661,7 +661,7 @@ class DiscoveriesModel extends BaseModel
         $org_list = array_unique($org_list);
         $sql = "SELECT discovery_log.id AS `discovery_log.id`, `discovery_log`.`discovery_id` AS `discovery_id`, `discoveries`.`name` AS `discovery_name`, `devices`.`id` as `devices.id`, `devices`.`type` AS `devices.type`, `devices`.`icon` AS `devices.icon`, `devices`.`name` AS `devices.name`, `discovery_log`.`ip` AS `devices.ip`, `discovery_log`.`message` AS `discovery_log.message`, `discovery_log`.`command_output` AS `output`, `discoveries`.`name` AS `discoveries.name` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` LEFT JOIN `devices` ON `discovery_log`.`device_id` = `devices`.`id` WHERE `command_status` = 'issue' AND `discoveries`.`org_id` IN (" . implode(',', $org_list) . ") AND discoveries.name IS NOT NULL GROUP BY `discovery_log`.`device_id`, `command_output` ORDER BY discovery_log.id DESC LIMIT 100;";
         $issues = $this->db->query($sql)->getResult();
-        for ($i=0; $i < count($issues); $i++) {
+        for ($i = 0; $i < count($issues); $i++) {
             // Derive the description and action
             $issues[$i] = $this->issueMap($issues[$i]);
             // Format the IP
@@ -714,19 +714,19 @@ class DiscoveriesModel extends BaseModel
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'It is likely SMB1 was used in an attept to talk to Windows. SMB1 has been deprecated and now removed from most Windows install by Microsoft. Check <a href="' . url_to('discoveryIssues', 2) . '">here</a>.';
             $issue->action = '';
-        } elseif ($issue->output ==='["ERROR: UploadService failed - NT_STATUS_ACCESS_DENIED"]') {
+        } elseif ($issue->output === '["ERROR: UploadService failed - NT_STATUS_ACCESS_DENIED"]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Are the ADMIN$ and IPC$ shares enabled? Check <a href="' . url_to('discoveryIssues', 3) . '">here</a>.';
             $issue->action = '';
-        } elseif ($issue->output ==='["ERROR: StartService failed. NT_STATUS_CANT_WAIT."]') {
+        } elseif ($issue->output === '["ERROR: StartService failed. NT_STATUS_CANT_WAIT."]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Most likely you are trying to audit a 32bit Windows machine. We support 64bit only for discovery (it\'s a winexe thing). You can copy the audit script to the target and run it manually until such time as you decommission the 32bit machine. Check <a href="' . url_to('discoveryIssues', 7) . '">here</a>.';
             $issue->action = '';
-        } elseif ($issue->output ==='["ERROR: Failed to install service winexesvc - NT_STATUS_ACCESS_DENIED"]') {
+        } elseif ($issue->output === '["ERROR: Failed to install service winexesvc - NT_STATUS_ACCESS_DENIED"]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'This likely means the user account being used does not have sufficient rights on the target machine. It may also be that the ADMIN$ share is not available on the target machine. Check <a href="' . url_to('discoveryIssues', 7) . '">here</a>.';
             $issue->action = 'add credentials';
-        } elseif ($issue->output ==='["ERROR: StartService failed. NT_STATUS_PLUGPLAY_NO_DEVICE."]') {
+        } elseif ($issue->output === '["ERROR: StartService failed. NT_STATUS_PLUGPLAY_NO_DEVICE."]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Does the target PC has a DNS resolvable name? Is the machine on the domain? Check <a href="' . url_to('discoveryIssues', 4) . '">here</a>.';
             $issue->action = '';
@@ -734,19 +734,19 @@ class DiscoveriesModel extends BaseModel
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'This may be an issue on some Windows 7 and 2008 machines. We suggest a disk defrag on the target machine as a first step. See this <a href="https://support.microsoft.com/en-us/topic/-status-sharing-violation-error-message-when-you-try-to-open-a-highly-fragmented-file-on-a-computer-that-is-running-windows-7-or-windows-server-2008-r2-be899c3b-8c5a-c883-ce0d-055d258a9178" target="_blank">link</a>.';
             $issue->action = '';
-        } elseif ($issue->output ==='["ERROR: CreateService failed. NT_STATUS_ACCESS_DENIED."]') {
+        } elseif ($issue->output === '["ERROR: CreateService failed. NT_STATUS_ACCESS_DENIED."]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'It appears that the winexesvc.exe file has been copied to the target but the service could not be registered. Check your credentials and that they are of a machine Administrator account. Check <a href="' . url_to('discoveryIssues', 1) . '">here</a>.';
             $issue->action = '';
-        } elseif ($issue->output ==='["ERROR: StartService failed. NT_STATUS_ACCESS_DENIED."]') {
+        } elseif ($issue->output === '["ERROR: StartService failed. NT_STATUS_ACCESS_DENIED."]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'It appears that the winexesvc.exe file has been copied to the target and the service registered, however it fails to start. Check <a href="' . url_to('discoveryIssues', 8) . '">here</a>.';
             $issue->action = '';
-        } elseif ($issue->output ==='["ERROR: Failed to open connection - NT_STATUS_NOT_SUPPORTED"]') {
+        } elseif ($issue->output === '["ERROR: Failed to open connection - NT_STATUS_NOT_SUPPORTED"]') {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Most likely this is a result of attempting to connect using SMB2 to a Windows machine that only has SMB1 enabled. You should be using SMB2 as Microsoft has deprecated SMB1 due to security vulnerabilities.';
             $issue->action = '';
-        } elseif ($issue->output ==='["",""]') {
+        } elseif ($issue->output === '["",""]') {
             # Windows connection from Windows Open-AudIT server
             $issue->description = 'Check your credentials and that they are of a machine Administrator account. Check <a href="' . url_to('discoveryIssues', 1) . '">here</a>.';
             $issue->action = 'add credentials';
@@ -1036,7 +1036,7 @@ class DiscoveriesModel extends BaseModel
         }
         if (is_string($result[0]->match_options)) {
             try {
-                $result[0]->match_options =json_decode($result[0]->match_options, false, 512, JSON_THROW_ON_ERROR);
+                $result[0]->match_options = json_decode($result[0]->match_options, false, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
                 log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             }

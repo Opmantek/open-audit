@@ -18,7 +18,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->icon = 'computer';
     # try to determine if this is a VMware virtual machine
     $i = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.25.6.3.1.2");
-    if (count($i) > 0) {
+    if (!empty($i) and is_array($i) and count($i) > 0) {
         for ($k = 0; $k < count($i); $k++) {
             if (mb_strpos($i[$k], "VMware Tools") !== false) {
                 $details->model = 'VMware Virtual Platform';

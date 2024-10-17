@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -33,7 +34,6 @@ use CodeIgniter\HTTP\RequestInterface;
  */
 class Input extends BaseController
 {
-
     public function benchmarks()
     {
         $db = db_connect();
@@ -75,7 +75,7 @@ class Input extends BaseController
             log_message('error', 'Invalid device ID supplied to Input::benchmarks. Supplied: ' . $json->device_id);
             $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'error', Invalid device ID supplied, $device_id', '')";
             $db->query($sql);
-            $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'error', Completed. Memory: " . round((memory_get_peak_usage(false)/1024/1024), 3) . " MiB', '')";
+            $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'error', Completed. Memory: " . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . " MiB', '')";
             $db->query($sql);
             return;
         }
@@ -94,7 +94,7 @@ class Input extends BaseController
         #$sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Processing report file completed. ' . intval(count($json->result)) . ' inserted.', '')";
         $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Processing report file completed.', '')";
         $db->query($sql);
-            $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Completed. Memory: " . round((memory_get_peak_usage(false)/1024/1024), 3) . " MiB', '')";
+            $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Completed. Memory: " . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . " MiB', '')";
         $db->query($sql);
     }
 

@@ -29,7 +29,13 @@ include 'shared/collection_functions.php';
                             </thead>
                             <tbody>
                             <?php if (!empty($data)) { ?>
-                                <?php foreach ($data as $item) { ?>
+                                <?php foreach ($data as $item) {
+                                    if ($item->attributes->type === 'traffic') {
+                                        $item->attributes->primary = !empty($item->attributes->{'queries.primary_query_name'}) ? $item->attributes->{'queries.primary_query_name'} : $item->attributes->primary;
+                                        $item->attributes->secondary = !empty($item->attributes->{'queries.secondary_query_name'}) ? $item->attributes->{'queries.secondary_query_name'} : $item->attributes->secondary;
+                                        $item->attributes->ternary = !empty($item->attributes->{'queries.ternary_query_name'}) ? $item->attributes->{'queries.ternary_query_name'} : $item->attributes->ternary;
+                                    }
+                                    ?>
                                 <tr>
                                     <?= collection_button_read($meta->collection, $item->id) ?>
                                     <?= collection_button_execute($meta->collection, intval($item->id)) ?>

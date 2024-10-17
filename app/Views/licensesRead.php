@@ -22,7 +22,7 @@ if ($style === 'icontext') {
                 <div class="card-body">
 
                     <div class="row text-center">
-                        <div class="col-10 offset-1">
+                        <div class="col-8 offset-2">
                             <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                                 <?= $details_button ?>
                                 <?= $device_button ?>

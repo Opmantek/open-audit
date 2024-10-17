@@ -11,7 +11,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
     $details->manufacturer = 'Hewlett Packard';
     $sysDescr = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
-    if (strpos($sysDescr, 'HP_3PAR') !== false) {
+    if (!empty($sysDescr) and strpos($sysDescr, 'HP_3PAR') !== false) {
         $details->type = 'san';
         $explode = explode(',', $sysDescr);
         for ($i = 0; $i < count($explode); $i++) {

@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class DashboardsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -214,7 +214,7 @@ class DashboardsModel extends BaseModel
                 }
             }
             foreach ($existing->widgets as $widget) {
-                if (intval($widget->position) === intval($widget_position)) {
+                if (isset($widget->position) and isset($widget_position) and intval($widget->position) === intval($widget_position)) {
                     $widget->widget_id = $widget_id;
                 }
             }
@@ -254,7 +254,7 @@ class DashboardsModel extends BaseModel
 
         $dictionary->about = '<p>Quickly view the status of devices on your network.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
-        $dictionary->notes = '<p><table class="table table-bordered">
+        $dictionary->notes = '<p>3 x 2<br><table class="table table-bordered">
                                         <tbody>
                                             <tr>
                                                 <td rowspan="2">Sidebar</td>
@@ -266,6 +266,23 @@ class DashboardsModel extends BaseModel
                                                 <td>Widget #4</td>
                                                 <td>Widget #5</td>
                                                 <td>Widget #6</td>
+                                            </tr>
+                                        </tbody>
+                                    </table><br /><br /></p>
+                                    <p>4 x 2<br><table class="table table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td rowspan="2">Sidebar</td>
+                                                <td>Widget #1</td>
+                                                <td>Widget #2</td>
+                                                <td>Widget #3</td>
+                                                <td>Widget #4</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Widget #5</td>
+                                                <td>Widget #6</td>
+                                                <td>Widget #7</td>
+                                                <td>Widget #8</td>
                                             </tr>
                                         </tbody>
                                     </table><br /><br /></p>';

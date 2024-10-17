@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,7 +7,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use \stdClass;
+use stdClass;
 
 /**
  * PHP version 7.4
@@ -34,8 +35,8 @@ class Components extends BaseController
 {
     public function createForm(string $type = '', $device_id = 0)
     {
-        $this->resp->included = $this->{$this->resp->meta->collection.'Model'}->includedCreateForm();
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $this->resp->included = $this->{$this->resp->meta->collection . 'Model'}->includedCreateForm();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         $this->resp->meta->id = $device_id;
         if ($type === 'applications') {
             $this->applicationsModel = new \App\Models\ApplicationsModel();
@@ -100,6 +101,6 @@ class Components extends BaseController
         $filter->value = $type;
         $this->resp->meta->filter[] = $filter;
         $item = $this->componentsModel->read(intval($id));
-        return $this->response->download(APPPATH.'/Attachments/' . $item[0]->attributes->filename, null);
+        return $this->response->download(APPPATH . '/Attachments/' . $item[0]->attributes->filename, null);
     }
 }

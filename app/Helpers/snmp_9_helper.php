@@ -17,6 +17,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $temp = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.2.10.1.0");
     $details->storage_count = (!empty($temp)) ? intval($temp / 1048576) : 0;
     $details->description = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
+    $details->description = (is_string($details->description)) ? $details->description : '';
     $details->os_version = '';
     $details->os_group = '';
     $details->os_family = '';
@@ -36,9 +37,54 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     if (!empty($i[1])) {
         $details->os_version = trim((string)$i[1]);
-        $details->os_cpe_version = str_replace($details->os_version, '(', '\(');
-        $details->os_cpe_version = str_replace($details->os_cpe_version, ')', '\)');
     }
+
+    # Cisco NxOS serial
+    if (empty($details->serial)) {
+        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.369.1.1.1");
+        $details->serial = !empty($details->serial) ? str_replace('VDH=', '', (string)$details->serial) : '';
+    }
+
+    # 3560
+    if (empty($details->model)) {
+        $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.2.1001");
+    }
+
+    # 3560
+    if (empty($details->os_version)) {
+        $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.1001");
+    }
+
+    # 3560
+    if (empty($details->serial)) {
+        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1001");
+    }
+
+    # ASR
+    if (empty($details->os_version)) {
+        $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.7000");
+    }
+
+    # 9300
+    if (empty($details->os_name)) {
+        $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.249.1.1.1.1.2");
+    }
+
+    # Wireless Access Controller 9800
+    if (empty($details->os_version)) {
+        $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.1");
+    }
+
+    if (!empty($details->os_version)) {
+        $details->os_cpe_version = !empty($details->os_version) ? $details->os_version . '';
+        if (strpos($details->os_cpe_version, '(') !== false) {
+            $details->os_cpe_version = str_replace($details->os_cpe_version, '(', '\(');
+        }
+        if (strpos($details->os_cpe_version, ')') !== false) {
+            $details->os_cpe_version = str_replace($details->os_cpe_version, ')', '\)');
+        }
+    }
+    $details->os_version = !empty($details->os_version) ? $details->os_version : '';
     $i = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.7");
     if (stripos((string)$i, "IOS") !== false) {
         $details->os_group = 'Cisco';
@@ -143,42 +189,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
             $details->serial = $i_array[0];
         }
         unset($i_array);
-    }
-
-    # Cisco NxOS serial
-    if (empty($details->serial)) {
-        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.369.1.1.1");
-        $details->serial = str_replace('VDH=', '', (string)$details->serial);
-    }
-
-    # 3560
-    if (empty($details->model)) {
-        $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.2.1001");
-    }
-
-    # 3560
-    if (empty($details->os_version)) {
-        $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.1001");
-    }
-
-    # 3560
-    if (empty($details->serial)) {
-        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1001");
-    }
-
-    # ASR
-    if (empty($details->os_version)) {
-        $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.7000");
-    }
-
-    # 9300
-    if (empty($details->os_name)) {
-        $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.249.1.1.1.1.2");
-    }
-
-    # Wireless Access Controller 9800
-    if (empty($details->os_version)) {
-        $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.1");
     }
 
     return($details);

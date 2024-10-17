@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class DevicesModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -29,11 +29,12 @@ class DevicesModel extends BaseModel
         $instance = & get_instance();
         $properties = $resp->meta->properties;
         $count = count($properties);
-        for ($i=0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             if (strpos($properties[$i], 'devices.') === false) {
                 $properties[$i] = $properties[$i] . ' AS `' . $properties[$i] . '`';
             }
         }
+        $properties[] = "devices.id as `devices.id`";
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
@@ -68,11 +69,11 @@ class DevicesModel extends BaseModel
         }
         $this->builder->orderBy('mycount');
         $this->builder->orderBy($resp->meta->sort);
-        if (!empty($instance->config->license_limit) and $resp->meta->limit > $instance->config->license_limit) {
-            $resp->meta->limit = $instance->config->license_limit;
-            log_message('warning', 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.');
-            $_SESSION['warning'] = 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.';
-        }
+        // if (!empty($instance->config->license_limit) and $resp->meta->limit > $instance->config->license_limit) {
+        //     $resp->meta->limit = $instance->config->license_limit;
+        //     log_message('warning', 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.');
+        //     $_SESSION['warning'] = 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.';
+        // }
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
         # log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));
@@ -80,10 +81,11 @@ class DevicesModel extends BaseModel
             return array();
         }
         $result = $query->getResult();
+        $result = formatQuery($result);
         $count = count($result);
 
         if (isset($result[0]->type) and isset($result[0]->last_seen_by) and $instance->config->product !== 'community') {
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 # BAD
                 if ($result[$i]->last_seen_by === 'nmap' and ($result[$i]->type === 'unclassified' or $result[$i]->type === 'unknown')) {
                     $result[$i]->audit_class = 'fa fa-times text-danger';
@@ -128,7 +130,7 @@ class DevicesModel extends BaseModel
         }
 
         if (isset($result[0]->tags)) {
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if (!empty($result[$i]->tags)) {
                     try {
                         $result[$i]->tags = json_decode($result[$i]->tags, false, 512, JSON_THROW_ON_ERROR);
@@ -402,7 +404,7 @@ class DevicesModel extends BaseModel
         }
 
         $include = array();
-        $current = array('antivirus', 'bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+        $current = array('access_point', 'antivirus', 'bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
         foreach ($current as $table) {
             if (empty($resp_include) or in_array($table, $resp_include)) {
                 $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y'";
@@ -416,7 +418,7 @@ class DevicesModel extends BaseModel
 
         if (!empty($include['ip'])) {
             $count = count($include['ip']);
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 $include['ip'][$i]->ip_padded = $include['ip'][$i]->ip;
                 $include['ip'][$i]->ip = ip_address_from_db($include['ip'][$i]->ip);
             }
@@ -763,7 +765,7 @@ class DevicesModel extends BaseModel
             return array();
         }
         $include['os'] = format_data($query->getResult(), 'devices');
-        for ($i=0; $i < count($include['os']); $i++) {
+        for ($i = 0; $i < count($include['os']); $i++) {
             if (file_exists(ROOTPATH . 'public/device_images/' . strtolower(str_replace(' ', '_', $include['os'][$i]->attributes->os_family)) . '.svg')) {
                 $include['os'][$i]->attributes->icon = strtolower(str_replace(' ', '_', $include['os'][$i]->attributes->os_family));
             }
@@ -881,7 +883,7 @@ class DevicesModel extends BaseModel
                     // get the current weight from the edit_log
                     $previous_weight = 10000;
                     $count = count($edit_log);
-                    for ($i=0; $i < $count; $i++) {
+                    for ($i = 0; $i < $count; $i++) {
                         if ($edit_log[$i]->db_column === $key) {
                             $previous_weight = intval($edit_log[$i]->weight);
                         }
@@ -900,6 +902,12 @@ class DevicesModel extends BaseModel
                     }
                 }
             }
+        }
+        if (in_array($source, ['nmap', 'ssh', 'snmp', 'cloud', 'wmi', 'windows', 'audit_wmi', 'audit_windows', 'audit']) and $db_entry->status !== 'production') {
+            // We discovered a device, set its status to production
+            $update_device->status = 'production';
+            $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'devices', ?, ?, ?, ?)";
+            $query = $this->db->query($sql, [$user_id, $id, $source, 2000, 'status', $data->timestamp, 'production', $db_entry->status]);
         }
         // Add our non-edit_log compared attributes to the data to be updated
         foreach ($data as $key => $value) {
@@ -967,7 +975,7 @@ class DevicesModel extends BaseModel
         }
 
         // Check and update any custom fields, if the supplied data key name == the fields.name
-        $fieldsModel = new \App\Models\FieldsModel;
+        $fieldsModel = new \App\Models\FieldsModel();
         // TODO - can we restrict this to only those fields from discoveries.org_id and lower by populating listUser([], $orgs) ?
         //      - The incoming data may be from a user (web interface) a discovery or an audit.
         $fields = $fieldsModel->listAll();
@@ -1041,6 +1049,7 @@ class DevicesModel extends BaseModel
         $dictionary->columns->description = @$instance->dictionary->description;
         $dictionary->columns->org_id = @$instance->dictionary->org_id;
         $dictionary->columns->uuid = 'Retrieved from the device - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostsvc/hostsummary, HP-UX:machinfo, Solaris:smbios, AIX:uname.';
+        $dictionary->columns->status = 'Normally \'production\'.';
         $dictionary->columns->last_seen = 'The last time that Open-AudIT retrieved details of this device.';
         $dictionary->columns->last_seen_by = 'The process that was used last to retrieve details about the device';
         return $dictionary;

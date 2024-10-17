@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class NetworksModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -126,6 +126,11 @@ class NetworksModel extends BaseModel
         $sql = "SELECT devices.id, MAX(devices.icon) AS `icon`, MAX(devices.name) AS `name`, MAX(devices.dns_fqdn) AS `dns_fqdn`, MAX(devices.domain) AS `domain`, ip.ip AS `ip.ip`, MAX(ip.last_seen) AS `ip.last_seen`, MAX(ip.mac) AS `ip.mac`, MAX(ip.set_by) AS `ip.set_by`, MAX(devices.os_family) AS `os_family`, MAX(devices.status) AS `status`, MAX(network.connection) AS `network.connection` FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') LEFT JOIN network ON (ip.mac = network.mac AND devices.id = network.device_id) WHERE (ip.network = ? OR (ip.ip >= ? AND ip.ip <= ?)) AND devices.org_id IN ($org_list) GROUP BY ip.ip, devices.id ORDER BY ip.ip";
         $devices = $this->db->query($sql, [(string)$network, $network_details->host_min, $network_details->host_max])->getResult();
         $included['devices'] = format_data($devices, 'devices');
+
+        $included['locations'] = array();
+        $locationsModel = new \App\Models\LocationsModel();
+        $included['locations'] = $locationsModel->listUser();
+
         return $included;
     }
 

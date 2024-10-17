@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -159,7 +160,7 @@ class Queue extends BaseController
                     $log = new \stdClass();
                     $log->discovery_id = intval($details->discovery_id);
                     $log->command = 'Peak Memory';
-                    $log->command_output = round((memory_get_peak_usage(false)/1024/1024), 3) . ' MiB';
+                    $log->command_output = round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB';
                     $log->command_status = 'device complete';
                     $log->command_time_to_execute = microtime(true)  - $microtime;
                     $log->message = 'IP Scan finish on device ' . ip_address_from_db($details->ip);

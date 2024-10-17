@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class LocationsModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -310,6 +310,7 @@ class LocationsModel extends BaseModel
         $dictionary->columns->notes = 'Unused.';
         $dictionary->columns->tags = 'Unused.';
         $dictionary->columns->phone = 'The locations phone.';
+        $dictionary->columns->contact = 'Details of who is usually contactable at this site.';
         $dictionary->columns->picture = 'Unused.';
         $dictionary->columns->external_ident = 'The externally referenced location ID. Usually populated by Cloud audits.';
         $dictionary->columns->options = 'Unused.';

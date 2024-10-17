@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class MapsModel extends BaseModel
 {
-
     public function __construct()
     {
     }
@@ -148,11 +148,11 @@ class MapsModel extends BaseModel
         $dictionary->attributes->collection = array();
         $dictionary->attributes->create = array();
         $dictionary->attributes->fields = array();
-        $dictionary->attributes->fieldsMeta =array();
+        $dictionary->attributes->fieldsMeta = array();
         $dictionary->attributes->update = array();
 
         $dictionary->sentence = 'Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location.';
-        
+
         $dictionary->about = '<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br /><br />
         ' . $instance->dictionary->link . '<br /><br /></p>';
 

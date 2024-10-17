@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,7 +7,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use \stdClass;
+use stdClass;
 
 /**
  * PHP version 7.4
@@ -92,10 +93,10 @@ class Database extends BaseController
 
             // From the file
             $file_schema = '';
-            for ($i=0; $i < count($sql_file); $i++) {
+            for ($i = 0; $i < count($sql_file); $i++) {
                 if (strpos($sql_file[$i], "CREATE TABLE `$table`") !== false) {
                     $file_schema = $sql_file[$i];
-                    for ($j=$i+1; $j < count($sql_file); $j++) {
+                    for ($j = $i + 1; $j < count($sql_file); $j++) {
                         if (strpos($sql_file[$j], '/*!') === false) {
                             $file_schema .= $sql_file[$j];
                         } else {
@@ -181,7 +182,7 @@ class Database extends BaseController
             // We want the raw table data and no extra columns, but formatted as usual (using attributes->).
             $count = count($this->resp->data);
             $return = array();
-            for ($i=0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 $item = new stdClass();
                 $item->attributes = $this->resp->data[$i];
                 $return[] = $item;

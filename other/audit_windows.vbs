@@ -1518,9 +1518,12 @@ for each objItem in colItems
     windows_time_daylight = objItem.DaylightName
 next
 
+oreg.getstringvalue hkey_local_machine, "Software\Microsoft\Windows NT\CurrentVersion", "UBR", build_number
+build_number = windows_build_number & "." & build_number
+
 result.WriteText "  <windows>" & vbcrlf
 result.WriteText "      <item>" & vbcrlf
-result.WriteText "          <build_number>" & escape_xml(windows_build_number) & "</build_number>" & vbcrlf
+result.WriteText "          <build_number>" & escape_xml(build_number) & "</build_number>" & vbcrlf
 result.WriteText "          <user_name>" & escape_xml(windows_user_name) & "</user_name>" & vbcrlf
 result.WriteText "          <client_site_name>" & escape_xml(windows_client_site_name) & "</client_site_name>" & vbcrlf
 result.WriteText "          <domain_short>" & escape_xml(domain_nb) & "</domain_short>" & vbcrlf
@@ -1544,7 +1547,40 @@ result.WriteText "          <active_directory_ou>" & escape_xml(windows_active_d
 result.WriteText "      </item>" & vbcrlf
 result.WriteText "  </windows>" & vbcrlf
 
-
+Dim objWMIServiceSC,objAntiVirusProduct,colAVItems,AvStatus
+Set objWMIServiceSC = GetObject("winmgmts:\\.\root\SecurityCenter2")
+error_returned = Err.Number
+if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (SecurityCenter2)" : audit_wmi_fails = audit_wmi_fails & "SecurityCenter2 " : end if
+if (error_returned = 0) then
+    Set colAVItems = objWMIServiceSC.ExecQuery("Select * from AntiVirusProduct")
+    If colAVItems.count > 0 Then
+        result.WriteText "  <antivirus>" & vbcrlf
+        For Each objAntiVirusProduct In colAVItems
+            result.WriteText "      <item>" & vbcrlf
+            result.WriteText "          <name>" & escape_xml(objAntiVirusProduct.displayName) & "</name>" & vbcrlf
+            AvStatus = Hex(objAntiVirusProduct.ProductState)
+            if (objAntiVirusProduct.ProductState = "393472" or objAntiVirusProduct.ProductState = "266240" _
+                or objAntiVirusProduct.ProductState = "331776" or objAntiVirusProduct.ProductState = "397568" _
+                or Mid(AvStatus, 2, 2) = "10" Or Mid(AvStatus, 2, 2) = "11" or mid(AvStatus, 5, 2) = "10" or Mid(AvStatus, 5, 2) = "11") then
+                result.WriteText "          <state>On</state>" & vbcrlf
+            else
+                result.WriteText "          <state>Off</state>" & vbcrlf
+            end if
+            if Mid(AvStatus, 4, 2) = "00" then
+                result.WriteText "          <status>UpToDate</status>" & vbcrlf
+            elseif Mid(AvStatus, 4, 2) = "10" then
+                result.WriteText "          <status>OutOfDate</status>" & vbcrlf
+            end if
+            if (objAntiVirusProduct.displayName = "Windows Defender") then
+                result.WriteText "          <owner>Windows</owner>" & vbcrlf
+            else
+                result.WriteText "          <owner>NonMs</owner>" & vbcrlf
+            end if
+        next
+        result.WriteText "      </item>" & vbcrlf
+        result.WriteText "  </antivirus>" & vbcrlf
+    end if
+end if
 
 item = ""
 if (not isempty(objWMIService3)) then

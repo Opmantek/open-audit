@@ -2,6 +2,13 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+if (!empty($included['queries'])) {
+    $item = new \stdClass();
+    $item->id = 0;
+    $item->attributes = new stdClass();
+    $item->attributes->name = '';
+    array_unshift($included['queries'], $item);
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -22,6 +29,7 @@ include 'shared/read_functions.php';
                                         <select class="form-select" id="type" name="type" data-original-value="<?= $resource->type ?>" disabled>
                                             <option value="line" <?php if ($resource->type === 'line') { echo 'selected'; } ?>><?= __('Line Graph') ?></option>
                                             <option value="pie" <?php if ($resource->type === 'pie') { echo 'selected'; } ?>><?= __('Pie Chart') ?></option>
+                                            <option value="traffic" <?php if ($resource->type === 'traffic') { echo 'selected'; } ?>><?= __('Traffic Light') ?></option>
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
@@ -52,13 +60,23 @@ include 'shared/read_functions.php';
                                     <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
                                 </div>
                             </div>
-                            <?php } else { ?>
-                                <?= read_field('primary', $resource->primary, $dictionary->columns->primary, $update) ?>
-                                <?= read_field('secondary', $resource->secondary, $dictionary->columns->secondary, $update) ?>
-                                <?= read_field('where', $resource->where, $dictionary->columns->where, $update) ?>
-                                <?= read_field('limit', $resource->limit, $dictionary->columns->limit, $update) ?>
-                            <?php } ?>
                                 <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update) ?>
+                            <?php } else {
+                                if ($resource->type !== 'traffic') { ?>
+                                    <?= read_field('primary', $resource->primary, $dictionary->columns->primary, $update) ?>
+                                    <?= read_field('secondary', $resource->secondary, $dictionary->columns->secondary, $update) ?>
+                                    <?= read_field('where', $resource->where, $dictionary->columns->where, $update) ?>
+                                    <?= read_field('limit', $resource->limit, $dictionary->columns->limit, $update) ?>
+                                    <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update) ?>
+                                <?php } else { ?>
+                                    <?= read_field('dataset_title', $resource->dataset_title, $dictionary->columns->dataset_title, $update, __('Title')) ?>
+                                    <?= read_field('group_by', html_entity_decode($resource->group_by), $dictionary->columns->group_by, $update, __('Secondary Text')) ?>
+                                    <?= read_field('where', $resource->where, $dictionary->columns->where, $update, __('Icon')) ?>
+                                    <?= read_select('primary', $resource->primary, $dictionary->columns->primary, $update, __('Red Query'), $included['queries']) ?>
+                                    <?= read_select('secondary', $resource->secondary, $dictionary->columns->secondary, $update, __('Yellow Query'), $included['queries']) ?>
+                                    <?= read_select('ternary', $resource->ternary, $dictionary->columns->ternary, $update, __('Green Query'), $included['queries']) ?>
+                                <?php } ?>
+                            <?php } ?>
                                 <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                                 <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                         </div>

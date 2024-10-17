@@ -41,7 +41,7 @@ if ($style === 'icontext') {
                                     <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
                                     <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
                                     <?= read_field('network', $resource->network, $dictionary->columns->network, $update) ?>
-                                    <?= read_field('location', $resource->{'locations.name'}, '') ?>
+                                    <?= read_select('location_id', $resource->location_id, $dictionary->columns->location_id, $update, __('Location'), $included['locations']) ?>
                                     <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
 
                                     <div class="row" style="padding-top:16px;">

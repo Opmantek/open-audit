@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class QueriesModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -96,7 +96,7 @@ class QueriesModel extends BaseModel
                         $columns[] = $column;
                     }
                 }
-                for ($i=0; $i < count($columns); $i++) {
+                for ($i = 0; $i < count($columns); $i++) {
                     $tables[] = explode('.', $columns[$i])[0];
                     $columns[$i] = $columns[$i] . ' AS `' . $columns[$i] . '`';
                 }
@@ -177,10 +177,14 @@ class QueriesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        $query = $query->getResult()[0];
+        $temp = $query->getResult();
+        if (empty($temp[0])) {
+            return array();
+        }
+        $query = $temp[0];
         $sql = trim((string)$query->sql);
-        if (strpos($sql, ';') === strlen($sql)-1) {
-            $sql = substr($sql, 0, strlen($sql)-1);
+        if (strpos($sql, ';') === strlen($sql) - 1) {
+            $sql = substr($sql, 0, strlen($sql) - 1);
             $sql = trim((string)$sql);
         }
         if (stripos($sql, "SELECT devices") !== false and stripos($sql, "SELECT devices") === 0) {
@@ -252,8 +256,9 @@ class QueriesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-
-        $result = format_data($query->getResult(), $type);
+        $result = $query->getResult();
+        $result = formatQuery($result);
+        $result = format_data($result, $type);
         return $result;
     }
 
@@ -334,6 +339,7 @@ class QueriesModel extends BaseModel
         $this->builder->join('orgs', 'queries.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->orderBy('queries.name');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

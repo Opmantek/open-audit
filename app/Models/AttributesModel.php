@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,13 +7,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
-
-use \Config\Services;
+use stdClass;
+use Config\Services;
 
 class AttributesModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();

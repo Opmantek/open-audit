@@ -38,7 +38,7 @@ if (!empty($resource->attributes->password)) {
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
-                        <div class="col-4 offset-4" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
+                        <div class="col-8 offset-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
                             <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                                 <?= $summary_button ?>
                                 <?= $details_button ?>

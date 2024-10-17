@@ -17,7 +17,7 @@ if ($user->toolbar_style === 'icontext') {
 
 $rack = new stdClass();
 if ($resource->ru_start == 1) {
-    for ($i = 1; $i < intval($resource->ru_height +1); $i++) {
+    for ($i = 1; $i < intval($resource->ru_height + 1); $i++) {
         unset($device);
         foreach ($included['rack_devices'] as $item) {
             if ($item->attributes->position == $i) {
@@ -35,7 +35,7 @@ if ($resource->ru_start == 1) {
 
 
                 if (!empty($device->attributes->{'image.filename'})) {
-                    $image = '<img alt="' . $icon . '" style="max-width:90%;max-height:' . $imageheight. 'px;" src="<?= $meta->baseurl ?>custom_images/' . $device->attributes->{'image.filename'} . '" />';
+                    $image = '<img alt="' . $icon . '" style="max-width:90%;max-height:' . $imageheight . 'px;" src="<?= $meta->baseurl ?>custom_images/' . $device->attributes->{'image.filename'} . '" />';
                     if (!empty($device->attributes->{'devices.icon'})) {
                         $icon = '<img alt="' . $icon . '" src="' . $meta->baseurl . 'device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
                     } else {
@@ -43,7 +43,7 @@ if ($resource->ru_start == 1) {
                     }
                 } elseif (!empty($device->attributes->{'devices.type'})) {
                     $temp = str_replace(' ', '_', $device->attributes->{'devices.type'});
-                    $image = '<img alt="' . $device->attributes->{'devices.type'} . '" style="z-index:10;height:' . $imageheight. 'px;" src="<?= $meta->baseurl ?>device_images/' . $temp . '.svg" />';
+                    $image = '<img alt="' . $device->attributes->{'devices.type'} . '" style="z-index:10;height:' . $imageheight . 'px;" src="<?= $meta->baseurl ?>device_images/' . $temp . '.svg" />';
                     if (!empty($device->attributes->{'devices.icon'})) {
                         $icon = '<img alt="' . $icon . '" src="<?= $meta->baseurl ?>device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
                     } else {
@@ -109,11 +109,11 @@ if ($resource->ru_start == 1) {
                 $icon = (empty($icon) and !empty($device->attributes->{'devices.type'})) ? $device->attributes->{'devices.type'} : '';
 
                 if (!empty($device->attributes->{'image.filename'})) {
-                    $image = '<img alt="' . $icon . '" style="max-width:90%;z-index:10;max-height:' . $imageheight. 'px;" src="' . $meta->baseurl . 'custom_images/' . $device->attributes->{'image.filename'} . '" />';
+                    $image = '<img alt="' . $icon . '" style="max-width:90%;z-index:10;max-height:' . $imageheight . 'px;" src="' . $meta->baseurl . 'custom_images/' . $device->attributes->{'image.filename'} . '" />';
                     $icon = '<img alt="' . $icon . '" src="<?= $meta->baseurl ?>device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
                 } elseif (!empty($device->attributes->{'devices.type'})) {
                     $temp = str_replace(' ', '_', $device->attributes->{'devices.type'});
-                    $image = '<img alt="' . $device->attributes->{'devices.type'} . '" style="z-index:10;height:' . $imageheight. 'px;" src="' . $meta->baseurl . 'device_images/' . $temp . '.svg" />';
+                    $image = '<img alt="' . $device->attributes->{'devices.type'} . '" style="z-index:10;height:' . $imageheight . 'px;" src="' . $meta->baseurl . 'device_images/' . $temp . '.svg" />';
                     $icon = '<img alt="' . $icon . '" src="<?= $meta->baseurl ?>device_images/' . $icon . '.svg" style="width:20px;position:absolute; z-index:100; top:4px; left:0px;" />';
                 } else {
                     $image = '';
@@ -150,7 +150,7 @@ if ($resource->ru_start == 1) {
                 }
                 $rack->{$row}[3] = '<td class="text-center" style="vertical-align:middle;">' . $row . '</td>';
             }
-            $i = intval($i - $device->attributes->height) +1;
+            $i = intval($i - $device->attributes->height) + 1;
         } else {
             $rack->{$i}[1] = '<td class="text-center" style="vertical-align:middle;">' . $i . '</td>';
             $rack->{$i}[2] = '<td></td>';
@@ -168,7 +168,7 @@ if ($resource->ru_start == 1) {
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
-                        <div class="col-2 offset-5">
+                        <div class="col-8 offset-2">
                             <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                                 <?= $deviceButton ?>
                             </ul>

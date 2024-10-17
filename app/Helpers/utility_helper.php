@@ -505,6 +505,35 @@ function format_data($result, $type)
     return $return;
 }
 
+function formatQuery(array $result = array()): array
+{
+    $instance = & get_instance();
+    $device_count = $instance->config->device_count;
+    $device_known = $instance->config->device_known;
+    $license_limit = $instance->config->license_limit;
+    if (empty($license_limit)) {
+        return $result;
+    }
+    if (!empty($result[0]->{'devices.id'}) and ($device_known > intval($license_limit * 1.1))) {
+        $devices = array();
+        foreach ($result as $row) {
+            $devices[] = intval($row->{'devices.id'});
+        }
+        $devices = array_unique($devices);
+        if (count($devices) > intval($license_limit * 1.1)) {
+            $_SESSION['warning'] = 'Restricting result to ' . $license_limit . ' devices as per license. There are actually ' . $device_count . ' devices in the database.';
+            $devices = array_slice($devices, 0, $license_limit);
+            $count = count($result);
+            for ($i = 0; $i < $count; $i++) {
+                if (!in_array($result[$i]->{'devices.id'}, $devices)) {
+                    unset($result[$i]);
+                }
+            }
+        }
+    }
+    return $result;
+}
+
 if (!function_exists('my_json_decode')) {
     function my_json_decode(string $string = '')
     {

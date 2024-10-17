@@ -78,7 +78,7 @@ include 'shared/read_functions.php';
                             <?php } ?>
 
                             <div class="row text-center">
-                                <div class="offset-2 col-8">
+                                <div class="col-8 offset-2">
                                     <br><hr>
                                     <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                                     <?php if (!empty($resource->remediation)) {

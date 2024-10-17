@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -76,7 +77,7 @@ class Discoveries extends BaseController
         $id = intval($id);
         $collectorsModel = new \App\Models\CollectorsModel();
         $this->resp->included['collectors'] = $collectorsModel->listUser();
-        $dictionary = $this->{$this->resp->meta->collection.'Model'}->dictionary();
+        $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),

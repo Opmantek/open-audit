@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,11 +7,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use \stdClass;
+use stdClass;
 
 class SupportModel extends BaseModel
 {
-
     public function __construct()
     {
         $this->db = db_connect();
@@ -122,6 +122,8 @@ class SupportModel extends BaseModel
         $data->webserver->script_name = @$_SERVER['SCRIPT_NAME'];
         $data->webserver->server_name = @$_SERVER['SERVER_NAME'];
         $data->webserver->current_url = current_url();
+        $data->webserver->user_get_current_user = get_current_user();
+        $data->webserver->user_whoami = exec('whoami');
 
         $data->php->display_errors = ini_get('display_errors');
         $data->php->error_log = ini_get('error_log');
@@ -133,13 +135,13 @@ class SupportModel extends BaseModel
             $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mysqli', 'session', 'simplexml', 'snmp', 'xml');
         }
         foreach ($extensions as $extension) {
-            $data->php->{'ext_'.$extension} = phpversion($extension);
-            if (empty($data->php->{'ext_'.$extension}) && extension_loaded($extension)) {
-                $data->php->{'ext_'.$extension} = 'ERROR - extension unknown version.';
+            $data->php->{'ext_' . $extension} = phpversion($extension);
+            if (empty($data->php->{'ext_' . $extension}) && extension_loaded($extension)) {
+                $data->php->{'ext_' . $extension} = 'ERROR - extension unknown version.';
                 log_message('error', 'Extension with unknown version - ' . $extension);
             }
-            if (empty($data->php->{'ext_'.$extension}) && !extension_loaded($extension)) {
-                $data->php->{'ext_'.$extension} = 'ERROR - entension not loaded.';
+            if (empty($data->php->{'ext_' . $extension}) && !extension_loaded($extension)) {
+                $data->php->{'ext_' . $extension} = 'ERROR - entension not loaded.';
                 log_message('error', 'Extension not loaded - ' . $extension);
             }
         }
@@ -195,7 +197,7 @@ class SupportModel extends BaseModel
             // Get any errors from the youngest logfile
             $command_string = "grep ERROR " . APPPATH . "../writable/logs/*.log";
             exec($command_string, $output, $return_var);
-            $data->logs = new stdClass;
+            $data->logs = new stdClass();
             $data->logs = $output;
         }
 
@@ -558,7 +560,7 @@ class SupportModel extends BaseModel
         $dictionary->attributes->collection = array();
         $dictionary->attributes->create = array();
         $dictionary->attributes->fields = array();
-        $dictionary->attributes->fieldsMeta =array();
+        $dictionary->attributes->fieldsMeta = array();
         $dictionary->attributes->update = array();
 
         $dictionary->sentence = "Amazing support from FirstWave - or the community if you like. It's the no excuses, no exceptions, can-do way of thinking that our staff bring to work every day. Your complete satisfaction is our priority. Anything less is simply unacceptable.";

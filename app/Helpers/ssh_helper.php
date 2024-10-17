@@ -754,7 +754,6 @@ if (! function_exists('ssh_audit')) {
                     $log->message = "Credential set for SSH named {$credential->name} not working on {$ip}.";
                     $log->command_status = 'notice';
                     $discoveryLogModel->create($log);
-                    $ssh->disconnect();
                     unset($ssh);
                 }
             }

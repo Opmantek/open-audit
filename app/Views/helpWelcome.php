@@ -207,6 +207,12 @@ foreach ($ips as $ip) {
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+
+        <?php
+        if ($config->device_count === 0) {
+            echo "\n            $('#modalCompareLicense').modal('show');\n";
+        } ?>
+
         $('#submit').click(function (e) {
             e.preventDefault();
             if ($("#subnet").val() !== "") {

@@ -1,4 +1,5 @@
 <?php
+
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -6,7 +7,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use \stdClass;
+use stdClass;
 
 /**
  * PHP version 7.4
@@ -32,7 +33,6 @@ use \stdClass;
  */
 class Reports extends BaseController
 {
-
     /**
      * Execute a report
      *
@@ -95,6 +95,7 @@ class Reports extends BaseController
         }
         return view('shared/header', [
             'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
             'dictionary' => $this->queriesModel->dictionary(),
             'meta' => filter_response($this->resp->meta),
             'orgs' => filter_response($this->orgsUser),

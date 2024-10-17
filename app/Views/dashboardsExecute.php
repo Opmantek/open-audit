@@ -21,6 +21,20 @@ foreach ($checks as $key => $value) {
         $display = true;
     }
 }
+$temp = explode('x', $resource->options->layout);
+$columns = intval($temp[0]);
+$rows = intval($temp[1]);
+if ($columns === 4) {
+    $colWidth = 'col-3';
+}
+if ($columns === 3) {
+    $colWidth = 'col-4';
+}
+$message = '';
+if ($resource->name === 'Windows Security Dashboard') {
+    $message = 'NOTE - The queries for Latest Build must be kept up-to-date by the user. Edit and update the build numbers for the Windows x Latest Build <a href="' . url_to('queriesCollection') . '?queries.name=LIKELatest Build">queries</a> as Microsoft updates them.';
+}
+
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -164,46 +178,37 @@ foreach ($checks as $key => $value) {
                         </div>
                         <div class="col-9" id="dashboard">
                         <?php } ?>
+
                         <?php if ($resource->sidebar !== 'y') { ?>
                         <div class="col-12" id="dashboard">
-                        <?php } else { ?>
-                        <?php } ?>
-                            <div class="row">
-                            <?php
-                            echo "\n";
-                            foreach ($resource->options->widgets as $widget) {
-                                echo "\n";
-                                if ($widget->{'position'} == 1) {
-                                    echo "                               <div id=\"widget_" . $widget->widget_id . "\" class=\"col-4\" style=\"padding: 10px 15px;\"></div>";
+                        <?php }
+
+
+                        for ($row = 0; $row < $rows; $row++) {
+                            echo "<div class=\"row\">\n";
+                            for ($col = 1; $col < ($columns + 1); $col++) {
+                                foreach ($resource->options->widgets as $widget) {
+                                    if ($widget->position == (($row * $columns) + $col)) {
+                                        echo "                               <div data-num=\"col $col, row $row, pos $widget->position\" id=\"widget_" . $widget->widget_id . "\" class=\"$colWidth\" style=\"padding: 10px 15px;\"></div>\n";
+                                    }
                                 }
-                                if ($widget->{'position'} == 2) {
-                                    echo "                               <div id=\"widget_" . $widget->widget_id . "\" class=\"col-4\" style=\"padding: 10px 15px;\"></div>";
-                                }
-                                if ($widget->{'position'} == 3) {
-                                    echo "                               <div id=\"widget_" . $widget->widget_id . "\" class=\"col-4\" style=\"padding: 10px 15px;\"></div>";
-                                }
-                            } ?>
-                            </div>
-                            <br>
-                            <div class="row">
-                            <?php
-                            echo "\n";
-                            foreach ($resource->options->widgets as $widget) {
-                                if ($widget->{'position'} == 4) {
-                                    echo "                               <div id=\"widget_" . $widget->widget_id . "\" class=\"col-4\" style=\"padding: 10px 15px;\"></div>\n";
-                                }
-                                if ($widget->{'position'} == 5) {
-                                    echo "                               <div id=\"widget_" . $widget->widget_id . "\" class=\"col-4\" style=\"padding: 10px 15px;\"></div>\n";
-                                }
-                                if ($widget->{'position'} == 6) {
-                                    echo "                               <div id=\"widget_" . $widget->widget_id . "\" class=\"col-4\" style=\"padding: 10px 15px;\"></div>\n";
-                                }
-                            } ?>
-                            </div>
-                        </div>
+                            }
+                            echo "</div>\n";
+                        }
+                        ?>
+
+
                     </div>
                 </div>
             </div>
+            <?php if (!empty($message)) { ?>
+                <div class="container-fluid">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <?= $message ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            <?php } ?>
         </main>
 
 <script {csp-script-nonce} defer src="<?= base_url('js/highcharts-9.3.1.min.js') ?>"></script>
@@ -243,6 +248,7 @@ window.onload = function () {
             });
         });
 
+        $("#button_export_json").remove();
         $("#button_execute").remove();
         $(".delete_link").remove();
 
@@ -308,12 +314,31 @@ window.onload = function () {
 
         <?php
         foreach ($included['widgets'] as $widget) {
-            if (!empty($widget->formatted)) {
+            if (!empty($widget->formatted) and !empty($widget->type) and $widget->type !== 'traffic') {
                 $wf = json_encode($widget->formatted);
                 $wf = str_replace('"function(event){location.href = this.options.url;}"', 'function(event){location.href = this.options.url;}', $wf);
                 echo "\n\tHighcharts.chart(" . html_entity_decode($wf) . ");\n";
             }
         } ?>
+
+        <?php
+        foreach ($included['widgets'] as $widget) {
+            if (!empty($widget->type) and $widget->type === 'traffic') {
+                $html = '<div class="row" style="height:140px;"><div class="col-4 text-center ' .  $widget->result->colour . ' h-100"><span class="' . $widget->result->icon . '" style="font-size:5em; padding-top:30px;"></span></div><div class="col-8 h-100" style="padding-top:14px;"><h5>' . $widget->result->title . '</h5><h4>';
+                if (is_numeric($widget->result->red)) {
+                    $html .= '&nbsp;<a href="' . url_to('queriesExecute', $widget->result->red_id) . '"><button class="btn btn-danger" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3">' . $widget->result->red . '</span></button></a>';
+                }
+                if (is_numeric($widget->result->yellow)) {
+                    $html .= '&nbsp;<a href="' . url_to('queriesExecute', $widget->result->yellow_id) . '"><button class="btn btn-warning" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3">' . $widget->result->yellow . '</span></button></a>&nbsp;';
+                }
+                if (is_numeric($widget->result->green)) {
+                    $html .= '<a href="' . url_to('queriesExecute', $widget->result->green_id) . '"><button class="btn btn-success" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3">' . $widget->result->green . '</span></button></a>';
+                }
+                $html .= '</h4><p><small class="text-body-secondary">' . $widget->result->secondary_text . '</small><br><br><br></p></div></div>';
+                echo "$(\"#widget_" . $widget->id . "\").html('" . $html . "');\n";
+            }
+        }
+        ?>
 
 <?php if ($config->rss_enable !== "n" and $resource->sidebar !== 'n') { ?>
         function getDate(days)
