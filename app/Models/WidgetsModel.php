@@ -68,7 +68,7 @@ class WidgetsModel extends BaseModel
             $widget->{'queries.primary_query_name'} = '';
             $widget->{'queries.secondary_query_name'} = '';
             $widget->{'queries.ternary_query_name'} = '';
-            if ($widget->type === 'traffic') {
+            if (!empty($widget->type) and $widget->type === 'traffic') {
                 $sql = "SELECT name FROM queries WHERE id = " . intval($widget->primary);
                 $name = $this->db->query($sql)->getResult();
                 $widget->{'queries.primary_query_name'} = !empty($name[0]->name) ? $name[0]->name : '';

@@ -63,9 +63,9 @@ class ResponseHelperTest extends CIUnitTestCase
 
         # response_get_query_filter($query_string, $type = '')
         $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'where', 'operator' => '=', 'value' => 'Desktop')), response_get_query_filter('attributes.name=Desktop', 'filter'));
-        $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'notLike', 'operator' => 'not like', 'value' => 'Desktop')), response_get_query_filter('attributes.name=not likeDesktop', 'filter'));
-        $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'notLike', 'operator' => 'not like', 'value' => 'Desktop')), response_get_query_filter('attributes.name=!likeDesktop', 'filter'));
-        $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'like', 'operator' => 'like', 'value' => 'Desktop')), response_get_query_filter('attributes.name=likeDesktop', 'filter'));
+        $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'where', 'operator' => 'not like', 'value' => '%Desktop%')), response_get_query_filter('attributes.name=not likeDesktop', 'filter'));
+        $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'where', 'operator' => 'not like', 'value' => '%Desktop%')), response_get_query_filter('attributes.name=!likeDesktop', 'filter'));
+        $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'where', 'operator' => 'like', 'value' => '%Desktop%')), response_get_query_filter('attributes.name=likeDesktop', 'filter'));
         $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'where', 'operator' => '>=', 'value' => 'Desktop')), response_get_query_filter('attributes.name=>=Desktop', 'filter'));
         $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'where', 'operator' => '<=', 'value' => 'Desktop')), response_get_query_filter('attributes.name=<=Desktop', 'filter'));
         $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'where', 'operator' => '>', 'value' => 'Desktop')), response_get_query_filter('attributes.name=>Desktop', 'filter'));
@@ -162,7 +162,7 @@ class ResponseHelperTest extends CIUnitTestCase
         $this->assertSame(1, response_get_offset(1, ''));
         $this->assertSame(1, response_get_offset(0, 1));
         $this->assertSame(0, response_get_offset(0, null));
-        
+
         # response_get_org_list($instance, $collection = '')
         $this->assertSame(null, response_get_org_list(null, null));
         $temp = $user->orgs;

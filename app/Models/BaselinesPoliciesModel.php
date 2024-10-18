@@ -49,7 +49,7 @@ class BaselinesPoliciesModel extends BaseModel
         }
         $result = $query->getResult();
         for ($i = 0; $i < count($result); $i++) {
-            if ($result[$i]->table === 'software') {
+            if (!empty($result[$i]->table) and $result[$i]->table === 'software') {
                 try {
                     $tests = json_decode($result[$i]->tests, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
@@ -66,7 +66,7 @@ class BaselinesPoliciesModel extends BaseModel
                     }
                 }
             }
-            if ($result[$i]->table === 'netstat') {
+            if (!empty($result[$i]->table) and $result[$i]->table === 'netstat') {
                 try {
                     $tests = json_decode($result[$i]->tests, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
@@ -83,7 +83,7 @@ class BaselinesPoliciesModel extends BaseModel
                     }
                 }
             }
-            if ($result[$i]->table === 'user') {
+            if (!empty($result[$i]->table) and $result[$i]->table === 'user') {
                 try {
                     $tests = json_decode($result[$i]->tests, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {

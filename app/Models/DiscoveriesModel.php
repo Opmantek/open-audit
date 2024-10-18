@@ -40,8 +40,8 @@ class DiscoveriesModel extends BaseModel
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
         }
-        $instance = & get_instance();
-        if ($instance->config->product  !== 'enterprise') {
+        $config = config('Openaudit');
+        if ($config->product  !== 'enterprise') {
             $this->builder->where('discoveries.type !=', 'seed');
         }
         $this->builder->orderBy($resp->meta->sort);

@@ -507,10 +507,14 @@ function format_data($result, $type)
 
 function formatQuery(array $result = array()): array
 {
+    if (empty($result)) {
+        return array();
+    }
     $instance = & get_instance();
-    $device_count = $instance->config->device_count;
-    $device_known = $instance->config->device_known;
-    $license_limit = $instance->config->license_limit;
+    $config = config('Openaudit');
+    $device_count = $config->device_count;
+    $device_known = $config->device_known;
+    $license_limit = $config->license_limit;
     if (empty($license_limit)) {
         return $result;
     }

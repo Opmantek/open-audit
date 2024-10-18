@@ -574,6 +574,10 @@ if (!function_exists('response_get_data')) {
         }
         if ($request_method === 'PATCH') {
             #$data_json = urldecode(str_replace('data=', '', file_get_contents('php://input')));
+            if (empty($patch)) {
+                log_message('warning', 'Patch request, but no data.');
+                return $received_data;
+            }
             $data_json = $patch;
             try {
                 $data_object = json_decode($data_json, false, 512, JSON_THROW_ON_ERROR);
@@ -1024,7 +1028,7 @@ if (!function_exists('response_get_ids')) {
         if (!empty($post)) {
             $device_ids = $post;
         }
-        if (isset($device_ids)) {
+        if (isset($device_ids) and $device_ids !== '') {
             if (is_string($device_ids)) {
                 // Remove a trailing comma if we have one
                 if (substr($device_ids, -1) === ',') {

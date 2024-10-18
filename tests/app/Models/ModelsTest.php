@@ -40,12 +40,18 @@ class ModelsTest extends CIUnitTestCase
         $response->meta->filter = response_get_query_filter('', 'filter');
 
 
-        $valid_collections = array('applications','attributes','baselines','baselines_policies','baselines_results','clouds','clusters','connections','credentials','dashboards','devices','discoveries','discovery_log','discovery_scan_options','fields','files','groups','integrations','ldap_servers','licenses','locations','networks','orgs','queries','racks','rack_devices','rules','scripts','summaries','tasks','users','widgets');
+        $valid_collections = array('applications','attributes','auth','baselines','baselines_policies','baselines_results','benchmarks','clouds','clusters','connections','credentials','dashboards','devices','discoveries','discovery_log','discovery_scan_options','fields','files','groups','integrations','licenses','locations','networks','orgs','queries','racks','rack_devices','rules','scripts','summaries','tasks','users','widgets');
 
         $valid_actions = array('collection', 'read');
 
         foreach ($valid_collections as $collection) {
             # $this->user->org_list = response_get_org_list($this->user, $response->meta->collection);
+
+            $model = $collection;
+            $model = str_replace('_', ' ', $model);
+            $model = ucwords($model);
+            $model = str_replace(' ', '', $model);
+            $model .= 'Model';
 
             unset($response->meta->filter);
             $response->meta->filter = array();
@@ -84,8 +90,9 @@ class ModelsTest extends CIUnitTestCase
                     $collection = str_replace(' ', '', $collection);
                 }
                 $namespace = "\\App\\Models\\" . $collection . "Model";
-                ${strtolower($response->meta->collection) . "Model"} = new $namespace;
-                $result = ${strtolower($response->meta->collection) . "Model"}->collection($response);
+                ${strtolower($collection) . "Model"} = new $namespace;
+                ${$model} = new $namespace;
+                $result = ${$model}->collection($response);
                 $this->assertIsArray($result, 'The return from ' . $collection . ' (' . $response->meta->action . ') is not an array');
                 $this->assertCount($count, $result, "Count of $collection (" . $response->meta->action . ") direct is $count, count via model is " . count($result));
             }
