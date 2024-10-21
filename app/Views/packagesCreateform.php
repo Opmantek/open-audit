@@ -12,7 +12,7 @@ include 'shared/create_functions.php';
                     <?php if (empty($included['software'])) { ?>
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
@@ -62,7 +62,7 @@ include 'shared/create_functions.php';
                                     echo html_entity_decode($dictionary->notes);
                                 } ?>
                                 <h4 class="text-center">Fields</h4><br>
-                                <?php $show = array('name', 'org_id', 'description', 'type', 'software_name', 'software_version', 'os'); ?>
+                                <?php $show = array('name', 'org_id', 'description', 'type', 'software_name'); ?>
                                 <?php foreach ($dictionary->columns as $key => $value) {
                                     if (in_array($key, $show)) {
                                         echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
@@ -103,7 +103,7 @@ window.onload = function () {
 
 <?php if (!empty($included['software'])) {
     $count = count($included['software']);
-    for ($i=0; $i < $count; $i++) {
+    for ($i = 0; $i < $count; $i++) {
         foreach (['antivirus', 'backup', 'firewall', 'approved', 'banned', 'ignored'] as $key) {
             $button = 'btn-outline-success';
             $fa = __('Add');
