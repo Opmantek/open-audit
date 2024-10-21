@@ -18,7 +18,7 @@ if (empty($display_columns)) {
     $display_columns = $meta->properties;
 }
 $count = count($display_columns);
-for ($i=0; $i < $count; $i++) {
+for ($i = 0; $i < $count; $i++) {
     $display_columns[$i] = str_replace('devices.', '', $display_columns[$i]);
 }
 $audit_status = false;
@@ -69,9 +69,22 @@ if (!empty($data)) {
                 unset($item->attributes->{$key});
             }
         }
+        if (!empty($item->attributes->org_id)) {
+            $item->attributes->org_id = collection_button_read('orgs', $item->attributes->org_id);
+        }
+        if (!empty($item->attributes->orgs__id)) {
+            $item->attributes->orgs__id = collection_button_read('orgs', $item->attributes->orgs__id);
+        }
+        if (!empty($item->attributes->location_id)) {
+            $item->attributes->location_id = collection_button_read('locations', $item->attributes->location_id);
+        }
+        if (!empty($item->attributes->locations__id)) {
+            $item->attributes->locations__id = collection_button_read('locations', $item->attributes->locations__id);
+        }
         // Add the per cell filter
+        $filter = array('id', 'tags', 'icon', 'ip', 'audit_status', 'delete', 'select', 'org_id', 'orgs__id', 'location_id', 'locations__id');
         foreach ($item->attributes as $key => $value) {
-            if ($key !== 'id' and $key !== 'tags' and $key !== 'icon' and $key !== 'ip' and $key !== 'audit_status' and $key !== 'delete' and $key !== 'select') {
+            if (!in_array($key, $filter)) {
                 $item->attributes->{$key} = "<span class=\"float-start\"><button type=\"button\" class=\"btn btn-xs btn-light\" data-bs-container=\"body\" data-bs-toggle=\"popover\" data-bs-html=\"true\" data-bs-placement=\"right\" data-bs-content=\"<a href='" . $query_string . "devices." . $key . "=" . $value . "'>" . __('Include') . "</a><br><a href='" . $query_string . "devices." . $key . "=!=" . $value . "'>" . __('Exclude') . "</a>\"><span class=\"fa fa-filter fa-xs\"></span></button></span>&nbsp;" . $value;
             }
         }
@@ -115,7 +128,10 @@ if (!empty($dataSet[0])) {
         $column = new \stdClass();
         $column->title = collection_column_name($key);
         $column->data = str_replace('.', '__', $key);
-        $column->visible = (in_array($key, $display_columns)) ? true : false;
+        $column->visible = false;
+        if (in_array($key, $display_columns) or in_array(str_replace('__', '.', $key), $display_columns)) {
+            $column->visible = true;
+        }
         if ($column->visible) {
             $myColumns[] = $column->data;
         }
