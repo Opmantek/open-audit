@@ -13504,6 +13504,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.9148.1.6.1': $device->model = 'Net-Net 1100'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.935.1.1.1': $device->model = 'Enviroment Management Unit'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.935.10.1': $device->model = 'Enviroment Management Unit'; $device->type = 'network device'; break;
+            case '1.3.6.1.4.1.95.1.27': $device->model = '1756-EN2T/D'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.95.1.39': $device->model = '1769-L30ER'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.95.1.86': $device->model = '5069-L320ER/A'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.95.1.9': $device->model = '1747-L552'; $device->type = 'network device'; break;
