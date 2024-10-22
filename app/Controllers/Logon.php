@@ -234,6 +234,9 @@ class Logon extends Controller
                 pclose(popen($command, 'r'));
             } else {
                 $command = $enterprise_binary . " --license";
+                if (!empty($config->enterprise_env) and strpos($command, 'enterprise.bin') !== false) {
+                    $command = 'export PAR_GLOBAL_TMPDIR=' . $config->enterprise_env . '; ' . $command;
+                }
                 exec($command, $output);
             }
             if (!empty($output)) {

@@ -1292,6 +1292,7 @@ INSERT INTO `configuration` VALUES (NULL,'license_footer','','text','n','system'
 INSERT INTO `configuration` VALUES (NULL,'license_limit','','number','n','system','2000-01-01 00:00:00','Licensed devices.');
 INSERT INTO `configuration` VALUES (NULL,'server_os','','text','n','system','2000-01-01 00:00:00','The OS Open-AudIT is running on (this server).');
 INSERT INTO `configuration` VALUES (NULL,'server_platform','','text','n','system','2000-01-01 00:00:00','The OS Platform Open-AudIT is running on (this server).');
+INSERT INTO `configuration` VALUES (NULL,'enterprise_env','','text','y','system','2000-01-01 00:00:00','Set to allow execution not in /tmp for Linux.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 

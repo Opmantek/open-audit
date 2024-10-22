@@ -466,6 +466,9 @@ if (!function_exists('response_create')) {
                     $command = $config->enterprise_binary . " --debug $id 2>&1";
                     log_message('debug', $command);
                 }
+                if (!empty($config->enterprise_env)) {
+                    $command = 'export PAR_GLOBAL_TMPDIR=' . $config->enterprise_env . '; ' . $command;
+                }
                 @exec($command, $output);
             }
             if (!empty($output)) {
