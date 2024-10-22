@@ -30,6 +30,7 @@ $GLOBALS["lang"]["About Discoveries"]="About Discoveries";
 $GLOBALS["lang"]["About Discovery Scan Options"]="About Discovery Scan Options";
 $GLOBALS["lang"]["About Discovery_scan_options"]="About Discovery_scan_options";
 $GLOBALS["lang"]["About Files"]="About Files";
+$GLOBALS["lang"]["About Groups"]="About Groups";
 $GLOBALS["lang"]["About Licenses"]="About Licenses";
 $GLOBALS["lang"]["About Networks"]="About Networks";
 $GLOBALS["lang"]["About Orgs"]="About Orgs";
