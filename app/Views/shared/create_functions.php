@@ -1,4 +1,5 @@
 <?php
+
 function create_card_header(string $collection = '', string $icon = '', object $user = null): string
 {
     $style = (!empty($user->toolbar_style)) ? $user->toolbar_style : '';
@@ -9,24 +10,29 @@ function create_card_header(string $collection = '', string $icon = '', object $
     $collection_title = __($collection_title);
 
     if ($style === 'icontext') {
-        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __("List") . "</a>";
-        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
+        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection . 'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __("List") . "</a>";
+        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
     } elseif ($style === 'icon') {
-        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span></a>";
-        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span></a>";
+        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection . 'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span></a>";
+        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span></a>";
     } else {
-        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection.'Collection') . "\">" . __("List") . "</a>";
-        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection.'Help') . "\">" . __("Help") . "</a>";
+        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection . 'Collection') . "\">" . __("List") . "</a>";
+        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\">" . __("Help") . "</a>";
     }
 
+    // TODO - Get rid of the nasty style hack in the middle section
     $return = "<div class=\"row\">
-                        <div class=\"col-3 clearfix\">
+                        <div class=\"col-4 clearfix\">
                             <div class=\"btn-group btn-group-sm\" role=\"group\">
                                 <h6 style=\"padding-top:10px;\"><span class=\"{$icon} oa-icon\"></span>{$collection_title}</h6>
                             </div>
                         </div>
-                        <div class=\"col-9 clearfix\">
-                            <div class=\"btn-group btn-group-sm float-end\" role=\"group\" id=\"oa_panel_buttons\">
+                        <div class=\"col-4 clearfix\">
+                            <div class=\"btn-group btn-group-sm float-middle\" role=\"group\" id=\"oa_panel_buttons\" style=\"padding-top: 6px; padding-bottom: -10px; height:46px;\">
+                            </div>
+                        </div>
+                        <div class=\"col-4 clearfix\">
+                            <div class=\"btn-group btn-group-sm float-end\" role=\"group\">
                                 <div class=\"page-title-right\">
                                     $collection_button
                                     $help_button

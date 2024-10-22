@@ -63,6 +63,9 @@ class PackagesModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        if (empty($data->sql)) {
+            $data->sql = '';
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
@@ -111,18 +114,40 @@ class PackagesModel extends BaseModel
     {
         $return = array();
         $return['software'] = array();
-        if (!empty($_GET['os'])) {
+        if (!empty($_GET['os']) or !empty($_GET['range'])) {
             $instance = & get_instance();
             $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
             $orgs[] = 1;
             $orgs = array_unique($orgs);
-            if ($_GET['os'] === 'Windows') {
-                $sql = "SELECT DISTINCT software.name AS `name`, packages.type AS `type`, packages.software_name AS `packages entry`, count(software.id) AS `found`, packages.id AS `id` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN packages ON (software.name LIKE packages.software_name) WHERE devices.org_id IN (" . implode(',', $orgs) . ") AND devices.os_group = 'Windows' IS NOT NULL GROUP BY software.name, packages.type ORDER BY software.name";
+
+            $range_filter = '';
+            if (!empty($_GET['range'])) {
+                log_message('debug', 'RANGE: ' . json_encode($_GET['range']));
+                $range = explode(',', $_GET['range']);
+                $range_filter = 'AND SUBSTRING(software.name, 1, 1) IN (';
+                foreach ($range as $firstLetter) {
+                    $firstLetter = substr($firstLetter, 0, 1);
+                    log_message('debug', '1FL: ' . $firstLetter);
+                    $firstLetter = preg_replace("/[^A-Za-z0-9]+/", "", $firstLetter);
+                    log_message('debug', '2FL: ' . $firstLetter);
+                    if (!empty($firstLetter)) {
+                        $range_filter .= "'$firstLetter', ";
+                    }
+                }
+                $range_filter = substr($range_filter, 0, -2) . ') ';
+            }
+
+            if (!empty($_GET['os'])) {
+                $sql = "SELECT DISTINCT software.name AS `name`, CONCAT('[', GROUP_CONCAT(DISTINCT CONCAT(JSON_OBJECT(packages.type, packages.id))), ']') AS `type`, packages.software_name AS `software_name`, count(software.id) AS `found`, packages.id AS `id` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN packages ON (software.name LIKE packages.software_name) WHERE devices.org_id IN (" . implode(',', $orgs) . ") AND devices.os_group = ? $range_filter GROUP BY software.name, software.type ORDER BY software.name";
+                $return['software'] = $this->db->query($sql, [$_GET['os']])->getResult();
+            } else {
+                $sql = "SELECT DISTINCT software.name AS `name`, CONCAT('[', GROUP_CONCAT(DISTINCT CONCAT(JSON_OBJECT(packages.type, packages.id))), ']') AS `type`, packages.software_name AS `software_name`, count(software.id) AS `found`, packages.id AS `id` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN packages ON (software.name LIKE packages.software_name) WHERE devices.org_id IN (" . implode(',', $orgs) . ") $range_filter GROUP BY software.name, software.type ORDER BY software.name";
                 $return['software'] = $this->db->query($sql)->getResult();
             }
+
+            log_message('debug', (string)$this->db->getLastQuery());
         }
         return $return;
-        #return array();
     }
 
     /**
@@ -224,7 +249,7 @@ class PackagesModel extends BaseModel
     {
         $instance = & get_instance();
 
-        $collection = 'applications';
+        $collection = 'packages';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
         $dictionary->columns = new stdClass();

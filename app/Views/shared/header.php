@@ -369,9 +369,9 @@ if (!empty($config->servers)) {
                                         <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Firewall Packages'), '?packages.type=firewall') ?>
                                         <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Approved Packages'), '?packages.type=approved') ?>
                                         <?= menuItem('orgs', 'r', $user, 'packagesCollection', __('List') . ' ' . __('Banned Packages'), '?packages.type=banned') ?>
-                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Linux Packages'), '?os=Linux') ?>
-                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('MacOS Packages'), '?os=MacOS') ?>
-                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Windows Packages'), '?os=Windows') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Linux Packages'), '?os=Linux&range=a') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('MacOS Packages'), '?os=Apple&range=a') ?>
+                                        <?= menuItem('orgs', 'c', $user, 'packagesCreateForm', __('Create') . ' ' . __('Windows Packages'), '?os=Windows&range=a') ?>
                                         <?= menuItem('orgs', 'c', $user, 'packagesImportForm', __('Import') . ' ' . __('Packages')) ?>
                                         <?= menuItem('orgs', '', $user, 'packagesDefaults', __('Default') . ' ' . __('Packages')) ?>
                                         <?= menuItem('orgs', '', $user, 'packagesHelp', __('Learn About') . ' ' . __('Packages')) ?>
