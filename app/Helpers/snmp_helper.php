@@ -889,12 +889,15 @@ if (!function_exists('snmp_audit')) {
         $discoveryLogModel->create($log);
         unset($log->command_time_to_execute, $log->command_output);
 
-        if (!empty($details->sysUpTime) && strpos($details->sysUpTime, ')') !== false) {
-            $temp = explode('(', $details->sysUpTime);
-            $temp2 = explode(')', $temp[1]);
-            $details->uptime = intval($temp2[0] / 100);
-        } else {
-            $details->uptime = intval($details->sysUpTime / 100);
+        $details->uptime = 0;
+        if (!empty($details->sysUpTime)) {
+            if (strpos($details->sysUpTime, ')') !== false) {
+                $temp = explode('(', $details->sysUpTime);
+                $temp2 = explode(')', $temp[1]);
+                $details->uptime = intval($temp2[0] / 100);
+            } else {
+                $details->uptime = is_integer($details->sysUpTime) ? intval($details->sysUpTime / 100) : 0;
+            }
         }
 
         // mac address
