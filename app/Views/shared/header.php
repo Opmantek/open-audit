@@ -503,6 +503,7 @@ if (!empty($config->servers)) {
                                         <?= menuItem('integrations', '', $user, 'integrationsDefaults', 'Integrations') ?>
                                         <?= menuItem('locations', '', $user, 'locationsDefaults', 'Locations') ?>
                                         <?= menuItem('orgs', '', $user, 'orgsDefaults', 'Orgs') ?>
+                                        <?= menuItem('packages', '', $user, 'packagesDefaults', 'Packages') ?>
                                         <?= menuItem('queries', '', $user, 'queriesDefaults', 'Queries') ?>
                                         <?= menuItem('roles', '', $user, 'rolesDefaults', 'Roles') ?>
                                         <?= menuItem('rules', '', $user, 'rulesDefaults', 'Rules') ?>

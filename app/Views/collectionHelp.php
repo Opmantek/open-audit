@@ -2,7 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
-@include 'help/'. $meta->collection . '.php';
+@include 'help/' . $meta->collection . '.php';
 $title = ucwords(str_replace('_', ' ', $meta->collection));
 $menu = 'Manage';
 if (in_array($meta->collection, ['clouds','credentials','discoveries','files','scripts'])) {
@@ -12,7 +12,7 @@ if ($meta->collection === 'discovery_scan_options') {
     $menu = 'Discover -> Discoveries';
 }
 $defaults = false;
-if (in_array($meta->collection, ['agents', 'attributes', 'configuration', 'dashboards', 'discovery_scan_options', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'queries', 'roles', 'rules', 'scripts', 'summaries', 'users', 'widgets'])) {
+if (in_array($meta->collection, ['agents', 'attributes', 'configuration', 'dashboards', 'discovery_scan_options', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'packages', 'queries', 'roles', 'rules', 'scripts', 'summaries', 'users', 'widgets'])) {
     $defaults = true;
 }
 $execute = false;
