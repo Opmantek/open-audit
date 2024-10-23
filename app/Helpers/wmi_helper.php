@@ -15,7 +15,7 @@ if (! function_exists('windows_credentials')) {
      *
      * @return false|object         A credentials object with an additional flag for 'sudo' and root, or false
      */
-    function windows_credentials(string $ip = '', array $credentials = array(), int $discovery_id = null): bool | object
+    function windows_credentials(string $ip = '', array $credentials = array(), int $discovery_id = null)
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
@@ -78,7 +78,7 @@ if (! function_exists('execute_windows')) {
      *
      * @return false|array          An array containing the output and status flag, or false
      */
-    function execute_windows(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null): bool | array
+    function execute_windows(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null)
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \stdClass();
@@ -769,7 +769,7 @@ if (! function_exists('wmi_command')) {
      *
      * @return bool|array An array containing the output and status flag, or false
      */
-    function wmi_command(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null): bool | array
+    function wmi_command(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null)
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
@@ -899,7 +899,7 @@ if (!function_exists('windows_ips_found')) {
      *
      * @return bool|array An array of discovered IP Addresses, or false
      */
-    function windows_ips_found(string $ip = '', object $credentials = null, int $discovery_id = null): bool | array
+    function windows_ips_found(string $ip = '', object $credentials = null, int $discovery_id = null)
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \stdClass();
