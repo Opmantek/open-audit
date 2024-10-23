@@ -564,7 +564,7 @@ class DiscoveriesModel extends BaseModel
             $sql = "SELECT discovery_log.timestamp FROM discovery_log WHERE discovery_log.timestamp < DATE_SUB(NOW(), INTERVAL 6 HOUR) AND discovery_log.id = (SELECT MAX(id) FROM discovery_log) ORDER BY discovery_log.timestamp DESC";
             $result = $this->db->query($sql)->getResult();
             if (!empty($result[0]->timestamp)) {
-                // We have items in the queue, but no logs for >30 minutes. Reset the queue count
+                // We have items in the queue, but no logs for > 6 hours. Reset the queue count
                 log_message('info', 'Items in queue count, but no logs for 6+ hours. Resetting queue count. Last log timestamp: ' . $result[0]->timestamp);
                 $sql = "UPDATE configuration SET value = '0' WHERE name = 'queue_count'";
                 $this->db->query($sql);

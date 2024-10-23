@@ -2,13 +2,6 @@
 
 $output .= "Upgrade database to 5.6.0 commenced.\n\n";
 
-if ($db->tableExists('ldap_servers')) {
-    $sql = "DROP TABLE `ldap_servers`";
-    $db->query($sql);
-    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-    log_message('info', (string)$db->getLastQuery());
-}
-
 if (!$db->tableExists('access_point')) {
     $sql = "CREATE TABLE `access_point` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1325,13 +1318,25 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 
+// Cleanup to make sure previous upgrades have the schema in-sync
+$sql = "ALTER TABLE `baselines_policies` CHANGE `org_id` `org_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `id`";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+
 $sql = "CREATE UNIQUE INDEX IF NOT EXISTS external_ident ON benchmarks_policies (external_ident)";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 
-$sql = "ALTER TABLE `baselines_policies` CHANGE `org_id` `org_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `id`";
+$sql = "CREATE INDEX IF NOT EXISTS name ON `file` (name)";
 $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+
+if ($db->tableExists('ldap_servers')) {
+    $sql = "DROP TABLE `ldap_servers`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 $sql = "ALTER TABLE `users` CHANGE `list_table_format` `list_table_format` enum('','compact') NOT NULL DEFAULT '' AFTER `toolbar_style`";
 $query = $db->query($sql);
