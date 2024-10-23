@@ -3041,6 +3041,7 @@ CREATE TABLE `packages` (
   `end_of_life` date NOT NULL DEFAULT '2000-01-01',
   `end_of_service_life` date NOT NULL DEFAULT '2000-01-01',
   `type` enum('antivirus','approved','backup','banned','cloud','firewall','ignored','license','other','') NOT NULL DEFAULT '',
+  `os` enum('Windows','Linux','MacOS','other','all','') NOT NULL DEFAULT 'Windows',
   `os` varchar(100) NOT NULL DEFAULT 'Windows',
   `sql` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',

@@ -152,7 +152,7 @@ if (!$db->fieldExists('circuit_status', 'connections')) {
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
-if (!$db->fieldExists('speed', 'connections') and !$db->fieldExists('speed_down_a', 'connections')) {
+if ($db->fieldExists('speed', 'connections') and !$db->fieldExists('speed_down_a', 'connections')) {
     $sql = "ALTER TABLE `connections` CHANGE `speed` `speed_down_a` float(7,3) NOT NULL DEFAULT '0.000'";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -265,7 +265,7 @@ if (!$db->tableExists('packages')) {
       `expiry_date` date NOT NULL DEFAULT '2000-01-01',
       `end_of_life` date NOT NULL DEFAULT '2000-01-01',
       `end_of_service_life` date NOT NULL DEFAULT '2000-01-01',
-      `type` enum('license','approved','banned','antivirus','other','cloud','') NOT NULL DEFAULT '',
+      `type` enum('antivirus','approved','backup','banned','cloud','firewall','ignored','license','other','') NOT NULL DEFAULT '',
       `os` enum('Windows','Linux','MacOS','other','all','') NOT NULL DEFAULT 'Windows',
       `sql` text NOT NULL,
       `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -1324,6 +1324,18 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+
+$sql = "CREATE UNIQUE INDEX IF NOT EXISTS external_ident ON benchmarks_policies (external_ident)";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+
+$sql = "ALTER TABLE `baselines_policies` CHANGE `org_id` `org_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `id`";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+
+$sql = "ALTER TABLE `users` CHANGE `list_table_format` `list_table_format` enum('','compact') NOT NULL DEFAULT '' AFTER `toolbar_style`";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 
 
 
