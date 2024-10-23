@@ -41,7 +41,7 @@ class DiscoveriesModel extends BaseModel
             }
         }
         $config = config('Openaudit');
-        if ($config->product  !== 'enterprise') {
+        if ($config->product !== 'enterprise') {
             $this->builder->where('discoveries.type !=', 'seed');
         }
         $this->builder->orderBy($resp->meta->sort);
@@ -553,12 +553,24 @@ class DiscoveriesModel extends BaseModel
         $included['queue_id'] = $this->db->query($sql)->getResult()[0]->id;
 
         // Mark as completed any discoveries with status = running and last logged > 30 minutes ago
-        $sql = "SELECT discovery_id FROM discovery_log INNER JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discoveries.status = 'running' GROUP BY discovery_id HAVING TIMESTAMPDIFF(MINUTE, MAX(discovery_log.timestamp), NOW()) > 30;";
+        $sql = "SELECT discovery_id FROM discovery_log INNER JOIN discoveries ON discovery_log.discovery_id = discoveries.id WHERE discoveries.status = 'running' GROUP BY discovery_id HAVING TIMESTAMPDIFF(MINUTE, MAX(discovery_log.timestamp), NOW()) > 30";
         $result = $this->db->query($sql)->getResult();
         foreach ($result as $discovery) {
             $sql = "UPDATE `discoveries` SET `status` = 'killed' WHERE id = ?";
             $query = $this->db->query($sql, [$discovery->discovery_id]);
         }
+
+        if (!empty($instance->config->queue_count)) {
+            $sql = "SELECT discovery_log.timestamp FROM discovery_log WHERE discovery_log.timestamp < DATE_SUB(NOW(), INTERVAL 6 HOUR) AND discovery_log.id = (SELECT MAX(id) FROM discovery_log) ORDER BY discovery_log.timestamp DESC";
+            $result = $this->db->query($sql)->getResult();
+            if (!empty($result[0]->timestamp)) {
+                // We have items in the queue, but no logs for >30 minutes. Reset the queue count
+                log_message('info', 'Items in queue count, but no logs for 6+ hours. Resetting queue count. Last log timestamp: ' . $result[0]->timestamp);
+                $sql = "UPDATE configuration SET value = '0' WHERE name = 'queue_count'";
+                $this->db->query($sql);
+            }
+        }
+
 
         return $included;
     }
