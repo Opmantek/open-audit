@@ -127,9 +127,7 @@ class PackagesModel extends BaseModel
                 $range_filter = 'AND SUBSTRING(software.name, 1, 1) IN (';
                 foreach ($range as $firstLetter) {
                     $firstLetter = substr($firstLetter, 0, 1);
-                    log_message('debug', '1FL: ' . $firstLetter);
                     $firstLetter = preg_replace("/[^A-Za-z0-9]+/", "", $firstLetter);
-                    log_message('debug', '2FL: ' . $firstLetter);
                     if (!empty($firstLetter)) {
                         $range_filter .= "'$firstLetter', ";
                     }

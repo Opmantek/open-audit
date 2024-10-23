@@ -130,7 +130,8 @@ window.onload = function () {
                 $action = 'delete';
                 $id = $type->{$key};
             }
-            $included['software'][$i]->{$key} = '<button style="min-width:6em;" class="btn btn-sml ' . $button . ' btnedit" id="' . $included['software'][$i]->name . '_' . $key . '_' . $action . '" data-type="' . $key . '" data-name="' . $included['software'][$i]->name . '" data-action="' . $action . '" data-id="' . $id . '">' . $fa . '</button>';
+
+            $included['software'][$i]->{$key} = '<button style="min-width:6em;" class="btn btn-sml ' . $button . ' btnedit" data-type="' . $key . '" data-name="' . $included['software'][$i]->name . '" data-action="' . $action . '" data-id="' . $id . '">' . $fa . '</button>';
         }
     }
 
@@ -162,7 +163,7 @@ window.onload = function () {
             "searching": true,
             "order": [[ 1, 'desc' ]],
             "info": true,
-            "pageLength": 50,
+            "pageLength": -1,
             "autoWidth": false,
             "oSearch": {
                 "bSmart": false,
