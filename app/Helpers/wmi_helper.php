@@ -820,6 +820,21 @@ if (! function_exists('wmi_command')) {
         $log->message = 'Using credentials named ' . $credentials->name;
         $item_start = microtime(true);
 
+        if (php_uname('s') === 'Darwin') {
+            if (!file_exists('/usr/local/bin/winexe')) {
+                log_message('warning', 'Winexe not installed on OSX, cannot run execute_windows.');
+                return false;
+            }
+            $temp = explode('@', $credentials->credentials->username);
+            $username = $temp[0];
+            $domain = @$temp[1];
+            unset($temp);
+            $command_string = 'winexe -U ' . $domain . '/' . $username . '%' . $credentials->credentials->password . ' //' . $ip . " \"wmic $command\"";
+            $log->command   = 'winexe -U ' . $domain . '/' . $username . '%' . '******' .                            ' //' . $ip . " \"wmic $command\"";
+            $discoveryLogModel->create($log);
+            exec($command_string, $return['output'], $return['status']);
+        }
+
         if (php_uname('s') == 'Linux') {
             $filepath = APPPATH . '../other';
             $filename = credentials_file($ip, $credentials);
