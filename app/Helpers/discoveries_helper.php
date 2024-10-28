@@ -1534,24 +1534,22 @@ if (! function_exists('ip_audit')) {
                 foreach ($output as $line) {
                     if (strpos($line, 'File ') !== false) {
                         $audit_file = trim(str_replace('File ', '', $line));
+                        break;
                     }
                 }
             }
             if (!empty($audit_file) and !empty($output)) {
                 $copy = false;
                 if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
-                    $temp = 'c:\\Windows\\System32\\' . $audit_file;
                     $destination = $filepath . '/scripts/' . $audit_file;
                 } else {
                     $temp = explode('\\', $audit_file);
-                    $destination = $filepath . '/scripts/' . end($temp);
+                    unset($audit_file);
+                    $audit_file = end($temp);
+                    $destination = $filepath . '/scripts/' . $audit_file;
                 }
                 if (php_uname('s') === 'Windows NT') {
-                    if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
-                        $destination = $filepath . '\\scripts\\' . $temp;
-                    } else {
-                        $destination = $filepath . '\\scripts\\' . end($temp);
-                    }
+                    $destination = $filepath . '\\scripts\\' . $audit_file;
                 }
                 if (php_uname('s') === 'Windows NT' and exec('whoami') === 'nt authority\system' and ! empty($instance->config->discovery_use_vintage_service) and $instance->config->discovery_use_vintage_service === 'y') {
                     if (rename($audit_file, $destination)) {
@@ -1560,8 +1558,11 @@ if (! function_exists('ip_audit')) {
                 } else {
                     if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
                         $copy = copy_from_windows($device->ip, $credentials_windows, 'System32\\' . $audit_file, $destination, $discovery->id);
+                        if (empty($copy)) {
+                            $copy = copy_from_windows($device->ip, $credentials_windows, 'SysWOW64\\' . $audit_file, $destination, $discovery->id);
+                        }
                     } else {
-                        $copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $discovery->id);
+                        $copy = copy_from_windows($device->ip, $credentials_windows, $audit_file, $destination, $discovery->id);
                     }
                 }
                 if ($copy === true) {
