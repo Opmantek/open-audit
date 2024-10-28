@@ -36,7 +36,7 @@ if ($discovery_id -ne 0) {
 
 # For developers only to save time when testing other items as these take a while
 $audit_software = 'y'
-$audit_netstat = 'y'
+$audit_netstat_udp = 'n'
 $audit_firewall_rule = 'n'
 
 if ($debug -gt 0) {
@@ -2243,29 +2243,37 @@ if ($test.Status -ne $null -and $test.Status.ToString() -eq "Running") {
     }
 }
 
-if ($audit_netstat -eq 'y') {
-    $itimer = [Diagnostics.Stopwatch]::StartNew()
-    $result.netstat = @()
+
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+$result.netstat = @()
+$item = @{}
+# Get-NetTCPConnection -State Listen | Select-Object -Property *,@{'Name' = 'ProcessName';'Expression'={(Get-Process -Id $_.OwningProcess).Name}} | ForEach {
+Get-NetTCPConnection -State Listen | ForEach {
+    Clear-Variable -name item
     $item = @{}
-    # Get-NetTCPConnection -State Listen | Select-Object -Property *,@{'Name' = 'ProcessName';'Expression'={(Get-Process -Id $_.OwningProcess).Name}} | ForEach {
-    Get-NetTCPConnection -State Listen | ForEach {
-        Clear-Variable -name item
-        $item = @{}
-        $item.protocol = "tcp"
-        $item.ip = $_.LocalAddress
-        $item.port = $_.LocalPort
-        $item.processId = $_.OwningProcess
-        Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
-            $item.program = $_.CommandLine
-        }
-        if ($item.program -eq $null) {
-            $item.program = ""
-        }
-        if ($item.port -ne "" -and $item.port -ne $null) {
-            # Added this check because in testing we managed to get an entry without a port or associated program
-            $result.netstat += $item
-        }
+    $item.protocol = "tcp"
+    $item.ip = $_.LocalAddress
+    $item.port = $_.LocalPort
+    $item.processId = $_.OwningProcess
+    Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
+        $item.program = $_.CommandLine
     }
+    if ($item.program -eq $null) {
+        $item.program = ""
+    }
+    if ($item.port -ne "" -and $item.port -ne $null) {
+        # Added this check because in testing we managed to get an entry without a port or associated program
+        $result.netstat += $item
+    }
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.netstat.count
+    Write-Host "Netstat TCP, $count entries took $totalSecs seconds"
+}
+
+if ($audit_netstat_udp -eq 'y') {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
     Get-NetUDPEndpoint | ForEach {
         Clear-Variable -name item
         $item = @{}
@@ -2287,9 +2295,11 @@ if ($audit_netstat -eq 'y') {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.netstat.count
-        Write-Host "Netstat, $count entries took $totalSecs seconds"
+        Write-Host "Netstat UDP, $count entries took $totalSecs seconds"
     }
-} # End of audit_netstat
+} # End of audit_netstat_udp
+
+
 
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
