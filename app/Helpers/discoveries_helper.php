@@ -1557,9 +1557,20 @@ if (! function_exists('ip_audit')) {
                     }
                 } else {
                     if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
-                        $copy = copy_from_windows($device->ip, $credentials_windows, 'System32\\' . $audit_file, $destination, $discovery->id);
-                        if (empty($copy)) {
+                        if (stripos($device->os_name, 'server') !== false) {
+                            // Servers tend to use c:\windows\syswow64
                             $copy = copy_from_windows($device->ip, $credentials_windows, 'SysWOW64\\' . $audit_file, $destination, $discovery->id);
+                        } else {
+                            // Clients tend to use c:\windows\system32
+                            $copy = copy_from_windows($device->ip, $credentials_windows, 'System32\\' . $audit_file, $destination, $discovery->id);
+                        }
+                        if (empty($copy)) {
+                            // For some reason the copy didn't work, so try the reverse location
+                            if (stripos($device->os_name, 'server') !== false) {
+                                $copy = copy_from_windows($device->ip, $credentials_windows, 'System32\\' . $audit_file, $destination, $discovery->id);
+                            } else {
+                                $copy = copy_from_windows($device->ip, $credentials_windows, 'SysWOW64\\' . $audit_file, $destination, $discovery->id);
+                            }
                         }
                     } else {
                         $copy = copy_from_windows($device->ip, $credentials_windows, $audit_file, $destination, $discovery->id);
