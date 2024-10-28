@@ -1604,6 +1604,7 @@ if (! function_exists('ip_audit')) {
                     // delete the remote audit result
                     if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
                         delete_windows_result($device->ip, $credentials_windows, 'admin$', 'System32\\' . $audit_file, $discovery->id);
+                        delete_windows_result($device->ip, $credentials_windows, 'admin$', 'SysWOW64\\' . $audit_file, $discovery->id);
                     } else {
                         delete_windows_result($device->ip, $credentials_windows, 'admin$', end($temp), $discovery->id);
                     }
