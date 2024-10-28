@@ -186,6 +186,11 @@ if (! function_exists('execute_windows')) {
                     $log->command_status = 'success';
                 }
             }
+            foreach ($output as $line) {
+                if (stripos($line, "Starting Audit") !== false) {
+                    $log->command_status = 'success';
+                }
+            }
             $discoveryLogModel->create($log);
         }
         if ($return_var == 0) {
