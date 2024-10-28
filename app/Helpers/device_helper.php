@@ -75,6 +75,7 @@ if (!function_exists('audit_convert')) {
                 if (!empty($log->discovery_id) or !empty($log->device_id)) {
                     $log->message = 'Successfully converted audit result from JSON.';
                     $log->severity = 7;
+                    $log->status = 'success';
                     $discoveryLogModel->create($log);
                 }
             }
