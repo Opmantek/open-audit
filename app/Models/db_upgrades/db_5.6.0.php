@@ -145,18 +145,14 @@ if (!$db->fieldExists('circuit_status', 'connections')) {
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
-if ($db->fieldExists('speed', 'connections') and !$db->fieldExists('speed_down_a', 'connections')) {
+if (!$db->fieldExists('speed_down_a', 'connections')) {
     $sql = "ALTER TABLE `connections` CHANGE `speed` `speed_down_a` float(7,3) NOT NULL DEFAULT '0.000'";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
 if (!$db->fieldExists('speed_up_a', 'connections')) {
-    if ($db->fieldExists('speed_down_a', 'connections')) {
-        $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_down_a`";
-    } else {
-        $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed`";
-    }
+    $sql = "ALTER TABLE `connections` ADD `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000' AFTER `speed_down_a`";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
