@@ -1548,8 +1548,10 @@ result.WriteText "      </item>" & vbcrlf
 result.WriteText "  </windows>" & vbcrlf
 
 Dim objWMIServiceSC,objAntiVirusProduct,colAVItems,AvStatus
+on error resume next
 Set objWMIServiceSC = GetObject("winmgmts:\\.\root\SecurityCenter2")
 error_returned = Err.Number
+on error goto 0
 if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (SecurityCenter2)" : audit_wmi_fails = audit_wmi_fails & "SecurityCenter2 " : end if
 if (error_returned = 0) then
     Set colAVItems = objWMIServiceSC.ExecQuery("Select * from AntiVirusProduct")
