@@ -1286,7 +1286,7 @@ INSERT INTO `configuration` VALUES (NULL,'uuid',UUID(),'text','n','system','2000
 INSERT INTO `configuration` VALUES (NULL,'feature_agents_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Agents to execute commands and download files.');
 INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.');
 INSERT INTO `configuration` VALUES (NULL,'feature_executables','n','bool','y','system','2000-01-01 00:00:00','Activate the linux based Executables feature.');
-INSERT INTO `configuration` VALUES (NULL,'feature_powershell_audit','n','bool','y','system','2000-01-01 00:00:00','Use the PowerShell audit script instead of the VBScript audit script in discoveries.')
+INSERT INTO `configuration` VALUES (NULL,'feature_powershell_audit','n','bool','y','system','2000-01-01 00:00:00','Use the PowerShell audit script instead of the VBScript audit script in discoveries.');
 INSERT INTO `configuration` VALUES (NULL,'product','community','text','n','system','2000-01-01 00:00:00','Product type.');
 INSERT INTO `configuration` VALUES (NULL,'license_footer','','text','n','system','2000-01-01 00:00:00','Footer text.');
 INSERT INTO `configuration` VALUES (NULL,'license_limit','','number','n','system','2000-01-01 00:00:00','Licensed devices.');
@@ -2577,7 +2577,7 @@ CREATE TABLE `locations` (
 
 LOCK TABLES `locations` WRITE;
 /*!40000 ALTER TABLE `locations` DISABLE KEYS */;
-INSERT INTO `locations` VALUES (1,'Default Location',1,'Our default location',1,'Office','location','','','','','','Gold Coast','','','','Queensland','','Australia','','','','','','',-28.017260,153.425705,'',NULL,'','2000-01-01 00:00:00');
+INSERT INTO `locations` VALUES (1,'Default Location',1,'Our default location',1,'Office','location','','','','','','Gold Coast','','','','Queensland','','Australia','','','','','','','',-28.017260,153.425705,'',NULL,'','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `locations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3042,7 +3042,6 @@ CREATE TABLE `packages` (
   `end_of_service_life` date NOT NULL DEFAULT '2000-01-01',
   `type` enum('antivirus','approved','backup','banned','cloud','firewall','ignored','license','other','') NOT NULL DEFAULT '',
   `os` enum('Windows','Linux','MacOS','other','all','') NOT NULL DEFAULT 'Windows',
-  `os` varchar(100) NOT NULL DEFAULT 'Windows',
   `sql` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
