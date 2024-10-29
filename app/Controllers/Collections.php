@@ -509,7 +509,7 @@ class Collections extends BaseController
             }
 
             if (($this->resp->meta->collection === 'credential' or $this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds') and empty($data->credentials)) {
-                $data->credentials = new \stdClass();
+                $data->credentials = new stdClass();
                 foreach ($data as $key => $value) {
                     if (strpos($key, 'credentials.') !== false) {
                         $data->credentials->{str_replace('credentials.', '', $key)} = $value;
@@ -519,7 +519,7 @@ class Collections extends BaseController
 
             #if (($this->resp->meta->collection === 'dashboards' or $this->resp->meta->collection === 'scripts' or $this->resp->meta->collection === 'tasks') and empty($data->options)) {
             if (($this->resp->meta->collection === 'dashboards' or $this->resp->meta->collection === 'scripts') and empty($data->options)) {
-                $data->options = new \stdClass();
+                $data->options = new stdClass();
                 foreach ($data as $key => $value) {
                     if (strpos($key, 'options.') !== false) {
                         $data->options->{str_replace('options.', '', $key)} = $value;
@@ -528,7 +528,7 @@ class Collections extends BaseController
             }
 
             if ($this->resp->meta->collection === 'discoveries' and empty($data->scan_options)) {
-                $data->options = new \stdClass();
+                $data->options = new stdClass();
                 foreach ($data as $key => $value) {
                     if (strpos($key, 'scan_options.') !== false) {
                         $data->options->{str_replace('scan_options.', '', $key)} = $value;
@@ -537,7 +537,7 @@ class Collections extends BaseController
             }
 
             if ($this->resp->meta->collection === 'discoveries' and empty($data->match_options)) {
-                $data->options = new \stdClass();
+                $data->options = new stdClass();
                 foreach ($data as $key => $value) {
                     if (strpos($key, 'match_options.') !== false) {
                         $data->options->{str_replace('match_options.', '', $key)} = $value;

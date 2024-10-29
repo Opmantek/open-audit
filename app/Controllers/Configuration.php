@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use stdClass;
+
 /**
  * PHP version 7.4
  *
@@ -43,55 +45,6 @@ class Configuration extends BaseController
             $_SESSION['error'] = 'The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from <a href="https://firstwave.com">https://firstwave.com</a>.';
             return redirect()->route('summariesCollection');
         }
-        $countries = array(
-            "Afghanistan", "Aland Islands", "Albania", "Algeria", "American Samoa", "Andorra",
-            "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia",
-            "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh",
-            "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan",
-            "Bolivia (Plurinational State of)", "Bonaire, Sint Eustatius and Saba", "Bosnia and Herzegovina",
-            "Botswana", "Bouvet Island", "Brazil", "British Indian Ocean Territory", "Brunei Darussalam", "Bulgaria",
-            "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon",
-            "Canada", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China",
-            "Christmas Island", "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo",
-            "Congo (The Democratic Republic of the)", "Cook Islands", "Costa Rica", "Cote d'Ivoire",
-            "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Denmark", "Djibouti",
-            "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea",
-            "Eritrea", "Estonia", "Ethiopia", "Falkland Islands (The) [Malvinas]", "Faroe Islands",
-            "Fiji", "Finland", "France", "French Guiana", "French Polynesia", "French Southern Territories",
-            "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece",
-            "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea",
-            "Guinea-Bissau", "Guyana", "Haiti", "Heard Island and McDonald Islands", "Holy See",
-            "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran (Islamic Republic of)",
-            "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan",
-            "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, The Democratic People's Republic of",
-            "Korea, The Republic of", "Kuwait", "Kyrgyzstan", "Lao People's Democratic Republic",
-            "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein",
-            "Lithuania", "Luxembourg", "Macao", "Macedonia, The former Yugoslav Republic of",
-            "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands",
-            "Martinique", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia (Federated States of)",
-            "Moldova, The Republic of", "Monaco", "Mongolia", "Montenegro",
-            "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal",
-            "Netherlands", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue",
-            "Norfolk Island", "Northern Mariana Islands", "Norway", "Oman", "Pakistan", "Palau",
-            "Palestine, State of", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines",
-            "Pitcairn", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russian Federation",
-            "Rwanda", "Saint Barthelemy", "Saint Helena, Ascension and Tristan da Cunha", "Saint Kitts and Nevis",
-            "Saint Lucia", "Saint Martin (French part)", "Saint Pierre and Miquelon", "Saint Vincent and the Grenadines",
-            "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles",
-            "Sierra Leone", "Singapore", "Sint Maarten (Dutch part)", "Slovakia", "Slovenia", "Solomon Islands",
-            "Somalia", "South Africa", "South Georgia and the South Sandwich Islands", "South Sudan",
-            "Spain", "Sri Lanka", "Sudan", "Suriname", "Svalbard and Jan Mayen", "Swaziland",
-            "Sweden", "Switzerland", "Syrian Arab Republic", "Taiwan (Province of China)",
-            "Tajikistan", "Tanzania, United Republic of", "Thailand", "Timor-Leste", "Togo",
-            "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands",
-            "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom of Great Britain and Northern Ireland",
-            "United States Minor Outlying Islands", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu",
-            "Venezuela (Bolivarian Republic of)", "Viet Nam", "Virgin Islands (British)", "Virgin Islands (U.S.)",
-            "Wallis and Futuna", "Western Sahara", "Yemen", "Zambia", "Zimbabwe");
-
-        $eu_countries = array('Austria', 'Belgium', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic', 'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Ireland,  Italy', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'Slovakia', 'Slovenia,Spain', 'Sweden', 'United Kingdom of Great Britain and Northern Ireland');
-
-        $display_license_string = $this->resp->meta->license_string;
 
         $db = db_connect();
         $sql = "SELECT `id`, `name` FROM `configuration` WHERE `name` IN ('license_string', 'license_string_collector')";
@@ -108,8 +61,9 @@ class Configuration extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('configurationReadLicense', ['license' => $this->licenses, 'license_collector' => $this->licenses_collector, 'countries' => $countries, 'eu_countries' => $eu_countries])
-            . view('shared/footer', ['license_string' => $display_license_string]);
+            view('configurationReadLicense', ['license' => $this->licenses, 'license_collector' => $this->licenses_collector])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+        return true;
     }
 
 
@@ -131,6 +85,7 @@ class Configuration extends BaseController
             $update = true;
         }
         $dictionary = $this->configurationModel->dictionary();
+        $name = !empty($this->resp->data[0]->attributes->name) ? $this->resp->data[0]->attributes->name : '';
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -141,7 +96,7 @@ class Configuration extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user),
-            'name' => @$this->resp->data[0]->attributes->name]) .
+            'name' => $name]) .
             view('configurationReadServers', ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
@@ -154,6 +109,7 @@ class Configuration extends BaseController
      */
     public function executeFormEmail()
     {
+        $name = !empty($this->resp->data[0]->attributes->name) ? $this->resp->data[0]->attributes->name : '';
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -163,7 +119,7 @@ class Configuration extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user),
-            'name' => @$this->resp->data[0]->attributes->name]) .
+            'name' => $name]) .
             view('configurationExecuteFormEmail')
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
@@ -200,7 +156,7 @@ class Configuration extends BaseController
         $email->setTo($email_to);
         $email->setSubject('Email Test from Open-AudIT');
         $email->setMessage('This is an email test from your Open-AudIT Server.');
-        $output = new \stdClass();
+        $output = new stdClass();
         $output->status = 'success';
         $output->message = 'An email was successfully sent.';
         if (!$email->send(false)) {
@@ -216,6 +172,7 @@ class Configuration extends BaseController
             }
             $output->message .= "\n\n" . $email->printDebugger(['headers']);
         }
+        $name = !empty($this->resp->data[0]->attributes->name) ? $this->resp->data[0]->attributes->name : '';
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -225,7 +182,7 @@ class Configuration extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user),
-            'name' => @$this->resp->data[0]->attributes->name]) .
+            'name' => $name]) .
             view('configurationExecuteEmail', ['output' => $output])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
