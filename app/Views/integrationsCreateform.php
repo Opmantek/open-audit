@@ -68,14 +68,14 @@ if (php_uname('s') === 'Windows NT') {
                                     <?php if ($connection_options) { ?>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8 text-center">
-                                            <br />
+                                            <br>
                                             <?= __('Connection Options') ?>
-                                            <hr />
+                                            <hr>
                                         </div>
                                     </div>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="server" class="form-label"><?= __('Server Is') ?></label><br />
+                                            <label for="server" class="form-label"><?= __('Server Is') ?></label><br>
                                             <select class="form-select" name="server" id="server">
                                                 <option value="local"><?= __('Local') ?></option>
                                                 <option value="remote"><?= __('Remote') ?></option>
@@ -116,9 +116,9 @@ if (php_uname('s') === 'Windows NT') {
                                 <div class="col-md-6">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8 text-center">
-                                            <br />
+                                            <br>
                                             <?= __('Open-AudIT Options') ?>
-                                            <hr />
+                                            <hr>
                                         </div>
                                     </div>
                                     <?= create_select('data[attributes][create_internal_from_external]', __('Create Open-AudIT Devices from NMIS'), [], $dictionary->attributes->create) ?>
@@ -139,14 +139,14 @@ if (php_uname('s') === 'Windows NT') {
                                 <div class="col-md-6">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8 text-center">
-                                            <br />
+                                            <br>
                                             <?= __('Open-AudIT Device Selection') ?>
-                                            <hr />
+                                            <hr>
                                         </div>
                                     </div>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="data[attributes][select_internal_type]" class="form-label"><?= __('Select') ?></label><br />
+                                            <label for="data[attributes][select_internal_type]" class="form-label"><?= __('Select') ?></label><br>
                                             <select class="form-select" name="data[attributes][select_internal_type]" id="data[attributes][select_internal_type]">
                                                 <option value="none"><?= __('None') ?></option>
                                                 <option value="attribute" selected><?= __('Attribute') ?></option>
@@ -157,7 +157,7 @@ if (php_uname('s') === 'Windows NT') {
                                     </div>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="data[attributes][select_internal_attribute]" class="form-label"><?= __('Attribute') ?></label><br />
+                                            <label for="data[attributes][select_internal_attribute]" class="form-label"><?= __('Attribute') ?></label><br>
                                             <select class="form-select" name="data[attributes][select_internal_attribute]" id="data[attributes][select_internal_attribute]" aria-label="<?= __('Attribute') ?>">
                                             </select>
                                         </div>
@@ -181,9 +181,9 @@ if (php_uname('s') === 'Windows NT') {
                                 <div class="col-md-6">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8 text-center">
-                                            <br />
+                                            <br>
                                             <?= __('NMIS Device Options') ?>
-                                            <hr />
+                                            <hr>
                                         </div>
                                     </div>
                                     <?= create_select('data[attributes][create_external_from_internal]', __('Create NMIS Devices from Open-AudIT'), [], $dictionary->attributes->create) ?>
@@ -205,14 +205,14 @@ if (php_uname('s') === 'Windows NT') {
                                 <div class="col-md-6">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8 text-center">
-                                            <br />
+                                            <br>
                                             <?= __('NMIS Device Selection') ?>
-                                            <hr />
+                                            <hr>
                                         </div>
                                     </div>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="data[attributes][select_external_type]" class="form-label"><?= __('Select') ?></label><br />
+                                            <label for="data[attributes][select_external_type]" class="form-label"><?= __('Select') ?></label><br>
                                             <select class="form-select" name="data[attributes][select_external_type]" id="data[attributes][select_external_type]">
                                                 <option value="group" selected><?= __('All') ?></option>
                                                 <option value="none"><?= __('None') ?></option>
@@ -223,7 +223,7 @@ if (php_uname('s') === 'Windows NT') {
                                     <div id="select_external_attribute">
                                         <div class="row" style="padding-top:16px;">
                                             <div class="offset-2 col-8" style="position:relative;">
-                                                <label for="data[attributes][select_external_attribute]" class="form-label"><?= __('Attribute') ?></label><br />
+                                                <label for="data[attributes][select_external_attribute]" class="form-label"><?= __('Attribute') ?></label><br>
                                                 <select class="form-select" name="data[attributes][select_external_attribute]" id="data[attributes][select_external_attribute]" aria-label="<?= __('Attribute') ?>">
                                                 </select>
                                             </div>
@@ -245,7 +245,7 @@ if (php_uname('s') === 'Windows NT') {
 
                             <div class="row">
                                 <div class="offset-1 col-10">
-                                    <hr />
+                                    <hr>
                                     <h3 class="text-center"><?= __('Fields') ?></h3>
                                     <table class="table" id="fields">
                                         <thead>
@@ -264,7 +264,7 @@ if (php_uname('s') === 'Windows NT') {
                                         </tbody>
                                     </table>
                                     <button type="button" class="btn btn-sm btn-success" id="button_add_field" name="button_add_field" title="<?= __('Add Field') ?>">Add Field</button>
-                                    <hr />
+                                    <hr>
                                 </div>
                             </div>
 

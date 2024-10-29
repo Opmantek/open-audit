@@ -149,7 +149,7 @@ if ($resource->name === 'Windows Security Dashboard') {
 
                                 <?php if ($display) {
                                     echo "<li class=\"list-group-item\">\n"; ?>
-                                    <br /><h5><?= __('Issues') ?></h5>
+                                    <br><h5><?= __('Issues') ?></h5>
                                 </li>
                                     <?php foreach ($checks as $key => $value) {
                                         if ($value === 'n') {
@@ -167,12 +167,12 @@ if ($resource->name === 'Windows Security Dashboard') {
                                 if ($config->rss_enable !== "n") { ?>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
-                                    <br /><h5><?= __('News Feed') ?></h5>
+                                    <br><h5><?= __('News Feed') ?></h5>
                                 </li>
                                 <li class="list-group-item"></li>
                             </ul>
                             <ul class="list-group list-group-flush fadenews" id="newsfeed">
-                                <li class="list-group-item">From the <a style="text-decoration:none;" target="_blank" href="https://docs.community.firstwave.com/wiki/spaces/OA">Open-AudIT wiki</a>.<br />&nbsp;</li>
+                                <li class="list-group-item">From the <a style="text-decoration:none;" target="_blank" href="https://docs.community.firstwave.com/wiki/spaces/OA">Open-AudIT wiki</a>.<br>&nbsp;</li>
                             </ul>
                                 <?php } ?>
                         </div>
@@ -412,7 +412,7 @@ window.onload = function () {
                 var updatedDate = updateDate.getFullYear() + " / " + month + " / " + updateDate.getDate();
                 li.style.display = "none";
                 li.className = "list-group-item";
-                li.innerHTML = "<span><a style='text-decoration:none;' target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> <br />by " + $this.find("author").text() + " on " + updatedDate + ".</span>";
+                li.innerHTML = "<span><a style='text-decoration:none;' target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> <br>by " + $this.find("author").text() + " on " + updatedDate + ".</span>";
                 document.getElementById("newsfeed").appendChild(li);
             })
         });

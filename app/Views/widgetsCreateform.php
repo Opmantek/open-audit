@@ -39,7 +39,7 @@ include 'shared/create_functions.php';
                                 <div class="collapse" id="primary_details">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label id="label_column" for="data[attributes][primary]" class="form-label"><?= __('Primary') ?></label><br />
+                                            <label id="label_column" for="data[attributes][primary]" class="form-label"><?= __('Primary') ?></label><br>
                                             <select class="form-select" name="data[attributes][primary]" id="data[attributes][primary]">
                                             </select>
                                         </div>
@@ -49,7 +49,7 @@ include 'shared/create_functions.php';
                                 <div class="collapse" id="secondary_details">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="data[attributes][secondary]" class="form-label"><?= __('Secondary') ?></label><br />
+                                            <label for="data[attributes][secondary]" class="form-label"><?= __('Secondary') ?></label><br>
                                             <select class="form-select" name="data[attributes][secondary]" id="data[attributes][secondary]">
                                             </select>
                                         </div>
@@ -59,7 +59,7 @@ include 'shared/create_functions.php';
                                 <div class="collapse" id="ternary_details">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="data[attributes][ternary]" class="form-label"><?= __('Ternary') ?></label><br />
+                                            <label for="data[attributes][ternary]" class="form-label"><?= __('Ternary') ?></label><br>
                                             <select class="form-select" name="data[attributes][ternary]" id="data[attributes][ternary]">
                                             </select>
                                         </div>

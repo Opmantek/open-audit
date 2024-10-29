@@ -121,7 +121,7 @@ if ($style === 'icontext') {
                                             <?php foreach ($fields as $key) { ?>
                                                 <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                             <?php } ?>
-                                            <hr />
+                                            <hr>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@ if ($style === 'icontext') {
                                             <?php foreach ($fields as $key) { ?>
                                                 <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                             <?php } ?>
-                                            <hr />
+                                            <hr>
                                         <?php } ?>
                                     </div>
                                 </div>

@@ -45,7 +45,7 @@ if (count($included['issues']) > 0) {
                                         </span>
                                     </div>
                                 </div>
-                                <span><br /></span>
+                                <span><br></span>
 
                                 <div class="offset-3 col-6">
                                     <label for="queue_count" class="form-label"><?= __('Current Discovery Processes') ?></label>
@@ -59,7 +59,7 @@ if (count($included['issues']) > 0) {
                                         </span>
                                     </div>
                                 </div>
-                                <span><br /></span>
+                                <span><br></span>
 
                             </div>
                         </div>
@@ -76,7 +76,7 @@ if (count($included['issues']) > 0) {
                                         </span>
                                     </div>
                                 </div>
-                                <span><br /></span>
+                                <span><br></span>
 
                                 <div class="offset-3 col-6">
                                     <label for="ip_audit" class="form-label"><?= __('Queued Device Audits') ?></label>
@@ -87,7 +87,7 @@ if (count($included['issues']) > 0) {
                                         </span>
                                     </div>
                                 </div>
-                                <span><br /></span>
+                                <span><br></span>
 
                             </div>
                         </div>
@@ -108,7 +108,7 @@ if (count($included['issues']) > 0) {
                                         </span>
                                     </div>
                                 </div>
-                                <span><br /></span>
+                                <span><br></span>
 
                             </div>
                         </div>
@@ -116,7 +116,7 @@ if (count($included['issues']) > 0) {
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
             <?php } ?>
 
             <?php if (!empty($config->license) and $config->license !== 'none' and !empty($included['issues'])) { ?>
@@ -143,7 +143,7 @@ if (count($included['issues']) > 0) {
                     <form class="form-horizontal">
                         <div class="row">
                             <div class="col-md-12">
-                                <br />
+                                <br>
                                 <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableIssues" id="table_issue" data-order='[[3,"asc"]]'>
                                     <thead>
                                         <tr>
@@ -165,7 +165,7 @@ if (count($included['issues']) > 0) {
                                             <td class="text-center col-md-1"><a title="<?= __('Discovery') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('discoveriesRead', $issue->discovery_id) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
                                             <td class="col-md-1"><?= $issue->discovery_name ?></td>
                                             <td class="text-center col-md-1"><a title="<?= __('Devices') ?>"role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $issue->{'devices.id'}) ?>"><span class="fa fa-desktop" aria-hidden="true"></span></a></td>
-                                            <td class="col-md-1"><span style="display:none;"><?= $issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} ?><br />
+                                            <td class="col-md-1"><span style="display:none;"><?= $issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} ?><br>
                                             <?php if ($issue->{'devices.type'} === 'unknown') { ?>
                                                 <span class="text-danger"><em><?= $issue->{'devices.type'} ?></em></span>
                                             <?php } elseif ($issue->{'devices.type'} === 'unclassified') { ?>
@@ -197,7 +197,7 @@ if (count($included['issues']) > 0) {
                     </form>
                 </div>
             </div>
-            <br />
+            <br>
             <?php } ?>
 
             <div class="card">
@@ -205,7 +205,7 @@ if (count($included['issues']) > 0) {
                     <?= collection_card_header($meta->collection, $meta->icon, $user, '', $meta->query_string) ?>
                 </div>
                 <div class="card-body">
-                    <br />
+                    <br>
                     <div class="table-responsive">
                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[3,"asc"]]'>
                             <thead>

@@ -65,20 +65,20 @@ include 'shared/collection_functions.php';
                         </div>
                         <?php
                         if ($i === 12 or $i === 24 or $i === 36) {
-                            echo "</div><br /><div class=\"row\">";
+                            echo "</div><br><div class=\"row\">";
                         }
                     }
                     ?>
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
             <div class="card">
                 <div class="card-header">
                     <?= collection_card_header($meta->collection, $meta->icon, $user, '', $meta->query_string) ?>
                 </div>
                 <div class="card-body">
-                    <br />
+                    <br>
                     <div class="table-responsive">
                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                             <thead>

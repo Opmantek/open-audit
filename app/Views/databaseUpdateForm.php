@@ -20,9 +20,9 @@ include 'shared/read_functions.php';
                                     <div class="offset-2 col-8" style="position:relative;">
                                     <?php if (intval($config->internal_version) < intval($config->appVersion)) {
                                         if (strpos($user->permissions['database'], 'u') === false) { ?>
-                                            <br />
+                                            <br>
                                             <?= __('The database version and web version are inconsistent.') ?>
-                                            <br />
+                                            <br>
                                             <?= __('Please have an Open-AudIT administrator logon and upgrade the database.') ?>
                                         <?php } else { ?>
                                             <label for="submit" class="form-label">Database Upgrade Required</label>
@@ -31,7 +31,7 @@ include 'shared/read_functions.php';
                                             </div>
                                         <?php } ?>
                                     <?php } else { ?>
-                                        <br /><?= __('No database upgrade required at this time.') ?></span>
+                                        <br><?= __('No database upgrade required at this time.') ?></span>
                                     <?php } ?>
                                     </div>
                                 </div>

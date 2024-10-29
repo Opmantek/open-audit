@@ -10,7 +10,7 @@ include 'shared/read_functions.php';
                     <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $meta->name) ?>
                 </div>
                 <div class="card-body">
-                    <br />
+                    <br>
                     <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
                         <div class="table-responsive">
                             <?php if (!empty($audit_status)) {

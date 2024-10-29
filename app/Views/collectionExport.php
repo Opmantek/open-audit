@@ -16,9 +16,9 @@ $id = (!empty($meta->id)) ? $meta->id : '';
                             <div class="row">
                                 <span class="offset-2 col-8">
                                     <?= __('Copy and paste the below to the forums, another instance of Open-AudIT or anywhere else you need to provide this item.') ?>
-                                    <br /><br />
+                                    <br><br>
                                     <?= __('NOTE - You can prevent credentials being displayed below by setting the configuration item for \'decrypt_credentials\' to \'n\'.') ?>
-                                    <br /><br />
+                                    <br><br>
                                 </span>
                             </div>
                             <div class="offset-2 col-8" style="position:relative;">

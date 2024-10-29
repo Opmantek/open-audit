@@ -49,7 +49,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="data[attributes][day_of_week][]" class="form-label"><?= __('Day Of Week') ?> <span style="color: #dc3545;">*</span></label><br />
+                                        <label for="data[attributes][day_of_week][]" class="form-label"><?= __('Day Of Week') ?> <span style="color: #dc3545;">*</span></label><br>
                                         <select class="form-select" multiple name="data[attributes][day_of_week][]" id="data[attributes][day_of_week][]">
                                             <option value="*">*</option>
                                             <option value="0"><?= __('Sunday') ?></option>
@@ -65,7 +65,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="data[attributes][hour][]" class="form-label"><?= __('Hour') ?> <span style="color: #dc3545;">*</span></label><br />
+                                        <label for="data[attributes][hour][]" class="form-label"><?= __('Hour') ?> <span style="color: #dc3545;">*</span></label><br>
                                         <select class="form-select" name="data[attributes][hour][]" id="data[attributes][hour][]">
                                             <option value="0">0</option>
                                             <option value="1" selected>1</option>

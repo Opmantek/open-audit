@@ -17,7 +17,7 @@ if ($style === 'icontext') {
                     <?= collection_card_header($meta->collection, $meta->icon, $user, 'Support') ?>
                 </div>
                 <div class="card-body">
-                    <br />
+                    <br>
                     <div class="row">
                         <div class="col-6">
 
@@ -32,7 +32,7 @@ if ($style === 'icontext') {
                                     ?>
                                 </div>
                             </div>
-                            <br />
+                            <br>
                             <div class="card">
                                 <div class="card-header">
                                     <?= __('Stats') ?>
@@ -44,7 +44,7 @@ if ($style === 'icontext') {
                                     ?>
                                 </div>
                             </div>
-                            <br />
+                            <br>
                             <div class="card">
                                 <div class="card-header">
                                     <?= __('Operating System') ?>
@@ -56,7 +56,7 @@ if ($style === 'icontext') {
                                     ?>
                                 </div>
                             </div>
-                            <br />
+                            <br>
                             <div class="card">
                                 <div class="card-header">
                                     <?= __('Database') ?>
@@ -68,7 +68,7 @@ if ($style === 'icontext') {
                                     ?>
                                 </div>
                             </div>
-                            <br />
+                            <br>
                             <div class="card">
                                 <div class="card-header">
                                     <?= __('Webserver') ?>
@@ -80,7 +80,7 @@ if ($style === 'icontext') {
                                     ?>
                                 </div>
                             </div>
-                            <br />
+                            <br>
                             <div class="card">
                                 <div class="card-header">
                                     <?= __('PHP') ?>
@@ -92,7 +92,7 @@ if ($style === 'icontext') {
                                     ?>
                                 </div>
                             </div>
-                            <br />
+                            <br>
                             <div class="card">
                                 <div class="card-header">
                                     <?= __('Prerequisites') ?>
@@ -104,7 +104,7 @@ if ($style === 'icontext') {
                                     ?>
                                 </div>
                             </div>
-                            <br />
+                            <br>
                             <div class="card">
                                 <div class="card-header">
                                     <?= __('Permissions') ?>

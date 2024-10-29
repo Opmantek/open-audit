@@ -21,7 +21,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="data[attributes][options][layout]" class="form-label"><?= __('Layout') ?></label><br />
+                                        <label for="data[attributes][options][layout]" class="form-label"><?= __('Layout') ?></label><br>
                                         <select class="form-select" name="data[attributes][options][layout]" id="data[attributes][options][layout]">
                                             <option value="3x2">3 x 2</option>
                                             <option value="4x2">4 x 2</option>

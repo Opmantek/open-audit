@@ -42,5 +42,5 @@ include 'shared/read_functions.php';
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
         </main>

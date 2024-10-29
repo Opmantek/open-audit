@@ -33,14 +33,14 @@ $instance = & get_instance();
                         </div>
                         <?php
                         if ($i === 12 or $i === 24 or $i === 36) {
-                            echo "</div><br /><div class=\"row\">";
+                            echo "</div><br><div class=\"row\">";
                         }
                     }
                     ?>
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
 
 
 
@@ -72,14 +72,14 @@ $instance = & get_instance();
                         </div>
                         <?php
                         if ($i === 12 or $i === 24 or $i === 36) {
-                            echo "</div><br /><div class=\"row\">";
+                            echo "</div><br><div class=\"row\">";
                         }
                     }
                     ?>
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
 
 
 
@@ -138,14 +138,14 @@ $instance = & get_instance();
                         </div>
                         <?php
                         if ($i === 12 or $i === 24 or $i === 36) {
-                            echo "</div><br /><div class=\"row\">";
+                            echo "</div><br><div class=\"row\">";
                         }
                     }
                     ?>
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
 
 
 

@@ -22,14 +22,14 @@ include 'shared/create_functions.php';
                                 <?php foreach ($fields as $field) { ?>
                                     <?= create_text_field('data[attributes][' . $field . ']', create_column_name($field), $dictionary->attributes->create) ?>
                                 <?php } ?>
-                                <div class="offset-2 col-8"><hr /></div>
+                                <div class="offset-2 col-8"><hr></div>
 
                                 <?= create_select('data[attributes][location_id_a]', __('Location A'), $included['locations'], $dictionary->attributes->create) ?>
                                 <?php $fields = array('service_level_a', 'site_hours_a', 'site_contact_a', 'device_id_a', 'speed_down_a', 'speed_up_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a'); ?>
                                 <?php foreach ($fields as $field) { ?>
                                     <?= create_text_field('data[attributes][' . $field . ']', create_column_name($field), $dictionary->attributes->create) ?>
                                 <?php } ?>
-                                <div class="offset-2 col-8"><hr /></div>
+                                <div class="offset-2 col-8"><hr></div>
 
                                 <?= create_select('data[attributes][location_id_b]', __('Location B'), $included['locations'], $dictionary->attributes->create) ?>
                                 <?php $fields = array('service_level_b', 'site_hours_b', 'site_contact_b', 'device_id_b', 'speed_down_b', 'speed_up_b', 'line_number_b', 'ip_address_external_b', 'ip_address_internal_b'); ?>
@@ -64,13 +64,13 @@ include 'shared/create_functions.php';
                                 <?php foreach ($fields as $key) { ?>
                                 <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                 <?php } ?>
-                                <hr />
+                                <hr>
 
                                 <?php $fields = array('location_id_a', 'service_level_a', 'site_hours_a', 'site_contact_a', 'device_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a') ?>
                                 <?php foreach ($fields as $key) { ?>
                                 <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                 <?php } ?>
-                                <hr />
+                                <hr>
 
 
                             </div>

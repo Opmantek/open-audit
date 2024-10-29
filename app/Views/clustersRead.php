@@ -41,7 +41,7 @@ if ($style === 'icontext') {
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="type" class="col-sm-4 control-label"><?= __('Type') ?></label><br />
+                                            <label for="type" class="col-sm-4 control-label"><?= __('Type') ?></label><br>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="type" name="type" data-original-value="<?= $resource->{'type'} ?>" disabled>
                                                     <option value="" label=" "        <?php if ($resource->{'type'} === '') {                  ?>selected<?php } ?>></option>
@@ -63,13 +63,13 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br /></span></div>
+                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="purpose" class="col-sm-4 control-label"><?= __('Purpose') ?></label><br />
+                                            <label for="purpose" class="col-sm-4 control-label"><?= __('Purpose') ?></label><br>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="purpose" name="purpose" data-original-value="<?= $resource->{'purpose'} ?>" disabled>
                                                     <option value="" label=" "     <?php if ($resource->{'purpose'} === '') {               ?>selected<?php } ?>></option>
@@ -93,13 +93,13 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="purpose" data-dictionary="<?= $dictionary->columns->purpose ?>"><span><br /></span></div>
+                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="purpose" data-dictionary="<?= $dictionary->columns->purpose ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="status" class="col-sm-4 control-label"><?= __('Status') ?></label><br />
+                                            <label for="status" class="col-sm-4 control-label"><?= __('Status') ?></label><br>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="status" name="status" data-original-value="<?= $resource->{'status'} ?>" disabled>
                                                     <option value="" label=" " <?php if ($resource->{'status'} === '') {         ?>selected<?php } ?>></option>
@@ -119,13 +119,13 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="status" data-dictionary="<?= $dictionary->columns->status ?>"><span><br /></span></div>
+                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="status" data-dictionary="<?= $dictionary->columns->status ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="scaling" class="col-sm-4 control-label"><?= __('Scaling') ?></label><br />
+                                            <label for="scaling" class="col-sm-4 control-label"><?= __('Scaling') ?></label><br>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="scaling" name="scaling" data-original-value="<?= $resource->{'scaling'} ?>" disabled>
                                                     <option value="" label=" " <?php if ($resource->{'scaling'} === '') { ?>selected<?php } ?>></option>
@@ -145,13 +145,13 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="scaling" data-dictionary="<?= $dictionary->columns->scaling ?>"><span><br /></span></div>
+                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="scaling" data-dictionary="<?= $dictionary->columns->scaling ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="configuration" class="col-sm-4 control-label"><?= __('Configuration') ?></label><br />
+                                            <label for="configuration" class="col-sm-4 control-label"><?= __('Configuration') ?></label><br>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="configuration" name="configuration" data-original-value="<?= $resource->{'configuration'} ?>" disabled>
                                                     <option value="" label=" "     <?php if ($resource->{'configuration'} === '') {               ?>selected<?php } ?>></option>
@@ -175,13 +175,13 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="configuration" data-dictionary="<?= $dictionary->columns->configuration ?>"><span><br /></span></div>
+                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="configuration" data-dictionary="<?= $dictionary->columns->configuration ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="environment" class="col-sm-4 control-label"><?= __('Environment') ?></label><br />
+                                            <label for="environment" class="col-sm-4 control-label"><?= __('Environment') ?></label><br>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="environment" name="environment" data-original-value="<?= $resource->{'environment'} ?>" disabled>
                                                 <option value="" label=" " <?php if ($resource->{'environment'} === '') { ?>selected<?php } ?>></option>
@@ -205,7 +205,7 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="environment" data-dictionary="<?= $dictionary->columns->environment ?>"><span><br /></span></div>
+                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="environment" data-dictionary="<?= $dictionary->columns->environment ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
@@ -235,12 +235,12 @@ if ($style === 'icontext') {
                             </div>
                         </div>
                     </div>
-                    <br />
+                    <br>
 
             <?php if ($resource->purpose !== 'virtualisation') { ?>
                     <div class="tab-content">
                         <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
-                            <br />
+                            <br>
                             <div class="table-responsive">
                                 <table class="table <?= $GLOBALS['table'] ?> table-striped dataTable" data-order='[[1,"asc"]]'>
                                     <thead>
@@ -273,13 +273,13 @@ if ($style === 'icontext') {
                             </div>
                         </div>
                     </div>
-                    <br />
+                    <br>
             <?php } ?>
 
             <?php if ($resource->purpose === 'virtualisation') { ?>
                     <div class="tab-content">
                         <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
-                            <br />
+                            <br>
                             <div class="table-responsive">
                                 <table class="table <?= $GLOBALS['table'] ?> table-striped dataTable" data-order='[[2,"asc"]]'>
                                     <thead>
@@ -326,9 +326,9 @@ if ($style === 'icontext') {
                                 </table>
                             </div>
 
-                            <br />
-                            <br />
-                            <br />
+                            <br>
+                            <br>
+                            <br>
                             <div class="table-responsive">
                                 <table class="table <?= $GLOBALS['table'] ?> table-striped dataTable" data-order='[[2,"asc"]]'>
                                     <thead>
@@ -367,7 +367,7 @@ if ($style === 'icontext') {
                             </div>
                         </div>
                     </div>
-                    <br />
+                    <br>
             <?php } ?>
         </main>
 

@@ -21,7 +21,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="data[attributes][type]" class="form-label"><?= __('Type') ?> <span style="color: #dc3545;">*</span></label><br />
+                                        <label for="data[attributes][type]" class="form-label"><?= __('Type') ?> <span style="color: #dc3545;">*</span></label><br>
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]">
                                         <option value="high availability" selected><?= __('High Availability') ?></option>
                                         <option value="load balancing"><?= __('Load Balancing') ?></option>
@@ -34,7 +34,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="data[attributes][purpose]" class="form-label"><?= __('Purpose') ?> <span style="color: #dc3545;">*</span></label><br />
+                                        <label for="data[attributes][purpose]" class="form-label"><?= __('Purpose') ?> <span style="color: #dc3545;">*</span></label><br>
                                         <select class="form-select" name="data[attributes][purpose]" id="data[attributes][purpose]">
                                         <option value="application" selected><?= __('Application') ?></option>
                                         <option value="compute"><?= __('Compute') ?></option>
@@ -49,7 +49,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="data[attributes][status]" class="form-label"><?= __('Status') ?></label><br />
+                                        <label for="data[attributes][status]" class="form-label"><?= __('Status') ?></label><br>
                                         <select class="form-select" name="data[attributes][status]" id="data[attributes][status]">
                                         <option value="active" selected><?= __('Active') ?></option>
                                         <option value="inactive"><?= __('Inactive') ?></option>
@@ -60,7 +60,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="data[attributes][scaling]" class="form-label"><?= __('Scaling') ?></label><br />
+                                        <label for="data[attributes][scaling]" class="form-label"><?= __('Scaling') ?></label><br>
                                         <select class="form-select" name="data[attributes][scaling]" id="data[attributes][scaling]">
                                         <option value="auto"><?= __('Auto') ?></option>
                                         <option value="fixed" selected><?= __('Fixed') ?></option>
@@ -71,7 +71,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="data[attributes][configuration]" class="form-label"><?= __('Configuration') ?></label><br />
+                                        <label for="data[attributes][configuration]" class="form-label"><?= __('Configuration') ?></label><br>
                                         <select class="form-select" name="data[attributes][configuration]" id="data[attributes][configuration]">
                                         <option value="active/active" selected><?= __('Active / Active') ?></option>
                                         <option value="active/passive"><?= __('Active / Passive') ?></option>

@@ -46,7 +46,7 @@ include 'shared/read_functions.php';
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="format[]" data-dictionary="<?= $dictionary->columns->format ?>"><span><br /></span></div>
+                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="format[]" data-dictionary="<?= $dictionary->columns->format ?>"><span><br></span></div>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -70,7 +70,7 @@ include 'shared/read_functions.php';
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="group_id[]" data-dictionary="<?= $dictionary->columns->group_id ?>"><span><br /></span></div>
+                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="group_id[]" data-dictionary="<?= $dictionary->columns->group_id ?>"><span><br></span></div>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -95,7 +95,7 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="minute[]" data-dictionary="<?= $dictionary->columns->minute ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="minute[]" data-dictionary="<?= $dictionary->columns->minute ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php } else { ?>
@@ -122,7 +122,7 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="hour[]" data-dictionary="<?= $dictionary->columns->hour ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="hour[]" data-dictionary="<?= $dictionary->columns->hour ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php } else { ?>
@@ -149,7 +149,7 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="day_of_month[]" data-dictionary="<?= $dictionary->columns->day_of_month ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="day_of_month[]" data-dictionary="<?= $dictionary->columns->day_of_month ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php } else { ?>
@@ -185,7 +185,7 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="month[]" data-dictionary="<?= $dictionary->columns->month ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="month[]" data-dictionary="<?= $dictionary->columns->month ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -212,7 +212,7 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="day_of_week[]" data-dictionary="<?= $dictionary->columns->day_of_week ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="day_of_week[]" data-dictionary="<?= $dictionary->columns->day_of_week ?>"><span><br></span></div>
                                 </div>
                             </div>
 

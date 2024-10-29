@@ -20,7 +20,7 @@ include 'shared/read_functions.php';
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <hr />
+                                    <hr>
                                 </div>
                             </div>
 
@@ -39,7 +39,7 @@ include 'shared/read_functions.php';
                                             $input_count += +1; ?>
                                         <div class="row" id="inputs_<?= $input_count ?>" data-id="">
                                             <?php if ($input_count > 1) { ?>
-                                            <div class="row"><div class="col-4 offset-3 text-center"><hr /><small>AND</small><br /><br /></div></div>
+                                            <div class="row"><div class="col-4 offset-3 text-center"><hr><small>AND</small><br><br></div></div>
                                             <?php } ?>
                                             <div class="row">
                                                 <div class="col-4 offset-1">
@@ -61,7 +61,7 @@ include 'shared/read_functions.php';
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <br />
+                                            <br>
                                             <div class="row">
                                                 <div class="col-4 offset-1">
                                                     <select class="form-select" id="inputs[<?= $input_count ?>][operator]" name="inputs[<?= $input_count ?>][operator]" disabled>
@@ -93,7 +93,7 @@ include 'shared/read_functions.php';
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <!--<hr />-->
+                                            <!--<hr>-->
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -102,7 +102,7 @@ include 'shared/read_functions.php';
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <hr />
+                                    <hr>
                                 </div>
                             </div>
 
@@ -119,7 +119,7 @@ include 'shared/read_functions.php';
                                             $output_count += 1; ?>
                                         <div class="row" id="outputs_<?= $output_count ?>">
                                             <?php if ($output_count > 1) { ?>
-                                            <div class="row"><div class="col-4 offset-3 text-center"><hr /><small>AND</small><br /><br /></div></div>
+                                            <div class="row"><div class="col-4 offset-3 text-center"><hr><small>AND</small><br><br></div></div>
                                             <?php } ?>
                                             <div class="row">
                                                 <div class="col-4 offset-1">
@@ -142,7 +142,7 @@ include 'shared/read_functions.php';
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <br />
+                                            <br>
                                             <div class="row">
                                                 <div class="col-4 offset-1">
                                                     <input type="text" class="form-control" id="outputs[<?= $output_count ?>][value]" name="outputs[<?= $output_count ?>][value]" disabled/>
@@ -495,7 +495,7 @@ window.onload = function () {
         $('#add_inputs').click(function (e) {
             input_count += 1;
             var content = "                                    <div class=\"row\" id=\"inputs_" + input_count + "\">\
-                                            <div class=\"row\"><div class=\"col-4 offset-3 text-center\"><hr /><small>AND</small><br /><br /></div></div>\
+                                            <div class=\"row\"><div class=\"col-4 offset-3 text-center\"><hr><small>AND</small><br><br></div></div>\
                                             <div class=\"row\">\
                                                 <div class=\"col-4 offset-1\">\
                                                     <select class=\"input_table form-select\" id=\"inputs[" + input_count + "][table]\" name=\"inputs[" + input_count + "][table]\" data-row=\"" + input_count + "\">\
@@ -514,7 +514,7 @@ window.onload = function () {
                                                     </button>\
                                                 </div>\
                                             </div>\
-                                            <br />\
+                                            <br>\
                                             <div class=\"row\">\
                                                 <div class=\"col-4 offset-1\">\
                                                     <select class=\"form-select\" id=\"inputs[" + input_count + "][operator]\" name=\"inputs[" + input_count + "][operator]\">\
@@ -559,7 +559,7 @@ window.onload = function () {
             output_count += 1;
 
             var content = "                                    <div class=\"row\" id=\"outputs_" + output_count + "\">\
-                                            <div class=\"row\"><div class=\"col-4 offset-3 text-center\"><hr /><small>AND</small><br /><br /></div></div>\
+                                            <div class=\"row\"><div class=\"col-4 offset-3 text-center\"><hr><small>AND</small><br><br></div></div>\
                                             <div class=\"row\">\
                                                 <div class=\"col-4 offset-1\">\
                                                     <select class=\"form-control\" id=\"outputs[" + output_count + "][table]\" name=\"outputs[" + output_count + "][table]\">\
@@ -579,7 +579,7 @@ window.onload = function () {
                                                     </button>\
                                                 </div>\
                                             </div>\
-                                            <br />\
+                                            <br>\
                                             <div class=\"row\">\
                                                 <div class=\"col-4 offset-1\">\
                                                     <input type=\"text\" class=\"form-control\" id=\"outputs[" + output_count + "][value]\" name=\"outputs[" + output_count + "][value]\" />\

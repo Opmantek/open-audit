@@ -9,7 +9,7 @@ include 'shared/collection_functions.php';
                     <?= collection_card_header($meta->collection, $meta->icon, $user, '', $meta->query_string) ?>
                 </div>
                 <div class="card-body">
-                    <br />
+                    <br>
                     <div class="table-responsive">
                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"],[2,"asc"],[3,"asc"]]'>
                             <thead>
@@ -47,14 +47,14 @@ include 'shared/collection_functions.php';
                                     <?php if (!empty($item->attributes->inputs)) { ?>
                                     <td>
                                         <?php foreach ($item->attributes->inputs as $input) { ?>
-                                            <?= $input->table ?>.<?= $input->attribute ?> <strong><?= $input->operator ?></strong> <?= $input->value ?><br />
+                                            <?= $input->table ?>.<?= $input->attribute ?> <strong><?= $input->operator ?></strong> <?= $input->value ?><br>
                                         <?php } ?>
                                     <?php } ?>
                                     </td>
                                     <?php if (!empty($item->attributes->outputs)) { ?>
                                     <td>
                                         <?php foreach ($item->attributes->outputs as $output) { ?>
-                                            <?= __('Set') . ' ' . $output->attribute . ' ' . __('to') . ' ' . $output->value ?> <br />
+                                            <?= __('Set') . ' ' . $output->attribute . ' ' . __('to') . ' ' . $output->value ?> <br>
                                         <?php } ?>
                                     <?php } ?>
                                     </td>

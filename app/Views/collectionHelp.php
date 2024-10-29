@@ -31,7 +31,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
                     <div class="row">
                         <div class="col-8 offset-2">
                             <h2><?= __('Introduction') ?></h2>
-                            <br />
+                            <br>
                             <div class="row">
                                 <div class="col-8">
                                     <?= @$intro ?>
@@ -45,7 +45,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                     <?php } else { ?>
                                         <button class="btn btn-warning"><?= __('Open-AudIT Community') ?></button>
                                     <?php } ?>
-                                    <br /><br />
+                                    <br><br>
                                     <img class="img-fluid helpImage" src="<?= base_url() . 'images/' . $meta->collection ?>.png" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 </div>
                             </div>
@@ -67,7 +67,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
                             <br>
                             <?php } ?>
                             <h2><?= __('View Details') ?></h2>
-                            <p>Go to menu: <?= $menu ?> -> <?= $title ?> -> <a href="<?= url_to($meta->collection . 'Collection') ?>">List <?= $title ?></a>.<br><br />
+                            <p>Go to menu: <?= $menu ?> -> <?= $title ?> -> <a href="<?= url_to($meta->collection . 'Collection') ?>">List <?= $title ?></a>.<br><br>
                             You will see a list of <?= $meta->collection ?>. You can view by clicking on the blue view icon. You can also edit or delete if you have permissions.</p>
                             <br>
                             <h2><?= __('Database Schema') ?></h2>

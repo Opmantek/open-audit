@@ -65,14 +65,14 @@ if ($resource->ru_start == 1) {
                 }
                 $data_content = '<b>' . $name . '</b>';
                 if ($ip) {
-                    $data_content = $data_content . '<br />' . $ip;
+                    $data_content = $data_content . '<br>' . $ip;
                 }
                 if ($link) {
-                    $data_content = $data_content . '<br /><a href=\'' . $link . '\'>' . __('Details') . '</a>';
+                    $data_content = $data_content . '<br><a href=\'' . $link . '\'>' . __('Details') . '</a>';
                 }
 
                 if ($filename == '' and $device_id == '') {
-                    $data_content = $data_content . '<br /><a href=\'' . url_to('componentsCreateForm', 'images', $device_id) . '\'>' . __('Add image') . '</a>';
+                    $data_content = $data_content . '<br><a href=\'' . url_to('componentsCreateForm', 'images', $device_id) . '\'>' . __('Add image') . '</a>';
                 }
 
                 $row = $i + $j;
@@ -131,14 +131,14 @@ if ($resource->ru_start == 1) {
                 }
                 $data_content = '<b>' . $name . '</b>';
                 if (!empty($ip)) {
-                    $data_content = $data_content . '<br />' . $ip;
+                    $data_content = $data_content . '<br>' . $ip;
                 }
                 if (!empty($link)) {
-                    $data_content = $data_content . '<br /><a href=\'' . $link . '\'>' . __('Details') . '</a>';
+                    $data_content = $data_content . '<br><a href=\'' . $link . '\'>' . __('Details') . '</a>';
                 }
 
                 if (empty($filename) and !empty($device_id)) {
-                    $data_content = $data_content . '<br /><a href=\'' . url_to('componentsCreateForm', 'images', $device_id) . '\'>' . __('Add image') . '</a>';
+                    $data_content = $data_content . '<br><a href=\'' . url_to('componentsCreateForm', 'images', $device_id) . '\'>' . __('Add image') . '</a>';
                 }
 
                 $row = intval($i - $j);
@@ -187,7 +187,7 @@ if ($resource->ru_start == 1) {
                             } ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
-                            <br /><div class="offset-2 col-8"><hr /></div>
+                            <br><div class="offset-2 col-8"><hr></div>
                             <?php $attributes = array('purpose', 'type', 'manufacturer', 'model', 'serial', 'asset_number', 'asset_tag', 'bar_code', 'ru_start');
                             foreach ($attributes as $attribute) {
                                 echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update) . "\n";

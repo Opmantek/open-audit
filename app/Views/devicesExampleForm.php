@@ -11,13 +11,13 @@ include 'shared/create_functions.php';
                 <div class="card-body text-center">
                     <div class="row">
                         <p class="fs-2"><?= __('Create Example Devices') ?></p>
-                        <br />
-                        <p><?= __('Click the Import button below to populate Open-AudIT with example device data.') ?><br />
-                        <br />
+                        <br>
+                        <p><?= __('Click the Import button below to populate Open-AudIT with example device data.') ?><br>
+                        <br>
                         <form action="<?= url_to('devicesExample') ?>" method="post">
                             <button id="submit" name="submit" type="submit" class="btn btn-success" aria-label="<?= __('Import') ?>"><?= __('Import') ?></button>
                         </form>
-                        <br />
+                        <br>
                         </p>
                         <span id="statusmsg">&nbsp;</span>
                     </div>
@@ -29,7 +29,7 @@ include 'shared/create_functions.php';
 window.onload = function () {
     $(document).ready(function(){
         $('#submit').click(function() {
-            document.getElementById('statusmsg').innerHTML = '<br />Please wait while we import the devices.<br /><br /><i class=\'fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom\'></i>';
+            document.getElementById('statusmsg').innerHTML = '<br>Please wait while we import the devices.<br><br><i class=\'fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom\'></i>';
         });
     });
 }

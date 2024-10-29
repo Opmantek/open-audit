@@ -19,7 +19,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="hostname" class="form-label"><?= __('Search For a Device') ?></label><br />
+                                        <label for="hostname" class="form-label"><?= __('Search For a Device') ?></label><br>
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="hostname" name="hostname" placeholder="hostname" />
                                             <div class="pull-right" style="padding-left:4px;">
@@ -32,7 +32,7 @@ include 'shared/create_functions.php';
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label for="data[attributes][device_id]" class="form-label"><?= __('Choose a Device') ?></label><br />
+                                        <label for="data[attributes][device_id]" class="form-label"><?= __('Choose a Device') ?></label><br>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][device_id]" id="data[attributes][device_id]" disabled>
                                                 <option value=""><?= __('Choose a Device') ?></option>
@@ -44,7 +44,7 @@ include 'shared/create_functions.php';
                                 <?= create_text_field('data[attributes][position]', __('Position'), $dictionary->attributes->create, '', 'number') ?>
                                 <?= create_text_field('data[attributes][height]', __('Height'), $dictionary->attributes->create, '', 'number') ?>
 
-                                <br />
+                                <br>
                                 <div class="row">
                                     <div class="offset-2 col-8">
                                         <label for="submit" class="form-label">&nbsp;</label>
@@ -59,16 +59,16 @@ include 'shared/create_functions.php';
                         <div class="col-md-6">
                             <div class="offset-2 col-8">
                                 <?php if (! empty($dictionary->about)) {
-                                    echo "<h4 class=\"text-center\">About</h4><br />";
+                                    echo "<h4 class=\"text-center\">About</h4><br>";
                                     echo html_entity_decode($dictionary->about);
                                 } ?>
                                 <?php if (! empty($dictionary->notes)) {
-                                    echo "<h4 class=\"text-center\">Notes</h4><br />";
+                                    echo "<h4 class=\"text-center\">Notes</h4><br>";
                                     echo html_entity_decode($dictionary->notes);
                                 } ?>
-                                <h4 class="text-center">Fields</h4><br />
+                                <h4 class="text-center">Fields</h4><br>
                                 <?php foreach ($dictionary->columns as $key => $value) {
-                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br /><br />";
+                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
                                 } ?>
                             </div>
                         </div>

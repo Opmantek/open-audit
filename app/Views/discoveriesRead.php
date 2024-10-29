@@ -467,7 +467,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <tr>
                                                     <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $device->{'devices.id'}) ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
                                                     <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $device->{'devices.icon'} ?>.svg" alt=""/></td>
-                                                    <td><span style="display:none;"><?= ip_address_to_db($device->{'discovery_log.ip'}) ?></span><?= $device->{'discovery_log.ip'} ?><br />
+                                                    <td><span style="display:none;"><?= ip_address_to_db($device->{'discovery_log.ip'}) ?></span><?= $device->{'discovery_log.ip'} ?><br>
                                                     <?php if ($device->{'devices.type'} === 'unknown') { ?>
                                                         <span class="text-danger"><i><?= $device->{'devices.type'} ?></i></span>
                                                     <?php } elseif ($device->{'devices.type'} === 'unclassified') { ?>
@@ -478,7 +478,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     </td>
                                                     <td><?= $device->{'devices.name'} ?>
                                                         <?php if (!empty($device->{'devices.domain'})) { ?>
-                                                            <br /><?= $device->{'devices.domain'} ?>
+                                                            <br><?= $device->{'devices.domain'} ?>
                                                         <?php } ?>
                                                     </td>
                                                     <td><?= $device->{'discovery_log.message'} ?></td>
@@ -527,7 +527,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     <td>
                                                         <span style="display:none;"><?= ip_address_to_db($device->{'discovery_log.ip'}) ?></span><?= $device->{'discovery_log.ip'} ?>
                                                         <?php if (!empty($device->{'devices.type'})) { ?>
-                                                            <br />
+                                                            <br>
                                                             <?php if ($device->{'devices.type'} === 'unknown') { ?>
                                                                 <span class="text-danger"><i><?= $device->{'devices.type'} ?></i></span>
                                                             <?php } elseif ($device->{'devices.type'} === 'unclassified') { ?>
@@ -541,7 +541,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                         <?php if (!empty($device->{'devices.name'})) { ?>
                                                             <?= $device->{'devices.name'} ?>
                                                             <?php if (!empty($device->{'devices.domain'})) { ?>
-                                                                <br /><?= $device->{'devices.domain'} ?>
+                                                                <br><?= $device->{'devices.domain'} ?>
                                                             <?php } ?>
                                                         <?php } ?>
                                                     </td>

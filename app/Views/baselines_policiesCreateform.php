@@ -71,7 +71,7 @@ if (stripos($meta->query_string, 'source=device') !== false) {
                                 <?php if ($type === 'device') { ?>
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="hostname" class="form-label"><?= __('Search For a Device') ?></label><br />
+                                        <label for="hostname" class="form-label"><?= __('Search For a Device') ?></label><br>
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="hostname" name="hostname" />
                                             <div class="pull-right" style="padding-left:4px;">
@@ -83,7 +83,7 @@ if (stripos($meta->query_string, 'source=device') !== false) {
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label for="data[attributes][device_id]" class="form-label"><?= __('Choose a Device') ?></label><br />
+                                        <label for="data[attributes][device_id]" class="form-label"><?= __('Choose a Device') ?></label><br>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][device_id]" id="data[attributes][device_id]" disabled>
                                                 <option value=""><?= __('Choose a Device') ?></option>
@@ -94,7 +94,7 @@ if (stripos($meta->query_string, 'source=device') !== false) {
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label for="data[attributes][table]" class="form-label"><?= __('Select a Table') ?></label><br />
+                                        <label for="data[attributes][table]" class="form-label"><?= __('Select a Table') ?></label><br>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][table]" id="data[attributes][table]" disabled>
                                                 <option value=""><?= __('Choose a Table') ?></option>
@@ -108,7 +108,7 @@ if (stripos($meta->query_string, 'source=device') !== false) {
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label for="data[attributes][operator]" class="form-label"><?= __('Assign an Operator') ?></label><br />
+                                        <label for="data[attributes][operator]" class="form-label"><?= __('Assign an Operator') ?></label><br>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][operator]" id="data[attributes][operator]" disabled>
                                             </select>

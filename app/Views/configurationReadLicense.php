@@ -16,8 +16,8 @@ include 'shared/create_functions.php';
                     <div class="row" style="padding-top:16px;">
                         <div class="col-6">
                             <div class="offset-2 col-8">
-                                <br />
-                                <h5><?= __('Your Licenses') ?></h5><br />
+                                <br>
+                                <h5><?= __('Your Licenses') ?></h5><br>
                                 <?php
                                 if (!empty($license->product) and !empty($license_collector->product)) {
                                     $disabled = 'disabled';
@@ -30,14 +30,14 @@ include 'shared/create_functions.php';
                                         $valid = '<span class="text-danger">' . __('expired') . '</span>';
                                     }
                                     echo '<div id="license_string">';
-                                    echo "<strong>" . $license->product . "</strong><br />";
+                                    echo "<strong>" . $license->product . "</strong><br>";
                                     echo '<div class="row"><div class="col-11">';
-                                    echo $license->product . ' ' . __('is licensed to') . ' ' . $license->company . ' ' . __('for') . ' ' . $license->conditions . '.<br />';
+                                    echo $license->product . ' ' . __('is licensed to') . ' ' . $license->company . ' ' . __('for') . ' ' . $license->conditions . '.<br>';
                                     echo __('This license expires on') . ' ' . date('Y-m-d h:i:s', $license->expires) . ' - ' . $valid . '</div>';
                                     echo '<div class="col-1"><button class="btn btn-sm btn-danger remove_license" data-name="license_string" data-id="' . $meta->license_string . '"><span class="fa fa-trash"></span></button></div></div>';
-                                    echo '<br /><br /><hr /><br /></div>';
+                                    echo '<br><br><hr><br></div>';
                                 } else {
-                                    echo '<div id="license_string"><span class="text-danger">' . __('No License for Professional or Enterprise') . '</span><br /><br /><hr /><br /></div>';
+                                    echo '<div id="license_string"><span class="text-danger">' . __('No License for Professional or Enterprise') . '</span><br><br><hr><br></div>';
                                 } ?>
                                 <?php
                                 if (!empty($license_collector->product)) {
@@ -46,28 +46,28 @@ include 'shared/create_functions.php';
                                         $valid = '<span class="text-danger">' . __('expired') . '</span>';
                                     }
                                     echo '<div id="license_collector">';
-                                    echo "<strong>" . @$license_collector->product . "</strong><br />";
+                                    echo "<strong>" . @$license_collector->product . "</strong><br>";
                                     echo '<div class="row"><div class="col-11">';
-                                    echo $license_collector->product . ' ' . __('is licensed to') . ' ' . $license_collector->company . ' ' . __('for') . ' ' . $license_collector->conditions . '.<br />';
+                                    echo $license_collector->product . ' ' . __('is licensed to') . ' ' . $license_collector->company . ' ' . __('for') . ' ' . $license_collector->conditions . '.<br>';
                                     echo __('This license expires on') . ' ' . date('Y-m-d h:i:s', $license_collector->expires) . ' - ' . $valid . '</div>';
                                     echo '<div class="col-1"><button class="btn btn-sm btn-danger remove_license" data-name="license_collector" data-id="' . $meta->license_string_collector . '"><span class="fa fa-trash"></span></button></div></div>';
-                                    echo '<br /><br /><hr /><br /></div>';
+                                    echo '<br><br><hr><br></div>';
                                 } ?>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="offset-2 col-8">
-                                <br />
+                                <br>
                                 <h5><?= __('Insert your Purchased license Key') ?></h5>
                                 <label class="form-label" for="data[attributes][license_string]"><?= __('License Key'); ?></label>
                                 <textarea class="form-control" rows="4" name="data[attributes][license_string]" id="data[attributes][license_string]" <?= $disabled ?>></textarea>
                                 <?php if ($disabled === 'disabled') { ?>
                                     <div class="form-text form-help float-end"><span><?= __('You must delete your existing license before adding a new license.') ?></span></div>
                                 <?php } ?>
-                                <br />
+                                <br>
                                 <label for="activate" class="form-label">&nbsp;</label>
                                 <button id="activate" name="activate" type="button" class="btn btn-primary" <?= $disabled ?>><?= __('Activate Key'); ?></button>
-                                <br /><br />
+                                <br><br>
                             </div>
                         </div>
                     </div>

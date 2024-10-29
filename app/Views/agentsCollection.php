@@ -26,7 +26,7 @@ if (!empty($config->feature_agents_advanced) and $config->feature_agents_advance
                     <?= collection_card_header($meta->collection, $meta->icon, $user, '', $meta->query_string) ?>
                 </div>
                 <div class="card-body">
-                    <br />
+                    <br>
                     <div class="table-responsive">
                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"],[2,"asc"],[3,"asc"]]'>
                             <thead>
@@ -75,7 +75,7 @@ if (!empty($config->feature_agents_advanced) and $config->feature_agents_advance
                 @include 'help/'. $meta->collection . '.php';
                 echo collection_intro_header('Introduction to ' . $meta->heading, $meta->collection, $meta->icon, @$intro, @$body);
             } else { ?>
-            <br />
+            <br>
             <div class="card">
                 <div class="card-header" style="height:46px;"><?= __('Installing') ?></div>
                 <div class="card-body">

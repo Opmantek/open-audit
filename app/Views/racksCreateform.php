@@ -111,7 +111,7 @@ $tooltip = '<a href="#" style="color: #16325c;" class="float-end" data-bs-contai
                                     <?= create_text_field('data[attributes][serial]', __('Serial'), $dictionary->attributes->create) ?>
                                     <?= create_text_field('data[attributes][asset_number]', __('Asset Number'), $dictionary->attributes->create) ?>
                                     <?= create_text_field('data[attributes][bar_code]', __('Bar Code'), $dictionary->attributes->create) ?>
-                                    <br />
+                                    <br>
                                     <?= create_text_field('data[attributes][ru_start]', __('RU Start'), $dictionary->attributes->create, '', '', '1') ?>
                                     <?= create_text_field('data[attributes][pod]', __('POD'), $dictionary->attributes->create) ?>
                                     <?= create_text_field('data[attributes][physical_height]', __('Physical Height'), $dictionary->attributes->create, '', 'number') ?>
@@ -120,13 +120,13 @@ $tooltip = '<a href="#" style="color: #16325c;" class="float-end" data-bs-contai
                                     <?= create_text_field('data[attributes][weight_empty]', __('Weight Empty'), $dictionary->attributes->create, '', 'number') ?>
                                     <?= create_text_field('data[attributes][weight_current]', __('Weight Current'), $dictionary->attributes->create, '', 'number') ?>
                                     <?= create_text_field('data[attributes][weight_max]', __('Weight Max'), $dictionary->attributes->create, '', 'number') ?>
-                                    <br />
+                                    <br>
                                     <?= create_text_field('data[attributes][btu_total]', __('BTU Total'), $dictionary->attributes->create, '', 'number') ?>
                                     <?= create_text_field('data[attributes][btu_max]', __('BTU Max'), $dictionary->attributes->create, '', 'number') ?>
                                     <?= create_text_field('data[attributes][power_circuit]', __('Power Circuit'), $dictionary->attributes->create) ?>
                                     <?= create_text_field('data[attributes][power_sockets]', __('Power Sockets'), $dictionary->attributes->create, '', 'number') ?>
                                     <?= create_text_field('data[attributes][circuit_count]', __('Circuit Count'), $dictionary->attributes->create, '', 'number') ?>
-                                    <br />
+                                    <br>
                                 </div>
 
                             </form>

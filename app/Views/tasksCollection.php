@@ -9,7 +9,7 @@ include 'shared/collection_functions.php';
                     <?= collection_card_header($meta->collection, $meta->icon, $user, '', $meta->query_string) ?>
                 </div>
                 <div class="card-body">
-                    <br />
+                    <br>
                     <div class="alert alert-success fade show text-center" role="alert">
                         <?= __('Current date & time is ') . $meta->timestamp . ' (' . $meta->timezone . ')' ?>
                     </div>

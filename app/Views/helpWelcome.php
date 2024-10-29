@@ -33,7 +33,7 @@ foreach ($ips as $ip) {
                             <div class="row">
                                 <div class="col-12 text-center align-self-center">
                                     <h2><?= __('Want to know more?') ?></h2>
-                                    <p><?= __('Follow any of the links below and discover how to use Open-AudIT to find out "What\'s On Your Network?"') ?><br /><br /></p>
+                                    <p><?= __('Follow any of the links below and discover how to use Open-AudIT to find out "What\'s On Your Network?"') ?><br><br></p>
                                 </div>
                             </div>
                             <div class="row">
@@ -47,9 +47,9 @@ foreach ($ips as $ip) {
                                         </div>
                                     </div>
                                 </div>
-                                <br />
+                                <br>
                             </div>
-                            <br />
+                            <br>
                             <div class="row">
                                 <div class="col-3">
                                     <div class="card text-center">
@@ -148,7 +148,7 @@ foreach ($ips as $ip) {
                     </div>
                     <div class="modal-body">
                         <p>This form provides a quick and simple way to get started discovering the devices on your network. For more (much more) detailed options, you can individually create <a href="#">credentials</a>, <a href="#">locations</a> and <a href="#">discoveries</a> using the main menu items.</p>
-                        <hr />
+                        <hr>
                         <h3>Credentials</h3>
                         <p>We need some credentials to be able to effectively talk to the devices on your network.</p><br>
                         <div class="row">
@@ -176,8 +176,8 @@ foreach ($ips as $ip) {
                                 <input type="password" class="form-control" placeholder="" value="public" aria-label="snmp_community" id="snmp_community" name="snmp_community">
                             </div>
                         </div>
-                        <hr />
-                        <br />
+                        <hr>
+                        <br>
                         <div class="row">
                             <div class="col">
                                 <h2>Location</h2>
@@ -194,11 +194,11 @@ foreach ($ips as $ip) {
                             <div class="col">
                                 <h2>Execute</h2>
                                 <p>And finally, click Submit to execute this discovery.</p>
-                                <label for="submit" class="form-label">Click Submit to Execute</label><br />
+                                <label for="submit" class="form-label">Click Submit to Execute</label><br>
                                 <button type="submit" class="btn btn-primary" id="submit" name="submit" >Submit</button>
                             </div>
                         </div>
-                        <br />
+                        <br>
                     </div>
                 </div>
             </div>

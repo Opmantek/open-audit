@@ -72,7 +72,7 @@ include 'shared/create_functions.php';
                                         </div>
                                     </div>
                                 </div>
-                                <br />
+                                <br>
 
 
                                 <div class="row" style="padding-top:16px;">
@@ -205,7 +205,7 @@ window.onload = function () {
 
         $('#add_inputs').click(function (e) {
             input_count += 1;
-            var content = "                                                        <br /><div class=\"row\" id=\"inputs_" + input_count + "\">\
+            var content = "                                                        <br><div class=\"row\" id=\"inputs_" + input_count + "\">\
                                                                 <div class=\"row\">\
                                                                     <div class=\"col-3\">\
                                                                         <select class=\"input_table form-select\" id=\"data[attributes][inputs][" + input_count + "][table]\" name=\"data[attributes][inputs][" + input_count + "][table]\" data-row=\"" + input_count + "\">\
@@ -253,7 +253,7 @@ window.onload = function () {
         $('#add_outputs').click(function (e) {
             output_count += 1;
 
-            var content = "                                                        <br /><div class=\"row\" id=\"outputs_" + output_count + "\">\
+            var content = "                                                        <br><div class=\"row\" id=\"outputs_" + output_count + "\">\
                                                                 <div class=\"row\">\
                                                                     <div class=\"col-3\">\
                                                                         <select class=\"form-select\" id=\"data[attributes][outputs][" + output_count + "][table]\" name=\"data[attributes][outputs][" + output_count + "][table]\">\

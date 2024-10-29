@@ -38,7 +38,7 @@ if (stripos($meta->query_string, 'type=cluster') !== false) {
                                 <?php if ($type === 'cluster') { ?>
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="hostname" class="form-label"><?= __('Search For a Device') ?></label><br />
+                                        <label for="hostname" class="form-label"><?= __('Search For a Device') ?></label><br>
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="hostname" name="hostname" />
                                             <div class="pull-right" style="padding-left:4px;">
@@ -50,7 +50,7 @@ if (stripos($meta->query_string, 'type=cluster') !== false) {
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <label for="data[attributes][device_id]" class="form-label"><?= __('Choose a Device') ?></label><br />
+                                        <label for="data[attributes][device_id]" class="form-label"><?= __('Choose a Device') ?></label><br>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][device_id]" id="data[attributes][device_id]" disabled>
                                                 <option value=""><?= __('Choose a Device') ?></option>
@@ -62,7 +62,7 @@ if (stripos($meta->query_string, 'type=cluster') !== false) {
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="data[attributes][role]" class="form-label"><?= __('Role') ?> <span style="color: #dc3545;">*</span></label><br />
+                                        <label for="data[attributes][role]" class="form-label"><?= __('Role') ?> <span style="color: #dc3545;">*</span></label><br>
                                         <select class="form-select" name="data[attributes][role]" id="data[attributes][role]">
                                         <option value="" selected><?= __('') ?></option>
                                         <option value="head"><?= __('Head') ?></option>

@@ -119,7 +119,7 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="policies" role="tabpanel" tabindex="0">
                             <br>
                             <div class="row">
-                                <h3 class="text-center">Policies: <?= $resource->result->policies ?>, Pass: <span class="text-success"><?= $resource->result->pass ?></span>, Fail: <span class="text-danger"><?= $resource->result->fail ?></span></h3><br />
+                                <h3 class="text-center">Policies: <?= $resource->result->policies ?>, Pass: <span class="text-success"><?= $resource->result->pass ?></span>, Fail: <span class="text-danger"><?= $resource->result->fail ?></span></h3><br>
                             </div>
                             <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
@@ -151,7 +151,7 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="devices" role="tabpanel" tabindex="0">
                             <br>
                             <div class="row">
-                                <h3 class="text-center">Devices: <?= $resource->result->devices ?>, Pass: <span class="text-success"><?= $resource->result->pass ?></span>, Fail: <span class="text-danger"><?= $resource->result->fail ?></span></h3><br />
+                                <h3 class="text-center">Devices: <?= $resource->result->devices ?>, Pass: <span class="text-success"><?= $resource->result->pass ?></span>, Fail: <span class="text-danger"><?= $resource->result->fail ?></span></h3><br>
                             </div>
                             <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                 <thead>
@@ -183,7 +183,7 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="policy" role="tabpanel" tabindex="0">
                             <br>
                             <div class="row">
-                                <h3 class="text-center"><?= html_entity_decode($policy->name) ?>, Pass: <span class="text-success"><?= $policy->pass ?></span>, Fail: <span class="text-danger"><?= $policy->fail ?></span></h3><br />
+                                <h3 class="text-center"><?= html_entity_decode($policy->name) ?>, Pass: <span class="text-success"><?= $policy->pass ?></span>, Fail: <span class="text-danger"><?= $policy->fail ?></span></h3><br>
                             </div>
                             <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                                 <thead>

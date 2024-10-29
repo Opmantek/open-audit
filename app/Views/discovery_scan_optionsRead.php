@@ -40,7 +40,7 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="timing" data-dictionary="<?= $dictionary->columns->timing ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="timing" data-dictionary="<?= $dictionary->columns->timing ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -62,7 +62,7 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="nmap_tcp_ports" data-dictionary="<?= $dictionary->columns->nmap_tcp_ports ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="nmap_tcp_ports" data-dictionary="<?= $dictionary->columns->nmap_tcp_ports ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -84,7 +84,7 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="nmap_udp_ports" data-dictionary="<?= $dictionary->columns->nmap_udp_ports ?>"><span><br /></span></div>
+                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="nmap_udp_ports" data-dictionary="<?= $dictionary->columns->nmap_udp_ports ?>"><span><br></span></div>
                                 </div>
                             </div>
 

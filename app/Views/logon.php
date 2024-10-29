@@ -210,8 +210,8 @@ include('shared/lang.php');
                                                         </div>
                                                     </form>
                                                 </div>
-                                                <br />
-                                                <?= __('The direct link for the script is') ?>&nbsp;<a href="#" id="go_link">#</a><br />
+                                                <br>
+                                                <?= __('The direct link for the script is') ?>&nbsp;<a href="#" id="go_link">#</a><br>
                                                 <?php if (stripos(base_url(), 'localhost') !== false or stripos(base_url(), '127.0.0') !== false) {
                                                     echo __('<br><strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.');
                                                 } else {

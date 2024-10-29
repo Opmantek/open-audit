@@ -39,29 +39,29 @@ if (!empty($data[0]) and $included[0]->attributes->type === 'collector') {
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <p class="text-center"><br />
+                        <p class="text-center"><br>
                         <?php if ($included[0]->attributes->type === 'collector') { ?>
                             <?php if ($every != '') { ?>
-                                This collector requests tasks every <?= $every ?>.<br /><br />
+                                This collector requests tasks every <?= $every ?>.<br><br>
                                 <?php if ($data[0]->{'last_run'} !== "2001-01-01 00:00:00") { ?>
-                                    The last time this task was run was <?= $data[0]->{'last_run'}; ?>.<br /><br />
+                                    The last time this task was run was <?= $data[0]->{'last_run'}; ?>.<br><br>
                                 <?php } else { ?>
-                                    This task has not yet been run.<br /><br />
+                                    This task has not yet been run.<br><br>
                                 <?php } ?>
                             <?php } else { ?>
-                            <b>This collector is not requesting tasks.</b><br /><br />
+                            <b>This collector is not requesting tasks.</b><br><br>
                             <?php } ?>
-                            The number of devices discovered by this collector is <?= $config->device_count ?>.<br /><br />
-                            This collector is managed by <a target="_blank" href="<?= $included[0]->attributes->host ?><?= $included[0]->attributes->community ?>"><?= $included[0]->attributes->host ?></a>.<br /><br />
+                            The number of devices discovered by this collector is <?= $config->device_count ?>.<br><br>
+                            This collector is managed by <a target="_blank" href="<?= $included[0]->attributes->host ?><?= $included[0]->attributes->community ?>"><?= $included[0]->attributes->host ?></a>.<br><br>
                         <?php } ?>
                         <?php if ($included[0]->attributes->type === 'stand-alone') { ?>
-                            This collector is in stand-alone mode.<br /><br />
-                            It should be managed locally (not on the associated server).<br /><br />
-                            Any devices found will be forwarded to <a target="_blank" href="<?= $included[0]->attributes->host ?><?= $included[0]->attributes->community ?>"><?= $included[0]->attributes->host ?></a>.<br /><br />
+                            This collector is in stand-alone mode.<br><br>
+                            It should be managed locally (not on the associated server).<br><br>
+                            Any devices found will be forwarded to <a target="_blank" href="<?= $included[0]->attributes->host ?><?= $included[0]->attributes->community ?>"><?= $included[0]->attributes->host ?></a>.<br><br>
                         <?php } ?>
                         </p>
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
         </main>

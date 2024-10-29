@@ -50,7 +50,7 @@ if ($update) {
                     </div>
                 </div>
             </div>
-            <br />
+            <br>
 
             <div class="card">
                 <div class="card-header" style="height:57px;">
@@ -68,7 +68,7 @@ if ($update) {
                     </div>
                 </div>
                 <div class="card-body">
-                    <br />
+                    <br>
                     <div class="table-responsive">
                     <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
                         <thead>
