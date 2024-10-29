@@ -42,7 +42,7 @@ if (!empty($config->servers)) {
         <title>Open-AudIT</title>
 
         <!-- JS -->
-        <script {csp-script-nonce} defer src="<?= base_url('js/jquery.min.js') ?>"></script>
+        <script {csp-script-nonce} async src="<?= base_url('js/jquery.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/popper.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/jquery.dataTables.min.js') ?>"></script>

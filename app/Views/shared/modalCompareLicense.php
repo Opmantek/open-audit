@@ -299,7 +299,7 @@ $countries = array(
 </div>
 
 <script {csp-script-nonce}>
-window.onload = function () {
+$(window).on("load", function() {
     $(document).ready(function () {
         <?php
         if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
@@ -414,5 +414,5 @@ window.onload = function () {
             });
         });
     });
-}
+});
 </script>
