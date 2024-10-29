@@ -21,7 +21,7 @@ $btnEntText = __('Upgrade');
 
 $message = '';
 $license = (!empty($config->license)) ? strtolower($config->license) : 'none';
-$product = (!empty($config->product)) ? $config->product : 'community';
+$product = (!empty($config->product)) ? strtolower($config->product) : 'community';
 
 if ($product === 'enterprise' and $license !== 'free') {
     $highlightEnt = "background: rgba(var(--bs-body-color-rgb), 0.03)";
@@ -50,7 +50,7 @@ if ($product === 'community') {
     $highlightFre = "background: rgba(var(--bs-body-color-rgb), 0.03)";
     $btnFre = 'btn-success';
     $btnFreStyle = 'style="color:white;"';
-    $message = 'Try Open-AudIT Enterprise on us, without a time limit. All the features of Enterprise for 100 devices.';
+    $message = 'Try Open-AudIT Enterprise on us for 12 months. All the features of Enterprise for 100 devices.';
 }
 
 $button_prompt_never = '';
@@ -301,11 +301,11 @@ $countries = array(
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
-
         <?php
         if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
             echo "\n            $('#modalCompareLicense').modal('show');\n";
-        } ?>
+        }
+        ?>
 
         $(document).on('click', '.dismiss_modal_button', function (e) {
             $('*').css('cursor','wait');
