@@ -11,7 +11,7 @@ include 'shared/create_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>" id="thisform">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>" id="thisform">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
                                 <?= create_select('data[attributes][org_id]', __('Organisation'), $orgs, $dictionary->attributes->create) ?>
@@ -69,9 +69,11 @@ include 'shared/create_functions.php';
                                             <select class="form-select" multiple aria-label="tables" id="tables" name="tables" size="10">
                                                 <option selected>devices</option>
                                                 <option value="">------</option>
-                                                <?php foreach ($included['tables'] as $table => $fields) { if ($table !== 'devices') { ?>
+                                                <?php foreach ($included['tables'] as $table => $fields) {
+                                                    if ($table !== 'devices') { ?>
                                                     <option value="<?= $table ?>"><?= $table ?></option>
-                                                <?php } } ?>
+                                                    <?php }
+                                                } ?>
                                             </select>
                                         </div>
                                         <?php foreach ($included['tables'] as $table => $fields) { ?>
@@ -249,8 +251,8 @@ window.onload = function () {
                             <select class="form-select" id="where[' + $where + '][field]" name="where[' + $where + '][field]">\
                             <option value=""></option>\
                             <?php foreach ($included['tables'] as $table => $fields) {
-                                foreach ($fields as $field) { 
-                                    echo '<option value="' . $table . '.' . $field . '">' . $table . '.' . $field . '</option>\\' . "\n"; 
+                                foreach ($fields as $field) {
+                                    echo '<option value="' . $table . '.' . $field . '">' . $table . '.' . $field . '</option>\\' . "\n";
                                 }
                             } ?>\
                             </select>\

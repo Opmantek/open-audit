@@ -236,7 +236,7 @@ if (count($included['issues']) > 0) {
                                             continue;
                                         }
                                         if ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
-                                            echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
+                                            echo "<td><a href=\"" . url_to($meta->collection . 'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
                                         } else {
                                             echo "<td>" . $item->attributes->{$key} . "</td>\n";
                                         }
@@ -255,7 +255,7 @@ if (count($included['issues']) > 0) {
             </div>
             <?php
             if (count($data) === 2) {
-                @include 'help/'. $meta->collection . '.php';
+                @include 'help/' . $meta->collection . '.php';
                 echo collection_intro_header('Introduction to ' . $meta->heading, $meta->collection, $meta->icon, @$intro, @$body);
             }
             ?>

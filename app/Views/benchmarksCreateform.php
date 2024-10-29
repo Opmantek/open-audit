@@ -9,7 +9,7 @@ include 'shared/create_functions.php';
                     <?= create_card_header($meta->collection, $meta->icon, $user); ?>
                 </div>
                 <div class="card-body">
-                    <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
+                    <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                         <div class="row">
                             <div class="col-md-6">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
@@ -69,7 +69,7 @@ include 'shared/create_functions.php';
                                         <select class="form-select" name="data[attributes][hour][]" id="data[attributes][hour][]">
                                             <option value="0">0</option>
                                             <option value="1" selected>1</option>
-                                            <?php for ($i=2; $i <= 23; $i++) { ?>
+                                            <?php for ($i = 2; $i <= 23; $i++) { ?>
                                             <option value="<?= $i ?>" ><?= $i ?></option>
                                             <?php } ?>
                                         </select>

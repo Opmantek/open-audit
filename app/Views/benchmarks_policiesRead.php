@@ -81,12 +81,14 @@ include 'shared/read_functions.php';
                                 <div class="col-8 offset-2">
                                     <br><hr>
                                     <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
-                                    <?php if (!empty($resource->remediation)) {
-                                    foreach ($resource->remediation as $key => $value) {
-                                        $id = str_replace(' ', '', $key);
-                                        ?>
-                                    <a class="flex-sm-fill text-sm-center nav-link" href="#<?= $id ?>"  id="<?= $key ?>-tab"><?= $key ?></a>
-                                    <?php } } ?>
+                                    <?php
+                                    if (!empty($resource->remediation)) {
+                                        foreach ($resource->remediation as $key => $value) {
+                                            $id = str_replace(' ', '', $key);
+                                            echo '<a class="flex-sm-fill text-sm-center nav-link" href="#' . $id . '"  id="' . $key . '-tab">' . $key . "</a>\n";
+                                        }
+                                    }
+                                    ?>
                                     </ul>
                                 </div>
                             </div>
@@ -106,7 +108,8 @@ include 'shared/read_functions.php';
                                     </div>
                                 </div>
                             </div>
-                            <?php } } ?>
+                                <?php }
+                            } ?>
                         </div>
                     </div>
                 </div>

@@ -18,7 +18,7 @@ if (empty($display_columns)) {
     $display_columns = $meta->properties;
 }
 $count = count($display_columns);
-for ($i=0; $i < $count; $i++) {
+for ($i = 0; $i < $count; $i++) {
     $display_columns[$i] = str_replace('devices.', '', $display_columns[$i]);
 }
 $audit_status = false;

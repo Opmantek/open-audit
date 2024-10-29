@@ -15,7 +15,7 @@ if (stripos($meta->query_string, 'source=device') !== false) {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
                                 <input type="hidden" value="<?= $included['baseline'][0]->attributes->org_id ?>" id="data[attributes][org_id]" name="data[attributes][org_id]" />
                                 <input type="hidden" value="<?= $included['baseline'][0]->attributes->id ?>" id="data[attributes][baseline_id]" name="data[attributes][baseline_id]" />

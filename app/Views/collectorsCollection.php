@@ -36,11 +36,11 @@ include 'shared/collection_functions.php';
                                             continue;
                                         }
                                         if ($key === 'resource') {
-                                            echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".resource=" . $item->attributes->resource . "\">" . $item->attributes->resource . "</a></td>\n";
+                                            echo "<td><a href=\"" . url_to($meta->collection . 'Collection') . "?" . $meta->collection . ".resource=" . $item->attributes->resource . "\">" . $item->attributes->resource . "</a></td>\n";
                                         } elseif ($key === 'type') {
-                                            echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".type=" . $item->attributes->type . "\">" . $item->attributes->type . "</a></td>\n";
+                                            echo "<td><a href=\"" . url_to($meta->collection . 'Collection') . "?" . $meta->collection . ".type=" . $item->attributes->type . "\">" . $item->attributes->type . "</a></td>\n";
                                         } elseif ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
-                                            echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
+                                            echo "<td><a href=\"" . url_to($meta->collection . 'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
                                         } else {
                                             echo "<td>" . $item->attributes->{$key} . "</td>\n";
                                         }

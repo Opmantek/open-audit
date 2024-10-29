@@ -51,7 +51,7 @@ include 'shared/collection_functions.php';
             </div>
             <?php
             if (count($data) === 0) {
-                @include 'help/'. $meta->collection . '.php';
+                @include 'help/' . $meta->collection . '.php';
                 echo collection_intro_header('Introduction to ' . $meta->heading, $meta->collection, $meta->icon, @$intro, @$body);
             }
             ?>

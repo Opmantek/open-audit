@@ -4,7 +4,7 @@
 include 'shared/collection_functions.php';
 $user->permissions['components'] = '';
 if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
-    for ($i=0; $i < count($data); $i++) {
+    for ($i = 0; $i < count($data); $i++) {
         unset($data[$i]->attributes->first_seen);
         unset($data[$i]->attributes->last_seen);
         $data[$i]->attributes->policy = '<a title="' . __('View Policy') . '" role="button" class="btn ' . $GLOBALS['button'] . ' btn-primary" href="' . url_to('benchmarks_policiesRead', intval($data[$i]->attributes->{'benchmarks_policies.id'})) . '"><span style="width:1rem;" title="' . __('View Policy') . '" class="fa fa-eye" aria-hidden="true"></span></a>';
@@ -49,7 +49,7 @@ $dataSet = array();
 foreach ($data as $item) {
     $dataSet[] = $item->attributes;
 }
-for ($i=0; $i < count($dataSet); $i++) {
+for ($i = 0; $i < count($dataSet); $i++) {
     foreach ($dataSet[$i] as $key => $value) {
         if (strpos($key, '.') !== false) {
             // We have to replace the . because it breaks (dataTables uses JS syntax)

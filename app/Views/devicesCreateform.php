@@ -11,7 +11,7 @@ include 'shared/create_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>" accept-charset="utf-8" enctype="multipart/form-data">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>" accept-charset="utf-8" enctype="multipart/form-data">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
 

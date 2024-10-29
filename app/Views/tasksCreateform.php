@@ -11,7 +11,7 @@ include 'shared/create_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
@@ -85,7 +85,7 @@ include 'shared/create_functions.php';
                                         <select class="form-select" multiple name="data[attributes][minute][]" id="data[attributes][minute][]">
                                             <option value="*">*</option>
                                             <option value="0" selected>0</option>
-                                            <?php for ($i=1; $i <= 59; $i++) { ?>
+                                            <?php for ($i = 1; $i <= 59; $i++) { ?>
                                             <option value="<?= $i ?>" ><?= $i ?></option>
                                             <?php } ?>
                                         </select>
@@ -101,7 +101,7 @@ include 'shared/create_functions.php';
                                         <select class="form-select" multiple name="data[attributes][hour][]" id="data[attributes][hour][]">
                                             <option value="*">*</option>
                                             <option value="0" selected>0</option>
-                                            <?php for ($i=1; $i <= 23; $i++) { ?>
+                                            <?php for ($i = 1; $i <= 23; $i++) { ?>
                                             <option value="<?= $i ?>" ><?= $i ?></option>
                                             <?php } ?>
                                         </select>
@@ -117,7 +117,7 @@ include 'shared/create_functions.php';
                                         <select class="form-select" multiple name="data[attributes][day_of_month][]" id="data[attributes][day_of_month][]">
                                             <option value="*">*</option>
                                             <option value="0" selected>0</option>
-                                            <?php for ($i=1; $i <= 31; $i++) { ?>
+                                            <?php for ($i = 1; $i <= 31; $i++) { ?>
                                             <option value="<?= $i ?>" ><?= $i ?></option>
                                             <?php } ?>
                                         </select>

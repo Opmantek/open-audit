@@ -9,7 +9,7 @@ include 'shared/create_functions.php';
                     <?= create_card_header($meta->collection, $meta->icon, $user); ?>
                 </div>
                 <div class="card-body">
-                    <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
+                    <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                     <div class="row">
                         <div class="col-md-4">
                             <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />

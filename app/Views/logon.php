@@ -160,7 +160,7 @@ include('shared/lang.php');
                                                         case 'okta':
                                                             $logo = 'fa-solid fa-o';
                                                             break;
-                                                        
+
                                                         default:
                                                             $logo = '';
                                                             break;

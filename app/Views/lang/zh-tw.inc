@@ -743,7 +743,8 @@ $GLOBALS["lang"]["XML"]="XML";
 $GLOBALS["lang"]["yes"]="yes";
 $GLOBALS["lang"]["Yes"]="Yes";
 $GLOBALS["lang"]["You should set all the 'default_*' items, to take advantage of Discovery."]="You should set all the 'default_*' items, to take advantage of Discovery.";
-$GLOBALS["lang"]["Your Open-AudIT database contains the following devices in a production state:"]="Your Open-AudIT database contains the following devices in a production state:";$GLOBALS["lang"]["Welcome to Open-AudIT."]="Welcome to Open-AudIT.";
+$GLOBALS["lang"]["Your Open-AudIT database contains the following devices in a production state:"]="Your Open-AudIT database contains the following devices in a production state:";
+$GLOBALS["lang"]["Welcome to Open-AudIT."]="Welcome to Open-AudIT.";
 $GLOBALS["lang"]["Extra Reports are available at Menu -> Admin -> Reports -> Activate Report.<br>Take a look, you might find exactly the Report you need."]="Extra Reports are available at Menu -> Admin -> Reports -> Activate Report.<br>Take a look, you might find exactly the Report you need.";
 $GLOBALS["lang"]["OS / Device"]="OS / 裝置";
 $GLOBALS["lang"]["Uptime"]="運作時間";
@@ -769,4 +770,3 @@ $GLOBALS["lang"]["IP"]="IP";
 $GLOBALS["lang"]["OU"]="OU";
 $GLOBALS["lang"]["Support Data"]="Support Data";
 $GLOBALS["lang"]["Host"]="主機";
-?>

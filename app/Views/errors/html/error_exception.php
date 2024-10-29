@@ -63,7 +63,6 @@ $errorId = uniqid('error', true);
 
                 <ol class="trace">
                 <?php foreach ($trace as $index => $row) : ?>
-
                     <li>
                         <p>
                             <!-- Trace info -->

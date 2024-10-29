@@ -90,12 +90,12 @@ include 'shared/collection_functions.php';
                                             continue;
                                         }
                                         if ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
-                                            echo "<td style=\"white-space: nowrap;\"><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
-                                        } else if ($key === 'os') {
-                                            echo "<td style=\"white-space: nowrap;\"><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".os=" . $item->attributes->{$key} . "\">" . $item->attributes->{$key} . "</a></td>\n";
-                                        } else if ($key === 'type') {
-                                            echo "<td style=\"white-space: nowrap;\"><a href=\"" . url_to($meta->collection.'Collection') . "?" . $meta->collection . ".type=" . $item->attributes->{$key} . "\">" . $item->attributes->{$key} . "</a></td>\n";
-                                        } else if ($key === 'last_run') {
+                                            echo "<td style=\"white-space: nowrap;\"><a href=\"" . url_to($meta->collection . 'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
+                                        } elseif ($key === 'os') {
+                                            echo "<td style=\"white-space: nowrap;\"><a href=\"" . url_to($meta->collection . 'Collection') . "?" . $meta->collection . ".os=" . $item->attributes->{$key} . "\">" . $item->attributes->{$key} . "</a></td>\n";
+                                        } elseif ($key === 'type') {
+                                            echo "<td style=\"white-space: nowrap;\"><a href=\"" . url_to($meta->collection . 'Collection') . "?" . $meta->collection . ".type=" . $item->attributes->{$key} . "\">" . $item->attributes->{$key} . "</a></td>\n";
+                                        } elseif ($key === 'last_run') {
                                             echo "<td style=\"white-space: nowrap;\">" . $item->attributes->{$key} . "</td>\n";
                                         } else {
                                             echo "<td>" . $item->attributes->{$key} . "</td>\n";

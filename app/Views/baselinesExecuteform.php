@@ -12,7 +12,7 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Execute', $meta->id) ?>">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Execute', $meta->id) ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
                                 <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('baselinesRead', $data[0]->id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>

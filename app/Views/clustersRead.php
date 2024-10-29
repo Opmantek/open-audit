@@ -129,7 +129,7 @@ if ($style === 'icontext') {
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="scaling" name="scaling" data-original-value="<?= $resource->{'scaling'} ?>" disabled>
                                                     <option value="" label=" " <?php if ($resource->{'scaling'} === '') { ?>selected<?php } ?>></option>
-                                                    <option value="auto" <?php if ($resource->{'scaling'} === 'auto')  { ?>selected<?php } ?>><?= __('Auto') ?></option>
+                                                    <option value="auto" <?php if ($resource->{'scaling'} === 'auto') { ?>selected<?php } ?>><?= __('Auto') ?></option>
                                                     <option value="fixed" <?php if ($resource->{'scaling'} === 'fixed') { ?>selected<?php } ?>><?= __('Fixed') ?></option>
                                                     <option value="other" <?php if ($resource->{'scaling'} === 'other') { ?>selected<?php } ?>><?= __('Other') ?></option>
                                                 </select>

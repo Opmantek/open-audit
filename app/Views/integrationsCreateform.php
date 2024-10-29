@@ -22,7 +22,7 @@ if (php_uname('s') === 'Windows NT') {
                     <?= create_card_header($meta->collection, $meta->icon, $user); ?>
                 </div>
                 <div class="card-body">
-                    <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
+                    <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                         <div class="row">
                             <div class="col-md-6">
                             

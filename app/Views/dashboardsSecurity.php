@@ -4,11 +4,11 @@
 include 'shared/collection_functions.php';
 $help_button = "";
 if ($user->toolbar_style === 'icontext') {
-    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($meta->collection.'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
+    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($meta->collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
 } elseif ($user->toolbar_style === 'icon') {
-    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($meta->collection.'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
+    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($meta->collection . 'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
 } else {
-    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($meta->collection.'Help') . "\">" . __("Help") . "</a>";
+    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($meta->collection . 'Help') . "\">" . __("Help") . "</a>";
 }
 $instance = & get_instance();
 $colour = '';
@@ -36,7 +36,7 @@ $colour = '';
                         <?php
                         if (intval($included['windows_client_av']->red) > 0) {
                             $colour = 'text-bg-danger';
-                        } else if (intval($included['windows_client_av']->yellow) > 0) {
+                        } elseif (intval($included['windows_client_av']->yellow) > 0) {
                             $colour = 'text-bg-warning';
                         } else {
                             $colour = 'text-bg-success';
@@ -62,7 +62,7 @@ $colour = '';
                         <?php
                         if (intval($included['windows_client_firewall']->red) > 0) {
                             $colour = 'text-bg-danger';
-                        } else if (intval($included['windows_client_firewall']->yellow) > 0) {
+                        } elseif (intval($included['windows_client_firewall']->yellow) > 0) {
                             $colour = 'text-bg-warning';
                         } else {
                             $colour = 'text-bg-success';
@@ -237,7 +237,7 @@ $colour = '';
                         <?php
                         if (intval($included['software']->red) > 0) {
                             $colour = 'text-bg-danger';
-                        } else if (intval($included['software']->yellow) > 0) {
+                        } elseif (intval($included['software']->yellow) > 0) {
                             $colour = 'text-bg-warning';
                         } else {
                             $colour = 'text-bg-success';
@@ -285,7 +285,7 @@ $colour = '';
                         <?php
                         if (intval($included['devices_not_seen']->red) > 0) {
                             $colour = 'text-bg-danger';
-                        } else if (intval($included['devices_not_seen']->yellow) > 0) {
+                        } elseif (intval($included['devices_not_seen']->yellow) > 0) {
                             $colour = 'text-bg-warning';
                         } else {
                             $colour = 'text-bg-success';

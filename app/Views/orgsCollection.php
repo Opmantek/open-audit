@@ -38,9 +38,9 @@ include 'shared/collection_functions.php';
                                             continue;
                                         }
                                         if ($key === 'parent_name' and !empty($item->attributes->parent_id)) {
-                                            echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?orgs.parent_id=" . $item->attributes->{'parent_id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
+                                            echo "<td><a href=\"" . url_to($meta->collection . 'Collection') . "?orgs.parent_id=" . $item->attributes->{'parent_id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
                                         } elseif ($key === 'type') {
-                                            echo "<td><a href=\"" . url_to($meta->collection.'Collection') . "?orgs.type=" . $item->attributes->type . "\">" . $item->attributes->type . "</a></td>\n";
+                                            echo "<td><a href=\"" . url_to($meta->collection . 'Collection') . "?orgs.type=" . $item->attributes->type . "\">" . $item->attributes->type . "</a></td>\n";
                                         } else {
                                             echo "<td>" . $item->attributes->{$key} . "</td>\n";
                                         }
@@ -63,7 +63,7 @@ include 'shared/collection_functions.php';
             </div>
             <?php
             if (count($data) === 1) {
-                @include 'help/'. $meta->collection . '.php';
+                @include 'help/' . $meta->collection . '.php';
                 echo collection_intro_header('Introduction to ' . $meta->heading, $meta->collection, $meta->icon, @$intro, @$body);
             }
             ?>

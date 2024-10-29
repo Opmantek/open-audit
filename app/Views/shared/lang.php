@@ -25,7 +25,7 @@ if (!function_exists('__')) {
                     if (!in_array($match, $lang_array)) {
                         $lang_array[] = $match;
                         sort($lang_array, SORT_NATURAL | SORT_FLAG_CASE);
-                        for ($i=0; $i < count($lang_array); $i++) {
+                        for ($i = 0; $i < count($lang_array); $i++) {
                             if ($lang_array[$i] === '') {
                                 unset($lang_array[$i]);
                             }

@@ -770,4 +770,3 @@ $GLOBALS["lang"]["IP"]="IP adresa";
 $GLOBALS["lang"]["OU"]="organizační jednotka";
 $GLOBALS["lang"]["Support Data"]="Podpůrná data";
 $GLOBALS["lang"]["Host"]="Stroj";
-?>

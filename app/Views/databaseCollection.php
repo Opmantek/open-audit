@@ -22,7 +22,8 @@ include 'shared/collection_functions.php';
                             </thead>
                             <tbody>
                             <?php if (!empty($data)) { ?>
-                                <?php foreach ($data as $item) { ?><tr>
+                                <?php foreach ($data as $item) {
+                                    ?><tr>
                                     <?= collection_button_read($meta->collection, $item->id) . "\n" ?>
                                     <td><?= $item->id ?></td>
                                     <td><?= $item->attributes->count ?></td>

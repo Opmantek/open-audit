@@ -4,7 +4,7 @@
 include 'shared/collection_functions.php';
 $user->permissions['components'] = '';
 if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
-    for ($i=0; $i < count($data); $i++) {
+    for ($i = 0; $i < count($data); $i++) {
         unset($data[$i]->attributes->first_seen);
         unset($data[$i]->attributes->last_seen);
         $data[$i]->attributes->policy = '<a title="' . __('View Policy') . '" role="button" class="btn ' . $GLOBALS['button'] . ' btn-primary" href="' . url_to('benchmarks_policiesRead', intval($data[$i]->attributes->{'benchmarks_policies.id'})) . '"><span style="width:1rem;" title="' . __('View Policy') . '" class="fa fa-eye" aria-hidden="true"></span></a>';
@@ -23,7 +23,7 @@ if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
                 break;
 
             default:
-            $data[$i]->attributes->result = '<span class="text-primary">' . $data[$i]->attributes->result . '</span>';
+                $data[$i]->attributes->result = '<span class="text-primary">' . $data[$i]->attributes->result . '</span>';
                 break;
         }
     }

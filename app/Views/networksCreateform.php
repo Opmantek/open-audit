@@ -12,7 +12,7 @@ $types = array('Campus Area Network','Cloud Network','Enterprise Private Network
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection.'Create') ?>">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
