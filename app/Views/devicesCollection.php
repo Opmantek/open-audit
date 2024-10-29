@@ -413,6 +413,7 @@ window.onload = function () {
         /* select all devices on /devices for bulk edit */
         $('#select_all').click(function () {
             $(':checkbox').each(function () { this.checked = !this.checked; });
+            $('#select_all').prop("checked", !$('#select_all').prop("checked"));
         });
 
         /* Send to bulk edit form */
