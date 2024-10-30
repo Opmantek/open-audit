@@ -169,6 +169,9 @@ class TasksModel extends BaseModel
         $baselinesModel = new \App\Models\BaselinesModel();
         $include['baselines'] = $baselinesModel->listUser();
 
+        $benchmarksModel = new \App\Models\BenchmarksModel();
+        $include['benchmarks'] = $benchmarksModel->listUser();
+
         $collectorsModel = new \App\Models\CollectorsModel();
         $include['collectors'] = $collectorsModel->listUser();
 

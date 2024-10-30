@@ -25,6 +25,7 @@ include 'shared/create_functions.php';
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]" required>
                                             <option value=""><?= __('Choose') ?></option>
                                             <option value="baselines"><?= __('Baseline') ?></option>
+                                            <option value="benchmarks"><?= __('Benchmark') ?></option>
                                             <option value="clouds"><?= __('Cloud Discovery') ?></option>
                                             <option value="discoveries"><?= __('Discovery') ?></option>
                                             <option value="integrations"><?= __('Integration') ?></option>
@@ -220,6 +221,11 @@ window.onload = function () {
                 $("#div_options").css('display', 'block');
                 $("#div_options").html(baselines);
             }
+            if ($type == "benchmarks") {
+                $("#div_collector").css('display', 'none');
+                $("#div_options").css('display', 'block');
+                $("#div_options").html(benchmarks);
+            }
             if ($type == "clouds") {
                 $("#div_collector").css('display', 'none');
                 $("#div_options").css('display', 'block');
@@ -304,6 +310,25 @@ window.onload = function () {
                                     <div class="offset-2 col-8" style="position:relative;">\
                                         <label for="data[attributes][sub_resource_id]" class="form-label"><?= __('Baseline') ?></label><br>\
                                         <input readonly required type="text" class="form-control" name="data[attributes][sub_resource_id]" id="data[attributes][sub_resource_id]" value="" placeholder="Please add a Baseline before creating a task." >\
+                                    </div>\
+                                </div>';
+        <?php } ?>
+
+        <?php if (!empty($included['benchmarks'])) { ?>
+        var benchmarks = '                                <div class="row" style="padding-top:16px;">\
+                                    <div class="offset-2 col-8" style="position:relative;">\
+                                        <label for="data[attributes][sub_resource_id]" class="form-label"><?= __('Benchmark') ?> <span style="color: #dc3545;">*</span></label><br>\
+                                        <select class="form-select" name="data[attributes][sub_resource_id]" id="data[attributes][sub_resource_id]">\
+                                            <option value=""> </option>\
+                                            <?php foreach ($included['benchmarks'] as $item) { ?><option value="<?= $item->id ?>"><?= $item->attributes->name ?></option><?php } ?>\
+                                        </select>\
+                                    </div>\
+                                </div>';
+        <?php } else { ?>
+        var benchmarks = '                                <div class="row" style="padding-top:16px;">\
+                                    <div class="offset-2 col-8" style="position:relative;">\
+                                        <label for="data[attributes][sub_resource_id]" class="form-label"><?= __('Benchmark') ?></label><br>\
+                                        <input readonly required type="text" class="form-control" name="data[attributes][sub_resource_id]" id="data[attributes][sub_resource_id]" value="" placeholder="Please add a Benchmark before creating a task." >\
                                     </div>\
                                 </div>';
         <?php } ?>
