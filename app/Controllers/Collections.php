@@ -844,7 +844,7 @@ class Collections extends BaseController
         $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         if ($this->resp->meta->collection === 'database') {
             $filename = str_replace(' ', '', ucwords(str_replace('_', ' ', $this->resp->meta->id)));
-            if (file_exists(APPPATH . '/Models/' . $filename . 'Model.php')) {
+            if (file_exists(APPPATH . 'Models/' . $filename . 'Model.php')) {
                 $namespace = "\\App\\Models\\" . $filename . "Model";
                 $IdModel = new $namespace();
                 $dictionary =  $IdModel->dictionary();

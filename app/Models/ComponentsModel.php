@@ -295,7 +295,7 @@ class ComponentsModel extends BaseModel
                     return null;
                 }
                 # $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $filename;
-                $target = APPPATH . '../public/custom_images/' . $filename;
+                $target = ROOTPATH . 'public/custom_images/' . $filename;
                 if (php_uname('s') === 'Windows NT') {
                     $target = 'c:\\xampp\\htdocs\\open-audit\\custom_images\\' . $filename;
                 }
@@ -364,7 +364,7 @@ class ComponentsModel extends BaseModel
             // $sql = "SELECT * FROM `image` WHERE id = ?";
             // $query = $this->db->query($sql, [$id]);
             // $data = $query->getResult();
-            // unlink(APPPATH . '../public/custom_images/' . $data[0]->filename);
+            // unlink(ROOTPATH . 'public/custom_images/' . $data[0]->filename);
         }
         $sql = "DELETE FROM `$type` WHERE id = ?";
         $query = $this->db->query($sql, [$id]);

@@ -170,7 +170,7 @@ class SupportModel extends BaseModel
 
         if (php_uname('s') === 'Linux') {
             $data->use = new stdClass();
-            $command_string = "grep ACCESS " . APPPATH . "../writable/logs/*.log | cut -d\" \" -f6- | sort | cut -d: -f2-3 | uniq -c | sed 's/^ *//g' | sed 's/ *$//g'";
+            $command_string = "grep ACCESS " . ROOTPATH . "writable/logs/*.log | cut -d\" \" -f6- | sort | cut -d: -f2-3 | uniq -c | sed 's/^ *//g' | sed 's/ *$//g'";
             exec($command_string, $output, $return_var);
             foreach ($output as $line) {
                 $temp = explode(' ', $line);
@@ -178,24 +178,24 @@ class SupportModel extends BaseModel
             }
             unset($output);
             // Get the oldest log file
-            $command_string = "ls " . APPPATH . "../writable/logs/*.log | sort | head -n1";
+            $command_string = "ls " . ROOTPATH . "writable/logs/*.log | sort | head -n1";
             exec($command_string, $output, $return_var);
-            $logfile = str_replace(APPPATH . '../writable/logs/log-', '', $output[0]);
+            $logfile = str_replace(ROOTPATH . 'writable/logs/log-', '', $output[0]);
             $logfile = str_replace('.log', '', $logfile);
             $data->app->oldest_logfile = $logfile;
             unset($output);
             unset($logfile);
 
             // Get the youngest log file
-            $command_string = "ls " . APPPATH . "../writable/logs/*.log | sort | tail -n1";
+            $command_string = "ls " . ROOTPATH . "writable/logs/*.log | sort | tail -n1";
             exec($command_string, $output, $return_var);
-            $logfile = str_replace(APPPATH . '../writable/logs/log-', '', $output[0]);
+            $logfile = str_replace(ROOTPATH . 'writable/logs/log-', '', $output[0]);
             $logfile = str_replace('.log', '', $logfile);
             $data->app->youngest_logfile = $logfile;
             unset($logfile);
 
             // Get any errors from the youngest logfile
-            $command_string = "grep ERROR " . APPPATH . "../writable/logs/*.log";
+            $command_string = "grep ERROR " . ROOTPATH . "writable/logs/*.log";
             exec($command_string, $output, $return_var);
             $data->logs = new stdClass();
             $data->logs = $output;

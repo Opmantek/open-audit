@@ -224,7 +224,7 @@ class Help extends BaseController
         $license = (!empty($_GET['license'])) ? $_GET['license'] : '';
         $license_contents = '';
         if (!empty($license)) {
-            $license_contents = @file_get_contents(APPPATH . '../other/licenses/' . $license . '.txt');
+            $license_contents = @file_get_contents(ROOTPATH . 'other/licenses/' . $license . '.txt');
         }
         return view('shared/header', [
             'config' => $this->config,

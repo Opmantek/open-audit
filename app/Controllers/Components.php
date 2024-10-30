@@ -101,6 +101,6 @@ class Components extends BaseController
         $filter->value = $type;
         $this->resp->meta->filter[] = $filter;
         $item = $this->componentsModel->read(intval($id));
-        return $this->response->download(APPPATH . '/Attachments/' . $item[0]->attributes->filename, null);
+        return $this->response->download(APPPATH . 'Attachments/' . $item[0]->attributes->filename, null);
     }
 }

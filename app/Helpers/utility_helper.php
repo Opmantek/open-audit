@@ -133,19 +133,19 @@ function dirPermLinux()
         $perm['cron_file_exists'] = 'y';
     }
     $perm['attachments_dir'] = 'n';
-    if (is_writable(APPPATH . '/Attachments')) {
+    if (is_writable(APPPATH . 'Attachments')) {
         $perm['attachments_dir'] = 'y';
     }
     $perm['uploads_dir'] = 'n';
-    if (is_writable(APPPATH . '/../writable/uploads')) {
+    if (is_writable(ROOTPATH . 'writable/uploads')) {
         $perm['uploads_dir'] = 'y';
     }
     $perm['scripts_dir'] = 'n';
-    if (is_writable(APPPATH . '/../other/scripts')) {
+    if (is_writable(ROOTPATH . 'other/scripts')) {
         $perm['scripts_dir'] = 'y';
     }
     $perm['custom_images_dir'] = 'n';
-    if (is_writable(APPPATH . '/../public/custom_images')) {
+    if (is_writable(ROOTPATH . 'public/custom_images')) {
         $perm['custom_images_dir'] = 'y';
     }
     return $perm;

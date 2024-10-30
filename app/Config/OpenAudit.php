@@ -45,8 +45,9 @@ class OpenAudit extends BaseConfig
 
         $this->microtime = microtime(true);
 
-        $commercial_dir = array(APPPATH . '../../omk',
-            APPPATH . '../../opmojo',
+        $commercial_dir = array(
+            ROOTPATH . '../omk',
+            ROOTPATH . '../opmojo',
             '/usr/local/omk',
             '/usr/local/opmojo',
             'c:\\omk');
@@ -55,10 +56,10 @@ class OpenAudit extends BaseConfig
             $commercial_dir = array('c:\\omk');
         }
 
-        $binaries = array(APPPATH . '../other/enterprise.bin', '/usr/local/oac/enterprise.pl');
+        $binaries = array(ROOTPATH . 'other/enterprise.bin', '/usr/local/oac/enterprise.pl');
 
         if (php_uname('s') === 'Windows NT') {
-            $binaries = array(APPPATH . '../other/enterprise.exe');
+            $binaries = array(ROOTPATH . 'other/enterprise.exe');
         }
 
         $nmis = (!empty(file_exists('/usr/local/nmis9'))) ? '/usr/local/nmis9' : '';

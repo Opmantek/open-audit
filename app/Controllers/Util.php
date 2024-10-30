@@ -64,7 +64,7 @@ class Util extends Controller
 
     public function testWindowsClient()
     {
-        $filename = APPPATH . '../other/test_windows_client.vbs';
+        $filename = ROOTPATH . 'other/test_windows_client.vbs';
         $file = file_get_contents($filename);
         // Set headers
         header('Cache-Control: public');

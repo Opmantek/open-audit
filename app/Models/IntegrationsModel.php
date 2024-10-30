@@ -582,7 +582,7 @@ class IntegrationsModel extends BaseModel
             if (php_uname('s') !== 'Windows NT') {
                 // TODO - not cloud compatible because no 'instance' on the command line
                 $instance = '';
-                $command = 'php ' . APPPATH . '../public/open-audit/index.php util queue > /dev/null 2>&1 &';
+                $command = 'php ' . ROOTPATH . 'public/open-audit/index.php util queue > /dev/null 2>&1 &';
                 if (php_uname('s') === 'Linux') {
                     $command = 'nohup ' . $command;
                 }

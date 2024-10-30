@@ -131,7 +131,7 @@ if (! function_exists('execute_windows')) {
         }
 
         if (php_uname('s') === 'Linux') {
-            $filepath = APPPATH . '../other';
+            $filepath = ROOTPATH . 'other';
             $filename = credentials_file($ip, $credentials);
             // For an unknown reason, if we attempt to execute an SMB2 command first and it does not work, the return var is NULL, which means success.
             // So before we attempt to actually run the audit script, try a WMIC query using SMB2 and determine which to use for the script.
@@ -520,8 +520,8 @@ if (! function_exists('delete_windows_result')) {
 
         if (php_uname('s') == 'Windows NT') {
             // Must have paexec
-            if (!file_exists(APPPATH . '..\\other\\paexec.exe')) {
-                $log->message = 'You must have paexec.exe in ' . APPPATH . '..\\open-audit\\other\\';
+            if (!file_exists(ROOTPATH . 'other\\paexec.exe')) {
+                $log->message = 'You must have paexec.exe in ' . ROOTPATH . 'other\\';
                 $log->command = '';
                 $log->command_status = 'fail';
                 $discoveryLogModel->create($log);
@@ -529,8 +529,8 @@ if (! function_exists('delete_windows_result')) {
             }
             $password = str_replace('"', '\"', $credentials->credentials->password);
             $username = $credentials->credentials->username;
-            $command =      APPPATH . '..\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $username . ' -p "' . $password . '" cmd /c "del \\\\' . $ip . '\\' . $share . '\\' . $file . '"';
-            $log->command = APPPATH . '..\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $username . ' -p "' . '*******' . '" cmd /c "del \\\\' . $ip . '\\' . $share . '\\' . $file . '"';
+            $command =      ROOTPATH . 'other\\paexec.exe \\\\' . $ip . ' -s -u ' . $username . ' -p "' . $password . '" cmd /c "del \\\\' . $ip . '\\' . $share . '\\' . $file . '"';
+            $log->command = ROOTPATH . 'other\\paexec.exe \\\\' . $ip . ' -s -u ' . $username . ' -p "' . '*******' . '" cmd /c "del \\\\' . $ip . '\\' . $share . '\\' . $file . '"';
             exec($command, $output, $return_var);
             $log->message = 'Delete file on ' . $ip;
             $log->command_output = json_encode($output);
@@ -842,7 +842,7 @@ if (! function_exists('wmi_command')) {
         }
 
         if (php_uname('s') == 'Linux') {
-            $filepath = APPPATH . '../other';
+            $filepath = ROOTPATH . 'other';
             $filename = credentials_file($ip, $credentials);
             $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //" . $ip . " \"wmic $command\" 2>&1";
             $log->command   = $command_string;
@@ -976,7 +976,7 @@ if (!function_exists('credentials_file')) {
     {
         $filename = str_replace('.', '', microtime());
         $filename = str_replace(' ', '', $filename);
-        $filename = APPPATH  . "../other/scripts/" . str_replace('.', '', $ip) . '_' . $filename . '.txt';
+        $filename = ROOTPATH  . "other/scripts/" . str_replace('.', '', $ip) . '_' . $filename . '.txt';
         $temp = explode('@', $credentials->credentials->username);
         $username = $temp[0];
         $domain = @$temp[1];

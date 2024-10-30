@@ -2454,7 +2454,7 @@ if (!function_exists('snmp_audit')) {
 
         // Virtual Guests
         if (intval($details->snmp_enterprise_id) === 6876) {
-            if (file_exists(APPPATH . '/Helpers/snmp_6876_2_helper.php')) {
+            if (file_exists(APPPATH . 'Helpers/snmp_6876_2_helper.php')) {
                 $log->severity = 7;
                 $log->message = 'snmp_helper::snmp_audit is loading the model helper for VMware virtual guests';
                 $discoveryLogModel->create($log);
