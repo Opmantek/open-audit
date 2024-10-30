@@ -854,11 +854,7 @@ if (! function_exists('ip_audit')) {
         $log->command_output = '';
         $log->command = '';
 
-        if (php_uname('s') !== 'Windows NT') {
-            $filepath = APPPATH . '../other';
-        } else {
-            $filepath = APPPATH . '..\\other';
-        }
+        $filepath = ROOTPATH . 'other';
 
         $device = new \StdClass();
         $device->audits_ip = $ip_scan->ip;
@@ -1638,8 +1634,8 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Starting SSH audit script for ' . $device->ip;
             $discoveryLogModel->create($log);
             // copy the audit script to the target ip
-            $destination = $instance->config->discovery_linux_script_directory;
-            if (substr($destination, -1) !== '/') {
+            $destination = !empty($instance->config->discovery_linux_script_directory) ? $instance->config->discovery_linux_script_directory : '/tmp/';
+            if (!empty($destination) and substr($destination, -1) !== '/') {
                 $destination .= '/';
             }
             if ($device->os_group === 'Windows') {
@@ -1829,16 +1825,24 @@ if (! function_exists('ip_audit')) {
             if ($instance->config->server_os === 'Windows NT') {
                 $temp = explode(DIRECTORY_SEPARATOR, $temp_audit_script);
                 $filename = end($temp);
-                $test = @unlink(ROOTPATH . 'other' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . $filename);
+                try {
+                    unlink(ROOTPATH . 'other' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . $filename);
+                } catch (Exception $error) {
+                    $log->severity = 4;
+                    $log->message = 'Could not delete temp audit script';
+                    $log->command_status = 'fail';
+                    $log->command_output = json_encode($error);
+                }
             }
             if ($instance->config->server_os !== 'Windows NT') {
-                $test = @unlink($temp_audit_script);
-            }
-            if (!$test) {
-                $log->severity = 4;
-                $log->message = 'Could not delete temp audit script';
-                $log->command_status = 'fail';
-                $log->command_output = json_encode($error);
+                try {
+                    unlink($temp_audit_script);
+                } catch (Exception $error) {
+                    $log->severity = 4;
+                    $log->message = 'Could not delete temp audit script';
+                    $log->command_status = 'fail';
+                    $log->command_output = json_encode($error);
+                }
             }
             $discoveryLogModel->create($log);
             $log->severity = 7;

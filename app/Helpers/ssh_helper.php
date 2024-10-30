@@ -547,12 +547,13 @@ if (! function_exists('ssh_command')) {
         $item_end = microtime(true);
         $ssh->disconnect();
         unset($ssh);
-        if ((($item_end - $item_start) > $timeout)) {
+        if ((($item_end - $item_start) > $timeout) and stripos($output, 'Audit Completed') === false and strpos($command, 'sudo rm ') === false) {
             if (!empty($parameters->discovery_id)) {
                 $log->command_time_to_execute = ($item_end - $item_start);
                 $log->command_status = 'warning';
                 $log->command_output = '';
-                $log->message = 'SSH command timed out.';
+                $log->message = 'SSH command timed out (took more than ' . number_format($timeout) . ' seconds).';
+                $log->command_output = json_encode($result);
                 $discoveryLogModel->create($log);
             }
             log_message('warning', 'SSH command timed out to ' . $ip);
