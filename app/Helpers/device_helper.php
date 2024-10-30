@@ -95,7 +95,7 @@ if (!function_exists('audit_convert')) {
             $xml = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/u', '', $xml);
             libxml_use_internal_errors(true);
             try {
-                $xml = @simplexml_load_string($xml);
+                $xml = simplexml_load_string($xml);
             } catch (Exception $e) {
                 foreach (libxml_get_errors() as $error) {
                     $log->message = 'Could not convert string to XML';
