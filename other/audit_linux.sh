@@ -944,10 +944,10 @@ if [ -z "$kernel_version" ]; then
 	kernel_version=$(hostnamectl 2>/dev/null | grep "Kernel" | cut -d: -f2 | cut -d" " -f3)
 fi
 
-last_os_update=$(stat -c %y /var/lib/apt/periodic/update-success-stamp | cut -d. -f1)
+last_os_update=$(stat -c %y /var/lib/apt/periodic/update-success-stamp 2>/dev/null | cut -d. -f1)
 if [ -z "$last_os_update" ]; then
-	lou=$(rpm -qa --last | head -1 | awk '{printf $2" "$3" "$4" "$5" "$6" "$7}')
-	last_os_update=$(date -d "$lou" +"%Y-%m-%d %H:%m:%S")
+	lou=$(rpm -qa --last 2>/dev/null | head -1 | awk '{printf $2" "$3" "$4" "$5" "$6" "$7}')
+	last_os_update=$(date -d "$lou" +"%Y-%m-%d %H:%m:%S" 2>/dev/null)
 fi
 
 #'''''''''''''''''''''''''''''''''
