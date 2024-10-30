@@ -53,7 +53,7 @@ class BaselinesResults extends BaseController
         foreach ($result->policy as $key) {
             $policyname = $key->name;
             foreach ($key->result as $r) {
-                $id = (!empty($r->id)) ? str_replace("\r", "\\r", str_replace("\n", "\\n", str_replace('"', '""', $r->id))) : '';
+                $id = (!empty($r->id)) ? str_replace("\r", "\\r", str_replace("\n", "\\n", str_replace('"', '""', (string)$r->id))) : '';
                 $devicename = (!empty($r->name)) ? str_replace("\r", "\\r", str_replace("\n", "\\n", str_replace('"', '""', $r->name))) : '';
                 $status = (!empty($r->status)) ? str_replace("\r", "\\r", str_replace("\n", "\\n", str_replace('"', '""', $r->status))) : '';
                 $test1 = (!empty($r->test1)) ? str_replace("\r", "\\r", str_replace("\n", "\\n", str_replace('"', '""', $r->test1))) : '';

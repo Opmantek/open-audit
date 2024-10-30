@@ -40,6 +40,9 @@ if (!function_exists('response_create')) {
         $response->meta = new \StdClass();
         $response->meta->action = strtolower($instance->method);
         $response->meta->collection = str_replace('\\app\\controllers\\', '', strtolower($instance->controller));
+        if ($response->meta->collection === 'baselinesresults') {
+            $response->meta->collection = 'baselines_results';
+        }
         $response->meta->request_method = strtoupper(\Config\Services::request()->getMethod());
         if (is_cli()) {
             $response->meta->request_method = 'CLI';
