@@ -547,7 +547,7 @@ if (! function_exists('ssh_command')) {
         $item_end = microtime(true);
         $ssh->disconnect();
         unset($ssh);
-        if ((($item_end - $item_start) > $timeout) and empty($result)) {
+        if ((($item_end - $item_start) > $timeout)) {
             if (!empty($parameters->discovery_id)) {
                 $log->command_time_to_execute = ($item_end - $item_start);
                 $log->command_status = 'warning';
@@ -557,17 +557,6 @@ if (! function_exists('ssh_command')) {
             }
             log_message('warning', 'SSH command timed out to ' . $ip);
             return false;
-        }
-        if (empty($result)) {
-            // if (!empty($parameters->discovery_id)) {
-            //     $log->command_time_to_execute = ($item_end - $item_start);
-            //     $log->command_status = 'warning';
-            //     $log->command_output = '';
-            //     $log->message = 'SSH command produced no output.';
-            //     $discoveryLogModel->create($log);
-            // }
-            // log_message('warning', 'SSH command produced no output from ' . $ip);
-            // return false;
         }
         for ($i = 0; $i < count($result); $i++) {
             $result[$i] = trim((string)$result[$i]);
