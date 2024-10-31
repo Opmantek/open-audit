@@ -654,15 +654,17 @@ for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8 -A
     # fi
 
     if [[ "$line" == *"Location:"* ]]; then
-        software_location=`echo "$line" | cut -d":" -f2 | sed 's/^ *//'`
-        software_name=`echo $software_name | cut -d":" -f1`
-        echo "      <item>" >> $xml_file
-        echo "          <name><![CDATA[$software_name]]></name>" >> $xml_file
-        echo "          <version><![CDATA[$software_version]]></version>" >> $xml_file
-        echo "          <location><![CDATA[$software_location]]></location>" >> $xml_file
-        echo "          <install_source>$software_install_source</install_source>" >> $xml_file
-        echo "          <publisher><![CDATA[$software_publisher]]></publisher>" >> $xml_file
-        echo "      </item>" >> $xml_file
+        if [[ "$line" != *"Daemon Containers"* ]]; then
+            software_location=`echo "$line" | cut -d":" -f2 | sed 's/^ *//'`
+            software_name=`echo $software_name | cut -d":" -f1`
+            echo "      <item>" >> $xml_file
+            echo "          <name><![CDATA[$software_name]]></name>" >> $xml_file
+            echo "          <version><![CDATA[$software_version]]></version>" >> $xml_file
+            echo "          <location><![CDATA[$software_location]]></location>" >> $xml_file
+            echo "          <install_source>$software_install_source</install_source>" >> $xml_file
+            echo "          <publisher><![CDATA[$software_publisher]]></publisher>" >> $xml_file
+            echo "      </item>" >> $xml_file
+        fi
         software_name=""
         software_version=""
         software_location=""
