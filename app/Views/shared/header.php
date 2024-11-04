@@ -80,7 +80,8 @@ if (!empty($config->servers)) {
             let html = document.querySelector('html');
             html.classList.add(prefers);
             html.setAttribute('data-bs-theme', prefers);
-
+            var license_string_id = <?= $config->license_string_id ?>;
+            var oae_prompt_id = <?= $config->oae_prompt_id ?>;
         </script>
     </head>
     <!-- Need d-flex flex-column h-100 to hold footer in place -->
@@ -679,6 +680,13 @@ foreach ($config->modules as $module) {
         <?php } ?>
 
         <!-- Toasts -->
+        <?php
+        $extra = 'Please download Open-AudIT from <a target="_blank" href="https://firstwave.com">FirstWave</a> to access a free license and additional functionality.';
+        $license = (!empty($config->license)) ? strtolower($config->license) : 'none';
+        if ($license !== 'commercial' and (is_file(ROOTPATH . 'other/enterprise.bin') or is_file(ROOTPATH . 'other/enterprise.exe'))) {
+            $extra = 'For a free license, click <a href="#" data-bs-toggle="modal" data-bs-target="#modalCompareLicense">here</a>.';
+        }
+        ?>
         <div aria-live="polite" aria-atomic="true" class="position-relative">
             <div class="toast-container top-0 end-0 p-3">
                 <div class="toast toast-ent" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastEnterprise">
@@ -687,7 +695,7 @@ foreach ($config->modules as $module) {
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
                     <div class="toast-body">
-                        This feature is limited to Enterprise licenses only. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.
+                        This feature is limited to Enterprise licenses only. <?= $extra ?>
                     </div>
                 </div>
                 <div class="toast toast-pro" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastProfessional">
@@ -696,7 +704,7 @@ foreach ($config->modules as $module) {
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
                     <div class="toast-body">
-                        This feature is limited to Professional licenses only. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.
+                        This feature is limited to Professional licenses only. <?= $extra ?>
                     </div>
                 </div>
                 <div class="toast toast-perm" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastPermission">

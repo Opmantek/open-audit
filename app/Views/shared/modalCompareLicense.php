@@ -56,8 +56,8 @@ if ($product === 'community') {
 $button_prompt_never = '';
 $button_prompt_later = '';
 if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
-    $button_prompt_never = '<span id="button_prompt_never"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="2100-01-01">' . __('Do not show me again') . '</a></span>';
-    $button_prompt_later = '<span id="button_prompt_later"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="' . date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')) . '">' . __('Ask me later') . '</a></span>';
+    // $button_prompt_never = '<span id="button_prompt_never"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="2100-01-01">' . __('Do not show me again') . '</a></span>';
+    $button_prompt_later = '<span id="button_prompt_later"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="' . date('Y-m-d', strtotime(date('Y-m-d') . ' + 30 day')) . '">' . __('Ask me later') . '</a></span>';
 }
 $countries = array(
     "Afghanistan", "Aland Islands", "Albania", "Algeria", "American Samoa", "Andorra",
@@ -280,13 +280,13 @@ $countries = array(
 
                 <div class="row">
                     <div class="col-6 clearfix pull-left">
-                        <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+                        <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and (file_exists(ROOTPATH . 'other/enterprise.bin') or file_exists(ROOTPATH . 'other/enterprise.exe'))) {
                             echo $button_prompt_later;
                         } ?>
                     </div>
                     <div class="col-6 clearfix pull-right">
                         <div class="float-end">
-                            <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+                            <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and (file_exists(ROOTPATH . 'other/enterprise.bin') or file_exists(ROOTPATH . 'other/enterprise.exe'))) {
                                 echo $button_prompt_never;
                             } ?>
                         </div>
@@ -302,117 +302,14 @@ $countries = array(
 $(window).on("load", function() {
     $(document).ready(function () {
         <?php
-        if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+        if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and (file_exists(ROOTPATH . 'other/enterprise.bin') or file_exists(ROOTPATH . 'other/enterprise.exe'))) {
             echo "\n            $('#modalCompareLicense').modal('show');\n";
         }
         ?>
-
-        $(document).on('click', '.dismiss_modal_button', function (e) {
-            $('*').css('cursor','wait');
-            var value = $(this).attr("data-value");
-            updatePrompt(value);
-            $('*').css('cursor','auto');
-        });
-
-
-        function updatePrompt(value) {
-            var data = {};
-            data["data"] = {};
-            data["data"]["id"] = "<?= $config->oae_prompt_id ?>";
-            data["data"]["type"] = "configuration";
-            data["data"]["attributes"] = {};
-            data["data"]["attributes"]["value"] = value;
-            data = JSON.stringify(data);
-            $.ajax({
-                async: false,
-                type: "PATCH",
-                url: "<?= base_url() ?>index.php/configuration/<?= $config->oae_prompt_id ?>",
-                contentType: "application/json",
-                data: {data : data},
-                success: function (data) {
-                    /* alert( 'success' ); */
-                    console.log(data);
-                },
-                error: function (data) {
-                    console.log(data.responseText);
-                    data = JSON.parse(data.responseText);
-                    alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
-                }
-            });
-        }
-
-        function validateEmail($email) {
-            var emailReg = /^([\w-\.\+]+@([\w-]+\.)+[\w-]{2,4})?$/;
-            return emailReg.test( $email );
-        }
-
-        $("#createFree").click(function (e) {
-            console.log("createFree clicked");
-
-            $("#data\\[attributes\\]\\[first_name\\]").removeClass('border-danger');
-            $("#data\\[attributes\\]\\[last_name\\]").removeClass('border-danger');
-            $("#data\\[attributes\\]\\[email\\]").removeClass('border-danger');
-            $("#data\\[attributes\\]\\[company\\]").removeClass('border-danger');
-            $("#data\\[attributes\\]\\[country\\]").removeClass('border-danger');
-
-            if ($("#data\\[attributes\\]\\[first_name\\]").val() == '') {
-                $("#data\\[attributes\\]\\[first_name\\]").addClass('border-danger');
-                $("#data\\[attributes\\]\\[first_name\\]").focus();
-                return;
-            }
-            if ($("#data\\[attributes\\]\\[last_name\\]").val() == '') {
-                $("#data\\[attributes\\]\\[last_name\\]").addClass('border-danger');
-                $("#data\\[attributes\\]\\[last_name\\]").focus();
-                return;
-            }
-            if ($("#data\\[attributes\\]\\[email\\]").val() == '' || !validateEmail($("#data\\[attributes\\]\\[email\\]").val())) {
-                $("#data\\[attributes\\]\\[email\\]").addClass('border-danger');
-                $("#data\\[attributes\\]\\[email\\]").focus();
-                return;
-            }
-            if ($("#data\\[attributes\\]\\[company\\]").val() == '') {
-                $("#data\\[attributes\\]\\[company\\]").addClass('border-danger');
-                $("#data\\[attributes\\]\\[company\\]").focus();
-                return;
-            }
-            if ($("#data\\[attributes\\]\\[country\\]").val() == '') {
-                $("#data\\[attributes\\]\\[country\\]").addClass('border-danger');
-                $("#data\\[attributes\\]\\[country\\]").focus();
-                return;
-            }
-
-            $('*').css('cursor','wait');
-
-            var data = {};
-            data["data"] = {};
-            data["data"]["id"] = <?= $config->license_string_id ?>;
-            data["data"]["type"] = "configuration";
-            data["data"]["attributes"] = {};
-            data["data"]["attributes"]["value"] = {};
-            data["data"]["attributes"]["value"]["country"] = $("#data\\[attributes\\]\\[country\\]").val();
-            data["data"]["attributes"]["value"]["first_name"] = $("#data\\[attributes\\]\\[first_name\\]").val();
-            data["data"]["attributes"]["value"]["last_name"] = $("#data\\[attributes\\]\\[last_name\\]").val();
-            data["data"]["attributes"]["value"]["email"] = $("#data\\[attributes\\]\\[email\\]").val();
-            data["data"]["attributes"]["value"]["company"] = $("#data\\[attributes\\]\\[company\\]").val();
-            data = JSON.stringify(data);
-            $.ajax({
-                type: "PATCH",
-                url: '<?= base_url() ?>index.php/configuration/<?= $config->license_string_id ?>',
-                contentType: "application/json",
-                data: {data : data},
-                success: function(data, textStatus) {
-                    updatePrompt('2101-01-01');
-                    location.reload();
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log("Status: " + textStatus);
-                    console.log("errorThrown: " + errorThrown);
-                    console.log(JSON.stringify(jqXHR));
-                    alert(jqXHR.responseJSON.errors[0].code + ": " + jqXHR.responseJSON.errors[0].detail);
-                    return false;
-                }
-            });
-        });
+        // console.log("Collection: <?= $meta->collection ?>");
+        // console.log("OAE Prompt: <?= $config->oae_prompt ?>");
+        // console.log("Date: <?= date('Y-m-d') ?>");
+        // console.log("License: <?= $license ?>");
     });
 });
 </script>

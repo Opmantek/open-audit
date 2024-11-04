@@ -400,4 +400,112 @@ $(document).ready(function () {
     $('.debug').click(function (e) {
         $('#json_response').css('display', 'block');
     });
+
+    /* Modal for Licensing */
+    $(document).on('click', '.dismiss_modal_button', function (e) {
+        $('*').css('cursor','wait');
+        var value = $(this).attr("data-value");
+        updatePrompt(value);
+        $('*').css('cursor','auto');
+    });
+
+
+    /* Remind me later */
+    function updatePrompt(value) {
+        var data = {};
+        data["data"] = {};
+        data["data"]["id"] = oae_prompt_id;
+        data["data"]["type"] = "configuration";
+        data["data"]["attributes"] = {};
+        data["data"]["attributes"]["value"] = value;
+        data = JSON.stringify(data);
+        $.ajax({
+            async: false,
+            type: "PATCH",
+            url: baseurl + "/configuration/" + oae_prompt_id,
+            contentType: "application/json",
+            data: {data : data},
+            success: function (data) {
+                /* alert( 'success' ); */
+                console.log(data);
+            },
+            error: function (data) {
+                console.log(data.responseText);
+                data = JSON.parse(data.responseText);
+                alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+            }
+        });
+    }
+
+    function validateEmail($email) {
+        var emailReg = /^([\w-\.\+]+@([\w-]+\.)+[\w-]{2,4})?$/;
+        return emailReg.test( $email );
+    }
+
+    /* Create a free license */
+    $("#createFree").click(function (e) {
+        $("#data\\[attributes\\]\\[first_name\\]").removeClass('border-danger');
+        $("#data\\[attributes\\]\\[last_name\\]").removeClass('border-danger');
+        $("#data\\[attributes\\]\\[email\\]").removeClass('border-danger');
+        $("#data\\[attributes\\]\\[company\\]").removeClass('border-danger');
+        $("#data\\[attributes\\]\\[country\\]").removeClass('border-danger');
+
+        if ($("#data\\[attributes\\]\\[first_name\\]").val() == '') {
+            $("#data\\[attributes\\]\\[first_name\\]").addClass('border-danger');
+            $("#data\\[attributes\\]\\[first_name\\]").focus();
+            return;
+        }
+        if ($("#data\\[attributes\\]\\[last_name\\]").val() == '') {
+            $("#data\\[attributes\\]\\[last_name\\]").addClass('border-danger');
+            $("#data\\[attributes\\]\\[last_name\\]").focus();
+            return;
+        }
+        if ($("#data\\[attributes\\]\\[email\\]").val() == '' || !validateEmail($("#data\\[attributes\\]\\[email\\]").val())) {
+            $("#data\\[attributes\\]\\[email\\]").addClass('border-danger');
+            $("#data\\[attributes\\]\\[email\\]").focus();
+            return;
+        }
+        if ($("#data\\[attributes\\]\\[company\\]").val() == '') {
+            $("#data\\[attributes\\]\\[company\\]").addClass('border-danger');
+            $("#data\\[attributes\\]\\[company\\]").focus();
+            return;
+        }
+        if ($("#data\\[attributes\\]\\[country\\]").val() == '') {
+            $("#data\\[attributes\\]\\[country\\]").addClass('border-danger');
+            $("#data\\[attributes\\]\\[country\\]").focus();
+            return;
+        }
+
+        $('*').css('cursor','wait');
+
+        var data = {};
+        data["data"] = {};
+        data["data"]["id"] = license_string_id;
+        data["data"]["type"] = "configuration";
+        data["data"]["attributes"] = {};
+        data["data"]["attributes"]["value"] = {};
+        data["data"]["attributes"]["value"]["country"] = $("#data\\[attributes\\]\\[country\\]").val();
+        data["data"]["attributes"]["value"]["first_name"] = $("#data\\[attributes\\]\\[first_name\\]").val();
+        data["data"]["attributes"]["value"]["last_name"] = $("#data\\[attributes\\]\\[last_name\\]").val();
+        data["data"]["attributes"]["value"]["email"] = $("#data\\[attributes\\]\\[email\\]").val();
+        data["data"]["attributes"]["value"]["company"] = $("#data\\[attributes\\]\\[company\\]").val();
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "PATCH",
+            url: baseurl + '/configuration/' + license_string_id,
+            contentType: "application/json",
+            data: {data : data},
+            success: function(data, textStatus) {
+                updatePrompt('2101-01-01');
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("errorThrown: " + errorThrown);
+                console.log(JSON.stringify(jqXHR));
+                alert(jqXHR.responseJSON.errors[0].code + ": " + jqXHR.responseJSON.errors[0].detail);
+                return false;
+            }
+        });
+    });
 });
