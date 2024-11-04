@@ -47,7 +47,12 @@ class Logon extends Controller
     {
         $session = session();
         if (!empty($session->get('user_id'))) {
-            return redirect()->to(site_url('summaries'));
+            $config =  new \Config\OpenAudit();
+            if ($config->device_count === 0) {
+                return redirect()->to(url_to('welcome'));
+            } else {
+                return redirect()->to(url_to('home'));
+            }
         }
         $db = db_connect();
         $sql = "SELECT * FROM discoveries WHERE id = 1";
