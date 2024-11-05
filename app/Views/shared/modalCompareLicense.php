@@ -50,7 +50,7 @@ if ($product === 'community') {
     $highlightFre = "background: rgba(var(--bs-body-color-rgb), 0.03)";
     $btnFre = 'btn-success';
     $btnFreStyle = 'style="color:white;"';
-    $message = 'Try Open-AudIT Enterprise on us for 12 months. All the features of Enterprise for 100 devices.';
+    $message = 'Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise.';
 }
 
 $button_prompt_never = '';
