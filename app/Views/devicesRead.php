@@ -611,7 +611,7 @@ if (!empty($included['fields'])) {
                                             }
                                             echo "<div class=\"col-4\">\n";
                                             if ($field->{'type'} == 'varchar') {
-                                                echo read_field($field->{'name'}, '', '', $update);
+                                                echo read_field($field->{'name'}, $field->{'field.value'}, '', $update);
                                             }
 
                                             if ($field->{'type'} == 'list') {
@@ -634,11 +634,11 @@ if (!empty($included['fields'])) {
                                                     $item->attributes->name = $value;
                                                     $values[] = $item;
                                                 }
-                                                echo read_select($field->name, '', '', $update, '', $values);
+                                                echo read_select($field->name, $field->{'field.value'}, '', $update, '', $values);
                                             }
 
                                             if ($field->{'type'} == 'date') {
-                                                echo read_field($field->{'name'}, '', '', $update, '', '', '', 'date') ;
+                                                echo read_field($field->{'name'}, $field->{'field.value'}, '', $update, '', '', '', 'date') ;
                                             }
                                             echo "</div>\n";
                                         }

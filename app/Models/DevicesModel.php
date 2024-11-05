@@ -917,7 +917,9 @@ class DevicesModel extends BaseModel
         }
         $update = $this->updateFieldData('devices', $update_device);
         $this->builder->where('id', intval($id));
-        $this->builder->update($update);
+        if (count((array)$update_device) > 0) {
+            $this->builder->update($update_device);
+        }
         if ($this->sqlError($this->db->error())) {
             return false;
         }
@@ -988,11 +990,11 @@ class DevicesModel extends BaseModel
                     $updated = false;
                     if (!empty($deviceFields)) {
                         foreach ($deviceFields as $deviceField) {
-                            if (intval($field->id) === intval($deviceField->fields_id)) {
+                            if (intval($field->id) === intval($deviceField->field_id)) {
                                 $previous_value = (!empty($deviceField->value)) ? $deviceField->value : '';
-                                $update = true;
+                                $updated = true;
                                 $sql = "UPDATE field SET value = ?, `timestamp` = NOW() WHERE id = ?";
-                                $this->db->query($sql, [$deviceField->id, $value]);
+                                $this->db->query($sql, [$value, $deviceField->id]);
                                 $sql = "INSERT INTO edit_log VALUES (null, ?, ?, 'Field data was updated', ?, ?, 'field', ?, NOW(), ?, ?)";
                                 $this->db->query($sql, [$user_id, $id, $source, 1000, $field->name, $value, $previous_value]);
                             }
