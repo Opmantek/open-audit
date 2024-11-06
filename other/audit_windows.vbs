@@ -1578,8 +1578,8 @@ if (error_returned = 0) then
             else
                 result.WriteText "          <owner>NonMs</owner>" & vbcrlf
             end if
+            result.WriteText "      </item>" & vbcrlf
         next
-        result.WriteText "      </item>" & vbcrlf
         result.WriteText "  </antivirus>" & vbcrlf
     end if
 end if
