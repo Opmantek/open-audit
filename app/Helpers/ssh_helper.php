@@ -521,6 +521,7 @@ if (! function_exists('ssh_command')) {
             $ssh->setTimeout($timeout);
             // Not using sudo, so no password prompt
             $result = $ssh->exec($command);
+            $output = $result;
             $result = explode("\n", $result);
             // remove the last line as it's always blank
             unset($result[count($result) - 1]);
