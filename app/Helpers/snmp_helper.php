@@ -99,7 +99,7 @@ if (!function_exists('snmp_credentials')) {
                     if (!empty($credential->credentials->context_name)) {
                         $command .= ' -n ' . escapeshellarg($credential->credentials->context_name);
                     }
-                    if (!empty($credential->credentials->context_name)) {
+                    if (!empty($credential->credentials->context_engine_id)) {
                         $command .= ' -E ' . escapeshellarg(implode(unpack("H*", $credential->credentials->context_engine_id)));
                     }
                     $command .= ' ' . $ip . ' ' . $oid;
@@ -113,7 +113,7 @@ if (!function_exists('snmp_credentials')) {
                     if (!empty($credential->credentials->context_name)) {
                         $log->command .= ' -n ' . escapeshellarg($credential->credentials->context_name);
                     }
-                    if (!empty($credential->credentials->context_name)) {
+                    if (!empty($credential->credentials->context_engine_id)) {
                         $log->command .= ' -E ' . escapeshellarg(implode(unpack("H*", $credential->credentials->context_engine_id)));
                     }
                     $log->command .= ' ' . $ip . ' ' . $oid;
@@ -164,7 +164,7 @@ if (!function_exists('snmp_credentials')) {
                     if (!empty($credential->credentials->context_name)) {
                         $log->command .= ' -n ' . escapeshellarg($credential->credentials->context_name);
                     }
-                    if (!empty($credential->credentials->context_name)) {
+                    if (!empty($credential->credentials->context_engine_id)) {
                         $log->command .= ' -E ' . escapeshellarg(implode(unpack("H*", $credential->credentials->context_engine_id)));
                     }
                     $log->command .= ' ' . $ip . ' ' . $oid;
