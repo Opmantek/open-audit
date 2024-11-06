@@ -95,16 +95,28 @@ if (!function_exists('snmp_credentials')) {
                                 ' -a ' . escapeshellarg($credential->credentials->authentication_protocol) .
                                 ' -A ' . escapeshellarg($credential->credentials->authentication_passphrase) .
                                 ' -x ' . escapeshellarg($credential->credentials->privacy_protocol) .
-                                ' -X ' . escapeshellarg($credential->credentials->privacy_passphrase) .
-                                ' ' . $ip . ' ' . $oid;
+                                ' -X ' . escapeshellarg($credential->credentials->privacy_passphrase);
+                    if (!empty($credential->credentials->context_name)) {
+                        $command .= ' -n ' . escapeshellarg($credential->credentials->context_name);
+                    }
+                    if (!empty($credential->credentials->context_name)) {
+                        $command .= ' -E ' . escapeshellarg(implode(unpack("H*", $credential->credentials->context_engine_id)));
+                    }
+                    $command .= ' ' . $ip . ' ' . $oid;
 
                     $log->command = 'Sample Command: snmpget -v3 -On -l ' . escapeshellarg($credential->credentials->security_level)  .
                                 ' -u ' . escapeshellarg($credential->credentials->security_name) .
                                 ' -a ' . escapeshellarg($credential->credentials->authentication_protocol) .
                                 ' -A ' . escapeshellarg('XXXX') .
                                 ' -x ' . escapeshellarg($credential->credentials->privacy_protocol) .
-                                ' -X ' . escapeshellarg('XXXX') .
-                                ' ' . $ip . ' ' . $oid;
+                                ' -X ' . escapeshellarg('XXXX');
+                    if (!empty($credential->credentials->context_name)) {
+                        $log->command .= ' -n ' . escapeshellarg($credential->credentials->context_name);
+                    }
+                    if (!empty($credential->credentials->context_name)) {
+                        $log->command .= ' -E ' . escapeshellarg(implode(unpack("H*", $credential->credentials->context_engine_id)));
+                    }
+                    $log->command .= ' ' . $ip . ' ' . $oid;
 
                     exec($command, $output, $return_var);
                     if ($return_var === 0 and !empty($output[0])) {
@@ -148,8 +160,14 @@ if (!function_exists('snmp_credentials')) {
                             ' -a ' . escapeshellarg($credential->credentials->authentication_protocol) .
                             ' -A ' . escapeshellarg('XXXX') .
                             ' -x ' . escapeshellarg($credential->credentials->privacy_protocol) .
-                            ' -X ' . escapeshellarg('XXXX') .
-                            ' ' . $ip . ' ' . $oid;
+                            ' -X ' . escapeshellarg('XXXX');
+                    if (!empty($credential->credentials->context_name)) {
+                        $log->command .= ' -n ' . escapeshellarg($credential->credentials->context_name);
+                    }
+                    if (!empty($credential->credentials->context_name)) {
+                        $log->command .= ' -E ' . escapeshellarg(implode(unpack("H*", $credential->credentials->context_engine_id)));
+                    }
+                    $log->command .= ' ' . $ip . ' ' . $oid;
                     $result = '';
                     $security_name =                !empty($credential->credentials->security_name) ? $credential->credentials->security_name : '';
                     $security_level =               !empty($credential->credentials->security_level) ? $credential->credentials->security_level : '';
@@ -302,7 +320,7 @@ function my_snmp_get_command($ip, $credentials, $oid)
         $privacy_protocol =             !empty($credentials->credentials->privacy_protocol) ?           ' -x ' . escapeshellarg($credentials->credentials->privacy_protocol) : '';
         $privacy_passphrase =           !empty($credentials->credentials->privacy_passphrase) ?         ' -X ' . escapeshellarg($credentials->credentials->privacy_passphrase) : '';
         $context_name =                 !empty($credentials->credentials->context_name) ?               ' -n ' . escapeshellarg($credentials->credentials->context_name) : '';
-        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg($credentials->credentials->context_engine_id) : '';
+        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg(implode(unpack("H*", $credential->credentials->context_engine_id))) : '';
         $command = 'snmpget -v3 -On ' . $security_level . $security_name . $authentication_protocol . $authentication_passphrase . $privacy_protocol . $privacy_passphrase . $context_name . $context_engine_id . ' ' . $ip . ' ' . $oid;
         exec($command, $output, $return_var);
         $array = array();
@@ -465,7 +483,7 @@ function my_snmp_walk_command($ip, $credentials, $oid)
         $privacy_protocol =             !empty($credentials->credentials->privacy_protocol) ?           ' -x ' . escapeshellarg($credentials->credentials->privacy_protocol) : '';
         $privacy_passphrase =           !empty($credentials->credentials->privacy_passphrase) ?         ' -X ' . escapeshellarg($credentials->credentials->privacy_passphrase) : '';
         $context_name =                 !empty($credentials->credentials->context_name) ?               ' -n ' . escapeshellarg($credentials->credentials->context_name) : '';
-        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg($credentials->credentials->context_engine_id) : '';
+        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg(implode(unpack("H*", $credential->credentials->context_engine_id))) : '';
         $command = 'snmpwalk -v3 -On ' . $security_level . $security_name . $authentication_protocol . $authentication_passphrase . $privacy_protocol . $privacy_passphrase . $context_name . $context_engine_id . ' ' . $ip . ' ' . $oid;
         exec($command, $output, $return_var);
         $array = array();
@@ -635,7 +653,7 @@ function my_snmp_real_walk_command($ip, $credentials, $oid)
         $privacy_protocol =             !empty($credentials->credentials->privacy_protocol) ?           ' -x ' . escapeshellarg($credentials->credentials->privacy_protocol) : '';
         $privacy_passphrase =           !empty($credentials->credentials->privacy_passphrase) ?         ' -X ' . escapeshellarg($credentials->credentials->privacy_passphrase) : '';
         $context_name =                 !empty($credentials->credentials->context_name) ?               ' -n ' . escapeshellarg($credentials->credentials->context_name) : '';
-        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg($credentials->credentials->context_engine_id) : '';
+        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg(implode(unpack("H*", $credential->credentials->context_engine_id))) : '';
         $command = 'snmpwalk -v3 -On ' . $security_level . $security_name . $authentication_protocol . $authentication_passphrase . $privacy_protocol . $privacy_passphrase . $context_name . $context_engine_id . ' ' . $ip . ' ' . $oid;
         exec($command, $output, $return_var);
         foreach ($output as $line) {
