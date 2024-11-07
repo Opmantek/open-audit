@@ -249,7 +249,7 @@ class BenchmarksModel extends BaseModel
                 $this->logCreate($id, $device_id, 'info', $command);
                 log_message('debug', $command . ' run on ' . $device->attributes->name);
                 $parameters->command = $command;
-                $parameters->timeout = 120; // 2 minutes to install openscap-scanner, et al
+                $parameters->timeout = 300; // 5 minutes to install openscap-scanner, et al
                 $output = ssh_command($parameters);
                 if ($output === false) {
                     $this->logCreate($id, $device_id, 'warning', 'SSH command to install openscap failed, please check log file.');
