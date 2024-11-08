@@ -930,15 +930,12 @@ sScriptName = wscript.scriptName
 nPID = "unknown"
 if (cint(local_windows_build_number) > 2222 and not local_windows_build_number = "3000") then
     for each oProc in getObject( "winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2").instancesOf("Win32_Process")
-    if lcase(oProc.name) = "wscript.exe" _
-    or lcase(oProc.name) = "cscript.exe" then
-    sCmdLine = oProc.commandLine
-    if  instr(1, sCmdLine, "\" & sScriptName, vbTextCompare) > 0 _
-    or instr(1, sCmdLine, " " & sScriptName, vbTextCompare) > 0 _
-    or instr(1, sCmdLine, """" & sScriptName, vbTextCompare) > 0 then
-    nPID = oProc.processId
-    end if
-    end if
+        if lcase(oProc.name) = "wscript.exe" or lcase(oProc.name) = "cscript.exe" then
+            sCmdLine = oProc.commandLine
+            if instr(1, sCmdLine, "\" & sScriptName, vbTextCompare) > 0 or instr(1, sCmdLine, " " & sScriptName, vbTextCompare) > 0 or instr(1, sCmdLine, """" & sScriptName, vbTextCompare) > 0 then
+                nPID = oProc.processId
+            end if
+        end if
     next
 end if
 
@@ -958,7 +955,9 @@ for each objItem in colItems
     system_os_family = os_family(objItem.Caption)
     system_os_name = objItem.Caption
     system_os_name = replace(system_os_name, "(R)", "")
-    system_os_arch = objItem.OSArchitecture
+    on error resume next
+        system_os_arch = objItem.OSArchitecture
+    on error goto 0
     system_description = objItem.Description
     system_description = lcase(system_description)
     OSInstall = objItem.InstallDate
@@ -1554,6 +1553,7 @@ error_returned = Err.Number
 on error goto 0
 if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (SecurityCenter2)" : audit_wmi_fails = audit_wmi_fails & "SecurityCenter2 " : end if
 if (error_returned = 0) then
+    on error resume next
     Set colAVItems = objWMIServiceSC.ExecQuery("Select * from AntiVirusProduct")
     If colAVItems.count > 0 Then
         result.WriteText "  <antivirus>" & vbcrlf
@@ -1582,6 +1582,7 @@ if (error_returned = 0) then
         next
         result.WriteText "  </antivirus>" & vbcrlf
     end if
+    on error goto 0
 end if
 
 item = ""
@@ -7289,9 +7290,9 @@ function form_factor(system_form_factor)
     if system_form_factor = "23" then system_form_factor = "Rack Mount Chassis" end if
     if system_form_factor = "24" then system_form_factor = "Sealed-case PC"  end if
     if system_form_factor = "30" then system_form_factor = "Tablet" end if
-	if system_form_factor = "31" then system_form_factor = "Convertible" end if
+    if system_form_factor = "31" then system_form_factor = "Convertible" end if
     if system_form_factor = "32" then system_form_factor = "Detachable" end if
-    if system_form_factor = "35" then system_form_factor = "Mini PC" end if                                                                                                                                    
+    if system_form_factor = "35" then system_form_factor = "Mini PC" end if
     form_factor = system_form_factor
 end function
 
