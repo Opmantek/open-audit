@@ -1341,7 +1341,7 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 
 
 // set our versions
-$sql = "UPDATE `configuration` SET `value` = '202411012' WHERE `name` = 'internal_version'";
+$sql = "UPDATE `configuration` SET `value` = '20241112' WHERE `name` = 'internal_version'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
