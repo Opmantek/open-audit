@@ -1435,6 +1435,42 @@ class ComponentsModel extends BaseModel
                 $query = $this->db->query($sql);
             }
         }
+        // ACCESS POINT
+        if ((string)$table === 'access_point') {
+            $sql = "SELECT * FROM access_point WHERE current = 'y' AND device_id = ?";
+            $aps = $this->db->query($sql, [$device->id])->getResult();
+            foreach ($aps as $ap) {
+                if (!empty($ap->ip) and filter_var($ap->ip, FILTER_VALIDATE_IP) !== false) {
+                    $sql = "SELECT ip.id, ip.device_id, ip.mac, devices.name, devices.serial FROM ip LEFT JOIN devices ON (ip.device_id = devices.id AND ip.current = 'y') WHERE devices.org_id = ? AND ip.ip = ? AND (ip.mac = ? OR ip.mac = ? OR ip.mac = '')";
+                    $apdevice = $this->db->query($sql, [intval($device->org_id), ip_address_to_db($ap->ip), $ap->mac, $ap->ethernet_mac])->getResult();
+                    if (!empty($apdevice) and count($apdevice) === 1) {
+                        // The AP already exists in the database, update it's details if required.
+                        if ($apdevice[0]->serial !== $ap->serial and empty($apdevice[0]->serial)) {
+                            $sql = "UPDATE devices SET `serial` = ?, `os_version` = ?, `name` = ?, `model` = ?, `os_group` = 'Cisco', `os_family` = 'Cisco IOS', `type` = 'access point' WHERE id = ?";
+                            $query = $this->db->query($sql, [$ap->serial, $ap->ios_version, $ap->name, $ap->model, $apdevice[0]->device_id]);
+                            reset_icons($apdevice[0]->device_id);
+
+                            $ap->ip = ip_address_from_db($ap->ip);
+                            $temp_long = !empty($ap->netmask) ? ip2long($ap->netmask) : '';
+                            $temp_base = ip2long('255.255.255.255');
+                            $temp_subnet = 32 - log(($temp_long ^ $temp_base) + 1, 2);
+                            $temp_net = @network_details($ap->ip . '/' . $temp_subnet);
+                            if (!empty($network_details)) {
+                                $network = !empty($temp_net->network) ? $temp_net->network . '/' . $temp_subnet : '';
+                                $cidr = !empty($temp_net->network_slash) ? $temp_net->network_slash : '';
+                                unset($temp_long);
+                                unset($temp_base);
+                                unset($temp_subnet);
+                                unset($temp_net);
+                                // TODO - decide on the correct mac address
+                                $sql = "UPDATE ip SET mac = ?, netmask = ?, network = ?, cidr = ? WHERE id = ? ";
+                                $query = $this->db->query($sql, [$ap->mac, $ap->netmask, $network, $cidr, $apdevice[0]->id]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return true;
     }
 
