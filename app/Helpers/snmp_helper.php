@@ -1066,6 +1066,7 @@ if (!function_exists('snmp_audit')) {
         // https://mibs.observium.org/mib/AIRESPACE-WIRELESS-MIB/
         $item_start = microtime(true);
         snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+        // bsnAPDot3MacAddress "The MAC address of an AP."
         $apMac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.1');
         snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
         $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -1085,6 +1086,7 @@ if (!function_exists('snmp_audit')) {
 
             $item_start = microtime(true);
             snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+            // bsnAPEthernetMacAddress "The Ethernet MAC address of the AP."
             $apEmac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.33');
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
             $log->command_time_to_execute = (microtime(true) - $item_start);
