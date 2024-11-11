@@ -1064,6 +1064,7 @@ if (!function_exists('snmp_audit')) {
         // Cisco Access Points attached to a Wireless Access Controller
         // https://oidref.com/1.3.6.1.4.1.14179.2.2.1.1
         // https://mibs.observium.org/mib/AIRESPACE-WIRELESS-MIB/
+        // https://www.cisco.com/c/en/us/support/docs/wireless/catalyst-9800-series-wireless-controllers/217460-monitor-catalyst-9800-wlc-via-snmp-with.html
         $item_start = microtime(true);
         snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
         // bsnAPDot3MacAddress "The MAC address of an AP."
