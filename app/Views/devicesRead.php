@@ -11,6 +11,12 @@ if (!empty($included['fields'])) {
         }
     }
 }
+if (empty($resource->icon)) {
+    $resource->icon = 'unknown';
+}
+if (empty($resource->type)) {
+    $resource->type = 'unknown';
+}
 ?>
         <main class="container-fluid">
             <div class="card">
