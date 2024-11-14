@@ -9,9 +9,9 @@ use Config\Database;
 
 class OpenAudit extends BaseConfig
 {
-    # leave for backwards compat $this->displayVersion = '5.6.0';
-    public string $displayVersion = '5.6.0';
-    public int $appVersion = 20241112;
+    # leave for backwards compat $this->displayVersion = '5.6.1';
+    public string $displayVersion = '5.6.1';
+    public int $appVersion = 20241130;
 
     public float $microtime = 0;
     public int $collector_connect_timeout = 10;
@@ -84,6 +84,11 @@ class OpenAudit extends BaseConfig
             if ($row->name === 'license_string_collector') {
                 $this->license_string_collector_id = (int)$row->id;
             }
+        }
+
+        // Bug fix for a mistyped vbersion in the 5.6.0 release
+        if ($this->internal_version === 202411012) {
+            $this->internal_version = 20241112;
         }
 
         if (empty($this->product) or empty($this->license_string)) {
