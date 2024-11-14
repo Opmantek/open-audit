@@ -19,6 +19,13 @@ function &get_instance() # : \App\Controllers\BaseController
     return $CI_INSTANCE[0];
 }
 
+function getFeed()
+{
+    $feedsModel = model('feedsModel');
+    $feed = $feedsModel->show();
+    return $feed;
+}
+
 function prereqCheck()
 {
     if (php_uname('s') !== 'Windows NT') {

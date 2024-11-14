@@ -1210,7 +1210,7 @@ if (!function_exists('response_get_permission_id')) {
     function response_get_permission_id($user, $collection, $action, $received_data, $id)
     {
         $db = db_connect();
-        $collections = array('auth', 'charts', 'configuration', 'database', 'errors', 'help', 'logs', 'nmis', 'queue', 'reports', 'roles');
+        $collections = array('auth', 'charts', 'configuration', 'database', 'errors', 'feeds', 'help', 'logs', 'nmis', 'queue', 'reports', 'roles');
 
         if (empty($id) or in_array($collection, $collections)) {
             log_message('debug', 'User permitted to access ' . $collection);

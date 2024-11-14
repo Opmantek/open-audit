@@ -254,6 +254,16 @@ class Collections extends BaseConfig
         $this->executables->actions->professional = '';
         $this->executables->actions->community = '';
 
+        $this->feeds = new \StdClass();
+        $this->feeds->icon = 'fa-solid fa-rss';
+        $this->feeds->name = 'Feeds';
+        $this->feeds->edition = 'Community';
+        $this->feeds->orgs = 'u';
+        $this->feeds->actions = new \stdClass();
+        $this->feeds->actions->enterprise = 'crud';
+        $this->feeds->actions->professional = 'crud';
+        $this->feeds->actions->community = 'crud';
+
         $this->fields = new \StdClass();
         $this->fields->icon = 'fa fa-comments-o';
         $this->fields->name = 'Fields';

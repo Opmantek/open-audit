@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include('lang.php');
 
+$feed = getFeed();
+
 $title = 'Open-AudIT ' . ucfirst($config->product) . ' ' . $config->display_version;
 
 // sort our queries, summaries and reports
@@ -517,6 +519,7 @@ if (!empty($config->servers)) {
                                 <li><a class="dropdown-item" href="https://docs.community.firstwave.com/wiki/spaces/OA"><?= __('Documentation') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('helpFAQ') ?>?name=FAQ"><?= __('FAQ') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('features') ?>"><?= __('Features') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('feedsCollection') ?>"><?= __('Feeds') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Getting Started') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('supportCollection') ?>"><?= __('Support') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Welcome Dashboard') ?></a></li>
@@ -570,7 +573,7 @@ foreach ($config->modules as $module) {
 
         <div class="container-fluid" style="margin-bottom: -10px;">
                 <div class="row second-nav">
-                    <div class="col-6" style="padding-bottom: 0px; padding-top: 16px;">
+                    <div class="col-4" style="padding-bottom: 0px; padding-top: 16px;">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="<?= url_to('home') ?>" class="link-secondary">Home</a></li>
@@ -587,7 +590,28 @@ foreach ($config->modules as $module) {
                             </ol>
                         </nav>
                     </div>
-                    <div class="col-6 clearfix" style="padding-bottom: 2px; padding-top: 10px;">
+
+                    <?php
+                    if (!empty($feed->id2)) {
+                        $description = '';
+                        if (!empty($feed->url)) {
+                            $description = '<a href="' . $feed->url . '" target="_blank">' . $feed->description . '</a>';
+                        } else {
+                            $description = '<a href="' . url_to('feedsRead', intval($feed->id)) . '">' . $feed->description . '</a>';
+                        }
+                        ?>
+                    <div class="col-4 clearfix" style="padding-bottom: 0px; padding-top: 10px;">
+                        <div class="container-fluid">
+                            <div class="alert alert-<?= $feed->alert_style ?> alert-dismissable fade show text-center" role="alert" style="padding-top:4px; padding-bottom:4px">
+                                <?= $description ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php } else { ?>
+                        <div class="col-4"></div>
+                    <?php } ?>
+
+                    <div class="col-4 clearfix text-end" style="padding-bottom: 2px; padding-top: 10px;">
                         <form class="float-end" method="post" action="<?= url_to('searchCreate') ?>">
                             <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                             <div class="btn-group" role="group">
@@ -641,6 +665,23 @@ foreach ($config->modules as $module) {
             </div>
         </div>
         <?php } ?>
+
+
+        <?php
+        if (!empty($feed->id)) {
+            $alert = !empty($feed->alert) ? $feed->alert : 'info';
+            $description = !empty($feed->description) ? $feed->description : '';
+            $title = !empty($feed->title) ? $feed->title : '';
+            ?>
+            <div class="container-fluid">
+                <div class="alert alert-<?= $feed->alert_style ?> alert-dismissable fade show" role="alert">
+                    <?= $description ?><?= $feed->link ?>
+                </div>
+            </div>
+        <?php } ?>
+
+
+
 
         <?php if (!empty($_SESSION['error'])) {
             try {
