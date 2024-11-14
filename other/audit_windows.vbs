@@ -23,7 +23,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <mark.unwin@firstwave.com>
-' @version   GIT: Open-AudIT_5.6.0
+' @version   GIT: Open-AudIT_5.6.1
 ' @copyright Copyright (c) 2022, Firstwave
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -103,7 +103,7 @@ self_delete = "n"
 debugging = "1"
 
 ' Version - NOTE, special formatted so we match the *nix scripts and can do find/replace
-version="5.6.0"
+version="5.6.1"
 
 ' In normal use, DO NOT SET THIS.
 ' This value is passed in when running the audit_domain script.
