@@ -289,8 +289,8 @@ class FeedsModel extends BaseModel
     public function show(): object
     {
         $this->builder->limit(1);
-        #$query = $this->builder->get();
-        $query = $this->builder->getWhere(['id' => 6]);
+        $query = $this->builder->get();
+        #$query = $this->builder->getWhere(['id' => 6]);
         $result = $query->getResult();
         foreach ($result as $item) {
             if (!empty($item->type) and !empty($item->body) and ($item->type === 'query' or $item->type === 'config')) {
@@ -301,13 +301,15 @@ class FeedsModel extends BaseModel
                 }
             }
         }
-        $feed = $result[0];
-        if (!empty($feed->url)) {
-            $feed->link = "<span class=\"clearfix float-end\"><a href=\"" . $feed->url . "\" target=\"_blank\">" . __('Read More') . "</button>";
-        } else {
-            $feed->link = "<span class=\"clearfix float-end\"><a href=\"" . url_to('feedsRead', intval($feed->id)) . "\" >" . __('Read More') . "</button>";
-        }
         $feed = new stdClass();
+        if (!empty($result[0])) {
+            $feed = $result[0];
+            if (!empty($feed->url)) {
+                $feed->link = "<span class=\"clearfix float-end\"><a href=\"" . $feed->url . "\" target=\"_blank\">" . __('Read More') . "</button>";
+            } else {
+                $feed->link = "<span class=\"clearfix float-end\"><a href=\"" . url_to('feedsRead', intval($feed->id)) . "\" >" . __('Read More') . "</button>";
+            }
+        }
         return $feed;
     }
 
