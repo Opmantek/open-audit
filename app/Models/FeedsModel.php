@@ -77,7 +77,7 @@ class FeedsModel extends BaseModel
         $data->products = array();
         $data->products[] = 'Open-AudIT';
         foreach ($config->modules as $module) {
-            if (!empty($module->url) and $module->name !== 'Applications' and stripos($module->url, 'https://firstwave') === false) {
+            if (!empty($module->url) and $module->name !== 'Applications' and $module->name !== 'opLicensing' and stripos($module->url, 'https://firstwave') === false) {
                 $data->products[] = $module->name;
             }
         }
