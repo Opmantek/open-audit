@@ -21,7 +21,7 @@ function &get_instance() # : \App\Controllers\BaseController
 
 function getFeed()
 {
-    $feedsModel = model('feedsModel');
+    $feedsModel = model('FeedsModel');
     $feed = $feedsModel->show();
     return $feed;
 }
