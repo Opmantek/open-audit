@@ -82,6 +82,7 @@ $routes->get('discoveries/(:num)/executeForm', 'Discoveries::executeForm/$1', ['
 $routes->post('discoveries/(:num)/executeForm', 'Discoveries::executeCollector/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesExecuteCollector']);
 
 $routes->get('feeds/execute', 'Feeds::execute', ['as' => 'feedsExecute']);
+$routes->cli('feeds/execute', 'Cli::executeFeeds', ['as' => 'executeFeeds']);
 
 $routes->post('graph/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'graphReset']);
 

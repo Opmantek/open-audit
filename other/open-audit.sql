@@ -1293,6 +1293,7 @@ INSERT INTO `configuration` VALUES (NULL,'license_limit','','number','n','system
 INSERT INTO `configuration` VALUES (NULL,'server_os','','text','n','system','2000-01-01 00:00:00','The OS Open-AudIT is running on (this server).');
 INSERT INTO `configuration` VALUES (NULL,'server_platform','','text','n','system','2000-01-01 00:00:00','The OS Platform Open-AudIT is running on (this server).');
 INSERT INTO `configuration` VALUES (NULL,'enterprise_env','','text','y','system','2000-01-01 00:00:00','Set to allow execution not in /tmp for Linux.');
+INSERT INTO `configuration` VALUES (NULL,'feature_feeds','n','bool','y','system','2000-01-01 00:00:00','Use online requests for news, updates, queries and packages.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1973,6 +1974,43 @@ CREATE TABLE `executables` (
 LOCK TABLES `executables` WRITE;
 /*!40000 ALTER TABLE `executables` DISABLE KEYS */;
 /*!40000 ALTER TABLE `executables` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `feeds`
+--
+
+DROP TABLE IF EXISTS `feeds`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `feeds` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `short` varchar(200) NOT NULL DEFAULT '',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `type` enum('advertisement','code','config','blog','file','howto','news','notification','other','package','query','release','') NOT NULL DEFAULT '',
+  `body` text NOT NULL,
+  `published` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `link` varchar(200) NOT NULL DEFAULT '',
+  `image` varchar(200) DEFAULT NULL,
+  `requested` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `expires` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `alert_style` enum('primary','secondary','success','danger','warning','info','light','dark') NOT NULL DEFAULT 'primary',
+  `version` varchar(20) NOT NULL DEFAULT '',
+  `accepted` enum('y','n','') DEFAULT NULL,
+  `accepted_by` varchar(200) NOT NULL DEFAULT '',
+  `accepted_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `feeds`
+--
+
+LOCK TABLES `feeds` WRITE;
+/*!40000 ALTER TABLE `feeds` DISABLE KEYS */;
+/*!40000 ALTER TABLE `feeds` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
