@@ -46,7 +46,12 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_feeds','n','bool','y','system','2000-01-01 00:00:00','Use online requests for news, updates, queries and packages.');"
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_feeds','n','bool','y','system','2000-01-01 00:00:00','Use online requests for news, updates, queries and packages.')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_feeds_url','n','bool','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve feeds articles.')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
