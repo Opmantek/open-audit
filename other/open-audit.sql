@@ -1294,7 +1294,7 @@ INSERT INTO `configuration` VALUES (NULL,'server_os','','text','n','system','200
 INSERT INTO `configuration` VALUES (NULL,'server_platform','','text','n','system','2000-01-01 00:00:00','The OS Platform Open-AudIT is running on (this server).');
 INSERT INTO `configuration` VALUES (NULL,'enterprise_env','','text','y','system','2000-01-01 00:00:00','Set to allow execution not in /tmp for Linux.');
 INSERT INTO `configuration` VALUES (NULL,'feature_feeds','n','bool','y','system','2000-01-01 00:00:00','Use online requests for news, updates, queries and packages.');
-INSERT INTO `configuration` VALUES (NULL,'feature_feeds_url','n','bool','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve feeds articles.');
+INSERT INTO `configuration` VALUES (NULL,'feature_feeds_url','https://open-audit.com/feeds','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve feeds articles.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
