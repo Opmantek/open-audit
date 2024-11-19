@@ -34,6 +34,10 @@ include('shared/lang.php');
         <script {csp-script-nonce}>
             window.onload = function () {
                 $(document).ready(function () {
+                    let prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    let html = document.querySelector('html');
+                    html.classList.add(prefers);
+                    html.setAttribute('data-bs-theme', prefers);
 
                     var checkurl = "https://services.opmantek.com/api/versioncheck/Open-AudIT/<?= $config->display_version ?>";
                     $.getJSON(checkurl, function (data) {
