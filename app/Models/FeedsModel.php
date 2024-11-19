@@ -198,8 +198,8 @@ class FeedsModel extends BaseModel
         $count = intval($count);
         if ($count === 0) {
             // This is a new article, store it
-            #$sql = "INSERT INTO feeds VALUES (null, name, short, description, type, body, published, link, image, requested, expires, alert_style, version, accepted, accepted_by, accepted_date)";
-            $sql = "INSERT INTO feeds VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 'n', '', '2001-01-01')";
+            #$sql = "INSERT INTO feeds VALUES (null, name, short, description, type, body, published, link, image, requested, expires, alert_style, version, read, actioned, actioned_by, actioned_date)";
+            $sql = "INSERT INTO feeds VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 'n', 'n', '', '2001-01-01')";
             $db->query($sql, [$body->name, $body->short, $body->description, $body->type, $body->body, $body->published, $body->link, $body->image, $body->expires, $body->alert_style, $body->version]);
         }
         return true;
@@ -269,11 +269,8 @@ class FeedsModel extends BaseModel
         $instance = & get_instance();
 
         $data = new \stdClass();
-        $data->accepted = 'y';
-        $data->accepted_by = $instance->user->full_name;
-        $data->accepted_date = $instance->config->timestamp;
+        $data->read = 'y';
         $this->builder->where('id', intval($id));
-        $this->builder->where('accepted_by', '');
         $this->builder->update($data);
 
         $query = $this->builder->getWhere(['id' => intval($id)]);
@@ -315,7 +312,7 @@ class FeedsModel extends BaseModel
     public function show(): object
     {
         $this->builder->limit(1);
-        $this->builder->where(['accepted' => '']);
+        $this->builder->where(['read' => 'n']);
         $this->builder->orderBy('requested', 'DESC');
         $query = $this->builder->get();
         $result = $query->getResult();
@@ -373,7 +370,7 @@ class FeedsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('published', 'name', 'type', 'description', 'accepted');
+        $dictionary->attributes->collection = array('published', 'name', 'type', 'description', 'actioned');
         $dictionary->attributes->create = array();
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
@@ -399,9 +396,10 @@ class FeedsModel extends BaseModel
         $dictionary->columns->expires = '';
         $dictionary->columns->alert_style = '';
         $dictionary->columns->version = '';
-        $dictionary->columns->accepted = '';
-        $dictionary->columns->accepted_by = '';
-        $dictionary->columns->accepted_date = '';
+        $dictionary->columns->read = '';
+        $dictionary->columns->actioned = '';
+        $dictionary->columns->actioned_by = '';
+        $dictionary->columns->actioned_date = '';
         return $dictionary;
     }
 }

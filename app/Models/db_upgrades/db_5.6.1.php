@@ -32,11 +32,12 @@ $sql = "CREATE TABLE `feeds` (
   `expires` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `alert_style` enum('primary','secondary','success','danger','warning','info','light','dark') NOT NULL DEFAULT 'primary',
   `version` varchar(20) NOT NULL DEFAULT '',
-  `accepted` enum('y','n','') DEFAULT NULL,
-  `accepted_by` varchar(200) NOT NULL DEFAULT '',
-  `accepted_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `read` enum('y','n','') DEFAULT NULL,
+  `actioned` enum('y','n','') DEFAULT NULL,
+  `actioned_by` varchar(200) NOT NULL DEFAULT '',
+  `actioned_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
