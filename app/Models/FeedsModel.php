@@ -67,10 +67,12 @@ class FeedsModel extends BaseModel
     public function execute(): bool
     {
         $config = new \Config\OpenAudit();
+        if (empty($config->feature_feeds) or $config->feature_feeds !== 'y') {
+            // Do not run
+            return true;
+        }
         $db = db_connect();
-        // $supportModel = new \App\Models\SupportModel();
         $data = new stdClass();
-
         $data->product = 'Open-AudIT';
         $data->version = $config->display_version;
         $data->internal_version = $config->internal_version;
@@ -81,8 +83,6 @@ class FeedsModel extends BaseModel
                 $data->products[] = $module->name;
             }
         }
-
-
         $data->uuid = $config->uuid;
         $data->license_product = '';
         $data->license_company = '';
@@ -127,7 +127,6 @@ class FeedsModel extends BaseModel
         }
         $data->platform = $config->server_platform;
         $data->server_os = $config->server_os;
-        $data->discovery_issues = array();
         $data->issues = array();
         $data->features = new stdCLass();
         if (php_uname('s') !== 'Windows NT') {
@@ -143,48 +142,66 @@ class FeedsModel extends BaseModel
             // Get the youngest log file
             $command_string = "ls " . ROOTPATH . "writable/logs/*.log | sort | tail -n1";
             exec($command_string, $output, $return_var);
-            $logfile = str_replace(ROOTPATH . 'writable/logs/log-', '', $output[0]);
-            $logfile = str_replace('.log', '', $logfile);
 
             // Get any errors from the youngest logfile
-            $command_string = "grep ERROR " . ROOTPATH . "writable/logs/" . $logfile;
+            $command_string = "grep -h -A1 ^CRITICAL " . $output[0];
             exec($command_string, $output, $return_var);
-            $data->issues = $output;
+            $combined_line = '';
+            foreach ($output as $line) {
+                if ($line === '--') {
+                    $combined_line = substr($combined_line, strpos($combined_line, '--> ') + 4);
+                    if (stripos($combined_line, 'menuItem') === false) {
+                        $data->issues[] = $combined_line;
+                    }
+                    $combined_line = '';
+                    continue;
+                }
+                $combined_line .= ' ' . $line;
+            }
         }
 
         $sql = "SELECT type, COUNT(*) AS `count` FROM devices GROUP BY type";
         $data->devices = $db->query($sql)->getResult();
 
-
-        $command_string = "grep -h -A1 ^CRITICAL " . ROOTPATH . "writable/logs/*.log";
-        exec($command_string, $output, $return_var);
-        $combined_line = '';
-        foreach ($output as $line) {
-            if ($line === '--') {
-                $combined_line = substr($combined_line, strpos($combined_line, '--> ') + 4);
-                $data->issues[] = $combined_line;
-                $combined_line = '';
-                continue;
-            }
-            $combined_line .= ' ' . $line;
-        }
-
-        $command_string = "grep -h ^ERROR " . ROOTPATH . "writable/logs/*.log | grep -v menuItem";
-        unset($output);
-        exec($command_string, $output, $return_var);
-        $combined_line = '';
-        foreach ($output as $line) {
-            $data->issues[] = substr($line, strpos($line, '--> ') + 4);
-        }
-
         sort($data->issues);
         $data->issues = array_unique($data->issues);
         unset($output);
 
+        $client = service('curlrequest') or die("Cannot instanciate a curlrequest.");
 
-        echo "<pre>\n";
-        echo json_encode($data, JSON_PRETTY_PRINT);
-        echo "</pre>";
+        // $response = $client->request('POST', 'http://localhost:8080/index.php/input/devices', [
+        $response = $client->request('POST', $config->feature_feeds_url, [
+            'debug' => true,
+            'form_params' => [
+                $data,
+            ],
+        ]);
+
+        $body = $response->getBody();
+        $body = @json_decode($body);
+        $body->name = !empty($body->name) ? $body->name : '';
+        $body->short = !empty($body->short) ? $body->short : '';
+        $body->description = !empty($body->description) ? $body->description : '';
+        $body->type = !empty($body->type) ? $body->type : '';
+        $body->body = !empty($body->body) ? $body->body : '';
+        $body->published = !empty($body->published) ? $body->published : '';
+        $body->link = !empty($body->link) ? $body->link : '';
+        $body->image = !empty($body->image) ? $body->image : '';
+        $body->expires = !empty($body->expires) ? $body->expires : '2100-01-01';
+        $body->alert_style = !empty($body->alert_style) ? $body->alert_style : 'primary';
+        $body->version = !empty($body->version) ? $body->version : '';
+        if (empty($body)) {
+            return true;
+        }
+        $sql = "SELECT COUNT(id) AS `count` FROM feeds WHERE name = ?";
+        $count = $db->query($sql, [$body->name])->getResult()[0]->count;
+        $count = intval($count);
+        if ($count === 0) {
+            // This is a new article, store it
+            #$sql = "INSERT INTO feeds VALUES (null, name, short, description, type, body, published, link, image, requested, expires, alert_style, version, accepted, accepted_by, accepted_date)";
+            $sql = "INSERT INTO feeds VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 'n', '', '2001-01-01')";
+            $db->query($sql, [$body->name, $body->short, $body->description, $body->type, $body->body, $body->published, $body->link, $body->image, $body->expires, $body->alert_style, $body->version]);
+        }
         return true;
     }
 
@@ -250,6 +267,15 @@ class FeedsModel extends BaseModel
     public function read(int $id = 0): array
     {
         $instance = & get_instance();
+
+        $data = new \stdClass();
+        $data->accepted = 'y';
+        $data->accepted_by = $instance->user->full_name;
+        $data->accepted_date = $instance->config->timestamp;
+        $this->builder->where('id', intval($id));
+        $this->builder->where('accepted_by', '');
+        $this->builder->update($data);
+
         $query = $this->builder->getWhere(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -289,8 +315,9 @@ class FeedsModel extends BaseModel
     public function show(): object
     {
         $this->builder->limit(1);
+        $this->builder->where(['accepted' => '']);
+        $this->builder->orderBy('requested', 'DESC');
         $query = $this->builder->get();
-        #$query = $this->builder->getWhere(['id' => 6]);
         $result = $query->getResult();
         foreach ($result as $item) {
             if (!empty($item->type) and !empty($item->body) and ($item->type === 'query' or $item->type === 'config')) {

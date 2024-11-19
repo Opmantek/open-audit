@@ -3,7 +3,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include('lang.php');
 
-$feed = getFeed();
+$feed = new \stdClass();
+if ($meta->collection !== 'feeds') {
+    $feed = getFeed();
+}
 
 $title = 'Open-AudIT ' . ucfirst($config->product) . ' ' . $config->display_version;
 

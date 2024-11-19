@@ -279,6 +279,12 @@ class Cli extends Controller
         $queueModel->start();
     }
 
+    public function executeFeeds()
+    {
+        $feedsModel = model('FeedsModel');
+        $feedsModel->execute();
+    }
+
     public function executeIntegration($id)
     {
         $id = intval($id);
