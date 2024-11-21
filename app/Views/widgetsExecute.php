@@ -132,6 +132,7 @@ window.onload = function () {
             <?php
             if (!empty($data->formatted)) {
                 $wf = json_encode($data->formatted);
+                $wf = htmlspecialchars_decode($wf, ENT_QUOTES);
                 $wf = str_replace('"function(event){location.href = this.options.url;}"', 'function(event){location.href = this.options.url;}', $wf);
                 echo "\n\tHighcharts.chart(" . html_entity_decode($wf) . ");\n";
             } ?>
