@@ -255,7 +255,16 @@ class FeedsModel extends BaseModel
                         $line = $lines[$i] . ' ' . $lines[$i + 1];
                         $line = substr($line, strpos($line, '--> ') + 4);
                         $line = str_replace("\n", "", $line);
-                        $data->issues[] = $line;
+                        $data->issues[] = 'CRITICAL - ' . $line;
+                    }
+                }
+                # ERROR - 2024-11-20 17:12:23 --> Could not convert audit submission.
+                for ($i = 0; $i < $count; $i++) {
+                    if (strpos($lines[$i], 'ERROR') !== false and strpos($lines[$i], 'Response:') === false) {
+                        $line = $lines[$i];
+                        $line = substr($line, strpos($line, '--> ') + 4);
+                        $line = str_replace("\n", "", $line);
+                        $data->issues[] = 'ERROR - ' . $line;
                     }
                 }
                 # INFO - 2024-11-21 13:19:56 --> ACCESS:summaries:collection::Administrator
@@ -273,7 +282,12 @@ class FeedsModel extends BaseModel
         $data->issues = array_values($data->issues);
 
         $sql = "SELECT type, COUNT(*) AS `count` FROM devices GROUP BY type";
-        $data->devices = $db->query($sql)->getResult();
+        $devices = $db->query($sql)->getResult();
+        $data->devices = new \stdClass();
+        foreach ($devices as $device) {
+            $data->devices->{$device->type} = intval($device->count);
+        }
+        unset($devices);
 
         $client = service('curlrequest');
         // $client = \Config\Services::curlrequest();
