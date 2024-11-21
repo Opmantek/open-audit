@@ -113,6 +113,24 @@ class Logon extends Controller
         $db->query($sql, [$server_platform]);
         log_message('info', 'Config auto-populated with ServerPlatform ' . $server_platform . '.');
 
+
+        $sql = "SELECT * FROM configuration WHERE name = 'feature_feeds'";
+        $result = $db->query($sql)->getResult();
+        if (!empty($result[0]->value) and $result[0]->value === 'y') {
+            $last_request_date = '2000-01-01';
+            $sql = "SELECT * FROM configuration WHERE name = 'feature_feeds_last_request_date'";
+            $result = $db->query($sql)->getResult();
+            if (!empty($result) and !empty($result[0]->value)) {
+                $last_request_date = $result[0]->value;
+            }
+            if ($last_request_date < date('Y-m-d')) {
+                // Request a feed item
+                log_message('info', 'Requesting feed article.');
+                $feedsModel = model('FeedsModel');
+                $feedsModel->executeAll();
+            }
+        }
+
         $methods = array();
         if ($db->tableExists('auth')) {
             $authModel = model('AuthModel');

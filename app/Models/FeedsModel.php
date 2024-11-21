@@ -60,11 +60,89 @@ class FeedsModel extends BaseModel
     }
 
     /**
-     * Execute a request for feeds articles
+     * Execute a request action a feeds article
      *
      * @return bool    true || false depending on success
      */
-    public function execute(): bool
+    public function execute(int $id = 0): bool
+    {
+        $instance = & get_instance();
+        if (empty($instance->user->id)) {
+            log_message('info', 'A feed article needs to be executed from a user.');
+            return false;
+        }
+        $item = $this->builder->getWhere(['id' => $id])->getResult();
+        if (empty($item)) {
+            // Bad ID, return
+            return false;
+        }
+        $item = $item[0];
+        if (!empty($item->type) and !empty($item->body) and ($item->type === 'query' or $item->type === 'config')) {
+            try {
+                $item->body = json_decode($item->body, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                return false;
+            }
+        }
+        log_message('info', json_encode($item));
+        if ($item->type === 'config') {
+            if (empty($instance->user->permissions['configuration']) or strpos($instance->user->permissions['queries'], 'u') === false) {
+                log_message('info', $instance->user->full_name . ' does not have permission to execute feeds to update configuration.');
+                return false;
+            }
+            $attributes = $item->body[0]->attributes;
+
+            $sql = "DELETE FROM `configuration` WHERE name = ?";
+            $this->db->query($sql, [$attributes->name]);
+
+            $sql = "INSERT INTO `configuration` (name, value, type, editable, description, edited_by, edited_date) VALUES (?, ?, ?, ?, ?, ?, NOW())";
+            $this->db->query($sql, [$attributes->name, $attributes->value, $attributes->type, $attributes->editable, $attributes->description, $instance->user->full_name]);
+
+
+            $data = new \stdClass();
+            $data->read = 'y';
+            $data->actioned = 'y';
+            $data->actioned_by = $instance->user->full_name;
+            $data->actioned_date = date('Y-m-d H:i:s');
+            $this->builder->where('id', intval($id));
+            $this->builder->update($data);
+        }
+        if ($item->type === 'query') {
+            if (empty($instance->user->permissions['queries']) or strpos($instance->user->permissions['queries'], 'c') === false or strpos($instance->user->permissions['queries'], 'u') === false or strpos($instance->user->permissions['queries'], 'd') === false) {
+                log_message('info', $instance->user->full_name . ' does not have permission to execute feeds to create/update/delete queries.');
+                return false;
+            }
+
+            $attributes = $item->body[0]->attributes;
+
+            $sql = "DELETE FROM `queries` WHERE name = ?";
+            $this->db->query($sql, [$attributes->name]);
+
+            $data = $this->createFieldData('queries', $item->body[0]->attributes);
+            if (empty($data)) {
+                return false;
+            }
+            model('App\Models\QueriesModel')->create($data);
+
+            $data = new \stdClass();
+            $data->read = 'y';
+            $data->actioned = 'y';
+            $data->actioned_by = $instance->user->full_name;
+            $data->actioned_date = date('Y-m-d H:i:s');
+            $this->builder->where('id', intval($id));
+            $this->builder->update($data);
+        }
+        return true;
+    }
+
+
+    /**
+     * Execute a request for All feeds articles
+     *
+     * @return bool    true || false depending on success
+     */
+    public function executeAll(): bool
     {
         $config = new \Config\OpenAudit();
         if (empty($config->feature_feeds) or $config->feature_feeds !== 'y') {
@@ -90,6 +168,8 @@ class FeedsModel extends BaseModel
         $data->license_count = 0;
         $data->license_expires = '2000-01-01';
         $data->license_type = '';
+
+        // License info
         if (!empty($config->enterprise_binary)) {
             if (php_uname('s') === 'Windows NT') {
                 $command = "%comspec% /c start /b " . $config->enterprise_binary . " --license";
@@ -105,7 +185,6 @@ class FeedsModel extends BaseModel
                 }
                 $output = @exec($command, $output);
             }
-            // $data->output = $output;
             if (!empty($output)) {
                 $json = @json_decode($output);
             }
@@ -128,55 +207,89 @@ class FeedsModel extends BaseModel
         $data->platform = $config->server_platform;
         $data->server_os = $config->server_os;
         $data->issues = array();
-        $data->features = new stdCLass();
-        if (php_uname('s') !== 'Windows NT') {
-            // Grep for used features
-            $command_string = "grep ACCESS " . ROOTPATH . "writable/logs/*.log | cut -d\" \" -f6- | sort | cut -d: -f2-3 | uniq -c | sed 's/^ *//g' | sed 's/ *$//g'";
-            exec($command_string, $output, $return_var);
-            foreach ($output as $line) {
-                $temp = explode(' ', $line);
-                $data->features->{$temp[1]} = intval($temp[0]);
-            }
-            unset($output);
+        $data->features = new \stdClass();
 
-            // Get the youngest log file
-            $command_string = "ls " . ROOTPATH . "writable/logs/*.log | sort | tail -n1";
-            exec($command_string, $output, $return_var);
+        // Feature use
+        // if (php_uname('s') !== 'Windows NT') {
+        //     // Grep for used features
+        //     $command_string = "grep ACCESS " . ROOTPATH . "writable/logs/*.log | cut -d\" \" -f6- | sort | cut -d: -f2-3 | uniq -c | sed 's/^ *//g' | sed 's/ *$//g'";
+        //     exec($command_string, $output, $return_var);
+        //     foreach ($output as $line) {
+        //         $temp = explode(' ', $line);
+        //         $data->features->{$temp[1]} = intval($temp[0]);
+        //     }
+        //     unset($output);
+        // }
 
-            // Get any errors from the youngest logfile
-            $command_string = "grep -h -A1 ^CRITICAL " . $output[0];
-            exec($command_string, $output, $return_var);
-            $combined_line = '';
-            foreach ($output as $line) {
-                if ($line === '--') {
-                    $combined_line = substr($combined_line, strpos($combined_line, '--> ') + 4);
-                    if (stripos($combined_line, 'menuItem') === false) {
-                        $data->issues[] = $combined_line;
+        // Yesterdays date
+        // $date = date('Y-m-d', strtotime("-1 days"));
+        // $logfile = '/usr/local/open-audit/writable/logs/log-' . $date . '.log';
+        // if (php_uname('s') === 'Windows NT') {
+        //     $logfile = 'c:\\xampp\\open-audit\\writable\\logs\\log-' . $date . '.log';
+        // }
+        // if (is_file($logfile)) {
+        //     $file = file($logfile);
+        //     $count = count($file);
+        //     for ($i = 0; $i < $count; $i++) {
+        //         if (strpos($file[$i], 'CRITICAL') !== false) {
+        //             $line = $file[$i] . ' ' . $file[$i + 1];
+        //             $line = substr($line, strpos($line, '--> ') + 4);
+        //             $line = str_replace("\n", "", $line);
+        //             $data->issues[] = $line;
+        //         }
+        //     }
+        // }
+
+        $path = '/usr/local/open-audit/writable/logs/';
+        if (php_uname('s') === 'Windows NT') {
+            $logfile = 'c:\\xampp\\open-audit\\writable\\logs\\';
+        }
+        $files = array_diff(scandir($path), array('.', '..', 'index.html'));
+        foreach ($files as $file) {
+            if (strpos($file, 'log-') !== false and strpos($file, '.log') !== false) {
+                $lines = file($path . $file);
+                $count = count($lines);
+                # CRITICAL - 2024-11-18 16:06:29 --> ErrorException: Attempt to read property "name" on array in APPPATH/Models/FeedsModel.php on line 191.
+                for ($i = 0; $i < $count; $i++) {
+                    if (strpos($lines[$i], 'CRITICAL') !== false and strpos($lines[$i], 'menuItem, no permission requested') === false) {
+                        $line = $lines[$i] . ' ' . $lines[$i + 1];
+                        $line = substr($line, strpos($line, '--> ') + 4);
+                        $line = str_replace("\n", "", $line);
+                        $data->issues[] = $line;
                     }
-                    $combined_line = '';
-                    continue;
                 }
-                $combined_line .= ' ' . $line;
+                # INFO - 2024-11-21 13:19:56 --> ACCESS:summaries:collection::Administrator
+                for ($i = 0; $i < $count; $i++) {
+                    if (strpos($lines[$i], 'ACCESS') !== false) {
+                        $explode = explode(':', $lines[$i]);
+                        $data->features->{$explode[3] . ':' . $explode[4]} = !empty($data->features->{$explode[3] . ':' . $explode[4]}) ? intval($data->features->{$explode[3] . ':' . $explode[4]}) + 1 : 1;
+                    }
+                }
             }
         }
+
+        sort($data->issues);
+        $data->issues = array_unique($data->issues);
+        $data->issues = array_values($data->issues);
 
         $sql = "SELECT type, COUNT(*) AS `count` FROM devices GROUP BY type";
         $data->devices = $db->query($sql)->getResult();
 
-        sort($data->issues);
-        $data->issues = array_unique($data->issues);
-        unset($output);
-
-        $client = service('curlrequest') or die("Cannot instanciate a curlrequest.");
-
-        // $response = $client->request('POST', 'http://localhost:8080/index.php/input/devices', [
-        $response = $client->request('POST', $config->feature_feeds_url, [
-            'debug' => true,
-            'form_params' => [
-                $data,
-            ],
-        ]);
-
+        $client = service('curlrequest');
+        // $client = \Config\Services::curlrequest();
+        try {
+            $response = @$client->request('POST', $config->feature_feeds_url, [
+            # $response = @$client->request('POST', 'http://localhost:8082/', [
+                # 'debug' => true,
+                # 'http_errors' => false,
+                'form_params' => [
+                    $data,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            log_message('critical', 'Requesting feeds failed: ' . $e->getMessage() . "\n");
+            return true;
+        }
         $body = $response->getBody();
         $body = @json_decode($body);
         $body->name = !empty($body->name) ? $body->name : '';
@@ -266,13 +379,10 @@ class FeedsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $instance = & get_instance();
-
         $data = new \stdClass();
         $data->read = 'y';
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
-
         $query = $this->builder->getWhere(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();

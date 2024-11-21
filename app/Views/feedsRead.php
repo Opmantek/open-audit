@@ -8,28 +8,28 @@ $name = !empty($data[0]->attributes->name) ? ucwords($data[0]->attributes->type)
 $description = !empty($data[0]->attributes->description) ? html_entity_decode($data[0]->attributes->description) . '<br><br>' : '';
 $short = !empty($data[0]->attributes->short) ? html_entity_decode($data[0]->attributes->short) . '<br><br>' : '';
 $body = !empty($data[0]->attributes->body) ? $data[0]->attributes->body : '';
-$accepted_by = !empty($data[0]->attributes->accepted_by) ? $data[0]->attributes->accepted_by : '';
-$accepted_date = !empty($data[0]->attributes->accepted_date) ? $data[0]->attributes->accepted_date : '';
-$accepted = '';
+$actioned_by = !empty($data[0]->attributes->actioned_by) ? $data[0]->attributes->actioned_by : '';
+$actioned_date = !empty($data[0]->attributes->actioned_date) ? $data[0]->attributes->actioned_date : '';
+$actioned = !empty($data[0]->attributes->actioned) ? $data[0]->attributes->actioned : '';
 
 switch ($data[0]->attributes->type) {
     case 'config':
         if (strpos($user->permissions['configuration'], 'c') !== false and strpos($user->permissions['configuration'], 'u') !== false) {
-            $name .= "<span class=\"clearfix float-end\"><button class=\"btn btn-primary\">" . __('Activate') . "</button>";
+            #$name .= "<span class=\"clearfix float-end\"><button class=\"btn btn-primary\">" . __('Activate') . "</button>";
         }
         $body = '<code><pre>' . json_encode($data[0]->attributes->body, JSON_PRETTY_PRINT) . '</pre></code>';
-        if (!empty($accepted_by) and !empty($accepted_date)) {
-            $accepted = 'Activated By ' . $accepted_by . ' on ' . $accepted_date . '<br><br>';
+        if (!empty($actioned_by) and !empty($actioned_date)) {
+            $actioned = 'Activated By ' . $actioned_by . ' on ' . $actioned_date . '.<br><br>';
         }
         break;
 
     case 'query':
         if (strpos($user->permissions['queries'], 'c') !== false and strpos($user->permissions['queries'], 'u') !== false) {
-            $name .= "<span class=\"clearfix float-end\"><button class=\"btn btn-primary\">" . __('Enable') . "</button>";
+            #$name .= "<span class=\"clearfix float-end\"><a href=\"" . url_to('feedsExecute', $meta->id) . "\" type=\"button\" class=\"btn btn-primary\">" . __('Enable') . "</a>";
         }
         $body = '<code><pre>' . json_encode($data[0]->attributes->body, JSON_PRETTY_PRINT) . '</pre></code>';
-        if (!empty($accepted_by) and !empty($accepted_date)) {
-            $accepted = 'Enabled By ' . $accepted_by . ' on ' . $accepted_date . '<br><br>';
+        if (!empty($actioned_by) and !empty($actioned_date)) {
+            $actioned = 'Enabled By ' . $actioned_by . ' on ' . $actioned_date . '.<br><br>';
         }
         break;
 
@@ -56,11 +56,23 @@ switch ($data[0]->attributes->type) {
                                 <h3><?= $name ?></h3><br>
                                 <?= $short ?>
                                 <?= $description ?>
-                                <?= $accepted ?>
+                                <?= $actioned ?>
                                 <?= $body ?><br><br>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
+            <pre>
+                <?= json_encode($data[0], JSON_PRETTY_PRINT) ?>
+            </pre>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function() {
+        $("#button_create").remove();
+        $("#button_delete").remove();
+    });
+}
+</script>

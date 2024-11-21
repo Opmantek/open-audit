@@ -40,10 +40,18 @@ class Feeds extends BaseController
      * @return void
      * @throws Exception
      */
-    public function execute()
+    public function executeAll()
     {
         $this->feedsModel = model('App\Models\FeedsModel');
-        $this->feedsModel->execute();
-        return;
+        $this->feedsModel->executeAll();
+        return redirect()->route('feedsCollection');
+    }
+
+    public function execute($id)
+    {
+        $id = intval($id);
+        $this->feedsModel = model('App\Models\FeedsModel');
+        $this->feedsModel->execute($id);
+        return redirect()->route('feedsRead', [$id]);
     }
 }

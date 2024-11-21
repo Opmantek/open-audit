@@ -334,7 +334,7 @@ class UsersModel extends BaseModel
                 $user->permissions['support'] = 'r';
             }
             if (empty($user->permissions['feeds'])) {
-                $user->permissions['feeds'] = 'r';
+                $user->permissions['feeds'] = 'crud';
             }
 
             $access_token = '';

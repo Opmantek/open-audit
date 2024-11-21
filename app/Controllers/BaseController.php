@@ -113,7 +113,7 @@ abstract class BaseController extends Controller
             // Anyone can download an agent
             return;
         }
-        if (empty($this->user) and $this->controller === '\App\Controllers\Feeds' and $this->method === 'execute') {
+        if (empty($this->user) and $this->controller === '\App\Controllers\Feeds' and $this->method === 'executeAll') {
             // No user, requesting feed articles
             return;
         }
