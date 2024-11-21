@@ -316,6 +316,7 @@ window.onload = function () {
         foreach ($included['widgets'] as $widget) {
             if (!empty($widget->formatted) and !empty($widget->type) and $widget->type !== 'traffic') {
                 $wf = json_encode($widget->formatted);
+                $wf = htmlspecialchars_decode($wf, ENT_QUOTES);
                 $wf = str_replace('"function(event){location.href = this.options.url;}"', 'function(event){location.href = this.options.url;}', $wf);
                 echo "\n\tHighcharts.chart(" . html_entity_decode($wf) . ");\n";
             }
