@@ -15,7 +15,7 @@ $actioned = !empty($data[0]->attributes->actioned) ? $data[0]->attributes->actio
 switch ($data[0]->attributes->type) {
     case 'config':
         if (strpos($user->permissions['configuration'], 'c') !== false and strpos($user->permissions['configuration'], 'u') !== false) {
-            #$name .= "<span class=\"clearfix float-end\"><button class=\"btn btn-primary\">" . __('Activate') . "</button>";
+            $name .= "<span class=\"clearfix float-end\"><button class=\"btn btn-primary\">" . __('Activate') . "</button>";
         }
         $body = '<code><pre>' . json_encode($data[0]->attributes->body, JSON_PRETTY_PRINT) . '</pre></code>';
         if (!empty($actioned_by) and !empty($actioned_date)) {
@@ -25,7 +25,7 @@ switch ($data[0]->attributes->type) {
 
     case 'query':
         if (strpos($user->permissions['queries'], 'c') !== false and strpos($user->permissions['queries'], 'u') !== false) {
-            #$name .= "<span class=\"clearfix float-end\"><a href=\"" . url_to('feedsExecute', $meta->id) . "\" type=\"button\" class=\"btn btn-primary\">" . __('Enable') . "</a>";
+            $name .= "<span class=\"clearfix float-end\"><a href=\"" . url_to('feedsExecute', $meta->id) . "\" type=\"button\" class=\"btn btn-primary\">" . __('Enable') . "</a>";
         }
         $body = '<code><pre>' . json_encode($data[0]->attributes->body, JSON_PRETTY_PRINT) . '</pre></code>';
         if (!empty($actioned_by) and !empty($actioned_date)) {
@@ -37,6 +37,7 @@ switch ($data[0]->attributes->type) {
         $body = htmlspecialchars_decode($data[0]->attributes->body);
         $body = html_entity_decode($body);
         $name .= "<span class=\"clearfix float-end\"><a href=\"#\" type=\"button\" class=\"btn btn-success\">" . __('Download') . "</a>";
+        $actioned = '';
         break;
 
     default:
@@ -73,6 +74,7 @@ window.onload = function () {
     $(document).ready(function() {
         $("#button_create").remove();
         $("#button_delete").remove();
+        $("#button_export_json").remove();
     });
 }
 </script>

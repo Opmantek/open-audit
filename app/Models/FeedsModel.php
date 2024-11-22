@@ -7,8 +7,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use stdClass;
-
 class FeedsModel extends BaseModel
 {
     public function __construct()
@@ -85,7 +83,7 @@ class FeedsModel extends BaseModel
                 return false;
             }
         }
-        log_message('info', json_encode($item));
+
         if ($item->type === 'config') {
             if (empty($instance->user->permissions['configuration']) or strpos($instance->user->permissions['queries'], 'u') === false) {
                 log_message('info', $instance->user->full_name . ' does not have permission to execute feeds to update configuration.');
@@ -149,145 +147,10 @@ class FeedsModel extends BaseModel
             // Do not run
             return true;
         }
-        $db = db_connect();
-        $data = new stdClass();
-        $data->product = 'Open-AudIT';
-        $data->version = $config->display_version;
-        $data->internal_version = $config->internal_version;
-        $data->products = array();
-        $data->products[] = 'Open-AudIT';
-        foreach ($config->modules as $module) {
-            if (!empty($module->url) and $module->name !== 'Applications' and $module->name !== 'opLicensing' and stripos($module->url, 'https://firstwave') === false) {
-                $data->products[] = $module->name;
-            }
-        }
-        $data->uuid = $config->uuid;
-        $data->license_product = '';
-        $data->license_company = '';
-        $data->license_email = '';
-        $data->license_count = 0;
-        $data->license_expires = '2000-01-01';
-        $data->license_type = '';
-
-        // License info
-        if (!empty($config->enterprise_binary)) {
-            if (php_uname('s') === 'Windows NT') {
-                $command = "%comspec% /c start /b " . $config->enterprise_binary . " --license";
-                $cwd = getcwd();
-                chdir('C:\\xampp\\open-audit\\other');
-                $output = @exec($command, $output);
-                pclose(popen($command, 'r'));
-                chdir($cwd);
-            } else {
-                $command = $config->enterprise_binary . " --license";
-                if (!empty($config->enterprise_env) and strpos($command, 'enterprise.bin') !== false) {
-                    $command = 'export PAR_GLOBAL_TMPDIR=' . $config->enterprise_env . '; ' . $command;
-                }
-                $output = @exec($command, $output);
-            }
-            if (!empty($output)) {
-                $json = @json_decode($output);
-            }
-            if (!empty($json)) {
-                $data->license_product = !empty($json->product) ? $json->product : '';
-                if (stripos($data->license_product, 'enterprise') !== false) {
-                    $data->license_product = 'Open-AudIT Enterprise';
-                }
-                if (stripos($data->license_product, 'professional') !== false) {
-                    $data->license_product = 'Open-AudIT Professional';
-                }
-                $data->license_company = !empty($json->company) ? $json->company : '';
-                $data->license_email = !empty($json->email) ? $json->email : '';
-                $data->license_count = !empty($json->count) ? intval($json->count) : 0;
-                $data->license_expires = !empty($json->expires) ? date('Y-m-d', $json->expires) : '';
-                $data->license_type = !empty($json->license) ? $json->license : '';
-            }
-            unset($output);
-        }
-        $data->platform = $config->server_platform;
-        $data->server_os = $config->server_os;
-        $data->issues = array();
-        $data->features = new \stdClass();
-
-        // Feature use
-        // if (php_uname('s') !== 'Windows NT') {
-        //     // Grep for used features
-        //     $command_string = "grep ACCESS " . ROOTPATH . "writable/logs/*.log | cut -d\" \" -f6- | sort | cut -d: -f2-3 | uniq -c | sed 's/^ *//g' | sed 's/ *$//g'";
-        //     exec($command_string, $output, $return_var);
-        //     foreach ($output as $line) {
-        //         $temp = explode(' ', $line);
-        //         $data->features->{$temp[1]} = intval($temp[0]);
-        //     }
-        //     unset($output);
-        // }
-
-        // Yesterdays date
-        // $date = date('Y-m-d', strtotime("-1 days"));
-        // $logfile = '/usr/local/open-audit/writable/logs/log-' . $date . '.log';
-        // if (php_uname('s') === 'Windows NT') {
-        //     $logfile = 'c:\\xampp\\open-audit\\writable\\logs\\log-' . $date . '.log';
-        // }
-        // if (is_file($logfile)) {
-        //     $file = file($logfile);
-        //     $count = count($file);
-        //     for ($i = 0; $i < $count; $i++) {
-        //         if (strpos($file[$i], 'CRITICAL') !== false) {
-        //             $line = $file[$i] . ' ' . $file[$i + 1];
-        //             $line = substr($line, strpos($line, '--> ') + 4);
-        //             $line = str_replace("\n", "", $line);
-        //             $data->issues[] = $line;
-        //         }
-        //     }
-        // }
-
-        $path = '/usr/local/open-audit/writable/logs/';
-        if (php_uname('s') === 'Windows NT') {
-            $logfile = 'c:\\xampp\\open-audit\\writable\\logs\\';
-        }
-        $files = array_diff(scandir($path), array('.', '..', 'index.html'));
-        foreach ($files as $file) {
-            if (strpos($file, 'log-') !== false and strpos($file, '.log') !== false) {
-                $lines = file($path . $file);
-                $count = count($lines);
-                # CRITICAL - 2024-11-18 16:06:29 --> ErrorException: Attempt to read property "name" on array in APPPATH/Models/FeedsModel.php on line 191.
-                for ($i = 0; $i < $count; $i++) {
-                    if (strpos($lines[$i], 'CRITICAL') !== false and strpos($lines[$i], 'menuItem, no permission requested') === false) {
-                        $line = $lines[$i] . ' ' . $lines[$i + 1];
-                        $line = substr($line, strpos($line, '--> ') + 4);
-                        $line = str_replace("\n", "", $line);
-                        $data->issues[] = 'CRITICAL - ' . $line;
-                    }
-                }
-                # ERROR - 2024-11-20 17:12:23 --> Could not convert audit submission.
-                for ($i = 0; $i < $count; $i++) {
-                    if (strpos($lines[$i], 'ERROR') !== false and strpos($lines[$i], 'Response:') === false) {
-                        $line = $lines[$i];
-                        $line = substr($line, strpos($line, '--> ') + 4);
-                        $line = str_replace("\n", "", $line);
-                        $data->issues[] = 'ERROR - ' . $line;
-                    }
-                }
-                # INFO - 2024-11-21 13:19:56 --> ACCESS:summaries:collection::Administrator
-                for ($i = 0; $i < $count; $i++) {
-                    if (strpos($lines[$i], 'ACCESS') !== false) {
-                        $explode = explode(':', $lines[$i]);
-                        $data->features->{$explode[3] . ':' . $explode[4]} = !empty($data->features->{$explode[3] . ':' . $explode[4]}) ? intval($data->features->{$explode[3] . ':' . $explode[4]}) + 1 : 1;
-                    }
-                }
-            }
-        }
-
-        sort($data->issues);
-        $data->issues = array_unique($data->issues);
-        $data->issues = array_values($data->issues);
-
-        $sql = "SELECT type, COUNT(*) AS `count` FROM devices GROUP BY type";
-        $devices = $db->query($sql)->getResult();
-        $data->devices = new \stdClass();
-        foreach ($devices as $device) {
-            $data->devices->{$device->type} = intval($device->count);
-        }
-        unset($devices);
+        $data = createFeedData();
+        // echo "<pre>";
+        // echo json_encode($data);
+        // exit;
 
         $client = service('curlrequest');
         // $client = \Config\Services::curlrequest();
@@ -449,7 +312,7 @@ class FeedsModel extends BaseModel
                 }
             }
         }
-        $feed = new stdClass();
+        $feed = new \stdClass();
         if (!empty($result[0])) {
             $feed = $result[0];
             if (!empty($feed->url)) {
@@ -489,11 +352,11 @@ class FeedsModel extends BaseModel
         $instance = & get_instance();
 
         $collection = 'feeds';
-        $dictionary = new stdClass();
+        $dictionary = new \stdClass();
         $dictionary->table = $collection;
-        $dictionary->columns = new stdClass();
+        $dictionary->columns = new \stdClass();
 
-        $dictionary->attributes = new stdClass();
+        $dictionary->attributes = new \stdClass();
         $dictionary->attributes->collection = array('published', 'name', 'type', 'description', 'actioned');
         $dictionary->attributes->create = array();
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);

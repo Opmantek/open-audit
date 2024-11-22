@@ -169,7 +169,6 @@ class Discoveries extends BaseController
         if (!empty($this->config->mail_password)) {
             $this->config->mail_password = 'Removed from display, but has been set';
         }
-        $this->resp->included['configuration'] = config('Openaudit');
         output($this);
         return;
     }
