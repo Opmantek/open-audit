@@ -148,9 +148,9 @@ class FeedsModel extends BaseModel
             return true;
         }
         $data = createFeedData();
-        // echo "<pre>";
-        // echo json_encode($data);
-        // exit;
+        echo "<pre>";
+        echo json_encode($data);
+        exit;
 
         $client = service('curlrequest');
         // $client = \Config\Services::curlrequest();
