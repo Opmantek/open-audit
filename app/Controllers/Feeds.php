@@ -56,7 +56,7 @@ class Feeds extends BaseController
         if (in_array($feed[0]->attributes->type, ['config', 'package', 'query'])) {
             return redirect()->route('feedsRead', [$id]);
         }
-        if (in_array($feed[0]->attributes->type, ['advertisement', 'blog', 'howto', 'news', 'notification', 'other', 'release'], '')) {
+        if (in_array($feed[0]->attributes->type, ['advertisement', 'blog', 'howto', 'news', 'notification', 'other', 'release', ''])) {
             return true;
         }
         return redirect()->route('feedsRead', [$id]);
