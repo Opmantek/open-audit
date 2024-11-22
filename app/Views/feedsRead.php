@@ -11,6 +11,7 @@ $body = !empty($data[0]->attributes->body) ? $data[0]->attributes->body : '';
 $actioned_by = !empty($data[0]->attributes->actioned_by) ? $data[0]->attributes->actioned_by : '';
 $actioned_date = !empty($data[0]->attributes->actioned_date) ? $data[0]->attributes->actioned_date : '';
 $actioned = !empty($data[0]->attributes->actioned) ? $data[0]->attributes->actioned : '';
+$link = !empty($data[0]->attributes->link) ? $data[0]->attributes->link : '';
 
 switch ($data[0]->attributes->type) {
     case 'config':
@@ -36,7 +37,8 @@ switch ($data[0]->attributes->type) {
     case 'release':
         $body = htmlspecialchars_decode($data[0]->attributes->body);
         $body = html_entity_decode($body);
-        $name .= "<span class=\"clearfix float-end\"><a href=\"#\" type=\"button\" class=\"btn btn-success\">" . __('Download') . "</a>";
+        $name .= "<span class=\"clearfix float-end\"><button id=\"myButton\" class=\"btn btn-success\">" . __('Download') . "</button>";
+        $name .= "<br><a id=\"link\" class=\"visually-hidden\" href=\"" . $link . "\" target=\"_blank\">" . $link . "</a>";
         $actioned = '';
         break;
 
@@ -75,6 +77,22 @@ window.onload = function () {
         $("#button_create").remove();
         $("#button_delete").remove();
         $("#button_export_json").remove();
+
+        $("#myButton").click(function(e){
+            $.ajax({
+                type: "GET",
+                url: "<?= url_to('feedsExecute', $data[0]->id) ?>",
+                success: function (data) {
+                    // data = JSON.parse(data.responseText);
+                    // console.log(data);
+                },
+                error: function (data) {
+                    // data = JSON.parse(data.responseText);
+                    // console.log(data);
+                }
+            });
+            document.getElementById('link').click();
+        });
     });
 }
 </script>

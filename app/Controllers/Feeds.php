@@ -52,6 +52,13 @@ class Feeds extends BaseController
         $id = intval($id);
         $this->feedsModel = model('App\Models\FeedsModel');
         $this->feedsModel->execute($id);
+        $feed = $this->feedsModel->read($id);
+        if (in_array($feed[0]->attributes->type, ['config', 'package', 'query'])) {
+            return redirect()->route('feedsRead', [$id]);
+        }
+        if (in_array($feed[0]->attributes->type, ['advertisement', 'blog', 'howto', 'news', 'notification', 'other', 'release'], '')) {
+            return true;
+        }
         return redirect()->route('feedsRead', [$id]);
     }
 }

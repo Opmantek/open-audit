@@ -252,6 +252,7 @@ function createFeedData()
     sort($data->issues);
     $data->issues = array_unique($data->issues);
     $data->issues = array_values($data->issues);
+    $data->issues = array_slice($data->issues, 0, 20);
 
     $sql = "SELECT type, COUNT(*) AS `count` FROM devices GROUP BY type";
     $devices = $db->query($sql)->getResult();

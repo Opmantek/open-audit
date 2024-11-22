@@ -96,15 +96,23 @@ class FeedsModel extends BaseModel
 
             $sql = "INSERT INTO `configuration` (name, value, type, editable, description, edited_by, edited_date) VALUES (?, ?, ?, ?, ?, ?, NOW())";
             $this->db->query($sql, [$attributes->name, $attributes->value, $attributes->type, $attributes->editable, $attributes->description, $instance->user->full_name]);
+        }
+        if ($item->type === 'package') {
+            if (empty($instance->user->permissions['packages']) or strpos($instance->user->permissions['packages'], 'c') === false or strpos($instance->user->permissions['packages'], 'u') === false or strpos($instance->user->permissions['packages'], 'd') === false) {
+                log_message('info', $instance->user->full_name . ' does not have permission to execute feeds to create/update/delete packages.');
+                return false;
+            }
 
+            $attributes = $item->body[0]->attributes;
 
-            $data = new \stdClass();
-            $data->read = 'y';
-            $data->actioned = 'y';
-            $data->actioned_by = $instance->user->full_name;
-            $data->actioned_date = date('Y-m-d H:i:s');
-            $this->builder->where('id', intval($id));
-            $this->builder->update($data);
+            $sql = "DELETE FROM `packages` WHERE name = ?";
+            $this->db->query($sql, [$attributes->name]);
+
+            $data = $this->createFieldData('packages', $item->body[0]->attributes);
+            if (empty($data)) {
+                return false;
+            }
+            model('App\Models\PackagesModel')->create($data);
         }
         if ($item->type === 'query') {
             if (empty($instance->user->permissions['queries']) or strpos($instance->user->permissions['queries'], 'c') === false or strpos($instance->user->permissions['queries'], 'u') === false or strpos($instance->user->permissions['queries'], 'd') === false) {
@@ -122,15 +130,14 @@ class FeedsModel extends BaseModel
                 return false;
             }
             model('App\Models\QueriesModel')->create($data);
-
-            $data = new \stdClass();
-            $data->read = 'y';
-            $data->actioned = 'y';
-            $data->actioned_by = $instance->user->full_name;
-            $data->actioned_date = date('Y-m-d H:i:s');
-            $this->builder->where('id', intval($id));
-            $this->builder->update($data);
         }
+        $data = new \stdClass();
+        $data->read = 'y';
+        $data->actioned = 'y';
+        $data->actioned_by = $instance->user->full_name;
+        $data->actioned_date = date('Y-m-d H:i:s');
+        $this->builder->where('id', intval($id));
+        $this->builder->update($data);
         return true;
     }
 
@@ -148,9 +155,9 @@ class FeedsModel extends BaseModel
             return true;
         }
         $data = createFeedData();
-        echo "<pre>";
-        echo json_encode($data);
-        exit;
+        // echo "<pre>";
+        // echo json_encode($data);
+        // exit;
 
         $client = service('curlrequest');
         // $client = \Config\Services::curlrequest();
@@ -275,6 +282,18 @@ class FeedsModel extends BaseModel
             }
         }
         $result = format_data($result, 'feeds');
+
+        // Mark these as actioned as there's nothing to do to 'action' them, they link to external sites
+        if (in_array($result[0]->attributes->type, ['blog', 'howto'])) {
+            $instance = & get_instance();
+            $data = new \stdClass();
+            $data->actioned = 'y';
+            $data->actioned_by = $instance->user->full_name;
+            $data->actioned_date = date('Y-m-d');
+            $this->builder->where('id', intval($id));
+            $this->builder->update($data);
+        }
+
         return $result;
     }
 
