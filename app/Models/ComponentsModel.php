@@ -1462,9 +1462,8 @@ class ComponentsModel extends BaseModel
                                 unset($temp_base);
                                 unset($temp_subnet);
                                 unset($temp_net);
-                                // TODO - decide on the correct mac address
                                 $sql = "UPDATE ip SET mac = ?, netmask = ?, network = ?, cidr = ? WHERE id = ? ";
-                                $query = $this->db->query($sql, [$ap->mac, $ap->netmask, $network, $cidr, $apdevice[0]->id]);
+                                $query = $this->db->query($sql, [$ap->ethernet_mac, $ap->netmask, $network, $cidr, $apdevice[0]->id]);
                             }
                         }
                     }
