@@ -150,6 +150,7 @@ class FeedsModel extends BaseModel
     public function executeAll(): bool
     {
         $config = new \Config\OpenAudit();
+        helper('utility_helper');
         if (empty($config->feature_feeds) or $config->feature_feeds !== 'y') {
             // Do not run
             return true;
@@ -176,28 +177,36 @@ class FeedsModel extends BaseModel
         }
         $body = $response->getBody();
         $body = @json_decode($body);
-        $body->name = !empty($body->name) ? $body->name : '';
-        $body->short = !empty($body->short) ? $body->short : '';
-        $body->description = !empty($body->description) ? $body->description : '';
-        $body->type = !empty($body->type) ? $body->type : '';
-        $body->body = !empty($body->body) ? $body->body : '';
-        $body->published = !empty($body->published) ? $body->published : '';
-        $body->link = !empty($body->link) ? $body->link : '';
-        $body->image = !empty($body->image) ? $body->image : '';
-        $body->expires = !empty($body->expires) ? $body->expires : '2100-01-01';
-        $body->alert_style = !empty($body->alert_style) ? $body->alert_style : 'primary';
-        $body->version = !empty($body->version) ? $body->version : '';
-        if (empty($body)) {
+        if (!is_array($body)) {
             return true;
         }
-        $sql = "SELECT COUNT(id) AS `count` FROM feeds WHERE name = ?";
-        $count = $db->query($sql, [$body->name])->getResult()[0]->count;
-        $count = intval($count);
-        if ($count === 0) {
-            // This is a new article, store it
-            #$sql = "INSERT INTO feeds VALUES (null, name, short, description, type, body, published, link, image, requested, expires, alert_style, version, read, actioned, actioned_by, actioned_date)";
-            $sql = "INSERT INTO feeds VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 'n', 'n', '', '2001-01-01')";
-            $db->query($sql, [$body->name, $body->short, $body->description, $body->type, $body->body, $body->published, $body->link, $body->image, $body->expires, $body->alert_style, $body->version]);
+        foreach ($body as $feed) {
+            if (empty($feed)) {
+                continue;
+            }
+            $feed->name = !empty($feed->name) ? $feed->name : '';
+            $feed->short = !empty($feed->short) ? $feed->short : '';
+            $feed->description = !empty($feed->description) ? $feed->description : '';
+            $feed->type = !empty($feed->type) ? $feed->type : '';
+            $feed->body = !empty($feed->body) ? $feed->body : '';
+            $feed->published = !empty($feed->published) ? $feed->published : '';
+            $feed->link = !empty($feed->link) ? $feed->link : '';
+            $feed->image = !empty($feed->image) ? $feed->image : '';
+            $feed->expires = !empty($feed->expires) ? $feed->expires : '2100-01-01';
+            $feed->alert_style = !empty($feed->alert_style) ? $feed->alert_style : 'primary';
+            $feed->version = !empty($feed->version) ? $feed->version : '';
+            if (empty($body)) {
+                return true;
+            }
+            $sql = "SELECT COUNT(id) AS `count` FROM feeds WHERE name = ?";
+            $count = $this->db->query($sql, [$feed->name])->getResult()[0]->count;
+            $count = intval($count);
+            if ($count === 0) {
+                // This is a new article, store it
+                #$sql = "INSERT INTO feeds VALUES (null, name, short, description, type, body, published, link, image, requested, expires, alert_style, version, read, actioned, actioned_by, actioned_date)";
+                $sql = "INSERT INTO feeds VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 'n', 'n', '', '2001-01-01')";
+                $this->db->query($sql, [$feed->name, $feed->short, $feed->description, $feed->type, $feed->body, $feed->published, $feed->link, $feed->image, $feed->expires, $feed->alert_style, $feed->version]);
+            }
         }
         return true;
     }
@@ -335,9 +344,9 @@ class FeedsModel extends BaseModel
         if (!empty($result[0])) {
             $feed = $result[0];
             if (!empty($feed->url)) {
-                $feed->link = "<span class=\"clearfix float-end\"><a href=\"" . $feed->url . "\" target=\"_blank\">" . __('Read More') . "</button>";
+                $feed->link = "<span class=\"clearfix float-end\"><a href=\"" . $feed->url . "\" target=\"_blank\">" . __('Read More') . "</a>";
             } else {
-                $feed->link = "<span class=\"clearfix float-end\"><a href=\"" . url_to('feedsRead', intval($feed->id)) . "\" >" . __('Read More') . "</button>";
+                $feed->link = "<span class=\"clearfix float-end\"><a href=\"" . url_to('feedsRead', intval($feed->id)) . "\" >" . __('Read More') . "</a>";
             }
         }
         return $feed;

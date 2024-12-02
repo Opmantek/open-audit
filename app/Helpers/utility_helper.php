@@ -195,6 +195,24 @@ function createFeedData()
     $data = new \stdClass();
     $data->product = 'Open-AudIT';
     $data->version = $config->display_version;
+    $data->product_role = '';
+    if (!empty($config->servers)) {
+        if (is_string($config->servers)) {
+            if (strpos($config->servers, '"type":"stand-alone"') !== false) {
+                $data->product_role = 'stand-alone';
+            }
+            if (strpos($config->servers, '"type":"collector"') !== false) {
+                $data->product_role = 'collector';
+            }
+        } else if (is_object($config->servers) and !empty($config->servers->type)) {
+            $data->product_role = $config->servers->type;
+        }
+    }
+    $sql = "SELECT COUNT(*) AS `count` FROM collectors";
+    $result = $db->query($sql)->getResult();
+    if (!empty($result[0]->count)) {
+        $data->product_role = 'server';
+    }
     $data->internal_version = $config->internal_version;
     $data->products = array();
     $data->products[] = 'Open-AudIT';
