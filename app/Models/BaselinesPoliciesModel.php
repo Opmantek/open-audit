@@ -114,21 +114,24 @@ class BaselinesPoliciesModel extends BaseModel
     public function create($data = null): ?int
     {
         if (empty($data)) {
+            log_message('error', 'No data object supplied to BaselinesPoliciesModel::create.');
             return null;
         }
         if (empty($data->baseline_id)) {
+            log_message('error', 'No data->baseline_id supplied to BaselinesPoliciesModel::create.');
             return null;
         }
 
         $sql = "SELECT org_id FROM baselines WHERE id = ?";
         $org_id = $this->db->query($sql, [$data->baseline_id])->getResult();
         if (empty($org_id)) {
+            log_message('error', 'No org_id retrieved from data in BaselinesPoliciesModel::create.');
             return null;
         }
         $data->org_id = intval($org_id[0]->org_id);
 
-        if (empty($data->type or $data->type === 'single')) {
-            log_message('ingo', 'Creating a siongle policy based on ' . $data->table);
+        if (empty($data->type) or $data->type === 'single') {
+            log_message('info', 'Creating a single policy based on ' . $data->table);
             if (!empty($data->table) && $data->table === 'software') {
                 $data->name = $data->tests->name->value . ' ' . $data->tests->version->operator . ' ' . $data->tests->version->value;
                 $tests = array();
