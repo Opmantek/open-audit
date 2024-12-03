@@ -74,6 +74,7 @@ class Devices extends BaseController
                     $componentsModel->upsert('ip', $device, $input);
                 }
             }
+            unset($input);
         }
 
         if (!empty($_POST['input_type']) && $_POST['input_type'] === 'audit_input') {
