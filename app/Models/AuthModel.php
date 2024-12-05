@@ -66,8 +66,8 @@ class AuthModel extends BaseModel
         if (empty($data)) {
             return null;
         }
-        if (!empty($data->dn_password)) {
-            $data->dn_password = simpleEncrypt($data->dn_password, config('Encryption')->key);
+        if (!empty($data->ldap_dn_password)) {
+            $data->ldap_dn_password = simpleEncrypt($data->ldap_dn_password, config('Encryption')->key);
         }
         if (!empty($data->client_secret)) {
             $data->client_secret = simpleEncrypt($data->client_secret, config('Encryption')->key);
@@ -166,11 +166,11 @@ class AuthModel extends BaseModel
         $count = count($result);
         for ($i = 0; $i < $count; $i++) {
             $decrypted = '';
-            if (!empty($result[$i]->dn_password)) {
-                $decrypted = simpleDecrypt($result[$i]->dn_password, config('Encryption')->key);
+            if (!empty($result[$i]->ldap_dn_password)) {
+                $decrypted = simpleDecrypt($result[$i]->ldap_dn_password, config('Encryption')->key);
             }
             if (!empty($decrypted)) {
-                $result[$i]->dn_password = $decrypted;
+                $result[$i]->ldap_dn_password = $decrypted;
             }
             $decrypted = '';
             if (!empty($result[$i]->client_secret)) {
@@ -222,8 +222,8 @@ class AuthModel extends BaseModel
     public function update($id = null, $data = null): bool
     {
         $data = $this->updateFieldData('auth', $data);
-        if (!empty($data->dn_password)) {
-            $data->dn_password = simpleEncrypt($data->dn_password, config('Encryption')->key);
+        if (!empty($data->ldap_dn_password)) {
+            $data->ldap_dn_password = simpleEncrypt($data->ldap_dn_password, config('Encryption')->key);
         }
         if (!empty($data->client_secret)) {
             $data->client_secret = simpleEncrypt($data->client_secret, config('Encryption')->key);
@@ -261,7 +261,7 @@ class AuthModel extends BaseModel
 
         $dictionary->about = '<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
-        $dictionary->notes = '<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you\'re using OpenLDAP), you can use another account which does have this access. Use the <code>dn_account</code> and <code>dn_password</code> to configure this.<br /><br /><strong>Helpful Documentation</strong><br /><br />
+        $dictionary->notes = '<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you\'re using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br /><br /><strong>Helpful Documentation</strong><br /><br />
         <a href="' . url_to('authHelp') . '">General Auth Help</a><br><br>
         <a href="' . url_to('helpFAQ') . '?name=Using Entra for Auth">Using Entra for Auth</a><br><br>
         <a href="' . url_to('helpFAQ') . '?name=Using OKTA for Auth">Using OKTA for Auth</a><br><br>

@@ -332,7 +332,7 @@ class LogonModel extends Model
             return false;
         }
         log_message('debug', 'Successful bind using credentials for LDAP server at ' . $ldap->connect_string . ' : ' . $bind_string);
-        $ldap->dn_password = (string)simpleDecrypt($ldap->ldap_dn_password, config('Encryption')->key);
+        $ldap->ldap_dn_password = (string)simpleDecrypt($ldap->ldap_dn_password, config('Encryption')->key);
         if (!empty($ldap->ldap_dn_account) && empty($ldap->ldap_dn_password)) {
             log_message('warning', 'DN Account set, but no DN Password.');
         }
