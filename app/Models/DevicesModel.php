@@ -149,6 +149,40 @@ class DevicesModel extends BaseModel
     }
 
     /**
+     * Derive a name for this device from the hostname, sysName, dns hostname or IP
+     *
+     * @param  object   $device The device attributes
+     *
+     * @return string   The derived name or an empty string
+     */
+    public function deriveName(object $device = null): string
+    {
+        if (empty($device)) {
+            return '';
+        }
+        if (empty($device->hostname) and empty($device->sysName) and empty($device->dns_hostname) and empty($device->ip)) {
+            return '';
+        }
+        $name = '';
+        if (!empty($device->hostname)) {
+            $name = $device->hostname;
+        } elseif (!empty($device->sysName)) {
+            $name = $device->sysName;
+        } elseif (!empty($device->dns_hostname)) {
+            $name = $device->dns_hostname;
+        } elseif (!empty($data->ip)) {
+            $name = ip_address_from_db($device->ip);
+        }
+        $name = strtolower($name);
+        if (strpos($name, '.') !== false and filter_var($name, FILTER_VALIDATE_IP) === false) {
+            // We have a name, not an IP, that contains a 'dot'. Split it and use the first item as the name.
+            $temp = explode('.', $name);
+            $name = $temp[0];
+        }
+        return $name;
+    }
+
+    /**
      * Create an individual item in the database
      *
      * @param  object $data The data attributes
@@ -170,35 +204,12 @@ class DevicesModel extends BaseModel
         $data = audit_format_system($parameters);
         // Ensure we have a name
         if (empty($data->name)) {
-            if (!empty($data->hostname)) {
-                $data->name = strtolower($data->hostname);
-                if (strpos($data->hostname, '.') !== false) {
-                    $temp = explode('.', $data->hostname);
-                    $data->name = $temp[0];
-                }
-            } elseif (!empty($data->sysName)) {
-                $data->name = strtolower($data->sysName);
-                if (strpos($data->sysName, '.') !== false) {
-                    $temp = explode('.', $data->sysName);
-                    $data->name = $temp[0];
-                }
-            } elseif (!empty($data->dns_hostname)) {
-                $data->name = strtolower($data->dns_hostname);
-                if (strpos($data->dns_hostname, '.') !== false) {
-                    $temp = explode('.', $data->dns_hostname);
-                    $data->name = $temp[0];
-                }
-            } elseif (!empty($data->ip)) {
-                $data->name = ip_address_from_db($data->ip);
-            } else {
-                $data->name = '';
+            $data->name = '';
+            $name = $this->deriveName($data);
+            if (!empty($name)) {
+                $data->name = $name;
             }
-        }
-        if (strpos($data->name, '.') !== false and filter_var($data->name, FILTER_VALIDATE_IP) === false) {
-            // We have a name, not an IP, that contains a 'dot'. Split it and use the first item as the name.
-            $temp = explode('.', $data->name);
-            $data->name = $temp[0];
-            unset($temp);
+            unset($name);
         }
         if (empty($data->org_id)) {
             $data->org_id = 1;
@@ -866,10 +877,16 @@ class DevicesModel extends BaseModel
                 $data->{$column} =  strtolower($data->{$column});
             }
         }
-        // Get the lastest edit_log data
+        // Get the latest edit_log data
         $sql = "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE device_id = ? AND `db_table` = 'devices' GROUP BY db_column, weight, value, previous_value, source ORDER BY id";
         $query = $this->db->query($sql, [$id]);
         $edit_log = $query->getResult();
+        if (in_array($source, ['audit', 'audit_ssh', 'audit_wmi', 'audit_windows', 'windows', 'wmi', 'cloud', 'nmis', 'snmp', 'ssh', 'integrations']) and empty($device->name)) {
+            $name = $this->deriveName($data);
+            if (!empty($name)) {
+                $data->name = $name;
+            }
+        }
         // Get the database column names
         $fields = $this->db->getFieldNames('devices');
         // We do not compare these with the edit_log data
