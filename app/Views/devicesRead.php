@@ -1092,7 +1092,8 @@ if (empty($resource->type)) {
                                                     <th><?= __('Name') ?></th>
                                                     <th><?= __('Model') ?></th>
                                                     <th><?= __('Serial') ?></th>
-                                                    <th><?= __('MAC') ?></th>
+                                                    <th><?= __('Ethernet MAC') ?></th>
+                                                    <th><?= __('Radio MAC') ?></th>
                                                     <th><?= __('IP') ?></th>
                                                     <th><?= __('Location') ?></th>
                                                     <th><?= __('Status') ?></th>
@@ -1108,6 +1109,7 @@ if (empty($resource->type)) {
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->model ?></td>
                                                     <td><?= $row->serial ?></td>
+                                                    <td><?= $row->ethernet_mac ?></td>
                                                     <td><?= $row->mac ?></td>
                                                     <td><?= $row->ip ?></td>
                                                     <td><?= $row->location ?></td>
