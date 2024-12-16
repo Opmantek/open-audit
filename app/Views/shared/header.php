@@ -157,6 +157,7 @@ if (!empty($config->servers)) {
                                     <ul class="dropdown-menu">
                                         <?= menuItem('credentials', 'r', $user, 'credentialsCollection', __('List') . ' ' . __('Credentials')) ?>
                                         <?= menuItem('credentials', 'c', $user, 'credentialsCreateForm', __('Create') . ' ' . __('Credentials')) ?>
+                                        <?= menuItem('credentials', 'c', $user, 'credentialsImportForm', __('Import') . ' ' . __('Credentials')) ?>
                                         <?= menuItem('credentials', '', $user, 'credentialsHelp', __('Learn About') . ' ' . __('Credentials')) ?>
                                     </ul>
                                 </li>
@@ -187,6 +188,7 @@ if (!empty($config->servers)) {
                                     <ul class="dropdown-menu">
                                         <?= menuItem('executables', 'r', $user, 'executablesCollection', __('List') . ' ' . __('Executables')) ?>
                                         <?= menuItem('executables', 'c', $user, 'executablesCreateForm', __('Create') . ' ' . __('Executables')) ?>
+                                        <?= menuItem('executables', 'c', $user, 'executablesImportForm', __('Import') . ' ' . __('Executables')) ?>
                                         <?= menuItem('executables', '', $user, 'executablesHelp', __('Learn About') . ' ' . __('Executables')) ?>
                                     </ul>
                                 </li>
@@ -195,6 +197,7 @@ if (!empty($config->servers)) {
                                     <ul class="dropdown-menu">
                                         <?= menuItem('files', 'r', $user, 'filesCollection', __('List') . ' ' . __('Files')) ?>
                                         <?= menuItem('files', 'c', $user, 'filesCreateForm', __('Create') . ' ' . __('Files')) ?>
+                                        <?= menuItem('files', 'c', $user, 'filesImportForm', __('Import') . ' ' . __('Files')) ?>
                                         <?= menuItem('files', '', $user, 'filesHelp', __('Learn About') . ' ' . __('Files')) ?>
                                     </ul>
                                 </li>
