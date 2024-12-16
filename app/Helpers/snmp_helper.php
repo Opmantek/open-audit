@@ -1344,77 +1344,123 @@ if (!function_exists('snmp_audit')) {
 
         // // https://mibs.observium.org/mib/CISCO-LWAPP-AP-MIB
         // // https://oidref.com/1.3.6.1.4.1.9.9.513.1.1.1
-        // #snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-        // $apMac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.2');
-        // #snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-        // if (!empty($apMac) and is_array($apMac)) {
-        //     foreach ($apMac as $key => $value) {
-        //         $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.2.', '', $key);
-        //         $access_points[$id] = new \stdClass();
-        //         $access_points[$id]->mac = $value;
-        //     }
-        //     $apName = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.5');
-        //     if (!empty($apName) and is_array($apName)) {
-        //         foreach ($apName as $key => $value) {
-        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.5.', '', $key);
-        //             if (empty($access_points[$id])) {
-        //                 $access_points[$id] = new \stdClass();
-        //             }
-        //             $access_points[$id]->name = $value;
-        //         }
-        //     }
-        //     $apLocation = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.49');
-        //     if (!empty($appLocation) and is_array($appLocation)) {
-        //         foreach ($apLocation as $key => $value) {
-        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.49.', '', $key);
-        //             if (empty($access_points[$id])) {
-        //                 $access_points[$id] = new \stdClass();
-        //             }
-        //             $access_points[$id]->location = $value;
-        //         }
-        //     }
-        //     $apPort = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.39');
-        //     if (!empty($apPort) and is_array($apPort)) {
-        //         foreach ($apPort as $key => $value) {
-        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.39.', '', $key);
-        //             if (empty($access_points[$id])) {
-        //                 $access_points[$id] = new \stdClass();
-        //             }
-        //             $access_points[$id]->port = $value;
-        //         }
-        //     }
-        //     $apFloorLabel = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.65');
-        //     if (!empty($apFloorLabel) and is_array($apFloorLabel)) {
-        //         foreach ($apFloorLabel as $key => $value) {
-        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.65.', '', $key);
-        //             if (empty($access_points[$id])) {
-        //                 $access_points[$id] = new \stdClass();
-        //             }
-        //             $access_points[$id]->floor_label = $value;
-        //         }
-        //     }
-        //     $apCountry = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.3.1.1');
-        //     if (!empty($apCountry) and is_array($apCountry)) {
-        //         foreach ($apCountry as $key => $value) {
-        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.3.1.1.', '', $key);
-        //             if (empty($access_points[$id])) {
-        //                 $access_points[$id] = new \stdClass();
-        //             }
-        //             $access_points[$id]->country = $value;
-        //         }
-        //     }
-        //     $apClientCount = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.72');
-        //     if (!empty($apClientCount) and is_array($apClientCount)) {
-        //         foreach ($apClientCount as $key => $value) {
-        //             $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.72.', '', $key);
-        //             if (empty($access_points[$id])) {
-        //                 $access_points[$id] = new \stdClass();
-        //             }
-        //             $access_points[$id]->client_count = intval($value);
-        //         }
-        //     }
-        //     log_message('debug', "AP: " . json_encode($access_points));
-        // }
+
+
+
+
+
+
+
+        #snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+        $apEthernetMac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.2');
+        #snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+        if (!empty($apEthernetMac) and is_array($apEthernetMac)) {
+            foreach ($apEthernetMac as $key => $value) {
+                $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.2.', '', $key);
+                $access_points[$id] = new \stdClass();
+                $access_points[$id]->ethernet_mac = $value;
+            }
+
+            $apMac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.1');
+            if (!empty($apMac) and is_array($apMac)) {
+                foreach ($apMac as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.1.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->mac = $value;
+                }
+            }
+
+            $apIP = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.10.1.4');
+            if (!empty($apIP) and is_array($apIP)) {
+                foreach ($apIP as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.1.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->ip = $value;
+                }
+            }
+
+            $apNetMask = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.10.1.12');
+            if (!empty($apNetMask) and is_array($apNetMask)) {
+                foreach ($apNetMask as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.1.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->netmask = $value;
+                }
+            }
+
+            $apName = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.5');
+            if (!empty($apName) and is_array($apName)) {
+                foreach ($apName as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.5.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->name = $value;
+                }
+            }
+
+            $apLocation = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.49');
+            if (!empty($appLocation) and is_array($appLocation)) {
+                foreach ($apLocation as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.49.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->location = $value;
+                }
+            }
+
+            $apPort = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.39');
+            if (!empty($apPort) and is_array($apPort)) {
+                foreach ($apPort as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.39.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->port_number = $value;
+                }
+            }
+
+            $apFloorLabel = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.65');
+            if (!empty($apFloorLabel) and is_array($apFloorLabel)) {
+                foreach ($apFloorLabel as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.65.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->floor_label = $value;
+                }
+            }
+
+            $apCountry = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.3.1.1');
+            if (!empty($apCountry) and is_array($apCountry)) {
+                foreach ($apCountry as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.3.1.1.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->location = empty($access_points[$id]->location) ? $value : $access_points[$id]->location . ' ' . $value;
+                }
+            }
+
+            $apClientCount = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.72');
+            if (!empty($apClientCount) and is_array($apClientCount)) {
+                foreach ($apClientCount as $key => $value) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.72.', '', $key);
+                    if (empty($access_points[$id])) {
+                        $access_points[$id] = new \stdClass();
+                    }
+                    $access_points[$id]->client_count = intval($value);
+                }
+            }
+            log_message('debug', "AP: " . json_encode($access_points));
+        }
 
         // Ubiquiti specific items to determine manufacturer
         $item_start = microtime(true);
@@ -2826,6 +2872,12 @@ if (!function_exists('format_mac')) {
         if (substr_count($mac_address, ' ') > 0) {
             $mac_address = str_replace(' ', ':', $mac_address);
         }
+
+        // Only lower case a-f and 0-9, along with : are acceptable
+        $chars = "0123456789:abcdef";
+        $pattern = "/[^" . preg_quote($chars, "/") . "]/";
+        $mac_address = preg_replace($pattern, '', $mac_address);
+
         // check for a substring thus "abcdef"
         if (substr_count($mac_address, ' ') === 0 && substr_count($mac_address, ':') === 0 && strlen($mac_address) === 12) {
             $mac_address = substr($mac_address, 0, 2) . ':' . substr($mac_address, 2, 2) . ':' .
