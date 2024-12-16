@@ -18,6 +18,169 @@ class DiscoveryLogModel extends BaseModel
         $this->builder = $this->db->table('discovery_log');
     }
 
+    public function getByIpTotal(int $id = null): int
+    {
+        $config = config('Openaudit');
+        $instance = & get_instance();
+        $this->builder->select("COUNT(DISTINCT(discovery_log.ip)) AS `count`", false);
+        $this->builder->join('devices', 'discovery_log.device_id = devices.id', 'left');
+        $this->builder->where('discovery_log.discovery_id', intval($id));
+        $this->builder->where('discovery_log.message LIKE', '% responding, %');
+        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
+        $query = $this->builder->get();
+        $result = $query->getResult();
+        $total = 0;
+        if (!empty($result[0]->count)) {
+            $total = intval($result[0]->count);
+        }
+        return $total;
+    }
+
+    public function getByIp(int $id = null): array
+    {
+        $config = config('Openaudit');
+        $instance = & get_instance();
+        $limit = !empty($instance->resp->meta->limit) ? intval($instance->resp->meta->limit) : intval($config->page_size);
+        $offset = !empty($instance->resp->meta->offset) ? intval($instance->resp->meta->offset) : 0;
+
+        // Get the actual records, including limit and offset
+        log_message('debug', json_encode($instance->resp->meta->filter));
+        $this->builder->select("DISTINCT(discovery_log.ip) AS `ip`, discovery_log.message AS `message`, ROUND(discovery_log.command_time_to_execute, 1) AS `command_time_to_execute`, devices.id AS `device_id`, devices.type AS `type`, devices.name AS `name`, devices.domain AS `domain`, devices.os_family AS `os_family`, devices.serial AS `serial`, devices.status AS `status`, devices.last_seen_by AS `last_seen_by`, devices.last_seen AS `last_seen`, devices.manufacturer AS `manufacturer`, devices.class AS `class`, devices.os_group AS `os_group`, devices.icon AS `icon`, devices.identification AS `identification`", false);
+        $this->builder->join('devices', 'discovery_log.device_id = devices.id', 'left');
+        $this->builder->where('discovery_log.discovery_id', intval($id));
+        $this->builder->where('discovery_log.message LIKE', '% responding, %');
+        foreach ($instance->resp->meta->filter as $filter) {
+            if ($filter->name === 'ip') {
+                $this->builder->where('(discovery_log.ip LIKE ' . $this->db->escape($filter->value) . ' OR devices.type LIKE ' . $this->db->escape($filter->value) . ')');
+            }
+            if ($filter->name === 'name') {
+                $this->builder->where('(devices.name LIKE ' . $this->db->escape($filter->value) . ' OR devices.domain LIKE ' . $this->db->escape($filter->value) . ')');
+            }
+            if ($filter->name === 'message') {
+                $this->builder->where('discovery_log.message LIKE ' . $this->db->escape($filter->value));
+            }
+            if ($filter->name === 'search') {
+                $this->builder->where('(devices.name LIKE ' . $this->db->escape($filter->value) . ' OR devices.domain LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.ip LIKE ' . $this->db->escape($filter->value) . ' OR devices.type LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.message LIKE ' . $this->db->escape($filter->value) . ')');
+            }
+        }
+        if (!empty($instance->resp->meta->sort)) {
+            if ($instance->resp->meta->sort === 'discovery_log.ip') {
+                $this->builder->orderBy('INET_ATON(discovery_log.ip)');
+            } else {
+                $this->builder->orderBy($instance->resp->meta->sort);
+            }
+        } else {
+            $this->builder->orderBy('INET_ATON(discovery_log.ip)');
+        }
+        $this->builder->limit($limit, $offset);
+        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
+        $query = $this->builder->get();
+        $result = $query->getResult();
+
+        // Pad our IPs
+        foreach ($result as $row) {
+            $row->ip = ip_address_to_db($row->ip);
+            $row->view = '';
+        }
+        return format_data($result, 'discovery_log');
+    }
+
+    public function getByDeviceTotal(int $id): int
+    {
+        $instance = & get_instance();
+        foreach ($instance->resp->meta->filter as $filter) {
+            if ($filter->name === 'ip') {
+                $this->builder->where('(discovery_log.ip LIKE ' . $this->db->escape($filter->value) . ' OR devices.type LIKE ' . $this->db->escape($filter->value) . ')');
+            }
+            if ($filter->name === 'name') {
+                $this->builder->where('(devices.name LIKE ' . $this->db->escape($filter->value) . ' OR devices.domain LIKE ' . $this->db->escape($filter->value) . ')');
+            }
+            if ($filter->name === 'message') {
+                $this->builder->where('discovery_log.message LIKE ' . $this->db->escape($filter->value));
+            }
+        }
+        $this->builder->select("COUNT(DISTINCT(devices.id)) AS `count`", false);
+        $this->builder->join('devices', 'discovery_log.device_id = devices.id', 'left');
+        $this->builder->where('discovery_log.discovery_id', intval($id));
+        $this->builder->where('discovery_log.ip != ', '127.0.0.1');
+        $this->builder->where('discovery_log.device_id IS NOT NULL');
+        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
+        $query = $this->builder->get();
+        $result = $query->getResult();
+        $total = 0;
+        if (!empty($result[0]->count)) {
+            $total = intval($result[0]->count);
+        }
+        return $total;
+    }
+
+    public function getByDevice(int $id): array
+    {
+        $config = config('Openaudit');
+        $instance = & get_instance();
+        $limit = !empty($instance->resp->meta->limit) ? intval($instance->resp->meta->limit) : intval($config->page_size);
+        $offset = !empty($instance->resp->meta->offset) ? intval($instance->resp->meta->offset) : 0;
+
+        foreach ($instance->resp->meta->filter as $filter) {
+            if ($filter->name === 'ip') {
+                $this->builder->where('(discovery_log.ip LIKE ' . $this->db->escape($filter->value) . ' OR devices.type LIKE ' . $this->db->escape($filter->value) . ')');
+            }
+            if ($filter->name === 'name') {
+                $this->builder->where('(devices.name LIKE ' . $this->db->escape($filter->value) . ' OR devices.domain LIKE ' . $this->db->escape($filter->value) . ')');
+            }
+            if ($filter->name === 'message') {
+                $this->builder->where('discovery_log.message LIKE ' . $this->db->escape($filter->value));
+            }
+            if ($filter->name === 'search') {
+                $this->builder->where('(devices.name LIKE ' . $this->db->escape($filter->value) . ' OR devices.domain LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.ip LIKE ' . $this->db->escape($filter->value) . ' OR devices.type LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.message LIKE ' . $this->db->escape($filter->value) . ')');
+            }
+        }
+        $this->builder->select("TIMEDIFF(MAX(discovery_log.timestamp), MIN(discovery_log.timestamp)) AS `command_time_to_execute`, discovery_log.ip AS `ip`, devices.id AS `id`, devices.type AS `type`, devices.name AS `name`, devices.domain AS `domain`, devices.os_family AS `os_family`, devices.serial AS `serial`, devices.status AS `status`, devices.last_seen_by AS `last_seen_by`, devices.last_seen AS `last_seen`, devices.manufacturer AS `manufacturer`, devices.class AS `class`, devices.os_group AS `os_group`, devices.icon AS `icon`, devices.identification AS `identification`, '' AS `message`", false);
+        $this->builder->join('devices', 'discovery_log.device_id = devices.id', 'left');
+        $this->builder->where('discovery_log.discovery_id', intval($id));
+        $this->builder->where('discovery_log.ip != ', '127.0.0.1');
+        $this->builder->where('discovery_log.device_id IS NOT NULL');
+        $this->builder->groupBy('discovery_log.ip');
+        if (!empty($instance->resp->meta->sort)) {
+            if ($instance->resp->meta->sort === 'discovery_log.ip asc') {
+                $this->builder->orderBy('INET_ATON(discovery_log.ip) asc');
+            } else if ($instance->resp->meta->sort === 'discovery_log.ip desc') {
+                $this->builder->orderBy('INET_ATON(discovery_log.ip) desc');
+            } else {
+                $this->builder->orderBy($instance->resp->meta->sort);
+            }
+        } else {
+            $this->builder->orderBy('INET_ATON(discovery_log.ip)');
+        }
+        $this->builder->limit($limit, $offset);
+        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
+        $query = $this->builder->get();
+        if ($this->sqlError($this->db->error())) {
+            return array();
+        }
+        $devices = $query->getResult();
+        $device_ips = array();
+        foreach ($devices as $device) {
+            $device_ips[] = $device->{'ip'};
+        }
+
+        $sql = "SELECT device_id, ip, message FROM discovery_log WHERE `id` IN (SELECT MAX(t2.id) FROM discovery_log t2 WHERE discovery_id = ? GROUP BY ip) AND discovery_id = ? AND ip IN (\"" . implode('","', $device_ips) . "\") and ip != '127.0.0.1'";
+        $query = $this->db->query($sql, [$id, $id]);
+        $messages = $query->getResult();
+        foreach ($messages as $message) {
+            foreach ($devices as $device) {
+                if ($message->ip === $device->{'ip'}) {
+                    $device->{'message'} = $message->message;
+                }
+            }
+        }
+        // Pad our IPs
+        foreach ($devices as $device) {
+            $device->ip = ip_address_to_db($device->ip);
+        }
+        return format_data($devices, 'discovery_log');
+    }
+
     /**
      * Read the collection from the database
      *
@@ -31,22 +194,42 @@ class DiscoveryLogModel extends BaseModel
         $this->builder->join('discoveries', 'discovery_log.discovery_id = discoveries.id', 'left');
 
         foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'ip') {
+                $filter->name = 'discovery_log.ip';
+            }
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
             } else {
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
         }
-        $this->builder->orderBy($resp->meta->sort);
+        foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'search') {
+                $this->builder->where('(discovery_log.timestamp LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.ip LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.command_status LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.message LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.command LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.command_output LIKE ' . $this->db->escape($filter->value) . ')');
+            }
+        }
+        if (!empty($instance->resp->meta->sort)) {
+            if ($instance->resp->meta->sort === 'discovery_log.ip' or $instance->resp->meta->sort === 'ip') {
+                $this->builder->orderBy('INET_ATON(discovery_log.ip)');
+            } else {
+                $this->builder->orderBy($instance->resp->meta->sort);
+            }
+        } else {
+            $this->builder->orderBy('INET_ATON(discovery_log.ip)');
+        }
         if (!empty($resp->meta->groupby)) {
             $this->builder->groupBy($resp->meta->groupby);
         }
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
+        $this->builder->limit(intval($resp->meta->limit), intval($resp->meta->offset));
+        $this->builder->notLike('message', 'not responding, ignoring');
+        $this->builder->notLike('message', 'responding, adding to device list');
+        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'discovery_log');
+        $result = $query->getResult();
+        return format_data($result, 'discovery_log');
     }
 
     /**
@@ -297,13 +480,43 @@ class DiscoveryLogModel extends BaseModel
     }
 
     /**
-     * Read the entire collection from the database
+     * Read the entire collection from the database that the user is allowed to read
      *
-     * @return array  An array of all Orgs
+     * @return array  An array of formatted entries
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        return array();
+        $instance = & get_instance();
+        if (empty($orgs)) {
+            $instance = & get_instance();
+            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+            $orgs[] = 1;
+            $orgs = array_unique($orgs);
+        }
+        if (!empty($instance->resp->meta->filter)) {
+            foreach ($instance->resp->meta->filter as $item) {
+                if ($item->name === 'discovery_id') {
+                    $this->builder->where('discovery_id', $item->value);
+                }
+            }
+        }
+        $properties = array();
+        $properties[] = 'discovery_log.*';
+        $properties[] = 'orgs.name as `orgs.name`';
+        $this->builder->select($properties, false);
+        $this->builder->join('discoveries', 'discovery_log.discovery_id = discoveries.id', 'left');
+        $this->builder->join('orgs', 'discoveries.org_id = orgs.id', 'left');
+        $this->builder->whereIn('orgs.id', $orgs);
+        $this->builder->where($where);
+        $this->builder->notLike('message', 'not responding, ignoring');
+        $this->builder->notLike('message', 'responding, adding to device list');
+        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
+        $query = $this->builder->get();
+        if ($this->sqlError($this->db->error())) {
+            return array();
+        }
+        $result = $query->getResult();
+        return format_data($result, 'discovery_log');
     }
 
     /**
@@ -369,7 +582,7 @@ class DiscoveryLogModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'parent_name', 'type', 'ad_group', 'device_count');
+        $dictionary->attributes->collection = array('id', 'discovery_id', 'timestamp', 'severity_text', 'ip', 'message', 'command_status', 'command', 'command_output');
         $dictionary->attributes->create = array(); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default

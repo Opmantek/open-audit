@@ -35,6 +35,7 @@ if (!function_exists('response_create')) {
         if (empty($config)) {
             $config = config('Openaudit');
         }
+        $db = db_connect();
 
         $response = new \StdClass();
         $response->meta = new \StdClass();
@@ -42,6 +43,9 @@ if (!function_exists('response_create')) {
         $response->meta->collection = str_replace('\\app\\controllers\\', '', strtolower($instance->controller));
         if ($response->meta->collection === 'baselinesresults') {
             $response->meta->collection = 'baselines_results';
+        }
+        if ($response->meta->collection === 'discoverylog') {
+            $response->meta->collection = 'discovery_log';
         }
         $response->meta->request_method = strtoupper(\Config\Services::request()->getMethod());
         if (is_cli()) {
@@ -198,6 +202,49 @@ if (!function_exists('response_create')) {
             $request->header('debug')
         );
 
+        // We need to do some field conversion for requests coming from dataTables
+        if ($response->meta->format === 'dataTables') {
+            if (!empty($_GET['start'])) {
+                $response->meta->offset = intval($_GET['start']);
+                unset($_GET['start']);
+            }
+            if (!empty($_GET['length'])) {
+                $response->meta->limit = intval($_GET['length']);
+                unset($_GET['length']);
+            }
+            // dataTables can send a limit of -1 for 'all' rows, we want to restrict that to the config page_size
+            if ($response->meta->limit === -1 or empty($response->meta->limit)) {
+                $response->meta->limit = intval($config->page_size);
+            }
+            if (!empty($_GET['sort'])) {
+                $response->meta->sort = $_GET['sort'];
+            }
+            foreach ($_GET as $key => $value) {
+                if ($db->fieldExists($key, 'discovery_log') or $db->fieldExists($key, 'devices')) {
+                    $query = new \StdClass();
+                    $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $key);
+                    $query->function = 'where';
+                    $query->operator = 'like';
+                    $query->value = '%' . $value . '%';
+                    if (strpos($query->name, '_id') !== false or $query->name === 'id') {
+                        $query->value = intval($value);
+                    }
+                    $response->meta->filter[] = $query;
+                }
+            }
+            if (!empty($_GET['search']['value'])) {
+                $query = new \StdClass();
+                $query->name = 'search';
+                $query->function = 'where';
+                $query->operator = 'like';
+                $query->value = '%' . $_GET['search']['value'] . '%';
+                $response->meta->filter[] = $query;
+            }
+            unset($_GET['columns']);
+            unset($_GET['draw']);
+            unset($_GET['search']);
+        }
+
         // Set the heading based on the collection
         $response->meta->heading = ucfirst($response->meta->collection);
 
@@ -282,34 +329,44 @@ if (!function_exists('response_create')) {
         );
 
         // depends on version affecting URI, collection
-        $response->meta->sort = response_get_sort(
-            $response->meta->collection,
-            $request->getGet('sort'),
-            $request->getPost('sort')
-        );
+        if ($response->meta->format !== 'dataTables') {
+            $response->meta->sort = response_get_sort(
+                $response->meta->collection,
+                $request->getGet('sort'),
+                $request->getPost('sort')
+            );
+        }
 
         // depends on version affecting URI, collection
-        $response->meta->groupby = response_get_groupby($request->getGet('groupby'), $request->getPost('groupby'));
+        $response->meta->groupby = response_get_groupby($request->getGet('groupby'), $request->getPost('groupby'), $response->meta->collection);
 
         // no dependencies - set in GET or POST
-        $response->meta->offset = response_get_offset($request->getGet('offset'), $request->getPost('offset'));
+        if ($response->meta->format !== 'dataTables') {
+            $response->meta->offset = response_get_offset($request->getGet('offset'), $request->getPost('offset'));
+        }
 
         // depends on format - set in GET or POST
-        $response->meta->limit = response_get_limit(
-            $request->getGet('limit'),
-            $request->getPost('limit'),
-            $response->meta->format,
-            $config->page_size
-        );
+        if ($response->meta->format !== 'dataTables') {
+            $response->meta->limit = response_get_limit(
+                $request->getGet('limit'),
+                $request->getPost('limit'),
+                $response->meta->format,
+                $config->page_size
+            );
+        }
 
         // depends on collection
-        $response->meta->properties = response_get_properties(
-            $response->meta->collection,
-            $response->meta->action,
-            $request->getGet('properties'),
-            $request->getPost('properties'),
-            $instance->user
-        );
+        if ($response->meta->format !== 'dataTables') {
+            $response->meta->properties = response_get_properties(
+                $response->meta->collection,
+                $response->meta->action,
+                $request->getGet('properties'),
+                $request->getPost('properties'),
+                $instance->user
+            );
+        } else {
+            $response->meta->properties = response_get_properties($response->meta->collection, $response->meta->action, '', '', $instance->user);
+        }
 
         $response->meta->properties = explode(',', $response->meta->properties);
         if ($response->meta->properties[0] !== $response->meta->collection . '.*' and !in_array($response->meta->collection . '.id', $response->meta->properties)) {
@@ -320,7 +377,9 @@ if (!function_exists('response_create')) {
         $response->meta->properties = explode(',', $response->meta->properties);
 
         // depends on query string
-        $response->meta->filter = response_get_query_filter($response->meta->query_string, 'filter');
+        if ($response->meta->format !== 'dataTables') {
+            $response->meta->filter = response_get_query_filter($response->meta->query_string, 'filter');
+        }
 
         // Do we need to add All the Orgs?
         $test = true;
@@ -409,7 +468,6 @@ if (!function_exists('response_create')) {
         }
 
         # Enterprise
-        $db = db_connect();
         $license_config = false;
         if ($response->meta->collection === 'configuration' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id)) {
             $license_config = true;
@@ -832,7 +890,7 @@ if (!function_exists('response_get_groupby')) {
      * @param  string $get  The groupby=table.column name from $_GET
      * @return string $post The groupby=table.column name from $_POST
      */
-    function response_get_groupby($get = '', $post = '')
+    function response_get_groupby($get = '', $post = '', $collection = '')
     {
         $db = db_connect();
         $groupby = '';
@@ -859,12 +917,12 @@ if (!function_exists('response_get_groupby')) {
                     $groupby = $temp[0] . '.' . $temp[1];
                 }
             } else {
-                if (!$db->fieldExists($groupby, $temp)) {
+                if (!$db->fieldExists($groupby, $collection)) {
                     $summary = "Invalid groupby supplied ({$groupby}), removed.";
                     log_message('warning', 'GroupBy: ' . $summary);
                     $groupby = '';
                 } else {
-                    $groupby = $temp . '.' . $groupby;
+                    $groupby = $collection . '.' . $groupby;
                 }
             }
         }
@@ -1545,7 +1603,7 @@ if (!function_exists('response_valid_formats')) {
      */
     function response_valid_formats()
     {
-        $valid_formats = array('csv','highcharts','html','html_data','json','json_data','sql','table','xml');
+        $valid_formats = array('csv','dataTables','highcharts','html','html_data','json','json_data','sql','table','xml');
         return $valid_formats;
     }
 }

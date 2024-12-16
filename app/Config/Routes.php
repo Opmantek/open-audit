@@ -147,7 +147,9 @@ foreach ($collections as $collection) {
     # Below functions are all generic enough to be handled by the Collections controller
 
     # collection
-    $routes->get($collection, 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Collection']);
+    if ($collection !== 'discovery_log') {
+        $routes->get($collection, 'Collections::collection', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Collection']);
+    }
 
     # export all
     $routes->get($collection . '/export', 'Collections::collection/export', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'CollectionExport']);
@@ -201,6 +203,7 @@ foreach ($collections as $collection) {
     $routes->patch($collection, 'Collections::bulkUpdate/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'BulkUpdate']);
 }
 
+$routes->get('discovery_log', 'DiscoveryLog::collection', ['filter' => \App\Filters\Session::class, 'as' => 'discovery_logCollection']);
 
 /*
  * --------------------------------------------------------------------

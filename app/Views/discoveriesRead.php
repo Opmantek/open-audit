@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/collection_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" class="fa-regular fa-rectangle-list text-primary"></span>' . __('Summary') . '</a></li>';
@@ -382,63 +383,33 @@ foreach ($included['discovery_scan_options'] as $item) {
                         <div class="tab-pane" id="logs" role="tabpanel" tabindex="0" aria-labelledby="logs">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                    <div id="logs_notice" class="container-fluid" style="display:none;">
+                                        <div id="logs_alert" class="alert alert-warning alert-dismissible fade show" role="alert">
+                                        </div>
+                                    </div>
+                                    <?php $log_data_order = ['view', 'id', 'timestamp', 'ip', 'command_status', 'message']; ?>
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[1,"asc"]]'>
                                         <thead>
-                                            <tr>
-                                                <th data-orderable="false" class="text-center" style="min-width:6rem;"><?= __('View') ?></th>
-                                                <th class="text-center" style="min-width:6rem;"><?= __('ID') ?></th>
-                                                <th style="min-width:12rem;"><?= __('Timestamp') ?></th>
-                                                <th style="min-width:8rem;"><?= __('IP') ?></th>
-                                                <th style="min-width:8rem;"><?= __('Status') ?></th>
-                                                <th><?= __('Message') ?></th>
-                                            </tr>
+                                            <?php foreach ($log_data_order as $key) {
+                                                $align = '';
+                                                if ($key === 'id' or $key === 'view' or strpos($key, '_id') !== false) {
+                                                    $align = 'text-center dt-body-center';
+                                                } ?>
+                                                <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
+                                            <?php } ?>
+                                        </thead>
+                                        <thead>
+                                            <?php foreach ($log_data_order as $key) { ?>
+                                                <th>
+                                                    <div class="input-group">
+                                                        <?php if ($key !== 'id' and $key !== 'view') { ?>
+                                                        <input id="alllog<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search <?= collection_column_name($key) ?>" />
+                                                        <?php } ?>
+                                                    </div>
+                                                </th>
+                                            <?php } ?>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($included['discovery_log'] as $log) { ?>
-                                                <?php if (strpos($log->message, 'not responding, ignoring') === false and strpos($log->message, 'responding, adding to device list') === false) { ?>
-                                                    <?php if ($log->function === 'match') {
-                                                        $log->message = 'DeviceMatch - ' . $log->message;
-                                                    } ?>
-                                                <tr>
-                                                    <?= device_component_button_read('discovery_log', $log->id) ?>
-                                                    <td class="text-center"><?= $log->id ?></td>
-                                                    <td><?= $log->timestamp ?></td>
-                                                    <td><span style="display:none;"><?= @$log->ip_padded ?></span> <?= $log->ip ?> </td>
-                                                    <td>
-                                                    <?php if ($log->command_status === 'success') { ?>
-                                                        <span class="text-success">
-                                                    <?php } elseif ($log->command_status === 'fail') { ?>
-                                                        <span class="text-danger">
-                                                    <?php } elseif ($log->command_status === 'warning') { ?>
-                                                        <span class="text-warning">
-                                                    <?php } elseif ($log->command_status === 'notice') { ?>
-                                                        <span class="text-info">
-                                                    <?php } else { ?>
-                                                        <span class="text-muted">
-                                                    <?php } ?>
-                                                    <strong><?= $log->command_status ?></strong></span></td>
-                                                    <td>
-                                                        <?= $log->message ?>
-                                                        <?php if ($log->command !== '') { ?>
-                                                            <br><strong><em><?= __('Command') ?>: </em></strong><code><?= $log->command ?></code>
-                                                        <?php } ?>
-                                                        <?php if ($log->command_output !== '') { ?>
-                                                        <br><strong><em><?= __('Output') ?>: </em></strong><span class="output"><?= str_replace(',', ', ', $log->command_output) ?></span>
-                                                        <?php } ?>
-                                                        <?php
-                                                        if (
-                                                            strpos($log->message, 'Nmap Command') !== false or
-                                                            stripos($log->message, 'IP Scan finish') !== false or
-                                                            stripos($log->message, 'IP Audit Finish') !== false or
-                                                            stripos($log->message, 'Updating discovery log with non-responding IPs') !== false or
-                                                            stripos($log->message, 'Nmap response scanning completed') !== false
-                                                        ) { ?>
-                                                        <br><strong><em><?= __('Time to execute') ?>: </em></strong><?= (!empty($log->command_time_to_execute)) ? round($log->command_time_to_execute, 2) : '0.00' ?> seconds.
-                                                        <?php } ?>
-                                                    </td>
-                                                </tr>
-                                                <?php } ?>
-                                            <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -450,42 +421,33 @@ foreach ($included['discovery_scan_options'] as $item) {
                         <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
+                                    <div id="dev_notice" class="container-fluid" style="display:none;">
+                                        <div id="dev_alert" class="alert alert-warning alert-dismissible fade show" role="alert">
+                                        </div>
+                                    </div>
+                                    <?php $device_data_order = ['view', 'icon', 'ip', 'name', 'message', 'command_time_to_execute']; ?>
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDev" data-order='[[2,"asc"]]'>
                                         <thead>
-                                            <tr>
-                                                <th style="min-width:6rem;" data-orderable="false" class="text-center"><?= __('View') ?></th>
-                                                <th style="min-width:6rem;" data-orderable="false" class="text-center"></th>
-                                                <th style="min-width:6rem;"><?= __('IP') ?></th>
-                                                <th style="min-width:6rem;"><?= __('Name') ?></th>
-                                                <th><?= __('Message') ?></th>
-                                                <th style="min-width:6rem;"><?= __('Duration (hh:mm:ss)') ?></th>
-                                            </tr>
+                                            <?php foreach ($device_data_order as $key) {
+                                                $align = '';
+                                                if ($key === 'id' or $key === 'view' or strpos($key, '_id') !== false) {
+                                                    $align = 'text-center dt-body-center';
+                                                } ?>
+                                                <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
+                                            <?php } ?>
+                                        </thead>
+                                        <thead>
+                                            <?php foreach ($device_data_order as $key) { ?>
+                                                <th>
+                                                    <div class="input-group">
+                                                        <?php if ($key !== 'icon' and $key !== 'view') { ?>
+                                                        <input id="alldev<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldDev" placeholder="Search <?= collection_column_name($key) ?>" />
+                                                        <?php } ?>
+                                                    </div>
+                                                </th>
+                                            <?php } ?>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($included['devices'] as $device) { ?>
-                                                <?php if (!empty($device->{'devices.id'})) { ?>
-                                                <tr>
-                                                    <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $device->{'devices.id'}) ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
-                                                    <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $device->{'devices.icon'} ?>.svg" alt=""/></td>
-                                                    <td><span style="display:none;"><?= ip_address_to_db($device->{'discovery_log.ip'}) ?></span><?= $device->{'discovery_log.ip'} ?><br>
-                                                    <?php if ($device->{'devices.type'} === 'unknown') { ?>
-                                                        <span class="text-danger"><i><?= $device->{'devices.type'} ?></i></span>
-                                                    <?php } elseif ($device->{'devices.type'} === 'unclassified') { ?>
-                                                        <span class="text-warning"><i><?= $device->{'devices.type'} ?></i></span>
-                                                    <?php } else { ?>
-                                                        <span class="text-success"><i><?= $device->{'devices.type'} ?></i></span>
-                                                    <?php } ?>
-                                                    </td>
-                                                    <td><?= $device->{'devices.name'} ?>
-                                                        <?php if (!empty($device->{'devices.domain'})) { ?>
-                                                            <br><?= $device->{'devices.domain'} ?>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td><?= $device->{'discovery_log.message'} ?></td>
-                                                    <td><?= $device->{'discovery_log.command_time_to_execute'} ?></td>
-                                                </tr>
-                                                <?php } ?>
-                                            <?php } ?>
                                         </tbody>
                                     </table>
                                     <?php if ($resource->status === 'running' and empty($included['devices'])) {
@@ -500,68 +462,36 @@ foreach ($included['discovery_scan_options'] as $item) {
                         <div class="tab-pane" id="all_ips" role="tabpanel" tabindex="0" aria-labelledby="all_ips">
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
+                                    <div id="ip_notice" class="container-fluid" style="display:none;">
+                                        <div id="ip_alert" class="alert alert-warning alert-dismissible fade show" role="alert">
+                                        </div>
+                                    </div>
+                                    <?php $ip_data_order = ['view', 'icon', 'ip', 'name', 'message', 'command_time_to_execute']; ?>
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableIP" data-order='[[2,"asc"]]'>
                                         <thead>
-                                            <tr>
-                                                <th style="min-width:6rem;" data-orderable="false" class="text-center"><?= __('View') ?></th>
-                                                <th style="min-width:6rem;" data-orderable="false" class="text-center"></th>
-                                                <th style="min-width:6rem;"><?= __('IP') ?></th>
-                                                <th style="min-width:6rem;"><?= __('Name') ?></th>
-                                                <th><?= __('Message') ?></th>
-                                                <th style="min-width:6rem;"><?= __('Nmap Duration') ?></th>
-                                            </tr>
+                                            <?php foreach ($ip_data_order as $key) {
+                                                $align = '';
+                                                if ($key === 'icon' or $key === 'view' or strpos($key, '_id') !== false) {
+                                                    $align = 'text-center dt-body-center';
+                                                } ?>
+                                                <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
+                                            <?php } ?>
+                                        </thead>
+                                        <thead>
+                                            <?php foreach ($ip_data_order as $key) { ?>
+                                                <th>
+                                                    <div class="input-group">
+                                                        <?php if ($key !== 'icon' and $key !== 'view') { ?>
+                                                        <input id="allip<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldIP" placeholder="Search <?= collection_column_name($key) ?>" />
+                                                        <?php } ?>
+                                                    </div>
+                                                </th>
+                                            <?php } ?>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($included['ips'] as $device) { ?>
-                                                <tr>
-                                                    <td class="text-center">
-                                                        <?php if (!empty($device->{'devices.id'})) { ?>
-                                                            <a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $device->{'devices.id'}) ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <?php if (!empty($device->{'devices.icon'})) { ?>
-                                                            <img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $device->{'devices.icon'} ?>.svg" alt=""/>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td>
-                                                        <span style="display:none;"><?= ip_address_to_db($device->{'discovery_log.ip'}) ?></span><?= $device->{'discovery_log.ip'} ?>
-                                                        <?php if (!empty($device->{'devices.type'})) { ?>
-                                                            <br>
-                                                            <?php if ($device->{'devices.type'} === 'unknown') { ?>
-                                                                <span class="text-danger"><i><?= $device->{'devices.type'} ?></i></span>
-                                                            <?php } elseif ($device->{'devices.type'} === 'unclassified') { ?>
-                                                                <span class="text-warning"><i><?= $device->{'devices.type'} ?></i></span>
-                                                            <?php } else { ?>
-                                                                <span class="text-success"><i><?= $device->{'devices.type'} ?></i></span>
-                                                            <?php } ?>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if (!empty($device->{'devices.name'})) { ?>
-                                                            <?= $device->{'devices.name'} ?>
-                                                            <?php if (!empty($device->{'devices.domain'})) { ?>
-                                                                <br><?= $device->{'devices.domain'} ?>
-                                                            <?php } ?>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if (!empty($device->{'discovery_log.message'})) { ?>
-                                                            <?= $device->{'discovery_log.message'} ?>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if (!empty($device->{'discovery_log.command_time_to_execute'})) { ?>
-                                                            <?= $device->{'discovery_log.command_time_to_execute'} . ' ' . __('seconds') ?>
-                                                        <?php } ?>
-                                                    </td>
-                                                </tr>
-                                            <?php } ?>
                                         </tbody>
                                     </table>
-                                    <?php if ($resource->status === 'running' and empty($included['ips'])) {
-                                        echo "<p class=\"text-center\">Your discovery is running, however no IP Addresses have been completely scanned yet. Click the Refresh button in your browser to update this page and check the Logs tab for more detailed information.</p>";
-                                    } ?>
+
                                 </div>
                             </div>
                         </div>
@@ -635,6 +565,424 @@ window.onload = function () {
         });
 
         $(".page-title-middle").append('<?= $support_button ?>');
+
+
+
+        let logSort = {};
+        var myDataTable = new DataTable('.dataTableAjax', {
+            ajax: {
+                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&format=dataTables',
+                dataSrc: 'data',
+                data: function (d) {
+<?php foreach ($log_data_order as $key) { ?>
+                    if ($("#alllog<?= $key ?>").val() != '') {
+                        d["<?= $key ?>"] = $("#alllog<?= $key ?>").val();
+                    }
+<?php } ?>
+                    if (d.order[0]) {
+                        if (d.columns[d.order[0].column].data == 'attributes.id') {
+                            d.sort = 'discovery_log.id ' + d.order[0].dir;
+                            logSort.column = 'discovery_log.id';
+                            logSort.direction = d.order[0].dir;
+                        }
+                        if (d.columns[d.order[0].column].data == 'attributes.timestamp') {
+                            d.sort = 'discovery_log.timestamp ' + d.order[0].dir;
+                            logSort.column = 'discovery_log.timestamp';
+                            logSort.direction = d.order[0].dir;
+                        }
+                        if (d.columns[d.order[0].column].data == 'attributes.ip') {
+                            d.sort = 'discovery_log.ip ' + d.order[0].dir;
+                            logSort.column = 'discovery_log.ip';
+                            logSort.direction = d.order[0].dir;
+                        }
+                        if (d.columns[d.order[0].column].data == 'attributes.command_status') {
+                            d.sort = 'discovery_log.command_status ' + d.order[0].dir;
+                            logSort.column = 'discovery_log.command_status';
+                            logSort.direction = d.order[0].dir;
+                        }
+                        if (d.columns[d.order[0].column].data == 'attributes.message') {
+                            d.sort = 'discovery_log.message ' + d.order[0].dir;
+                            logSort.column = 'discovery_log.message';
+                            logSort.direction = d.order[0].dir;
+                        }
+                    } else {
+                        if (logSort.direction == 'asc') {
+                            d.sort = logSort.column + ' desc';
+                            logSort.direction = 'desc';
+                        } else {
+                            d.sort = logSort.column + ' asc';
+                            logSort.direction = 'asc';
+                        }
+                    }
+                }
+            },
+            autoWidth: false,
+            columns: [
+                { data: 'attributes.view', 
+                    render: function (data, type, row, meta) {
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                    }
+                },
+                { data: 'attributes.id' },
+                { data: 'attributes.timestamp',
+                    render: function (data, type, row, meta) {
+                        return data;
+                    }
+                },
+                { data: 'attributes.ip' },
+                { data: 'attributes.command_status',
+                    render: function (data, type, row, meta) {
+                        if (row.attributes.command_status == 'success') {
+                            data = '<span class="text-success"><strong>' + data + '</strong></span>';
+                        } else if (row.attributes.command_status == 'fail') {
+                            data = '<span class="text-danger"><strong>' + data + '</strong></span>';
+                        } else if (row.attributes.command_status == 'warning') {
+                            data = '<span class="text-warning"><strong>' + data + '</strong></span>';
+                        } else if (row.attributes.command_status == 'notice') {
+                            data = '<span class="text-info"><strong>' + data + '</strong></span>';
+                        } else {
+                            data = '<span class="text- "><strong>' + data + '</strong></span>';
+                        }
+                        return data;
+                    }
+                },
+                { data: 'attributes.message',
+                    render: function (message, type, row, meta) {
+                        if (row.attributes.command != '') {
+                            message = message + '<br><strong><em><?= __('Command') ?>: </em></strong><code>' + row.attributes.command + '</code>';
+                        }
+                        if (row.attributes.command_output != '') {
+                            message = message + '<br><strong><em><?= __('Output') ?>: </em></strong><span class="output">' + row.attributes.command_output + '</span>';
+                        }
+                        if (row.attributes.message.includes('Nmap Command') || row.attributes.message.includes('IP Scan finish') || row.attributes.message.includes('IP Audit finish') || row.attributes.message.includes('Updating discovery log with non-responding IPs') || row.attributes.message.includes('Nmap response scanning completed')) {
+                            if (row.attributes.command_time_to_execute != '0.000000') {
+                                message = message + '<br><strong><em><?= __('Time to Execute') ?>: </em></strong><span class="output">' + row.attributes.command_time_to_execute + '</span>';
+                            }
+                        }
+                        return message;
+                    }
+                },
+            ],
+            columnDefs: [
+                {className: "text-center", target: 0, width: "10em"},
+                {className: "text-center", target: 1, width: "10em"},
+                {className: "text-start", target: 2},
+                {className: "text-start", target: 3, width: "10em"},
+                {className: "text-start", title: "Status", target: 4, width: "10em"},
+                {className: "text-start", target: 5}
+            ],
+            info: true,
+            layout: {
+                bottomEnd: {
+                    paging: {
+                        type: 'full_numbers'
+                    }
+                }
+            },
+            lengthChange: true,
+            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+            order: [[ 1, 'asc' ]],
+            pageLength: 25,
+            processing: true,
+            searching: true,
+            serverSide: true
+        });
+
+        $(".dataTablesearchField").on("keypress", function (evtObj) {
+            // console.log(evtObj.keyCode);
+            if (evtObj.keyCode == 13) {
+                myDataTable.ajax.reload();
+            }
+        });
+
+        myDataTable.on('xhr', function (e, settings, json) {
+            if (json.warning) {
+                $("#logs_notice").show();
+                $("#logs_alert").html(json.warning + '<button id="logs_button" type="button" class="btn-close" aria-label="Close"></button>');
+                $("#logs_alert").show();
+            } else {
+                $("#logs_alert").hide();
+            }
+        });
+        $(document).on('click', '#logs_button', function() {
+            $(this).parent().hide();
+        });
+
+
+
+
+        let ipSort = {};
+        var myDataTableIP = new DataTable('.dataTableIP', {
+            ajax: {
+                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=dataTables',
+                dataSrc: 'data',
+                data: function (d) {
+<?php foreach ($ip_data_order as $key) { ?>
+                    if ($("#allip<?= $key ?>").val() != '') {
+                        d.<?= $key ?> = $("#allip<?= $key ?>").val();
+                    }
+<?php } ?>
+                    if (d.order[0]) {
+                        if (d.columns[d.order[0].column].data == 'attributes.ip') {
+                            d.sort = 'discovery_log.ip ' + d.order[0].dir;
+                            ipSort.column = 'discovery_log.ip';
+                            ipSort.direction = d.order[0].dir;
+                        }
+                        if (d.columns[d.order[0].column].data == 'attributes.name') {
+                            d.sort = 'devices.name ' + d.order[0].dir;
+                            ipSort.column = 'devices.name';
+                            ipSort.direction = d.order[0].dir;
+                        }
+                        if (d.columns[d.order[0].column].data == 'attributes.message') {
+                            d.sort = 'discovery_log.message ' + d.order[0].dir;
+                            ipSort.column = 'discovery_log.message';
+                            ipSort.direction = d.order[0].dir;
+                        }
+                        if (d.columns[d.order[0].column].data == 'attributes.command_time_to_execute') {
+                            d.sort = 'discovery_log.command_time_to_execute ' + d.order[0].dir;
+                            ipSort.column = 'discovery_log.command_time_to_execute';
+                            ipSort.direction = d.order[0].dir;
+                        }
+                    } else {
+                        if (ipSort.direction == 'asc') {
+                            d.sort = ipSort.column + ' desc';
+                            ipSort.direction = 'desc';
+                        } else {
+                            d.sort = ipSort.column + ' asc';
+                            ipSort.direction = 'asc';
+                        }
+                    }
+                }
+            },
+            autoWidth: false,
+            columns: [
+                { data: 'attributes.view', 
+                    render: function (data, type, row, meta) {
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                    }
+                },
+                { data: 'attributes.icon',
+                    render: function (icon) {
+                        return icon
+                            ? '<img style="width:30px;" src="<?= base_url() ?>device_images/' + icon + '.svg"/>'
+                            : '';
+                    }
+                },
+                { data: 'attributes.ip',
+                    render: function (data, type, row, meta) {
+                        if (row.attributes.ip_padded) {
+                            data = '<span style="display:none;">' + row.attributes.ip_padded + '</span>' + data;
+                        }
+                        if (row.attributes.type) {
+                            if (row.attributes.type == 'unknown') {
+                                data = data + '<br><span class="text-danger"><i>' + row.attributes.type + '</i></span>';
+                            } else if (row.attributes.type == 'unclassified') {
+                                data = data + '<br><span class="text-warning"><i>' + row.attributes.type + '</i></span>';
+                            } else {
+                                data = data + '<br><span class="text-success"><i>' + row.attributes.type + '</i></span>';
+                            }
+                        }
+                        return data;
+                    }
+                },
+                { data: 'attributes.name',
+                    render: function (data, type, row, meta) {
+                        return data
+                            ? data + '<br><span class="text-primary"><i>' + row.attributes.domain + '</i></span>'
+                            : data;
+                    }
+                },
+                { data: 'attributes.message' },
+                { data: 'attributes.command_time_to_execute',
+                    render: function (data, type, row, meta) {
+                        return data + ' seconds';
+                    }
+                },
+            ],
+            columnDefs: [
+                {className: "text-center", target: 0, width: "10em"},
+                {className: "text-center", target: 1, width: "10em"},
+                {className: "text-start", target: 2},
+                {className: "text-start", target: 3},
+                {className: "text-start", target: 4},
+                {className: "text-start", target: 5, width: "15em", title: "Duration"}
+            ],
+            info: true,
+            layout: {
+                bottomEnd: {
+                    paging: {
+                        type: 'full_numbers'
+                    }
+                }
+            },
+            lengthChange: true,
+            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+            order: [[ 1, 'asc' ]],
+            pageLength: 25,
+            paging: true,
+            processing: true,
+            searching: true,
+            serverSide: true
+        });
+
+        $(".dataTablesearchFieldIP").on("keypress", function (evtObj) {
+            if (evtObj.keyCode == 13) {
+                myDataTableIP.ajax.reload();
+            }
+        });
+
+        myDataTableIP.on('xhr', function (e, settings, json) {
+            if (json.warning) {
+                $("#ip_notice").show();
+                $("#ip_alert").html(json.warning + '<button id="dev_button" type="button" class="btn-close" aria-label="Close"></button>');
+                $("#ip_alert").show();
+            } else {
+                $("#ip_alert").hide();
+            }
+        });
+        $(document).on('click', '#ip_button', function() {
+            $(this).parent().hide();
+        });
+
+
+
+
+
+        let devSort = {};
+        var myDataTableDev = new DataTable('.dataTableDev', {
+            devSort: {},
+            ajax: {
+                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=dataTables&limit=25',
+                dataSrc: 'data',
+                data: function (d) {
+<?php foreach ($device_data_order as $key) { ?>
+                    if ($("#alldev<?= $key ?>").val() != '') {
+                        d.<?= $key ?> = $("#alldev<?= $key ?>").val();
+                    }
+<?php } ?>
+
+                    if (d.order[0]) {
+                        if (d.columns[d.order[0].column].data == 'attributes.ip') {
+                            d.sort = 'discovery_log.ip ' + d.order[0].dir;
+                            devSort.column = 'discovery_log.ip';
+                            devSort.direction = d.order[0].dir;
+                        }
+                        if (d.columns[d.order[0].column].data == 'attributes.name') {
+                            d.sort = 'devices.name ' + d.order[0].dir;
+                            devSort.column = 'devices.name';
+                            devSort.direction = d.order[0].dir;
+                        }
+                        if (d.columns[d.order[0].column].data == 'attributes.message') {
+                            d.sort = 'discovery_log.message ' + d.order[0].dir;
+                            devSort.column = 'discovery_log.message';
+                            devSort.direction = d.order[0].dir;
+                        }
+                        if (d.columns[d.order[0].column].data == 'attributes.command_time_to_execute') {
+                            d.sort = 'discovery_log.command_time_to_execute ' + d.order[0].dir;
+                            devSort.column = 'discovery_log.command_time_to_execute';
+                            devSort.direction = d.order[0].dir;
+                        }
+                    } else {
+                        if (devSort.direction == 'asc') {
+                            d.sort = devSort.column + ' desc';
+                            devSort.direction = 'desc';
+                        } else {
+                            d.sort = devSort.column + ' asc';
+                            devSort.direction = 'asc';
+                        }
+                    }
+                }
+            },
+            autoWidth: false,
+            columns: [
+                { data: 'attributes.view', 
+                    render: function (data, type, row, meta) {
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>devices/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                    }
+                },
+                { data: 'attributes.icon',
+                    render: function (icon) {
+                        return icon
+                            ? '<img style="width:30px;" src="<?= base_url() ?>device_images/' + icon + '.svg"/>'
+                            : '';
+                    }
+                },
+                { data: 'attributes.ip',
+                    render: function (data, type, row, meta) {
+                        if (row.attributes.ip_padded) {
+                            data = '<span style="display:none;">' + row.attributes.ip_padded + '</span>' + data;
+                        }
+                        if (row.attributes.type) {
+                            if (row.attributes.type == 'unknown') {
+                                data = data + '<br><span class="text-danger"><i>' + row.attributes.type + '</i></span>';
+                            } else if (row.attributes.type == 'unclassified') {
+                                data = data + '<br><span class="text-warning"><i>' + row.attributes.type + '</i></span>';
+                            } else {
+                                data = data + '<br><span class="text-success"><i>' + row.attributes.type + '</i></span>';
+                            }
+                        }
+                        return data;
+                    }
+                },
+                { data: 'attributes.name',
+                    render: function (data, type, row, meta) {
+                        return data
+                            ? data + '<br><span class="text-primary"><i>' + row.attributes.domain + '</i></span>'
+                            : data;
+                    }
+                },
+                { data: 'attributes.message' },
+                { data: 'attributes.command_time_to_execute',
+                    render: function (data, type, row, meta) {
+                        return data;
+                    }
+                },
+            ],
+            columnDefs: [
+                {className: "text-center", target: 0, width: "10em"},
+                {className: "text-center", target: 1, width: "10em"},
+                {className: "text-start", target: 2},
+                {className: "text-start", target: 3},
+                {className: "text-start", target: 4},
+                {className: "text-start", target: 5, width: "15em", title: "Duration (h:m:s)"}
+            ],
+            info: true,
+            layout: {
+                bottomEnd: {
+                    paging: {
+                        type: 'full_numbers'
+                    }
+                }
+            },
+            lengthChange: true,
+            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+            order: [[ 1, 'asc' ]],
+            pageLength: 25,
+            paging: true,
+            processing: true,
+            searching: true,
+            serverSide: true
+        });
+
+        $(".dataTablesearchFieldDev").on("keypress", function (evtObj) {
+            console.log(evtObj.keyCode);
+            if (evtObj.keyCode == 13) {
+                myDataTableDev.ajax.reload();
+            }
+        });
+
+        myDataTableDev.on('xhr', function (e, settings, json) {
+            if (json.warning) {
+                $("#dev_notice").show();
+                $("#dev_alert").html(json.warning + '<button id="dev_button" type="button" class="btn-close" aria-label="Close"></button>');
+                $("#dev_alert").show();
+            } else {
+                $("#dev_alert").hide();
+            }
+        });
+        $(document).on('click', '#dev_button', function() {
+            $(this).parent().hide();
+        });
     });
 }
 </script>

@@ -13,13 +13,16 @@ $title = 'Open-AudIT ' . ucfirst($config->product) . ' ' . $config->display_vers
 // sort our queries, summaries and reports
 $reports = array();
 $categories = array();
-foreach ($queries as $item) {
-    if ($item->{'attributes'}->{'menu_display'} === 'y') {
-        $item->name = $item->{'attributes'}->{'name'};
-        $reports[] = $item;
-        $categories[] = $item->{'attributes'}->{'menu_category'};
+if (!empty($queries)) {
+    foreach ($queries as $item) {
+        if ($item->{'attributes'}->{'menu_display'} === 'y') {
+            $item->name = $item->{'attributes'}->{'name'};
+            $reports[] = $item;
+            $categories[] = $item->{'attributes'}->{'menu_category'};
+        }
     }
 }
+$GLOBALS['table'] = !empty($GLOBALS['table']) ? $GLOBALS['table'] : '';
 function my_comparison($asort, $bsort)
 {
     return strcmp($asort->name, $bsort->name);
@@ -50,8 +53,12 @@ if (!empty($config->servers)) {
         <script {csp-script-nonce} src="<?= base_url('js/jquery.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/popper.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
+        <!--
         <script {csp-script-nonce} defer src="<?= base_url('js/jquery.dataTables.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
+        -->
+        <script {csp-script-nonce} defer src="<?= base_url('js/datatables.min.js') ?>"></script>
+
         <script {csp-script-nonce} defer src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/fa-v4-shims.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
@@ -60,7 +67,10 @@ if (!empty($config->servers)) {
         <!-- CSS -->
         <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/bootstrap.css') ?>" rel="stylesheet">
+        <!--
         <link href="<?= base_url('css/dataTables.bootstrap5.min.css') ?>" rel="stylesheet">
+        -->
+        <link href="<?= base_url('css/datatables.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/font-awesome.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/open-audit.css') ?>" rel="stylesheet">
 

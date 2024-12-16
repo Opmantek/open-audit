@@ -583,47 +583,20 @@ class DiscoveriesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-
         $included = array();
 
         $locationsModel = new \App\Models\LocationsModel();
         $included['locations'] = $locationsModel->listUser();
-
-        $sql = "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY id";
-        $query = $this->db->query($sql, [$id]);
-        $discovery_log = $query->getResult();
-        foreach ($discovery_log as $log) {
-            $log->ip_padded = ip_address_to_db($log->ip);
-        }
-        $included['discovery_log'] = $discovery_log;
 
         $discovery_scan_optionsModel = new \App\Models\DiscoveryScanOptionsModel();
         $included['discovery_scan_options'] = $discovery_scan_optionsModel->listUser();
 
         $included['issues'] = $this->issuesRead($id);
 
-        $sql = "SELECT discovery_log.ip AS `discovery_log.ip`, discovery_log.message AS `discovery_log.message`, ROUND(discovery_log.command_time_to_execute, 1) AS `discovery_log.command_time_to_execute`, devices.id AS `devices.id`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.serial AS `devices.serial`, devices.status AS `devices.status`, devices.last_seen_by AS `devices.last_seen_by`, devices.last_seen AS `devices.last_seen`, devices.manufacturer AS `devices.manufacturer`, devices.class AS `devices.class`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification` FROM discovery_log LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.message LIKE '% responding, %' AND discovery_log.discovery_id = ?";
-        $query = $this->db->query($sql, [$id]);
-        $included['ips'] = $query->getResult();
+        $included['discovery_log'] = array();
+        $included['ips'] = array();
+        $included['devices'] = array();
 
-        $sql = "SELECT TIMEDIFF(MAX(discovery_log.timestamp), MIN(discovery_log.timestamp)) AS `discovery_log.command_time_to_execute`, discovery_log.ip AS `discovery_log.ip`, devices.id AS `devices.id`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.domain AS `devices.domain`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.serial AS `devices.serial`, devices.status AS `devices.status`, devices.last_seen_by AS `devices.last_seen_by`, devices.last_seen AS `devices.last_seen`, devices.manufacturer AS `devices.manufacturer`, devices.class AS `devices.class`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.identification AS `devices.identification`, '' AS `discovery_log.message` FROM discovery_log LEFT JOIN devices ON (discovery_log.device_id = devices.id) WHERE discovery_log.discovery_id = ? AND discovery_log.ip != '127.0.0.1' AND discovery_log.device_id IS NOT NULL GROUP BY discovery_log.ip";
-        $query = $this->db->query($sql, [$id]);
-        $devices = $query->getResult();
-        $device_ips = array();
-        foreach ($devices as $device) {
-            $device_ips[] = $device->{'discovery_log.ip'};
-        }
-        $sql = "SELECT device_id, ip, message FROM discovery_log WHERE `id` IN (SELECT MAX(t2.id) FROM discovery_log t2 WHERE discovery_id = ? GROUP BY ip) AND discovery_id = ? AND ip IN ( \"" . implode('","', $device_ips) . "\") and ip != '127.0.0.1'";
-        $query = $this->db->query($sql, [$id, $id]);
-        $messages = $query->getResult();
-        foreach ($messages as $message) {
-            foreach ($devices as $device) {
-                if ($message->ip === $device->{'discovery_log.ip'}) {
-                    $device->{'discovery_log.message'} = $message->message;
-                }
-            }
-        }
-        $included['devices'] = $devices;
         return $included;
     }
 
