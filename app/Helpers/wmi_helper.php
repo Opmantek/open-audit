@@ -126,8 +126,12 @@ if (! function_exists('execute_windows')) {
             unset($temp);
             $command_string = 'winexe -U ' . $domain . '/' . $username . '%' . $credentials->credentials->password . ' //' . $ip . ' \'' . $command . '\'';
             $log->command   = 'winexe -U ' . $domain . '/' . $username . '%' . '******' .                            ' //' . $ip . ' \'' . $command . '\'';
-            $discoveryLogModel->create($log);
+            $log->command_status = 'fail';
             exec($command_string, $output, $return_var);
+            if (!empty($ouput)) {
+                $log->command_status = 'success';
+            }
+            $discoveryLogModel->create($log);
         }
 
         if (php_uname('s') === 'Linux') {
@@ -161,7 +165,7 @@ if (! function_exists('execute_windows')) {
             exec($command_string, $output, $return_var);
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_output = (json_encode($output)) ? json_encode($output) : '';
-            $log->command_status = 'notice';
+            $log->command_status = 'success';
             $log->message = 'Attempting to execute command using ' . $win . ' succeeded.';
             $log->severity = 7;
             if (empty($output)) {
