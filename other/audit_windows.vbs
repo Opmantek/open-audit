@@ -3703,6 +3703,7 @@ if (windows_domain_role <> "Backup Domain Controller" and windows_domain_role <>
     if struser = "" then
         dim group_domain
         dim member_domain
+        on error resume next
         For Each group In GetObject("WinNT://" & system_hostname)
             if group.Class = "Group" then
                 group_members = ""
@@ -3720,6 +3721,7 @@ if (windows_domain_role <> "Backup Domain Controller" and windows_domain_role <>
                 result.WriteText "      </item>" & vbcrlf
             end if
         Next
+        on error goto 0
     end if
 
     if struser > "" then
