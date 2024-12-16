@@ -43,6 +43,11 @@ if ($collection === "discoveries") {
     $extra = "The fields 'scan_options' and 'match_options' are stored as a JSON object. You should use the field names of 'scan_options.attribute_name'. For an example, ping would be 'scan_options.ping'.</p><p>For an example, use the web interface to create a discovery and then go to menu -> Admin -> Database -> List Tables and click on Discoveries. Then export to CSV.</p><p>";
 }
 
+if ($collection === "executables") {
+    $sample = ' <tr><td>"name","org_id","path","description","os_family","exclude"</td></tr>
+                <tr><td>"The Open-AudIT binary","/usr/local/open-audit/other/enterprise.bin","This binary enables Enterprise functionality.","Linux",""</td></tr>';
+}
+
 if ($collection === "fields") {
     $sample = ' <tr><td>"name","org_id","group_id","type","values","placement"</td></tr>
                 <tr><td>"My Special Field","1","1","varchar","","custom"</td></tr>';
