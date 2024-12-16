@@ -208,7 +208,7 @@ if (!function_exists('audit_convert')) {
 }
 
 if (! function_exists('deviceMatch')) {
-    function deviceMatch(object $details = null, int $discovery_id = 0, object $match = null)
+    function deviceMatch(object $details = new stdClass(), int $discovery_id = 0, object $match = new stdClass())
     {
         $db = db_connect();
 
@@ -257,10 +257,6 @@ if (! function_exists('deviceMatch')) {
         $message->command_status = 'notice';
         $message->command_output = '';
         $log_message[] = $message;
-
-        if (is_null($match)) {
-            $match = new \StdClass();
-        }
 
         // Ensure we have a fully populated (even if blank) match list
         $matches = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
