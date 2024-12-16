@@ -44,10 +44,11 @@ class View extends BaseView
      * by the core Parser by creating aliases that will be replaced with
      * any callable. Can be single or tag pair.
      *
-     * @var array<string, array<string>|callable|string>
+     * @var array<string, (callable(mixed): mixed)|(list<callable(mixed): mixed&string>)>
      * @phpstan-var array<string, array<ParserCallableString>|ParserCallableString|ParserCallable>
      */
-    public $plugins = [];
+    # Commented out because we aren't using it and to silence PHPStan
+    # public $plugins = [];
 
     /**
      * View Decorators are class methods that will be run in sequence to
@@ -56,7 +57,7 @@ class View extends BaseView
      *
      * All classes must implement CodeIgniter\View\ViewDecoratorInterface
      *
-     * @var class-string<ViewDecoratorInterface>[]
+     * @var list<class-string<ViewDecoratorInterface>>
      */
     public array $decorators = [];
 }

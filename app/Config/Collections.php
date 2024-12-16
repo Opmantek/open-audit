@@ -3,13 +3,64 @@
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
-
 use Config\Database;
 
 #[\AllowDynamicProperties]
 
 class Collections extends BaseConfig
 {
+    public $agents;
+    public $applications;
+    public $widgets;
+    public $attributes;
+    public $auth;
+    public $baselines;
+    public $baselines_policies;
+    public $baselines_results;
+    public $benchmarks;
+    public $benchmarks_exceptions;
+    public $benchmarks_policies;
+    public $clouds;
+    public $clusters;
+    public $collectors;
+    public $components;
+    public $configuration;
+    public $connections;
+    public $credentials;
+    public $dashboards;
+    public $database;
+    public $devices;
+    public $discoveries;
+    public $discovery_log;
+    public $discovery_scan_options;
+    public $executables;
+    public $feeds;
+    public $fields;
+    public $files;
+    public $groups;
+    public $help;
+    public $integrations;
+    public $integrations_log;
+    public $integrations_rules;
+    public $licenses;
+    public $locations;
+    public $maps;
+    public $networks;
+    public $orgs;
+    public $packages;
+    public $queries;
+    public $rack_devices;
+    public $racks;
+    public $reports;
+    public $roles;
+    public $rules;
+    public $scripts;
+    public $search;
+    public $summaries;
+    public $support;
+    public $tasks;
+    public $users;
+
     public function __construct()
     {
         parent::__construct();

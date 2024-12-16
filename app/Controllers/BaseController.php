@@ -37,15 +37,38 @@ abstract class BaseController extends Controller
     protected $request;
 
     /**
-     * An array of helpers to be loaded automatically upon
-     * class instantiation. These helpers will be available
-     * to all other controllers that extend BaseController.
+     * Helpers that will be automatically loaded on class instantiation.
      *
-     * @var array
+     * @var list<string>
      */
     protected $helpers = ['components', 'device', 'network', 'output', 'response', 'scripts', 'security', 'utility'];
 
+    public $collections;
+    public $config;
+    public $controller;
+    public $dashboards;
+    public $dashboardsModel;
+    public $devicesModel;
+    public $dictionary;
+    public $licenses;
+    public $licenses_collector;
+    public $method;
+    public $networksModel;
+    public $orgs;
+    public $orgsModel;
+    public $orgsUser;
+    public $queries;
+    public $queriesModel;
+    public $queriesUser;
+    public $reportsModel;
+    public $resp;
     public $response;
+    public $roles;
+    public $rolesModel;
+    public $session;
+    public $summariesModel;
+    public $user;
+    public $usersModel;
 
     /**
      * Constructor.
@@ -91,6 +114,9 @@ abstract class BaseController extends Controller
             define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
         }
 
+        if (empty($this->config->internal_version)) {
+            $this->config->internal_version = 1;
+        }
         if ($this->config->internal_version > 20230614) {
             $this->orgs = $this->orgsModel->listAll();
         }
@@ -120,7 +146,7 @@ abstract class BaseController extends Controller
 
         $this->user = $this->usersModel->userValidate();
 
-        if ((int)$this->config->internal_version < $this->config->appVersion) {
+        if (!empty($this->config->internal_version) and intval($this->config->internal_version) < intval($this->config->appVersion)) {
             if ($router->controllerName() !== '\App\Controllers\Database' and $router->methodName() !== 'update') {
                 header('Location: ' . url_to('databaseUpdate'));
                 exit;
@@ -189,9 +215,7 @@ abstract class BaseController extends Controller
             }
             $message .= ':' . $data;
         }
-        if ($message !== '') {
-            log_message('info', $message);
-        }
+        log_message('info', $message);
 
         // The dictionary items
         $this->dictionary = new stdClass();

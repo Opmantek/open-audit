@@ -25,6 +25,7 @@ class Modules extends BaseModules
      *
      * @var bool
      */
+    // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public $enabled = true;
 
     /**
@@ -37,6 +38,7 @@ class Modules extends BaseModules
      *
      * @var bool
      */
+    // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public $discoverInComposer = true;
 
     /**
@@ -60,6 +62,7 @@ class Modules extends BaseModules
      *
      * @var array
      */
+    // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public $composerPackages = [];
 
     /**
@@ -72,8 +75,9 @@ class Modules extends BaseModules
      *
      * If it is not listed, only the base application elements will be used.
      *
-     * @var string[]
+     * @var list<string>
      */
+    // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public $aliases = [
         'events',
         'filters',

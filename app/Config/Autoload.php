@@ -44,6 +44,7 @@ class Autoload extends AutoloadConfig
      * @var array<string, array<int, string>|string>
      * @phpstan-var array<string, string|list<string>>
      */
+    // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public $psr4 = [
         APP_NAMESPACE => APPPATH, // For custom app namespace
         'Config'      => APPPATH . 'Config',
@@ -66,6 +67,7 @@ class Autoload extends AutoloadConfig
      *
      * @var array<string, string>
      */
+    // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public $classmap = [];
 
     /**
@@ -84,6 +86,7 @@ class Autoload extends AutoloadConfig
      * @var string[]
      * @phpstan-var list<string>
      */
+    // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public $files = [];
 
     /**
@@ -98,5 +101,6 @@ class Autoload extends AutoloadConfig
      * @var string[]
      * @phpstan-var list<string>
      */
+    // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public $helpers = [];
 }

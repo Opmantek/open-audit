@@ -23,6 +23,7 @@ class Mimes
     /**
      * Map of extensions to mime types.
      */
+    // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public static array $mimes = [
         'hqx' => [
             'application/mac-binhex40',

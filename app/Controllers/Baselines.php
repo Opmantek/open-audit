@@ -31,11 +31,12 @@ namespace App\Controllers;
  */
 class Baselines extends BaseController
 {
+    public $baselinesModel;
+
     /**
      * Provide a form to choose a group so we can execute a baseline
      *
      * @access public
-     * @return void
      */
     public function executeForm($id)
     {
@@ -62,7 +63,6 @@ class Baselines extends BaseController
      * Provide a form to choose a group so we can execute a baseline
      *
      * @access public
-     * @return void
      */
     public function execute($id)
     {

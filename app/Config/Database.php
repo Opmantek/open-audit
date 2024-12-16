@@ -83,7 +83,8 @@ class Database extends Config
         }
         if (file_exists(APPPATH . 'Config/Database.json')) {
             $file_contents = file_get_contents(APPPATH . 'Config/Database.json');
-            if (!empty($file->contents)) {
+            $json = '';
+            if (!empty($file_contents)) {
                 try {
                     $json = json_decode($file_contents, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {

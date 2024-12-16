@@ -16,8 +16,24 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
 
 $config_collections = new \Config\Collections();
 $collections = array();
+// @phpstan-ignore foreach.nonIterable
 foreach ($config_collections as $col => $value) {
     $collections[] = (string)$col;
+}
+
+if (!isset($routes)) {
+    $routes = [
+        '*'       => [],
+        'options' => [],
+        'get'     => [],
+        'head'    => [],
+        'post'    => [],
+        'put'     => [],
+        'delete'  => [],
+        'trace'   => [],
+        'connect' => [],
+        'cli'     => [],
+    ];
 }
 
 # The default route
