@@ -130,7 +130,7 @@ class OpenAudit extends BaseConfig
     public string $discovery_linux_script_permissions;
     public bool $discovery_linux_use_sudo;
     public bool $discovery_override_nmap;
-    public int $discovery_pid;
+    public string $discovery_pid;
     public int $discovery_route_retrieve_limit;
     public int $discovery_ssh_timeout;
     public string $discovery_sudo_path;
@@ -243,7 +243,9 @@ class OpenAudit extends BaseConfig
         $query = $db->query('SELECT * FROM `configuration`');
         $result = $query->getResult();
         foreach ($result as $row) {
-            $this->{$row->name} = $row->value;
+            if ($row->type = 'text') {
+                $this->{$row->name} = (string)$row->value;
+            }
             if ($row->type === 'number') {
                 $this->{$row->name} = (int)$row->value;
             }
