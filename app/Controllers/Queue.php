@@ -147,10 +147,10 @@ class Queue extends BaseController
                 discover_subnet($details);
             }
 
-            #if ($item->type === 'active directory') {
-            #    log_message('debug', $microtime . " " . "Scanning AD as per type.");
-            #    discover_ad($details);
-            #}
+            if ($item->type === 'active directory') {
+                log_message('debug', $microtime . " " . "Scanning AD as per type.");
+                discover_ad($details);
+            }
 
             if ($item->type === 'ip_scan') {
                 log_message('debug', $microtime . " " . "Scanning IP " . $details->ip . " as per type.");
