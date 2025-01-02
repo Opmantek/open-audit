@@ -1238,10 +1238,10 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->message = 'Access Point location retrieval for ' . $ip;
             $log->command = 'snmpwalk 1.3.6.1.4.1.14179.2.2.1.1.4';
-            $log->command_output = json_encode($apLocation);
+            $log->command_output = '';
             $log->command_status = 'notice';
-            $discoveryLogModel->create($log);
             if (!empty($apLocation) and is_array($apLocation)) {
+                $log->command_output = json_encode($apLocation);
                 foreach ($apLocation as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.4.', '', $key);
                     if (empty($access_points[$id])) {
@@ -1250,6 +1250,7 @@ if (!function_exists('snmp_audit')) {
                     $access_points[$id]->location = $value;
                 }
             }
+            $discoveryLogModel->create($log);
 
             $item_start = microtime(true);
             $apPortNumber = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.14179.2.2.1.1.13');
