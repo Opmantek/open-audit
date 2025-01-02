@@ -2378,7 +2378,7 @@ if (! function_exists('discover_ad')) {
         $db->query($sql, [$discovery_id]);
 
         // We need to get the Org Children of this particular discovery run
-        $orgs = $instance->orgsModel->getChildren(intval($discovery->org_id));
+        $orgs = $instance->orgsModel->getDescendants(intval($discovery->org_id));
         $orgs[] = $discovery->org_id;
         $orgs = implode(',', $orgs);
 
