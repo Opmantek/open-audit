@@ -57,7 +57,7 @@ class DiscoveryLog extends BaseController
 
         if (!empty($this->resp->meta->groupby) and ($this->resp->meta->groupby === 'discovery_log.ip' or $this->resp->meta->groupby === 'discovery_log.device_id') and !empty($this->resp->meta->filter)) {
             foreach ($this->resp->meta->filter as $item) {
-                if ($item->name === 'discovery_id') {
+                if ($item->name === 'discovery_id' or $item->name === 'discovery_log.discovery_id') {
                     $id = intval($item->value);
                 }
             }

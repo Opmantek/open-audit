@@ -147,8 +147,6 @@ if (!function_exists('response_create')) {
         $instance->user->org_list = response_get_org_list($instance->user, $response->meta->collection);
         $response->meta->permission_requested = $permission_requested;
 
-
-
         $response->links = new \StdClass();
         $response->included = array();
         $response->logs = array();
@@ -195,54 +193,36 @@ if (!function_exists('response_create')) {
         $response->meta->sql = array();
         $response->meta->user = $instance->user->name;
 
-        // no dependencies - set in GET or POST
-        $response->meta->debug = response_get_debug(
-            $request->getGet('debug'),
-            $request->getPost('debug'),
-            $request->header('debug')
-        );
-
         // We need to do some field conversion for requests coming from dataTables
-        if ($response->meta->format === 'dataTables') {
-            if (!empty($_GET['start'])) {
-                $response->meta->offset = intval($_GET['start']);
-                unset($_GET['start']);
-            }
-            if (!empty($_GET['length'])) {
-                $response->meta->limit = intval($_GET['length']);
-                unset($_GET['length']);
-            }
-            // dataTables can send a limit of -1 for 'all' rows, we want to restrict that to the config page_size
-            if ($response->meta->limit === -1 or empty($response->meta->limit)) {
-                $response->meta->limit = intval($config->page_size);
-            }
-            if (!empty($_GET['sort'])) {
-                $response->meta->sort = $_GET['sort'];
-            }
-            foreach ($_GET as $key => $value) {
-                if ($db->fieldExists($key, 'discovery_log') or $db->fieldExists($key, 'devices')) {
-                    $query = new \StdClass();
-                    $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $key);
-                    $query->function = 'where';
-                    $query->operator = 'like';
-                    $query->value = '%' . $value . '%';
-                    if (strpos($query->name, '_id') !== false or $query->name === 'id') {
-                        $query->value = intval($value);
+        if (!empty($_GET['columns']) and gettype($_GET['columns']) === 'array') {
+            $get = $_GET;
+            unset($_GET);
+            $_GET = array();
+            $response->meta->format = 'json';
+            foreach ($get as $key => $value) {
+                if (strpos($key, '.') === false) {
+                    if ($response->meta->collection === 'discovery_log' and $key === 'status') {
+                        // Hack because GUI has a column heading of Status and we don't expect users to realise we actually show the command_status column
+                        $key = 'command_status';
                     }
-                    $response->meta->filter[] = $query;
+                    if ($db->fieldExists($key, $response->meta->collection)) {
+                        $_GET[$response->meta->collection . '.' . $key] = $value;
+                    } else {
+                        if ($response->meta->collection === 'discovery_log' and $db->fieldExists($key, 'devices')) {
+                            $_GET['devices.' . $key] = $value;
+                        }
+                    }
                 }
             }
-            if (!empty($_GET['search']['value'])) {
-                $query = new \StdClass();
-                $query->name = 'search';
-                $query->function = 'where';
-                $query->operator = 'like';
-                $query->value = '%' . $_GET['search']['value'] . '%';
-                $response->meta->filter[] = $query;
+            if (!empty($get['search']['value'])) {
+                $_GET['search'] = $get['search']['value'];
             }
-            unset($_GET['columns']);
-            unset($_GET['draw']);
-            unset($_GET['search']);
+            $response->meta->query_string = '';
+            foreach ($_GET as $key => $value) {
+                $response->meta->query_string .= $key . '=' . $value . '&';
+            }
+            // Add the below for when we process the filter in response_get_query_filter
+            $response->meta->query_string .= 'dataTables=true';
         }
 
         // Set the heading based on the collection
@@ -329,44 +309,34 @@ if (!function_exists('response_create')) {
         );
 
         // depends on version affecting URI, collection
-        if ($response->meta->format !== 'dataTables') {
-            $response->meta->sort = response_get_sort(
-                $response->meta->collection,
-                $request->getGet('sort'),
-                $request->getPost('sort')
-            );
-        }
+        $response->meta->sort = response_get_sort(
+            $response->meta->collection,
+            $request->getGet('sort'),
+            $request->getPost('sort')
+        );
 
         // depends on version affecting URI, collection
         $response->meta->groupby = response_get_groupby($request->getGet('groupby'), $request->getPost('groupby'), $response->meta->collection);
 
         // no dependencies - set in GET or POST
-        if ($response->meta->format !== 'dataTables') {
-            $response->meta->offset = response_get_offset($request->getGet('offset'), $request->getPost('offset'));
-        }
+        $response->meta->offset = response_get_offset($request->getGet('offset'), $request->getPost('offset'));
 
         // depends on format - set in GET or POST
-        if ($response->meta->format !== 'dataTables') {
-            $response->meta->limit = response_get_limit(
-                $request->getGet('limit'),
-                $request->getPost('limit'),
-                $response->meta->format,
-                $config->page_size
-            );
-        }
+        $response->meta->limit = response_get_limit(
+            $request->getGet('limit'),
+            $request->getPost('limit'),
+            $response->meta->format,
+            $config->page_size
+        );
 
         // depends on collection
-        if ($response->meta->format !== 'dataTables') {
-            $response->meta->properties = response_get_properties(
-                $response->meta->collection,
-                $response->meta->action,
-                $request->getGet('properties'),
-                $request->getPost('properties'),
-                $instance->user
-            );
-        } else {
-            $response->meta->properties = response_get_properties($response->meta->collection, $response->meta->action, '', '', $instance->user);
-        }
+        $response->meta->properties = response_get_properties(
+            $response->meta->collection,
+            $response->meta->action,
+            $request->getGet('properties'),
+            $request->getPost('properties'),
+            $instance->user
+        );
 
         $response->meta->properties = explode(',', $response->meta->properties);
         if ($response->meta->properties[0] !== $response->meta->collection . '.*' and !in_array($response->meta->collection . '.id', $response->meta->properties)) {
@@ -377,9 +347,7 @@ if (!function_exists('response_create')) {
         $response->meta->properties = explode(',', $response->meta->properties);
 
         // depends on query string
-        if ($response->meta->format !== 'dataTables') {
-            $response->meta->filter = response_get_query_filter($response->meta->query_string, 'filter');
-        }
+        $response->meta->filter = response_get_query_filter($response->meta->query_string, 'filter');
 
         // Do we need to add All the Orgs?
         $test = true;
@@ -718,8 +686,17 @@ if (!function_exists('response_get_query_filter')) {
             return array();
         }
 
+        $dataTables = false;
+        if (!empty($query_string) and strpos($query_string, '&dataTables=true') !== false) {
+            $dataTables = true;
+            $query_string = str_replace('&dataTables=true', '', $query_string);
+        }
+
         if (!empty($query_string)) {
             foreach (explode('&', $query_string) as $item) {
+                if (empty($item)) {
+                    continue;
+                }
                 $query = new \StdClass();
                 $query->name = substr($item, 0, strpos($item, '='));
                 $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $query->name);
@@ -772,6 +749,9 @@ if (!function_exists('response_get_query_filter')) {
                 if (empty($query->operator)) {
                     $query->function = 'where';
                     $query->operator = '=';
+                    if ($dataTables) {
+                        $query->operator = '';
+                    }
                 }
 
                 if (substr($query->value, 0, 3) === 'in(' && strpos($query->value, ')') === strlen($query->value) - 1) {
@@ -823,12 +803,31 @@ if (!function_exists('response_get_query_filter')) {
                     }
                 }
 
-                if (!empty($query->name) && ! in_array($query->name, $reserved_words) && $type === 'filter') {
+                if (!empty($query->name) and !in_array($query->name, $reserved_words) and $type === 'filter') {
+                    $filter[] = $query;
+                }
+
+                if ($query->name === 'search' and strpos($query_string, 'discovery_log') !== false) {
                     $filter[] = $query;
                 }
 
                 if ($type === 'query') {
                     $filter[] = $query;
+                }
+            }
+
+            if ($dataTables) {
+                foreach ($filter as $query) {
+                    if ($query->operator === '' and strpos($query->name, 'id') === false and gettype($query->value) === 'string') {
+                        // We default to a LIKE clause for dataTables filtering
+                        // To use an EQUALS clause, specify =value in the search field,
+                        // this will translate to column==value and hence be covered above
+                        if (strpos($query->value, '%') === false) {
+                            $query->value = '%' . $query->value . '%';
+                        }
+                        $query->function = 'where';
+                        $query->operator = 'like';
+                    }
                 }
             }
         }
@@ -1175,19 +1174,19 @@ if (!function_exists('response_get_limit')) {
         $limit = $default_limit;
         if (!empty($get)) {
             $limit = intval($get);
-            log_message('debug', 'Set include according to GET (' . $limit . ').');
+            log_message('debug', 'Set limit according to GET (' . $limit . ').');
         }
         if (!empty($post)) {
             $limit = intval($post);
-            log_message('debug', 'Set include according to POST (' . $limit . ').');
+            log_message('debug', 'Set limit according to POST (' . $limit . ').');
         }
         if ($format === 'html' && empty($limit)) {
             $limit = intval($default_limit);
-            log_message('debug', 'Set include according to SCREEN DEFAULT (' . $limit . ').');
+            log_message('debug', 'Set limit according to SCREEN DEFAULT (' . $limit . ').');
         }
         if ($format === 'json' && empty($limit)) {
             $limit = intval($default_limit);
-            log_message('debug', 'Set include according to JSON DEFAULT (' . $limit . ').');
+            log_message('debug', 'Set limit according to JSON DEFAULT (' . $limit . ').');
         }
         return $limit;
     }
@@ -1603,7 +1602,7 @@ if (!function_exists('response_valid_formats')) {
      */
     function response_valid_formats()
     {
-        $valid_formats = array('csv','dataTables','highcharts','html','html_data','json','json_data','sql','table','xml');
+        $valid_formats = array('csv','highcharts','html','html_data','json','json_data','sql','table','xml');
         return $valid_formats;
     }
 }

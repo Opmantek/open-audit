@@ -440,7 +440,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <?php foreach ($device_data_order as $key) { ?>
                                                 <th>
                                                     <div class="input-group">
-                                                        <?php if ($key !== 'icon' and $key !== 'view') { ?>
+                                                        <?php if ($key !== 'icon' and $key !== 'view' and $key !== 'command_time_to_execute') { ?>
                                                         <input id="alldev<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldDev" placeholder="Search <?= collection_column_name($key) ?>" />
                                                         <?php } ?>
                                                     </div>
@@ -481,7 +481,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <?php foreach ($ip_data_order as $key) { ?>
                                                 <th>
                                                     <div class="input-group">
-                                                        <?php if ($key !== 'icon' and $key !== 'view') { ?>
+                                                        <?php if ($key !== 'icon' and $key !== 'view' and $key !== 'command_time_to_execute') { ?>
                                                         <input id="allip<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldIP" placeholder="Search <?= collection_column_name($key) ?>" />
                                                         <?php } ?>
                                                     </div>
@@ -570,10 +570,19 @@ window.onload = function () {
 
         let logSort = {};
         var myDataTable = new DataTable('.dataTableAjax', {
+            lengthChange: true,
+            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+            order: [[ 1, 'asc' ]],
+            pageLength: 25,
+            processing: true,
+            searching: true,
+            serverSide: true,
             ajax: {
-                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&format=dataTables',
+                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&format=json',
                 dataSrc: 'data',
                 data: function (d) {
+                    d.limit = d.length;
+                    d.offset = d.start;
 <?php foreach ($log_data_order as $key) { ?>
                     if ($("#alllog<?= $key ?>").val() != '') {
                         d["<?= $key ?>"] = $("#alllog<?= $key ?>").val();
@@ -581,36 +590,63 @@ window.onload = function () {
 <?php } ?>
                     if (d.order[0]) {
                         if (d.columns[d.order[0].column].data == 'attributes.id') {
-                            d.sort = 'discovery_log.id ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.id ' + d.order[0].dir;
                             logSort.column = 'discovery_log.id';
                             logSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.id';
+                            } else {
+                                d.sort = '-discovery_log.id';
+                            }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.timestamp') {
-                            d.sort = 'discovery_log.timestamp ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.timestamp ' + d.order[0].dir;
                             logSort.column = 'discovery_log.timestamp';
                             logSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.timestamp';
+                            } else {
+                                d.sort = '-discovery_log.timestamp';
+                            }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.ip') {
-                            d.sort = 'discovery_log.ip ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.ip ' + d.order[0].dir;
                             logSort.column = 'discovery_log.ip';
                             logSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.ip';
+                            } else {
+                                d.sort = '-discovery_log.ip';
+                            }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.command_status') {
-                            d.sort = 'discovery_log.command_status ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.command_status ' + d.order[0].dir;
                             logSort.column = 'discovery_log.command_status';
                             logSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.command_status';
+                            } else {
+                                d.sort = '-discovery_log.command_status';
+                            }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.message') {
-                            d.sort = 'discovery_log.message ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.message ' + d.order[0].dir;
                             logSort.column = 'discovery_log.message';
                             logSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.message';
+                            } else {
+                                d.sort = '-discovery_log.message';
+                            }
                         }
                     } else {
                         if (logSort.direction == 'asc') {
-                            d.sort = logSort.column + ' desc';
+                            // d.sort = logSort.column + ' desc';
+                            d.sort = '-' + logSort.column;
                             logSort.direction = 'desc';
                         } else {
-                            d.sort = logSort.column + ' asc';
+                            // d.sort = logSort.column + ' asc';
+                            d.sort = logSort.column;
                             logSort.direction = 'asc';
                         }
                     }
@@ -678,14 +714,7 @@ window.onload = function () {
                         type: 'full_numbers'
                     }
                 }
-            },
-            lengthChange: true,
-            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
-            order: [[ 1, 'asc' ]],
-            pageLength: 25,
-            processing: true,
-            searching: true,
-            serverSide: true
+            }
         });
 
         $(".dataTablesearchField").on("keypress", function (evtObj) {
@@ -713,10 +742,20 @@ window.onload = function () {
 
         let ipSort = {};
         var myDataTableIP = new DataTable('.dataTableIP', {
+            lengthChange: true,
+            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+            order: [[ 1, 'asc' ]],
+            pageLength: 25,
+            paging: true,
+            processing: true,
+            searching: true,
+            serverSide: true,
             ajax: {
-                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=dataTables',
+                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=json',
                 dataSrc: 'data',
                 data: function (d) {
+                    d.limit = d.length;
+                    d.offset = d.start;
 <?php foreach ($ip_data_order as $key) { ?>
                     if ($("#allip<?= $key ?>").val() != '') {
                         d.<?= $key ?> = $("#allip<?= $key ?>").val();
@@ -724,31 +763,53 @@ window.onload = function () {
 <?php } ?>
                     if (d.order[0]) {
                         if (d.columns[d.order[0].column].data == 'attributes.ip') {
-                            d.sort = 'discovery_log.ip ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.ip ' + d.order[0].dir;
                             ipSort.column = 'discovery_log.ip';
                             ipSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.ip';
+                            } else {
+                                d.sort = '-discovery_log.ip';
+                            }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.name') {
-                            d.sort = 'devices.name ' + d.order[0].dir;
+                            // d.sort = 'devices.name ' + d.order[0].dir;
                             ipSort.column = 'devices.name';
                             ipSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.name';
+                            } else {
+                                d.sort = '-discovery_log.name';
+                            }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.message') {
-                            d.sort = 'discovery_log.message ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.message ' + d.order[0].dir;
                             ipSort.column = 'discovery_log.message';
                             ipSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.message';
+                            } else {
+                                d.sort = '-discovery_log.message';
+                            }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.command_time_to_execute') {
-                            d.sort = 'discovery_log.command_time_to_execute ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.command_time_to_execute ' + d.order[0].dir;
                             ipSort.column = 'discovery_log.command_time_to_execute';
                             ipSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.command_time_to_execute';
+                            } else {
+                                d.sort = '-discovery_log.command_time_to_execute';
+                            }
                         }
                     } else {
                         if (ipSort.direction == 'asc') {
-                            d.sort = ipSort.column + ' desc';
+                            // d.sort = ipSort.column + ' desc';
+                            d.sort = '-' + ipSort.column;
                             ipSort.direction = 'desc';
                         } else {
-                            d.sort = ipSort.column + ' asc';
+                            // d.sort = ipSort.column + ' asc';
+                            d.sort = ipSort.column;
                             ipSort.direction = 'asc';
                         }
                     }
@@ -814,15 +875,7 @@ window.onload = function () {
                         type: 'full_numbers'
                     }
                 }
-            },
-            lengthChange: true,
-            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
-            order: [[ 1, 'asc' ]],
-            pageLength: 25,
-            paging: true,
-            processing: true,
-            searching: true,
-            serverSide: true
+            }
         });
 
         $(".dataTablesearchFieldIP").on("keypress", function (evtObj) {
@@ -850,11 +903,21 @@ window.onload = function () {
 
         let devSort = {};
         var myDataTableDev = new DataTable('.dataTableDev', {
+            lengthChange: true,
+            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+            order: [[ 1, 'asc' ]],
+            pageLength: 25,
+            paging: true,
+            processing: true,
+            searching: true,
+            serverSide: true,
             devSort: {},
             ajax: {
-                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=dataTables&limit=25',
+                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=json&limit=25',
                 dataSrc: 'data',
                 data: function (d) {
+                    d.limit = d.length;
+                    d.offset = d.start;
 <?php foreach ($device_data_order as $key) { ?>
                     if ($("#alldev<?= $key ?>").val() != '') {
                         d.<?= $key ?> = $("#alldev<?= $key ?>").val();
@@ -863,31 +926,53 @@ window.onload = function () {
 
                     if (d.order[0]) {
                         if (d.columns[d.order[0].column].data == 'attributes.ip') {
-                            d.sort = 'discovery_log.ip ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.ip ' + d.order[0].dir;
                             devSort.column = 'discovery_log.ip';
                             devSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.ip';
+                            } else {
+                                d.sort = '-discovery_log.ip';
+                            }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.name') {
-                            d.sort = 'devices.name ' + d.order[0].dir;
+                            // d.sort = 'devices.name ' + d.order[0].dir;
                             devSort.column = 'devices.name';
                             devSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.name';
+                            } else {
+                                d.sort = '-discovery_log.name';
+                            }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.message') {
-                            d.sort = 'discovery_log.message ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.message ' + d.order[0].dir;
                             devSort.column = 'discovery_log.message';
                             devSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.message';
+                            } else {
+                                d.sort = '-discovery_log.message';
+                            }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.command_time_to_execute') {
-                            d.sort = 'discovery_log.command_time_to_execute ' + d.order[0].dir;
+                            // d.sort = 'discovery_log.command_time_to_execute ' + d.order[0].dir;
                             devSort.column = 'discovery_log.command_time_to_execute';
                             devSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'discovery_log.command_time_to_execute';
+                            } else {
+                                d.sort = '-discovery_log.command_time_to_execute';
+                            }
                         }
                     } else {
                         if (devSort.direction == 'asc') {
-                            d.sort = devSort.column + ' desc';
+                            // d.sort = devSort.column + ' desc';
+                            d.sort = '-' + devSort.column;
                             devSort.direction = 'desc';
                         } else {
-                            d.sort = devSort.column + ' asc';
+                            // d.sort = devSort.column + ' asc';
+                            d.sort = devSort.column;
                             devSort.direction = 'asc';
                         }
                     }
@@ -953,15 +1038,7 @@ window.onload = function () {
                         type: 'full_numbers'
                     }
                 }
-            },
-            lengthChange: true,
-            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
-            order: [[ 1, 'asc' ]],
-            pageLength: 25,
-            paging: true,
-            processing: true,
-            searching: true,
-            serverSide: true
+            }
         });
 
         $(".dataTablesearchFieldDev").on("keypress", function (evtObj) {

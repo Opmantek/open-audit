@@ -44,19 +44,18 @@ class DiscoveryLogModel extends BaseModel
         $offset = !empty($instance->resp->meta->offset) ? intval($instance->resp->meta->offset) : 0;
 
         // Get the actual records, including limit and offset
-        log_message('debug', json_encode($instance->resp->meta->filter));
         $this->builder->select("DISTINCT(discovery_log.ip) AS `ip`, discovery_log.message AS `message`, ROUND(discovery_log.command_time_to_execute, 1) AS `command_time_to_execute`, devices.id AS `device_id`, devices.type AS `type`, devices.name AS `name`, devices.domain AS `domain`, devices.os_family AS `os_family`, devices.serial AS `serial`, devices.status AS `status`, devices.last_seen_by AS `last_seen_by`, devices.last_seen AS `last_seen`, devices.manufacturer AS `manufacturer`, devices.class AS `class`, devices.os_group AS `os_group`, devices.icon AS `icon`, devices.identification AS `identification`", false);
         $this->builder->join('devices', 'discovery_log.device_id = devices.id', 'left');
         $this->builder->where('discovery_log.discovery_id', intval($id));
         $this->builder->where('discovery_log.message LIKE', '% responding, %');
         foreach ($instance->resp->meta->filter as $filter) {
-            if ($filter->name === 'ip') {
+            if ($filter->name === 'ip' or $filter->name === 'discovery_log.ip') {
                 $this->builder->where('(discovery_log.ip LIKE ' . $this->db->escape($filter->value) . ' OR devices.type LIKE ' . $this->db->escape($filter->value) . ')');
             }
-            if ($filter->name === 'name') {
+            if ($filter->name === 'name' or $filter->name === 'devices.name') {
                 $this->builder->where('(devices.name LIKE ' . $this->db->escape($filter->value) . ' OR devices.domain LIKE ' . $this->db->escape($filter->value) . ')');
             }
-            if ($filter->name === 'message') {
+            if ($filter->name === 'message' or $filter->name === 'discovery_log.message') {
                 $this->builder->where('discovery_log.message LIKE ' . $this->db->escape($filter->value));
             }
             if ($filter->name === 'search') {
@@ -64,10 +63,14 @@ class DiscoveryLogModel extends BaseModel
             }
         }
         if (!empty($instance->resp->meta->sort)) {
-            if ($instance->resp->meta->sort === 'discovery_log.ip') {
-                $this->builder->orderBy('INET_ATON(discovery_log.ip)');
+            if (strpos($instance->resp->meta->sort, 'discovery_log.ip') !== false) {
+                if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+                    $this->builder->orderBy('INET_ATON(discovery_log.ip) DESC');
+                } else {
+                    $this->builder->orderBy('INET_ATON(discovery_log.ip)');
+                }
             } else {
-                $this->builder->orderBy($instance->resp->meta->sort);
+                $this->builder->orderBy($resp->meta->sort);
             }
         } else {
             $this->builder->orderBy('INET_ATON(discovery_log.ip)');
@@ -122,13 +125,13 @@ class DiscoveryLogModel extends BaseModel
         $offset = !empty($instance->resp->meta->offset) ? intval($instance->resp->meta->offset) : 0;
 
         foreach ($instance->resp->meta->filter as $filter) {
-            if ($filter->name === 'ip') {
+            if ($filter->name === 'discovery_log.ip' or $filter->name === 'ip') {
                 $this->builder->where('(discovery_log.ip LIKE ' . $this->db->escape($filter->value) . ' OR devices.type LIKE ' . $this->db->escape($filter->value) . ')');
             }
-            if ($filter->name === 'name') {
+            if ($filter->name === 'devices.name') {
                 $this->builder->where('(devices.name LIKE ' . $this->db->escape($filter->value) . ' OR devices.domain LIKE ' . $this->db->escape($filter->value) . ')');
             }
-            if ($filter->name === 'message') {
+            if ($filter->name === 'discovery_log.message' or $filter->name === 'message') {
                 $this->builder->where('discovery_log.message LIKE ' . $this->db->escape($filter->value));
             }
             if ($filter->name === 'search') {
@@ -142,12 +145,14 @@ class DiscoveryLogModel extends BaseModel
         $this->builder->where('discovery_log.device_id IS NOT NULL');
         $this->builder->groupBy('discovery_log.ip');
         if (!empty($instance->resp->meta->sort)) {
-            if ($instance->resp->meta->sort === 'discovery_log.ip asc') {
-                $this->builder->orderBy('INET_ATON(discovery_log.ip) asc');
-            } else if ($instance->resp->meta->sort === 'discovery_log.ip desc') {
-                $this->builder->orderBy('INET_ATON(discovery_log.ip) desc');
+            if (strpos($instance->resp->meta->sort, 'discovery_log.ip') !== false) {
+                if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+                    $this->builder->orderBy('INET_ATON(discovery_log.ip) DESC');
+                } else {
+                    $this->builder->orderBy('INET_ATON(discovery_log.ip)');
+                }
             } else {
-                $this->builder->orderBy($instance->resp->meta->sort);
+                $this->builder->orderBy($resp->meta->sort);
             }
         } else {
             $this->builder->orderBy('INET_ATON(discovery_log.ip)');
@@ -194,6 +199,9 @@ class DiscoveryLogModel extends BaseModel
         $this->builder->join('discoveries', 'discovery_log.discovery_id = discoveries.id', 'left');
 
         foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'search') {
+                continue;
+            }
             if ($filter->name === 'ip') {
                 $filter->name = 'discovery_log.ip';
             }
@@ -208,11 +216,15 @@ class DiscoveryLogModel extends BaseModel
                 $this->builder->where('(discovery_log.timestamp LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.ip LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.command_status LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.message LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.command LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.command_output LIKE ' . $this->db->escape($filter->value) . ')');
             }
         }
-        if (!empty($instance->resp->meta->sort)) {
-            if ($instance->resp->meta->sort === 'discovery_log.ip' or $instance->resp->meta->sort === 'ip') {
-                $this->builder->orderBy('INET_ATON(discovery_log.ip)');
+        if (!empty($resp->meta->sort)) {
+            if (strpos($resp->meta->sort, 'discovery_log.ip') !== false or strpos($resp->meta->sort, 'ip') !== false) {
+                if (strpos($resp->meta->sort, ' DESC') === false) {
+                    $this->builder->orderBy('INET_ATON(discovery_log.ip) DESC');
+                } else {
+                    $this->builder->orderBy('INET_ATON(discovery_log.ip)');
+                }
             } else {
-                $this->builder->orderBy($instance->resp->meta->sort);
+                $this->builder->orderBy($resp->meta->sort);
             }
         } else {
             $this->builder->orderBy('INET_ATON(discovery_log.ip)');
