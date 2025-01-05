@@ -712,13 +712,14 @@ if (! function_exists('ssh_audit')) {
                         $password = $credential->credentials->sudo_password;
                     }
                     break;
-                } else {
-                    $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
-                    $log->command_status = 'notice';
-                    $discoveryLogModel->create($log);
-                    $ssh->disconnect();
-                    unset($ssh);
                 }
+                // else {
+                //     $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
+                //     $log->command_status = 'notice';
+                //     $discoveryLogModel->create($log);
+                //     $ssh->disconnect();
+                //     unset($ssh);
+                // }
             } elseif ($credential->type === 'ssh') {
                 log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
                 // NOTE - Use @ below because some devices cause "Error reading from socket" and halt this process
@@ -741,12 +742,13 @@ if (! function_exists('ssh_audit')) {
                     $username = $credential->credentials->username;
                     $password = (!empty($credential->credentials->password)) ? $credential->credentials->password : '';
                     break;
-                } else {
-                    $log->message = "Credential set for SSH named {$credential->name} not working on {$ip}.";
-                    $log->command_status = 'notice';
-                    $discoveryLogModel->create($log);
-                    unset($ssh);
                 }
+                // else {
+                //     $log->message = "Credential set for SSH named {$credential->name} not working on {$ip}.";
+                //     $log->command_status = 'notice';
+                //     $discoveryLogModel->create($log);
+                //     unset($ssh);
+                // }
             }
         }
 
