@@ -18,6 +18,7 @@ include 'shared/collection_functions.php';
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
                             <?= read_field('password', '', $dictionary->columns->password, $update, '', '', '', 'password') ?>
                             <?= read_field('email', $resource->email, $dictionary->columns->email, $update) ?>
+                            <?= read_field('devices_default_display_columns', $resource->devices_default_display_columns, $dictionary->columns->devices_default_display_columns, $update) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
