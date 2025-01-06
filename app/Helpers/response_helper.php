@@ -73,8 +73,6 @@ if (!function_exists('response_create')) {
         if ($response->meta->request_method === 'CLI') {
             // Check if we've been passed a format on the CLI
             $getPath = $uri->getPath();
-            log_message('debug', gettype($getPath));
-            log_message('debug', json_encode($getPath));
             if (!empty($getPath)) {
                 foreach ($getPath as $segment) {
                     if (strpos($segment, 'format=') !== false) {
@@ -687,9 +685,10 @@ if (!function_exists('response_get_query_filter')) {
         }
 
         $dataTables = false;
-        if (!empty($query_string) and strpos($query_string, '&dataTables=true') !== false) {
+        if (!empty($query_string) and strpos($query_string, 'dataTables=true') !== false) {
             $dataTables = true;
             $query_string = str_replace('&dataTables=true', '', $query_string);
+            $query_string = str_replace('dataTables=true', '', $query_string);
         }
 
         if (!empty($query_string)) {
