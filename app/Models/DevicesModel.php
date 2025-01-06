@@ -1057,6 +1057,7 @@ class DevicesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
+        $dictionary->attributes->collection = explode(',', $instance->config->devices_default_display_columns);
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
