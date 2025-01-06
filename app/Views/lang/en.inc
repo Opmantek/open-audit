@@ -1233,6 +1233,7 @@ $GLOBALS["lang"]["not in"]="not in";
 $GLOBALS["lang"]["Not In"]="Not In";
 $GLOBALS["lang"]["not like"]="not like";
 $GLOBALS["lang"]["Not Like"]="Not Like";
+$GLOBALS["lang"]["Not Set"]="Not Set";
 $GLOBALS["lang"]["November"]="November";
 $GLOBALS["lang"]["Nursing Home"]="Nursing Home";
 $GLOBALS["lang"]["Oae Manage"]="Oae Manage";
