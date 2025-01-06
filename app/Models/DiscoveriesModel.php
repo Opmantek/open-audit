@@ -959,16 +959,16 @@ class DiscoveriesModel extends BaseModel
                 log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             }
         }
-        if (empty($result[0]->match_options)) {
-            $result[0]->match_options = new \stdClass();
-        }
-        if (is_string($result[0]->match_options)) {
-            try {
-                $result[0]->match_options = json_decode($result[0]->match_options, false, 512, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-            }
-        }
+        // if (empty($result[0]->match_options)) {
+        //     $result[0]->match_options = new \stdClass();
+        // }
+        // if (is_string($result[0]->match_options)) {
+        //     try {
+        //         $result[0]->match_options = json_decode($result[0]->match_options, false, 512, JSON_THROW_ON_ERROR);
+        //     } catch (\JsonException $e) {
+        //         log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+        //     }
+        // }
         if (!isset($result[0]->scan_options->id) or !is_numeric($result[0]->scan_options->id)) {
             if (!empty($instance->config->discovery_default_scan_option)) {
                 $result[0]->scan_options->id = intval($instance->config->discovery_default_scan_option);
@@ -1028,7 +1028,7 @@ class DiscoveriesModel extends BaseModel
         }
         foreach (config('Openaudit') as $key => $value) {
             if (strpos($key, 'match_') !== false) {
-                if (empty($result[0]->match_options->{$key}) && ! empty(config('Openaudit')->{$key})) {
+                if (empty($result[0]->match_options->{$key}) && !empty(config('Openaudit')->{$key})) {
                     $result[0]->match_options->{$key} = config('Openaudit')->{$key};
                 }
             }
@@ -1433,14 +1433,14 @@ class DiscoveriesModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT Enterprise discovers every device on your network.';
 
-        $dictionary->about = '<p>Discoveries are at the very heart of what Open-AudIT does.<br /><br />How else would you know "What is on my network?"<br /><br />Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Discoveries are at the very heart of what Open-AudIT does.<br /><br />How else would you know "What is on my network?"<br /><br />Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />For more detailed information, check the Open-AudIT <a href="' . url_to('discoveriesHelp') . '">Knowledge Base</a>.<br /><br /></p>';
 
         $dictionary->notes = '<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br /><br /><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br /><br />If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br /><br /></p>';
 
         $dictionary->product = 'community';
-        $dictionary->columns->id = $instance->dictionary->id;
-        $dictionary->columns->name = $instance->dictionary->name;
-        $dictionary->columns->org_id = $instance->dictionary->org_id;
+        $dictionary->columns->id = @$instance->dictionary->id;
+        $dictionary->columns->name = @$instance->dictionary->name;
+        $dictionary->columns->org_id = @$instance->dictionary->org_id;
         $dictionary->columns->description = 'This description is auto-populated and should ideally be left as-is.';
         $dictionary->columns->ad_domain = 'The Active Directory domain to retrieve a list of subnets from.';
         $dictionary->columns->ad_server = 'The Active Directory server to retrieve a list of subnets from.';
@@ -1473,8 +1473,8 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns->status = 'The current status of the discovery.';
         $dictionary->columns->subnet = 'The network subnet to execute the discovery on.';
         $dictionary->columns->type = "Supported types are 'subnet', 'seed' and 'active directory'.";
-        $dictionary->columns->edited_by = $instance->dictionary->edited_by;
-        $dictionary->columns->edited_date = $instance->dictionary->edited_date;
+        $dictionary->columns->edited_by = @$instance->dictionary->edited_by;
+        $dictionary->columns->edited_date = @$instance->dictionary->edited_date;
 
         $dictionary->columns->match_dbus = 'Should we match a device based on its dbus id.';
         $dictionary->columns->match_fqdn = 'Should we match a device based on its fqdn.';
