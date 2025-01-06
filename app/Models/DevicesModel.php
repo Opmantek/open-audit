@@ -211,6 +211,12 @@ class DevicesModel extends BaseModel
             }
             unset($name);
         }
+        if (empty($data->name) and !empty($data->ip)) {
+            $data->name = $data->ip;
+        }
+        if (empty($data->name)) {
+            $data->name = 'name unknown';
+        }
         if (empty($data->org_id)) {
             $data->org_id = 1;
         }
