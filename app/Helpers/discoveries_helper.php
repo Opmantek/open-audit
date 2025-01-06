@@ -2385,14 +2385,13 @@ if (! function_exists('discover_ad')) {
         // Stored credential sets
         $credentials = $instance->credentialsModel->listUser([], explode(',', $orgs));
         // get the list of subnets from AD
-        // TODO - make the below able to use LDAPS as well as LDAP
-        $ldapuri = 'ldap://' . $discovery->ad_server;
-        $error_reporting = error_reporting();
-        error_reporting(0);
+        if (strpos($discovery->ad_server, 'ldap') !== 0) {
+            $ldapuri = 'ldap://' . $discovery->ad_server;
+        } else {
+            $ldapuri = $discovery->ad_server;
+        }
         $ldapconn = @ldap_connect($ldapuri);
-        error_reporting($error_reporting);
-        unset($error_reporting);
-        if (! $ldapconn) {
+        if (!$ldapconn) {
             // log the failed attempt to connect to AD
             $log->severity = 4;
             $log->details = 'Could not connect to AD ' . $discovery->ad_domain . ' at ' . $discovery->ad_server;
@@ -2406,35 +2405,48 @@ if (! function_exists('discover_ad')) {
         $bind = false;
         foreach ($credentials as $credential) {
             if ($credential->attributes->type === 'windows') {
-                if ($bind = @ldap_bind($ldapconn, $credential->attributes->credentials->username, $credential->attributes->credentials->password)) {
-                    $log->severity = 7;
-                    $log->message = 'Successful bind to AD using ' . $credential->attributes->name;
-                    $log->command_status = 'success';
-                    $discoveryLogModel->create($log);
-                    $base_dn = 'CN=Subnets,CN=Sites,CN=Configuration,dc=' . implode(', dc=', explode('.', $discovery->ad_domain));
-                    $filter = '(&(objectclass=*))';
-                    $justthese = array('distinguishedName', 'name', 'siteobject');
-                    $search_result = ldap_search($ldapconn, $base_dn, $filter, $justthese);
-                    $info = ldap_get_entries($ldapconn, $search_result);
-                    if (empty($info)) {
-                        $log->message = 'Could not Retrieve subnets from ' . $discovery->ad_domain . ' on ' . $discovery->ad_server . ' using ' . $credential->attributes->name;
-                        $log->severity = 6;
-                        $log->command_output = '';
-                        $log->command_status = 'fail';
-                        $discoveryLogModel->create($log);
-                    } else {
-                        $log->severity = 7;
-                        $log->message = 'Retrieved subnets from ' . $discovery->ad_domain . ' on ' . $discovery->ad_server;
-                        $log->command_status = 'success';
-                        $discoveryLogModel->create($log);
-                        break;
-                    }
-                } else {
+                if (!empty($credential->attributes->credentials) and is_string($credential->attributes->credentials)) {
+                    $credential->attributes->credentials = json_decode(simpleDecrypt($credential->attributes->credentials, config('Encryption')->key));
+                }
+                try {
+                    $bind = ldap_bind($ldapconn, $credential->attributes->credentials->username, $credential->attributes->credentials->password);
+                } catch (Exception $e) {
                     $log->severity = 7;
                     $log->message = 'Could not bind to AD using ' . $credential->attributes->name;
                     $log->command_status = 'warning';
                     $discoveryLogModel->create($log);
                     $bind = false;
+                    continue;
+                }
+                $log->severity = 7;
+                $log->message = 'Successful bind to AD using ' . $credential->attributes->name;
+                $log->command_status = 'success';
+                $discoveryLogModel->create($log);
+                $base_dn = 'CN=Subnets,CN=Sites,CN=Configuration,dc=' . implode(', dc=', explode('.', $discovery->ad_domain));
+                $filter = '(&(objectclass=*))';
+                $justthese = array('distinguishedName', 'name', 'siteobject');
+                $search_result = @ldap_search($ldapconn, $base_dn, $filter, $justthese);
+                if (empty($search_result)) {
+                    $log->message = 'Could not perform ldap search ' . $discovery->ad_domain . ' on ' . $discovery->ad_server . ' using ' . $credential->attributes->name;
+                    $log->severity = 6;
+                    $log->command_output = '';
+                    $log->command_status = 'fail';
+                    $discoveryLogModel->create($log);
+                    continue;
+                }
+                $info = ldap_get_entries($ldapconn, $search_result);
+                if (empty($info)) {
+                    $log->message = 'Could not Retrieve subnets from ' . $discovery->ad_domain . ' on ' . $discovery->ad_server . ' using ' . $credential->attributes->name;
+                    $log->severity = 6;
+                    $log->command_output = '';
+                    $log->command_status = 'fail';
+                    $discoveryLogModel->create($log);
+                } else {
+                    $log->severity = 7;
+                    $log->message = 'Retrieved subnets from ' . $discovery->ad_domain . ' on ' . $discovery->ad_server;
+                    $log->command_status = 'success';
+                    $discoveryLogModel->create($log);
+                    break;
                 }
             }
         }
