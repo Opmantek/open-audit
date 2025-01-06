@@ -1564,6 +1564,7 @@ $GLOBALS["lang"]["Scsi Port"]="Scsi Port";
 $GLOBALS["lang"]["Search"]="Search";
 $GLOBALS["lang"]["Search For a Device"]="Search For a Device";
 $GLOBALS["lang"]["Search for Device"]="Search for Device";
+$GLOBALS["lang"]["Searching Using DataTables"]="Searching Using DataTables";
 $GLOBALS["lang"]["Secondary"]="Secondary";
 $GLOBALS["lang"]["Secondary Text"]="Secondary Text";
 $GLOBALS["lang"]["seconds"]="seconds";

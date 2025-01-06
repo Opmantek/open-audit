@@ -126,6 +126,7 @@ class DevicesModel extends BaseModel
                     $result[$i]->audit_class = 'fa fa-question text-danger';
                     $result[$i]->audit_text = 'Limited information available.';
                 }
+                $result[$i]->audit_status = '<span class="' . $result[$i]->audit_class . '" title="' . $result[$i]->audit_text . '"></span>';
             }
         }
 
