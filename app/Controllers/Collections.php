@@ -119,6 +119,10 @@ class Collections extends BaseController
         }
 
         if ($this->resp->meta->format !== 'html') {
+            if ($this->resp->meta->collection === 'devices') {
+                $this->resp->recordsTotal = count($this->resp->data);
+                $this->resp->recordsFiltered = $this->config->device_count;
+            }
             output($this);
             return;
         }
@@ -147,7 +151,7 @@ class Collections extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view($view, ['data' => filter_response($this->resp->data), 'included' => filter_response($this->resp->included)])
+            view($view, ['data' => filter_response($this->resp->data), 'included' => filter_response($this->resp->included), 'dictionary' => $dictionary])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         return true;
     }
