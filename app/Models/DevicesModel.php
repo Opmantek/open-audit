@@ -27,6 +27,16 @@ class DevicesModel extends BaseModel
     public function collection(object $resp): array
     {
         $instance = & get_instance();
+        if (!empty($instance->config->license_limit) and $instance->config->device_known > intval($instance->config->license_limit * 1.1)) {
+            log_message('warning', 'Restricting Devices to the first ' . $instance->config->license_limit . ' devices as per license. There are actually ' . $instance->config->device_known . ' licensed devices in the database.');
+            $resp->warning = 'Restricting Devices to the first ' . $instance->config->license_limit . ' devices as per license. There are actually ' . $instance->config->device_known . ' licensed devices in the database.';
+
+            $subquery = $this->db->table('devices');
+            $subquery->orderBy('devices.id');
+            $subquery->limit($instance->config->license_limit);
+            $this->builder = $this->db->newQuery()->fromSubquery($subquery, 'devices');
+        }
+
         $properties = $resp->meta->properties;
         $count = count($properties);
         for ($i = 0; $i < $count; $i++) {
@@ -60,23 +70,29 @@ class DevicesModel extends BaseModel
                 $joined_tables[] = $joined_table[0];
             }
         }
-        // log_message('debug', json_encode($joined_tables));
         $joined_tables = array_unique($joined_tables);
         if (!empty($joined_tables)) {
             foreach ($joined_tables as $joined_table) {
                 $this->builder->join($joined_table, "devices.id = $joined_table.device_id", 'left');
             }
         }
-        $this->builder->orderBy('mycount');
-        $this->builder->orderBy($resp->meta->sort);
-        // if (!empty($instance->config->license_limit) and $resp->meta->limit > $instance->config->license_limit) {
-        //     $resp->meta->limit = $instance->config->license_limit;
-        //     log_message('warning', 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.');
-        //     $_SESSION['warning'] = 'Restricting Devices to ' . $instance->config->license_limit . ' items as per license. There are actually ' . $instance->config->device_count . ' devices in the database.';
-        // }
+        if (!empty($instance->resp->meta->sort)) {
+            if (strpos($instance->resp->meta->sort, 'devices.ip') !== false) {
+                if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+                    $this->builder->orderBy('INET_ATON(devices.ip) DESC');
+                } else {
+                    $this->builder->orderBy('INET_ATON(devices.ip)');
+                }
+            } else {
+                $this->builder->orderBy($resp->meta->sort);
+            }
+        } else {
+            $this->builder->orderBy('devices.id');
+        }
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
+
+        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
         $query = $this->builder->get();
-        # log_message('info', (string)str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }
@@ -213,7 +229,7 @@ class DevicesModel extends BaseModel
             unset($name);
         }
         if (empty($data->name) and !empty($data->ip)) {
-            $data->name = $data->ip;
+            $data->name = ip_address_from_db($data->ip);
         }
         if (empty($data->name)) {
             $data->name = 'name unknown';
