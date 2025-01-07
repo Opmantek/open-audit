@@ -335,11 +335,9 @@ window.onload = function () {
                 },
                 top2Start: {
                     buttons: [
-                        //'copy', 'excel', 'pdf', 'csv', 'print'
                         { extend: 'copy', className: 'btn btn-light mb-2', text: 'Copy' },
                         { extend: 'csv', className: 'btn btn-light mb-2', text: 'CSV' },
                         { extend: 'excel', className: 'btn btn-light mb-2', text: 'Excel' },
-                        { extend: 'pdf', className: 'btn btn-light mb-2', text: 'PDF' },
                         { extend: 'print', className: 'btn btn-light mb-2', text: 'Print' }
                     ]
                 },
@@ -418,6 +416,8 @@ window.onload = function () {
                 ?>
             ],
         });
+
+        $('.dataTableSearchField').on('click', function(e) { e.stopPropagation() });
 
         $(".dataTableSearchField").on("keypress", function (evtObj) {
             // console.log(evtObj.keyCode);

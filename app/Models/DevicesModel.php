@@ -55,6 +55,18 @@ class DevicesModel extends BaseModel
         $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
         $joined_tables = array();
         foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'search') {
+                $this->builder->where('(devices.name LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.domain LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.ip LIKE ' . $this->db->escape(ip_address_to_db($filter->value)) .
+                    ' OR devices.type LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.model LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.manufacturer LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.os_family LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.os_name LIKE ' . $this->db->escape($filter->value) .
+                    ')');
+                continue;
+            }
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 if ($filter->name === 'devices.tags' and $filter->operator === '=') {
                     $filter->function = 'like';

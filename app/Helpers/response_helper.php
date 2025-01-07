@@ -806,7 +806,7 @@ if (!function_exists('response_get_query_filter')) {
                     $filter[] = $query;
                 }
 
-                if ($query->name === 'search' and strpos($query_string, 'discovery_log') !== false) {
+                if ($query->name === 'search' and $dataTables === true) {
                     $filter[] = $query;
                 }
 
