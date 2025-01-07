@@ -747,7 +747,7 @@ foreach ($config->modules as $module) {
         <div aria-live="polite" aria-atomic="true" class="position-relative">
             <div class="toast-container top-0 end-0 p-3">
                 <div class="toast toast-ent" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastEnterprise">
-                    <div class="toast-header" style="background-color: var(--bs-success-bg-subtle); --bs-border-color: var(--bs-primary-border-subtle); color: var(--bs-success-text);">
+                    <div class="toast-header">
                         <strong class="me-auto">Enterprise Feature</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
@@ -756,7 +756,7 @@ foreach ($config->modules as $module) {
                     </div>
                 </div>
                 <div class="toast toast-pro" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastProfessional">
-                    <div class="toast-header" style="background-color: var(--bs-primary-border-subtle); color: var(--bs-primary-text);">
+                    <div class="toast-header">
                         <strong class="me-auto">Professional Feature</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
@@ -765,7 +765,7 @@ foreach ($config->modules as $module) {
                     </div>
                 </div>
                 <div class="toast toast-perm" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastPermission">
-                    <div class="toast-header" style="background-color: var(--bs-danger-bg-subtle); --bs-border-color: var(--bs-danger-border-subtle); color: var(--bs-danger-text);">
+                    <div class="toast-header">
                         <strong class="me-auto">Not Authorized</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
@@ -774,7 +774,7 @@ foreach ($config->modules as $module) {
                     </div>
                 </div>
                 <div class="toast toast-success" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastSuccess">
-                    <div class="toast-header" style="background-color: var(--bs-success-bg-subtle); --bs-border-color: var(--bs-success-border-subtle); color: var(--bs-success-text);">
+                    <div class="toast-header">
                         <strong id="liveToastSuccess-header" class="me-auto"></strong>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>
@@ -782,7 +782,7 @@ foreach ($config->modules as $module) {
                     </div>
                 </div>
                 <div class="toast toast-failure" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastFailure">
-                    <div class="toast-header" style="background-color: var(--bs-danger-bg-subtle); --bs-border-color: var(--bs-danger-border-subtle); color: var(--bs-danger-text);">
+                    <div class="toast-header">
                         <strong id="liveToastFailure-header" class="me-auto"></strong>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
                     </div>

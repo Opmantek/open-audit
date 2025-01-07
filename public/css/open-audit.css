@@ -621,11 +621,44 @@ table.dataTable > thead .sorting_desc_disabled::after
   100% {background-color: rgba(237, 85, 101, 1)}
 }
 
+.toast-ent .toast-header {
+    background-color: var(--bs-success-bg-subtle);
+    --bs-border-color: var(--bs-primary-border-subtle);
+    color: var(--bs-success-text);
+}
+
+.toast-pro .toast-header {
+    background-color: var(--bs-primary-border-subtle);
+    color: var(--bs-primary-text);
+}
+
+.toast-perm .toast-header {
+    background-color: var(--bs-danger-bg-subtle);
+    --bs-border-color: var(--bs-danger-border-subtle);
+    color: var(--bs-danger-text);
+}
+
+.toast-success .toast-header {
+    background-color: var(--bs-success-bg-subtle);
+    --bs-border-color: var(--bs-success-border-subtle);
+    color: var(--bs-success-text);
+}
+
+.toast-failure .toast-header {
+    background-color: var(--bs-danger-bg-subtle);
+    --bs-border-color: var(--bs-danger-border-subtle);
+    color: var(--bs-danger-text);
+}
+
 
 @media (prefers-color-scheme: dark) {
     .nav-link
     {
         color: #fff;
+    }
+
+    .toast-body {
+        background: #ddd;
     }
 
     .table > :not(caption) > * > * {
