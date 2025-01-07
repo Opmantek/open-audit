@@ -192,7 +192,7 @@ if (!function_exists('response_create')) {
         $response->meta->user = $instance->user->name;
 
         // We need to do some field conversion for requests coming from dataTables
-        if (!empty($_GET['columns']) and gettype($_GET['columns']) === 'array') {
+        if (!empty($_GET['draw'])) {
             $get = $_GET;
             unset($_GET);
             $_GET = array();

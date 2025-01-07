@@ -156,7 +156,7 @@ class OpenAudit extends BaseConfig
     public string $homepage = 'summaries';
     public int $internal_version;
     public string $license;
-    public string $license_eula;
+    // public string $license_eula;
     public string $license_footer;
     public int $license_limit;
     public string $license_string;

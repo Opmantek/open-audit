@@ -10,7 +10,6 @@ for ($i = 0; $i < count($columns); $i++) {
     $columns[$i] = str_replace('devices.', '', $columns[$i]);
     if ($columns[$i] === 'name') {
         $sort_column_index = $i;
-        log_message('debug', 'Setting col index to ' . $sort_column_index);
     }
 }
 
@@ -320,6 +319,10 @@ window.onload = function () {
                             logSort.direction = 'asc';
                         }
                     }
+                    delete d.start;
+                    delete d.length;
+                    delete d.order;
+                    delete d.columns;
                 }
             },
             autoWidth: false,
