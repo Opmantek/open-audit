@@ -1413,6 +1413,10 @@ if (!function_exists('response_get_properties')) {
                 $summary = "Set properties according to GET JSON.";
                 $properties = implode(',', $temp);
             }
+            if ($collection === 'devices' and $action === 'collection') {
+                // Special case this and populate the users columns so they'll apply on the devicesCollection template
+                $user->devices_default_display_columns = $properties;
+            }
         }
         if (!empty($post)) {
             $properties = $post;

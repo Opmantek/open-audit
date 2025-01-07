@@ -57,8 +57,12 @@ class DevicesModel extends BaseModel
         foreach ($resp->meta->filter as $filter) {
             if ($filter->name === 'search') {
                 $this->builder->where('(devices.name LIKE ' . $this->db->escape($filter->value) .
-                    ' OR devices.domain LIKE ' . $this->db->escape($filter->value) .
                     ' OR devices.ip LIKE ' . $this->db->escape(ip_address_to_db($filter->value)) .
+                    ' OR devices.hostname LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.domain LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.dns_hostname LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.dns_domain LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.sysName LIKE ' . $this->db->escape($filter->value) .
                     ' OR devices.type LIKE ' . $this->db->escape($filter->value) .
                     ' OR devices.model LIKE ' . $this->db->escape($filter->value) .
                     ' OR devices.manufacturer LIKE ' . $this->db->escape($filter->value) .

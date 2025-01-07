@@ -5,13 +5,14 @@ include 'shared/collection_functions.php';
 $instance = & get_instance();
 
 $columns = array();
-if (!empty($meta->properties)) {
-    $columns = $meta->properties;
-}
-if (empty($columns) and !empty($user->devices_default_display_columns)) {
-    $columns = explode(',', $user->devices_default_display_columns);
+if (!empty($user->devices_default_display_columns)) {
+    if (is_string($user->devices_default_display_columns)) {
+        $user->devices_default_display_columns = explode(',', $user->devices_default_display_columns);
+    }
+    $columns = $user->devices_default_display_columns;
 }
 if (empty($columns) and !empty($dictionary->attributes->collection)) {
+    // NOTE - this is populated in devicesModel from instance->config->devices_default_display_columns
     $columns = $dictionary->attributes->collection;
 }
 
@@ -427,15 +428,17 @@ window.onload = function () {
             ],
         });
 
+        /* This stops the sort when clicking in a search text box in the table header */
         $('.dataTableSearchField').on('click', function(e) { e.stopPropagation() });
 
+        /* And don't automatically send the result - wait for the user to press <enter> / <return> */
         $(".dataTableSearchField").on("keypress", function (evtObj) {
-            // console.log(evtObj.keyCode);
             if (evtObj.keyCode == 13) {
                 myDataTable.ajax.reload();
             }
         });
 
+        /* Show a warning above the table if it's in the JSON response */
         myDataTable.on('xhr', function (e, settings, json) {
             if (json.warning) {
                 $("#notice").show();
