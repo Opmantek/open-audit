@@ -3,8 +3,18 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
 $instance = & get_instance();
+
 $columns = array();
-$columns = (!empty($user->devices_default_display_columns)) ? explode(',', $user->devices_default_display_columns) : $dictionary->attributes->collection;
+if (!empty($meta->properties)) {
+    $columns = $meta->properties;
+}
+if (empty($columns) and !empty($user->devices_default_display_columns)) {
+    $columns = explode(',', $user->devices_default_display_columns);
+}
+if (empty($columns) and !empty($dictionary->attributes->collection)) {
+    $columns = $dictionary->attributes->collection;
+}
+
 $sort_column_index = 4;
 for ($i = 0; $i < count($columns); $i++) {
     $columns[$i] = str_replace('devices.', '', $columns[$i]);
