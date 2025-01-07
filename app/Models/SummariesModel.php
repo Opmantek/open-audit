@@ -104,6 +104,11 @@ class SummariesModel extends BaseModel
         } else {
             $org_id = 'org_id';
         }
+        if (!$this->db->fieldExists($dashboard[0]->column, $dashboard[0]->table)) {
+            log_message('error', 'The field \'' . $dashboard[0]->column . '\' does not exist in the \'' . $dashboard[0]->table . '\' database table. Not attempting to run summary \'' . $dashboard[0]->name . '\'.');
+            $_SESSION['warning'] = 'The field \'' . $dashboard[0]->column . '\' does not exist in the \'' . $dashboard[0]->table . '\' database table. Not attempting to run summary \'' . $dashboard[0]->name . '\'.';
+            return array();
+        }
         $tables = ' field audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
         if (stripos($tables, $dashboard[0]->table) !== false) {
             $sql = "SELECT " . $dashboard[0]->id . " AS `id`, COUNT(*) AS `count`, " . $dashboard[0]->table . "." . $dashboard[0]->column . " AS `name` FROM devices LEFT JOIN `" . $dashboard[0]->table . "` ON (devices.id = " . $dashboard[0]->table . ".device_id and " . $dashboard[0]->table . ".current = 'y') WHERE " . $dashboard[0]->table . "." . $dashboard[0]->column . " IS NOT NULL AND " . $dashboard[0]->table . "." . $dashboard[0]->column . " != '' AND devices.org_id IN (" . $instance->user->org_list . ") GROUP BY " . $dashboard[0]->table . "." . $dashboard[0]->column;
