@@ -717,6 +717,10 @@ window.onload = function () {
             }
         });
 
+        /* This stops the sort when clicking in a search text box in the table header */
+        $('.dataTablesearchField').on('click', function(e) { e.stopPropagation() });
+
+        /* And don't automatically send the result - wait for the user to press <enter> / <return> */
         $(".dataTablesearchField").on("keypress", function (evtObj) {
             // console.log(evtObj.keyCode);
             if (evtObj.keyCode == 13) {
@@ -878,6 +882,10 @@ window.onload = function () {
             }
         });
 
+        /* This stops the sort when clicking in a search text box in the table header */
+        $('.dataTablesearchFieldIP').on('click', function(e) { e.stopPropagation() });
+
+        /* And don't automatically send the result - wait for the user to press <enter> / <return> */
         $(".dataTablesearchFieldIP").on("keypress", function (evtObj) {
             if (evtObj.keyCode == 13) {
                 myDataTableIP.ajax.reload();
@@ -1041,6 +1049,10 @@ window.onload = function () {
             }
         });
 
+        /* This stops the sort when clicking in a search text box in the table header */
+        $('.dataTablesearchFieldDev').on('click', function(e) { e.stopPropagation() });
+
+        /* And don't automatically send the result - wait for the user to press <enter> / <return> */
         $(".dataTablesearchFieldDev").on("keypress", function (evtObj) {
             console.log(evtObj.keyCode);
             if (evtObj.keyCode == 13) {
