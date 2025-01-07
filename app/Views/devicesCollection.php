@@ -30,6 +30,12 @@ if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
 }
 ?>
        <main class="container-fluid">
+
+            <div id="notice" class="container-fluid" style="display:none;">
+                <div id="alert" class="alert alert-warning alert-dismissible fade show" role="alert">
+                </div>
+            </div>
+
             <?php if (!empty($config->license) and $config->license !== 'none') { ?>
             <div class="card">
                 <div class="card-header" style="height:57px;">
@@ -336,7 +342,7 @@ window.onload = function () {
                 },
                 top2End: {
                     div: {
-                        html: "<a href=\"<?= url_to('helpFAQ') ?>?name=Searching Using DataTables\" type=\"button\" class=\"btn btn-light mb-2\">Searching Information</a>"
+                        html: "<a href=\"<?= url_to('helpFAQ') ?>?name=Searching Using DataTables\" type=\"button\" class=\"btn btn-light mb-2\">HowTo Search</a>"
                     }
                 }
             },
@@ -417,8 +423,21 @@ window.onload = function () {
             }
         });
 
+        myDataTable.on('xhr', function (e, settings, json) {
+            if (json.warning) {
+                $("#notice").show();
+                $("#alert").html(json.warning + '<button id="button" type="button" class="btn-close" aria-label="Close"></button>');
+                $("#alert").show();
+            } else {
+                $("#alert").hide();
+            }
+        });
+        $(document).on('click', '#button', function() {
+            $(this).parent().hide();
+        });
+
         /* Delete links */
-        $('.delete_link').click(function (e) {
+        $(document).on("click", ".delete_link", function () {
             if (confirm("Are you sure?\nThis will permanently DELETE this entry for devices.") !== true) {
                 return;
             }
