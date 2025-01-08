@@ -13,7 +13,7 @@ include 'shared/read_functions.php';
                         <div class="col-6">
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
+                            <?= read_field('description', html_entity_decode($resource->description), $dictionary->columns->description, $update) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">

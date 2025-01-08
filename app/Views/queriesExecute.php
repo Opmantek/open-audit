@@ -3,6 +3,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
 include 'shared/read_functions.php';
+$allCollections = new \Config\Collections();
+$collections = array();
+foreach ($allCollections as $collection => $value) {
+    $collections[] = $collection;
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -42,7 +47,11 @@ include 'shared/read_functions.php';
                                             echo collection_button_read('devices', $item->id);
                                         } elseif (strpos($key, '.id') !== false) {
                                             $temp = explode('.', $key);
-                                            echo collection_button_read($temp[0], $item->attributes->{$key});
+                                            if (in_array($temp[0], $collections)) {
+                                                echo collection_button_read($temp[0], $item->attributes->{$key});
+                                            } else {
+                                                echo "<td class=\"text-center\">" . $item->attributes->{$key} . "</td>\n";
+                                            }
                                         } elseif ($key === 'link') {
                                             echo "<td><a href=\"" . base_url() . 'index.php/' . $item->attributes->{$key} . "\" role=\"button\" class=\"btn btn-sm btn-primary\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></td>";
                                         } elseif ((strripos($key, 'ip') === strlen($key) - 2)) {
