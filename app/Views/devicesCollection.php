@@ -39,7 +39,7 @@ if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
     $columns_button = 'Columns';
 }
 
-$url = base_url() . '/devices?format=json';
+$url = base_url() . 'index.php/devices?format=json';
 foreach ($meta->filter as $filter) {
     if ($filter->name !== 'devices.org_id' and strpos($filter->name, 'devices.') !== false) {
         $url .= '&' . $filter->name . '=' . $filter->operator . $filter->value;
@@ -133,7 +133,7 @@ foreach ($meta->filter as $filter) {
                 </div>
                 <div class="card-body">
                     <br>
-                    <form action="<?= base_url() ?>devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
+                    <form action="<?= base_url() ?>index.php/devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
                         <div class="table-responsive">
                             <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDevices">
                                 <thead>
@@ -240,7 +240,7 @@ window.onload = function () {
             data = JSON.stringify(data);
             $.ajax({
                 type: "PATCH",
-                url: "<?= base_url() ?>users/<?= $user->id ?>",
+                url: "<?= base_url() ?>index.php/users/<?= $user->id ?>",
                 contentType: "application/json",
                 data: {data : data},
                 success: function (data) {
@@ -372,7 +372,7 @@ window.onload = function () {
                     if ($key === 'id') {
                         echo '{ data: \'attributes.id\',
                             render: function (data, type, row, meta) {
-                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'devices/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/devices/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
                             }
                         },';
                         echo "\n";

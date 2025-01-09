@@ -59,7 +59,7 @@ window.onload = function () {
             searching: true,
             serverSide: true,
             ajax: {
-                url: '<?= base_url() ?>discovery_log?format=dataTables',
+                url: '<?= base_url() ?>index.php/discovery_log?format=dataTables',
                 dataSrc: 'data',
                 data: function (d) {
                     d.limit = d.length;
@@ -71,8 +71,6 @@ window.onload = function () {
 <?php } ?>
                     if (d.order[0]) {
                         if (d.columns[d.order[0].column].data == 'attributes.id') {
-                            // d.sort = 'discovery_log.id ' + d.order[0].dir;
-                            logSort.column = 'discovery_log.id';
                             logSort.direction = d.order[0].dir;
                             if (d.order[0].dir == 'asc') {
                                 d.sort = 'discovery_log.id';
@@ -81,7 +79,6 @@ window.onload = function () {
                             }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.timestamp') {
-                            // d.sort = 'discovery_log.timestamp ' + d.order[0].dir;
                             logSort.column = 'discovery_log.timestamp';
                             logSort.direction = d.order[0].dir;
                             if (d.order[0].dir == 'asc') {
@@ -91,7 +88,6 @@ window.onload = function () {
                             }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.ip') {
-                            // d.sort = 'discovery_log.ip ' + d.order[0].dir;
                             logSort.column = 'discovery_log.ip';
                             logSort.direction = d.order[0].dir;
                             if (d.order[0].dir == 'asc') {
@@ -101,7 +97,6 @@ window.onload = function () {
                             }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.command_status') {
-                            // d.sort = 'discovery_log.command_status ' + d.order[0].dir;
                             logSort.column = 'discovery_log.command_status';
                             logSort.direction = d.order[0].dir;
                             if (d.order[0].dir == 'asc') {
@@ -111,7 +106,6 @@ window.onload = function () {
                             }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.message') {
-                            // d.sort = 'discovery_log.message ' + d.order[0].dir;
                             logSort.column = 'discovery_log.message';
                             logSort.direction = d.order[0].dir;
                             if (d.order[0].dir == 'asc') {
@@ -122,22 +116,24 @@ window.onload = function () {
                         }
                     } else {
                         if (devSort.direction == 'asc') {
-                            // d.sort = devSort.column + ' desc';
                             d.sort = '-' + devSort.column;
                             devSort.direction = 'desc';
                         } else {
-                            // d.sort = devSort.column + ' asc';
                             d.sort = devSort.column;
                             devSort.direction = 'asc';
                         }
                     }
+                    delete d.start;
+                    delete d.length;
+                    delete d.order;
+                    delete d.columns;
                 }
             },
             autoWidth: false,
             columns: [
                 { data: 'attributes.view', 
                     render: function (data, type, row, meta) {
-                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
                     }
                 },
                 { data: 'attributes.id' },

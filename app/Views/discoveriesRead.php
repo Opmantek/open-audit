@@ -578,7 +578,7 @@ window.onload = function () {
             searching: true,
             serverSide: true,
             ajax: {
-                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&format=json',
+                url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&format=json',
                 dataSrc: 'data',
                 data: function (d) {
                     d.limit = d.length;
@@ -660,7 +660,7 @@ window.onload = function () {
             columns: [
                 { data: 'attributes.view', 
                     render: function (data, type, row, meta) {
-                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
                     }
                 },
                 { data: 'attributes.id' },
@@ -758,7 +758,7 @@ window.onload = function () {
             searching: true,
             serverSide: true,
             ajax: {
-                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=json',
+                url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=json',
                 dataSrc: 'data',
                 data: function (d) {
                     d.limit = d.length;
@@ -830,7 +830,7 @@ window.onload = function () {
             columns: [
                 { data: 'attributes.view', 
                     render: function (data, type, row, meta) {
-                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
                     }
                 },
                 { data: 'attributes.icon',
@@ -928,7 +928,7 @@ window.onload = function () {
             serverSide: true,
             devSort: {},
             ajax: {
-                url: '<?= base_url() ?>discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=json&limit=25',
+                url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=json&limit=25',
                 dataSrc: 'data',
                 data: function (d) {
                     d.limit = d.length;
@@ -1001,7 +1001,7 @@ window.onload = function () {
             columns: [
                 { data: 'attributes.view', 
                     render: function (data, type, row, meta) {
-                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>devices/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/devices/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
                     }
                 },
                 { data: 'attributes.icon',
