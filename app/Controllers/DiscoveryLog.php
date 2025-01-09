@@ -71,12 +71,12 @@ class DiscoveryLog extends BaseController
             if (!empty($id) and $this->resp->meta->groupby === 'discovery_log.device_id') {
                 $this->resp->recordsFiltered = $this->{strtolower($this->resp->meta->collection) . "Model"}->getByDeviceTotal($id);
                 if (!empty($this->config->product) and $this->config->product !== 'community') {
-                    if ($this->resp->meta->limit > $this->config->license_limit) {
+                    if (!empty($this->config->license_limit) and $this->resp->meta->limit > $this->config->license_limit and $this->resp->recordsFiltered > $this->config->license_limit) {
                         $this->resp->meta->limit = $this->config->license_limit;
-                        log_message('warning', "The are in " . intval($this->resp->recordsFiltered) . " devices in this discovery. This is greater than your license of " . intval($this->config->license_limit) . ". Limiting the resultset to " . intval($this->resp->meta->limit) . ' devices.');
-                        $this->resp->warning = "The are in " . intval($this->resp->recordsFiltered) . " devices in this discovery. This is greater than your license of " . intval($this->config->license_limit) . ". Limiting the resultset to " . intval($this->resp->meta->limit) . ' devices.';
+                        log_message('warning', "The are " . intval($this->resp->recordsFiltered) . " devices in this discovery. This is greater than your license of " . intval($this->config->license_limit) . ". Limiting the resultset to " . intval($this->resp->meta->limit) . ' devices.');
+                        $this->resp->warning = "The are " . intval($this->resp->recordsFiltered) . " devices in this discovery. This is greater than your license of " . intval($this->config->license_limit) . ". Limiting the resultset to " . intval($this->resp->meta->limit) . ' devices.';
                     }
-                    if (!empty($this->config->license_limit) and intval($this->resp->meta->limit + $this->resp->meta->offset) > intval($this->config->license_limit)) {
+                    if (!empty($this->config->license_limit) and intval($this->resp->meta->limit + $this->resp->meta->offset) > intval($this->config->license_limit) and $this->resp->recordsFiltered > $this->config->license_limit) {
                         $this->resp->meta->offset = intval($this->config->license_limit - $this->resp->meta->limit);
                         if ($this->resp->meta->offset < 0) {
                             $this->resp->meta->offset = 0;
