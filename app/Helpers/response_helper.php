@@ -191,36 +191,9 @@ if (!function_exists('response_create')) {
         $response->meta->sql = array();
         $response->meta->user = $instance->user->name;
 
-        // We need to do some field conversion for requests coming from dataTables
+        // Set the GLOBALS for use in response_get_query_filter when we detect dataTables
         if (!empty($_GET['draw'])) {
-            $get = $_GET;
-            unset($_GET);
-            $_GET = array();
-            $response->meta->format = 'json';
-            foreach ($get as $key => $value) {
-                if (strpos($key, '.') === false) {
-                    if ($response->meta->collection === 'discovery_log' and $key === 'status') {
-                        // Hack because GUI has a column heading of Status and we don't expect users to realise we actually show the command_status column
-                        $key = 'command_status';
-                    }
-                    if ($db->fieldExists($key, $response->meta->collection)) {
-                        $_GET[$response->meta->collection . '.' . $key] = $value;
-                    } else {
-                        if ($response->meta->collection === 'discovery_log' and $db->fieldExists($key, 'devices')) {
-                            $_GET['devices.' . $key] = $value;
-                        }
-                    }
-                }
-            }
-            if (!empty($get['search']['value'])) {
-                $_GET['search'] = $get['search']['value'];
-            }
-            $response->meta->query_string = '';
-            foreach ($_GET as $key => $value) {
-                $response->meta->query_string .= $key . '=' . $value . '&';
-            }
-            // Add the below for when we process the filter in response_get_query_filter
-            $response->meta->query_string .= 'dataTables=true';
+            $GLOBALS['collection'] = $response->meta->collection;
         }
 
         // Set the heading based on the collection
@@ -685,23 +658,54 @@ if (!function_exists('response_get_query_filter')) {
         }
 
         $dataTables = false;
-        if (!empty($query_string) and strpos($query_string, 'dataTables=true') !== false) {
+        if (!empty($GLOBALS['collection'])) {
             $dataTables = true;
-            $query_string = str_replace('&dataTables=true', '', $query_string);
-            $query_string = str_replace('dataTables=true', '', $query_string);
+            $collection = $GLOBALS['collection'];
+            $db = db_connect();
         }
 
         if (!empty($query_string)) {
             foreach (explode('&', $query_string) as $item) {
+                $name = substr($item, 0, strpos($item, '='));
+
                 if (empty($item)) {
                     continue;
                 }
+
+                if ($dataTables) {
+                    $value = str_replace($name . '=', '', $item);
+                    if ($value === '') {
+                        continue;
+                    }
+                    if (in_array($name, ['draw', '_', 'search[regex]']) or strpos($name, 'column') !== false) {
+                        continue;
+                    }
+                    if ($name === 'search[value]') {
+                        $name = 'search';
+                    }
+                    if ($collection === 'discovery_log' and ($name === 'status' or $name === 'discovery_log.status')) {
+                        // Hack because GUI has a column heading of Status and we don't expect users to realise we actually show the command_status column
+                        $name = 'discovery_log.command_status';
+                    }
+
+                    if (strpos($name, '.') === false and $name !== 'search') {
+                        if ($db->fieldExists($name, $collection)) {
+                            $name = $collection . '.' . $name;
+                        }
+                        if ($collection === 'discovery_log' and $db->fieldExists($name, 'devices')) {
+                            $name = 'devices.' . $name;
+                        }
+                    }
+                }
+
                 $query = new \StdClass();
-                $query->name = substr($item, 0, strpos($item, '='));
+                $query->name = $name;
                 $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $query->name);
                 $query->function = 'where';
                 $query->operator = '';
-                $query->value = str_replace($query->name . '=', '', $item);
+                $query->value = str_replace($name . '=', '', $item);
+                $query->value = (isset($value)) ? $value : $query->value;
+                unset($value);
 
                 if (strtolower(substr($query->value, 0, 8)) === 'not like') {
                     $query->value = substr($query->value, 8);
@@ -817,15 +821,19 @@ if (!function_exists('response_get_query_filter')) {
 
             if ($dataTables) {
                 foreach ($filter as $query) {
-                    if ($query->operator === '' and strpos($query->name, 'id') === false and gettype($query->value) === 'string') {
+                    if ($query->operator === '' and strpos($query->name, 'id') !== (strlen($query->name) - 2) and gettype($query->value) === 'string') {
                         // We default to a LIKE clause for dataTables filtering
                         // To use an EQUALS clause, specify =value in the search field,
                         // this will translate to column==value and hence be covered above
+                        // Additionally, if we have 'id' on the end of the name, skip this block and use the next block below to set =
                         if (strpos($query->value, '%') === false) {
                             $query->value = '%' . $query->value . '%';
                         }
                         $query->function = 'where';
                         $query->operator = 'like';
+                    }
+                    if ($query->operator === '' and strpos($query->name, 'id') === (strlen($query->name) - 2) and gettype($query->value) === 'string') {
+                        $query->operator = '=';
                     }
                 }
             }

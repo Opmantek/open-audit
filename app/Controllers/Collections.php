@@ -88,11 +88,11 @@ class Collections extends BaseController
             $this->resp->meta->filtered = count($this->resp->data);
         }
 
-        if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['warning'])) {
+        if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['warning']) and $this->resp->meta->format === 'html') {
             $_SESSION['success'] = 'Result limited to ' . $this->resp->meta->filtered . ' items as requested. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '.';
         }
 
-        if (strpos($this->resp->meta->query_string, 'limit=') === false and $this->resp->meta->filtered < $this->resp->meta->total and $this->resp->meta->filtered === $this->config->page_size) {
+        if (strpos($this->resp->meta->query_string, 'limit=') === false and $this->resp->meta->filtered < $this->resp->meta->total and $this->resp->meta->filtered === $this->config->page_size and $this->resp->meta->format === 'html') {
             $_SESSION['success'] = 'Result limited to ' . $this->config->page_size . ' items as per configuration. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '. You can change this in the configuration, <a href="' . url_to('configurationRead', 'page_size') . '">here</a>.';
         }
 

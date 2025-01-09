@@ -38,6 +38,13 @@ if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
 } else {
     $columns_button = 'Columns';
 }
+
+$url = base_url() . '/devices?format=json';
+foreach ($meta->filter as $filter) {
+    if ($filter->name !== 'devices.org_id' and strpos($filter->name, 'devices.') !== false) {
+        $url .= '&' . $filter->name . '=' . $filter->operator . $filter->value;
+    }
+}
 ?>
        <main class="container-fluid">
 
@@ -292,7 +299,7 @@ window.onload = function () {
             serverSide: true,
             // dom: '<"dt-top-container"<l><"dt-center-in-div"f><"dt-btn-container"B>r>tip',
             ajax: {
-                url: '<?= base_url() ?>devices?format=json',
+                url: '<?= $url ?>',
                 dataSrc: 'data',
                 data: function (d) {
                     d.limit = d.length;

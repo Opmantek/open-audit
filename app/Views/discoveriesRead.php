@@ -650,6 +650,10 @@ window.onload = function () {
                             logSort.direction = 'asc';
                         }
                     }
+                    delete d.start;
+                    delete d.length;
+                    delete d.order;
+                    delete d.columns;
                 }
             },
             autoWidth: false,
@@ -722,7 +726,6 @@ window.onload = function () {
 
         /* And don't automatically send the result - wait for the user to press <enter> / <return> */
         $(".dataTablesearchField").on("keypress", function (evtObj) {
-            // console.log(evtObj.keyCode);
             if (evtObj.keyCode == 13) {
                 myDataTable.ajax.reload();
             }
@@ -817,6 +820,10 @@ window.onload = function () {
                             ipSort.direction = 'asc';
                         }
                     }
+                    delete d.start;
+                    delete d.length;
+                    delete d.order;
+                    delete d.columns;
                 }
             },
             autoWidth: false,
@@ -984,6 +991,10 @@ window.onload = function () {
                             devSort.direction = 'asc';
                         }
                     }
+                    delete d.start;
+                    delete d.length;
+                    delete d.order;
+                    delete d.columns;
                 }
             },
             autoWidth: false,
@@ -1054,7 +1065,6 @@ window.onload = function () {
 
         /* And don't automatically send the result - wait for the user to press <enter> / <return> */
         $(".dataTablesearchFieldDev").on("keypress", function (evtObj) {
-            console.log(evtObj.keyCode);
             if (evtObj.keyCode == 13) {
                 myDataTableDev.ajax.reload();
             }

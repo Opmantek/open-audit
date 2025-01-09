@@ -635,7 +635,7 @@ foreach ($config->modules as $module) {
                                 <label style="padding-top:5px;">Search&nbsp;</label>
                                 <input type="text"   name="data[attributes][value]" class="form-control form-control-sm" style="border: 1px solid #adb5bd" placeholder="Device Name or IP">
                                 <input type="hidden" name="data[attributes][tables]"  value='["devices"]'>
-                                <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]'>
+                                <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","domain","dns_hostname","dns_domain","sysName"]'>
                                 <button class="btn btn-sm btn-outline-secondary" type="submit" title="Submit"><span class="fa fa-search" title="<?= __('Search') ?>"></span></button>
                             </div>
                             <?php } ?>
