@@ -928,7 +928,7 @@ window.onload = function () {
             serverSide: true,
             devSort: {},
             ajax: {
-                url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=json&limit=25',
+                url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=json',
                 dataSrc: 'data',
                 data: function (d) {
                     d.limit = d.length;
