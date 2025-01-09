@@ -4,8 +4,10 @@
 include('lang.php');
 
 $feed = new \stdClass();
-if ($meta->collection !== 'feeds') {
-    $feed = getFeed();
+if (!empty($config->feature_feeds) and $config->feature_feeds === 'y') {
+    if ($meta->collection !== 'feeds') {
+        $feed = getFeed();
+    }
 }
 
 $title = 'Open-AudIT ' . ucfirst($config->product) . ' ' . $config->display_version;
@@ -608,7 +610,7 @@ foreach ($config->modules as $module) {
                     </div>
 
                     <?php
-                    if (!empty($feed->id2)) {
+                    if (!empty($feed->id)) {
                         $description = '';
                         if (!empty($feed->url)) {
                             $description = '<a href="' . $feed->url . '" target="_blank">' . $feed->description . '</a>';

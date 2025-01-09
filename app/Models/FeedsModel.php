@@ -12,7 +12,9 @@ class FeedsModel extends BaseModel
     public function __construct()
     {
         $this->db = db_connect();
-        $this->builder = $this->db->table('feeds');
+        if ($this->db->tableExists('feeds')) {
+            $this->builder = $this->db->table('feeds');
+        }
         # Use the below to execute BaseModel::__construct
         # parent::__construct();
     }
@@ -26,6 +28,9 @@ class FeedsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
+        if (!$this->db->tableExists('feeds')) {
+            return array();
+        }
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -64,6 +69,9 @@ class FeedsModel extends BaseModel
      */
     public function execute(int $id = 0): bool
     {
+        if (!$this->db->tableExists('feeds')) {
+            return false;
+        }
         $instance = & get_instance();
         if (empty($instance->user->id)) {
             log_message('info', 'A feed article needs to be executed from a user.');
@@ -149,6 +157,9 @@ class FeedsModel extends BaseModel
      */
     public function executeAll(): bool
     {
+        if (!$this->db->tableExists('feeds')) {
+            return false;
+        }
         $config = new \Config\OpenAudit();
         helper('utility_helper');
         if (empty($config->feature_feeds) or $config->feature_feeds !== 'y') {
@@ -219,8 +230,7 @@ class FeedsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $include = array();
-        return ($include);
+        return array();
     }
 
     /**
@@ -242,6 +252,9 @@ class FeedsModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
+        if (!$this->db->tableExists('feeds')) {
+            return array();
+        }
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -256,6 +269,9 @@ class FeedsModel extends BaseModel
      */
     public function listAll(): array
     {
+        if (!$this->db->tableExists('feeds')) {
+            return array();
+        }
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -272,6 +288,9 @@ class FeedsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
+        if (!$this->db->tableExists('feeds')) {
+            return array();
+        }
         $data = new \stdClass();
         $data->read = 'y';
         $this->builder->where('id', intval($id));
@@ -313,6 +332,9 @@ class FeedsModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
+        if (!$this->db->tableExists('feeds')) {
+            return false;
+        }
         if ($this->tableReset('feeds')) {
             return true;
         }
@@ -326,6 +348,10 @@ class FeedsModel extends BaseModel
      */
     public function show(): object
     {
+        $feed = new \stdClass();
+        if (!$this->db->tableExists('feeds')) {
+            return $feed;
+        }
         $this->builder->limit(1);
         $this->builder->where(['read' => 'n']);
         $this->builder->orderBy('requested', 'DESC');
@@ -340,7 +366,6 @@ class FeedsModel extends BaseModel
                 }
             }
         }
-        $feed = new \stdClass();
         if (!empty($result[0])) {
             $feed = $result[0];
             if (!empty($feed->url)) {
