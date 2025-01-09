@@ -622,10 +622,9 @@ class DiscoveriesModel extends BaseModel
         return $included;
     }
 
-
     public function issuesRead(int $id = 0): array
     {
-        $sql = "SELECT discovery_log.id AS `discovery_log.id`, `discovery_log`.`discovery_id` AS `discovery_id`, `discoveries`.`name` AS `discovery_name`, `devices`.`ip` AS `devices.ip`, `devices`.`id` as `devices.id`, `devices`.`type` AS `devices.type`, `devices`.`icon` AS `devices.icon`, `devices`.`name` AS `devices.name`, `discovery_log`.`ip` AS `discovery_log.ip`, `discovery_log`.`message` AS `discovery_log.message`, `discovery_log`.`command_output` AS `output`, `discoveries`.`name` AS `discoveries.name` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` LEFT JOIN `devices` ON `discovery_log`.`device_id` = `devices`.`id` WHERE `command_status` = 'issue' AND `discoveries`.`id` = $id AND discoveries.name IS NOT NULL GROUP BY `discovery_log`.`device_id`, `command_output` ORDER BY discovery_log.id DESC";
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, `discovery_log`.`discovery_id` AS `discovery_id`, `discoveries`.`name` AS `discovery_name`, `devices`.`ip` AS `devices.ip`, `devices`.`id` as `devices.id`, `devices`.`type` AS `devices.type`, `devices`.`icon` AS `devices.icon`, `devices`.`name` AS `devices.name`, `discovery_log`.`ip` AS `discovery_log.ip`, `discovery_log`.`message` AS `discovery_log.message`, `discovery_log`.`command_output` AS `output`, `discoveries`.`name` AS `discoveries.name` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` LEFT JOIN `devices` ON `discovery_log`.`device_id` = `devices`.`id` WHERE `command_status` = 'issue' AND `discoveries`.`id` = $id AND discoveries.name IS NOT NULL GROUP BY `discovery_log`.`device_id`, `command_output` ORDER BY discovery_log.id DESC LIMIT 200";
         $issues = $this->db->query($sql)->getResult();
         for ($i = 0; $i < count($issues); $i++) {
             // Derive the description and action
@@ -638,6 +637,7 @@ class DiscoveriesModel extends BaseModel
         }
         return $issues;
     }
+
     public function issuesCollection(int $user_id = 0): array
     {
         $instance = & get_instance();
