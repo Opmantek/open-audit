@@ -167,7 +167,7 @@ if (!function_exists('response_create')) {
         $response->meta->properties = '';
         // NOTE see response_get_query_filter for why we do the below with the query string
         $response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
-        $response->meta->query_string = str_replace('&amp;', '&', $response->meta->query_string);
+        $response->meta->query_string = html_entity_decode($response->meta->query_string);
         $response->meta->requestor = '';
         if (!empty($_SERVER['HTTP_REQUESTOR'])) {
             $response->meta->requestor = (string)$_SERVER['HTTP_REQUESTOR'];
@@ -666,12 +666,10 @@ if (!function_exists('response_get_query_filter')) {
 
         if (!empty($query_string)) {
             foreach (explode('&', $query_string) as $item) {
-                $name = substr($item, 0, strpos($item, '='));
-
                 if (empty($item)) {
                     continue;
                 }
-
+                $name = substr($item, 0, strpos($item, '='));
                 if ($dataTables) {
                     $value = str_replace($name . '=', '', $item);
                     if ($value === '') {

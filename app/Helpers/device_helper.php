@@ -208,7 +208,7 @@ if (!function_exists('audit_convert')) {
 }
 
 if (! function_exists('deviceMatch')) {
-    function deviceMatch(object $details = new stdClass(), int $discovery_id = 0, object $match = new stdClass())
+    function deviceMatch(object $details, int $discovery_id = 0, object $match)
     {
         $db = db_connect();
 
