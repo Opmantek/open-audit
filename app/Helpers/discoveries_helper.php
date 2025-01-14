@@ -2227,6 +2227,12 @@ if (! function_exists('ip_audit')) {
                             $log->command_output = 'IP ' . $value . ' found on device ' . $device->ip;
                             $log->function = 'ip_audit';
                             $discoveryLogModel->create($log);
+                        } elseif (strpos($instance->config->discovery_ip_exclude, $value) !== false or strpos($discovery->scan_options->exclude_ip, $value) !== false) {
+                            $log->severity = 7;
+                            $log->message = 'IP ' . $value . ' detected, but not adding to device list as this is on the exclude list.';
+                            $log->command_output = 'IP ' . $value . ' detected but excluded.';
+                            $log->function = 'ip_audit';
+                            $discoveryLogModel->create($log);
                         } else {
                             $log->severity = 7;
                             $temp_device_id = @$log->device_id;
