@@ -32,7 +32,7 @@ include 'shared/collection_functions.php';
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
                                     <?= collection_button_read($meta->collection, $item->id) ?>
-                                    <?= collection_button_devices(url_to('devicesCollection') . '?devices.location_id=' . $item->id) . "\n" ?>
+                                    <?= collection_button_devices(url_to('devicesCollection') . '?devices.location_id=' . $item->id . '&properties=audit_status,devices.id,devices.icon,devices.type,devices.name,devices.ip,devices.manufacturer,devices.os_family,devices.status,locations.name') . "\n" ?>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {
                                             continue;

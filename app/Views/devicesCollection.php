@@ -152,10 +152,10 @@ if (!empty($meta->properties) and is_array($meta->properties)) {
                                         if ($key === 'audit_status' or $key === 'icon' or $key === 'id' or strpos($key, '_id') !== false or $key === 'delete' or $key === 'update') {
                                             $align = 'text-center dt-body-center';
                                         } ?>
-                                        <th class="<?= $align ?>"><?= collection_column_name($key) ?>
+                                        <th class="<?= $align ?>"><?= collection_column_name(str_replace('ip__', '', $key)) ?>
                                         <?php
                                         if ($key !== 'audit_status' and $key !== 'icon' and $key !== 'id' and $key !== 'delete' and $key !== 'update') {
-                                            echo'<hr><input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTableSearchField" placeholder="Search ' . collection_column_name($key) . '" />';
+                                            echo'<hr><input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTableSearchField" placeholder="Search ' . collection_column_name(str_replace('ip__', '', $key)) . '" />';
                                         } else if ($key === 'update') {
                                             echo "<hr><button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"margin-left:5em; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></button>\n";
                                             echo "<input aria-label='" . __('Select All') . "' type=\"checkbox\" name=\"select_all\" id=\"select_all\">\n";
@@ -316,7 +316,7 @@ window.onload = function () {
                     <?php foreach ($meta->data_order as $key) {
                         $key = str_replace('devices.', '', $key);
                         echo "\n\t\t\t\t\tif ($(\"#search_" . $key . "\").val() != '') {\n";
-                        echo "\t\t\t\t\t\td[\"" . $key . "\"] = $(\"#search_" . $key . "\").val();\n";
+                        echo "\t\t\t\t\t\td[\"" . str_replace('__', '.', $key) . "\"] = $(\"#search_" . $key . "\").val();\n";
                         echo "\t\t\t\t\t}\n";
                     } ?>
 
@@ -325,13 +325,19 @@ window.onload = function () {
                     foreach ($meta->data_order as $key) {
                         $key = str_replace('devices.', '', $key);
                         if ($key !== 'delete' and $key !== 'update') {
+                            $sort_key = $key;
+                            if (strpos($key, "__") !== false) {
+                                $sort_key = str_replace('__', '.', $key);
+                            } else {
+                                $sort_key = 'devices.' . $key;
+                            }
                             echo "\n\t\t\t\t\t\tif (d.columns[d.order[0].column].data == 'attributes.$key') {
                                 logSort.column = 'devices.$key';
                                 logSort.direction = d.order[0].dir;
                                 if (d.order[0].dir == 'asc') {
-                                    d.sort = 'devices.$key';
+                                    d.sort = '$sort_key';
                                 } else {
-                                    d.sort = '-devices.$key';
+                                    d.sort = '-$sort_key';
                                 }
                             }\n";
                         }

@@ -135,7 +135,7 @@ include 'shared/collection_functions.php';
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
                                     <?= collection_button_read($meta->collection, $item->id) ?>
-                                    <?= collection_button_devices(url_to('devicesCollection') . '?ip.network=' . $item->attributes->network . '&properties=devices.id,devices.icon,devices.type,devices.name,devices.domain,ip.ip,devices.description,devices.manufacturer,devices.os_family,devices.status') ?>
+                                    <?= collection_button_devices(url_to('devicesCollection') . '?ip.network=' . $item->attributes->network . '&properties=audit_status,devices.id,devices.icon,devices.type,devices.name,devices.domain,ip.ip,devices.description,devices.manufacturer,devices.os_family,devices.status') ?>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {
                                             continue;

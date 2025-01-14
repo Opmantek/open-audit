@@ -824,6 +824,9 @@ if (!function_exists('response_get_query_filter')) {
                         // To use an EQUALS clause, specify =value in the search field,
                         // this will translate to column==value and hence be covered above
                         // Additionally, if we have 'id' on the end of the name, skip this block and use the next block below to set =
+                        if (strpos($query->name, '.ip') === (strlen($query->name) - 3) or $query->name === 'ip') {
+                            $query->value = ip_address_to_db($query->value);
+                        }
                         if (strpos($query->value, '%') === false) {
                             $query->value = '%' . $query->value . '%';
                         }
