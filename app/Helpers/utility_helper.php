@@ -491,6 +491,15 @@ function format_data($result, $type)
                 $item->{$key . '_padded'} = $value;
                 $item->{$key} = ip_address_from_db($value);
             }
+            if (isset($GLOBALS['collection']) and strpos($key, '.') !== false) {
+                // We have dataTables output.
+                // dataTables cannot cope with an attribute that has a dot in the name, hence no orgs.name
+                // Replace any dot's with a double underscore
+                // We do not use a double underscore anywhere in our naming, so this should be fine
+                $formatted_key = str_replace('.', '__', $key);
+                $item->{$formatted_key} = $value;
+                unset($item->{$key});
+            }
         }
     }
 

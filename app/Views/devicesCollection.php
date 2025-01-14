@@ -15,15 +15,21 @@ if (empty($columns) and !empty($dictionary->attributes->collection)) {
     // NOTE - this is populated in devicesModel from instance->config->devices_default_display_columns
     $columns = $dictionary->attributes->collection;
 }
-
+if (!empty($meta->data_order)) {
+    for ($i = 0; $i < count($meta->data_order); $i++) {
+        if (strpos($meta->data_order[$i], '.') !== false) {
+            $meta->data_order[$i] = str_replace('.', '__', $meta->data_order[$i]);
+        }
+    }
+}
 $sort_column_index = 4;
 for ($i = 0; $i < count($columns); $i++) {
     $columns[$i] = str_replace('devices.', '', $columns[$i]);
+    $columns[$i] = str_replace('.', '__', $columns[$i]);
     if ($columns[$i] === 'name') {
         $sort_column_index = $i;
     }
 }
-
 if (strpos($user->permissions[$meta->collection], 'd') !== false or strpos($user->permissions[$meta->collection], 'u') !== false) {
     $meta->data_order[] = 'delete';
     $meta->data_order[] = 'update';
@@ -41,9 +47,12 @@ if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
 
 $url = base_url() . 'index.php/devices?format=json';
 foreach ($meta->filter as $filter) {
-    if ($filter->name !== 'devices.org_id' and strpos($filter->name, 'devices.') !== false) {
+    if ($filter->name !== 'devices.org_id' and is_string($filter->value)) {
         $url .= '&' . $filter->name . '=' . $filter->operator . $filter->value;
     }
+}
+if (!empty($meta->properties) and is_array($meta->properties)) {
+    $url .= '&properties=' . implode(',', $meta->properties);
 }
 ?>
        <main class="container-fluid">

@@ -44,12 +44,25 @@ class DevicesModel extends BaseModel
                 $properties[$i] = $properties[$i] . ' AS `' . $properties[$i] . '`';
             }
         }
+        // Add these two properties so we can determine audit_status
+        $properties[] = "devices.type as `devices.type`";
+        $properties[] = "devices.last_seen_by as `devices.last_seen_by`";
+
         $properties[] = "devices.id as `devices.id`";
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
+        if (!in_array('orgs.name', $properties)) {
+            $properties[] = "orgs.name as `orgs.name`";
+        }
+        if (!in_array('orgs.id', $properties)) {
+            $properties[] = "orgs.id as `orgs.id`";
+        }
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        $properties[] = "locations.name as `locations.name`";
-        $properties[] = "locations.id as `locations.id`";
+
+        if (!in_array('locations.name', $properties)) {
+            $properties[] = "locations.name as `locations.name`";
+        }
+        if (!in_array('locations.id', $properties)) {
+            $properties[] = "locations.id as `locations.id`";
+        }
         $properties[] = "IF(devices.type IN ('unknown', 'unclassified'), 2, 1) AS mycount";
         $this->builder->select($properties, false);
         $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
@@ -116,43 +129,43 @@ class DevicesModel extends BaseModel
         $result = formatQuery($result);
         $count = count($result);
 
-        if (isset($result[0]->type) and isset($result[0]->last_seen_by) and $instance->config->product !== 'community') {
+        if (isset($result[0]->{'devices.type'}) and isset($result[0]->{'devices.last_seen_by'}) and $instance->config->product !== 'community') {
             for ($i = 0; $i < $count; $i++) {
                 # BAD
-                if ($result[$i]->last_seen_by === 'nmap' and ($result[$i]->type === 'unclassified' or $result[$i]->type === 'unknown')) {
+                if ($result[$i]->{'devices.last_seen_by'} === 'nmap' and ($result[$i]->{'devices.type'} === 'unclassified' or $result[$i]->{'devices.type'} === 'unknown')) {
                     $result[$i]->audit_class = 'fa fa-times text-danger';
                     $result[$i]->audit_text = 'Nmap discovered, data retrieval will be very limited.';
                 # NOT GOOD
-                } elseif ($result[$i]->last_seen_by === 'nmap' and $result[$i]->type !== 'unclassified' and $result[$i]->type !== 'unknown') {
+                } elseif ($result[$i]->{'devices.last_seen_by'} === 'nmap' and $result[$i]->{'devices.type'} !== 'unclassified' and $result[$i]->{'devices.type'} !== 'unknown') {
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Last discovery only Nmap worked. This may be an issue, or it may be a device of a type we cannot audit.';
-                } elseif ($result[$i]->last_seen_by === 'cloud') {
+                } elseif ($result[$i]->{'devices.last_seen_by'} === 'cloud') {
                     #$result[$i]->audit_class = 'fa fa-times text-info';
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Cloud import, data retrieval will be very limited.';
-                } elseif ($result[$i]->last_seen_by === 'integrations') {
+                } elseif ($result[$i]->{'devices.last_seen_by'} === 'integrations') {
                     #$result[$i]->audit_class = 'fa fa-times text-info';
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Integration import, data retrieval will be very limited.';
-                } elseif ($result[$i]->type === 'computer' and ($result[$i]->last_seen_by === 'ssh' or $result[$i]->last_seen_by === 'windows' or $result[$i]->last_seen_by === 'wmi' or $result[$i]->last_seen_by === 'snmp')) {
+                } elseif ($result[$i]->{'devices.type'} === 'computer' and ($result[$i]->{'devices.last_seen_by'} === 'ssh' or $result[$i]->{'devices.last_seen_by'} === 'windows' or $result[$i]->{'devices.last_seen_by'} === 'wmi' or $result[$i]->{'devices.last_seen_by'} === 'snmp')) {
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Partially discovered computer. Data retrieval limited.';
-                } elseif ($result[$i]->last_seen_by === 'web form') {
+                } elseif ($result[$i]->{'devices.last_seen_by'} === 'web form') {
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
-                    $result[$i]->audit_text = 'Manually created ' . $result[$i]->type . '. Data retrieval limited.';
+                    $result[$i]->audit_text = 'Manually created ' . $result[$i]->{'devices.type'} . '. Data retrieval limited.';
                 # GOOD
-                } elseif ($result[$i]->type === 'computer' and ($result[$i]->last_seen_by === 'audit_wmi' or $result[$i]->last_seen_by === 'audit_ssh')) {
+                } elseif ($result[$i]->{'devices.type'} === 'computer' and ($result[$i]->{'devices.last_seen_by'} === 'audit_wmi' or $result[$i]->{'devices.last_seen_by'} === 'audit_ssh')) {
                     $result[$i]->audit_class = 'fa fa-check text-success';
                     $result[$i]->audit_text = 'Discovered and audited computer.';
-                } elseif ($result[$i]->type === 'computer' and $result[$i]->last_seen_by === 'audit') {
+                } elseif ($result[$i]->{'devices.type'} === 'computer' and $result[$i]->{'devices.last_seen_by'} === 'audit') {
                     $result[$i]->audit_class = 'fa fa-check text-success';
                     $result[$i]->audit_text = 'Audited computer.';
-                } elseif ($result[$i]->type === 'san' and $result[$i]->last_seen_by === 'audit') {
+                } elseif ($result[$i]->{'devices.type'} === 'san' and $result[$i]->{'devices.last_seen_by'} === 'audit') {
                     $result[$i]->audit_class = 'fa fa-check text-success';
                     $result[$i]->audit_text = 'Audited SAN.';
-                } elseif ($result[$i]->type !== 'computer' and !empty($result[$i]->snmp_oid)) {
+                } elseif ($result[$i]->{'devices.type'} !== 'computer' and !empty($result[$i]->snmp_oid)) {
                     $result[$i]->audit_class = 'fa fa-check text-success';
-                    $result[$i]->audit_text = 'Discovered and audited ' . $result[$i]->type . '.';
+                    $result[$i]->audit_text = 'Discovered and audited ' . $result[$i]->{'devices.type'} . '.';
                 # BAD - FALLBACK
                 } else {
                     $result[$i]->audit_class = 'fa fa-question text-danger';
