@@ -94,55 +94,56 @@ if ($resource->name === 'Windows Security Dashboard') {
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-television"></span></div>
-                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('reportsExecute', 10000) ?>"><?= __('Devices Found Today') ?></a></div>
+                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.first_seen=like<?= date('Y-m-d') ?>%&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.first_seen,locations.name"><?= __('Devices Found Today') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-television"></span></div>
-                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('reportsExecute', 10001) ?>"><?= __('Devices Found Yesterday') ?></a></div>
+                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.first_seen=like<?= date('Y-m-d', strtotime('-1 days')) ?>%&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.first_seen,locations.name"><?= __('Devices Found Yesterday') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-television"></span></div>
-                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('reportsExecute', 10002) ?>"><?= __('Devices Found Last 7 Days') ?></a></div>
+                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.first_seen=><?= date('Y-m-d', strtotime('-7 days')) ?>&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.first_seen,locations.name"><?= __('Devices Found Last 7 Days') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-bar-chart"></span></div>
-                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('reportsExecute', 20000) ?>"><?= __('Software Found Today') ?></a></div>
+                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?change_log.db_table=software&change_log.db_action=create&change_log.timestamp=like<?= date('Y-m-d') ?>%&properties=devices.id,devices.icon,devices.ip,devices.name,devices.os_family,change_log.details,change_log.timestamp"><?= __('Software Found Today') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-bar-chart"></span></div>
-                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('reportsExecute', 20001) ?>"><?= __('Software Found Yesterday') ?></a></div>
+                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?change_log.db_table=software&change_log.db_action=create&change_log.timestamp=like<?= date('Y-m-d', strtotime('-1 days')) ?>%&properties=devices.id,devices.icon,devices.ip,devices.name,devices.os_family,change_log.details,change_log.timestamp"><?= __('Software Found Yesterday') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-bar-chart"></span></div>
-                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('reportsExecute', 20002) ?>"><?= __('Software Found Last 7 Days') ?></a></div>
+                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?change_log.db_table=software&change_log.db_action=create&change_log.timestamp=>=<?= date('Y-m-d', strtotime('-7 days')) ?>&properties=devices.id,devices.icon,devices.ip,devices.name,devices.os_family,change_log.details,change_log.timestamp"><?= __('Software Found Last 7 Days') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-server"></span></div>
-                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('reportsExecute', 30000) ?>"><?= __('Devices Not Seen 7 Days') ?></a></div>
+                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.last_seen=<=<?= date('Y-m-d', strtotime('-7 days')) ?>&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.last_seen,locations.name"><?= __('Devices Not Seen 7 Days') ?></a></div>
+
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-server"></span></div>
-                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('reportsExecute', 30001) ?>"><?= __('Devices Not Seen 30 Days') ?></a></div>
+                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.last_seen=<=<?= date('Y-m-d', strtotime('-30 days')) ?>&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.last_seen,locations.name"><?= __('Devices Not Seen 30 Days') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-server"></span></div>
-                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('reportsExecute', 30002) ?>"><?= __('Devices Not Seen 90 Days') ?></a></div>
+                                        <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.last_seen=<=<?= date('Y-m-d', strtotime('-90 days')) ?>&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.last_seen,locations.name"><?= __('Devices Not Seen 90 Days') ?></a></div>
                                     </div>
                                 </li>
                                 <?php } ?>
