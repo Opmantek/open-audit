@@ -269,8 +269,9 @@ class Database extends BaseController
             $eula->new_value = json_encode($item);
             $errors = array();
             \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('Openaudit')->display_version . " (" . config('Openaudit')->internal_version . ").");
+            $config = new \Config\OpenAudit();
             return view('shared/header', [
-                'config' => $this->config,
+                'config' => $config,
                 'dashboards' => filter_response($this->dashboards),
                 'meta' => filter_response($meta),
                 'queries' => array(),
