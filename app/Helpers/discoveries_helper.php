@@ -1199,6 +1199,10 @@ if (! function_exists('ip_audit')) {
             unset($log->command_time_to_execute, $log->command_error_message);
         } else {
             // INSERT
+            if (empty($device->type)) {
+                // Just a precaution
+                $device->type = 'unknown';
+            }
             $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
             $discoveryLogModel->create($log);
             $command_start = microtime(true);

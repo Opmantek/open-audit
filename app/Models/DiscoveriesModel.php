@@ -420,7 +420,6 @@ class DiscoveriesModel extends BaseModel
         return true;
     }
 
-
     /**
      * Take a discovery ID and optionally a device ID
      * Return an array of credentials in the order of device specific, device previously worked, discovery associated
@@ -644,7 +643,7 @@ class DiscoveriesModel extends BaseModel
         $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
         $org_list[] = 1;
         $org_list = array_unique($org_list);
-        $sql = "SELECT discovery_log.id AS `discovery_log.id`, `discovery_log`.`discovery_id` AS `discovery_id`, `discoveries`.`name` AS `discovery_name`, `devices`.`id` as `devices.id`, `devices`.`type` AS `devices.type`, `devices`.`icon` AS `devices.icon`, `devices`.`name` AS `devices.name`, `discovery_log`.`ip` AS `devices.ip`, `discovery_log`.`message` AS `discovery_log.message`, `discovery_log`.`command_output` AS `output`, `discoveries`.`name` AS `discoveries.name` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` LEFT JOIN `devices` ON `discovery_log`.`device_id` = `devices`.`id` WHERE `command_status` = 'issue' AND `discoveries`.`org_id` IN (" . implode(',', $org_list) . ") AND discoveries.name IS NOT NULL GROUP BY `discovery_log`.`device_id`, `command_output` ORDER BY discovery_log.id DESC LIMIT 100;";
+        $sql = "SELECT discovery_log.id AS `discovery_log.id`, `discovery_log`.`discovery_id` AS `discovery_id`, `discoveries`.`name` AS `discovery_name`, `devices`.`id` as `devices.id`, `devices`.`type` AS `devices.type`, `devices`.`icon` AS `devices.icon`, `devices`.`name` AS `devices.name`, `discovery_log`.`ip` AS `devices.ip`, `discovery_log`.`message` AS `discovery_log.message`, `discovery_log`.`command_output` AS `output`, `discoveries`.`name` AS `discoveries.name` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` LEFT JOIN `devices` ON `discovery_log`.`device_id` = `devices`.`id` WHERE `command_status` = 'issue' AND `discoveries`.`org_id` IN (" . implode(',', $org_list) . ") AND discoveries.name IS NOT NULL GROUP BY `discovery_log`.`device_id`, `command_output` ORDER BY discovery_log.id DESC LIMIT 100";
         $issues = $this->db->query($sql)->getResult();
         for ($i = 0; $i < count($issues); $i++) {
             // Derive the description and action

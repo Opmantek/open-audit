@@ -465,6 +465,9 @@ class DevicesModel extends BaseModel
         } else {
             $identification = 'No information could be retrieved.';
             $sql = "UPDATE `devices` SET `identification` = ? WHERE `id` = ?";
+            if (empty($device->type)) {
+                $sql = "UPDATE `devices` SET `identification` = ?, `type` = 'unknown' WHERE `id` = ?";
+            }
         }
         $query = $this->db->query($sql, [$identification, $id]);
         return true;
