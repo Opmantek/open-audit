@@ -166,7 +166,16 @@ if (!function_exists('response_create')) {
         $response->meta->offset = 0;
         $response->meta->properties = '';
         // NOTE see response_get_query_filter for why we do the below with the query string
-        $response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
+        $query_string = $_SERVER['QUERY_STRING'];
+        $replace_like = false;
+        if (stripos($query_string, 'like%') !== false) {
+            $query_string = str_replace('like%', 'like', $query_string);
+            $replace_like = true;
+        }
+        $response->meta->query_string = urldecode($query_string);
+        if ($replace_like) {
+            $response->meta->query_string = str_replace('like', 'like%', $response->meta->query_string);
+        }
         $response->meta->query_string = html_entity_decode($response->meta->query_string);
         $response->meta->requestor = '';
         if (!empty($_SERVER['HTTP_REQUESTOR'])) {

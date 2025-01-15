@@ -127,9 +127,13 @@ class Collections extends BaseController
         }
 
         if ($this->resp->meta->format !== 'html') {
-            if ($this->resp->meta->collection === 'devices') {
+            if (!empty($GLOBALS['collection'])) {
+                // This is dataTables response
                 $this->resp->recordsTotal = count($this->resp->data);
-                $this->resp->recordsFiltered = $this->config->device_count;
+                $this->resp->recordsFiltered = 0;
+                if (!empty($GLOBALS['recordsFiltered'])) {
+                    $this->resp->recordsFiltered = $GLOBALS['recordsFiltered'];
+                }
             }
             output($this);
             return;

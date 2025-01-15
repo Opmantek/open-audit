@@ -64,12 +64,13 @@ class DiscoveryLog extends BaseController
 
             if (!empty($id) and $this->resp->meta->groupby === 'discovery_log.ip') {
                 $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->getByIp($id);
-                $this->resp->recordsFiltered = $this->{strtolower($this->resp->meta->collection) . "Model"}->getByIpTotal($id);
                 $this->resp->recordsTotal = count($this->resp->data);
+                if (!empty($GLOBALS['recordsFiltered'])) {
+                    $this->resp->recordsFiltered = $GLOBALS['recordsFiltered'];
+                }
             }
 
             if (!empty($id) and $this->resp->meta->groupby === 'discovery_log.device_id') {
-                $this->resp->recordsFiltered = $this->{strtolower($this->resp->meta->collection) . "Model"}->getByDeviceTotal($id);
                 if (!empty($this->config->product) and $this->config->product !== 'community') {
                     if (!empty($this->config->license_limit) and $this->resp->meta->limit > $this->config->license_limit and $this->resp->recordsFiltered > $this->config->license_limit) {
                         $this->resp->meta->limit = $this->config->license_limit;
@@ -87,18 +88,19 @@ class DiscoveryLog extends BaseController
                 }
                 $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->getByDevice($id);
                 $this->resp->recordsTotal = count($this->resp->data);
+                if (!empty($GLOBALS['recordsFiltered'])) {
+                    $this->resp->recordsFiltered = $GLOBALS['recordsFiltered'];
+                }
                 if (!empty($this->resp->warning)) {
                     $this->resp->recordsFiltered = $this->resp->recordsTotal;
                 }
             }
         } else {
             $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
-            $temp = $this->{strtolower($this->resp->meta->collection) . "Model"}->listUser();
-            if (!empty($temp)) {
-                $this->resp->recordsFiltered = count($temp);
-            }
-            unset($temp);
             $this->resp->recordsTotal = count($this->resp->data);
+            if (!empty($GLOBALS['recordsFiltered'])) {
+                $this->resp->recordsFiltered = $GLOBALS['recordsFiltered'];
+            }
         }
 
         $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();

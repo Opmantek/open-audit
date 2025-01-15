@@ -360,7 +360,15 @@ window.onload = function () {
             },
             autoWidth: false,
             info: true,
+            language: {
+                infoFiltered: ""
+            },
             layout: {
+                bottomStart: {
+                    info: {
+                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                    }
+                },
                 bottomEnd: {
                     paging: {
                         type: 'full_numbers'

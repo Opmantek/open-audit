@@ -790,10 +790,10 @@ function formatQuery(array $result = array()): array
     if (empty($license_limit)) {
         return $result;
     }
-    if (!empty($result[0]->{'devices.id'}) and ($device_known > intval($license_limit * 1.1))) {
+    if ((!empty($result[0]->{'devices.id'}) or (!empty($result[0]->type) and $result[0]->type === 'devices')) and ($device_known > intval($license_limit * 1.1))) {
         $devices = array();
         foreach ($result as $row) {
-            $devices[] = intval($row->{'devices.id'});
+            $devices[] = !empty($row->{'devices.id'}) ? intval($row->{'devices.id'}) : $row->id;
         }
         $devices = array_unique($devices);
         if (count($devices) > intval($license_limit * 1.1)) {
@@ -801,7 +801,7 @@ function formatQuery(array $result = array()): array
             $devices = array_slice($devices, 0, $license_limit);
             $count = count($result);
             for ($i = 0; $i < $count; $i++) {
-                if (!in_array($result[$i]->{'devices.id'}, $devices)) {
+                if ((!empty($result[$i]->{'devices.id'}) and !in_array($result[$i]->{'devices.id'}, $devices) or (!empty($result[$i]->id) and !in_array($result[$i]->id, $devices)))) {
                     unset($result[$i]);
                 }
             }

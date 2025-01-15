@@ -68,7 +68,7 @@ class Reports extends BaseController
         $breadcrumb->url = url_to('reportsExecute', $this->resp->meta->id);
         $breadcrumb->name = (!empty($this->resp->meta->name)) ? $this->resp->meta->name : '';
         $this->resp->meta->breadcrumbs[] = $breadcrumb;
-        $this->resp->data = (!empty($this->resp->data)) ? format_data($this->resp->data, 'devices') : array();
+        $this->resp->data = (!empty($this->resp->data)) ? formatQuery(format_data($this->resp->data, 'devices')) : array();
 
         $this->resp->meta->total = count($this->resp->data);
         $this->resp->meta->filtered = count($this->resp->data);

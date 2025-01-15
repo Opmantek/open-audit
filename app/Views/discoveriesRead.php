@@ -712,7 +712,15 @@ window.onload = function () {
                 {className: "text-start", target: 5}
             ],
             info: true,
+            language: {
+                infoFiltered: ""
+            },
             layout: {
+                bottomStart: {
+                    info: {
+                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                    }
+                },
                 bottomEnd: {
                     paging: {
                         type: 'full_numbers'
@@ -880,7 +888,15 @@ window.onload = function () {
                 {className: "text-start", target: 5, width: "15em", title: "Duration"}
             ],
             info: true,
+            language: {
+                infoFiltered: ""
+            },
             layout: {
+                bottomStart: {
+                    info: {
+                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                    }
+                },
                 bottomEnd: {
                     paging: {
                         type: 'full_numbers'
@@ -1051,7 +1067,15 @@ window.onload = function () {
                 {className: "text-start", target: 5, width: "15em", title: "Duration (h:m:s)"}
             ],
             info: true,
+            language: {
+                infoFiltered: ""
+            },
             layout: {
+                bottomStart: {
+                    info: {
+                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                    }
+                },
                 bottomEnd: {
                     paging: {
                         type: 'full_numbers'

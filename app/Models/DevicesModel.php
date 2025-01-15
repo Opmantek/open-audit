@@ -27,16 +27,93 @@ class DevicesModel extends BaseModel
     public function collection(object $resp): array
     {
         $instance = & get_instance();
+        // First run the requested query, but only retrieve count(*) and use that for recordsFiltered for dataTables (stored in GLOBAL)
+        // Second, rebuild the query including all properties and return that result as data
         if (!empty($instance->config->license_limit) and $instance->config->device_known > intval($instance->config->license_limit * 1.1)) {
             log_message('warning', 'Restricting Devices to the first ' . $instance->config->license_limit . ' devices as per license. There are actually ' . $instance->config->device_known . ' licensed devices in the database.');
             $resp->warning = 'Restricting Devices to the first ' . $instance->config->license_limit . ' devices as per license. There are actually ' . $instance->config->device_known . ' licensed devices in the database.';
 
             $subquery = $this->db->table('devices');
             $subquery->orderBy('devices.id');
-            $subquery->limit($instance->config->license_limit);
+            $subquery->limit(intval($instance->config->license_limit));
             $this->builder = $this->db->newQuery()->fromSubquery($subquery, 'devices');
         }
 
+        $this->builder->select('count(*) AS `count`', false);
+        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
+        $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
+        $joined_tables = array();
+        foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'search') {
+                $this->builder->where('(devices.name LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.ip LIKE ' . $this->db->escape(ip_address_to_db($filter->value)) .
+                    ' OR devices.hostname LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.domain LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.dns_hostname LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.dns_domain LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.sysName LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.type LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.model LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.manufacturer LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.os_family LIKE ' . $this->db->escape($filter->value) .
+                    ' OR devices.os_name LIKE ' . $this->db->escape($filter->value) .
+                    ')');
+                continue;
+            }
+            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
+                if ($filter->name === 'devices.tags' and $filter->operator === '=') {
+                    $filter->function = 'like';
+                    $filter->operator = '';
+                    $filter->value = '"' . $filter->value . '"';
+                }
+                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
+            } else {
+                $this->builder->{$filter->function}($filter->name, $filter->value);
+            }
+            $joined_table = explode('.', $filter->name);
+            if (count($joined_table) === 2 and $joined_table[0] !== 'devices' and $joined_table[0] !== 'system' and $joined_table[0] !== 'orgs' and $joined_table[0] !== 'locations') {
+                $joined_tables[] = $joined_table[0];
+            }
+        }
+        $joined_tables = array_unique($joined_tables);
+        if (!empty($joined_tables)) {
+            foreach ($joined_tables as $joined_table) {
+                $this->builder->join($joined_table, "devices.id = $joined_table.device_id", 'left');
+            }
+        }
+        if (!empty($instance->resp->meta->sort)) {
+            if (strpos($instance->resp->meta->sort, 'devices.ip') !== false) {
+                if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+                    $this->builder->orderBy('INET_ATON(devices.ip) DESC');
+                } else {
+                    $this->builder->orderBy('INET_ATON(devices.ip)');
+                }
+            } else {
+                $this->builder->orderBy($resp->meta->sort);
+            }
+        } else {
+            $this->builder->orderBy('devices.id');
+        }
+
+        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
+        $query = $this->builder->get();
+        $result = $query->getResult();
+        $GLOBALS['recordsFiltered'] = 0;
+        if (isset($result[0]->count)) {
+            $GLOBALS['recordsFiltered'] = intval($result[0]->count);
+        }
+
+        // Second - rebuild the query (including requested properties) and return the result as data
+        $this->builder = $this->db->table('devices');
+        if (!empty($instance->config->license_limit) and $instance->config->device_known > intval($instance->config->license_limit * 1.1)) {
+            log_message('warning', 'Restricting Devices to the first ' . $instance->config->license_limit . ' devices as per license. There are actually ' . $instance->config->device_known . ' licensed devices in the database.');
+            $resp->warning = 'Restricting Devices to the first ' . $instance->config->license_limit . ' devices as per license. There are actually ' . $instance->config->device_known . ' licensed devices in the database.';
+
+            $subquery = $this->db->table('devices');
+            $subquery->orderBy('devices.id');
+            $subquery->limit(intval($instance->config->license_limit));
+            $this->builder = $this->db->newQuery()->fromSubquery($subquery, 'devices');
+        }
         $properties = $resp->meta->properties;
         $count = count($properties);
         for ($i = 0; $i < $count; $i++) {
@@ -55,7 +132,6 @@ class DevicesModel extends BaseModel
         if (!in_array('orgs.id', $properties)) {
             $properties[] = "orgs.id as `orgs.id`";
         }
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
 
         if (!in_array('locations.name', $properties)) {
             $properties[] = "locations.name as `locations.name`";
@@ -63,8 +139,8 @@ class DevicesModel extends BaseModel
         if (!in_array('locations.id', $properties)) {
             $properties[] = "locations.id as `locations.id`";
         }
-        $properties[] = "IF(devices.type IN ('unknown', 'unclassified'), 2, 1) AS mycount";
         $this->builder->select($properties, false);
+        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
         $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
         $joined_tables = array();
         foreach ($resp->meta->filter as $filter) {
@@ -119,7 +195,6 @@ class DevicesModel extends BaseModel
             $this->builder->orderBy('devices.id');
         }
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-
         // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
