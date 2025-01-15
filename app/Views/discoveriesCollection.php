@@ -136,7 +136,7 @@ if (count($included['issues']) > 0) {
                 <div class="card-body collapse" id="issues">
                     <?php if (count($included['issues']) > 99) { ?>
                         <div class="alert alert-warning alert-dismissable fade show" role="alert">
-                            <?= __('Limited to 100 rows.') ?>'
+                            <?= __('Limited to 100 rows.') ?>
                             <button type="button" class="btn-close pull-right" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     <?php } ?>
