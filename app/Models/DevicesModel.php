@@ -39,6 +39,7 @@ class DevicesModel extends BaseModel
             $this->builder = $this->db->newQuery()->fromSubquery($subquery, 'devices');
         }
 
+        // Get the row count
         $this->builder->select('count(*) AS `count`', false);
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
         $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
@@ -81,20 +82,6 @@ class DevicesModel extends BaseModel
                 $this->builder->join($joined_table, "devices.id = $joined_table.device_id", 'left');
             }
         }
-        if (!empty($instance->resp->meta->sort)) {
-            if (strpos($instance->resp->meta->sort, 'devices.ip') !== false) {
-                if (strpos($instance->resp->meta->sort, ' DESC') === false) {
-                    $this->builder->orderBy('INET_ATON(devices.ip) DESC');
-                } else {
-                    $this->builder->orderBy('INET_ATON(devices.ip)');
-                }
-            } else {
-                $this->builder->orderBy($resp->meta->sort);
-            }
-        } else {
-            $this->builder->orderBy('devices.id');
-        }
-
         // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
         $query = $this->builder->get();
         $result = $query->getResult();
@@ -104,6 +91,7 @@ class DevicesModel extends BaseModel
         }
 
         // Second - rebuild the query (including requested properties) and return the result as data
+        // Get the actual row data
         $this->builder = $this->db->table('devices');
         if (!empty($instance->config->license_limit) and $instance->config->device_known > intval($instance->config->license_limit * 1.1)) {
             log_message('warning', 'Restricting Devices to the first ' . $instance->config->license_limit . ' devices as per license. There are actually ' . $instance->config->device_known . ' licensed devices in the database.');
@@ -181,6 +169,9 @@ class DevicesModel extends BaseModel
                 $this->builder->join($joined_table, "devices.id = $joined_table.device_id", 'left');
             }
         }
+        // Note that the below code uses lots of 'else' statements.
+        // This is because if we don't use else statements and set a default orderBy
+        // then change it based on the 'if', the orderBy's are chained, not replaced
         if (!empty($instance->resp->meta->sort)) {
             if (strpos($instance->resp->meta->sort, 'devices.ip') !== false) {
                 if (strpos($instance->resp->meta->sort, ' DESC') === false) {
