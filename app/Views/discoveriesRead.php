@@ -792,9 +792,9 @@ window.onload = function () {
                             ipSort.column = 'devices.name';
                             ipSort.direction = d.order[0].dir;
                             if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.name';
+                                d.sort = 'devices.name';
                             } else {
-                                d.sort = '-discovery_log.name';
+                                d.sort = '-devices.name';
                             }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.message') {
@@ -971,9 +971,9 @@ window.onload = function () {
                             devSort.column = 'devices.name';
                             devSort.direction = d.order[0].dir;
                             if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.name';
+                                d.sort = 'devices.name';
                             } else {
-                                d.sort = '-discovery_log.name';
+                                d.sort = '-devices.name';
                             }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.message') {
