@@ -159,10 +159,26 @@ class Discoveries extends BaseController
     public function download($id)
     {
         $id = intval($id);
+        $this->resp->meta->limit = 10000;
+        $this->resp->meta->filter[] = json_decode('{"name":"discovery_log.discovery_id","function":"where","operator":"=","value":"' . $id . '"}');
+        $this->resp->meta->properties = ['discovery_log.*'];
         $this->resp->data = $this->discoveriesModel->read($id);
-        $this->resp->included = $this->discoveriesModel->includedRead($id);
+
+        $this->resp->included = array();
+        $this->resp->included['issues'] = $this->discoveriesModel->issuesRead($id);
+
+        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
+        $this->resp->included['discovery_log'] = $discoveryLogModel->collection($this->resp);
+        $this->resp->included['devices'] = $discoveryLogModel->getByDevice($id);
+
+        $DiscoveryScanOptionsModel = new \App\Models\DiscoveryScanOptionsModel();
+        if (!empty($this->resp->data[0]->attributes->scan_options->id)) {
+            $this->resp->included['discovery_scan_options'] = $DiscoveryScanOptionsModel->read(intval($this->resp->data[0]->attributes->scan_options->id));
+        }
+
         $supportModel = new \App\Models\SupportModel();
         $this->resp->included['support'] = $supportModel->collection($this->resp);
+
         if (!empty($this->config->maps_api_key)) {
             $this->config->maps_api_key = 'Removed from display, but has been set';
         }
