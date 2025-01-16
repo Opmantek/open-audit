@@ -101,14 +101,14 @@ function getOsTimezone()
     if (php_uname('s') === 'Windows NT') {
         $command_string = 'tzutil /g';
         exec($command_string, $output, $return_var);
-        $timezone = @$output[0];
+        $timezone = (!empty($output[0])) ? (string)$output[0] : '';
         unset($output);
         return $timezone;
     }
     if (php_uname('s') === 'Darwin') {
         $command_string = '/bin/ls -l /etc/localtime | /usr/bin/cut -d"/" -f8,9';
         exec($command_string, $output, $return_var);
-        $timezone = @$output[0];
+        $timezone = (!empty($output[0])) ? (string)$output[0] : '';
         unset($output);
         return $timezone;
     }
@@ -118,18 +118,19 @@ function getOsTimezone()
             if (file_exists('/etc/sysconfig/clock')) {
                 $command_string = 'cat /etc/sysconfig/clock | grep ZONE | cut -d"\"" -f2';
                 exec($command_string, $output, $return_var);
-                $timezone = @$output[0];
+                $timezone = (!empty($output[0])) ? (string)$output[0] : '';
             }
             if ($os->timezone === '') {
                 $command_string = 'timedatectl 2>/dev/null | grep zone | cut -d: -f2 | cut -d"(" -f1';
                 exec($command_string, $output, $return_var);
-                $timezone = @trim((string)$output[0]);
+                $timezone = (!empty($output[0])) ? (string)$output[0] : '';
+                $timezone = trim($timezone);
             }
         }
-        if ($os->name === 'Linux (Debian)') {
+        if ($os->os_name === 'Linux (Debian)') {
             $command_string = 'cat /etc/timezone';
             exec($command_string, $output, $return_var);
-            $timezone = @$output[0];
+            $timezone = (!empty($output[0])) ? (string)$output[0] : '';
             unset($output);
             unset($command_string);
         }
