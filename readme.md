@@ -24,21 +24,21 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Nmap is a prerequisite for Open-AudIT. We rely on Nmap for discovering devices on your network. The Linux installer will install this and the other prerequisites. The Windows installer needs the user to manually install Nmap.
+Nmap is a prerequisite for Open-AudIT. We rely on Nmap for discovering devices on your network. The Linux installer will install this and the other prerequisites. The Windows installer needs the user to manually install [Nmap](https://www.nmap.org). The Windows install also needs the [Microsot Visual C Redistributable](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0) installed.
 
 The other Linux prerequisites are:
 
 #### RedHat 8 & 9
 
-mariadb-server httpd php php-cli php-intl php-mysqlnd php-ldap php-json php-mbstring php-process php-snmp php-xml nmap zip curl wget sshpass screen samba-client logrotate perl-Time-ParseDate ipmitool net-snmp perl-Crypt-CBC libnsl.x86_64
+curl httpd ipmitool libnsl.x86_64 logrotate mariadb-server net-snmp net-snmp-utils nmap perl-Crypt-CBC perl-Time-ParseDate php php-cli php-intl php-json php-ldap php-mbstring php-mysqlnd php-process php-snmp php-xml samba-client screen sshpass wget zip
 
 #### Debian 11 & 12 
 
-mariadb-server apache2 apache2-utils libapache2-mod-php openssh-client php php-cli php-curl php-intl php-ldap php-mbstring php-mysql php-snmp php-xml nmap zip wget curl sshpass screen smbclient logrotate ipmitool snmp libcrypt-cbc-perl
+apache2 apache2-utils curl ipmitool libapache2-mod-php libcrypt-cbc-perl logrotate mariadb-server nmap openssh-client php php-cli php-curl php-intl php-ldap php-mbstring php-mysql php-snmp php-xml screen smbclient snmp sshpass wget zip 
 
 #### Ubuntu 20.04 & 22.04
 
-mariadb-server apache2 apache2-utils libapache2-mod-php openssh-client php php-cli php-curl php-intl php-ldap php-mbstring php-mysql php-snmp php-xml nmap zip wget curl sshpass screen smbclient logrotate ipmitool snmp libcrypt-cbc-perl
+apache2 apache2-utils curl ipmitool libapache2-mod-php libcrypt-cbc-perl logrotate mariadb-server nmap openssh-client php php-cli php-curl php-intl php-ldap php-mbstring php-mysql php-snmp php-xml screen smbclient snmp sshpass wget zip
 
 ### Installing
 
@@ -47,7 +47,7 @@ Installing is simply a matter of downloading the .run or .exe (Linux or Windows)
 To install from this source, please put the code in /usr/local/open-audit and link the public folder into your web root under /open-audit. Use composer to install the required dependencies. Initialise a MySQL database using the credentials found in app/Config/database.json. The MySQL schema can be found in other/open-audit.sql.
 
 ## Release Notes
-Are available here - https://community.opmantek.com/display/OA/Open-AudIT+Release+Notes
+Are available here - https://docs.community.firstwave.com/wiki/x/ZACWv
 
 ## Built With
 
@@ -58,7 +58,7 @@ Are available here - https://community.opmantek.com/display/OA/Open-AudIT+Releas
 
 ## Contributing
 
-Please contact [Firstwave](https://www.firstwave.com) with any enquiries for contributing or post to the [Questions](https://community.opmantek.com/questions) site. And you can always submit a pull request on [GitHub](https://github.com/Opmantek/open-audit).
+Please contact [Firstwave](https://www.firstwave.com) with any enquiries for contributing or post to the [Questions](https://docs.community.firstwave.com/wiki/display/OA/customcontent/list/ac%3Acom.atlassian.confluence.plugins.confluence-questions%3Aquestion?ac.com.atlassian.confluence.plugins.confluence-questions.path=/questions-bootstrap) site or on [GitHub](https://github.com/Opmantek/open-audit/issues). And you can always submit a pull request on [GitHub](https://github.com/Opmantek/open-audit).
 
 ## Versioning
 
@@ -71,8 +71,3 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## License
 
 This project is licensed under the aGPL License - see the [AGPL 3.0](agpl-3.0.txt) file for details
-
-## Acknowledgments
-
-* Thanks for all the forum contributions.
-* Thanks in particular to JPA (forum user) for his countless contributions and testing work.
