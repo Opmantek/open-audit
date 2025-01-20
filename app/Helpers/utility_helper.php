@@ -425,6 +425,9 @@ function format_data($result, $type)
 
     $return = array();
 
+    helper('security_helper');
+    helper('network_helper');
+
     if (!is_array($result)) {
         $item = $result;
         $result = array($item);
