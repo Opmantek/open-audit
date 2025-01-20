@@ -82,7 +82,7 @@ class Collections extends BaseController
 
         $this->resp->meta->total = 0;
         $this->resp->meta->filtered = 0;
-        if ($this->resp->meta->collection !== 'devices' or $this->resp->meta->format !== 'html') {
+        if (($this->resp->meta->collection !== 'devices' and $this->resp->meta->collection !== 'components') or $this->resp->meta->format !== 'html') {
             $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
             $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
             $this->resp->meta->filtered = count($this->resp->data);
@@ -107,6 +107,17 @@ class Collections extends BaseController
         }
         if ($this->resp->meta->collection === 'devices') {
             array_unshift($this->resp->meta->data_order, 'audit_status');
+        }
+        if ($this->resp->meta->collection === 'components') {
+            $count = count($this->resp->meta->filter);
+            $table = 'ip';
+            for ($i = 0; $i < $count; $i++) {
+                if ($this->resp->meta->filter[$i]->name === 'type' or $this->resp->meta->filter[$i]->name === 'components.type') {
+                    $table = str_replace('%', '', $this->resp->meta->filter[$i]->value);
+                }
+            }
+            $this->resp->meta->data_order = $this->componentsModel->getFields($table);
+            $this->resp->meta->component = $table;
         }
         if ($this->resp->meta->collection === 'discoveries') {
             $this->resp->included['issues'] = $this->discoveriesModel->issuesCollection(intval($this->user->id));

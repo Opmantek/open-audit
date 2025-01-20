@@ -696,7 +696,7 @@ if (!function_exists('response_get_query_filter')) {
                     }
 
                     if (strpos($name, '.') === false and $name !== 'search') {
-                        if ($db->fieldExists($name, $collection)) {
+                        if ($db->tableExists($collection) and $db->fieldExists($name, $collection)) {
                             $name = $collection . '.' . $name;
                         }
                         if ($collection === 'discovery_log' and $db->fieldExists($name, 'devices')) {

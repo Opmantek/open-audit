@@ -37,80 +37,111 @@ if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
                 <div class="card-body">
                     <br>
                     <div class="table-responsive">
-                        <table id="example" class="table table-striped">
+                        <div id="notice" class="container-fluid" style="display:none;">
+                            <div id="alert" class="alert alert-warning alert-dismissible fade show" role="alert">
+                            </div>
+                        </div>
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableComponents" data-order='[[2,"asc"]]'>
+                            <thead>
+                                <?php foreach ($meta->data_order as $key) { ?>
+                                    <th ><?= collection_column_name($key) ?></th>
+                                <?php } ?>
+                            </thead>
+                            <thead>
+                                <?php foreach ($meta->data_order as $key) { ?>
+                                    <th>
+                                        <div class="input-group">
+                                            <input id="search_<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search <?= collection_column_name($key) ?>" />
+                                        </div>
+                                    </th>
+                                <?php } ?>
+                            </thead>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </main>
-
-<?php
-$dataSet = array();
-foreach ($data as $item) {
-    $dataSet[] = $item->attributes;
-}
-for ($i = 0; $i < count($dataSet); $i++) {
-    foreach ($dataSet[$i] as $key => $value) {
-        if (strpos($key, '.') !== false) {
-            // We have to replace the . because it breaks (dataTables uses JS syntax)
-            $dataSet[$i]->{str_replace('.', '__', $key)} = $value;
-            unset($dataSet[$i]->$key);
-        }
-    }
-    if (!empty($dataSet[$i]->id)) {
-        $dataSet[$i]->id = '<a title="' . __('View') . '" role="button" class="btn ' . $GLOBALS['button'] . ' btn-primary" href="' . url_to('componentsRead', $dataSet[$i]->id) . '?components.type=' . $item->type . '"><span style="width:1rem;" title="' . __('View') . '" class="fa fa-eye" aria-hidden="true"></span></a>';
-    }
-    if (!empty($dataSet[$i]->device_id)) {
-        $dataSet[$i]->device_id = collection_button_read('devices', $dataSet[$i]->device_id);
-    }
-}
-$columns = array();
-// Always Put the ID column first
-$column = new \stdClass();
-$column->title = __('Details');
-$column->data = 'id';
-$columns[] = $column;
-// Always put the Device ID link second
-$column = new \stdClass();
-$column->title = __('View Device');
-$column->data = 'device_id';
-$columns[] = $column;
-// And the Device Name third
-$column = new \stdClass();
-$column->title = __('Device');
-$column->data = 'devices__name';
-$columns[] = $column;
-
-
-foreach ($data[0]->attributes as $key => $value) {
-    if ($key === 'id' or $key === 'device_id' or $key === 'devices__name' or $key === 'devices__id') {
-        continue;
-    }
-    $column = new \stdClass();
-    $column->title = collection_column_name($key);
-    $column->data = str_replace('.', '__', $key);
-    $columns[] = $column;
-}
-?>
 <script {csp-script-nonce}>
 window.onload = function () {
-    $(document).ready(function() {
-        var dataSet = <?= json_encode($dataSet, JSON_PRETTY_PRINT) ?>;
-        $('#example').dataTable( {
-            "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-            "paging": true,
-            "searching": true,
-            "order": [[ 1, 'asc' ]],
-            "info": true,
-            "pageLength": 50,
-            "autoWidth": false,
-            "oSearch": {
-                "bSmart": false,
-                "bRegex": true,
-                "sSearch": ""
+    $(document).ready(function () {
+
+        let ipSort = {};
+        var myDataTable = new DataTable('.dataTableComponents', {
+            lengthChange: true,
+            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+            order: [[ 1, 'asc' ]],
+            pageLength: 25,
+            paging: true,
+            processing: true,
+            searching: true,
+            serverSide: true,
+            ajax: {
+                url: '<?= base_url() ?>index.php/components?components.type=<?= $meta->component ?>&format=json',
+                dataSrc: 'data',
+                data: function (d) {
+                    d.limit = d.length;
+                    d.offset = d.start;
+                    <?php foreach ($meta->data_order as $key) { ?>
+                    if ($("#search_<?= $key ?>").val() != '') {
+                        d.<?= $key ?> = $("#search_<?= $key ?>").val();
+                    }
+                    <?php } ?>
+                    delete d.start;
+                    delete d.length;
+                    delete d.order;
+                    delete d.columns;
+                }
             },
-            columns: <?= json_encode($columns, JSON_PRETTY_PRINT) ?>,
-            data: dataSet
+            autoWidth: false,
+            columnDefs: [
+                // {className: "text-start", target: 0, width: "15em", title: "View"}
+            ],
+            columns: [
+                <?php foreach ($meta->data_order as $column) {
+                    echo "{ data: 'attributes.$column' },\n";
+                } ?>
+            ],
+            info: true,
+            language: {
+                infoFiltered: ""
+            },
+            layout: {
+                bottomStart: {
+                    info: {
+                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                    }
+                },
+                bottomEnd: {
+                    paging: {
+                        type: 'full_numbers'
+                    }
+                }
+            }
+        });
+
+        /* This stops the sort when clicking in a search text box in the table header */
+        $(".dataTablesearchField").on("click", function(e) { e.stopPropagation() });
+
+        /* And don't automatically send the result - wait for the user to press <enter> / <return> */
+        $(".dataTablesearchField").on("keypress", function (evtObj) {
+            if (evtObj.keyCode == 13) {
+                myDataTable.ajax.reload();
+            }
+        });
+
+        myDataTable.on('xhr', function (e, settings, json) {
+            if (json.warning) {
+                $("#notice").show();
+                $("#alert").html(json.warning + '<button id="button" type="button" class="btn-close" aria-label="Close"></button>');
+                $("#alert").show();
+            } else {
+                $("#alert").hide();
+            }
+        });
+        $(document).on('click', '#button', function() {
+            $(this).parent().hide();
         });
     });
 }
