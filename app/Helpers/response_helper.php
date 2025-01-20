@@ -618,29 +618,6 @@ if (!function_exists('response_get_data')) {
     }
 }
 
-function response_get_debug($get = '', $post = '', $header = '')
-{
-    # We cannot change the log threshold after creation.
-    # Leaving the below, but it won't have much effect.
-    $debug = false;
-    if (!empty($get) && strtolower($get) === 'true') {
-        $summary = 'Set debug TRUE according to GET.';
-        $debug = true;
-    }
-    if (!empty($post) && strtolower($post) === 'true') {
-        $summary = 'Set debug TRUE according to POST.';
-        $debug = true;
-    }
-    if (!empty($header) && strtolower($header) === 'true') {
-        $summary = 'Set debug TRUE according to HEADER.';
-        $debug = true;
-    }
-    if ($debug) {
-        log_message('debug', $summary);
-    }
-    return $debug;
-}
-
 if (!function_exists('response_get_query_filter')) {
     /**
      * [response_get_filter description]
