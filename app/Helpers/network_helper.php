@@ -146,7 +146,7 @@ if (! function_exists('network_details')) {
         if (! preg_match('/^0./', $dq_host)) {
             foreach (explode(".", $dq_host) as $octet) {
                 if ($octet > 255) {
-                    $details->error = "Invalid IP Address";
+                    $details->error = "Invalid IP Address.";
 
                     return($details);
                 }
@@ -260,7 +260,7 @@ if (! function_exists('bintoint')) {
     }
 }
 
-if (! function_exists('bintoint')) {
+if (! function_exists('binwmtonm')) {
     function binwmtonm($binin)
     {
         $binin = rtrim((string)$binin, "1");
@@ -397,6 +397,7 @@ if (! function_exists('subnet_validate')) {
         if (!preg_match('/^[\d,\.,\/,-]*$/', $subnet)) {
             $error->message = 'Invalid Subnet. Received (' . $subnet . ').';
             log_message('error', $error->message);
+            log_message('error', json_encode($error));
             $GLOBALS['stash'] = $error;
             return '';
         }
@@ -523,12 +524,20 @@ if (! function_exists('dns_validate')) {
 /**
  * Read the collection from the database
  *
- * @param  string $ip_address A standard IP, a list of comma separated subnets or an empty string
- * @return bool               Returns true if ip is contained in a subnet, false otherwise
+ * @param  string $ip_address A standard IP
+ * @return bool               Returns true if ip is contained in any network in the database, false otherwise
  */
 function check_ip(string $ip = ''): bool
 {
     if (empty($ip)) {
+        return false;
+    }
+
+    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        return true;
+    }
+
+    if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
         return false;
     }
 
@@ -552,13 +561,17 @@ function check_ip(string $ip = ''): bool
     if (stripos($ip, ':') !== false) {
         return true;
     }
+
     $db = db_connect();
     $sql = "SELECT COUNT(id) AS count FROM networks WHERE ((-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1)) OR network = '" . $ip . "/32')";
+
     $result = $db->query($sql, [$ip])->getResult();
+
     if (!empty($db->error()->code)) {
         log_message('error', json_encode($db->error()));
         return false;
     }
+
     if (intval($result[0]->count) > 0) {
         return true;
     } else {

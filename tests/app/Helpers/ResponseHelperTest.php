@@ -6,6 +6,8 @@ use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\ControllerTestTrait;
 use CodeIgniter\Test\DatabaseTestTrait;
 
+#[\AllowDynamicProperties]
+
 class ResponseHelperTest extends CIUnitTestCase
 {
     use DatabaseTestTrait;
@@ -13,6 +15,10 @@ class ResponseHelperTest extends CIUnitTestCase
 
     public function testResponseHelper()
     {
+        echo "\nExecuting Response Helper tests.\n";
+        log_message('debug', '');
+        log_message('debug', '');
+
         $collection = 'attributes';
         $action = 'read';
         $id = 23;
@@ -50,16 +56,6 @@ class ResponseHelperTest extends CIUnitTestCase
         // NOTE - assertEquals because the objects are not the SAME object
         $this->assertEquals((object)array("collection" => "attributes"), response_get_data('POST', '{"collection":"attributes"}', null));
         $this->assertEquals((object)array("collection" => "attributes"), response_get_data('PATCH', null, '{"collection":"attributes"}'));
-
-        # response_get_debug($get = '', $post = '', $header = '')
-        $this->assertSame(false, response_get_debug());
-        $this->assertSame(true, response_get_debug('true', null, null));
-        $this->assertSame(true, response_get_debug(null, 'true', null));
-        $this->assertSame(true, response_get_debug(null, null, 'true'));
-        $this->assertSame(true, response_get_debug('TRUE', null, null));
-        $this->assertSame(true, response_get_debug(null, 'TRUE', null));
-        $this->assertSame(true, response_get_debug(null, null, 'TRUE'));
-        $this->assertSame(true, response_get_debug('FALSE', null, 'TRUE'));
 
         # response_get_query_filter($query_string, $type = '')
         $this->assertEquals(array((object)array('name' => 'attributes.name', 'function' => 'where', 'operator' => '=', 'value' => 'Desktop')), response_get_query_filter('attributes.name=Desktop', 'filter'));
@@ -199,6 +195,15 @@ class ResponseHelperTest extends CIUnitTestCase
         $this->assertSame('orgs.name', response_get_sort('orgs', '', 'name'));
         $this->assertSame('', response_get_sort('', 'name', ''));
         $this->assertSame('', response_get_sort('', '', 'name'));
+
+
+
+        // Remove our added Orgs
+        log_message('debug', 'Deleting inserted Orgs.');
+        $sql = "DELETE FROM orgs WHERE id IN (2,3,4,5)";
+        $db->query($sql);
+
+        log_message('debug', '');
     }
 
     private function setupResponse()

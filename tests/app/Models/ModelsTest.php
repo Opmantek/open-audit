@@ -15,6 +15,8 @@ class ModelsTest extends CIUnitTestCase
 
     public function testModels()
     {
+        echo "\nExecuting Models tests.\n";
+
         helper('utility_helper');
         helper('network_helper');
 
