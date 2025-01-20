@@ -1102,9 +1102,6 @@ class IntegrationsModel extends BaseModel
         $instance = & get_instance();
         $include = array();
         $sql = "SELECT * FROM integrations_log WHERE integrations_id = ? AND `severity_text` != 'debug' LIMIT " . intval($instance->resp->meta->limit);
-        if (!empty($instance->resp->meta->debug)) {
-            $sql = "SELECT * FROM integrations_log WHERE integrations_id = ? LIMIT " . intval($instance->resp->meta->limit);
-        }
         $result = $this->db->query($sql, [$id])->getResult();
         $include['logs'] = format_data($result, 'integrations_log');
 

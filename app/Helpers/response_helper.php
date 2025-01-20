@@ -154,7 +154,6 @@ if (!function_exists('response_create')) {
         if ($response->meta->collection === 'components') {
             $response->meta->current = 'y';
         }
-        $response->meta->debug = false;
         $response->meta->filtered = '';
         $response->meta->groupby = '';
         $response->meta->header = 200;
