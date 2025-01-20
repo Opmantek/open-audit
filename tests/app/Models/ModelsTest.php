@@ -6,6 +6,8 @@ use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\ControllerTestTrait;
 use CodeIgniter\Test\DatabaseTestTrait;
 
+#[\AllowDynamicProperties]
+
 class ModelsTest extends CIUnitTestCase
 {
     use DatabaseTestTrait;
@@ -13,90 +15,116 @@ class ModelsTest extends CIUnitTestCase
 
     public function testModels()
     {
-        $response = $this->setupResponse();
-        $response->meta->collection = '';
-        $response->meta->action = '';
-        $response->meta->id = 1;
+        helper('utility_helper');
+        helper('network_helper');
+
+        $this->config = new \Config\OpenAudit();
+
+        $this->response = $this->setupResponse();
+        $this->response->meta->collection = '';
+        $this->response->meta->action = '';
+        $this->response->meta->id = null;
+
+        global $CI_INSTANCE;
+        $CI_INSTANCE[0] = &$this;
 
         helper('response');
         helper('utility');
         $db = db_connect();
 
-        $orgsModel = new \App\Models\OrgsModel();
-        $orgs = $orgsModel->listAll();
-        $usersModel = new \App\Models\UsersModel();
-        $user = $usersModel->read(1)[0]->attributes;
-        $user->org_list = '1,2,3,4,5';
+        $this->orgsModel = model('OrgsModel');
+        $this->orgs = $this->orgsModel->listAll();
+        $this->usersModel = model('UsersModel');
+        $this->user = $this->usersModel->read(1)[0]->attributes;
+        $this->user->org_list = '1,2,3,4,5';
+        $this->user->orgs = [1,2,3,4,5];
 
         # Setup a session for user
         $session = \Config\Services::session();
         $temp = bin2hex(openssl_random_pseudo_bytes(30));
-        $user->access_token = $temp;
+        $this->user->access_token = $temp;
         $access_token[] = $temp;
         $access_token = array_slice($access_token, -intval(config('Openaudit')->access_token_count));
-        $userdata = array('user_id' => $user->id, 'access_token' => $access_token);
+        $userdata = array('user_id' => $this->user->id, 'access_token' => $access_token);
         $session->set($userdata);
 
-        $response->meta->filter = response_get_query_filter('', 'filter');
-
+        $this->response->meta->filter = response_get_query_filter('', 'filter');
 
         $valid_collections = array('applications','attributes','auth','baselines','baselines_policies','baselines_results','benchmarks','clouds','clusters','connections','credentials','dashboards','devices','discoveries','discovery_log','discovery_scan_options','fields','files','groups','integrations','licenses','locations','networks','orgs','queries','racks','rack_devices','rules','scripts','summaries','tasks','users','widgets');
 
         $valid_actions = array('collection', 'read');
 
         foreach ($valid_collections as $collection) {
-            # $this->user->org_list = response_get_org_list($this->user, $response->meta->collection);
+            $model = $this->modelName($collection);
 
-            $model = $collection;
-            $model = str_replace('_', ' ', $model);
-            $model = ucwords($model);
-            $model = str_replace(' ', '', $model);
-            $model .= 'Model';
+            unset($this->response->meta->filter);
+            $this->response->meta->filter = array();
 
-            unset($response->meta->filter);
-            $response->meta->filter = array();
+            $this->response->meta->collection = $collection;
+            $this->response->meta->sort = $collection . '.id';
 
-            $response->meta->collection = $collection;
+            $this->response->meta->properties = array($collection . '.id', $collection . '.name');
 
-            $response->meta->properties = array($collection . '.id', $collection . '.name');
-            if ($response->meta->collection === 'discovery_log') {
-                $response->meta->properties = array($collection . '.id', $collection . '.message');
+            if ($this->response->meta->collection === 'discovery_log') {
+                $this->response->meta->properties = array('discovery_log.id', 'discovery_log.message');
             } else {
                 $item = new \StdClass();
                 $item->name = 'orgs.id';
-                if ($response->meta->collection !== 'orgs') {
-                    $item->name = $response->meta->collection . '.' . 'org_id';
+                if ($this->response->meta->collection !== 'orgs') {
+                    $item->name = $this->response->meta->collection . '.' . 'org_id';
                 }
                 $item->function = 'whereIn';
                 $item->operator = 'in';
-                if (is_string($user->org_list)) {
-                    $item->value = explode(',', $user->org_list);
-                } else {
-                    $item->value = $user->org_list;
-                }
-                $response->meta->filter[] = $item;
+                $item->value = $this->user->orgs;
+                $this->response->meta->filter[] = $item;
             }
 
-            $sql = "SELECT count(*) AS `count` FROM $collection";
+            if ($collection !== 'discovery_log') {
+                $sql = "SELECT count(*) AS `count` FROM $collection";
+            } else {
+                $sql = "SELECT count(*) AS `count` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` WHERE `message` NOT LIKE '%not responding, ignoring%' AND  `message` NOT LIKE '%responding, adding to device list%'";
+            }
+
+            log_message('debug', "SQL for $collection is: $sql");
             $count = intval($db->query($sql)->getResult()[0]->count);
 
-            foreach ($valid_actions as $action) {
-                $response->meta->action = $action;
+            ${$model} = model($model) or die("Could not load model for " . $model);
 
-                $collection = ucfirst($response->meta->collection);
-                if (strpos($collection, '_') !== false) {
-                    $collection = str_replace('_', ' ', $collection);
-                    $collection = ucwords($collection);
-                    $collection = str_replace(' ', '', $collection);
+            log_message('debug', "Testing Action collection on Model: $model");
+            $this->response->meta->action = 'collection';
+            $result = ${$model}->collection($this->response);
+            $this->assertIsArray($result, 'The return from ' . $collection . ' (' . $this->response->meta->action . ') is not an array');
+            if (!empty($GLOBALS['recordsFiltered'])) {
+                $this->assertEquals($count, $GLOBALS['recordsFiltered'], "Count of $collection (" . $this->response->meta->action . ") direct is $count, count via model is " . $GLOBALS['recordsFiltered']);
+                unset($GLOBALS['recordsFiltered']);
+            } else {
+                $this->assertCount($count, $result, "Count of $collection (" . $this->response->meta->action . ") direct is $count, count via model is " . count($result));
+            }
+
+            if (!empty($count)) {
+                log_message('debug', "Testing Action read on Model: $model");
+                $sql = "SELECT id FROM $collection ORDER BY id LIMIT 1";
+                $id = intval($db->query($sql)->getResult()[0]->id);
+                if (!empty($id)) {
+                    $this->response->meta->id = $id;
+                    $this->response->meta->action = 'read';
+                    $result = ${$model}->read($this->response->meta->id);
+                    $this->assertIsArray($result, 'The return from ' . $collection . ' (' . $this->response->meta->action . ') is not an array');
+                    $this->assertCount(1, $result, "Count of $collection (" . $this->response->meta->action . ") direct is $count, count via model is " . count($result));
                 }
-                $namespace = "\\App\\Models\\" . $collection . "Model";
-                ${strtolower($collection) . "Model"} = new $namespace;
-                ${$model} = new $namespace;
-                $result = ${$model}->collection($response);
-                $this->assertIsArray($result, 'The return from ' . $collection . ' (' . $response->meta->action . ') is not an array');
-                $this->assertCount($count, $result, "Count of $collection (" . $response->meta->action . ") direct is $count, count via model is " . count($result));
+                $this->response->meta->id = null;
             }
         }
+    }
+
+    private function modelName($collection)
+    {
+        $model = $collection;
+        $model = str_replace('_', ' ', $model);
+        $model = ucwords($model);
+        $model = str_replace(' ', '', $model);
+        $model .= 'Model';
+        return $model;
     }
 
     private function setupResponse()
@@ -118,7 +146,6 @@ class ModelsTest extends CIUnitTestCase
         $response->meta->access_token = '';
         $response->meta->baseurl = base_url();
         $response->meta->current = '';
-        $response->meta->debug = false;
         $response->meta->filtered = '';
         $response->meta->groupby = '';
         $response->meta->header = 200;
