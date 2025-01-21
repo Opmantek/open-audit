@@ -3,6 +3,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 include 'shared/collection_functions.php';
+$self_update = $update;
+if ($resource->id === $user->id) {
+    $self_update = true;
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -14,11 +18,17 @@ include 'shared/collection_functions.php';
                         <div class="col-6">
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
 
-                            <?= read_field('full_name', $resource->full_name, $dictionary->columns->full_name, $update) ?>
+                            <?= read_field('full_name', $resource->full_name, $dictionary->columns->full_name, $self_update) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('password', '', $dictionary->columns->password, $update, '', '', '', 'password') ?>
-                            <?= read_field('email', $resource->email, $dictionary->columns->email, $update) ?>
-                            <?= read_field('devices_default_display_columns', $resource->devices_default_display_columns, $dictionary->columns->devices_default_display_columns, $update) ?>
+                            <?= read_field('password', '', $dictionary->columns->password, $self_update, '', '', '', 'password') ?>
+                            <?= read_field('email', $resource->email, $dictionary->columns->email, $self_update) ?>
+                            <?php
+                            $value = $resource->devices_default_display_columns;
+                            if (empty($value)) {
+                                $value = __('Please set using') . ' ' . __('Manage') . ' -> ' . __('Devices') . ' -> ' . __('List Devices') . '.';
+                            }
+                            ?>
+                            <?= read_field('devices_default_display_columns', $resource->devices_default_display_columns, $dictionary->columns->devices_default_display_columns, $update, '', '', $value) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
@@ -33,7 +43,7 @@ include 'shared/collection_functions.php';
                                         <option value='pt-br'><?php echo __('Brazilian Portuguese'); ?></option>
                                         <option value='zh-tw'><?php echo __('Traditional Chinese'); ?></option>
                                         </select>
-                                        <?php if ($update) { ?>
+                                        <?php if ($self_update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="lang" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="lang" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
@@ -54,7 +64,7 @@ include 'shared/collection_functions.php';
                                         <option value='icon'><?php echo __('Icon'); ?></option>
                                         <option value='text'><?php echo __('Text'); ?></option>
                                         </select>
-                                        <?php if ($update) { ?>
+                                        <?php if ($self_update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="toolbar_style" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="toolbar_style" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
@@ -74,7 +84,7 @@ include 'shared/collection_functions.php';
                                         <option value=''><?= __('Standard') ?></option>
                                         <option value='compact'><?= __('Compact') ?></option>
                                         </select>
-                                        <?php if ($update) { ?>
+                                        <?php if ($self_update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="list_table_format" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
                                             <div data-attribute="list_table_format" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
