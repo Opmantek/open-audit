@@ -30,131 +30,106 @@ class ComponentsModel extends BaseModel
         $result = array();
         $count = count($resp->meta->filter);
         $instance = & get_instance();
+        $orgs = array();
+        $device_id = null;
+        // We also do the below in Collections controller as the HTML response needs to set the wable and warning
+        // Leave this in place for JSON direct requests (not via html + dataTables)
         for ($i = 0; $i < $count; $i++) {
             if ($resp->meta->filter[$i]->name === 'type' or $resp->meta->filter[$i]->name === 'components.type') {
                 // The request has populated components.type=memory or components.type=memory,processor - get those into the $table variable
-                if (strpos($resp->meta->filter[$i]->value, ',') !== false) {
+                $resp->meta->filter[$i]->value = str_replace('%', '', $resp->meta->filter[$i]->value);
+                $table = $resp->meta->filter[$i]->value;
+                if (strpos($table, ',') !== false) {
                     # We have a comma separated list of tables
                     $tables = explode(',', $resp->meta->filter[$i]->value);
+                    $table = $tables[0];
+                    $resp->meta->filter[$i]->name = $table;
+                    $tables = array();
+                    $resp->warning = 'You can only ask for one type of component. Returning ' . htmlentities($table) . '.';
+                    log_message('warning', $resp->warning);
                 }
-                $table = str_replace('%', '', $resp->meta->filter[$i]->value);
+                unset($resp->meta->filter[$i]);
                 $properties[] = $table . '.*';
             }
         }
         if ($table === '' and $resp->meta->format === 'html') {
             $table = 'ip';
-            \Config\Services::session()->setFlashdata('warning', 'No components.type supplied, returning IP data.');
+            $resp->warning = 'No components.type supplied, returning IP data.';
+            log_message('warning', $resp->warning);
         }
-        if ($table === '') {
-            // No components.type requested, return all the below
-            $tables = array('access_point', 'antivirus', 'benchmarks_result', 'bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
-        }
-        $orgs = array();
-        $count = count($resp->meta->filter);
-        for ($i = 0; $i < $count; $i++) {
-            if ($resp->meta->filter[$i]->name === 'components.org_id') {
-                $resp->meta->filter[$i]->name = 'devices.org_id';
-                $orgs = $resp->meta->filter[$i]->value;
+        $resp->meta->component = $table;
+        foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'components.org_id') {
+                $filter->name = 'devices.org_id';
             }
         }
-        $device_sql = '';
-        $device_id = null;
-        $count = count($resp->meta->filter);
-        for ($i = 0; $i < $count; $i++) {
-            if ($resp->meta->filter[$i]->name === 'components.device_id') {
-                $device_sql = " AND `$table`.device_id = " . intval($resp->meta->filter[$i]->value);
-                $device_id = intval($resp->meta->filter[$i]->value);
+        foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'components.device_id') {
+                $filter->name = $table . '.device_id';
             }
         }
-        if (empty($tables)) {
-            if (!in_array($table, ['access_point', 'antivirus', 'audit_log', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
-                # Invalid table
-                log_message('error', 'Invalid table provided to ComponentsModel::collection, ' . $table);
-                $_SESSION['error'] = 'Invalid table provided to ComponentsModel::collection, ' . htmlentities($table);
-                return array();
-            }
+        if (!in_array($table, ['access_point', 'antivirus', 'audit_log', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
+            # Invalid table
+            $resp->warning = 'Invalid table provided to ComponentsModel::collection, ' . htmlentities($table);
+            log_message('error', $resp->warning);
+            return array();
+        }
 
-            // For dataTables
-            $sql = "SELECT count(*) AS `count` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) $device_sql";
-            $query = $this->db->query($sql, [implode(',', $orgs)]);
-            log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
-            $result = $query->getResult();
-            $GLOBALS['recordsFiltered'] = 0;
-            if (isset($result[0]->count)) {
-                $GLOBALS['recordsFiltered'] = intval($result[0]->count);
-            }
-
-            $this->builder = $this->db->table($table);
-            if ($table !== 'benchmarks_result') {
-                if (!empty($instance->config->license_limit) and $instance->config->device_known > intval($instance->config->license_limit * 1.1)) {
-                    log_message('warning', 'Restricting Devices to the first ' . $instance->config->license_limit . ' devices as per license. There are actually ' . $instance->config->device_known . ' licensed devices in the database.');
-                    $resp->warning = 'Restricting Devices to the first ' . $instance->config->license_limit . ' devices as per license. There are actually ' . $instance->config->device_known . ' licensed devices in the database.';
-
-                    $subquery = $this->db->table('devices');
-                    $subquery->orderBy('devices.id');
-                    $subquery->limit(intval($instance->config->license_limit));
-                    $this->builder = $this->db->newQuery()->fromSubquery($subquery, 'devices');
-                }
-                $properties = array();
-                // $properties[] = "$table as `table`";
-                $properties[] = "$table.*";
-                $properties[] = "devices.id as `devices.id`";
-                $properties[] = "devices.name as `devices.name`";
-                $this->builder->select($properties, false);
-                $this->builder->join('devices', $table . '.device_id = devices.id', 'left');
-                foreach ($resp->meta->filter as $filter) {
-                    $filter->name = str_replace('components.', $table . '.', $filter->name);
-                    if ($filter->name === $table . '.type') {
-                        continue;
-                    }
-                    if (strpos($filter->name, '.') === false) {
-                        $filter->name = $table . '.' . $filter->name;
-                    }
-                    if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                        $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-                    } else {
-                        $this->builder->{$filter->function}($filter->name, $filter->value);
-                    }
-                }
-                $this->builder->orderBy($resp->meta->sort);
-                $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-                // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
-                $query = $this->builder->get();
-                $result = $query->getResult();
-                foreach ($result as $row) {
-                    $row->table = $table;
-                }
-                $result = format_data($result, $table);
-                return $result;
-            }
-
-            if ($table === 'benchmarks_result') {
-                $sql = "SELECT `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name`, benchmarks_policies.id AS `benchmarks_policies.id` FROM `$table` LEFT JOIN benchmarks_policies ON benchmarks_result.external_ident = benchmarks_policies.external_ident LEFT JOIN `devices` ON `$table`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN $table ON devices.id = $table.device_id LEFT JOIN benchmarks_policies ON benchmarks_result.external_ident = benchmarks_policies.external_ident WHERE devices.type NOT IN ('unknown', 'unclassified') AND devices.org_id IN (" . implode(',', $orgs) . ") AND $table.id IS NOT NULL ORDER BY devices.id LIMIT " . $instance->config->license_limit . ") as D2 on $table.device_id = D2.id WHERE devices.org_id IN (" . implode(',', $orgs) . ") $device_sql LIMIT " . $resp->meta->limit;
-                $query = $this->db->query($sql, [implode(',', $orgs)]);
-                $result = $query->getResult();
-                return format_data($result, $table);
-            }
-        } else {
-            foreach ($tables as $table) {
-                if (empty($device_id)) {
-                    $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) LIMIT " . $resp->meta->limit;
-                    if ($instance->config->device_known > $instance->config->device_license and $instance->config->device_license > 0) {
-                        $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN $table ON devices.id = $table.device_id WHERE devices.type NOT IN ('unknown', 'unclassified') AND devices.org_id IN (" . implode(',', $orgs) . ") AND $table.id IS NOT NULL ORDER BY devices.id LIMIT " . $instance->config->device_license . ") as D2 on $table.device_id = D2.id WHERE devices.org_id IN (?) LIMIT " . $resp->meta->limit;
-                    }
-                } else {
-                    $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) AND devices.id = $device_id LIMIT " . $resp->meta->limit;
-                    if ($instance->config->device_known > $instance->config->device_license and $instance->config->device_license > 0) {
-                        $sql = "SELECT '$table' AS `table`, `$table`.*, devices.id AS `devices.id`, devices.name AS `devices.name` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id JOIN (SELECT DISTINCT devices.id FROM `devices` LEFT JOIN $table ON devices.id = $table.device_id WHERE devices.type NOT IN ('unknown', 'unclassified') AND devices.org_id IN (" . implode(',', $orgs) . ") AND $table.id IS NOT NULL ORDER BY devices.id LIMIT " . $instance->config->device_license . ") as D2 on $table.device_id = D2.id WHERE devices.org_id IN (?) AND devices.id = $device_id LIMIT " . $resp->meta->limit;
-                    }
-                }
-                $query = $this->db->query($sql, [implode(',', $orgs)]);
-                if ($this->sqlError($this->db->error())) {
-                    return array();
-                }
-                $result = array_merge($result, format_data($query->getResult(), $table));
-            }
-            return $result;
+        // For dataTables
+        $sql = "SELECT count(*) AS `count` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?)";
+        $query = $this->db->query($sql, [implode(',', $orgs)]);
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        $result = $query->getResult();
+        $GLOBALS['recordsFiltered'] = 0;
+        if (isset($result[0]->count)) {
+            $GLOBALS['recordsFiltered'] = intval($result[0]->count);
         }
+
+        $this->builder = $this->db->table($table);
+        if (!empty($instance->config->license_limit) and $instance->config->device_known > intval($instance->config->license_limit * 1.1)) {
+            $resp->warning = 'Restricting Devices to the first ' . $instance->config->license_limit . ' devices as per license. There are actually ' . $instance->config->device_known . ' licensed devices in the database.';
+            log_message('warning', $resp->warning);
+
+            $subquery = $this->db->table('devices');
+            $subquery->orderBy('devices.id');
+            $subquery->limit(intval($instance->config->license_limit));
+            $this->builder = $this->db->newQuery()->fromSubquery($subquery, 'devices');
+        }
+        $properties = array();
+        $properties[] = "'$table' as `table`";
+        $properties[] = "$table.*";
+        $properties[] = "devices.id as `devices.id`";
+        $properties[] = "devices.name as `devices.name`";
+        $this->builder->select($properties, false);
+        $this->builder->join('devices', $table . '.device_id = devices.id', 'left');
+        foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'type' or $filter->name === 'components.type' or $filter->name === $table . '.type') {
+                continue;
+            }
+            $filter->name = str_replace('components.', $table . '.', $filter->name);
+            if ($filter->name === $table . '.type') {
+                continue;
+            }
+            $filter->name = str_replace('__', '.', $filter->name);
+            if (strpos($filter->name, '.') === false) {
+                $filter->name = $table . '.' . $filter->name;
+            }
+            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
+                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
+            } else {
+                $this->builder->{$filter->function}($filter->name, $filter->value);
+            }
+        }
+        $this->builder->orderBy($resp->meta->sort);
+        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
+        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
+        $query = $this->builder->get();
+        $result = $query->getResult();
+        foreach ($result as $row) {
+            $row->table = $table;
+        }
+        $result = format_data($result, $table);
+        return $result;
     }
 
     /**

@@ -111,12 +111,19 @@ class Collections extends BaseController
         if ($this->resp->meta->collection === 'components') {
             $count = count($this->resp->meta->filter);
             $table = 'ip';
-            for ($i = 0; $i < $count; $i++) {
-                if ($this->resp->meta->filter[$i]->name === 'type' or $this->resp->meta->filter[$i]->name === 'components.type') {
-                    $table = str_replace('%', '', $this->resp->meta->filter[$i]->value);
+            foreach ($this->resp->meta->filter as $filter) {
+                if ($filter->name === 'type' or $filter->name === 'components.type') {
+                    $table = str_replace('%', '', $filter->value);
+                    $tables = explode(',', $table);
+                    $table = $tables[0];
+                    if (strpos($filter->value, ',') !== false) {
+                        $_SESSION['warning'] = 'Can only ask for one type of component. Returning ' . $table . '.';
+                        log_message('warning', $_SESSION['warning']);
+                    }
                 }
             }
             $this->resp->meta->data_order = $this->componentsModel->getFields($table);
+            $this->resp->meta->data_order[] = 'devices__name';
             $this->resp->meta->component = $table;
         }
         if ($this->resp->meta->collection === 'discoveries') {

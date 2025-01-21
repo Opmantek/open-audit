@@ -3,31 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
 $user->permissions['components'] = '';
-if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
-    for ($i = 0; $i < count($data); $i++) {
-        unset($data[$i]->attributes->first_seen);
-        unset($data[$i]->attributes->last_seen);
-        $data[$i]->attributes->policy = '<a title="' . __('View Policy') . '" role="button" class="btn ' . $GLOBALS['button'] . ' btn-primary" href="' . url_to('benchmarks_policiesRead', intval($data[$i]->attributes->{'benchmarks_policies.id'})) . '"><span style="width:1rem;" title="' . __('View Policy') . '" class="fa fa-eye" aria-hidden="true"></span></a>';
-        unset($data[$i]->attributes->{'benchmarks_policies.id'});
-        switch ($data[$i]->attributes->result) {
-            case 'pass':
-                $data[$i]->attributes->result = '<span class="text-success">' . $data[$i]->attributes->result . '</span>';
-                break;
-
-            case 'fail':
-                $data[$i]->attributes->result = '<span class="text-danger">' . $data[$i]->attributes->result . '</span>';
-                break;
-
-            case 'error':
-                $data[$i]->attributes->result = '<span class="text-warning">' . $data[$i]->attributes->result . '</span>';
-                break;
-
-            default:
-                $data[$i]->attributes->result = '<span class="text-primary">' . $data[$i]->attributes->result . '</span>';
-                break;
-        }
-    }
-}
+$collection = $meta->component;
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -36,6 +12,10 @@ if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
                 </div>
                 <div class="card-body">
                     <br>
+                    <div id="notice" class="container-fluid" style="display:none;">
+                        <div id="alert" class="alert alert-warning alert-dismissible fade show" role="alert">
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <div id="notice" class="container-fluid" style="display:none;">
                             <div id="alert" class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -43,8 +23,12 @@ if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
                         </div>
                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableComponents" data-order='[[2,"asc"]]'>
                             <thead>
-                                <?php foreach ($meta->data_order as $key) { ?>
-                                    <th ><?= collection_column_name($key) ?></th>
+                                <?php foreach ($meta->data_order as $key) {
+                                    $align = '';
+                                    if (strpos($key, 'id') === intval(strlen($key) - 2)) {
+                                        $align = 'text-center';
+                                    } ?>
+                                    <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
                                 <?php } ?>
                             </thead>
                             <thead>
@@ -67,7 +51,7 @@ if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
 window.onload = function () {
     $(document).ready(function () {
 
-        let ipSort = {};
+        let logSort = {};
         var myDataTable = new DataTable('.dataTableComponents', {
             lengthChange: true,
             lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
@@ -83,6 +67,35 @@ window.onload = function () {
                 data: function (d) {
                     d.limit = d.length;
                     d.offset = d.start;
+                    if (d.order[0]) {
+                    <?php
+                    foreach ($meta->data_order as $key) {
+                        $sort_key = $key;
+                        if (strpos($key, "__") !== false) {
+                            $sort_key = str_replace('__', '.', $key);
+                        } else {
+                            $sort_key = $collection . '.' . $key;
+                        }
+                        echo "\n\t\t\t\t\t\tif (d.columns[d.order[0].column].data == 'attributes.$key') {
+                            logSort.column = '$key';
+                            logSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = '$sort_key';
+                            } else {
+                                d.sort = '-$sort_key';
+                            }
+                        }\n";
+                    }
+                    ?>
+                    } else {
+                        if (logSort.direction == 'asc') {
+                            d.sort = '-' + logSort.column;
+                            logSort.direction = 'desc';
+                        } else {
+                            d.sort = logSort.column;
+                            logSort.direction = 'asc';
+                        }
+                    }
                     <?php foreach ($meta->data_order as $key) { ?>
                     if ($("#search_<?= $key ?>").val() != '') {
                         d.<?= $key ?> = $("#search_<?= $key ?>").val();
@@ -96,11 +109,63 @@ window.onload = function () {
             },
             autoWidth: false,
             columnDefs: [
-                // {className: "text-start", target: 0, width: "15em", title: "View"}
+                <?php for ($i = 0; $i < count($meta->data_order); $i++) {
+                    if (strpos($meta->data_order[$i], 'id') === intval(strlen($meta->data_order[$i]) - 2)) {
+                        echo "\n                {className: \"text-center\", target: $i, width: \"12em\", visible: true, name:\"" . $meta->data_order[$i] . "\", sortable: false},";
+                    } else {
+                        echo "\n                {className: \"text-start\",  target: $i, width: \"12em\", visible: true, name:\"" . $meta->data_order[$i] . "\"},";
+                    }
+                }
+                ?>
             ],
             columns: [
                 <?php foreach ($meta->data_order as $column) {
-                    echo "{ data: 'attributes.$column' },\n";
+                    if ($column === 'id') {
+                        echo '{ data: \'attributes.id\',
+                            render: function (data, type, row, meta) {
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/components/" + row.attributes.id + "?components.type=' . $collection . '\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                            }
+                        },';
+                        echo "\n";
+                    } else if ($column === 'device_id') {
+                        echo '{ data: \'attributes.device_id\',
+                            render: function (data, type, row, meta) {
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/devices/" + row.attributes.device_id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                            }
+                        },';
+                        echo "\n";
+                    } else if ($column === 'benchmark_id') {
+                        echo '{ data: \'attributes.benchmark_id\',
+                            render: function (data, type, row, meta) {
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/benchmarks/" + row.attributes.benchmark_id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                            }
+                        },';
+                        echo "\n";
+                    } else if ($column === 'external_ident' and $collection === 'benchmarks_result') {
+                        echo '{ data: \'attributes.external_ident\',
+                            render: function (data, type, row, meta) {
+                                return "<a title=\"View\" href=\"' . base_url() . 'index.php/benchmarks_policies?benchmarks_policies.external_ident=" + row.attributes.external_ident + "\">" + row.attributes.external_ident + "</a>";
+                            }
+                        },';
+                        echo "\n";
+                    } else if ($column === 'result') {
+                        echo '{ data: \'attributes.result\',
+                            render: function (data, type, row, meta) {
+                                if (row.attributes.result == \'pass\') {
+                                    return "<span class=\"text-success\" aria-hidden=\"true\">" + row.attributes.result + "</span>";
+                                } else if (row.attributes.result == \'fail\') {
+                                    return "<span class=\"text-danger\" aria-hidden=\"true\">" + row.attributes.result + "</span>";
+                                } else if (row.attributes.result == \'error\') {
+                                    return "<span class=\"text-warning\" aria-hidden=\"true\">" + row.attributes.result + "</span>";
+                                } else {
+                                    return "<span class=\"text-primary\" aria-hidden=\"true\">" + row.attributes.result + "</span>";
+                                }
+                            }
+                        },';
+                        echo "\n";
+                    } else {
+                        echo "{ data: 'attributes.$column' },\n";
+                    }
                 } ?>
             ],
             info: true,
