@@ -102,7 +102,17 @@ if (!function_exists('response_create')) {
             log_message('error', 'Invalid collection supplied (' . $response->meta->collection . '), removing.');
             $response->meta->collection = '';
         }
+
+
+        $instance->user->org_list = response_get_org_list($instance->user, $response->meta->collection);
+
         $response->meta->id = null;
+        // depends on collection - set in URI or POST
+        $response->meta->id = response_get_id(
+            html_entity_decode(urldecode($uri->getSegment(2))),
+            $response->meta->collection,
+            $instance->user->org_list
+        );
 
         # We have what the user is trying to do and to what (if any) item - check permissions
         $permission_requested = response_valid_permissions($response->meta->collection);
@@ -117,11 +127,23 @@ if (!function_exists('response_create')) {
         if ($response->meta->collection === 'configuration' and $response->meta->action === 'executeemail') {
             $response->meta->action = 'create';
         }
+        if ($response->meta->collection === 'users' and $response->meta->action === 'update' and $response->meta->id === $instance->user->id) {
+            if (strpos($instance->user->permissions['users'], 'r') === false) {
+                // Allowed to read self
+                $instance->user->permissions['users'] .= 'r';
+            }
+            if (strpos($instance->user->permissions['users'], 'u') === false) {
+                // Allowed to update self
+                $instance->user->permissions['users'] .= 'u';
+            }
+        }
 
         // log_message('debug', 'Action: ' . $response->meta->action);
         // log_message('debug', 'Collection: ' . $response->meta->collection);
         // log_message('debug', 'Permission Requested: ' . $permission_requested[$response->meta->action]);
         // log_message('debug', 'UserPermission: ' . $instance->user->permissions[$response->meta->collection]);
+        // log_message('debug', 'ID: ' . $response->meta->id . ' is a ' . gettype($response->meta->id));
+        // log_message('debug', 'UserID: ' . $instance->user->id . ' is a ' . gettype($instance->user->id));
 
         if ($response->meta->collection !== 'help') {
             if (empty($instance->user->permissions[$response->meta->collection]) or strpos($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action]) === false) {
@@ -142,7 +164,6 @@ if (!function_exists('response_create')) {
                 log_message('debug', 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', and has permission to do so.');
             }
         }
-        $instance->user->org_list = response_get_org_list($instance->user, $response->meta->collection);
         $response->meta->permission_requested = $permission_requested;
 
         $response->links = new \StdClass();
@@ -207,18 +228,9 @@ if (!function_exists('response_create')) {
         // Set the heading based on the collection
         $response->meta->heading = ucfirst($response->meta->collection);
 
-        // depends on collection - set in URI or POST
-        $response->meta->id = response_get_id(
-            html_entity_decode(urldecode($uri->getSegment(2))),
-            $response->meta->collection,
-            $instance->user->org_list
-        );
         if ($response->meta->collection === 'help') {
             $response->meta->action = 'about';
         }
-        // if ($response->meta->action === 'create') {
-        //     $response->meta->id = null;
-        // }
 
         // no dependencies - set in GET or POST
         $temp = response_get_ids($request->getGet('ids'), $request->getPost('ids'));

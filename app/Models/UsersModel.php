@@ -276,6 +276,7 @@ class UsersModel extends BaseModel
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
                 }
                 $user->password = null;
+                $user->id = intval($user->id);
             }
 
 
