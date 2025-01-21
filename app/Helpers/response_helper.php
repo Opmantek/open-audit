@@ -431,6 +431,9 @@ if (!function_exists('response_create')) {
         if ($response->meta->collection === 'configuration' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id)) {
             $license_config = true;
         }
+        if ($response->meta->collection === 'roles' and $response->meta->action === 'create') {
+            $license_config = true;
+        }
         $permission_requested = $response->meta->permission_requested;
         $collections = new \Config\Collections();
         if (!empty($config->enterprise_binary) and ($db->tableExists('enterprise') and !empty($collections->{$response->meta->collection}->edition) and $collections->{$response->meta->collection}->edition !== 'Community') or $license_config === true) {
