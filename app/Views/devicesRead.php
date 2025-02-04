@@ -213,6 +213,11 @@ if (empty($resource->type)) {
                                             <?= read_field('os_family', $resource->os_family, '', $update, __('OS Family')) ?>
                                             <?= read_field('processor_count', $resource->processor_count, '', false, __('Processors')) ?>
                                             <?= read_field('uptime', $resource->uptime) ?>
+                                            <?php if (!empty($resource->vm_device_id) and !empty($resource->vm_server_name)) {
+                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesRead', $resource->vm_device_id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                                echo read_field('VM Host', $resource->vm_server_name, '', '', '', $link);
+                                            }
+                                            ?>
                                         </div>
                                         <div class="col-4">
                                             <?= read_field('domain', $resource->domain, '', $update) ?>
@@ -2665,7 +2670,11 @@ if (empty($resource->type)) {
                                                 <tr>
                                                     <?= device_component_button_read('vm', $row->id) ?>
                                                     <td class="text-center"><?= $row->icon ?></td>
-                                                    <td><?= $row->name ?></td>
+                                                    <?php if (!empty($row->guest_device_id)) { ?>
+                                                        <td><a href="<?= url_to('devicesRead', $row->guest_device_id) ?>"><?= $row->name ?></a></td>
+                                                    <?php } else { ?>
+                                                        <td><?= $row->name ?></td>
+                                                    <?php } ?>
                                                     <td><?= $row->type ?></td>
                                                     <td><?= $row->memory_count ?></td>
                                                     <td><?= $row->cpu_count ?></td>

@@ -1083,23 +1083,27 @@ class DevicesModel extends BaseModel
         }
 
         // Check if we have a matching entry in the vm table and update it if required
-        $sql = "SELECT vm.id AS `vm.id`, vm.device_id AS `vm.device_id`, devices.hostname AS `devices.hostname` FROM vm, devices WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.uuid != '' AND vm.current = 'y' AND vm.device_id = devices.id;";
-        $query = $this->db->query($sql, [@$data->uuid, @$data->vm_uuid]);
-        if ($query->getNumRows() > 0) {
-            $row = $query->getRow();
-            $temp_vm_id = $row->{'vm.id'};
-            $data->vm_device_id = $row->{'vm.device_id'};
-            $data->vm_server_name = $row->{'devices.hostname'};
-            $sql = "SELECT icon, 'vm' FROM devices WHERE id = ?";
-            $query = $this->db->query($sql, [$id]);
-            $row = $query->getRow();
-            $data->icon = $row->icon;
-            $myName = (!empty($data->name)) ? $data->name : '';
-            $myName = (empty($myName) and !empty($data->hostname)) ? $data->hostname : '';
-            $sql = 'UPDATE vm SET guest_device_id = ?, icon = ?, name = ? WHERE id = ?';
-            $query = $this->db->query($sql, [$id, $data->icon, $myName, intval($temp_vm_id)]);
-            $sql = 'UPDATE devices SET vm_device_id = ?, vm_server_name = ? WHERE id = ?';
-            $query = $this->db->query($sql, [$data->vm_device_id, $data->vm_server_name, $data->id]);
+        if (!empty($data->uuid) and !empty($data->vm_uuid)) {
+            $sql = "SELECT vm.id AS `vm.id`, vm.device_id AS `vm.device_id`, devices.hostname AS `devices.hostname` FROM vm, devices WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.uuid != '' AND vm.current = 'y' AND vm.device_id = devices.id;";
+            $query = $this->db->query($sql, [$data->uuid, $data->vm_uuid]);
+            if ($query->getNumRows() > 0) {
+                $row = $query->getRow();
+                $temp_vm_id = $row->{'vm.id'};
+                $data->vm_device_id = $row->{'vm.device_id'};
+                $data->vm_server_name = $row->{'devices.hostname'};
+                $sql = "SELECT icon, 'vm' FROM devices WHERE id = ?";
+                $query = $this->db->query($sql, [$id]);
+                $row = $query->getRow();
+                $data->icon = $row->icon;
+                $myName = (!empty($data->name)) ? $data->name : '';
+                if (empty($myName) and !empty($data->hostname)) {
+                    $myName = $data->hostname;
+                }
+                $sql = 'UPDATE vm SET guest_device_id = ?, icon = ?, name = ? WHERE id = ?';
+                $query = $this->db->query($sql, [$id, $data->icon, $myName, intval($temp_vm_id)]);
+                $sql = 'UPDATE devices SET vm_device_id = ?, vm_server_name = ? WHERE id = ?';
+                $query = $this->db->query($sql, [$data->vm_device_id, $data->vm_server_name, $data->id]);
+            }
         }
         // Ensure we have an OrgID
         if (empty($data->org_id)) {
