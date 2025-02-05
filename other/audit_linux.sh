@@ -3750,8 +3750,8 @@ if [ "$submit_online" = "y" ]; then
 			else
 				curl -o add_system --data-binary "@$xml_file" "$url"
 			fi
-			cat add_system
-			rm add_system
+			cat add_system 2>/dev/null
+			rm add_system 2>/dev/null
 		else
 			if [ "$ignore_invalid_ssl" = "y" ]; then
 				curl -k --data-binary "@$xml_file" "$url" >/dev/null 2>&1
@@ -3771,8 +3771,8 @@ if [ "$submit_online" = "y" ]; then
 				else
 					wget -O add_system --post-file="$xml_file" "$url"
 				fi
-				cat add_system
-				rm add_system
+				cat add_system 2>/dev/null
+				rm add_system 2>/dev/null
 			else
 				if [ "$ignore_invalid_ssl" = "y" ]; then
 					wget --no-check-certificate --delete-after --post-file="$xml_file" "$url" 2>/dev/null
