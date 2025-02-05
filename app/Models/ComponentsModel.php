@@ -30,8 +30,9 @@ class ComponentsModel extends BaseModel
         $result = array();
         $count = count($resp->meta->filter);
         $instance = & get_instance();
-        $orgs = array();
+        $orgs = $instance->user->orgs;
         $device_id = null;
+
         // We also do the below in Collections controller as the HTML response needs to set the wable and warning
         // Leave this in place for JSON direct requests (not via html + dataTables)
         for ($i = 0; $i < $count; $i++) {
@@ -125,9 +126,6 @@ class ComponentsModel extends BaseModel
         // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
         $query = $this->builder->get();
         $result = $query->getResult();
-        foreach ($result as $row) {
-            $row->table = $table;
-        }
         $result = format_data($result, $table);
         return $result;
     }
