@@ -150,6 +150,7 @@ function getLicenseDetails()
     $license->count = 0;
     $license->expires = '2000-01-01';
     $license->type = '';
+    $license->string = hash('sha256', trim($config->license_string));
 
     // License info
     if (!empty($config->enterprise_binary)) {
@@ -222,12 +223,38 @@ function createFeedData()
             $data->products[] = $module->name;
         }
     }
-    $data->uuid = $config->uuid;
-    $data->license = getLicenseDetails();
-
+    // $data->uuid = $config->uuid;
+    $license = getLicenseDetails();
+    $data->uuid = hash('sha256', $config->uuid);
+    $data->server = hash('sha256', trim(`hostname`));
     $data->server_platform = $config->server_platform;
     $data->server_os = $config->server_os;
     $data->server_timezone = getOsTimezone();
+
+    $data->device_count = (!empty($config->device_known)) ? $config->device_known : 0;
+    $data->stats = new stdClass();
+
+    $collections = new \Config\Collections();
+    $baseModel = model('App\Models\BaseModel');
+    $databaseModel = model('App\Models\DatabaseModel');
+    $exceptions = array('baselines_policies', 'baselines_results', 'benchmarks_policies', 'discovery_log', 'integrations_log', 'maps');
+    foreach ($collections as $collection => $value) {
+        if (in_array($collection, $exceptions)) {
+            continue;
+        }
+        if ($db->tableExists($collection)) {
+            $defaults_count = count($baseModel->tableDefaults($collection));
+            $sql = "SELECT COUNT(*) AS `count` FROM " . $collection;
+            $result = $db->query($sql)->getResult();
+            $database_count = intval($result[0]->count);
+            if ($database_count > $defaults_count) {
+                $data->stats->{$collection} = intval($database_count - $defaults_count);
+            }
+        }
+    }
+    $license = json_encode($license);
+    openssl_public_encrypt($license, $enc_license, $config->public_key);
+    $data->license = bin2hex($enc_license);
     $data->issues = array();
     $data->features = new \stdClass();
 

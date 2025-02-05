@@ -194,6 +194,7 @@ class OpenAudit extends BaseConfig
     public int $page_size;
     public string $process_netstat_windows_dns;
     public string $product = 'community';
+    public string $public_key = '';
     public int $queue_count;
     public int $queue_limit;
     public string $rss_enable;

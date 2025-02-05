@@ -161,11 +161,11 @@ class FeedsModel extends BaseModel
             return false;
         }
         $config = new \Config\OpenAudit();
-        helper('utility_helper');
         if (empty($config->feature_feeds) or $config->feature_feeds !== 'y') {
             // Do not run
             return true;
         }
+        helper('utility_helper');
         $data = createFeedData();
         // echo "<pre>";
         // echo json_encode($data);

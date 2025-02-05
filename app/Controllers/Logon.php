@@ -46,8 +46,8 @@ class Logon extends Controller
     public function createForm()
     {
         $session = session();
+        $config =  new \Config\OpenAudit();
         if (!empty($session->get('user_id'))) {
-            $config =  new \Config\OpenAudit();
             if ($config->device_count === 0) {
                 return redirect()->to(url_to('welcome'));
             } else {
@@ -113,21 +113,16 @@ class Logon extends Controller
         $db->query($sql, [$server_platform]);
         log_message('info', 'Config auto-populated with ServerPlatform ' . $server_platform . '.');
 
-
-        $sql = "SELECT * FROM configuration WHERE name = 'feature_feeds'";
-        $result = $db->query($sql)->getResult();
-        if (!empty($result[0]->value) and $result[0]->value === 'y') {
-            $last_request_date = '2000-01-01';
-            $sql = "SELECT * FROM configuration WHERE name = 'feature_feeds_last_request_date'";
-            $result = $db->query($sql)->getResult();
-            if (!empty($result) and !empty($result[0]->value)) {
-                $last_request_date = $result[0]->value;
-            }
-            if ($last_request_date < date('Y-m-d')) {
+        if (!empty($config->feature_feeds) and $config->feature_feeds === 'y') {
+            $last_request_date = (!empty($config->feature_feeds_last_request_date)) ? $config->feature_feeds_last_request_date : '2001-01-01';
+            $today = date('Y-m-d');
+            if ($last_request_date < $today) {
                 // Request a feed item
                 log_message('info', 'Requesting feed article.');
                 $feedsModel = model('FeedsModel');
                 $feedsModel->executeAll();
+                $sql = 'UPDATE configuration SET value = ? WHERE name = "feature_feeds_last_request_date"';
+                $db->query($sql, [$today]);
             }
         }
 

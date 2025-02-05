@@ -17,7 +17,7 @@ $intro = '<p>Feeds is our way of keeping you uptodate with the latest fixes, ann
 $body = '
 <h2>What do we send?</h2>
 <br>
-<p>We only send the minimum amount of data and definitley nothing of a sensitive nature. We send our license data (name, type, etc), our application data (name, version, platform, timezone, etc), any logged errors, a count of device types and a count of the features used. <i>Any</i> environment has devices and that\'s the only piece of your data we send. And only the type of device and a count. Not the manufacturer, not the model. We send nothing special. No networks. No IP addresses. No OS versions. No software names. Just the data we find useful to improve the product.</p>
+<p>We only send the minimum amount of data and definitley nothing of a sensitive nature. We send our license data (name, type, etc), our application data (name, version, platform, timezone, etc), any logged errors, a count of device types and a count of the features used. <i>Any</i> environment has devices and that\'s the only piece of your data we send. And only the type of device and a count. Not the manufacturer, not the model. We send nothing special. No networks. No IP addresses. No OS versions. No software names. The UUID and Server fields are sha256 encoded (so we don\'t know the value). We send just the data we need to improve the product.</p>
 <br><br>
 <h2>Data</h2>
 <p>Because we try to be as transparent as possible, here is your actual data that we send.</p>
