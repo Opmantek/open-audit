@@ -107,6 +107,21 @@ class ConfigurationModel extends BaseModel
     }
 
     /**
+     * Read an individual item from the database, by name
+     *
+     * @param int $id The ID of the requested item
+     * @return array The array of requested items
+     */
+    public function readName(string $name = ''): array
+    {
+        $query = $this->builder->getWhere(['name' => $name]);
+        if ($this->sqlError($this->db->error())) {
+            return array();
+        }
+        return format_data($query->getResult(), 'configuration');
+    }
+
+    /**
      * Reset a table
      *
      * @return bool Did it work or not?

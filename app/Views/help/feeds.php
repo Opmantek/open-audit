@@ -3,14 +3,14 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-$intro = '<p>Feeds is our way of keeping you uptodate with the latest fixes, announcements and other items of note.<br>
+$intro = '<p>Feeds is our way of keeping you up-to-date with the latest fixes, announcements, query updates, software versions and more.<br>
     <br>
     You don\'t need to keep on top of the wiki or check for new releases, we can send these to you!</p>
     <br><br>
     <h2>Notes</h2>
 <br>
 <p>Feeds check-in each time you login for updated queries & packages, configuration recommendations, release announcements, blog posts and more.</p>
-<p>In order to use this functionality, it must be enabled in the configuration - click <a href="' . url_to('configurationCollection') . '?configuration.name=LIKEfeeds">here</a>.</p>
+<p>In order to use this functionality, it must be enabled in the configuration - click <a href="' . url_to('configurationCollection') . '?configuration.name=feature_feeds">here</a>.</p>
 <p>Along with this request for information, we send back to FirstWave datapoints that will give us some much needed data on feature use and your installation.</p>
 <br><br>';
 

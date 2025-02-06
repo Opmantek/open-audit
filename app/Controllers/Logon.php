@@ -114,15 +114,16 @@ class Logon extends Controller
         log_message('info', 'Config auto-populated with ServerPlatform ' . $server_platform . '.');
 
         if (!empty($config->feature_feeds) and $config->feature_feeds === 'y') {
-            $last_request_date = (!empty($config->feature_feeds_last_request_date)) ? $config->feature_feeds_last_request_date : '2001-01-01';
-            $today = date('Y-m-d');
+            $request_days = (!empty($config->feature_feeds_request_days)) ? intval($config->feature_feeds_request_days) : 7;
+            $last_request_date = (!empty($config->feature_feeds_last_request_date)) ? strtotime("+" . $request_days . " days", strtotime($config->feature_feeds_last_request_date)) : strtotime('2001-01-01');
+            $today = strtotime(date('Y-m-d'));
             if ($last_request_date < $today) {
                 // Request a feed item
-                log_message('info', 'Requesting feed article.');
+                log_message('info', 'Requesting feed articles.');
                 $feedsModel = model('FeedsModel');
                 $feedsModel->executeAll();
                 $sql = 'UPDATE configuration SET value = ? WHERE name = "feature_feeds_last_request_date"';
-                $db->query($sql, [$today]);
+                $db->query($sql, [date('Y-m-d')]);
             }
         }
 

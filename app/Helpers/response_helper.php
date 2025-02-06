@@ -426,6 +426,24 @@ if (!function_exists('response_create')) {
             $response->logs = $instance->response->logs;
         }
 
+        if (!empty($config->feature_feeds) and $config->feature_feeds === 'n' and in_array($response->meta->action, ['collection', 'execute']) and $response->meta->format === 'html') {
+            $reminder_days = (!empty($config->feature_feeds_remind_days)) ? intval($config->feature_feeds_remind_days) : 30;
+            $last_request_date = (!empty($config->feature_feeds_last_request_date)) ? strtotime("+" . $reminder_days . " days", strtotime($config->feature_feeds_last_request_date)) : strtotime('2001-01-01');
+            $today = strtotime(date('Y-m-d'));
+            if ($last_request_date < $today) {
+                $conf = model('ConfigurationModel');
+                $conf_data = $conf->readName('feature_feeds');
+                $conf_id = (!empty($conf_data[0]->id)) ? intval($conf_data[0]->id) : 0;
+                $_SESSION['success'] = 'Why not enable \'feeds\'? Keep up-to-date with the latest fixes, announcements, query updates, software versions and more. Click <a href="' . url_to('configurationRead', $conf_id) . '">here</a> to enable.';
+                $db = db_connect();
+                $sql = "UPDATE `configuration` SET `value` = ? WHERE `name` = 'feature_feeds_last_request_date'";
+                $result = $db->query($sql, [date('Y-m-d')]);
+                unset($conf);
+                unset($conf_data);
+                unset($conf_id);
+            }
+        }
+
         # Enterprise
         $license_config = false;
         if ($response->meta->collection === 'configuration' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id)) {
