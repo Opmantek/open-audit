@@ -669,13 +669,13 @@ foreach ($config->modules as $module) {
 
         <?php
         if (!empty($feed->id)) {
-            $alert = !empty($feed->alert) ? $feed->alert : 'info';
-            $description = !empty($feed->description) ? $feed->description : '';
+            $alert = !empty($feed->alert_style) ? $feed->alert_style : 'info';
+            $short = !empty($feed->short) ? $feed->short : '';
             $title = !empty($feed->title) ? $feed->title : '';
             ?>
             <div class="container-fluid">
-                <div class="alert alert-<?= $feed->alert_style ?> alert-dismissable fade show" role="alert">
-                    <?= $description ?><?= $feed->link ?>
+                <div class="alert alert-<?= $alert ?> alert-dismissable fade show" role="alert">
+                    <?= $short ?><?= $feed->link ?>
                 </div>
             </div>
         <?php } ?>

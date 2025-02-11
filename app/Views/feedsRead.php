@@ -5,7 +5,7 @@
 include 'shared/read_functions.php';
 
 if ($data[0]->attributes->type !== 'advertisement') {
-    $name = !empty($data[0]->attributes->name) ? ucwords($data[0]->attributes->type) . ' :: ' . html_entity_decode($data[0]->attributes->name) : '';
+    $name = !empty($data[0]->attributes->short) ? ucwords($data[0]->attributes->type) . ' :: ' . html_entity_decode($data[0]->attributes->short) : '';
 } else {
     $name = html_entity_decode($data[0]->attributes->name);
 }
@@ -62,16 +62,15 @@ switch ($data[0]->attributes->type) {
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, '') ?>
+                    <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $data[0]->attributes->name) ?>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-8 offset-2">
                             <p>
                                 <h3><?= $name ?></h3><br>
-                                <?= $short ?>
                                 <?= $description ?>
-                                <?= $actioned ?>
+                                <br><br>
                                 <?= $body ?><br><br>
                             </p>
                         </div>

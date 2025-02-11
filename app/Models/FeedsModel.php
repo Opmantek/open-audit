@@ -74,7 +74,7 @@ class FeedsModel extends BaseModel
         }
         $instance = & get_instance();
         if (empty($instance->user->id)) {
-            log_message('info', 'A feed article needs to be executed from a user.');
+            log_message('info', 'A feed article needs to be executed by a user.');
             return false;
         }
         $item = $this->builder->getWhere(['id' => $id])->getResult();
@@ -83,7 +83,7 @@ class FeedsModel extends BaseModel
             return false;
         }
         $item = $item[0];
-        if (!empty($item->type) and !empty($item->body) and ($item->type === 'query' or $item->type === 'config')) {
+        if (!empty($item->type) and !empty($item->body) and ($item->type === 'config' or $item->type === 'package' or $item->type === 'query')) {
             try {
                 $item->body = json_decode($item->body, false, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
