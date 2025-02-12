@@ -163,16 +163,13 @@ class FeedsModel extends BaseModel
         $config = new \Config\OpenAudit();
         if (empty($config->feature_feeds) or $config->feature_feeds !== 'y') {
             // Do not run
+            log_message('info', 'Feeds not executed because config item set to n.');
             return true;
         }
         helper('utility_helper');
         $data = createFeedData();
-        // echo "<pre>";
-        // echo json_encode($data);
-        // exit;
 
         $client = service('curlrequest');
-        // $client = \Config\Services::curlrequest();
         try {
             $response = @$client->request('POST', $config->feature_feeds_url, [
             # $response = @$client->request('POST', 'http://localhost:8082/', [

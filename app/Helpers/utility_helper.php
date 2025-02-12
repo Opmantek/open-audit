@@ -218,19 +218,15 @@ function createFeedData()
     }
     $data->internal_version = $config->internal_version;
     $data->products = array();
-    $data->products[] = 'Open-AudIT';
-    // foreach ($config->modules as $module) {
-    //     if (!empty($module->url) and $module->name !== 'Applications' and $module->name !== 'opLicensing' and stripos($module->url, 'https://firstwave') === false) {
-    //         $data->products[] = $module->name;
-    //     }
-    // }
-    log_message('debug', $config->commercial_dir);
-    if (file_exists($config->commercial_dir . '/bin/oplicense.pl')) {
-        $command = $config->commercial_dir . '/bin/oplicense.pl act=license_summary | grep Product -A1';
+    if (file_exists($config->commercial_dir . '/bin/oplicense-cli.pl')) {
+        $command = $config->commercial_dir . '/bin/oplicense-cli.pl act=license_summary | grep "Valid: yes" -B2 -A4';
         exec($command, $output, $return_var);
         if (!empty($output)) {
-            $data->products = json_encode($output);
-            log_message('debug',  json_encode($output));
+            foreach ($output as $line) {
+                if (stripos($line, 'Product') !== false) {
+                    $data->products[] = str_replace('Product: ', '', $line);
+                }
+            }
         }
     }
     // $data->uuid = $config->uuid;
