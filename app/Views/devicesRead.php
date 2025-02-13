@@ -867,6 +867,25 @@ if (empty($resource->type)) {
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.owner=" . urlencode($resource->owner) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('owner', $resource->owner, '', $update, '', $link) ?>
                                             <?= read_select('org_id_2', $resource->org_id, '', false, __('Organisation'), $orgs) ?>
+
+                                            <?php
+                                            if (empty($included['rack_devices'][0]->{'rack_id'})) {
+                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('racksCollection') . "\"><span title=\"" . __('View Racks') . "\" class=\"fa fa-film\" aria-hidden=\"true\"></span></a>";
+                                            } else {
+                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('racksRead', $included['rack_devices'][0]->{'rack_id'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                            } ?>
+                                            <?= read_field('rack', $included['rack_devices'][0]->{'racks.name'}, '', '', '', $link) ?>
+                                            <?php
+                                            if (empty(!$included['rack_devices'][0]->{'position'})) {
+                                                echo read_field('position_in_rack', $included['rack_devices'][0]->{'position'}, '', '', '', '');
+                                            }
+                                            if (!empty($included['rack_devices'][0]->{'locations.id'})) {
+                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsRead', $included['rack_devices'][0]->{'locations.id'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                                echo read_field('rack_location', $included['rack_devices'][0]->{'locations.name'}, '', '', '', $link);
+                                            }
+                                            ?>
+
+
                                         </div>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.switch_device_id=" . urlencode($resource->switch_device_id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
@@ -2689,8 +2708,6 @@ if (empty($resource->type)) {
                                     </div>
                                 </div>
                             </div>
-
-
 
                         </div>
                     </div>

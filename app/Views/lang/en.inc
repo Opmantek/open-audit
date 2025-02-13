@@ -1929,6 +1929,7 @@ $GLOBALS["lang"]["View Details"]="View Details";
 $GLOBALS["lang"]["View Device"]="View Device";
 $GLOBALS["lang"]["View Discovery"]="View Discovery";
 $GLOBALS["lang"]["View Policy"]="View Policy";
+$GLOBALS["lang"]["View Racks"]="View Racks";
 $GLOBALS["lang"]["View the getting started documentation and find out \"What's On Your Network?\""]="View the getting started documentation and find out \"What's On Your Network?\"";
 $GLOBALS["lang"]["Virtual Desktop"]="Virtual Desktop";
 $GLOBALS["lang"]["Virtualisation"]="Virtualisation";

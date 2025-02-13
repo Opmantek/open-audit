@@ -564,7 +564,7 @@ class DevicesModel extends BaseModel
         }
 
 
-        $no_current = array('attachment', 'audit_log', 'change_log', 'credential', 'edit_log', 'image', 'rack_devices');
+        $no_current = array('attachment', 'audit_log', 'change_log', 'credential', 'edit_log', 'image');
         foreach ($no_current as $table) {
             if (empty($resp_include) or in_array($table, $resp_include)) {
                 $sql = "SELECT `$table`.*, devices.name AS `devices.name` FROM `$table` LEFT JOIN devices ON (`$table`.device_id = devices.id) WHERE device_id = ?";
@@ -575,6 +575,22 @@ class DevicesModel extends BaseModel
                 }
             }
         }
+
+        $sql = "SELECT `rack_devices`.*, devices.name AS `devices.name`, racks.name AS `racks.name`, locations.name AS `locations.name`, locations.id AS `locations.id` FROM `rack_devices` LEFT JOIN devices ON (rack_devices.device_id = devices.id) LEFT JOIN `racks` ON (rack_devices.rack_id = racks.id) LEFT JOIN `locations` ON (racks.location_id = locations.id) WHERE device_id = ?";
+        $query = $this->db->query($sql, $id);
+        $result = $query->getResult();
+        if (!empty($result)) {
+            $include['rack_devices'] = $result;
+        } else {
+            $blank_rack = new stdClass();
+            $blank_rack->{'rack_id'} = 0;
+            $blank_rack->{'position'} = 0;
+            $blank_rack->{'racks.name'} = 'Not in a rack';
+            $blank_rack->{'locations.name'} = '';
+            $blank_rack->{'locations.id'} = 0;
+            $include['rack_devices'][] = $blank_rack;
+        }
+
 
 
         $sql = "SELECT `application`.*, applications.name AS `applications.name`, applications.description AS `applications.description` FROM `application` LEFT JOIN applications ON (`application`.application_id = applications.id) WHERE application.device_id = ?";
