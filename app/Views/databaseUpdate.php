@@ -28,7 +28,7 @@ include 'shared/read_functions.php';
             </div>
             <div class="modal-body">
                 <br>
-                <pre class="border rounded bg-light" style="max-height: 340px; overflow-y: scroll; padding: 9.5px;"><?= file_get_contents(ROOTPATH . 'other/licenses/eula.txt') ?></pre>
+                <pre class="border rounded" style="max-height: 340px; overflow-y: scroll; padding: 9.5px;"><?= file_get_contents(ROOTPATH . 'other/licenses/eula.txt') ?></pre>
                 <br>
             </div>
         </div>
