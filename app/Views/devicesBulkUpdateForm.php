@@ -110,11 +110,6 @@ $ids = implode(',', $id);
                 </div>
             </div>
 
-
-
-
-
-
             <br>
             <div class="card">
                 <div class="card-header">
@@ -145,6 +140,8 @@ $ids = implode(',', $id);
                                         }
                                         if ($key === 'icon') {
                                             echo "<td><img src=\"" . base_url() . "device_images/" . $item->attributes->icon . ".svg\" style=\"width:40px\"></td>\n";
+                                        } else if ($key === 'audit_status') {
+                                            echo "<td>" . html_entity_decode($item->attributes->{$key}) . "</td>\n";
                                         } else {
                                             if (is_string($item->attributes->{$key}) or is_numeric($item->attributes->{$key})) {
                                                 echo "<td>" . $item->attributes->{$key} . "</td>\n";

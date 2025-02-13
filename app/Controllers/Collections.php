@@ -165,6 +165,9 @@ class Collections extends BaseController
             $view = $this->resp->meta->collection . 'BulkUpdateForm';
             $this->resp->included = $this->{strtolower($this->resp->meta->collection) . "Model"}->includedBulkUpdate();
             $this->resp->meta->action = 'bulkupdateform';
+            $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
+            $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
+            $this->resp->meta->filtered = count($this->resp->data);
         }
         if ($export === 'export') {
             $view = 'collectionExport';
