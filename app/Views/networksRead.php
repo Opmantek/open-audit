@@ -118,8 +118,11 @@ if ($style === 'icontext') {
                                             <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="admin_status" data-dictionary="<?= $dictionary->columns->admin_status ?>"><span><br></span></div>
                                         </div>
                                     </div>
-                                    <?= read_field('security_zone', $resource->security_zone, $dictionary->columns->security_zone, $update) ?>
-                                    <?= read_field('network_domain', $resource->network_domain, $dictionary->columns->network_domain, $update) ?>
+                                    <?php $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.security_zone=" . urlencode($resource->security_zone) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">"; ?>
+                                    <?= read_field('security_zone', $resource->security_zone, $dictionary->columns->security_zone, $update, '', $link_button) ?>
+
+                                    <?php $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.network_domain=" . urlencode($resource->network_domain) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">"; ?>
+                                    <?= read_field('network_domain', $resource->network_domain, $dictionary->columns->network_domain, $update, '', $link_button) ?>
                                 </div>
                                 <div class="col-4">
                                     <?= read_field('DHCP_servers', $resource->dhcp_servers, $dictionary->columns->dhcp_servers, false) ?>
@@ -164,6 +167,7 @@ if ($style === 'icontext') {
                                         <tr>
                                             <th class="text-center"><?= __('View') ?></th>
                                             <th class="text-center"><?= __('Icon') ?></th>
+                                            <th><?= __('Type') ?></th>
                                             <th><?= __('Name') ?></th>
                                             <th><?= __('DNS FQDN') ?></th>
                                             <th><?= __('IP') ?></th>
@@ -178,10 +182,11 @@ if ($style === 'icontext') {
                                         <?php foreach ($included['devices'] as $item) { ?>
                                         <tr>
                                             <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
-                                            <td><img src="<?= base_url() ?>device_images/<?= $item->attributes->icon ?>.svg" style="width:40px" alt="<?= $item->attributes->icon ?>"></td>
+                                            <td class="text-center"><img src="<?= base_url() ?>device_images/<?= $item->attributes->icon ?>.svg" style="width:40px" alt="<?= $item->attributes->icon ?>"></td>
+                                            <td><?= $item->attributes->{'type'} ?></td>
                                             <td><?= $item->attributes->{'name'} ?></td>
                                             <td><?= $item->attributes->{'dns_fqdn'} ?></td>
-                                            <td><?= $item->attributes->{'ip.ip'} ?></td>
+                                            <td><span style="display:none;"><?= ip_address_to_db($item->attributes->{'ip.ip'}) ?></span><?= $item->attributes->{'ip.ip'} ?></td>
                                             <td><?= $item->attributes->{'ip.set_by'} ?></td>
                                             <td><?= $item->attributes->{'ip.mac'} ?></td>
                                             <td><?= $item->attributes->{'network.connection'} ?></td>
