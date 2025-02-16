@@ -547,7 +547,10 @@ if (! function_exists('ip_scan')) {
             $discoveryLogModel->create($log);
             $command_output = '';
             echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
-            $device = array_merge($device, check_nmap_output($discovery, $output, $ip, $command));
+            $temp = check_nmap_output($discovery, $output, $ip, $command);
+            if (!empty($temp)) {
+                $device = array_merge($device, $temp);
+            }
             unset($output);
         }
 
@@ -566,7 +569,10 @@ if (! function_exists('ip_scan')) {
             $command_output = '';
             echo $log->message . ' took ' . $log->command_time_to_execute . "seconds.\n";
             $ports = @$device['nmap_ports'];
-            $device = array_merge($device, check_nmap_output($discovery, $output, $ip, $command));
+            $temp = check_nmap_output($discovery, $output, $ip, $command);
+            if (!empty($temp)) {
+                $device = array_merge($device, $temp);
+            }
             if (!empty($ports)) {
                 $device['nmap_ports'] = $ports . ',' . $device['nmap_ports'];
             }
