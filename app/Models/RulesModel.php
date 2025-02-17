@@ -168,22 +168,22 @@ class RulesModel extends BaseModel
                 $device = $result[0];
                 $device->where = 'database';
                 // NOTE - Some of these are in the database and default to 0. Empty these.
-                if ($device->snmp_enterprise_id === 0) {
+                if (intval($device->snmp_enterprise_id) === 0) {
                     $device->snmp_enterprise_id = '';
                 }
-                if ($device->os_bit === 0) {
+                if (intval($device->os_bit) === 0) {
                     $device->os_bit = '';
                 }
-                if ($device->memory_count === 0) {
+                if (intval($device->memory_count) === 0) {
                     $device->memory_count = '';
                 }
-                if ($device->processor_count === 0) {
+                if (intval($device->processor_count) === 0) {
                     $device->processor_count = '';
                 }
-                if ($device->storage_count === 0) {
+                if (intval($device->storage_count) === 0) {
                     $device->storage_count = '';
                 }
-                if ($device->switch_port === 0) {
+                if (intval($device->switch_port) === 0) {
                     $device->switch_port = '';
                 }
                 $device->discovery_id = '';
@@ -234,7 +234,8 @@ class RulesModel extends BaseModel
         $newdevice = new \stdClass();
 
         // Details based on SNMP OID
-        if (!empty($device->snmp_oid)) {
+        // NEW for 5.7.0 - Do not run if we already have a model
+        if (!empty($device->snmp_oid) and empty($device->model)) {
             $log_start = microtime(true);
             $newdevice = get_details_from_oid($device->snmp_oid);
             if (!empty($newdevice->type) or !empty($newdevice->model)) {

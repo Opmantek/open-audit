@@ -1499,7 +1499,7 @@ if (!function_exists('snmp_audit')) {
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
         // guess at model using entity mib
-        if (empty($details->model)) {
+        if (empty($details->model) or $details->model === 'Jet Direct Print Server') {
             $item_start = microtime(true);
             $details->model = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.13');
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -1511,7 +1511,7 @@ if (!function_exists('snmp_audit')) {
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
         // guess at model using entity mib #2
-        if (empty($details->model)) {
+        if (empty($details->model) or $details->model === 'Jet Direct Print Server') {
             $item_start = microtime(true);
             $details->model = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.2.1');
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -1523,7 +1523,7 @@ if (!function_exists('snmp_audit')) {
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
         // guess at model using entity mib #3
-        if (empty($details->model)) {
+        if (empty($details->model) or $details->model === 'Jet Direct Print Server') {
             $item_start = microtime(true);
             $details->model = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.13.1');
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -1535,7 +1535,7 @@ if (!function_exists('snmp_audit')) {
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
         // guess at model using host resources mib
-        if (empty($details->model)) {
+        if (empty($details->model) or $details->model === 'Jet Direct Print Server') {
             $item_start = microtime(true);
             $details->model = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.25.3.2.1.3.1');
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -1547,7 +1547,7 @@ if (!function_exists('snmp_audit')) {
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
         //  guess at model parsing host resources mib
-        if (empty($details->model)) {
+        if (empty($details->model) or $details->model === 'Jet Direct Print Server') {
             $item_start = microtime(true);
             $temp = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.25.1.4.0');
             $log->command_time_to_execute = (microtime(true) - $item_start);
