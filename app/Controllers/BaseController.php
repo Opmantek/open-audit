@@ -123,24 +123,23 @@ abstract class BaseController extends Controller
 
         $this->queries = array();
 
-        if (empty($this->user) and $this->controller === '\App\Controllers\Input') {
+        if ($this->controller === '\App\Controllers\Input') {
             // We are receiving input from an audit result, no need for $user, et al.
             return;
         }
-        if (empty($this->user) and $this->controller === '\App\Controllers\Queue' and $this->method === 'start') {
+        if ($this->controller === '\App\Controllers\Queue' and $this->method === 'start') {
             // We are starting the queue, no need for $user, et al.
             return;
         }
-        if (empty($this->user) and $this->controller === '\App\Controllers\Scripts' and $this->method === 'download') {
+        if ($this->controller === '\App\Controllers\Scripts' and $this->method === 'download') {
             // Anyone can download a script
             return;
         }
-        if (empty($this->user) and $this->controller === '\App\Controllers\Agents' and ($this->method === 'download' or $this->method === 'execute')) {
+        if ($this->controller === '\App\Controllers\Agents' and ($this->method === 'download' or $this->method === 'execute')) {
             // Anyone can download an agent
             return;
         }
-        if (empty($this->user) and $this->controller === '\App\Controllers\News' and $this->method === 'executeAll') {
-            // No user, requesting news articles
+        if ($this->controller === '\App\Controllers\News' and $this->method === 'executeAll') {
             return;
         }
 
