@@ -430,7 +430,7 @@ if (!function_exists('response_create')) {
             $response->logs = $instance->response->logs;
         }
 
-        if (!empty($config->feature_news) and $config->featurenews === 'n' and in_array($response->meta->action, ['collection', 'execute']) and $response->meta->format === 'html') {
+        if (!empty($config->feature_news) and $config->feature_news === 'n' and in_array($response->meta->action, ['collection', 'execute']) and $response->meta->format === 'html') {
             $reminder_days = (!empty($config->feature_news_remind_days)) ? intval($config->feature_news_remind_days) : 30;
             $last_request_date = (!empty($config->feature_news_last_request_date)) ? strtotime("+" . $reminder_days . " days", strtotime($config->feature_news_last_request_date)) : strtotime('2001-01-01');
             $today = strtotime(date('Y-m-d'));
