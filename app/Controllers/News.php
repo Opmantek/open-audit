@@ -42,6 +42,14 @@ class News extends BaseController
      */
     public function executeAll()
     {
+        $session = \Config\Services::session();
+        $user = '';
+        if (!empty($session->get('user_id'))) {
+            $usersModel = model('UsersModel');
+            $userFromDB = $usersModel->read($session->get('user_id'));
+            $user = $userFromDB[0]->attributes->full_name;
+        }
+        log_message('info', 'ACCESS:news:executeAll::' . $user);
         $this->newsModel = model('App\Models\NewsModel');
         $this->newsModel->executeAll();
         return redirect()->route('newsCollection');
