@@ -2061,6 +2061,9 @@ if (! function_exists('ip_audit')) {
                     $device_json->system->{$key} = $value;
                 }
             }
+            if (!empty($device_json->system->ip)) {
+                $device_json->system->ip = ip_address_from_db($device_json->system->ip);
+            }
             $device_json->system->collector_uuid = $instance->config->uuid;
             if (count($nmap_result) > 0) {
                 $device_json->nmap = array();

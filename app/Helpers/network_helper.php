@@ -318,52 +318,30 @@ if (! function_exists('inttobin')) {
     }
 }
 
-if (! function_exists('ip_address_from_db')) {
+if (!function_exists('ip_address_from_db')) {
     function ip_address_from_db($ip = '')
     {
-        if ($ip != "") {
-            if (stripos($ip, '.') !== false) {
+        if (!empty($ip)) {
+            if (stripos($ip, '.') !== false and substr_count($ip, '.') === 3) {
                 // this is an ip v4 address
                 $myip = explode(".", $ip);
-                $myip[0] = ltrim((string)$myip[0], "0");
-                if ($myip[0] == "") {
-                    $myip[0] = "0";
-                }
-                if (isset($myip[1])) {
-                    $myip[1] = ltrim((string)$myip[1], "0");
-                }
-                if (!isset($myip[1]) or $myip[1] == "") {
-                    $myip[1] = "0";
-                }
-                if (isset($myip[2])) {
-                    $myip[2] = ltrim((string)$myip[2], "0");
-                }
-                if (!isset($myip[2]) or $myip[2] == "") {
-                    $myip[2] = "0";
-                }
-                if (isset($myip[3])) {
-                    $myip[3] = ltrim((string)$myip[3], "0");
-                }
-                if (!isset($myip[3]) or $myip[3] == "") {
-                    $myip[3] = "0";
-                }
-                $ip = $myip[0] . '.' . $myip[1] . '.' . $myip[2] . '.' . $myip[3];
+                $ip = intval($myip[0]) . '.' . intval($myip[1]) . '.' . intval($myip[2]) . '.' . intval($myip[3]);
             }
             if (stripos($ip, ':') !== false) {
                 // this is an ip v6 address
             }
-        } else {
-            $ip = "";
         }
-        return $ip;
+        return (string)$ip;
     }
 }
 
-if (! function_exists('ip_address_to_db')) {
+if (!function_exists('ip_address_to_db')) {
     function ip_address_to_db($ip = '')
     {
         if ($ip != "") {
             if (stripos($ip, '.') !== false) {
+                // A cautionary thing. Something is sending a padded IP to be padded.
+                $ip = ip_address_from_db($ip);
                 if (filter_var($ip, FILTER_VALIDATE_IP)) {
                     // this is an ip v4 address
                     $myip = explode(".", $ip);
@@ -379,10 +357,8 @@ if (! function_exists('ip_address_to_db')) {
             if (stripos($ip, ':') !== false) {
                 // this is an ip v6 address
             }
-        } else {
-            $ip = "";
         }
-        return $ip;
+        return (string)$ip;
     }
 }
 
