@@ -124,7 +124,7 @@ class BenchmarksModel extends BaseModel
         $sql = "SELECT id, name, os_family, os_version, collector_uuid FROM devices WHERE id IN (" . implode(',', $devices) . ") and credentials != '' and credentials != '[]' and (collector_uuid = '' or collector_uuid = ?)";
         $my_devices = $this->db->query($sql, [$config->uuid])->getResult();
         if (empty($my_devices)) {
-            log_message('error', "No suitable devices in database, associated with benchmark.");
+            log_message('warning', "No suitable devices in database, associated with benchmark.");
             #$this->logCreate($id, 0, 'error', 'No suitable devices in database, associated with benchmark.');
             #$this->logCreate($id, 0, 'info', 'Completed. Memory: ' . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB');
             return false;
