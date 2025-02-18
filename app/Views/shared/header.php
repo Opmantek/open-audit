@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include('lang.php');
 
-$feed = new \stdClass();
-if (!empty($config->feature_feeds) and $config->feature_feeds === 'y') {
-    if ($meta->collection !== 'feeds') {
-        $feed = getFeed();
+$news = new \stdClass();
+if (!empty($config->feature_news) and $config->feature_news === 'y') {
+    if ($meta->collection !== 'news') {
+        $news = getNews();
     }
 }
 
@@ -537,8 +537,8 @@ if (!empty($config->servers)) {
                                 <li><a class="dropdown-item" href="https://docs.community.firstwave.com/wiki/spaces/OA"><?= __('Documentation') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('helpFAQ') ?>?name=FAQ"><?= __('FAQ') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('features') ?>"><?= __('Features') ?></a></li>
-                                <?php if (!empty($config->feature_feeds)) { ?>
-                                <li><a class="dropdown-item" href="<?= url_to('feedsCollection') ?>"><?= __('Feeds') ?></a></li>
+                                <?php if (!empty($config->feature_news)) { ?>
+                                <li><a class="dropdown-item" href="<?= url_to('newsCollection') ?>"><?= __('News') ?></a></li>
                                 <?php } ?>
                                 <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Getting Started') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('supportCollection') ?>"><?= __('Support') ?></a></li>
@@ -668,14 +668,14 @@ foreach ($config->modules as $module) {
 
 
         <?php
-        if (!empty($feed->id)) {
-            $alert = !empty($feed->alert_style) ? $feed->alert_style : 'info';
-            $short = !empty($feed->short) ? $feed->short : '';
-            $title = !empty($feed->title) ? $feed->title : '';
+        if (!empty($news->id)) {
+            $alert = !empty($news->alert_style) ? $news->alert_style : 'info';
+            $short = !empty($news->short) ? $news->short : '';
+            $title = !empty($news->title) ? $news->title : '';
             ?>
             <div class="container-fluid">
                 <div class="alert alert-<?= $alert ?> alert-dismissable fade show" role="alert">
-                    <?= $short ?><?= $feed->link ?>
+                    <?= $short ?><?= $news->link ?>
                 </div>
             </div>
         <?php } ?>

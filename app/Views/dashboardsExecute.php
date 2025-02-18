@@ -164,18 +164,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                     }
                                 }
                                 echo "</ul>\n";
-
-                                if ($config->rss_enable !== "n") { ?>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <br><h5><?= __('News Feed') ?></h5>
-                                </li>
-                                <li class="list-group-item"></li>
-                            </ul>
-                            <ul class="list-group list-group-flush fadenews" id="newsfeed">
-                                <li class="list-group-item">From the <a style="text-decoration:none;" target="_blank" href="https://docs.community.firstwave.com/wiki/spaces/OA">Open-AudIT wiki</a>.<br>&nbsp;</li>
-                            </ul>
-                                <?php } ?>
+                                ?>
                         </div>
                         <div class="col-9" id="dashboard">
                         <?php } ?>
@@ -341,95 +330,6 @@ window.onload = function () {
             }
         }
         ?>
-
-<?php if ($config->rss_enable !== "n" and $resource->sidebar !== 'n') { ?>
-        function getDate(days)
-        {
-            if (days == "") { days = 0; }
-            theDate = new Date();
-            theDate.setDate(theDate.getDate() - days);
-            dd = theDate.getDate();
-            mm = theDate.getMonth()+1; // January is 0
-            yyyy = theDate.getFullYear();
-            if(dd<10){dd='0'+dd}
-            if(mm<10){mm='0'+mm}
-            returnDate = yyyy+"-"+mm+"-"+dd;
-            return returnDate;
-        }
-
-        (function (e) {
-            e.fn.inewsticker = function (t) {
-                var n = {
-                    speed: 200,
-                    effect: "fade",
-                    dir: "ltr",
-                    font_size: null,
-                    color: null,
-                    font_family: null,
-                    delay_after: 3e3
-                };
-                e.extend(n, t);
-                var r = e(this);
-                var i = r.children();
-                i.not(":first").hide();
-                r.css("direction", t.dir);
-                /* r.css("font-size", t.font_size); */
-                r.css("color", t.color);
-                r.css("font-family", t.font_family);
-                setInterval(function () {
-                    var e = r.children();
-                    e.not(":first").hide();
-                    var n = e.eq(0);
-                    var i = e.eq(1);
-                    if (t.effect == "fade") {
-                        n.fadeOut(function () {
-                            i.fadeIn();
-                            n.remove().appendTo(r)
-                        })
-                    }
-                }, t.speed);
-
-            }
-        })(jQuery)
-
-        var rssurl = "<?= $config->rss_url ?>";
-        var rssfeed = $.ajax({
-            url: "<?= $config->rss_url ?>",
-            ifModified: true
-        })
-        .done(function(data) {
-            var $xml = $(data);
-            $xml.find("entry").each(function() {
-                var $this = $(this),
-                item = {
-                    title: $this.find("title").text(),
-                    link: $this.find("link").text(),
-                    description: $this.find("description").text(),
-                    pubDate: $this.find("pubDate").text(),
-                    author: $this.find("author").text()
-                }
-                var li = document.createElement("li");
-                var updateDate = new Date($this.find("updated").text());
-                var month = parseInt(updateDate.getMonth()) + 1;
-                var updatedDate = updateDate.getFullYear() + " / " + month + " / " + updateDate.getDate();
-                li.style.display = "none";
-                li.className = "list-group-item";
-                li.innerHTML = "<span><a style='text-decoration:none;' target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> <br>by " + $this.find("author").text() + " on " + updatedDate + ".</span>";
-                document.getElementById("newsfeed").appendChild(li);
-            })
-        });
-
-        $('.fadenews').inewsticker({
-            speed       : 5000,
-            effect      : 'fade',
-            dir         : 'ltr',
-            font_size   : 13,
-            color       : '#000',
-            font_family : 'arial',
-            delay_after : 1000
-        });
-
-<?php } ?>
     });
 }
 </script>

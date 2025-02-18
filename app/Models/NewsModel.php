@@ -7,13 +7,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-class FeedsModel extends BaseModel
+class NewsModel extends BaseModel
 {
     public function __construct()
     {
         $this->db = db_connect();
-        if ($this->db->tableExists('feeds')) {
-            $this->builder = $this->db->table('feeds');
+        if ($this->db->tableExists('news')) {
+            $this->builder = $this->db->table('news');
         }
         # Use the below to execute BaseModel::__construct
         # parent::__construct();
@@ -28,7 +28,7 @@ class FeedsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        if (!$this->db->tableExists('feeds')) {
+        if (!$this->db->tableExists('news')) {
             return array();
         }
         $query = $this->builder->get();
@@ -63,18 +63,18 @@ class FeedsModel extends BaseModel
     }
 
     /**
-     * Execute a request action a feeds article
+     * Execute a request action a news article
      *
      * @return bool    true || false depending on success
      */
     public function execute(int $id = 0): bool
     {
-        if (!$this->db->tableExists('feeds')) {
+        if (!$this->db->tableExists('news')) {
             return false;
         }
         $instance = & get_instance();
         if (empty($instance->user->id)) {
-            log_message('info', 'A feed article needs to be executed by a user.');
+            log_message('info', 'A news article needs to be executed by a user.');
             return false;
         }
         $item = $this->builder->getWhere(['id' => $id])->getResult();
@@ -94,7 +94,7 @@ class FeedsModel extends BaseModel
 
         if ($item->type === 'config') {
             if (empty($instance->user->permissions['configuration']) or strpos($instance->user->permissions['queries'], 'u') === false) {
-                log_message('info', $instance->user->full_name . ' does not have permission to execute feeds to update configuration.');
+                log_message('info', $instance->user->full_name . ' does not have permission to execute news to update configuration.');
                 return false;
             }
             $attributes = $item->body[0]->attributes;
@@ -107,7 +107,7 @@ class FeedsModel extends BaseModel
         }
         if ($item->type === 'package') {
             if (empty($instance->user->permissions['packages']) or strpos($instance->user->permissions['packages'], 'c') === false or strpos($instance->user->permissions['packages'], 'u') === false or strpos($instance->user->permissions['packages'], 'd') === false) {
-                log_message('info', $instance->user->full_name . ' does not have permission to execute feeds to create/update/delete packages.');
+                log_message('info', $instance->user->full_name . ' does not have permission to execute news to create/update/delete packages.');
                 return false;
             }
 
@@ -124,7 +124,7 @@ class FeedsModel extends BaseModel
         }
         if ($item->type === 'query') {
             if (empty($instance->user->permissions['queries']) or strpos($instance->user->permissions['queries'], 'c') === false or strpos($instance->user->permissions['queries'], 'u') === false or strpos($instance->user->permissions['queries'], 'd') === false) {
-                log_message('info', $instance->user->full_name . ' does not have permission to execute feeds to create/update/delete queries.');
+                log_message('info', $instance->user->full_name . ' does not have permission to execute news to create/update/delete queries.');
                 return false;
             }
 
@@ -151,27 +151,27 @@ class FeedsModel extends BaseModel
 
 
     /**
-     * Execute a request for All feeds articles
+     * Execute a request for All news articles
      *
      * @return bool    true || false depending on success
      */
     public function executeAll(): bool
     {
-        if (!$this->db->tableExists('feeds')) {
+        if (!$this->db->tableExists('news')) {
             return false;
         }
         $config = new \Config\OpenAudit();
-        if (empty($config->feature_feeds) or $config->feature_feeds !== 'y') {
+        if (empty($config->feature_news) or $config->feature_news !== 'y') {
             // Do not run
-            log_message('info', 'Feeds not executed because config item set to n.');
+            log_message('info', 'News not executed because config item set to n.');
             return true;
         }
         helper('utility_helper');
-        $data = createFeedData();
+        $data = createNewsData();
 
         $client = service('curlrequest');
         try {
-            $response = @$client->request('POST', $config->feature_feeds_url, [
+            $response = @$client->request('POST', $config->feature_news_url, [
             # $response = @$client->request('POST', 'http://localhost:8082/', [
                 # 'debug' => true,
                 # 'http_errors' => false,
@@ -180,7 +180,7 @@ class FeedsModel extends BaseModel
                 ],
             ]);
         } catch (\Exception $e) {
-            log_message('critical', 'Requesting feeds failed: ' . $e->getMessage() . "\n");
+            log_message('critical', 'Requesting news failed: ' . $e->getMessage() . "\n");
             return true;
         }
         $body = $response->getBody();
@@ -188,32 +188,32 @@ class FeedsModel extends BaseModel
         if (!is_array($body)) {
             return true;
         }
-        foreach ($body as $feed) {
-            if (empty($feed)) {
+        foreach ($body as $news) {
+            if (empty($news)) {
                 continue;
             }
-            $feed->name = !empty($feed->name) ? $feed->name : '';
-            $feed->short = !empty($feed->short) ? $feed->short : '';
-            $feed->description = !empty($feed->description) ? $feed->description : '';
-            $feed->type = !empty($feed->type) ? $feed->type : '';
-            $feed->body = !empty($feed->body) ? $feed->body : '';
-            $feed->published = !empty($feed->published) ? $feed->published : '';
-            $feed->link = !empty($feed->link) ? $feed->link : '';
-            $feed->image = !empty($feed->image) ? $feed->image : '';
-            $feed->expires = !empty($feed->expires) ? $feed->expires : '2100-01-01';
-            $feed->alert_style = !empty($feed->alert_style) ? $feed->alert_style : 'primary';
-            $feed->version = !empty($feed->version) ? $feed->version : '';
+            $news->name = !empty($news->name) ? $news->name : '';
+            $news->short = !empty($news->short) ? $news->short : '';
+            $news->description = !empty($news->description) ? $news->description : '';
+            $news->type = !empty($news->type) ? $news->type : '';
+            $news->body = !empty($news->body) ? $news->body : '';
+            $news->published = !empty($news->published) ? $news->published : '';
+            $news->link = !empty($news->link) ? $news->link : '';
+            $news->image = !empty($news->image) ? $news->image : '';
+            $news->expires = !empty($news->expires) ? $news->expires : '2100-01-01';
+            $news->alert_style = !empty($news->alert_style) ? $news->alert_style : 'primary';
+            $news->version = !empty($news->version) ? $news->version : '';
             if (empty($body)) {
                 return true;
             }
-            $sql = "SELECT COUNT(id) AS `count` FROM feeds WHERE name = ?";
-            $count = $this->db->query($sql, [$feed->name])->getResult()[0]->count;
+            $sql = "SELECT COUNT(id) AS `count` FROM news WHERE name = ?";
+            $count = $this->db->query($sql, [$news->name])->getResult()[0]->count;
             $count = intval($count);
             if ($count === 0) {
                 // This is a new article, store it
-                #$sql = "INSERT INTO feeds VALUES (null, name, short, description, type, body, published, link, image, requested, expires, alert_style, version, read, actioned, actioned_by, actioned_date)";
-                $sql = "INSERT INTO feeds VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 'n', 'n', '', '2001-01-01')";
-                $this->db->query($sql, [$feed->name, $feed->short, $feed->description, $feed->type, $feed->body, $feed->published, $feed->link, $feed->image, $feed->expires, $feed->alert_style, $feed->version]);
+                #$sql = "INSERT INTO news VALUES (null, name, short, description, type, body, published, link, image, requested, expires, alert_style, version, read, actioned, actioned_by, actioned_date)";
+                $sql = "INSERT INTO news VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 'n', 'n', '', '2001-01-01')";
+                $this->db->query($sql, [$news->name, $news->short, $news->description, $news->type, $news->body, $news->published, $news->link, $news->image, $news->expires, $news->alert_style, $news->version]);
             }
         }
         return true;
@@ -249,7 +249,7 @@ class FeedsModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (!$this->db->tableExists('feeds')) {
+        if (!$this->db->tableExists('news')) {
             return array();
         }
         $query = $this->builder->get();
@@ -266,7 +266,7 @@ class FeedsModel extends BaseModel
      */
     public function listAll(): array
     {
-        if (!$this->db->tableExists('feeds')) {
+        if (!$this->db->tableExists('news')) {
             return array();
         }
         $query = $this->builder->get();
@@ -285,7 +285,7 @@ class FeedsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        if (!$this->db->tableExists('feeds')) {
+        if (!$this->db->tableExists('news')) {
             return array();
         }
         $data = new \stdClass();
@@ -306,7 +306,7 @@ class FeedsModel extends BaseModel
                 }
             }
         }
-        $result = format_data($result, 'feeds');
+        $result = format_data($result, 'news');
 
         // Mark these as actioned as there's nothing to do to 'action' them, they link to external sites
         if (in_array($result[0]->attributes->type, ['blog', 'howto'])) {
@@ -329,10 +329,10 @@ class FeedsModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if (!$this->db->tableExists('feeds')) {
+        if (!$this->db->tableExists('news')) {
             return false;
         }
-        if ($this->tableReset('feeds')) {
+        if ($this->tableReset('news')) {
             return true;
         }
         return false;
@@ -341,13 +341,13 @@ class FeedsModel extends BaseModel
     /**
      * Read an individual item from the database, not read previously for display on the header
      *
-     * @return object   An item from feeds
+     * @return object   An item from news
      */
     public function show(): object
     {
-        $feed = new \stdClass();
-        if (!$this->db->tableExists('feeds')) {
-            return $feed;
+        $news = new \stdClass();
+        if (!$this->db->tableExists('news')) {
+            return $news;
         }
         $this->builder->limit(1);
         $this->builder->where(['read' => 'n']);
@@ -364,14 +364,14 @@ class FeedsModel extends BaseModel
             }
         }
         if (!empty($result[0])) {
-            $feed = $result[0];
-            if (!empty($feed->url)) {
-                $feed->link = "<span class=\"clearfix float-end\"><a href=\"" . $feed->url . "\" target=\"_blank\">" . __('Read More') . "</a>";
+            $news = $result[0];
+            if (!empty($news->url)) {
+                $news->link = "<span class=\"clearfix float-end\"><a href=\"" . $news->url . "\" target=\"_blank\">" . __('Read More') . "</a>";
             } else {
-                $feed->link = "<span class=\"clearfix float-end\"><a href=\"" . url_to('feedsRead', intval($feed->id)) . "\" >" . __('Read More') . "</a>";
+                $news->link = "<span class=\"clearfix float-end\"><a href=\"" . url_to('newsRead', intval($news->id)) . "\" >" . __('Read More') . "</a>";
             }
         }
-        return $feed;
+        return $news;
     }
 
     /**
@@ -383,7 +383,7 @@ class FeedsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        $data = $this->updateFieldData('feeds', $data);
+        $data = $this->updateFieldData('news', $data);
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
         if ($this->sqlError($this->db->error())) {
@@ -401,7 +401,7 @@ class FeedsModel extends BaseModel
     {
         $instance = & get_instance();
 
-        $collection = 'feeds';
+        $collection = 'news';
         $dictionary = new \stdClass();
         $dictionary->table = $collection;
         $dictionary->columns = new \stdClass();

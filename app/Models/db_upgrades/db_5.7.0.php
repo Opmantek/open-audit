@@ -7,7 +7,12 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "CREATE TABLE `feeds` (
+$sql = "DROP TABLE IF EXISTS `news`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "CREATE TABLE `news` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `short` varchar(200) NOT NULL DEFAULT '',
@@ -31,55 +36,79 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'feature_feeds'";
+$sql = "DELETE FROM configuration WHERE name = 'feature_news'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_feeds','n','bool','y','system','2000-01-01 00:00:00','Use online requests for news, updates, queries and packages.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_news','n','bool','y','system','2000-01-01 00:00:00','Use online requests for news, updates, queries and packages.')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'feature_feeds_url'";
+$sql = "DELETE FROM configuration WHERE name = 'feature_news_url'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_feeds_url','https://open-audit.com/feeds','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve feeds articles.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_news_url','https://open-audit.com/news','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve news articles.')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'feature_feeds_last_request_date'";
+$sql = "DELETE FROM configuration WHERE name = 'feature_news_last_request_date'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_feeds_last_request_date','2000-01-01','text','y','system','2000-01-01 00:00:00','When did we last request a feed article.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_news_last_request_date','2000-01-01','text','y','system','2000-01-01 00:00:00','When did we last request a news article.')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'feature_feeds_request_days'";
+$sql = "DELETE FROM configuration WHERE name = 'feature_news_request_days'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_feeds_request_days','7','number','n','system','2000-01-01 00:00:00','Make a feed request every this number of days.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_news_request_days','7','number','n','system','2000-01-01 00:00:00','Make a news request every this number of days.')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM configuration WHERE name = 'feature_feeds_remind_days'";
+$sql = "DELETE FROM configuration WHERE name = 'feature_news_remind_days'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_feeds_remind_days','30','number','n','system','2000-01-01 00:00:00','If not enabled, reminder the user every this number of days.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_news_remind_days','30','number','n','system','2000-01-01 00:00:00','If not enabled, reminder the user every this number of days.')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
+
+$sql = "SELECT * FROM `roles`";
+$roles = $db->query($sql)->getResult();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+foreach ($roles as $role) {
+    $permissions = json_decode($role->permissions);
+    if (!empty($permissions)) {
+        if ($role->name === 'org_admin' or $role->name === 'admin') {
+            $permissions->news = 'crud';
+            $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
+            $query = $db->query($sql, [json_encode($permissions), $role->id]);
+            $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+        } else {
+            $permissions->news = '';
+            $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
+            $query = $db->query($sql, [json_encode($permissions), $role->id]);
+            $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+        }
+    }
+}
 
 $sql = "DELETE FROM configuration WHERE name = 'public_key'";
 $db->query($sql);

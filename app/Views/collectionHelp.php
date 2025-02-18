@@ -52,7 +52,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
 
                             <?= @$body ?>
 
-                            <?php if ($meta->collection !== 'components' and $meta->collection !== 'feeds') { ?>
+                            <?php if ($meta->collection !== 'components' and $meta->collection !== 'news') { ?>
                             <h2><?= __('Creating') ?></h2>
                                 <?php if ($meta->collection !== 'collectors') { ?>
                             <p>An entry can be created using the web interface if the current user logged in has a role that contains the <?= $meta->collection ?>::create permission.<br><br>

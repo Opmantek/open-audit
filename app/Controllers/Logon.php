@@ -113,16 +113,16 @@ class Logon extends Controller
         $db->query($sql, [$server_platform]);
         log_message('info', 'Config auto-populated with ServerPlatform ' . $server_platform . '.');
 
-        if (!empty($config->feature_feeds) and $config->feature_feeds === 'y') {
-            $request_days = (!empty($config->feature_feeds_request_days)) ? intval($config->feature_feeds_request_days) : 7;
-            $last_request_date = (!empty($config->feature_feeds_last_request_date)) ? strtotime("+" . $request_days . " days", strtotime($config->feature_feeds_last_request_date)) : strtotime('2001-01-01');
+        if (!empty($config->feature_news) and $config->feature_news === 'y') {
+            $request_days = (!empty($config->feature_news_request_days)) ? intval($config->feature_news_request_days) : 7;
+            $last_request_date = (!empty($config->feature_news_last_request_date)) ? strtotime("+" . $request_days . " days", strtotime($config->feature_news_last_request_date)) : strtotime('2001-01-01');
             $today = strtotime(date('Y-m-d'));
             if ($last_request_date < $today) {
-                // Request a feed item
-                log_message('info', 'Requesting feed articles.');
-                $feedsModel = model('FeedsModel');
-                $feedsModel->executeAll();
-                $sql = 'UPDATE configuration SET value = ? WHERE name = "feature_feeds_last_request_date"';
+                // Request a news item
+                log_message('info', 'Requesting news articles.');
+                $newsModel = model('NewsModel');
+                $newsModel->executeAll();
+                $sql = 'UPDATE configuration SET value = ? WHERE name = "feature_news_last_request_date"';
                 $db->query($sql, [date('Y-m-d')]);
             }
         }

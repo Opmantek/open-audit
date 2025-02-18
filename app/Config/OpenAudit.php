@@ -145,11 +145,11 @@ class OpenAudit extends BaseConfig
     public string $enterprise_env;
     public string $feature_agents_advanced;
     public string $feature_executables;
-    public string $feature_feeds;
-    public string $feature_feeds_last_request_date;
-    public string $feature_feeds_url;
-    public int $feature_feeds_request_days;
-    public int $feature_feeds_remind_days;
+    public string $feature_news;
+    public string $feature_news_last_request_date;
+    public string $feature_news_url;
+    public int $feature_news_request_days;
+    public int $feature_news_remind_days;
     public string $feature_powershell_audit;
     public string $feature_queries_advanced;
     public string $firstwave_prompt;

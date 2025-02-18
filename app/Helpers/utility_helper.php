@@ -19,11 +19,11 @@ function &get_instance() # : \App\Controllers\BaseController
     return $CI_INSTANCE[0];
 }
 
-function getFeed()
+function getNews()
 {
-    $feedsModel = model('FeedsModel');
-    $feed = $feedsModel->show();
-    return $feed;
+    $newsModel = model('NewsModel');
+    $news = $newsModel->show();
+    return $news;
 }
 
 function getOs()
@@ -190,14 +190,14 @@ function getLicenseDetails()
     return $license;
 }
 
-function createFeedData()
+function createNewsData()
 {
     $config = new \Config\OpenAudit();
     $db = db_connect();
     $data = new \stdClass();
     $data->product = 'Open-AudIT';
     $data->version = $config->display_version;
-    $data->action = 'feed';
+    $data->action = 'news';
     $data->product_role = '';
     if (!empty($config->servers)) {
         if (is_string($config->servers)) {
@@ -273,7 +273,7 @@ function createFeedData()
         if (strpos($file, 'log-') !== false and strpos($file, '.log') !== false) {
             $lines = file($path . $file);
             $count = count($lines);
-            # CRITICAL - 2024-11-18 16:06:29 --> ErrorException: Attempt to read property "name" on array in APPPATH/Models/FeedsModel.php on line 191.
+            # CRITICAL - 2024-11-18 16:06:29 --> ErrorException: Attempt to read property "name" on array in APPPATH/Models/NewsModel.php on line 191.
             for ($i = 0; $i < $count; $i++) {
                 if (strpos($lines[$i], 'CRITICAL') !== false and strpos($lines[$i], 'menuItem, no permission requested') === false) {
                     $line = $lines[$i] . ' ' . $lines[$i + 1];

@@ -34,7 +34,6 @@ class Collections extends BaseConfig
     public $discovery_log;
     public $discovery_scan_options;
     public $executables;
-    public $feeds;
     public $fields;
     public $files;
     public $groups;
@@ -46,6 +45,7 @@ class Collections extends BaseConfig
     public $locations;
     public $maps;
     public $networks;
+    public $news;
     public $orgs;
     public $packages;
     public $queries;
@@ -305,16 +305,6 @@ class Collections extends BaseConfig
         $this->executables->actions->professional = '';
         $this->executables->actions->community = '';
 
-        $this->feeds = new \StdClass();
-        $this->feeds->icon = 'fa-solid fa-rss';
-        $this->feeds->name = 'Feeds';
-        $this->feeds->edition = 'Community';
-        $this->feeds->orgs = 'u';
-        $this->feeds->actions = new \stdClass();
-        $this->feeds->actions->enterprise = 'crud';
-        $this->feeds->actions->professional = 'crud';
-        $this->feeds->actions->community = 'crud';
-
         $this->fields = new \StdClass();
         $this->fields->icon = 'fa fa-comments-o';
         $this->fields->name = 'Fields';
@@ -424,6 +414,16 @@ class Collections extends BaseConfig
         $this->networks->actions->enterprise = 'crud';
         $this->networks->actions->professional = 'crud';
         $this->networks->actions->community = 'crud';
+
+        $this->news = new \StdClass();
+        $this->news->icon = 'fa-solid fa-rss';
+        $this->news->name = 'News';
+        $this->news->edition = 'Community';
+        $this->news->orgs = 'u';
+        $this->news->actions = new \stdClass();
+        $this->news->actions->enterprise = 'crud';
+        $this->news->actions->professional = 'crud';
+        $this->news->actions->community = 'crud';
 
         $this->orgs = new \StdClass();
         $this->orgs->icon = 'fa fa-bank';

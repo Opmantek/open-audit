@@ -38,7 +38,7 @@ switch ($data[0]->attributes->type) {
 
     case 'query':
         if (strpos($user->permissions['queries'], 'c') !== false and strpos($user->permissions['queries'], 'u') !== false) {
-            $name .= "<span class=\"clearfix float-end\"><a href=\"" . url_to('feedsExecute', $meta->id) . "\" type=\"button\" class=\"btn btn-primary\">" . __('Enable') . "</a>";
+            $name .= "<span class=\"clearfix float-end\"><a href=\"" . url_to('newsExecute', $meta->id) . "\" type=\"button\" class=\"btn btn-primary\">" . __('Enable') . "</a>";
         }
         $body = '<code><pre>' . json_encode($data[0]->attributes->body, JSON_PRETTY_PRINT) . '</pre></code>';
         if (!empty($actioned_by) and !empty($actioned_date)) {
@@ -93,7 +93,7 @@ window.onload = function () {
         $("#myButton").click(function(e){
             $.ajax({
                 type: "GET",
-                url: "<?= url_to('feedsExecute', $data[0]->id) ?>",
+                url: "<?= url_to('newsExecute', $data[0]->id) ?>",
                 success: function (data) {
                     // data = JSON.parse(data.responseText);
                     // console.log(data);

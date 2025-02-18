@@ -67,11 +67,11 @@ window.onload = function () {
         $("#button_create").remove();
         $("#button_default_items").remove();
         <?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
-            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __("Get Feeds") ?>\" href=\"<?= url_to('feedsExecuteAll') ?>\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rss text-primary\"></span><?= __("Get Feeds") ?></a>");
+            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __("Get News") ?>\" href=\"<?= url_to('newsExecuteAll') ?>\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rss text-primary\"></span><?= __("Get News") ?></a>");
         <?php } elseif ($user->toolbar_style === 'icon') { ?>
-            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __("Get Feeds") ?>\" href=\"<?= url_to('feedsExecuteAll') ?>\"><span class=\"fa-solid fa-rss text-primary\"></span></a>");
+            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __("Get News") ?>\" href=\"<?= url_to('newsExecuteAll') ?>\"><span class=\"fa-solid fa-rss text-primary\"></span></a>");
         <?php } elseif ($user->toolbar_style === 'text') { ?>
-            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __("Get Feeds") ?>\" href=\"<?= url_to('feedsExecuteAll') ?>\"><?= __("Get Feeds") ?></a>");
+            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __("Get News") ?>\" href=\"<?= url_to('newsExecuteAll') ?>\"><?= __("Get News") ?></a>");
         <?php } ?>
     });
 }

@@ -29,7 +29,7 @@ namespace App\Controllers;
  * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  * @link     http://www.open-audit.org
  */
-class Feeds extends BaseController
+class News extends BaseController
 {
     /**
      * POST submission endpoint from remote agents
@@ -42,23 +42,23 @@ class Feeds extends BaseController
      */
     public function executeAll()
     {
-        $this->feedsModel = model('App\Models\FeedsModel');
-        $this->feedsModel->executeAll();
-        return redirect()->route('feedsCollection');
+        $this->newsModel = model('App\Models\NewsModel');
+        $this->newsModel->executeAll();
+        return redirect()->route('newsCollection');
     }
 
     public function execute($id)
     {
         $id = intval($id);
-        $this->feedsModel = model('App\Models\FeedsModel');
-        $this->feedsModel->execute($id);
-        $feed = $this->feedsModel->read($id);
-        if (in_array($feed[0]->attributes->type, ['config', 'package', 'query'])) {
-            return redirect()->route('feedsRead', [$id]);
+        $this->newsModel = model('App\Models\NewsModel');
+        $this->newsModel->execute($id);
+        $news = $this->newsModel->read($id);
+        if (in_array($news[0]->attributes->type, ['config', 'package', 'query'])) {
+            return redirect()->route('newsRead', [$id]);
         }
-        if (in_array($feed[0]->attributes->type, ['advertisement', 'blog', 'howto', 'news', 'notification', 'other', 'release', ''])) {
+        if (in_array($news[0]->attributes->type, ['advertisement', 'blog', 'howto', 'news', 'notification', 'other', 'release', ''])) {
             return true;
         }
-        return redirect()->route('feedsRead', [$id]);
+        return redirect()->route('newsRead', [$id]);
     }
 }

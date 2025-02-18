@@ -97,8 +97,8 @@ $routes->get('discoveries/(:any)/download', 'Discoveries::download/$1', ['filter
 $routes->get('discoveries/(:num)/executeForm', 'Discoveries::executeForm/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesExecuteForm']);
 $routes->post('discoveries/(:num)/executeForm', 'Discoveries::executeCollector/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesExecuteCollector']);
 
-$routes->get('feeds/execute', 'Feeds::executeAll', ['as' => 'feedsExecuteAll']);
-$routes->cli('feeds/execute', 'Cli::executeFeeds', ['as' => 'executeFeedsAll']);
+$routes->get('news/execute', 'News::executeAll', ['as' => 'newsExecuteAll']);
+$routes->cli('news/execute', 'Cli::executeNews', ['as' => 'executeNewssAll']);
 
 $routes->post('graph/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'graphReset']);
 
