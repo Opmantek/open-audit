@@ -113,6 +113,10 @@ if (!function_exists('response_create')) {
             $response->meta->collection,
             $instance->user->org_list
         );
+        if (empty($response->meta->id) and ($response->meta->action === 'read' or $response->meta->action === 'update' or $response->meta->action === 'delete')) {
+            log_message('warning', 'Request to ' . $response->meta->action . ' ' . $response->meta->collection . ', but no ID supplied.');
+        }
+
 
         # We have what the user is trying to do and to what (if any) item - check permissions
         $permission_requested = response_valid_permissions($response->meta->collection);
@@ -969,7 +973,7 @@ if (!function_exists('response_get_id')) {
     function response_get_id($id = '', $collection = '', $org_list = '')
     {
         if (empty($id)) {
-            log_message('debug', 'No ID provided, returning NULL.');
+            // log_message('debug', 'No ID provided, returning NULL.');
             return null;
         }
         if (is_numeric($id)) {
@@ -1296,7 +1300,7 @@ if (!function_exists('response_get_permission_id')) {
         $collections = array('auth', 'charts', 'configuration', 'database', 'errors', 'help', 'logs', 'news', 'nmis', 'queue', 'reports', 'roles');
 
         if (empty($id) or in_array($collection, $collections)) {
-            log_message('debug', 'User permitted to access ' . $collection);
+            log_message('debug', 'User permitted to access ' . $action . '::' . $collection);
             return true;
         }
 
