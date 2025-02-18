@@ -158,9 +158,9 @@ class OpenAudit extends BaseConfig
     public string $homepage = 'summaries';
     public int $internal_version;
     public string $license;
-    // public string $license_eula;
+    public string $license_eula;
     public string $license_footer;
-    // public int $license_limit;
+    public int $license_limit;
     public string $license_string;
     public string $license_string_collector;
     public string $mail_domain;
@@ -209,12 +209,21 @@ class OpenAudit extends BaseConfig
 
     public function __set($key, $value)
     {
-        $this->$key = $value;
+        if (isset($this->$key)) {
+            $this->$key = $value;
+            return;
+        }
+        log_message('error', 'OpenAudit.php::_set called with bad key of ' . $key);
+        return;
     }
 
     public function __get($key)
     {
-        return $this->$key;
+        if (isset($this->$key)) {
+            return $this->$key;
+        }
+        log_message('error', 'OpenAudit.php::_get called with bad key of ' . $key);
+        return;
     }
 
     public function __construct()
@@ -246,12 +255,14 @@ class OpenAudit extends BaseConfig
         $query = $db->query('SELECT * FROM `configuration`');
         $result = $query->getResult();
         foreach ($result as $row) {
-            if ($row->type = 'text') {
+            // Set the type
+            if ($row->type !== 'number') {
                 $this->{$row->name} = (string)$row->value;
             }
             if ($row->type === 'number') {
                 $this->{$row->name} = (int)$row->value;
             }
+            // Set these config IDs
             if ($row->name === 'oae_prompt') {
                 $this->oae_prompt_id = (int)$row->id;
             }
