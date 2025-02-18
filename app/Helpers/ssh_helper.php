@@ -1127,6 +1127,9 @@ if (! function_exists('ssh_audit')) {
 
 
         // Set some items that may have multiple results
+        if (!empty($device->hostname) and is_array($device->hostname)) {
+            $device->hostname = implode('', $device->hostname);
+        }
         if (!empty($device->hostname)) {
             $device->hostname = strtolower($device->hostname);
             if (stripos($device->hostname, '.') !== false) {
