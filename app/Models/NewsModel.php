@@ -186,10 +186,17 @@ class NewsModel extends BaseModel
         $body = $response->getBody();
         $body = @json_decode($body);
         if (!is_array($body)) {
+            log_message('critical', 'Body returned but body not an array. Body is a ' . gettype($body));
             return true;
         }
+        if (empty($body)) {
+            log_message('info', 'No news articles returned.');
+            return true;
+        }
+        log_message('info', count($body) . ' news articles returned.');
         foreach ($body as $news) {
             if (empty($news)) {
+                log_message('info', 'No news article populated.');
                 continue;
             }
             $news->name = !empty($news->name) ? $news->name : '';
