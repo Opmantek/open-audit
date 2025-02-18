@@ -690,6 +690,10 @@ class DiscoveriesModel extends BaseModel
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'Is the network logon service is running on the target machine? Check <a href="' . url_to('discoveryIssues', 6) . '">here</a>.';
             $issue->action = '';
+        } elseif (strpos($issue->{'output'}, 'NT_STATUS_NO_MEMORY') !== false) {
+            # Windows connection from Linux Open-AudIT server
+            $issue->description = 'The target machine looks to have an issue. Try again later. Check <a href="' . url_to('discoveryIssues', 9) . '">here</a>.';
+            $issue->action = '';
         } elseif (strpos($issue->{'output'}, 'NT_STATUS_ACCOUNT_EXPIRED') !== false) {
             # Windows connection from Linux Open-AudIT server
             $issue->description = 'The credentials have expired. Check <a href="' . url_to('discoveryIssues', 1) . '">here</a>.';
