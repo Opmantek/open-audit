@@ -537,10 +537,10 @@ if (!empty($config->servers)) {
                                 <li><a class="dropdown-item" href="https://docs.community.firstwave.com/wiki/spaces/OA"><?= __('Documentation') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('helpFAQ') ?>?name=FAQ"><?= __('FAQ') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('features') ?>"><?= __('Features') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Getting Started') ?></a></li>
                                 <?php if (!empty($config->feature_news)) { ?>
                                 <li><a class="dropdown-item" href="<?= url_to('newsCollection') ?>"><?= __('News') ?></a></li>
                                 <?php } ?>
-                                <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Getting Started') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('supportCollection') ?>"><?= __('Support') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Welcome Dashboard') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('util/test_windows_client') ?>"><?= __('Windows Test Script') ?></a></li>
