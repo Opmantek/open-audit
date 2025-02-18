@@ -235,13 +235,13 @@ if (!empty($resource->attributes->password)) {
                         <div class="tab-pane" id="fields" role="tabpanel" tabindex="0">
                             <br>
                             <div class="table-responsive">
-                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" id="fieldstable" data-order='[[0,"asc"]]'>
+                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover" id="fieldstable" data-order='[[0,"asc"]]'>
                                     <thead>
                                         <tr>
                                             <th><?= __('Open-AudIT Field Name') ?></th>
                                             <th><?= $resource->type . ' ' . __('Field Name') ?></th>
                                             <th><?= $resource->type . ' ' . __('Field Type') ?></th>
-                                            <th><?= __('Priority') ?></th>
+                                            <th class="text-center"><?= __('Priority') ?></th>
                                             <th style="white-space: nowrap;"><?= __('Default Value') ?></th>
                                             <th><?= __('Match') ?></th>
                                             <th><?= __('Delete') ?></th>
@@ -251,16 +251,16 @@ if (!empty($resource->attributes->password)) {
                                         <?php foreach ($resource->{'fields'} as $field) {
                                             $priority = '';
                                             if ($field->priority === 'internal') {
-                                                $priority = '<span class="v-success">internal</span>';
+                                                $priority = '<span class="badge btn-success">Open-AudIT</span>';
                                             }
                                             if ($field->priority === 'external') {
-                                                $priority = '<span class="badge bg-info">external</span>';
+                                                $priority = '<span class="badge btn-info">' . $resource->type . '</span>';
                                             } ?>
                                         <tr>
                                             <td><?= $field->internal_field_name ?></td>
                                             <td><?= $field->external_field_name ?></td>
                                             <td><?= $field->external_field_type ?></td>
-                                            <td><?= $priority ?></td>
+                                            <td class="text-center"><?= $priority ?></td>
                                             <td><?= $field->default_value ?></td>
                                             <td>
                                             <?php if ($field->{'matching_attribute'} === 'y') { ?>
