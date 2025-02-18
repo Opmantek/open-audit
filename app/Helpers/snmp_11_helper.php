@@ -49,6 +49,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = $temp_model;
     }
 
+    if (empty($details->model) or $details->model === 'Jet Direct Print Server') {
+        $model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.3.0");
+    }
+
     if (empty($details->os_version)) {
         $details->os_version = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.47.1.1.1.1.10.1');
     }
