@@ -1009,8 +1009,8 @@ if (! function_exists('ssh_audit')) {
         );
 
         if ($type === 'seed') {
-            $commands['arp'] = 'arp -an 2>/dev/null';
-            $commands['route'] = 'netstat -rn 2>/dev/null | grep "^[0-9]" | awk  \'"\'"\'{print $2}\'"\'"\' | sort | uniq | grep -v "0\.0\.0\.0" | grep "\." | grep -v "127\.0\.0\.1"';
+            $commands['arp_one'] = 'arp -an      2>/dev/null | grep -v -i incomplete | awk \'{print $2 "\t" $4}\' | sed \'s/[()]//g\'';
+            $commands['arp_two'] = 'ip neighbour 2>/dev/null | grep -v -i failed     | awk \'{print $1 "\t" $5}\'';
         }
 
         foreach ($commands as $item => $command) {
@@ -1057,7 +1057,7 @@ if (! function_exists('ssh_audit')) {
                 }
                 $log->command = $command;
                 $log->command_time_to_execute = (microtime(true) - $item_start);
-                $log->command_output = $temp1;
+                $log->command_output = json_encode($temp1);
                 $log->command_status = 'success';
                 $log->message = 'SSH command - ' . $item;
                 $discoveryLogModel->create($log);
@@ -1075,41 +1075,46 @@ if (! function_exists('ssh_audit')) {
         $device->ips_found = array();
 
         if ($type === 'seed') {
-            if (!empty($device->arp)) {
-                foreach ($device->arp as $line) {
-                    $item = array();
-
-                    $explode = explode('(', $line);
-                    $explode_2 = explode(')', $explode[1]);
-                    $item_ip = $explode_2[0];
-
-                    $item_mac = '';
-                    $explode = explode(' ', $line);
-                    if (!empty($explode[3])) {
-                        $item_mac = strtolower($explode[3]);
+            if (!empty($device->arp_one)) {
+                if (is_string($device->arp_one)) {
+                    $device->arp_one = explode("\n", $device->arp_one);
+                }
+                foreach ($device->arp_one as $line) {
+                    $explode = explode("\t", $line);
+                    $mac = '';
+                    $ip = '';
+                    if (!empty($explode[1]) and strpos($explode[1], ':') !== false and $explode[1] !== 'ff:ff:ff:ff:ff:ff' and substr_count($explode[1], ':') === 5) {
+                        $mac = $explode[1];
                     }
-                    if (
-                        !empty($item_mac) and
-                        stripos($item_mac, ':') !== false and
-                        $item_mac !== 'ff:ff:ff:ff:ff:ff' and
-                        !empty($item_ip) and
-                        stripos($item_ip, '.') !== false and
-                        $item_ip !== '255.255.255.255' and
-                        filter_var($item_ip, FILTER_VALIDATE_IP)
-                    ) {
-                        $device->ips_found[$item_mac] = $item_ip;
+                    if (!empty($explode[0]) and strpos($explode[0], '.') !== false and $explode[0] !== '255.255.255.255' and filter_var($explode[0], FILTER_VALIDATE_IP)) {
+                        $ip = $explode[0];
+                    }
+                    if (!empty($ip) and !empty($mac)) {
+                        $device->ips_found[$mac] = $ip;
                     }
                 }
+                unset($device->arp_one);
             }
-            unset($device->arp);
-            if (!empty($device->route)) {
-                foreach ($device->route as $ip) {
-                    if (filter_var($ip, FILTER_VALIDATE_IP)) {
-                        $device->ips_found[] = $ip;
+            if (!empty($device->arp_two)) {
+                if (is_string($device->arp_two)) {
+                    $device->arp_two = explode("\n", $device->arp_two);
+                }
+                foreach ($device->arp_two as $line) {
+                    $explode = explode("\t", $line);
+                    $mac = '';
+                    $ip = '';
+                    if (!empty($explode[1]) and strpos($explode[1], ':') !== false and $explode[1] !== 'ff:ff:ff:ff:ff:ff' and substr_count($explode[1], ':') === 5) {
+                        $mac = $explode[1];
+                    }
+                    if (!empty($explode[0]) and strpos($explode[0], '.') !== false and $explode[0] !== '255.255.255.255' and filter_var($explode[0], FILTER_VALIDATE_IP)) {
+                        $ip = $explode[0];
+                    }
+                    if (!empty($ip) and !empty($mac)) {
+                        $device->ips_found[$mac] = $ip;
                     }
                 }
+                unset($device->arp_two);
             }
-            unset($device->route);
 
             // Lower case all MAC addresses
             $device->ips_found = array_change_key_case($device->ips_found, CASE_LOWER);
