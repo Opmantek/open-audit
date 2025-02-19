@@ -2728,20 +2728,16 @@ if (!function_exists('snmp_audit')) {
                             $explode = explode('.', $key);
                             $found_ip = implode('.', array_splice($explode, -4));
                             // the MAC
-                            $explode = explode(' ', $value);
-                            if (substr_count($value, ' ') > 1) {
-                                unset($explode[0]);
-                                $found_mac = trim(implode(':', $explode));
-                            } else {
-                                $found_mac = $explode[1];
+                            $found_mac = trim(str_replace('STRING:', '', $value));
+                            if (!empty($found_mac) and !empty($found_ip)) {
+                                // pad the MAC
+                                $explode = explode(':', $found_mac);
+                                foreach ($explode as &$explode_mac) {
+                                    $explode_mac = substr('00' . $explode_mac, -2);
+                                }
+                                $found_mac = implode(':', $explode);
+                                $ips_found[$found_mac] = $found_ip;
                             }
-                            // pad the MAC
-                            $explode = explode(':', $found_mac);
-                            foreach ($explode as &$explode_mac) {
-                                $explode_mac = substr('00' . $explode_mac, -2);
-                            }
-                            $found_mac = implode(':', $explode);
-                            $ips_found[$found_mac] = $found_ip;
                         }
                     }
                 }
