@@ -11,4 +11,4 @@ As at February 2024, we support Open-AudIT 4.4.2 and 5.x.x
 
 ## Reporting a Vulnerability
 
-Please email support@firstwave.com with any security issues found.
+Please email support+nmis@firstwave.com with any security issues found.

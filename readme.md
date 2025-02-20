@@ -58,7 +58,7 @@ Are available here - https://docs.community.firstwave.com/wiki/x/ZACWv
 
 ## Contributing
 
-Please contact [Firstwave](https://www.firstwave.com) with any enquiries for contributing or post to the [Questions](https://docs.community.firstwave.com/wiki/display/OA/customcontent/list/ac%3Acom.atlassian.confluence.plugins.confluence-questions%3Aquestion?ac.com.atlassian.confluence.plugins.confluence-questions.path=/questions-bootstrap) site or on [GitHub](https://github.com/Opmantek/open-audit/issues). And you can always submit a pull request on [GitHub](https://github.com/Opmantek/open-audit).
+Please contact [Firstwave](https://www.firstwave.com) with any enquiries for contributing or post to on [GitHub](https://github.com/Opmantek/open-audit/issues). And you can always submit a pull request on [GitHub](https://github.com/Opmantek/open-audit).
 
 ## Versioning
 
