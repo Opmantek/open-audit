@@ -3740,6 +3740,8 @@ fi
 ########################################################
 # ROUTE SECTION                                        #
 ########################################################
+	IFS="
+"
 	if [ -z $(echo "$skip_sections" | grep "route,") ]; then
 	if [ "$debugging" -gt "0" ]; then
 		echo "Route Info"
@@ -3749,6 +3751,33 @@ fi
 	if [ -n "$(which route 2>/dev/null)" ]; then
 		for i in $(route -n | tail -n +3) ; do
 			echo "$i" | awk ' { print "\t\t<item>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</item>" } ' >> "$xml_file"
+		done
+	fi
+	if [ -z "$(which route 2>/dev/null)" ] && [ -n "$(which ip 2>/dev/null)" ]; then
+		for i in $(ip route | grep via); do
+			route_name=$(echo "$i" | awk '{print $1 " via " $3}')
+			route_mask=""
+			route_destination=$(echo "$i" | awk '{print $1}' | cut -d/ -f1)
+			if [ "$route_destination" = "default" ]; then
+				route_destination="0.0.0.0"
+			fi
+			route_mask=$(echo "$i" | awk '{print $1}' | cut -d/ -f2)
+			route_mask=$(cidr2mask "$route_mask")
+			route_metric=""
+			test=$(echo "$i" | grep metric)
+			if [ -n "$test" ]; then
+				route_metric=$(echo "$i" | awk 'NF>1{print $NF}')
+			fi
+			route_next_hop=$(echo "$i" | awk '{print $3}')
+			{
+			echo "		<item>"
+			echo "			<name>$(escape_xml "$route_name")</name>"
+			echo "			<destination>$(escape_xml "$route_destination")</destination>"
+			echo "			<mask>$(escape_xml "$route_mask")</mask>"
+			echo "			<metric>$(escape_xml "$route_metric")</metric>"
+			echo "			<next_hop>$(escape_xml "$route_next_hop")</next_hop>"
+			echo "		</item>"
+			} >> "$xml_file"
 		done
 	fi
 	# if [ -n "$(which route 2>/dev/null)" ] && [ -n "$(which ip 2>/dev/null)" ]; then
