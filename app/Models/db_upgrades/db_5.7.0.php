@@ -2,11 +2,6 @@
 
 $output .= "Upgrade database to 5.7.0 commenced.\n\n";
 
-$sql = "UPDATE `roles` SET `permissions` = REPLACE(permissions, 'ldap_servers', 'auth')";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
 $sql = "DROP TABLE IF EXISTS `news`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
