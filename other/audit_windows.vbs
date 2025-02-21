@@ -2665,23 +2665,23 @@ set colPartitions = objWMIService.ExecQuery("Select * FROM Win32_LogicalDisk whe
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_LogicalDisk)" : audit_wmi_fails = audit_wmi_fails & "Win32_LogicalDisk " : end if
 for each objPartition In colPartitions
 
-    partition_index     = ""
-    partition_mount_point   = ""
-    partition_name  = ""
-    partition_size  = 0
-    partition_free_space    = 0
-    partition_used_space    = 0
-    partition_format    = ""
-    partition_caption   = ""
-    partition_type  = ""
-    partition_quotas_supported  = ""
-    partition_quotas_enabled    = ""
-    partition_serial    = ""
-    partition_bootable  = ""
+    partition_index = ""
+    partition_mount_point = ""
+    partition_name = ""
+    partition_size = 0
+    partition_free_space = 0
+    partition_used_space = 0
+    partition_format = ""
+    partition_caption = ""
+    partition_type = ""
+    partition_quotas_supported = ""
+    partition_quotas_enabled = ""
+    partition_serial = ""
+    partition_bootable = ""
     'partition_index    = objPartition.Index '''''''''''''''''''''''''''''''''
-    partition_size  = int(objPartition.Size /1024 /1024)
-    partition_device_id     = ""
-    partition_disk_index    = ""
+    partition_size = int(objPartition.Size /1024 /1024)
+    partition_device_id = ""
+    partition_disk_index = ""
 
     set colLinks = objWMIService.ExecQuery("Select * FROM Win32_LogicalDiskToPartition",,32)
     error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_LogicalDiskToPartition)" : audit_wmi_fails = audit_wmi_fails & "Win32_LogicalDiskToPartition " : end if
@@ -2696,7 +2696,6 @@ for each objPartition In colPartitions
         end if
     next
 
-
     partition_mount_point   = objPartition.Caption
     partition_name  = objPartition.VolumeName
     partition_free_space    = int(objPartition.FreeSpace /1024 /1024)
@@ -2706,28 +2705,75 @@ for each objPartition In colPartitions
     partition_serial    = objPartition.VolumeSerialNumber
 
     if ( objPartition.DriveType = "2") then
-    partition_type = "local removable"
+        partition_type = "local removable"
     end if
     if ( objPartition.DriveType = "3") then
-    partition_type = "local"
+        partition_type = "local"
     end if
 
+    encryption_status = ""
+    encryption_method = ""
+    on error resume next
+        set encPartitions = objWMIService.ExecQuery("Select * FROM Win32_EncryptableVolume WHERE DeviceID = '" & partition_device_id & "'",,32)
+        error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_EncryptableVolume)" : audit_wmi_fails = audit_wmi_fails & "Win32_EncryptableVolume " : end if
+        for each encPartition In encPartitions
+            if ( encPartition.ProtectionStatus = "0") then
+                encryption_status = "off"
+            end if
+            if ( encPartition.ProtectionStatus = "1") then
+                encryption_status = "on"
+            end if
+            if ( encPartition.ProtectionStatus = "2") then
+                encryption_status = "unknown"
+            end if
+
+
+            if ( encPartition.EncryptionMethod = "0") then
+                encryption_method = "NOT ENCRYPTED"
+            end if
+            if ( encPartition.EncryptionMethod = "1") then
+                encryption_method = "AES 128 WITH DIFFUSER"
+            end if
+            if ( encPartition.EncryptionMethod = "2") then
+                encryption_method = "AES 256 WITH DIFFUSER"
+            end if
+            if ( encPartition.EncryptionMethod = "3") then
+                encryption_method = "AES 128"
+            end if
+            if ( encPartition.EncryptionMethod = "4") then
+                encryption_method = "AES 256"
+            end if
+            if ( encPartition.EncryptionMethod = "5") then
+                encryption_method = "HARDWARE ENCRYPTION"
+            end if
+            if ( encPartition.EncryptionMethod = "6") then
+                encryption_method = "XTS-AES 128"
+            end if
+            if ( encPartition.EncryptionMethod = "7") then
+                encryption_method = "XTS-AES 256 WITH DIFFUSER"
+            end if
+
+        next
+    on error goto 0
+
     if (partition_size > "") then
-    result_partition = result_partition & "     <item>" & vbcrlf
-    result_partition = result_partition & "         <hard_drive_index>" & escape_xml(partition_disk_index) & "</hard_drive_index>" & vbcrlf
-    result_partition = result_partition & "         <mount_type>partition</mount_type>" & vbcrlf
-    result_partition = result_partition & "         <mount_point>" & escape_xml(partition_mount_point) & "</mount_point>" & vbcrlf
-    result_partition = result_partition & "         <name>" & escape_xml(partition_name) & "</name>" & vbcrlf
-    result_partition = result_partition & "         <size>" & escape_xml(partition_size) & "</size>" & vbcrlf
-    result_partition = result_partition & "         <free>" & escape_xml(partition_free_space) & "</free>" & vbcrlf
-    result_partition = result_partition & "         <used>" & escape_xml(partition_used_space) & "</used>" & vbcrlf
-    result_partition = result_partition & "         <format>" & escape_xml(partition_format) & "</format>" & vbcrlf
-    result_partition = result_partition & "         <description>" & escape_xml(partition_caption) & "</description>" & vbcrlf
-    result_partition = result_partition & "         <device>" & escape_xml(partition_device_id) & "</device>" & vbcrlf
-    result_partition = result_partition & "         <partition_disk_index></partition_disk_index>" & vbcrlf
-    result_partition = result_partition & "         <type>" & escape_xml(partition_type) & "</type>" & vbcrlf
-    result_partition = result_partition & "         <serial>" & escape_xml(partition_serial) & "</serial>" & vbcrlf
-    result_partition = result_partition & "     </item>" & vbcrlf
+        result_partition = result_partition & "     <item>" & vbcrlf
+        result_partition = result_partition & "         <hard_drive_index>" & escape_xml(partition_disk_index) & "</hard_drive_index>" & vbcrlf
+        result_partition = result_partition & "         <mount_type>partition</mount_type>" & vbcrlf
+        result_partition = result_partition & "         <mount_point>" & escape_xml(partition_mount_point) & "</mount_point>" & vbcrlf
+        result_partition = result_partition & "         <name>" & escape_xml(partition_name) & "</name>" & vbcrlf
+        result_partition = result_partition & "         <size>" & escape_xml(partition_size) & "</size>" & vbcrlf
+        result_partition = result_partition & "         <free>" & escape_xml(partition_free_space) & "</free>" & vbcrlf
+        result_partition = result_partition & "         <used>" & escape_xml(partition_used_space) & "</used>" & vbcrlf
+        result_partition = result_partition & "         <format>" & escape_xml(partition_format) & "</format>" & vbcrlf
+        result_partition = result_partition & "         <description>" & escape_xml(partition_caption) & "</description>" & vbcrlf
+        result_partition = result_partition & "         <device>" & escape_xml(partition_device_id) & "</device>" & vbcrlf
+        result_partition = result_partition & "         <partition_disk_index></partition_disk_index>" & vbcrlf
+        result_partition = result_partition & "         <type>" & escape_xml(partition_type) & "</type>" & vbcrlf
+        result_partition = result_partition & "         <serial>" & escape_xml(partition_serial) & "</serial>" & vbcrlf
+        result_partition = result_partition & "         <encryption_status>" & escape_xml(encryption_status) & "</encryption_status>" & vbcrlf
+        result_partition = result_partition & "         <encryption_method>" & escape_xml(encryption_method) & "</encryption_method>" & vbcrlf
+        result_partition = result_partition & "     </item>" & vbcrlf
     end if
 next
 
@@ -2739,44 +2785,44 @@ if (audit_mount_point = "y" and cint(windows_build_number) > 3000) then
     error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_MappedLogicalDisk)" : audit_wmi_fails = audit_wmi_fails & "Win32_MappedLogicalDisk " : end if
     for each objPartition In colPartitions
 
-    partition_mount_point   = objPartition.Caption
-    partition_device_id = objPartition.DeviceId
-    partition_name  = objPartition.VolumeName
-    partition_free_space    = int(objPartition.FreeSpace /1024 /1024)
-    partition_size  = int(objPartition.Size /1024 /1024)
-    partition_used_space    = int(partition_size - partition_free_space)
-    partition_format    = objPartition.FileSystem
-    partition_caption   = objPartition.Caption
-    partition_serial    = objPartition.VolumeSerialNumber
-    partition_provider_name = objPartition.ProviderName
+        partition_mount_point   = objPartition.Caption
+        partition_device_id = objPartition.DeviceId
+        partition_name  = objPartition.VolumeName
+        partition_free_space    = int(objPartition.FreeSpace /1024 /1024)
+        partition_size  = int(objPartition.Size /1024 /1024)
+        partition_used_space    = int(partition_size - partition_free_space)
+        partition_format    = objPartition.FileSystem
+        partition_caption   = objPartition.Caption
+        partition_serial    = objPartition.VolumeSerialNumber
+        partition_provider_name = objPartition.ProviderName
 
-    if (isnull(partition_name)) then
-    temp = split(partition_provider_name, "\")
-    partition_name = temp(uBound(temp))
-    end if
+        if (isnull(partition_name)) then
+        temp = split(partition_provider_name, "\")
+        partition_name = temp(uBound(temp))
+        end if
 
-    if (partition_provider_name <> "") then
-    partition_name = partition_name & " at " & partition_provider_name
-    end if
+        if (partition_provider_name <> "") then
+        partition_name = partition_name & " at " & partition_provider_name
+        end if
 
-    if (partition_size > "") then
-    result_partition = result_partition & "     <item>" & vbcrlf
-    result_partition = result_partition & "         <hard_drive_index></hard_drive_index>" & vbcrlf
-    result_partition = result_partition & "         <mount_type>mount point</mount_type>" & vbcrlf
-    result_partition = result_partition & "         <mount_point>" & escape_xml(partition_mount_point) & "</mount_point>" & vbcrlf
-    result_partition = result_partition & "         <name>" & escape_xml(partition_name) & "</name>" & vbcrlf
-    result_partition = result_partition & "         <size>" & escape_xml(partition_size) & "</size>" & vbcrlf
-    result_partition = result_partition & "         <free>" & escape_xml(partition_free_space) & "</free>" & vbcrlf
-    result_partition = result_partition & "         <used>" & escape_xml(partition_used_space) & "</used>" & vbcrlf
-    result_partition = result_partition & "         <format>" & escape_xml(partition_format) & "</format>" & vbcrlf
-    result_partition = result_partition & "         <description>" & escape_xml(partition_caption) & "</description>" & vbcrlf
-    result_partition = result_partition & "         <device>" & escape_xml(partition_device_id) & "</device>" & vbcrlf
-    result_partition = result_partition & "         <partition_disk_index></partition_disk_index>" & vbcrlf
-    result_partition = result_partition & "         <bootable></bootable>" & vbcrlf
-    result_partition = result_partition & "         <type>smb</type>" & vbcrlf
-    result_partition = result_partition & "         <serial>" & escape_xml(partition_serial) & "</serial>" & vbcrlf
-    result_partition = result_partition & "     </item>" & vbcrlf
-    end if
+        if (partition_size > "") then
+        result_partition = result_partition & "     <item>" & vbcrlf
+        result_partition = result_partition & "         <hard_drive_index></hard_drive_index>" & vbcrlf
+        result_partition = result_partition & "         <mount_type>mount point</mount_type>" & vbcrlf
+        result_partition = result_partition & "         <mount_point>" & escape_xml(partition_mount_point) & "</mount_point>" & vbcrlf
+        result_partition = result_partition & "         <name>" & escape_xml(partition_name) & "</name>" & vbcrlf
+        result_partition = result_partition & "         <size>" & escape_xml(partition_size) & "</size>" & vbcrlf
+        result_partition = result_partition & "         <free>" & escape_xml(partition_free_space) & "</free>" & vbcrlf
+        result_partition = result_partition & "         <used>" & escape_xml(partition_used_space) & "</used>" & vbcrlf
+        result_partition = result_partition & "         <format>" & escape_xml(partition_format) & "</format>" & vbcrlf
+        result_partition = result_partition & "         <description>" & escape_xml(partition_caption) & "</description>" & vbcrlf
+        result_partition = result_partition & "         <device>" & escape_xml(partition_device_id) & "</device>" & vbcrlf
+        result_partition = result_partition & "         <partition_disk_index></partition_disk_index>" & vbcrlf
+        result_partition = result_partition & "         <bootable></bootable>" & vbcrlf
+        result_partition = result_partition & "         <type>smb</type>" & vbcrlf
+        result_partition = result_partition & "         <serial>" & escape_xml(partition_serial) & "</serial>" & vbcrlf
+        result_partition = result_partition & "     </item>" & vbcrlf
+        end if
     next
 end if
 
@@ -5087,7 +5133,6 @@ win_cd_key = "n"
 '''''''''''''''''''''''''''''''''''''''''''''''''
 '   MS CD Keys for Windows 2000 onwards         '
 '''''''''''''''''''''''''''''''''''''''''''''''''
-if debugging > "1" then wscript.echo "Win 2000 Key" end if
 path = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
 subKey = "DigitalProductId"
 oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
@@ -5098,6 +5143,7 @@ end if
 if (IsNull(key_text) or key_text = "") then
     ' do nothing
 else
+    if debugging > "1" then wscript.echo "Windows" end if
     result.WriteText "      <item>" & vbcrlf
     result.WriteText "          <name>" & escape_xml(system_os_name) & "</name>" & vbcrlf
     result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -5118,7 +5164,6 @@ end if
 '''''''''''''''''''''''''''''''''''''''''''''''''
 '   MS CD Keys for Windows 64bit                '
 '''''''''''''''''''''''''''''''''''''''''''''''''
-if debugging > "1" then wscript.echo "Win 64bit Key" end if
 if address_width = "64" then
     Subhive = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
     Set objCtx = CreateObject("WbemScripting.SWbemNamedValueSet")
@@ -5127,10 +5172,10 @@ if address_width = "64" then
     Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
 
     if ((struser <> "") and (instr(local_net, strcomputer) = 0)) then
-    ' Username & Password provided - assume not a domain local PC.
-    Set objServices = objLocator.ConnectServer(strcomputer, "root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait, objCtx)
+        ' Username & Password provided - assume not a domain local PC.
+        Set objServices = objLocator.ConnectServer(strcomputer, "root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait, objCtx)
     else
-    Set objServices = objLocator.ConnectServer(strcomputer, "root\default", "", "", "", "", wbemConnectFlagUseMaxWait, objCtx)
+        Set objServices = objLocator.ConnectServer(strcomputer, "root\default", "", "", "", "", wbemConnectFlagUseMaxWait, objCtx)
     end if
     Set o64reg = objServices.Get("StdRegProv")
     key_text = null
@@ -5141,33 +5186,35 @@ if address_width = "64" then
     set Outparams = o64reg.ExecMethod_("GetBinaryValue", Inparams,,objCtx)
     key_text = getkey(Outparams.uValue, 1)
     if (IsNull(key_text) or (win_cd_key = "y") or (key_text = "")) then
-    ' do nothing
+        ' do nothing
     else
-    win_cd_key = "y"
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(system_os_name) & "</name>" & vbcrlf
-    result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "          <rel>" & escape_xml(windows_build_number) & "</rel>" & vbcrlf
-    result.WriteText "          <edition>" & escape_xml(system_os_version) & "</edition>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
+        if debugging > "1" then wscript.echo "Windows 64bit" end if
+        win_cd_key = "y"
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "          <name>" & escape_xml(system_os_name) & "</name>" & vbcrlf
+        result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+        result.WriteText "          <rel>" & escape_xml(windows_build_number) & "</rel>" & vbcrlf
+        result.WriteText "          <edition>" & escape_xml(system_os_version) & "</edition>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
     end if
     Inparams.Svaluename = "DigitalProductID4"
     set Outparams = o64reg.ExecMethod_("GetBinaryValue", Inparams,,objCtx)
     if IsNull(Outparams.uValue) then
-    key_text = NULL
+        key_text = NULL
     else
-    key_text = getkey(Outparams.uValue, 1)
+        key_text = getkey(Outparams.uValue, 1)
     end if
     if (IsNull(key_text) or (win_cd_key = "y") or (key_text = "")) then
-    ' do nothing
+        ' do nothing
     else
-    win_cd_key = "y"
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(system_os_name) & "</name>" & vbcrlf
-    result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "          <rel>" & escape_xml(windows_build_number) & "</rel>" & vbcrlf
-    result.WriteText "          <edition>" & escape_xml(system_os_version) & "</edition>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
+        if debugging > "1" then wscript.echo "Windows 64bit" end if
+        win_cd_key = "y"
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "          <name>" & escape_xml(system_os_name) & "</name>" & vbcrlf
+        result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+        result.WriteText "          <rel>" & escape_xml(windows_build_number) & "</rel>" & vbcrlf
+        result.WriteText "          <edition>" & escape_xml(system_os_version) & "</edition>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
     end if
 end if
 
@@ -5180,30 +5227,30 @@ end if
 ''''''''''''''''''''''''''''''''
 '   MS CD Keys for Office XP   '
 ''''''''''''''''''''''''''''''''
-if debugging > "1" then wscript.echo "Office XP Key" end if
 strKeyPath = "SOFTWARE\Microsoft\Office\10.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_xp(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    else
-    key_text = decodeKey(key)
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "          <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "          <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_xp(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+        else
+            if debugging > "1" then wscript.echo "Office XP" end if
+            key_text = decodeKey(key)
+            result.WriteText "      <item>" & vbcrlf
+            result.WriteText "          <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "          <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "          <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "      </item>" & vbcrlf
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     next
 end if
 
@@ -5214,27 +5261,28 @@ strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Office\10.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_xp(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing - no key retrieved
-    else
-    key_text = decodeKey(key)
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "          <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "          <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    key_name = ""
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_xp(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing - no key retrieved
+        else
+            if debugging > "1" then wscript.echo "Office XP 64bit" end if
+            key_text = decodeKey(key)
+            result.WriteText "      <item>" & vbcrlf
+            result.WriteText "          <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "          <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "          <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "      </item>" & vbcrlf
+            key_name = ""
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     Next
 end if
 
@@ -5245,26 +5293,27 @@ strKeyPath = "SOFTWARE\Microsoft\Office\11.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     for each subkey In arrSubKeys
-    key_name = get_sku_2003(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing
-    else
-    key_text = decodeKey(key)
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "          <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "          <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_2003(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing
+        else
+            if debugging > "1" then wscript.echo "Office 2003" end if
+            key_text = decodeKey(key)
+            result.WriteText "      <item>" & vbcrlf
+            result.WriteText "          <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "          <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "          <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "          <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "      </item>" & vbcrlf
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     next
 end if
 
@@ -5275,27 +5324,28 @@ strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Office\11.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_2003(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing - no key retrieved
-    else
-    key_text = decodeKey(key)
-    result.WriteText "  <item>" & vbcrlf
-    result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "  </item>" & vbcrlf
-    key_name = ""
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_2003(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing - no key retrieved
+        else
+            if debugging > "1" then wscript.echo "Office 2003 64bit" end if
+            key_text = decodeKey(key)
+            result.WriteText "  <item>" & vbcrlf
+            result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "  </item>" & vbcrlf
+            key_name = ""
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     Next
 end if
 
@@ -5306,26 +5356,27 @@ strKeyPath = "SOFTWARE\Microsoft\Office\12.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_2007(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing
-    else
-    key_text = decodeKey(key)
-    result.WriteText "  <item>" & vbcrlf
-    result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "  </item>" & vbcrlf
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_2007(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing
+        else
+            if debugging > "1" then wscript.echo "Office 2007" end if
+            key_text = decodeKey(key)
+            result.WriteText "  <item>" & vbcrlf
+            result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "  </item>" & vbcrlf
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     Next
 end if
 
@@ -5336,27 +5387,28 @@ strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Office\12.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_2007(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing - no key retrieved
-    else
-    key_text = decodeKey(key)
-    result.WriteText "  <item>" & vbcrlf
-    result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "  </item>" & vbcrlf
-    key_name = ""
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_2007(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing - no key retrieved
+        else
+            if debugging > "1" then wscript.echo "Office 2007 64bit" end if
+            key_text = decodeKey(key)
+            result.WriteText "  <item>" & vbcrlf
+            result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "  </item>" & vbcrlf
+            key_name = ""
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     Next
 end if
 
@@ -5367,26 +5419,27 @@ strKeyPath = "SOFTWARE\Microsoft\Office\14.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_2010(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing
-    else
-    key_text = decodeKey(key)
-    result.WriteText "  <item>" & vbcrlf
-    result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "  </item>" & vbcrlf
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_2010(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing
+        else
+            if debugging > "1" then wscript.echo "Office 2010" end if
+            key_text = decodeKey(key)
+            result.WriteText "  <item>" & vbcrlf
+            result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "  </item>" & vbcrlf
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     Next
 end if
 
@@ -5397,27 +5450,28 @@ strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Office\14.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_2010(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing - no key retrieved
-    else
-    key_text = decodeKey(key)
-    result.WriteText "  <item>" & vbcrlf
-    result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "  </item>" & vbcrlf
-    key_name = ""
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_2010(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing - no key retrieved
+        else
+            if debugging > "1" then wscript.echo "Office 2010 64bit" end if
+            key_text = decodeKey(key)
+            result.WriteText "  <item>" & vbcrlf
+            result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "  </item>" & vbcrlf
+            key_name = ""
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     Next
 end if
 
@@ -5428,26 +5482,27 @@ strKeyPath = "SOFTWARE\Microsoft\Office\15.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_2013(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing
-    else
-    key_text = decodeKey(key)
-    result.WriteText "  <item>" & vbcrlf
-    result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "  </item>" & vbcrlf
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_2013(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing
+        else
+            if debugging > "1" then wscript.echo "Office 2013" end if
+            key_text = decodeKey(key)
+            result.WriteText "  <item>" & vbcrlf
+            result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "  </item>" & vbcrlf
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     Next
 end if
 
@@ -5458,27 +5513,28 @@ strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Office\15.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_2013(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing - no key retrieved
-    else
-    key_text = decodeKey(key)
-    result.WriteText "  <item>" & vbcrlf
-    result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "  </item>" & vbcrlf
-    key_name = ""
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_2013(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing - no key retrieved
+        else
+            if debugging > "1" then wscript.echo "Office 2013 64bit" end if
+            key_text = decodeKey(key)
+            result.WriteText "  <item>" & vbcrlf
+            result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "  </item>" & vbcrlf
+            key_name = ""
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     Next
 end if
 
@@ -5489,25 +5545,26 @@ strKeyPath = "SOFTWARE\Microsoft\Office\16.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_2016(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing
-    else
-    key_text = decodekey(key)
-    result.WriteText "  <item>" & vbcrlf
-    result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "  </item>" & vbcrlf
-    key_text = ""
-    key_release = ""
-    key_edition = ""
+        key_name = get_sku_2016(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing
+        else
+            if debugging > "1" then wscript.echo "Office 2016" end if
+            key_text = decodekey(key)
+            result.WriteText "  <item>" & vbcrlf
+            result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "  </item>" & vbcrlf
+            key_text = ""
+            key_release = ""
+            key_edition = ""
     end if
     Next
 end if
@@ -5519,27 +5576,28 @@ strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Office\16.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
     For Each subkey In arrSubKeys
-    key_name = get_sku_2016(subkey)
-    key_release = get_release_type(subkey)
-    key_edition = get_edition_type(subkey)
-    path = strKeyPath & "\" & subkey
-    subKey = "DigitalProductId"
-    oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-    if IsNull(key) then
-    ' do nothing - no key retrieved
-    else
-    key_text = decodekey(key)
-    result.WriteText "  <item>" & vbcrlf
-    result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "  </item>" & vbcrlf
-    key_name = ""
-    key_text = ""
-    key_release = ""
-    key_edition = ""
-    end if
+        key_name = get_sku_2016(subkey)
+        key_release = get_release_type(subkey)
+        key_edition = get_edition_type(subkey)
+        path = strKeyPath & "\" & subkey
+        subKey = "DigitalProductId"
+        oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+        if IsNull(key) then
+            ' do nothing - no key retrieved
+        else
+            if debugging > "1" then wscript.echo "Office 2016 64bit" end if
+            key_text = decodekey(key)
+            result.WriteText "  <item>" & vbcrlf
+            result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+            result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+            result.WriteText "  <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+            result.WriteText "  <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+            result.WriteText "  </item>" & vbcrlf
+            key_name = ""
+            key_text = ""
+            key_release = ""
+            key_edition = ""
+        end if
     Next
 end if
 
@@ -5555,6 +5613,7 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
     ' do nothing
 else
+    if debugging > "1" then wscript.echo "SQL 2000" end if
     result.WriteText "  <item>" & vbcrlf
     result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
     result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -5586,19 +5645,21 @@ if (IsNull(key_text) or key_text = "") then
     subKey = "DigitalProductID"
     key_text = GetSN(strcomputer,HKEY_LOCAL_MACHINE,strKeyPath,subKey)
     if (IsNull(key_text) or key_text = "") then
-    ' nothing returned
+        ' nothing returned
     else
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "         <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "         <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    key_text = ""
-    key_release = ""
-    key_edition = ""
+        if debugging > "1" then wscript.echo "SQL 2005" end if
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+        result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+        result.WriteText "         <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+        result.WriteText "         <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
+        key_text = ""
+        key_release = ""
+        key_edition = ""
     end if
 else
+    if debugging > "1" then wscript.echo "SQL 2005" end if
     result.WriteText "      <item>" & vbcrlf
     result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
     result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -5627,6 +5688,7 @@ oReg.GetBinaryValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key
 if IsNull(key) then
     ' do nothing
 else
+    if debugging > "1" then wscript.echo "SQL 2008" end if
     key_text = decodeKey(key)
     result.WriteText "  <item>" & vbcrlf
     result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
@@ -5655,18 +5717,20 @@ if IsNull(key) OR key = "" then
     oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key
     if IsNull(key) OR key = "" then
     else
-    key_text = key
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-    result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-    result.WriteText "         <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-    result.WriteText "         <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    key_text = ""
-    key_release = ""
-    key_edition = ""
+        if debugging > "1" then wscript.echo "Visual Studio 2010" end if
+        key_text = key
+        result.WriteText "      <item>" & vbcrlf
+        result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+        result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+        result.WriteText "         <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+        result.WriteText "         <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+        result.WriteText "      </item>" & vbcrlf
+        key_text = ""
+        key_release = ""
+        key_edition = ""
     end if
 else
+    if debugging > "1" then wscript.echo "Visual Studio 2010" end if
     key_text = key
     result.WriteText "      <item>" & vbcrlf
     result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
@@ -5692,6 +5756,7 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) or key_text = "" then
     ' do nothing
 else
+    if debugging > "1" then wscript.echo "Visual Studio 2008" end if
     result.WriteText "      <item>" & vbcrlf
     result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
     result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -5716,6 +5781,7 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) or key_text = "" then
     ' do nothing
 else
+    if debugging > "1" then wscript.echo "Visual Studio 2005" end if
     result.WriteText "      <item>" & vbcrlf
     result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
     result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -5785,6 +5851,7 @@ if objFSO.FileExists("sqlite3.Exe") then
             key_release = ""
             key_edition = "Licensed"
             if (key_name > "" and key_name <> "Adobe " and key_text > "") then
+                if debugging > "1" then wscript.echo "Adobe " & key_name end if
                 result.WriteText "  <item>" & vbcrlf
                 result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
                 result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -5818,6 +5885,7 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
     ' do nothing
 else
+    if debugging > "1" then wscript.echo "Adobe Illustrator" end if
     result.WriteText "  <item>" & vbcrlf
     result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
     result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -5843,6 +5911,7 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
     ' do nothing
 else
+    if debugging > "1" then wscript.echo "Adobe Photoshop 7" end if
     result.WriteText "  <item>" & vbcrlf
     result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
     result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -5867,6 +5936,7 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
     ' do nothing
 else
+    if debugging > "1" then wscript.echo "Adobe Photoshop 5 LE" end if
     result.WriteText "  <item>" & vbcrlf
     result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
     result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -5890,6 +5960,7 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
     ' do nothing
 else
+    if debugging > "1" then wscript.echo "Adobe Photoshop 5" end if
     result.WriteText "  <item>" & vbcrlf
     result.WriteText "  <name>" & escape_xml(key_name) & "</name>" & vbcrlf
     result.WriteText "  <string>" & escape_xml(key_text) & "</string>" & vbcrlf

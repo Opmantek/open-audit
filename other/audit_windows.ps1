@@ -70,6 +70,7 @@ $Win32_SystemEnclosure = Get-WmiObject -Class Win32_SystemEnclosure
 $Win32_BaseBoard = Get-WmiObject -Class Win32_BaseBoard
 $Win32_LogicalDiskToPartition = Get-WmiObject -Class Win32_LogicalDiskToPartition
 $Win32_MappedLogicalDisk = Get-WmiObject -Class Win32_MappedLogicalDisk -ErrorAction Ignore
+$Win32_EncryptableVolume = Get-WmiObject -Class Win32_EncryptableVolume -ErrorAction Ignore
 $Win32_NetworkAdapter = Get-WmiObject -Class Win32_NetworkAdapter -ErrorAction Ignore
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
@@ -1018,6 +1019,25 @@ Get-WmiObject -Class Win32_LogicalDisk -Filter 'DriveType = "2" or DriveType = "
             $item.hard_drive_index = ((($_.Antecedent.split('"'))[1].split('#'))[1].split(','))[0]
         }
     }
+    $item.encryption_status = ""
+    $item.encryption_method = ""
+    $Win32_EncryptableVolume | ForEach {
+        if ($_.DeviceID -eq $item.device) {
+            if ($_.ProtectionStatus -eq 0) { $item.encryption_status = "off" }
+            if ($_.ProtectionStatus -eq 1) { $item.encryption_status = "on" }
+            if ($_.ProtectionStatus -eq 2) { $item.encryption_status = "unknown" }
+
+            if ($_.EncryptionMethod -eq 0) { $item.encryption_method = "NOT ENCRYPTED" }
+            if ($_.EncryptionMethod -eq 1) { $item.encryption_method = "AES 128 WITH DIFFUSER" }
+            if ($_.EncryptionMethod -eq 2) { $item.encryption_method = "AES 256 WITH DIFFUSER" }
+            if ($_.EncryptionMethod -eq 3) { $item.encryption_method = "AES 128" }
+            if ($_.EncryptionMethod -eq 4) { $item.encryption_method = "AES 256" }
+            if ($_.EncryptionMethod -eq 5) { $item.encryption_method = "HARDWARE ENCRYPTION" }
+            if ($_.EncryptionMethod -eq 6) { $item.encryption_method = "XTS-AES 128" }
+            if ($_.EncryptionMethod -eq 7) { $item.encryption_method = "XTS-AES 256 WITH DIFFUSER" }
+        }
+    }
+
   $result.partition += $item
 }
 if ($Win32_MappedLogicalDisk) {
