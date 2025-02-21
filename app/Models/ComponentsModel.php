@@ -50,7 +50,7 @@ class ComponentsModel extends BaseModel
                     log_message('warning', $resp->warning);
                 }
                 unset($resp->meta->filter[$i]);
-                $properties[] = $table . '.*';
+                $properties[] = '`' . $table . '`.*';
             }
         }
         if ($table === '' and $resp->meta->format === 'html') {
@@ -98,7 +98,7 @@ class ComponentsModel extends BaseModel
         }
         $properties = array();
         $properties[] = "'$table' as `table`";
-        $properties[] = "$table.*";
+        $properties[] = "`$table`.*";
         $properties[] = "devices.id as `devices.id`";
         $properties[] = "devices.name as `devices.name`";
         $this->builder->select($properties, false);
