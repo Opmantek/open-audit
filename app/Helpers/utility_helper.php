@@ -231,6 +231,10 @@ function createNewsData()
     }
     // $data->uuid = $config->uuid;
     $license = getLicenseDetails();
+    if (!empty($license->product)) {
+        $data->products[] = 'Open-AudIT';
+    }
+    $data->products = array_unique($data->products);
     $data->uuid = hash('sha256', $config->uuid);
     $data->server = hash('sha256', trim(`hostname`));
     $data->server_platform = $config->server_platform;
