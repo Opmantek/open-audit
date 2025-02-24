@@ -144,7 +144,11 @@ class SummariesModel extends BaseModel
         }
         $link = url_to($collection . 'Collection') . '?' . $dashboard[0]->table . '.' . $dashboard[0]->column . '=';
         for ($i = 0; $i < count($result); $i++) {
-            $result[$i]->attributes->link = $link . urlencode($result[$i]->attributes->name) . '&properties=' . $properties;
+            if (strpos($result[$i]->attributes->name, '&') !== false) {
+                $result[$i]->attributes->link = $link . 'LIKE' . urlencode(str_replace('&', '%', $result[$i]->attributes->name)) . '&properties=' . $properties;
+            } else {
+                $result[$i]->attributes->link = $link . urlencode($result[$i]->attributes->name) . '&properties=' . $properties;
+            }
         }
         if (!empty($set_count)) {
             if ($limit_upper == 8888888888) {
