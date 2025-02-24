@@ -1479,6 +1479,8 @@ if (empty($resource->type)) {
                                                     <th><?= __('Used') ?></th>
                                                     <th><?= __('Format') ?></th>
                                                     <th><?= __('Serial') ?></th>
+                                                    <th><?= __('Encryption Status') ?></th>
+                                                    <th><?= __('Encryption Method') ?></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1495,6 +1497,8 @@ if (empty($resource->type)) {
                                                     <td><?= number_format($row->used / 1000) ?> GB</td>
                                                     <td><?= $row->format ?></td>
                                                     <td><?= $row->serial ?></td>
+                                                    <td><?= $row->encryption_status ?></td>
+                                                    <td><?= $row->encryption_method ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
