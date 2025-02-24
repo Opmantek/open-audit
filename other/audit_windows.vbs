@@ -2714,7 +2714,8 @@ for each objPartition In colPartitions
     encryption_status = ""
     encryption_method = ""
     on error resume next
-        set encPartitions = objWMIService.ExecQuery("Select * FROM Win32_EncryptableVolume WHERE DeviceID = '" & partition_device_id & "'",,32)
+        set objSecService = GetObject("winmgmts:\\.\Root\CIMV2\Security\MicrosoftVolumeEncryption")
+        set encPartitions = objSecService.ExecQuery("Select * FROM Win32_EncryptableVolume WHERE DriveLetter = '" & objPartition.Name & "'",,48)
         error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_EncryptableVolume)" : audit_wmi_fails = audit_wmi_fails & "Win32_EncryptableVolume " : end if
         for each encPartition In encPartitions
             if ( encPartition.ProtectionStatus = "0") then
@@ -2752,7 +2753,6 @@ for each objPartition In colPartitions
             if ( encPartition.EncryptionMethod = "7") then
                 encryption_method = "XTS-AES 256 WITH DIFFUSER"
             end if
-
         next
     on error goto 0
 
