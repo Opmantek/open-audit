@@ -2249,13 +2249,12 @@ if [ -z $(echo "$skip_sections" | grep "vm,") ]; then
 	fi
 	PREVIFS=$IFS
 	IFS="$NEWLINEIFS";
-	for line in $(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Status}}" 2>/dev/null); do
+	for line in $(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" 2>/dev/null); do
 		vm_ident=$(echo "$line" | awk '{print $1}')
 		name=$(echo "$line" | awk '{print $2}')
 		status=$(echo "$line" | awk '{print $4}')
 		uuid=$(echo "$line" | awk '{print $1}')
 		config_file=$(echo "$line" | awk '{print $3}')
-		uuid=$(echo "$line" | awk '{print $1}')
 		vm_result=$vm_result"
 			<item>
 				<vm_ident>$(escape_xml "$vm_ident")</vm_ident>
