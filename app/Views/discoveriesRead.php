@@ -346,7 +346,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         <div class="offset-2 col-8" style="position:relative;">
                                             <label for="match_options.<?= $match ?>" class="form-label"><?= ucwords(str_replace('_', ' ', $match)) ?></label>
                                             <div class="input-group">
-                                                <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= @$resource->scan_options->{$match} ?>" disabled>
+                                                <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= $field ?>" disabled>
                                                     <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
                                                     <option value="n" <?php if ($field === 'n') { echo 'selected'; } ?>><?= __('No')  ?></option>
                                                     <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently \'' . $config->{$match} . '\'') ?></option>
