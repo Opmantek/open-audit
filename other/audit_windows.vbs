@@ -2716,44 +2716,51 @@ for each objPartition In colPartitions
     on error resume next
         set objSecService = GetObject("winmgmts:\\.\Root\CIMV2\Security\MicrosoftVolumeEncryption")
         set encPartitions = objSecService.ExecQuery("Select * FROM Win32_EncryptableVolume WHERE DriveLetter = '" & objPartition.Name & "'",,48)
-        error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_EncryptableVolume)" : audit_wmi_fails = audit_wmi_fails & "Win32_EncryptableVolume " : end if
-        for each encPartition In encPartitions
-            if ( encPartition.ProtectionStatus = "0") then
-                encryption_status = "off"
+        error_returned = Err.Number
+        if (error_returned <> 0) then
+            if (debugging > "0") then
+                wscript.echo check_wbem_error(error_returned) & " (Win32_EncryptableVolume)"
+                audit_wmi_fails = audit_wmi_fails & "Win32_EncryptableVolume "
             end if
-            if ( encPartition.ProtectionStatus = "1") then
-                encryption_status = "on"
-            end if
-            if ( encPartition.ProtectionStatus = "2") then
-                encryption_status = "unknown"
-            end if
+        else
+            for each encPartition In encPartitions
+                if ( encPartition.ProtectionStatus = "0") then
+                    encryption_status = "off"
+                end if
+                if ( encPartition.ProtectionStatus = "1") then
+                    encryption_status = "on"
+                end if
+                if ( encPartition.ProtectionStatus = "2") then
+                    encryption_status = "unknown"
+                end if
 
 
-            if ( encPartition.EncryptionMethod = "0") then
-                encryption_method = "NOT ENCRYPTED"
-            end if
-            if ( encPartition.EncryptionMethod = "1") then
-                encryption_method = "AES 128 WITH DIFFUSER"
-            end if
-            if ( encPartition.EncryptionMethod = "2") then
-                encryption_method = "AES 256 WITH DIFFUSER"
-            end if
-            if ( encPartition.EncryptionMethod = "3") then
-                encryption_method = "AES 128"
-            end if
-            if ( encPartition.EncryptionMethod = "4") then
-                encryption_method = "AES 256"
-            end if
-            if ( encPartition.EncryptionMethod = "5") then
-                encryption_method = "HARDWARE ENCRYPTION"
-            end if
-            if ( encPartition.EncryptionMethod = "6") then
-                encryption_method = "XTS-AES 128"
-            end if
-            if ( encPartition.EncryptionMethod = "7") then
-                encryption_method = "XTS-AES 256 WITH DIFFUSER"
-            end if
-        next
+                if ( encPartition.EncryptionMethod = "0") then
+                    encryption_method = "NOT ENCRYPTED"
+                end if
+                if ( encPartition.EncryptionMethod = "1") then
+                    encryption_method = "AES 128 WITH DIFFUSER"
+                end if
+                if ( encPartition.EncryptionMethod = "2") then
+                    encryption_method = "AES 256 WITH DIFFUSER"
+                end if
+                if ( encPartition.EncryptionMethod = "3") then
+                    encryption_method = "AES 128"
+                end if
+                if ( encPartition.EncryptionMethod = "4") then
+                    encryption_method = "AES 256"
+                end if
+                if ( encPartition.EncryptionMethod = "5") then
+                    encryption_method = "HARDWARE ENCRYPTION"
+                end if
+                if ( encPartition.EncryptionMethod = "6") then
+                    encryption_method = "XTS-AES 128"
+                end if
+                if ( encPartition.EncryptionMethod = "7") then
+                    encryption_method = "XTS-AES 256 WITH DIFFUSER"
+                end if
+            next
+        end if
     on error goto 0
 
     if (partition_size > "") then
