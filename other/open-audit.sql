@@ -2934,8 +2934,8 @@ UNLOCK TABLES;
 --
 
 -- DROP TABLE IF EXISTS `news`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+-- /*!40101 SET @saved_cs_client     = @@character_set_client */;
+-- /*!40101 SET character_set_client = utf8 */;
 -- CREATE TABLE `news` (
 --   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 --   `name` varchar(200) NOT NULL DEFAULT '',
@@ -2956,15 +2956,15 @@ UNLOCK TABLES;
 --   `actioned_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
 --   PRIMARY KEY (`id`)
 -- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `news`
 --
 
 -- LOCK TABLES `news` WRITE;
-/*!40000 ALTER TABLE `news` DISABLE KEYS */;
-/*!40000 ALTER TABLE `news` ENABLE KEYS */;
+-- /*!40000 ALTER TABLE `news` DISABLE KEYS */;
+-- /*!40000 ALTER TABLE `news` ENABLE KEYS */;
 -- UNLOCK TABLES;
 
 --
