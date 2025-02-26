@@ -123,7 +123,7 @@ class ComponentsModel extends BaseModel
         }
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
+        log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
         $query = $this->builder->get();
         $result = $query->getResult();
         $result = format_data($result, $table);

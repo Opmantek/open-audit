@@ -59,7 +59,10 @@ window.onload = function () {
             pageLength: 25,
             paging: true,
             processing: true,
-            searching: true,
+            searching: false,
+            search: {
+                return: true
+            },
             serverSide: true,
             ajax: {
                 url: '<?= base_url() ?>index.php/components?components.type=<?= $meta->component ?>&format=json',

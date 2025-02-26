@@ -57,6 +57,9 @@ window.onload = function () {
             pageLength: 25,
             processing: true,
             searching: true,
+            search: {
+                return: true
+            },
             serverSide: true,
             ajax: {
                 url: '<?= base_url() ?>index.php/discovery_log?format=dataTables',
