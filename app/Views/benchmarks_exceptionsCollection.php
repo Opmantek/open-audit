@@ -56,3 +56,11 @@ include 'shared/collection_functions.php';
                 </div>
             </div>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function () {
+        $("#button_create").remove();
+    });
+}
+</script>

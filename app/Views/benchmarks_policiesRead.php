@@ -116,10 +116,10 @@ include 'shared/read_functions.php';
             </div>
         </main>
 
-
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
+        $("#button_create").remove();
 
         var hash = window.location.hash;
         if (hash == "") {
