@@ -61,29 +61,6 @@ class AgentsModel extends BaseModel
         if (empty($data)) {
             return null;
         }
-        if (is_array($data->inputs) or is_object($data->inputs)) {
-            $new_inputs = array();
-            foreach ($data->inputs as $input) {
-                $item = new \stdClass();
-                foreach ($input as $key => $value) {
-                    $item->{$key} = $value;
-                }
-                $new_inputs[] = $item;
-            }
-            $data->inputs = json_encode($new_inputs);
-        }
-
-        if (is_array($data->outputs) or is_object($data->outputs)) {
-            $new_outputs = array();
-            foreach ($data->outputs as $output) {
-                $item = new \stdClass();
-                foreach ($output as $key => $value) {
-                    $item->{$key} = $value;
-                }
-                $new_outputs[] = $item;
-            }
-            $data->outputs = json_encode($new_outputs);
-        }
         $data = $this->createFieldData('agents', $data);
         if (empty($data)) {
             return null;
