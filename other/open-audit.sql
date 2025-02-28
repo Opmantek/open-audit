@@ -310,6 +310,7 @@ INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Device','netwo
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network IDS (Intrusion Detection)','network ids','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Printer','network printer','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Scanner','network scanner','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Termination Unit (NTU)','ntu','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','OT Sensor','ot sensor','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Patch Panel','patch panel','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','PBX','pbx','system','2000-01-01 00:00:00');
