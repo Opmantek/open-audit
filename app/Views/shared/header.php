@@ -104,7 +104,7 @@ if (!empty($config->servers)) {
     <!-- Need d-flex flex-column h-100 to hold footer in place -->
     <body class="d-flex flex-column h-100">
         <!-- Menu -->
-        <nav class="navbar navbar-expand-md" style="background-color: #1F284F !important;">
+        <nav class="navbar navbar-expand-md">
             <div class="container-fluid">
                 <a class="navbar-brand" style="color: white;" href="<?= $homepage ?>">
                     <img class="rounded-circle border border-white border-0" style="width:25px; height: 25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
