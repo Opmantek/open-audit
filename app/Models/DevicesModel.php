@@ -195,8 +195,11 @@ class DevicesModel extends BaseModel
         $result = formatQuery($result);
         $count = count($result);
 
-        if (isset($result[0]->{'devices.type'}) and isset($result[0]->{'devices.last_seen_by'}) and $instance->config->product !== 'community') {
+        if (isset($result[0]->{'devices.type'}) and isset($result[0]->{'devices.last_seen_by'})) {
             for ($i = 0; $i < $count; $i++) {
+                $result[$i]->audit_status = '';
+                $result[$i]->audit_class = '';
+                $result[$i]->audit_text = '';
                 # BAD
                 if ($result[$i]->{'devices.last_seen_by'} === 'nmap' and ($result[$i]->{'devices.type'} === 'unclassified' or $result[$i]->{'devices.type'} === 'unknown')) {
                     $result[$i]->audit_class = 'fa fa-times text-danger';
@@ -206,11 +209,9 @@ class DevicesModel extends BaseModel
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Last discovery only Nmap worked. This may be an issue, or it may be a device of a type we cannot audit.';
                 } elseif ($result[$i]->{'devices.last_seen_by'} === 'cloud') {
-                    #$result[$i]->audit_class = 'fa fa-times text-info';
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Cloud import, data retrieval will be very limited.';
                 } elseif ($result[$i]->{'devices.last_seen_by'} === 'integrations') {
-                    #$result[$i]->audit_class = 'fa fa-times text-info';
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Integration import, data retrieval will be very limited.';
                 } elseif ($result[$i]->{'devices.type'} === 'computer' and ($result[$i]->{'devices.last_seen_by'} === 'ssh' or $result[$i]->{'devices.last_seen_by'} === 'windows' or $result[$i]->{'devices.last_seen_by'} === 'wmi' or $result[$i]->{'devices.last_seen_by'} === 'snmp')) {
