@@ -20,6 +20,9 @@ function match_columns($table)
     if ($table === 'certificate') {
             $match_columns = array('name', 'issuer', 'serial', 'valid_from_raw', 'valid_to_raw');
     }
+    if ($table === 'cli_config') {
+            $match_columns = array('name', 'hash', 'config');
+    }
     if ($table === 'disk') {
             $match_columns = array('model', 'serial', 'hard_drive_index', 'size');
     }

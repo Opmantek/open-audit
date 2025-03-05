@@ -135,7 +135,7 @@ if (empty($resource->type)) {
 
                                     <?php
                                     $show = false;
-                                    $sections = array('certificate', 'dns', 'file', 'executable', 'ip', 'log', 'netstat', 'nmap', 'pagefile', 'policy', 'print_queue', 'route', 'share', 'task', 'user', 'user_group', 'variable', 'vm', 'windows');
+                                    $sections = array('certificate', 'cli_config', 'dns', 'file', 'executable', 'ip', 'log', 'netstat', 'nmap', 'pagefile', 'policy', 'print_queue', 'route', 'share', 'task', 'user', 'user_group', 'variable', 'vm', 'windows');
                                     foreach ($sections as $section) {
                                         if (!empty($included[$section])) {
                                             $show = true;
@@ -1755,6 +1755,27 @@ if (empty($resource->type)) {
                                     </div>
                                 </div>
                             </div>
+
+                            <?php if (!empty($included['cli_config'])) { ?>
+                            <div style="margin-bottom:20px; display:none;" class="card" id="cli_config_section">
+                                <?php $count = !empty($included['cli_config']) ? count($included['cli_config']) : 0; ?>
+                                <?=  device_panel('cli_config', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-10 offset-1">
+                                            <?php foreach ($included['cli_config'] as $cli_config) {
+                                                $myConfig = (!empty(json_decode(html_entity_decode($cli_config->config)))) ?
+                                                            json_encode(json_decode(html_entity_decode($cli_config->config)), JSON_PRETTY_PRINT) :
+                                                            html_entity_decode($cli_config->config); ?>
+                                                <label for="cli_config_<?= $cli_config->hash ?>" class="form-label"><?= $cli_config->name ?></label>
+                                                <textarea id="cli_config_<?= $cli_config->hash ?>" class="form-control" rows="10" style="font-family: courier;"><?= $myConfig ?></textarea>
+                                                <br><br>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php } ?>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="firewall_section">
                                 <?php $count = !empty($included['firewall']) ? count($included['firewall']) : 0; ?>

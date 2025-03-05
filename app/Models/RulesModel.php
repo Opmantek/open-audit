@@ -235,7 +235,7 @@ class RulesModel extends BaseModel
 
         // Details based on SNMP OID
         // NEW for 5.7.0 - Do not run if we already have a model
-        if (!empty($device->snmp_oid) and empty($device->model)) {
+        if (!empty($device->snmp_oid) and (empty($device->model) or empty($device->type))) {
             $log_start = microtime(true);
             $newdevice = get_details_from_oid($device->snmp_oid);
             if (!empty($newdevice->type) or !empty($newdevice->model)) {
