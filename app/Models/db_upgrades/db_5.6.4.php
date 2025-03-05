@@ -24,6 +24,11 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Termination Unit (NTU)','ntu','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20250305' WHERE `name` = 'internal_version'";
 $db->query($sql);
