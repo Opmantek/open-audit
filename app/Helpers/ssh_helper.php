@@ -443,7 +443,7 @@ if (! function_exists('ssh_command')) {
         // if (!defined('NET_SSH2_LOGGING')) {
         //     define('NET_SSH2_LOGGING', SSH2::LOG_COMPLEX);
         // }
-        $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
+        $ssh = new phpseclib3\Net\SSH2($ip, $ssh_port);
         if (empty($ssh)) {
             $log->message = 'Could not instanciate SSH object to ' . $ip . ':' . $ssh_port . '.';
             $log->severity = 3;
@@ -579,6 +579,93 @@ if (! function_exists('ssh_command')) {
     }
 }
 
+function ssh_connect(string $ip = '', array $credentials = array(), int $discovery_id = 0, int $ssh_port = 22, int $timeout = 10)
+{
+    $discoveryLogModel = model('DiscoveryLogModel');
+
+    $return = new \StdClass();
+
+    $log = new \StdClass();
+    $log->discovery_id = (!empty($discovery_id)) ? $discovery_id : '';
+    $log->ip = (!empty($ip)) ? $ip : '';
+    $log->file = 'ssh_helper';
+    $log->function = 'ssh_credentials';
+
+    if (empty($credentials)) {
+        $message = 'No credentials array passed to ssh_credentials for ' . $ip . '.';
+        log_message('warning', $message);
+        $log->message = $message;
+        $log->command_output = '';
+        $log->command_status = 'error';
+        $log->severity = 4;
+        $discoveryLogModel->create($log);
+        return false;
+    }
+    if (empty($ip) or ! filter_var($ip, FILTER_VALIDATE_IP)) {
+        $message = 'Invalid or blank IP passed to snmp_credentials.';
+        log_message('error', $message);
+        $log->message = $message;
+        $log->command_output = '';
+        $log->command_status = 'error';
+        $log->severity = 4;
+        $discoveryLogModel->create($log);
+        return false;
+    }
+
+    foreach ($credentials as $credential) {
+        if ($credential->type === 'ssh_key') {
+            $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
+            $ssh->setTimeout($timeout);
+            log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
+            if (!empty($credential->credentials->password)) {
+                $key = PublicKeyLoader::load($credential->credentials->ssh_key, $credential->credentials->password);
+            } else {
+                $key = PublicKeyLoader::load($credential->credentials->ssh_key);
+            }
+            try {
+                $test = $ssh->login($credential->credentials->username, $key);
+            } catch (Exception $e) {
+                $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
+                $log->command_status = 'notice';
+                $discoveryLogModel->create($log);
+                $ssh->disconnect();
+                unset($ssh);
+            }
+            if (!empty($test)) {
+                $log->message = "Valid credentials for {$credential->type} named {$credential->name} used to log in to {$ip}.";
+                $log->command_status = 'success';
+                $discoveryLogModel->create($log);
+                $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
+                break;
+            }
+        } elseif ($credential->type === 'ssh') {
+            $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
+            $ssh->setTimeout($timeout);
+            log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
+            try {
+                $test = $ssh->login($credential->credentials->username, $credential->credentials->password);
+            } catch (Exception $e) {
+                $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
+                $log->command_status = 'notice';
+                $discoveryLogModel->create($log);
+                $ssh->disconnect();
+                unset($ssh);
+            }
+            if (!empty($test)) {
+                $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
+                $log->command_status = 'success';
+                $discoveryLogModel->create($log);
+                $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
+                break;
+            }
+        }
+    }
+    if (!empty($ssh)) {
+        return $ssh;
+    }
+    return null;
+}
+
 if (! function_exists('ssh_audit')) {
     /**
      * [ssh_audit description]
@@ -701,7 +788,6 @@ if (! function_exists('ssh_audit')) {
                     $ssh->disconnect();
                     unset($ssh);
                 }
-                // if ($ssh->login($credential->credentials->username, $key)) {
                 if (!empty($test)) {
                     $log->message = "Valid credentials for {$credential->type} named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
@@ -713,18 +799,8 @@ if (! function_exists('ssh_audit')) {
                     }
                     break;
                 }
-                // else {
-                //     $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
-                //     $log->command_status = 'notice';
-                //     $discoveryLogModel->create($log);
-                //     $ssh->disconnect();
-                //     unset($ssh);
-                // }
             } elseif ($credential->type === 'ssh') {
                 log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
-                // NOTE - Use @ below because some devices cause "Error reading from socket" and halt this process
-                // TODO - change to try / catch
-
                 try {
                     $test = $ssh->login($credential->credentials->username, $credential->credentials->password);
                 } catch (Exception $e) {
@@ -734,7 +810,6 @@ if (! function_exists('ssh_audit')) {
                     $ssh->disconnect();
                     unset($ssh);
                 }
-                // if (@$ssh->login($credential->credentials->username, $credential->credentials->password)) {
                 if (!empty($test)) {
                     $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
@@ -743,12 +818,6 @@ if (! function_exists('ssh_audit')) {
                     $password = (!empty($credential->credentials->password)) ? $credential->credentials->password : '';
                     break;
                 }
-                // else {
-                //     $log->message = "Credential set for SSH named {$credential->name} not working on {$ip}.";
-                //     $log->command_status = 'notice';
-                //     $discoveryLogModel->create($log);
-                //     unset($ssh);
-                // }
             }
         }
 
@@ -831,29 +900,18 @@ if (! function_exists('ssh_audit')) {
 
             $device->os_family = '';
             if (!empty($device->os_name)) {
+                // Client
                 if (strpos($device->os_name, ' 95') !== false) {
                     $device->os_family = 'Windows 95';
                 }
                 if (strpos($device->os_name, ' 98') !== false) {
                     $device->os_family = 'Windows 98';
                 }
-                if (strpos($device->os_name, ' NT') !== false) {
-                    $device->os_family = 'Windows NT';
-                }
-                if (strpos($device->os_name, '2000') !== false) {
-                    $device->os_family = 'Windows 2000';
-                }
                 if (strpos($device->os_name, ' XP') !== false) {
                     $device->os_family = 'Windows XP';
                 }
-                if (strpos($device->os_name, '2003') !== false) {
-                    $device->os_family = 'Windows 2003';
-                }
                 if (strpos($device->os_name, 'Vista') !== false) {
                     $device->os_family = 'Windows Vista';
-                }
-                if (strpos($device->os_name, '2008') !== false) {
-                    $device->os_family = 'Windows 2008';
                 }
                 if (strpos($device->os_name, 'Windows 7') !== false) {
                     $device->os_family = 'Windows 7';
@@ -861,14 +919,39 @@ if (! function_exists('ssh_audit')) {
                 if (strpos($device->os_name, 'Windows 8') !== false) {
                     $device->os_family = 'Windows 8';
                 }
-                if (strpos($device->os_name, '2012') !== false) {
-                    $device->os_family = 'Windows 2012';
-                }
                 if (strpos($device->os_name, 'Windows 10') !== false) {
                     $device->os_family = 'Windows 10';
                 }
+                if (strpos($device->os_name, 'Windows 11') !== false) {
+                    $device->os_family = 'Windows 11';
+                }
+                // Server
+                if (strpos($device->os_name, ' NT') !== false) {
+                    $device->os_family = 'Windows NT';
+                }
+                if (strpos($device->os_name, '2000') !== false) {
+                    $device->os_family = 'Windows 2000';
+                }
+                if (strpos($device->os_name, '2003') !== false) {
+                    $device->os_family = 'Windows 2003';
+                }
+                if (strpos($device->os_name, '2008') !== false) {
+                    $device->os_family = 'Windows 2008';
+                }
+                if (strpos($device->os_name, '2012') !== false) {
+                    $device->os_family = 'Windows 2012';
+                }
                 if (strpos($device->os_name, '2016') !== false) {
                     $device->os_family = 'Windows 2016';
+                }
+                if (strpos($device->os_name, '2019') !== false) {
+                    $device->os_family = 'Windows 2019';
+                }
+                if (strpos($device->os_name, '2022') !== false) {
+                    $device->os_family = 'Windows 2022';
+                }
+                if (strpos($device->os_name, '2025') !== false) {
+                    $device->os_family = 'Windows 2025';
                 }
             }
             $device->credentials = $credential;

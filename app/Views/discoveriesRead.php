@@ -576,6 +576,9 @@ window.onload = function () {
             pageLength: 25,
             processing: true,
             searching: true,
+            search: {
+                return: true
+            },
             serverSide: true,
             ajax: {
                 url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&format=json',
@@ -764,6 +767,9 @@ window.onload = function () {
             paging: true,
             processing: true,
             searching: true,
+            search: {
+                return: true
+            },
             serverSide: true,
             ajax: {
                 url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=json',
@@ -941,6 +947,9 @@ window.onload = function () {
             paging: true,
             processing: true,
             searching: true,
+            search: {
+                return: true
+            },
             serverSide: true,
             devSort: {},
             ajax: {

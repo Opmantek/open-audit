@@ -186,7 +186,7 @@ class DevicesModel extends BaseModel
             $this->builder->orderBy('devices.id');
         }
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
+        log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -195,8 +195,11 @@ class DevicesModel extends BaseModel
         $result = formatQuery($result);
         $count = count($result);
 
-        if (isset($result[0]->{'devices.type'}) and isset($result[0]->{'devices.last_seen_by'}) and $instance->config->product !== 'community') {
+        if (isset($result[0]->{'devices.type'}) and isset($result[0]->{'devices.last_seen_by'})) {
             for ($i = 0; $i < $count; $i++) {
+                $result[$i]->audit_status = '';
+                $result[$i]->audit_class = '';
+                $result[$i]->audit_text = '';
                 # BAD
                 if ($result[$i]->{'devices.last_seen_by'} === 'nmap' and ($result[$i]->{'devices.type'} === 'unclassified' or $result[$i]->{'devices.type'} === 'unknown')) {
                     $result[$i]->audit_class = 'fa fa-times text-danger';
@@ -206,11 +209,9 @@ class DevicesModel extends BaseModel
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Last discovery only Nmap worked. This may be an issue, or it may be a device of a type we cannot audit.';
                 } elseif ($result[$i]->{'devices.last_seen_by'} === 'cloud') {
-                    #$result[$i]->audit_class = 'fa fa-times text-info';
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Cloud import, data retrieval will be very limited.';
                 } elseif ($result[$i]->{'devices.last_seen_by'} === 'integrations') {
-                    #$result[$i]->audit_class = 'fa fa-times text-info';
                     $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
                     $result[$i]->audit_text = 'Integration import, data retrieval will be very limited.';
                 } elseif ($result[$i]->{'devices.type'} === 'computer' and ($result[$i]->{'devices.last_seen_by'} === 'ssh' or $result[$i]->{'devices.last_seen_by'} === 'windows' or $result[$i]->{'devices.last_seen_by'} === 'wmi' or $result[$i]->{'devices.last_seen_by'} === 'snmp')) {
@@ -509,6 +510,9 @@ class DevicesModel extends BaseModel
         }
 
         foreach ($current as $table) {
+            if (!$this->db->tableExists($table)) {
+                continue;
+            }
             $sql = "SELECT count(*) AS `count` FROM `$table` LEFT JOIN `devices` ON $table.device_id = devices.id WHERE devices.org_id IN (" . implode(',', $orgs) . ")";
             $query = $this->db->query($sql);
             $result = $query->getResult();
@@ -536,8 +540,11 @@ class DevicesModel extends BaseModel
         }
 
         $include = array();
-        $current = array('access_point', 'antivirus', 'bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+        $current = array('access_point', 'antivirus', 'bios', 'certificate', 'cli_config', 'disk', 'dns', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
         foreach ($current as $table) {
+            if (!$this->db->tableExists($table)) {
+                continue;
+            }
             if (empty($resp_include) or in_array($table, $resp_include)) {
                 $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y'";
                 $query = $this->db->query($sql, $id);
@@ -545,6 +552,46 @@ class DevicesModel extends BaseModel
                 if (!empty($result)) {
                     $include[$table] = $result;
                 }
+            }
+        }
+
+        if (!empty($include['cli_config'])) {
+            $sql = "SELECT d.* FROM cli_config d WHERE d.last_seen IN (SELECT max(d2.last_seen) FROM cli_config d2 WHERE d2.name = d.name AND d2.current = 'n' and d2.device_id = ?)";
+            $query = $this->db->query($sql, $id);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include['cli_config_non_current'] = $result;
+            }
+
+            if (!empty($include['cli_config_non_current'])) {
+                helper('diff');
+                $output = '';
+                foreach ($include['cli_config'] as $cli_config) {
+                    $date = '';
+                    foreach ($include['cli_config_non_current'] as $cli_config_non_current) {
+                        if ($cli_config->name === $cli_config_non_current->name) {
+                            $date = $cli_config_non_current->last_seen;
+                        }
+                    }
+                    $output .= '<div class="card col-10 offset-1" style="margin-bottom:20px;">
+                                        <div class="row">
+                                            <div class="card-header col-6 clearfix"><h6>' . $cli_config->name . '&nbsp;&nbsp;on&nbsp;&nbsp;' . $cli_config->last_seen . '</h6></div>
+                                            <div class="card-header col-6 clearfix"><h6>' . $cli_config->name . '&nbsp;&nbsp;on&nbsp;&nbsp;' . $date . '</h6></div>
+                                        </div>
+                                    <div class="card-body">
+                                        <div class="row text-center" style="overflow-y:scroll; height:12em;">';
+                    foreach ($include['cli_config_non_current'] as $cli_config_non_current) {
+                        if ($cli_config->name === $cli_config_non_current->name) {
+                            $diffClass = new \App\Helpers\Diff();
+                            $table_output = $diffClass->toTable($diffClass->compare($cli_config->config, $cli_config_non_current->config));
+                            $temp = str_replace('<table class="diff">', '<table class="diff font-monospace text-start" style="width:100%; font-size:.8em;">', $table_output);
+                            $temp = str_replace('<td ', '<td style="padding:4px; spacing:4px;" ', $temp);
+                            $output .= $temp;
+                        }
+                    }
+                    $output .= '</div></div></div>';
+                }
+                $include['cli_config_diff'] = $output;
             }
         }
 

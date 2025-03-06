@@ -17,7 +17,7 @@ use stdClass;
  * @author    Mark Unwin <mark.unwin@firstwave.com>
  * @copyright 2023 FirstWave
  * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   GIT: Open-AudIT_5.6.3
+ * @version   GIT: Open-AudIT_5.6.4
  * @link      http://www.open-audit.org
  */
 
@@ -220,13 +220,17 @@ class Devices extends BaseController
             }
             $device = audit_convert($device);
             $logname = (!empty($device->system->hostname)) ? $device->system->hostname : ((!empty($device->system->ip)) ? $device->system->ip : $file);
-            log_message('info', 'Importing device ' . $logname);
+            log_message('info', 'Importing device ' . $logname . ' - ' . @$device->system->ip);
             unset($logname);
             if (!$device) {
                 log_message('error', 'Could not convert example result file ' . $file . '.');
                 \Config\Services::session()->setFlashdata('fail', 'Could not convert example result file ' . $file . '.');
                 return redirect()->to(site_url() . '/devices?devices.domain=open-audit.local');
             }
+            $device->system->domain = 'open-audit.local';
+            unset($device->system->oae_manage);
+            unset($device->system->nmis_manage);
+            unset($device->system->credentials);
             include "include_process_device.php";
             $count += 1;
         }

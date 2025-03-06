@@ -310,6 +310,7 @@ INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Device','netwo
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network IDS (Intrusion Detection)','network ids','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Printer','network printer','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Scanner','network scanner','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Termination Unit (NTU)','ntu','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','OT Sensor','ot sensor','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Patch Panel','patch panel','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','PBX','pbx','system','2000-01-01 00:00:00');
@@ -934,6 +935,37 @@ LOCK TABLES `chart` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `cli_config`
+--
+
+DROP TABLE IF EXISTS `cli_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cli_config` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `device_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `hash` text NOT NULL,
+  `config` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`device_id`),
+  CONSTRAINT `cli_config_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cli_config`
+--
+
+LOCK TABLES `cli_config` WRITE;
+/*!40000 ALTER TABLE `cli_config` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cli_config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `cloud_log`
 --
 
@@ -1233,7 +1265,7 @@ INSERT INTO `configuration` VALUES (NULL,'discovery_use_ipmi','y','bool','y','sy
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_org_id_match','n','bool','y','system','2000-01-01 00:00:00','When matching a device and assign_devices_to_org is set, use that attribute in the relevant match rules.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_wmi_timeout','900','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device from Linux via WMI.');
-INSERT INTO `configuration` VALUES (NULL,'display_version','5.6.3','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (NULL,'display_version','5.6.4','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (NULL,'download_reports','n','bool','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports.');
 INSERT INTO `configuration` VALUES (NULL,'mail_domain','','text','y','system','2000-01-01 00:00:00','Email domain to use.');
 INSERT INTO `configuration` VALUES (NULL,'mail_from','','text','y','system','2000-01-01 00:00:00','Email address used for as the sender.');
@@ -1246,7 +1278,7 @@ INSERT INTO `configuration` VALUES (NULL,'firstwave_prompt','2000-01-01','date',
 INSERT INTO `configuration` VALUES (NULL,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (NULL,'gui_trim_characters','25','number','y','system','2000-01-01 00:00:00','When showing a table of information in the web GUI, replace characters greater than this with \"...\".');
 INSERT INTO `configuration` VALUES (NULL,'homepage','summaries','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (NULL,'internal_version','20250218','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (NULL,'internal_version','20250305','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
 INSERT INTO `configuration` VALUES (NULL,'maps_api_key','','text','y','system','2000-01-01 00:00:00','Your API key for Google Maps.');
 INSERT INTO `configuration` VALUES (NULL,'match_dbus','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
 INSERT INTO `configuration` VALUES (NULL,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.');
@@ -2934,8 +2966,8 @@ UNLOCK TABLES;
 --
 
 -- DROP TABLE IF EXISTS `news`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+-- /*!40101 SET @saved_cs_client     = @@character_set_client */;
+-- /*!40101 SET character_set_client = utf8 */;
 -- CREATE TABLE `news` (
 --   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 --   `name` varchar(200) NOT NULL DEFAULT '',
@@ -2956,15 +2988,15 @@ UNLOCK TABLES;
 --   `actioned_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
 --   PRIMARY KEY (`id`)
 -- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `news`
 --
 
 -- LOCK TABLES `news` WRITE;
-/*!40000 ALTER TABLE `news` DISABLE KEYS */;
-/*!40000 ALTER TABLE `news` ENABLE KEYS */;
+-- /*!40000 ALTER TABLE `news` DISABLE KEYS */;
+-- /*!40000 ALTER TABLE `news` ENABLE KEYS */;
 -- UNLOCK TABLES;
 
 --

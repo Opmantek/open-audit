@@ -12,6 +12,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use App\Models\AgentsModel;
 use Config\Services;
+use Config\OpenAudit;
 use DateTime;
 use Exception;
 use stdClass;
@@ -24,7 +25,7 @@ use stdClass;
  * @author    Mark Unwin <mark.unwin@firstwave.com>
  * @copyright 2023 FirstWave
  * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   GIT: Open-AudIT_5.6.3
+ * @version   GIT: Open-AudIT_5.6.4
  * @link      http://www.open-audit.org
  */
 
@@ -57,7 +58,7 @@ class Agents extends BaseController
             $this->devicesModel = model('App\Models\DevicesModel');
         }
         if (empty($this->config)) {
-            $this->config = new \Config\OpenAudit();
+            $this->config = new Config\OpenAudit();
         }
     }
 
@@ -70,7 +71,7 @@ class Agents extends BaseController
      */
     public function download($id = null)
     {
-        $request = Services::request();
+        $request = service('request');
         $ip = $request->getIPAddress();
         log_message('info', 'ACCESS:agents:download::' . $ip);
 
@@ -132,7 +133,7 @@ class Agents extends BaseController
         $current_agent_version = 530;
 
         $id = (int)$id;
-        $request = Services::request();
+        $request = service('request');
         $ip = $request->getIPAddress();
         log_message('info', 'ACCESS:agents:execute:' . $id . ':' . $ip);
         // $this->agentsModel = new AgentsModel();

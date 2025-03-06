@@ -305,6 +305,9 @@ window.onload = function () {
             pageLength: 25,
             processing: true,
             searching: true,
+            search: {
+                return: true
+            },
             serverSide: true,
             // dom: '<"dt-top-container"<l><"dt-center-in-div"f><"dt-btn-container"B>r>tip',
             ajax: {

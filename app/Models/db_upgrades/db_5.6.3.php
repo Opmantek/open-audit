@@ -83,7 +83,7 @@ $w2025nlb = $db->insertID();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "DELETE FROM widgets WHERE name = 'Windows 2019 Server Latest Build' AND edited_by = 'system'";
+$sql = "DELETE FROM widgets WHERE name = 'Windows 2025 Server Latest Build' AND edited_by = 'system'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());

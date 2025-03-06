@@ -332,6 +332,7 @@ $GLOBALS["lang"]["Click Buttons to Execute Queries"]="Click Buttons to Execute Q
 $GLOBALS["lang"]["Click the buttons to execute the queries"]="Click the buttons to execute the queries";
 $GLOBALS["lang"]["Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. "]="Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. ";
 $GLOBALS["lang"]["Click the Import button below to populate Open-AudIT with example device data."]="Click the Import button below to populate Open-AudIT with example device data.";
+$GLOBALS["lang"]["Cli Config"]="Cli Config";
 $GLOBALS["lang"]["Client ID"]="Client ID";
 $GLOBALS["lang"]["Client Secret"]="Client Secret";
 $GLOBALS["lang"]["Client Site Name"]="Client Site Name";

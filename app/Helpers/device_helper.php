@@ -39,9 +39,11 @@ if (!function_exists('audit_convert')) {
                     $audit->system = $json->system;
                     unset($json->system);
                 }
-                foreach ($audit->system as $key => $value) {
-                    if (empty($value)) {
-                        unset($audit->system->{$key});
+                if (!empty($audit->system)) {
+                    foreach ($audit->system as $key => $value) {
+                        if (empty($value)) {
+                            unset($audit->system->{$key});
+                        }
                     }
                 }
                 foreach ($json as $section => $something) {
