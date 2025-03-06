@@ -33,7 +33,10 @@ function ssh_palo_alto_audit(string $ip = '', int $discovery_id = 0, array $cred
     if (is_null($ssh)) {
         return $device;
     }
-
+    if (!empty($GLOBALS[$discovery_id . '_' . $ip])) {
+        $device->credentials = array(intval($GLOBALS[$discovery_id . '_' . $ip]));
+        unset($GLOBALS[$discovery_id . '_' . $ip]);
+    }
     $command_result = '';
     $ssh->enablePTY();
     $ssh->setTimeout(20);
@@ -51,10 +54,9 @@ function ssh_palo_alto_audit(string $ip = '', int $discovery_id = 0, array $cred
     unset($ssh);
 
     if (!empty($command_result)) {
-        log_message('debug', 'Parsing show system info for Palo Alto.');
+        log_message('debug', 'Parsing \'show system info\' for Palo Alto.');
     }
     foreach ($command_result as $line) {
-        // log_message('info', $line);
         if (stripos($line, 'hostname') === 0) {
             $device->hostname = trim(str_replace('hostname:', '', $line));
         }
@@ -96,7 +98,6 @@ function ssh_palo_alto_audit(string $ip = '', int $discovery_id = 0, array $cred
         $cli->name = 'system info';
         $cli->hash = hash('sha256', $cli->config);
         $device->cli_config[] = $cli;
-        log_message('debug', json_encode($cli));
     }
     unset($cli);
 
@@ -117,10 +118,9 @@ function ssh_palo_alto_audit(string $ip = '', int $discovery_id = 0, array $cred
     sleep(5);
     $command_result = $ssh->read();
     if (!empty($command_result)) {
-        log_message('debug', 'Parsing show device config for Palo Alto.');
+        log_message('debug', 'Parsing \'show deviceconfig\' for Palo Alto.');
     }
     if (is_string($command_result)) {
-        log_message('debug', 'Palo Alto config is a string.');
         $command_result = iconv("UTF-8", "ISO-8859-1", $command_result);
         $command_result = str_replace('[edit]', '', $command_result);
         $command_result = substr($command_result, strpos($command_result, "\n"));
@@ -130,8 +130,6 @@ function ssh_palo_alto_audit(string $ip = '', int $discovery_id = 0, array $cred
         $cli->hash = hash('sha256', $command_result);
         $cli->config = $command_result;
         $device->cli_config[] = $cli;
-        log_message('debug', json_encode($cli));
-        log_message('debug', 'Config count: ' . count($device->cli_config));
     }
     $ssh->disconnect();
     unset($ssh);
@@ -149,10 +147,9 @@ function ssh_palo_alto_audit(string $ip = '', int $discovery_id = 0, array $cred
     sleep(5);
     $command_result = $ssh->read();
     if (!empty($command_result)) {
-        log_message('debug', 'Parsing license info for Palo Alto.');
+        log_message('debug', 'Parsing \'request license info\' for Palo Alto.');
     }
     if (is_string($command_result)) {
-        log_message('debug', 'Palo Alto license info is a string.');
         $command_result = iconv("UTF-8", "ISO-8859-1", $command_result);
         $command_result = explode("\n", $command_result);
         $cli = new stdClass();
@@ -178,16 +175,8 @@ function ssh_palo_alto_audit(string $ip = '', int $discovery_id = 0, array $cred
             $cli->name = 'license info';
             $cli->hash = hash('sha256', $cli->config);
             $device->cli_config[] = $cli;
-            log_message('debug', json_encode($cli));
         }
         unset($cli);
-        // $cli = new stdClass();
-        // $cli->name = 'license info';
-        // $cli->hash = hash('sha256', $command_result);
-        // $cli->config = $command_result;
-        // $device->cli_config[] = $cli;
-        // log_message('debug', json_encode($cli));
-        // log_message('debug', 'Config count: ' . count($device->cli_config));
     }
     $ssh->disconnect();
     unset($ssh);

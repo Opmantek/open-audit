@@ -16,6 +16,7 @@ use phpseclib3\Net\SSH2;
  */
 function ssh_cisco_audit(string $ip = '', int $discovery_id = 0, array $credentials = null): object
 {
+    $removals = array('uptime is');
     $ssh_port = 22;
     $discoveryLogModel = model('DiscoveryLogModel');
     $log = new \stdClass();
@@ -32,6 +33,10 @@ function ssh_cisco_audit(string $ip = '', int $discovery_id = 0, array $credenti
     if (is_null($ssh)) {
         return $device;
     }
+    if (!empty($GLOBALS[$discovery_id . '_' . $ip])) {
+        $device->credentials = array(intval($GLOBALS[$discovery_id . '_' . $ip]));
+        unset($GLOBALS[$discovery_id . '_' . $ip]);
+    }
     $command_result = '';
     $ssh->enablePTY();
     $ssh->setTimeout(20);
@@ -40,14 +45,30 @@ function ssh_cisco_audit(string $ip = '', int $discovery_id = 0, array $credenti
     $ssh->write('show version' . "\n");
     sleep(5);
     $command_result = $ssh->read();
-    log_message('debug', $command_result);
+    if (!empty($command_result)) {
+        log_message('debug', 'Parsing \'show version\' for Cisco.');
+    }
+    $explode = explode("\n", $command_result);
+    unset($explode[0]);
+    unset($explode[1]);
+    unset($explode[count($explode)]);
+    $count = count($explode);
+    for ($i = 0; $i < $count; $i++) {
+        if (isset($explode[$i])) {
+            foreach ($removals as $removal) {
+                if (stripos($explode[$i], $removal) !== false) {
+                    unset($explode[$i]);
+                }
+            }
+        }
+    }
+    $command_result = implode("\n", array_values($explode));
     if (!empty($command_result)) {
         $cli = new stdClass();
         $cli->config = $command_result;
         $cli->name = 'version';
         $cli->hash = hash('sha256', $cli->config);
         $device->cli_config[] = $cli;
-        log_message('debug', json_encode($cli));
     }
     unset($cli);
     $ssh->disconnect();
@@ -58,6 +79,10 @@ function ssh_cisco_audit(string $ip = '', int $discovery_id = 0, array $credenti
     if (is_null($ssh)) {
         return $device;
     }
+    if (!empty($GLOBALS[$discovery_id . '_' . $ip])) {
+        $device->credentials = array(intval($GLOBALS[$discovery_id . '_' . $ip]));
+        unset($GLOBALS[$discovery_id . '_' . $ip]);
+    }
     $command_result = '';
     $ssh->enablePTY();
     $ssh->setTimeout(20);
@@ -66,14 +91,20 @@ function ssh_cisco_audit(string $ip = '', int $discovery_id = 0, array $credenti
     $ssh->write('show running-config' . "\n");
     sleep(5);
     $command_result = $ssh->read();
-    log_message('debug', $command_result);
+    if (!empty($command_result)) {
+        log_message('debug', 'Parsing \'show running-config\' for Cisco.');
+    }
+    $explode = explode("\n", $command_result);
+    unset($explode[0]);
+    unset($explode[1]);
+    unset($explode[count($explode)]);
+    $command_result = implode("\n", array_values($explode));
     if (!empty($command_result)) {
         $cli = new stdClass();
         $cli->config = $command_result;
         $cli->name = 'running-config';
         $cli->hash = hash('sha256', $cli->config);
         $device->cli_config[] = $cli;
-        log_message('debug', json_encode($cli));
     }
     unset($cli);
     $ssh->disconnect();

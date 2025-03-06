@@ -612,7 +612,6 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
         return false;
     }
 
-    $credential_id = 0;
     foreach ($credentials as $credential) {
         if ($credential->type === 'ssh_key') {
             $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
@@ -636,7 +635,7 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                 $log->message = "Valid credentials for {$credential->type} named {$credential->name} used to log in to {$ip}.";
                 $log->command_status = 'success';
                 $discoveryLogModel->create($log);
-                $credential_id = $credential->id;
+                $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
                 break;
             }
         } elseif ($credential->type === 'ssh') {
@@ -656,11 +655,10 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                 $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
                 $log->command_status = 'success';
                 $discoveryLogModel->create($log);
-                $credential_id = $credential->id;
+                $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
                 break;
             }
         }
-
     }
     if (!empty($ssh)) {
         return $ssh;
