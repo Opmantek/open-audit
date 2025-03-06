@@ -402,7 +402,7 @@ function nmapSuid($setNotice = false)
     $command_string = 'which nmap 2>/dev/null';
     $output = shell_exec($command_string);
     if (!empty($output)) {
-        $command_string = 'ls -lh `which nmap` | cut -d" " -f1 | cut -c4';
+        $command_string = 'ls -lh $(realpath `which nmap`) | cut -d" " -f1 | cut -c4';
         exec($command_string, $output);
         if (isset($output[0]) and $output[0] === 's') {
             $suid = 'y';
