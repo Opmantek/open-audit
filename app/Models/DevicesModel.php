@@ -555,6 +555,46 @@ class DevicesModel extends BaseModel
             }
         }
 
+        if (!empty($include['cli_config'])) {
+            $sql = "SELECT d.* FROM cli_config d WHERE d.last_seen IN (SELECT max(d2.last_seen) FROM cli_config d2 WHERE d2.name = d.name AND d2.current = 'n' and d2.device_id = ?)";
+            $query = $this->db->query($sql, $id);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include['cli_config_non_current'] = $result;
+            }
+
+            if (!empty($include['cli_config_non_current'])) {
+                helper('diff');
+                $output = '';
+                foreach ($include['cli_config'] as $cli_config) {
+                    $date = '';
+                    foreach ($include['cli_config_non_current'] as $cli_config_non_current) {
+                        if ($cli_config->name === $cli_config_non_current->name) {
+                            $date = $cli_config_non_current->last_seen;
+                        }
+                    }
+                    $output .= '<div class="card col-10 offset-1" style="margin-bottom:20px;">
+                                        <div class="row">
+                                            <div class="card-header col-6 clearfix"><h6>' . $cli_config->name . '&nbsp;&nbsp;on&nbsp;&nbsp;' . $cli_config->last_seen . '</h6></div>
+                                            <div class="card-header col-6 clearfix"><h6>' . $cli_config->name . '&nbsp;&nbsp;on&nbsp;&nbsp;' . $date . '</h6></div>
+                                        </div>
+                                    <div class="card-body">
+                                        <div class="row text-center" style="overflow-y:scroll; height:12em;">';
+                    foreach ($include['cli_config_non_current'] as $cli_config_non_current) {
+                        if ($cli_config->name === $cli_config_non_current->name) {
+                            $diffClass = new \App\Helpers\Diff();
+                            $table_output = $diffClass->toTable($diffClass->compare($cli_config->config, $cli_config_non_current->config));
+                            $temp = str_replace('<table class="diff">', '<table class="diff font-monospace text-start" style="width:100%; font-size:.8em;">', $table_output);
+                            $temp = str_replace('<td ', '<td style="padding:4px; spacing:4px;" ', $temp);
+                            $output .= $temp;
+                        }
+                    }
+                    $output .= '</div></div></div>';
+                }
+                $include['cli_config_diff'] = $output;
+            }
+        }
+
         if (!empty($include['ip'])) {
             $count = count($include['ip']);
             for ($i = 0; $i < $count; $i++) {

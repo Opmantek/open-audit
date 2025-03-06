@@ -123,7 +123,13 @@ Disabled as the light grey is a bit too light
 */
 
 
-
+/* DIFF for devices::cli_config and database::compare schema */
+.diffInserted {
+    background: #cdebac;
+}
+.diffDeleted {
+    background: rgb(242, 208, 211);
+}
 
 .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating),
 .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3),
