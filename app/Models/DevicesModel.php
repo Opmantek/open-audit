@@ -971,7 +971,8 @@ class DevicesModel extends BaseModel
     /**
      * Update an individual item in the database
      *
-     * @param  object  $data The data attributes
+     * @param int    $id   The device id
+     * @param object $data The data attributes
      *
      * @return bool    true || false depending on success
      */
@@ -1010,26 +1011,23 @@ class DevicesModel extends BaseModel
             $log->device_id = $data->id;
             $id = intval($data->id);
         }
+        $log->ip = '';
         if (!empty($data->ip)) {
-            $data->ip = @ip_address_to_db($data->ip);
-            $log->ip = @ip_address_from_db($data->ip);
-        } else {
-            $log->ip = '';
+            $data->ip = ip_address_to_db($data->ip);
+            $log->ip = ip_address_from_db($data->ip);
         }
+        $log->discovery_id = '';
         if (!empty($data->discovery_id)) {
             $log->discovery_id = $data->discovery_id;
             $GLOBALS['discovery_id'] = $data->discovery_id;
         } elseif (!empty($GLOBALS['discovery_id'])) {
             $log->discovery_id = $GLOBALS['discovery_id'];
-        } else {
-            $log->discovery_id = '';
         }
 
         $log->message = "System update start for ID: $id";
+        $source = 'user';
         if (!empty($data->last_seen_by)) {
             $source = $data->last_seen_by;
-        } else {
-            $source = 'user';
         }
 
         if (empty($data->discovery_id)) {
@@ -1065,41 +1063,49 @@ class DevicesModel extends BaseModel
         $sql = "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE device_id = ? AND `db_table` = 'devices' GROUP BY db_column, weight, value, previous_value, source ORDER BY id";
         $query = $this->db->query($sql, [$id]);
         $edit_log = $query->getResult();
-        if (in_array($source, ['audit', 'audit_ssh', 'audit_wmi', 'audit_windows', 'windows', 'wmi', 'cloud', 'nmis', 'snmp', 'ssh', 'integrations']) and empty($device->name)) {
-            $name = $this->deriveName($data);
-            if (!empty($name)) {
-                $data->name = $name;
-            }
+
+        // if (in_array($source, ['audit', 'audit_ssh', 'audit_wmi', 'audit_windows', 'windows', 'wmi', 'cloud', 'nmis', 'snmp', 'ssh', 'integrations'])) {
+        //     $name = $this->deriveName($data);
+        //     if (!empty($name)) {
+        //         $data->name = $name;
+        //     }
+        // }
+
+        if ($source !== 'user' and $source !== 'rules') {
+            $data->name = $this->deriveName($data);
         }
+
         // Get the database column names
         $fields = $this->db->getFieldNames('devices');
         // We do not compare these with the edit_log data
         $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen', 'instance_options', 'credentials');
         $update_device = new \stdClass();
         foreach ($data as $key => $value) {
-            if (($key !== '' && $value !== '') or ($key !== '' and $source === 'user')) {
-                // need to iterate through available columns and only insert where $key == valid column name
-                if (!in_array($key, $disallowed_fields) && in_array($key, $fields)) {
-                    $previous_value = (!empty($db_entry->{$key})) ? $db_entry->{$key} : '';
-                    // get the current weight from the edit_log
-                    $previous_weight = 10000;
-                    $count = count($edit_log);
-                    for ($i = 0; $i < $count; $i++) {
-                        if ($edit_log[$i]->db_column === $key) {
-                            $previous_weight = intval($edit_log[$i]->weight);
+            if (!empty($key)) {
+                if ((isset($value) and $value !== '') or $source === 'user') {
+                    // need to iterate through available columns and only insert where $key == valid column name
+                    if (!in_array($key, $disallowed_fields) && in_array($key, $fields)) {
+                        $previous_value = (!empty($db_entry->{$key})) ? $db_entry->{$key} : '';
+                        // get the current weight from the edit_log
+                        $previous_weight = 10000;
+                        $count = count($edit_log);
+                        for ($i = 0; $i < $count; $i++) {
+                            if ($edit_log[$i]->db_column === $key) {
+                                $previous_weight = intval($edit_log[$i]->weight);
+                            }
                         }
-                    }
-                    // calculate the weight
-                    $weight = intval(weight($source));
-                    if (!is_string($value)) {
-                        $value = json_encode($value);
-                    }
-                    if ($weight <= $previous_weight && (string)$value !== (string)$previous_value) {
-                        $update_device->$key = $value;
-                        $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'devices', ?, ?, ?, ?)";
-                        $query = $this->db->query($sql, [$user_id, $id, $source, $weight, $key, $data->timestamp, $value, $previous_value]);
-                    } else {
-                        // We have an existing edit_log entry with a more important change - don't touch the `devices`.`$key` value
+                        // calculate the weight
+                        $weight = intval(weight($source));
+                        if (!is_string($value)) {
+                            $value = json_encode($value);
+                        }
+                        if ($weight <= $previous_weight && (string)$value !== (string)$previous_value) {
+                            $update_device->$key = $value;
+                            $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'devices', ?, ?, ?, ?)";
+                            $query = $this->db->query($sql, [$user_id, $id, $source, $weight, $key, $data->timestamp, $value, $previous_value]);
+                        } else {
+                            // We have an existing edit_log entry with a more important change - don't touch the `devices`.`$key` value
+                        }
                     }
                 }
             }
