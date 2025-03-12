@@ -97,7 +97,7 @@ function getOs()
 
 function getOsTimezone()
 {
-
+    $timezone = '';
     if (php_uname('s') === 'Windows NT') {
         $command_string = 'tzutil /g';
         exec($command_string, $output, $return_var);
@@ -120,7 +120,7 @@ function getOsTimezone()
                 exec($command_string, $output, $return_var);
                 $timezone = (!empty($output[0])) ? (string)$output[0] : '';
             }
-            if ($os->timezone === '') {
+            if (empty($timezone)) {
                 $command_string = 'timedatectl 2>/dev/null | grep zone | cut -d: -f2 | cut -d"(" -f1';
                 exec($command_string, $output, $return_var);
                 $timezone = (!empty($output[0])) ? (string)$output[0] : '';
