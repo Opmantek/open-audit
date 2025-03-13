@@ -1041,8 +1041,8 @@ if (! function_exists('ip_audit')) {
                 and stripos($device->os_name, 'dd-wrt') === false
                 and stripos($device->manufacturer, 'Ubiquiti') === false
                 and stripos($device->manufacturer, 'Synology') === false
-                // and stripos($device->manufacturer, 'Palo Alto') === false
-                // and stripos($device->manufacturer, 'Cisco') === false
+                and stripos($device->manufacturer, 'Palo Alto') === false
+                and stripos($device->manufacturer, 'Cisco') === false
         ) {
             $log->message = 'Not a computer and not a DD-WRT or Ubiquiti or Synology device setting SSH status to false for ' . $device->ip;
             $log->severity = 5;
@@ -1062,37 +1062,52 @@ if (! function_exists('ip_audit')) {
         // SSH Audit
         $credentials_ssh = false;
 
-        // if (stripos($device->manufacturer, 'Palo Alto') !== false and $device->os_group === 'Pan-OS' and $ip_scan->ssh_status === 'true') {
-        //     helper('ssh_palo_alto');
-        //     $ssh_device = ssh_palo_alto_audit($device->ip, intval($discovery->id), $credentials);
-        //     log_message('info', json_encode($ssh_device));
-        //     foreach ($ssh_device as $key => $value) {
-        //         if (!empty($value) and $key !== 'cli_config') {
-        //             $device->{$key} = $value;
-        //         }
-        //     }
-        //     if (!empty($ssh_device->cli_config) and is_array($ssh_device->cli_config)) {
-        //         $cli_config = $ssh_device->cli_config;
-        //     }
-        //     $ip_scan->ssh_status = 'false';
-        //     unset($ssh_device);
-        // }
+        if (stripos($device->manufacturer, 'Palo Alto') !== false and $device->os_group === 'Pan-OS' and $ip_scan->ssh_status === 'true') {
+            helper('ssh_palo_alto');
+            $ssh_device = ssh_palo_alto_audit($device->ip, intval($discovery->id), $credentials);
+            log_message('info', json_encode($ssh_device));
+            foreach ($ssh_device as $key => $value) {
+                if (!empty($value) and $key !== 'cli_config') {
+                    $device->{$key} = $value;
+                }
+            }
+            if (!empty($ssh_device->cli_config) and is_array($ssh_device->cli_config)) {
+                $cli_config = $ssh_device->cli_config;
+            }
+            $ip_scan->ssh_status = 'false';
+            unset($ssh_device);
+        }
 
-        // if (stripos($device->manufacturer, 'Cisco') !== false and $device->os_family === 'Cisco IOS' and $ip_scan->ssh_status === 'true') {
-        //     helper('ssh_cisco');
-        //     $ssh_device = ssh_cisco_audit($device->ip, intval($discovery->id), $credentials);
-        //     log_message('info', json_encode($ssh_device));
-        //     foreach ($ssh_device as $key => $value) {
-        //         if (!empty($value) and $key !== 'cli_config') {
-        //             $device->{$key} = $value;
-        //         }
-        //     }
-        //     if (!empty($ssh_device->cli_config) and is_array($ssh_device->cli_config)) {
-        //         $cli_config = $ssh_device->cli_config;
-        //     }
-        //     $ip_scan->ssh_status = 'false';
-        //     unset($ssh_device);
-        // }
+        if (stripos($device->manufacturer, 'Cisco') !== false and $device->os_family === 'Cisco IOS' and $ip_scan->ssh_status === 'true') {
+            helper('ssh_cisco');
+            $ssh_device = ssh_cisco_audit($device->ip, intval($discovery->id), $credentials);
+            log_message('info', json_encode($ssh_device));
+            foreach ($ssh_device as $key => $value) {
+                if (!empty($value) and $key !== 'cli_config') {
+                    $device->{$key} = $value;
+                }
+            }
+            if (!empty($ssh_device->cli_config) and is_array($ssh_device->cli_config)) {
+                $cli_config = $ssh_device->cli_config;
+            }
+            $ip_scan->ssh_status = 'false';
+            unset($ssh_device);
+        }
+
+        if (stripos($device->manufacturer, 'Ubiquiti') !== false and $ip_scan->ssh_status === 'true') {
+            helper('ssh_ubiquiti');
+            $ssh_device = ssh_ubiquiti_audit($device->ip, intval($discovery->id), $credentials);
+            log_message('info', json_encode($ssh_device));
+            foreach ($ssh_device as $key => $value) {
+                if (!empty($value) and $key !== 'cli_config') {
+                    $device->{$key} = $value;
+                }
+            }
+            if (!empty($ssh_device->cli_config) and is_array($ssh_device->cli_config)) {
+                $cli_config = $ssh_device->cli_config;
+            }
+            unset($ssh_device);
+        }
 
         // Run SSH audit
         if ($ip_scan->ssh_status === 'true') {
@@ -1365,12 +1380,12 @@ if (! function_exists('ip_audit')) {
         }
 
         // insert any found cli config from SSH
-        // if (isset($cli_config) and is_array($cli_config) and count($cli_config) > 0) {
-        //     $log->command_status = 'notice';
-        //     $log->message = 'Processing found cli_config for ' . $device->ip;
-        //     $discoveryLogModel->create($log);
-        //     $componentsModel->upsert('cli_config', $device, $cli_config);
-        // }
+        if (isset($cli_config) and is_array($cli_config) and count($cli_config) > 0) {
+            $log->command_status = 'notice';
+            $log->message = 'Processing found cli_config for ' . $device->ip;
+            $discoveryLogModel->create($log);
+            $componentsModel->upsert('cli_config', $device, $cli_config);
+        }
 
         // process and store the Nmap data
         $nmap_result = array();

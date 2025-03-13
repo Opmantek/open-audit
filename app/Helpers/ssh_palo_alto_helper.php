@@ -126,7 +126,7 @@ function ssh_palo_alto_audit(string $ip = '', int $discovery_id = 0, array $cred
         $command_result = substr($command_result, strpos($command_result, "\n"));
         $command_result = substr($command_result, 0, strrpos($command_result, "\n"));
         $cli = new stdClass();
-        $cli->name = 'device config';
+        $cli->name = 'deviceconfig';
         $cli->hash = hash('sha256', $command_result);
         $cli->config = $command_result;
         $device->cli_config[] = $cli;
