@@ -1249,6 +1249,43 @@ if [ -z $(echo "$skip_sections" | grep "processor,") ]; then
 		processor_socket="Unknown"
 	fi
 
+	if [ -z "$processor_description" ] && [ -f "/proc/ubnthal/system.info" ]; then
+		# Ubiquiti device
+		processor_description=$(grep "system type" /proc/cpuinfo 2>/dev/null | head -n1 | cut -d: -f2)
+		if [ "$processor_description" = *"UBNT"* ]; then
+			processor_description=""
+			processor_description=$(grep "cpu model" /proc/cpuinfo 2>/dev/null | head -n1 | cut -d: -f2)
+		fi
+		if [ -z "$processor_description" ]; then
+			processor_description=$(grep "Processor" /proc/cpuinfo 2>/dev/null | head -n1 | cut -d: -f2)
+		fi
+
+		isa=$(grep ^isa /proc/cpuinfo 2>/dev/null | head -n1)
+		hardware=$(grep ^Hardware /proc/cpuinfo 2>/dev/null | head -n1)
+		system_pc_cores_x_processor=$(grep processor /proc/cpuinfo | count)
+		system_pc_threads_x_processor=$(grep processor /proc/cpuinfo | count)
+		system_pc_physical_processors=1
+
+		if [ "$processor_description" = *"ARM"* ]; then
+			processor_socket="arm"
+		fi
+		if [ "$processor_description" = *"Arm"* ]; then
+			processor_socket="arm"
+		fi
+		if [ "$processor_description" = *"MIPS"* ] || [ "$isa" = *"mips" ]; then
+			processor_socket="mips"
+		fi
+		if [ "$hardware" = *"Broadcom"* ]; then
+			processor_manufacturer="Broadcom"
+		fi
+		if [ "$processor_description" = *"Qualcomm"* ]; then
+			processor_manufacturer="Qualcomm"
+		fi
+		if [ "$processor_description" = *"Cavium"* ]; then
+			processor_manufacturer="Cavium"
+		fi
+	fi
+
 	total_cores=$(( $system_pc_cores_x_processor * $system_pc_physical_processors ))
 	total_logical_processors=$(( $system_pc_threads_x_processor * $system_pc_physical_processors ))
 
