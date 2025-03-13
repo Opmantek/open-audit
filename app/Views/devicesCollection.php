@@ -27,13 +27,18 @@ if (!empty($meta->data_order)) {
     }
 }
 $sort_column_index = 4;
+$sort_column_name = (!empty($config->devices_default_sort)) ? $config->devices_default_sort : 'name';
+
 for ($i = 0; $i < count($columns); $i++) {
     $columns[$i] = str_replace('devices.', '', $columns[$i]);
     $columns[$i] = str_replace('.', '__', $columns[$i]);
-    if ($columns[$i] === 'name') {
+}
+for ($i = 0; $i < count($meta->data_order); $i++) {
+    if ($meta->data_order[$i] === $sort_column_name) {
         $sort_column_index = $i;
     }
 }
+
 if (strpos($user->permissions[$meta->collection], 'd') !== false or strpos($user->permissions[$meta->collection], 'u') !== false) {
     $meta->data_order[] = 'delete';
     $meta->data_order[] = 'update';
@@ -300,12 +305,17 @@ window.onload = function () {
                 }
             });
         });
-
+        <?php
+        $sort_order = 'asc';
+        if ($sort_column_name === 'ip') {
+            $sort_order = 'desc';
+        }
+        ?>
         let logSort = {};
         var myDataTable = new DataTable('.dataTableDevices', {
             lengthChange: true,
             lengthMenu: [ [25, 50, 100, <?= $config->page_size ?>], [25, 50, 100, '<?= $config->page_size ?>'] ],
-            order: [[ <?= $sort_column_index ?>, 'asc' ]],
+            order: [[ <?= $sort_column_index ?>, '<?= $sort_order ?>' ]],
             pageLength: 25,
             processing: true,
             searching: true,

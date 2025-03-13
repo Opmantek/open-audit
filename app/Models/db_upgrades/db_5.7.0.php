@@ -91,6 +91,16 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM configuration WHERE name = 'devices_default_sort'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'devices_default_sort','name','text','y','system','2000-01-01 00:00:00','The default sort on the Devices List page.')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "SELECT * FROM `roles`";
 $roles = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

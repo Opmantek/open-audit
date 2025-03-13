@@ -123,6 +123,7 @@ class OpenAudit extends BaseConfig
     public string $devices_default_display_columns;
     public string $devices_default_group_columns;
     public string $devices_default_retrieve_columns;
+    public string $devices_default_sort = 'name';
     public string $device_auto_delete;
     public int $discovery_default_scan_option;
     public string $discovery_ip_exclude;
