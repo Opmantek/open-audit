@@ -15,6 +15,10 @@ if (empty($columns) and !empty($dictionary->attributes->collection)) {
     // NOTE - this is populated in devicesModel from instance->config->devices_default_display_columns
     $columns = $dictionary->attributes->collection;
 }
+
+if (!in_array('audit_status', $columns) and !empty($config->product) and $config->product !== 'community') {
+    array_unshift($columns, 'audit_status');
+}
 if (!empty($meta->data_order)) {
     for ($i = 0; $i < count($meta->data_order); $i++) {
         if (strpos($meta->data_order[$i], '.') !== false) {
