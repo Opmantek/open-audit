@@ -139,12 +139,11 @@ class Logon extends Controller
                 }
             }
         }
-        $config =  new \Config\OpenAudit();
         $alert = '';
         if (!$db->tableExists('auth') and intval($config->internal_version) < 20240822) {
             $alert = 'Active Directory and openLDAP logins will not work until the database has been upgraded.<br>Please logon with a <i>local</i> \'admin\' user, to upgrade the database.';
         }
-        return view('logon', ['config' => new \Config\OpenAudit(), 'methods' => $methods, 'alert' => $alert]);
+        return view('logon', ['config' =>$config, 'methods' => $methods, 'alert' => $alert]);
     }
 
     public function create()
