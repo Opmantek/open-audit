@@ -189,6 +189,7 @@ class OpenAudit extends BaseConfig
     public string $match_sysname;
     public string $match_sysname_serial;
     public string $match_uuid;
+    public string $message_of_the_day;
     public $modules;
     public string $nmis;
     public string $nmis_url;

@@ -110,6 +110,11 @@ include('shared/lang.php');
                                         <h1><span class="text-secondary">Open-AudIT</span></h1>
                                     </div>
 
+                                    <?php if (!empty($config->message_of_the_day)) { ?>
+                                    <div class="col-12 text-center">
+                                        <?= htmlspecialchars_decode($config->message_of_the_day) ?>
+                                    </div>
+                                    <?php } ?>
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
                                         <div class="offset-3 col-6" style="position:relative;">
