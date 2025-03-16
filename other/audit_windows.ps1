@@ -565,6 +565,9 @@ if ($item.description -ne $null) {
     $item.description = $item.description.Replace("(R)", "").Replace("(TM)", "").Replace("(r)", "").Replace("(tm)", "")
     $item.description = $item.description -replace '\s{2,}', ' '
 }
+if ($item.description -eq 'Apple silicon') {
+    $item.architecture = 'ARM'
+}
 $item.socket = ''
 if ($processor.UpgradeMethod -eq 1) { $item.socket = 'Other' }
 if ($processor.UpgradeMethod -eq 2) { $item.socket = 'Unknown' }

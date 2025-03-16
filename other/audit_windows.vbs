@@ -1826,6 +1826,10 @@ for each objItem In colItems
       case Default  processor_architecture = "Unknown"
    end select
 
+    if processor_description = "Apple silicon" then
+        processor_architecture = "ARM"
+    end if
+
 next
 result.WriteText "  <processor>" & vbcrlf
 result.WriteText "      <item>" & vbcrlf
