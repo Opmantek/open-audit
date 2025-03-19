@@ -312,6 +312,7 @@ INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Android','android','sy
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Application Accelerator','application accelerator','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Bar Code Reader','bar code reader','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','BDSL Modem','bdsl modem','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Blade Chassis','blade chassis','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Bridge','bridge','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Broadband Router','broadband router','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Building Management','building management','system','2000-01-01 00:00:00');
@@ -337,6 +338,7 @@ INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Keyboard, Video, Mouse
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Load Balancer','load balancer','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Media Device','media device','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Mobile Modem','mobile modem','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Management Console','management console','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Monitor','monitor','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','NAS (Network Attached Storage)','nas','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Network Device','network device','system','2000-01-01 00:00:00');
