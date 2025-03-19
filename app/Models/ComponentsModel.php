@@ -595,6 +595,28 @@ class ComponentsModel extends BaseModel
             }
         }
 
+        // ARP
+        if ((string)$table === 'arp') {
+            $count = count($data);
+            for ($i = 0; $i < $count; $i++) {
+                if (!empty($data[$i]->mac)) {
+                    // Padding
+                    $explode = explode(':', $data[$i]->mac);
+                    for ($j=0; $j < count($explode); $j++) {
+                        $explode[$j] = substr('00' . $explode[$j], -2);
+                    }
+                    $data[$i]->mac = implode(':', $explode);
+                }
+                if (empty($data[$i]->manufacturer) and !empty($data[$i]->mac)) {
+                    $data[$i]->manufacturer = get_manufacturer_from_mac($data[$i]->mac);
+                }
+                if ($data[$i]->mac === 'ff:ff:ff:ff:ff:ff') {
+                    unset($data[$i]);
+                }
+            }
+        }
+
+
         // BIOS
         if ((string)$table === 'bios') {
             $count = count($data);

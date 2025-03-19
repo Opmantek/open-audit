@@ -35,6 +35,7 @@ class OpenAudit extends BaseConfig
     public string $blessed_subnets_use;
     public int $collector_check_minutes;
     public string $create_change_log;
+    public string $create_change_log_arp;
     public string $create_change_log_bios;
     public string $create_change_log_certificate;
     public string $create_change_log_disk;
@@ -81,6 +82,7 @@ class OpenAudit extends BaseConfig
     public string $decrypt_credentials;
     public string $default_network_address;
     public string $delete_noncurrent;
+    public string $delete_noncurrent_arp;
     public string $delete_noncurrent_bios;
     public string $delete_noncurrent_certificate;
     public string $delete_noncurrent_disk;

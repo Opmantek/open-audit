@@ -897,7 +897,7 @@ class Collections extends BaseController
                 $this->resp->dictionary = $dictionary;
                 if ($this->resp->meta->format === 'json_data') {
                     // Special case device as an audit result
-                    $components_array = array('bios', 'certificate', 'cli_config', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+                    $components_array = array('arp', 'bios', 'certificate', 'cli_config', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
                     unset($this->resp->data[0]->attributes->id);
                     unset($this->resp->data[0]->attributes->first_seen);
                     unset($this->resp->data[0]->attributes->last_seen);

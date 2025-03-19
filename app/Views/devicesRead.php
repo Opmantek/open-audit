@@ -135,7 +135,7 @@ if (empty($resource->type)) {
 
                                     <?php
                                     $show = false;
-                                    $sections = array('certificate', 'cli_config', 'dns', 'file', 'executable', 'ip', 'log', 'netstat', 'nmap', 'pagefile', 'policy', 'print_queue', 'route', 'share', 'task', 'user', 'user_group', 'variable', 'vm', 'windows');
+                                    $sections = array('arp', 'certificate', 'cli_config', 'dns', 'file', 'executable', 'ip', 'log', 'netstat', 'nmap', 'pagefile', 'policy', 'print_queue', 'route', 'share', 'task', 'user', 'user_group', 'variable', 'vm', 'windows');
                                     foreach ($sections as $section) {
                                         if (!empty($included[$section])) {
                                             $show = true;
@@ -1972,6 +1972,66 @@ if (empty($resource->type)) {
                                                     <td><?= $row->string ?></td>
                                                     <td><?= $row->edition ?></td>
                                                     <td><?= $row->rel ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="arp_section">
+                                <?php $count = !empty($included['arp']) ? count($included['arp']) : 0; ?>
+                                <?=  device_panel('arp', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <?php
+                                $interface_id = false;
+                                if (!empty($included['arp'])) {
+                                    foreach ($included['arp'] as $row) {
+                                        if (!empty($row->interface_id)) {
+                                            $interface_id = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
+                                                    <th><?= __('IP') ?></th>
+                                                    <th><?= __('Mac') ?></th>
+                                                    <th><?= __('Interface') ?></th>
+                                                    <?php if ($interface_id) { ?>
+                                                    <th><?= __('Interface ID') ?></th>
+                                                    <?php } ?>
+                                                    <th><?= __('MAC Manufacturer') ?></th>
+                                                    <th class="text-center"><?= __('Device') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['arp'])) {
+                                                foreach ($included['arp'] as $row) {
+                                                    if (!empty($row->manufacturer) and $row->manufacturer === 'private') {
+                                                        $row->manufacturer = '<i>private</i>';
+                                                    }
+                                                    if (!empty($row->{'ip.device_id'})) {
+                                                        #$row->{'ip.device_id'} = '<a href="' . url_to('devicesRead', intval($row->{'ip.device_id'})) . '">link</a>';
+                                                        $row->{'ip.device_id'} = "<a title=\"" . __('Device') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-devices\" href=\"" . url_to('devicesRead', intval($row->{'ip.device_id'})) . "\"><span style=\"width:1rem;\" title=\"" . __('Device') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
+                                                    }
+                                                    ?>
+                                                <tr>
+                                                    <?= device_component_button_read('arp', $row->id) ?>
+                                                    <td><span style="display:none;"><?= ip_address_to_db($row->ip) ?></span><?= $row->ip ?></td>
+                                                    <td><?= $row->mac ?></td>
+                                                    <td><?= $row->interface ?></td>
+                                                    <?php if ($interface_id) { ?>
+                                                    <td><?= $row->interface_id ?></td>
+                                                    <?php } ?>
+                                                    <td><?= $row->manufacturer ?></td>
+                                                    <td class="text-center"><?= $row->{'ip.device_id'} ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>

@@ -14,6 +14,9 @@ function match_columns($table)
     if ($table === 'antivirus') {
             $match_columns = array('name');
     }
+    if ($table === 'arp') {
+            $match_columns = array('ip', 'mac', 'interface');
+    }
     if ($table === 'bios') {
             $match_columns = array('manufacturer', 'model', 'serial', 'smversion', 'version');
     }
