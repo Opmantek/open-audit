@@ -1000,6 +1000,9 @@ if (! function_exists('ip_audit')) {
                 $device->last_seen_by = 'snmp';
                 $device->audits_ip = '127.0.0.1';
             }
+            if (!empty($temp_array['arp'])) {
+                $arp = $temp_array['arp'];
+            }
             if (!empty($temp_array['interfaces'])) {
                 $network_interfaces = $temp_array['interfaces'];
             }
@@ -1139,7 +1142,7 @@ if (! function_exists('ip_audit')) {
                 $device->audits_ip = '127.0.0.1';
                 if (!empty($ssh_details->ips_found)) {
                     $ips_found = array_merge($ips_found, $ssh_details->ips_found);
-                    $log->message = 'Adding detected ARP ip addresses from ' . $device->ip;
+                    $log->message = 'Adding detected Seed ARP ip addresses from ' . $device->ip;
                     $log->command_output = json_encode($ips_found);
                     $discoveryLogModel->create($log);
                 }
@@ -1195,7 +1198,7 @@ if (! function_exists('ip_audit')) {
                 $temp = windows_ips_found($device->ip, $credentials_windows, $discovery->id);
                 if (!empty($temp)) {
                     $ips_found = array_merge($ips_found, $temp);
-                    $log->message = 'Adding detected ARP ip addresses from ' . $device->ip;
+                    $log->message = 'Adding detected Seed ARP ip addresses from ' . $device->ip;
                     $log->command_output = json_encode($ips_found);
                     $discoveryLogModel->create($log);
                 }
@@ -1209,6 +1212,33 @@ if (! function_exists('ip_audit')) {
         // Now run our rules to update the device if any match
         // TODO
         # $device = $instance->rulesModel->execute($device, intval($discovery->id), 'return');
+
+        if (empty($device->mac_address)) {
+            // Check the arp table
+            $log->message = 'Check for a MAC address for this IP in the arp table.';
+            $log->command_status = 'notice';
+            $command_start = microtime(true);
+            $sql = "SELECT arp.* FROM arp LEFT JOIN devices ON (arp.device_id = devices.id) WHERE arp.ip = ? AND arp.last_seen > DATE_SUB(CURDATE(), INTERVAL 2 DAY) AND devices.org_id = ? LIMIT 1";
+            $result = $db->query($sql, [$ip_scan->ip, $discovery->org_id])->getResult();
+            $log->command_time_to_execute = microtime(true) - $command_start;
+            $log->command = str_replace("\n", " ", (string)$db->getLastQuery());
+            if (!empty($result[0]->mac)) {
+                $device->mac_address = $result[0]->mac;
+                $log->command_output = json_encode($result[0]);
+            }
+            $discoveryLogModel->create($log);
+            $log->command_output = '';
+        }
+
+        // See if we have a Mac Address for the device's IP
+        if (!empty($network_interfaces) and empty($device->mac_address)) {
+            foreach ($network_interfaces as $interface) {
+                if (!empty($interface->ip) and !empty($device->ip) and $interface->ip === $device->ip) {
+                    $device->mac_address = $interface->mac;
+                    $device->subnet = $interface->subnet;
+                }
+            }
+        }
 
         // If we don't have a device.id, check with our updated device attributes (if any)
         if (empty($device->id)) {
@@ -1228,16 +1258,6 @@ if (! function_exists('ip_audit')) {
             }
         }
         unset($log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-
-        // See if we have a Mac Address for the device's IP
-        if (!empty($network_interfaces) and empty($device->mac_address)) {
-            foreach ($network_interfaces as $interface) {
-                if (!empty($interface->ip) and !empty($device->ip) and $interface->ip === $device->ip) {
-                    $device->mac_address = $interface->mac;
-                    $device->subnet = $interface->subnet;
-                }
-            }
-        }
 
         $log->command_status = 'notice';
         if (!empty($device->id)) {
@@ -1338,6 +1358,14 @@ if (! function_exists('ip_audit')) {
 
         // finish off with updating any network IPs that don't have a matching interface
         $componentsModel->updateMissingInterfaces($device->id);
+
+        // insert any arp from SNMP
+        if (isset($arp) and is_array($arp) and count($arp) > 0) {
+            $log->command_status = 'notice';
+            $log->message = 'Processing found arp for ' . $device->ip;
+            $discoveryLogModel->create($log);
+            $componentsModel->upsert('arp', $device, $arp);
+        }
 
         // insert any modules from SNMP
         if (isset($modules) and is_array($modules) and count($modules) > 0) {

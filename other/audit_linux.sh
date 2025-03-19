@@ -3883,6 +3883,31 @@ if [ -z $(echo "$skip_sections" | grep "netstat,") ]; then
 	echo "	</netstat>" >> "$xml_file"
 fi
 
+########################################################
+# ARP                                                  #
+########################################################
+if [ -z $(echo "$skip_sections" | grep "arp,") ]; then
+	IFS="
+";
+	if [ "$debugging" -gt "0" ]; then
+		echo "Arp Info"
+	fi
+	echo "	<arp>" >> "$xml_file"
+	arp=$(ip neighbour 2>/dev/null | grep -v -i failed | awk '{print $1 "\t" $5 "\t" $3}')
+	for line in $arp; do
+		ip=$(echo "$line" | awk '{print $1}')
+		mac=$(echo "$line" | awk '{print $2}')
+		interface=$(echo "$line" | awk '{print $3}')
+		{
+		echo "		<item>"
+		echo "			<mac>$(escape_xml "$mac")</mac>"
+		echo "			<ip>$(escape_xml "$ip")</ip>"
+		echo "			<interface>$(escape_xml "$interface")</interface>"
+		echo "		</item>"
+		} >> "$xml_file"
+	done
+	echo "	</arp>" >> "$xml_file"
+fi
 
 # End the XML because busybox is likely to choke on the below
 if [ "$busybox" = "y" ]; then

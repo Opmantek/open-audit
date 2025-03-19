@@ -593,6 +593,25 @@ echo "   <partition>" >> $xml_file
 echo "$partition_each</partition>" >> $xml_file
 
 
+if [ "$debugging" -gt "0" ]; then
+    echo "Arp Info"
+fi
+echo "  <arp>" >> $xml_file
+for line in $(arp -a | grep -v incomplete | awk '{print $2 "\t" $4 "\t" $6}'); do
+    ip=$(echo "$line" | awk '{print $1}' | cut -d\( -f2 | cut -d\) -f1)
+    mac=$(echo "$line" | awk '{print $2}')
+    interface=$(echo "$line" | awk '{print $3}')
+    {
+    echo "      <item>"
+    echo "          <mac>$mac</mac>"
+    echo "          <ip>$ip</ip>"
+    echo "          <interface>$interface</interface>"
+    echo "      </item>"
+    } >> "$xml_file"
+done
+echo "  </arp>" >> "$xml_file"
+
+
 
 if [ "$debugging" -gt "0" ]; then
     echo "Software Info"
