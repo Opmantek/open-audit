@@ -1036,25 +1036,24 @@ if (! function_exists('ip_audit')) {
         if (empty($device->manufacturer)) {
             $device->manufacturer = '';
         }
-        if (
-                !empty($device->type)
-                and $device->type !== 'computer'
-                and $device->type !== 'unknown'
-                and $device->type !== 'unclassified'
-                and stripos($device->os_name, 'dd-wrt') === false
-                and stripos($device->manufacturer, 'Ubiquiti') === false
-                and stripos($device->manufacturer, 'Synology') === false
-                and stripos($device->manufacturer, 'Palo Alto') === false
-                and stripos($device->manufacturer, 'Cisco') === false
+        if (!empty($device->type)
+            and $device->type !== 'computer'
+            and $device->type !== 'unknown'
+            and $device->type !== 'unclassified'
+            and stripos($device->os_name, 'dd-wrt') === false
+            and stripos($device->manufacturer, 'Ubiquiti') === false
+            and stripos($device->manufacturer, 'Synology') === false
+            and stripos($device->manufacturer, 'Palo Alto') === false
+            and stripos($device->manufacturer, 'Cisco') === false
         ) {
-            $log->message = 'Not a computer and not a DD-WRT or Ubiquiti or Synology device setting SSH status to false for ' . $device->ip;
+            $log->message = 'Not a computer, setting SSH status to false for ' . $device->ip;
             $log->severity = 5;
             $discoveryLogModel->create($log);
             $log->severity = 7;
             $ip_scan->ssh_status = 'false';
         }
 
-        if (stripos($device->os_name, 'extreme networks') !== false) {
+        if (stripos($device->os_name, 'extreme networks') !== false or stripos($device->os_group, 'extreme networks') !== false) {
             $log->message = 'Extreme Networks device setting SSH status to false for ' . $device->ip;
             $log->severity = 5;
             $discoveryLogModel->create($log);
@@ -1066,6 +1065,9 @@ if (! function_exists('ip_audit')) {
         $credentials_ssh = false;
 
         if (stripos($device->manufacturer, 'Palo Alto') !== false and $device->os_group === 'Pan-OS' and $ip_scan->ssh_status === 'true') {
+            $log->severity = 7;
+            $log->message = 'CLI Config for Palo Alto for ' . $device->ip;
+            $discoveryLogModel->create($log);
             helper('ssh_palo_alto');
             $ssh_device = ssh_palo_alto_audit($device->ip, intval($discovery->id), $credentials);
             log_message('info', json_encode($ssh_device));
@@ -1082,6 +1084,9 @@ if (! function_exists('ip_audit')) {
         }
 
         if (stripos($device->manufacturer, 'Cisco') !== false and $device->os_family === 'Cisco IOS' and $ip_scan->ssh_status === 'true') {
+            $log->severity = 7;
+            $log->message = 'CLI Config for Cisco for ' . $device->ip;
+            $discoveryLogModel->create($log);
             helper('ssh_cisco');
             $ssh_device = ssh_cisco_audit($device->ip, intval($discovery->id), $credentials);
             log_message('info', json_encode($ssh_device));
@@ -1098,6 +1103,9 @@ if (! function_exists('ip_audit')) {
         }
 
         if (stripos($device->manufacturer, 'Ubiquiti') !== false and $ip_scan->ssh_status === 'true') {
+            $log->severity = 7;
+            $log->message = 'CLI Config for Ubiquiti for ' . $device->ip;
+            $discoveryLogModel->create($log);
             helper('ssh_ubiquiti');
             $ssh_device = ssh_ubiquiti_audit($device->ip, intval($discovery->id), $credentials);
             log_message('info', json_encode($ssh_device));
@@ -1109,6 +1117,7 @@ if (! function_exists('ip_audit')) {
             if (!empty($ssh_device->cli_config) and is_array($ssh_device->cli_config)) {
                 $cli_config = $ssh_device->cli_config;
             }
+            $ip_scan->ssh_status = 'false';
             unset($ssh_device);
         }
 
@@ -1744,7 +1753,7 @@ if (! function_exists('ip_audit')) {
             $parameters->destination = $destination;
             $parameters->discovery_id = $discovery->id;
             $parameters->ssh_port = $ip_scan->ssh_port;
-            $temp = scp($parameters);
+            $temp = @scp($parameters);
             if (! $temp) {
                 $audit_script = '';
                 $log->severity = 3;

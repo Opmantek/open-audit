@@ -18,5 +18,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->os_family = 'FortiOS';
     $details->os_group = 'FortiGate';
     $details->os_name = 'FortiOS ' . $details->os_version;
+    $details->type = 'firewall';
     return($details);
 };

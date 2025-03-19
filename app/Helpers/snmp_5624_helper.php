@@ -5,7 +5,7 @@
 
 declare(strict_types=1);
 
-# Vendor Extreme Networks
+# Enterasys / Extreme
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();

@@ -504,10 +504,10 @@ class DevicesModel extends BaseModel
 
         $included = array();
         // No excecutable, file, radio, san, scsi, usb
-        $current = array('antivirus', 'arp', 'audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $current = array('antivirus', 'arp', 'audit_log', 'bios', 'change_log', 'cli_config', 'disk', 'dns', 'edit_log', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
 
         if (!empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
-            $current = array('antivirus', 'arp', 'audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'file', 'firewall', 'firewall_rule', 'executable', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            $current = array('antivirus', 'arp', 'audit_log', 'bios', 'change_log', 'cli_config', 'disk', 'dns', 'edit_log', 'file', 'firewall', 'firewall_rule', 'executable', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         }
 
         foreach ($current as $table) {
@@ -578,6 +578,7 @@ class DevicesModel extends BaseModel
                 helper('diff');
                 $output = '';
                 foreach ($include['cli_config'] as $cli_config) {
+                    $cli_config->config = (!empty(json_decode($cli_config->config))) ? json_encode(json_decode($cli_config->config), JSON_PRETTY_PRINT) : $cli_config->config;
                     $date = $date = '<div class="card-header col-12 clearfix"><h6>' . $cli_config->name . '&nbsp;&nbsp;on&nbsp;&nbsp;' . $cli_config->last_seen . '</h6></div>';
                     foreach ($include['cli_config_non_current'] as $cli_config_non_current) {
                         if ($cli_config->name === $cli_config_non_current->name) {
@@ -594,6 +595,7 @@ class DevicesModel extends BaseModel
                     foreach ($include['cli_config_non_current'] as $cli_config_non_current) {
                         if ($cli_config->name === $cli_config_non_current->name) {
                             $diffClass = new \App\Helpers\Diff();
+                            $cli_config_non_current->config = (!empty(json_decode($cli_config_non_current->config))) ? json_encode(json_decode($cli_config_non_current->config), JSON_PRETTY_PRINT) : $cli_config_non_current->config;
                             $table_output = $diffClass->toTable($diffClass->compare($cli_config->config, $cli_config_non_current->config));
                             $temp = str_replace('<table class="diff">', '<table class="diff font-monospace text-start" style="width:100%; font-size:.8em;">', $table_output);
                             $temp = str_replace('<td ', '<td style="padding:4px; spacing:4px;  white-space:pre-wrap;" width="50%" ', $temp);
@@ -602,7 +604,7 @@ class DevicesModel extends BaseModel
                         }
                     }
                     if (!$hit) {
-                        $output .= '<div class="text-start col-6 font-monospace" style="font-size:.8em; white-space:pre-wrap;">' . nl2br($cli_config->config) . '</div>';
+                        $output .= '<div class="text-start col-6 font-monospace" style="font-size:.8em; white-space:pre-wrap;">' . $cli_config->config . '</div>';
                     }
                     $output .= '</div></div></div>';
                 }

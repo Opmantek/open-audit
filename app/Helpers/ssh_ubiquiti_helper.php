@@ -30,7 +30,7 @@ function ssh_ubiquiti_audit(string $ip = '', int $discovery_id = 0, array $crede
     $device->cli_config = array();
 
     $ssh = ssh_connect($ip, $credentials, $discovery_id, 22, 10);
-    if (is_null($ssh)) {
+    if (empty($ssh) or is_null($ssh) or $ssh === false ) {
         return $device;
     }
     if (!empty($GLOBALS[$discovery_id . '_' . $ip])) {

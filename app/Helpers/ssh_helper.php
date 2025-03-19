@@ -614,23 +614,16 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
 
     foreach ($credentials as $credential) {
         if ($credential->type === 'ssh_key') {
+            log_message('debug', 'Testing SSH Key credentials named: ' . $credential->name . ' on ' . $ip);
+            unset($test);
             $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
             $ssh->setTimeout($timeout);
-            log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
             if (!empty($credential->credentials->password)) {
                 $key = PublicKeyLoader::load($credential->credentials->ssh_key, $credential->credentials->password);
             } else {
                 $key = PublicKeyLoader::load($credential->credentials->ssh_key);
             }
-            try {
-                $test = $ssh->login($credential->credentials->username, $key);
-            } catch (Exception $e) {
-                $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
-                $log->command_status = 'notice';
-                $discoveryLogModel->create($log);
-                $ssh->disconnect();
-                unset($ssh);
-            }
+            $test = @$ssh->login($credential->credentials->username, $key);
             if (!empty($test)) {
                 $log->message = "Valid credentials for {$credential->type} named {$credential->name} used to log in to {$ip}.";
                 $log->command_status = 'success';
@@ -638,25 +631,28 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                 $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
                 break;
             }
-        } elseif ($credential->type === 'ssh') {
-            $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
-            $ssh->setTimeout($timeout);
-            log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
-            try {
-                $test = $ssh->login($credential->credentials->username, $credential->credentials->password);
-            } catch (Exception $e) {
-                $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
-                $log->command_status = 'notice';
-                $discoveryLogModel->create($log);
+            if (empty($test)) {
                 $ssh->disconnect();
                 unset($ssh);
+                unset($test);
             }
+        } elseif ($credential->type === 'ssh') {
+            log_message('debug', 'Testing SSH credentials named: ' . $credential->name . ' on ' . $ip);
+            unset($test);
+            $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
+            $ssh->setTimeout($timeout);
+            $test = @$ssh->login($credential->credentials->username, $credential->credentials->password);
             if (!empty($test)) {
                 $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
                 $log->command_status = 'success';
                 $discoveryLogModel->create($log);
                 $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
                 break;
+            }
+            if (empty($test)) {
+                $ssh->disconnect();
+                unset($ssh);
+                unset($test);
             }
         }
     }
@@ -763,31 +759,23 @@ if (! function_exists('ssh_audit')) {
             }
         }
 
-
         // if (!defined('NET_SSH2_LOGGING')) {
         //     define('NET_SSH2_LOGGING', SSH2::LOG_COMPLEX);
         // }
         $password = '';
 
         foreach ($credentials as $credential) {
-            $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
-            $ssh->setTimeout(10);
             if ($credential->type === 'ssh_key') {
-                log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
+                $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
+                $ssh->setTimeout(10);
+                log_message('debug', 'Testing SSH Key credentials named: ' . $credential->name . ' for ' . $ip);
+                unset($test);
                 if (!empty($credential->credentials->password)) {
                     $key = PublicKeyLoader::load($credential->credentials->ssh_key, $credential->credentials->password);
                 } else {
                     $key = PublicKeyLoader::load($credential->credentials->ssh_key);
                 }
-                try {
-                    $test = $ssh->login($credential->credentials->username, $key);
-                } catch (Exception $e) {
-                    $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
-                    $log->command_status = 'notice';
-                    $discoveryLogModel->create($log);
-                    $ssh->disconnect();
-                    unset($ssh);
-                }
+                $test = @$ssh->login($credential->credentials->username, $key);
                 if (!empty($test)) {
                     $log->message = "Valid credentials for {$credential->type} named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
@@ -799,17 +787,17 @@ if (! function_exists('ssh_audit')) {
                     }
                     break;
                 }
-            } elseif ($credential->type === 'ssh') {
-                log_message('debug', 'Testing credentials named: ' . $credential->name . ' on ' . $ip);
-                try {
-                    $test = $ssh->login($credential->credentials->username, $credential->credentials->password);
-                } catch (Exception $e) {
-                    $log->message = "Credential set for {$credential->type} named {$credential->name} not working on {$ip}.";
-                    $log->command_status = 'notice';
-                    $discoveryLogModel->create($log);
+                if (empty($test)) {
                     $ssh->disconnect();
                     unset($ssh);
+                    unset($test);
                 }
+            } elseif ($credential->type === 'ssh') {
+                log_message('debug', 'Testing SSH credentials named: ' . $credential->name . ' for ' . $ip);
+                unset($test);
+                $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
+                $ssh->setTimeout($timeout);
+                $test = @$ssh->login($credential->credentials->username, $credential->credentials->password);
                 if (!empty($test)) {
                     $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
@@ -818,6 +806,12 @@ if (! function_exists('ssh_audit')) {
                     $password = (!empty($credential->credentials->password)) ? $credential->credentials->password : '';
                     break;
                 }
+                if (empty($test)) {
+                    $ssh->disconnect();
+                    unset($ssh);
+                    unset($test);
+                }
+
             }
         }
 
@@ -1093,7 +1087,7 @@ if (! function_exists('ssh_audit')) {
 
         if ($type === 'seed') {
             $commands['arp_one'] = 'arp -an      2>/dev/null | grep -v -i incomplete | awk \'{print $2 "\t" $4}\' | sed \'s/[()]//g\'';
-            $commands['arp_two'] = 'ip neighbour 2>/dev/null | grep -v -i failed     | awk \'{print $1 "\t" $5}\'';
+            $commands['arp_two'] = 'ip neighbour 2>/dev/null | grep -v -i failed     | awk \'{print $1 "\t" $5 "\t" $3}\'';
         }
 
         foreach ($commands as $item => $command) {
@@ -1186,6 +1180,7 @@ if (! function_exists('ssh_audit')) {
                     $explode = explode("\t", $line);
                     $mac = '';
                     $ip = '';
+                    $interface = '';
                     if (!empty($explode[1]) and strpos($explode[1], ':') !== false and $explode[1] !== 'ff:ff:ff:ff:ff:ff' and substr_count($explode[1], ':') === 5) {
                         $mac = $explode[1];
                     }
@@ -1212,7 +1207,6 @@ if (! function_exists('ssh_audit')) {
             $discoveryLogModel->create($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
-
 
         // Set some items that may have multiple results
         if (!empty($device->hostname) and is_array($device->hostname)) {
