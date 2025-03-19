@@ -165,6 +165,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.11.2.3.7.11.1.3': $device->model = 'ProCurve Switch Module 10FL'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.11.2.3.7.11.1.4': $device->model = 'ProCurve Switch Module FDDI'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.11.2.3.7.11.1.5': $device->model = 'ProCurve Switch Module TX2'; $device->type = 'switch'; break;
+            case '1.3.6.1.4.1.11.2.3.7.11.1.6': $device->model = 'ProCurve Switch Module ATM'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.11.2.3.7.11.10': $device->model = 'ProCurve Switch 2400M'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.11.2.3.7.11.100': $device->model = 'ProCurve Switch 6600ml-24G (J9263A)'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.11.2.3.7.11.101': $device->model = 'ProCurve Switch 6600ml-24G-4XG'; $device->type = 'switch'; break;
