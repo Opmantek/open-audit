@@ -1227,8 +1227,8 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Check for a MAC address for this IP in the arp table.';
             $log->command_status = 'notice';
             $command_start = microtime(true);
-            $sql = "SELECT arp.* FROM arp LEFT JOIN devices ON (arp.device_id = devices.id) WHERE arp.ip = ? AND arp.last_seen > DATE_SUB(CURDATE(), INTERVAL 2 DAY) AND devices.org_id = ? LIMIT 1";
-            $result = $db->query($sql, [$ip_scan->ip, $discovery->org_id])->getResult();
+            $sql = "SELECT arp.* FROM `arp` LEFT JOIN `devices` ON (arp.device_id = devices.id) WHERE arp.ip = ? AND arp.last_seen > DATE_SUB(CURDATE(), INTERVAL 2 DAY) AND devices.org_id = ? AND devices.discovery_id = ? LIMIT 1";
+            $result = $db->query($sql, [$ip_scan->ip, intval($discovery->org_id), intval($discovery->id)])->getResult();
             $log->command_time_to_execute = microtime(true) - $command_start;
             $log->command = str_replace("\n", " ", (string)$db->getLastQuery());
             if (!empty($result[0]->mac)) {
