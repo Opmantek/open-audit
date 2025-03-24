@@ -463,7 +463,7 @@ if (!function_exists('response_create')) {
             unset($response->meta->query_string);
             $function = $response->meta->collection . '_' . $response->meta->action;
             if (
-                !in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
+                !in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "standards_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))
             ) {
                 $received_data = $response->meta->received_data;
@@ -557,7 +557,7 @@ if (!function_exists('response_create')) {
                 $db->query($sql);
             }
             if (
-                !in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "tasks_create", "widgets_create", "widgets_update")) and
+                !in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "standards_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))
             ) {
                 $response->meta->received_data = $received_data;
@@ -1315,6 +1315,15 @@ if (!function_exists('response_get_permission_id')) {
         }
 
         $org_list = explode(',', $user->org_list);
+
+        if ($collection === 'standards_results') {
+            $sql = "SELECT standards.org_id FROM standards_results LEFT JOIN standards ON (standards_results.standard_id = standards.id) WHERE standards_results.id = ?";
+            $result = $db->query($sql, [$id])->getResult();
+            if (empty($result) or count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
+                return false;
+            }
+            return true;
+        }
 
         if ($collection === 'orgs') {
             $sql = 'SELECT `orgs`.`id` AS org_id FROM orgs WHERE id = ?';

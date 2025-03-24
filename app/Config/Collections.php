@@ -525,6 +525,26 @@ class Collections extends BaseConfig
         $this->search->actions->professional = 'crud';
         $this->search->actions->community = 'crud';
 
+        $this->standards = new \StdClass();
+        $this->standards->icon = 'fa-solid fa-check-double';
+        $this->standards->name = 'Standards';
+        $this->standards->edition = 'Enterprise';
+        $this->standards->orgs = 'd';
+        $this->standards->actions = new \stdClass();
+        $this->standards->actions->enterprise = 'crud';
+        $this->standards->actions->professional = '';
+        $this->standards->actions->community = '';
+
+        $this->standards_results = new \StdClass();
+        $this->standards_results->icon = 'fa-solid fa-check-double';
+        $this->standards_results->name = 'Standards Results';
+        $this->standards_results->edition = 'Enterprise';
+        $this->standards_results->orgs = 'd';
+        $this->standards_results->actions = new \stdClass();
+        $this->standards_results->actions->enterprise = 'crud';
+        $this->standards_results->actions->professional = '';
+        $this->standards_results->actions->community = '';
+
         $this->summaries = new \StdClass();
         $this->summaries->icon = 'fa fa-pie-chart';
         $this->summaries->name = 'Summaries';

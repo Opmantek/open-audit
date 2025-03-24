@@ -433,6 +433,13 @@ if (!empty($config->servers)) {
                                         <?= menuItem('rules', '', $user, 'rulesHelp', __('Learn About') . ' ' . __('Rules')) ?>
                                     </ul>
                                 </li>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Standards') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('standards', 'r', $user, 'standardsCollection', __('List') . ' ' . __('Standards')) ?>
+                                        <?= menuItem('standards', 'c', $user, 'standardsCreateForm', __('Create') . ' ' . __('Standards')) ?>
+                                        <?= menuItem('standards', '', $user, 'standardsHelp', __('Learn About') . ' ' . __('Standards')) ?>
+                                    </ul>
+                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Summaries') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('summaries', 'r', $user, 'summariesCollection', __('List') . ' ' . __('Summaries')) ?>
