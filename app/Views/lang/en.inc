@@ -389,6 +389,7 @@ $GLOBALS["lang"]["Computer"]="Computer";
 $GLOBALS["lang"]["computer"]="computer";
 $GLOBALS["lang"]["Condition"]="Condition";
 $GLOBALS["lang"]["Conference Center"]="Conference Center";
+$GLOBALS["lang"]["Config"]="Config";
 $GLOBALS["lang"]["Config Default, currently '1'"]="Config Default, currently '1'";
 $GLOBALS["lang"]["Config Default, currently 'n'"]="Config Default, currently 'n'";
 $GLOBALS["lang"]["Config Default, currently 'y'"]="Config Default, currently 'y'";
