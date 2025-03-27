@@ -328,20 +328,18 @@ if (! function_exists('copy_to_windows')) {
         }
 
         if (php_uname('s') == 'Linux') {
-            $command = 'which smbclient';
-            exec($command, $output, $return_var);
-            if ($return_var != 0) {
+            $smbclient = smbclient();
+            if ($smbclient === '') {
+                log_message('error', 'Linux attempt to copy file to windows, without useable smbclient in wmi_helper::copy_to_windows');
                 $log->command = 'which smbclient';
                 $log->message = 'Linux attempt to copy file to windows, without useable smbclient in wmi_helper::copy_to_windows';
                 $log->severity = 5;
                 $discoveryLogModel->create($log);
-                $log->severity = 7;
-                log_message('error', 'Linux attempt to copy file to windows, without useable smbclient in wmi_helper::copy_to_windows');
                 return false;
             }
             $log->command = '';
             $filename = credentials_file($ip, $credentials);
-            $command = 'smbclient -m SMB2 \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+            $command = $smbclient . ' -m SMB2 \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
             $log->command = $command;
             exec($command, $output, $return_var);
             if ($return_var == 0) {
@@ -356,7 +354,7 @@ if (! function_exists('copy_to_windows')) {
                 $log->command_output = json_encode($output);
                 $log->severity = 7;
                 $discoveryLogModel->create($log);
-                $command = 'smbclient \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+                $command = $smbclient . ' \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
                 $log->command = $command;
                 exec($command, $output, $return_var);
                 if ($return_var == 0) {
@@ -482,8 +480,17 @@ if (! function_exists('delete_windows_result')) {
         }
 
         if (php_uname('s') == 'Linux') {
+            $smbclient = smbclient();
+            if ($smbclient === '') {
+                log_message('error', 'Linux attempt to delete windows audit result, without useable smbclient in wmi_helper::delete_windows_result');
+                $log->command = 'which smbclient';
+                $log->message = 'Linux attempt to delete windows audit result, without useable smbclient in wmi_helper::delete_windows_result';
+                $log->severity = 5;
+                $discoveryLogModel->create($log);
+                return false;
+            }
             $filename = credentials_file($ip, $credentials);
-            $command = 'smbclient -m SMB2 \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "del ' . $file . '"';
+            $command = $smbclient . ' -m SMB2 \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "del ' . $file . '"';
             $log->command = $command;
             exec($command, $output, $return_var);
             if ($return_var == 0) {
@@ -498,7 +505,7 @@ if (! function_exists('delete_windows_result')) {
                 $log->command_output = json_encode($output);
                 $log->severity = 6;
                 $discoveryLogModel->create($log);
-                $command = 'smbclient \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "del ' . $file . '"';
+                $command = $smbclient . ' \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "del ' . $file . '"';
                 $log->command = $command;
                 exec($command, $output, $return_var);
                 if ($return_var == 0) {
@@ -662,17 +669,17 @@ if (!function_exists('copy_from_windows')) {
         }
 
         if (php_uname('s') == 'Linux') {
-            $command = 'which smbclient';
-            exec($command, $output, $return_var);
-            if ($return_var != 0) {
+            $smbclient = smbclient();
+            if ($smbclient === '') {
+                log_message('error', 'Linux attempt to copy file from windows, without useable smbclient in wmi_helper::copy_from_window');
                 $log->command = 'which smbclient';
-                $log->message = 'Linux attempt to copy file from windows, without useable smbclient in wmi_helper::copy_from_windows';
+                $log->message = 'Linux attempt to copy file from windows, without useable smbclient in wmi_helper::copy_from_window';
                 $log->severity = 5;
                 $discoveryLogModel->create($log);
                 return false;
             }
             $filename = credentials_file($ip, $credentials);
-            $command = 'smbclient -m SMB2 \\\\\\\\' . $ip . '\\\\admin\$ -A ' . $filename . ' -c "get ' . $source . ' ' . $destination . ' 2>&1"';
+            $command = $smbclient . ' -m SMB2 \\\\\\\\' . $ip . '\\\\admin\$ -A ' . $filename . ' -c "get ' . $source . ' ' . $destination . ' 2>&1"';
             $log->command = $command;
             $output = '';
             exec($command, $output, $return_var);
@@ -691,7 +698,7 @@ if (!function_exists('copy_from_windows')) {
             $log->command_output = json_encode($output);
             $log->severity = 7;
             $discoveryLogModel->create($log);
-            $command = 'smbclient \\\\\\\\' . $ip . '\\\\admin\$ -A ' . $filename . ' -c "get ' . $source . ' ' . $destination . ' 2>&1"';
+            $command = $smbclient . ' \\\\\\\\' . $ip . '\\\\admin\$ -A ' . $filename . ' -c "get ' . $source . ' ' . $destination . ' 2>&1"';
             $log->command = $command;
             exec($command, $output, $return_var);
             $log->command_output = json_encode($output);
@@ -1161,5 +1168,24 @@ if (!function_exists('wmi_audit')) {
         $log->message = 'WMI audit complete';
         $discoveryLogModel->create($log);
         return($details);
+    }
+
+    function smbclient()
+    {
+        $smbclient = '';
+        $command = 'which smbclient';
+        exec($command, $output, $return_var);
+        if ($return_var == 0) {
+            $smbclient = $output[0];
+        }
+        if ($return_var != 0) {
+            if (file_exists('/usr/bin/smbclient')) {
+                $smbclient = '/usr/bin/smbclient';
+            }
+        }
+        if ($smbclient === '') {
+            log_message('warning', 'No SMBClient detected, cannot copy audit_windows.vbs to or from target.');
+        }
+        return $smbclient;
     }
 }
