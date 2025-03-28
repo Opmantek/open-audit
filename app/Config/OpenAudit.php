@@ -205,7 +205,7 @@ class OpenAudit extends BaseConfig
     public int $queue_limit;
     public string $rss_enable;
     public string $rss_url;
-    public string $servers;
+    public $servers;
     public string $server_ip;
     public string $server_os;
     public string $server_platform;
