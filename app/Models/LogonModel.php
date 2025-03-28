@@ -102,7 +102,12 @@ class LogonModel extends Model
                         log_message('warning', 'LDAP search failed for user ' . $username . ' at ' . $ldap->host . ', ' . (string)ldap_error($ldap_connection));
                         continue;
                     }
+
                     $entries = $this->my_ldap_get_entries($ldap, $ldap_connection, $result, $user);
+                    if (empty($entries)) {
+                        log_message('warning', 'LDAP entries failed for user ' . $username . ' at ' . $ldap->host . ', ' . (string)ldap_error($ldap_connection));
+                        continue;
+                    }
 
                     // Build the new user from LDAP attributes
                     $user = $this->my_user($user, $ldap, $entries);
@@ -116,6 +121,10 @@ class LogonModel extends Model
                     $user_ldap_groups = '';
                     if ($ldap->type === 'active directory') {
                         log_message('debug', 'Checking AD group membership for ' . $username);
+                        if (empty($entries[0]['memberof'])) {
+                            log_message('warning', 'No values in $entries[0][\'memberof\'] when checking AD group membership for ' . $username . ', skipping. JSON encoded entities: ' . @json_encode($entities));
+                            continue;
+                        }
                         foreach ($roles as $role) {
                             if (!empty($role->ad_group)) {
                                 foreach ($entries[0]['memberof'] as $key => $group) {
@@ -142,7 +151,7 @@ class LogonModel extends Model
                                     }
                                 }
                             } else {
-                                log_message('warning', "No AD group associated with org {$org->name}, skipping.");
+                                log_message('warning', 'No AD group associated with org ' . $org->name . ', skipping.');
                             }
                         }
                     }
