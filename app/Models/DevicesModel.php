@@ -1131,7 +1131,8 @@ class DevicesModel extends BaseModel
                 }
             }
         }
-        if (in_array($source, ['nmap', 'ssh', 'snmp', 'cloud', 'wmi', 'windows', 'audit_wmi', 'audit_windows', 'audit']) and $db_entry->status !== 'production') {
+        $statuses = array('deleted', 'lost', 'retired');
+        if (in_array($source, ['nmap', 'ssh', 'snmp', 'cloud', 'wmi', 'windows', 'audit_wmi', 'audit_windows', 'audit']) and in_array($db_entry->status, $statuses)) {
             // We discovered a device, set its status to production
             $update_device->status = 'production';
             $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'devices', ?, ?, ?, ?)";
