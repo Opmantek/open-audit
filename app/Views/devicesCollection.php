@@ -56,8 +56,11 @@ if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
 
 $url = base_url() . 'index.php/devices?format=json';
 foreach ($meta->filter as $filter) {
-    if ($filter->name !== 'devices.org_id' and is_string($filter->value)) {
+    if (is_string($filter->value)) {
         $url .= '&' . $filter->name . '=' . $filter->operator . $filter->value;
+    }
+    if (!is_string($filter->value)){
+        $url .= '&' . $filter->name . '=' . $filter->operator . '("' . implode('","', $filter->value) . '")';
     }
 }
 if (!empty($meta->properties) and is_array($meta->properties)) {
