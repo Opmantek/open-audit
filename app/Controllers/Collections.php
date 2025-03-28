@@ -107,6 +107,10 @@ class Collections extends BaseController
         }
         if ($this->resp->meta->collection === 'devices') {
             array_unshift($this->resp->meta->data_order, 'audit_status');
+            $this->resp->meta->data_order[] = 'orgs.id';
+            $this->resp->meta->data_order[] = 'orgs.name';
+            $this->resp->meta->data_order[] = 'locations.id';
+            $this->resp->meta->data_order[] = 'locations.name';
         }
         if ($this->resp->meta->collection === 'components') {
             $count = count($this->resp->meta->filter);
