@@ -116,16 +116,20 @@ class DevicesModel extends BaseModel
         $properties[] = "devices.id as `devices.id`";
         if (!in_array('orgs.name', $properties)) {
             $properties[] = "orgs.name as `orgs.name`";
+            $resp->meta->properties[] = 'orgs.name';
         }
         if (!in_array('orgs.id', $properties)) {
             $properties[] = "orgs.id as `orgs.id`";
+            $resp->meta->properties[] = 'orgs.id';
         }
 
         if (!in_array('locations.name', $properties)) {
             $properties[] = "locations.name as `locations.name`";
+            $resp->meta->properties[] = 'locations.name';
         }
         if (!in_array('locations.id', $properties)) {
             $properties[] = "locations.id as `locations.id`";
+            $resp->meta->properties[] = 'locations.id';
         }
         $this->builder->select($properties, false);
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
