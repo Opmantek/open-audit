@@ -20,8 +20,26 @@ $update_group = false;
 if ($config->product === 'enterprise') {
     $update_group = true;
 }
+$banner = '';
+if ($config->product === 'professional') {
+    $banner = '        <div class="container-fluid">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Editing Roles is restricted to Enterprise licenses.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>';
+}
+if ($config->product !== 'professional' and $config->product !== 'enterprise') {
+    $banner = '        <div class="container-fluid">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Editing Roles is restricted to Enterprise licenses. Editing Roles is restricted to Enterprise licenses. Get your free license <a href="#" data-bs-toggle="modal" data-bs-target="#modalCompareLicense">here</a>.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>';
+}
 ?>
         <main class="container-fluid">
+            <?= $banner ?>
             <div class="card">
                 <div class="card-header">
                     <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $resource->name) ?>
