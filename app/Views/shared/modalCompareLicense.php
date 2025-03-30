@@ -50,7 +50,7 @@ if ($product === 'community') {
     $highlightFre = "background: rgba(var(--bs-body-color-rgb), 0.03)";
     $btnFre = 'btn-success';
     $btnFreStyle = 'style="color:white;"';
-    $message = 'Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise.';
+    $message = 'Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. <a href="' . base_url() . 'index.php/appLicenses?license=eula">EULA</a>.';
 }
 
 $button_prompt_never = '';

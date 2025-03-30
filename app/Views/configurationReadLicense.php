@@ -68,6 +68,17 @@ include 'shared/create_functions.php';
                                 <label for="activate" class="form-label">&nbsp;</label>
                                 <button id="activate" name="activate" type="button" class="btn btn-primary" <?= $disabled ?>><?= __('Activate Key'); ?></button>
                                 <br><br>
+                                <hr>
+                                <br><br>
+                                <h5><?= __('Activate a free Enterprise license') ?></h5><br>
+                                <a type="button" href="#" data-bs-toggle="modal" data-bs-target="#modalCompareLicense" class="btn btn-success"><?= __('Get a Free License'); ?></a>
+                                <br><br>
+                                <hr>
+                                <br><br>
+                                <h5><?= __('EULA') ?></h5><br>
+                                <a type="button" href="<?= url_to('appLicenses') ?>?license=eula" class="btn btn-primary"><?= __('EULA'); ?></a>
+                                <br><br>
+
                             </div>
                         </div>
                     </div>

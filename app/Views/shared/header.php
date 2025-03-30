@@ -561,6 +561,7 @@ foreach ($config->modules as $module) {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
+                                <li><a class="dropdown-item" href="<?= url_to('appLicenses') ?>?license=eula"><?= __('EULA') ?></a></li>
 <?php if (empty($config->license) or $config->license === 'none') { ?>
                                 <li><a class="dropdown-item" href='#' data-bs-toggle="modal" data-bs-target="#modalCompareLicense"><?= __('Activate Free License')?></a></li>
 <?php } else { ?>
