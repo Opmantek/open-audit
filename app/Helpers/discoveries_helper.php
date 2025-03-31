@@ -1070,7 +1070,7 @@ if (! function_exists('ip_audit')) {
             $discoveryLogModel->create($log);
             helper('ssh_palo_alto');
             $ssh_device = ssh_palo_alto_audit($device->ip, intval($discovery->id), $credentials);
-            log_message('info', json_encode($ssh_device));
+            log_message('debug', json_encode($ssh_device));
             foreach ($ssh_device as $key => $value) {
                 if (!empty($value) and $key !== 'cli_config') {
                     $device->{$key} = $value;
@@ -1089,7 +1089,7 @@ if (! function_exists('ip_audit')) {
             $discoveryLogModel->create($log);
             helper('ssh_cisco');
             $ssh_device = ssh_cisco_audit($device->ip, intval($discovery->id), $credentials);
-            log_message('info', json_encode($ssh_device));
+            log_message('debug', json_encode($ssh_device));
             foreach ($ssh_device as $key => $value) {
                 if (!empty($value) and $key !== 'cli_config') {
                     $device->{$key} = $value;
@@ -1108,7 +1108,7 @@ if (! function_exists('ip_audit')) {
             $discoveryLogModel->create($log);
             helper('ssh_ubiquiti');
             $ssh_device = ssh_ubiquiti_audit($device->ip, intval($discovery->id), $credentials);
-            log_message('info', json_encode($ssh_device));
+            log_message('debug', json_encode($ssh_device));
             foreach ($ssh_device as $key => $value) {
                 if (!empty($value) and $key !== 'cli_config') {
                     $device->{$key} = $value;
