@@ -46,7 +46,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                         <?php if ($resource->sidebar === 'y') { ?>
                         <div class="col-3">
                              <ul class="list-group list-group-flush">
-                                <?php if (!empty($instance->user->permissions['devices']) and strpos($instance->user->permissions['devices'], 'r') !== false) { ?>
+                                <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="fa fa-desktop"></span></div>

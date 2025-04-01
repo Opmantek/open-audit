@@ -15,7 +15,7 @@ namespace App\Controllers;
  * @author    Mark Unwin <mark.unwin@firstwave.com>
  * @copyright 2023 FirstWave
  * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   GIT: Open-AudIT_5.6.4
+ * @version   GIT: Open-AudIT_5.6.5
  * @link      http://www.open-audit.org
  */
 

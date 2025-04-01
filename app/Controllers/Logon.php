@@ -27,7 +27,7 @@ use Foxworth42\OAuth2\Client\Provider\Okta;
  * @author    Mark Unwin <mark.unwin@firstwave.com>
  * @copyright 2023 FirstWave
  * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   GIT: Open-AudIT_5.6.4
+ * @version   GIT: Open-AudIT_5.6.5
  * @link      http://www.open-audit.org
  */
 
@@ -113,19 +113,19 @@ class Logon extends Controller
         $db->query($sql, [$server_platform]);
         log_message('info', 'Config auto-populated with ServerPlatform ' . $server_platform . '.');
 
-        if (!empty($config->feature_news) and $config->feature_news === 'y') {
-            $request_days = (!empty($config->feature_news_request_days)) ? intval($config->feature_news_request_days) : 7;
-            $last_request_date = (!empty($config->feature_news_last_request_date)) ? strtotime("+" . $request_days . " days", strtotime($config->feature_news_last_request_date)) : strtotime('2001-01-01');
-            $today = strtotime(date('Y-m-d'));
-            if ($last_request_date < $today) {
-                // Request a news item
-                log_message('info', 'Requesting news articles.');
-                $newsModel = model('NewsModel');
-                $newsModel->executeAll();
-                $sql = 'UPDATE configuration SET value = ? WHERE name = "feature_news_last_request_date"';
-                $db->query($sql, [date('Y-m-d')]);
-            }
-        }
+        // if (!empty($config->feature_news) and $config->feature_news === 'y') {
+        //     $request_days = (!empty($config->feature_news_request_days)) ? intval($config->feature_news_request_days) : 7;
+        //     $last_request_date = (!empty($config->feature_news_last_request_date)) ? strtotime("+" . $request_days . " days", strtotime($config->feature_news_last_request_date)) : strtotime('2001-01-01');
+        //     $today = strtotime(date('Y-m-d'));
+        //     if ($last_request_date < $today) {
+        //         // Request a news item
+        //         log_message('info', 'Requesting news articles.');
+        //         $newsModel = model('NewsModel');
+        //         $newsModel->executeAll();
+        //         $sql = 'UPDATE configuration SET value = ? WHERE name = "feature_news_last_request_date"';
+        //         $db->query($sql, [date('Y-m-d')]);
+        //     }
+        // }
 
         $methods = array();
         if ($db->tableExists('auth')) {

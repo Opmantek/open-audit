@@ -430,23 +430,23 @@ if (!function_exists('response_create')) {
             $response->logs = $instance->response->logs;
         }
 
-        if (!empty($config->feature_news) and $config->feature_news === 'n' and in_array($response->meta->action, ['collection', 'execute']) and $response->meta->format === 'html') {
-            $reminder_days = (!empty($config->feature_news_remind_days)) ? intval($config->feature_news_remind_days) : 30;
-            $last_request_date = (!empty($config->feature_news_last_request_date)) ? strtotime("+" . $reminder_days . " days", strtotime($config->feature_news_last_request_date)) : strtotime('2001-01-01');
-            $today = strtotime(date('Y-m-d'));
-            if ($last_request_date < $today) {
-                $conf = model('ConfigurationModel');
-                $conf_data = $conf->readName('feature_news');
-                $conf_id = (!empty($conf_data[0]->id)) ? intval($conf_data[0]->id) : 0;
-                $_SESSION['success'] = 'Why not enable \'news\'? Keep up-to-date with the latest fixes, announcements, query updates, software versions and more. Click <a href="' . url_to('configurationRead', $conf_id) . '">here</a> to enable.';
-                $db = db_connect();
-                $sql = "UPDATE `configuration` SET `value` = ? WHERE `name` = 'feature_news_last_request_date'";
-                $result = $db->query($sql, [date('Y-m-d')]);
-                unset($conf);
-                unset($conf_data);
-                unset($conf_id);
-            }
-        }
+        // if (!empty($config->feature_news) and $config->feature_news === 'n' and in_array($response->meta->action, ['collection', 'execute']) and $response->meta->format === 'html') {
+        //     $reminder_days = (!empty($config->feature_news_remind_days)) ? intval($config->feature_news_remind_days) : 30;
+        //     $last_request_date = (!empty($config->feature_news_last_request_date)) ? strtotime("+" . $reminder_days . " days", strtotime($config->feature_news_last_request_date)) : strtotime('2001-01-01');
+        //     $today = strtotime(date('Y-m-d'));
+        //     if ($last_request_date < $today) {
+        //         $conf = model('ConfigurationModel');
+        //         $conf_data = $conf->readName('feature_news');
+        //         $conf_id = (!empty($conf_data[0]->id)) ? intval($conf_data[0]->id) : 0;
+        //         $_SESSION['success'] = 'Why not enable \'news\'? Keep up-to-date with the latest fixes, announcements, query updates, software versions and more. Click <a href="' . url_to('configurationRead', $conf_id) . '">here</a> to enable.';
+        //         $db = db_connect();
+        //         $sql = "UPDATE `configuration` SET `value` = ? WHERE `name` = 'feature_news_last_request_date'";
+        //         $result = $db->query($sql, [date('Y-m-d')]);
+        //         unset($conf);
+        //         unset($conf_data);
+        //         unset($conf_id);
+        //     }
+        // }
 
         # Enterprise
         $license_config = false;
@@ -691,7 +691,12 @@ if (!function_exists('response_get_query_filter')) {
                 if (empty($item)) {
                     continue;
                 }
+                if (strpos($item, '=') === false) {
+                    continue;
+                }
                 $name = substr($item, 0, strpos($item, '='));
+                unset($value);
+
                 if ($dataTables) {
                     $value = str_replace($name . '=', '', $item);
                     if ($value === '') {
@@ -719,8 +724,7 @@ if (!function_exists('response_get_query_filter')) {
                 }
 
                 $query = new \StdClass();
-                $query->name = $name;
-                $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $query->name);
+                $query->name = preg_replace('/[^A-Za-z0-9\.\_]/', '', $name);
                 $query->function = 'where';
                 $query->operator = '';
                 $query->value = str_replace($name . '=', '', $item);
@@ -777,7 +781,7 @@ if (!function_exists('response_get_query_filter')) {
                     }
                 }
 
-                if (substr($query->value, 0, 3) === 'in(' && strpos($query->value, ')') === strlen($query->value) - 1) {
+                if (is_string($query->value) and substr($query->value, 0, 3) === 'in(' && strpos($query->value, ')') === strlen($query->value) - 1) {
                     $query->value = substr($query->value, 2);
                     $query->function = 'whereIn';
                     $query->operator = 'in';
@@ -798,7 +802,8 @@ if (!function_exists('response_get_query_filter')) {
                 if (is_string($query->value) and substr($query->value, 0, 6) === 'notin(' && strpos($query->value, ')') === strlen($query->value) - 1) {
                     $query->value = substr($query->value, 5);
                     $query->function = 'whereNotIn';
-                    $query->operator = 'not in';
+                    // $query->operator = 'not in'; // NOTE - changed to notin below so we can use it in the dataTables URL creation
+                    $query->operator = 'notin';
                     $values = explode(',', trim((string)$query->value, '()'));
                     $query->value = array();
                     foreach ($values as $key => $value) {
@@ -837,6 +842,7 @@ if (!function_exists('response_get_query_filter')) {
                 if ($type === 'query') {
                     $filter[] = $query;
                 }
+                unset($query);
             }
 
             if ($dataTables) {
@@ -862,7 +868,7 @@ if (!function_exists('response_get_query_filter')) {
             }
         }
         if (!empty($filter)) {
-            log_message('debug', strtoupper($type) . ': ' . json_encode($filter));
+            log_message('debug', strtoupper($type) . ': ' . json_encode($filter, JSON_PRETTY_PRINT));
         }
         return $filter;
     }

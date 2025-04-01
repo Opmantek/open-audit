@@ -24,7 +24,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <mark.unwin@firstwave.com>
-# @version   GIT: Open-AudIT_5.6.4
+# @version   GIT: Open-AudIT_5.6.5
 # @copyright Copyright (c) 2022, Firstwave
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -44,7 +44,7 @@ system_id=""
 last_seen_by="audit"
 
 # Version
-version="5.6.4"
+version="5.6.5"
 
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here

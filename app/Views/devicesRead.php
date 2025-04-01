@@ -837,6 +837,9 @@ if (empty($resource->type)) {
 
                             <?php
                             $location = new \stdClass();
+                            if (empty($included['locations'])) {
+                                $included['locations'] = array();
+                            }
                             foreach ($included['locations'] as $included_location) {
                                 if ($included_location->id == $resource->location_id) {
                                     $location = $included_location;
@@ -858,10 +861,10 @@ if (empty($resource->type)) {
                                     <div class="row">
                                         <div class="col-4">
                                             <?= read_select('location_id', $resource->location_id, '', $update, __('Location'), $included['locations']) ?>
-                                            <?= read_field('address', $location->attributes->address) ?>
-                                            <?= read_field('city', $location->attributes->city) ?>
-                                            <?= read_field('state', $location->attributes->state) ?>
-                                            <?= read_field('country', $location->attributes->country) ?>
+                                            <?= read_field('address', @(string)$location->attributes->address) ?>
+                                            <?= read_field('city', @(string)$location->attributes->city) ?>
+                                            <?= read_field('state', @(string)$location->attributes->state) ?>
+                                            <?= read_field('country', @(string)$location->attributes->country) ?>
                                         </div>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.owner=" . urlencode($resource->owner) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>

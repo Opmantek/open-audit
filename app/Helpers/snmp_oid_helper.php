@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 if (!function_exists('get_manufacturer_from_oid')) {
 
+	# 'Opengear Inc.' to 'OpenGear, Inc'
+
 	function get_manufacturer_from_oid($oid) {
 		$oid = (string)$oid;
 		if (strpos($oid, '.') !== false) {
@@ -24950,7 +24952,7 @@ if (!function_exists('get_manufacturer_from_oid')) {
 			case 25046: $manufacturer = 'Globaltouch Telecom'; break;
 			case 25047: $manufacturer = 'Fluid4 Studios'; break;
 			case 25048: $manufacturer = 'Synchronica Plc'; break;
-			case 25049: $manufacturer = 'Opengear Inc.'; break;
+			case 25049: $manufacturer = 'OpenGear, Inc'; break;
 			case 25050: $manufacturer = 'It Knows Aps'; break;
 			case 25051: $manufacturer = 'Pythagoras Software (uk)'; break;
 			case 25052: $manufacturer = 'Idya Bt.'; break;

@@ -266,12 +266,26 @@ abstract class BaseController extends Controller
         ) {
             $action = $this->resp->meta->permission_requested[$this->resp->meta->action];
 
+            if (empty($this->config->product)) {
+                $this->config->product = 'community';
+            }
+
             if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
                 log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
                 header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
                 exit();
             }
+
+            if (@$this->collections->{$this->resp->meta->collection}->actions->{$this->config->product} === 'r' and $this->resp->meta->action === 'read') {
+                if ($this->config->product === 'professional') {
+                    \Config\Services::session()->setFlashdata('warning', 'Editing ' . $this->resp->meta->collection . ' is restricted to Enterprise licenses.');
+                }
+                if ($this->config->product !== 'professional' and $this->config->product !== 'enterprise') {
+                    \Config\Services::session()->setFlashdata('warning', 'Editing ' . $this->resp->meta->collection . ' is restricted to Enterprise licenses. Get your free license <a href="#" data-bs-toggle="modal" data-bs-target="#modalCompareLicense">here</a>.');
+                }
+            }
+
         }
     }
 }
