@@ -147,7 +147,7 @@ foreach ($ips as $ip) {
                         <button type="button" id="buttonClose" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="padding-right: 50px; padding-top: 50px;"></button>
                     </div>
                     <div class="modal-body">
-                        <p>This form provides a quick and simple way to get started discovering the devices on your network. For more (much more) detailed options, you can individually create <a href="#">credentials</a>, <a href="#">locations</a> and <a href="#">discoveries</a> using the main menu items.</p>
+                        <p>This form provides a quick and simple way to get started discovering the devices on your network. For more (much more) detailed options, you can individually create <a href="<?= url_to('credentialsCollection') ?>">credentials</a>, <a href="<?= url_to('locationsCollection') ?>">locations</a> and <a href="<?= url_to('discoveriesCollection') ?>">discoveries</a> using the main menu items.</p>
                         <hr>
                         <h3>Credentials</h3>
                         <p>We need some credentials to be able to effectively talk to the devices on your network.</p><br>
