@@ -433,7 +433,7 @@ if (!empty($config->servers)) {
                                         <?= menuItem('rules', '', $user, 'rulesHelp', __('Learn About') . ' ' . __('Rules')) ?>
                                     </ul>
                                 </li>
-                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Standards') ?></a>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('standardsCollection') ?>"><?= __('Standards') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('standards', 'r', $user, 'standardsCollection', __('List') . ' ' . __('Standards')) ?>
                                         <?= menuItem('standards', 'c', $user, 'standardsCreateForm', __('Create') . ' ' . __('Standards')) ?>

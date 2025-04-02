@@ -25,7 +25,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= collection_card_header($meta->collection, $meta->icon, $user, 'About ' . $title); ?>
+                    <?= collection_card_header($meta->collection, $meta->icon, $user, __('About') . ' ' . $title); ?>
                 </div>
                 <div class="card-body">
                     <div class="row">

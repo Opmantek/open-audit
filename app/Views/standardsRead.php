@@ -78,6 +78,7 @@ if ($style === 'icontext') {
                                                 <th>Policy Class</th>
                                                 <th>Policy Section</th>
                                                 <th>Policy Name</th>
+                                                <th>Responsibility</th>
                                                 <th>Result</th>
                                                 <th>Maturity Score</th>
                                                 <th>Maturity Level</th>
@@ -103,6 +104,7 @@ if ($style === 'icontext') {
                                                 <td><?= $item->attributes->{'standards_policies.class'} ?></td>
                                                 <td><span style="display:none;"><?= $item->attributes->{'standards_policies.section_padded'} ?></span><?= $item->attributes->{'standards_policies.section'} ?></td>
                                                 <td><?= $item->attributes->{'standards_policies.name'} ?></td>
+                                                <td><?= $item->attributes->responsibility ?></td>
                                                 <td><?= $item->attributes->result ?></td>
                                                 <td><?= $item->attributes->maturity_score ?></td>
                                                 <td><?= $item->attributes->maturity_level ?></td>
