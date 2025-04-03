@@ -625,11 +625,18 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
             }
             $test = @$ssh->login($credential->credentials->username, $key);
             if (!empty($test)) {
-                $log->message = "Valid credentials for {$credential->type} named {$credential->name} used to log in to {$ip}.";
-                $log->command_status = 'success';
-                $discoveryLogModel->create($log);
-                $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
-                break;
+                $banner = @$ssh->getBannerMessage();
+                if (!empty($banner) and stripos($banner, 'Invalid user') !== false) {
+                    $ssh->disconnect();
+                    unset($ssh);
+                    unset($test);
+                } else {
+                    $log->message = "Valid credentials for {$credential->type} named {$credential->name} used to log in to {$ip}.";
+                    $log->command_status = 'success';
+                    $discoveryLogModel->create($log);
+                    $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
+                    break;
+                }
             }
             if (empty($test)) {
                 $ssh->disconnect();
@@ -643,11 +650,18 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
             $ssh->setTimeout($timeout);
             $test = @$ssh->login($credential->credentials->username, $credential->credentials->password);
             if (!empty($test)) {
-                $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
-                $log->command_status = 'success';
-                $discoveryLogModel->create($log);
-                $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
-                break;
+                $banner = @$ssh->getBannerMessage();
+                if (!empty($banner) and stripos($banner, 'Invalid user') !== false) {
+                    $ssh->disconnect();
+                    unset($ssh);
+                    unset($test);
+                } else {
+                    $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
+                    $log->command_status = 'success';
+                    $discoveryLogModel->create($log);
+                    $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
+                    break;
+                }
             }
             if (empty($test)) {
                 $ssh->disconnect();
