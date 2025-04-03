@@ -11363,7 +11363,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.9.1.285': $device->model = 'Cisco Management Engine 1100'; $device->type = 'network device'; break;
             case '1.3.6.1.4.1.9.1.2850': $device->model = 'Catalyst 9120AX'; $device->type = 'access point'; break;
             case '1.3.6.1.4.1.9.1.286': $device->model = 'Cisco 3810 MC V3'; $device->type = 'router'; break;
-            case '1.3.6.1.4.1.9.1.2860': $device->model = '9800-L Wireless Controller'; $device->type = 'access control'; break;
+            case '1.3.6.1.4.1.9.1.2860': $device->model = '9800-L Wireless Controller'; $device->type = 'wac'; break;
             case '1.3.6.1.4.1.9.1.2861': $device->model = '9800-L Wireless Controller'; $device->type = 'wac'; break;
             case '1.3.6.1.4.1.9.1.287': $device->model = 'Cisco Catalyst 3524 tXLEn'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.1.2870': $device->model = 'Firepower 1150'; $device->type = 'firewall'; break;
