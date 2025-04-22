@@ -1250,14 +1250,18 @@ Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter "IPEnabled = True
     for ($i = 0; $i -lt $_.IPAddress.Length; $i++) {
         Clear-Variable -name item
         $item = @{}
-        $item.mac = if ($_.MACAddress) { $_.MACAddress } Else { "" }
-        $item.net_index = if ($_.Index) { $_.Index } Else { "" }
-        $item.subnet = if ($_.IPSubnet[$i]) { $_.IPSubnet[$i] } Else { "" }
         $item.ip = if ($_.IPAddress[$i]) { [string]$_.IPAddress[$i] } Else { "" }
-        $length = $item.ip.Length
-        $item.version = if ($length -gt 15) { 6 } Else { 4 }
-        $result.ip += $item
-        $ip_address_array += $result.ip
+        if ($item.ip -ne "") {
+            $item.mac = if ($_.MACAddress) { $_.MACAddress } Else { "" }
+            $item.net_index = if ($_.Index) { $_.Index } Else { "" }
+            $item.subnet = if ($_.IPSubnet[$i]) { $_.IPSubnet[$i] } Else { "" }
+            $item.version = 4
+            if ($item.ip.Length -gt 15) {
+                $item.version = 6
+            }
+            $result.ip += $item
+            $ip_address_array += $result.ip
+        }
         $dns_server = if ($_.DNSServerSearchOrder[0]) { $_.DNSServerSearchOrder[0] }
     }
 }
