@@ -90,11 +90,11 @@ class TasksModel extends BaseModel
         if (empty($data)) {
             return null;
         }
-        $data->minute = implode(',', $data->minute);
-        $data->hour = implode(',', $data->hour);
-        $data->month = implode(',', $data->month);
-        $data->day_of_month = implode(',', $data->day_of_month);
-        $data->day_of_week = implode(',', $data->day_of_week);
+        $data->minute = is_array($data->minute) ? implode(',', $data->minute) : (string)$data->minute;
+        $data->hour = is_array($data->hour) ? implode(',', $data->hour) : (string)$data->hour;
+        $data->month = is_array($data->month) ? implode(',', $data->month) : (string)$data->month;
+        $data->day_of_month = is_array($data->day_of_month) ? implode(',', $data->day_of_month) : (string)$data->day_of_month;
+        $data->day_of_week = is_array($data->day_of_week) ? implode(',', $data->day_of_week) : (string)$data->day_of_week;
         if (empty($data->uuid)) {
             $instance = & get_instance();
             $data->uuid = $instance->config->uuid;
