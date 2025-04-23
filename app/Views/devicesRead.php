@@ -420,7 +420,7 @@ if (empty($resource->type)) {
                                         <div class="col-4">
                                             <div class="row" style="padding-top:16px;">
                                                 <div class="offset-2 col-8" style="position:relative;">
-                                                    <label for="sql" class="form-label"><?= __('API Result') ?></label>
+                                                    <label for="instance_options" class="form-label"><?= __('API Result') ?></label>
                                                     <div class="input-group">
                                                         <textarea class="form-control" rows="12" id="instance_options" name="instance_options" disabled><?= html_entity_decode(json_encode($resource->instance_options, JSON_PRETTY_PRINT)) ?></textarea>
                                                     </div>
@@ -870,6 +870,7 @@ if (empty($resource->type)) {
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.owner=" . urlencode($resource->owner) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('owner', $resource->owner, '', $update, '', $link) ?>
                                             <?= read_select('org_id_2', $resource->org_id, '', false, __('Organisation'), $orgs) ?>
+                                            </div>
 
                                             <?php
                                             if (empty($included['rack_devices'][0]->{'rack_id'})) {
