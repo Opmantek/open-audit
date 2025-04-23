@@ -215,8 +215,11 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
         $return = $return . '<div class="float-end" style="padding-left:4px;">' . $link_button . '</div>';
     }
                                     $return = $return . '
-                                </div>
-                                <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="' .  $name . '" data-dictionary="' . $dictionary . '"><span><br></span></div>
+                                </div>';
+    if ($dictionary !== '') {
+        $return = $return . '                                <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="' .  $name . '" data-dictionary="' . $dictionary . '"><span><br></span></div>';
+    }
+    $return = $return . '
                             </div>
                         </div>
                         ';
@@ -267,7 +270,7 @@ function read_select(string $name = '', string $value = '', string $dictionary =
     $return =  "                           <div class=\"row\" style=\"padding-top:16px;\">
                                 <div class=\"offset-2 col-8\" style=\"position:relative;\">
                                     <label for=\"{$name}\" class=\"form-label\">{$label}</label><br>
-                                    <div class=\"col-7 input-group\">
+                                    <div class=\"input-group\">
                                         <select class=\"form-select\" id=\"{$name}\" name=\"{$name}\" data-original-value=\"{$value}\" disabled>\n";
     foreach ($values as $item) {
         $selected = '';
@@ -294,11 +297,13 @@ function read_select(string $name = '', string $value = '', string $dictionary =
                                             <div data-attribute=\"{$name}\" class=\"btn btn-outline-secondary edit\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></div>
                                             <div data-attribute=\"{$name}\" class=\"btn btn-outline-success submit\" style=\"display: none;\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-check\"></span></div>
                                             <div data-attribute=\"{$name}\" class=\"btn btn-outline-danger cancel\" style=\"display: none;\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-remove\"></span></div>
-                                        </div>\n";
+                                        </div>
+                                    </div>\n";
     }
-    $return .= "                                    </div>
-                                    <div class=\"form-text form-help float-end\" style=\"position: absolute; right: 0;\" data-attribute=\"{$name}\" data-dictionary=\"" . $dictionary . "\"><span><br></span></div>
-                                </div>
+    if ($dictionary !== '') {
+        $return .= "<div class=\"form-text form-help float-end\" style=\"position: absolute; right: 0;\" data-attribute=\"{$name}\" data-dictionary=\"" . $dictionary . "\"><span><br></span></div>";
+    }
+    $return .= "                            </div>
                             </div>\n";
     return $return;
 }

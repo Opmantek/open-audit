@@ -451,6 +451,11 @@ window.onload = function () {
                 break;
                 }
             document.getElementById("options").innerHTML = based_on_text;
+            $(".form-select").select2({
+                theme: "bootstrap-5",
+                selectionCssClass: "select2--small",
+                dropdownCssClass: "select2--small",
+            });
         });
     }
 )};

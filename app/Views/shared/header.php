@@ -63,8 +63,9 @@ if (!empty($config->servers)) {
 
         <script {csp-script-nonce} defer src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/fa-v4-shims.min.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/apexcharts.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/select2.full.min.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
 
         <!-- CSS -->
         <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">
@@ -74,6 +75,8 @@ if (!empty($config->servers)) {
         -->
         <link href="<?= base_url('css/datatables.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/font-awesome.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/select2.min.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/select2-bootstrap-5-theme.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/open-audit.css') ?>" rel="stylesheet">
 
         <!-- Open-AudIT specific items -->

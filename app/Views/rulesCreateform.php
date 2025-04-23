@@ -10,7 +10,7 @@ include 'shared/create_functions.php';
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
@@ -132,8 +132,8 @@ include 'shared/create_functions.php';
                             </form>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="offset-2 col-8">
+                        <div class="col-md-4">
+                            <div class="col-12">
                                 <?php if (! empty($dictionary->about)) {
                                     echo "<h4 class=\"text-center\">About</h4><br>";
                                     echo html_entity_decode($dictionary->about);
@@ -144,7 +144,9 @@ include 'shared/create_functions.php';
                                 } ?>
                                 <h4 class="text-center">Fields</h4><br>
                                 <?php foreach ($dictionary->columns as $key => $value) {
-                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
+                                    if (in_array($key, ['name', 'org_id', 'description', 'weight'])) {
+                                        echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
+                                    }
                                 } ?>
                             </div>
                         </div>

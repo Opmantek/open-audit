@@ -64,6 +64,40 @@ h1,
     color: var(--bs-heading-color, inherit);
 }
 
+
+/* All below is for the select2 dropdoiwn boxes */
+.select2-container--bootstrap-5 .select2--small.select2-selection {
+  min-height: calc(1.5em + .5rem + 8px);
+}
+
+.select2-container--bootstrap-5.select2-container--disabled .select2-selection, .select2-container--bootstrap-5.select2-container--disabled.select2-container--focus .select2-selection {
+  background-color: #f8f9fa;
+}
+
+.select2-container--bootstrap-5 .select2--small.select2-selection {
+    font-size: 1rem;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 2.25rem 0.5rem 0.75rem;
+}
+
+.select2-container--bootstrap-5 .select2--small.select2-selection:enabled {
+    background-color: #fff;
+}
+
+.input-group.has-validation > :nth-last-child(n+3):not(.dropdown-toggle):not(.dropdown-menu).select2-container--bootstrap-5 .select2-selection, .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu).select2-container--bootstrap-5 .select2-selection {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+.select2-selection__rendered {
+    color: #16325c;
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+
+
+
 /* NAVBAR */
 .navbar-brand
 {
