@@ -1265,8 +1265,8 @@ Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter "IPEnabled = True
             }
             $result.ip += $item
             $ip_address_array += $result.ip
+            $dns_server = if ($_.DNSServerSearchOrder[0]) { $_.DNSServerSearchOrder[0] }
         }
-        $dns_server = if ($_.DNSServerSearchOrder[0]) { $_.DNSServerSearchOrder[0] }
     }
 }
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
