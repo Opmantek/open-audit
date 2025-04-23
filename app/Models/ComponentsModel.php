@@ -69,7 +69,7 @@ class ComponentsModel extends BaseModel
                 $filter->name = $table . '.device_id';
             }
         }
-        if (!in_array($table, ['access_point', 'antivirus', 'audit_log', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'cli_config', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
+        if (!in_array($table, ['access_point', 'antivirus', 'arp', 'audit_log', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'cli_config', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
             # Invalid table
             $resp->warning = 'Invalid table provided to ComponentsModel::collection, ' . htmlentities($table);
             log_message('error', $resp->warning);
@@ -1543,7 +1543,7 @@ class ComponentsModel extends BaseModel
         $dictionary->attributes->fieldsMeta = array();
         $dictionary->attributes->update = array();
 
-        $dictionary->about = '<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>';
+        $dictionary->about = '<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>';
 
         $dictionary->notes = '<p></p>';
 
