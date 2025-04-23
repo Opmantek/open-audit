@@ -87,7 +87,11 @@ $result.sys.domain = $Win32_ComputerSystem | Select-Object -ExpandProperty Domai
 if ($result.sys.domain -eq 'WORKGROUP') {
     $result.sys.domain = ''
 }
-$result.sys.ip = (Find-NetRoute -RemoteIPAddress "0.0.0.0" | % { $_.IPAddress })[0]
+$result.sys.ip = ""
+$ip = Find-NetRoute -RemoteIPAddress "0.0.0.0" -ErrorAction Ignore
+if ($ip -ne $null) {
+    $result.sys.ip = ($ip | % { $_.IPAddress })[0]
+}
 $result.sys.description = $Win32_OperatingSystem | Select-Object -ExpandProperty Description
 $result.sys.type = 'computer'
 $result.sys.icon = 'windows'
@@ -1921,14 +1925,14 @@ if ($audit_software -eq 'y') {
             $item.comments  = $_.Comments
         }
         if ($_.InstallSource -ne "" -and $_.InstallSource -ne $null) {
-            $item.installsource  = $_.InstallSource
+            $item.install_source  = $_.InstallSource
         }
         if ($_.SystemComponent -ne "" -and $_.SystemComponent -ne $null) {
             $item.system_component  = $_.SystemComponent
         }
 
         $name = [string]$_.DisplayName
-        $package = Get-Package -name "$name" -ErrorAction Ignore
+        $package = Get-Package -name "$name" -ErrorAction Ignore -WarningAction silentlyContinue
         if ($package -ne $null) {
             $package | ForEach {
                 if ($_.MetaData["InstalledDate"][0] -ne $null) {
