@@ -2566,6 +2566,16 @@ if [ -z $(echo "$skip_sections" | grep "user,") ]; then
 		echo "			<sid>$(escape_xml "$sid")</sid>" >> $xml_file
 		echo "			<home>$(escape_xml "$home")</home>" >> $xml_file
 		echo "			<shell>$(escape_xml "$shell")</shell>" >> $xml_file
+
+		password_expires=$(chage -l "$name" 2>/dev/null | grep -i "^Password expires" | cut -d: -f2)
+		echo "                  <password_expires>$(escape_xml "$password_expires")</password_expires>" >> $xml_file
+
+		password_last_changed=$(chage -l "$name" 2>/dev/null | grep -i "^Last password change" | cut -d: -f2 | xargs -I {} date -d "{}" +"%F 00:00:00")
+		echo "                  <password_last_changed>$(escape_xml "$password_last_changed")</password_last_changed>" >> $xml_file
+
+		last_logon=$(lastlog -u "$name" 2>/dev/null | sed '1d' | awk '{$1=$2=$3=$4=""; print substr($0,5)}' | xargs -I {} date -d "{}" +"%Y-%m-%d %H:%M:%S")
+		echo "                  <last_logon>$(escape_xml "$last_logon")</last_logon>" >> $xml_file
+
 		test1=$(grep "^$name:" /etc/shadow 2>/dev/null | cut -d: -f8)
 		test2=$(grep "^$name:" /etc/shadow 2>/dev/null | cut -d: -f2)
 		today=$(($(date --utc +%s)/86400))
