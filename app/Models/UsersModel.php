@@ -405,7 +405,7 @@ class UsersModel extends BaseModel
         $dictionary->columns->name = 'The name given to this user (used to login). Ideally it should be unique.';
         $dictionary->columns->full_name = 'The actual full name of this user.';
         $dictionary->columns->org_id = $instance->dictionary->org_id;
-        $dictionary->columns->password = 'A hashed password that enables logon when using application authentication.';
+        $dictionary->columns->password = 'A password (stored as a hash) that enables logon when using application authentication.';
         $dictionary->columns->email = 'The users email address.';
         $dictionary->columns->lang = 'The language to translate the web interface into for the user.';
         $dictionary->columns->toolbar_style = 'Icon only, text only or icon and text.';

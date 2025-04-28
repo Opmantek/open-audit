@@ -261,7 +261,7 @@ class PackagesModel extends BaseModel
 
         $dictionary->sentence = 'Software Package are for ...';
 
-        $dictionary->about = '<p>Software Packages are good.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '';
 

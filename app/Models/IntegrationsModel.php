@@ -1717,7 +1717,7 @@ class IntegrationsModel extends BaseModel
 
         $dictionary->about = '<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
-        $dictionary->notes = '<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br /><br />The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br /><br />An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = \'Debian\'</code><br /><br /></p>';
+        $dictionary->notes = '<p></p>';
 
         $dictionary->system_fields = $this->db->getFieldNames('devices');
         sort($dictionary->system_fields);
@@ -1741,10 +1741,10 @@ class IntegrationsModel extends BaseModel
         $dictionary->columns->additional_items = 'Populated with additional data from the external system, in a JSON representation.';
         $dictionary->columns->devices = 'Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.';
         $dictionary->columns->locations = 'Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.';
-        $dictionary->columns->debug = 'Unused.';
+        $dictionary->columns->debug = 'Extra and more verbose logging is generated for troubleshooting.';
         $dictionary->columns->discovery_id = 'The associated discovery (if required). Links to <code>discoveries.id</code>.';
         $dictionary->columns->fields = 'A JSON representation of the fields for this integration.';
-        $dictionary->columns->duration = 'Calculated upon integration completion, the time taken to execute this integration.';
+        $dictionary->columns->duration = 'Calculated upon completion, the time taken to execute this item.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
 
@@ -1759,7 +1759,7 @@ class IntegrationsModel extends BaseModel
         $dictionary->columns->update_internal_from_external = 'When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?';
         $dictionary->columns->discovery_run = 'When retrieve an external device, should we run discovery upon it?';
         $dictionary->columns->select_internal_type = 'How should we select devices to be integrated (using an Attribute, Query or a Group).';
-        $dictionary->columns->select_internal_attribute = 'The attribute to test (from the \'devices\' table).';
+        $dictionary->columns->select_internal_attribute = 'The attribute to test (from the <code>devices</code> table).';
         $dictionary->columns->select_internal_value = 'This item must match the value of the attribute selected or contains the ID of the query to be used.';
 
         $dictionary->columns->create_external_count = 'The calculated number of devices to be created externally.';

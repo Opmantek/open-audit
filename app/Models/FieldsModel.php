@@ -244,7 +244,7 @@ class FieldsModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->group_id = 'The group of devices this field applies to. To apply it to all devices, use the All Devices group. Links to <code>groups.id</code>.';
-        $dictionary->columns->type = 'This can be either a varchar (a text field) or a list (a list of values that can be selected).';
+        $dictionary->columns->type = 'This can be either a varchar (a text field), a list (a list of values that can be selected) or a date.';
         $dictionary->columns->values = 'A comma separated list of values, one of which can be selected.';
         $dictionary->columns->placement = 'Where on the Device Details screen you would like to see this field appear.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

@@ -368,7 +368,7 @@ class NetworksModel extends BaseModel
         $dictionary->columns->external_ident = 'The ID retrieved from a Cloud discovery.';
         $dictionary->columns->cloud_id = 'The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.';
         $dictionary->columns->environment = 'One of Development, Disaster Recovery, Evaluation, Pre-Production, Production, Testing, Training, User Acceptance Testing';
-        $dictionary->columns->gateways = 'Derived from device audits.';
+        $dictionary->columns->gateways = 'Populated from device audits.';
         $dictionary->columns->network_domain = 'A routing domain or address space where the IP addresses and MAC addresses are unique.';
         $dictionary->columns->security_zone = 'A security zone is a administrative domain or policy domain within the Network Domain.';
         $dictionary->columns->admin_status = 'One of allocated, delegated, planning, reserved, unallocated, unknown, unmanaged. Defaults to allocated.';
@@ -377,8 +377,8 @@ class NetworksModel extends BaseModel
         // Not in schema, but populated in GUI of Pro/Ent.
         $dictionary->columns->dhcp_servers = 'Derived from device audits.';
         $dictionary->columns->dns_servers = 'Derived from device audits.';
-        $dictionary->columns->ip_total_count = 'The total number of valid IP addresses for this network.';
-        $dictionary->columns->device_count = 'Populated using discovery.';
+        $dictionary->columns->ip_total_count = 'Calculated total number of valid IP addresses for this network.';
+        $dictionary->columns->device_count = 'Calculated from discovery.';
         $dictionary->columns->ip_available_count = 'Calculated from discovery.';
         // Set the below directly for when we don't call using a normal user, via CLI discovery
         $dictionary->columns->edited_by = 'The name of the user who last changed or added this item (read only).';

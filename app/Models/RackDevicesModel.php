@@ -256,6 +256,10 @@ class RackDevicesModel extends BaseModel
         $dictionary->columns->tags = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
+
+
+        $dictionary->columns->rack_name = 'Derived from <code>rack_devices.rack_id</code>.';
+        $dictionary->columns->device_name = 'Derived from <code>rack_devices.device_id</code>.';
         return $dictionary;
     }
 }

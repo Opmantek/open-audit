@@ -290,8 +290,8 @@ class CredentialsModel extends BaseModel
         $dictionary->columns->credentials = 'An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.';
         $dictionary->columns->community = 'The SNMP community string.';
         $dictionary->columns->username = 'The credentials username.';
-        $dictionary->columns->password = 'The credentials password.';
-        $dictionary->columns->ssh_key = 'You SSH key.';
+        $dictionary->columns->password = 'The credentials password. If the credentials are an SSH Key, this is the password used to unlock the key and is optional.';
+        $dictionary->columns->ssh_key = 'Your SSH key.';
         $dictionary->columns->sudo_password = 'An optional password to use sudo.';
         $dictionary->columns->authentication_passphrase = 'The SNMP v3 Authentication Passphrase.';
         $dictionary->columns->authentication_protocol = 'The SNMP v3 Authentication Protocol.';

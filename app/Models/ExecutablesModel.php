@@ -226,9 +226,9 @@ class ExecutablesModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->path = 'The path to the file or directory.';
+        $dictionary->columns->path = 'The path to the file or directory. Directories should end with a trailing slash.';
         $dictionary->columns->os_family = 'Unused as at 5.2.0.';
-        $dictionary->columns->exclude = 'Should this file (or pattern) be used to exclude files from being reported.';
+        $dictionary->columns->exclude = 'Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to \'y\'.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

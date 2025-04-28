@@ -951,11 +951,14 @@ class BenchmarksModel extends BaseModel
         $dictionary->columns->os = 'Which OS this benchmark applies to.';
         $dictionary->columns->type = 'The benchmark type.';
         $dictionary->columns->install = 'Should we install Open-Scap on the target machine.';
-        $dictionary->columns->devices = '';
-        $dictionary->columns->last_run = '';
+        $dictionary->columns->devices = 'A JSON array of device IDs that will have this benchmark executed.';
+        $dictionary->columns->last_run = 'The last time this benchmarks was executed.';
         $dictionary->columns->remediation = '';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
+        // Derived columns for GUI
+        $dictionary->columns->number_of_devices = 'The number of devices this benchmark will be executed upon. Derived from <code>benchmarks.devices</code>.';
+        $dictionary->columns->schedule = 'When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.';
         return $dictionary;
     }
 }
