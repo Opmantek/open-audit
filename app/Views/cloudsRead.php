@@ -43,24 +43,23 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="summary" role="tabpanel" tabindex="0" aria-labelledby="summary">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name1', $resource->name, $dictionary->columns->name, false, 'Name') ?>
-                                    <?= read_field('current_status', $resource->status, $dictionary->columns->name, false) ?>
-                                    <?= read_field('last_run', $included['stats']->last_run, $dictionary->columns->name, false) ?>
-                                    <?= read_field('duration', $included['stats']->duration . __(' seconds'), $dictionary->columns->name, false) ?>
+                                    <?= read_field('status', $resource->status, $dictionary->columns->status, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('last_run', $included['stats']->last_run, $dictionary->columns->last_run, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('duration', $included['stats']->duration . __(' seconds'), $dictionary->columns->duration, false, '', '', '', '', $meta->collection) ?>
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations.cloud_id=" . $resource->id . "\"><span title=\"" . __('View') . "\" class=\"fa fa-building\" aria-hidden=\"true\"></span></a>"; ?>
-                                    <?= read_field('locations', $included['stats']->locations, $dictionary->columns->name, false, '', $link) ?>
+                                    <?= read_field('locations', $included['stats']->locations, $dictionary->columns->locations, false, '', $link) ?>
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.cloud_id=" . $resource->id . "\"><span title=\"" . __('View') . "\" class=\"fa fa-wifi\" aria-hidden=\"true\"></span></a>"; ?>
-                                    <?= read_field('networks', $included['stats']->networks, $dictionary->columns->name, false, '', $link) ?>
+                                    <?= read_field('networks', $included['stats']->networks, $dictionary->columns->networks, false, '', $link) ?>
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
-                                    <?= read_field('devices_retrieved', $included['stats']->devices_retrieved, $dictionary->columns->name, false, '', $link) ?>
+                                    <?= read_field('devices_retrieved', $included['stats']->devices_retrieved, $dictionary->columns->devices_retrieved, false, '', $link) ?>
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.serial=!=\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
-                                    <?= read_field('devices_audited', $included['stats']->devices_audited, $dictionary->columns->name, false, '', $link) ?>
+                                    <?= read_field('devices_audited', $included['stats']->devices_audited, $dictionary->columns->devices_audited, false, '', $link) ?>
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.serial=\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
-                                    <?= read_field('devices_not_audited', $included['stats']->devices_not_audited, $dictionary->columns->name, false, '', $link) ?>
+                                    <?= read_field('devices_not_audited', $included['stats']->devices_not_audited, $dictionary->columns->devices_not_audited, false, '', $link) ?>
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.instance_state=running\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
-                                    <?= read_field('devices_running', $included['stats']->devices_running, $dictionary->columns->name, false, '', $link) ?>
-                                    <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.instance_stats=!=running\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
-                                    <?= read_field('devices_stopped', $included['stats']->devices_stopped, $dictionary->columns->name, false, '', $link) ?>
+                                    <?= read_field('devices_running', $included['stats']->devices_running, $dictionary->columns->devices_running, false, '', $link) ?>
+                                    <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.instance_state=!=running\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>"; ?>
+                                    <?= read_field('devices_stopped', $included['stats']->devices_stopped, $dictionary->columns->devices_stopped, false, '', $link) ?>
                                 </div>
                                 <div class="col-6">
                                     <br>
@@ -90,15 +89,15 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                                    <?= read_select('options.ssh', $resource->options->ssh, $dictionary->columns->ssh, $update, __('Use SSH'), array()) ?>
-                                    <?= read_select('options.wmi', $resource->options->wmi, $dictionary->columns->wmi, $update, __('Use WMI'), array()) ?>
-                                    <?= read_select('options.snmp', $resource->options->snmp, $dictionary->columns->snmp, $update, __('Use SNMP'), array()) ?>
+                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('options.ssh', $resource->options->ssh, $dictionary->columns->ssh, $update, __('Use SSH'), array(), $meta->collection) ?>
+                                    <?= read_select('options.wmi', $resource->options->wmi, $dictionary->columns->wmi, $update, __('Use WMI'), array(), $meta->collection) ?>
+                                    <?= read_select('options.snmp', $resource->options->snmp, $dictionary->columns->snmp, $update, __('Use SNMP'), array(), $meta->collection) ?>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="type" class="form-label"><?= __('Type') ?></label>
+                                            <?= read_field_header($meta->collection, 'type', $dictionary->columns->type) ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="type" name="type" data-original-value="<?= $resource->type ?>" disabled>
                                                     <option value="amazon">Amazon AWS</option>
@@ -106,22 +105,21 @@ if ($style === 'icontext') {
                                                     <option value="microsoft">Microsoft Azure</option>
                                                 </select>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                         </div>
                                     </div>
                                     <?php if ($resource->type === 'amazon') {
-                                        echo read_field('credentials.key', $resource->credentials->key, $dictionary->columns->key, $update, __('Credentials Key'));
-                                        echo read_field('credentials.secret_key', '', $dictionary->columns->secret_key, $update, __('Credentials Secret'), '', 'password');
+                                        echo read_field('credentials.key', $resource->credentials->key, $dictionary->columns->key, $update, '', '', '', '', $meta->collection);
+                                        echo read_field('credentials.secret_key', '', $dictionary->columns->secret_key, $update, '', '', '', '', $meta->collection);
                                     } elseif ($resource->type === 'microsoft') {
-                                        echo read_field('credentials.subscription_id', $resource->credentials->subscription_id, $dictionary->columns->subscription_id, $update, __('Subscription ID'));
-                                        echo read_field('credentials.tenant_id', $resource->credentials->tenant_id, $dictionary->columns->tenant_id, $update, __('Tenant ID'));
-                                        echo read_field('credentials.client_id', $resource->credentials->client_id, $dictionary->columns->client_id, $update, __('Client ID'));
-                                        echo read_field('credentials.client_secret', '', $dictionary->columns->client_secret, $update, __('Client Secret'), '', '', 'password');
+                                        echo read_field('credentials.subscription_id', $resource->credentials->subscription_id, $dictionary->columns->subscription_id, $update, '', '', '', '', $meta->collection);
+                                        echo read_field('credentials.tenant_id', $resource->credentials->tenant_id, $dictionary->columns->tenant_id, $update, '', '', '', '', $meta->collection);
+                                        echo read_field('credentials.client_id', $resource->credentials->client_id, $dictionary->columns->client_id, $update, '', '', '', '', $meta->collection);
+                                        echo read_field('credentials.client_secret', '', $dictionary->columns->client_secret, $update, '', '', '', 'password', $meta->collection);
                                     } elseif ($resource->type === 'google') {
-                                        echo read_field('credentials.json', '', $dictionary->columns->json, $update, __("Google JSON Credentials"), '', '', 'password');
+                                        echo read_field('credentials.json', '', $dictionary->columns->json, $update, __("Google JSON Credentials"), '', '', 'password', $meta->collection);
                                     } ?>
-                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-6">
                                     <br>

@@ -23,13 +23,13 @@ $fields->all = array('client_ident', 'client_secret', 'redirect_uri', 'issuer', 
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                            <?= read_field('type', $resource->type, $dictionary->columns->type) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="use_authentication" class="form-label"><?= __('Use for Authentication') ?></label>
+                                    <?= read_field_header($meta->collection, 'use_authentication', $dictionary->columns->use_authentication) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="use_authentication" name="use_authentication" data-original-value="<?= $resource->use_authentication ?>" disabled>
                                             <option value="n"><?= __('No') ?></option>
@@ -43,13 +43,12 @@ $fields->all = array('client_ident', 'client_secret', 'redirect_uri', 'issuer', 
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="use_authentication" data-dictionary="<?= $dictionary->columns->use_authentication ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php if ($resource->type !== 'github' and $resource->type !== 'okta') { ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="use_authorisation" class="form-label"><?= __('Use for Authorisation') ?></label>
+                                    <?= read_field_header($meta->collection, 'use_authorisation', $dictionary->columns->use_authorisation) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="use_authorisation" name="use_authorisation" data-original-value="<?= $resource->use_authorisation ?>" disabled>
                                             <option value="n"><?= __('No') ?></option>
@@ -74,8 +73,8 @@ $fields->all = array('client_ident', 'client_secret', 'redirect_uri', 'issuer', 
                             }
                             ?>
 
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>

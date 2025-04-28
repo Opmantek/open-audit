@@ -127,25 +127,25 @@ if (!empty($hour) and !empty($days)) {
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                                    <?= read_field('description', $resource->name, $dictionary->columns->name, $update) ?>
-                                    <?= read_field('type', $resource->type, $dictionary->columns->type, false) ?>
-                                    <?= read_field('os', $resource->os, $dictionary->columns->os, false) ?>
+                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                                    <?= read_field('description', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('os', $resource->os, $dictionary->columns->os, false, '', '', '', '', $meta->collection) ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="schedule" class="form-label">Schedule</label>
+                                            <?= read_field_header('', 'schedule', $dictionary->columns->schedule) ?>
                                             <div class="input-group">
                                                 <input disabled="" type="text" class="form-control" id="schedule" value="<?= $schedule ?>">
                                             </div>
                                         </div>
                                     </div>
-                                    <?= read_field('last_run', $resource->last_run, '', false) ?>
+                                    <?= read_field('last_run', $resource->last_run, $dictionary->columns->last_run, false, '', '', '', '', 'benchmarks') ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="device_count" class="form-label">Number of Devices</label>
+                                            <?= read_field_header('', 'number_of_devices', $dictionary->columns->number_of_devices) ?>
                                             <div class="input-group">
                                                 <input disabled="" type="text" class="form-control" id="device_count" value="<?= $device_count ?>">
                                             </div>
@@ -153,8 +153,8 @@ if (!empty($hour) and !empty($days)) {
                                     </div>
 
 
-                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                     <br>
                                 </div>
                                 <div class="col-6">

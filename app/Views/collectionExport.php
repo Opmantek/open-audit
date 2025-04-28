@@ -26,7 +26,6 @@ $id = (!empty($meta->id)) ? $meta->id : '';
                                 <div class="input-group">
                                     <textarea rows="20" class="form-control" id="resource" name="resource"><?= html_entity_decode(json_encode($data, JSON_PRETTY_PRINT)) ?></textarea>
                                 </div>
-                                <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="resource" data-dictionary=""></div>
                             </div>
                         </div>
                         <div class="col-6">

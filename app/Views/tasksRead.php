@@ -11,26 +11,26 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                            <?= read_select('enabled', $resource->enabled, $dictionary->columns->enabled, $update, __('Enabled'), array()) ?>
-                            <?= read_field('last_run', $resource->last_run, $dictionary->columns->last_run) ?>
-                            <?= read_field('first_run', $resource->first_run, $dictionary->columns->first_run, $update) ?>
-                            <?= read_field('type', $resource->type, $dictionary->columns->type) ?>
-                            <?= read_select('sub_resource_id', $resource->sub_resource_id, '', $update, ucwords($resource->type) . ' ' . __('Name'), $included[$resource->type]) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('enabled', $resource->enabled, $dictionary->columns->enabled, $update, __('Enabled'), array(), $meta->collection) ?>
+                            <?= read_field('last_run', $resource->last_run, $dictionary->columns->last_run, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('first_run', $resource->first_run, $dictionary->columns->first_run, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('sub_resource_id', $resource->sub_resource_id, $dictionary->columns->sub_resource_id . ' Links to <code>' . $resource->type . '.id</code>.', $update, ucwords($resource->type) . ' ' . __('Name'), $included[$resource->type], $meta->collection) ?>
 
                             <?php if (!empty($included['collectors']) and $resource->type === 'discoveries') { ?>
-                                <?= read_select('uuid', $resource->uuid, $dictionary->columns->uuid, $update, __('Collector (UUID)'), $included['collectors']) ?>
+                                <?= read_select('uuid', $resource->uuid, $dictionary->columns->uuid, $update, __('Collector (UUID)'), $included['collectors'], $response->collection) ?>
                             <?php } else { ?>
-                            <input type="hidden" value="<?= $config->uuid ?>" id="uuid" name="uuid" />
+                            <input type="hidden" value="<?= $config->uuid ?>" id="uuid" name="uuid">
                             <?php } ?>
 
                             <?php if ($resource->type === 'queries' or $resource->type === 'reports' or $resource->type === 'summaries') { ?>
-                                <?= read_field('email_address', $resource->email_address, $dictionary->columns->{'email_address'}, $update, __('Email Address')) ?>
+                                <?= read_field('email_address', $resource->email_address, $dictionary->columns->{'email_address'}, $update, '', '', '', '', $meta->collection) ?>
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="format" class="form-label"><?= __('Format') ?></label>
+                                        <?= read_field_header($meta->collection, 'format', $dictionary->columns->format) ?>
                                         <div class="input-group">
                                             <select class="form-select" id="format" name="format" disabled>
                                                 <option value="csv" <?php if ($resource->format === 'csv') { echo "selected"; } ?>>CSV</option>
@@ -46,7 +46,6 @@ include 'shared/read_functions.php';
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="format[]" data-dictionary="<?= $dictionary->columns->format ?>"><span><br></span></div>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -55,7 +54,7 @@ include 'shared/read_functions.php';
                             <?php if ($resource->type === 'baselines') { ?>
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label for="group_id" class="form-label"><?= __('Group') ?></label>
+                                        <?= read_field_header($meta->collection, 'group_id', $dictionary->columns->group_id) ?>
                                         <div class="input-group">
                                             <select class="form-select" id="group_id" name="group_id" disabled>
                                                 <?php foreach ($included['groups'] as $group) { ?>
@@ -70,7 +69,6 @@ include 'shared/read_functions.php';
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="group_id[]" data-dictionary="<?= $dictionary->columns->group_id ?>"><span><br></span></div>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -78,7 +76,7 @@ include 'shared/read_functions.php';
                             <?php if (strpos($resource->minute, "*/") === false) { ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="minute[]" class="form-label"><?= __('Minute') ?></label>
+                                    <?= read_field_header($meta->collection, 'minute[]', $dictionary->columns->minute) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="minute[]" name="minute[]" multiple disabled>
                                             <?php $split = explode(',', $resource->minute); ?>
@@ -95,17 +93,16 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="minute[]" data-dictionary="<?= $dictionary->columns->minute ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php } else { ?>
-                                <?= read_field('minute', $resource->minute, $dictionary->columns->minute, $update) ?>
+                                <?= read_field('minute', $resource->minute, $dictionary->columns->minute, $update, '', '', '', '', $meta->collection) ?>
                             <?php } ?>
   
                             <?php if (strpos($resource->hour, "*/") === false) { ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="hour[]" class="form-label"><?= __('Hour') ?></label>
+                                    <?= read_field_header($meta->collection, 'hour[]', $dictionary->columns->hour) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="hour[]" name="hour[]" multiple disabled>
                                             <?php $split = explode(',', $resource->hour); ?>
@@ -122,17 +119,16 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="hour[]" data-dictionary="<?= $dictionary->columns->hour ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php } else { ?>
-                                <?= read_field('hour', $resource->hour, $dictionary->columns->hour, $update) ?>
+                                <?= read_field('hour', $resource->hour, $dictionary->columns->hour, $update, '', '', '', '', $meta->collection) ?>
                             <?php } ?>
 
                             <?php if (strpos($resource->day_of_month, "*/") === false) { ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="day_of_month[]" class="form-label"><?= __('Day of Month') ?></label>
+                                    <?= read_field_header($meta->collection, 'day_of_month[]', $dictionary->columns->day_of_month, __('Day of Month')) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="day_of_month[]" name="day_of_month[]" multiple disabled>
                                             <?php $split = explode(',', $resource->day_of_month); ?>
@@ -149,17 +145,16 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="day_of_month[]" data-dictionary="<?= $dictionary->columns->day_of_month ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php } else { ?>
-                                <?= read_field('day_of_month', $resource->day_of_month, $dictionary->columns->day_of_month, $update) ?>
+                                <?= read_field('day_of_month', $resource->day_of_month, $dictionary->columns->day_of_month, $update, '', '', '', '', $meta->collection) ?>
                             <?php } ?>
 
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="month[]" class="form-label"><?= __('Month') ?></label>
+                                    <?= read_field_header($meta->collection, 'month', $dictionary->columns->month) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="month[]" name="month[]" multiple disabled>
                                             <?php $split = explode(',', $resource->month); ?>
@@ -185,13 +180,12 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="month[]" data-dictionary="<?= $dictionary->columns->month ?>"><span><br></span></div>
                                 </div>
                             </div>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="day_of_week[]" class="form-label"><?= __('Day Of Week') ?></label>
+                                    <?= read_field_header($meta->collection, 'day_of_week', $dictionary->columns->day_of_week) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="day_of_week[]" name="day_of_week[]" multiple disabled>
                                             <?php $split = explode(',', $resource->day_of_week); ?>
@@ -212,12 +206,11 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="day_of_week[]" data-dictionary="<?= $dictionary->columns->day_of_week ?>"><span><br></span></div>
                                 </div>
                             </div>
 
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <div class="offset-2 col-8">

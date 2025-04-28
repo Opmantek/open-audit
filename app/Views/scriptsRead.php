@@ -11,12 +11,12 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Org'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->name, $update) ?>
-                            <?= read_field('based_on', $resource->based_on, $dictionary->columns->name) ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('based_on', $resource->based_on, $dictionary->columns->name, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                             <?php if (!empty($included['files'])) { ?>
                                 <div class="row">
                                     <div class="offset-2 col-8">
@@ -51,7 +51,7 @@ include 'shared/read_functions.php';
                             </div>
                             <?php foreach ($included['script_option'] as $script_option) {
                                 $value = (isset($resource->options->{$included['option'][$script_option]->name}) and !is_null($resource->options->{$included['option'][$script_option]->name})) ? $resource->options->{$included['option'][$script_option]->name} : '';
-                                echo read_field('options.' . $script_option, $value, $included['option'][$script_option]->help, $update, ucwords(str_replace('_', ' ', $script_option)));
+                                echo read_field('options.' . $script_option, $value, $included['option'][$script_option]->help, $update, ucwords(str_replace('_', ' ', $script_option)), '', '', '', $meta->collection);
                             } ?>
 
                         </div>

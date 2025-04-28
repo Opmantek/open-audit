@@ -44,18 +44,18 @@ if ($user->toolbar_style === 'icontext') {
                     <br/>
                     <div class="row">
                         <div class="col-4">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_select('type', $resource->type, $dictionary->columns->type, $update, __('Type'), $included['types']) ?>
                             <?php $attributes = array('room', 'suite', 'level', 'address', 'suburb', 'district', 'region', 'area');
                             foreach ($attributes as $attribute) {
                                 $link_button = '';
                                 if (in_array($attribute, ['suburb', 'district', 'region', 'area'])) {
-                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">
-                                    <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
+                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Locations in this') . ' ' . ucfirst($attribute) . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">
+                                    <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Devices in this') . ' ' . $attribute . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
                                 }
-                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button) . "\n";
+                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button, '', '', $meta->collection) . "\n";
                             } ?>
                         </div>
                         <div class="col-4">
@@ -63,13 +63,13 @@ if ($user->toolbar_style === 'icontext') {
                             foreach ($attributes as $attribute) {
                                 $link_button = '';
                                 if (in_array($attribute, ['city', 'state', 'postcode', 'country'])) {
-                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">
-                                    <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
+                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Locations in this') . ' ' . ucfirst($attribute) . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">
+                                    <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Devices in this') . ' ' . ucfirst($attribute) . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
                                 }
-                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button) . "\n";
+                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button, '', '', $meta->collection) . "\n";
                             } ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-4">
                             <br>
@@ -89,13 +89,6 @@ if ($user->toolbar_style === 'icontext') {
                                 <?php if (!empty($dictionary->notes)) { ?>
                                     <h4 class="text-center"><?= __('Notes') ?></h4><br>
                                     <?= $dictionary->notes ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                    <?php $fields = array('name', 'org_id', 'description', 'type', 'room', 'suite', 'level', 'address', 'city', 'state', 'postcode', 'country', 'phone', 'contact', 'latitude', 'longitude', 'edited_by', 'edited_date') ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
-                                    <?php } ?>
                                 <?php } ?>
                             </div>
                         </div>

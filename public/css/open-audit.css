@@ -64,6 +64,11 @@ h1,
     color: var(--bs-heading-color, inherit);
 }
 
+.popover {
+    /* width:400px; */
+    max-width: 410px;
+}
+
 
 /* All below is for the select2 dropdoiwn boxes */
 .select2-container--bootstrap-5 .select2--small.select2-selection {
@@ -436,6 +441,21 @@ Disabled as the light grey is a bit too light
     color: var(--bs-btn-color);
 }
 
+.btn-clear a
+{
+    background-color: #fff;
+    border-color: #fff;
+}
+.btn-clear a:hover
+{
+    text-decoration: none;
+    border-color: #fff;
+}
+.btn-clear a:click
+{
+    text-decoration: none;
+    border-color: #fff;
+}
 
 
 /* GENERAL HTML */

@@ -14,8 +14,8 @@ if (empty($update) or $resource->editable !== 'y') {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, false) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, false) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, false, '', '', '', '', $meta->collection) ?>
 
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8">
@@ -55,8 +55,8 @@ if (empty($update) or $resource->editable !== 'y') {
 
 
 
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>

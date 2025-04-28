@@ -16,10 +16,10 @@ array_unshift($included['widgets'], $item);
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                            <?= read_select('sidebar', $resource->sidebar, $dictionary->columns->sidebar, $update, __('Sidebar')) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('sidebar', $resource->sidebar, $dictionary->columns->sidebar, $update, __('Sidebar'), [], $meta->collection) ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="options.layout" class="form-label"><?= __('Layout') ?></label>
@@ -38,7 +38,6 @@ array_unshift($included['widgets'], $item);
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary=""><span><br></span></div>
                                 </div>
                             </div>
                             <?php
@@ -47,14 +46,14 @@ array_unshift($included['widgets'], $item);
                                 for ($i = 0; $i < 20; $i++) {
                                     foreach ($resource->options->widgets as $widget) {
                                         if ($widget->position == $i) {
-                                            echo read_select('options.widgets.position.' . $widget->position, $widget->widget_id, '', $update, 'Widget #' . $widget->position, $included['widgets']);
+                                            echo read_select('options.widgets.position.' . $widget->position, $widget->widget_id, '<code>options.widgets.position.' . $i . '</code><br>The widget at position ' . $i . '.', $update, 'Widget #' . $widget->position, $included['widgets']);
                                         }
                                     }
                                 }
                             }
                             ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>

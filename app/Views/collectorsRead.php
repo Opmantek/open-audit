@@ -11,16 +11,16 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                            <?= read_field('ip', $resource->ip, $dictionary->columns->ip) ?>
-                            <?= read_field('status', $resource->status, $dictionary->columns->status) ?>
-                            <?= read_field('uuid', $resource->uuid, $dictionary->columns->uuid) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('ip', $resource->ip, $dictionary->columns->ip, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('status', $resource->status, $dictionary->columns->status, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('uuid', $resource->uuid, $dictionary->columns->uuid, '', '', '', '', $meta->collection) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="type" class="form-label"><?= __('Type') ?></label>
+                                    <?= read_field_header($meta->collection, 'type', $dictionary->columns->type) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="type" name="type" data-original-value="<?= $resource->type ?>" disabled>
                                             <option value="collector"><?= __('Collector') ?></option>
@@ -41,8 +41,8 @@ include 'shared/read_functions.php';
                             </div>
 
 
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>

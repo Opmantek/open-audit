@@ -88,22 +88,22 @@ foreach ($included['discovery_scan_options'] as $item) {
                             </ul>
                         </div>
                     </div>
-                    <br/>
+                    <br>
 
 
                     <div class="tab-content">
                         <div class="tab-pane" id="summary" role="tabpanel" tabindex="0" aria-labelledby="summary">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name_orig', $resource->name, '', '', 'Name') ?>
-                                    <?= read_field('status', $resource->status) ?>
-                                    <?= read_field('last_run', $resource->last_run, '', false, __('Started On')) ?>
-                                    <?= read_field('duration', $resource->duration) ?>
-                                    <?= read_field('last_finished', $resource->last_finished, '', false, __('Completed On')) ?>
-                                    <?= read_field('all_ips_orig', $resource->ip_all_count, '', false, __('All IPS in Network')) ?>
-                                    <?= read_field('responding_ip_count', $resource->ip_responding_count, '', false, __('IPs Responding')) ?>
-                                    <?= read_field('ip_scanned_count', $resource->ip_scanned_count, '', false, __('IPs Nmap Scanned')) ?>
-                                    <?= read_field('discovered_devices', $resource->ip_discovered_count, '', false, __('IPs Successfully Discovered')) ?>
+                                    <?= read_field('status', $resource->status, $dictionary->columns->status, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('last_run', $resource->last_run, $dictionary->columns->last_run, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('duration', $resource->duration, $dictionary->columns->duration, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('last_finished', $resource->last_finished, $dictionary->columns->last_finished, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('ip_all_count', $resource->ip_all_count, $dictionary->columns->ip_all_count, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('ip_responding_count', $resource->ip_responding_count, $dictionary->columns->ip_responding_count, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('ip_scanned_count', $resource->ip_scanned_count, $dictionary->columns->ip_scanned_count, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('ip_audited_count', $resource->ip_audited_count, $dictionary->columns->ip_audited_count, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('device_count', $resource->ip_discovered_count, $dictionary->columns->device_count, false, '', '', '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-6">
                                     <br>
@@ -126,26 +126,26 @@ foreach ($included['discovery_scan_options'] as $item) {
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                                    <?= read_field('type', $resource->type, $dictionary->columns->type) ?>
+                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
                                     <?php if ($resource->type === 'subnet' or $resource->type === 'seed') { ?>
-                                        <?= read_field('subnet', $resource->subnet, $dictionary->columns->subnet, $update) ?>
+                                        <?= read_field('subnet', $resource->subnet, $dictionary->columns->subnet, $update, '', '', '', '', $meta->collection) ?>
                                     <?php } ?>
                                     <?php if ($resource->type === 'seed') { ?>
-                                        <?= read_select('seed_restrict_to_subnet', $resource->seed_restrict_to_subnet, $dictionary->columns->seed_restrict_to_subnet, $update, __('Restrict to Subnet'), []) ?>
-                                        <?= read_select('seed_restrict_to_private', $resource->seed_restrict_to_private, $dictionary->columns->seed_restrict_to_private, $update, __('Restrict to Private'), []) ?>
+                                        <?= read_select('seed_restrict_to_subnet', $resource->seed_restrict_to_subnet, $dictionary->columns->seed_restrict_to_subnet, $update, __('Restrict to Subnet'), [], $meta->collection) ?>
+                                        <?= read_select('seed_restrict_to_private', $resource->seed_restrict_to_private, $dictionary->columns->seed_restrict_to_private, $update, __('Restrict to Private'), [], $meta->collection) ?>
                                     <?php } ?>
                                     <?php if ($resource->type === 'active directory') { ?>
-                                        <?= read_field('ad_domain', $resource->ad_domain, $dictionary->columns->ad_domain, $update) ?>
-                                        <?= read_field('ad_server', $resource->ad_server, $dictionary->columns->ad_server, $update) ?>
+                                        <?= read_field('ad_domain', $resource->ad_domain, $dictionary->columns->ad_domain, $update, '', '', '', '', $meta->collection) ?>
+                                        <?= read_field('ad_server', $resource->ad_server, $dictionary->columns->ad_server, $update, '', '', '', '', $meta->collection) ?>
                                     <?php } ?>
-                                    <?= read_select('require_port', $resource->require_port, $dictionary->columns->require_port, $update, __('Require an Open Port'), []) ?>
-                                    <?= read_select('devices_assigned_to_org', $resource->devices_assigned_to_org, $dictionary->columns->devices_assigned_to_org, $update, __('Assign Devices to Organisation'), $orgs) ?>
-                                    <?= read_select('devices_assigned_to_location', $resource->devices_assigned_to_location, $dictionary->columns->devices_assigned_to_location, $update, __('Assign Devices to Location'), $included['locations']) ?>
-                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                                    <?= read_select('require_port', $resource->require_port, $dictionary->columns->require_port, $update, __('Require an Open Port'), [], $meta->collection) ?>
+                                    <?= read_select('devices_assigned_to_org', $resource->devices_assigned_to_org, $dictionary->columns->devices_assigned_to_org, $update, __('Assign Devices to Organisation'), $orgs, $meta->collection) ?>
+                                    <?= read_select('devices_assigned_to_location', $resource->devices_assigned_to_location, $dictionary->columns->devices_assigned_to_location, $update, __('Assign Devices to Location'), $included['locations'], $meta->collection) ?>
+                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-6">
                                     <br>
@@ -158,13 +158,6 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <h4 class="text-center"><?= __('Notes') ?></h4><br>
                                             <?= $dictionary->notes ?>
                                         <?php } ?>
-                                        <?php if (!empty($dictionary->columns)) { ?>
-                                            <?php $fields = array('name', 'org_id', 'description', 'type', 'subnet', 'require_port', 'devices_assigned_to_org', 'devices_assigned_to_location', 'edited_by', 'edited_date') ?>
-                                        <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                            <?php foreach ($fields as $key) { ?>
-                                            <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
-                                            <?php } ?>
-                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
@@ -176,9 +169,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                             <div class="row">
                                 <div class="col-6">
                                     <?php if ($config->product === 'professional' or $config->product === 'enterprise') { ?>
-                                        <?= read_select('scan_options.id', $resource->scan_options->id, $dictionary->columns->{'scan_options.id'}, $update, __('Scan Options'), $included['discovery_scan_options']) ?>
+                                        <?= read_select('scan_options.id', $resource->scan_options->id, $dictionary->columns->{'scan_options.id'}, $update, __('Scan Options'), $included['discovery_scan_options'], $meta->collection) ?>
                                     <?php } else { ?>
-                                        <?= read_field('scan_options_orig', $resource->scan_options->{'discovery_scan_options.name'}, $dictionary->columns->{'scan_options.id'}) ?>
+                                        <?= read_field('scan_options_orig', $resource->scan_options->{'discovery_scan_options.name'}, $dictionary->columns->{'scan_options.id'}, false, '', '', '', '', $meta->collection) ?>
                                     <?php }
 
                                     $scan_options = array();
@@ -201,15 +194,15 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         $new_options = $options;
                                         $new_options[] = $default;
                                         if ($config->product === 'enterprise') {
-                                            echo read_select('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, __($value), $new_options);
+                                            echo read_select('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, __($value), $new_options, $meta->collection);
                                         } else {
-                                            echo read_field('scan_options.' . $key, $default->attributes->name, '', false, __($value));
+                                            echo read_field('scan_options.' . $key, $default->attributes->name, '', false, __($value), '', $meta->collection);
                                         }
                                     } ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="scan_options.timing" class="form-label"><?= __('Timing') ?></label>
+                                            <?= read_field_header($meta->collection, 'scan_options.timing', $dictionary->columns->{'scan_options.timing'}) ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="scan_options.timing" name="scan_options.timing" data-original-value="<?= $resource->scan_options->timing ?>" disabled>
                                                     <?php if (empty($resource->scan_options->timing) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
@@ -232,13 +225,12 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="scan_options.timing" data-dictionary="<?= $dictionary->columns->{'scan_options.timing'} ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="scan_options.nmap_tcp_ports" class="form-label"><?= __('Top Nmap TCP Ports') ?></label>
+                                            <?= read_field_header($meta->collection, 'scan_options.nmap_tcp_ports', $dictionary->columns->{'scan_options.nmap_tcp_ports'}) ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="scan_options.nmap_tcp_ports" name="scan_options.nmap_tcp_ports" data-original-value="<?= $resource->scan_options->nmap_tcp_ports ?>" disabled>
                                                     <?php if (empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
@@ -259,13 +251,12 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="scan_options.nmap_tcp_ports" data-dictionary="<?= $dictionary->columns->{'scan_options.nmap_tcp_ports'} ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="scan_options.nmap_udp_ports" class="form-label"><?= __('Top Nmap UDP Ports') ?></label>
+                                            <?= read_field_header($meta->collection, 'scan_options.nmap_udp_ports', $dictionary->columns->{'scan_options.nmap_udp_ports'}) ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="scan_options.nmap_udp_ports" name="scan_options.nmap_udp_ports" data-original-value="<?= $resource->scan_options->nmap_udp_ports ?>" disabled>
                                                     <?php if (empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
@@ -286,10 +277,12 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="scan_options.nmap_udp_ports" data-dictionary="<?= $dictionary->columns->{'scan_options.nmap_udp_ports'} ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
+
+                                </div>
+                                <div class="col-6">
                                     <?php
                                     unset($scan_options);
                                     $scan_options = array();
@@ -307,29 +300,11 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             $placeholder = 'Not Set';
                                         }
                                         if ($config->product === 'enterprise') {
-                                            echo read_field('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, $value, '', $placeholder);
+                                            echo read_field('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, $value, '', $placeholder, '', $meta->collection);
                                         } else {
-                                            echo read_field('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, false, $value, '', $placeholder);
+                                            echo read_field('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, false, $value, '', $placeholder, '', $meta->collection);
                                         }
                                     } ?>
-                                </div>
-                                <div class="col-6">
-                                    <br>
-                                    <div class="offset-2 col-8">
-                                    <?php if (!empty($dictionary->columns)) { ?>
-                                        <h4 class="text-center"><?= __('Scan Options') ?></h4><br>
-                                        <?php foreach ($dictionary->columns as $key => $value) {
-                                            if (strpos($key, 'scan_options.') === 0) { ?>
-                                            <code><?= str_replace('scan_options.', '', $key) ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
-                                            <?php } ?>
-                                        <?php } ?>
-                                    <?php } ?>
-                                    <h4 class="text-center"><?= __('Common Ports') ?></h4><br>
-                                    <code>TCP 22</code>: SSH, typically used by Linux and Unix based machines.<br><br>
-                                    <code>TCP 135</code>: Windows remote procedure call.<br><br>
-                                    <code>TCP 62078</code>: IOS (Apple) lockdown / sync port.<br><br>
-                                    <code>UDP 161</code>: SNMP, typically used by network devices (switches, routers, et al).<br><br>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -339,12 +314,13 @@ foreach ($included['discovery_scan_options'] as $item) {
                         <div class="tab-pane" id="match" role="tabpanel" tabindex="0" aria-labelledby="match">
                             <div class="row">
                                 <div class="col-6">
-                                    <?php $matches = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
+                                    <?php $matches = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip');
                                     foreach ($matches as $match) {
                                         $field = (!empty($resource->match_options->{$match})) ? $resource->match_options->{$match} : ''; ?>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="match_options.<?= $match ?>" class="form-label"><?= ucwords(str_replace('_', ' ', $match)) ?></label>
+                                            <!-- <label for="match_options.<?= $match ?>" class="form-label"><?= ucwords(str_replace('_', ' ', $match)) ?></label> -->
+                                            <?= read_field_header($meta->collection, 'match_options.' . $match, $dictionary->columns->{'match_options.' . $match}) ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= $field ?>" disabled>
                                                     <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
@@ -359,21 +335,35 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="match_options.<?= $match ?>" data-dictionary="<?= @$dictionary->columns->{'scan_options.' . $match} ?>"><span><br></span></div>
                                         </div>
                                     </div>
                                     <?php } ?>
                                 </div>
                                 <div class="col-6">
-                                    <br>
-                                    <div class="offset-2 col-8">
-                                        <?php if (!empty($dictionary->columns)) { ?>
-                                            <h4 class="text-center"><?= __('Match Options') ?></h4><br>
-                                            <?php foreach ($matches as $key) { ?>
-                                                <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
-                                            <?php } ?>
-                                        <?php } ?>
+                                    <?php $matches = array('match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
+                                    foreach ($matches as $match) {
+                                        $field = (!empty($resource->match_options->{$match})) ? $resource->match_options->{$match} : ''; ?>
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <!-- <label for="match_options.<?= $match ?>" class="form-label"><?= ucwords(str_replace('_', ' ', $match)) ?></label> -->
+                                            <?= read_field_header($meta->collection, 'match_options.' . $match, $dictionary->columns->{'match_options.' . $match}) ?>
+                                            <div class="input-group">
+                                                <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= $field ?>" disabled>
+                                                    <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
+                                                    <option value="n" <?php if ($field === 'n') { echo 'selected'; } ?>><?= __('No')  ?></option>
+                                                    <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently \'' . $config->{$match} . '\'') ?></option>
+                                                </select>
+                                                <?php if ($update and $config->product === 'enterprise') { ?>
+                                                <div class="pull-right" style="padding-left:4px;">
+                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
+                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
+                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                </div>
+                                                <?php } ?>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
@@ -397,14 +387,14 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 } ?>
                                                 <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
                                             <?php } ?>
-                                        </thead>
-                                        <thead>
+                                            </thead>
+                                            <thead>
                                             <?php foreach ($log_data_order as $key) { ?>
                                                 <th>
                                                     <div class="input-group">
-                                                        <?php if ($key !== 'id' and $key !== 'view') { ?>
-                                                        <input id="alllog<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search <?= collection_column_name($key) ?>" />
-                                                        <?php } ?>
+                                                        <?php if ($key !== 'id' and $key !== 'view') {
+                                                        echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . collection_column_name($key) . '">';
+                                                        } ?>
                                                     </div>
                                                 </th>
                                             <?php } ?>
@@ -441,7 +431,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <th>
                                                     <div class="input-group">
                                                         <?php if ($key !== 'icon' and $key !== 'view' and $key !== 'command_time_to_execute') { ?>
-                                                        <input id="alldev<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldDev" placeholder="Search <?= collection_column_name($key) ?>" />
+                                                        <input id="alldev<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldDev" placeholder="Search <?= collection_column_name($key) ?>">
                                                         <?php } ?>
                                                     </div>
                                                 </th>
@@ -482,7 +472,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <th>
                                                     <div class="input-group">
                                                         <?php if ($key !== 'icon' and $key !== 'view' and $key !== 'command_time_to_execute') { ?>
-                                                        <input id="allip<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldIP" placeholder="Search <?= collection_column_name($key) ?>" />
+                                                        <input id="allip<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldIP" placeholder="Search <?= collection_column_name($key) ?>">
                                                         <?php } ?>
                                                     </div>
                                                 </th>
@@ -521,7 +511,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 } ?>
                                                 <tr>
                                                     <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= $link ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
-                                                    <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""/></td>
+                                                    <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""></td>
                                                     <td><span style="display:none;"><?= @$issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
                                                     <td><?= $issue->{'devices.name'} ?></td>
                                                     <td><?= $issue->{'output'} . '<br>' . html_entity_decode($issue->{'description'}) ?></td>
@@ -854,7 +844,7 @@ window.onload = function () {
                 { data: 'attributes.icon',
                     render: function (icon) {
                         return icon
-                            ? '<img style="width:30px;" src="<?= base_url() ?>device_images/' + icon + '.svg"/>'
+                            ? '<img style="width:30px;" src="<?= base_url() ?>device_images/' + icon + '.svg">'
                             : '';
                     }
                 },
@@ -1036,7 +1026,7 @@ window.onload = function () {
                 { data: 'attributes.icon',
                     render: function (icon) {
                         return icon
-                            ? '<img style="width:30px;" src="<?= base_url() ?>device_images/' + icon + '.svg"/>'
+                            ? '<img style="width:30px;" src="<?= base_url() ?>device_images/' + icon + '.svg">'
                             : '';
                     }
                 },

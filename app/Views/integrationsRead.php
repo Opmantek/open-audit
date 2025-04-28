@@ -54,31 +54,35 @@ if (!empty($resource->attributes->password)) {
                         <div class="tab-pane" id="summary" role="tabpanel" tabindex="0">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name.orig', $resource->name) ?>
                                     <?= read_field('status', $resource->status) ?>
                                     <?= read_field('last_run', $resource->last_run) ?>
                                     <?= read_field('duration', $resource->duration) ?>
-                                    <div class="offset-2 col-8" style="position:relative;"><hr></div>
-                                    <?= read_field('select_internal_count', $resource->select_internal_count, '', '', __('Devices Selected from Open-AudIT')) ?>
-                                    <?= read_field('create_internal_count', $resource->create_internal_count, '', '', __('Devices Created in Open-AudIT')) ?>
-                                    <?= read_field('update_internal_count', $resource->update_internal_count, '', '', __('Devices Updated in Open-AudIT')) ?>
-                                    <div class="offset-2 col-8" style="position:relative;"><hr></div>
-                                    <?= read_field('select_external_count', $resource->select_external_count, '', '', __('Devices Selected from ') . $resource->type) ?>
-                                    <?= read_field('create_external_count', $resource->create_external_count, '', '', __('Devices Created in ') . $resource->type) ?>
-                                    <?= read_field('update_external_count', $resource->update_external_count, '', '', __('Devices Updated in ') . $resource->type) ?>
                                 </div>
                                 <div class="col-6">
-                                    <br>
                                     <div class="offset-2 col-8">
                                         <?php if (!empty($dictionary->about)) { ?>
                                             <h4 class="text-center"><?= __('About') ?></h4><br>
                                             <?= $dictionary->about ?>
                                         <?php } ?>
-                                        <?php if (!empty($dictionary->notes)) { ?>
-                                            <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                            <?= $dictionary->notes ?>
-                                        <?php } ?>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="offset-2 col-8">
+                                        <br><hr>
+                                    </div>
+                                    <?= read_field('select_internal_count', $resource->select_internal_count, $dictionary->columns->select_internal_count, false, __('Devices Selected from Open-AudIT'), '', '', '', $meta->collection) ?>
+                                    <?= read_field('create_internal_count', $resource->create_internal_count, $dictionary->columns->create_internal_count, false, __('Devices Created in Open-AudIT'), '', '', '', $meta->collection) ?>
+                                    <?= read_field('update_internal_count', $resource->update_internal_count, $dictionary->columns->update_internal_count, false, __('Devices Updated in Open-AudIT'), '', '', '', $meta->collection) ?>
+                                </div>
+                                <div class="col-6">
+                                    <div class="offset-2 col-8">
+                                        <br><hr>
+                                    </div>
+                                    <?= read_field('select_external_count', $resource->select_external_count, $dictionary->columns->select_external_count, false, __('Devices Selected from ') . $resource->type, '', '', '', $meta->collection) ?>
+                                    <?= read_field('create_external_count', $resource->create_external_count, $dictionary->columns->create_external_count, '', __('Devices Created in ') . $resource->type, '', '', '', $meta->collection) ?>
+                                    <?= read_field('update_external_count', $resource->update_external_count, $dictionary->columns->update_external_count, '', __('Devices Updated in ') . $resource->type, '', '', '', $meta->collection) ?>
                                 </div>
                             </div>
                         </div>
@@ -86,19 +90,9 @@ if (!empty($resource->attributes->password)) {
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                                    <?= read_field('type', $resource->type, $dictionary->columns->type) ?>
-                                    <?= read_select('debug', $resource->debug, $dictionary->columns->debug, $update, __('Debug')) ?>
-                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
-                                    <br>
-                                    <div class="offset-2 col-8" style="position:relative;"><hr></div>
-                                    <?= read_field('attributes.url', $resource->attributes->url, $dictionary->columns->attributes->url, $update, __('URL')) ?>
-                                    <?= read_field('attributes.username', $resource->attributes->username, $dictionary->columns->attributes->username, $update, __('Username')) ?>
-                                    <?= read_field('attributes.password', '', $dictionary->columns->attributes->password, $update, __('Password'), '', $placeholder, 'password') ?>
-                                    <br>
+                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-6">
                                     <br>
@@ -107,21 +101,21 @@ if (!empty($resource->attributes->password)) {
                                             <h4 class="text-center"><?= __('About') ?></h4><br>
                                             <?= $dictionary->about ?>
                                         <?php } ?>
-                                        <?php if (!empty($dictionary->notes)) { ?>
-                                            <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                            <?= $dictionary->notes ?>
-                                        <?php } ?>
-                                        <?php if (!empty($dictionary->columns)) { ?>
-                                            <?php $fields = array('name', 'description', 'type') ?>
-                                        <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                            <?php foreach ($fields as $key) { ?>
-                                            <code><?= $key ?>: </code><?= $dictionary->columns->{$key} ?><br><br>
-                                            <?php } ?>
-                                        <?php } ?>
-                                        <code>url: </code><?= $dictionary->columns->attributes->url ?><br><br>
-                                        <code>username: </code><?= $dictionary->columns->attributes->username ?><br><br>
-                                        <code>password: </code><?= $dictionary->columns->attributes->password ?><br><br>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('debug', $resource->debug, $dictionary->columns->debug, $update, '', [], $meta->collection) ?>
+                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
+                                </div>
+                                <div class="col-6">
+                                    <?= read_field('attributes.url', $resource->attributes->url, $dictionary->columns->attributes->url, $update, 'URL', '', '', '', $meta->collection) ?>
+                                    <?= read_field('attributes.username', $resource->attributes->username, $dictionary->columns->attributes->username, $update, __('Username'), '', '', '', $meta->collection) ?>
+                                    <?= read_field('attributes.password', '', $dictionary->columns->attributes->password, $update, __('Password'), '', $placeholder, 'password', '', '', '', $meta->collection) ?>
+                                    <br>
                                 </div>
                             </div>
                             <div class="row">
@@ -129,14 +123,14 @@ if (!empty($resource->attributes->password)) {
                                     <hr>
                                 </div>
                                 <div class="col-6">
-                                    <?= read_select('create_internal_from_external', $resource->create_internal_from_external, $dictionary->columns->create_internal_from_external, $update, __('Create Open-AudIT Devices from ') . $resource->type) ?>
-                                    <?= read_select('update_internal_from_external', $resource->update_internal_from_external, $dictionary->columns->update_internal_from_external, $update, __('Update Open-AudIT Devices from ') . $resource->type) ?>
-                                    <?= read_select('discovery_run', $resource->discovery_run, $dictionary->columns->discovery_run, $update, __('Run Discovery')) ?>
-                                    <?= read_field('discovery_name', $resource->{'discoveries.name'}, '', $update) ?>
+                                    <?= read_select('create_internal_from_external', $resource->create_internal_from_external, $dictionary->columns->create_internal_from_external, $update, __('Create Open-AudIT Devices from ') . $resource->type, [], $meta->collection) ?>
+                                    <?= read_select('update_internal_from_external', $resource->update_internal_from_external, $dictionary->columns->update_internal_from_external, $update, __('Update Open-AudIT Devices from ') . $resource->type, [], $meta->collection) ?>
+                                    <?= read_select('discovery_run', $resource->discovery_run, $dictionary->columns->discovery_run, $update, __('Run Discovery'), [], $meta->collection) ?>
+                                    <?= read_field('discovery_name', $resource->{'discoveries.name'}, 'Links to <code>discoveries.id</code>.', false, '', '', '', '') ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="select_internal_type" class="form-label"><?= __('Select') ?></label>
+                                            <?= read_field_header($meta->collection, 'select_internal_type', $dictionary->columns->select_internal_type, 'Select') ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="select_internal_type" name="select_internal_type" data-original-value="<?= $resource->select_internal_type ?>" disabled>
                                                     <option value="none" <?php if ($resource->select_internal_type === 'none') { ?>selected<?php } ?>><?= __('None') ?></option>
@@ -145,14 +139,13 @@ if (!empty($resource->attributes->password)) {
                                                     <option value="query" <?php if ($resource->select_internal_type === 'query') { ?>selected<?php } ?>><?= __('Query') ?></option>
                                                 </select>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="select_internal_type" data-dictionary="<?= $dictionary->columns->select_internal_type ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <?php if ($resource->select_internal_type === 'group') { ?>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="select_internal_attribute" class="form-label"><?= __('Group') ?></label>
+                                            <?= read_field_header($meta->collection, 'select_internal_attribute', $dictionary->columns->select_internal_attribute, 'Group') ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="select_internal_attribute" name="select_internal_attribute" data-original-value="<?= $resource->select_internal_attribute ?>" disabled>
                                                     <?php foreach ($included['groups'] as $group) { ?>
@@ -167,7 +160,6 @@ if (!empty($resource->attributes->password)) {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="select_internal_attribute" data-dictionary="<?= $dictionary->columns->select_internal_attribute ?>"><span><br></span></div>
                                         </div>
                                     </div>
                                     <?php } ?>
@@ -175,7 +167,7 @@ if (!empty($resource->attributes->password)) {
                                     <?php if ($resource->select_internal_type === 'query') { ?>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="select_internal_attribute" class="form-label"><?= __('Query') ?></label>
+                                            <?= read_field_header($meta->collection, 'select_internal_attribute', $dictionary->columns->select_internal_attribute, 'Query') ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="select_internal_attribute" name="select_internal_attribute" data-original-value="<?= $resource->select_internal_attribute ?>" disabled>
                                                     <?php foreach ($included['queries'] as $query) { ?>
@@ -190,24 +182,23 @@ if (!empty($resource->attributes->password)) {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="select_internal_attribute" data-dictionary="<?= $dictionary->columns->select_internal_attribute ?>"><span><br></span></div>
                                         </div>
                                     </div>
                                     <?php } ?>
 
                                     <?php if ($resource->select_internal_type === 'attribute') { ?>
-                                        <?= read_field('select_internal_attribute', $resource->{'select_internal_attribute'}, '', $update, __('Attribute')) ?>
-                                        <?= read_field('select_internal_value', $resource->{'select_internal_value'}, '', $update, __('Value')) ?>
+                                        <?= read_field('select_internal_attribute', $resource->{'select_internal_attribute'}, $dictionary->columns->select_internal_attribute, $update, __('Attribute'), '', '', '', $meta->collection) ?>
+                                        <?= read_field('select_internal_value', $resource->{'select_internal_value'}, $dictionary->columns->select_internal_value, $update, __('Value'), '', '', '', $meta->collection) ?>
                                     <?php } ?>
                                 </div>
                                 <div class="col-6">
-                                    <?= read_select('create_external_from_internal', $resource->create_external_from_internal, $dictionary->columns->create_external_from_internal, $update, __('Create') . ' ' . $resource->type . ' ' . __('Devices from Open-AudIT')) ?>
-                                    <?= read_select('update_external_from_internal', $resource->update_external_from_internal, $dictionary->columns->update_external_from_internal, $update, __('Update') . ' ' . $resource->type . ' ' . __('Devices from Open-AudIT')) ?>
-                                    <?= read_select('delete_external_from_internal', $resource->delete_external_from_internal, $dictionary->columns->delete_external_from_internal, $update, __('Delete') . ' ' . $resource->type . ' ' . __('Devices from Open-AudIT')) ?>
+                                    <?= read_select('create_external_from_internal', $resource->create_external_from_internal, $dictionary->columns->create_external_from_internal, $update, __('Create') . ' ' . $resource->type . ' ' . __('Devices from Open-AudIT'), [], $meta->collection) ?>
+                                    <?= read_select('update_external_from_internal', $resource->update_external_from_internal, $dictionary->columns->update_external_from_internal, $update, __('Update') . ' ' . $resource->type . ' ' . __('Devices from Open-AudIT'), [], $meta->collection) ?>
+                                    <?= read_select('delete_external_from_internal', $resource->delete_external_from_internal, $dictionary->columns->delete_external_from_internal, $update, __('Delete') . ' ' . $resource->type . ' ' . __('Devices from Open-AudIT'), [], $meta->collection) ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="select_external_type" class="form-label"><?= __('Select') ?></label>
+                                            <?= read_field_header($meta->collection, 'select_external_type', $dictionary->columns->select_external_type, 'Select') ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="select_external_type" name="select_external_type" data-original-value="<?= $resource->select_external_type ?>" disabled>
                                                     <option value="all" <?php if ($resource->select_external_type === 'all') { ?>selected<?php } ?>><?= __('All') ?></option>
@@ -222,12 +213,11 @@ if (!empty($resource->attributes->password)) {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="select_external_type" data-dictionary="<?= $dictionary->columns->select_external_type ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
-                                    <?= read_field('select_external_attribute', $resource->{'select_external_attribute'}, '', $update) ?>
-                                    <?= read_field('select_external_value', $resource->{'select_external_value'}, '', $update) ?>
+                                    <?= read_field('select_external_attribute', $resource->{'select_external_attribute'}, $dictionary->columns->select_external_attribute, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('select_external_value', $resource->{'select_external_value'}, $dictionary->columns->select_external_value, $update, '', '', '', '', $meta->collection) ?>
                                 </div>
                             </div>
                         </div>

@@ -11,12 +11,12 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Org'), $orgs) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update,'', $orgs, $meta->collection) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="type" class="form-label"><?= __('Type') ?></label>
+                                    <?= read_field_header($meta->collection, 'type', $dictionary->columns->{'type'}) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="type" name="type" data-original-value="<?= $resource->type ?>" disabled>
                                             <option value="varchar"><?php echo __('VarChar'); ?></option>
@@ -35,10 +35,10 @@ include 'shared/read_functions.php';
                                 </div>
                             </div>
                             <?php if (!empty($resource->values) and $resource->type = 'list') { ?>
-                                <?= read_field('values', $resource->values, $dictionary->columns->values, $update) ?>
+                                <?= read_field('values', $resource->values, $dictionary->columns->values, $update, '', '', '', '', $meta->collection) ?>
                             <?php } ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>

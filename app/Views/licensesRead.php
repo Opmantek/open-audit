@@ -36,13 +36,13 @@ if ($style === 'icontext') {
                             <br>
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                                    <?= read_field('description', $resource->name, $dictionary->columns->description, $update) ?>
+                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                                    <?= read_field('description', $resource->name, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="org_descendants" class="form-label"><?= __('Organisation Descendants') ?></label>
+                                            <?= read_field_header($meta->collection, 'org_descendants', $dictionary->columns->org_descendants, __('Organisation Descendants')) ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="org_descendants" name="org_descendants" data-original-value="<?= $resource->org_descendants ?>" disabled>
                                                     <option value="y"><?= __('Yes') ?></option>
@@ -59,11 +59,11 @@ if ($style === 'icontext') {
                                             <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="org_descendants" data-dictionary="<?= $dictionary->columns->org_descendants ?>"><span><br></span></div>
                                         </div>
                                     </div>
-                                    <?= read_field('purchase_count', $resource->purchase_count, $dictionary->columns->purchase_count, $update) ?>
+                                    <?= read_field('purchase_count', $resource->purchase_count, $dictionary->columns->purchase_count, $update, '', '', '', '', $meta->collection) ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="used_count" class="form-label"><?= __('Used Count') ?></label>
+                                            <?= read_field_header($meta->collection, 'used_count', $dictionary->columns->used_count, __('Used Count')) ?>
                                             <?php if ($resource->used_count > $resource->purchase_count) {
                                                 $valid = "is-invalid";
                                             } else {
@@ -73,9 +73,9 @@ if ($style === 'icontext') {
                                         </div>
                                     </div>
 
-                                    <?= read_field('match_string', $resource->match_string, $dictionary->columns->match_string, $update) ?>
-                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                                    <?= read_field('match_string', $resource->match_string, $dictionary->columns->match_string, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-6">
                                     <br>

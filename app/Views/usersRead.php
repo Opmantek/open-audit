@@ -16,23 +16,22 @@ if ($resource->id === $user->id) {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-
-                            <?= read_field('full_name', $resource->full_name, $dictionary->columns->full_name, $self_update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('password', '', $dictionary->columns->password, $self_update, '', '', '', 'password') ?>
-                            <?= read_field('email', $resource->email, $dictionary->columns->email, $self_update) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('full_name', $resource->full_name, $dictionary->columns->full_name, $self_update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('password', '', $dictionary->columns->password, $self_update, '', '', '', 'password', $meta->collection) ?>
+                            <?= read_field('email', $resource->email, $dictionary->columns->email, $self_update, '', '', '', '', $meta->collection) ?>
                             <?php
                             $value = $resource->devices_default_display_columns;
                             if (empty($value)) {
                                 $value = __('Please set using') . ' ' . __('Manage') . ' -> ' . __('Devices') . ' -> ' . __('List Devices') . '.';
                             }
                             ?>
-                            <?= read_field('devices_default_display_columns', $resource->devices_default_display_columns, $dictionary->columns->devices_default_display_columns, $update, '', '', $value) ?>
+                            <?= read_field('devices_default_display_columns', $resource->devices_default_display_columns, $dictionary->columns->devices_default_display_columns, $update, '', '', $value, '', $meta->collection) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="lang" class="form-label"><?= __('Language') ?></label>
+                                    <?= read_field_header($meta->collection, 'lang', $dictionary->columns->lang, 'Language') ?>
                                     <div class="input-group">
                                         <select class="form-select" id="lang" name="lang" data-original-value="<?= $resource->lang ?>" disabled>
                                         <option value='cs'><?php echo __('Czech'); ?></option>
@@ -57,7 +56,7 @@ if ($resource->id === $user->id) {
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="toolbar_style" class="form-label"><?= __('Toolbar Style') ?></label>
+                                    <?= read_field_header($meta->collection, 'toolbar_style', $dictionary->columns->toolbar_style) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="toolbar_style" name="toolbar_style" data-original-value="<?= $resource->toolbar_style ?>" disabled>
                                         <option value='icontext'><?php echo __('Icon and Text'); ?></option>
@@ -78,7 +77,7 @@ if ($resource->id === $user->id) {
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="list_table_format" class="form-label"><?= __('Table Sizing') ?></label>
+                                    <?= read_field_header($meta->collection, 'list_table_format', $dictionary->columns->list_table_format, 'Table Sizing') ?>
                                     <div class="input-group">
                                         <select class="form-select" id="list_table_format" name="list_table_format" data-original-value="<?= $resource->list_table_format ?>" disabled>
                                         <option value=''><?= __('Standard') ?></option>
@@ -98,7 +97,7 @@ if ($resource->id === $user->id) {
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="roles" class="form-label"><?= __('Roles') ?></label>
+                                    <?= read_field_header($meta->collection, 'roles', $dictionary->columns->roles) ?>
                                     <div class="input-group">
                                      <select multiple size="6" class="form-select" id="roles" name="roles" disabled>
                                         <?php foreach ($included as $role) {
@@ -127,7 +126,7 @@ if ($resource->id === $user->id) {
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="orgs" class="form-label"><?= __('Orgs') ?></label>
+                                    <?= read_field_header($meta->collection, 'orgs', $dictionary->columns->orgs) ?>
                                     <div class="input-group">
                                      <select multiple size="6" class="form-select" id="orgs" name="orgs" disabled>
                                         <?php foreach ($orgs as $org) {
@@ -151,8 +150,8 @@ if ($resource->id === $user->id) {
                             </div>
 
                             <?php // TODO - dashboard and default display columns ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>

@@ -179,17 +179,69 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     return $return;
 }
 
-function read_field(string $name = '', string $value = '', string $dictionary = '', bool $update = false, string $label = '', string $link_button = '', string $placeholder = '', string $type = 'text'): string
+function read_field_header(string $collection = '', string $name = '', string $dictionary = '', string $label = '')
 {
+    // Use a counter so we don't get duplicated IDs in the HTML
+    if (empty($GLOBALS['header_count'])) {
+        $GLOBALS['header_count'] = 1;
+    } else {
+        $GLOBALS['header_count'] += 1;
+    }
+    $count = $GLOBALS['header_count'];
 
+    $label = (empty($label)) ? $name : $label;
+    $label = ($label === 'org_id') ? 'organisation' : $label;
+    $label = ($label === 'location_id') ? 'location' : $label;
+    $label = ($label === 'group_id') ? 'group' : $label;
+
+    $label = str_replace('credentials.', 'credentials ', $label);
+    $label = str_replace('scan_options.', 'scan_options ', $label);
+    $label = ucwords(str_replace('_', ' ', __($label)));
+    $label = str_replace('Nmis', 'NMIS', $label);
+    $label = str_replace('Os ', 'OS ', $label);
+    $label = str_replace('Ip ', 'IP ', $label);
+    $label = ($label === 'Ip') ? 'IP' : $label;
+    $label = ($label === 'Sql') ? 'SQL' : $label;
+    $label = ($label === 'Options.ssh') ? 'Use SSH' : $label;
+    $label = ($label === 'Options.wmi') ? 'Use WMI' : $label;
+    $label = ($label === 'Options.snmp') ? 'Use SNMP' : $label;
+    $label = ($label === 'Credentials Subscription Id') ? 'Credentials Subscription ID' : $label;
+    $label = ($label === 'Credentials Tenant Id') ? 'Credentials Tenant ID' : $label;
+    $label = ($label === 'Credentials Client Id') ? 'Credentials Client ID' : $label;
+    $label = ($label === 'Credentials Ssh Key') ? 'SSH Key' : $label;
+    $label = ($label === 'Credentials Password') ? 'Password' : $label;
+    $label = ($label === 'Credentials Username') ? 'Username' : $label;
+    $label = ($label === 'Credentials Sudo Password') ? 'Sudo Password' : $label;
+    $label = ($label === 'Context Engine Id') ? 'Context Engine ID' : $label;
+    $label = ($label === 'Credentials Authentication Passphrase') ? 'Authentication Passphrase' : $label;
+    $label = ($label === 'Credentials Privacy Passphrase') ? 'Privacy Passphrase' : $label;
+    $label = ($label === 'Scan Options Id') ? 'Scan Options ID' : $label;
+    $label = str_replace('Options.widgets.position.', 'Widget #', $label);
+    $label = str_replace('[]', '', $label);
+
+
+    $field = (!empty($collection) and !empty($name)) ? '<code>' . $collection . '.' . str_replace('[]', '', $name) . '</code><br>' : '';
+    $header = '
+                                            <div class="row" id="header_row_' . $name . '_' . $count . '">
+                                                <div class="col-10 clearfix">
+                                                    <label for="' . $name . '" class="form-label" title="' . $name . '">' . $label . '</label>
+                                                </div>
+                                                <div class="col-2">
+                                                    <div class="float-end">
+                                                    <a role="button" tabindex="0" class="btn btn-clear btn-sm"           data-bs-container="#header_row_' . $name . '_' . $count . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . $field . str_replace('"', '\"', __($dictionary)) . '"><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC;"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>';
+    return $header;
+}
+
+function read_field(string $name = '', string $value = '', string $dictionary = '', bool $update = false, string $label = '', string $link_button = '', string $placeholder = '', string $type = 'text', string $collection = ''): string
+{
     if ($value === '2000-01-01 00:00:00') {
         $value = '';
     }
-    $label = !empty($label) ? $label : ucwords(str_replace('_', ' ', $name));
-    $label = str_replace('Nmis', 'NMIS', $label);
-    $label = str_replace('Os ', 'OS ', $label);
-    if (strlen($dictionary) > 60) {
-        $dictionary = mb_substr($dictionary, 0, 60) . '...';
+    if (empty($type)) {
+        $type = 'text';
     }
     if (!empty($placeholder)) {
         $placeholder = 'placeholder="' . $placeholder . '"';
@@ -197,8 +249,7 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
 
     $return = '
                         <div class="row" style="padding-top:16px;">
-                            <div class="offset-2 col-8" style="position:relative;">
-                                <label for="' . $name . '" class="form-label">' . $label . '</label>
+                            <div class="offset-2 col-8" style="position:relative;">' . read_field_header($collection, $name, $dictionary, $label) . '
                                 <div class="input-group">
                                     <input disabled type="' . $type . '" class="form-control" id="' . $name . '" value="' . $value . '" data-original-value="' . $value . '" ' . $placeholder . '>';
 
@@ -216,9 +267,6 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
     }
                                     $return = $return . '
                                 </div>';
-    if ($dictionary !== '') {
-        $return = $return . '                                <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="' .  $name . '" data-dictionary="' . $dictionary . '"><span><br></span></div>';
-    }
     $return = $return . '
                             </div>
                         </div>
@@ -226,12 +274,12 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
     return $return;
 }
 
-function read_text_box(string $name = '', string $value = '')
+function read_text_box(string $name = '', string $value = '', string $dictionary = '', string $collection = '')
 {
     $return = '
                         <div class="row" style="padding-top:16px;">
                             <div class="offset-2 col-8" style="position:relative;">
-                                <label for="' . $name . '" class="form-label">' . $name . '</label>
+                                ' . read_field_header($collection, $name, $dictionary) . '
                                 <div class="input-group">
                                     <textarea class="form-control" disabled rows="8">' . $value . '</textarea>
                                 </div>
@@ -240,15 +288,10 @@ function read_text_box(string $name = '', string $value = '')
     return $return;
 }
 
-function read_select(string $name = '', string $value = '', string $dictionary = '', bool $update = false, string $label = '', array $values = array()): string
+function read_select(string $name = '', string $value = '', string $dictionary = '', bool $update = false, string $label = '', array $values = array(), string $collection = ''): string
 {
 
     $return = '';
-    if (empty($label)) {
-        $label = ucwords(str_replace('_', ' ', __($name)));
-        $label = str_replace('Nmis', 'NMIS', $label);
-    }
-
     if (empty($values)) {
         # No values passed, assuming a bool y|n.
         $values = array();
@@ -269,7 +312,7 @@ function read_select(string $name = '', string $value = '', string $dictionary =
 
     $return =  "                           <div class=\"row\" style=\"padding-top:16px;\">
                                 <div class=\"offset-2 col-8\" style=\"position:relative;\">
-                                    <label for=\"{$name}\" class=\"form-label\">{$label}</label><br>
+                                    " . read_field_header($collection, $name, $dictionary, $label) . "
                                     <div class=\"input-group\">
                                         <select class=\"form-select\" id=\"{$name}\" name=\"{$name}\" data-original-value=\"{$value}\" disabled>\n";
     foreach ($values as $item) {
@@ -299,9 +342,6 @@ function read_select(string $name = '', string $value = '', string $dictionary =
                                             <div data-attribute=\"{$name}\" class=\"btn btn-outline-danger cancel\" style=\"display: none;\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-remove\"></span></div>
                                         </div>
                                     </div>\n";
-    }
-    if ($dictionary !== '') {
-        $return .= "<div class=\"form-text form-help float-end\" style=\"position: absolute; right: 0;\" data-attribute=\"{$name}\" data-dictionary=\"" . $dictionary . "\"><span><br></span></div>";
     }
     $return .= "                            </div>
                             </div>\n";

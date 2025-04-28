@@ -177,26 +177,26 @@ if ($resource->ru_start == 1) {
                     <br/>
                     <div class="row">
                         <div class="col-4">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                            <?= read_select('location_id', $resource->location_id, $dictionary->columns->location_id, $update, __('Location'), $included['locations']) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('location_id', $resource->location_id, $dictionary->columns->location_id, $update, __('Location'), $included['locations'], $meta->collection) ?>
                             <?php $attributes = array('building', 'floor', 'room', 'row', 'row_position', 'pod', 'ru_height');
                             foreach ($attributes as $attribute) {
-                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update) . "\n";
+                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', '', '', '', $meta->collection) . "\n";
                             } ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                             <br><div class="offset-2 col-8"><hr></div>
                             <?php $attributes = array('purpose', 'type', 'manufacturer', 'model', 'serial', 'asset_number', 'asset_tag', 'bar_code', 'ru_start');
                             foreach ($attributes as $attribute) {
-                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update) . "\n";
+                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', '', '', '', $meta->collection) . "\n";
                             } ?>
                             <?php $attributes = array('physical_height', 'physical_width', 'physical_depth', 'weight_empty', 'weight_current', 'weight_max', 'btu_total', 'btu_max', 'power_sockets', 'circuit_count');
                             foreach ($attributes as $attribute) {
-                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update) . "\n";
+                                echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', '', '', '', $meta->collection) . "\n";
                             }
-                            echo read_field('power_circuit', $resource->power_circuit, $dictionary->columns->power_circuit, $update) . "\n";
+                            echo read_field('power_circuit', $resource->power_circuit, $dictionary->columns->power_circuit, $update, '', '', '', '', $meta->collection) . "\n";
                             ?>
                         </div>
                         <div class="col-4">

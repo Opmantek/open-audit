@@ -39,17 +39,16 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-
+                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
                                     <?php $fields = array('description', 'provider', 'service_type', 'product_name', 'service_identifier', 'circuit_status'); ?>
                                     <?php foreach ($fields as $field) { ?>
-                                        <?= read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update) ?>
+                                        <?= read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update, '', '', '', '', $meta->collection) ?>
                                     <?php } ?>
                                     <br>
 
-                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-6">
                                     <br>

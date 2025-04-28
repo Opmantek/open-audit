@@ -418,15 +418,6 @@ if (!empty($config->servers)) {
                                         <?= menuItem('racks', '', $user, 'racksHelp', __('Learn About') . ' ' . __('Racks')) ?>
                                     </ul>
                                 </li>
-                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('rolesCollection') ?>"><?= __('Roles') ?></a>
-                                    <ul class="dropdown-menu">
-                                        <?= menuItem('roles', 'r', $user, 'rolesCollection', __('List') . ' ' . __('Roles')) ?>
-                                        <?= menuItem('roles', 'c', $user, 'rolesCreateForm', __('Create') . ' ' . __('Roles')) ?>
-                                        <?= menuItem('roles', 'c', $user, 'rolesImportForm', __('Import') . ' ' . __('Roles')) ?>
-                                        <?= menuItem('roles', '', $user, 'rolesDefaults', __('Default') . ' ' . __('Roles')) ?>
-                                        <?= menuItem('roles', '', $user, 'rolesHelp', __('Learn About') . ' ' . __('Roles')) ?>
-                                    </ul>
-                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('rulesCollection') ?>"><?= __('Rules') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('rules', 'r', $user, 'rulesCollection', __('List') . ' ' . __('Rules')) ?>
@@ -487,6 +478,15 @@ if (!empty($config->servers)) {
                                     <ul class="dropdown-menu">
                                         <?= menuItem('database', 'r', $user, 'databaseCollection', __('List') . ' ' . __('Database Tables')) ?>
                                         <?= menuItem('database', 'r', $user, 'databaseCompare', 'Compare Database Schema') ?>
+                                    </ul>
+                                </li>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('rolesCollection') ?>"><?= __('Roles') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('roles', 'r', $user, 'rolesCollection', __('List') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', 'c', $user, 'rolesCreateForm', __('Create') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', 'c', $user, 'rolesImportForm', __('Import') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', '', $user, 'rolesDefaults', __('Default') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', '', $user, 'rolesHelp', __('Learn About') . ' ' . __('Roles')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('tasksCollection') ?>"><?= __('Tasks') ?></a>

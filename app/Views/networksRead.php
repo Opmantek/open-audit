@@ -38,15 +38,15 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row">
                                 <div class="col-4">
-                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                                    <?= read_field('network', $resource->network, $dictionary->columns->network, $update) ?>
-                                    <?= read_select('location_id', $resource->location_id, $dictionary->columns->location_id, $update, __('Location'), $included['locations']) ?>
-                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
+                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs, $meta->collection) ?>
+                                    <?= read_field('network', $resource->network, $dictionary->columns->network, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('location_id', $resource->location_id, $dictionary->columns->location_id, $update, __('Location'), $included['locations'], $meta->collection) ?>
+                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="type" class="form-label"><?= __('Environment') ?></label>
+                                            <?= read_field_header($meta->collection, 'environment', $dictionary->columns->environment) ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="environment" name="environment" data-original-value="<?= $resource->environment ?>" disabled>
                                                 <?php foreach ($environments as $environment) {
@@ -65,13 +65,12 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="environment" data-dictionary="<?= $dictionary->columns->environment ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="type" class="form-label"><?= __('Type') ?></label>
+                                            <?= read_field_header($meta->collection, 'type', $dictionary->columns->type) ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="type" name="type" data-original-value="<?= $resource->type ?>" disabled>
                                                 <?php foreach ($types as $type) {
@@ -90,13 +89,12 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="admin_status" class="form-label"><?= __('Admin Status') ?></label>
+                                            <?= read_field_header($meta->collection, 'admin_status', $dictionary->columns->admin_status) ?>
                                             <div class="input-group">
                                                 <select class="form-select" id="admin_status" name="admin_status" data-original-value="<?= $resource->admin_status ?>" disabled>
                                                 <?php foreach ($statuses as $status) {
@@ -119,20 +117,20 @@ if ($style === 'icontext') {
                                         </div>
                                     </div>
                                     <?php $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.security_zone=" . urlencode($resource->security_zone) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">"; ?>
-                                    <?= read_field('security_zone', $resource->security_zone, $dictionary->columns->security_zone, $update, '', $link_button) ?>
+                                    <?= read_field('security_zone', $resource->security_zone, $dictionary->columns->security_zone, $update, '', $link_button, '', '', $meta->collection) ?>
 
                                     <?php $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.network_domain=" . urlencode($resource->network_domain) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">"; ?>
-                                    <?= read_field('network_domain', $resource->network_domain, $dictionary->columns->network_domain, $update, '', $link_button) ?>
+                                    <?= read_field('network_domain', $resource->network_domain, $dictionary->columns->network_domain, $update, '', $link_button, '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-4">
                                     <?= read_field('DHCP_servers', $resource->dhcp_servers, $dictionary->columns->dhcp_servers, false) ?>
                                     <?= read_field('DNS_servers', $resource->dns_servers, $dictionary->columns->dns_servers, false) ?>
-                                    <?= read_field('Gateways', $resource->gateways, $dictionary->columns->gateways, false) ?>
+                                    <?= read_field('Gateways', $resource->gateways, $dictionary->columns->gateways, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('IPs_total', $resource->ip_total_count, $dictionary->columns->ip_total_count, false) ?>
                                     <?= read_field('IPs_used', $resource->device_count, $dictionary->columns->device_count, false) ?>
                                     <?= read_field('IPs_available', $resource->ip_available_count, $dictionary->columns->ip_available_count, false) ?>
-                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-4">
                                     <br>
@@ -144,13 +142,6 @@ if ($style === 'icontext') {
                                         <?php if (!empty($dictionary->notes)) { ?>
                                             <h4 class="text-center"><?= __('Notes') ?></h4><br>
                                             <?= $dictionary->notes ?>
-                                        <?php } ?>
-                                        <?php if (!empty($dictionary->columns)) { ?>
-                                            <?php $fields = array('name', 'org_id', 'network', 'description', 'type', 'edited_by', 'edited_date') ?>
-                                        <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                            <?php foreach ($fields as $key) { ?>
-                                            <code><?= $key ?>: </code><?= $dictionary->columns->{$key} ?><br><br>
-                                            <?php } ?>
                                         <?php } ?>
                                     </div>
                                 </div>

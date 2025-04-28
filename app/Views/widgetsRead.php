@@ -18,13 +18,13 @@ if (!empty($included['queries'])) {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="type" class="form-label"><?= __('Type') ?></label>
+                                    <?= read_field_header($meta->collection, 'type', $dictionary->columns->type) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="type" name="type" data-original-value="<?= $resource->type ?>" disabled>
                                             <option value="line" <?php if ($resource->type === 'line') { echo 'selected'; } ?>><?= __('Line Graph') ?></option>
@@ -46,7 +46,7 @@ if (!empty($included['queries'])) {
                             <?php if (!empty($resource->sql)) { ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="sql" class="form-label"><?= __('SQL') ?></label>
+                                    <?= read_field_header($meta->collection, 'sql', $dictionary->columns->sql, 'SQL') ?>
                                     <div class="input-group">
                                         <textarea class="form-control" rows="14" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
                                         <?php if ($update) { ?>
@@ -60,25 +60,25 @@ if (!empty($included['queries'])) {
                                     <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
                                 </div>
                             </div>
-                                <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update) ?>
+                                <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update, '', '', '', '', $meta->collection) ?>
                             <?php } else {
                                 if ($resource->type !== 'traffic') { ?>
-                                    <?= read_field('primary', $resource->primary, $dictionary->columns->primary, $update) ?>
-                                    <?= read_field('secondary', $resource->secondary, $dictionary->columns->secondary, $update) ?>
-                                    <?= read_field('where', $resource->where, $dictionary->columns->where, $update) ?>
-                                    <?= read_field('limit', $resource->limit, $dictionary->columns->limit, $update) ?>
-                                    <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update) ?>
+                                    <?= read_field('primary', $resource->primary, $dictionary->columns->primary, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('secondary', $resource->secondary, $dictionary->columns->secondary, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('where', $resource->where, $dictionary->columns->where, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('limit', $resource->limit, $dictionary->columns->limit, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update, '', '', '', '', $meta->collection) ?>
                                 <?php } else { ?>
-                                    <?= read_field('dataset_title', $resource->dataset_title, $dictionary->columns->dataset_title, $update, __('Title')) ?>
-                                    <?= read_field('group_by', html_entity_decode($resource->group_by), $dictionary->columns->group_by, $update, __('Secondary Text')) ?>
-                                    <?= read_field('where', $resource->where, $dictionary->columns->where, $update, __('Icon')) ?>
-                                    <?= read_select('primary', $resource->primary, $dictionary->columns->primary, $update, __('Red Query'), $included['queries']) ?>
-                                    <?= read_select('secondary', $resource->secondary, $dictionary->columns->secondary, $update, __('Yellow Query'), $included['queries']) ?>
-                                    <?= read_select('ternary', $resource->ternary, $dictionary->columns->ternary, $update, __('Green Query'), $included['queries']) ?>
+                                    <?= read_field('dataset_title', $resource->dataset_title, $dictionary->columns->dataset_title, $update, __('Title'), '', '', '', $meta->collection) ?>
+                                    <?= read_field('group_by', html_entity_decode($resource->group_by), $dictionary->columns->group_by, $update, __('Secondary Text'), '', '', '', $meta->collection) ?>
+                                    <?= read_field('where', $resource->where, $dictionary->columns->where, $update, __('Icon'), '', '', '', $meta->collection) ?>
+                                    <?= read_select('primary', $resource->primary, $dictionary->columns->primary, $update, __('Red Query'), $included['queries'], $meta->collection) ?>
+                                    <?= read_select('secondary', $resource->secondary, $dictionary->columns->secondary, $update, __('Yellow Query'), $included['queries'], $meta->collection) ?>
+                                    <?= read_select('ternary', $resource->ternary, $dictionary->columns->ternary, $update, __('Green Query'), $included['queries'], $meta->collection) ?>
                                 <?php } ?>
                             <?php } ?>
-                                <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                                <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                                <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>
