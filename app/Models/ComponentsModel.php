@@ -282,10 +282,10 @@ class ComponentsModel extends BaseModel
                 redirect()->route('devicesRead', [$data->device_id]);
                 return null;
             }
-            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
-                mkdir($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images');
+            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/custom_images')) {
+                mkdir($_SERVER['DOCUMENT_ROOT'] . '/custom_images');
             }
-            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
+            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/custom_images')) {
                 log_message('error', 'Custom Images directory does not exist and cannot be created.');
                 \Config\Services::session()->setFlashdata('error', 'Custom Images directory does not exist and cannot be created. Check filesystem permissions.');
                 redirect()->route('devicesRead', [$data->device_id]);
