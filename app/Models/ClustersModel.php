@@ -321,12 +321,12 @@ class ClustersModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
-        $dictionary->columns->type = "Can be 'high availability','load balancing','performance','storage','other' or blank.";
-        $dictionary->columns->purpose = "Can be 'application','compute','database','storage','virtualisation','web','other' or blank.";
-        $dictionary->columns->status = "Can be 'active', 'passive' or blank.";
-        $dictionary->columns->configuration = "The configuration of your cluster can be: 'active/active','active/passive','N+1','N+M','N-to-1','N-to-N','other' or blank.";
+        $dictionary->columns->type = 'Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.';
+        $dictionary->columns->purpose = 'Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.';
+        $dictionary->columns->status = 'Can be  <code>active</code>, <code>passive</code> or blank.';
+        $dictionary->columns->configuration = 'The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.';
         $dictionary->columns->environment = 'As per the attributes for device environments. Production, Training, et al.';
-        $dictionary->columns->scaling = "Can be 'auto', 'fixed', 'other' or blank.";
+        $dictionary->columns->scaling = 'Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.';
         $dictionary->columns->retrieved_name = 'Unused.';
         $dictionary->columns->retrieved_ident = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

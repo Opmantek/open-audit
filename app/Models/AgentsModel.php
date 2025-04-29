@@ -316,15 +316,19 @@ class AgentsModel extends BaseModel
         $dictionary->columns->test_minutes = 'If this many or more minutes have passed since the device contacted the server, perform the actions.';
         $dictionary->columns->test_subnet = 'If an agent reports its primary IP is in this subnet, perform the actions.';
         $dictionary->columns->test_os = 'If the agent OS family (case insensitive) contains this string, perform the actions.';
-        $dictionary->columns->tests = 'Unused.'; #'A JSON object containing an array of attributes to match.';
+
+        #'A JSON object containing an array of attributes to match.';
+        $dictionary->columns->tests = 'Unused.';
 
         $dictionary->columns->action_download = 'A URL to a file to download.';
         $dictionary->columns->action_command = 'A command to run. When the agent is Windows based, this command is run from within the powershell agent.';
         $dictionary->columns->action_audit = 'Should we run an audit and submit it (y/n).';
         $dictionary->columns->action_uninstall = 'Should we uninstall the agent (y/n).';
         $dictionary->columns->action_devices_assigned_to_location = 'Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.';
-        $dictionary->columns->action_devices_assigned_to_org = "Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.";
-        $dictionary->columns->actions = 'Unused.'; #'A JSON object containing an array of attributes to change if the match occurs.';
+        $dictionary->columns->action_devices_assigned_to_org = 'Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.';
+
+        #'A JSON object containing an array of attributes to change if the match occurs.';
+        $dictionary->columns->actions = 'Unused.';
 
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

@@ -413,9 +413,9 @@ class UsersModel extends BaseModel
         $dictionary->columns->roles = 'A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.';
         $dictionary->columns->orgs = 'A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.';
         $dictionary->columns->dashboard_id = 'The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.';
-        $dictionary->columns->active = "Is this account active? If set to 'n', the user cannot logon.";
+        $dictionary->columns->active = 'Is this account active? If set to <code>n</code>, the user cannot logon.';
         $dictionary->columns->ldap = 'The LDAP OU of this user (if LDAP is used).';
-        $dictionary->columns->type = "Can be 'user' or 'collector'.";
+        $dictionary->columns->type = 'Can be <code>user</code> or <code>collector</code>.';
         $dictionary->columns->devices_default_display_columns = 'If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.';
         $dictionary->columns->access_token = 'Internal JSON array of valid access tokens for this user.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

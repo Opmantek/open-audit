@@ -1454,7 +1454,7 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns->device_count = 'The number of devices found by this discovery.';
         $dictionary->columns->device_id = 'Used internally when discovering a single device. Links to <code>devices.id</code>.';
         $dictionary->columns->devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.';
-        $dictionary->columns->devices_assigned_to_org = "Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the 'org_id' of this discovery. Links to <code>orgs.id</code>.";
+        $dictionary->columns->devices_assigned_to_org = 'Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id<code> of this discovery. Links to <code>orgs.id</code>.';
         $dictionary->columns->discard = 'Used internally when discovering a single device.';
         $dictionary->columns->duration = 'Updated each time the discovery has completed execution.';
         $dictionary->columns->ip_all_count = 'Updated each time discovery has been executed.';
@@ -1475,7 +1475,7 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns->seed_restrict_to_subnet = 'For a seed discovery, should I only discover IPs on the chosen subnet.';
         $dictionary->columns->status = 'The current status of the discovery.';
         $dictionary->columns->subnet = 'The network subnet to execute the discovery on.';
-        $dictionary->columns->type = "Supported types are 'subnet', 'seed' and 'active directory'.";
+        $dictionary->columns->type = 'Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.';
         $dictionary->columns->edited_by = @$instance->dictionary->edited_by;
         $dictionary->columns->edited_date = @$instance->dictionary->edited_date;
 

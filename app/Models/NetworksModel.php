@@ -364,7 +364,7 @@ class NetworksModel extends BaseModel
         $dictionary->columns->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
         $dictionary->columns->description = 'Your description of this item.';
         $dictionary->columns->network = 'The network in the format 192.168.1.0/24.';
-        $dictionary->columns->type = "One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.";
+        $dictionary->columns->type = 'One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.';
         $dictionary->columns->external_ident = 'The ID retrieved from a Cloud discovery.';
         $dictionary->columns->cloud_id = 'The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.';
         $dictionary->columns->environment = 'One of Development, Disaster Recovery, Evaluation, Pre-Production, Production, Testing, Training, User Acceptance Testing';

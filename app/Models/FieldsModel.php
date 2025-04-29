@@ -237,13 +237,13 @@ class FieldsModel extends BaseModel
 
         $dictionary->about = '<p>Open-AudIT can store information in custom fields that are associated with each device.<br /><br />Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
-        $dictionary->notes = '<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br /><br />Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br /><br />You can edit the value of the Field for each individual device in the group you have assigned the field to. View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br /><br /></p>';
+        $dictionary->notes = '<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br /><br />Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br /><br />View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br /><br /></p>';
 
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
-        $dictionary->columns->group_id = 'The group of devices this field applies to. To apply it to all devices, use the All Devices group. Links to <code>groups.id</code>.';
+        $dictionary->columns->group_id = 'Unused.';
         $dictionary->columns->type = 'This can be either a varchar (a text field), a list (a list of values that can be selected) or a date.';
         $dictionary->columns->values = 'A comma separated list of values, one of which can be selected.';
         $dictionary->columns->placement = 'Where on the Device Details screen you would like to see this field appear.';

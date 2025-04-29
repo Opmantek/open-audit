@@ -736,9 +736,9 @@ class WidgetsModel extends BaseModel
         $dictionary->columns->limit = 'Limit the query to the first X items.';
         $dictionary->columns->options = 'Unused.';
         $dictionary->columns->group_by = 'This is generally the primary column, unless otherwise configured. NOTE: When type = traffic, this represents the secondary text.';
-        $dictionary->columns->type = "Can be 'line', 'pie' or 'traffic'.";
+        $dictionary->columns->type = 'Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.';
         $dictionary->columns->dataset_title = 'The text for the bottom of the chart in a line chart (only).';
-        $dictionary->columns->sql = "For advanced entry of a raw SQL query. As per Queries, you must include 'WHERE @filter AND' in your SQL.";
+        $dictionary->columns->sql = 'For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.';
         $dictionary->columns->link = 'The template for the link to be generated per result line.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
