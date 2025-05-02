@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 include 'shared/collection_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
@@ -108,14 +109,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                 <div class="col-6">
                                     <br>
                                     <div class="offset-2 col-8">
-                                        <?php if (!empty($dictionary->about)) { ?>
-                                            <h4 class="text-center"><?= __('About') ?></h4><br>
-                                            <?= $dictionary->about ?>
-                                        <?php } ?>
-                                        <?php if (!empty($dictionary->notes)) { ?>
-                                            <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                            <?= $dictionary->notes ?>
-                                        <?php } ?>
+                                        <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                                     </div>
                                 </div>
                             </div>
@@ -148,17 +142,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                     <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-6">
-                                    <br>
-                                    <div class="offset-2 col-8">
-                                        <?php if (!empty($dictionary->about)) { ?>
-                                            <h4 class="text-center"><?= __('About') ?></h4><br>
-                                            <?= $dictionary->about ?>
-                                        <?php } ?>
-                                        <?php if (!empty($dictionary->notes)) { ?>
-                                            <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                            <?= $dictionary->notes ?>
-                                        <?php } ?>
-                                    </div>
+                                    <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                                 </div>
                             </div>
                         </div>
@@ -187,7 +171,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         $default->attributes = new stdClass();
                                         $default->attributes->id = '';
                                         if (empty($resource->scan_options->{$key}) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') {
-                                            $default->attributes->name = $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently \'') . $scan_options_default->{$key} . '\'';
+                                            $default->attributes->name = $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->{$key};
                                         } else {
                                             $default->attributes->name = 'Not Set';
                                         }
@@ -206,7 +190,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <div class="input-group">
                                                 <select class="form-select" id="scan_options.timing" name="scan_options.timing" data-original-value="<?= $resource->scan_options->timing ?>" disabled>
                                                     <?php if (empty($resource->scan_options->timing) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
-                                                    <option value="" selected><?= $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently \'') . $scan_options_default->timing . '\'' ?></option>
+                                                    <option value="" selected><?= $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->timing ?></option>
                                                     <?php } else { ?>
                                                     <option value=""><?= __('Not Set') ?></option>
                                                     <?php } ?>
@@ -234,7 +218,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <div class="input-group">
                                                 <select class="form-select" id="scan_options.nmap_tcp_ports" name="scan_options.nmap_tcp_ports" data-original-value="<?= $resource->scan_options->nmap_tcp_ports ?>" disabled>
                                                     <?php if (empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
-                                                    <option value="" selected><?= $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently \'') . $scan_options_default->nmap_tcp_ports . '\'' ?></option>
+                                                    <option value="" selected><?= $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->nmap_tcp_ports ?></option>
                                                     <?php } else { ?>
                                                     <option value=""><?= __('Not Set') ?></option>
                                                     <?php } ?>
@@ -260,7 +244,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <div class="input-group">
                                                 <select class="form-select" id="scan_options.nmap_udp_ports" name="scan_options.nmap_udp_ports" data-original-value="<?= $resource->scan_options->nmap_udp_ports ?>" disabled>
                                                     <?php if (empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
-                                                    <option value="" selected><?= $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently \'') . $scan_options_default->nmap_udp_ports . '\'' ?></option>
+                                                    <option value="" selected><?= $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->nmap_udp_ports ?></option>
                                                     <?php } else { ?>
                                                     <option value=""><?= __('Not Set') ?></option>
                                                     <?php } ?>
@@ -295,7 +279,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                     $scan_options['ssh_ports'] = 'SSH Running on Ports';
                                     foreach ($scan_options as $key => $value) {
                                         if (empty($resource->scan_options->{$key}) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') {
-                                            $placeholder = $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently \'') . $scan_options_default->{$key} . '\'';
+                                            $placeholder = $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->{$key};
                                         } else {
                                             $placeholder = 'Not Set';
                                         }
@@ -325,7 +309,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= $field ?>" disabled>
                                                     <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
                                                     <option value="n" <?php if ($field === 'n') { echo 'selected'; } ?>><?= __('No')  ?></option>
-                                                    <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently \'' . $config->{$match} . '\'') ?></option>
+                                                    <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently ') . $config->{$match} ?></option>
                                                 </select>
                                                 <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
@@ -351,7 +335,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= $field ?>" disabled>
                                                     <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
                                                     <option value="n" <?php if ($field === 'n') { echo 'selected'; } ?>><?= __('No')  ?></option>
-                                                    <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently \'' . $config->{$match} . '\'') ?></option>
+                                                    <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently ') . $config->{$match} ?></option>
                                                 </select>
                                                 <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">

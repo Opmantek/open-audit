@@ -14,7 +14,9 @@ if (!function_exists('__')) {
         $language_file = APPPATH . 'Views/lang/en.inc';
         $word = (string)$word;
         if (isset($GLOBALS['lang'][$word])) {
-            return $GLOBALS['lang'][$word];
+            // We do this because we use this output in JS and HTML
+            return str_replace("'", "\'", $GLOBALS['lang'][$word]);
+            return str_replace('"', '\"', $GLOBALS['lang'][$word]);
         } else {
             if ($language_learning_mode === true and !empty($word) and php_uname('s') !== 'Windows NT') {
                 if (is_writable($language_file)) {

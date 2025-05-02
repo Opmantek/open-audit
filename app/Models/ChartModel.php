@@ -337,6 +337,7 @@ class ChartModel extends BaseModel
 
         $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'professional';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

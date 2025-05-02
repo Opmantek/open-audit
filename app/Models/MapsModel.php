@@ -153,9 +153,10 @@ class MapsModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location.';
 
-        $dictionary->about = '<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br /><br />
-        ' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br> <br>
+        </p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'professional';
         return $dictionary;
     }

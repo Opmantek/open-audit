@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $item = new \stdClass();
 $item->id = 0;
 $item->attributes = new stdClass();
@@ -22,7 +23,8 @@ array_unshift($included['widgets'], $item);
                             <?= read_select('sidebar', $resource->sidebar, $dictionary->columns->sidebar, $update, __('Sidebar'), [], $meta->collection) ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="options.layout" class="form-label"><?= __('Layout') ?></label>
+                                    <!--<label for="options.layout" class="form-label"><?= __('Layout') ?></label> -->
+                                    <?= read_field_header($meta->collection, 'options.layout', $dictionary->columns->layout, 'Layout') ?>
                                     <div class="input-group">
                                         <select class="form-select" id="options.layout" name="options.layout" data-original-value="<?= $resource->options->layout ?>" disabled>
                                             <option value='3x2'>3 x 2</option>
@@ -46,7 +48,7 @@ array_unshift($included['widgets'], $item);
                                 for ($i = 0; $i < 20; $i++) {
                                     foreach ($resource->options->widgets as $widget) {
                                         if ($widget->position == $i) {
-                                            echo read_select('options.widgets.position.' . $widget->position, $widget->widget_id, '<code>options.widgets.position.' . $i . '</code><br>The widget at position ' . $i . '.', $update, 'Widget #' . $widget->position, $included['widgets']);
+                                            echo read_select('options.widgets.position.' . $widget->position, $widget->widget_id, '<code>options.widgets.position.' . $i . '</code><br>' . __('The widget at position ') . $i . '.', $update, __('Widget #') . $widget->position, $included['widgets']);
                                         }
                                     }
                                 }
@@ -58,20 +60,7 @@ array_unshift($included['widgets'], $item);
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                    <?= $dictionary->notes ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($dictionary->columns as $key => $value) { ?>
-                                    <code><?= $key ?>: </code><?= @$value ?><br><br>
-                                    <?php } ?>
-                                <?php } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                             </div>
                         </div>
                     </div>

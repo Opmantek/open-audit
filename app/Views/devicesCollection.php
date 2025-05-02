@@ -51,7 +51,7 @@ if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
 } elseif ($user->toolbar_style === 'icon') {
     $columns_button = '<span class="fa fa-list text-primary" aria-hidden="true" title="' . __('Columns') . '"></span>';
 } else {
-    $columns_button = 'Columns';
+    $columns_button = __('Columns');
 }
 
 $url = base_url() . 'index.php/devices?format=json';
@@ -204,7 +204,7 @@ window.onload = function () {
                     $attribute_escaped = str_replace('.', '_', $attribute);
                     if (in_array($attribute, $columns)) {
                         ?>\
-                <li data-sort=""><a style="font-weight: bold;" href="#" id="<?= $attribute_escaped ?>" class="dropdown-item toggle-vis" data-column="<?= $i ?>" data-db_column="<?= $attribute ?>"><?= collection_column_name($attribute) ?></a></li>\
+                <li data-sort=""><a style="font-weight: bold;" href="#" id="<?= $attribute_escaped ?>" class="dropdown-item toggle-vis" data-column="<?= $i ?>" data-db_column="<?= $attribute ?>"><?= str_replace("'", "\'", (collection_column_name($attribute))) ?></a></li>\
                     <?php } ?>\
                 <?php } ?>\
                 <li data-sort=""><hr class="dropdown-divider"></li>\
@@ -214,7 +214,7 @@ window.onload = function () {
                     $attribute_escaped = str_replace('.', '_', $attribute);
                     if (!in_array($attribute, $columns)) {
                         ?>\
-                <li data-sort="<?= $attribute ?>"><a href="#" class="dropdown-item toggle-vis" data-column="<?= $i ?>" data-db_column="<?= $attribute ?>"><?= collection_column_name($attribute) ?></a></li>\
+                <li data-sort="<?= $attribute ?>"><a href="#" class="dropdown-item toggle-vis" data-column="<?= $i ?>" data-db_column="<?= $attribute ?>"><?= str_replace("'", "\'", (collection_column_name($attribute))) ?></a></li>\
                     <?php } ?>\
                 <?php } ?>\
             </ul>\

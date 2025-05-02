@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
+include 'shared/common_functions.php';
 $collection = $meta->collection;
 $values = implode(', ', $data->attributes->create);
 $sample = '';
@@ -173,14 +174,7 @@ $example .= 'You should use a header line containing the names of the columns yo
                 </div>
                 <div class="col-6">
                     <div class="offset-2 col-8">
-                        <?php if ($dictionary->about) { ?>
-                            <h4 class="text-center"><?= __('About') ?></h4><br>
-                            <?= $dictionary->about ?>
-                        <?php } ?>
-                        <?php if ($dictionary->notes) { ?>
-                            <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                            <?= $dictionary->notes ?>
-                        <?php } ?>
+                        <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                         <?php foreach ($data->columns as $column => $value) { ?>
                             <code><?= $column ?>: </code><?= $value ?><br><br>
                         <?php } ?>

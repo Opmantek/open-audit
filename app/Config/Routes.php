@@ -140,6 +140,7 @@ $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::cla
 
 $routes->post('util/subnet_size', 'Util::subnetSize');
 $routes->get('util/test_windows_client', 'Util::testWindowsClient');
+$routes->get('dictionary', 'Dictionary::dictionary');
 
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);

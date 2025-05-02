@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
+include 'shared/common_functions.php';
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -50,16 +51,8 @@ include 'shared/create_functions.php';
                         </div>
 
                         <div class="col-md-4">
-                            <?php if (! empty($dictionary->about)) {
-                                echo "<h4 class=\"text-center\">About</h4><br>";
-                                echo html_entity_decode($dictionary->about);
-                            } ?>
-                            <h4 class="text-center">Fields</h4><br>
-                            <?php foreach ($dictionary->columns as $key => $value) {
-                                if ($value !== 'Unused.') {
-                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
-                                }
-                            } ?>
+                            <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                            <?= fieldsInfoDiv ($dictionary) ?>
                         </div>
                     </div>
                     </form>

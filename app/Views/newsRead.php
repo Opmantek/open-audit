@@ -3,6 +3,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 
 if ($data[0]->attributes->type !== 'advertisement') {
     $name = !empty($data[0]->attributes->short) ? ucwords($data[0]->attributes->type) . ' :: ' . html_entity_decode($data[0]->attributes->short) : '';

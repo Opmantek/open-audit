@@ -78,7 +78,7 @@ abstract class BaseController extends Controller
 
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-
+        $GLOBALS['browser_lang'] = $this->request->getLocale();
         // Register the instance so we can call it from models, et al.
         register_ci_instance($this);
 
@@ -123,6 +123,23 @@ abstract class BaseController extends Controller
 
         $this->queries = array();
 
+        // The dictionary items
+        // These need to be before the return below for dictionary items
+        $this->dictionary = new stdClass();
+        $this->dictionary->link = '';
+        if (!empty($this->resp->meta->collection)) {
+            // $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="' . url_to($this->resp->meta->collection . 'Help') . '">Knowledge Base</a>.';
+            $this->dictionary->link = 'For more detailed information, check the Open-AudIT Knowledge Base.';
+        }
+        $this->dictionary->id = 'The identifier column (integer) in the database (read only).';
+        $this->dictionary->name = 'The name given to this item. Ideally it should be unique.';
+        $this->dictionary->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
+        $this->dictionary->description = 'Your description of this item.';
+        $this->dictionary->options = 'A JSON object containing collection specific options.';
+        $this->dictionary->edited_by = 'The name of the user who last changed or added this item (read only).';
+        $this->dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
+        $this->dictionary->device_id = 'The id of the linked device. Links to <code>devices.id</code>';
+
         if ($this->controller === '\App\Controllers\Input') {
             // We are receiving input from an audit result, no need for $user, et al.
             return;
@@ -140,6 +157,9 @@ abstract class BaseController extends Controller
             return;
         }
         if ($this->controller === '\App\Controllers\News' and $this->method === 'executeAll') {
+            return;
+        }
+        if ($this->controller === '\App\Controllers\Dictionary' and $this->method === 'dictionary') {
             return;
         }
 
@@ -215,21 +235,6 @@ abstract class BaseController extends Controller
             $message .= ':' . $data;
         }
         log_message('info', $message);
-
-        // The dictionary items
-        $this->dictionary = new stdClass();
-        $this->dictionary->link = '';
-        if (!empty($this->resp->meta->collection)) {
-            $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="' . url_to($this->resp->meta->collection . 'Help') . '">Knowledge Base</a>.';
-        }
-        $this->dictionary->id = 'The identifier column (integer) in the database (read only).';
-        $this->dictionary->name = 'The name given to this item. Ideally it should be unique.';
-        $this->dictionary->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
-        $this->dictionary->description = 'Your description of this item.';
-        $this->dictionary->options = 'A JSON object containing collection specific options.';
-        $this->dictionary->edited_by = 'The name of the user who last changed or added this item (read only).';
-        $this->dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
-        $this->dictionary->device_id = 'The id of the linked device. Links to <code>devices.id</code>';
 
         // Load our $this->{$collection}Model
         $collection = ucfirst($this->resp->meta->collection);

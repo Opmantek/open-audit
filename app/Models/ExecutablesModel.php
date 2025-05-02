@@ -216,11 +216,12 @@ class ExecutablesModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT Enterprise includes Executables, which detects executable files not know by the package manager. This feature is for Linux targets only.';
 
-        $dictionary->about = '<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br /><br />Supported clients are Linux only.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>';
 
-        $dictionary->notes = '<p>Supported clients are Linux only.<br /><br /></p>';
+        $dictionary->notes = '<p>Supported clients are Linux only.<br> <br></p>';
 
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
@@ -228,7 +229,7 @@ class ExecutablesModel extends BaseModel
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->path = 'The path to the file or directory. Directories should end with a trailing slash.';
         $dictionary->columns->os_family = 'Unused as at 5.2.0.';
-        $dictionary->columns->exclude = 'Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to \'y\'.';
+        $dictionary->columns->exclude = 'Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

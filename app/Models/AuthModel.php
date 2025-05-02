@@ -245,6 +245,11 @@ class AuthModel extends BaseModel
     {
         $instance = & get_instance();
 
+        $uri = new \CodeIgniter\HTTP\URI(url_to('helpFAQ'));
+        $helpFAQ = $uri->getPath();
+        $uri = new \CodeIgniter\HTTP\URI(url_to('authHelp'));
+        $authHelp = $uri->getPath();
+
         $collection = 'auth';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
@@ -259,15 +264,16 @@ class AuthModel extends BaseModel
 
         $dictionary->sentence = '';
 
-        $dictionary->about = '<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>';
 
-        $dictionary->notes = '<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you\'re using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br /><br /><strong>Helpful Documentation</strong><br /><br />
-        <a href="' . url_to('authHelp') . '">General Auth Help</a><br><br>
-        <a href="' . url_to('helpFAQ') . '?name=Using Entra for Auth">Using Entra for Auth</a><br><br>
-        <a href="' . url_to('helpFAQ') . '?name=Using OKTA for Auth">Using OKTA for Auth</a><br><br>
-        <a href="' . url_to('helpFAQ') . '?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br><br>
-        <a href="' . url_to('helpFAQ') . '?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br><br></p>';
+        $dictionary->notes = '<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you are using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br> <br><strong>Helpful Documentation</strong><br> <br>
+        <a href="' . $authHelp . '">General Auth Help</a><br> <br>
+        <a href="' . $helpFAQ . '?name=Using Entra for Auth">Using Entra for Auth</a><br> <br>
+        <a href="' . $helpFAQ . '?name=Using OKTA for Auth">Using OKTA for Auth</a><br> <br>
+        <a href="' . $helpFAQ . '?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br> <br>
+        <a href="' . $helpFAQ . '?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;

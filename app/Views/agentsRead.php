@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $add_input = '<a id="add_inputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add If') . '"><span style="margin-right:6px;" class="fa fa-plus text-success"></span>' . __('Add If') . '</a>';
@@ -22,7 +23,6 @@ $output_count = 0;
                     <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $resource->name) ?>
                 </div>
                 <div class="card-body">
-
                     <div class="row">
                         <div class="col-4">
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
@@ -55,18 +55,8 @@ $output_count = 0;
                             <?= read_select('action_uninstall', $resource->action_uninstall, $dictionary->columns->action_uninstall, $update, '', array(), $meta->collection) ?>
                         </div>
 
-                        <div class="col-4">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <h4 class="text-center">Fields</h4><br>
-                                <?php foreach ($dictionary->columns as $key => $value) {
-                                    if ($value !== 'Unused.') {
-                                        echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
-                                    }
-                                } ?>
-
+                        <div class="col-md-4">
+                            <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                         </div>
                     </div>
                 </div>

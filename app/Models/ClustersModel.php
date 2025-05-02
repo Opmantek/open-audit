@@ -312,10 +312,11 @@ class ClustersModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT enables you to create and record your clusters';
 
-        $dictionary->about = '<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>';
 
         $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'professional';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;

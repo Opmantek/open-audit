@@ -235,10 +235,11 @@ class RackDevicesModel extends BaseModel
 
         $dictionary->sentence = 'Place your devices into racks.';
 
-        $dictionary->about = '<p>These are the devices that live within a rack.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>These are the devices that live within a rack.<br> <br></p>';
 
-        $dictionary->notes = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->notes = '<p>Your racks help refine exactly where your devices are located.<br> <br></p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;

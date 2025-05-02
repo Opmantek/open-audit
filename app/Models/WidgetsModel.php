@@ -719,10 +719,11 @@ class WidgetsModel extends BaseModel
 
         $dictionary->sentence = 'Widgets are used on Dashboards and are completely open to user design.';
 
-        $dictionary->about = '<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>';
 
-        $dictionary->notes = '<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br /><br /></p>';
+        $dictionary->notes = '<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'professional';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;

@@ -1715,9 +1715,9 @@ class IntegrationsModel extends BaseModel
 
         $dictionary->sentence = 'Use Open-AudIT to integrate with external systems.';
 
-        $dictionary->about = '<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>';
 
-        $dictionary->notes = '<p></p>';
+        $dictionary->notes = '';
 
         $dictionary->system_fields = $this->db->getFieldNames('devices');
         sort($dictionary->system_fields);
@@ -1726,6 +1726,7 @@ class IntegrationsModel extends BaseModel
         $dictionary->transform = array('', 'string', 'int', 'bool', 'capitalise', 'lower', 'upper', 'date', 'date_now', 'date_time', 'datetime_now', 'int_to_bool', 'int_to_yn', 'yn_to_int', 'yn_to_bool');
         sort($dictionary->transform);
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
@@ -1755,7 +1756,7 @@ class IntegrationsModel extends BaseModel
 
         $dictionary->columns->server = 'Is the NMIS server local (on this Open-AudIT server) or remote?';
 
-        $dictionary->columns->create_internal_from_external = 'When integrating devices from the external system, if the device doesn\'t exist in Open-AudIT should we create it?';
+        $dictionary->columns->create_internal_from_external = 'When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?';
         $dictionary->columns->update_internal_from_external = 'When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?';
         $dictionary->columns->discovery_run = 'When retrieve an external device, should we run discovery upon it?';
         $dictionary->columns->select_internal_type = 'How should we select devices to be integrated (using an Attribute, Query or a Group).';

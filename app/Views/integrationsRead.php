@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" class="fa-regular fa-rectangle-list text-primary"></span>' . __('Summary') . '</a></li>';
@@ -60,10 +61,7 @@ if (!empty($resource->attributes->password)) {
                                 </div>
                                 <div class="col-6">
                                     <div class="offset-2 col-8">
-                                        <?php if (!empty($dictionary->about)) { ?>
-                                            <h4 class="text-center"><?= __('About') ?></h4><br>
-                                            <?= $dictionary->about ?>
-                                        <?php } ?>
+                                        <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                                     </div>
                                 </div>
                             </div>
@@ -97,10 +95,7 @@ if (!empty($resource->attributes->password)) {
                                 <div class="col-6">
                                     <br>
                                     <div class="offset-2 col-8">
-                                        <?php if (!empty($dictionary->about)) { ?>
-                                            <h4 class="text-center"><?= __('About') ?></h4><br>
-                                            <?= $dictionary->about ?>
-                                        <?php } ?>
+                                        <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                                     </div>
                                 </div>
                             </div>
@@ -215,7 +210,6 @@ if (!empty($resource->attributes->password)) {
                                             </div>
                                         </div>
                                     </div>
-
                                     <?= read_field('select_external_attribute', $resource->{'select_external_attribute'}, $dictionary->columns->select_external_attribute, $update, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('select_external_value', $resource->{'select_external_value'}, $dictionary->columns->select_external_value, $update, '', '', '', '', $meta->collection) ?>
                                 </div>

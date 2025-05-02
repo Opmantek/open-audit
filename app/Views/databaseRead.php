@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $device_delete = false;
 if ($meta->id === 'devices' and !empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'd') !== false) {
     $device_delete = true;
@@ -34,7 +35,7 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
                                             <form id="status_form" method="post" action="<?= url_to($data[0]->id.'Reset') ?>?status=<?= $status->status ?>">
-                                                <label for="<?= $status->status ?>" class="form-label"><?php echo __('Device Status: ' . $status->status); ?></label>
+                                                <label for="<?= $status->status ?>" class="form-label"><?php echo __('Device Status' . ': ' . $status->status); ?></label>
                                                 <div class="input-group">
                                                     <input disabled type="text" class="form-control" id="<?= $status->status ?>" value="<?php echo $status->count; ?>">
                                                     <?php if ($device_delete and $status->status != 'production') { ?>
@@ -77,14 +78,7 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                    <?= $dictionary->notes ?>
-                                <?php } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                             </div>
                         </div>
                     </div>

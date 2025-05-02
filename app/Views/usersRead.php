@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 include 'shared/collection_functions.php';
 $self_update = $update;
 if ($resource->id === $user->id) {
@@ -34,13 +35,13 @@ if ($resource->id === $user->id) {
                                     <?= read_field_header($meta->collection, 'lang', $dictionary->columns->lang, 'Language') ?>
                                     <div class="input-group">
                                         <select class="form-select" id="lang" name="lang" data-original-value="<?= $resource->lang ?>" disabled>
-                                        <option value='cs'><?php echo __('Czech'); ?></option>
-                                        <option value='de'><?php echo __('German'); ?></option>
-                                        <option value='en'><?php echo __('English'); ?></option>
-                                        <option value='es'><?php echo __('Spanish'); ?></option>
-                                        <option value='fr'><?php echo __('French'); ?></option>
-                                        <option value='pt-br'><?php echo __('Brazilian Portuguese'); ?></option>
-                                        <option value='zh-tw'><?php echo __('Traditional Chinese'); ?></option>
+                                        <option value='cs' <?php if ($resource->lang === 'cs') { echo 'selected'; } ?>><?php echo __('Czech'); ?></option>
+                                        <option value='de' <?php if ($resource->lang === 'de') { echo 'selected'; } ?>><?php echo __('German'); ?></option>
+                                        <option value='en' <?php if ($resource->lang === 'en') { echo 'selected'; } ?>><?php echo __('English'); ?></option>
+                                        <option value='es' <?php if ($resource->lang === 'es') { echo 'selected'; } ?>><?php echo __('Spanish'); ?></option>
+                                        <option value='fr' <?php if ($resource->lang === 'fr') { echo 'selected'; } ?>><?php echo __('French'); ?></option>
+                                        <option value='pt-br' <?php if ($resource->lang === 'pt-br') { echo 'selected'; } ?>><?php echo __('Brazilian Portuguese'); ?></option>
+                                        <option value='zh-tw' <?php if ($resource->lang === 'zh-tw') { echo 'selected'; } ?>><?php echo __('Traditional Chinese'); ?></option>
                                         </select>
                                         <?php if ($self_update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
@@ -50,7 +51,6 @@ if ($resource->id === $user->id) {
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="lang" data-dictionary="<?= $dictionary->columns->lang ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -71,7 +71,6 @@ if ($resource->id === $user->id) {
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="toolbar_style" data-dictionary="<?= $dictionary->columns->toolbar_style ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -91,7 +90,6 @@ if ($resource->id === $user->id) {
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="list_table_format" data-dictionary="<?= $dictionary->columns->list_table_format ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -120,7 +118,6 @@ if ($resource->id === $user->id) {
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="roles" data-dictionary="<?= $dictionary->columns->roles ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -145,7 +142,6 @@ if ($resource->id === $user->id) {
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="orgs" data-dictionary="<?= $dictionary->columns->orgs ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -156,24 +152,7 @@ if ($resource->id === $user->id) {
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                    <?= $dictionary->notes ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php
-                                    $do_not_show = array('id', 'dashboard_id', 'active', 'ldap', 'type', 'devices_default_display_columns', 'access_token', 'edited_by', 'edited_date');
-                                    foreach ($dictionary->columns as $key => $value) {
-                                        if (!in_array($key, $do_not_show)) {
-                                            echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
-                                        }
-                                    }
-                                } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                             </div>
                         </div>
                     </div>

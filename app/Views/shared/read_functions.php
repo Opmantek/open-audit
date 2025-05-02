@@ -4,12 +4,9 @@ function read_card_header(string $collection = '', string $id = '', string $icon
 {
     $style = (!empty($user->toolbar_style)) ? $user->toolbar_style : '';
     $collection_title = __(ucwords(str_replace('_', ' ', $collection)));
-    if ($collection_title === 'Ldap Servers') {
-        $collection_title = 'LDAP Servers';
-    }
     $collection_title = __($collection_title);
     if (!empty($name)) {
-        $collection_title = __($collection_title) . ' :: ' . $name;
+        $collection_title = __($collection_title) . ' :: ' . __($name);
     }
     $return = '';
 
@@ -224,7 +221,7 @@ function read_field_header(string $collection = '', string $name = '', string $d
     $header = '
                                             <div class="row" id="header_row_' . $name . '_' . $count . '">
                                                 <div class="col-10 clearfix">
-                                                    <label for="' . $name . '" class="form-label" title="' . $name . '">' . $label . '</label>
+                                                    <label for="' . $name . '" class="form-label" title="' . $name . '">' . __($label) . '</label>
                                                 </div>
                                                 <div class="col-2">
                                                     <div class="float-end">
@@ -311,7 +308,7 @@ function read_select(string $name = '', string $value = '', string $dictionary =
     }
 
     $return =  "                           <div class=\"row\" style=\"padding-top:16px;\">
-                                <div class=\"offset-2 col-8\" style=\"position:relative;\">
+                                <div class=\"offset-2 col-8\" style=\"position:relative;\" width=\"100%\">
                                     " . read_field_header($collection, $name, $dictionary, $label) . "
                                     <div class=\"input-group\">
                                         <select class=\"form-select\" id=\"{$name}\" name=\"{$name}\" data-original-value=\"{$value}\" disabled>\n";

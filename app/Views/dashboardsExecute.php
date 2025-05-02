@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $summary_id = 0;
 $os_systems_id = 0;
 if (!empty($queries) and $resource->sidebar === 'y') {

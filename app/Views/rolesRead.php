@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $permissions = array('c','r','u','d');
 $endpoints = array('agents','applications','attributes','auth','baselines','benchmarks','benchmarks_exceptions','benchmarks_policies','charts','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','executables','fields','files','groups','integrations','licenses','locations','networks','orgs','packages','queries','racks','rack_devices','roles','rules','scripts','search','summaries','tasks','users','widgets');
 $item_permissions = $resource->permissions;
@@ -52,21 +53,7 @@ if ($config->product === 'enterprise') {
                                 <div class="col-6">
                                     <br>
                                     <div class="offset-2 col-8">
-                                        <?php if (!empty($dictionary->about)) { ?>
-                                            <h4 class="text-center"><?= __('About') ?></h4><br>
-                                            <?= $dictionary->about ?>
-                                        <?php } ?>
-                                        <?php if (!empty($dictionary->notes)) { ?>
-                                            <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                            <?= $dictionary->notes ?>
-                                        <?php } ?>
-                                        <?php if (!empty($dictionary->columns)) { ?>
-                                            <?php $fields = array('name', 'description', 'ad_group', 'edited_by', 'edited_date') ?>
-                                        <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                            <?php foreach ($fields as $key) { ?>
-                                            <code><?= $key ?>: </code><?= $dictionary->columns->{$key} ?><br><br>
-                                            <?php } ?>
-                                        <?php } ?>
+                                        <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                                     </div>
                                 </div>
                             </div>

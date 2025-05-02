@@ -583,6 +583,14 @@ foreach ($config->modules as $module) {
                             </ul>
                         </li>
 
+                        <?php if ($GLOBALS['browser_lang'] !== $user->lang) { ?>
+                            <li class="nav-item">
+                                <a style="padding-top:10px;" role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" data-bs-content="<?= __(codeToCountry($GLOBALS['browser_lang'])) . __(' is now supported with a language file. To change your user to use this language, click ') . ' <a href=\'' . url_to('usersRead', $user->id) . '\'>' . __('here') . '</a>.' ?>">
+                                    <i class="fa-solid fa-earth-americas" style="color: #ffc107;"></i>
+                                </a>
+                            </li>
+                        <?php } ?>
+
                         <?php if (!empty($config->servers)) { ?>
                         <li class="nav-item">
                             <a href="<?= url_to('dashboardCollector') ?>" role="button" class="btn btn-primary"><?= $config->servers->type ?></a>
@@ -600,7 +608,7 @@ foreach ($config->modules as $module) {
                     <div class="col-6" style="padding-bottom: 0px; padding-top: 16px;">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="<?= url_to('home') ?>" class="link-secondary">Home</a></li>
+                                <li class="breadcrumb-item"><a href="<?= $homepage ?>" class="link-secondary">Home</a></li>
                                 <?php if (empty($meta->breadcrumbs)) { ?>
                                     <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Collection') ?>" class="link-secondary"><?= @ucwords(str_replace('_', ' ', $meta->collection)) ?></a></li>
                                     <?php if (($meta->action === 'read' or $meta->action === 'execute') and !empty($name)) { ?>

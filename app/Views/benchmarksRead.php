@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa-regular fa-rectangle-list text-success"></span>' . __('Details') . '</a></li>';
@@ -248,8 +249,6 @@ if (!empty($hour) and !empty($days)) {
                                             <div class="col-6" id="chart2"></div>
                                         </div>
                                     </div>
-
-
 
                                     <br>
                                     <div class="offset-1 col-10">

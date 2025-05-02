@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -23,8 +24,6 @@ include 'shared/read_functions.php';
                                     <hr>
                                 </div>
                             </div>
-
-
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
@@ -172,25 +171,11 @@ include 'shared/read_functions.php';
                             </div>
                         </div>
 
-
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                    <?= $dictionary->notes ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($dictionary->columns as $key => $value) {
-                                        if (in_array($key, ['weight', 'inputs', 'outputs'])) { ?>
-                                    <code><?= $key ?>: </code><?= @$value ?><br><br>
-                                    <?php } } ?>
-                                <?php } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                                <?= fieldsInfoDiv ($dictionary, ['weight', 'inputs', 'outputs']) ?>
                             </div>
                         </div>
                     </div>
