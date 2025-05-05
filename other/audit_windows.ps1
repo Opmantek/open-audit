@@ -1653,13 +1653,13 @@ if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainR
         Clear-Variable -name item
         $item = @{}
         $item.caption = $_.Caption
-        $item.disabled  = $_.Disabled
+        if ($_.Disabled) { $item.disabled = "true" } else { $item.disabled = "false" }
         $item.domain  = $_.Domain
         $item.full_name  = $_.FullName
         $item.name = $_.Name
-        $item.password_changeable  = $_.PasswordChangeable
-        $item.password_expires  = $_.PasswordExpires
-        $item.password_required  = $_.PasswordRequired
+        if ($_.PasswordChangeable) { $item.password_changeable = "true" } else { $item.password_changeable = "false" }
+        if ($_.PasswordExpires) { $item.password_expires = "true" } else { $item.password_expires = "false" }
+        if ($_.PasswordRequired) { $item.password_required = "true" } else { $item.password_required = "false" }
         $item.sid  = $_.SID
         $item.status  = $_.Status
         $item.password_last_changed  = ""
@@ -1676,14 +1676,16 @@ if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainR
                 if ($_.LocalPath -ne "") {
                     $item.user_home = $_.LocalPath
                 }
-                if ($_.LastUseTime -ne "") {
-                    $item.last_logon = [string]($_.ConvertToDateTime($_.LastUseTime) -f "yyyy/MM/dd H:m:s")
+                if ($_.LastUseTime -ne "" -and $_.LastUseTime -ne 0 -and $_.LastUseTime -ne $null) {
+                    $item.last_logon = [Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime).tostring('yyyy-MM-dd HH:mm:ss')
                 }
             }
         }
         $LocalUser | ForEach {
             if ($_.SID -eq $item.sid) {
-                $item.password_last_changed = ($_.PasswordLastSet) -f "yyyy/MM/dd H:m:s"
+                if ($_.PasswordLastSet -ne "" -and $_.PasswordLastSet -ne 0 -and $_.PasswordLastSet -ne $null) {
+                    $item.password_last_changed = $_.PasswordLastSet.ToString("yyyy-MM-dd H:m:s")
+                }
             }
         }
         $result.user += $item
