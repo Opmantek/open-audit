@@ -8,7 +8,7 @@ if (!function_exists('__')) {
     function __($word)
     {
         $language_learning_mode = false;
-        if (ENVIRONMENT === 'development') {
+        if (ENVIRONMENT === 'Set as \'development\' and enable .env to make work. Disabled now as we use parsing for each build.') {
             $language_learning_mode = true;
         }
         $language_file = APPPATH . 'Views/lang/en.inc';
@@ -23,7 +23,7 @@ if (!function_exists('__')) {
                     unset($lang_array);
                     $lang_array = file($language_file);
                     $lang_array = array_unique($lang_array);
-                    $match = '$GLOBALS["lang"]["' . $word . '"]="' . $word . "\";\n";
+                    $match = '$GLOBALS["lang"]["' . $word . '"]="' . $word . "';\n";
                     if (!in_array($match, $lang_array)) {
                         $lang_array[] = $match;
                         sort($lang_array, SORT_NATURAL | SORT_FLAG_CASE);
