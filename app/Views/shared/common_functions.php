@@ -20,7 +20,6 @@ function fieldsInfoDiv (object $dictionary = null, array $fieldsList = [])
     if (empty($dictionary)) {
         return '';
     }
-    log_message('info', json_encode($dictionary));
     $return = '';
     $return .= "<h4 class=\"text-center\">" . __('Fields') . "</h4><br>";
     foreach ($dictionary->columns as $key => $value) {
