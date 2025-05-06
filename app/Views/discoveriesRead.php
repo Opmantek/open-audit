@@ -400,7 +400,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         </div>
                                     </div>
                                     <?php $device_data_order = ['view', 'icon', 'ip', 'name', 'message', 'command_time_to_execute']; ?>
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDev" data-order='[[2,"asc"]]'>
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDev" data-order='[[2,"desc"]]'>
                                         <thead>
                                             <?php foreach ($device_data_order as $key) {
                                                 $align = '';
@@ -441,7 +441,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         </div>
                                     </div>
                                     <?php $ip_data_order = ['view', 'icon', 'ip', 'name', 'message', 'command_time_to_execute']; ?>
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableIP" data-order='[[2,"asc"]]'>
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableIP" data-order='[[2,"desc"]]'>
                                         <thead>
                                             <?php foreach ($ip_data_order as $key) {
                                                 $align = '';
