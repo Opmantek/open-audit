@@ -127,10 +127,6 @@ abstract class BaseController extends Controller
         // These need to be before the return below for dictionary items
         $this->dictionary = new stdClass();
         $this->dictionary->link = '';
-        if (!empty($this->resp->meta->collection)) {
-            // $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="' . url_to($this->resp->meta->collection . 'Help') . '">Knowledge Base</a>.';
-            $this->dictionary->link = 'For more detailed information, check the Open-AudIT Knowledge Base.';
-        }
         $this->dictionary->id = 'The identifier column (integer) in the database (read only).';
         $this->dictionary->name = 'The name given to this item. Ideally it should be unique.';
         $this->dictionary->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
@@ -175,6 +171,11 @@ abstract class BaseController extends Controller
 
         # Parse the input and create our response
         $this->resp = response_create($this);
+
+        if (!empty($this->resp->meta->collection)) {
+            // $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="' . url_to($this->resp->meta->collection . 'Help') . '">Knowledge Base</a>.';
+            $this->dictionary->link = 'For more detailed information, check the Open-AudIT Knowledge Base.';
+        }
 
         $this->licenses = new stdClass();
         if (!empty($this->resp->meta->licenses)) {
