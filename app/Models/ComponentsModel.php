@@ -1082,13 +1082,18 @@ class ComponentsModel extends BaseModel
 
         // SERVICE
         if ((string)$table === 'service') {
-            foreach ($data as $item => $attributes) {
-                $explode = explode('_', $attributes->name);
-                $attributes->name = $explode[0];
-                unset($explode);
-                // Remove any PAExec and Winexe 'services' as these are just the audit script running
-                if (strtolower($attributes->name) === 'paexec' or strtolower($attributes->name) === 'winexesvc') {
-                    unset($data[$item]);
+            if ($device->os_group === 'Windows') {
+                foreach ($data as $item => $attributes) {
+                    $explode = explode('_', $attributes->name);
+                    if (!empty($explode[1])) {
+                        log_message('debug', 'Service name was ' . $attributes->name . ', renaming to ' . $explode[0]);
+                    }
+                    $attributes->name = $explode[0];
+                    unset($explode);
+                    // Remove any PAExec and Winexe 'services' as these are just the audit script running
+                    if (strtolower($attributes->name) === 'paexec' or strtolower($attributes->name) === 'winexesvc') {
+                        unset($data[$item]);
+                    }
                 }
             }
         }
