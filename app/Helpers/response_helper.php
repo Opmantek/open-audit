@@ -473,6 +473,14 @@ if (!function_exists('response_create')) {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
+            if ($function === 'configuration_update' and $response->meta->id === $config->license_string_id) {
+                $response->meta->received_data->attributes->value = trim($response->meta->received_data->attributes->value);
+                $response->meta->received_data->attributes->value = str_replace("\n", "", $response->meta->received_data->attributes->value);
+            }
+            if ($function === 'configuration_update' and $response->meta->id === $config->license_string_collector_id) {
+                $response->meta->received_data->attributes->value = trim($response->meta->received_data->attributes->value);
+                $response->meta->received_data->attributes->value = str_replace("\n", "", $response->meta->received_data->attributes->value);
+            }
             // We need Orgs for these, associated with the user, supply them here
             if ($response->meta->collection === 'reports' and $response->meta->action === 'execute') {
                 $response->meta->orgs = response_get_org_list($instance->user, 'devices');
