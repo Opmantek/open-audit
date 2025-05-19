@@ -364,6 +364,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                     <?php $log_data_order = ['view', 'id', 'timestamp', 'ip', 'command_status', 'message']; ?>
                                     <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[1,"asc"]]'>
                                         <thead>
+                                            <tr>
                                             <?php foreach ($log_data_order as $key) {
                                                 $align = '';
                                                 if ($key === 'id' or $key === 'view' or strpos($key, '_id') !== false) {
@@ -371,8 +372,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 } ?>
                                                 <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
                                             <?php } ?>
-                                            </thead>
-                                            <thead>
+                                            </tr>
+                                            <tr>
                                             <?php foreach ($log_data_order as $key) { ?>
                                                 <th>
                                                     <div class="input-group">
@@ -382,6 +383,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     </div>
                                                 </th>
                                             <?php } ?>
+                                            </tr>
                                         </thead>
                                         <tbody>
                                         </tbody>
@@ -402,6 +404,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                     <?php $device_data_order = ['view', 'icon', 'ip', 'name', 'message', 'command_time_to_execute']; ?>
                                     <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDev" data-order='[[2,"desc"]]'>
                                         <thead>
+                                            <tr>
                                             <?php foreach ($device_data_order as $key) {
                                                 $align = '';
                                                 if ($key === 'id' or $key === 'view' or strpos($key, '_id') !== false) {
@@ -409,8 +412,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 } ?>
                                                 <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
                                             <?php } ?>
-                                        </thead>
-                                        <thead>
+                                            </tr>
+                                            <tr>
                                             <?php foreach ($device_data_order as $key) { ?>
                                                 <th>
                                                     <div class="input-group">
@@ -420,6 +423,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     </div>
                                                 </th>
                                             <?php } ?>
+                                            </tr>
                                         </thead>
                                         <tbody>
                                         </tbody>
@@ -443,6 +447,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                     <?php $ip_data_order = ['view', 'icon', 'ip', 'name', 'message', 'command_time_to_execute']; ?>
                                     <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableIP" data-order='[[2,"desc"]]'>
                                         <thead>
+                                            <tr>
                                             <?php foreach ($ip_data_order as $key) {
                                                 $align = '';
                                                 if ($key === 'icon' or $key === 'view' or strpos($key, '_id') !== false) {
@@ -450,8 +455,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 } ?>
                                                 <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
                                             <?php } ?>
-                                        </thead>
-                                        <thead>
+                                            </tr>
+                                            <tr>
                                             <?php foreach ($ip_data_order as $key) { ?>
                                                 <th>
                                                     <div class="input-group">
@@ -461,6 +466,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     </div>
                                                 </th>
                                             <?php } ?>
+                                            </tr>
                                         </thead>
                                         <tbody>
                                         </tbody>
@@ -511,7 +517,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                             </div>
                         </div>
                     </div>
-
+                </div>
+            </div>
         </main>
 
 <script {csp-script-nonce}>

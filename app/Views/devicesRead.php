@@ -375,6 +375,7 @@ if (empty($resource->type)) {
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableChangeLog" data-order='[[1,"asc"]]'>
                                             <thead>
+                                                <tr>
                                                 <?php foreach ($dataTableChangeLogColumns as $key) {
                                                     $align = '';
                                                     if (strpos($key, 'id') === intval(strlen($key) - 2)) {
@@ -383,18 +384,19 @@ if (empty($resource->type)) {
                                                     echo '<th class="' . $align . '">' . ucfirst($key) . "</th>\n                                                ";
                                                 } ?>
 
-                                            </thead>
-                                            <thead>
-                                                <?php foreach ($dataTableChangeLogColumns as $key) {
-                                                    echo "\n";
-                                                    echo '                                                <th>
-                                                    <div class="input-group">
-                                                        <input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . ucfirst($key) . '" />
-                                                    </div>
-                                                </th>';
-                                                    echo "\n";
-                                                } ?>
+                                                </tr>
+                                                <tr>
+                                                    <?php foreach ($dataTableChangeLogColumns as $key) {
+                                                        echo "\n";
+                                                        echo '                                                <th>
+                                                        <div class="input-group">
+                                                            <input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . ucfirst($key) . '">
+                                                        </div>
+                                                    </th>';
+                                                        echo "\n";
+                                                    } ?>
 
+                                                </tr>
                                             </thead>
                                             <tbody>
                                             </tbody>
