@@ -369,33 +369,34 @@ if (empty($resource->type)) {
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="change_log_section">
                                 <?php $count = !empty($included['change_log']) ? count($included['change_log']) : 0; ?>
-                                <?=  device_panel('change_log', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <?= device_panel('change_log', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <?php $dataTableChangeLogColumns = ['id', 'timestamp', 'db_table', 'db_action', 'details']; ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableChangeLog" data-order='[[1,"asc"]]'>
                                             <thead>
-                                                <tr>
-                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
-                                                    <th class="text-center"><?= __('ID') ?></th>
-                                                    <th><?= __('Timestamp') ?></th>
-                                                    <th><?= __('Type') ?></th>
-                                                    <th><?= __('Table') ?></th>
-                                                    <th><?= __('Details') ?></th>
-                                                </tr>
+                                                <?php foreach ($dataTableChangeLogColumns as $key) {
+                                                    $align = '';
+                                                    if (strpos($key, 'id') === intval(strlen($key) - 2)) {
+                                                        $align = 'text-center';
+                                                    }
+                                                    echo '<th class="' . $align . '">' . ucfirst($key) . "</th>\n                                                ";
+                                                } ?>
+
+                                            </thead>
+                                            <thead>
+                                                <?php foreach ($dataTableChangeLogColumns as $key) {
+                                                    echo "\n";
+                                                    echo '                                                <th>
+                                                    <div class="input-group">
+                                                        <input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . ucfirst($key) . '" />
+                                                    </div>
+                                                </th>';
+                                                    echo "\n";
+                                                } ?>
+
                                             </thead>
                                             <tbody>
-                                            <?php if (!empty($included['change_log'])) {
-                                                foreach ($included['change_log'] as $row) { ?>
-                                                <tr>
-                                                    <?= device_component_button_read('change_log', $row->id) ?>
-                                                    <td class="text-center"><?= $row->id ?></td>
-                                                    <td><?= $row->timestamp ?></td>
-                                                    <td><?= $row->db_action ?></td>
-                                                    <td><?= $row->db_table ?></td>
-                                                    <td><?= $row->details ?></td>
-                                                </tr>
-                                                <?php } ?>
-                                            <?php } ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -2900,5 +2901,132 @@ window.onload = function () {
         }
     })
 
+
+    $(document).ready(function () {
+        let logSort = {};
+        var myDataTable = new DataTable('.dataTableChangeLog', {
+            lengthChange: true,
+            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+            order: [[ 1, 'asc' ]],
+            pageLength: 25,
+            paging: true,
+            processing: true,
+            searching: false,
+            search: {
+                return: true
+            },
+            serverSide: true,
+            ajax: {
+                url: '<?= base_url() ?>index.php/components?components.type=change_log&components.device_id=<?= $meta->id ?>&format=json',
+                dataSrc: 'data',
+                data: function (d) {
+                    d.limit = d.length;
+                    d.offset = d.start;
+                    if (d.order[0]) {
+                    <?php
+                    foreach ($dataTableChangeLogColumns as $key) {
+                        $sort_key = $key;
+                        if (strpos($key, "__") !== false) {
+                            $sort_key = str_replace('__', '.', $key);
+                        } else {
+                            $sort_key = 'change_log' . '.' . $key;
+                        }
+                        echo "\n\t\t\t\t\t\tif (d.columns[d.order[0].column].data == 'attributes.$key') {
+                            logSort.column = '$key';
+                            logSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = '$sort_key';
+                            } else {
+                                d.sort = '-$sort_key';
+                            }
+                        }\n";
+                    }
+                    ?>
+                    } else {
+                        if (logSort.direction == 'asc') {
+                            d.sort = '-' + logSort.column;
+                            logSort.direction = 'desc';
+                        } else {
+                            d.sort = logSort.column;
+                            logSort.direction = 'asc';
+                        }
+                    }
+                    <?php foreach ($dataTableChangeLogColumns as $key) { ?>
+                    if ($("#search_<?= $key ?>").val() != '') {
+                        d.<?= $key ?> = $("#search_<?= $key ?>").val();
+                    }
+                    <?php } ?>
+                    delete d.start;
+                    delete d.length;
+                    delete d.order;
+                    delete d.columns;
+                }
+            },
+            autoWidth: false,
+            columnDefs: [
+                <?php for ($i = 0; $i < count($dataTableChangeLogColumns); $i++) {
+                    if (strpos($dataTableChangeLogColumns[$i], 'id') === intval(strlen($dataTableChangeLogColumns[$i]) - 2)) {
+                        echo "\n                {className: \"text-center\", target: $i, width: \"12em\", visible: true, name:\"" . $dataTableChangeLogColumns[$i] . "\", sortable: false},";
+                    } else {
+                        echo "\n                {className: \"text-start\",  target: $i, width: \"12em\", visible: true, name:\"" . $dataTableChangeLogColumns[$i] . "\"},";
+                    }
+                }
+                ?>
+            ],
+            columns: [
+                <?php foreach ($dataTableChangeLogColumns as $column) {
+                    if ($column === 'id') {
+                        echo '{ data: \'attributes.id\',
+                            render: function (data, type, row, meta) {
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/components/" + row.attributes.id + "?components.type=change_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                            }
+                        },';
+                        echo "\n";
+                    } else {
+                        echo "{ data: 'attributes.$column' },\n";
+                    }
+                } ?>
+            ],
+            info: true,
+            language: {
+                infoFiltered: ""
+            },
+            layout: {
+                bottomStart: {
+                    info: {
+                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                    }
+                },
+                bottomEnd: {
+                    paging: {
+                        type: 'full_numbers'
+                    }
+                }
+            }
+        });
+
+        /* This stops the sort when clicking in a search text box in the table header */
+        $(".dataTableChangeLog").on("click", function(e) { e.stopPropagation() });
+
+        /* And don't automatically send the result - wait for the user to press <enter> / <return> */
+        $(".dataTablesearchField").on("keypress", function (evtObj) {
+            if (evtObj.keyCode == 13) {
+                myDataTable.ajax.reload();
+            }
+        });
+
+        myDataTable.on('xhr', function (e, settings, json) {
+            if (json.warning) {
+                $("#notice").show();
+                $("#alert").html(json.warning + '<button id="button" type="button" class="btn-close" aria-label="Close"></button>');
+                $("#alert").show();
+            } else {
+                $("#alert").hide();
+            }
+        });
+        $(document).on('click', '#button', function() {
+            $(this).parent().hide();
+        });
+    });
 }
 </script>
