@@ -36,6 +36,7 @@ $os = !empty($_GET['os']) ? 'os=' . $_GET['os'] : '';
                                     </div>
                                 </div>
 
+                                <?= create_text_field('data[attributes][os]', __('Operating System'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][software_name]', __('Software Name'), $dictionary->attributes->create) ?>
                                 <!--
                                 <?= create_text_field('data[attributes][software_version]', __('Software Version'), $dictionary->attributes->create) ?>
@@ -75,7 +76,6 @@ $os = !empty($_GET['os']) ? 'os=' . $_GET['os'] : '';
             </div>
         </main>
 
-
 <?php if (empty($included['software'])) { ?>
 <script {csp-script-nonce}>
 window.onload = function () {
@@ -83,6 +83,7 @@ window.onload = function () {
         <?php if (!empty($included['software'])) { ?>
         $("#createform").hide();
         <?php } ?>
+        $("#data\\[attributes\\]\\[os\\]").val('Windows');
     });
 }
 </script>
