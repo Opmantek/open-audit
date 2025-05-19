@@ -102,7 +102,7 @@ class OrgsModel extends BaseModel
         if ($this->db->affectedRows() !== 1) {
             return false;
         }
-        $tables = array('applications', 'attributes', 'auth', 'baselines', 'buildings', 'chart', 'clouds', 'clusters', 'collectors', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'graph', 'groups', 'integrations', 'licenses', 'locations', 'maps', 'networks', 'queries', 'queue', 'rack_devices', 'racks', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'system', 'tasks', 'users', 'widgets');
+        $tables = array('applications', 'attributes', 'auth', 'baselines', 'buildings', 'chart', 'clouds', 'clusters', 'collectors', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'licenses', 'locations', 'maps', 'networks', 'queries', 'queue', 'rack_devices', 'racks', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'system', 'tasks', 'users', 'widgets');
         foreach ($tables as $table) {
             $builder = $this->db->table($table);
             $builder->set('org_id', $org[0]->parent_id, false);
@@ -392,7 +392,7 @@ class OrgsModel extends BaseModel
         if (!empty($this->tableReset('orgs'))) {
             return false;
         }
-        $tables = array('agents', 'applications', 'attributes', 'auth', 'baselines', 'buildings', 'chart', 'clouds', 'clusters', 'collectors', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'graph', 'groups', 'integrations', 'invoice', 'licenses', 'locations', 'maps', 'networks', 'queries', 'queue', 'rack_devices', 'racks', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'system', 'tasks', 'users', 'widgets');
+        $tables = array('agents', 'applications', 'attributes', 'auth', 'baselines', 'buildings', 'chart', 'clouds', 'clusters', 'collectors', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'invoice', 'licenses', 'locations', 'maps', 'networks', 'queries', 'queue', 'rack_devices', 'racks', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'system', 'tasks', 'users', 'widgets');
         foreach ($tables as $table) {
             $sql = "UPDATE `$table` SET org_id = 1";
             $query = $this->db->query($sql);

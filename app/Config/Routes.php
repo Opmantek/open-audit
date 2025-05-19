@@ -100,8 +100,6 @@ $routes->post('discoveries/(:num)/executeForm', 'Discoveries::executeCollector/$
 $routes->get('news/execute', 'News::executeAll', ['as' => 'newsExecuteAll']);
 $routes->cli('news/execute', 'Cli::executeNews', ['as' => 'executeNewssAll']);
 
-$routes->post('graph/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'graphReset']);
-
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
 $routes->get('api', 'Help::api', ['filter' => \App\Filters\Session::class, 'as' => 'api']);
 $routes->get('help', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'helpCollection']);

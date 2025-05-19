@@ -1371,23 +1371,6 @@ class ComponentsModel extends BaseModel
                     $query = $this->db->query($sql);
                 }
             }
-            if ((string)$table === 'partition') {
-                // insert an entry into the graph table
-                if (!isset($data_item->used) or $data_item->used === '') {
-                    $data_item->used = 0;
-                }
-                if (!isset($data_item->free) or $data_item->free === '') {
-                    $data_item->free = 0;
-                }
-                $used_percent = 0;
-                $free_percent = 0;
-                if (!empty($data_item->used) and !empty($data_item->size)) {
-                    $used_percent = @intval(($data_item->used / $data_item->size) * 100);
-                    $free_percent = @intval(100 - $used_percent);
-                }
-                $sql = 'INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-                $query = $this->db->query($sql, [intval($device->org_id), intval($device->id), "{$table}", intval($id), "{$table}", intval($used_percent), intval($free_percent), intval($data_item->used), intval($data_item->free), intval($data_item->size), "{$device->last_seen}"]);
-            }
         }
 
         // remove the duplicated DB_items
