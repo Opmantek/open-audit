@@ -2874,7 +2874,7 @@ window.onload = function () {
         if (confirm("<?= __('Should I remove all non-current data from this device?') ?>")) {
             $.ajax({
                 type: "PATCH",
-                url: "<?= base_url() ?>devices/<?= $resource->id ?>/reset",
+                url: "<?= base_url() ?>index.php/devices/<?= $resource->id ?>/reset",
                 contentType: "application/json",
                 data: {},
                 success: function (data) {
