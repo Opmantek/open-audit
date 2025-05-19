@@ -133,7 +133,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     $download_button = '';
     if ($collection === 'scripts' and !empty($id)) {
         if ($style === 'icontext') {
-            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-download_button text-primary\"></span>" . __("Download") . "</a>";
+            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-download text-primary\"></span>" . __("Download") . "</a>";
         } elseif ($style === 'icon') {
             $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span class=\"fa fa-download text-primary\"></span></a>";
         } else {
