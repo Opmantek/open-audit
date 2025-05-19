@@ -1558,27 +1558,29 @@ if (error_returned = 0) then
     If colAVItems.count > 0 Then
         result.WriteText "  <antivirus>" & vbcrlf
         For Each objAntiVirusProduct In colAVItems
-            result.WriteText "      <item>" & vbcrlf
-            result.WriteText "          <name>" & escape_xml(objAntiVirusProduct.displayName) & "</name>" & vbcrlf
-            AvStatus = Hex(objAntiVirusProduct.ProductState)
-            if (objAntiVirusProduct.ProductState = "393472" or objAntiVirusProduct.ProductState = "266240" _
-                or objAntiVirusProduct.ProductState = "331776" or objAntiVirusProduct.ProductState = "397568" _
-                or Mid(AvStatus, 2, 2) = "10" Or Mid(AvStatus, 2, 2) = "11" or mid(AvStatus, 5, 2) = "10" or Mid(AvStatus, 5, 2) = "11") then
-                result.WriteText "          <state>On</state>" & vbcrlf
-            else
-                result.WriteText "          <state>Off</state>" & vbcrlf
+            if (objAntiVirusProduct.displayName != "") then
+                result.WriteText "      <item>" & vbcrlf
+                result.WriteText "          <name>" & escape_xml(objAntiVirusProduct.displayName) & "</name>" & vbcrlf
+                AvStatus = Hex(objAntiVirusProduct.ProductState)
+                if (objAntiVirusProduct.ProductState = "393472" or objAntiVirusProduct.ProductState = "266240" _
+                    or objAntiVirusProduct.ProductState = "331776" or objAntiVirusProduct.ProductState = "397568" _
+                    or Mid(AvStatus, 2, 2) = "10" Or Mid(AvStatus, 2, 2) = "11" or mid(AvStatus, 5, 2) = "10" or Mid(AvStatus, 5, 2) = "11") then
+                    result.WriteText "          <state>On</state>" & vbcrlf
+                else
+                    result.WriteText "          <state>Off</state>" & vbcrlf
+                end if
+                if Mid(AvStatus, 4, 2) = "00" then
+                    result.WriteText "          <status>UpToDate</status>" & vbcrlf
+                elseif Mid(AvStatus, 4, 2) = "10" then
+                    result.WriteText "          <status>OutOfDate</status>" & vbcrlf
+                end if
+                if (objAntiVirusProduct.displayName = "Windows Defender") then
+                    result.WriteText "          <owner>Windows</owner>" & vbcrlf
+                else
+                    result.WriteText "          <owner>NonMs</owner>" & vbcrlf
+                end if
+                result.WriteText "      </item>" & vbcrlf
             end if
-            if Mid(AvStatus, 4, 2) = "00" then
-                result.WriteText "          <status>UpToDate</status>" & vbcrlf
-            elseif Mid(AvStatus, 4, 2) = "10" then
-                result.WriteText "          <status>OutOfDate</status>" & vbcrlf
-            end if
-            if (objAntiVirusProduct.displayName = "Windows Defender") then
-                result.WriteText "          <owner>Windows</owner>" & vbcrlf
-            else
-                result.WriteText "          <owner>NonMs</owner>" & vbcrlf
-            end if
-            result.WriteText "      </item>" & vbcrlf
         next
         result.WriteText "  </antivirus>" & vbcrlf
     end if
