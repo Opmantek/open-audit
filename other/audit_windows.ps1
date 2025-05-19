@@ -1386,9 +1386,9 @@ if ($debug -gt 0) {
 
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.printer = @()
+$result.print_queue = @()
 $item = @{}
-$Win32_Printer = Get-WmiObject Win32_Printer -filter "PrintProcessor <> 'winprint'" -ErrorAction Ignore
+$Win32_Printer = Get-WmiObject Win32_Printer -Filter "NOT Name LIKE '%microsoft%' AND NOT Name LIKE '%windows%' AND NOT Name LIKE '%fax%' AND NOT Name LIKE '%onenote%' AND NOT Name LIKE '%pdf%'" -ErrorAction Ignore
 if ($Win32_Printer -ne $null) {
     $Win32_Printer | ForEach {
         Clear-Variable -name item
@@ -1510,7 +1510,7 @@ if ($Win32_Printer -ne $null) {
             if ($_.ExtendedPrinterStatus -eq 17 ) { $item.status = "I/O Active" }
             if ($_.ExtendedPrinterStatus -eq 18 ) { $item.status = "Manual Feed" }
             $item.capabilities = [string]::join(", ", $_.CapabilityDescriptions)
-            $result.printer += $item
+            $result.print_queue += $item
         }
     }
 }
