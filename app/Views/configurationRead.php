@@ -44,6 +44,7 @@ if ($resource->name === 'feature_agents_advanced') {
                             <br>
                             <div class="offset-2 col-8">
                                 <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                                <p><?= $resource->description ?></p>
                             </div>
                         </div>
                     </div>
