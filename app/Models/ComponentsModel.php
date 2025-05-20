@@ -918,6 +918,22 @@ class ComponentsModel extends BaseModel
                     unset($data[$item]);
                     continue;
                 }
+                if (strpos($attributes->ip, '.') !== false) {
+                    if (strpos($attributes->protocol, 'tcp') !== false) {
+                        $attributes->protocol = 'tcp4';
+                    }
+                    if (strpos($attributes->protocol, 'udp') !== false) {
+                        $attributes->protocol = 'udp4';
+                    }
+                }
+                if (strpos($attributes->ip, ':') !== false) {
+                    if (strpos($attributes->protocol, 'tcp') !== false) {
+                        $attributes->protocol = 'tcp6';
+                    }
+                    if (strpos($attributes->protocol, 'udp') !== false) {
+                        $attributes->protocol = 'udp6';
+                    }
+                }
                 if (isset($instance->config->process_netstat_windows_dns) and $instance->config->process_netstat_windows_dns === 'n') {
                     if (stripos($attributes->program, 'dns.exe') !== false and intval($attributes->port) > 1000) {
                         unset($data[$item]);
