@@ -7003,12 +7003,19 @@ if (strcomputer = "." and audit_location = "local") then
                             loop
                             strtext = trim(strtext)
                             words = split(strtext)
+                            protocol = lcase(words(0))
                             ports = split(words(1), ":")
                             port = ports(UBound(ports))
                             ip = replace(words(1), ":" & port, "")
                             pid = words(Ubound(words))
                             set colItems = objWMIService.ExecQuery("Select * from Win32_Process where ProcessID = " & pid,,32)
                             program = ""
+                            if (instr(ip, ":")) then
+                                protocol = protocol + "6"
+                            end if
+                            if (instr(ip, ".")) then
+                                protocol = protocol + "4"
+                            end if
                             for each objItem in colItems
                                 program = objItem.CommandLine
                                 if (program = "") then
@@ -7017,7 +7024,7 @@ if (strcomputer = "." and audit_location = "local") then
                             next
                             if (program > "" and port > "") then
                                 result.WriteText "    <item>" & vbcrlf
-                                result.WriteText "        <protocol>" & escape_xml(words(0)) & "</protocol>" & vbcrlf
+                                result.WriteText "        <protocol>" & escape_xml(protocol) & "</protocol>" & vbcrlf
                                 result.WriteText "        <ip>" & escape_xml(ip) & "</ip>" & vbcrlf
                                 result.WriteText "        <port>" & escape_xml(port) & "</port>" & vbcrlf
                                 result.WriteText "        <program>" & escape_xml(program) & "</program>" & vbcrlf

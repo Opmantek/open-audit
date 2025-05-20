@@ -2286,6 +2286,12 @@ Get-NetTCPConnection -State Listen | ForEach {
     Clear-Variable -name item
     $item = @{}
     $item.protocol = "tcp"
+    if ($_.LocalAddress.IndexOf(":") -ne -1) {
+        $item.protocol = "tcp6"
+    }
+    if ($_.LocalAddress.IndexOf(".") -ne -1) {
+        $item.protocol = "tcp4"
+    }
     $item.ip = $_.LocalAddress
     $item.port = $_.LocalPort
     $item.processId = $_.OwningProcess
@@ -2315,6 +2321,12 @@ if ($audit_netstat_udp -eq 'y') {
         Clear-Variable -name item
         $item = @{}
         $item.protocol = "udp"
+        if ($_.LocalAddress.IndexOf(":") -ne -1) {
+            $item.protocol = "udp6"
+        }
+        if ($_.LocalAddress.IndexOf(".") -ne -1) {
+            $item.protocol = "udp4"
+        }
         $item.ip = $_.LocalAddress
         $item.port = $_.LocalPort
         $item.processId = $_.OwningProcess
