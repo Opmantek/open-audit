@@ -2295,7 +2295,7 @@ Get-NetTCPConnection -State Listen | ForEach {
     if ($item.program -eq $null) {
         $item.program = ""
     }
-    if ($item.port -ne "" -and $item.port -ne $null) {
+    if ($item.port -ne "" -and $item.port -ne $null -and $item.program -ne "") {
         # Added this check because in testing we managed to get an entry without a port or associated program
         $result.netstat += $item
     }
@@ -2321,7 +2321,7 @@ if ($audit_netstat_udp -eq 'y') {
         if ($item.program -eq $null) {
             $item.program = ""
         }
-        if ($item.port -ne "" -and $item.port -ne $null) {
+        if ($item.port -ne "" -and $item.port -ne $null -and $item.program -ne "") {
             # Added this check because in testing we managed to get an entry without a port or associated program
             $result.netstat += $item
         }

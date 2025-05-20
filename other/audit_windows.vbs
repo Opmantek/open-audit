@@ -7010,14 +7010,18 @@ if (strcomputer = "." and audit_location = "local") then
                             set colItems = objWMIService.ExecQuery("Select * from Win32_Process where ProcessID = " & pid,,32)
                             program = ""
                             for each objItem in colItems
-                                program = objItem.CommandLine
+                                if (objItem.CommandLine > "") then
+                                    program = objItem.CommandLine
+                                end if
                             next
-                            result.WriteText "    <item>" & vbcrlf
-                            result.WriteText "        <protocol>" & escape_xml(words(0)) & "</protocol>" & vbcrlf
-                            result.WriteText "        <ip>" & escape_xml(ip) & "</ip>" & vbcrlf
-                            result.WriteText "        <port>" & escape_xml(port) & "</port>" & vbcrlf
-                            result.WriteText "        <program>" & escape_xml(program) & "</program>" & vbcrlf
-                            result.WriteText "    </item>" & vbcrlf
+                            if (program > "" and port > "") then
+                                result.WriteText "    <item>" & vbcrlf
+                                result.WriteText "        <protocol>" & escape_xml(words(0)) & "</protocol>" & vbcrlf
+                                result.WriteText "        <ip>" & escape_xml(ip) & "</ip>" & vbcrlf
+                                result.WriteText "        <port>" & escape_xml(port) & "</port>" & vbcrlf
+                                result.WriteText "        <program>" & escape_xml(program) & "</program>" & vbcrlf
+                                result.WriteText "    </item>" & vbcrlf
+                            end if
                         end if
                     end if
                 end if
