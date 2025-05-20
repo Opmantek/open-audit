@@ -2291,6 +2291,9 @@ Get-NetTCPConnection -State Listen | ForEach {
     $item.processId = $_.OwningProcess
     Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
         $item.program = $_.CommandLine
+        if ($item.program -eq $null) {
+            $item.program = $_.Name
+        }
     }
     if ($item.program -eq $null) {
         $item.program = ""
@@ -2317,6 +2320,9 @@ if ($audit_netstat_udp -eq 'y') {
         $item.processId = $_.OwningProcess
         Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
             $item.program = $_.CommandLine
+            if ($item.program -eq $null) {
+                $item.program = $_.Name
+            }
         }
         if ($item.program -eq $null) {
             $item.program = ""
