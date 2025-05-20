@@ -128,6 +128,16 @@ class Collections extends BaseController
             }
             $this->resp->meta->data_order = $this->componentsModel->getFields($table);
             $this->resp->meta->data_order[] = 'devices__name';
+            if (!empty($this->config->components_extra_columns)) {
+                $db = db_connect();
+                $explode = explode(',', $this->config->components_extra_columns);
+                foreach ($explode as $column) {
+                    $column = trim($column);
+                    if ($db->fieldExists($column, 'devices')) {
+                        $this->resp->meta->data_order[] = 'devices__' . $column;
+                    }
+                }
+            }
             $this->resp->meta->component = $table;
         }
         if ($this->resp->meta->collection === 'discoveries') {

@@ -101,6 +101,16 @@ class ComponentsModel extends BaseModel
         $properties[] = "`$table`.*";
         $properties[] = "devices.id as `devices.id`";
         $properties[] = "devices.name as `devices.name`";
+        if (!empty($instance->config->components_extra_columns)) {
+            $explode = explode(',', $instance->config->components_extra_columns);
+            foreach ($explode as $column) {
+                $column = trim($column);
+                if ($this->db->fieldExists($column, 'devices')) {
+                    $properties[] = "devices." . $column . " as `devices." . $column . "`";
+                }
+            }
+            log_message('info', 'Properties: ' . json_encode($properties));
+        }
         $this->builder->select($properties, false);
         $this->builder->join('devices', $table . '.device_id = devices.id', 'left');
         foreach ($resp->meta->filter as $filter) {
