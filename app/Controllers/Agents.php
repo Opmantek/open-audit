@@ -91,7 +91,19 @@ class Agents extends BaseController
         //     return;
         // }
         // $scriptContents = $this->agentsModel->download($id);
+
+        if (empty($id)) {
+            $id = 'windows';
+        }
+
         $filename = ROOTPATH . 'other/agent_windows.ps1';
+        if ($id === 'linux') {
+            $filename = ROOTPATH . 'other/agent_linux.sh';
+        }
+        if ($id === 'macos') {
+            $filename = ROOTPATH . 'other/agent_macos.sh';
+        }
+
         if (!file_exists($filename)) {
             log_message('error', "Script does not exist on filesystem for $filename.");
             return null;
@@ -99,13 +111,25 @@ class Agents extends BaseController
         $file = file_get_contents($filename);
         $file = str_replace("\r\n", "\n", $file);
         $file = str_replace("\r", "\n", $file);
-        $file = str_replace("\$url = ''", "\$url = '" . base_url() . "index.php/'", $file);
-        if ($id !== null) {
-            $file = str_replace("\$agentId = ''", "\$agentId = '$id'", $file);
+        if ($id === 'windows') {
+            $file = str_replace("\$url = ''", "\$url = '" . base_url() . "index.php/'", $file);
+            if ($id !== null) {
+                $file = str_replace("\$agentId = ''", "\$agentId = '$id'", $file);
+            }
+            if ($request->isSecure() and isset($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
+                $file = str_replace("\$advanced = 'n'", "\$advanced = 'y'", $file);
+            }
         }
-        if ($request->isSecure() and isset($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
-            $file = str_replace("\$advanced = 'n'", "\$advanced = 'y'", $file);
+        if ($id === 'linux' or $id === 'macos') {
+            $file = str_replace("url=\"\"", "url = \"" . base_url() . "index.php/\"", $file);
+            if ($id !== null) {
+                $file = str_replace("agentId=\"\"", "agentId=\"$id\"", $file);
+            }
+            if ($request->isSecure() and isset($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
+                $file = str_replace("advanced=\"n\"", "advanced=\"y\"", $file);
+            }
         }
+
         if (empty($file)) {
             Services::session()->setFlashdata('danger', 'Cannot download installer, please contact your Open-AudIT administrator.');
             return redirect()->route($this->config->homepage);
@@ -113,7 +137,12 @@ class Agents extends BaseController
         header('Cache-Control: public');
         header('Content-Description: File Transfer');
         // TODO - test for Windows VS Unis (.ps1 or .sh)
-        header('Content-Disposition: attachment; filename=agent.ps1');
+        if ($id === 'windows') {
+            header('Content-Disposition: attachment; filename=agent.ps1');
+        }
+        if ($id === 'linux' or $id === 'macos') {
+            header('Content-Disposition: attachment; filename=agent.sh');
+        }
         header('Content-Type: text');
         header('Content-Transfer-Encoding: binary');
         echo $file;
