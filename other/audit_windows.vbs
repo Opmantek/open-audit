@@ -60,7 +60,10 @@ strpass = ""
 ' If our URL uses https, but the certificate is invalid or unrecognised (self signed), we should submit anyway.
 ignore_invalid_ssl = "y"
 
-' optional - assign any PCs audited to this Org - take the OrgId from Open-AudIT web interface
+' optional - assign the PC to this Location - take the location_id from Open-AudIT web interface
+location_id = ""
+
+' optional - assign the PC to this Org - take the org_id from Open-AudIT web interface
 org_id = ""
 
 ' optional - query this Active Directory attribute to determine the users work unit
@@ -163,6 +166,9 @@ For Each strArg in objArgs
 
             case "ignore_invalid_ssl"
             ignore_invalid_ssl = argValue
+
+            case "location_id"
+            location_id = argValue
 
             case "org_id"
             org_id = argValue
@@ -280,8 +286,12 @@ if (help = "y") then
     wscript.echo "    *y - If our URL uses https, but the certificate is invalid or unrecognised (self signed), we should submit anyway."
     wscript.echo "     n - Do not submit if certificate is invalid (or self signed)."
     wscript.echo ""
+    wscript.echo "  location_id"
+    wscript.echo "        - The location_id (an integer) taken from Open-AudIT. If set the device will be associated to that Location."
+    wscript.echo ""
+    wscript.echo ""
     wscript.echo "  org_id"
-    wscript.echo "        - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+    wscript.echo "        - The org_id (an integer) taken from Open-AudIT. If set the device will be associated to that Organisation."
     wscript.echo ""
     wscript.echo "  ping_target"
     wscript.echo "      *n - Attempt to ping the target computer to determine if it is online."
@@ -364,6 +374,7 @@ if debugging > "0" then
     wscript.echo "discovery_id         " & discovery_id
     wscript.echo "hide_audit_window    " & hide_audit_window
     wscript.echo "ldap                 " & ldap
+    wscript.echo "location_id          " & location_id
     wscript.echo "org_id               " & org_id
     wscript.echo "ping_target          " & ping_target
     wscript.echo "self_delete          " & self_delete
@@ -1315,6 +1326,7 @@ result.WriteText "      <os_arch>" & escape_xml(system_os_arch) & "</os_arch>" &
 result.WriteText "      <memory_count>" & escape_xml(system_pc_memory) & "</memory_count>" & vbcrlf
 result.WriteText "      <processor_count>" & escape_xml(system_pc_num_processor) & "</processor_count>" & vbcrlf
 result.WriteText "      <os_installation_date>" & escape_xml(system_pc_date_os_installation) & "</os_installation_date>" & vbcrlf
+result.WriteText "      <location_id>" & escape_xml(location_id) & "</location_id>" & vbcrlf
 result.WriteText "      <org_id>" & escape_xml(org_id) & "</org_id>" & vbcrlf
 result.WriteText "      <cluster_name>" & escape_xml(man_cluster_name) & "</cluster_name>" & vbcrlf
 result.WriteText "      <last_seen_by>" & escape_xml(last_seen_by) & "</last_seen_by>" & vbcrlf

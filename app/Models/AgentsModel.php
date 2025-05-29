@@ -92,12 +92,12 @@ class AgentsModel extends BaseModel
         return true;
     }
 
-    public function download(int $id = 0): ?string
+    public function download(int $id = 0, string $os = ''): ?string
     {
         $instance = & get_instance();
         // $result = $this->read($id);
         // $data = $result[0]->attributes;
-        // if (empty($data)) {
+        // if (empty($id)) {
         //     log_message('error', 'No script returned when ScriptsModel::download called with ID ' . $id);
         //     return null;
         // }
@@ -126,37 +126,6 @@ class AgentsModel extends BaseModel
     {
         log_message('debug', 'AgentsExecute called.');
         return;
-    }
-
-
-    public function getByOs(string $os = ''): ?int
-    {
-        switch (strtolower($os)) {
-            case 'linux':
-                $script = 'agent_installer_linux.sh';
-                break;
-
-            case 'darwin':
-            case 'osx':
-                $script = 'agent_installer_apple.sh';
-                break;
-
-            case 'windows':
-                $script = 'agent_installer_windows.ps1';
-                break;
-
-            default:
-                $audit_script = '';
-                break;
-        }
-        $sql = "SELECT * FROM agents WHERE os = ? LIMIT 1";
-        $query = $this->db->query($sql, [$audit_script])->getResult();
-        if (empty($query[0]->id)) {
-            // Invalid OS
-            log_message('error', "Invalid OS provided to ScriptsModel::getByOs ($os).");
-            return null;
-        }
-        return intval($query[0]->id);
     }
 
     /**

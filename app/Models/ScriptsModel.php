@@ -306,6 +306,7 @@ class ScriptsModel extends BaseModel
                 break;
 
             case 'darwin':
+            case 'macos':
             case 'osx':
                 $audit_script = 'audit_osx.sh';
                 break;

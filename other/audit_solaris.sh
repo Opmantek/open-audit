@@ -56,6 +56,9 @@ discovery_id=""
 # the address of the Open-AudIT server "submit" page
 url="http://localhost/open-audit/index.php/input/devices"
 
+# optional - assign any PCs audited to this Location - take the location_id from Open-AudIT interface
+location_id=""
+
 # optional - assign any PCs audited to this Org - take the org_id from Open-AudIT interface
 org_id=""
 
@@ -247,6 +250,8 @@ for arg in "$@"; do
                         debugging="$parameter_value" ;;
                 "discovery_id" )
                         discovery_id="$parameter_value" ;;
+                "location_id" )
+                        location_id="$parameter_value" ;;
                 "org_id" )
                         org_id="$parameter_value" ;;
                 "self_delete" )
@@ -289,6 +294,9 @@ if [ "$help" = "y" ]; then
     echo "  -h or --help or help=y"
     echo "      y - Display this help output."
     echo "     *n - Do not display this output."
+    echo ""
+    echo "  location_id"
+    echo "       - The location_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Location."
     echo ""
     echo "  org_id"
     echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
@@ -336,6 +344,7 @@ if [ $debugging -gt 0 ]; then
     echo "Submit Online       $submit_online"
     echo "Debugging Level     $debugging"
     echo "Discovery ID        $discovery_id"
+    echo "Location Id         $location_id"
     echo "Org Id              $org_id"
     echo "File                $xml_file_full_path"
     echo "----------------------------"
@@ -451,6 +460,7 @@ echo "          <os_arch>"$(escape_xml "$system_pc_os_arch")"</os_arch>" >> $xml
 echo "          <memory_count>"$(escape_xml "$system_pc_memory")"</memory_count>" >> $xml_file
 echo "          <processor_count>"$(escape_xml "$processor_physical_count")"</processor_count>" >> $xml_file
 echo "          <os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"</os_installation_date>" >> $xml_file
+echo "          <location_id>"$(escape_xml "$location_id")"</location_id>" >> $xml_file
 echo "          <org_id>"$(escape_xml "$org_id")"</org_id>" >> $xml_file
 echo "          <discovery_id>"$(escape_xml "$discovery_id")"</discovery_id>" >> $xml_file
 echo "    </sys>" >> $xml_file

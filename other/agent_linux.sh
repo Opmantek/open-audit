@@ -1,10 +1,5 @@
 #!/bin/bash
 
-if [ "$(id -u)" != "0" ]; then
-    echo "This script should be run by root or using sudo." >&2
-    exit 1
-fi
-
 version="5.6.5"
 
 ORIGIFS=$IFS
@@ -17,7 +12,10 @@ audit="n"
 debug="n"
 help="n"
 install="n"
+location_id=""
+org_id=""
 uninstall="n"
+update="n"
 url=""
 
 # Not setable by user
@@ -98,6 +96,7 @@ if [ "$debug" = "y" ]; then
     echo "Uninstall: $uninstall"
     echo "Update: $update"
     echo "URL: $url"
+    echo "----------------------------"
     echo ""
 fi
 
@@ -106,6 +105,11 @@ execute_audit ()
     location_id="$1"
     org_id="$2"
     debugging="$3"
+
+    if [ "$debug" = "y" ]; then
+        echo "Auditing" > `tty`
+    fi
+
     # Make sure we have a directory
     if [ ! -d "$programPath" ]; then
         test=$(mkdir "$programPath")
@@ -116,43 +120,48 @@ execute_audit ()
         exit 1
     fi
     if [ "$debug" = "y" ]; then
-        echo "Attempting to download audit_linux.sh from $url/scripts/linux/download" > `tty`
-        echo "And store it in $programPath/audit_linux.sh" > `tty`
+        echo "Attempting to download audit_linux.sh from ${url}/scripts/linux/download" > `tty`
+        echo "And store it in ${programPath}/audit_linux.sh" > `tty`
         echo "" > `tty`
     fi
-    test=$(execute_download "$url/scripts/linux/download" "$programPath/audit_linux.sh")
-    if [ "$debug" = "y" ] && [ -f "$programPath/audit_linux.sh" ]; then
+
+    test=$(execute_download "$url/scripts/linux/download" "${programPath}/audit_linux.sh")
+    if [ "$debug" = "y" ] && [ -f "${programPath}/audit_linux.sh" ]; then
         echo "Audit script downloaded successfully." > `tty`
         echo "" > `tty`
     fi
-    if [ ! -f "$programPath/audit_linux.sh" ]; then
+    if [ ! -f "${programPath}/audit_linux.sh" ]; then
         echo "Audit script not downloaded." >&2
         exit 1
     fi
     # Make the audit script executable
-    `chmod 777 $programPath/audit_linux.sh`
-    command="$programPath/audit_linux.sh"
+    `chmod 777 ${programPath}/audit_linux.sh`
+    command="${programPath}/audit_linux.sh"
     # Build the command
     # No need to set the URL here as we download from $url and 
     #        Open-AudIT will set it in the audit script for us
     if [ "$debugging" = "y" ]; then
         command="$command debugging=5"
     fi
-    if [ "$location_id" = "y" ]; then
+    if [ "$location_id" ]; then
         command="$command location_id=$location_id"
     fi
-    if [ "$org_id" = "y" ]; then
+    if [ "$org_id" ]; then
         command="$command org_id=$org_id"
     fi
     if [ "$debug" = "y" ]; then
         echo "Running: $command" > `tty`
         echo "" > `tty`
     fi
+
     # Run the audit
     if [ "$debug" = "y" ]; then
-        eval $command > `tty`
-    else
         eval $command
+        echo "Audit complete." > `tty`
+        echo "---------------" > `tty`
+        echo "" > `tty`
+    else
+        eval $command > /dev/null
     fi
 }
 
@@ -164,16 +173,16 @@ execute_command ()
         echo "" > `tty`
     fi
     if [ "$debug" = "y" ]; then
-        eval $command > `tty`
-    else
         eval $command
+    else
+        eval $command > /dev/null
     fi
 }
 
 execute_download ()
 {
-    url="$1"
-    if [ ! "$url" ]; then
+    this_url="$1"
+    if [ ! "$this_url" ]; then
         return
     fi
     file="$2"
@@ -181,7 +190,7 @@ execute_download ()
         return
     fi
     if [ "$debug" = "y" ]; then
-        echo "Downloading: $url" > `tty`
+        echo "Downloading: $this_url" > `tty`
     fi
     if [ ! -f  ]; then
         mkdir "$programPath"
@@ -189,54 +198,83 @@ execute_download ()
     if [ "$debug" = "y" ]; then
         echo "Saving to: $file" > `tty`
     fi
-    if [ "$debug" = "y" ]; then
-        curl "$url" --output "$file" > `tty`
-    else
-        curl -s "$url" --output "$file"
-    fi
+    curl -s "$this_url" --output "$file"
 }
 
 
 execute_install ()
 {
+    # Only root
+    if [ "$(id -u)" != "0" ]; then
+        echo "This script should be run by root or using sudo, exiting." >&2
+        exit 1
+    fi
+
+    if [ -d "$programPath" ]; then
+        echo "ERROR - $programPath exists, not installing." >&2
+        return;
+    fi
+
     if [ "$debug" = "y" ]; then
-        echo "Installing into $programPath." > `tty`
+        echo "Installing into ${programPath}" > `tty`
     fi
 
     # Create the install directory if it doesn't already exist
-    if [ ! -d "$programPath" ]; then
-        test=$(mkdir "$programPath")
+    if [ ! -d "${programPath}" ]; then
+        if [ "$debug" = "y" ]; then
+            echo "Creating ${{programPath}}" > `tty`
+        fi
+        test=$(mkdir "${programPath}")
     fi
-    if [ ! -d "$programPath" ]; then
-        echo "ERROR - Could not create $programPath" >&2
+    if [ ! -d "${programPath}" ]; then
+        echo "ERROR - Could not create ${programPath}" >&2
         echo "$test" >&2
         exit 1
     fi
-    if [ "$debug" = "y" ]; then
-        echo "$programPath directory created." > `tty`
-    fi
+
     # Create the downloads directory if it doesn't already exist
     if [ ! -d "$programPath/downloads" ]; then
-        test=$(mkdir "$programPath/downloads")
+        if [ "$debug" = "y" ]; then
+            echo "Creating ${programPath}/downloads" > `tty`
+        fi
+        test=$(mkdir "${programPath}/downloads")
     fi
     if [ ! -d "$programPath/downloads" ]; then
         echo "ERROR - Could not create $programPath/downloads" >&2
         echo "$test" >&2
         exit 1
     fi
-    if [ "$debug" = "y" ]; then
-        echo "$programPath/downloads directory created." > `tty`
-    fi
+
     # Copy the agent into this directory
-    test=$(cp "$scriptPath/agent.sh" "$programPath/agent.sh")
-    if [ ! -f "$programPath/agent.sh" ]; then
-        echo "ERROR - Could not copy $scriptPath/agent.sh to $programPath/agent.sh" >&2
-        echo "$test" >&2
-        exit 1
+    if [ ! -f "$scriptPath/agent.sh" ]; then
+        path="${url}agents/macos/download"
+        if [ "$agentId" ]; then
+            path="${url}agents/${agentId}/download/macos"
+        fi
+        if [ "$debug" = "y" ]; then
+            echo "Downloading agent from ${path} to ${programPath}/agent.sh" > `tty`
+        fi
+        execute_download "${path}" "${programPath}/agent.sh"
+        if [ ! -f "$programPath/agent.sh" ]; then
+            echo "ERROR - Could not download agent from ${path} to ${programPath}/agent.sh" >&2
+            echo "$test" >&2
+            exit 1
+        fi
+    else
+        if [ "$debug" = "y" ]; then
+            echo "Copying agent from ${scriptPath}/agent.sh to ${programPath}/agent.sh" > `tty`
+        fi
+        test=$(cp "${scriptPath}/agent.sh" "${programPath}/agent.sh")
+        if [ ! -f "$programPath/agent.sh" ]; then
+            echo "ERROR - Could not copy ${scriptPath}/agent.sh to ${programPath}/agent.sh" >&2
+            echo "$test" >&2
+            exit 1
+        fi
     fi
-    if [ "$debug" = "y" ]; then
-        echo "Agent copied." > `tty`
-    fi
+
+    chmod 777 "${programPath}"
+    chmod 777 "${programPath}/downloads"
+    chmod 755 "${programPath}/agent.sh"
 
     if [ "$debug" = "y" ]; then
         echo "Install task into cron" > `tty`
@@ -254,26 +292,26 @@ execute_install ()
         minute=$(date +%M)
         echo "# m h dom month dow user command
 # run the task checker every 13:01
-$minute 13 * * *   root    php /usr/local/open-audit/public/index.php tasks execute >/dev/null 2>&1" > /etc/cron.d/open-audit-agent
+$minute 13 * * *   root    /usr/local/Open-AudIT-Agent/agent.sh >/dev/null 2>&1" > /etc/cron.d/open-audit-agent
+    fi
+
+    if [ "$debug" = "y" ]; then
+        echo "Agent copied." > `tty`
+        echo "Install complete." > `tty`
+        echo "-----------------" > `tty`
+        echo "" > `tty`
     fi
 }
 
 execute_uninstall ()
 {
+    # Only root
+    if [ "$(id -u)" != "0" ]; then
+        echo "This script should be run by root or using sudo, exiting." >&2
+        exit 1
+    fi
     if [ "$debug" = "y" ]; then
         echo "Uninstalling Open-AudIT Agent version $version." > `tty`
-    fi
-    # Remove the cron
-    if [ -f /etc/cron.d/open-audit-agent ]; then
-        test=$(rm /etc/cron.d/open-audit-agent)
-    fi
-    if [ -f /etc/cron.d/open-audit-agent ]; then
-        echo "Could not remove dron file at /etc/cron.d/open-audit-agent, please do this manually." 2>&1
-        echo "$test" 2>&1
-    else
-        if [ "$debug" = "y" ]; then
-            echo "Removed task."
-        fi
     fi
     # Remove the directory
     if [ -d "$programPath" ]; then
@@ -284,16 +322,37 @@ execute_uninstall ()
         echo "$test" >&2
         exit 1
     fi
-    echo "Open-AudIT Agent has been uninstalled." > `tty`
-    echo
+    # Remove the cron
+    if [ -f /etc/cron.d/open-audit-agent ]; then
+        test=$(rm /etc/cron.d/open-audit-agent)
+    fi
+    if [ -f /etc/cron.d/open-audit-agent ]; then
+        echo "Could not remove cron file at /etc/cron.d/open-audit-agent, please do this manually." 2>&1
+        echo "$test" 2>&1
+    else
+        if [ "$debug" = "y" ]; then
+            echo "Removed task." > `tty`
+        fi
+    fi
+    if [ "$debug" = "y" ]; then
+        echo "Uninstall complete." > `tty`
+        echo "-----------------" > `tty`
+        echo "" > `tty`
+    fi
 }
 
 execute_update ()
 {
+    if [ "$debug" = "y" ]; then
+        echo "Updating"
+    fi
     # Update the actual agent script
     test=$(execute_download "$url/agents/linux/download" "$programPath/agent.sh")
     if [ "$debug" = "y" ] && [ -f "$programPath/agent.sh" ]; then
         echo "Agent updated successfully." > `tty`
+        echo "Update complete." > `tty`
+        echo "----------------" > `tty`
+        echo "" > `tty`
     fi
 }
 
@@ -501,54 +560,91 @@ if [[ "$system_os_family" == *"suse"* ]] || [[ "$system_os_family" == *"SUSE"* ]
     system_os_name=$(grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
 fi
 
-
-postDetails="{\"version\":\"$version\",\"hostname\":\"$(json "$system_hostname")\",\"uuid\":\"$(json "$system_uuid")\",\"serial\":\"$(json "$system_serial")\",\"ip\":\"$(json "$system_ip_address")\",\"os_name\":\"$(json "$system_os_name")\",\"os_family\":\"$(json "$system_os_family")\"}"
+if [ "$agentId" ]; then
+    postDetails="{\"version\":\"$version\",\"hostname\":\"$(json "$system_hostname")\",\"uuid\":\"$(json "$system_uuid")\",\"serial\":\"$(json "$system_serial")\",\"ip\":\"$(json "$system_ip_address")\",\"os_name\":\"$(json "$system_os_name")\",\"os_family\":\"$(json "$system_os_family")\",\"agentId\":\"$agentId\"}"
+else
+    postDetails="{\"version\":\"$version\",\"hostname\":\"$(json "$system_hostname")\",\"uuid\":\"$(json "$system_uuid")\",\"serial\":\"$(json "$system_serial")\",\"ip\":\"$(json "$system_ip_address")\",\"os_name\":\"$(json "$system_os_name")\",\"os_family\":\"$(json "$system_os_family")\"}"
+fi
 
 if [ "$debug" = "y" ]; then
-    echo "Sending:"
+    if [ "$agentId" ]; then
+        echo "Sending to: ${url}agents/${agentId}/execute"
+    else
+        echo "Sending to: ${url}agents/execute"
+    fi
+    echo ""
     echo "$postDetails"
-    echo "to: $url/agents/execute"
+    echo "----------------"
     echo ""
 fi
 
-response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "$url/agents/execute")
+if [ "$agentId" ]; then
+    response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "${url}agents/${agentId}/execute")
+else
+    response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "${url}agents/execute")
+fi
 
 if [ "$debug" = "y" ]; then
     echo "Received:"
     echo "$response"
+    echo "----------------"
     echo ""
 fi
 
-for line in $(echo $response); do
-    # Audit is true
-    if [ $(echo "$line" | grep audit) ]; then
-        if [ $(echo "$line" | grep true) ]; then
-            audit="y"
-        fi
-    fi
+if [ "$debug" = "y" ]; then
+    echo "Processing response"
+fi
 
-    # Download
-    if [ $(echo "$line" | grep uninstall) ]; then
-        if [ $(echo "$line" | grep true) ]; then
-            uninstall="y"
+for line in $(echo $response); do
+
+    # Audit
+    if [ $(echo "$line" | grep "\"audit\": true") ]; then
+        audit="y"
+        if [ "$debug" = "y" ]; then
+            echo "Audit sent from server"
         fi
     fi
 
     # Update
-    if [ $(echo "$line" | grep update) ]; then
-        if [ $(echo "$line" | grep true) ]; then
-            update="y"
+    if [ $(echo "$line" | grep "\"update\": true") ]; then
+        update="y"
+        if [ "$debug" = "y" ]; then
+            echo "Update sent from server"
         fi
     fi
 
     # Uninstall
-    if [ $(echo "$line" | grep uninstall) ]; then
-        if [ $(echo "$line" | grep true) ]; then
-            uninstall="y"
+    if [ $(echo "$line" | grep "\"uninstall\": true") ]; then
+        uninstall="y"
+        if [ "$debug" = "y" ]; then
+            echo "Uninstall sent from server"
+        fi
+    fi
+
+    # Location ID
+    if [ $(echo $line | grep "\"location_id\"" | cut -d: -f2 | cut -d, -f1) ]; then
+        location_id=$(echo $line | grep "\"location_id\"" | cut -d: -f2 | cut -d, -f1)
+        location_id=$(trim $location_id)
+        if [ "$debug" = "y" ]; then
+            echo "LocationID sent from server: $location_id"
+        fi
+    fi
+
+    # Org ID
+    if [ $(echo $line | grep "\"org_id\"" | cut -d: -f2 | cut -d, -f1) ]; then
+        org_id=$(echo $line | grep "\"org_id\"" | cut -d: -f2 | cut -d, -f1)
+        org_id=$(trim $org_id)
+        if [ "$debug" = "y" ]; then
+            echo "OrgID sent from server: $org_id"
         fi
     fi
 done
 
+if [ "$debug" = "y" ]; then
+    echo "Completed processing response"
+    echo "----------------"
+    echo ""
+fi
 
 # Our actions to take
 if [ "$install" = "y" ]; then
@@ -566,3 +662,6 @@ fi
 if [ "$uninstall" = "y" ]; then
     test=$(execute_uninstall)
 fi
+
+IFS="$ORIGIFS"
+exit 0
