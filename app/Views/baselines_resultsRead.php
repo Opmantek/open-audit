@@ -3,6 +3,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
+$count_software = count($resource->result->notin->software);
+$count_netstat = count($resource->result->notin->netstat);
+$count_user = count($resource->result->notin->user);
+$total = $count_software + $count_netstat + $count_user;
 $delete = false;
 if (strpos($user->permissions[$meta->collection], 'd') !== false) {
     $delete = true;
@@ -33,6 +37,7 @@ if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
     $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Results') . '</a></li>';
     $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Results') . '</a></li>';
+    $notin_button = '<li class="nav-item" role="presentation"><a href="#notin" class="nav-link" id="notin-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Items not in Baseline') . '</a></li>';
     if ($extra === 'policy') {
         $single_policy_button = '<li class="nav-item" role="presentation"><a href="#policy" class="nav-link" id="policy-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Result') . '</a></li>';
     }
@@ -43,6 +48,7 @@ if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
     $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Results') . '</a></li>';
     $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Results') . '</a></li>';
+    $notin_button = '<li class="nav-item" role="presentation"><a href="#notin" class="nav-link" id="notin-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Items not in Baseline') . '</a></li>';
     if ($extra === 'policy') {
         $single_policy_button = '<li class="nav-item" role="presentation"><a href="#policy" class="nav-link" id="policy-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Result') . '</a></li>';
     }
@@ -53,6 +59,7 @@ if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"></span>' . __('Details') . '</a></li>';
     $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab">' . __('Policy Results') . '</a></li>';
     $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Device Results') . '</a></li>';
+    $notin_button = '<li class="nav-item" role="presentation"><a href="#notin" class="nav-link" id="notin-tab">' . __('Items not in Baseline') . '</a></li>';
     if ($extra === 'policy') {
         $single_policy_button = '<li class="nav-item" role="presentation"><a href="#policy" class="nav-link" id="policy-tab">' . __('Policy Result') . '</a></li>';
     }
@@ -74,6 +81,7 @@ if ($style === 'icontext') {
                                 <?= $details_button ?>
                                 <?= $policy_button ?>
                                 <?= $device_button ?>
+                                <?php if ($total > 0) { echo $notin_button; } ?>
                                 <?= $single_policy_button ?>
                                 <?= $single_device_button ?>
                             </ul>
@@ -158,6 +166,72 @@ if ($style === 'icontext') {
                                         <td class="text-center"><a href="#" role="button" class="btn btn-success btn-sm"><strong><?= $row->pass ?></strong></a></td>
                                         <td class="text-center"><a href="#" role="button" class="btn btn-danger  btn-sm"><strong><?= $row->fail ?></strong></a></td>
                                     </tr>
+                                    <?php } ?>
+                                <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <?php
+                        $string = 'Total: <span class="text-danger">' . $total . '</span>, ';
+                        if ($count_software > 0) {
+                            $string .= 'Software: <span class="text-primary">' . $count_software . '</span>';
+                        }
+                        if ($count_netstat > 0 and strpos($string, 'Software:') !== false) {
+                            $string .= ', Netstat: <span class="text-primary">' . $count_netstat . '</span>';
+                        }
+                        if ($count_netstat > 0 and strpos($string, 'Software:') === false) {
+                            $string .= 'Netstat: <span class="text-primary">' . $count_netstat . '</span>';
+                        }
+                        if ($count_user > 0 and (strpos($string, 'Software:') !== false or strpos($string, 'Netstat:') !== false)) {
+                            $string .= ', User: <span class="text-primary">' . $count_user . '</span>';
+                        }
+                        if ($count_user > 0 and (strpos($string, 'Software:') === false and strpos($string, 'Netstat:') === false)) {
+                            $string .= 'User: <span class="text-primary">' . $count_user . '</span>';
+                        }
+                        $string .= '.';
+                    ?>
+                    <div class="tab-content">
+                        <div class="tab-pane" id="notin" role="tabpanel" tabindex="0">
+                            <br>
+                            <div class="row">
+                                <h3 class="text-center"><?= $string ?></h3>
+                            </div>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
+                                <thead>
+                                    <tr>
+                                        <th class="text-center"><?= __('View Device') ?></th>
+                                        <th><?= __('Device') ?></th>
+                                        <th><?= __('Type') ?></th>
+                                        <th><?= __('Details') ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php if (!empty($resource->result->notin)) { ?>
+                                    <?php foreach ($resource->result->notin as $key => $value) { ?>
+                                        <?php foreach ($value as $row) { ?>
+                                        <tr>
+                                            <td class="text-center"><a href="<?= url_to('devicesRead', $row->{'devices.id'}) ?>" role="button" class="btn btn-primary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                            <td><?= $row->{'devices.name'} ?></td>
+                                            <td><?= $key ?></td>
+                                            <?php if ($key === 'software') {
+                                                if (!empty($row->{'software.version'})) {
+                                                    $details = $row->{'software.name'} . ' (version ' . $row->{'software.version'} . ')';
+                                                } else {
+                                                    $details = $row->{'software.name'};
+                                                }
+                                            } else if ($key === 'netstat') {
+                                                $details = $row->{'netstat.protocol'} . ' port ' . $row->{'netstat.port'} . ' running ' . $row->{'netstat.program'};
+                                            } else if ($key === 'user') {
+                                                $details = $row->{'user.name'};
+                                            } else {
+                                                $details = '';
+                                            }
+                                            echo "<td>" . $details . "</td>\n";
+                                            ?>
+                                        </tr>
+                                        <?php } ?>
                                     <?php } ?>
                                 <?php } ?>
                                 </tbody>
