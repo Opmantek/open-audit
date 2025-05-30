@@ -589,6 +589,7 @@ CREATE TABLE `baselines` (
   `description` text NOT NULL,
   `notes` text NOT NULL,
   `documentation` text NOT NULL,
+  `notin` enum('y','n') NOT NULL DEFAULT 'n',
   `priority` int(10) unsigned NOT NULL DEFAULT '5',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',

@@ -266,6 +266,7 @@ class BaselinesModel extends BaseModel
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->notes = 'Any additional notes you care to make.';
         $dictionary->columns->documentation = 'Any additional documentation you need.';
+        $dictionary->columns->notin = 'When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.';
         $dictionary->columns->priority = 'The importance of this baseline (not used yet).';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

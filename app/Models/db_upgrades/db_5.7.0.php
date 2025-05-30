@@ -7,6 +7,13 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+if (!$db->fieldExists('notin', 'baselines')) {
+    $sql = "ALTER TABLE `baselines` ADD `notin` enum('y','n') NOT NULL DEFAULT 'n' AFTER `documentation`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 $sql = "DROP TABLE IF EXISTS `news`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

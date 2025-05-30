@@ -198,7 +198,7 @@ if ($style === 'icontext') {
                             <div class="row">
                                 <h3 class="text-center"><?= $string ?></h3>
                             </div>
-                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"],[3,"asc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('View Device') ?></th>

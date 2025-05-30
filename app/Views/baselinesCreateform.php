@@ -21,6 +21,18 @@ include 'shared/common_functions.php';
                                 <?= create_text_field('data[attributes][notes]', __('Notes'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][documentation]', __('Documentation'), $dictionary->attributes->create) ?>
 
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-8">
+                                        <label for="data[attributes][notin]" class="form-label"><?= __('Not In') ?></label><br>
+                                        <div class="input-group">
+                                            <select class="form-select" name="data[attributes][notin]" id="data[attributes][notin]">
+                                                <option value="n"><?= __('No') ?></option>
+                                                <option value="y"><?= __('Yes') ?></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="row" style="padding-top:16px">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="hostname" class="form-label"><?= __('Search For a Device') ?></label><br>
