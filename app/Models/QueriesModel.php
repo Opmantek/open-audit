@@ -294,7 +294,7 @@ class QueriesModel extends BaseModel
                 $category->attributes->name = '&nbsp;';
             }
         }
-        $components = array('devices', 'bios', 'certificate', 'disk', 'dns', 'executable', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $components = array('devices', 'arp', 'bios', 'certificate', 'disk', 'dns', 'executable', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         $included['tables'] = array();
         $databaseModel = new \App\Models\DatabaseModel();
         foreach ($components as $component) {
@@ -461,10 +461,11 @@ class QueriesModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT provides many built-in queries and makes it simple to create your own.';
 
-        $dictionary->about = '<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>';
 
-        $dictionary->notes = '<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br /><br />The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br /><br />An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br /><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, <br />devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM<br /> devices WHERE @filter AND devices.os_group = "Linux"</code><br /><br /></p>';
+        $dictionary->notes = '<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
@@ -472,7 +473,7 @@ class QueriesModel extends BaseModel
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->sql = 'Your SQL to select attributes that will populate this query.';
         $dictionary->columns->link = 'Unused.';
-        $dictionary->columns->advanced = 'Don\'t hold my hand, I know what I\'m doing. No filter and the ability to join custom tables.';
+        $dictionary->columns->advanced = 'Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.';
         $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the Report menu in the web interface.';
         $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

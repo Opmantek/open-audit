@@ -17,12 +17,9 @@ $collection = $meta->component;
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <div id="notice" class="container-fluid" style="display:none;">
-                            <div id="alert" class="alert alert-warning alert-dismissible fade show" role="alert">
-                            </div>
-                        </div>
                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableComponents" data-order='[[2,"asc"]]'>
                             <thead>
+                                <tr>
                                 <?php foreach ($meta->data_order as $key) {
                                     $align = '';
                                     if (strpos($key, 'id') === intval(strlen($key) - 2)) {
@@ -30,15 +27,16 @@ $collection = $meta->component;
                                     } ?>
                                     <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
                                 <?php } ?>
-                            </thead>
-                            <thead>
+                                </tr>
+                                <tr>
                                 <?php foreach ($meta->data_order as $key) { ?>
                                     <th>
                                         <div class="input-group">
-                                            <input id="search_<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search <?= collection_column_name($key) ?>" />
+                                            <input id="search_<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search <?= collection_column_name($key) ?>">
                                         </div>
                                     </th>
                                 <?php } ?>
+                                </tr>
                             </thead>
                             <tbody>
                             </tbody>

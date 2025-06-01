@@ -306,6 +306,7 @@ class ScriptsModel extends BaseModel
                 break;
 
             case 'darwin':
+            case 'macos':
             case 'osx':
                 $audit_script = 'audit_osx.sh';
                 break;
@@ -625,10 +626,11 @@ class ScriptsModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT utilise powerful auditing scripts to avoid installing an agent while at the same time, gathering an incredible amount of configuration data from your devices.';
 
-        $dictionary->about = '<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>';
 
-        $dictionary->notes = '<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br /><br /></p>';
+        $dictionary->notes = '<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;

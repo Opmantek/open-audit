@@ -69,29 +69,47 @@ class Agents extends BaseController
      *
      * @access public
      */
-    public function download($id = null)
+    public function download($id = null, $os = null)
     {
         $request = service('request');
         $ip = $request->getIPAddress();
         log_message('info', 'ACCESS:agents:download::' . $ip);
 
-        // NOTE - Below shouldn't be required because of initController
-        // if (empty($this->agentsModel)) {
-        //     $this->agentsModel = model('App\Models\AgentsModel');
-        // }
+        if (is_numeric($id)) {
+            $id = intval($id);
+        }
 
-        // TODO - Implement the below when we activate Unix style OS's
-        // if (!is_numeric($id)) {
-        //     $id = $this->agentsModel->getByOs($id);
-        // }
-        // if (is_numeric($id)) {
-        //     $id = intval($id);
-        // }
-        // if (empty($id)) {
-        //     return;
-        // }
-        // $scriptContents = $this->agentsModel->download($id);
+        if (!is_numeric($id)) {
+            $os = 'windows';
+            if ($id === 'linux') {
+                $os = 'linux';
+            }
+            if ($id === 'macos') {
+                $os = 'macos';
+            }
+        }
+
         $filename = ROOTPATH . 'other/agent_windows.ps1';
+        if ($os === 'linux') {
+            $filename = ROOTPATH . 'other/agent_linux.sh';
+        }
+        if ($os === 'macos') {
+            $filename = ROOTPATH . 'other/agent_macos.sh';
+        }
+
+        if (empty($id)) {
+            return;
+        }
+
+        $id = intval($id);
+
+        log_message('info', 'ID: ' . $id . ', OS: ' . $os);
+
+        $agent = array();
+        if (is_numeric($id)) {
+            $agent = $this->agentsModel->read($id);
+        }
+
         if (!file_exists($filename)) {
             log_message('error', "Script does not exist on filesystem for $filename.");
             return null;
@@ -99,13 +117,33 @@ class Agents extends BaseController
         $file = file_get_contents($filename);
         $file = str_replace("\r\n", "\n", $file);
         $file = str_replace("\r", "\n", $file);
-        $file = str_replace("\$url = ''", "\$url = '" . base_url() . "index.php/'", $file);
-        if ($id !== null) {
-            $file = str_replace("\$agentId = ''", "\$agentId = '$id'", $file);
+
+        if ($os === 'windows') {
+            $file = str_replace("\$url = ''", "\$url = '" . base_url() . "index.php/'", $file);
+            if (!empty($id)) {
+                $file = str_replace("\$agentId = ''", "\$agentId = '$id'", $file);
+            }
+            if ($request->isSecure() and isset($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
+                $file = str_replace("\$advanced = 'n'", "\$advanced = 'y'", $file);
+            }
         }
-        if ($request->isSecure() and isset($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
-            $file = str_replace("\$advanced = 'n'", "\$advanced = 'y'", $file);
+
+        if ($os === 'linux' or $os === 'macos') {
+            $file = str_replace("url=\"\"", "url=\"" . base_url() . "index.php/\"", $file);
+            if (!empty($id)) {
+                $file = str_replace("agentId=\"\"", "agentId=\"$id\"", $file);
+            }
+            if ($request->isSecure() and isset($this->config->feature_agents_advanced) and $this->config->feature_agents_advanced === 'y') {
+                $file = str_replace("advanced=\"n\"", "advanced=\"y\"", $file);
+            }
+            if (!empty($agent[0]->action_devices_assigned_to_location)) {
+                $file = str_replace("location_id=\"n\"", "location_id=\"" . $agent[0]->action_devices_assigned_to_location . "\"", $file);
+            }
+            if (!empty($agent[0]->action_devices_assigned_to_org)) {
+                $file = str_replace("org_id=\"n\"", "org_id=\"" . $agent[0]->action_devices_assigned_to_org . "\"", $file);
+            }
         }
+
         if (empty($file)) {
             Services::session()->setFlashdata('danger', 'Cannot download installer, please contact your Open-AudIT administrator.');
             return redirect()->route($this->config->homepage);
@@ -113,7 +151,12 @@ class Agents extends BaseController
         header('Cache-Control: public');
         header('Content-Description: File Transfer');
         // TODO - test for Windows VS Unis (.ps1 or .sh)
-        header('Content-Disposition: attachment; filename=agent.ps1');
+        if ($id === 'windows') {
+            header('Content-Disposition: attachment; filename=agent.ps1');
+        }
+        if ($id === 'linux' or $id === 'macos') {
+            header('Content-Disposition: attachment; filename=agent.sh');
+        }
         header('Content-Type: text');
         header('Content-Transfer-Encoding: binary');
         echo $file;
@@ -130,7 +173,7 @@ class Agents extends BaseController
     public function execute($id = null)
     {
         // Do not use dot's here so we can compare to (intval)$input->version
-        $current_agent_version = 530;
+        $current_agent_version = 565;
 
         $id = (int)$id;
         $request = service('request');

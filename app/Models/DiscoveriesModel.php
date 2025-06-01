@@ -371,7 +371,7 @@ class DiscoveriesModel extends BaseModel
                 // We have a range and cannot insert a network
                 $warning = 'IP range, instead of subnet supplied. No network entry created.';
                 if ($instance->config->blessed_subnets_use !== 'n') {
-                    $warning .= '<br />Because you are using blessed subnets, please ensure a valid network for this range exists.';
+                    $warning .= '<br>Because you are using blessed subnets, please ensure a valid network for this range exists.';
                 }
                 \Config\Services::session()->setFlashdata('warning', $warning);
             }
@@ -1436,10 +1436,13 @@ class DiscoveriesModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT Enterprise discovers every device on your network.';
 
-        $dictionary->about = '<p>Discoveries are at the very heart of what Open-AudIT does.<br /><br />How else would you know "What is on my network?"<br /><br />Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />For more detailed information, check the Open-AudIT <a href="' . url_to('discoveriesHelp') . '">Knowledge Base</a>.<br /><br /></p>';
+        $dictionary->about = '<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>';
 
-        $dictionary->notes = '<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br /><br /><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br /><br />If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br /><br /></p>';
+        $dictionary->notes = '<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>';
 
+        $dictionary->options = '<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br> <br></p>';
+
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = @$instance->dictionary->id;
         $dictionary->columns->name = @$instance->dictionary->name;
@@ -1454,16 +1457,16 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns->device_count = 'The number of devices found by this discovery.';
         $dictionary->columns->device_id = 'Used internally when discovering a single device. Links to <code>devices.id</code>.';
         $dictionary->columns->devices_assigned_to_location = 'Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.';
-        $dictionary->columns->devices_assigned_to_org = "Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the 'org_id' of this discovery. Links to <code>orgs.id</code>.";
+        $dictionary->columns->devices_assigned_to_org = 'Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.';
         $dictionary->columns->discard = 'Used internally when discovering a single device.';
-        $dictionary->columns->duration = 'A calculated field that is updated each time the discovery has completed execution.';
-        $dictionary->columns->ip_all_count = 'A calculated field that is updated each time discovery has been executed.';
-        $dictionary->columns->ip_responding_count = 'A calculated field that is updated each time discovery has been executed.';
-        $dictionary->columns->ip_scanned_count = 'A calculated field that is updated each time discovery has been executed.';
-        $dictionary->columns->ip_discovered_count = 'A calculated field that is updated each time discovery has been executed.';
-        $dictionary->columns->ip_audited_count = 'A calculated field that is updated each time discovery has been executed.';
-        $dictionary->columns->last_run = 'A calculated field that is updated each time the discovery has been executed.';
-        $dictionary->columns->last_finished = 'A calculated field that is updated each time the discovery has completed execution.';
+        $dictionary->columns->duration = 'Updated each time the discovery has completed execution.';
+        $dictionary->columns->ip_all_count = 'Updated each time discovery has been executed.';
+        $dictionary->columns->ip_responding_count = 'Updated each time discovery has been executed with IPs detected to be responding.';
+        $dictionary->columns->ip_scanned_count = 'Updated each time discovery has been executed with IPs that have been scanned by Nmap.';
+        $dictionary->columns->ip_discovered_count = 'Updated each time discovery has been executed with devices we were able to query.';
+        $dictionary->columns->ip_audited_count = 'Updated each time discovery has been executed with devices we were able to audit.';
+        $dictionary->columns->last_run = 'Updated each time the discovery has been executed.';
+        $dictionary->columns->last_finished = 'Updated each time the discovery has completed execution.';
         $dictionary->columns->limit = 'The number of devices to limit this discovery to.';
         $dictionary->columns->match_options = 'A JSON document containing the required attributes overriding the default device match options.';
         $dictionary->columns->network_address = 'The URL the audit scripts should submit their result to.';
@@ -1475,7 +1478,7 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns->seed_restrict_to_subnet = 'For a seed discovery, should I only discover IPs on the chosen subnet.';
         $dictionary->columns->status = 'The current status of the discovery.';
         $dictionary->columns->subnet = 'The network subnet to execute the discovery on.';
-        $dictionary->columns->type = "Supported types are 'subnet', 'seed' and 'active directory'.";
+        $dictionary->columns->type = 'Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.';
         $dictionary->columns->edited_by = @$instance->dictionary->edited_by;
         $dictionary->columns->edited_date = @$instance->dictionary->edited_date;
 
@@ -1497,7 +1500,7 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns->match_sysname_serial = 'Should we match a device based only on its SNMP sysName and serial.';
         $dictionary->columns->match_uuid = 'Should we match a device based on its UUID.';
 
-        $dictionary->columns->{'scan_options.id'} = 'Links to discovery_scan_options.id.';
+        $dictionary->columns->{'scan_options.id'} = 'Links to <code>discovery_scan_options.id</code>.';
         $dictionary->columns->{'scan_options.ping'} = 'The device must respond to an Nmap ping before it is considered online.';
         $dictionary->columns->{'scan_options.service_version'} = 'This will considerably slow the discovery scan.';
         $dictionary->columns->{'scan_options.open|filtered'} = 'If a port responds with open|filtered, should we consider it available.';
@@ -1512,6 +1515,26 @@ class DiscoveriesModel extends BaseModel
         $dictionary->columns->{'scan_options.exclude_udp_ports'} = 'Do not scan these UDP ports.';
         $dictionary->columns->{'scan_options.exclude_ip'} = 'Exclude these IP addresses from being Nmap scanned.';
         $dictionary->columns->{'scan_options.ssh_ports'} = 'Check this port for any SSH service.';
+
+        $dictionary->columns->{'match_options.match_dbus'} = 'Should we match a device based on its dbus id.';
+        $dictionary->columns->{'match_options.match_dns_fqdn'} = 'Should we match a device based on its DNS fqdn.';
+        $dictionary->columns->{'match_options.match_dns_hostname'} = 'Should we match a device based on its DNS hostname.';
+        $dictionary->columns->{'match_options.match_fqdn'} = 'Should we match a device based on its fqdn.';
+        $dictionary->columns->{'match_options.match_hostname'} = 'Should we match a device based only on its hostname.';
+        $dictionary->columns->{'match_options.match_hostname_dbus'} = 'Should we match a device based on its hostname and dbus id.';
+        $dictionary->columns->{'match_options.match_hostname_serial'} = 'Should we match a device based on its hostname and serial.';
+        $dictionary->columns->{'match_options.match_hostname_uuid'} = 'Should we match a device based on its hostname and UUID.';
+        $dictionary->columns->{'match_options.match_ip'} = 'Should we match a device based on its ip.';
+        $dictionary->columns->{'match_options.match_ip_no_data'} = 'Should we match a device based on its ip if we have an existing device with no data.';
+        $dictionary->columns->{'match_options.match_mac'} = 'Should we match a device based on its mac address.';
+        $dictionary->columns->{'match_options.match_mac_vmware'} = 'Should we match a device based mac address even if its a known likely duplicate from VMware.';
+        $dictionary->columns->{'match_options.match_serial'} = 'Should we match a device based on its serial number.';
+        $dictionary->columns->{'match_options.match_serial_type'} = 'Should we match a device based on its serial and type.';
+        $dictionary->columns->{'match_options.match_sysname'} = 'Should we match a device based only on its SNMP sysName.';
+        $dictionary->columns->{'match_options.match_sysname_serial'} = 'Should we match a device based only on its SNMP sysName and serial.';
+        $dictionary->columns->{'match_options.match_uuid'} = 'Should we match a device based on its UUID.';
+
+
         return $dictionary;
     }
 }

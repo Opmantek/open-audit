@@ -263,10 +263,11 @@ class ConnectionsModel extends BaseModel
 
         $dictionary->sentence = 'Track your connections to branch offices, the internet, where-ever else you need to. Simple, easy, intuitive.';
 
-        $dictionary->about = '<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>';
 
         $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'professional';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
@@ -281,12 +282,12 @@ class ConnectionsModel extends BaseModel
         $dictionary->columns->speed_up_a = 'Usually Mb/s, from Location A.';
         $dictionary->columns->speed_down_b = 'Usually Mb/s, to Location B.';
         $dictionary->columns->speed_up_b = 'Usually Mb/s, from Location B.';
-        $dictionary->columns->location_id_a = 'The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the \'FROM\' location.';
+        $dictionary->columns->location_id_a = 'The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.';
         $dictionary->columns->device_id_a = 'The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.';
         $dictionary->columns->line_number_a = 'The line number assigned by the provider to the line at this end of the connection.';
         $dictionary->columns->ip_address_external_a = 'The IP of the external interface.';
         $dictionary->columns->ip_address_internal_a = 'The IP of the internal interface.';
-        $dictionary->columns->location_id_b = 'The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the \'TO\' location.';
+        $dictionary->columns->location_id_b = 'The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.';
         $dictionary->columns->device_id_b = 'The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.';
         $dictionary->columns->line_number_b = 'The line number assigned by the provider to the line at this end of the connection.';
         $dictionary->columns->ip_address_external_b = 'The IP of the external interface.';

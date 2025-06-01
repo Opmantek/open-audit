@@ -69,7 +69,7 @@ class ComponentsModel extends BaseModel
                 $filter->name = $table . '.device_id';
             }
         }
-        if (!in_array($table, ['access_point', 'antivirus', 'audit_log', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'cli_config', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
+        if (!in_array($table, ['access_point', 'antivirus', 'arp', 'audit_log', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'cli_config', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
             # Invalid table
             $resp->warning = 'Invalid table provided to ComponentsModel::collection, ' . htmlentities($table);
             log_message('error', $resp->warning);
@@ -101,6 +101,16 @@ class ComponentsModel extends BaseModel
         $properties[] = "`$table`.*";
         $properties[] = "devices.id as `devices.id`";
         $properties[] = "devices.name as `devices.name`";
+        if (!empty($instance->config->components_extra_columns)) {
+            $explode = explode(',', $instance->config->components_extra_columns);
+            foreach ($explode as $column) {
+                $column = trim($column);
+                if ($this->db->fieldExists($column, 'devices')) {
+                    $properties[] = "devices." . $column . " as `devices." . $column . "`";
+                }
+            }
+            log_message('info', 'Properties: ' . json_encode($properties));
+        }
         $this->builder->select($properties, false);
         $this->builder->join('devices', $table . '.device_id = devices.id', 'left');
         foreach ($resp->meta->filter as $filter) {
@@ -282,10 +292,10 @@ class ComponentsModel extends BaseModel
                 redirect()->route('devicesRead', [$data->device_id]);
                 return null;
             }
-            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
-                mkdir($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images');
+            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/custom_images')) {
+                mkdir($_SERVER['DOCUMENT_ROOT'] . '/custom_images');
             }
-            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
+            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/custom_images')) {
                 log_message('error', 'Custom Images directory does not exist and cannot be created.');
                 \Config\Services::session()->setFlashdata('error', 'Custom Images directory does not exist and cannot be created. Check filesystem permissions.');
                 redirect()->route('devicesRead', [$data->device_id]);
@@ -908,6 +918,22 @@ class ComponentsModel extends BaseModel
                     unset($data[$item]);
                     continue;
                 }
+                if (strpos($attributes->ip, '.') !== false) {
+                    if (strpos($attributes->protocol, 'tcp') !== false) {
+                        $attributes->protocol = 'tcp4';
+                    }
+                    if (strpos($attributes->protocol, 'udp') !== false) {
+                        $attributes->protocol = 'udp4';
+                    }
+                }
+                if (strpos($attributes->ip, ':') !== false) {
+                    if (strpos($attributes->protocol, 'tcp') !== false) {
+                        $attributes->protocol = 'tcp6';
+                    }
+                    if (strpos($attributes->protocol, 'udp') !== false) {
+                        $attributes->protocol = 'udp6';
+                    }
+                }
                 if (isset($instance->config->process_netstat_windows_dns) and $instance->config->process_netstat_windows_dns === 'n') {
                     if (stripos($attributes->program, 'dns.exe') !== false and intval($attributes->port) > 1000) {
                         unset($data[$item]);
@@ -1082,13 +1108,15 @@ class ComponentsModel extends BaseModel
 
         // SERVICE
         if ((string)$table === 'service') {
-            foreach ($data as $item => $attributes) {
-                $explode = explode('_', $attributes->name);
-                $attributes->name = $explode[0];
-                unset($explode);
-                // Remove any PAExec and Winexe 'services' as these are just the audit script running
-                if (strtolower($attributes->name) === 'paexec' or strtolower($attributes->name) === 'winexesvc') {
-                    unset($data[$item]);
+            if ($device->os_group === 'Windows') {
+                foreach ($data as $item => $attributes) {
+                    $explode = explode('_', $attributes->name);
+                    $attributes->name = $explode[0];
+                    unset($explode);
+                    // Remove any PAExec and Winexe 'services' as these are just the audit script running
+                    if (strtolower($attributes->name) === 'paexec' or strtolower($attributes->name) === 'winexesvc') {
+                        unset($data[$item]);
+                    }
                 }
             }
         }
@@ -1369,23 +1397,6 @@ class ComponentsModel extends BaseModel
                     $query = $this->db->query($sql);
                 }
             }
-            if ((string)$table === 'partition') {
-                // insert an entry into the graph table
-                if (!isset($data_item->used) or $data_item->used === '') {
-                    $data_item->used = 0;
-                }
-                if (!isset($data_item->free) or $data_item->free === '') {
-                    $data_item->free = 0;
-                }
-                $used_percent = 0;
-                $free_percent = 0;
-                if (!empty($data_item->used) and !empty($data_item->size)) {
-                    $used_percent = @intval(($data_item->used / $data_item->size) * 100);
-                    $free_percent = @intval(100 - $used_percent);
-                }
-                $sql = 'INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-                $query = $this->db->query($sql, [intval($device->org_id), intval($device->id), "{$table}", intval($id), "{$table}", intval($used_percent), intval($free_percent), intval($data_item->used), intval($data_item->free), intval($data_item->size), "{$device->last_seen}"]);
-            }
         }
 
         // remove the duplicated DB_items
@@ -1543,10 +1554,11 @@ class ComponentsModel extends BaseModel
         $dictionary->attributes->fieldsMeta = array();
         $dictionary->attributes->update = array();
 
-        $dictionary->about = '<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>';
+        $dictionary->about = '<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>';
 
-        $dictionary->notes = '<p></p>';
+        $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->resource = 'The foreign table to reference. Should be one of: devices, locations, orgs or queries.';

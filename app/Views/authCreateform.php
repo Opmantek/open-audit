@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
+include 'shared/common_functions.php';
 $test = '';
 if (strpos(base_url(), 'https:') === false) {
     $test = '<p><div class="container-fluid"><div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -125,19 +126,8 @@ if (strpos(base_url(), 'https:') === false) {
 
                         <div class="col-md-6">
                             <div class="offset-2 col-8">
-                                <?php if (! empty($dictionary->about)) {
-                                    echo "<h4 class=\"text-center\">About</h4><br>";
-                                    echo html_entity_decode($dictionary->about);
-                                } ?>
-                                <?php if (! empty($dictionary->notes)) {
-                                    echo "<h4 class=\"text-center\">Notes</h4><br>";
-                                    echo $test;
-                                    echo html_entity_decode($dictionary->notes);
-                                } ?>
-                                <h4 class="text-center">Fields</h4><br>
-                                <?php foreach ($dictionary->columns as $key => $value) {
-                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
-                                } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                                <?= fieldsInfoDiv ($dictionary) ?>
                             </div>
                         </div>
                     </div>

@@ -8,20 +8,22 @@ if (!function_exists('__')) {
     function __($word)
     {
         $language_learning_mode = false;
-        if (ENVIRONMENT === 'development') {
+        if (ENVIRONMENT === 'Set as \'development\' and enable .env to make work. Disabled now as we use parsing for each build.') {
             $language_learning_mode = true;
         }
         $language_file = APPPATH . 'Views/lang/en.inc';
         $word = (string)$word;
         if (isset($GLOBALS['lang'][$word])) {
-            return $GLOBALS['lang'][$word];
+            // We do this because we use this output in JS and HTML
+            return str_replace("'", "\'", $GLOBALS['lang'][$word]);
+            return str_replace('"', '\"', $GLOBALS['lang'][$word]);
         } else {
             if ($language_learning_mode === true and !empty($word) and php_uname('s') !== 'Windows NT') {
                 if (is_writable($language_file)) {
                     unset($lang_array);
                     $lang_array = file($language_file);
                     $lang_array = array_unique($lang_array);
-                    $match = '$GLOBALS["lang"]["' . $word . '"]="' . $word . "\";\n";
+                    $match = '$GLOBALS["lang"]["' . $word . '"]="' . $word . "';\n";
                     if (!in_array($match, $lang_array)) {
                         $lang_array[] = $match;
                         sort($lang_array, SORT_NATURAL | SORT_FLAG_CASE);

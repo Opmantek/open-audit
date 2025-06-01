@@ -92,12 +92,12 @@ class AgentsModel extends BaseModel
         return true;
     }
 
-    public function download(int $id = 0): ?string
+    public function download(int $id = 0, string $os = ''): ?string
     {
         $instance = & get_instance();
         // $result = $this->read($id);
         // $data = $result[0]->attributes;
-        // if (empty($data)) {
+        // if (empty($id)) {
         //     log_message('error', 'No script returned when ScriptsModel::download called with ID ' . $id);
         //     return null;
         // }
@@ -126,37 +126,6 @@ class AgentsModel extends BaseModel
     {
         log_message('debug', 'AgentsExecute called.');
         return;
-    }
-
-
-    public function getByOs(string $os = ''): ?int
-    {
-        switch (strtolower($os)) {
-            case 'linux':
-                $script = 'agent_installer_linux.sh';
-                break;
-
-            case 'darwin':
-            case 'osx':
-                $script = 'agent_installer_apple.sh';
-                break;
-
-            case 'windows':
-                $script = 'agent_installer_windows.ps1';
-                break;
-
-            default:
-                $audit_script = '';
-                break;
-        }
-        $sql = "SELECT * FROM agents WHERE os = ? LIMIT 1";
-        $query = $this->db->query($sql, [$audit_script])->getResult();
-        if (empty($query[0]->id)) {
-            // Invalid OS
-            log_message('error', "Invalid OS provided to ScriptsModel::getByOs ($os).");
-            return null;
-        }
-        return intval($query[0]->id);
     }
 
     /**
@@ -300,12 +269,13 @@ class AgentsModel extends BaseModel
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
-        $dictionary->sentence = 'Think \'if this, then that\' for devices with an Agent installed.';
+        $dictionary->sentence = 'Think <code>if this, then that</code> for devices with an Agent installed.';
 
-        $dictionary->about = '<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It doesn\'t matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>';
+        $dictionary->about = '<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>';
 
-        $dictionary->notes = '<p></p>';
+        $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
@@ -316,15 +286,19 @@ class AgentsModel extends BaseModel
         $dictionary->columns->test_minutes = 'If this many or more minutes have passed since the device contacted the server, perform the actions.';
         $dictionary->columns->test_subnet = 'If an agent reports its primary IP is in this subnet, perform the actions.';
         $dictionary->columns->test_os = 'If the agent OS family (case insensitive) contains this string, perform the actions.';
-        $dictionary->columns->tests = 'Unused.'; #'A JSON object containing an array of attributes to match.';
+
+        #'A JSON object containing an array of attributes to match.';
+        $dictionary->columns->tests = 'Unused.';
 
         $dictionary->columns->action_download = 'A URL to a file to download.';
         $dictionary->columns->action_command = 'A command to run. When the agent is Windows based, this command is run from within the powershell agent.';
         $dictionary->columns->action_audit = 'Should we run an audit and submit it (y/n).';
         $dictionary->columns->action_uninstall = 'Should we uninstall the agent (y/n).';
         $dictionary->columns->action_devices_assigned_to_location = 'Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.';
-        $dictionary->columns->action_devices_assigned_to_org = "Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.";
-        $dictionary->columns->actions = 'Unused.'; #'A JSON object containing an array of attributes to change if the match occurs.';
+        $dictionary->columns->action_devices_assigned_to_org = 'Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.';
+
+        #'A JSON object containing an array of attributes to change if the match occurs.';
+        $dictionary->columns->actions = 'Unused.';
 
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

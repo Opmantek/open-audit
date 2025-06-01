@@ -232,10 +232,11 @@ class BenchmarksPoliciesModel extends BaseModel
 
         $dictionary->sentence = '';
 
-        $dictionary->about = '<p><br /><br /></p>';
+        $dictionary->about = '';
 
-        $dictionary->notes = '<p><br /><br /></p>';
+        $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;

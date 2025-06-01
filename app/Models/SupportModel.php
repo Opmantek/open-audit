@@ -461,10 +461,11 @@ class SupportModel extends BaseModel
         $dictionary->attributes->fieldsMeta = array();
         $dictionary->attributes->update = array();
 
-        $dictionary->sentence = "Amazing support from FirstWave - or the community if you like. It's the no excuses, no exceptions, can-do way of thinking that our staff bring to work every day. Your complete satisfaction is our priority. Anything less is simply unacceptable.";
+        $dictionary->sentence = "Amazing support from FirstWave - or the community if you like. Its the no excuses, no exceptions, can-do way of thinking that our staff bring to work every day. Your complete satisfaction is our priority. Anything less is simply unacceptable.";
 
-        $dictionary->about = "<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, there's that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No if's or but's. Great support. Period.<br /><br />" . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'professional';
         return $dictionary;
     }

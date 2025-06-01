@@ -17,6 +17,7 @@ include 'shared/collection_functions.php';
                         <?php $log_data_order = ['view', 'id', 'timestamp', 'ip', 'command_status', 'message']; ?>
                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[1,"asc"]]'>
                             <thead>
+                                <tr>
                                 <?php foreach ($log_data_order as $key) {
                                     $align = '';
                                     if ($key === 'id' or $key === 'view' or strpos($key, '_id') !== false) {
@@ -24,17 +25,18 @@ include 'shared/collection_functions.php';
                                     } ?>
                                     <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
                                 <?php } ?>
-                            </thead>
-                            <thead>
+                                </tr>
+                                <tr>
                                 <?php foreach ($log_data_order as $key) { ?>
                                     <th>
                                         <div class="input-group">
                                             <?php if ($key !== 'id' and $key !== 'view') { ?>
-                                            <input id="alllog<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search <?= collection_column_name($key) ?>" />
+                                            <input id="alllog<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search <?= collection_column_name($key) ?>">
                                             <?php } ?>
                                         </div>
                                     </th>
                                 <?php } ?>
+                                </tr>
                             </thead>
                             <tbody>
                             </tbody>

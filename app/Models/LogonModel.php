@@ -129,7 +129,7 @@ class LogonModel extends Model
                             if (!empty($role->ad_group)) {
                                 foreach ($entries[0]['memberof'] as $key => $group) {
                                     if (is_integer($key)) {
-                                        $ad_users_groups[] = '<br />"' . $group . '"';
+                                        $ad_users_groups[] = '<br>"' . $group . '"';
                                         if (strpos($group, $role->ad_group) !== false) {
                                             log_message('debug', 'User ' . $user->name . ' is a member of LDAP group for Role ' . $role->ad_group);
                                             $user->roles[] = $role->name;

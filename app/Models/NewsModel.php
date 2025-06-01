@@ -422,10 +422,11 @@ class NewsModel extends BaseModel
 
         $dictionary->sentence = '';
 
-        $dictionary->about = '<p><br /><br /></p>';
+        $dictionary->about = '';
 
-        $dictionary->notes = '<p><br /><br /></p>';
+        $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = '';
         $dictionary->columns->name = '';

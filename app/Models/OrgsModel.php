@@ -102,7 +102,7 @@ class OrgsModel extends BaseModel
         if ($this->db->affectedRows() !== 1) {
             return false;
         }
-        $tables = array('applications', 'attributes', 'auth', 'baselines', 'buildings', 'chart', 'clouds', 'clusters', 'collectors', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'graph', 'groups', 'integrations', 'licenses', 'locations', 'maps', 'networks', 'queries', 'queue', 'rack_devices', 'racks', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'system', 'tasks', 'users', 'widgets');
+        $tables = array('applications', 'attributes', 'auth', 'baselines', 'buildings', 'chart', 'clouds', 'clusters', 'collectors', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'licenses', 'locations', 'maps', 'networks', 'queries', 'queue', 'rack_devices', 'racks', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'system', 'tasks', 'users', 'widgets');
         foreach ($tables as $table) {
             $builder = $this->db->table($table);
             $builder->set('org_id', $org[0]->parent_id, false);
@@ -392,7 +392,7 @@ class OrgsModel extends BaseModel
         if (!empty($this->tableReset('orgs'))) {
             return false;
         }
-        $tables = array('agents', 'applications', 'attributes', 'auth', 'baselines', 'buildings', 'chart', 'clouds', 'clusters', 'collectors', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'graph', 'groups', 'integrations', 'invoice', 'licenses', 'locations', 'maps', 'networks', 'queries', 'queue', 'rack_devices', 'racks', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'system', 'tasks', 'users', 'widgets');
+        $tables = array('agents', 'applications', 'attributes', 'auth', 'baselines', 'buildings', 'chart', 'clouds', 'clusters', 'collectors', 'connections', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_scan_options', 'fields', 'files', 'floors', 'groups', 'integrations', 'invoice', 'licenses', 'locations', 'maps', 'networks', 'queries', 'queue', 'rack_devices', 'racks', 'rooms', 'rows', 'rules', 'scripts', 'summaries', 'system', 'tasks', 'users', 'widgets');
         foreach ($tables as $table) {
             $sql = "UPDATE `$table` SET org_id = 1";
             $query = $this->db->query($sql);
@@ -429,6 +429,9 @@ class OrgsModel extends BaseModel
     {
         $instance = & get_instance();
 
+        $uri = new \CodeIgniter\HTTP\URI(url_to('helpFAQ'));
+        $helpFAQ = $uri->getPath();
+
         $collection = 'orgs';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
@@ -443,10 +446,11 @@ class OrgsModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT provides multi-tenancy out of the box!';
 
-        $dictionary->about = '<p>Open-AudIT provides multi-tenancy out of the box!<br /><br />Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br /><br />Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br /><br />Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>';
+        $dictionary->about = '<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="' . $helpFAQ . '?name=Users, Roles and Orgs">FAQ</a>.</p>';
 
         $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;

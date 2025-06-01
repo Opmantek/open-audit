@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -11,12 +12,12 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="resource" class="form-label"><?= __('Resource') ?></label>
+                                    <?= read_field_header($meta->collection, 'resource', $dictionary->columns->resource) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="resource" name="resource" data-original-value="<?= $resource->resource ?>" disabled>
                                             <option value="devices"><?= __('Devices') ?></option>
@@ -32,13 +33,12 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="resource" data-dictionary="<?= $dictionary->columns->resource ?>"><span><br></span></div>
                                 </div>
                             </div>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="type" class="form-label"><?= __('Type') ?></label>
+                                    <?= read_field_header($meta->collection, 'type', $dictionary->columns->type) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="type" name="type" data-original-value="<?= $resource->type ?>" disabled>
                                         </select>
@@ -50,28 +50,17 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                 </div>
                             </div>
 
-                            <?= read_field('value', $resource->value, $dictionary->columns->value, $update) ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('value', $resource->value, $dictionary->columns->value, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                    <?php $fields = array('name', 'org_id', 'resource', 'type', 'value', 'edited_by', 'edited_date') ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
-                                    <?php } ?>
-                                <?php } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 if (!$update or $resource->editable !== 'y') {
     $update = false;
 }
@@ -22,41 +23,28 @@ if ($resource->name === 'feature_agents_advanced') {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, false) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, false) ?>
-                            <?= read_field('editable', $resource->editable, $dictionary->columns->editable, false) ?>
-                            <?= read_field('type', $resource->type, $dictionary->columns->type, false) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('editable', $resource->editable, $dictionary->columns->editable, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
                             <?php if ($resource->type !== 'bool') { ?>
                                 <?php if (strpos($resource->name, 'password') === false) { ?>
-                                    <?= read_field('value', html_entity_decode($resource->value), $dictionary->columns->value, $update, '', '', '', $resource->type) ?>
+                                    <?= read_field('value', html_entity_decode($resource->value), $dictionary->columns->value, $update, '', '', '', $resource->type, $meta->collection) ?>
                                 <?php } else { ?>
-                                    <?= read_field('value', '', $dictionary->columns->value, $update, '', '', '', 'password') ?>
+                                    <?= read_field('value', '', $dictionary->columns->value, $update, '', '', '', 'password', $meta->collection) ?>
                                 <?php } ?>
                             <?php } ?>
                             <?php if ($resource->type === 'bool') { ?>
-                                <?= read_select('value', $resource->value, $dictionary->columns->value, $update, '', array()) ?>
+                                <?= read_select('value', $resource->value, $dictionary->columns->value, $update, '', array(), $meta->collection) ?>
                             <?php } ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                    <?= $dictionary->notes ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                    <?php $fields = array('name', 'description', 'editable', 'type', 'value', 'edited_by', 'edited_date') ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= $dictionary->columns->{$key} ?><br><br>
-                                    <?php } ?>
-                                <?php } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                                <p><?= $resource->description ?></p>
                             </div>
                         </div>
                     </div>

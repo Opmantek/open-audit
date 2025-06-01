@@ -252,9 +252,9 @@ class DashboardsModel extends BaseModel
 
         $dictionary->sentence = "Open-AudIT Professional and Enterprises' interactive Dashboard provides a single point of access to audit status and results. The ability to customize and create Dashboards is an Enterprise feature.";
 
-        $dictionary->about = '<p>Quickly view the status of devices on your network.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Quickly view the status of devices on your network.<br> <br></p>';
 
-        $dictionary->notes = '<p>3 x 2<br><table class="table table-bordered">
+        $dictionary->notes = '<p>3 x 2<br> <table class="table table-bordered">
                                         <tbody>
                                             <tr>
                                                 <td rowspan="2">Sidebar</td>
@@ -268,7 +268,7 @@ class DashboardsModel extends BaseModel
                                                 <td>Widget #6</td>
                                             </tr>
                                         </tbody>
-                                    </table><br /><br /></p>
+                                    </table> <br> <br> </p>
                                     <p>4 x 2<br><table class="table table-bordered">
                                         <tbody>
                                             <tr>
@@ -285,16 +285,19 @@ class DashboardsModel extends BaseModel
                                                 <td>Widget #8</td>
                                             </tr>
                                         </tbody>
-                                    </table><br /><br /></p>';
+                                    </table><br> <br> </p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->sidebar = 'Do you wish to see the standard sidebar on the left.';
+        $dictionary->columns->layout = 'One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.';
         $dictionary->columns->user_id = 'Unused.';
         $dictionary->columns->options = 'Contains a JSON object details the associated widgets and their positions.';
+        $dictionary->columns->{'options.type'} = 'optionally ';
         $dictionary->columns->type = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

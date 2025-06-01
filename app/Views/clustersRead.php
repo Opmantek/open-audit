@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
@@ -35,13 +36,13 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
+                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="type" class="col-sm-4 control-label"><?= __('Type') ?></label><br>
+                                            <?= read_field_header($meta->collection, 'type', $dictionary->columns->type) ?>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="type" name="type" data-original-value="<?= $resource->{'type'} ?>" disabled>
                                                     <option value="" label=" "        <?php if ($resource->{'type'} === '') {                  ?>selected<?php } ?>></option>
@@ -63,13 +64,12 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="purpose" class="col-sm-4 control-label"><?= __('Purpose') ?></label><br>
+                                            <?= read_field_header($meta->collection, 'purpose', $dictionary->columns->purpose) ?>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="purpose" name="purpose" data-original-value="<?= $resource->{'purpose'} ?>" disabled>
                                                     <option value="" label=" "     <?php if ($resource->{'purpose'} === '') {               ?>selected<?php } ?>></option>
@@ -93,13 +93,12 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="purpose" data-dictionary="<?= $dictionary->columns->purpose ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="status" class="col-sm-4 control-label"><?= __('Status') ?></label><br>
+                                            <?= read_field_header($meta->collection, 'status', $dictionary->columns->status) ?>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="status" name="status" data-original-value="<?= $resource->{'status'} ?>" disabled>
                                                     <option value="" label=" " <?php if ($resource->{'status'} === '') {         ?>selected<?php } ?>></option>
@@ -119,13 +118,12 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="status" data-dictionary="<?= $dictionary->columns->status ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="scaling" class="col-sm-4 control-label"><?= __('Scaling') ?></label><br>
+                                            <?= read_field_header($meta->collection, 'scaling', $dictionary->columns->scaling) ?>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="scaling" name="scaling" data-original-value="<?= $resource->{'scaling'} ?>" disabled>
                                                     <option value="" label=" " <?php if ($resource->{'scaling'} === '') { ?>selected<?php } ?>></option>
@@ -145,13 +143,12 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="scaling" data-dictionary="<?= $dictionary->columns->scaling ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="configuration" class="col-sm-4 control-label"><?= __('Configuration') ?></label><br>
+                                            <?= read_field_header($meta->collection, 'configuration', $dictionary->columns->configuration) ?>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="configuration" name="configuration" data-original-value="<?= $resource->{'configuration'} ?>" disabled>
                                                     <option value="" label=" "     <?php if ($resource->{'configuration'} === '') {               ?>selected<?php } ?>></option>
@@ -175,13 +172,12 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="configuration" data-dictionary="<?= $dictionary->columns->configuration ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="environment" class="col-sm-4 control-label"><?= __('Environment') ?></label><br>
+                                            <?= read_field_header($meta->collection, 'environment', $dictionary->columns->environment) ?>
                                             <div class="col-sm-7 input-group">
                                                 <select class="form-select" id="environment" name="environment" data-original-value="<?= $resource->{'environment'} ?>" disabled>
                                                 <option value="" label=" " <?php if ($resource->{'environment'} === '') { ?>selected<?php } ?>></option>
@@ -205,31 +201,16 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="environment" data-dictionary="<?= $dictionary->columns->environment ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
-                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-6">
                                     <br>
                                     <div class="offset-2 col-8">
-                                        <?php if (!empty($dictionary->about)) { ?>
-                                            <h4 class="text-center"><?= __('About') ?></h4><br>
-                                            <?= $dictionary->about ?>
-                                        <?php } ?>
-                                        <?php if (!empty($dictionary->notes)) { ?>
-                                            <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                            <?= $dictionary->notes ?>
-                                        <?php } ?>
-                                        <?php if (!empty($dictionary->columns)) { ?>
-                                            <?php $fields = array('name', 'org_id', 'description', 'edited_by', 'edited_date') ?>
-                                        <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                            <?php foreach ($fields as $key) { ?>
-                                            <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
-                                            <?php } ?>
-                                        <?php } ?>
+                                        <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                                     </div>
                                 </div>
                             </div>

@@ -410,6 +410,9 @@ class CloudsModel extends BaseModel
     {
         $instance = & get_instance();
 
+        $uri = new \CodeIgniter\HTTP\URI(url_to('helpFAQ'));
+        $helpFAQ = $uri->getPath();
+
         $collection = 'clouds';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
@@ -424,10 +427,11 @@ class CloudsModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT can discover and audit your cloud-based virtual machines. You provide the credentials and Open-AudIT will query the Amazon or Microsoft APIs to determine what devices you have, their state, any associated networks and locations and then run discovery upon each cloud instance. You get all the regular Open-AudIT details, but now you also get cloud-specific details like size.';
 
-        $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br /><br /><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br /><br />' . $instance->dictionary->link . '<br /><br />Credentials for your cloud (<a href="' . url_to('helpFAQ') . '?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="' . url_to('helpFAQ') . '?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br><br></p>';
+        $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="' . $helpFAQ . '?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="' . $helpFAQ . '?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>';
 
-        $dictionary->notes = "<p>If you intend to completely audit your cloud machines, don't forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br /><br /></p>";
+        $dictionary->notes = "<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>";
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
@@ -438,20 +442,30 @@ class CloudsModel extends BaseModel
         $dictionary->columns->status = 'The current status of the Cloud Discovery.';
         $dictionary->columns->options = 'Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.';
         $dictionary->columns->snmp = 'Should we test for SNMP using UDP port 161.';
-        $dictionary->columns->ssh = 'Should we test for SSH using TCP port 21.';
+        $dictionary->columns->ssh = 'Should we test for SSH using TCP port 22.';
         $dictionary->columns->wmi = 'Should we test for WMI using TCP port 135.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
-        # AWS
+        // AWS
         $dictionary->columns->key = 'Your AWS EC2 API key.';
         $dictionary->columns->secret_key = 'The secret key used in conjunction with your AWS EC2 API key.';
-        # Azue
+        // Azue
         $dictionary->columns->subscription_id = 'Your Microsoft Azure Subscription ID.';
         $dictionary->columns->tenant_id = 'Your Microsoft Azure Tennant ID.';
         $dictionary->columns->client_id = 'Your Microsoft Azure Client ID.';
         $dictionary->columns->client_secret = 'Your Microsoft Azure Client Secret.';
-        # Google Compute
+        // Google Compute
         $dictionary->columns->json = 'Your Google Compute credentials as JSON.';
+        // Derived columns for GUI
+        $dictionary->columns->last_run = 'The last date and time this item was executed (read only).';
+        $dictionary->columns->duration = 'Calculated upon completion, the time taken to execute this item.';
+        $dictionary->columns->locations = 'The number of associated locations. Links to <code>locations.cloud_id</code>.';
+        $dictionary->columns->networks = 'The number of associated networks. Links to <code>networks.cloud_id</code>.';
+        $dictionary->columns->devices_retrieved = 'The number of devices in this cloud. Links to <code>devices.cloud_id</code>.';
+        $dictionary->columns->devices_audited = 'The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.';
+        $dictionary->columns->devices_not_audited = 'The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.';
+        $dictionary->columns->devices_running = 'The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.';
+        $dictionary->columns->devices_stopped = 'The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.';
 
         return $dictionary;
     }

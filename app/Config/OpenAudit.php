@@ -34,6 +34,7 @@ class OpenAudit extends BaseConfig
     public string $access_token_enable;
     public string $blessed_subnets_use;
     public int $collector_check_minutes;
+    public string $components_extra_columns;
     public string $create_change_log;
     public string $create_change_log_arp;
     public string $create_change_log_bios;

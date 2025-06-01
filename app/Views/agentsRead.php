@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $add_input = '<a id="add_inputs" role="button" class="btn btn-light mb-2" href="#" title="' . __('Add If') . '"><span style="margin-right:6px;" class="fa fa-plus text-success"></span>' . __('Add If') . '</a>';
@@ -22,51 +23,40 @@ $output_count = 0;
                     <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $resource->name) ?>
                 </div>
                 <div class="card-body">
-
                     <div class="row">
                         <div class="col-4">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                            <?= read_field('weight', $resource->weight, $dictionary->columns->weight, $update) ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs, $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('weight', $resource->weight, $dictionary->columns->weight, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
 
                         <div class="col-4">
                             <div class="col-12 text-center">
                                 <h3><?= __('IF') ?></h3>
                             </div>
-                            <?= read_field('test_minutes', $resource->test_minutes, $dictionary->columns->test_minutes, $update, __('Minutes since last audit are greater than')) ?>
-                            <?= read_field('test_subnet', $resource->test_subnet, $dictionary->columns->test_subnet, $update, __('Device is in the Subnet')) ?>
-                            <?= read_field('test_os', $resource->test_os, $dictionary->columns->test_os, $update, __('Operating System Family Contains')) ?>
+                            <?= read_field('test_minutes', $resource->test_minutes, $dictionary->columns->test_minutes, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('test_subnet', $resource->test_subnet, $dictionary->columns->test_subnet, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('test_os', $resource->test_os, $dictionary->columns->test_os, $update, '', '', '', '', $meta->collection) ?>
 
                             <div class="col-12 text-center">
                                 <br>
                                 <h3><?= __('Then') ?></h3>
                             </div>
                             <?php if (!empty($config->feature_agents_advanced) and $config->feature_agents_advanced === 'y') { ?>
-                                <?= read_field('action_download', $resource->action_download, $dictionary->columns->action_download, $update, __('Download a file from URL')) ?>
-                                <?= read_field('action_command', html_entity_decode($resource->action_command), $dictionary->columns->action_command, $update, __('Run this Command')) ?>
+                                <?= read_field('action_download', $resource->action_download, $dictionary->columns->action_download, $update, '', '', '', '', $meta->collection) ?>
+                                <?= read_field('action_command', html_entity_decode($resource->action_command), $dictionary->columns->action_command, $update, '', '', '', '', $meta->collection) ?>
                             <?php } ?>
-                            <?= read_select('action_devices_assigned_to_location', $resource->action_devices_assigned_to_location, $dictionary->columns->action_devices_assigned_to_location, $update, __('Assign Device to Location'), $included['locations']) ?>
-                            <?= read_select('action_devices_assigned_to_org', $resource->action_devices_assigned_to_org, $dictionary->columns->action_devices_assigned_to_org, $update, __('Assign Device to Organisation'), $orgs) ?>
-                            <?= read_select('action_audit', $resource->action_audit, $dictionary->columns->action_audit, $update, __('Audit the Device'), array()) ?>
-                            <?= read_select('action_uninstall', $resource->action_uninstall, $dictionary->columns->action_uninstall, $update, __('Uninstall the Agent'), array()) ?>
+                            <?= read_select('action_devices_assigned_to_location', $resource->action_devices_assigned_to_location, $dictionary->columns->action_devices_assigned_to_location, $update, '', $included['locations'], $meta->collection) ?>
+                            <?= read_select('action_devices_assigned_to_org', $resource->action_devices_assigned_to_org, $dictionary->columns->action_devices_assigned_to_org, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_select('action_audit', $resource->action_audit, $dictionary->columns->action_audit, $update, '', array(), $meta->collection) ?>
+                            <?= read_select('action_uninstall', $resource->action_uninstall, $dictionary->columns->action_uninstall, $update, '', array(), $meta->collection) ?>
                         </div>
 
-                        <div class="col-4">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <h4 class="text-center">Fields</h4><br>
-                                <?php foreach ($dictionary->columns as $key => $value) {
-                                    if ($value !== 'Unused.') {
-                                        echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
-                                    }
-                                } ?>
-
+                        <div class="col-md-4">
+                            <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                         </div>
                     </div>
                 </div>

@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $delete = false;
 if (strpos($user->permissions[$meta->collection], 'd') !== false) {
     $delete = true;
@@ -92,29 +93,17 @@ if ($style === 'icontext') {
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('notin', $resource->notin, $dictionary->columns->notin, $update, '', [], $meta->collection) ?>
+                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-6">
                                     <br>
                                     <div class="offset-2 col-8">
-                                        <?php if (!empty($dictionary->about)) { ?>
-                                            <h4 class="text-center"><?= __('About') ?></h4><br>
-                                            <?= $dictionary->about ?>
-                                        <?php } ?>
-                                        <?php if (!empty($dictionary->notes)) { ?>
-                                            <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                            <?= $dictionary->notes ?>
-                                        <?php } ?>
-                                        <?php if (!empty($dictionary->columns)) { ?>
-                                            <?php $fields = array('name', 'description', 'edited_by', 'edited_date') ?>
-                                        <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                            <?php foreach ($fields as $key) { ?>
-                                            <code><?= $key ?>: </code><?= $dictionary->columns->{$key} ?><br><br>
-                                            <?php } ?>
-                                        <?php } ?>
+                                        <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +111,7 @@ if ($style === 'icontext') {
 
                         <div class="tab-pane" id="results" role="tabpanel" tabindex="0">
                             <br>
-                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable resultsTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable resultsTable" data-order='[[1,"desc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('View') ?></th>

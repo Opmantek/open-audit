@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $update_group = false;
 if ($config->product === 'enterprise') {
     $update_group = true;
@@ -15,32 +16,18 @@ if ($config->product === 'enterprise') {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                            <?= read_select('parent_id', $resource->parent_id, $dictionary->columns->parent_id, $update, __('Parent'), $orgs) ?>
-                            <?= read_select('type', $resource->type, $dictionary->columns->type, $update, __('Type'), $included['types']) ?>
-                            <?= read_field('ad_group', $resource->ad_group, $dictionary->columns->ad_group, $update_group, __('AD Group')) ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('parent_id', $resource->parent_id, $dictionary->columns->parent_id, $update, __('Parent'), $orgs, $meta->collection) ?>
+                            <?= read_select('type', $resource->type, $dictionary->columns->type, $update, __('Type'), $included['types'], $meta->collection) ?>
+                            <?= read_field('ad_group', $resource->ad_group, $dictionary->columns->ad_group, $update_group, __('AD Group'), '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                    <?= $dictionary->notes ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                    <?php $fields = array('name', 'parent_id', 'description', 'type', 'ad_group', 'edited_by', 'edited_date') ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= $dictionary->columns->{$key} ?><br><br>
-                                    <?php } ?>
-                                <?php } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                             </div>
                         </div>
                     </div>

@@ -63,8 +63,9 @@ if (!empty($config->servers)) {
 
         <script {csp-script-nonce} defer src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/fa-v4-shims.min.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/apexcharts.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/select2.full.min.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
 
         <!-- CSS -->
         <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">
@@ -74,6 +75,8 @@ if (!empty($config->servers)) {
         -->
         <link href="<?= base_url('css/datatables.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/font-awesome.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/select2.min.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/select2-bootstrap-5-theme.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/open-audit.css') ?>" rel="stylesheet">
 
         <!-- Open-AudIT specific items -->
@@ -415,15 +418,6 @@ if (!empty($config->servers)) {
                                         <?= menuItem('racks', '', $user, 'racksHelp', __('Learn About') . ' ' . __('Racks')) ?>
                                     </ul>
                                 </li>
-                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('rolesCollection') ?>"><?= __('Roles') ?></a>
-                                    <ul class="dropdown-menu">
-                                        <?= menuItem('roles', 'r', $user, 'rolesCollection', __('List') . ' ' . __('Roles')) ?>
-                                        <?= menuItem('roles', 'c', $user, 'rolesCreateForm', __('Create') . ' ' . __('Roles')) ?>
-                                        <?= menuItem('roles', 'c', $user, 'rolesImportForm', __('Import') . ' ' . __('Roles')) ?>
-                                        <?= menuItem('roles', '', $user, 'rolesDefaults', __('Default') . ' ' . __('Roles')) ?>
-                                        <?= menuItem('roles', '', $user, 'rolesHelp', __('Learn About') . ' ' . __('Roles')) ?>
-                                    </ul>
-                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('rulesCollection') ?>"><?= __('Rules') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('rules', 'r', $user, 'rulesCollection', __('List') . ' ' . __('Rules')) ?>
@@ -491,6 +485,15 @@ if (!empty($config->servers)) {
                                     <ul class="dropdown-menu">
                                         <?= menuItem('database', 'r', $user, 'databaseCollection', __('List') . ' ' . __('Database Tables')) ?>
                                         <?= menuItem('database', 'r', $user, 'databaseCompare', 'Compare Database Schema') ?>
+                                    </ul>
+                                </li>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('rolesCollection') ?>"><?= __('Roles') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('roles', 'r', $user, 'rolesCollection', __('List') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', 'c', $user, 'rolesCreateForm', __('Create') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', 'c', $user, 'rolesImportForm', __('Import') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', '', $user, 'rolesDefaults', __('Default') . ' ' . __('Roles')) ?>
+                                        <?= menuItem('roles', '', $user, 'rolesHelp', __('Learn About') . ' ' . __('Roles')) ?>
                                     </ul>
                                 </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('tasksCollection') ?>"><?= __('Tasks') ?></a>
@@ -587,6 +590,14 @@ foreach ($config->modules as $module) {
                             </ul>
                         </li>
 
+                        <?php if ($GLOBALS['browser_lang'] !== $user->lang) { ?>
+                            <li class="nav-item">
+                                <a style="padding-top:10px;" role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" data-bs-content="<?= __(codeToCountry($GLOBALS['browser_lang'])) . __(' is now supported with a language file. To change your user to use this language, click ') . ' <a href=\'' . url_to('usersRead', $user->id) . '\'>' . __('here') . '</a>.' ?>">
+                                    <i class="fa-solid fa-earth-americas" style="color: #ffc107;"></i>
+                                </a>
+                            </li>
+                        <?php } ?>
+
                         <?php if (!empty($config->servers)) { ?>
                         <li class="nav-item">
                             <a href="<?= url_to('dashboardCollector') ?>" role="button" class="btn btn-primary"><?= $config->servers->type ?></a>
@@ -604,7 +615,7 @@ foreach ($config->modules as $module) {
                     <div class="col-6" style="padding-bottom: 0px; padding-top: 16px;">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="<?= url_to('home') ?>" class="link-secondary">Home</a></li>
+                                <li class="breadcrumb-item"><a href="<?= $homepage ?>" class="link-secondary">Home</a></li>
                                 <?php if (empty($meta->breadcrumbs)) { ?>
                                     <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Collection') ?>" class="link-secondary"><?= @ucwords(str_replace('_', ' ', $meta->collection)) ?></a></li>
                                     <?php if (($meta->action === 'read' or $meta->action === 'execute') and !empty($name)) { ?>

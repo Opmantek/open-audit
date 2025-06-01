@@ -37,6 +37,7 @@ url="http://localhost/open-audit/index.php/input/devices"
 submit_online="n"
 create_file="y"
 discovery_id=""
+location_id=""
 org_id=""
 terminal_print="n"
 debugging="3"
@@ -85,8 +86,12 @@ if [ "$help" = "y" ]; then
     echo "      y - Display this help output."
     echo "     *n - Do not display this output."
     echo ""
+    echo "  location_id"
+    echo "       - The location_id (an integer) taken from Open-AudIT. If set the device will be associated to that Location."
+    echo ""
+    echo ""
     echo "  org_id"
-    echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+    echo "       - The org_id (an integer) taken from Open-AudIT. If set the device will be associated to that Organisation."
     echo ""
     echo "  submit_online"
     echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
@@ -104,6 +109,8 @@ system_hostname=$(hostname | cut -d. -f1)
 xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 xml_file_full_path=`pwd`"/$xml_file"
 
+echo "${xml_file_full_path} / ${xml_file}" > /tmp/Open-AudIT-Agent.out
+
 if [  "$debugging" -gt 0 ]; then
     echo "----------------------------"
     echo "Open-AudIT OSX audit script"
@@ -115,6 +122,7 @@ if [  "$debugging" -gt 0 ]; then
     echo "Submit Online       $submit_online"
     echo "Debugging Level     $debugging"
     echo "Discovery ID        $discovery_id"
+    echo "Location Id         $location_id"
     echo "Org Id              $org_id"
     echo "File                $xml_file_full_path"
     echo "----------------------------"
@@ -193,6 +201,7 @@ echo  "     <os_arch>$system_pc_os_arch</os_arch>" >> $xml_file
 echo  "     <memory_count>$system_pc_memory</memory_count>" >> $xml_file
 echo  "     <processor_count>$processor_count</processor_count>" >> $xml_file
 echo  "     <os_installation_date>$system_pc_date_os_installation</os_installation_date>" >> $xml_file
+echo  "     <location_id>$location_id</location_id>" >> $xml_file
 echo  "     <org_id>$org_id</org_id>" >> $xml_file
 echo  "     <last_seen_by>$last_seen_by</last_seen_by>" >> $xml_file
 echo  "     <discovery_id>$discovery_id</discovery_id>" >> $xml_file

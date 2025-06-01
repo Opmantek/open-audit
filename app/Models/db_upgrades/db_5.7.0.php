@@ -2,6 +2,18 @@
 
 $output .= "Upgrade database to 5.7.0 commenced.\n\n";
 
+$sql = "DROP TABLE IF EXISTS `graph`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+if (!$db->fieldExists('notin', 'baselines')) {
+    $sql = "ALTER TABLE `baselines` ADD `notin` enum('y','n') NOT NULL DEFAULT 'n' AFTER `documentation`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 $sql = "DROP TABLE IF EXISTS `news`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -31,6 +43,15 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM configuration WHERE name = 'components_extra_columns'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'components_extra_columns','','text','y','system','2000-01-01 00:00:00','Any extra columns from the devices table to show on the components list page. Should be comman separated, no spaces, column name only.')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 $sql = "DELETE FROM configuration WHERE name = 'feature_news'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

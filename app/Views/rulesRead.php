@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -11,20 +12,18 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                            <?= read_field('weight', $resource->weight, $dictionary->columns->weight, $update) ?>
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('weight', $resource->weight, $dictionary->columns->weight, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <hr>
                                 </div>
                             </div>
-
-
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
@@ -172,24 +171,11 @@ include 'shared/read_functions.php';
                             </div>
                         </div>
 
-
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                    <?= $dictionary->notes ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($dictionary->columns as $key => $value) { ?>
-                                    <code><?= $key ?>: </code><?= @$value ?><br><br>
-                                    <?php } ?>
-                                <?php } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                                <?= fieldsInfoDiv ($dictionary, ['weight', 'inputs', 'outputs']) ?>
                             </div>
                         </div>
                     </div>

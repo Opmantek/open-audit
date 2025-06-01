@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $firstwave_fields = array('nmis_active', 'nmis_collect', 'nmis_model', 'nmis_netType', 'nmis_ping', 'nmis_port', 'activated_NMIS', 'activated_opConfig', 'activated_opEvents');
 $included['nmis_fields'] = array();
 if (!empty($included['fields'])) {
@@ -171,32 +172,32 @@ if (empty($resource->type)) {
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
-                                            <?= read_field('name', $resource->name, '', $update) ?>
-                                            <?= read_select('org_id', $resource->org_id, '', $update, __('Organisation'), $orgs) ?>
+                                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs, $meta->collection) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.manufacturer=" . urlencode($resource->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('manufacturer', $resource->manufacturer, '', $update, '', $link) ?>
+                                            <?= read_field('manufacturer', $resource->manufacturer, $dictionary->columns->manufacturer, $update, '', $link, '', '', $meta->collection) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.os_group=" . urlencode($resource->os_group) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('os_group', $resource->os_group, '', $update, __('OS Group'), $link) ?>
+                                            <?= read_field('os_group', $resource->os_group, $dictionary->columns->os_group, $update, __('OS Group'), $link, '', '', $meta->collection) ?>
                                             <?php if (!empty($resource->type) and stripos($resource->type, 'printer') !== false and !empty($resource->snmp_oid)) { ?>
-                                                <?= read_field('printer_color', $resource->printer_color, '', false, __('Color')) ?>
+                                                <?= read_field('printer_color', $resource->printer_color, $dictionary->columns->printer_color, false, __('Color'), '', '', '', $meta->collection) ?>
                                             <?php } ?>
 
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('ip', $resource->ip, '', $update, 'IP') ?>
-                                            <?= read_select('status', $resource->status, '', $update, __('Status'), $included['status']) ?>
+                                            <?= read_field('ip', $resource->ip, $dictionary->columns->ip, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_select('status', $resource->status, $dictionary->columns->status, $update, __('Status'), $included['status'], $meta->collection) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.model=" . urlencode($resource->model) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('model', $resource->model, '', $update, '', $link) ?>
-                                            <?= read_field('os_name', $resource->os_name, '', $update, 'OS Name') ?>
+                                            <?= read_field('model', $resource->model, $dictionary->columns->model, $update, '', $link, '', '', $meta->collection) ?>
+                                            <?= read_field('os_name', $resource->os_name, $dictionary->columns->os_name, $update, '', '', '', '', $meta->collection) ?>
                                             <?php if (!empty($resource->type) and stripos($resource->type, 'printer') !== false and !empty($resource->snmp_oid)) { ?>
-                                                <?= read_field('printer_duplex', $resource->printer_duplex, '', false, __('Duplex')) ?>
+                                                <?= read_field('printer_duplex', $resource->printer_duplex, $dictionary->columns->printer_duplex, false, __('Duplex'), '', '', '', $meta->collection) ?>
                                             <?php } ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_select('type', $resource->type, '', $update, __('Type'), $included['type']) ?>
-                                            <?= read_select('environment', $resource->environment, '', $update, __('Environment'), $included['environment']) ?>
-                                            <?= read_field('serial', $resource->serial, '', $update) ?>
-                                            <?= read_field('description', $resource->description, '', $update) ?>
+                                            <?= read_select('type', $resource->type, $dictionary->columns->type, $update, __('Type'), $included['type'], $meta->collection) ?>
+                                            <?= read_select('environment', $resource->environment, $dictionary->columns->environment, $update, __('Environment'), $included['environment'], $meta->collection) ?>
+                                            <?= read_field('serial', $resource->serial, $dictionary->columns->serial, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -207,35 +208,35 @@ if (empty($resource->type)) {
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
-                                            <?= read_field('hostname', $resource->hostname, '', $update) ?>
-                                            <?= read_field('dns_name', $resource->dns_hostname, '', $update, __('DNS Hostname')) ?>
-                                            <?= read_field('form_factor', $resource->form_factor, '', $update) ?>
-                                            <?= read_field('os_family', $resource->os_family, '', $update, __('OS Family')) ?>
-                                            <?= read_field('processor_count', $resource->processor_count, '', false, __('Processors')) ?>
-                                            <?= read_field('uptime', $resource->uptime) ?>
+                                            <?= read_field('hostname', $resource->hostname, $dictionary->columns->hostname, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('dns_name', $resource->dns_hostname, $dictionary->columns->dns_hostname, $update, __('DNS Hostname'), '', '', '', $meta->collection) ?>
+                                            <?= read_field('form_factor', $resource->form_factor, $dictionary->columns->form_factor, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('os_family', $resource->os_family, $dictionary->columns->os_family, $update, __('OS Family'), '', '', '', $meta->collection) ?>
+                                            <?= read_field('processor_count', $resource->processor_count, $dictionary->columns->processor_count, false, __('Processors'), '', '', '', $meta->collection) ?>
+                                            <?= read_field('uptime', $resource->uptime, $dictionary->columns->uptime, false, '', '', '', '', $meta->collection) ?>
                                             <?php if (!empty($resource->vm_device_id) and !empty($resource->vm_server_name)) {
                                                 $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesRead', $resource->vm_device_id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
-                                                echo read_field('VM Host', $resource->vm_server_name, '', '', '', $link);
+                                                echo read_field('VM Host', $resource->vm_server_name, $dictionary->columns->vm_server_name, '', false, $link);
                                             }
                                             ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('domain', $resource->domain, '', $update) ?>
-                                            <?= read_field('dns_domain', $resource->dns_domain, '', $update, 'DNS Domain') ?>
-                                            <?= read_select('class', $resource->class, '', $update, __('Class'), $included['class']) ?>
-                                            <?= read_field('os_version', $resource->os_version, '', false, __('OS Version')) ?>
-                                            <?= read_field('memory_count', ($resource->memory_count / 1024 / 1024) . ' GB', '', false, __('Memory')) ?>
-                                            <?= read_field('os_installation_date', $resource->os_installation_date, '', $update, __('OS Installed On')) ?>
-                                            <?= read_field('service_tag', $resource->service_tag, '', '', __('Service Tag')) ?>
+                                            <?= read_field('domain', $resource->domain, $dictionary->columns->domain, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('dns_domain', $resource->dns_domain, $dictionary->columns->dns_domain, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_select('class', $resource->class, $dictionary->columns->class, $update, __('Class'), $included['class'], $meta->collection) ?>
+                                            <?= read_field('os_version', $resource->os_version, $dictionary->columns->os_version, false, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('memory_count', ($resource->memory_count / 1024 / 1024) . ' GB', $dictionary->columns->memory_count, false, __('Memory'), '', '', '', $meta->collection) ?>
+                                            <?= read_field('os_installation_date', $resource->os_installation_date, $dictionary->columns->os_installation_date, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('service_tag', $resource->service_tag, $dictionary->columns->service_tag, false, '', '', '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('fqdn', $resource->fqdn, '', $update, __('FQDN')) ?>
-                                            <?= read_field('dns_fqdn', $resource->dns_fqdn, '', $update, __('DNS FQDN')) ?>
-                                            <?= read_field('function', $resource->function, '', $update) ?>
-                                            <?= read_field('uuid', $resource->uuid, '', false, __('UUID')) ?>
-                                            <?= read_field('first_seen', $resource->first_seen, '', false, __('First Seen On')) ?>
-                                            <?= read_field('last_seen', $resource->last_seen, '', false, __('Last Seen On')) ?>
-                                            <?= read_field('last_seen_by', $resource->last_seen_by) ?>
+                                            <?= read_field('fqdn', $resource->fqdn, $dictionary->columns->fqdn, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('dns_fqdn', $resource->dns_fqdn, $dictionary->columns->dns_fqdn, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('function', $resource->function, $dictionary->columns->function, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('uuid', $resource->uuid, $dictionary->columns->uuid, false, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('first_seen', $resource->first_seen, $dictionary->columns->first_seen, false, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('last_seen', $resource->last_seen, $dictionary->columns->last_seen, false, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('last_seen_by', $resource->last_seen_by, $dictionary->columns->last_seen_by, false, '', '', '', '', $meta->collection) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -345,22 +346,22 @@ if (empty($resource->type)) {
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
-                                            <?= read_field('service_number', $resource->service_number, '', $update) ?>
+                                            <?= read_field('service_number', $resource->service_number, $dictionary->columns->service_number, $update, '', '', '', '', $meta->collection) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_network=" . urlencode($resource->service_network) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('service_network', $resource->service_network, '', $update, '', $link) ?>
-                                            <?= read_field('serial_imei', $resource->serial_imei, '', $update, '') ?>
+                                            <?= read_field('service_network', $resource->service_network, $dictionary->columns->service_network, $update, '', $link, '', '', $meta->collection) ?>
+                                            <?= read_field('serial_imei', $resource->serial_imei, $dictionary->columns->serial_imei, $update, '', '', '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_type=" . $resource->service_type . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('service_type', $resource->service_type, '', $update, '', $link) ?>
+                                            <?= read_field('service_type', $resource->service_type, $dictionary->columns->service_type, $update, '', $link, '', '', $meta->collection) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_provider=" . $resource->service_provider . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('service_provider', $resource->service_provider, '', $update, '', $link) ?>
-                                            <?= read_field('serial_sim', $resource->serial_sim, '', $update) ?>
+                                            <?= read_field('service_provider', $resource->service_provider, $dictionary->columns->service_provider, $update, '', $link, '', '', $meta->collection) ?>
+                                            <?= read_field('serial_sim', $resource->serial_sim, $dictionary->columns->serial_sim, $update, '', '', '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_plan=" . $resource->service_plan . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('service_plan', $resource->service_plan, '', $update, '', $link) ?>
-                                            <?= read_field('unlock_pin', $resource->unlock_pin, '', $update) ?>
+                                            <?= read_field('service_plan', $resource->service_plan, $dictionary->columns->service_plan, $update, '', $link, '', '', $meta->collection) ?>
+                                            <?= read_field('unlock_pin', $resource->unlock_pin, $dictionary->columns->unlock_pin, $update, '', '', '', '', $meta->collection) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -368,33 +369,36 @@ if (empty($resource->type)) {
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="change_log_section">
                                 <?php $count = !empty($included['change_log']) ? count($included['change_log']) : 0; ?>
-                                <?=  device_panel('change_log', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <?= device_panel('change_log', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <?php $dataTableChangeLogColumns = ['id', 'timestamp', 'db_table', 'db_action', 'details']; ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableChangeLog" data-order='[[1,"asc"]]'>
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
-                                                    <th class="text-center"><?= __('ID') ?></th>
-                                                    <th><?= __('Timestamp') ?></th>
-                                                    <th><?= __('Type') ?></th>
-                                                    <th><?= __('Table') ?></th>
-                                                    <th><?= __('Details') ?></th>
+                                                <?php foreach ($dataTableChangeLogColumns as $key) {
+                                                    $align = '';
+                                                    if (strpos($key, 'id') === intval(strlen($key) - 2)) {
+                                                        $align = 'text-center';
+                                                    }
+                                                    echo '<th class="' . $align . '">' . ucfirst($key) . "</th>\n                                                ";
+                                                } ?>
+
+                                                </tr>
+                                                <tr>
+                                                    <?php foreach ($dataTableChangeLogColumns as $key) {
+                                                        echo "\n";
+                                                        echo '                                                <th>
+                                                        <div class="input-group">
+                                                            <input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . ucfirst($key) . '">
+                                                        </div>
+                                                    </th>';
+                                                        echo "\n";
+                                                    } ?>
+
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            <?php if (!empty($included['change_log'])) {
-                                                foreach ($included['change_log'] as $row) { ?>
-                                                <tr>
-                                                    <?= device_component_button_read('change_log', $row->id) ?>
-                                                    <td class="text-center"><?= $row->id ?></td>
-                                                    <td><?= $row->timestamp ?></td>
-                                                    <td><?= $row->db_action ?></td>
-                                                    <td><?= $row->db_table ?></td>
-                                                    <td><?= $row->details ?></td>
-                                                </tr>
-                                                <?php } ?>
-                                            <?php } ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -420,7 +424,7 @@ if (empty($resource->type)) {
                                         <div class="col-4">
                                             <div class="row" style="padding-top:16px;">
                                                 <div class="offset-2 col-8" style="position:relative;">
-                                                    <label for="sql" class="form-label"><?= __('API Result') ?></label>
+                                                    <label for="instance_options" class="form-label"><?= __('API Result') ?></label>
                                                     <div class="input-group">
                                                         <textarea class="form-control" rows="12" id="instance_options" name="instance_options" disabled><?= html_entity_decode(json_encode($resource->instance_options, JSON_PRETTY_PRINT)) ?></textarea>
                                                     </div>
@@ -664,17 +668,17 @@ if (empty($resource->type)) {
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
-                                            <?= read_select('nmis_manage', $resource->nmis_manage, '', $update, __('Manage in NMIS'), []) ?>
-                                            <?= read_field('nmis_name', $resource->nmis_name, '', $update) ?>
-                                            <?= read_field('nmis_notes', $resource->nmis_notes, '', $update) ?>
-                                            <?= read_field('omk_uuid', $resource->omk_uuid, '', $update) ?>
-                                            <?= read_select('nmis_group', $resource->nmis_group, '', $update, __('NMIS Group'), $included['nmis_groups']) ?>
-                                            <?= read_select('nmis_role', $resource->nmis_role, '', $update, __('NMIS Role'), $included['nmis_roles']) ?>
+                                            <?= read_select('nmis_manage', $resource->nmis_manage, $dictionary->columns->nmis_manage, $update, __('Manage in NMIS'), [], $meta->collection) ?>
+                                            <?= read_field('nmis_name', $resource->nmis_name, $dictionary->columns->nmis_name, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('nmis_notes', $resource->nmis_notes, $dictionary->columns->nmis_notes, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('omk_uuid', $resource->omk_uuid, $dictionary->columns->omk_uuid, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_select('nmis_group', $resource->nmis_group, $dictionary->columns->nmis_group, $update, __('NMIS Group'), $included['nmis_groups'], $meta->collection) ?>
+                                            <?= read_select('nmis_role', $resource->nmis_role, $dictionary->columns->nmis_role, $update, __('NMIS Role'), $included['nmis_roles'], $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_select('nmis_business_service', $resource->nmis_business_service, '', $update, __('NMIS Business Service'), $included['nmis_business_services']) ?>
-                                            <?= read_select('nmis_customer', $resource->nmis_customer, '', $update, __('NMIS Customer'), $included['nmis_customers']) ?>
-                                            <?= read_select('nmis_poller_uuid', $resource->nmis_poller_uuid, '', $update, __('NMIS Poller'), $included['nmis_pollers']) ?>
+                                            <?= read_select('nmis_business_service', $resource->nmis_business_service, $dictionary->columns->nmis_business_service, $update, __('NMIS Business Service'), $included['nmis_business_services'], $meta->collection) ?>
+                                            <?= read_select('nmis_customer', $resource->nmis_customer, $dictionary->columns->nmis_customer, $update, __('NMIS Customer'), $included['nmis_customers'], $meta->collection) ?>
+                                            <?= read_select('nmis_poller_uuid', $resource->nmis_poller_uuid, $dictionary->columns->nmis_poller_uuid, $update, __('NMIS Poller'), $included['nmis_pollers'], $meta->collection) ?>
 
 
 
@@ -860,7 +864,7 @@ if (empty($resource->type)) {
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
-                                            <?= read_select('location_id', $resource->location_id, '', $update, __('Location'), $included['locations']) ?>
+                                            <?= read_select('location_id', $resource->location_id, $dictionary->columns->location_id, $update, __('Location'), $included['locations'], $meta->collection) ?>
                                             <?= read_field('address', @(string)$location->attributes->address) ?>
                                             <?= read_field('city', @(string)$location->attributes->city) ?>
                                             <?= read_field('state', @(string)$location->attributes->state) ?>
@@ -868,8 +872,9 @@ if (empty($resource->type)) {
                                         </div>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.owner=" . urlencode($resource->owner) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('owner', $resource->owner, '', $update, '', $link) ?>
-                                            <?= read_select('org_id_2', $resource->org_id, '', false, __('Organisation'), $orgs) ?>
+                                            <?= read_field('owner', $resource->owner, $dictionary->columns->owner, $update, '', $link, '', '', $meta->collection) ?>
+                                            <?= read_select('org_id_2', $resource->org_id, $dictionary->columns->org_id, false, __('Organisation'), $orgs, $meta->collection) ?>
+                                            </div>
 
                                             <?php
                                             if (empty($included['rack_devices'][0]->{'rack_id'})) {
@@ -892,10 +897,10 @@ if (empty($resource->type)) {
                                         </div>
                                         <div class="col-4">
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.switch_device_id=" . urlencode($resource->switch_device_id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
-                                            <?= read_field('switch_device_id', $resource->switch_device_id, '', $update, '', $link) ?>
-                                            <?= read_field('switch_port', $resource->switch_port, '', $update, '') ?>
-                                            <?= read_field('patch_panel', $resource->patch_panel, '', $update, '', $link) ?>
-                                            <?= read_field('patch_panel_port', $resource->patch_panel_port, '', $update, '') ?>
+                                            <?= read_field('switch_device_id', $resource->switch_device_id, $dictionary->columns->switch_device_id, $update, '', $link, '', '', $meta->collection) ?>
+                                            <?= read_field('switch_port', $resource->switch_port, $dictionary->columns->switch_port, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('patch_panel', $resource->patch_panel, $dictionary->columns->patch_panel, $update, '', $link, '', '', $meta->collection) ?>
+                                            <?= read_field('patch_panel_port', $resource->patch_panel_port, $dictionary->columns->patch_panel_port, $update, '', '', '', '', $meta->collection) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -906,27 +911,27 @@ if (empty($resource->type)) {
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
-                                            <?= read_field('purchase_invoice', $resource->purchase_invoice, '', $update, '') ?>
-                                            <?= read_field('purchase_order_number', $resource->purchase_order_number, '', $update, '') ?>
-                                            <?= read_field('purchase_cost_center', $resource->purchase_cost_center, '', $update, '') ?>
-                                            <?= read_field('purchase_vendor', $resource->purchase_vendor, '', $update, '') ?>
-                                            <?= read_field('purchase_amount', $resource->purchase_amount, '', $update, '') ?>
-                                            <?= read_field('purchase_date', $resource->purchase_date, '', $update, '', '', '', 'date') ?>
-                                            <?= read_field('purchase_service_contract_number', $resource->purchase_service_contract_number, '', $update, '') ?>
+                                            <?= read_field('purchase_invoice', $resource->purchase_invoice, $dictionary->columns->purchase_invoice, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('purchase_order_number', $resource->purchase_order_number, $dictionary->columns->purchase_order_number, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('purchase_cost_center', $resource->purchase_cost_center, $dictionary->columns->purchase_cost_center, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('purchase_vendor', $resource->purchase_vendor, $dictionary->columns->purchase_vendor, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('purchase_amount', $resource->purchase_amount, $dictionary->columns->purchase_amount, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('purchase_date', $resource->purchase_date, $dictionary->columns->purchase_date, $update, '', '', '', 'date', $meta->collection) ?>
+                                            <?= read_field('purchase_service_contract_number', $resource->purchase_service_contract_number, $dictionary->columns->purchase_service_contract_number, $update, '', '', '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('asset_number', $resource->asset_number, '', $update, '') ?>
-                                            <?= read_field('asset_tag', $resource->asset_tag, '', $update, '') ?>
-                                            <?= read_field('lease_expiry_date', $resource->lease_expiry_date, '', $update, '', '', '', 'date') ?>
-                                            <?= read_field('end_of_production', $resource->end_of_production, '', $update, '', '', '', 'date') ?>
-                                            <?= read_field('end_of_service', $resource->end_of_service, '', $update, '', '', '', 'date') ?>
-                                            <?= read_field('end_of_life', $resource->end_of_life, '', $update, '', '', '', 'date') ?>
+                                            <?= read_field('asset_number', $resource->asset_number, $dictionary->columns->asset_number, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('asset_tag', $resource->asset_tag, $dictionary->columns->asset_tag, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('lease_expiry_date', $resource->lease_expiry_date, $dictionary->columns->lease_expiry_date, $update, '', '', '', 'date', $meta->collection) ?>
+                                            <?= read_field('end_of_production', $resource->end_of_production, $dictionary->columns->end_of_production, $update, '', '', '', 'date', $meta->collection) ?>
+                                            <?= read_field('end_of_service', $resource->end_of_service, $dictionary->columns->end_of_service, $update, '', '', '', 'date', $meta->collection) ?>
+                                            <?= read_field('end_of_life', $resource->end_of_life, $dictionary->columns->end_of_life, $update, '', '', '', 'date', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('warranty_duration', $resource->warranty_duration, '', $update, '') ?>
-                                            <?= read_field('warranty_expires', $resource->warranty_expires, '', $update, '', '', '', 'date') ?>
-                                            <?= read_field('warranty_status', $resource->warranty_status, '', $update, '') ?>
-                                            <?= read_field('maintenance_expires', $resource->maintenance_expires, '', $update, '', '', '', 'date') ?>
+                                            <?= read_field('warranty_duration', $resource->warranty_duration, $dictionary->columns->warranty_duration, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('warranty_expires', $resource->warranty_expires, $dictionary->columns->warranty_expires, $update, '', '', '', 'date', $meta->collection) ?>
+                                            <?= read_field('warranty_status', $resource->warranty_status, $dictionary->columns->warranty_status, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_field('maintenance_expires', $resource->maintenance_expires, $dictionary->columns->maintenance_expires, $update, '', '', '', 'date', $meta->collection) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -2872,7 +2877,7 @@ window.onload = function () {
         if (confirm("<?= __('Should I remove all non-current data from this device?') ?>")) {
             $.ajax({
                 type: "PATCH",
-                url: "<?= base_url() ?>devices/<?= $resource->id ?>/reset",
+                url: "<?= base_url() ?>index.php/devices/<?= $resource->id ?>/reset",
                 contentType: "application/json",
                 data: {},
                 success: function (data) {
@@ -2898,5 +2903,132 @@ window.onload = function () {
         }
     })
 
+
+    $(document).ready(function () {
+        let logSort = {};
+        var myDataTable = new DataTable('.dataTableChangeLog', {
+            lengthChange: true,
+            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+            order: [[ 1, 'asc' ]],
+            pageLength: 25,
+            paging: true,
+            processing: true,
+            searching: false,
+            search: {
+                return: true
+            },
+            serverSide: true,
+            ajax: {
+                url: '<?= base_url() ?>index.php/components?components.type=change_log&components.device_id=<?= $meta->id ?>&format=json',
+                dataSrc: 'data',
+                data: function (d) {
+                    d.limit = d.length;
+                    d.offset = d.start;
+                    if (d.order[0]) {
+                    <?php
+                    foreach ($dataTableChangeLogColumns as $key) {
+                        $sort_key = $key;
+                        if (strpos($key, "__") !== false) {
+                            $sort_key = str_replace('__', '.', $key);
+                        } else {
+                            $sort_key = 'change_log' . '.' . $key;
+                        }
+                        echo "\n\t\t\t\t\t\tif (d.columns[d.order[0].column].data == 'attributes.$key') {
+                            logSort.column = '$key';
+                            logSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = '$sort_key';
+                            } else {
+                                d.sort = '-$sort_key';
+                            }
+                        }\n";
+                    }
+                    ?>
+                    } else {
+                        if (logSort.direction == 'asc') {
+                            d.sort = '-' + logSort.column;
+                            logSort.direction = 'desc';
+                        } else {
+                            d.sort = logSort.column;
+                            logSort.direction = 'asc';
+                        }
+                    }
+                    <?php foreach ($dataTableChangeLogColumns as $key) { ?>
+                    if ($("#search_<?= $key ?>").val() != '') {
+                        d.<?= $key ?> = $("#search_<?= $key ?>").val();
+                    }
+                    <?php } ?>
+                    delete d.start;
+                    delete d.length;
+                    delete d.order;
+                    delete d.columns;
+                }
+            },
+            autoWidth: false,
+            columnDefs: [
+                <?php for ($i = 0; $i < count($dataTableChangeLogColumns); $i++) {
+                    if (strpos($dataTableChangeLogColumns[$i], 'id') === intval(strlen($dataTableChangeLogColumns[$i]) - 2)) {
+                        echo "\n                {className: \"text-center\", target: $i, width: \"12em\", visible: true, name:\"" . $dataTableChangeLogColumns[$i] . "\", sortable: false},";
+                    } else {
+                        echo "\n                {className: \"text-start\",  target: $i, width: \"12em\", visible: true, name:\"" . $dataTableChangeLogColumns[$i] . "\"},";
+                    }
+                }
+                ?>
+            ],
+            columns: [
+                <?php foreach ($dataTableChangeLogColumns as $column) {
+                    if ($column === 'id') {
+                        echo '{ data: \'attributes.id\',
+                            render: function (data, type, row, meta) {
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/components/" + row.attributes.id + "?components.type=change_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                            }
+                        },';
+                        echo "\n";
+                    } else {
+                        echo "{ data: 'attributes.$column' },\n";
+                    }
+                } ?>
+            ],
+            info: true,
+            language: {
+                infoFiltered: ""
+            },
+            layout: {
+                bottomStart: {
+                    info: {
+                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                    }
+                },
+                bottomEnd: {
+                    paging: {
+                        type: 'full_numbers'
+                    }
+                }
+            }
+        });
+
+        /* This stops the sort when clicking in a search text box in the table header */
+        $(".dataTableChangeLog").on("click", function(e) { e.stopPropagation() });
+
+        /* And don't automatically send the result - wait for the user to press <enter> / <return> */
+        $(".dataTablesearchField").on("keypress", function (evtObj) {
+            if (evtObj.keyCode == 13) {
+                myDataTable.ajax.reload();
+            }
+        });
+
+        myDataTable.on('xhr', function (e, settings, json) {
+            if (json.warning) {
+                $("#notice").show();
+                $("#alert").html(json.warning + '<button id="button" type="button" class="btn-close" aria-label="Close"></button>');
+                $("#alert").show();
+            } else {
+                $("#alert").hide();
+            }
+        });
+        $(document).on('click', '#button', function() {
+            $(this).parent().hide();
+        });
+    });
 }
 </script>

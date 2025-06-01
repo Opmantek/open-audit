@@ -260,10 +260,11 @@ class LicensesModel extends BaseModel
 
         $dictionary->sentence = 'Track your installed software, quickly and easily.';
 
-        $dictionary->about = '<p>The license endpoint allows you to track the number of licenses found on your devices.<br /><br />To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>';
 
-        $dictionary->notes = '<p>You can use the percent % sign as a wildcard in the match_string.<br /><br /></p>';
+        $dictionary->notes = '<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;

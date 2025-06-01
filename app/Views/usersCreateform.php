@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
+include 'shared/common_functions.php';
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -69,7 +70,7 @@ include 'shared/create_functions.php';
                                             <option value="<?= $org->id ?>"><?= $org->attributes->name . $parent ?></option>
                                         <?php } ?>
                                         </select>
-                                        <span><?= __('Note - Selecting a parent will automatically provide access to its children (although it won\'t be shown here).') ?></span>
+                                        <span><?= __('Note - Selecting a parent will automatically provide access to its children (although it wont be shown here).') ?></span>
                                     </div>
                                 </div>
 
@@ -85,21 +86,8 @@ include 'shared/create_functions.php';
 
                         <div class="col-md-6">
                             <div class="offset-2 col-8">
-                                <?php if (! empty($dictionary->about)) {
-                                    echo "<h4 class=\"text-center\">About</h4><br>";
-                                    echo html_entity_decode($dictionary->about);
-                                } ?>
-                                <?php if (! empty($dictionary->notes)) {
-                                    echo "<h4 class=\"text-center\">Notes</h4><br>";
-                                    echo html_entity_decode($dictionary->notes);
-                                } ?>
-                                <h4 class="text-center">Fields</h4><br>
-                                <?php $do_not_show = array('id', 'dashboard_id', 'active', 'ldap', 'type', 'devices_default_display_columns', 'access_token', 'edited_by', 'edited_date'); ?>
-                                <?php foreach ($dictionary->columns as $key => $value) {
-                                    if (!in_array($key, $do_not_show)) {
-                                        echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
-                                    }
-                                } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                                <?= fieldsInfoDiv ($dictionary) ?>
                             </div>
                         </div>
                     </div>

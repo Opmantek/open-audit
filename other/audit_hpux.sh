@@ -50,6 +50,7 @@ version="5.6.5"
 discovery_id=""
 help=""
 last_seen_by="audit_ssh"
+location_id=""
 org_id=""
 system_id=""
 
@@ -68,6 +69,7 @@ for arg; do
 		submit_online) submit_online="$VAL";;
 		create_file)   create_file="$VAL";;
 		debugging)     debugging="$VAL";;
+		location_id)   location_id="$VAL";;
 		org_id)        org_id="$VAL";;
 		url)           url="$VAL";;
 		system_id)     system_id="$VAL";;
@@ -98,6 +100,10 @@ if [[ $help = "y" ]]; then
 	echo ""
 	echo "  discovery_id"
 	echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
+	echo ""
+	echo "  location_id"
+	echo "     * - The Open-AudIT id of the location you would like this machine assigned to. This is not populated by default."
+	echo ""
 	echo ""
 	echo "  org_id"
 	echo "     * - The Open-AudIT id of the organisation you would like this machine assigned to. This is not populated by default."
@@ -154,6 +160,7 @@ if [[ "$debugging" -gt 0 ]]; then
 	echo "Submit Online       $submit_online"
 	echo "Debugging Level     $debugging"
 	echo "Discovery ID        $discovery_id"
+	echo "Location Id         $location_id"
 	echo "Org Id              $org_id"
 	echo "URL                 $url"
 	echo "File                $xml_file_full_path"
@@ -203,6 +210,7 @@ cat >"$xml_file" <<EndOfFile
 		<memory_count>$(escape_xml "$memory_count")</memory_count>
 		<processor_count>$(escape_xml "$processor_count")</processor_count>
 		<os_installation_date></os_installation_date>
+		<location_id>$(escape_xml "$location_id")</location_id>
 		<org_id>$(escape_xml "$org_id")</org_id>
 		<class>$(escape_xml "$class")</class>
 		<id>$(escape_xml "$system_id")</id>

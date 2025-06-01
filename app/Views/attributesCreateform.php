@@ -55,18 +55,8 @@ include 'shared/create_functions.php';
 
                         <div class="col-md-6">
                             <div class="offset-2 col-8">
-                                <?php if (! empty($dictionary->about)) {
-                                    echo "<h4 class=\"text-center\">About</h4><br>";
-                                    echo html_entity_decode($dictionary->about);
-                                } ?>
-                                <?php if (! empty($dictionary->notes)) {
-                                    echo "<h4 class=\"text-center\">Notes</h4><br>";
-                                    echo html_entity_decode($dictionary->notes);
-                                } ?>
-                                <h4 class="text-center">Fields</h4><br>
-                                <?php foreach ($dictionary->columns as $key => $value) {
-                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
-                                } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                                <?= fieldsInfoDiv ($dictionary) ?>
                             </div>
                         </div>
                     </div>

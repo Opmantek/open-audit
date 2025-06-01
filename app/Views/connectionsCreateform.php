@@ -1,9 +1,8 @@
 <?php
-
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
-
 include 'shared/create_functions.php';
+include 'shared/common_functions.php';
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -51,28 +50,18 @@ include 'shared/create_functions.php';
 
                         <div class="col-md-6">
                             <div class="offset-2 col-8">
-                                <?php if (! empty($dictionary->about)) {
-                                    echo "<h4 class=\"text-center\">About</h4><br>";
-                                    echo html_entity_decode($dictionary->about);
-                                } ?>
-                                <?php if (! empty($dictionary->notes)) {
-                                    echo "<h4 class=\"text-center\">Notes</h4><br>";
-                                    echo html_entity_decode($dictionary->notes);
-                                } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                                 <h4 class="text-center">Fields</h4><br>
                                 <?php $fields = array('name', 'org_id', 'description', 'provider', 'service_type', 'product_name', 'service_identifier', 'speed') ?>
                                 <?php foreach ($fields as $key) { ?>
                                 <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                 <?php } ?>
                                 <hr>
-
                                 <?php $fields = array('location_id_a', 'service_level_a', 'site_hours_a', 'site_contact_a', 'device_id_a', 'line_number_a', 'ip_address_external_a', 'ip_address_internal_a') ?>
                                 <?php foreach ($fields as $key) { ?>
                                 <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
                                 <?php } ?>
                                 <hr>
-
-
                             </div>
                         </div>
                     </div>

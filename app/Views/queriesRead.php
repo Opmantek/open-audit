@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -11,13 +12,13 @@ include 'shared/read_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
-                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
-                            <?= read_field('description', html_entity_decode($resource->description), $dictionary->columns->description, $update) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                            <?= read_field('description', html_entity_decode($resource->description), $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="menu_display" class="form-label"><?= __('Display in Menu') ?></label>
+                                    <?= read_field_header($meta->collection, 'menu_display', $dictionary->columns->menu_display, __('Display in Menu')) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="menu_display" name="menu_display" data-original-value="<?= $resource->menu_display ?>" disabled>
                                         <option value='y'><?php echo __('Yes'); ?></option>
@@ -35,11 +36,11 @@ include 'shared/read_functions.php';
                                 </div>
                             </div>
 
-                            <?= read_select('menu_category', $resource->menu_category, $dictionary->columns->menu_category, $update, __('Menu Category'), $included['menu_category']) ?>
+                            <?= read_select('menu_category', $resource->menu_category, $dictionary->columns->menu_category, $update, __('Menu Category'), $included['menu_category'], $meta->collection) ?>
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="sql" class="form-label"><?= __('SQL') ?></label>
+                                    <?= read_field_header($meta->collection, 'sql', $dictionary->columns->sql, 'SQL') ?>
                                     <div class="input-group">
                                         <textarea class="form-control" rows="14" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
                                         <?php if ($update) { ?>
@@ -55,27 +56,13 @@ include 'shared/read_functions.php';
                             </div>
 
 
-                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
-                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                    <?= $dictionary->notes ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                    <?php $fields = array('name', 'org_id', 'description', 'menu_display', 'menu_category', 'sql', 'edited_by', 'edited_date') ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($fields as $key) { ?>
-                                    <code><?= $key ?>: </code><?= @$dictionary->columns->{$key} ?><br><br>
-                                    <?php } ?>
-                                <?php } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                             </div>
                         </div>
                     </div>

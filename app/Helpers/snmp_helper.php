@@ -1082,8 +1082,13 @@ if (!function_exists('snmp_audit')) {
         if (!empty($apMac) and is_array($apMac)) {
             foreach ($apMac as $key => $value) {
                 $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.1.', '', $key);
-                $access_points[$id] = new \stdClass();
-                $access_points[$id]->mac = format_mac($value);
+                $value = format_mac($value);
+                if (!empty($id) and empty($access_points[$id])) {
+                    $access_points[$id] = new \stdClass();
+                }
+                if (!empty($value) and !empty($access_points[$id])) {
+                    $access_points[$id]->mac = (string)$value;
+                }
             }
 
             $item_start = microtime(true);
@@ -1101,10 +1106,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apEmac) and is_array($apEmac)) {
                 foreach ($apEmac as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.33.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = format_mac($value);
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->ethernet_mac = format_mac($value);
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->ethernet_mac = (string)$value;
+                    }
                 }
             }
 
@@ -1119,10 +1127,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apModel) and is_array($apModel)) {
                 foreach ($apModel as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.16.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->model = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->model = (string)$value;
+                    }
                 }
             }
 
@@ -1137,10 +1148,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apSerial) and is_array($apSerial)) {
                 foreach ($apSerial as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.17.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->serial = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->serial = (string)$value;
+                    }
                 }
             }
 
@@ -1155,10 +1169,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apIp) and is_array($apIp)) {
                 foreach ($apIp as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.19.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->ip = $value;
+                    if (!empty($value) and filter_var($value, FILTER_VALIDATE_IP) and !empty($access_points[$id])) {
+                        $access_points[$id]->ip = (string)$value;
+                    }
                 }
             }
 
@@ -1173,10 +1190,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apNetMask) and is_array($apNetMask)) {
                 foreach ($apNetMask as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.26.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->netmask = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->netmask = (string)$value;
+                    }
                 }
             }
 
@@ -1191,10 +1211,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apGateway) and is_array($apGateway)) {
                 foreach ($apGateway as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.27.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->gateway = $value;
+                    if (!empty($value) and filter_var($value, FILTER_VALIDATE_IP) and !empty($access_points[$id])) {
+                        $access_points[$id]->gateway = (string)$value;
+                    }
                 }
             }
 
@@ -1209,10 +1232,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apName) and is_array($apName)) {
                 foreach ($apName as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.3.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->name = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->name = (string)$value;
+                    }
                 }
             }
 
@@ -1227,10 +1253,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apIosVersion) and is_array($apIosVersion)) {
                 foreach ($apIosVersion as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.31.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->ios_version = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->ios_version = (string)$value;
+                    }
                 }
             }
 
@@ -1245,10 +1274,13 @@ if (!function_exists('snmp_audit')) {
                 $log->command_output = json_encode($apLocation);
                 foreach ($apLocation as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.4.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->location = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->location = (string)$value;
+                    }
                 }
             }
             $discoveryLogModel->create($log);
@@ -1264,10 +1296,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apPortNumber) and is_array($apPortNumber)) {
                 foreach ($apPortNumber as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.13.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->port_number = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->port_number = $value;
+                    }
                 }
             }
 
@@ -1282,7 +1317,7 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apStatus) and is_array($apStatus)) {
                 foreach ($apStatus as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.6.', '', $key);
-                    if (empty($access_points[$id])) {
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
                     switch (intval($value)) {
@@ -1302,7 +1337,9 @@ if (!function_exists('snmp_audit')) {
                             $value = 'unknown';
                             break;
                     }
-                    $access_points[$id]->status = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->status = $value;
+                    }
                 }
             }
 
@@ -1317,10 +1354,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apSoftwareVersion) and is_array($apSoftwareVersion)) {
                 foreach ($apSoftwareVersion as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.8.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->software_version = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->software_version = (string)$value;
+                    }
                 }
             }
 
@@ -1335,11 +1375,14 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apType) and is_array($apType)) {
                 foreach ($apType as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.14179.2.2.1.1.22.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->type_numeric = $value;
-                    $access_points[$id]->type = ap_type(intval($value));
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->type_numeric = $value;
+                        $access_points[$id]->type = ap_type(intval($value));
+                    }
                 }
             }
         }
@@ -1347,52 +1390,60 @@ if (!function_exists('snmp_audit')) {
         // // https://mibs.observium.org/mib/CISCO-LWAPP-AP-MIB
         // // https://oidref.com/1.3.6.1.4.1.9.9.513.1.1.1
 
-
-
-
-
-
-
         #snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
         $apEthernetMac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.2');
         #snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
         if (!empty($apEthernetMac) and is_array($apEthernetMac)) {
             foreach ($apEthernetMac as $key => $value) {
                 $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.2.', '', $key);
-                $access_points[$id] = new \stdClass();
-                $access_points[$id]->ethernet_mac = $value;
+                $value = format_mac($value);
+                if (!empty($id) and empty($access_points[$id])) {
+                    $access_points[$id] = new \stdClass();
+                }
+                if (!empty($value) and !empty($access_points[$id])) {
+                    $access_points[$id]->ethernet_mac = (string)$value;
+                }
             }
 
             $apMac = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.1.1.1');
             if (!empty($apMac) and is_array($apMac)) {
                 foreach ($apMac as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.1.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = format_mac($value);
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->mac = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->mac = $value;
+                    }
                 }
             }
 
             $apIP = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.10.1.4');
             if (!empty($apIP) and is_array($apIP)) {
                 foreach ($apIP as $key => $value) {
-                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.1.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.10.1.4.', '', $key);
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->ip = $value;
+                    if (!empty($value) and filter_var($value, FILTER_VALIDATE_IP) and !empty($access_points[$id])) {
+                        $access_points[$id]->ip = $value;
+                    }
                 }
             }
 
             $apNetMask = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.513.1.1.10.1.12');
             if (!empty($apNetMask) and is_array($apNetMask)) {
                 foreach ($apNetMask as $key => $value) {
-                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.1.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.10.1.12.', '', $key);
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->netmask = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->netmask = (string)$value;
+                    }
                 }
             }
 
@@ -1400,10 +1451,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apName) and is_array($apName)) {
                 foreach ($apName as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.5.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->name = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->name = (string)$value;
+                    }
                 }
             }
 
@@ -1411,10 +1465,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($appLocation) and is_array($appLocation)) {
                 foreach ($apLocation as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.49.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->location = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->location = (string)$value;
+                    }
                 }
             }
 
@@ -1422,10 +1479,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apPort) and is_array($apPort)) {
                 foreach ($apPort as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.39.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->port_number = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->port_number = (string)$value;
+                    }
                 }
             }
 
@@ -1433,10 +1493,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apFloorLabel) and is_array($apFloorLabel)) {
                 foreach ($apFloorLabel as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.65.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->floor_label = $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->floor_label = (string)$value;
+                    }
                 }
             }
 
@@ -1444,10 +1507,13 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apCountry) and is_array($apCountry)) {
                 foreach ($apCountry as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.3.1.1.', '', $key);
-                    if (empty($access_points[$id])) {
+                    $value = mb_convert_encoding($value, 'ISO-8859-1', mb_detect_encoding($value));
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->location = empty($access_points[$id]->location) ? $value : $access_points[$id]->location . ' ' . $value;
+                    if (!empty($value) and !empty($access_points[$id])) {
+                        $access_points[$id]->location = empty($access_points[$id]->location) ? $value : $access_points[$id]->location . ' ' . $value;
+                    }
                 }
             }
 
@@ -1455,10 +1521,12 @@ if (!function_exists('snmp_audit')) {
             if (!empty($apClientCount) and is_array($apClientCount)) {
                 foreach ($apClientCount as $key => $value) {
                     $id = str_replace('1.3.6.1.4.1.9.9.513.1.1.1.1.72.', '', $key);
-                    if (empty($access_points[$id])) {
+                    if (!empty($id) and empty($access_points[$id])) {
                         $access_points[$id] = new \stdClass();
                     }
-                    $access_points[$id]->client_count = intval($value);
+                    if (!empty($access_points[$id])) {
+                        $access_points[$id]->client_count = intval($value);
+                    }
                 }
             }
         }
@@ -2994,12 +3062,11 @@ if (!function_exists('format_mac')) {
             // join it back together
             $mac_address = implode(':', $mymac);
         }
-        if (substr_count($mac_address, ':') !== 0) {
+        if (substr_count($mac_address, ':') === 5 and strlen($mac_address) === 17) {
             return($mac_address);
         } else {
             return '';
         }
-        return($mac_address);
     }
 }
 

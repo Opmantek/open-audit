@@ -270,8 +270,9 @@ class QueueModel extends BaseModel
 
         $dictionary->about = '<p>Attributes are stored for Open-AudIT to use for particular fields.</p>';
 
-        $dictionary->notes = '<p></p>';
+        $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->resource = 'The foreign table to reference. Should be one of: devices, locations, orgs or queries.';

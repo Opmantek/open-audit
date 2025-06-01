@@ -43,13 +43,13 @@ if ($debug -gt 0) {
     Write-Host "================"
     Write-Host "Starting Audit"
     Write-Host "================"
-    Write-Host "CreateFile: $create_file"
+    Write-Host "CreateFile:   $create_file"
     Write-Host "SubmitOnline: $submit_online"
-    Write-Host "Location: $location_id"
+    Write-Host "Location:     $location_id"
     Write-Host "Organisation: $org_id"
-    Write-Host "Debug: $debugging"
-    Write-Host "SystemID: $system_id"
-    Write-Host "File  $file"
+    Write-Host "Debug:        $debugging"
+    Write-Host "SystemID:     $system_id"
+    Write-Host "File          $file"
     Write-Host "================"
 }
 
@@ -87,7 +87,11 @@ $result.sys.domain = $Win32_ComputerSystem | Select-Object -ExpandProperty Domai
 if ($result.sys.domain -eq 'WORKGROUP') {
     $result.sys.domain = ''
 }
-$result.sys.ip = (Find-NetRoute -RemoteIPAddress "0.0.0.0" | % { $_.IPAddress })[0]
+$result.sys.ip = ""
+$ip = Find-NetRoute -RemoteIPAddress "0.0.0.0" -ErrorAction Ignore
+if ($ip -ne $null) {
+    $result.sys.ip = ($ip | % { $_.IPAddress })[0]
+}
 $result.sys.description = $Win32_OperatingSystem | Select-Object -ExpandProperty Description
 $result.sys.type = 'computer'
 $result.sys.icon = 'windows'
@@ -1250,15 +1254,19 @@ Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter "IPEnabled = True
     for ($i = 0; $i -lt $_.IPAddress.Length; $i++) {
         Clear-Variable -name item
         $item = @{}
-        $item.mac = if ($_.MACAddress) { $_.MACAddress } Else { "" }
-        $item.net_index = if ($_.Index) { $_.Index } Else { "" }
-        $item.subnet = if ($_.IPSubnet[$i]) { $_.IPSubnet[$i] } Else { "" }
         $item.ip = if ($_.IPAddress[$i]) { [string]$_.IPAddress[$i] } Else { "" }
-        $length = $item.ip.Length
-        $item.version = if ($length -gt 15) { 6 } Else { 4 }
-        $result.ip += $item
-        $ip_address_array += $result.ip
-        $dns_server = if ($_.DNSServerSearchOrder[0]) { $_.DNSServerSearchOrder[0] }
+        if ($item.ip -ne "") {
+            $item.mac = if ($_.MACAddress) { $_.MACAddress } Else { "" }
+            $item.net_index = if ($_.Index) { $_.Index } Else { "" }
+            $item.subnet = if ($_.IPSubnet[$i]) { $_.IPSubnet[$i] } Else { "" }
+            $item.version = 4
+            if ($item.ip.Length -gt 15) {
+                $item.version = 6
+            }
+            $result.ip += $item
+            $ip_address_array += $result.ip
+            $dns_server = if ($_.DNSServerSearchOrder[0]) { $_.DNSServerSearchOrder[0] }
+        }
     }
 }
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
@@ -1378,9 +1386,9 @@ if ($debug -gt 0) {
 
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.printer = @()
+$result.print_queue = @()
 $item = @{}
-$Win32_Printer = Get-WmiObject Win32_Printer -filter "PrintProcessor <> 'winprint'" -ErrorAction Ignore
+$Win32_Printer = Get-WmiObject Win32_Printer -Filter "NOT Name LIKE '%microsoft%' AND NOT Name LIKE '%windows%' AND NOT Name LIKE '%fax%' AND NOT Name LIKE '%onenote%' AND NOT Name LIKE '%pdf%'" -ErrorAction Ignore
 if ($Win32_Printer -ne $null) {
     $Win32_Printer | ForEach {
         Clear-Variable -name item
@@ -1502,7 +1510,7 @@ if ($Win32_Printer -ne $null) {
             if ($_.ExtendedPrinterStatus -eq 17 ) { $item.status = "I/O Active" }
             if ($_.ExtendedPrinterStatus -eq 18 ) { $item.status = "Manual Feed" }
             $item.capabilities = [string]::join(", ", $_.CapabilityDescriptions)
-            $result.printer += $item
+            $result.print_queue += $item
         }
     }
 }
@@ -1645,13 +1653,13 @@ if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainR
         Clear-Variable -name item
         $item = @{}
         $item.caption = $_.Caption
-        $item.disabled  = $_.Disabled
+        if ($_.Disabled) { $item.disabled = "true" } else { $item.disabled = "false" }
         $item.domain  = $_.Domain
         $item.full_name  = $_.FullName
         $item.name = $_.Name
-        $item.password_changeable  = $_.PasswordChangeable
-        $item.password_expires  = $_.PasswordExpires
-        $item.password_required  = $_.PasswordRequired
+        if ($_.PasswordChangeable) { $item.password_changeable = "true" } else { $item.password_changeable = "false" }
+        if ($_.PasswordExpires) { $item.password_expires = "true" } else { $item.password_expires = "false" }
+        if ($_.PasswordRequired) { $item.password_required = "true" } else { $item.password_required = "false" }
         $item.sid  = $_.SID
         $item.status  = $_.Status
         $item.password_last_changed  = ""
@@ -1668,14 +1676,16 @@ if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainR
                 if ($_.LocalPath -ne "") {
                     $item.user_home = $_.LocalPath
                 }
-                if ($_.LastUseTime -ne "") {
-                    $item.last_logon = [string]($_.ConvertToDateTime($_.LastUseTime) -f "yyyy/MM/dd H:m:s")
+                if ($_.LastUseTime -ne "" -and $_.LastUseTime -ne 0 -and $_.LastUseTime -ne $null) {
+                    $item.last_logon = [Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime).tostring('yyyy-MM-dd HH:mm:ss')
                 }
             }
         }
         $LocalUser | ForEach {
             if ($_.SID -eq $item.sid) {
-                $item.password_last_changed = ($_.PasswordLastSet) -f "yyyy/MM/dd H:m:s"
+                if ($_.PasswordLastSet -ne "" -and $_.PasswordLastSet -ne 0 -and $_.PasswordLastSet -ne $null) {
+                    $item.password_last_changed = $_.PasswordLastSet.ToString("yyyy-MM-dd H:m:s")
+                }
             }
         }
         $result.user += $item
@@ -1917,14 +1927,14 @@ if ($audit_software -eq 'y') {
             $item.comments  = $_.Comments
         }
         if ($_.InstallSource -ne "" -and $_.InstallSource -ne $null) {
-            $item.installsource  = $_.InstallSource
+            $item.install_source  = $_.InstallSource
         }
         if ($_.SystemComponent -ne "" -and $_.SystemComponent -ne $null) {
             $item.system_component  = $_.SystemComponent
         }
 
         $name = [string]$_.DisplayName
-        $package = Get-Package -name "$name" -ErrorAction Ignore
+        $package = Get-Package -name "$name" -ErrorAction Ignore -WarningAction silentlyContinue
         if ($package -ne $null) {
             $package | ForEach {
                 if ($_.MetaData["InstalledDate"][0] -ne $null) {
@@ -2276,16 +2286,25 @@ Get-NetTCPConnection -State Listen | ForEach {
     Clear-Variable -name item
     $item = @{}
     $item.protocol = "tcp"
+    if ($_.LocalAddress.IndexOf(":") -ne -1) {
+        $item.protocol = "tcp6"
+    }
+    if ($_.LocalAddress.IndexOf(".") -ne -1) {
+        $item.protocol = "tcp4"
+    }
     $item.ip = $_.LocalAddress
     $item.port = $_.LocalPort
     $item.processId = $_.OwningProcess
     Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
         $item.program = $_.CommandLine
+        if ($item.program -eq $null) {
+            $item.program = $_.Name
+        }
     }
     if ($item.program -eq $null) {
         $item.program = ""
     }
-    if ($item.port -ne "" -and $item.port -ne $null) {
+    if ($item.port -ne "" -and $item.port -ne $null -and $item.program -ne "") {
         # Added this check because in testing we managed to get an entry without a port or associated program
         $result.netstat += $item
     }
@@ -2302,16 +2321,25 @@ if ($audit_netstat_udp -eq 'y') {
         Clear-Variable -name item
         $item = @{}
         $item.protocol = "udp"
+        if ($_.LocalAddress.IndexOf(":") -ne -1) {
+            $item.protocol = "udp6"
+        }
+        if ($_.LocalAddress.IndexOf(".") -ne -1) {
+            $item.protocol = "udp4"
+        }
         $item.ip = $_.LocalAddress
         $item.port = $_.LocalPort
         $item.processId = $_.OwningProcess
         Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
             $item.program = $_.CommandLine
+            if ($item.program -eq $null) {
+                $item.program = $_.Name
+            }
         }
         if ($item.program -eq $null) {
             $item.program = ""
         }
-        if ($item.port -ne "" -and $item.port -ne $null) {
+        if ($item.port -ne "" -and $item.port -ne $null -and $item.program -ne "") {
             # Added this check because in testing we managed to get an entry without a port or associated program
             $result.netstat += $item
         }

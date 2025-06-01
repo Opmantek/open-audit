@@ -46,7 +46,7 @@ $routes->post('agents/(:num)/execute', 'Agents::execute/$1', ['as' => 'agentsExe
 # $routes->get('agents/execute', 'Agents::execute', ['as' => 'agentsExecuteAll']);
 # $routes->get('agents/(:num)/execute', 'Agents::execute/$1', ['as' => 'agentsExecute']);
 # NOTE - Below is only so we can ask for /download/agent_windows.ps1 and have it save with that name
-$routes->get('agents/(:any)/download/(:any)', 'Agents::download/$1');
+$routes->get('agents/(:any)/download/(:any)', 'Agents::download/$1/$2');
 $routes->get('agents/(:any)/download', 'Agents::download/$1', ['as' => 'agentsDownload']);
 
 $routes->get('baselines/(:num)/execute', 'Baselines::executeForm/$1', ['filter' => \App\Filters\Session::class, 'as' => 'baselinesExecuteForm']);
@@ -100,8 +100,6 @@ $routes->post('discoveries/(:num)/executeForm', 'Discoveries::executeCollector/$
 $routes->get('news/execute', 'News::executeAll', ['as' => 'newsExecuteAll']);
 $routes->cli('news/execute', 'Cli::executeNews', ['as' => 'executeNewssAll']);
 
-$routes->post('graph/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'graphReset']);
-
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
 $routes->get('api', 'Help::api', ['filter' => \App\Filters\Session::class, 'as' => 'api']);
 $routes->get('help', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'helpCollection']);
@@ -140,6 +138,7 @@ $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::cla
 
 $routes->post('util/subnet_size', 'Util::subnetSize');
 $routes->get('util/test_windows_client', 'Util::testWindowsClient');
+$routes->get('dictionary', 'Dictionary::dictionary');
 
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);

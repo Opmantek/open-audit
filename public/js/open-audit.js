@@ -1,6 +1,12 @@
 /* inline edit */
 $(document).ready(function () {
 
+    $(".form-select").select2({
+        theme: "bootstrap-5",
+        selectionCssClass: "select2--small",
+        dropdownCssClass: "select2--small",
+    });
+
     $(document).on('click', '.execute_button', function (e) {
         href = $(this).prop("href");
         console.log(href);
@@ -49,6 +55,9 @@ $(document).ready(function () {
         $(".edit[data-attribute='" + attribute + "']").hide();
         $(".submit[data-attribute='" + attribute + "']").show();
         $(".cancel[data-attribute='" + attribute + "']").show();
+        /* Below is for select2 */
+        $("#" + attribute).parent().find(".select2-selection").css("background-color", "#fff");
+        $("#" + attribute).trigger('change');
     });
 
     /* Inline edit, click cancel */
@@ -60,11 +69,14 @@ $(document).ready(function () {
         attribute = attribute.replace(/\]/g, '\\]'); /* for tasks.minute[] */
         $(".form-help[data-attribute='" + attribute + "']").html('<br />');
         $(".form-help[data-attribute='" + attribute + "']").parent().find('br:last-child').remove();
-        $("#"+attribute).val($("#"+attribute).attr("data-original-value"));
+        $("#" + attribute).val($("#"+attribute).attr("data-original-value"));
         $("#" + attribute).attr("disabled", true);
         $(".edit[data-attribute='" + attribute + "']").show();
         $(".submit[data-attribute='" + attribute + "']").hide();
         $(".cancel[data-attribute='" + attribute + "']").hide();
+        /* Below is for select2 */
+        $("#" + attribute).parent().find(".select2-selection").css("background-color", "#f8f9fa");
+        $("#" + attribute).trigger('change');
     });
 
     /* Inline edit, click submit */
@@ -186,6 +198,9 @@ $(document).ready(function () {
         if (attribute == 'tags' && collection == 'devices') {
             $("#tags_control").css('display', 'none');
         }
+        /* Below is for select2 */
+        $("#" + attribute).parent().find(".select2-selection").css("background-color", "#f8f9fa");
+        $("#" + attribute).trigger('change');
     });
 
     /* Delete links */

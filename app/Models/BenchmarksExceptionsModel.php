@@ -242,10 +242,11 @@ class BenchmarksExceptionsModel extends BaseModel
 
         $dictionary->sentence = '';
 
-        $dictionary->about = '<p><br /><br /></p>';
+        $dictionary->about = '<p><br> <br></p>';
 
-        $dictionary->notes = '<p><br /><br /></p>';
+        $dictionary->notes = '<p><br> <br></p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->org_id = $instance->dictionary->org_id;

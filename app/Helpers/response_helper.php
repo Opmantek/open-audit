@@ -473,6 +473,14 @@ if (!function_exists('response_create')) {
                 $received_data = $response->meta->received_data;
                 $response->meta->received_data = array();
             }
+            if ($function === 'configuration_update' and $response->meta->id === $config->license_string_id) {
+                $response->meta->received_data->attributes->value = trim($response->meta->received_data->attributes->value);
+                $response->meta->received_data->attributes->value = str_replace("\n", "", $response->meta->received_data->attributes->value);
+            }
+            if ($function === 'configuration_update' and $response->meta->id === $config->license_string_collector_id) {
+                $response->meta->received_data->attributes->value = trim($response->meta->received_data->attributes->value);
+                $response->meta->received_data->attributes->value = str_replace("\n", "", $response->meta->received_data->attributes->value);
+            }
             // We need Orgs for these, associated with the user, supply them here
             if ($response->meta->collection === 'reports' and $response->meta->action === 'execute') {
                 $response->meta->orgs = response_get_org_list($instance->user, 'devices');
@@ -1663,7 +1671,7 @@ if (!function_exists('response_valid_includes')) {
      */
     function response_valid_includes()
     {
-        return array('application', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'field', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        return array('application', 'arp', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'field', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
     }
 }
 
@@ -1719,7 +1727,7 @@ if (!function_exists('response_valid_sub_resources')) {
      */
     function response_valid_sub_resources()
     {
-        return array('application', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discovery', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'field', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'partition_graph', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
+        return array('application', 'arp', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discovery', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'field', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
     }
 }
 
@@ -1730,7 +1738,7 @@ if (!function_exists('valid_reserved_words')) {
      */
     function response_valid_reserved_words()
     {
-        return array('action', 'as_at', 'current', 'debug', 'format', 'graph', 'groupby', 'ids', 'include', 'limit', 'offset', 'properties', 'query', 'report_name', 'search', 'sort');
+        return array('action', 'as_at', 'current', 'debug', 'format', 'groupby', 'ids', 'include', 'limit', 'offset', 'properties', 'query', 'report_name', 'search', 'sort');
     }
 }
 // End of file response_helper.php

@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $allCollections = new \Config\Collections();
 $collections = array();
 foreach ($allCollections as $collection => $value) {

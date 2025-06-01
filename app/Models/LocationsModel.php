@@ -283,10 +283,11 @@ class LocationsModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location.';
 
-        $dictionary->about = '<p>A location is a physical address that can have devices associated with it.<br /><br />You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br /><br />' . @$instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>';
 
-        $dictionary->notes = '<p>The <code>type</code> of the location will assign its icon.<br /><br /></p>';
+        $dictionary->notes = '<p>The <code>type</code> of the location will assign its icon.<br> <br></p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = @$instance->dictionary->id;
         $dictionary->columns->name = @$instance->dictionary->name;

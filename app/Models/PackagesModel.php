@@ -261,10 +261,11 @@ class PackagesModel extends BaseModel
 
         $dictionary->sentence = 'Software Package are for ...';
 
-        $dictionary->about = '<p>Software Packages are good.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>';
 
         $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;

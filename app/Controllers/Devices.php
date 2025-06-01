@@ -483,7 +483,7 @@ class Devices extends BaseController
     {
         $id = (int)$id;
         $db = db_connect();
-        $tables = array('bios', 'certificate', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+        $tables = array('arp', 'bios', 'certificate', 'cli_config', 'disk', 'dns', 'executable', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
         foreach ($tables as $table) {
             $sql = "DELETE FROM `$table` WHERE device_id = ? and current = 'n'";
             $db->query($sql, [$id]);

@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
+include 'shared/common_functions.php';
 $name = (!empty($resource->name)) ? $resource->name : '';
 $id = (!empty($meta->id)) ? $meta->id : '';
 ?>
@@ -17,7 +18,7 @@ $id = (!empty($meta->id)) ? $meta->id : '';
                                 <span class="offset-2 col-8">
                                     <?= __('Copy and paste the below to the forums, another instance of Open-AudIT or anywhere else you need to provide this item.') ?>
                                     <br><br>
-                                    <?= __('NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for \'decrypt_credentials\' to \'n\'.') ?>
+                                    <?= __('NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.') ?>
                                     <br><br>
                                 </span>
                             </div>
@@ -26,25 +27,14 @@ $id = (!empty($meta->id)) ? $meta->id : '';
                                 <div class="input-group">
                                     <textarea rows="20" class="form-control" id="resource" name="resource"><?= html_entity_decode(json_encode($data, JSON_PRETTY_PRINT)) ?></textarea>
                                 </div>
-                                <div class="form-text form-help pull-right" style="position: absolute; right: 0;" data-attribute="resource" data-dictionary=""></div>
                             </div>
                         </div>
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
-                                <?php if (!empty($dictionary->about)) { ?>
-                                    <h4 class="text-center"><?= __('About') ?></h4><br>
-                                    <?= $dictionary->about ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->notes)) { ?>
-                                    <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                    <?= $dictionary->notes ?>
-                                <?php } ?>
-                                <?php if (!empty($dictionary->columns)) { ?>
-                                <h4 class="text-center"><?= __('Fields') ?></h4><br>
-                                    <?php foreach ($dictionary->columns as $key => $value) { ?>
-                                    <code><?= $key ?>: </code><?= $value ?><br><br>
-                                    <?php } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                                <?php if ($meta->collection !== 'integrations') { ?>
+                                <?= fieldsInfoDiv ($dictionary) ?>
                                 <?php } ?>
                             </div>
                         </div>

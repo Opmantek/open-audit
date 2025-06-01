@@ -60,7 +60,10 @@ strpass = ""
 ' If our URL uses https, but the certificate is invalid or unrecognised (self signed), we should submit anyway.
 ignore_invalid_ssl = "y"
 
-' optional - assign any PCs audited to this Org - take the OrgId from Open-AudIT web interface
+' optional - assign the PC to this Location - take the location_id from Open-AudIT web interface
+location_id = ""
+
+' optional - assign the PC to this Org - take the org_id from Open-AudIT web interface
 org_id = ""
 
 ' optional - query this Active Directory attribute to determine the users work unit
@@ -163,6 +166,9 @@ For Each strArg in objArgs
 
             case "ignore_invalid_ssl"
             ignore_invalid_ssl = argValue
+
+            case "location_id"
+            location_id = argValue
 
             case "org_id"
             org_id = argValue
@@ -280,8 +286,12 @@ if (help = "y") then
     wscript.echo "    *y - If our URL uses https, but the certificate is invalid or unrecognised (self signed), we should submit anyway."
     wscript.echo "     n - Do not submit if certificate is invalid (or self signed)."
     wscript.echo ""
+    wscript.echo "  location_id"
+    wscript.echo "        - The location_id (an integer) taken from Open-AudIT. If set the device will be associated to that Location."
+    wscript.echo ""
+    wscript.echo ""
     wscript.echo "  org_id"
-    wscript.echo "        - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+    wscript.echo "        - The org_id (an integer) taken from Open-AudIT. If set the device will be associated to that Organisation."
     wscript.echo ""
     wscript.echo "  ping_target"
     wscript.echo "      *n - Attempt to ping the target computer to determine if it is online."
@@ -364,6 +374,7 @@ if debugging > "0" then
     wscript.echo "discovery_id         " & discovery_id
     wscript.echo "hide_audit_window    " & hide_audit_window
     wscript.echo "ldap                 " & ldap
+    wscript.echo "location_id          " & location_id
     wscript.echo "org_id               " & org_id
     wscript.echo "ping_target          " & ping_target
     wscript.echo "self_delete          " & self_delete
@@ -1315,6 +1326,7 @@ result.WriteText "      <os_arch>" & escape_xml(system_os_arch) & "</os_arch>" &
 result.WriteText "      <memory_count>" & escape_xml(system_pc_memory) & "</memory_count>" & vbcrlf
 result.WriteText "      <processor_count>" & escape_xml(system_pc_num_processor) & "</processor_count>" & vbcrlf
 result.WriteText "      <os_installation_date>" & escape_xml(system_pc_date_os_installation) & "</os_installation_date>" & vbcrlf
+result.WriteText "      <location_id>" & escape_xml(location_id) & "</location_id>" & vbcrlf
 result.WriteText "      <org_id>" & escape_xml(org_id) & "</org_id>" & vbcrlf
 result.WriteText "      <cluster_name>" & escape_xml(man_cluster_name) & "</cluster_name>" & vbcrlf
 result.WriteText "      <last_seen_by>" & escape_xml(last_seen_by) & "</last_seen_by>" & vbcrlf
@@ -1558,27 +1570,29 @@ if (error_returned = 0) then
     If colAVItems.count > 0 Then
         result.WriteText "  <antivirus>" & vbcrlf
         For Each objAntiVirusProduct In colAVItems
-            result.WriteText "      <item>" & vbcrlf
-            result.WriteText "          <name>" & escape_xml(objAntiVirusProduct.displayName) & "</name>" & vbcrlf
-            AvStatus = Hex(objAntiVirusProduct.ProductState)
-            if (objAntiVirusProduct.ProductState = "393472" or objAntiVirusProduct.ProductState = "266240" _
-                or objAntiVirusProduct.ProductState = "331776" or objAntiVirusProduct.ProductState = "397568" _
-                or Mid(AvStatus, 2, 2) = "10" Or Mid(AvStatus, 2, 2) = "11" or mid(AvStatus, 5, 2) = "10" or Mid(AvStatus, 5, 2) = "11") then
-                result.WriteText "          <state>On</state>" & vbcrlf
-            else
-                result.WriteText "          <state>Off</state>" & vbcrlf
+            if (objAntiVirusProduct.displayName != "") then
+                result.WriteText "      <item>" & vbcrlf
+                result.WriteText "          <name>" & escape_xml(objAntiVirusProduct.displayName) & "</name>" & vbcrlf
+                AvStatus = Hex(objAntiVirusProduct.ProductState)
+                if (objAntiVirusProduct.ProductState = "393472" or objAntiVirusProduct.ProductState = "266240" _
+                    or objAntiVirusProduct.ProductState = "331776" or objAntiVirusProduct.ProductState = "397568" _
+                    or Mid(AvStatus, 2, 2) = "10" Or Mid(AvStatus, 2, 2) = "11" or mid(AvStatus, 5, 2) = "10" or Mid(AvStatus, 5, 2) = "11") then
+                    result.WriteText "          <state>On</state>" & vbcrlf
+                else
+                    result.WriteText "          <state>Off</state>" & vbcrlf
+                end if
+                if Mid(AvStatus, 4, 2) = "00" then
+                    result.WriteText "          <status>UpToDate</status>" & vbcrlf
+                elseif Mid(AvStatus, 4, 2) = "10" then
+                    result.WriteText "          <status>OutOfDate</status>" & vbcrlf
+                end if
+                if (objAntiVirusProduct.displayName = "Windows Defender") then
+                    result.WriteText "          <owner>Windows</owner>" & vbcrlf
+                else
+                    result.WriteText "          <owner>NonMs</owner>" & vbcrlf
+                end if
+                result.WriteText "      </item>" & vbcrlf
             end if
-            if Mid(AvStatus, 4, 2) = "00" then
-                result.WriteText "          <status>UpToDate</status>" & vbcrlf
-            elseif Mid(AvStatus, 4, 2) = "10" then
-                result.WriteText "          <status>OutOfDate</status>" & vbcrlf
-            end if
-            if (objAntiVirusProduct.displayName = "Windows Defender") then
-                result.WriteText "          <owner>Windows</owner>" & vbcrlf
-            else
-                result.WriteText "          <owner>NonMs</owner>" & vbcrlf
-            end if
-            result.WriteText "      </item>" & vbcrlf
         next
         result.WriteText "  </antivirus>" & vbcrlf
     end if
@@ -7001,21 +7015,33 @@ if (strcomputer = "." and audit_location = "local") then
                             loop
                             strtext = trim(strtext)
                             words = split(strtext)
+                            protocol = lcase(words(0))
                             ports = split(words(1), ":")
                             port = ports(UBound(ports))
                             ip = replace(words(1), ":" & port, "")
                             pid = words(Ubound(words))
                             set colItems = objWMIService.ExecQuery("Select * from Win32_Process where ProcessID = " & pid,,32)
                             program = ""
+                            if (instr(ip, ":")) then
+                                protocol = protocol + "6"
+                            end if
+                            if (instr(ip, ".")) then
+                                protocol = protocol + "4"
+                            end if
                             for each objItem in colItems
                                 program = objItem.CommandLine
+                                if (program = "") then
+                                    program = objItem.Name
+                                end if
                             next
-                            result.WriteText "    <item>" & vbcrlf
-                            result.WriteText "        <protocol>" & escape_xml(words(0)) & "</protocol>" & vbcrlf
-                            result.WriteText "        <ip>" & escape_xml(ip) & "</ip>" & vbcrlf
-                            result.WriteText "        <port>" & escape_xml(port) & "</port>" & vbcrlf
-                            result.WriteText "        <program>" & escape_xml(program) & "</program>" & vbcrlf
-                            result.WriteText "    </item>" & vbcrlf
+                            if (program > "" and port > "") then
+                                result.WriteText "    <item>" & vbcrlf
+                                result.WriteText "        <protocol>" & escape_xml(protocol) & "</protocol>" & vbcrlf
+                                result.WriteText "        <ip>" & escape_xml(ip) & "</ip>" & vbcrlf
+                                result.WriteText "        <port>" & escape_xml(port) & "</port>" & vbcrlf
+                                result.WriteText "        <program>" & escape_xml(program) & "</program>" & vbcrlf
+                                result.WriteText "    </item>" & vbcrlf
+                            end if
                         end if
                     end if
                 end if

@@ -33,14 +33,14 @@ foreach ($ips as $ip) {
                             <div class="row">
                                 <div class="col-12 text-center align-self-center">
                                     <h2><?= __('Want to know more?') ?></h2>
-                                    <p><?= __('Follow any of the links below and discover how to use Open-AudIT to find out "What\'s On Your Network?"') ?><br><br></p>
+                                    <p><?= __('Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>') ?><br><br></p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-4 offset-4">
                                     <div class="card text-center">
                                         <div class="card-body">
-                                            <?= __('Run a discovery and find out What\'s On Your Network?') ?>'
+                                            <?= __('Run a discovery and find out <b>Whats On Your Network?</b>') ?>'
                                         </div>
                                         <div class="card-footer">
                                             <a role="button" id="get_started" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#discoveryModel" href="#"><?= __('Get Started') ?></a>

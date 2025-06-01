@@ -2,6 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
+include 'shared/common_functions.php';
 $endpoints = array('agents','applications','attributes','auth','baselines','benchmarks','benchmarks_exceptions','benchmarks_policies','charts','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','executables','fields','files','groups','integrations','licenses','locations','networks','orgs','packages','queries','racks','reports','roles','rules','scripts','search','standards','standards_results','summaries','tasks','users','widgets');
 $permissions = array('c', 'r', 'u', 'd');
 ?>
@@ -73,18 +74,8 @@ $permissions = array('c', 'r', 'u', 'd');
 
                         <div class="col-md-6">
                             <div class="offset-2 col-8">
-                                <?php if (! empty($dictionary->about)) {
-                                    echo "<h4 class=\"text-center\">About</h4><br>";
-                                    echo html_entity_decode($dictionary->about);
-                                } ?>
-                                <?php if (! empty($dictionary->notes)) {
-                                    echo "<h4 class=\"text-center\">Notes</h4><br>";
-                                    echo html_entity_decode($dictionary->notes);
-                                } ?>
-                                <h4 class="text-center">Fields</h4><br>
-                                <?php foreach ($dictionary->columns as $key => $value) {
-                                    echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
-                                } ?>
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                                <?= fieldsInfoDiv ($dictionary) ?>
                             </div>
                         </div>
                     </div>

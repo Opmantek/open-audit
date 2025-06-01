@@ -51,7 +51,7 @@ if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
 } elseif ($user->toolbar_style === 'icon') {
     $columns_button = '<span class="fa fa-list text-primary" aria-hidden="true" title="' . __('Columns') . '"></span>';
 } else {
-    $columns_button = 'Columns';
+    $columns_button = __('Columns');
 }
 
 $url = base_url() . 'index.php/devices?format=json';
@@ -167,7 +167,7 @@ if (!empty($meta->properties) and is_array($meta->properties)) {
                                         <th class="<?= $align ?>"><?= collection_column_name(str_replace('ip__', '', $key)) ?>
                                         <?php
                                         if ($key !== 'audit_status' and $key !== 'icon' and $key !== 'id' and $key !== 'delete' and $key !== 'update') {
-                                            echo'<hr><input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTableSearchField" placeholder="Search ' . collection_column_name(str_replace('ip__', '', $key)) . '" />';
+                                            echo'<hr><input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTableSearchField" placeholder="Search ' . collection_column_name(str_replace('ip__', '', $key)) . '">';
                                         } else if ($key === 'update') {
                                             echo "<hr><button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"margin-left:5em; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></button>\n";
                                             echo "<input aria-label='" . __('Select All') . "' type=\"checkbox\" name=\"select_all\" id=\"select_all\">\n";
@@ -204,7 +204,7 @@ window.onload = function () {
                     $attribute_escaped = str_replace('.', '_', $attribute);
                     if (in_array($attribute, $columns)) {
                         ?>\
-                <li data-sort=""><a style="font-weight: bold;" href="#" id="<?= $attribute_escaped ?>" class="dropdown-item toggle-vis" data-column="<?= $i ?>" data-db_column="<?= $attribute ?>"><?= collection_column_name($attribute) ?></a></li>\
+                <li data-sort=""><a style="font-weight: bold;" href="#" id="<?= $attribute_escaped ?>" class="dropdown-item toggle-vis" data-column="<?= $i ?>" data-db_column="<?= $attribute ?>"><?= str_replace("'", "\'", (collection_column_name($attribute))) ?></a></li>\
                     <?php } ?>\
                 <?php } ?>\
                 <li data-sort=""><hr class="dropdown-divider"></li>\
@@ -214,7 +214,7 @@ window.onload = function () {
                     $attribute_escaped = str_replace('.', '_', $attribute);
                     if (!in_array($attribute, $columns)) {
                         ?>\
-                <li data-sort="<?= $attribute ?>"><a href="#" class="dropdown-item toggle-vis" data-column="<?= $i ?>" data-db_column="<?= $attribute ?>"><?= collection_column_name($attribute) ?></a></li>\
+                <li data-sort="<?= $attribute ?>"><a href="#" class="dropdown-item toggle-vis" data-column="<?= $i ?>" data-db_column="<?= $attribute ?>"><?= str_replace("'", "\'", (collection_column_name($attribute))) ?></a></li>\
                     <?php } ?>\
                 <?php } ?>\
             </ul>\

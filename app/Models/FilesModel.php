@@ -218,6 +218,9 @@ class FilesModel extends BaseModel
     {
         $instance = & get_instance();
 
+        $uri = new \CodeIgniter\HTTP\URI(url_to('helpFAQ'));
+        $helpFAQ = $uri->getPath();
+
         $collection = 'files';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
@@ -232,15 +235,16 @@ class FilesModel extends BaseModel
 
         $dictionary->sentence = 'Open-AudIT Enterprise includes Files, providing change control monitoring of individual files and folders on both Linux and Windows servers.';
 
-        $dictionary->about = '<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br /><br />This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br /><br />Supported clients are Windows and Linux.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>';
 
-        $dictionary->notes = '<p>There is no need to do anything if you\'re running Open-AudIT on a Linux server.<br>
+        $dictionary->notes = '<p>There is no need to do anything if you are running Open-AudIT on a Linux server.<br>
 <br>
 Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.<br>
 <br>
-See our page on enabling <a href="' . url_to('helpFAQ') . '?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>';
+See our page on enabling <a href="' . $helpFAQ . '?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>';
 
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;

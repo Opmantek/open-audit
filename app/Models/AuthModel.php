@@ -245,6 +245,11 @@ class AuthModel extends BaseModel
     {
         $instance = & get_instance();
 
+        $uri = new \CodeIgniter\HTTP\URI(url_to('helpFAQ'));
+        $helpFAQ = $uri->getPath();
+        $uri = new \CodeIgniter\HTTP\URI(url_to('authHelp'));
+        $authHelp = $uri->getPath();
+
         $collection = 'auth';
         $dictionary = new stdClass();
         $dictionary->table = $collection;
@@ -259,29 +264,30 @@ class AuthModel extends BaseModel
 
         $dictionary->sentence = '';
 
-        $dictionary->about = '<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
+        $dictionary->about = '<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>';
 
-        $dictionary->notes = '<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you\'re using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br /><br /><strong>Helpful Documentation</strong><br /><br />
-        <a href="' . url_to('authHelp') . '">General Auth Help</a><br><br>
-        <a href="' . url_to('helpFAQ') . '?name=Using Entra for Auth">Using Entra for Auth</a><br><br>
-        <a href="' . url_to('helpFAQ') . '?name=Using OKTA for Auth">Using OKTA for Auth</a><br><br>
-        <a href="' . url_to('helpFAQ') . '?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br><br>
-        <a href="' . url_to('helpFAQ') . '?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br><br></p>';
+        $dictionary->notes = '<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you are using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br> <br><strong>Helpful Documentation</strong><br> <br>
+        <a href="' . $authHelp . '">General Auth Help</a><br> <br>
+        <a href="' . $helpFAQ . '?name=Using Entra for Auth">Using Entra for Auth</a><br> <br>
+        <a href="' . $helpFAQ . '?name=Using OKTA for Auth">Using OKTA for Auth</a><br> <br>
+        <a href="' . $helpFAQ . '?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br> <br>
+        <a href="' . $helpFAQ . '?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->description = $instance->dictionary->description;
-        $dictionary->columns->use_authentication = "Should we use this method to authenticate user credentials. Set to 'y' or 'n'.";
-        $dictionary->columns->use_authorisation = "Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to 'y' or 'n'.";
+        $dictionary->columns->use_authentication = 'Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.';
+        $dictionary->columns->use_authorisation = 'Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.';
         $dictionary->columns->lang = 'The default language assigned to any user created by this method.';
         $dictionary->columns->host = 'The ip address of the Auth method.';
-        $dictionary->columns->port = "Default of 389. Normally 636 used for Active Directory LDAPS.";
-        $dictionary->columns->secure = "Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.";
-        $dictionary->columns->domain = "The regular domain notation of your directory. Eg - 'open-audit.lan'.";
-        $dictionary->columns->type = "One of either 'active directory' or 'openldap'.";
-        $dictionary->columns->version = "Default of '3' for LDAP and Active Directory.";
+        $dictionary->columns->port = 'Default of 389. Normally 636 used for Active Directory LDAPS.';
+        $dictionary->columns->secure = 'Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.';
+        $dictionary->columns->domain = 'The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.';
+        $dictionary->columns->type = 'One of either <code>active directory</code> or <code>openldap</code>.';
+        $dictionary->columns->version = 'Default of <code>3</code> for LDAP and Active Directory.';
         $dictionary->columns->ldap_base_dn = 'The base path from which to search for Users.';
         $dictionary->columns->ldap_dn_account = 'If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.';
         $dictionary->columns->ldap_dn_password = 'The password for the dn_account attribute.';

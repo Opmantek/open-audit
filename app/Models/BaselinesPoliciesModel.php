@@ -550,6 +550,7 @@ class BaselinesPoliciesModel extends BaseModel
 
         $dictionary->notes = '';
 
+        $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
