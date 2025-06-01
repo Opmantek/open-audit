@@ -96,6 +96,7 @@ if ($style === 'icontext') {
                                     <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
                                     <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
                                     <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_select('notin', $resource->notin, $dictionary->columns->notin, $update, '', [], $meta->collection) ?>
                                     <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
@@ -110,7 +111,7 @@ if ($style === 'icontext') {
 
                         <div class="tab-pane" id="results" role="tabpanel" tabindex="0">
                             <br>
-                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable resultsTable" data-order='[[1,"asc"]]'>
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable resultsTable" data-order='[[1,"desc"]]'>
                                 <thead>
                                     <tr>
                                         <th class="text-center"><?= __('View') ?></th>
