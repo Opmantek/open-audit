@@ -29,37 +29,43 @@ include 'shared/read_functions.php';
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                             <br>
+
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <div class="row">
                                         <div class="col-6 clearfix">
-                                            <label for="applied" class="form-label"><?= __('Links') ?></label>
+                                            <label for="applied" class="form-label"><?= __('Linked Files') ?></label>
                                         </div>
                                         <div class="col-6 clearfix">
                                             <dlv class="float-end">
                                                 <div class="page-title-right" style="padding-right:20px;">
-                                                    <button class="btn btn-sm btn-success"><span class="fa fa-add"></span></button>
+                                                    <button id="link_add" class="btn btn-sm btn-success"><span class="fa fa-add"></span></button>
                                                 </div>
                                             </dlv>
                                         </div>
                                     </div>
                                     <br><br>
-                                    <table class="table" id="links">
+                                    <table class="table">
                                         <tbody>
-                                        <?php if (!empty($resource->links)) { foreach ($resource->links as $link) { ?>
+                                        <?php if (!empty($resource->links)) {
+                                            foreach ($resource->links as $link) { ?>
                                             <tr>
-                                                <td><img src="<?= $link->icon ?>"></td>
-                                                <td><a href="<?= $link->link ?>" target="_blank" title="<?= $link->link ?>"><?= $link->name ?></a></td>
-                                                <td><button class="btn btn-sm btn-danger"><span class="fa fa-trash"></span></button></td>
+                                                <td><img src="<?= @$link->icon ?>"></td>
+                                                <td><a href="<?= @$link->link ?>" target="_blank" title="<?= @$link->link ?>"><?= @$link->name ?></a></td>
+                                                <td><button class="btn btn-sm btn-danger link_delete" data-name="<?= str_replace('"', '\"', @$link->name) ?>"><span class="fa fa-trash"></span></button></td>
                                             </tr>
                                         <?php } } ?>
                                         </tbody>
                                     </table>
+                                    <div id="links" style="display: none;"><br><br><div class="col-12" style="position:relative;"><div class="row"><div class="col-12 clearfix"><label for="link_name" class="form-label" title="link_name">Name</label></div></div><div class="input-group"><input type="text" class="form-control" id="link_name" value="" /></div></div><br><div class="col-12" style="position:relative;"><div class="row"><div class="col-12 clearfix"><label for="link_name" class="form-label" title="link_name">Link</label></div></div><div class="input-group"><input type="text" class="form-control" id="link_link" value="" /></div></div><br><button class="btn btn-primary link_add_item" type="button">Submit</button></div>
                                 </div>
                             </div>
+
                         </div>
                         <div class="col-6">
-                            <div class="row" style="padding-top:16px;">
+
+
+                           <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="applied" class="form-label"><?= __('Applied') ?></label>
                                     <div class="input-group">
@@ -125,6 +131,8 @@ include 'shared/read_functions.php';
                                 </div>
                             </div>
                             <?php } ?>
+
+
                         </div>
                     </div>
                 </div>
@@ -140,6 +148,120 @@ window.onload = function () {
         $("#button_export_json").remove();
         $("#button_delete").remove();
         $("#button_list").attr("href", "<?= base_url() ?>standards/<?= $resource->standard_id ?>#results");
+
+        <?php if (!empty($resource->links)) {
+        echo "\n" . '        var $links = \''. json_encode($resource->links) . '\';' . "\n";
+        echo '        $links = JSON.parse($links);' . "\n";
+        } ?>
+
+        // $(document).on('click', '#add_link', function (e) {
+        $( "#link_add" ).on( "click", function() {
+            $('#links').attr("style", "display: block;");
+            
+        });
+
+        $(".link_add_item").on( "click", function() {
+            var item = {};
+            item.name = $("#link_name").val();
+            item.link = $("#link_link").val();
+            $links.push(item);
+            linksSend = JSON.stringify($links);
+            var data = {};
+            data["data"] = {};
+            data["data"]["id"] = <?= intval($resource->id) ?>;
+            data["data"]["type"] = 'standards_results';
+            data["data"]["attributes"] = {};
+            data["data"]["attributes"]["links"] = linksSend;
+            data = JSON.stringify(data);
+            $.ajax({
+                type: "PATCH",
+                url: <?= intval($resource->id) ?>,
+                contentType: "application/json",
+                data: {data : data},
+                success: function (data) {
+                    $("#liveToastSuccess-header").text("Update Succeeded");
+                    $("#liveToastSuccess-body").text("Links have been updated. Refresh page to update display.");
+                    var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
+                    var toastList = toastElList.map(function(toastEl) {
+                        return new bootstrap.Toast(toastEl)
+                    });
+                    toastList.forEach(toast => toast.show());
+                    $("#link_name").val("");
+                    $("#link_link").val("");
+                    $('#links').attr("style", "display: none;");
+                    location.reload(true);
+                },
+                error: function (data) {
+                    data = JSON.parse(data.responseText);
+                    $("#liveToastFailure-header").text("Update Failed");
+                    $("#liveToastFailure-body").text(data.message);
+                    var toastElList = [].slice.call(document.querySelectorAll('.toast-failure'));
+                    var toastList = toastElList.map(function(toastEl) {
+                        return new bootstrap.Toast(toastEl)
+                    });
+                    toastList.forEach(toast => toast.show());
+                    $("#"+attribute).val($("#"+attribute).attr("data-original-value"));
+
+                }
+            }); 
+        });
+
+
+        $(".link_delete").on( "click", function() {
+            var $link_name = $(this).attr("data-name");
+            var row = $(this);
+            var linksSend = '';
+            for (let index = 0; index < $links.length; ++index) {
+                if ($links[index].name == $link_name) {
+                    $links.splice(index, 1);
+                    linksSend = JSON.stringify($links);
+                }
+            }
+            if (linksSend > "") {
+                var data = {};
+                data["data"] = {};
+                data["data"]["id"] = <?= intval($resource->id) ?>;
+                data["data"]["type"] = 'standards_results';
+                data["data"]["attributes"] = {};
+                data["data"]["attributes"]["links"] = linksSend;
+                data = JSON.stringify(data);
+                $.ajax({
+                    type: "PATCH",
+                    url: <?= intval($resource->id) ?>,
+                    contentType: "application/json",
+                    data: {data : data},
+                    success: function (data) {
+                        $("#liveToastSuccess-header").text("Update Succeeded");
+                        $("#liveToastSuccess-body").text("Links have been updated.");
+                        var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
+                        var toastList = toastElList.map(function(toastEl) {
+                            return new bootstrap.Toast(toastEl)
+                        });
+                        toastList.forEach(toast => toast.show());
+                        row.closest('tr').remove();
+                    },
+                    error: function (data) {
+                        data = JSON.parse(data.responseText);
+                        $("#liveToastFailure-header").text("Update Failed");
+                        $("#liveToastFailure-body").text(data.message);
+                        var toastElList = [].slice.call(document.querySelectorAll('.toast-failure'));
+                        var toastList = toastElList.map(function(toastEl) {
+                            return new bootstrap.Toast(toastEl)
+                        });
+                        toastList.forEach(toast => toast.show());
+                        $("#"+attribute).val($("#"+attribute).attr("data-original-value"));
+
+                    }
+                });                        
+            }
+
+        });
+
+
+
+
+
+
     });
 }
 </script>

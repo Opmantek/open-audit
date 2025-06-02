@@ -62,6 +62,7 @@ window.onload = function () {
                 /* $("#submit").removeAttr('disabled'); */
             }
         });
+        $("#data\\[attributes\\]\\[type\\]").val('ISO 27001');
     });
 }
 </script>

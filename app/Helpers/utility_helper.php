@@ -1026,6 +1026,18 @@ function format_data($result, $type)
         }
     }
 
+    if ($type === 'standards_results') {
+        foreach ($result as $item) {
+            if (!empty($item->links)) {
+                try {
+                    $item->links = json_decode($item->links, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
+            }
+        }
+    }
+
     if ($type === 'tasks') {
         foreach ($result as $item) {
             if (!empty($item->options)) {

@@ -145,30 +145,45 @@ class StandardsResultsModel extends BaseModel
         }
         $result = $query->getResult();
 
-        $result[0]->links = '[{"name":"CIS CheckPoint Firewall Benchmark","link":"https://firstwavetechnologyptyltd-my.sharepoint.com/personal/simon_may_firstwavecloud_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fsimon%5Fmay%5Ffirstwavecloud%5Fcom%2FDocuments%2FMicrosoft%20Teams%20Chat%20Files%2FCIS%5FCheck%5FPoint%5FFirewall%5FBenchmark%5Fv1%2E1%2E0%2Epdf&parent=%2Fpersonal%2Fsimon%5Fmay%5Ffirstwavecloud%5Fcom%2FDocuments%2FMicrosoft%20Teams%20Chat%20Files"},{"name":"Open-AudIT PowerPoint","link":"https://firstwavetechnologyptyltd-my.sharepoint.com/:p:/r/personal/simon_may_firstwavecloud_com/_layouts/15/Doc.aspx?sourcedoc=%7BAB917B3E-8769-4FA7-8AA8-50C3ADF33580%7D&file=POC%20Trial%20Guidance%20FCT-%20OAE.pptx&action=edit&mobileredirect=true"},{"name":"File on Disk","link":"file://Users/mark/Downloads/image.png"}]';
+//             $result[0]->links = '[
+//     {
+//         "link": "https://firstwavetechnologyptyltd-my.sharepoint.com/personal/simon_may_firstwavecloud_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fsimon%5Fmay%5Ffirstwavecloud%5Fcom%2FDocuments%2FMicrosoft%20Teams%20Chat%20Files%2FCIS%5FCheck%5FPoint%5FFirewall%5FBenchmark%5Fv1%2E1%2E0%2Epdf&parent=%2Fpersonal%2Fsimon%5Fmay%5Ffirstwavecloud%5Fcom%2FDocuments%2FMicrosoft%20Teams%20Chat%20Files",
+//         "name": "CIS CheckPoint Firewall Benchmark"
+//     },
+//     {
+//         "link": "https://firstwavetechnologyptyltd-my.sharepoint.com/:p:/r/personal/simon_may_firstwavecloud_com/_layouts/15/Doc.aspx?sourcedoc=%7BAB917B3E-8769-4FA7-8AA8-50C3ADF33580%7D&file=POC%20Trial%20Guidance%20FCT-%20OAE.pptx&action=edit&mobileredirect=true",
+//         "name": "Open-AudIT PowerPoint"
+//     },
+//     {
+//         "link": "file://Users/mark/Downloads/image.png",
+//         "name": "File on Disk"
+//     }
+// ]';
 
-        $result[0]->links = json_decode($result[0]->links);
-        if (empty($result[0]->links)) {
-            $result[0]->links = array();
-        }
-        foreach ($result[0]->links as $item) {
-            log_message('debug', $item->link);
-            $item->icon = base_url() . 'mime/' . 'web.svg';
-            foreach (\Config\Mimes::$mimes as $key => $value) {
-                if (stripos(urldecode($item->link), '.' . $key) !== false) {
-                    if (is_array($value)) {
-                        $item->icon = base_url() . 'mime/' . str_replace('/', '-', $value[0]) . '.svg';
+        if (!empty($result[0]->links)) {
+            try {
+                $result[0]->links = json_decode($result[0]->links, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            }
+            if (!empty($result[0]->links)) {
+                foreach ($result[0]->links as $item) {
+                    $item->icon = base_url() . 'mime/' . 'web.svg';
+                    foreach (\Config\Mimes::$mimes as $key => $value) {
+                        if (stripos(urldecode($item->link), '.' . $key) !== false) {
+                            if (is_array($value)) {
+                                $item->icon = base_url() . 'mime/' . str_replace('/', '-', $value[0]) . '.svg';
+                            }
+                            if (is_string($value)) {
+                                $item->icon = base_url() . 'mime/' . str_replace('/', '-', $value) . '.svg';
+                            }
+                            break;
+                        }
                     }
-                    if (is_string($value)) {
-                        $item->icon = base_url() . 'mime/' . str_replace('/', '-', $value) . '.svg';
-                    }
-                    break;
                 }
+                $result[0]->links = json_encode($result[0]->links);
             }
         }
-
-
-
         return format_data($result, 'standards_results');
     }
 
@@ -194,7 +209,6 @@ class StandardsResultsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Accept our client data
         $data = $this->updateFieldData('standards_results', $data);
         $this->builder->where('id', intval($id));
         $this->builder->update($data);

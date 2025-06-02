@@ -56,6 +56,7 @@ class Collections extends BaseConfig
     public $rules;
     public $scripts;
     public $search;
+    public $standards;
     public $summaries;
     public $support;
     public $tasks;

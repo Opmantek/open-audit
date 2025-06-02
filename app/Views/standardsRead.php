@@ -39,7 +39,7 @@ if ($style === 'icontext') {
                                     <?= read_field('name', $resource->name, $dictionary->columns->name, $update) ?>
                                     <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs) ?>
                                     <?= read_field('description', $resource->description, $dictionary->columns->description, $update) ?>
-                                    <?= read_field('type', $resource->type, $dictionary->columns->type, $update) ?>
+                                    <?= read_field('type', $resource->type, $dictionary->columns->type, false) ?>
                                     <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false) ?>
                                     <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false) ?>
                                 </div>
