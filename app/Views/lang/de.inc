@@ -1,10 +1,10 @@
 <?php
 
-$GLOBALS["lang"][' Default, currently '] = 'Default, aktuell';
+$GLOBALS["lang"][' Default, currently '] = ' Default, aktuell ';
 
-$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = 'wird nun mit einer Sprachdatei unterstützt. Um Ihren Benutzer zu ändern, um diese Sprache zu verwenden, klicken Sie auf';
+$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = ' wird nun mit einer Sprachdatei unterstützt. Um Ihren Benutzer zu ändern, um diese Sprache zu verwenden, klicken Sie auf ';
 
-$GLOBALS["lang"][' seconds'] = 'sekunden';
+$GLOBALS["lang"][' seconds'] = ' Sekunden';
 
 $GLOBALS["lang"]['10 Minutes'] = '10 Minuten';
 
@@ -14,169 +14,159 @@ $GLOBALS["lang"]['30 Minutes'] = '30 Minuten';
 
 $GLOBALS["lang"]['5 Minutes'] = '5 Minuten';
 
-$GLOBALS["lang"]['<br><strong>NOTE</strong>- You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br><strong>NOTE</strong>- Sie haben Zugriff auf diese URL vom lokalen Open-AudIT Server. Das heruntergeladene Skript wird nicht in der Lage sein, wenn Sie auf einem anderen Rechner laufen. Wenn Sie andere Maschinen überprüfen müssen, laden Sie das Skript von jedem Remote-Computer herunter, nicht mit einem Browser auf dem Open-AudIT Server selbst.';
+$GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br/> <strong>HINWEIS</strong> - Sie greifen auf diese URL vom lokalen Open-AudIT Server. Das heruntergeladene Skript wird nicht in der Lage sein, wenn Sie auf einem anderen Rechner laufen. Wenn Sie andere Maschinen überprüfen müssen, laden Sie das Skript von jedem Remote-Computer herunter, nicht mit einem Browser auf dem Open-AudIT Server selbst.';
 
-$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong>- You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">NOTE</strong>- Sie müssen SSH- oder SSH-Schlüssel-Anmeldedaten zur Ausführung von Benchmarks auf einem Zielgerät haben.</p>';
+$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">HINWEIS</strong> - Sie müssen SSH- oder SSH-Schlüssel-Anmeldedaten arbeiten, um Benchmarks auf einem Zielgerät auszuführen.</p>';
 
-$GLOBALS["lang"]['<p><strong>Baseline</strong>- The overarching document that contains the baseline definition and the individual policy tests.<br><br><strong>Policies</strong>- The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br><br><strong>Details</strong>- Baselines can compare netstat ports, users and software.<br><br><strong>Software</strong>- To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br><br><strong>Netstat Ports</strong>- Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br><br><strong>Users</strong>- Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br><br></p>'] = '<p>strong>Baseline</strong>- Das übergeordnete Dokument, das die Basisdefinition und die einzelnen politischen Tests enthält.<br><br><br><strong>Policies</strong>- Die einzelnen Tests innerhalb eines Baselins. Jeder Test ist für einen bestimmten Gegenstand. Ein Beispiel wären Tests für SSH-Version 1.2.3.<br><br><strong>Details</strong>- Basislinien können Netstat-Ports, Benutzer und Software vergleichen.<br><br><br><strong>Software</strong>- Um Software zu vergleichen, überprüfen wir den Namen und die Version. Da Versionsnummern nicht alle im Format standardisiert sind, erstellen wir ein neues Attribut namens software_pplus, das wir in der Datenbank zusammen mit den übrigen Software-Details für jedes Paket speichern. Aus diesem Grund werden die Basislinien, die Softwarerichtlinien verwenden, nicht funktionieren, wenn sie gegen ein Gerät laufen, das nicht von 1.10 geprüft wurde (zumindest). Softwarerichtlinien können prüfen, ob die Version "gleich", "größer als" oder "gleich oder größer" ist. <br><br><strong>Netstat Ports</strong>- Netstat Ports verwenden eine Kombination aus Portnummer, Protokoll und Programm. Wenn alle vorhanden sind, die Politik geht.<br><br><strong>Users</strong>- Nutzer arbeiten ähnlich wie Netstat Ports. Wenn ein Benutzer mit einem übereinstimmenden Namen, Status und Passwort-Details (änderbar, abläuft, erforderlich) besteht, dann geht die Richtlinie.<br><br></p>';
+$GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong>Basel</strong> - Das übergeordnete Dokument, das die Basisdefinition und die einzelnen politischen Tests enthält.<br/> <br/> <strong>Politik</strong> - Die einzelnen Tests in einer Baseline. Jeder Test ist für einen bestimmten Gegenstand. Ein Beispiel wäre die Prüfung der SSH-Version 1.2.3.<br/> <br/> <strong>Details</strong> - Baselines können Netstat-Ports, Benutzer und Software vergleichen.<br/> <br/> <strong>Software</strong> - Um Software zu vergleichen, überprüfen wir den Namen und die Version. Da Versionsnummern nicht alle im Format standardisiert sind, erstellen wir ein neues Attribut namens software_pplus, das wir in der Datenbank zusammen mit den übrigen Software-Details für jedes Paket speichern. Aus diesem Grund werden die Basislinien, die Softwarerichtlinien verwenden, nicht funktionieren, wenn sie gegen ein Gerät laufen, das nicht von 1.10 geprüft wurde (zumindest). Softwarerichtlinien können testen, ob die Version "gleich", "größer" oder "gleich oder größer" ist.<br/> <br/> <strong>Netstat Ports</strong> - Netstat Ports verwenden eine Kombination aus Portnummer, Protokoll und Programm. Wenn alle anwesend sind, geht die Politik durch.<br/> <br/> <strong>Benutzer</strong> - Benutzer arbeiten ähnlich wie Netstat Ports. Wenn ein Benutzer mit einem passenden Namen, Status und Passwort-Details (änderbar, abläuft, erforderlich) existiert, dann geht die Richtlinie weiter.<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br><br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br><br></p>'] = '<p>Ein Ort ist eine physische Adresse, die Geräte mit ihr verbunden haben kann.<br><br>Sie können es Koordinaten (lat/long) zuordnen und wenn Geräte zugeordnet sind, wird der Standort auf der Open-AudIT Enterprise map.<br><br><br></p>';
+$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p>Ein Ort ist eine physische Adresse, die Geräte zugeordnet werden kann.<br/> <br/>Sie können es Koordinaten (lat/long) zuordnen und wenn Geräte zugewiesen sind, wird der Standort auf der Open-AudIT Enterprise Karte angezeigt.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br><br>Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br><br></p>'] = '<p>A-Netzwerk wird von Entdeckungseinträgen und Geräteattributen abgeleitet.<br><br>Open-AudIT kann konfiguriert werden, um nur Auditergebnisse aus den hier enthaltenen Netzwerken zu akzeptieren. Um dies festzulegen, gehen Sie zur Konfiguration und setzen Sie das Attribut <code>blessed_subnets_use</code><br><br></p>';
+$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br>Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br> <br></p>'] = '<p>Ein Netzwerk wird von Entdeckungseinträgen und Geräteattributen abgeleitet.<br/> <br/>Open-AudIT kann konfiguriert werden, um nur Auditergebnisse aus den hier enthaltenen Netzwerken zu akzeptieren. Um dies zu setzen gehen Sie auf die Konfiguration und setzen Sie das Attribut <code>blessed_subnets_use</code>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code>and <code>column</code>attributes.<br><br>When a summary is executed, the result will be a list of distinct values for that <code>table</code>and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br><br>If the attribute of <code>extra_columns</code>is populated, the resulting page will contain these columns in addition to the standard device columns.<br><br></p>'] = '<p>A Zusammenfassung zeigt eine Liste von Punkten, die durch die verschiedenen Werte des Attributs, die durch die <code>tabelle</code>und <code>column</code>Attribute gruppiert sind, gruppiert werden. <br><br>Wenn eine Zusammenfassung ausgeführt wird, wird das Ergebnis eine Liste von verschiedenen Werten für diese <code>table</code>und <code>column</code>Es gibt Links zu den Werten, die es dem Benutzer ermöglichen, die passenden Geräte zu sehen.<br><br>Wenn das Attribut von <code>extra_columns</code>bevölkert wird, wird die resultierende Seite diese Spalten zusätzlich zu den Standard-Gerätespalten enthalten.<br><br></p>';
+$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>Eine Zusammenfassung zeigt eine Liste von Elementen, die durch die einzelnen Werte des Attributs gruppiert werden, die von der <code>table</code> und <code>column</code> Attribute.<br/> <br/>Wenn eine Zusammenfassung ausgeführt wird, wird das Ergebnis eine Liste von eindeutigen Werten dafür sein. <code>table</code> und <code>column</code>. Es gibt Links auf den Werten, die es dem Benutzer ermöglichen, die passenden Geräte zu sehen.<br/> <br/>Wenn das Attribut <code>extra_columns</code> wird bevölkert, die resultierende Seite wird diese Spalten zusätzlich zu den Standard-Gerät Spalten enthalten.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong>an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong>the actions are taken.</p>'] = '<p>Agents lassen Sie PCs ohne Entdeckung testen. Installieren Sie den Agenten und es wird jeden Tag mit dem Server Check-in und Audit selbst. Es spielt keine Rolle, ob Ihre Computer Firewall sind, Audit-Daten erscheinen immer noch in Open-AudIT.</p>Prüfung <strong>if</strong>ein Agent sollte Aktionen durchführen, alle drei Tests müssen passieren (wenn der Test eingestellt ist). <string>Die</string>Maßnahmen ergriffen werden.</p>';
+$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>Agenten lassen Sie PCs ohne Entdeckung testen. Installieren Sie den Agenten und es wird jeden Tag mit dem Server Check-in und Audit selbst. Es spielt keine Rolle, ob Ihre Computer Firewalled sind, Audit-Daten erscheinen immer noch in Open-AudIT.</p><p>Bei der Prüfung <strong>wenn</strong> ein Agent sollte Aktionen durchführen, alle drei Tests müssen passieren (wenn der Test eingestellt ist). <strong>Dann</strong> die Aktionen durchgeführt werden.</p>';
 
-$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br><br></p>'] = '<p>Anwendungen werden von Ihnen definiert, der Benutzer und für Open-AudIT gespeichert, um Geräte zu verwenden und zu assoziiert.<br><br></p>';
+$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '<p>Anwendungen werden von Ihnen, dem Benutzer definiert und für Open-AudIT gespeichert, um Geräte zu verwenden und zu verknüpfen.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>Attribute werden für Open-AudIT zur Verwendung für bestimmte Felder gespeichert.</p>';
+$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>Attribute werden für Open-AudIT gespeichert, um für bestimmte Felder zu verwenden.</p>';
 
-$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br><br>Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br><br>For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br><br></p>'] = '<p>Die Fähigkeit, zu ermitteln, welche Maschinen gleich konfiguriert sind, ist ein wesentlicher Teil der Systemverwaltung und -prüfung – und jetzt darüber zu berichten, wird einfach und automatisiert. Sobald Sie Ihre Basislinie definieren, wird sie automatisch auf einem bestimmten Zeitplan gegen einen Satz von Geräten laufen. Die Ausgabe dieser ausgeführten Basislinien wird für die Web-Sichtung, Import in ein Drittland-System oder sogar als gedruckter Bericht zur Verfügung stehen.<br><br>Basislinien ermöglichen es Ihnen, Auditdaten mit einer Reihe von Attributen, die Sie zuvor definiert haben (Ihre Basislinie) zu kombinieren, um die Einhaltung von Geräten zu bestimmen.<br><br>Zum Beispiel - Sie könnten eine Basiszeile aus einem Gerät erstellen, das Centos 6 betreibt, das als eines Ihrer Cluster-Server in einem Cluster fungiert. Sie wissen, dass dieser bestimmte Server genau so konfiguriert ist, wie Sie es wollen, aber Sie sind nicht sicher, ob andere Server im Cluster genau das gleiche konfiguriert sind. Basislinien ermöglichen es Ihnen, diese zu bestimmen.<br><br></p>';
+$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '<p>In der Lage zu bestimmen, welche Maschinen gleich konfiguriert sind, ist ein wesentlicher Bestandteil der Systemverwaltung und -prüfung – und jetzt wird darüber berichtet, dass es einfach und automatisiert wird. Sobald Sie Ihre Basislinie definieren, wird sie automatisch auf einem bestimmten Zeitplan gegen einen Satz von Geräten laufen. Die Ausgabe dieser ausgeführten Basislinien wird für die Web-Betrachtung, Import in ein Drittland-System oder sogar als gedruckter Bericht zur Verfügung stehen.<br/> <br/> Basislinien ermöglichen es Ihnen, Auditdaten mit einer Reihe von Attributen zu kombinieren, die Sie zuvor definiert haben (Ihre Basislinie), um die Einhaltung von Geräten zu bestimmen.<br/> <br/> Zum Beispiel - Sie könnten eine Basislinie von einem Gerät erstellen, das Centos 6 betreibt, das als einer Ihrer apache Server in einem Cluster fungiert. Sie wissen, dass dieser bestimmte Server genau so konfiguriert ist, wie Sie es wollen, aber Sie sind nicht sicher, ob andere Server im Cluster genau das gleiche konfiguriert sind. Baselines ermöglicht es Ihnen, dies zu bestimmen.<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br><br></p>'] = '<p>Clusters werden in Open-AudIT für assoziierte Geräte zur besseren Erfassung, Verwaltung und Schätzung der Lizenzkosten gespeichert.<br><br></p>';
+$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>Cluster werden in Open-AudIT gespeichert, um Geräte besser zu erfassen, verwalten und schätzen Lizenzkosten.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p>In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>Komponenten ist ein allgemeiner Begriff, der für die Tabellen verwendet wird, die die Attribute für ein Gerät speichern. Diese Tabellen sind: access_point, arp, bios, Certificate, cli_config, disk, dns, file, ip, log, Memory, module, monitor, motherboard, netstat, network, nmap, Optical, pagefile, Partition, policy, print_queue, process, radio, route, san, scsi, server, server_item, service, share, software_group, software_key, sound, windows, server, server, server, Darüber hinaus klassifizieren wir die folgenden Tabellen auch als Geräteverwandte: Anwendung, Aufsatz, Cluster, Anmeldeinformationen, Bild.</p>';
+$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>Komponenten ist ein allgemeiner Begriff für die Tabellen, die die Attribute für ein Gerät speichern. Diese Tabellen sind: access_point, arp, bios, Certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, Optical, pagefile, Partition, policy, print_queue, process, radio, route, san, scsi, server, server_item, service, share, software_group, software_key, sound, software, software</p><p> Darüber hinaus klassifizieren wir die folgenden Tabellen auch als Geräteverwandt: Anwendung, Anbau, Cluster, Anmeldeinformationen, Bild.</p>';
 
-$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br><br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code>table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code>is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br><br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br><br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br><br></p>'] = '<p>Credentials werden verschlüsselt, wenn sie in der Datenbank gespeichert sind.<br><br>Wenn eine Discovery ausgeführt wird, hat ein Gerät seine Anmeldedaten, die zuerst auf die Verbindung abgerufen und getestet wurden (aus der <code>credential</code>Tabelle). Wenn diese scheitern, dann werden die mit dem angegebenen Org <code>credentials.org_id</code>verbundenen Anmeldeinformationen auch gegen das Gerät getestet. In der Anmeldetabelle (Anmerkung - keine "s" im Tabellennamen) werden Arbeitsdaten auf einer individuellen Geräteebene gespeichert. <br><br>SSH-Tasten werden vor SSH-Benutzername / Passwort getestet. Beim Testen von SSH werden die Anmeldeinformationen auch als Arbeiten mit sudo gekennzeichnet oder root.<br><br><br>Zur Benutzerfreundlichkeit sollten Windows-Passwörter kein einzelnes oder doppeltes Angebot enthalten. Dies ist eine entfernte WMI-Beschränkung, keine Open-AudIT-Beschränkung.<br><br></p>';
+$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>In der Datenbank werden Credentials verschlüsselt.<br/> <br/>Wenn eine Discovery ausgeführt wird, hat ein Gerät seine Anmeldeinformationen abgerufen und auf die Verbindung getestet (von der <code>credential</code> Tabelle Wenn diese scheitern, dann Anmeldeinformationen mit dem gegebenen Org verbunden <code>credentials.org_id</code> wird auch gegen das Gerät getestet. In der Anmeldetabelle werden Arbeitsinformationen auf einer individuellen Geräteebene gespeichert (Anmerkung - keine "s" im Tabellennamen).<br/> <br/>SSH-Tasten werden vor SSH-Benutzername / Passwort getestet. Beim Testen von SSH werden die Anmeldeinformationen auch als Arbeiten mit Sudo oder als root markiert.<br/> <br/>Für einfache Bedienung sollten Windows-Passwörter kein einzelnes oder doppeltes Angebot enthalten. Dies ist eine Remote-WMI-Beschränkung, keine Open-AudIT-Beschränkung.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Credentials are used to access devices.<br><br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br><br></p>'] = '<p>Credentials werden verwendet, um auf Geräte zuzugreifen.<br><br>Konfigurieren von Anmeldeinformationen sollte eines der ersten Dinge sein, die Sie nach der Installation von Open-AudIT tun.<br><br></p>';
+$GLOBALS["lang"]['<p>Credentials are used to access devices.<br> <br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br> <br></p>'] = '<p>Informationen werden verwendet, um auf Geräte zuzugreifen.<br/> <br/>Die Konfiguration von Anmeldeinformationen sollte eines der ersten Dinge sein, die Sie nach der Installation von Open-AudIT tun.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br><br></p>'] = '<p>Legen Sie Ihre Racks und ordnen Sie Geräte in ihre Positionen. Sie haben bereits Ihre Geräte in Open-AudIT und Sie kennen Ihre Standorte. Open-AudIT erweitert dies, damit Sie ein Rack erstellen und ihm Geräte zuweisen können. Open-AudIT wird sogar eine Visualisierung des Regals und der darin enthaltenen Geräte bieten. Wenn Sie ein Gerätebild bereitstellen, wird dieses Bild in der Visualisierung verwendet. Sie können das Rack auf dem Bildschirm betrachten und die gleichen Artikel sehen, die Sie sehen würden, ob Sie vor ihm standen.<br><br></p>';
+$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br> <br></p>'] = '<p>Definieren Sie Ihre Racks und ordnen Sie Geräte in ihre Positionen. Sie haben bereits Ihre Geräte in Open-AudIT und Sie kennen Ihre Standorte. Open-AudIT erweitert dies, damit Sie ein Rack erstellen und ihm Geräte zuweisen können. Open-AudIT wird sogar eine Visualisierung des Regals und der darin enthaltenen Geräte bieten. Wenn Sie ein Gerätebild bereitstellen, wird dieses Bild in der Visualisierung verwendet. Sie können das Rack auf dem Bildschirm ansehen und die gleichen Artikel sehen, die Sie sehen würden, ob Sie vor ihm stehen.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br><br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br><br>Expand on the stored fields easily with your own custom attributes.<br><br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br><br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br><br></p>'] = '<p>Geräte in Ihrem Netzwerk müssen verwaltet werden. Aber wie halten Sie Ihre Aufzeichnungen auf dem Laufenden? Ein Tabellenblatt - defintley nicht. Das wird in Stunden, wenn nicht in Tagen, nicht sein. Warum manuell versuchen, aufrechtzuerhalten. Verwenden Sie Open-AudIT, um Ihre Netzwerke automatisch zu scannen und Ihre Geräte aufzunehmen - Hersteller, Modell, Serien und mehr als 100 andere Attribute. Volle Listen von Software, Dienstleistungen, Festplatten, offene Ports, Benutzer, etc. Sehen Sie automatisch, ob ein Attribut hinzugefügt, entfernt oder geändert wurde.<br><br>Once Open-AudIT eingerichtet ist, können Sie sich zurücklehnen und entspannen. Haben Sie Berichte per E-Mail an Sie per Zeitplan geändert, zum Beispiel - welche neuen Geräte haben wir diese Woche entdeckt? Welche neue Software wurde diese Woche installiert? Gibt es Hardwareänderungen im letzten Monat?<br><br>Expand auf den gespeicherten Feldern leicht mit Ihren eigenen benutzerdefinierten Attributen.<br><br><br>Even Add-Geräte, die nicht mit Ihrem Netzwerk verbunden sind oder diese Geräte Ihr Open-AudIT-Server nicht erreichen kann.<br><br>Computer, Switches, Router, Drucker oder ein anderes Gerät auf Ihrem Netzwerk - Open-AudIT kann sie alle überprüfen';
+$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br> <br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br> <br>Expand on the stored fields easily with your own custom attributes.<br> <br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br> <br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br> <br></p>'] = '<p>Geräte in Ihrem Netzwerk müssen verwaltet werden. Aber wie halten Sie Ihre Aufzeichnungen auf dem Laufenden? Ein Tabellenblatt - defintley nicht. Das wird in Stunden, wenn nicht in Tagen, nicht sein. Warum manuell versuchen, aufrechtzuerhalten. Verwenden Sie Open-AudIT, um Ihre Netzwerke automatisch zu scannen und Ihre Geräte aufzunehmen - Hersteller, Modell, Serien und mehr als 100 andere Attribute. Volle Listen von Software, Dienstleistungen, Festplatten, offene Ports, Benutzer, etc. Sehen Sie automatisch, ob ein Attribut hinzugefügt, entfernt oder geändert wurde.<br/> <br/>Sobald Open-AudIT eingerichtet ist, können Sie sich zurücklehnen und entspannen. Haben Sie Berichte per E-Mail an Sie per Zeitplan geändert, zum Beispiel - welche neuen Geräte haben wir diese Woche entdeckt? Welche neue Software wurde diese Woche installiert? Gibt es im letzten Monat Hardwareänderungen?<br/> <br/>Erweitern Sie auf den gespeicherten Feldern einfach mit Ihren eigenen benutzerdefinierten Attributen.<br/> <br/>Auch Geräte hinzufügen, die nicht mit Ihrem Netzwerk verbunden sind oder die Geräte, die Ihr Open-AudIT Server nicht erreichen kann.<br/> <br/>Computer, Switche, Router, Drucker oder jedes andere Gerät auf Ihrem Netzwerk - Open-AudIT kann sie alle überprüfen.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br><br>How else would you know "What is on my network?"<br><br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br><br></p>'] = '<p>Discoveries sind im Herzen dessen, was Open-AudIT tut.<br><br>Wie sonst würden Sie wissen, "Was ist auf meinem Netzwerk?" <br><br>Discoveries werden Datenelemente erstellt, die es Ihnen ermöglichen, eine Entdeckung auf einem Netzwerk in einem einzigen Klick durchzuführen, ohne die Details dieses Netzes jedes Mal einzugeben';
+$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>'] = '<p>Entdeckungen sind im Herzen dessen, was Open-AudIT tut.<br/> <br/>Wie sonst wüsstest du "Was ist in meinem Netzwerk?"<br/> <br/>Entdeckungen sind vorbereitete Datenelemente, die es Ihnen ermöglichen, eine Entdeckung auf einem Netzwerk in einem einzigen Klick durchzuführen, ohne die Details dieses Netzwerks jedes Mal einzugeben.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code>port is considered open. A <code>filtered</code>port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code>port is considered open. A <code>filtered</code>port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code>port is considered open. A <code>filtered</code>port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code>port is considered open. A <code>filtered</code>port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code>port is considered open. A <code>filtered</code>port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code>port is considered open. A <code>filtered</code>port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code>port is considered open. A <code>filtered</code>port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '<p>Entdeckung Optionen sind eine globale Einstellung geändert in der <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. Wenn Sie eine Open-AudIT Enterprise Lizenz haben, sind diese pro Entdeckung und zusätzlich nach Bedarf anpassbar. Entdeckung Optionen sind wie folgt (einschließlich einer Indizitave-Zeit zum Scannen eines einzelnen IP): <br/><br><br>strong>UltraFast</strong>: <i>1 second</i>. Scannen Sie nur die Ports, die Open-AudIT verwenden muss, um mit dem Gerät zu sprechen und ein IOS-Gerät (WMI, SSH, SNMP, Apple Sync) zu erkennen. Ein <code>open|filtered</code>Port gilt als offen. A <code>filtered</code>port wird nicht als offen angesehen. Gerät muss auf eine Nmap-Ping reagieren. Verwenden Sie aggressives Timing.<br>br/>strong>Superfast</strong>: <i>5 secs</i>. Scannen Sie die Top 10 TCP- und UDP-Ports sowie Port 62078 (Apple IOS-Erkennung). Ein <code>open|filtered</code>Port gilt als offen. A <code>filtered</code>port wird nicht als offen angesehen. Gerät muss auf eine Nmap-Ping reagieren. Verwenden Sie aggressives Timing.<br/>br/>strong>Fast</strong>: <i>40 sec</i>. Scannen Sie die oberen 100 TCP- und UDP-Ports sowie Port 62078 (Apple IOS-Detektion). Ein <code>open|filtered</code>Port gilt als offen. A <code>filtered</code>port wird nicht als offen angesehen. Gerät muss auf eine Nmap-Ping reagieren. Verwendung aggressiver Timings.<br/>br/>strong>Medium (Classic)</strong>: <i>90 secs</i>So nah an einem traditionellen Open-AudIT-Scan, wie wir es machen können. Scannen Sie die oberen 1000 TCP-Ports, sowie 62078 (Apple IOS-Detektion) und UDP 161 (SNMP). Ein <code>open|filtered</code>Port gilt als offen. Ein <code>filtered</code>Port wird als offen betrachtet (und löst Geräteerkennung aus). Geräte werden unabhängig von einer Antwort auf ein Nmap-Ping gescannt. Verwenden Sie aggressives Timing.<br/>br/>strong>Medium</strong>: <i>100 Sekunden</i>. Scannen Sie die Top 1000 TCP und Top 100 UDP-Ports, sowie Port 62078 (Apple IOS-Erkennung). Ein <code>open|filtered</code>Port gilt als offen. A <code>filtered</code>port wird nicht als offen angesehen. Gerät muss auf eine Nmap-Ping reagieren. Verwenden Sie aggressives Timing.<br/>br/>strong>Slow</strong>: <i>4 Minuten</i>. Scannen Sie die Top 1000 TCP und Top 100 UDP-Ports, sowie Port 62078 (Apple IOS-Erkennung). Versionserkennung aktiviert. Ein <code>open|filtered</code>Port gilt als offen. Ein <code>filtered</code>Port wird als offen betrachtet (und löst Geräteerkennung aus). Gerät muss auf eine Nmap-Ping reagieren. Verwenden Sie normales Timing.<br/>br/>strong>UltraSlow</strong>: <i>20 minutes</i>. Nicht empfohlen. Scannen Sie die oberen 1000 TCP- und UDP-Ports sowie Port 62078 (Apple IOS-Erkennung). Geräte werden unabhängig von einer Antwort auf ein Nmap-Ping gescannt. Versionserkennung aktiviert. Ein <code>open|filtered</code>Port gilt als offen. Ein <code>filtered</code>Port wird als offen betrachtet (und löst Geräteerkennung aus). Verwenden Sie höfliches Timing.<br/>br/>strong>Custom</strong>: <i>Unknown time</i>Werden andere Optionen als durch eine Standard-Erkennungsvoreinstellung festgelegt geändert.<br><br></p>';
+$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '<p>Entdeckung Optionen sind eine globale Einstellung in der <a href="../configuration?configuration.name=discovery_default_scan_option">Konfiguration</a>. Wenn Sie eine Open-AudIT Enterprise Lizenz haben, sind diese pro Entdeckung und zusätzlich nach Bedarf anpassbar. Entdeckung Optionen sind wie folgt (einschließlich einer Indizitave-Zeit zum Scannen eines individuellen IP):<br/><br/><strong>UltraFast</strong>: <i>1 Sekunde</i>. Scannen Sie nur die Ports, die Open-AudIT verwenden muss, um mit dem Gerät zu sprechen und ein IOS-Gerät (WMI, SSH, SNMP, Apple Sync) zu erkennen. Eine <code>open|filtered</code> Hafen gilt als offen. A <code>filtered</code> Port wird nicht als offen betrachtet. Gerät muss auf eine Nmap-Ping reagieren. Verwenden Sie aggressives Timing.<br/><br><strong>SuperFast</strong>: <i>5 Sekunden</i>. Scannen Sie die Top 10 TCP- und UDP-Ports sowie Port 62078 (Apple IOS-Erkennung). Eine <code>open|filtered</code> Hafen gilt als offen. A <code>filtered</code> Port wird nicht als offen betrachtet. Gerät muss auf eine Nmap-Ping reagieren. Verwenden Sie aggressives Timing.<br><br/><strong>Schnell!</strong>: <i>40 Sekunden</i>. Scannen Sie die oberen 100 TCP- und UDP-Ports sowie Port 62078 (Apple IOS-Detektion). Eine <code>open|filtered</code> Hafen gilt als offen. A <code>filtered</code> Port wird nicht als offen betrachtet. Gerät muss auf eine Nmap-Ping reagieren. Verwenden Sie aggressives Timing.<br/><br/><strong>Mittel (Klassisch)</strong>: <i>90 Sekunden</i>. So nah an einem traditionellen Open-AudIT-Scan, wie wir es machen können. Scannen Sie die oberen 1000 TCP-Ports, sowie 62078 (Apple IOS-Detektion) und UDP 161 (SNMP). Eine <code>open|filtered</code> Hafen gilt als offen. A <code>filtered</code> Port wird als offen betrachtet (und löst Geräteerkennung aus). Geräte werden unabhängig von einer Antwort auf ein Nmap-Ping gescannt. Verwenden Sie aggressives Timing.<br/><br/><strong>Mittel</strong>: <i>100 Sekunden</i>. Scannen Sie die Top 1000 TCP und Top 100 UDP-Ports, sowie Port 62078 (Apple IOS-Erkennung). Eine <code>open|filtered</code> Hafen gilt als offen. A <code>filtered</code> Port wird nicht als offen betrachtet. Gerät muss auf eine Nmap-Ping reagieren. Verwenden Sie aggressives Timing.<br/><br/><strong>Langsam</strong>: <i>4 Minuten</i>. Scannen Sie die Top 1000 TCP und Top 100 UDP-Ports, sowie Port 62078 (Apple IOS-Erkennung). Versionserkennung aktiviert. Eine <code>open|filtered</code> Hafen gilt als offen. A <code>filtered</code> Port wird als offen betrachtet (und löst Geräteerkennung aus). Gerät muss auf eine Nmap-Ping reagieren. Verwenden Sie normales Timing.<br/><br/><strong>Ultraslow</strong>: <i>20 Minuten</i>. Nicht empfohlen. Scannen Sie die oberen 1000 TCP- und UDP-Ports sowie Port 62078 (Apple IOS-Erkennung). Geräte werden unabhängig von einer Antwort auf ein Nmap-Ping gescannt. Versionserkennung aktiviert. Eine <code>open|filtered</code> Hafen gilt als offen. A <code>filtered</code> Port wird als offen betrachtet (und löst Geräteerkennung aus). Verwenden Sie höfliches Timing.<br/><br/><strong>Zoll</strong>: <i>Unbekannte Zeit</i>. Wenn andere Optionen als durch eine Standard-Erkennungsvoreinstellung festgelegt werden.<br/><br/></br></br></p>';
 
-$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code>only. If requested using the web interface, they return the standard column attribute list.<br><br></p>'] = '<p>Gruppen werden als einfache Listen von Geräten verwendet, die den gewünschten Bedingungen entsprechen. Wenn Sie JSON verwenden, geben Sie eine Liste von <code>devices.id</code>nur zurück. Wenn Sie die Web-Schnittstelle verwenden möchten, geben Sie die Standard-Spalten-Attributliste zurück';
+$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code> only. If requested using the web interface, they return the standard column attribute list.<br> <br></p>'] = '<p>Gruppen werden als einfache Listen von Geräten verwendet, die den gewünschten Bedingungen entsprechen. Auf Wunsch mit JSON geben sie eine Liste zurück <code>devices.id</code> Nur. Wenn Sie die Web-Schnittstelle verwenden möchten, geben Sie die Standard-Spalten-Attributliste zurück.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you are using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code>and <code>ldap_dn_password</code>to configure this.<br><br><strong>Helpful Documentation</strong><br><br>
-        <a href="/index.php/auth/help">General Auth Help</a><br><br>
-        <a href="/index.php/faq?name=Using Entra for Auth">Using Entra for Auth</a><br><br>
-        <a href="/index.php/faq?name=Using OKTA for Auth">Using OKTA for Auth</a><br><br>
-        <a href="/index.php/faq?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br><br>
-        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br><br></p>'] = '<p>Wenn der Benutzer sich auf Open-AudIT anmelden hat nicht den Zugriff auf die Suche LDAP (und Sie verwenden OpenLDAP), können Sie ein anderes Konto verwenden, das diesen Zugriff hat. Verwenden Sie die <code>ldap_dn_account</code>und <code>ldap_dn_password</code>, um diese zu konfigurieren.<br><br>strong>Helpful Documentation</strong>br>
-<a href="/index.php/auth/help">General Auth Help</a>br>
-<a href="/index.php/faq?name=Using Entra for Auth">Using Entra for Auth</a>br>
-<a href="/index.php/faq?name=Using OKTA for Auth">Using OKTA for Auth</a>br>
-<a href="/index.php/faq?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a>br><br>
-<a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a>br><br></p>';
+$GLOBALS["lang"]['<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you are using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br> <br><strong>Helpful Documentation</strong><br> <br>
+        <a href="/index.php/auth/help">General Auth Help</a><br> <br>
+        <a href="/index.php/faq?name=Using Entra for Auth">Using Entra for Auth</a><br> <br>
+        <a href="/index.php/faq?name=Using OKTA for Auth">Using OKTA for Auth</a><br> <br>
+        <a href="/index.php/faq?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br> <br>
+        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>'] = '<p>Wenn der Benutzer sich auf Open-AudIT anmelden hat nicht den Zugriff auf die Suche LDAP (und Sie verwenden OpenLDAP), können Sie ein anderes Konto verwenden, das diesen Zugriff hat. Verwenden Sie die <code>ldap_dn_account</code> und <code>ldap_dn_password</code> um dies zu konfigurieren.<br/> <br/><strong>Hilfreiche Dokumentation</strong><br/> <br/><a href="/index.php/auth/help">Allgemeine Auth Hilfe</a><br/> <br/><a href="/index.php/faq?name=Using Entra for Auth">Mit Entra für Auth</a><br/> <br/><a href="/index.php/faq?name=Using OKTA for Auth">OKTA für Auth verwenden</a><br/> <br/><a href="/index.php/faq?name=Troubleshooting LDAP Logins">Fehlerbehebung LDAP Logins</a><br/> <br/><a href="/index.php/faq?name=Users, Roles and Orgs">Benutzer, Roles und Orgs</a><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br><br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i>is a <code>device</code>, valid <i>types</i>are: <code>class</code>, <code>environment</code>, <code>status</code>and <code>type</code>. If the <i>resource</i>is <code>locations</code>or <code>org</code>the only valid <i>type</i>is <code>type</code>. If the <i>resource</i>is a <code>query</code>the only valid <i>type</i>is <code>menu_category</code>.</p>'] = '<========== Wenn Sie einen Gerätetyp hinzufügen, müssen Sie das zugehörige Icon manuell kopieren die .svg formatierte Datei in das Verzeichnis:<br>em>Linux</em>:/usr/local/open-audit/public/device_images>b\em>/em>: c:\xampp\htdocs\open-audit\device_images Wenn die <i>resource</i>ein <code>device</code>ist, gelten <i>types</i>: <code>class</code>, <code>environment>/code>, <code>status>/code>und <code>type>/code>. Ist die <i>resource</i><code>locations</code>oder <code>org</code>nur gültig <i>type/i>ist <code>type</code>. Wenn die <i>resource</i>ein <code>query</code>ist nur gültig <i>type/i>ist <code>menu_category</code>/p>';
+$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br> <br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a <code>device</code>, valid <i>types</i> are: <code>class</code>, <code>environment</code>, <code>status</code> and <code>type</code>. If the <i>resource</i> is <code>locations</code> or <code>org</code> the only valid <i>type</i> is <code>type</code>. If the <i>resource</i> is a <code>query</code> the only valid <i>type</i> is <code>menu_category</code>.</p>'] = '<p>Wenn Sie einen Gerätetyp hinzufügen, um das zugehörige Icon anzuzeigen, müssen Sie die .svg formatierte Datei manuell in das Verzeichnis kopieren:<br/><em>Linux</em>:/usr/local/open-audit/public/device_images<br/><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br/> <br/>Wenn Sie einen Standorttyp hinzufügen, um das zugehörige Symbol anzuzeigen, müssen Sie das 32x32px-Symbol manuell in das Verzeichnis kopieren:<br/><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br/><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>Wenn <i>Ressourcen</i> ein <code>device</code>, gültig <i>Typen</i> sind: <code>class</code>, <code>environment</code>, <code>status</code> und <code>type</code>. Wenn <i>Ressourcen</i> ist <code>locations</code> oder <code>org</code> nur gültig <i>Typ</i> ist <code>type</code>. Wenn <i>Ressourcen</i> ein <code>query</code> nur gültig <i>Typ</i> ist <code>menu_category</code>.</p>';
 
-$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine ->Networking rules.<br><br></p>'] = '<p>Wenn Sie beabsichtigen, Ihre Cloud-Maschinen vollständig zu überprüfen, vergessen Sie nicht, dass Sie auch diese in Open-AudIT.</p>p>gespeicherten Anmeldeinformationen benötigen Stellen Sie sicher, dass Sie die richtigen Ports zulassen, wenn Sie Microsoft Azure verwenden (22 für SSH, etc.). Prüfen Sie Ihre virtuelle Maschine ->Netzregeln.<br><br></p>';
+$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>'] = '<p>Wenn Sie Ihre Cloud-Maschinen vollständig testen möchten, vergessen Sie nicht, dass Sie auch diese in Open-AudIT gespeicherten Anmeldeinformationen benötigen.</p><p>Stellen Sie sicher, dass Sie die richtigen Ports zulassen, wenn Sie Microsoft Azure verwenden (22 für SSH, etc.). Überprüfen Sie Ihre virtuelle Maschine -> Netzwerkregeln.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br><br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br><br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br><br></p>'] = '<p>Wenn Sie einen Listentyp auswählen, wird das Feld "Werte" aktiviert. Sie sollten hier eine Komma getrennte Liste von wählbaren Werten setzen. Diese werden in einem Dropdown-Box angezeigt, wenn das Feld bearbeitet wird.<br><br>Wie die meisten anderen Attribute, Felder können Bulk editiert werden. Verwenden Sie die Bulk Edit Funktion, wie Sie normalerweise würden und Sie werden sehen, dass die Felder für Eingabe verfügbar sind.<br><br><br>Ansicht des Gerätedetails Bildschirm, öffnen Sie den Abschnitt, der das Feld enthält und (wenn Sie genügend Zugriff haben) Sie können auf den Feldwert klicken, um es zu bearbeiten.br></p>';
+$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br> <br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br> <br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br> <br></p>'] = '<p>Wenn Sie einen Listentyp auswählen, wird das Feld "Werte" aktiviert. Sie sollten hier eine Komma getrennte Liste von wählbaren Werten setzen. Diese werden in einem Dropdown-Box angezeigt, wenn das Feld bearbeitet wird.<br/> <br/>Wie die meisten anderen Attribute, Felder können Bulk editiert werden. Verwenden Sie die Bulk Edit Funktion, wie Sie normalerweise würden und Sie werden sehen, dass die Felder für Eingabe zur Verfügung stehen.<br/> <br/>Zeigen Sie den Bildschirm der Gerätedetails, öffnen Sie den Abschnitt mit dem Feld und (wenn Sie genügend Zugriff haben) können Sie auf den Feldwert klicken, um es zu bearbeiten.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '<p>In der sich ständig verändernden Welt der Computersicherheit, in der täglich neue Sicherheitslücken entdeckt und gepatelt werden, muss die Durchsetzung der Sicherheitskonformität ein kontinuierlicher Prozess sein. Es muss auch eine Möglichkeit enthalten, Anpassungen an die Politik sowie regelmäßige Bewertung und Risikoüberwachung vorzunehmen. Das OpenSCAP-Ökosystem bietet Tools und anpassbare Richtlinien für eine schnelle, kostengünstige und flexible Umsetzung dieser Prozesse.</p>';
 
-$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br><br></p>'] = '<p>Integrations ermöglichen es Ihnen, Geräteauswahl und -pläne für Open-AudIT zu erstellen, um mit externen Systemen zu sprechen.<br><br></p>';
+$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>Integrationen ermöglichen es Ihnen, Geräteauswahl und -pläne für Open-AudIT zu erstellen, um mit externen Systemen zu sprechen.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>It is easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen over time. All the devices discovered last week, last month or any other period. New software found. What about devices that have not been seen - where are they? How useful to be able to specify these items over time.<br><br></p>'] = '<========== Es ist leicht zu sehen, dass Berichte über die Zeit äußerst nützlich sind. Nicht nur können Sie die Open-AudIT-Daten sehen, sondern jetzt, was sie im Laufe der Zeit gesehen hat. Alle Geräte entdeckten letzte Woche, letzten Monat oder jede andere Periode. Neue Software gefunden. Was ist mit Geräten, die nicht gesehen wurden - wo sind sie? Wie nützlich es ist, diese Artikel im Laufe der Zeit anzugeben.<br><br></p>';
+$GLOBALS["lang"]['<p>It is easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen over time. All the devices discovered last week, last month or any other period. New software found. What about devices that have not been seen - where are they? How useful to be able to specify these items over time.<br> <br></p>'] = '<p>Es ist leicht zu sehen, dass Berichte über die Zeit äußerst nützlich sind. Nicht nur können Sie die Open-AudIT-Daten sehen, sondern jetzt, was sie im Laufe der Zeit gesehen hat. Alle Geräte entdeckten letzte Woche, letzten Monat oder jede andere Periode. Neue Software gefunden. Was ist mit Geräten, die nicht gesehen wurden - wo sind sie? Wie nützlich, diese Elemente im Laufe der Zeit anzugeben.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br><br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i>Lyon</footer><br><br></p>'] = '<p>Nmap Timingdetails finden sich unten auf dieser verlinkten Seite <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. Von dieser Seite: <br><br>Wenn Sie auf einer anständigen Breitband- oder Ethernet-Verbindung sind, würde ich empfehlen, immer -T4 (Aggressive) zu verwenden. Einige Leute lieben -T5 (Insane), obwohl es zu aggressiv für meinen Geschmack ist. Manchmal geben die Menschen -T2 (Polite) an, weil sie denken, dass es weniger wahrscheinlich ist, Gastgeber abzustürzen oder weil sie sich als höflich im Allgemeinen betrachten. Sie wissen oft nicht, wie langsam -T2 wirklich ist. Ihr Scan kann zehnmal länger dauern als ein Standard-Scan. Maschinenunfälle und Bandbreite Probleme sind selten mit den Standard-TIM-Optionen -T3 (Normal) und so empfehle ich normalerweise, dass für vorsichtige Scanner. Omitting Versionserkennung ist weitaus effektiver als das Spielen mit Zeitwerten bei der Reduzierung dieser Probleme.</em><footer>Gordon <i>Fyodor</i>Lyon</fuß>br><br>';
+$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>Nmap Timing Details finden Sie unten auf dieser Seite <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. Von dieser Seite:<br/> <br/><em>Wenn Sie auf einer anständigen Breitband- oder Ethernet-Verbindung sind, würde ich empfehlen immer -T4 (Aggressive). Einige Leute lieben -T5 (Insane), obwohl es zu aggressiv für meinen Geschmack ist. Manchmal geben die Menschen -T2 (Polite) an, weil sie denken, dass es weniger wahrscheinlich ist, Gastgeber abzustürzen oder weil sie sich als höflich im Allgemeinen betrachten. Sie wissen oft nicht, wie langsam -T2 wirklich ist. Ihr Scan kann zehnmal länger dauern als ein Standard-Scan. Maschinenunfälle und Bandbreite Probleme sind selten mit den Standard-TIM-Optionen -T3 (Normal) und so empfehle ich normalerweise, dass für vorsichtige Scanner. Omitting Versionserkennung ist viel effektiver als das Spielen mit Timing-Werten, um diese Probleme zu reduzieren.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br><br></p>'] = '<p>Open-AudIT kann konfiguriert werden, um verschiedene Methoden zur Authentifizierung eines Benutzers zu verwenden und zusätzlich ein Benutzerkonto mit zugewiesenen Rollen und Orgs basierend auf Gruppenmitgliedschaft zu erstellen.<br><br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '<p>Open-AudIT kann konfiguriert werden, um verschiedene Methoden zur Authentisierung eines Benutzers zu verwenden und zusätzlich ein Benutzerkonto mit zugewiesenen Rollen und Orgs basierend auf Gruppenmitgliedschaft zu erstellen.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br><br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br><br>Supported clients are Windows and Linux.<br><br></p>'] = '<p>Open-Aud IT kann Daten über eine Datei oder ein Verzeichnis von Dateien abrufen und diese Dateien für Änderungen gemäß anderen Attributen in der Open-AudIT-Datenbank überwachen.<br><br>Diese Funktion funktioniert aus dem Feld für Linux Open-AudIT-Server, benötigt aber eine Änderung des Service-Kontonamens unter einem Windows Open-AudIT-Server.<br><br>Supported-Clients sind Windows und Linux.<br>';
+$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>'] = '<p>Open-Aud Die IT kann Informationen über eine Datei oder ein Verzeichnis von Dateien abrufen und diese Dateien für Änderungen gemäß anderen Attributen in der Open-AudIT-Datenbank überwachen.<br/> <br/>Diese Funktion funktioniert aus der Box für Linux Open-AudIT Server, benötigt aber eine Änderung des Service-Kontonamens unter einem Windows Open-AudIT Server.<br/> <br/>Unterstützte Clients sind Windows und Linux.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br><br>Supported clients are Linux only.<br><br></p>'] = '<p>Open-Aud IT kann Daten über eine Datei abrufen, fragen Sie den nativen Paketmanager, wenn sie ihm bekannt sind und überwachen diese Dateien für Änderungen gemäß anderen Attributen in der Open-AudIT Datenbank.<br><br>Supported Clients sind nur Linux.<br><br><br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>'] = '<p>Open-Aud Die IT kann Informationen über eine Datei abrufen, den nativen Paketmanager fragen, ob sie ihm bekannt sind und diese Dateien für Änderungen gemäß anderen Attributen in der Open-AudIT-Datenbank überwachen.<br/> <br/>Unterstützte Clients sind nur Linux.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br><br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br><br></p>'] = '<p>Open-AudIT kann Informationen in benutzerdefinierten Feldern speichern, die jedem Gerät zugeordnet sind.<br><br><br>Once ein zusätzliches Feld erstellt wurde, kann es in Abfragen und Gruppen verwendet werden, wie jedes andere Attribut in der Datenbank';
+$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br> <br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br> <br></p>'] = '<p>Open-Aud Die IT kann Informationen in benutzerdefinierten Feldern speichern, die jedem Gerät zugeordnet sind.<br/> <br/>Sobald ein zusätzliches Feld erstellt wurde, kann es in Abfragen und Gruppen verwendet werden, wie jedes andere Attribut in der Datenbank.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br><br></p>'] = '<p>Open-Aud Die IT kommt mit vielen Abfragen aufgebaut. Wenn Sie eine bestimmte Abfrage benötigen und keine der vorverpackten Abfragen Ihren Bedürfnissen entsprechen, ist es ganz einfach, eine neue zu erstellen und in Open-AudIT für den Betrieb zu laden.<br><br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Open-AudIT kommt mit vielen Abfragen aufgebaut. Wenn Sie eine bestimmte Abfrage benötigen und keine der vorverpackten Abfragen Ihren Bedürfnissen entsprechen, ist es ganz einfach, eine neue zu erstellen und in Open-AudIT zum Laufen zu laden.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br><br></p>'] = '<p>Open-Aud Die IT kommt mit vielen zusammengebauten Zusammenfassungen. Wenn Sie eine bestimmte Zusammenfassung benötigen und keine der vorverpackten Zusammenfassungen Ihren Bedürfnissen entsprechen, ist es ganz einfach, eine neue zu erstellen und in Open-AudIT für den Betrieb zu laden.<br><br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Open-AudIT kommt mit vielen Zusammenfassungen eingebaut. Wenn Sie eine bestimmte Zusammenfassung benötigen und keine der vorverpackten Zusammenfassungen Ihren Bedürfnissen entsprechen, ist es ganz einfach, eine neue zu erstellen und sie in Open-AudIT zum Laufen zu laden.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br><br></p>'] = '<p>Open-AudIT wird von FirstWave mit einer erstaunlichen Unterstützung unterstützt. Wenn Sie eine aktive Gemeinschaft der Unterstützungsspender bevorzugen, gibt es das auch. Wo sonst können Sie direkt mit den Entwicklern sprechen und innerhalb von 24 Stunden eine Antwort bekommen? Versuchen Sie das mit anderen Produkten! Erstaunliche Unterstützung. Stopp. Sie brauchen Unterstützung, wir bieten Unterstützung. Nein. Tolle Unterstützung. Zeitraum: <br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>'] = '<p>Open-AudIT wird von FirstWave mit einer erstaunlichen Unterstützung unterstützt. Wenn Sie eine aktive Gemeinschaft der Unterstützungsspender bevorzugen, gibt es das auch. Wo sonst können Sie direkt mit den Entwicklern sprechen und innerhalb von 24 Stunden eine Antwort bekommen? Versuchen Sie das mit anderen Produkten! Erstaunliche Unterstützung. Stopp. Sie brauchen Unterstützung, wir bieten Unterstützung. Nein. Tolle Unterstützung. Zeitraum.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br><br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br><br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br><br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '<p>Open-AudIT bietet Multi-Tenancy aus der Box!<br><br>Orgs (Organisationen) in Open-AudIT sind ein Schlüsselelement. Ein Benutzer hat eine primäre Org sowie eine Liste von Orgs sie zugreifen können. Ein Benutzer kombiniert dies mit einer Liste von zugewiesenen "Roles", die definieren, welche Aktionen sie auf den Orgs zugewiesenen Gegenständen übernehmen können, zu denen sie Zugang haben. Die Kombination von Benutzern "orgs" und "roles" definieren, was sie innerhalb von Open-AudIT tun können und können.<br><br>Die meisten Artikel in Open-AudIT sind einem Org zugeordnet. Geräte, Standorte, Netzwerke, etc.<br><br>Orgs können Kinderorgs haben. Denken Sie an eine Organisations-Chart (Straße) Struktur. Wenn ein Benutzer Zugang zu einem bestimmten Org hat, haben sie auch Zugriff auf diese Orgs Nachkommen. Für weitere Informationen siehe diese <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>/p>';
+$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '<p>Open-AudIT bietet Multi-Tenancy aus der Box!<br/> <br/>Orgs (Organisationen) in Open-AudIT sind ein wichtiger Punkt. Ein Benutzer hat eine primäre Org sowie eine Liste von Orgs sie zugreifen können. Ein Benutzer kombiniert dies mit einer Liste von zugewiesenen "Roles", die definieren, welche Aktionen sie auf den Orgs zugewiesenen Gegenständen übernehmen können, zu denen sie Zugang haben. Die Kombination von "orgs" und "roles" definieren, was sie innerhalb von Open-AudIT tun können und können.<br/> <br/>Die meisten Objekte in Open-AudIT werden einem Org zugeordnet. Geräte, Standorte, Netzwerke, etc.<br/> <br/>Orgs können Kinder Orgs haben. Denken Sie an eine Organisations-Chart (Straße) Struktur. Wenn ein Benutzer Zugang zu einem bestimmten Org hat, haben sie auch Zugriff auf diese Orgs Nachkommen. Weitere Informationen finden Sie hier <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br><br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br><br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br><br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '<p>Open-AudIT bietet Multi-Tenancy aus der Box!<br><br>Orgs (Organisationen) in Open-AudIT sind ein Schlüsselelement. Ein Benutzer hat eine primäre Org sowie eine Liste von Orgs sie zugreifen können. Ein Benutzer kombiniert dies mit einer Liste von zugewiesenen "Roles", die definieren, welche Aktionen sie auf den Orgs zugewiesenen Gegenständen übernehmen können, zu denen sie Zugang haben. Die Kombination von Benutzern "orgs" und "roles" definieren, was sie innerhalb von Open-AudIT tun können und können.<br><br>Die meisten Artikel in Open-AudIT sind einem Org zugeordnet. Geräte, Standorte, Netzwerke, etc.<br><br>Orgs können Kinderorgs haben. Denken Sie an eine Organisations-Chart (Straße) Struktur. Hat ein Benutzer Zugang zu einem bestimmten Org, haben sie auch Zugang zu diesem Orgs Nachkommen.</p>';
+$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '<p>Open-AudIT bietet Multi-Tenancy aus der Box!<br/> <br/>Orgs (Organisationen) in Open-AudIT sind ein wichtiger Punkt. Ein Benutzer hat eine primäre Org sowie eine Liste von Orgs sie zugreifen können. Ein Benutzer kombiniert dies mit einer Liste von zugewiesenen "Roles", die definieren, welche Aktionen sie auf den Orgs zugewiesenen Gegenständen übernehmen können, zu denen sie Zugang haben. Die Kombination von "orgs" und "roles" definieren, was sie innerhalb von Open-AudIT tun können und können.<br/> <br/>Die meisten Objekte in Open-AudIT werden einem Org zugeordnet. Geräte, Standorte, Netzwerke, etc.<br/> <br/>Orgs können Kinder Orgs haben. Denken Sie an eine Organisations-Chart (Straße) Struktur. Wenn ein Benutzer Zugang zu einem bestimmten Org hat, haben sie auch Zugriff auf diese Orgs Nachkommen.</p>';
 
-$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br><br></p>'] = '<p>Quickly view the status of devices on your network.<br><br></p>';
+$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br></p>'] = '<p>Schnell den Status von Geräten in Ihrem Netzwerk anzeigen.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned Roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br><br>
-        Get the complete Open-AudIT Enterprise experience. Creating roles allows fine grained control over what your users can do within Open-AudIT.<br><br>
-        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br><br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br><br></p>'] = '<p>Roles in Open-Aud IT ist ein Schlüsselelement. Ein Benutzer hat eine primäre Org sowie eine Liste von Orgs sie zugreifen können. Ein Benutzer kombiniert dies mit einer Liste von zugewiesenen Roles, die definieren, welche Aktionen sie auf den Orgs zugewiesenen Gegenständen übernehmen können. Die Kombination der Benutzer "orgs" und "roles" definieren, was sie innerhalb von Open-AudIT tun können und können.<br><br>
-Holen Sie sich die komplette Open-AudIT Enterprise Erfahrung. Die Erstellung von Rollen ermöglicht eine feinkörnige Kontrolle darüber, was Ihre Benutzer innerhalb von Open-AudIT tun können.<br><br>
-Die primäre Methode zur Zulassung (was ein Benutzer tun kann) basiert auf den Benutzern Roles. Default-Rollen werden als Admin, org_admin, Reporter und Benutzer definiert. Jede Rolle hat eine Reihe von Berechtigungen (Kreate, Lesen, Aktualisieren, Löschen) für jeden Endpunkt. Die Fähigkeit, zusätzliche Rollen zu definieren und bestehende Rollen zu bearbeiten, ist in Open-AudIT Enterprise aktiviert.<br><br>Roles kann auch mit LDAP (Active Directory und OpenLDAP) Berechtigung verwendet werden. Unternehmen lizenzierte Anlagen haben die Fähigkeit, die LDAP-Gruppe für jede definierte Rolle anzupassen.<br><br></p>';
+$GLOBALS["lang"]['<p>Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned Roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>
+        Get the complete Open-AudIT Enterprise experience. Creating roles allows fine grained control over what your users can do within Open-AudIT.<br> <br>
+        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>Roles in Open-Aud IT ist ein Schlüsselelement. Ein Benutzer hat eine primäre Org sowie eine Liste von Orgs sie zugreifen können. Ein Benutzer kombiniert dies mit einer Liste von zugewiesenen Roles, die definieren, welche Aktionen sie auf den Orgs zugewiesenen Gegenständen übernehmen können. Die Kombination von "orgs" und "roles" definieren, was sie innerhalb von Open-AudIT tun können und können.<br/> <br/>Holen Sie sich die komplette Open-AudIT Enterprise Erfahrung. Das Erstellen von Rollen ermöglicht eine feinkörnige Kontrolle darüber, was Ihre Benutzer innerhalb von Open-AudIT tun können.<br/> <br/>Die primäre Methode zur Zulassung (was ein Benutzer tun kann) basiert auf den Benutzern Roles. Default-Rollen werden als Admin, org_admin, Reporter und Benutzer definiert. Jede Rolle hat eine Reihe von Berechtigungen (Kreate, Lesen, Aktualisieren, Löschen) für jeden Endpunkt. Die Möglichkeit, zusätzliche Rollen zu definieren und bestehende Rollen zu bearbeiten ist in Open-AudIT Enterprise aktiviert.<br/> <br/>Roles können auch mit LDAP (Active Directory und OpenLDAP) Zulassung verwendet werden. Enterprise-lizenzierte Installationen haben die Möglichkeit, die LDAP-Gruppe für jede definierte Rolle anzupassen.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p>Rules untersuchen Attribute und machen Kahnges basierend auf der entsprechenden Regel.</p>';
+$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p>Regeln prüfen Attribute und machen Kahnges basierend auf der entsprechenden Regel.</p>';
 
-$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br><br></p>'] = '<p>Scanning-Optionen ermöglichen es Ihnen, einfach eine Reihe von Optionen auf eine Entdeckung anzuwenden.>br <br></p>';
+$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br> <br></p>'] = '<p>Scanoptionen ermöglichen es Ihnen, eine Reihe von Optionen auf eine Entdeckung leicht anzuwenden.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br><br>
-        </p>'] = '<p>Einfache, intuitive, genaue geografische Kartierung von Google Maps. Open-AudIT Hebel Google Maps zur Bereitstellung von Live-, interaktiven geographischen Mappings von Gerätestandorten. Automatisierte Umwandlung von Straßenadressen zu Geocodes und Longitude / latitude.<br>
-< p>';
+$GLOBALS["lang"]['<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br> <br>
+        </p>'] = '<p>Einfache, intuitive, genaue geographische Kartierung von Google Maps. Open-AudIT Hebel Google Maps zur Bereitstellung von Live-, interaktiven geographischen Mappings von Gerätestandorten. Automatisierte Umwandlung von Straßenadressen zu Geocodes und Longitude / Breite.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br><br></p>'] = '<p>Software-Pakete werden verwendet, um festzustellen, ob Antivirus, Backup, Firewall, genehmigte oder verbotene Software installiert ist.<br><br></p>';
+$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>'] = '<p>Software-Pakete werden verwendet, um festzustellen, ob Antiviren-, Backup-, Firewall-, genehmigte oder verbotene Software installiert ist.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br><br><em>NOTE</em>- Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br><br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br><br></p>'] = '<p>Einige Beispiele für gültige Subnet-Attribute sind: 192.168.1.1 (eine einzelne IP-Adresse), 192.168.1.0/24 (ein Subnetz), 192.168.1-3.1-20 (eine Reichweite von IP-Adressen).<br><br>em>NOTE>/em>- Nur ein Subnetz (gemäß den Beispielen - 192.168.1.0/24) kann automatisch ein gültiges Netz für Open-AudIT erstellen. <br><br>Wenn Sie einen Active Directory-Typ verwenden, stellen Sie sicher, dass Sie entsprechende Anmeldedaten haben, um mit Ihrem Domain Controller bereits in <a href=" zu sprechen./credentials">credentials</a>.<br><br></p>';
+$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '<p>Einige Beispiele für gültige Subnet-Attribute sind: 192.168.1.1 (eine einzelne IP-Adresse), 192.168.1.0/24 (ein Subnetz), 192.168.1-3.1-20 (eine Reichweite von IP-Adressen).<br/> <br/><em>HINWEIS</em> - Nur ein Subnetz (gemäß den Beispielen - 192.168.1.0/24) kann automatisch ein gültiges Netzwerk für Open-AudIT erstellen. <br/> <br/>Wenn Sie einen Active Directory-Typ verwenden, stellen Sie sicher, dass Sie entsprechende Anmeldeinformationen haben, um mit Ihrem Domain Controller bereits in <a href="../credentials">Anmeldeinformationen</a>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Supported clients are Linux only.<br><br></p>'] = '<p>Supported Clients sind nur Linux.<br><br></p>';
+$GLOBALS["lang"]['<p>Standards are stored in Open-AudIT.<br /><br /><br /><br /></p>'] = '<p>Standards werden in Open-AudIT gespeichert.<br/><br/><br/><br/></p>';
 
-$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br><br>The <code>type</code>of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br><br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br><br>The value for <code>uuid</code>is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br><br>The <code>options</code>attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code>and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br><br></p>'] = '<p>Tasks haben einen Zeitplan, der den unix cron Zeitplan spiegelt. Die Attribute für Minute, Stunde, Tag_of_Monat, Monat, Tag_of_Woche handeln alle nach den Cron Definitionen. Sie können mehrere davon mithilfe von komma seperierten Werten (keine Leerzeichen) auswählen. Sie können jeden Wert auswählen, der *.<br><br>Die <code>type</code>der Aufgabe ist: Basislinien, Sammler, Entdeckungen, Abfragen, Berichte oder Zusammenfassungen.<br><br>Wenn Sie eine Baseline oder Discovery planen möchten, müssen Sie diese vor der Erstellung der Aufgaben erstellen. Sie müssen die ID der Art des Artikels in <code>sub_resource_id</code>verwenden. Zum Beispiel, wenn Sie eine Discovery planen möchten, verwenden Sie diese bestimmte Discoveries ID in <code>sub_resource_id</code>.<br><br>Der Wert für <code>uuid</code>ist für jeden Open-AudIT Server spezifisch. Ihr einzigartiger Wert kann in der Konfiguration gefunden werden.<br><br>Die <code>options</code>Attribut ist ein JSON-Dokument, das alle zusätzlichen Attribute enthält, die zur Ausführung der Aufgabe erforderlich sind. Die zusätzlichen Attribute für Berichte, Abfragen und Zusammenfassungen sind: <code>email_address</code>und <code>format</code>. Das zusätzliche Attribut für Bselines ist <code>group_id</code>br><br></p>';
+$GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '<p>Unterstützte Clients sind nur Linux.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The <code>type</code>of the location will assign its icon.<br><br></p>'] = '<p>Der <code>type/code>des Standorts wird sein Icon zuordnen.<br><br></p>';
+$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '<p>Aufgaben haben einen Zeitplan, der den unix cron Zeitplan widerspiegelt. Die Attribute für Minute, Stunde, Tag_of_Monat, Monat, Tag_of_Woche handeln alle nach den Cron Definitionen. Sie können mehrere davon mithilfe von komma seperierten Werten (keine Leerzeichen) auswählen. Sie können jeden Wert mit * auswählen.<br/> <br/>Die <code>type</code> der Aufgabe kann eine von: Basislinien, Sammler, Entdeckungen, Abfragen, Berichte oder Zusammenfassungen sein.<br/> <br/>Wenn Sie eine Baseline oder Discovery planen möchten, müssen Sie diese vor der Erstellung der Aufgaben erstellen. Sie müssen die ID der Art des Artikels in <code>sub_resource_id</code>. Zum Beispiel, wenn Sie eine Discovery planen möchten, verwenden Sie diese spezielle Discoveries ID in <code>sub_resource_id</code>.<br/> <br/>Der Wert für <code>uuid</code> ist spezifisch für jeden Open-AudIT Server. Ihr einzigartiger Wert finden Sie in der Konfiguration.<br/> <br/>Die <code>options</code> Attribut ist ein JSON-Dokument mit zusätzlichen Attributen, die zur Ausführung der Aufgabe erforderlich sind. Die zusätzlichen Attribute für Berichte, Abfragen und Zusammenfassungen sind: <code>email_address</code> und <code>format</code>. Das zusätzliche Attribut für Bselines ist <code>group_id</code>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '<========== Mit dem Endpunkt Attributes können Sie in Open-AudIT individuelle Werte zu verschiedenen Attributen hinzufügen, im Moment funktioniert diese Funktion auf den Attributen Class, Environment, Status und Type auf Geräten, dem Attribut Type für beide Standorte und Orgs sowie der Menu Kategorie für Queries. Wenn Sie einen Artikel eines der prvious Typen anzeigen (siehe Ansicht einer Lkocation) werden Sie feststellen, dass das Typ Attribut aus einem Dropdown-Box ausgewählt werden muss. Hier werden diese Werte gespeichert. Wenn Sie also einen neuen Typ hinzufügen möchten, der für einen Standort gewählt werden soll, fügen Sie ihn mit der Attributes-Feature.</p>';
+$GLOBALS["lang"]['<p>The <code>type</code> of the location will assign its icon.<br> <br></p>'] = '<p>Die <code>type</code> der Lage wird ihr Icon zuordnen.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br><br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br><br></p>'] = '<========== Die Collectors Funktion ermöglicht es Ihnen, viele "Kollektor"-Computer, die Netzwerk-Erkennung durchführen, einfach zu verwalten. Alle Collectors werden zentral vom Server gesteuert. Die einzigen benötigten Netzwerk-Ports zwischen dem Collector und dem Server sind 80 und/oder 443.<br><br>It macht die Verwaltung von disparate Netzwerken schnell, einfach und einfach. Open-AudIT Enterprise Lizenznehmer erhalten eine einzelne Sammlerlizenz und haben die Möglichkeit, nach Bedarf mehr zu kaufen.<br><br></p>';
+$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '<p>Mit dem Endpunkt Attributes können Sie in Open-AudIT individuelle Werte zu verschiedenen Attributen hinzufügen, im Moment funktioniert diese Funktion auf den Attributen Class, Environment, Status und Type auf Geräten, dem Attribut Type für beide Standorte und Orgs sowie der Menu Kategorie für Queries. Wenn Sie einen Artikel eines der prvious Typen anzeigen (siehe Ansicht einer Lkocation) werden Sie feststellen, dass das Typ Attribut aus einem Dropdown-Box ausgewählt werden muss. Hier werden diese Werte gespeichert. Wenn Sie also einen neuen Typ hinzufügen möchten, der für einen Standort gewählt werden soll, fügen Sie ihn mit der Attributes-Funktion hinzu.</p>';
 
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em>contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br><br>The WHERE section of your SQL <em>must</em>contain <code>WHERE @filter</code>so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br><br>An example query SQL showing attributes on devices that have an <code>os_group</code>attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br><br></p>'] = '<p>Der SELECT-Abschnitt Ihres SQL <em>must</em>enthält vollqualifizierte Spalten. IE - <code>SELECT Geräte.id AS `devices.id`, Geräte.name AS `devices.name` ...</code>br><br>Der WHERE Abschnitt Ihres SQL <em>must</em>enthält <code>WHERE @filter</code>, so dass Open-AudIT weiß, dass Sie Ihre Anfrage auf die entsprechenden Orgs beschränken. SQL, der diese Bedingung nicht enthält, führt dazu, dass die Abfrage nicht erstellt wird, es sei denn, Sie haben die Admin-Rolle.<br><br>Ein Beispiel Abfrage SQL zeigt Attribute auf Geräten, die ein <code>os_group</code>Attribut von "Linux" - <br>code>SELECT-Geräten haben.id AS `devices.id`, devices.icon AS `devices. Typ AS `devices.type`, devices.name AS `devices.name`, device.os_name AS `devices.os_name` AUS Geräte WHERE @filter AND device.os_group = "Linux">/code>br><br></p>';
+$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br> <br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br> <br></p>'] = '<p>Die Collectors Funktion ermöglicht es Ihnen, viele "Kollektor"-Computer, die Netzwerk-Erkennung durchführen, einfach zu verwalten. Alle Collectors werden zentral vom Server gesteuert. Die einzigen benötigten Netzwerk-Ports zwischen dem Collector und dem Server sind 80 und/oder 443.<br/> <br/>Es macht die Verwaltung disparate Netzwerke schnell, einfach und einfach. Open-AudIT Enterprise Lizenznehmer erhalten eine einzelne Sammlerlizenz und haben die Möglichkeit, mehr als erforderlich zu kaufen..<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em>only contain <code>DISTINCT(devices.id)</code>.<br><br>The WHERE section of your SQL <em>must</em>contain <code>WHERE @filter</code>so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br><br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br><br></p>'] = '<p>Der SELECT-Abschnitt Ihres SQL <em>must</em>Nur enthalten <code>DISTINCT(devices.id)</code>.<br><br>Der WAREN-Abschnitt Ihres SQL <em>must</em>enthält <code>WHERE @filter</code>so Open-AudIT weiß, dass Sie Ihre Anfrage auf die entsprechenden Orgs beschränken. SQL, der diese Bedingung nicht enthält, führt dazu, dass die Gruppe nicht erstellt wird.<br><br>brEin Beispiel für SQL, um alle Geräte auszuwählen, die das Debian OS ausführen - <code>SELECT DISTINCT(devices.id) AUSRÜSTIGE Geräte WHERE @filter AND device.os_family = "Debian"</code>br><br><br></p>';
+$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>'] = '<p>Der SELECT-Bereich Ihres SQL <em>müssen</em> vollständig qualifizierte Spalten enthalten. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br/> <br/>Der WHERE Abschnitt Ihres SQL <em>müssen</em> enthalten <code>WHERE @filter</code> so Open-AudIT weiß, Ihre Anfrage auf die entsprechenden Orgs zu beschränken. SQL, der diese Bedingung nicht enthält, führt dazu, dass die Abfrage nicht erstellt wird, es sei denn, Sie haben die Admin-Rolle.<br/> <br/>Ein Beispiel Abfrage SQL zeigt Attribute auf Geräten, die eine <code>os_group</code> Attribute von "Linux" - <br/><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br><br>To create an entry to track your licenses you <em>must</em>to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code>you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br><br></p>'] = '<========== Der Lizenzendpunkt ermöglicht es Ihnen, die Anzahl der auf Ihren Geräten gefundenen Lizenzen zu verfolgen.>br><br>Um einen Eintrag zu erstellen, um Ihre Lizenzen zu verfolgen Sie <em>must</em>, um einen Namen, eine Organisation, die Anzahl der erworbenen Lizenzen und den Namen der Software bereitzustellen. Auf dem Feld <code>match_string</code>Sie müssen den Namen der Software bereitstellen, die Sie verfolgen möchten, Sie können das Prozentzeichen (%) als Wildcard im match_string.<br><br></p>verwenden';
+$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br> <br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br> <br></p>'] = '<p>Der SELECT-Bereich Ihres SQL <em>müssen</em> nur enthalten <code>DISTINCT(devices.id)</code>.<br/> <br/>Der WHERE Abschnitt Ihres SQL <em>müssen</em> enthalten <code>WHERE @filter</code> so Open-AudIT weiß, Ihre Anfrage auf die entsprechenden Orgs zu beschränken. SQL, der diese Bedingung nicht enthält, führt dazu, dass die Gruppe nicht erstellt wird.<br/> <br/>Ein Beispiel für SQL, um alle Geräte auszuwählen, die das Debian OS ausführen - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br><br></p>'] = '<========== Das Netz sollte im Format 192.168.1.0/24 liegen';
+$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>'] = '<p>Mit dem Lizenzendpunkt können Sie die Anzahl der auf Ihren Geräten gefundenen Lizenzen verfolgen.<br/> <br/>Um einen Eintrag zu erstellen, um Ihre Lizenzen zu verfolgen <em>müssen</em> einen Namen, eine Organisation, die Anzahl der erworbenen Lizenzen und den Namen der Software bereitzustellen. Auf dem Feld <code>match_string</code> Sie müssen den Namen der Software bereitstellen, die Sie verfolgen möchten, Sie können das Prozentzeichen (%) als Wildcard im match_string verwenden.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br><br></p>'] = '<========== Die primären und optionalen Sekundärartikel sollten vollständig qualifiziert sein - dh, Geräte. Typ oder Software.name.<br><br></p>';
+$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br> <br></p>'] = '<p>Das Netzwerk sollte im Format 192.168.1.0/24 liegen.<br/> <br/></p>';
+
+$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>'] = '<p>Die primären und optionalen Sekundärartikel sollten vollständig qualifiziert sein - dh, Geräte. Typ oder Software. Name.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>There is no need to do anything if you are running Open-AudIT on a Linux server.<br>
 <br>
 Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.<br>
 <br>
-See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '<========== Es gibt keine Notwendigkeit, etwas zu tun, wenn Sie Open-AudIT auf einem Linux-Server laufen.<br>
-< < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < <
-Windows-Clients sind einfach gut und erfordern keine speziellen Aktionen, aber.... um diese Funktion zu aktivieren, muss das Audit-Skript lokal auf dem Ziel-Windows-System ausgeführt werden. Es kann nicht remote ausgeführt werden, wie wir mit WMI-Anrufen tun, wenn das Audit-Skript auf einem Windows-Computer ausgeführt wird, während eine zweite Windows-Maschine anvisiert wird. Dazu müssen wir das Audit-Skript auf die Ziel-Windows-Maschine kopieren und dann ausführen. Leider ist das Service-Konto, unter dem Apache läuft, das lokale System-Konto. Dieses Konto hat keinen Zugriff auf Remote (Netzwerk-basierte) Ressourcen. Um diese Frage zu bearbeiten, muss der Dienst unter einem anderen Konto ausgeführt werden. Es ist am einfachsten, nur das lokale Administrator-Konto zu verwenden, aber Sie können jedes Konto versuchen, das Sie mögen, solange es die erforderlichen Privilegien hat. Das lokale System-Konto hat so viel lokalen Zugriff wie das lokale Administrator-Konto.
-< < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < <
-Siehe unsere Seite über die Aktivierung <a href="/index.php/faq?name=Running Open-AudIT Apache Service Unter Windows">Running Open-AudIT Apache Service Unter Windows</a>';
+See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '<p>Es gibt keine Notwendigkeit, etwas zu tun, wenn Sie Open-AudIT auf einem Linux-Server laufen.<br/><br/>Windows-Clients sind einfach gut und erfordern keine speziellen Aktionen, aber.... um diese Funktion zu aktivieren, muss das Audit-Skript lokal auf dem Ziel-Windows-System ausgeführt werden. Es kann nicht remote ausgeführt werden, wie wir mit WMI-Anrufen tun, wenn das Audit-Skript auf einem Windows-Computer ausgeführt wird, während eine zweite Windows-Maschine anvisiert wird. Dazu müssen wir das Audit-Skript auf die Ziel-Windows-Maschine kopieren und dann ausführen. Leider ist das Service-Konto, unter dem Apache läuft, das lokale System-Konto. Dieses Konto hat keinen Zugriff auf Remote (Netzwerk-basierte) Ressourcen. Um diese Frage zu bearbeiten, muss der Dienst unter einem anderen Konto ausgeführt werden. Es ist am einfachsten, nur das lokale Administrator-Konto zu verwenden, aber Sie können jedes Konto versuchen, das Sie mögen, solange es die erforderlichen Privilegien hat. Das lokale System-Konto hat so viel lokalen Zugriff wie das lokale Administrator-Konto.<br/><br/>Sehen Sie unsere Seite auf Aktivierung <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Open-AudIT Apache Service unter Windows laufen</a></p>';
 
-$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br><br></p>'] = '<========== Dies sind Geräte, die innerhalb eines Racks leben.<br><br></p>';
+$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>'] = '<p>Dies sind die Geräte, die in einem Rack leben.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br><br><em>NOTE</em>- To use this feature, we <em>must</em>enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br><br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a>or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br><br></p>'] = '<========== Mit diesem Endpoint können Sie Ihre Cloud-Infrastrukturdaten hinzufügen. Open-AudIT wird dann mit ihrer nativen API auf Ihre Clouds zugreifen und Ihre Server zurückgeben, genau wie jedes andere Gerät in Open-AudIT.<br><br>em>NOTE</em>- Um diese Funktion zu nutzen, aktivieren wir die Konfigurationsdateien match_mac (für AWS) und match_hostname (für Azure). Dies geschieht automatisch zum ersten Mal, wenn eine Cloud-Entdeckung ausgeführt wird.<br><br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft In Cloud Discovery verwendete Azure">Azure</a>oder <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) sind erforderlich.<br><br></p>';
+$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p>Mit diesem Endpoint können Sie Ihre Cloud-Infrastrukturdaten hinzufügen. Open-AudIT wird dann mit ihrer nativen API in Ihre Wolken gelangen und Ihre Server zurückgeben, genau wie jedes andere Gerät in Open-AudIT.<br/> <br/><em>HINWEIS</em> - Um diese Funktion zu nutzen, wir <em>müssen</em> die Konfigurationselemente match_mac (für AWS) und match_hostname (für Azure) aktivieren. Dies geschieht automatisch zum ersten Mal, wenn eine Cloud-Entdeckung ausgeführt wird.<br/> <br/>Informationen fÃ1⁄4r Ihre Cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azulen</a> oder <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) erforderlich sind.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu ->Discover ->Audit Scripts ->List Audit Scripts<br><br></p>'] = '<p>Wir installieren zunächst die Standardliste von Skripten mit den Standardoptionen. Diese Standardskripte können nicht gelöscht werden. Sie können nach Bedarf zusätzliche Skripte für die Nutzung durch Sie erstellen. Ihr Skript basiert auf einem der vorhandenen Skripte und hat benutzerdefinierte Optionen angewendet. Die Skripte können dann auf der Listenseite im Menü ->heruntergeladen werden Entdecken ->Audit Scripts ->Liste Audit Scripts<br><br></p>';
+$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>Wir installieren zunächst die Standardliste der Skripte mit den Standardoptionen. Diese Standardskripte können nicht gelöscht werden. Sie können nach Bedarf zusätzliche Skripte für die Nutzung durch Sie erstellen. Ihr Skript basiert auf einem der vorhandenen Skripte und hat benutzerdefinierte Optionen angewendet. Die Skripte können dann auf der Listenseite im Menü -> heruntergeladen werden Entdecken -> Audit Scripts -> Liste Audit Skripte<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank">PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>Bei Verwendung von Regex zur Anpassung kann auf der <a href="https://www.php.net/manual/en/regexp.reference.meta.php"-Ziel="_blank">PHP Website</a>Einige Unterschiede zu Perl Regex sind zu finden <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>';
+$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>Bei der Verwendung von Regex zum Matching kann auf der Seite eine hilfreiche Seite gefunden werden. <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP Website</a>. Einige Unterschiede zu Perl Regex finden Sie <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">Hier.</a>.</p>';
 
-$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br><br></p>'] = '<p>Widgets können leicht erstellt werden, um zu zeigen, was für Ihre Umwelt auf Ihren Dashboards spezifisch ist.<br><br></p>';
+$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>'] = '<p>Widgets können leicht erstellt werden, um zu zeigen, was für Ihre Umgebung auf Ihren Dashboards spezifisch ist.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br><br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br><br></p>'] = '<p>Mit Open-AudIT Professional und Enterprise können Sie Entdeckungen, Report-Generation oder Baseline-Checks automatisieren und planen, wenn Sie wollen, und so oft Sie brauchen. Planen Sie Ihre Entdeckungen, um nachts zu laufen und Berichte zu erstellen und per E-Mail an Schlüsselpersonal jeden Morgen. Komplexe oder einfache Zeitplan, Geräte-Erkennung und Report-Generation ist nur ein Klick entfernt.<br><br>Individuelle Entdeckungspläne für jeden Subnetz- oder AD-Controller erstellen, in Berichten hinzufügen, die für gezielte Publikum erstellt werden. Entwicklung einfacher oder komplexer Fahrpläne zur Unterstützung des Unternehmensbedarfs, Vermeidung von Backups oder Auswirkungen auf den Betrieb oder einfach zur Verbreitung der Fertigstellung von Last- und Geschwindigkeitsprüfungen';
+$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>'] = '<p>Mit Open-AudIT Professional und Enterprise können Sie Entdeckungen, Report-Generation oder Baseline-Checks automatisieren und planen, wenn Sie wollen, und so oft Sie brauchen. Planen Sie Ihre Entdeckungen, um nachts zu laufen und Berichte zu erstellen und per E-Mail an Schlüsselpersonal jeden Morgen. Komplexe oder einfache Zeitplan, Geräte-Erkennung und Report-Generation ist nur einen Klick entfernt.<br/> <br/>Erstellen Sie individuelle Entdeckungspläne für jeden Subnet- oder AD-Controller, fügen Sie in Berichten hinzu, die für gezielte Publikum erstellt werden sollen. Entwickeln Sie einfache oder komplexe Termine, um die Bedürfnisse des Unternehmens zu unterstützen, Backups oder Auswirkungen auf den Betrieb zu vermeiden oder einfach die Fertigstellung der Last- und Beschleunigungsprüfung zu verbreiten.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br><br></p>'] = '<========== Sie können ein Skript mit allen Optionen für eine der vorhandenen Audit-Skripte erstellen - nicht nur Windows. AIX, ESX, Linux, OSX und Windows sind alle abgedeckt.<br><p>';
+$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>'] = '<p>Sie können ein Skript mit allen Optionen für eine der vorhandenen Audit-Skripte erstellen - nicht nur Windows. AIX, ESX, Linux, OSX und Windows sind alle abgedeckt.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br><br></p>'] = '<========== Sie können das %-Zeichen als Wildcard im match_string.<br><br></p>verwenden';
+$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>'] = '<p>Sie können das prozentuale %-Zeichen als Wildcard im match_string verwenden.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br><br></p>'] = '<p>Ihre Racks helfen, genau zu verfeinern, wo sich Ihre Geräte befinden.>br><br></p>';
+$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br> <br></p>'] = '<p>Ihre Racks helfen, genau dort zu verfeinern, wo sich Ihre Geräte befinden.<br/> <br/></p>';
 
 $GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = 'Google Maps API Für diese Funktion ist der Schlüssel erforderlich.';
 
 $GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = 'Ein JSON-Array von Geräte-IDs, die diesen Benchmark ausgeführt haben.';
 
-$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = 'Ein JSON-Dokument mit den Orgs, die diesem Benutzer zugeordnet sind. IDs aus <code>orgs.id</code>Wenn ein Benutzer Zugang zu einem Org hat, haben sie Zugriff auf diese Orgs Nachkommen.';
+$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = 'Ein JSON-Dokument mit den Orgs, die diesem Benutzer zugeordnet sind. Ausgenommene IDs <code>orgs.id</code>. Wenn ein Benutzer Zugang zu einem Org hat, haben sie Zugriff auf diese Orgs Nachkommen.';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = 'Ein JSON-Dokument, das die erforderlichen Attribute in Abhängigkeit von <code>scripts.type</code>enthält.';
+$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = 'Ein JSON-Dokument mit den erforderlichen Attributen je nach <code>scripts.type</code>.';
 
 $GLOBALS["lang"]['A JSON document containing the required attributes overriding the chosen discovery_scan_options.'] = 'Ein JSON-Dokument mit den erforderlichen Attributen, die die ausgewählten Discovery_scan_Optionen überschreiben.';
 
 $GLOBALS["lang"]['A JSON document containing the required attributes overriding the default device match options.'] = 'Ein JSON-Dokument mit den erforderlichen Attributen, die die Optionen der Standard-Geräteanpassung überschreiben.';
 
-$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = 'Ein JSON-Dokument mit den Rollen, die diesem Benutzer zugewiesen werden. Rollenbezeichnungen aus <code>roles.name</code>.';
+$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = 'Ein JSON-Dokument mit den Rollen, die diesem Benutzer zugewiesen werden. Rollennamen aus <code>roles.name</code>.';
 
 $GLOBALS["lang"]['A JSON object containing an array of attributes to change if the match occurs.'] = 'Ein JSON-Objekt, das eine Reihe von Attributen enthält, um zu ändern, wenn das Spiel auftritt.';
 
@@ -220,7 +210,7 @@ $GLOBALS["lang"]['A security zone is a administrative domain or policy domain wi
 
 $GLOBALS["lang"]['A short description of the log entry.'] = 'Eine kurze Beschreibung des Log-Eintrags.';
 
-$GLOBALS["lang"]['A string that matches the <code>software.name</code>attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = 'Ein String, der dem Attribut <code>software.name</code>entspricht. Sie können die Standard SQL-Wildcard von Prozent (%) verwenden, um einen oder mehrere Zeichen zu entsprechen.';
+$GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = 'Eine Saite, die dem <code>software.name</code> Attribut. Sie können die Standard SQL-Wildcard von Prozent (%) verwenden, um einen oder mehrere Zeichen zu entsprechen.';
 
 $GLOBALS["lang"]['AD Group'] = 'AD Group';
 
@@ -287,6 +277,18 @@ $GLOBALS["lang"]['Action Download'] = 'Downloads für Actions';
 $GLOBALS["lang"]['action_uninstall'] = 'Uninstallieren';
 
 $GLOBALS["lang"]['Action Uninstall'] = 'Uninstallieren';
+
+$GLOBALS["lang"]['actioned'] = 'Maßnahmen';
+
+$GLOBALS["lang"]['Actioned'] = 'Maßnahmen';
+
+$GLOBALS["lang"]['actioned_by'] = 'Von';
+
+$GLOBALS["lang"]['Actioned By'] = 'Von';
+
+$GLOBALS["lang"]['actioned_date'] = 'Datum';
+
+$GLOBALS["lang"]['Actioned Date'] = 'Datum';
 
 $GLOBALS["lang"]['actions'] = 'Maßnahmen';
 
@@ -378,6 +380,10 @@ $GLOBALS["lang"]['Aland Islands'] = 'Alandinseln';
 
 $GLOBALS["lang"]['Albania'] = 'Albanien';
 
+$GLOBALS["lang"]['alert_style'] = 'Wie man sieht';
+
+$GLOBALS["lang"]['Alert Style'] = 'Wie man sieht';
+
 $GLOBALS["lang"]['Algeria'] = 'Algerien';
 
 $GLOBALS["lang"]['algorithm'] = 'Algorithmen';
@@ -402,9 +408,9 @@ $GLOBALS["lang"]['American Samoa'] = 'Amerikanische Samoa';
 
 $GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = 'Eine Reihe von <code>benchmarks.id</code>.';
 
-$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = 'Ein Array von <code>devices.id</code>.';
+$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = 'Eine Reihe von <code>devices.id</code>.';
 
-$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = 'Ein verschlüsseltes JSON-Dokument, das die erforderlichen Attribute in Abhängigkeit von der <code>credentials.type</code>enthält.';
+$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = 'Ein verschlüsseltes JSON-Dokument mit den erforderlichen Attributen je nach <code>credentials.type</code>.';
 
 $GLOBALS["lang"]['An indication of the level of service required by this site.'] = 'Ein Hinweis auf das von dieser Website benötigte Serviceniveau.';
 
@@ -442,7 +448,7 @@ $GLOBALS["lang"]['Any discovered devices will be assigned to this Location if se
 
 $GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.'] = 'Alle entdeckten Geräte werden diesem Standort zugeordnet, wenn sie ihr Audit-Skript (falls gesetzt) ausführen. Links zu <code>locations.id</code>.';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code>of this discovery. Links to <code>orgs.id</code>.'] = 'Alle entdeckten Geräte werden diesem Org zugewiesen, wenn gesetzt. Wenn nicht festgelegt, werden sie der <code>org_id</code>dieser Entdeckung zugeordnet. Links zu <code>orgs.id</code>.';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.'] = 'Alle entdeckten Geräte werden diesem Org zugewiesen, wenn gesetzt. Wenn nicht gesetzt, werden sie dem <code>org_id</code> von dieser Entdeckung. Links zu <code>orgs.id</code>.';
 
 $GLOBALS["lang"]['Any required filter. NOTE: When type = traffic, this represents the font-awesome icon.'] = 'Jeder benötigte Filter. HINWEIS: Wenn Typ = Verkehr, steht dies für die Schrift-Akku.';
 
@@ -466,7 +472,7 @@ $GLOBALS["lang"]['applied'] = 'Angemeldet';
 
 $GLOBALS["lang"]['Applied'] = 'Angemeldet';
 
-$GLOBALS["lang"]['Approved'] = 'Genehmigt';
+$GLOBALS["lang"]['Approved'] = 'genehmigt';
 
 $GLOBALS["lang"]['April'] = 'April';
 
@@ -490,9 +496,9 @@ $GLOBALS["lang"]['Argentina'] = 'Argentinien';
 
 $GLOBALS["lang"]['Armenia'] = 'Armenien';
 
-$GLOBALS["lang"]['arp'] = 'A';
+$GLOBALS["lang"]['arp'] = 'A.';
 
-$GLOBALS["lang"]['Arp'] = 'A';
+$GLOBALS["lang"]['Arp'] = 'A.';
 
 $GLOBALS["lang"]['Aruba'] = 'Aruba';
 
@@ -604,7 +610,7 @@ $GLOBALS["lang"]['Auto'] = 'Auto';
 
 $GLOBALS["lang"]['Auto populated by the Open-AudIT Server.'] = 'Auto bevölkert durch den Open-AudIT Server.';
 
-$GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = 'Automatisch auf Basis des Collectors OS besiedelt.';
+$GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = 'automatisch auf Basis des Collectors OS besiedelt.';
 
 $GLOBALS["lang"]['availability'] = 'Verfügbarkeit';
 
@@ -718,6 +724,10 @@ $GLOBALS["lang"]['bios'] = 'Bios';
 
 $GLOBALS["lang"]['Bios'] = 'Bios';
 
+$GLOBALS["lang"]['body'] = 'Körper';
+
+$GLOBALS["lang"]['Body'] = 'Körper';
+
 $GLOBALS["lang"]['Bolivia'] = 'Bolivien';
 
 $GLOBALS["lang"]['Boolean'] = 'Boolen';
@@ -772,7 +782,7 @@ $GLOBALS["lang"]['Bulgaria'] = 'Bulgarien';
 
 $GLOBALS["lang"]['Bulk Edit'] = 'Bulk Edit';
 
-$GLOBALS["lang"]['Burkina Faso'] = 'Das ist nicht so';
+$GLOBALS["lang"]['Burkina Faso'] = 'Das ist nicht so.';
 
 $GLOBALS["lang"]['Burundi'] = 'Burundi';
 
@@ -784,7 +794,7 @@ $GLOBALS["lang"]['Buy'] = 'Kaufen';
 
 $GLOBALS["lang"]['Buy More'] = 'Mehr erfahren';
 
-$GLOBALS["lang"]['By'] = 'Von';
+$GLOBALS["lang"]['By'] = 'von';
 
 $GLOBALS["lang"]['CIDR'] = 'CIDR';
 
@@ -806,9 +816,9 @@ $GLOBALS["lang"]['Calculated total number of valid IP addresses for this network
 
 $GLOBALS["lang"]['Calculated upon completion, the time taken to execute this item.'] = 'Berechnet nach Fertigstellung, die Zeit zur Ausführung dieses Artikels.';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = 'Berechnet bei laufender Integration und enthält eine JSON-Darstellung der Geräte in dieser Integration. Jede Verbindung zu <code>devices.id</code>.';
+$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = 'Berechnet bei laufender Integration und enthält eine JSON-Darstellung der Geräte in dieser Integration. Alle Links zu <code>devices.id</code>.';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = 'Berechnet bei laufender Integration und enthält eine JSON-Darstellung der Standorte in dieser Integration. Jede Verbindung zu <code>locations.id</code>.';
+$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = 'Berechnet bei laufender Integration und enthält eine JSON-Darstellung der Standorte in dieser Integration. Alle Links zu <code>locations.id</code>.';
 
 $GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected from Open-AudIT.'] = 'Berechnet bei laufender Integration und enthält die Anzahl der von Open-AudIT ausgewählten Geräte.';
 
@@ -824,17 +834,19 @@ $GLOBALS["lang"]['Cameroon'] = 'Kampanien';
 
 $GLOBALS["lang"]['Campus Area Network'] = 'Campus Area Network';
 
-$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code>or blank.'] = 'Kann <code>active</code>, <code>passive</code>oder leer sein.';
+$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code> or blank.'] = 'Kann sein <code>active</code>, <code>passive</code> oder leer.';
 
-$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code>or blank.'] = 'Kann <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation>/code>, <code>web</code>, <code>other</code>oder leer sein.';
+$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.'] = 'Kann sein <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> oder leer.';
 
-$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code>or blank.'] = 'Kann <code>auto</code>, <code>fixed</code>, <code>other>/code>oder leer sein.';
+$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.'] = 'Kann sein <code>auto</code>, <code>fixed</code>, <code>other</code> oder leer.';
 
-$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code>or blank.'] = 'Kann <code>high availability</code>, <code>load balance</code>, <code>performance>/code>, <code>storage</code>, <code>other</code>oder blank sein.';
+$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.'] = 'Kann sein <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> oder leer.';
 
-$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code>or <code>traffic</code>.'] = 'Kann <code>line</code>, <code>pie>/code>oder <code>traffic</code>sein.';
+$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.'] = 'Kann sein <code>line</code>, <code>pie</code> oder <code>traffic</code>.';
 
-$GLOBALS["lang"]['Can be <code>user</code>or <code>collector</code>.'] = 'Kann <code>user</code>oder <code>collector</code>sein.';
+$GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = 'Kann sein <code>user</code> oder <code>collector</code>.';
+
+$GLOBALS["lang"]['Can be set by discovery or user.'] = 'Kann durch Entdeckung oder Benutzer eingestellt werden.';
 
 $GLOBALS["lang"]['Can the user edit this item.'] = 'Kann der Benutzer diesen Artikel bearbeiten.';
 
@@ -934,7 +946,7 @@ $GLOBALS["lang"]['class_text'] = 'Klasse Text';
 
 $GLOBALS["lang"]['Class Text'] = 'Klasse Text';
 
-$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = 'Klicken Sie auf die Schaltfläche Löschen, um die Beispielgeräte von Open-AudIT.<br>zu entfernen Dies wird die folgenden Geräte aus der Datenbank entfernen.';
+$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = 'Klicken Sie auf die Schaltfläche Löschen, um die Beispielgeräte von Open-AudIT zu entfernen.<br/>Dies wird die folgenden Geräte aus der Datenbank entfernen. ';
 
 $GLOBALS["lang"]['Click the Import button below to populate Open-AudIT with example device data.'] = 'Klicken Sie unten auf die Schaltfläche Importieren, um Open-AudIT mit Beispiel-Gerätendaten zu bevölkern.';
 
@@ -1080,15 +1092,15 @@ $GLOBALS["lang"]['config'] = 'Konkret';
 
 $GLOBALS["lang"]['Config'] = 'Konkret';
 
-$GLOBALS["lang"]['Config Default, currently '] = 'Config Default, aktuell';
+$GLOBALS["lang"]['Config Default, currently '] = 'Config Default, aktuell ';
 
 $GLOBALS["lang"]['config_file'] = 'Bearbeiten von Dateien';
 
 $GLOBALS["lang"]['Config File'] = 'Bearbeiten von Dateien';
 
-$GLOBALS["lang"]['config_manager_error_code'] = 'Passwort vergessen';
+$GLOBALS["lang"]['config_manager_error_code'] = 'Passwort vergessen?';
 
-$GLOBALS["lang"]['Config Manager Error Code'] = 'Passwort vergessen';
+$GLOBALS["lang"]['Config Manager Error Code'] = 'Passwort vergessen?';
 
 $GLOBALS["lang"]['configuration'] = 'Konfiguration';
 
@@ -1114,7 +1126,7 @@ $GLOBALS["lang"]['connections'] = 'Verbindungen';
 
 $GLOBALS["lang"]['Connections'] = 'Verbindungen';
 
-$GLOBALS["lang"]['Consider filtered Ports Open'] = 'Als gefiltert Ports Open';
+$GLOBALS["lang"]['Consider filtered Ports Open'] = 'als gefiltert Ports Open';
 
 $GLOBALS["lang"]['Consider open|filtered Ports Open'] = 'Betrachten Sie open|filtriert Ports Open';
 
@@ -1206,7 +1218,7 @@ $GLOBALS["lang"]['Create Internal From External'] = 'Erstellen Sie intern von ex
 
 $GLOBALS["lang"]['Create NMIS Devices from Open-AudIT'] = 'NMIS Geräte aus Open-AudIT erstellen';
 
-$GLOBALS["lang"]['Create Open-AudIT Devices from '] = 'Open-AudIT erstellen Geräte von';
+$GLOBALS["lang"]['Create Open-AudIT Devices from '] = 'Open-AudIT erstellen Geräte von ';
 
 $GLOBALS["lang"]['Create Open-AudIT Devices from NMIS'] = 'Open-AudIT erstellen Geräte von NMIS';
 
@@ -1246,9 +1258,9 @@ $GLOBALS["lang"]['Current'] = 'Strom';
 
 $GLOBALS["lang"]['Current Discovery Processes'] = 'Aktuelle Entdeckungsprozesse';
 
-$GLOBALS["lang"]['Current date & time is '] = 'Aktuelles Datum und Uhrzeit';
+$GLOBALS["lang"]['Current date & time is '] = 'Aktuelles Datum und Uhrzeit ';
 
-$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code>or <code>windows</code>.'] = 'Derzeit unterstützte Typen sind <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code>oder <code>windows</code>.';
+$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = 'Derzeit unterstützte Typen <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> oder <code>windows</code>.';
 
 $GLOBALS["lang"]['Custom TCP Ports'] = 'Kundenspezifische TCP-Ports';
 
@@ -1358,7 +1370,7 @@ $GLOBALS["lang"]['Default Value'] = 'Standardwert';
 
 $GLOBALS["lang"]['Default of 389. Normally 636 used for Active Directory LDAPS.'] = 'Standard von 389. Normalerweise verwendet 636 für Active Directory LDAPS.';
 
-$GLOBALS["lang"]['Default of <code>3</code>for LDAP and Active Directory.'] = 'Standard <code>3</code>für LDAP und Active Directory.';
+$GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = 'Standard <code>3</code> für LDAP und Active Directory.';
 
 $GLOBALS["lang"]['delay_minutes'] = 'Verzögerungsprotokolle';
 
@@ -1384,11 +1396,27 @@ $GLOBALS["lang"]['Deleted At'] = 'Gelöscht bei';
 
 $GLOBALS["lang"]['Denmark'] = 'Dänemark';
 
+$GLOBALS["lang"]['Derived by audit or manually set by user.'] = 'Abgeleitet durch Audit oder manuell vom Benutzer eingestellt.';
+
+$GLOBALS["lang"]['Derived by audit.'] = 'Abgeleitet durch Audit.';
+
 $GLOBALS["lang"]['Derived from <code>rack_devices.device_id</code>.'] = 'Abgeleitet von <code>rack_devices.device_id</code>.';
 
 $GLOBALS["lang"]['Derived from <code>rack_devices.rack_id</code>.'] = 'Abgeleitet von <code>rack_devices.rack_id</code>.';
 
+$GLOBALS["lang"]['Derived from Collector discovery.'] = 'Abgeleitet von Collector Entdeckung.';
+
+$GLOBALS["lang"]['Derived from OS Name.'] = 'Abgeleitet von OS Name.';
+
+$GLOBALS["lang"]['Derived from cloud discovery.'] = 'Von der Cloud-Entdeckung abgeleitet.';
+
 $GLOBALS["lang"]['Derived from device audits.'] = 'Abgeleitet von Geräteaudits.';
+
+$GLOBALS["lang"]['Derived from device type and OS.'] = 'Abgeleitet vom Gerätetyp und Betriebssystem.';
+
+$GLOBALS["lang"]['Derived from discovery.'] = 'Abgeleitet von der Entdeckung.';
+
+$GLOBALS["lang"]['Derived from hostname, sysName, dns Hostname and IP in that order.'] = 'Abgeleitet von Hostname, sysName, dns Hostname und IP in dieser Reihenfolge.';
 
 $GLOBALS["lang"]['Derived from the integer severity.'] = 'Abgeleitet von der ganzzahligen Schwere.';
 
@@ -1456,7 +1484,7 @@ $GLOBALS["lang"]['Devices Assigned To Org'] = 'Org zugewiesene Geräte';
 
 $GLOBALS["lang"]['Devices Audited'] = 'Geräte geprüft';
 
-$GLOBALS["lang"]['Devices Created in '] = 'Geräte, die in';
+$GLOBALS["lang"]['Devices Created in '] = 'Geräte, die in ';
 
 $GLOBALS["lang"]['Devices Created in Open-AudIT'] = 'Geräte, die in Open-AudIT erstellt wurden';
 
@@ -1480,11 +1508,11 @@ $GLOBALS["lang"]['Devices Not Seen 90 Days'] = 'Geräte nicht gesehen 90 Tage';
 
 $GLOBALS["lang"]['Devices Retrieved via API'] = 'Geräte über API abrufbar';
 
-$GLOBALS["lang"]['Devices Selected from '] = 'Ausgewählte Geräte';
+$GLOBALS["lang"]['Devices Selected from '] = 'Ausgewählte Geräte ';
 
 $GLOBALS["lang"]['Devices Selected from Open-AudIT'] = 'Ausgewählte Geräte aus Open-AudIT';
 
-$GLOBALS["lang"]['Devices Updated in '] = 'Geräte, die in';
+$GLOBALS["lang"]['Devices Updated in '] = 'Geräte, die in ';
 
 $GLOBALS["lang"]['Devices Updated in Open-AudIT'] = 'Geräte Aktualisiert in Open-AudIT';
 
@@ -1499,6 +1527,8 @@ $GLOBALS["lang"]['Devices in Running State'] = 'Geräte in Deutschland';
 $GLOBALS["lang"]['Devices in Stopped State'] = 'Geräte in Gestopptem Zustand';
 
 $GLOBALS["lang"]['Devices in this'] = 'Geräte in diesem';
+
+$GLOBALS["lang"]['Devired from type or OS.'] = 'Entvirt vom Typ oder Betriebssystem.';
 
 $GLOBALS["lang"]['dhcp_enabled'] = 'Dhcp Aktiviert';
 
@@ -1820,6 +1850,8 @@ $GLOBALS["lang"]['Exclude Udp Ports'] = 'Udp Ports ausschließen';
 
 $GLOBALS["lang"]['Exclude these IP addresses from being Nmap scanned.'] = 'Ausschließen Sie diese IP-Adressen von Nmap-Scanning.';
 
+$GLOBALS["lang"]['Excluded'] = 'Ausgeschlossen';
+
 $GLOBALS["lang"]['exclusion_reasons'] = 'Ausschlussgründe';
 
 $GLOBALS["lang"]['Exclusion Reasons'] = 'Ausschlussgründe';
@@ -1855,6 +1887,10 @@ $GLOBALS["lang"]['Existing Row'] = 'Vorhandene Row';
 $GLOBALS["lang"]['expire_minutes'] = 'Abgelaufene Protokolle';
 
 $GLOBALS["lang"]['Expire Minutes'] = 'Abgelaufene Protokolle';
+
+$GLOBALS["lang"]['expires'] = 'Entfällt';
+
+$GLOBALS["lang"]['Expires'] = 'Entfällt';
 
 $GLOBALS["lang"]['expiry_date'] = 'Datum';
 
@@ -1917,6 +1953,10 @@ $GLOBALS["lang"]['Faroe Islands'] = 'Färöer';
 $GLOBALS["lang"]['Features'] = 'Eigenschaften';
 
 $GLOBALS["lang"]['February'] = 'Februar';
+
+$GLOBALS["lang"]['feeds'] = 'Futtermittel';
+
+$GLOBALS["lang"]['Feeds'] = 'Futtermittel';
 
 $GLOBALS["lang"]['field'] = 'Feld';
 
@@ -1992,8 +2032,6 @@ $GLOBALS["lang"]['first_seen'] = 'Erste Lesung';
 
 $GLOBALS["lang"]['First Seen'] = 'Erste Lesung';
 
-$GLOBALS["lang"]['First Seen On'] = 'Erster Blick auf';
-
 $GLOBALS["lang"]['FirstWave'] = 'Erste Hilfe';
 
 $GLOBALS["lang"]['Fix'] = 'Fehler';
@@ -2002,7 +2040,7 @@ $GLOBALS["lang"]['Fixed'] = 'Festgelegt';
 
 $GLOBALS["lang"]['Floor'] = 'Boden';
 
-$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = 'Folgen Sie einer der unten stehenden Links und entdecken Sie, wie Sie Open-AudIT verwenden können, um herauszufinden <b>Whats On Your Network?</b>';
+$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = 'Folgen Sie einer der unten stehenden Links und entdecken Sie, wie Sie Open-AudIT nutzen können, um herauszufinden, <b>Was ist auf Ihrem Netzwerk?</b>';
 
 $GLOBALS["lang"]['For a seed discovery, should I only discover IPs in the private IP address space.'] = 'Für eine Saatgutentdeckung sollte ich nur IPs im privaten IP-Adressenraum entdecken.';
 
@@ -2010,7 +2048,7 @@ $GLOBALS["lang"]['For a seed discovery, should I only discover IPs on the chosen
 
 $GLOBALS["lang"]['For a seed discovery, should I ping the subnet before running the discovery.'] = 'Für eine Samenentdeckung, sollte ich das Subnet ping, bevor die Entdeckung läuft.';
 
-$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code>in your SQL.'] = 'Für fortgeschrittene Eingabe einer rohen SQL-Abfrage. Nach Queries müssen Sie <code>WHERE @filter AND<code>in Ihrem SQL enthalten.';
+$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.'] = 'Für fortgeschrittene Eingabe einer rohen SQL-Abfrage. Wie pro Queries müssen Sie <code>WHERE @filter AND<code> in your SQL.</code></code>';
 
 $GLOBALS["lang"]['For licenses that are not perpetual, when does the license expire.'] = 'Für Lizenzen, die nicht dauerhaft sind, wann läuft die Lizenz ab.';
 
@@ -2098,7 +2136,7 @@ $GLOBALS["lang"]['Ghana'] = 'Ghana';
 
 $GLOBALS["lang"]['Gibraltar'] = 'Gibraltar';
 
-$GLOBALS["lang"]['Go'] = 'Los';
+$GLOBALS["lang"]['Go'] = 'Los!';
 
 $GLOBALS["lang"]['Google Compute Fields'] = 'Google Compute Fields';
 
@@ -2168,9 +2206,11 @@ $GLOBALS["lang"]['hardware_revision'] = 'Hardware-Revision';
 
 $GLOBALS["lang"]['Hardware Revision'] = 'Hardware-Revision';
 
-$GLOBALS["lang"]['hash'] = 'Hash';
+$GLOBALS["lang"]['Has this policy been applied in this organization.'] = 'Wurde diese Politik in dieser Organisation angewendet.';
 
-$GLOBALS["lang"]['Hash'] = 'Hash';
+$GLOBALS["lang"]['hash'] = 'Hash!';
+
+$GLOBALS["lang"]['Hash'] = 'Hash!';
 
 $GLOBALS["lang"]['Head'] = 'Kopf';
 
@@ -2184,7 +2224,7 @@ $GLOBALS["lang"]['Height in RU'] = 'Höhe in RU';
 
 $GLOBALS["lang"]['Help'] = 'Hilfe';
 
-$GLOBALS["lang"]['High'] = 'Hoch';
+$GLOBALS["lang"]['High'] = 'hoch';
 
 $GLOBALS["lang"]['High Availability'] = 'Hohe Verfügbarkeit';
 
@@ -2238,7 +2278,7 @@ $GLOBALS["lang"]['hyperthreading'] = 'Hyperthreading';
 
 $GLOBALS["lang"]['Hyperthreading'] = 'Hyperthreading';
 
-$GLOBALS["lang"]['id'] = 'AUSWEIS';
+$GLOBALS["lang"]['id'] = 'Ausweis';
 
 $GLOBALS["lang"]['ID'] = 'ID';
 
@@ -2246,9 +2286,9 @@ $GLOBALS["lang"]['IF'] = 'F';
 
 $GLOBALS["lang"]['IOS Version'] = 'IOS Version';
 
-$GLOBALS["lang"]['ip'] = 'IP-ADRESSE';
+$GLOBALS["lang"]['ip'] = 'IP-Adresse';
 
-$GLOBALS["lang"]['IP'] = 'IP-ADRESSE';
+$GLOBALS["lang"]['IP'] = 'IP-Adresse';
 
 $GLOBALS["lang"]['IP Address'] = 'IP-Adresse';
 
@@ -2257,6 +2297,8 @@ $GLOBALS["lang"]['IP Addresses'] = 'IP-Adressen';
 $GLOBALS["lang"]['IP Last Seen'] = 'IP Zuletzt gesehen';
 
 $GLOBALS["lang"]['IP Set By'] = 'IP Set von';
+
+$GLOBALS["lang"]['ISO 27001 only.'] = 'Nur ISO 27001.';
 
 $GLOBALS["lang"]['Iceland'] = 'Island';
 
@@ -2280,7 +2322,7 @@ $GLOBALS["lang"]['identification'] = 'Identifizierung';
 
 $GLOBALS["lang"]['Identification'] = 'Identifizierung';
 
-$GLOBALS["lang"]['If'] = 'Wenn';
+$GLOBALS["lang"]['If'] = 'wenn';
 
 $GLOBALS["lang"]['If a port responds with filtered, should we consider it available.'] = 'Wenn ein Port mit gefiltert reagiert, sollten wir es als verfügbar betrachten.';
 
@@ -2300,7 +2342,7 @@ $GLOBALS["lang"]['If set, holds a JSON array of specific device columns this use
 
 $GLOBALS["lang"]['If the agent OS family (case insensitive) contains this string, perform the actions.'] = 'Wenn die Agent OS Familie (case insensitive) enthält diese String, führen Sie die Aktionen.';
 
-$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br><br>'] = 'Sind folgende Bedingungen erfüllt: <br><ul><li>a Rolle hat ad_group</li><li>Org hat ad_group</li><li>LDAP Server hat use_roles set to y</li><li><li>a user in LDAP (be it Active Directory oder OpenLDAP) und ist in den zugewiesenen ad_groups</li></ul>Dieser Benutzer kann sich auf Open-AudIT anmelden, ohne dass ein Konto in Open-AudIT erstellt werden muss. Open-AudIT wird die betreffende LDAP abfragen und wenn der Benutzer in den erforderlichen Gruppen, aber nicht in Open-AudIT ist, werden seine Benutzerattribute (Name, Vollname, E-Mail, Rollen, Orgs, etc.) innerhalb von Open-AudIT automatisch bevölkert und sie werden auf.<br><br><br>';
+$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>'] = 'Sind folgende Bedingungen erfüllt:<br/><ul><li>eine Rolle hat eine zugeordnete ad_group</li><li>ein Org hat eine zugeordnete ad_group</li><li>ein LDAP Server hat use_roles auf y gesetzt</li><li>ein Benutzer existiert in LDAP (be it Active Directory oder OpenLDAP) und ist in den zugewiesenen ad_groups</li></ul>Dieser Benutzer kann sich auf Open-AudIT anmelden, ohne dass ein Konto in Open-AudIT erstellt werden muss. Open-AudIT wird die betreffende LDAP abfragen und wenn der Benutzer in den gewünschten Gruppen, aber nicht in Open-AudIT ist, werden seine Benutzerattribute (Name, Vollname, E-Mail, Rollen, Orgs usw.) innerhalb von Open-AudIT automatisch bevölkert und sie werden eingeloggt.<br/> <br/>';
 
 $GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.'] = 'Wenn der Benutzer, der sich auf Open-AudIT einloggt, keinen Zugriff auf die Suche LDAP hat, können Sie ein anderes Konto verwenden, das diesen Zugriff hat.';
 
@@ -2402,7 +2444,11 @@ $GLOBALS["lang"]['installed_on'] = 'In den Warenkorb';
 
 $GLOBALS["lang"]['Installed On'] = 'In den Warenkorb';
 
-$GLOBALS["lang"]['Installing'] = 'Installation';
+$GLOBALS["lang"]['Installing on Linux'] = 'Installation auf Linux';
+
+$GLOBALS["lang"]['Installing on MacOS'] = 'Installation auf MacOS';
+
+$GLOBALS["lang"]['Installing on Windows'] = 'Installation unter Windows';
 
 $GLOBALS["lang"]['instance'] = 'Rechtssache';
 
@@ -2478,9 +2524,9 @@ $GLOBALS["lang"]['invoice'] = 'Rechnung';
 
 $GLOBALS["lang"]['Invoice'] = 'Rechnung';
 
-$GLOBALS["lang"]['invoice_id'] = 'Passwort vergessen';
+$GLOBALS["lang"]['invoice_id'] = 'Passwort vergessen?';
 
-$GLOBALS["lang"]['Invoice ID'] = 'Passwort vergessen';
+$GLOBALS["lang"]['Invoice ID'] = 'Passwort vergessen?';
 
 $GLOBALS["lang"]['invoice_item'] = 'Invoice Item';
 
@@ -2544,7 +2590,7 @@ $GLOBALS["lang"]['Is Fru'] = 'Ist Fru';
 
 $GLOBALS["lang"]['Is the NMIS server local (on this Open-AudIT server) or remote?'] = 'Ist der NMIS-Server lokal (auf diesem Open-AudIT-Server) oder remote?';
 
-$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = 'Ist das Konto aktiv? Wenn auf <code>n</code>gesetzt, kann der Benutzer sich nicht anmelden.';
+$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = 'Ist das Konto aktiv? Wenn eingestellt <code>n</code>, der Benutzer kann sich nicht anmelden.';
 
 $GLOBALS["lang"]['Is this task enabled (y/n).'] = 'Ist diese Aufgabe aktiviert (y/n).';
 
@@ -2561,6 +2607,8 @@ $GLOBALS["lang"]['Issuer'] = 'Emittent';
 $GLOBALS["lang"]['Issues'] = 'Emissionen';
 
 $GLOBALS["lang"]['Italy'] = 'Italien';
+
+$GLOBALS["lang"]['Items not in Baseline'] = 'Artikel nicht in Baseline';
 
 $GLOBALS["lang"]['JSON'] = 'JSON';
 
@@ -2645,8 +2693,6 @@ $GLOBALS["lang"]['Last Seen'] = 'Letzter Tag';
 $GLOBALS["lang"]['last_seen_by'] = 'Letzter Tag von';
 
 $GLOBALS["lang"]['Last Seen By'] = 'Letzter Tag von';
-
-$GLOBALS["lang"]['Last Seen On'] = 'Letzter Besuch auf';
 
 $GLOBALS["lang"]['last_user'] = 'Letzter Beitrag';
 
@@ -2762,6 +2808,10 @@ $GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Li
 
 $GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = 'Links zu <code>discovery_scan_options.id</code>.';
 
+$GLOBALS["lang"]['Links to <code>standards.id</code>'] = 'Links zu <code>standards.id</code>';
+
+$GLOBALS["lang"]['Links to <standards_policies.id</code>'] = 'Links zu <standards_policies.id< code=""></standards_policies.id<>';
+
 $GLOBALS["lang"]['Linux'] = 'Linux';
 
 $GLOBALS["lang"]['List'] = 'Liste';
@@ -2844,9 +2894,9 @@ $GLOBALS["lang"]['log'] = 'Protokoll';
 
 $GLOBALS["lang"]['Log'] = 'Protokoll';
 
-$GLOBALS["lang"]['log_format'] = 'Passwort vergessen';
+$GLOBALS["lang"]['log_format'] = 'Passwort vergessen?';
 
-$GLOBALS["lang"]['Log Format'] = 'Passwort vergessen';
+$GLOBALS["lang"]['Log Format'] = 'Passwort vergessen?';
 
 $GLOBALS["lang"]['log_path'] = 'Logischer Pfad';
 
@@ -2860,7 +2910,7 @@ $GLOBALS["lang"]['log_status'] = 'Anmelden';
 
 $GLOBALS["lang"]['Log Status'] = 'Anmelden';
 
-$GLOBALS["lang"]['Logical Cores '] = 'Logische Kerne';
+$GLOBALS["lang"]['Logical Cores '] = 'Logische Kerne ';
 
 $GLOBALS["lang"]['logical_count'] = 'Logischer Zähler';
 
@@ -2913,6 +2963,10 @@ $GLOBALS["lang"]['Malta'] = 'Malta';
 $GLOBALS["lang"]['Manage in NMIS'] = 'Verwalten in NMIS';
 
 $GLOBALS["lang"]['Manual Input'] = 'Manuelle Eingabe';
+
+$GLOBALS["lang"]['Manually set by user, defaults to Production.'] = 'Manuell von Benutzer eingestellt, standardmäßig auf Produktion.';
+
+$GLOBALS["lang"]['Manually set by user.'] = 'manuell vom Benutzer eingestellt.';
 
 $GLOBALS["lang"]['manufacture_date'] = 'Datum des Inkrafttretens';
 
@@ -3122,7 +3176,7 @@ $GLOBALS["lang"]['NMIS Poller'] = 'NMIS Poller';
 
 $GLOBALS["lang"]['NMIS Role'] = 'NMIS Rolle';
 
-$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code>to <code>n</code>.'] = 'HINWEIS - Sie können verhindern, dass einzelne Text-Anmeldeinformationen unten angezeigt werden, indem Sie den Konfigurationspunkt für <code>decrypt_credentials</code>zu <code>n</code>einstellen.';
+$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.'] = 'HINWEIS - Sie können verhindern, dass einzelne Text-Anmeldeinformationen unten angezeigt werden, indem Sie das Konfigurationselement für <code>decrypt_credentials</code> bis <code>n</code>.';
 
 $GLOBALS["lang"]['name'] = 'Name';
 
@@ -3274,8 +3328,6 @@ $GLOBALS["lang"]['Norfolk Island'] = 'Norfolk Island';
 
 $GLOBALS["lang"]['Normal'] = 'Normal';
 
-$GLOBALS["lang"]['Normally <code>production</code>.'] = 'Normalerweise <code>production/code>.';
-
 $GLOBALS["lang"]['Northern Mariana Islands'] = 'Nördliche Marianen';
 
 $GLOBALS["lang"]['Norway'] = 'Norwegen';
@@ -3304,21 +3356,21 @@ $GLOBALS["lang"]['notes'] = 'Anmerkungen';
 
 $GLOBALS["lang"]['Notice'] = 'Mitteilung';
 
+$GLOBALS["lang"]['notin'] = 'nicht';
+
+$GLOBALS["lang"]['Notin'] = 'nicht';
+
 $GLOBALS["lang"]['November'] = 'November';
 
 $GLOBALS["lang"]['ORDER BY'] = 'BINNENMARKT';
 
-$GLOBALS["lang"]['OS'] = 'SICHERHEIT';
+$GLOBALS["lang"]['OS'] = 'Sicherheit';
 
 $GLOBALS["lang"]['OS Families'] = 'OS Familien';
 
 $GLOBALS["lang"]['OS Family'] = 'OS Familie';
 
 $GLOBALS["lang"]['OS Group'] = 'OS Gruppe';
-
-$GLOBALS["lang"]['OS Installed On'] = 'Betriebssystem installiert auf';
-
-$GLOBALS["lang"]['OS Version'] = 'Betriebssystemversion';
 
 $GLOBALS["lang"]['oae_manage'] = 'Oae Manage';
 
@@ -3338,7 +3390,7 @@ $GLOBALS["lang"]['Omk Uuid'] = 'Omk Uuid';
 
 $GLOBALS["lang"]['On'] = 'Auf';
 
-$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code>or <code>4x4</code>.'] = '<code>3x2</code>, <code>4x2</code>, <code>4x3</code>oder <code>4x4</code>.';
+$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.'] = 'Einer von <code>3x2</code>, <code>4x2</code>, <code>4x3</code> oder <code>4x4</code>.';
 
 $GLOBALS["lang"]['One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.'] = 'Einer der Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Netzwerk, Virtuelles Private Network, Wide Area Network, Wireless Local Area Network.';
 
@@ -3346,7 +3398,7 @@ $GLOBALS["lang"]['One of Development, Disaster Recovery, Evaluation, Pre-Product
 
 $GLOBALS["lang"]['One of allocated, delegated, planning, reserved, unallocated, unknown, unmanaged. Defaults to allocated.'] = 'Einer der zugewiesenen, delegierten, Planung, reserviert, nicht zugewiesen, unbekannt, nicht verwaltet. Defaults zugeteilt.';
 
-$GLOBALS["lang"]['One of either <code>active directory</code>or <code>openldap</code>.'] = 'Eines der beiden <code>active Directory</code>oder <code>openldap</code>.';
+$GLOBALS["lang"]['One of either <code>active directory</code> or <code>openldap</code>.'] = 'Einer von beiden <code>active directory</code> oder <code>openldap</code>.';
 
 $GLOBALS["lang"]['One of: antivirus, backup, firewall, approved, banned, ignored or other.'] = 'Einer von: Antivirus, Backup, Firewall, genehmigt, verboten, ignoriert oder andere.';
 
@@ -3388,9 +3440,9 @@ $GLOBALS["lang"]['Operating System Family Contains'] = 'Betriebssystem Familienb
 
 $GLOBALS["lang"]['Operating Systems'] = 'Betriebssysteme';
 
-$GLOBALS["lang"]['optical'] = 'Optisch';
+$GLOBALS["lang"]['optical'] = 'optisch';
 
-$GLOBALS["lang"]['Optical'] = 'Optisch';
+$GLOBALS["lang"]['Optical'] = 'optisch';
 
 $GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = 'Optionale Version als von Open-AudIT geprüft. Verwenden Sie das prozentuale Zeichen % als Wildcard.';
 
@@ -3430,9 +3482,9 @@ $GLOBALS["lang"]['os_arch'] = 'Os Arch';
 
 $GLOBALS["lang"]['Os Arch'] = 'Os Arch';
 
-$GLOBALS["lang"]['os_bit'] = 'Os Bit';
+$GLOBALS["lang"]['os_bit'] = '!';
 
-$GLOBALS["lang"]['Os Bit'] = 'Os Bit';
+$GLOBALS["lang"]['Os Bit'] = '!';
 
 $GLOBALS["lang"]['os_cpe'] = 'Oskar';
 
@@ -3570,9 +3622,9 @@ $GLOBALS["lang"]['Passed'] = 'Passiert';
 
 $GLOBALS["lang"]['Passive Optical Local Area Network'] = 'Passives Optisches lokales Netzwerk';
 
-$GLOBALS["lang"]['password'] = 'Passwort vergessen';
+$GLOBALS["lang"]['password'] = 'Passwort vergessen?';
 
-$GLOBALS["lang"]['Password'] = 'Passwort vergessen';
+$GLOBALS["lang"]['Password'] = 'Passwort vergessen?';
 
 $GLOBALS["lang"]['password_changeable'] = 'Passwort ändernd';
 
@@ -3582,9 +3634,9 @@ $GLOBALS["lang"]['password_disabled'] = 'Passwort deaktiviert';
 
 $GLOBALS["lang"]['Password Disabled'] = 'Passwort deaktiviert';
 
-$GLOBALS["lang"]['password_expires'] = 'Passwort vergessen';
+$GLOBALS["lang"]['password_expires'] = 'Passwort vergessen?';
 
-$GLOBALS["lang"]['Password Expires'] = 'Passwort vergessen';
+$GLOBALS["lang"]['Password Expires'] = 'Passwort vergessen?';
 
 $GLOBALS["lang"]['password_last_changed'] = 'Passwort Letzte Änderung';
 
@@ -3694,9 +3746,25 @@ $GLOBALS["lang"]['Policy Results'] = 'Ergebnisse der Politik';
 
 $GLOBALS["lang"]['Polite'] = 'Polit';
 
-$GLOBALS["lang"]['Populated dynamically.'] = 'Dynamisch bevölkert.';
+$GLOBALS["lang"]['Populated by audit.'] = 'Bevölkert durch Audit.';
+
+$GLOBALS["lang"]['Populated by discovery and audit.'] = 'Populiert durch Entdeckung und Audit.';
+
+$GLOBALS["lang"]['Populated dynamically.'] = 'dynamisch bevölkert.';
+
+$GLOBALS["lang"]['Populated from DNS.'] = 'Populiert aus DNS.';
+
+$GLOBALS["lang"]['Populated from SNMP discovery.'] = 'Bevölkert von SNMP Entdeckung.';
 
 $GLOBALS["lang"]['Populated from device audits.'] = 'Bevölkert von Geräteaudits.';
+
+$GLOBALS["lang"]['Populated from hostname.'] = 'Populiert von Hostname.';
+
+$GLOBALS["lang"]['Populated from machine-id on Linux.'] = 'Populiert von Machine-ID auf Linux.';
+
+$GLOBALS["lang"]['Populated from the IP for the default route or the IP detected in discovery.'] = 'Aus der IP für die Standardroute oder die in der Entdeckung erkannte IP gepopuliert.';
+
+$GLOBALS["lang"]['Populated from the hostname command.'] = 'Populiert aus dem Hostname-Befehl.';
 
 $GLOBALS["lang"]['Populated with additional data from the external system, in a JSON representation.'] = 'Populiert mit zusätzlichen Daten aus dem externen System, in einer JSON-Darstellung.';
 
@@ -3824,6 +3892,10 @@ $GLOBALS["lang"]['provider'] = 'Anbieter';
 
 $GLOBALS["lang"]['Provider'] = 'Anbieter';
 
+$GLOBALS["lang"]['published'] = 'Veröffentlicht';
+
+$GLOBALS["lang"]['Published'] = 'Veröffentlicht';
+
 $GLOBALS["lang"]['publisher'] = 'Verlag';
 
 $GLOBALS["lang"]['Publisher'] = 'Verlag';
@@ -3928,6 +4000,8 @@ $GLOBALS["lang"]['rationale'] = 'Rationalität';
 
 $GLOBALS["lang"]['Rationale'] = 'Rationalität';
 
+$GLOBALS["lang"]['read'] = 'Weiterlesen';
+
 $GLOBALS["lang"]['Read'] = 'Weiterlesen';
 
 $GLOBALS["lang"]['Read our online documentation on the Open-AudIT Wiki.'] = 'Lesen Sie unsere Online-Dokumentation über das Open-AudIT Wiki.';
@@ -3952,7 +4026,7 @@ $GLOBALS["lang"]['rel'] = 'Rel';
 
 $GLOBALS["lang"]['Rel'] = 'Rel';
 
-$GLOBALS["lang"]['Release'] = 'Release';
+$GLOBALS["lang"]['Release'] = '!';
 
 $GLOBALS["lang"]['remediation'] = 'Zurück zur Übersicht';
 
@@ -3983,6 +4057,10 @@ $GLOBALS["lang"]['Reportable'] = 'Berichterstattung';
 $GLOBALS["lang"]['request'] = 'Anfrage senden';
 
 $GLOBALS["lang"]['Request'] = 'Anfrage senden';
+
+$GLOBALS["lang"]['requested'] = 'Antrag';
+
+$GLOBALS["lang"]['Requested'] = 'Antrag';
 
 $GLOBALS["lang"]['require_port'] = 'Hafen suchen';
 
@@ -4028,9 +4106,9 @@ $GLOBALS["lang"]['retrieved'] = 'Abrufen';
 
 $GLOBALS["lang"]['Retrieved'] = 'Abrufen';
 
-$GLOBALS["lang"]['retrieved_ident'] = 'Zurückgerufener Ausweis';
+$GLOBALS["lang"]['retrieved_ident'] = 'zurückgerufener Ausweis';
 
-$GLOBALS["lang"]['Retrieved Ident'] = 'Zurückgerufener Ausweis';
+$GLOBALS["lang"]['Retrieved Ident'] = 'zurückgerufener Ausweis';
 
 $GLOBALS["lang"]['retrieved_name'] = 'Retrieved Name';
 
@@ -4094,7 +4172,7 @@ $GLOBALS["lang"]['Run Discovery'] = 'Entdecke die Flucht';
 
 $GLOBALS["lang"]['Run Discovery on Devices'] = 'Entdecken Sie die Geräte';
 
-$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = 'Führen Sie eine Entdeckung und finden Sie heraus <b>Was auf Ihrem Netzwerk?</b>';
+$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = 'Eine Entdeckung starten und herausfinden <b>Was ist auf Ihrem Netzwerk?</b>';
 
 $GLOBALS["lang"]['Run this Command'] = 'Führen Sie das Kommando';
 
@@ -4430,9 +4508,13 @@ $GLOBALS["lang"]['Shell'] = 'Schale';
 
 $GLOBALS["lang"]['Ship Date'] = 'Datum des Inkrafttretens';
 
+$GLOBALS["lang"]['short'] = 'Kurz';
+
+$GLOBALS["lang"]['Short'] = 'Kurz';
+
 $GLOBALS["lang"]['Should I remove all non-current data from this device?'] = 'Sollte ich alle nicht aktuellen Daten von diesem Gerät entfernen?';
 
-$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = 'Sollte diese Datei (oder Muster) verwendet werden, um Dateien von der Meldung auszuschließen. In der Regel wird zur Prüfung von Dateien diese auf <code>y</code>gesetzt.';
+$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = 'Sollte diese Datei (oder Muster) verwendet werden, um Dateien von der Meldung auszuschließen. Normalerweise, um Dateien zu überprüfen, ist dies auf <code>y</code>.';
 
 $GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = 'Sollten wir Geräte aus dem Ferndienst hinzufügen, lokal.';
 
@@ -4498,9 +4580,9 @@ $GLOBALS["lang"]['Should we test for WMI using TCP port 135.'] = 'Sollten wir mi
 
 $GLOBALS["lang"]['Should we uninstall the agent (y/n).'] = 'Sollten wir den Agenten deinstallieren (y/n).';
 
-$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code>or <code>n</code>.'] = 'Sollten wir diese Methode verwenden, um Benutzerinformationen zu authentifizieren. Auf <code>y</code>oder <code>n</code>eingestellt.';
+$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.'] = 'Sollten wir diese Methode verwenden, um Benutzerinformationen zu authentifizieren. Angepasst <code>y</code> oder <code>n</code>.';
 
-$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code>must be set to <code>y</code>to use this. Set to <code>y</code>or <code>n</code>.'] = 'Sollten wir diese Methode verwenden, um eine Benutzerrolle zu bevölkern. Feld <code>use_auth</code>muss auf <code>y</code>eingestellt werden, um dies zu verwenden. Auf <code>y</code>oder <code>n</code>eingestellt.';
+$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.'] = 'Sollten wir diese Methode verwenden, um eine Benutzerrolle zu bevölkern. Das Feld <code>use_auth</code> muss eingestellt werden <code>y</code> das zu benutzen. Angepasst <code>y</code> oder <code>n</code>.';
 
 $GLOBALS["lang"]['Show All'] = 'Alle anzeigen';
 
@@ -4762,7 +4844,7 @@ $GLOBALS["lang"]['supplier'] = 'Lieferant';
 
 $GLOBALS["lang"]['Supplier'] = 'Lieferant';
 
-$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code>and <code>active directory</code>.'] = 'Unterstützte Typen sind <code>subnet</code>, <code>seed</code>und <code>active Directory</code>.';
+$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = 'Unterstützte Typen sind <code>subnet</code>, <code>seed</code> und <code>active directory</code>.';
 
 $GLOBALS["lang"]['Suriname'] = 'Suriname';
 
@@ -4848,7 +4930,7 @@ $GLOBALS["lang"]['tags'] = 'Schlagwörter';
 
 $GLOBALS["lang"]['Tags'] = 'Schlagwörter';
 
-$GLOBALS["lang"]['Tags :: '] = 'Schlagworte::';
+$GLOBALS["lang"]['Tags :: '] = 'Schlagworte:: ';
 
 $GLOBALS["lang"]['Taiwan'] = 'Taiwan';
 
@@ -4914,17 +4996,17 @@ $GLOBALS["lang"]['The ID from the devices table (the devices.name will be displa
 
 $GLOBALS["lang"]['The ID from the imported benchmark policy.'] = 'Die ID der eingeführten Benchmark-Politik.';
 
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code>location.'] = 'Die ID aus der Positionstabelle (der Standortname wird angezeigt) dieses Endes der Verbindung. Links zu <code>locations.id</code>Der Standort A ist in der Regel der <code>FROM</code>Ort.';
+$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.'] = 'Die ID aus der Positionstabelle (der Standortname wird angezeigt) dieses Endes der Verbindung. Links zu <code>locations.id</code>. Der A-Standort ist in der Regel <code>FROM</code> Standort.';
 
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code>location.'] = 'Die ID aus der Positionstabelle (der Standortname wird angezeigt) dieses Endes der Verbindung. Links zu <code>locations.id</code>Der B-Standort ist in der Regel der <code>TO</code>Ort.';
+$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.'] = 'Die ID aus der Positionstabelle (der Standortname wird angezeigt) dieses Endes der Verbindung. Links zu <code>locations.id</code>. Der B-Standort ist in der Regel <code>TO</code> Standort.';
 
 $GLOBALS["lang"]['The ID of the associated device (if any). Links to <code>devices.id</code>.'] = 'Die ID des zugehörigen Gerätes (falls vorhanden). Links zu <code>devices.id</code>.';
 
-$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = 'Die ID der zugehörigen Entdeckung. Link zu <code>discoveries.id</code>';
+$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = 'Die ID der zugehörigen Entdeckung. Linked to <code>discoveries.id</code>';
 
 $GLOBALS["lang"]['The ID of the item of the associated type.'] = 'Die ID des Produkts der zugehörigen Art.';
 
-$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = 'Die ID dieses Orgs Elternorgs. Link zu <code>orgs.id</code>';
+$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = 'Die ID dieses Orgs Elternorgs. Linked to <code>orgs.id</code>';
 
 $GLOBALS["lang"]['The ID provided by the provider.'] = 'Die vom Anbieter bereitgestellte ID.';
 
@@ -4992,7 +5074,7 @@ $GLOBALS["lang"]['The associated baseline. Links to <code>baselines.id</code>.']
 
 $GLOBALS["lang"]['The associated discovery (if required). Links to <code>discoveries.id</code>.'] = 'Die zugehörige Entdeckung (falls erforderlich). Links zu <code>discoveries.id</code>.';
 
-$GLOBALS["lang"]['The attribute to test (from the <code>devices</code>table).'] = 'Das Attribut zum Test (aus der Tabelle <code>devices</code>).';
+$GLOBALS["lang"]['The attribute to test (from the <code>devices</code> table).'] = 'Das Attribut zum Testen (aus dem <code>devices</code> Tabelle';
 
 $GLOBALS["lang"]['The attribute to test (must match an external field name from below).'] = 'Das Attribut zum Testen (muss einen externen Feldnamen von unten entsprechen).';
 
@@ -5014,7 +5096,7 @@ $GLOBALS["lang"]['The column name from the foreign table. Should be one of: clas
 
 $GLOBALS["lang"]['The command executed upon the target device or Open-AudIT server code executed during discovery.'] = 'Der Befehl, der auf dem Zielgerät oder Open-AudIT Servercode ausgeführt wird, der während der Entdeckung ausgeführt wird.';
 
-$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code>or blank.'] = 'Die Konfiguration Ihres Clusters kann sein: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other/code>oder leer.';
+$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.'] = 'Die Konfiguration Ihres Clusters kann sein: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> oder leer.';
 
 $GLOBALS["lang"]['The credentials password. If the credentials are an SSH Key, this is the password used to unlock the key and is optional.'] = 'Das Anmelde-Passwort. Wenn die Anmeldeinformationen ein SSH Key sind, ist dies das Passwort, das verwendet wird, um den Schlüssel zu entsperren und optional ist.';
 
@@ -5055,6 +5137,8 @@ $GLOBALS["lang"]['The email address of the reciever'] = 'Die E-Mail-Adresse des 
 $GLOBALS["lang"]['The entire associated baseline this result is from.'] = 'Die gesamte zugeordnete Basislinie stammt aus.';
 
 $GLOBALS["lang"]['The externally referenced location ID. Usually populated by Cloud audits.'] = 'Die extern referenzierte Standort-ID. Üblicherweise von Cloud-Audits besiedelt.';
+
+$GLOBALS["lang"]['The first time that Open-AudIT retrieved details of this device.'] = 'Das erste Mal, dass Open-AudIT Details dieses Geräts abgerufen.';
 
 $GLOBALS["lang"]['The floor the rack is located on.'] = 'Der Boden der Rack befindet sich auf.';
 
@@ -5156,15 +5240,15 @@ $GLOBALS["lang"]['The number of associated locations. Links to <code>locations.c
 
 $GLOBALS["lang"]['The number of associated networks. Links to <code>networks.cloud_id</code>.'] = 'Die Anzahl der zugehörigen Netze. Links zu <code>networks.cloud_id</code>.';
 
-$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code>and <code>devices.serial</code>.'] = 'Die Anzahl der geprüften Geräte in dieser Cloud. Links zu <code>devices.cloud_id</code>und <code>devices.serial</code>.';
+$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = 'Die Anzahl der geprüften Geräte in dieser Cloud. Links zu <code>devices.cloud_id</code> und <code>devices.serial</code>.';
 
 $GLOBALS["lang"]['The number of devices found by this discovery.'] = 'Die Anzahl der von dieser Entdeckung gefundenen Geräte.';
 
 $GLOBALS["lang"]['The number of devices in the associated group.'] = 'Die Anzahl der Geräte in der zugehörigen Gruppe.';
 
-$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code>and <code>devices.instance_state</code>.'] = 'Die Anzahl der Geräte in dieser Cloud mit einem Zustand des Laufens. Links zu <code>devices.cloud_id</code>und <code>devices.instance_state</code>.';
+$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Die Anzahl der Geräte in dieser Cloud mit einem Zustand des Laufens. Links zu <code>devices.cloud_id</code> und <code>devices.instance_state</code>.';
 
-$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code>and <code>devices.instance_state</code>.'] = 'Die Anzahl der Geräte in dieser Cloud mit einem Stand. Links zu <code>devices.cloud_id</code>und <code>devices.instance_state</code>.';
+$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Die Anzahl der Geräte in dieser Cloud mit einem Stand. Links zu <code>devices.cloud_id</code> und <code>devices.instance_state</code>.';
 
 $GLOBALS["lang"]['The number of devices in this cloud. Links to <code>devices.cloud_id</code>.'] = 'Die Anzahl der Geräte in dieser Cloud. Links zu <code>devices.cloud_id</code>.';
 
@@ -5258,7 +5342,7 @@ $GLOBALS["lang"]['The text for the bottom of the chart in a line chart (only).']
 
 $GLOBALS["lang"]['The text that is displayed.'] = 'Der Text, der angezeigt wird.';
 
-$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2001-01-01 00:00:00</code>which means by default, a scheduled task will run at next scheduled execution time.'] = 'Danach sollte diese Aufgabe laufen. Führen Sie beispielsweise eine Aufgabe nach dem 1. Juni 2017 um 10 Uhr aus, setzen Sie sie auf <code>2017-06-01 09:59:00</code>. Dieser Wert sollte null gepolstert sein (d.h. 09, nicht 9). Dieser Wert wird standardmäßig auf <code>2001-01 00:00:00:00:00>/code>eingestellt, was bedeutet standardmäßig, eine geplante Aufgabe wird zur nächsten geplanten Ausführungszeit ausgeführt.';
+$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2001-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = 'Danach sollte diese Aufgabe laufen. Führen Sie beispielsweise eine Aufgabe nach dem 1. Juni 2017 um 10 Uhr aus, setzen Sie sie auf <code>2017-06-01 09:59:00</code>. Dieser Wert sollte null gepolstert sein (d.h. 09, nicht 9). Dieser Wert wird standardmäßig <code>2001-01-01 00:00:00</code> Das bedeutet standardmäßig, eine geplante Aufgabe wird zur nächsten geplanten Ausführungszeit ausgeführt.';
 
 $GLOBALS["lang"]['The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.'] = 'Die Top 10, 100 oder 1000 (oder keine) TCP-Ports, die üblicherweise gemäß Nmap verwendet werden.';
 
@@ -5292,13 +5376,13 @@ $GLOBALS["lang"]['The value that is stored for this particular item.'] = 'Der f�
 
 $GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = 'Das Web-Verzeichnis auf dem Host, das Open-AudIT installiert ist (erfordert einen nachlaufenden Slash).';
 
-$GLOBALS["lang"]['The widget at position '] = 'Das Widget an Position';
+$GLOBALS["lang"]['The widget at position '] = 'Das Widget an Position ';
 
 $GLOBALS["lang"]['The width of this device.'] = 'Die Breite dieser Vorrichtung.';
 
 $GLOBALS["lang"]['Then'] = 'Dann';
 
-$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code>and,or <code>d</code>which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = 'Dieses Attribut wird als JSON-Objekt gespeichert. Es ist die Liste aller Sammlungen und enthält den Sammelnamen zusammen mit <code>c</code>, <code>r</code>, <code>u</code>und,oder <code>d</code>, die erstellen, lesen, aktualisieren und löschen. Dies sind die Aktionen, die ein Benutzer auf Gegenständen aus dieser bestimmten Sammlung ausführen kann.';
+$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = 'Dieses Attribut wird als JSON-Objekt gespeichert. Es ist die Liste aller Sammlungen und enthält den Sammelnamen zusammen mit <code>c</code>, <code>r</code>, <code>u</code> und <code>d</code> die erstellen, lesen, aktualisieren und löschen. Dies sind die Aktionen, die ein Benutzer auf Gegenständen aus dieser bestimmten Sammlung ausführen kann.';
 
 $GLOBALS["lang"]['This can be either a varchar (a text field), a list (a list of values that can be selected) or a date.'] = 'Dies kann entweder ein Varchar (ein Textfeld), eine Liste (eine Liste von Werten, die ausgewählt werden können) oder ein Datum sein.';
 
@@ -5478,7 +5562,7 @@ $GLOBALS["lang"]['Update Internal From External'] = 'Update intern von extern';
 
 $GLOBALS["lang"]['Update NMIS Devices from Open-AudIT'] = 'NMIS-Geräte von Open-AudIT aktualisieren';
 
-$GLOBALS["lang"]['Update Open-AudIT Devices from '] = 'Open-AudIT aktualisieren Geräte von';
+$GLOBALS["lang"]['Update Open-AudIT Devices from '] = 'Open-AudIT aktualisieren Geräte von ';
 
 $GLOBALS["lang"]['Update Open-AudIT Devices from NMIS'] = 'Open-AudIT aktualisieren Geräte von NMIS';
 
@@ -5564,7 +5648,11 @@ $GLOBALS["lang"]['Used when LDAP servers have been configured to populate a user
 
 $GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.'] = 'Wird verwendet, wenn LDAP-Server konfiguriert wurden, um eine Benutzerdetails zu bevölkern - dies beinhaltet die Roles, die sie zugewiesen werden. Wenn ein Benutzer in dieser LDAP-Gruppe ist, werden diese Rolle zugewiesen.';
 
-$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = 'Wird bei der Suche nach OpenLDAP verwendet, um den Benutzern zu entsprechen, die an eine Gruppenmitglieder weitergeleitet werden. Standard <code>memberUid</code>Nur von OpenLDAP verwendet.';
+$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = 'Wird bei der Suche nach OpenLDAP verwendet, um den Benutzern zu entsprechen, die an eine Gruppenmitglieder weitergeleitet werden. Standard <code>memberUid</code>. Nur von OpenLDAP verwendet.';
+
+$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications.'] = 'Verwendet mit Integrations- und FirstWave Monitoring-Anwendungen.';
+
+$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications. Set to y if working SNMP detected by discovery.'] = 'Verwendet mit Integrations- und FirstWave Monitoring-Anwendungen. Setzen Sie auf y, wenn die Arbeit SNMP durch Entdeckung erkannt.';
 
 $GLOBALS["lang"]['user'] = 'Benutzer';
 
@@ -5758,7 +5846,7 @@ $GLOBALS["lang"]['weight_max'] = 'Gewicht Max';
 
 $GLOBALS["lang"]['Weight Max'] = 'Gewicht Max';
 
-$GLOBALS["lang"]['Welcome'] = 'Willkommen';
+$GLOBALS["lang"]['Welcome'] = 'Willkommen!';
 
 $GLOBALS["lang"]['Welcome Dashboard'] = 'Willkommen Dashboard';
 
@@ -5766,13 +5854,13 @@ $GLOBALS["lang"]['Welcome to FirstWave Open-AudIT'] = 'Willkommen bei FirstWave 
 
 $GLOBALS["lang"]['Western Sahara'] = 'Westsahara';
 
-$GLOBALS["lang"]['what'] = 'Was';
+$GLOBALS["lang"]['what'] = 'Was?';
 
-$GLOBALS["lang"]['What'] = 'Was';
+$GLOBALS["lang"]['What'] = 'Was?';
 
 $GLOBALS["lang"]['What is the purpose of this rack.'] = 'Was ist der Zweck dieses Regals.';
 
-$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code>table.'] = 'Was ist die Art dieses Ortes. Zulässige Typen in <code>attributes</code>Tabelle.';
+$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = 'Was ist die Art dieses Ortes. Zulässige Typen <code>attributes</code> Tisch.';
 
 $GLOBALS["lang"]['when'] = 'Wann';
 
@@ -5784,11 +5872,13 @@ $GLOBALS["lang"]['When integrating devices from the external system, if the devi
 
 $GLOBALS["lang"]['When retrieve an external device, should we run discovery upon it?'] = 'Wenn wir ein externes Gerät abrufen, sollten wir es entdecken?';
 
-$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code>and <code>tasks.sub_resource_id</code>.'] = 'Wenn dieser Benchmark ausgeführt werden soll. Abgeleitet von den zugehörigen <code>tasks.type</code>und <code>tasks.sub_resource_id</code>.';
+$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.'] = 'Wenn dieser Benchmark ausgeführt werden soll. Abgeleitet vom zugehörigen <code>tasks.type</code> und <code>tasks.sub_resource_id</code>.';
 
 $GLOBALS["lang"]['When this log was created.'] = 'Als dieses Protokoll erstellt wurde.';
 
 $GLOBALS["lang"]['When this queue item started processing.'] = 'Wenn diese Warteschlange beginnt die Verarbeitung.';
+
+$GLOBALS["lang"]['When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.'] = 'Wenn wir diese Basislinie ausführen, sollten wir nach Artikeln auf Geräten überprüfen, die nicht in einer Richtlinie für diese Basislinie sind.';
 
 $GLOBALS["lang"]['When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.'] = 'Wenn wir einen offenen Port erhalten, sollten wir versuchen, auf die Version des Dienstes zu testen, der derzeit läuft? Dies hilft bei der Bestätigung der tatsächlichen laufenden Dienste.';
 
@@ -5814,7 +5904,7 @@ $GLOBALS["lang"]['Wide Area Network'] = 'Netzwerk für breite Bereiche';
 
 $GLOBALS["lang"]['Widget'] = 'Widget';
 
-$GLOBALS["lang"]['Widget # '] = 'Widget';
+$GLOBALS["lang"]['Widget # '] = 'Widget ';
 
 $GLOBALS["lang"]['Widget Type'] = 'Widget-Typ';
 
@@ -5852,7 +5942,7 @@ $GLOBALS["lang"]['Yellow Query'] = 'Gelbe Querung';
 
 $GLOBALS["lang"]['Yemen'] = 'Jemen';
 
-$GLOBALS["lang"]['Yes'] = 'Ja';
+$GLOBALS["lang"]['Yes'] = 'Ja.';
 
 $GLOBALS["lang"]['You may want to copy and paste this URL in an email to your staff.'] = 'Sie möchten diese URL möglicherweise in einer E-Mail an Ihr Personal kopieren und einfügen.';
 
@@ -5894,47 +5984,47 @@ $GLOBALS["lang"]['Zambia'] = 'Sambia';
 
 $GLOBALS["lang"]['Zimbabwe'] = 'Schweden';
 
-$GLOBALS["lang"]['active'] = 'wirkstoff';
+$GLOBALS["lang"]['active'] = 'Wirkstoff';
 
-$GLOBALS["lang"]['active directory'] = 'aktives verzeichnis';
+$GLOBALS["lang"]['active directory'] = 'Aktives Verzeichnis';
 
 $GLOBALS["lang"]['active/active'] = 'aktiv/aktiv';
 
 $GLOBALS["lang"]['active/passive'] = 'aktiv/passiv';
 
-$GLOBALS["lang"]['ad hoc'] = 'ad hoc';
+$GLOBALS["lang"]['ad hoc'] = 'Ad hoc';
 
-$GLOBALS["lang"]['alert'] = 'alarmstufe';
+$GLOBALS["lang"]['alert'] = 'Alarmstufe';
 
 $GLOBALS["lang"]['all'] = 'alle';
 
 $GLOBALS["lang"]['allocated'] = 'zugewiesen';
 
-$GLOBALS["lang"]['amazon'] = 'amazon';
+$GLOBALS["lang"]['amazon'] = 'Amazon';
 
-$GLOBALS["lang"]['antivirus'] = 'antivirus';
+$GLOBALS["lang"]['antivirus'] = 'Antivirus';
 
-$GLOBALS["lang"]['application'] = 'anwendungsbereich';
+$GLOBALS["lang"]['application'] = 'Anwendungsbereich';
 
 $GLOBALS["lang"]['approved'] = 'genehmigt';
 
-$GLOBALS["lang"]['attribute'] = 'eigenschaften';
+$GLOBALS["lang"]['attribute'] = 'Eigenschaften';
 
-$GLOBALS["lang"]['auto'] = 'auto';
+$GLOBALS["lang"]['auto'] = 'Auto';
 
-$GLOBALS["lang"]['backup'] = 'sicherung';
+$GLOBALS["lang"]['backup'] = 'Sicherung';
 
 $GLOBALS["lang"]['banned'] = 'verboten';
 
-$GLOBALS["lang"]['bottom'] = 'boden';
+$GLOBALS["lang"]['bottom'] = 'Boden';
 
-$GLOBALS["lang"]['building'] = 'gebäude';
+$GLOBALS["lang"]['building'] = 'Gebäude';
 
-$GLOBALS["lang"]['cloud'] = 'wolken';
+$GLOBALS["lang"]['cloud'] = 'Wolken';
 
-$GLOBALS["lang"]['collector'] = 'sammler';
+$GLOBALS["lang"]['collector'] = 'Sammler';
 
-$GLOBALS["lang"]['compute'] = 'berechnung';
+$GLOBALS["lang"]['compute'] = 'Berechnung';
 
 $GLOBALS["lang"]['contains'] = 'enthält';
 
@@ -5944,69 +6034,69 @@ $GLOBALS["lang"]['created'] = 'erstellt';
 
 $GLOBALS["lang"]['critical'] = 'kritisch';
 
-$GLOBALS["lang"]['database'] = 'datenbank';
+$GLOBALS["lang"]['database'] = 'Datenbank';
 
-$GLOBALS["lang"]['debug'] = 'debug';
+$GLOBALS["lang"]['debug'] = 'Debug';
 
-$GLOBALS["lang"]['defined process'] = 'definierter prozess';
+$GLOBALS["lang"]['defined process'] = 'definierter Prozess';
 
-$GLOBALS["lang"]['delegated'] = 'delegierte';
+$GLOBALS["lang"]['delegated'] = 'Delegierte';
 
-$GLOBALS["lang"]['delete'] = 'löschen';
+$GLOBALS["lang"]['delete'] = 'Löschen';
 
 $GLOBALS["lang"]['deleted'] = 'gelöscht';
 
 $GLOBALS["lang"]['denied'] = 'gekürzt';
 
-$GLOBALS["lang"]['devices'] = 'geräte';
+$GLOBALS["lang"]['devices'] = 'Geräte';
 
-$GLOBALS["lang"]['digitalocean'] = 'digitalocean';
+$GLOBALS["lang"]['digitalocean'] = 'Digitalocean';
 
 $GLOBALS["lang"]['does not equal'] = 'nicht gleich';
 
-$GLOBALS["lang"]['emergency'] = 'notfall';
+$GLOBALS["lang"]['emergency'] = 'Notfall';
 
-$GLOBALS["lang"]['entra'] = 'entre';
+$GLOBALS["lang"]['entra'] = 'Entre';
 
 $GLOBALS["lang"]['equals'] = 'gleich';
 
-$GLOBALS["lang"]['error'] = 'fehler';
+$GLOBALS["lang"]['error'] = 'Fehler';
 
 $GLOBALS["lang"]['excluded'] = 'ausgeschlossen';
 
 $GLOBALS["lang"]['expired'] = 'abgelaufen';
 
-$GLOBALS["lang"]['fail'] = 'fehler';
+$GLOBALS["lang"]['fail'] = 'Fehler';
 
 $GLOBALS["lang"]['false'] = 'falsch';
 
-$GLOBALS["lang"]['firewall'] = 'firewall';
+$GLOBALS["lang"]['firewall'] = 'Firewall';
 
 $GLOBALS["lang"]['fixed'] = 'fest';
 
-$GLOBALS["lang"]['floor'] = 'boden';
+$GLOBALS["lang"]['floor'] = 'Boden';
 
-$GLOBALS["lang"]['front'] = 'vorderseite';
+$GLOBALS["lang"]['front'] = 'Vorderseite';
 
 $GLOBALS["lang"]['front-left'] = 'vorne links';
 
 $GLOBALS["lang"]['front-right'] = 'vorne rechts';
 
-$GLOBALS["lang"]['github'] = 'github';
+$GLOBALS["lang"]['github'] = 'Github';
 
-$GLOBALS["lang"]['google'] = 'kohl';
+$GLOBALS["lang"]['google'] = 'Kohl';
 
 $GLOBALS["lang"]['greater or equals'] = 'größer oder gleich';
 
 $GLOBALS["lang"]['greater than'] = 'größer als';
 
-$GLOBALS["lang"]['group'] = 'gruppe';
+$GLOBALS["lang"]['group'] = 'Gruppe';
 
-$GLOBALS["lang"]['head'] = 'kopf';
+$GLOBALS["lang"]['head'] = 'Kopf';
 
-$GLOBALS["lang"]['here'] = 'hier';
+$GLOBALS["lang"]['here'] = 'Hier.';
 
-$GLOBALS["lang"]['high availability'] = 'hohe verfügbarkeit';
+$GLOBALS["lang"]['high availability'] = 'hohe Verfügbarkeit';
 
 $GLOBALS["lang"]['ignored'] = 'ignoriert';
 
@@ -6014,9 +6104,9 @@ $GLOBALS["lang"]['in'] = 'in';
 
 $GLOBALS["lang"]['inactive'] = 'inaktiv';
 
-$GLOBALS["lang"]['info'] = 'info';
+$GLOBALS["lang"]['info'] = 'Info';
 
-$GLOBALS["lang"]['int, text, bool (y/n), etc'] = 'int, text, bool (y/n), usw';
+$GLOBALS["lang"]['int, text, bool (y/n), etc'] = 'int, Text, bool (y/n), usw.';
 
 $GLOBALS["lang"]['is licensed to'] = 'ist lizenziert';
 
@@ -6026,33 +6116,33 @@ $GLOBALS["lang"]['less or equals'] = 'kleiner oder gleich';
 
 $GLOBALS["lang"]['less than'] = 'weniger als';
 
-$GLOBALS["lang"]['license'] = 'lizenz';
+$GLOBALS["lang"]['license'] = 'Lizenz';
 
 $GLOBALS["lang"]['like'] = 'wie';
 
-$GLOBALS["lang"]['line'] = 'linie';
+$GLOBALS["lang"]['line'] = 'Linie';
 
-$GLOBALS["lang"]['load balancing'] = 'lastausgleich';
+$GLOBALS["lang"]['load balancing'] = 'Lastausgleich';
 
-$GLOBALS["lang"]['location'] = 'standort';
+$GLOBALS["lang"]['location'] = 'Standort';
 
 $GLOBALS["lang"]['managed and measurable'] = 'verwaltet und messbar';
 
-$GLOBALS["lang"]['microsoft'] = 'mikrosoft';
+$GLOBALS["lang"]['microsoft'] = 'Mikrosoft';
 
-$GLOBALS["lang"]['mount point'] = 'befestigungspunkt';
+$GLOBALS["lang"]['mount point'] = 'Befestigungspunkt';
 
-$GLOBALS["lang"]['network'] = 'netzwerk';
+$GLOBALS["lang"]['network'] = 'Netzwerk';
 
-$GLOBALS["lang"]['no'] = 'nein';
+$GLOBALS["lang"]['no'] = 'Nein';
 
-$GLOBALS["lang"]['node'] = 'knotenpunkt';
+$GLOBALS["lang"]['node'] = 'Knotenpunkt';
 
 $GLOBALS["lang"]['non-existent'] = 'nicht vorhanden';
 
 $GLOBALS["lang"]['none'] = 'keine';
 
-$GLOBALS["lang"]['normal'] = 'normalwert';
+$GLOBALS["lang"]['normal'] = 'Normalwert';
 
 $GLOBALS["lang"]['not applicable'] = 'nicht anwendbar';
 
@@ -6060,63 +6150,63 @@ $GLOBALS["lang"]['not in'] = 'nicht';
 
 $GLOBALS["lang"]['not like'] = 'nicht wie';
 
-$GLOBALS["lang"]['notice'] = 'mitteilung';
+$GLOBALS["lang"]['notice'] = 'Mitteilung';
 
-$GLOBALS["lang"]['okta'] = 'ok';
+$GLOBALS["lang"]['okta'] = 'Ok';
 
-$GLOBALS["lang"]['openldap'] = 'openldap';
+$GLOBALS["lang"]['openldap'] = 'Openldap';
 
 $GLOBALS["lang"]['optimized'] = 'optimiert';
 
-$GLOBALS["lang"]['optionally '] = 'optional';
+$GLOBALS["lang"]['optionally '] = 'optional ';
 
 $GLOBALS["lang"]['other'] = 'andere';
 
-$GLOBALS["lang"]['partition'] = 'partition';
+$GLOBALS["lang"]['partition'] = 'Partition';
 
 $GLOBALS["lang"]['pass'] = 'passieren';
 
 $GLOBALS["lang"]['pending'] = 'bis';
 
-$GLOBALS["lang"]['performance'] = 'leistung';
+$GLOBALS["lang"]['performance'] = 'Leistung';
 
-$GLOBALS["lang"]['pie'] = 'torf';
+$GLOBALS["lang"]['pie'] = 'Torf';
 
-$GLOBALS["lang"]['planning'] = 'planung';
+$GLOBALS["lang"]['planning'] = 'Planung';
 
-$GLOBALS["lang"]['query'] = 'anfrage';
+$GLOBALS["lang"]['query'] = 'Anfrage';
 
-$GLOBALS["lang"]['rear'] = 'heck';
+$GLOBALS["lang"]['rear'] = 'Heck';
 
 $GLOBALS["lang"]['rear-left'] = 'hinten links';
 
 $GLOBALS["lang"]['rear-right'] = 'hinten rechts';
 
-$GLOBALS["lang"]['regex'] = 'regex';
+$GLOBALS["lang"]['regex'] = 'Regex';
 
 $GLOBALS["lang"]['repeatable but intuitive'] = 'wiederholbar aber intuitiv';
 
 $GLOBALS["lang"]['reserved'] = 'reserviert';
 
-$GLOBALS["lang"]['right'] = 'recht';
+$GLOBALS["lang"]['right'] = 'Recht';
 
-$GLOBALS["lang"]['room'] = 'zimmer';
+$GLOBALS["lang"]['room'] = 'Zimmer';
 
-$GLOBALS["lang"]['row'] = 'zeile';
+$GLOBALS["lang"]['row'] = 'Zeile';
 
-$GLOBALS["lang"]['stand-alone'] = 'stand-alone';
+$GLOBALS["lang"]['stand-alone'] = 'Stand-alone';
 
-$GLOBALS["lang"]['standard'] = 'standard';
+$GLOBALS["lang"]['standard'] = 'Standard';
 
 $GLOBALS["lang"]['starts with'] = 'beginnt mit';
 
-$GLOBALS["lang"]['storage'] = 'lagerung';
+$GLOBALS["lang"]['storage'] = 'Lagerung';
 
-$GLOBALS["lang"]['timestamp'] = 'zeitstempel';
+$GLOBALS["lang"]['timestamp'] = 'Zeitstempel';
 
-$GLOBALS["lang"]['top'] = 'kopf';
+$GLOBALS["lang"]['top'] = 'Kopf';
 
-$GLOBALS["lang"]['traffic'] = 'verkehr';
+$GLOBALS["lang"]['traffic'] = 'Verkehr';
 
 $GLOBALS["lang"]['true'] = 'wahr';
 
@@ -6130,21 +6220,21 @@ $GLOBALS["lang"]['unmanaged'] = 'unmanaged';
 
 $GLOBALS["lang"]['unused'] = 'nicht verwendet';
 
-$GLOBALS["lang"]['update'] = 'aktualisierung';
+$GLOBALS["lang"]['update'] = 'Aktualisierung';
 
 $GLOBALS["lang"]['valid'] = 'gültig';
 
-$GLOBALS["lang"]['virtualisation'] = 'virtualisierung';
+$GLOBALS["lang"]['virtualisation'] = 'Virtualisierung';
 
-$GLOBALS["lang"]['warning'] = 'warnung';
+$GLOBALS["lang"]['warning'] = 'Warnung';
 
-$GLOBALS["lang"]['web'] = 'waren';
+$GLOBALS["lang"]['web'] = 'Waren';
 
-$GLOBALS["lang"]['yes'] = 'ja';
+$GLOBALS["lang"]['yes'] = 'Ja.';
 
 $GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br><br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br><br></p>'] = 'Ein Standort ist eine physische Adresse, die Geräte mit ihr verbunden haben kann.<br><br>Sie können es Koordinaten (lat/long) zuordnen und wenn Geräte zugewiesen sind, erscheint der Standort auf der Open-AudIT Enterprise map.<br><br></p>';
 
-$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It doesn\t matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong>an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong>the actions are taken.</p>'] = '<p>Agents lassen Sie PCs ohne Entdeckung testen. Installieren Sie den Agenten und es wird jeden Tag mit dem Server Check-in und Audit selbst. Es spielt keine Rolle, ob Ihre Computer Firewall sind, Audit-Daten erscheinen immer noch in Open-AudIT.</p>Prüfung <strong>if</strong>ein Agent sollte Aktionen durchführen, alle drei Tests müssen passieren (wenn der Test eingestellt ist). <strong>die</strong>Maßnahmen ergriffen werden.</p>';
+$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It doesn\t matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>Agents lassen Sie PCs ohne Entdeckung testen. Installieren Sie den Agenten und es wird jeden Tag mit dem Server Check-in und Audit selbst. Es spielt keine Rolle, ob Ihre Computer Firewall sind, Audit-Daten erscheinen immer noch in Open-AudIT.</p>p> Prüfung <strong>if</strong> ein Agent sollte Aktionen durchführen, alle drei Tests müssen passieren (wenn der Test eingestellt ist). <strong>die</strong> Maßnahmen ergriffen werden.</p>';
 
 $GLOBALS["lang"]['AF'] = 'AF';
 

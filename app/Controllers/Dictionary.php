@@ -431,7 +431,8 @@ class Dictionary extends BaseController
         set_time_limit(3000);
         $opt = new stdClass();
         $opt->source = 'en';
-        $opt->target = 'zh';
+        $opt->target = 'de';
+        $opt->format = 'html';
         $opt->url = 'http://localhost:5000/translate';
 
         $ch = curl_init($opt->url);
@@ -441,6 +442,7 @@ class Dictionary extends BaseController
                 'q' => $value,
                 'source' => $opt->source,
                 'target'   => $opt->target,
+                'format'   => $opt->format,
             ];
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
             $response = curl_exec($ch);
