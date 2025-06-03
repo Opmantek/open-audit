@@ -78,10 +78,10 @@ if ($style === 'icontext') {
                                                 <th>Policy Class</th>
                                                 <th>Policy Section</th>
                                                 <th>Policy Name</th>
-                                                <th>Responsibility</th>
-                                                <th>Result</th>
-                                                <th>Maturity Score</th>
-                                                <th>Maturity Level</th>
+                                                <th class="text-center">Responsibility</th>
+                                                <th class="text-center">Result</th>
+                                                <th class="text-center">Maturity Level</th>
+                                                <th class="text-center">Edited Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -89,25 +89,42 @@ if ($style === 'icontext') {
                                             <?php
                                             if ($item->attributes->result === '') {
                                                 $item->attributes->result = 'unanswered';
-                                                $item->attributes->maturity_score = '';
                                             }
                                             if ($item->attributes->result === 'pass') {
                                                 $item->attributes->result = '<span class="text-success">' . $item->attributes->result . '</span>';
                                             } else if ($item->attributes->result === 'fail') {
                                                 $item->attributes->result = '<span class="text-danger">' . $item->attributes->result . '</span>';
+                                            } else if ($item->attributes->result === 'unanswered') {
+                                                $item->attributes->result = '<span class="text-danger">' . $item->attributes->result . '</span>';
+                                            } else if ($item->attributes->result === 'not applicable') {
+                                                $item->attributes->result = '<span class="text-success">' . $item->attributes->result . '</span>';
                                             } else {
                                                 $item->attributes->result = '<span class="text-warning">' . $item->attributes->result . '</span>';
                                             }
+
+                                            if ($item->attributes->maturity_level === 'incomplete') {
+                                                $item->attributes->maturity_level = '<span class="text-warning">' . $item->attributes->maturity_level . '</span>';
+                                            }
+                                            if ($item->attributes->maturity_level === 'incomplete' and ($item->attributes->result === 'fail' or $item->attributes->result === 'unanswered')) {
+                                                $item->attributes->maturity_level = '<span class="text-danger">' . $item->attributes->maturity_level . '</span>';
+                                            }
+                                            if ($item->attributes->maturity_level === 'performed' or $item->attributes->maturity_level === 'managed') {
+                                                $item->attributes->maturity_level = '<span class="text-primary">' . $item->attributes->maturity_level . '</span>';
+                                            }
+                                            if ($item->attributes->maturity_level === 'established' or $item->attributes->maturity_level === 'predictable' or $item->attributes->maturity_level === 'optimized') {
+                                                $item->attributes->maturity_level = '<span class="text-success">' . $item->attributes->maturity_level . '</span>';
+                                            }
+
                                             ?>
                                             <tr>
                                                 <?=collection_button_read('standards_results', $item->id) ?>
                                                 <td><?= $item->attributes->{'standards_policies.class'} ?></td>
                                                 <td><span style="display:none;"><?= $item->attributes->{'standards_policies.section_padded'} ?></span><?= $item->attributes->{'standards_policies.section'} ?></td>
                                                 <td><?= $item->attributes->{'standards_policies.name'} ?></td>
-                                                <td><?= $item->attributes->responsibility ?></td>
-                                                <td><?= $item->attributes->result ?></td>
-                                                <td><?= $item->attributes->maturity_score ?></td>
-                                                <td><?= $item->attributes->maturity_level ?></td>
+                                                <td class="text-center"><?= $item->attributes->responsibility ?></td>
+                                                <td class="text-center"><?= $item->attributes->result ?></td>
+                                                <td class="text-center"><?= $item->attributes->maturity_level ?></td>
+                                                <td class="text-center"><?php $date = new DateTime($item->attributes->edited_date); echo $date->format('Y-m-d'); ?></td>
                                             </tr>
                                             <?php } ?>
                                         </tbody>

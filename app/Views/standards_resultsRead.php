@@ -19,7 +19,7 @@ include 'shared/read_functions.php';
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="sql" class="form-label"><?= __('Description') ?></label>
+                                    <?= read_field_header($meta->collection, 'description', '') ?>
                                     <div class="input-group">
                                         <textarea class="form-control" rows="14" id="description" name="description" disabled><?= html_entity_decode($included['standards_policies'][0]->attributes->description) ?></textarea>
                                     </div>
@@ -67,7 +67,7 @@ include 'shared/read_functions.php';
 
                            <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="applied" class="form-label"><?= __('Applied') ?></label>
+                                    <?= read_field_header($meta->collection, 'applied', $dictionary->columns->applied) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="applied" name="applied" data-original-value="<?= $resource->applied ?>" disabled>
                                             <option value='y'><?php echo __('Yes'); ?></option>
@@ -88,15 +88,15 @@ include 'shared/read_functions.php';
 
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="result" class="form-label"><?= __('Result') ?></label>
+                                    <?= read_field_header($meta->collection, 'result', $dictionary->columns->result) ?>
                                     <div class="input-group">
                                         <select class="form-select" id="result" name="result" data-original-value="<?= $resource->result ?>" disabled>
                                             <option value=''>&nbsp;</option>
-                                            <option value='pass'><?php echo __('Pass'); ?></option>
-                                            <option value='fail'><?php echo __('Fail'); ?></option>
-                                            <option value='not applicable'><?php echo __('Not Applicable'); ?></option>
-                                            <option value='excluded'><?php echo __('Excluded'); ?></option>
-                                            <option value='other'><?php echo __('Other'); ?></option>
+                                            <option value='pass'           <?php if ($resource->{'result'} === 'pass') { ?>selected<?php } ?>><?php echo __('Pass'); ?></option>
+                                            <option value='fail'           <?php if ($resource->{'result'} === 'fail') { ?>selected<?php } ?>><?php echo __('Fail'); ?></option>
+                                            <option value='not applicable' <?php if ($resource->{'result'} === 'not applicable') { ?>selected<?php } ?>><?php echo __('Not Applicable'); ?></option>
+                                            <option value='excluded'       <?php if ($resource->{'result'} === 'excluded') { ?>selected<?php } ?>><?php echo __('Excluded'); ?></option>
+                                            <option value='other'          <?php if ($resource->{'result'} === 'other') { ?>selected<?php } ?>><?php echo __('Other'); ?></option>
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
@@ -110,13 +110,38 @@ include 'shared/read_functions.php';
                                 </div>
                             </div>
 
+                            <div class="row" style="padding-top:16px;">
+                                <div class="offset-2 col-8" style="position:relative;">
+                                    <?= read_field_header($meta->collection, 'maturity_level', $dictionary->columns->maturity_level) ?>
+                                    <div class="input-group">
+                                        <select class="form-select" id="maturity_level" name="maturity_level" data-original-value="<?= $resource->maturity_level ?>" disabled>
+                                            <option value=''>&nbsp;</option>
+                                            <option value='incomplete' <?php if ($resource->{'maturity_level'} === 'incomplete') { ?>selected<?php } ?>><?php echo __('Incomplete'); ?></option>
+                                            <option value='performed'  <?php if ($resource->{'maturity_level'} === 'performed')  { ?>selected<?php } ?>><?php echo __('Performed'); ?></option>
+                                            <option value='managed'    <?php if ($resource->{'maturity_level'} === 'managed')    { ?>selected<?php } ?>><?php echo __('Managed'); ?></option>
+                                            <option value='established'<?php if ($resource->{'maturity_level'} === 'established'){ ?>selected<?php } ?>><?php echo __('Established'); ?></option>
+                                            <option value='predictable'<?php if ($resource->{'maturity_level'} === 'predictable'){ ?>selected<?php } ?>><?php echo __('Predictable'); ?></option>
+                                            <option value='optimized'  <?php if ($resource->{'maturity_level'} === 'optimized')  { ?>selected<?php } ?>><?php echo __('Optimized'); ?></option>
+                                        </select>
+                                        <?php if ($update) { ?>
+                                        <div class="float-end" style="padding-left:4px;">
+                                            <div data-attribute="maturity_level" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                            <div data-attribute="maturity_level" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                            <div data-attribute="maturity_level" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="maturity_level" data-dictionary="<?= $dictionary->columns->result ?>"><span><br></span></div>
+                                </div>
+                            </div>
+
                             <?php
                             $columns = array('exclusion_reasons', 'responsibility', 'legal_requirements', 'contractual_obligations', 'business_requirements', 'best_practises', 'risk_assesment_result', 'implementation_notes', 'notes');
                             foreach ($columns as $column) {
                             ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
-                                    <label for="<?= $column ?>" class="form-label"><?= ucwords(str_replace('_', ' ', __($column))) ?></label>
+                                    <?= read_field_header($meta->collection, $column, $dictionary->columns->{$column}) ?>
                                     <div class="input-group">
                                         <textarea class="form-control" rows="6" id="<?= $column ?>" name="<?= $column ?>" data-original-value="<?= $resource->$column ?>" disabled><?= html_entity_decode($resource->$column) ?></textarea>
                                         <?php if ($update) { ?>
@@ -144,6 +169,7 @@ window.onload = function () {
     $(document).ready(function() {
         $("#applied").val("<?= $resource->applied ?>");
         $("#result").val("<?= $resource->result ?>");
+        $("#maturity_level").val("<?= $resource->maturity_level ?>");
         $("#button_export_csv").remove();
         $("#button_export_json").remove();
         $("#button_delete").remove();

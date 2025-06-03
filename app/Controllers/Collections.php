@@ -906,6 +906,15 @@ class Collections extends BaseController
         }
 
         if ($this->resp->meta->format !== 'html') {
+            if ($this->resp->meta->collection === 'standards' and $this->resp->meta->format === 'report') {
+                $orgs = $this->orgsModel->read($this->resp->data[0]->attributes->org_id);
+                return view('standardsReport', [
+                    'data' => filter_response($this->resp->data),
+                    'orgs' => filter_response($orgs),
+                    'resource' => filter_response($this->resp->data[0]->attributes),
+                    'included' => filter_response($this->resp->included)]);
+            }
+
             if ($this->resp->meta->collection === 'devices') {
                 $this->resp->included = $this->{$this->resp->meta->collection . 'Model'}->includedRead($this->resp->meta->id);
                 $this->resp->dictionary = $dictionary;

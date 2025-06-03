@@ -1659,7 +1659,7 @@ if (!function_exists('response_valid_formats')) {
      */
     function response_valid_formats()
     {
-        $valid_formats = array('csv','highcharts','html','html_data','json','json_data','sql','table','xml');
+        $valid_formats = array('csv','highcharts','html','html_data','json','json_data','report','sql','table','xml');
         return $valid_formats;
     }
 }

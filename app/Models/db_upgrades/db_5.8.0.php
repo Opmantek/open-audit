@@ -55,7 +55,7 @@ $sql = "CREATE TABLE `standards_results` (
   `policy_id` int(10) unsigned NOT NULL DEFAULT '1',
   `applied` varchar(200) NOT NULL DEFAULT '',
   `maturity_score` decimal(1,1) NOT NULL DEFAULT '0.0',
-  `maturity_level` enum('non-existent', 'ad hoc', 'repeatable but intuitive', 'defined process', 'managed and measurable', 'optimized', ''),
+  `maturity_level` enum('incomplete', 'performed', 'managed', 'established', 'predictable', 'optimized', ''),
   `legal_requirements` text NOT NULL,
   `contractual_obligations` text NOT NULL,
   `business_requirements` text NOT NULL,
