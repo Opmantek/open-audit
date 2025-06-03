@@ -223,7 +223,7 @@ class Help extends BaseController
     {
         $license = (!empty($_GET['license'])) ? $_GET['license'] : '';
         $license_contents = '';
-        if (!empty($license)) {
+        if (!empty($license) and file_exists(ROOTPATH . 'other/licenses/' . $license . '.txt')) {
             $license_contents = @file_get_contents(ROOTPATH . 'other/licenses/' . $license . '.txt');
         }
         return view('shared/header', [
