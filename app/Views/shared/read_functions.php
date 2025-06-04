@@ -141,6 +141,17 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         }
     }
 
+    $report_button = '';
+    if ($collection === 'standards' and !empty($id)) {
+        if ($style === 'icontext') {
+            $report_button = "<a id=\"button_report\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Report") . "\" href=\"" . url_to($collection . 'Read', $id) . "?format=report\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-print text-primary\"></span>" . __("Report") . "</a>";
+        } elseif ($style === 'icon') {
+            $report_button = "<a id=\"button_report\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Report") . "\" href=\"" . url_to($collection . 'Read', $id) . "?format=report\"><span class=\"fa-solid fa-print text-primary\"></span></a>";
+        } else {
+            $report_button = "<a id=\"button_report\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Report") . "\" href=\"" . url_to($collection . 'Read', $id) . "?format=report\">" . __("Report") . "</a>";
+        }
+    }
+
     $return = "<div class=\"row\">
                         <div class=\"col-4 clearfix\">
                             <h6 style=\"padding-top:10px;\"><span class=\"{$icon} oa-icon\"></span>{$collection_title}</h6>
@@ -150,6 +161,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
                                 <div class=\"page-title-middle\">
                                     $read_button
                                     $execute_button
+                                    $report_button
                                     $add_device_button
                                     $download_button
                                     $device_reset_button
