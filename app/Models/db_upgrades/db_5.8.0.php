@@ -67,7 +67,7 @@ $sql = "CREATE TABLE `standards_results` (
   `attachments` text NOT NULL,
   `links` text NOT NULL,
   `improvement_opportunities` text NOT NULL,
-  `result` enum('pass', 'fail', 'not applicable', 'excluded', 'other', '') NOT NULL DEFAULT '',
+  `result` enum('fail', 'other', 'excluded', 'not applicable', 'pass', '') NOT NULL DEFAULT '',
   `notes` longtext NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -84,7 +84,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.2', 'Review of the policies for information security ', 'Infromation security roles and responsibilities shall be defined and allocated according to the organization needs.', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.2', 'Review of the policies for information security ', 'Information security roles and responsibilities shall be defined and allocated according to the organization needs.', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -139,12 +139,12 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.13', 'Labelling of infromation', 'An appropriate set of procedures for information labelling shall be developea and Implemented in accordance wit the Information clas sification scheme adopted by the organization', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.13', 'Labelling of information', 'An appropriate set of procedures for information labelling shall be developea and Implemented in accordance wit the Information clas sification scheme adopted by the organization', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.14', 'Infromation transfer', 'Information transfer rules, procedures, or agreements shall be in place for all types of transter facilities within the organization and between the organization and other parties', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.14', 'information transfer', 'Information transfer rules, procedures, or agreements shall be in place for all types of transter facilities within the organization and between the organization and other parties', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -174,12 +174,12 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.20', 'Addressing infromation security within supplier agreements', 'Relevant information security requirements shall be established and agreed with each supplier based on the type of supplier relationship', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.20', 'Addressing information security within supplier agreements', 'Relevant information security requirements shall be established and agreed with each supplier based on the type of supplier relationship', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.21', 'Managing infromation security in the information and communication technology(ICT) supply chain', 'Processes and procedures shall be defined and implemented to manage the information security risks associated with the ICT products and services supply chain', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.21', 'Managing information security in the information and communication technology(ICT) supply chain', 'Processes and procedures shall be defined and implemented to manage the information security risks associated with the ICT products and services supply chain', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -189,7 +189,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.23', 'Infromation security for use of cloud services', 'Processes for acquisition, use, management and exit from cloud services shall be established in accordance with the organization\'s information security requirements.', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.23', 'Information security for use of cloud services', 'Processes for acquisition, use, management and exit from cloud services shall be established in accordance with the organization\'s information security requirements.', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -199,17 +199,17 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.25', 'Assessment and decision on information security events', 'The organization shall assess information security events and decide if they are to be categorized as infromation security incidents.', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.25', 'Assessment and decision on information security events', 'The organization shall assess information security events and decide if they are to be categorized as information security incidents.', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.26', 'Response to information security incidents', 'Infromation security incidents shall be responded to in accordance with the documented procedures', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.26', 'Response to information security incidents', 'Information security incidents shall be responded to in accordance with the documented procedures', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.27', 'Learning from infromation security incidents', 'Knowledge gained from infromation security incidents shall be used to strangthen and improve the infromation security controls.', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.27', 'Learning from information security incidents', 'Knowledge gained from information security incidents shall be used to strangthen and improve the information security controls.', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -219,7 +219,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.29', 'Infromation security during disruption', 'The organization shall plan how to maintain infromation security at an appropriate level during disruption', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.29', 'Information security during disruption', 'The organization shall plan how to maintain information security at an appropriate level during disruption', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -274,7 +274,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.3', 'Information security awaremess education and training', 'Personnel of the organization and relevant interested parties shall receive appropriate information security awareness , education and training and regular updates of the organization\'s infromation security policy, topic-specific policies and procedures, as relevant for their job function.', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.3', 'Information security awaremess education and training', 'Personnel of the organization and relevant interested parties shall receive appropriate information security awareness , education and training and regular updates of the organization\'s information security policy, topic-specific policies and procedures, as relevant for their job function.', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -284,7 +284,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.5', 'Responsibilities after termination or change of employment', 'Infromation security responsibilities and duties that remain valid after termination or change of employment shall be defined, enforced and communicated to relevant personnel and other interested parties.', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.5', 'Responsibilities after termination or change of employment', 'Information security responsibilities and duties that remain valid after termination or change of employment shall be defined, enforced and communicated to relevant personnel and other interested parties.', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -334,7 +334,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.7', 'Clear desk and clear screen', 'Clear desk rules for papers and removable storage media and clear screen rules for infromation processing facilities shall be defined and appropriately enforced.', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.7', 'Clear desk and clear screen', 'Clear desk rules for papers and removable storage media and clear screen rules for information processing facilities shall be defined and appropriately enforced.', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
