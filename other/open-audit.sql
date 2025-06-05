@@ -4391,7 +4391,7 @@ CREATE TABLE `standards_results` (
   `attachments` text NOT NULL,
   `links` text NOT NULL,
   `improvement_opportunities` text NOT NULL,
-  `result` enum('pass', 'fail', 'not applicable', 'excluded', 'other', '') NOT NULL DEFAULT '',
+  `result` enum('fail', 'other', 'excluded', 'not applicable', 'pass', '') NOT NULL DEFAULT '',
   `notes` longtext NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
