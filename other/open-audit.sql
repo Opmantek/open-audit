@@ -2055,6 +2055,44 @@ LOCK TABLES `executables` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `feeds`
+--
+
+DROP TABLE IF EXISTS `feeds`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `feeds` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `short` varchar(200) NOT NULL DEFAULT '',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `type` enum('advertisement','code','config','blog','file','howto','news','notification','other','package','query','release','') NOT NULL DEFAULT '',
+  `body` text NOT NULL,
+  `published` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `link` varchar(200) NOT NULL DEFAULT '',
+  `image` varchar(200) DEFAULT NULL,
+  `requested` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `expires` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `alert_style` enum('primary','secondary','success','danger','warning','info','light','dark') NOT NULL DEFAULT 'primary',
+  `version` varchar(20) NOT NULL DEFAULT '',
+  `read` enum('y','n','') DEFAULT NULL,
+  `actioned` enum('y','n','') DEFAULT NULL,
+  `actioned_by` varchar(200) NOT NULL DEFAULT '',
+  `actioned_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `feeds`
+--
+
+LOCK TABLES `feeds` WRITE;
+/*!40000 ALTER TABLE `feeds` DISABLE KEYS */;
+/*!40000 ALTER TABLE `feeds` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `field`
 --
 
@@ -3123,7 +3161,7 @@ CREATE TABLE `packages` (
   `end_of_life` date NOT NULL DEFAULT '2000-01-01',
   `end_of_service_life` date NOT NULL DEFAULT '2000-01-01',
   `type` enum('antivirus','approved','backup','banned','cloud','firewall','ignored','license','other','') NOT NULL DEFAULT '',
-  `os` enum('Windows','Linux','MacOS','other','all','') NOT NULL DEFAULT 'Windows',
+  `os` varchar(200) NOT NULL DEFAULT '',
   `sql` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -4378,8 +4416,8 @@ CREATE TABLE `standards_results` (
   `standard_id` int(10) unsigned NOT NULL DEFAULT '1',
   `policy_id` int(10) unsigned NOT NULL DEFAULT '1',
   `applied` varchar(200) NOT NULL DEFAULT '',
-  `maturity_score` decimal(1,1) NOT NULL DEFAULT '0.0',
-  `maturity_level` enum('incomplete', 'performed', 'managed', 'established', 'predictable', 'optimized', ''),
+  `maturity_score` decimal(1,1) NOT NULL DEFAULT 0.0,
+  `maturity_level` enum('incomplete','performed','managed','established','predictable','optimized','') NOT NULL DEFAULT '',
   `legal_requirements` text NOT NULL,
   `contractual_obligations` text NOT NULL,
   `business_requirements` text NOT NULL,
@@ -4391,7 +4429,7 @@ CREATE TABLE `standards_results` (
   `attachments` text NOT NULL,
   `links` text NOT NULL,
   `improvement_opportunities` text NOT NULL,
-  `result` enum('fail', 'other', 'excluded', 'not applicable', 'pass', '') NOT NULL DEFAULT '',
+  `result` enum('fail','other','excluded','not applicable','pass','') NOT NULL DEFAULT '',
   `notes` longtext NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
