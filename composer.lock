@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b26a594bb79deaa0ffcf1d413094ecbb",
+    "content-hash": "49b72d9290da535a9a6adbab5b649127",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2506,6 +2506,47 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "codeigniter4/codeigniter4-standard",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codeigniter4/coding-standard.git",
+                "reference": "051da55337e73cf53f13df0a15ea8e0b76a5facd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codeigniter4/coding-standard/zipball/051da55337e73cf53f13df0a15ea8e0b76a5facd",
+                "reference": "051da55337e73cf53f13df0a15ea8e0b76a5facd",
+                "shasum": ""
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+                "phpunit/phpunit": "^7.0",
+                "satooshi/php-coveralls": "^1.0",
+                "squizlabs/php_codesniffer": "^3.1"
+            },
+            "type": "phpcodesniffer-standard",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Louis Linehan",
+                    "email": "louis.linehan@gmail.com",
+                    "homepage": "https://github.com/louisl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "CodeIgniter 4 Standard for PHP_CodeSniffer 3.",
+            "support": {
+                "issues": "https://github.com/codeigniter4/coding-standard/issues",
+                "source": "https://github.com/codeigniter4/coding-standard/tree/v1.1.1"
+            },
+            "abandoned": "codeigniter/coding-standard",
+            "time": "2021-03-05T09:34:10+00:00"
+        },
         {
             "name": "fakerphp/faker",
             "version": "v1.24.1",

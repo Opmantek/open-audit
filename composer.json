@@ -29,7 +29,8 @@
     "require-dev": {
         "fakerphp/faker": "^1.9",
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^9.6"
+        "phpunit/phpunit": "^9.6",
+        "codeigniter4/codeigniter4-standard": "^1.1"
     },
     "suggest": {
         "ext-fileinfo": "Improves mime type detection for files"
