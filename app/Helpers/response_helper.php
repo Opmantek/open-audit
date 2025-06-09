@@ -306,8 +306,7 @@ if (!function_exists('response_create')) {
         // depends on version affecting URI, collection
         $response->meta->sort = response_get_sort(
             $response->meta->collection,
-            $request->getGet('sort'),
-            $request->getPost('sort')
+            $request->getGet('sort')
         );
 
         // depends on version affecting URI, collection
@@ -1496,21 +1495,6 @@ if (!function_exists('response_get_properties')) {
                 $summary = 'Set properties to config DEFAULT.';
                 $properties = $instance->config->devices_default_retrieve_columns;
             }
-            // if ($properties === 'default') {
-            //     $summary = 'Set properties to config DEFAULT.';
-            //     $properties = config('Openaudit')->devices_default_retrieve_columns;
-            // } else {
-            //     if (!empty($user->devices_default_display_columns)) {
-            //         $summary = 'Set properties to user default.';
-            //         $properties = $user->devices_default_display_columns;
-            //     } else if (!empty(config('Openaudit')->devices_default_retrieve_columns)) {
-            //         $summary = 'Set properties to config default.';
-            //         $properties = config('Openaudit')->devices_default_retrieve_columns;
-            //     } else {
-            //         $summary = 'Set properties to default because neither user nor config are set.';
-            //         $properties = 'devices.id,devices.icon,devices.type,devices.name,devices.domain,devices.ip,devices.identification,devices.description,devices.manufacturer,devices.os_family,devices.status';
-            //     }
-            // }
         }
         if ($properties === 'all' or $properties === '*') {
             $properties = $collection . '.' . implode(',' . $collection . '.', $db->getFieldNames($collection));
@@ -1568,75 +1552,80 @@ if (!function_exists('response_get_properties')) {
 
 if (!function_exists('response_get_sort')) {
     /**
-     * Determine the requested sort by parsing an comma separated string of properies, validating them and returning a string in SQL format
+     * Determine the requested sort by parsing a comma-separated string of properties,
+     * validating them, and returning a string in SQL format.
+     *
      * @param  string $collection The request collection
      * @param  string $get        The GET sort variable
-     * @param  string $post       The POST sort variable
      * @return string             A string of properties, in SQL format
      */
-    function response_get_sort($collection = '', $get = '', $post = '')
+    function response_get_sort(string $collection = '', string $get = ''): string
     {
         $db = db_connect();
         $sort = '';
+        $sorted = [];
+
+        $get = str_replace('+', '', $get);
 
         if (!empty($get)) {
-            $sort = $get;
-            $summary = 'Set sort according to GET';
-        }
-        if (! empty($post)) {
-            $sort = $post;
-            $summary = 'Set sort according to POST';
-        }
-        $sort = str_replace('+', '', $sort);
-        if (!empty($sort)) {
-            $properties = explode(',', $sort);
-            for ($i = 0; $i < count($properties); $i++) {
-                $field = $properties[$i];
-                if (substr($field, 0, 1) === '-') {
+            $properties = array_map('trim', explode(',', $get));
+
+            foreach ($properties as $property) {
+                $direction = 'ASC';
+                $field = $property;
+
+                if (str_starts_with($field, '-')) {
                     $field = substr($field, 1);
+                    $direction = 'DESC';
                 }
-                $temp = array();
+
                 if (strpos($field, '.') !== false) {
-                    $temp = explode('.', $field);
+                    [$table, $column] = explode('.', $field, 2);
                 } else {
-                    $temp[0] = $collection;
-                    $temp[1] = $field;
+                    $table = $collection;
+                    $column = $field;
                 }
-                if (!empty($temp[0]) and !empty($temp[1]) and $db->fieldExists($temp[1], $temp[0])) {
-                    if (substr($properties[$i], 0, 1) === '-') {
-                        $properties[$i] = $temp[0] . '.' . $temp[1] . ' DESC';
-                    } else {
-                        $properties[$i] = $temp[0] . '.' . $temp[1];
-                    }
+
+                if (!empty($table) && !empty($column) && $db->tableExists($table) and $db->fieldExists($column, $table)) {
+                    $sorted[] = "{$table}.{$column}" . ($direction === 'DESC' ? ' DESC' : '');
                 } else {
-                    log_message('warning', 'Invalid sort attribute supplied for ' . $collection . ' (' . $properties[$i] . '), removed.');
-                    unset($properties[$i]);
+                    log_message('warning', "Invalid sort attribute supplied for {$collection} ({$property}), removed.");
                 }
             }
-            $sort = implode(',', $properties);
+
+            $sort = implode(', ', $sorted);
         }
+
         if (!empty($sort)) {
-            log_message('debug', $summary . " ($sort).");
+            log_message('debug', "Sort set to: {$sort}.");
         }
+
         return $sort;
     }
 }
 
+
 if (!function_exists('response_valid_actions')) {
     /**
-     * An array of valid actions
-     * @return array
+     * Returns an array of valid action identifiers used in the application.
+     *
+     * These actions may correspond to API endpoints, UI operations, or internal logic.
+     *
+     * @return array List of valid action names.
      */
-    function response_valid_actions()
+    function response_valid_actions(): array
     {
-        return array('bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'delete_form', 'dictionary', 'download', 'example', 'example_form', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'importnmisform', 'importnmis', 'read', 'reset', 'resetForm', 'test', 'update');
+        return ['bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'delete_form', 'dictionary', 'download', 'example', 'example_form', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'importnmisform', 'importnmis', 'read', 'reset', 'resetForm', 'test', 'update'];
     }
 }
 
 if (!function_exists('response_valid_collections')) {
     /**
-     * An array of valid collections
-     * @return array
+     * Returns an array of valid collection names used in the application.
+     *
+     * These collection names correspond to API endpoints.
+     *
+     * @return array List of valid collection names.
      */
     function response_valid_collections()
     {
@@ -1649,49 +1638,51 @@ if (!function_exists('response_valid_collections')) {
     }
 }
 
-if (!function_exists('response_valid_current')) {
-    /**
-     * An array of valid current
-     * @return array
-     */
-    function response_valid_current()
-    {
-        return array('y','n','all','delta','full');
-    }
-}
-
 if (!function_exists('response_valid_formats')) {
     /**
-     * An array of valid response formats
-     * @return array
+     * Returns an array of valid response formats for API output.
+     *
+     * These formats determine how data is structured and returned to the client.
+     *
+     * @return array List of supported response format identifiers.
      */
-    function response_valid_formats()
+    function response_valid_formats(): array
     {
-        $valid_formats = array('csv','highcharts','html','html_data','json','json_data','report','sql','table','xml');
-        return $valid_formats;
+        return ['csv','highcharts','html','html_data','json','json_data','report','sql','table','xml'];
     }
 }
 
 if (!function_exists('response_valid_includes')) {
     /**
-     * An array of valid includes
-     * @return array
+     * Returns an array of valid include keys for resource expansion in API responses.
+     *
+     * These keys represent related entities that can be optionally included
+     * when querying a resource.
+     *
+     * @return array List of valid include keys.
      */
-    function response_valid_includes()
+    function response_valid_includes(): array
     {
-        return array('application', 'arp', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'field', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        return ['application', 'arp', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'field', 'file', 'image', 'ip', 'location', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'purchase', 'rack_devices', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows'];
     }
 }
 
 if (!function_exists('response_valid_permissions')) {
     /**
-     * Set permissions array. Execute depends on $collection
-     * @param  string $collection Execute depends on $collection
-     * @return array              The array.
+     * Returns an array mapping resource actions to permission codes.
+     *
+     * Permission codes:
+     * - 'r' = read
+     * - 'u' = update
+     * - 'c' = create
+     * - 'd' = delete
+     *
+     * @param string $collection (Currently unused) Reserved for future logic based on collection type.
+     * @return array Associative array of resource => permission code.
      */
-    function response_valid_permissions($collection)
+    function response_valid_permissions($collection): array
     {
-        $permission = array();
+        $permission = [];
         $permission['about'] = 'r';
         $permission['bulkupdate'] = 'u';
         $permission['bulkupdateform'] = 'u';
@@ -1730,23 +1721,29 @@ if (!function_exists('response_valid_permissions')) {
 
 if (!function_exists('response_valid_sub_resources')) {
     /**
-     * An array of valid sub_resources (for devices)
-     * @return array
+     * Returns an array of valid sub-resources for device-related operations.
+     *
+     * These sub-resources are used to validate or filter API responses related to devices.
+     *
+     * @return array List of valid sub-resource names.
      */
-    function response_valid_sub_resources()
+    function response_valid_sub_resources(): array
     {
-        return array('application', 'arp', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discovery', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'field', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group');
+        return ['application', 'arp', 'attachment', 'audit_log', 'bios', 'certificate', 'change_log', 'cluster', 'credential', 'discovery', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'field', 'image', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows', 'report', 'query', 'group'];
     }
 }
 
 if (!function_exists('valid_reserved_words')) {
     /**
-     * An array of valid URL reserved words
-     * @return array
+     * Returns an array of reserved words that should not be used as URL parameters or resource identifiers.
+     *
+     * These words are typically used by the system for routing, filtering, or formatting and may conflict with user-defined values.
+     *
+     * @return array List of reserved URL keywords.
      */
-    function response_valid_reserved_words()
+    function response_valid_reserved_words(): array
     {
-        return array('action', 'as_at', 'current', 'debug', 'format', 'groupby', 'ids', 'include', 'limit', 'offset', 'properties', 'query', 'report_name', 'search', 'sort');
+        return ['action', 'as_at', 'current', 'debug', 'format', 'groupby', 'ids', 'include', 'limit', 'offset', 'properties', 'query', 'report_name', 'search', 'sort'];
     }
 }
 // End of file response_helper.php
