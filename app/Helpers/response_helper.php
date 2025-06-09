@@ -304,10 +304,12 @@ if (!function_exists('response_create')) {
         );
 
         // depends on version affecting URI, collection
-        $response->meta->sort = response_get_sort(
-            $response->meta->collection,
-            $request->getGet('sort')
-        );
+        if (!empty($request->getGet('sort'))) {
+            $response->meta->sort = response_get_sort(
+                $response->meta->collection,
+                $request->getGet('sort')
+            );
+        }
 
         // depends on version affecting URI, collection
         $response->meta->groupby = response_get_groupby($request->getGet('groupby'), $request->getPost('groupby'), $response->meta->collection);
