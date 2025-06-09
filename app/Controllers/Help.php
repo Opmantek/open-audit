@@ -222,8 +222,9 @@ class Help extends BaseController
     public function licenses()
     {
         $license = (!empty($_GET['license'])) ? $_GET['license'] : '';
+
         $license_contents = '';
-        if (!empty($license) and file_exists(ROOTPATH . 'other/licenses/' . $license . '.txt')) {
+        if (!empty($license) and in_array($license . '.txt', scandir(ROOTPATH . 'other/licenses/'))) {
             $license_contents = @file_get_contents(ROOTPATH . 'other/licenses/' . $license . '.txt');
         }
         return view('shared/header', [
