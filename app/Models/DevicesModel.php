@@ -736,7 +736,7 @@ class DevicesModel extends BaseModel
             $include['nmis_customers'] = array();
             $include['nmis_pollers'] = array();
             $integrationsModel = new \App\Models\IntegrationsModel();
-            $integrations = $integrationsModel->listUser(['integrations.type', 'nmis']);
+            $integrations = $integrationsModel->listUser(['integrations.type' => 'nmis']);
             if (!empty($integrations)) {
                 foreach ($integrations as $integration) {
                     if (!empty($integration->attributes->additional_items->business_services)) {

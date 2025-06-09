@@ -37,11 +37,19 @@ abstract class BaseController extends Controller
     protected $request;
 
     /**
-     * Helpers that will be automatically loaded on class instantiation.
+     * An array of helpers to be loaded automatically upon
+     * class instantiation. These helpers will be available
+     * to all other controllers that extend BaseController.
      *
      * @var list<string>
      */
     protected $helpers = ['components', 'device', 'network', 'output', 'response', 'scripts', 'security', 'utility'];
+
+    /**
+     * Be sure to declare properties for any property fetch you initialized.
+     * The creation of dynamic property is deprecated in PHP 8.2.
+     */
+    // protected $session;
 
     public $collections;
     public $config;
@@ -71,11 +79,10 @@ abstract class BaseController extends Controller
     public $usersModel;
 
     /**
-     * Constructor.
+     * @return void
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
-
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
         $GLOBALS['browser_lang'] = $this->request->getLocale();

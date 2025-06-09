@@ -105,6 +105,7 @@ class Cache extends BaseConfig
      * --------------------------------------------------------------------------
      * File settings
      * --------------------------------------------------------------------------
+     *
      * Your file storage preferences can be specified below, if you are using
      * the File driver.
      *
@@ -119,6 +120,7 @@ class Cache extends BaseConfig
      * -------------------------------------------------------------------------
      * Memcached settings
      * -------------------------------------------------------------------------
+     *
      * Your Memcached servers can be specified below, if you are using
      * the Memcached drivers.
      *
@@ -137,6 +139,7 @@ class Cache extends BaseConfig
      * -------------------------------------------------------------------------
      * Redis settings
      * -------------------------------------------------------------------------
+     *
      * Your Redis server can be specified below, if you are using
      * the Redis or Predis drivers.
      *

@@ -60,7 +60,7 @@ class Modules extends BaseModules
      *       ],
      *   ]
      *
-     * @var array
+     * @var array{only?: list<string>, exclude?: list<string>}
      */
     // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public $composerPackages = [];

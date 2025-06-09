@@ -96,6 +96,8 @@ class Security extends BaseConfig
      * @see https://portswigger.net/web-security/csrf/samesite-cookies
      *
      * @deprecated `Config\Cookie` $samesite property is used.
+     *
+     * @see https://codeigniter4.github.io/userguide/libraries/security.html#redirection-on-failure
      */
     public string $samesite = 'Lax';
 }

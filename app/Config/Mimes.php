@@ -22,6 +22,8 @@ class Mimes
 {
     /**
      * Map of extensions to mime types.
+     *
+     * @var array<string, list<string>|string>
      */
     // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
     public static array $mimes = [
@@ -481,6 +483,8 @@ class Mimes
             'application/sla',
             'application/vnd.ms-pki.stl',
             'application/x-navistyle',
+            'model/stl',
+            'application/octet-stream',
         ],
     ];
 
