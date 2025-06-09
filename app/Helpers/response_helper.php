@@ -602,7 +602,7 @@ if (!function_exists('response_get_data')) {
         if ($request_method === 'POST') {
             if (!empty($post) && is_array($post)) {
                 $summary = 'Set received data according to POST (form).';
-                $received_data = $_POST['data'];
+                $received_data = $post;
                 $received_data = json_encode($received_data);
                 try {
                     $received_data = json_decode($received_data, false, 512, JSON_THROW_ON_ERROR);
@@ -640,7 +640,9 @@ if (!function_exists('response_get_data')) {
             } catch (\JsonException $e) {
                 log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             }
-            $options = @$data_object->data->attributes->options;
+            if (!empty($data_object->data->attributes->options)) {
+                $options = $data_object->data->attributes->options;
+            }
             if (empty($data_object)) {
                 // do nothing
             } else {
@@ -1265,34 +1267,40 @@ if (!function_exists('response_get_org_list')) {
      * @param  string  $collection    The requested collection
      * @return string                 A comma separated string of OrgIDs the user can access for the requested collection
      */
-    function response_get_org_list($user, $collection = '')
+    function response_get_org_list(stdClass $user = null, string $collection = ''): string
     {
         $org_list = array();
         $orgsModel = new \App\Models\OrgsModel();
         $orgs = $orgsModel->listAll();
         if (empty($collection) or empty($user)) {
             log_message('error', 'Either no collection or no user supplied.');
-            return;
+            return '';
         }
+        $user_orgs = is_array($user->orgs) ? $user->orgs : explode(',', (string) $user->orgs);
         $collections = new \Config\Collections();
-        if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'd') {
-            $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
-            // log_message('debug', 'Set org_list according to ' . $collection . ' for DESCENDANTS (' . implode(', ', $org_list) . ').');
-        }
-        if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'u') {
-            $org_list = $user->orgs;
-            // log_message('debug', 'Set org_list according to ' . $collection . ' for USER (' . implode(', ', $org_list) . ').');
-        }
-        if (!empty($collections->{$collection}->orgs) and $collections->{$collection}->orgs === 'b') {
-            $org_list = array_unique(array_merge($user->orgs, $orgsModel->getUserDescendants($user->orgs, $orgs)));
-            $org_list = array_unique(array_merge($org_list, $orgsModel->getUserAscendants($user->orgs, $orgs)));
-            $org_list[] = 1;
-            $org_list = array_unique($org_list);
-            // log_message('debug', 'Set org_list according to ' . $collection . ' for PARENTS and DESCENDANTS (' . implode(', ', $org_list) . ').');
-            asort($org_list);
+        $org_rule = $collections->{$collection}->orgs ?? '';
+        switch ($org_rule) {
+            case 'd':
+                $org_list = array_unique(array_merge($user_orgs, $orgsModel->getUserDescendants($user_orgs, $orgs)));
+                log_message('debug', "Org list for user '{$user->id}' and collection '{$collection}' using rule '{$org_rule}': " . implode(',', $org_list));
+                break;
+
+            case 'u':
+                $org_list = $user_orgs;
+                log_message('debug', "Org list for user '{$user->id}' and collection '{$collection}' using rule '{$org_rule}': " . implode(',', $org_list));
+                break;
+
+            case 'b':
+                $org_list = array_merge($user_orgs, $orgsModel->getUserDescendants($user_orgs, $orgs));
+                $org_list = array_merge($org_list, $orgsModel->getUserAscendants($user_orgs, $orgs));
+                $org_list[] = 1;
+                $org_list = array_unique($org_list);
+                asort($org_list);
+                log_message('debug', "Org list for user '{$user->id}' and collection '{$collection}' using rule '{$org_rule}': " . implode(',', $org_list));
+                break;
         }
         if (empty($org_list)) {
-            $org_list = $user->orgs;
+            $org_list = $user_orgs;
         }
         $org_list = implode(',', $org_list);
         return $org_list;
