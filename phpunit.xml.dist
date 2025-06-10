@@ -31,6 +31,7 @@
         <testdoxText outputFile="build/logs/testdox.txt"/>
         <junit outputFile="build/logs/logfile.xml"/>
     </logging>
+    <!--
     <source>
         <include>
             <directory suffix=".php">./app</directory>
@@ -40,6 +41,7 @@
             <file>./app/Config/Routes.php</file>
         </exclude>
     </source>
+    -->
     <php>
         <server name="app.baseURL" value="http://example.com/"/>
         <server name="CODEIGNITER_SCREAM_DEPRECATIONS" value="0"/>
