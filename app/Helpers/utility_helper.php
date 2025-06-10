@@ -821,6 +821,7 @@ function format_data($result, $type)
                     $item->inputs = json_decode($item->inputs, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
             if (!empty($item->outputs)) {
@@ -828,6 +829,7 @@ function format_data($result, $type)
                     $item->outputs = json_decode($item->outputs, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -857,6 +859,7 @@ function format_data($result, $type)
                     $item->tests = json_decode($item->tests, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -870,6 +873,7 @@ function format_data($result, $type)
                 } catch (\JsonException $e) {
                     // Not logging below as this does appear to work, even though it always throws an exception
                     // log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
             if (!empty($item->result)) {
@@ -877,6 +881,7 @@ function format_data($result, $type)
                     $item->result = json_decode($item->result, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -902,6 +907,7 @@ function format_data($result, $type)
                     $item->options = json_decode($item->options, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -914,6 +920,7 @@ function format_data($result, $type)
                     $item->scan_options = json_decode($item->scan_options, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
             if (!empty($item->match_options)) {
@@ -921,6 +928,7 @@ function format_data($result, $type)
                     $item->match_options = json_decode($item->match_options, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
             if (!empty($item->command_options)) {
@@ -928,6 +936,7 @@ function format_data($result, $type)
                     $item->command_options = json_decode($item->command_options, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -940,6 +949,7 @@ function format_data($result, $type)
                     $item->additional_items = json_decode($item->additional_items, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
             if (!empty($item->attributes)) {
@@ -947,6 +957,7 @@ function format_data($result, $type)
                     $item->attributes = json_decode((string)$item->attributes, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
             if (!empty($item->fields)) {
@@ -954,6 +965,7 @@ function format_data($result, $type)
                     $item->fields = json_decode($item->fields, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -966,6 +978,7 @@ function format_data($result, $type)
                     $item->options = json_decode($item->options, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -978,6 +991,7 @@ function format_data($result, $type)
                     $item->options = json_decode($item->options, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -990,6 +1004,7 @@ function format_data($result, $type)
                     $item->permissions = json_decode($item->permissions, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -1002,6 +1017,7 @@ function format_data($result, $type)
                     $item->inputs = json_decode($item->inputs, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
             if (!empty($item->outputs)) {
@@ -1009,6 +1025,7 @@ function format_data($result, $type)
                     $item->outputs = json_decode($item->outputs, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -1021,6 +1038,7 @@ function format_data($result, $type)
                     $item->options = json_decode($item->options, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -1033,6 +1051,7 @@ function format_data($result, $type)
                     $item->links = json_decode($item->links, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -1045,6 +1064,7 @@ function format_data($result, $type)
                     $item->options = json_decode($item->options, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
@@ -1057,6 +1077,7 @@ function format_data($result, $type)
                     $item->roles = json_decode($item->roles, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
             if (!empty($item->orgs)) {
@@ -1064,6 +1085,7 @@ function format_data($result, $type)
                     $item->orgs = json_decode($item->orgs, false, 512, JSON_THROW_ON_ERROR);
                 } catch (\JsonException $e) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    continue;
                 }
             }
         }
