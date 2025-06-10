@@ -85,10 +85,11 @@ if (!function_exists('response_create')) {
                 $get_format = 'json';
             }
         }
+
         $response->meta->format = response_get_format(
             $get_format,
             $request->getPost('format'),
-            $request->header('Accept')
+            $request->getHeaderLine('Accept')
         );
 
         if ($response->meta->collection === 'collections') {
@@ -887,46 +888,50 @@ if (!function_exists('response_get_query_filter')) {
 
 if (!function_exists('response_get_format')) {
     /**
-     * Return the response format derived from the HEADERS or URL (get) or BODY (post)
-     * @return string The response format requested
+     * Return the response format derived from the HEADERS or URL (GET) or BODY (POST)
+     *
+     * @param string $get    Format from GET parameter
+     * @param string $post   Format from POST body
+     * @param string $header Value of the Accept header
+     * @return string        The response format requested
      */
     function response_get_format($get = '', $post = '', $header = '')
     {
-        $format = '';
-        $summary = '';
 
-        if (!empty($header) and stripos((string)$header, 'application/json') !== false) {
-            $format = 'json';
-            $summary = "Set format according to HEADER application/json ($format).";
-        }
-        if (!empty($header) and stripos((string)$header, '*/*') !== false) {
-            $format = 'json';
-            $summary = "Set format according to HEADER */* ($format).";
-        }
-        if (!empty($header) and stripos((string)$header, 'html') !== false) {
-            $format = 'html';
-            $summary = "Set format according to HEADER html ($format).";
-        }
-        if (!empty($get)) {
-            $format = $get;
-            $summary = "Set format according to GET ($format).";
-        }
-        if (!empty($post)) {
-            $format = $post;
-            $summary = "Set format according to POST ($format).";
-        }
         $valid_formats = response_valid_formats();
-        if (in_array($header, $valid_formats)) {
-            $format = $header;
+        $header = strtolower(trim($header));
+
+        if (!empty($get) and in_array($get, $valid_formats)) {
+            log_message('debug', "Set format according to GET ($get).");
+            return $get;
         }
-        if (!in_array($format, $valid_formats)) {
-            $summary = 'Set format to json, because unknown format: ' . $format;
-            $format = 'json';
-            log_message('warning', $summary);
-        } else {
-            // log_message('debug', $summary);
+        if (!empty($post) and in_array($post, $valid_formats)) {
+            log_message('debug', "Set format according to POST ($post).");
+            return $post;
         }
-        return $format;
+        if (!empty($header) and strpos($header, 'application/json') !== false) {
+            log_message('debug', "Set format according to HEADER application/json (json).");
+            return 'json';
+        }
+        if (!empty($header) and strpos($header, 'html') !== false) {
+            log_message('debug', "Set format according to HEADER {$header} (html).");
+            return 'html';
+        }
+        if (!empty($header) and strpos($header, 'text/csv') !== false) {
+            log_message('debug', "Set format according to HEADER {$header} (csv).");
+            return 'csv';
+        }
+        if (!empty($header) and strpos($header, 'text/xml') !== false) {
+            log_message('debug', "Set format according to HEADER {$header} (xml).");
+            return 'xml';
+        }
+        // Default
+        if (!empty($header) and strpos($header, '*/*') !== false) {
+            log_message('debug', "Set format according to HEADER {$header} (json).");
+            return 'json';
+        }
+        log_message('warning', 'Set format to json, because unknown format: ' . $get . ' / ' . $post . ' / ' . $header . ' (json).');
+        return 'json';
     }
 }
 
