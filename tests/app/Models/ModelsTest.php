@@ -3,19 +3,35 @@
 namespace App\Models;
 
 use CodeIgniter\Test\CIUnitTestCase;
-use CodeIgniter\Test\ControllerTestTrait;
-use CodeIgniter\Test\DatabaseTestTrait;
 
 #[\AllowDynamicProperties]
 
+/*
+ * @covers App\Models\devicesModel
+*/
 class ModelsTest extends CIUnitTestCase
 {
-    use DatabaseTestTrait;
-    use ControllerTestTrait;
 
+    /*
+     * @covers App\Models\devicesModel
+    */
     public function testModels()
     {
-        echo "\nExecuting Models tests.\n";
+
+        // $meta = (object)[
+        //     'properties' => ['name', 'description', 'hostname', 'ip', 'os_name'],
+        //     'filter' => [
+        //         (object)['name' => 'name', 'operator' => 'like', 'function' => 'where', 'value' => '%debian%'],
+        //         (object)['name' => 'ip', 'operator' => 'like', 'function' => 'orWhere', 'value' => '192.168.001%']
+        //     ],
+        //     'sort' => 'name ASC',
+        //     'limit' => 10,
+        //     'offset' => 0,
+        //     'collection' => 'devices'
+        // ];
+        // $resp = (object)['meta' => $meta];
+
+        log_message('debug', "Executing Models tests.");
 
         helper('utility_helper');
         helper('network_helper');
@@ -23,9 +39,6 @@ class ModelsTest extends CIUnitTestCase
         $this->config = new \Config\OpenAudit();
 
         $this->response = $this->setupResponse();
-        $this->response->meta->collection = '';
-        $this->response->meta->action = '';
-        $this->response->meta->id = null;
 
         global $CI_INSTANCE;
         $CI_INSTANCE[0] = &$this;
@@ -52,7 +65,7 @@ class ModelsTest extends CIUnitTestCase
 
         $this->response->meta->filter = response_get_query_filter('', 'filter');
 
-        $valid_collections = array('applications','attributes','auth','baselines','baselines_policies','baselines_results','benchmarks','clouds','clusters','connections','credentials','dashboards','devices','discoveries','discovery_log','discovery_scan_options','fields','files','groups','integrations','licenses','locations','networks','orgs','queries','racks','rack_devices','rules','scripts','summaries','tasks','users','widgets');
+        $valid_collections = array('agents','applications','attributes','auth','baselines','baselines_policies','baselines_results','benchmarks','clouds','clusters','connections','credentials','dashboards','devices','discoveries','discovery_scan_options','fields','files','groups','integrations','licenses','locations','networks','orgs','queries','racks','rack_devices','rules','scripts','summaries','tasks','users','widgets');
 
         $valid_actions = array('collection', 'read');
 
@@ -67,26 +80,18 @@ class ModelsTest extends CIUnitTestCase
 
             $this->response->meta->properties = array($collection . '.id', $collection . '.name');
 
-            if ($this->response->meta->collection === 'discovery_log') {
-                $this->response->meta->properties = array('discovery_log.id', 'discovery_log.message');
-            } else {
-                $item = new \StdClass();
-                $item->name = 'orgs.id';
-                if ($this->response->meta->collection !== 'orgs') {
-                    $item->name = $this->response->meta->collection . '.' . 'org_id';
-                }
-                $item->function = 'whereIn';
-                $item->operator = 'in';
-                $item->value = $this->user->orgs;
-                $this->response->meta->filter[] = $item;
-            }
 
-            if ($collection !== 'discovery_log') {
-                $sql = "SELECT count(*) AS `count` FROM $collection";
-            } else {
-                $sql = "SELECT count(*) AS `count` FROM `discovery_log` LEFT JOIN `discoveries` ON `discovery_log`.`discovery_id` = `discoveries`.`id` WHERE `message` NOT LIKE '%not responding, ignoring%' AND  `message` NOT LIKE '%responding, adding to device list%'";
+            $item = new \StdClass();
+            $item->name = 'orgs.id';
+            if ($this->response->meta->collection !== 'orgs') {
+                $item->name = $this->response->meta->collection . '.' . 'org_id';
             }
+            $item->function = 'whereIn';
+            $item->operator = 'in';
+            $item->value = $this->user->orgs;
+            $this->response->meta->filter[] = $item;
 
+            $sql = "SELECT count(id) AS `count` FROM $collection";
             log_message('debug', "SQL for $collection is: $sql");
             $count = intval($db->query($sql)->getResult()[0]->count);
 
@@ -102,17 +107,42 @@ class ModelsTest extends CIUnitTestCase
             } else {
                 $this->assertCount($count, $result, "Count of $collection (" . $this->response->meta->action . ") direct is $count, count via model is " . count($result));
             }
+            unset($result);
 
             if (!empty($count)) {
                 log_message('debug', "Testing Action read on Model: $model");
-                $sql = "SELECT id FROM $collection ORDER BY id LIMIT 1";
+                $sql = "SELECT id, name FROM $collection ORDER BY id LIMIT 1";
                 $id = intval($db->query($sql)->getResult()[0]->id);
+                $name = $db->query($sql)->getResult()[0]->name;
+
+                // Our direct DB result.
+                // ID and Name are common across models - use only these.
+                $directResult = [];
+                $item = new \stdClass();
+                $item->id = intval($id);
+                $item->type = $collection;
+                $item->attributes = new \stdClass();
+                $item->attributes->name = $name;
+                $directResult[] = $item;
+
                 if (!empty($id)) {
                     $this->response->meta->id = $id;
                     $this->response->meta->action = 'read';
                     $result = ${$model}->read($this->response->meta->id);
                     $this->assertIsArray($result, 'The return from ' . $collection . ' (' . $this->response->meta->action . ') is not an array');
-                    $this->assertCount(1, $result, "Count of $collection (" . $this->response->meta->action . ") direct is $count, count via model is " . count($result));
+                    $this->assertCount(1, $result, "Count of $collection (" . $this->response->meta->action . ") for a given ID should be 1, count via model::read is " . count($result));
+
+                    // To compare the output as model::read returns all columns - we only want id and name
+                    $modelResult = [];
+                    $item = new \stdClass();
+                    $item->id = intval($result[0]->id);
+                    $item->type = $collection;
+                    $item->attributes = new \stdClass();
+                    $item->attributes->name = $result[0]->attributes->name;
+                    $modelResult[] = $item;
+                    $this->assertEquals($directResult, $modelResult);
+
+                    unset($result);
                 }
                 $this->response->meta->id = null;
             }
