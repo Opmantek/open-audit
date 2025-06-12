@@ -50,7 +50,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                 <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-desktop"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-desktop"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>"><?= __('Devices') ?></a></div>
                                     </div>
                                 </li>
@@ -59,7 +59,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                     <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-laptop"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-laptop"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('summariesExecute', $summary_id) ?>"><?= __('Device Types') ?></a></div>
                                     </div>
                                 </li>
@@ -69,7 +69,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                     <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-tags"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-tags"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('summariesExecute', $os_systems_id) ?>"><?= __('Operating Systems') ?></a></div>
                                     </div>
                                 </li>
@@ -78,7 +78,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                 <?php if (!empty($user->permissions['maps']) and strpos($user->permissions['maps'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-map-o"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-map-o"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('mapsCollection') ?>"><?= __('Map') ?></a></div>
                                     </div>
                                 </li>
@@ -86,7 +86,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                 <?php if (!empty($user->permissions['discoveries']) and strpos($user->permissions['discoveries'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-binoculars"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-binoculars"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('discoveriesCollection') ?>"><?= __('Discoveries') ?></a></div>
                                     </div>
                                 </li>
@@ -94,56 +94,56 @@ if ($resource->name === 'Windows Security Dashboard') {
                                 <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-television"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-television"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.first_seen=like<?= date('Y-m-d') ?>%&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.first_seen,locations.name"><?= __('Devices Found Today') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-television"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-television"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.first_seen=like<?= date('Y-m-d', strtotime('-1 days')) ?>%&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.first_seen,locations.name"><?= __('Devices Found Yesterday') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-television"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-television"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.first_seen=><?= date('Y-m-d', strtotime('-7 days')) ?>&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.first_seen,locations.name"><?= __('Devices Found Last 7 Days') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-bar-chart"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-bar-chart"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?change_log.db_table=software&change_log.db_action=create&change_log.timestamp=like<?= date('Y-m-d') ?>%&properties=devices.id,devices.icon,devices.ip,devices.name,devices.os_family,change_log.details,change_log.timestamp"><?= __('Software Found Today') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-bar-chart"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-bar-chart"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?change_log.db_table=software&change_log.db_action=create&change_log.timestamp=like<?= date('Y-m-d', strtotime('-1 days')) ?>%&properties=devices.id,devices.icon,devices.ip,devices.name,devices.os_family,change_log.details,change_log.timestamp"><?= __('Software Found Yesterday') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-bar-chart"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-bar-chart"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?change_log.db_table=software&change_log.db_action=create&change_log.timestamp=>=<?= date('Y-m-d', strtotime('-7 days')) ?>&properties=devices.id,devices.icon,devices.ip,devices.name,devices.os_family,change_log.details,change_log.timestamp"><?= __('Software Found Last 7 Days') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-server"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-server"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.last_seen=<=<?= date('Y-m-d', strtotime('-7 days')) ?>&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.last_seen,locations.name"><?= __('Devices Not Seen 7 Days') ?></a></div>
 
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-server"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-server"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.last_seen=<=<?= date('Y-m-d', strtotime('-30 days')) ?>&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.last_seen,locations.name"><?= __('Devices Not Seen 30 Days') ?></a></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
-                                        <div class="col-1"><span class="fa fa-server"></span></div>
+                                        <div class="col-1"><span class="oa-menu-icon fa fa-server"></span></div>
                                         <div class="col-10 col-offset-1" style="padding-left:1rem;"><a href="<?= url_to('devicesCollection') ?>?devices.last_seen=<=<?= date('Y-m-d', strtotime('-90 days')) ?>&properties=audit_status,devices.id,devices.icon,devices.ip,devices.type,devices.name,devices.manufacturer,devices.last_seen,locations.name"><?= __('Devices Not Seen 90 Days') ?></a></div>
                                     </div>
                                 </li>
