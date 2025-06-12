@@ -78,6 +78,7 @@ class Logon extends Controller
 
         // get the server OS
         $server_os = php_uname('s');
+        $server_platform = '';
 
         if ($server_os === 'Windows NT') {
             $command = 'wmic os get name';
