@@ -27,6 +27,18 @@ if (! function_exists('is_ssl')) {
     }
 }
 
+/**
+ * Check if an IP address is within a private IPv4 range.
+ *
+ * This function determines whether the given IP address falls within
+ * one of the standard private IP ranges:
+ * - 10.0.0.0 to 10.255.255.255
+ * - 172.16.0.0 to 172.31.255.255
+ * - 192.168.0.0 to 192.168.255.255
+ *
+ * @param string $ip The IP address to check.
+ * @return bool True if the IP is private, false otherwise.
+ */
 if (! function_exists('is_private_ip')) {
     function is_private_ip($ip)
     {
@@ -104,9 +116,16 @@ if (! function_exists('server_ip')) {
 
 if (! function_exists('network_details')) {
     # accept $ip as either '192.168.0.12/24' or '192.168.0.12 255.255.255.0'
-    function network_details($ip)
+
+    /**
+     * Return the network details derived from the supplied network
+     *
+     * @param string $network    Format as either '192.168.0.12/24' or '192.168.0.12 255.255.255.0'
+     * @return class        The details of the network
+     */
+    function network_details($network)
     {
-        $my_net_info = rtrim((string)$ip);
+        $my_net_info = rtrim((string)$network);
         $details = new \StdClass();
 
         if (! preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}(( ([0-9]{1,3}\.){3}[0-9]{1,3})|(\/[0-9]{1,2}))$/', $my_net_info)) {
