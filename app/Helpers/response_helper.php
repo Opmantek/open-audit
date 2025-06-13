@@ -106,13 +106,17 @@ if (!function_exists('response_create')) {
 
 
         $instance->user->org_list = response_get_org_list($instance->user, $response->meta->collection);
+        $instance->user->org_array = array();
+        foreach (explode(',', $instance->user->org_list) as $item) {
+            $instance->user->org_array[] = intval($item);
+        }
 
         $response->meta->id = null;
         // depends on collection - set in URI or POST
         $response->meta->id = response_get_id(
             html_entity_decode(urldecode($uri->getSegment(2))),
             $response->meta->collection,
-            $instance->user->org_list
+            $instance->user->org_array
         );
         if (empty($response->meta->id) and ($response->meta->action === 'read' or $response->meta->action === 'update' or $response->meta->action === 'delete')) {
             log_message('warning', 'Request to ' . $response->meta->action . ' ' . $response->meta->collection . ', but no ID supplied.');
@@ -362,11 +366,7 @@ if (!function_exists('response_create')) {
             }
             $item->function = 'whereIn';
             $item->operator = 'in';
-            if (is_string($instance->user->org_list)) {
-                $item->value = explode(',', $instance->user->org_list);
-            } else {
-                $item->value = $instance->user->org_list;
-            }
+            $item->value = $instance->user->org_array;
             $response->meta->filter[] = $item;
         }
 
@@ -375,11 +375,7 @@ if (!function_exists('response_create')) {
             $item->name = 'discoveries.org_id';
             $item->function = 'whereIn';
             $item->operator = 'in';
-            if (is_string($instance->user->org_list)) {
-                $item->value = explode(',', $instance->user->org_list);
-            } else {
-                $item->value = $instance->user->org_list;
-            }
+            $item->value = $instance->user->org_array;
             $response->meta->filter[] = $item;
         }
 
@@ -987,12 +983,12 @@ if (!function_exists('response_get_groupby')) {
 if (!function_exists('response_get_id')) {
     /**
      * Determine if we are passed an ID or a name and return an integer ID
-     * @param  string $id         [description]
-     * @param  string $collection [description]
-     * @param  string $org_list   [description]
+     * @param  string $id          The requested ID from $_GET
+     * @param  string $collection  The collection from response->meta->collection
+     * @param  array  $org_array   The user->org_array of OrgIDs as an array of integers that the user has access to for this collection
      * @return int|null
      */
-    function response_get_id($id = '', $collection = '', $org_list = '')
+    function response_get_id($id = '', $collection = '', $org_array = [])
     {
         if (empty($id)) {
             // log_message('debug', 'No ID provided, returning NULL.');
@@ -1031,8 +1027,8 @@ if (!function_exists('response_get_id')) {
                 } else if ($collection === 'baselines_policies') {
                     // TODO - We have org_id in baselines_policies - remove this
                     // baselines_policies.baseline_id -> baselines.id -> baselines.org_id
-                    $sql = "SELECT baselines_policies.id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) WHERE baselines_policies.name LIKE ? AND baselines.org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $result = $db->query($sql, [$id])->getResult();
+                    $sql = "SELECT baselines_policies.id FROM baselines_policies LEFT JOIN baselines ON (baselines_policies.baseline_id = baselines.id) WHERE baselines_policies.name LIKE ? AND baselines.org_id IN ? ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id, $org_array])->getResult();
                     if (!empty($result)) {
                         log_message('debug', "ID to Name match in baselines_policies (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
@@ -1054,8 +1050,8 @@ if (!function_exists('response_get_id')) {
                 } else if ($collection === 'devices') {
                     // TODO - remove this
                     // devices
-                    $sql = "SELECT id FROM devices WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $result = $db->query($sql, [$id])->getResult();
+                    $sql = "SELECT id FROM devices WHERE name LIKE ? AND org_id IN ? ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id, $org_array])->getResult();
                     if (!empty($result)) {
                         log_message('debug', "ID to Name match in devices (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
@@ -1065,8 +1061,8 @@ if (!function_exists('response_get_id')) {
                     }
                 } else if ($collection === 'orgs') {
                     // orgs.id, not *.org_id
-                    $sql = "SELECT id FROM orgs WHERE name LIKE ? AND id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $result = $db->query($sql, [$id])->getResult();
+                    $sql = "SELECT id FROM orgs WHERE name LIKE ? AND id IN ? ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id, $org_array])->getResult();
                     if (!empty($result)) {
                         log_message('debug', "ID to Name match in orgs (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
@@ -1076,11 +1072,11 @@ if (!function_exists('response_get_id')) {
                     }
                 } else if ($collection === 'users') {
                     // Special case the username as we may be given user.name@domain.com for LDAP user, but we only use user.name in users.name
-                    $sql = "SELECT id FROM users WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
+                    $sql = "SELECT id FROM users WHERE name LIKE ? AND org_id IN ? ORDER BY id DESC LIMIT 1";
                     $temp = explode('@', $id);
                     $data = array($temp[0]);
                     unset($temp);
-                    $result = $db->query($sql, $data)->getResult();
+                    $result = $db->query($sql, [$data, $org_array])->getResult();
                     if (!empty($result)) {
                         log_message('debug', "ID to Name match in users (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
@@ -1111,8 +1107,8 @@ if (!function_exists('response_get_id')) {
                         $id = null;
                     }
                 } else if (in_array($collection, $collections)) {
-                    $sql = "SELECT id FROM {$collection} WHERE name LIKE ? AND org_id IN ({$org_list}) ORDER BY id DESC LIMIT 1";
-                    $result = $db->query($sql, [$id])->getResult();
+                    $sql = "SELECT id FROM {$collection} WHERE name LIKE ? AND org_id IN ? ORDER BY id DESC LIMIT 1";
+                    $result = $db->query($sql, [$id, $org_array])->getResult();
                     if (!empty($result)) {
                         log_message('debug', "ID to Name match in $collection (Provided ID: $id, Database ID: " . intval($result[0]->id) . ").");
                         $id = intval($result[0]->id);
@@ -1271,7 +1267,6 @@ if (!function_exists('response_get_org_list')) {
      * Return the Org IDs list for the given collection for a supplied user
      * @param  object  $user          The requesting user must contain an org_list comma separated string
      * @param  string  $collection    The requested collection
-     * @return string                 A comma separated string of OrgIDs the user can access for the requested collection
      */
     function response_get_org_list(stdClass $user = null, string $collection = ''): string
     {
@@ -1316,7 +1311,7 @@ if (!function_exists('response_get_org_list')) {
 if (!function_exists('response_get_permission_id')) {
     /**
      * Can the $user perform this $action on item $id in this $collection
-     * @param  object  $user          The requesting user must contain an org_list comma separated string
+     * @param  object  $user          The requesting user must contain an org_array of intergers
      * @param  string  $collection    The requested collection
      * @param  string  $action        The requested action
      * @param  array   $received_data Any received data
@@ -1342,12 +1337,10 @@ if (!function_exists('response_get_permission_id')) {
             return true;
         }
 
-        $org_list = explode(',', $user->org_list);
-
         if ($collection === 'standards_results') {
             $sql = "SELECT standards.org_id FROM standards_results LEFT JOIN standards ON (standards_results.standard_id = standards.id) WHERE standards_results.id = ?";
             $result = $db->query($sql, [$id])->getResult();
-            if (empty($result) or count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
+            if (empty($result) or count($result) === 0 or !in_array($result[0]->org_id, $user->org_array)) {
                 return false;
             }
             return true;
@@ -1356,7 +1349,7 @@ if (!function_exists('response_get_permission_id')) {
         if ($collection === 'orgs') {
             $sql = 'SELECT `orgs`.`id` AS org_id FROM orgs WHERE id = ?';
             $result = $db->query($sql, [$id])->getResult();
-            if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
+            if (count($result) === 0 or !in_array($result[0]->org_id, $user->org_array)) {
                 return false;
             }
             return true;
@@ -1379,7 +1372,7 @@ if (!function_exists('response_get_permission_id')) {
             if (!empty($query)) {
                 $result = $query->getResult();
             }
-            if (count($result) === 0 or !in_array($result[0]->org_id, $org_list)) {
+            if (count($result) === 0 or !in_array($result[0]->org_id, $user->org_array)) {
                 return false;
             }
             log_message('debug', 'User permitted to perform ' . $action . ' on ' . $collection . '::' . $id . '::' . $component);
@@ -1410,7 +1403,7 @@ if (!function_exists('response_get_permission_id')) {
             \Config\Services::session()->setFlashdata('error', 'Requested item does not exist (' . $collection . '::' . intval($id) . ').');
             return false;
         }
-        if (!in_array($result[0]->org_id, $org_list)) {
+        if (!in_array($result[0]->org_id, $user->org_array)) {
             \Config\Services::session()->setFlashdata('error', 'Requested item belongs to an Org this user has no permission on.');
             return false;
         }
@@ -1420,7 +1413,7 @@ if (!function_exists('response_get_permission_id')) {
             // org_id
             if (!empty($received_data->org_id)) {
                 $allowed = false;
-                foreach ($org_list as $key => $value) {
+                foreach ($user->org_array as $key => $value) {
                     if ($received_data->org_id === $value) {
                         $allowed = true;
                     }
@@ -1433,7 +1426,7 @@ if (!function_exists('response_get_permission_id')) {
             // devices_assigned_to_org
             if (!empty($received_data->devices_assigned_to_org)) {
                 $allowed = false;
-                foreach ($org_list as $key => $value) {
+                foreach ($user->org_array as $key => $value) {
                     if ($received_data->devices_assigned_to_org === $value) {
                         $allowed = true;
                     }
