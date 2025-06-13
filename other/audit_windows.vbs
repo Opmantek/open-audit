@@ -1570,7 +1570,7 @@ if (error_returned = 0) then
     If colAVItems.count > 0 Then
         result.WriteText "  <antivirus>" & vbcrlf
         For Each objAntiVirusProduct In colAVItems
-            if (objAntiVirusProduct.displayName != "") then
+            if (objAntiVirusProduct.displayName > "") then
                 result.WriteText "      <item>" & vbcrlf
                 result.WriteText "          <name>" & escape_xml(objAntiVirusProduct.displayName) & "</name>" & vbcrlf
                 AvStatus = Hex(objAntiVirusProduct.ProductState)
