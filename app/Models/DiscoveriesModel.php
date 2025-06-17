@@ -103,6 +103,7 @@ class DiscoveriesModel extends BaseModel
             }
         }
         if (!empty($data->subnet)) {
+            $data->subnet = trim($data->subnet);
             $data->subnet = subnet_validate($data->subnet);
             if (empty($data->subnet)) {
                 \Config\Services::session()->setFlashdata('error', 'Discovery not created. ' . $GLOBALS['stash']->message);
