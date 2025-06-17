@@ -851,6 +851,16 @@ if (! function_exists('ssh_audit')) {
             return false;
         }
 
+        if (!empty($windows_os_name) and stripos($windows_os_name, 'Inappropriate ioctl for device') !== false) {
+            $log->command_status = 'notice';
+            $log->command_output = $windows_os_name;
+            $log->message = 'Cannot execute SSH commands on ' . $device->ip . ', aborting SSH connection.';
+            $log->severity = 6;
+            $ssh->disconnect();
+            unset($ssh);
+            return false;
+        }
+
         if (!empty($windows_os_name) and stripos($windows_os_name, 'Microsoft Windows') !== false) {
             $device->type = 'computer';
             $device->os_group = 'Windows';
