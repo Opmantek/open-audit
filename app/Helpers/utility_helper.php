@@ -586,6 +586,9 @@ function prereqCheck()
 {
     if (php_uname('s') !== 'Windows NT') {
         $prereq = dirPermLinux();
+        if (php_uname('s') === 'Darwin') {
+            $prereq['cron_file_exists'] = 'y';
+        }
     }
     $prereq['nmap_installed'] = nmapInstalled();
     $prereq['nmap_suid'] = nmapSuid();
