@@ -805,7 +805,7 @@ class RulesModel extends BaseModel
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
 
-        $tables = array('bios', 'credential', 'devices', 'disk', 'dns', 'field', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $tables = array('bios', 'credential', 'devices', 'disk', 'dns', 'field', 'file', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         $columns = array();
         foreach ($tables as $table) {
             $fields = $this->db->getFieldNames($table);

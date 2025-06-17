@@ -43,6 +43,7 @@ class OpenAudit extends BaseConfig
     public string $create_change_log_dns;
     public string $create_change_log_file;
     public string $create_change_log_ip;
+    public string $create_change_log_license;
     public string $create_change_log_log;
     public string $create_change_log_memory;
     public string $create_change_log_module;
@@ -90,6 +91,7 @@ class OpenAudit extends BaseConfig
     public string $delete_noncurrent_dns;
     public string $delete_noncurrent_file;
     public string $delete_noncurrent_ip;
+    public string $delete_noncurrent_license;
     public string $delete_noncurrent_log;
     public string $delete_noncurrent_memory;
     public string $delete_noncurrent_module;

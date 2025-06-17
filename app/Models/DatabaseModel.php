@@ -454,6 +454,9 @@ class DatabaseModel extends BaseModel
         if ($table === 'ip') {
                 $match_columns = array('ip', 'mac', 'netmask');
         }
+        if ($table === 'license') {
+                $match_columns = array('name', 'software_name', 'software_version');
+        }
         if ($table === 'log') {
                 $match_columns = array('name', 'file_name', 'overwrite');
         }

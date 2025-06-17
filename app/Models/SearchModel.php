@@ -70,7 +70,7 @@ class SearchModel extends BaseModel
             $return = format_data($result, 'devices');
         } else {
             $instance->resp->meta->data_order = array('devices.id', 'devices.icon', 'devices.type', 'devices.name', 'table', 'column', 'value');
-            $tables = array('bios','disk','dns','file','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','partition','pagefile','print_queue','processor','route','san','scsi','service','server','server_item','share','software','software_key','sound','task','user','user_group','variable','video','vm','windows');
+            $tables = array('bios','disk','dns','file','ip','license','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','partition','pagefile','print_queue','processor','route','san','scsi','service','server','server_item','share','software','software_key','sound','task','user','user_group','variable','video','vm','windows');
             foreach ($tables as $table) {
                 unset($result);
                 $columns = $this->db->getFieldNames($table);
