@@ -777,6 +777,58 @@ if (!function_exists('my_snmp_real_walk')) {
 }
 
 
+if (!function_exists('snmp_full_walk')) {
+    function snmp_full_walk(string $ip = '', object $credentials = null, int $discovery_id = 0, int $device_id = 0): bool
+    {
+        if (empty($discovery_id)) {
+            log_message('error', 'No discovery ID to snmp_helper::snmp_full_walk during discovery for device ID ' . @$device_id . ' at IP ' . @$ip);
+            return false;
+        }
+        $log = new \StdClass();
+        $log->discovery_id = $discovery_id;
+        $log->ip = (!empty($ip)) ? $ip : '';
+        $log->file = 'snmp_helper';
+        $log->function = 'snmp_full_walk';
+        $log->severity = 7;
+
+        if (empty($ip)) {
+            log_message('error', 'No IP passed to snmp_helper::snmp_full_walk during discovery ' . $discovery_id);
+            $log->message = 'No IP passed to snmp_helper::snmp_full_walk during discovery ' . $discovery_id;
+            $log->severity = 5;
+            $discoveryLogModel->create($log);
+            return false;
+        }
+        if (empty($credentials)) {
+            log_message('error', 'No credentials passed to snmp_helper::snmp_full_walk during discovery ' . $discovery_id);
+            $log->message = 'No credentials passed to snmp_helper::snmp_full_walk during discovery ' . $discovery_id;
+            $log->severity = 5;
+            $discoveryLogModel->create($log);
+            return false;
+        }
+
+        if (empty($device_id)) {
+            log_message('error', 'No device ID to snmp_helper::snmp_full_walk duriing discovery ' . $discovery_id);
+            $log->message = 'No device ID to snmp_helper::snmp_full_walk duriing discovery ' . $discovery_id;
+            $log->severity = 5;
+            $discoveryLogModel->create($log);
+            return false;
+        }
+
+        # need to delete file with device_id
+
+        // Run a full walk
+        $contents = my_snmp_real_walk($ip, $credentials, '.');
+        if (!empty($contents)) {
+            // Write the result to a file
+            $handle = @fopen(APPPATH . '../other/scripts/' . $device_id . '_snmpwalk.txt', 'w');
+            @fwrite($handle, $contents);
+            @fclose($handle);
+            return true;
+        }
+        return false;
+    }
+}
+
 if (!function_exists('snmp_audit')) {
     /**
      * [snmp_audit description]
