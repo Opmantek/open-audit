@@ -104,6 +104,12 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->os_name = "Cisco IOS-XE " . $details->os_version;
         $details->os_cpe_name = 'ios_xe';
     }
+    if (stripos($details->description, "Cisco FX-OS(tm)") !== false) {
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco FX-OS';
+        $details->os_name = "Cisco FX-OS " . $details->os_version;
+        $details->os_cpe_name = 'ios_xe';
+    }
     if (stripos($details->description, "Cisco Controller") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS-XE';
