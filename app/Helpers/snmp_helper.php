@@ -7,12 +7,12 @@ declare(strict_types=1);
 
 if (!function_exists('snmp_credentials')) {
     /**
-     * [snmp_credentials description]
+     * Takes an array of credentials an tries them on a given IP.
      * @param  string $ip           [description]
      * @param  array  $credentials  [description]
      * @param  [type] $log          [description]
      * @param  [type] $discovery_id [description]
-     * @return [type]               [description]
+     * @return class                Returns an object of working credentials or false
      */
     function snmp_credentials(string $ip = '', array $credentials = array(), int $discovery_id = 0)
     {
@@ -289,7 +289,7 @@ function my_snmp_get_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -304,7 +304,7 @@ function my_snmp_get_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -328,7 +328,7 @@ function my_snmp_get_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -452,7 +452,7 @@ function my_snmp_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -467,7 +467,7 @@ function my_snmp_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -491,7 +491,7 @@ function my_snmp_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -622,7 +622,7 @@ function my_snmp_real_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -637,7 +637,7 @@ function my_snmp_real_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -660,7 +660,7 @@ function my_snmp_real_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
