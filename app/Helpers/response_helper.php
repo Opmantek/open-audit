@@ -472,8 +472,10 @@ if (!function_exists('response_create')) {
                 $response->meta->received_data = array();
             }
             if ($function === 'configuration_update' and $response->meta->id === $config->license_string_id) {
-                $response->meta->received_data->attributes->value = trim($response->meta->received_data->attributes->value);
-                $response->meta->received_data->attributes->value = str_replace("\n", "", $response->meta->received_data->attributes->value);
+                if (is_string($response->meta->received_data->attributes->value)) {
+                    $response->meta->received_data->attributes->value = trim($response->meta->received_data->attributes->value);
+                    $response->meta->received_data->attributes->value = str_replace("\n", "", $response->meta->received_data->attributes->value);
+                }
             }
             if ($function === 'configuration_update' and $response->meta->id === $config->license_string_collector_id) {
                 $response->meta->received_data->attributes->value = trim($response->meta->received_data->attributes->value);
