@@ -2667,6 +2667,36 @@ fi
 
 
 ########################################################
+# LICENSE$ SECTION                                     #
+########################################################
+if [ -z $(echo "$skip_sections" | grep "license,") ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "License Info"
+	fi
+	software=""
+	echo "	<license>" >> "$xml_file"
+
+	# Open-AudIT
+	if [ -f "/usr/local/open-audit/other/enterprise.bin" ]; then
+		version=$(/usr/local/open-audit/other/enterprise.bin --version)
+		raw=$(/usr/local/open-audit/other/enterprise.bin --license)
+		echo "		<item>" >> "$xml_file"
+		echo "			<name>Open-AudIT</name>" >> "$xml_file"
+		echo "			<raw>$(escape_xml $raw)</raw>" >> "$xml_file"
+		echo "			<software_name>Open-AudIT</software_name>" >> "$xml_file"
+		echo "			<software_version>$(escape_xml $version)</software_version>" >> "$xml_file"
+		echo "		</item>" >> "$xml_file"
+		# Add this package to the software list.
+		# Not strictly required for Open-AudIT because we have the below,
+		#     but provided as an example so other manually installed software
+		#     will appear in the software list for a device
+		software="$software \n		<item><name>Open-AudIT</name><version>$(escape_xml $version)</version><url>https://firstwave.com</url><publisher>FirstWave</publisher><location>/usr/local/omk</location></item>"
+	fi
+
+	echo "	</license>" >> "$xml_file"
+fi
+
+########################################################
 # SOFTWARE SECTION                                     #
 ########################################################
 if [ -z $(echo "$skip_sections" | grep "software,") ]; then
@@ -2676,12 +2706,18 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 	IFS='
 	'
 	echo "	<software>" >> "$xml_file"
+
 	# include OS in software
 	echo "		<item>" >> "$xml_file"
 	echo "			<name>$(escape_xml $system_os_name)</name>" >> "$xml_file"
 	echo "			<version>$(escape_xml $system_os_version)</version>" >> "$xml_file"
 	echo "			<description>Operating System</description>" >> "$xml_file"
 	echo "		</item>" >> "$xml_file"
+
+	if [ -n "$software" ]; then
+		echo "$software" >> "$xml_file"
+	fi
+
 	# Detect FirstWave applications
 	if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
 		for package in $(/usr/local/omk/bin/show_versions.pl 2>/dev/null); do

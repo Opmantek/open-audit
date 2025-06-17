@@ -44,6 +44,9 @@ function match_columns($table)
     if ($table === 'firewall_rule') {
             $match_columns = array('name', 'profile', 'enabled', 'direction', 'action', 'local_port', 'remote_port', 'firewall');
     }
+    if ($table === 'license') {
+            $match_columns = array('name', 'software_name', 'software_version');
+    }
     if ($table === 'log') {
             $match_columns = array('name', 'file_name', 'overwrite');
     }

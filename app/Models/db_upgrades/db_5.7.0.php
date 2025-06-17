@@ -19,6 +19,35 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DROP TABLE IF EXISTS `license`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "CREATE TABLE `license` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `device_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `raw` text NOT NULL,
+  `purchase_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `used_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `software_name` text NOT NULL,
+  `software_version` varchar(200) NOT NULL DEFAULT '',
+  `expiry_date` date NOT NULL DEFAULT '2000-01-01',
+  `end_of_life` date NOT NULL DEFAULT '2000-01-01',
+  `end_of_service_life` date NOT NULL DEFAULT '2000-01-01',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`device_id`),
+  CONSTRAINT `license_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "DROP TABLE IF EXISTS `news`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

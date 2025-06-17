@@ -107,7 +107,7 @@ if (empty($resource->type)) {
 
                                     <?php
                                     $show = false;
-                                    $sections = array('antivirus', 'firewall', 'firewall_rule', 'server', 'service', 'software', 'software_key');
+                                    $sections = array('antivirus', 'firewall', 'firewall_rule', 'license', 'server', 'service', 'software', 'software_key');
                                     foreach ($sections as $section) {
                                         if (!empty($included[$section])) {
                                             $show = true;
@@ -1837,6 +1837,45 @@ if (empty($resource->type)) {
                                     </div>
                                 </div>
                             </div>
+
+
+                            <div style="margin-bottom:20px; display:none;" class="card" id="license_section">
+                                <?php $count = !empty($included['license']) ? count($included['license']) : 0; ?>
+                                <?=  device_panel('license', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
+                                                    <th><?= __('Name') ?></th>
+                                                    <th><?= __('Software Name') ?></th>
+                                                    <th><?= __('Software Version') ?></th>
+                                                    <th><?= __('Purchase Count') ?></th>
+                                                    <th><?= __('Used Count') ?></th>
+                                                    <th><?= __('Expiry Date') ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php if (!empty($included['license'])) {
+                                                foreach ($included['license'] as $row) { ?>
+                                                <tr>
+                                                    <?= device_component_button_read('license', $row->id) ?>
+                                                    <td><?= $row->name ?></td>
+                                                    <td><?= $row->software_name ?></td>
+                                                    <td><?= $row->software_version ?></td>
+                                                    <td><?= $row->purchase_count ?></td>
+                                                    <td><?= $row->used_count ?></td>
+                                                    <td><?= $row->expiry_date ?></td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="service_section">
                                 <?php $count = !empty($included['service']) ? count($included['service']) : 0; ?>

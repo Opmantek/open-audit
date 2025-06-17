@@ -148,8 +148,6 @@ $instance = & get_instance();
             <br>
 
 
-
-
             <?php if (!empty($config->license) and $config->license !== 'none') { ?>
             <div class="card">
                 <div class="card-header" style="height:57px;">
@@ -162,11 +160,13 @@ $instance = & get_instance();
                 <div class="card-body" id="advanced">
                     <div class="row">
                         <?php
-                        $components = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard');
+                        $components = array('arp', 'audit_log', 'bios', 'change_log', 'cli_config', 'disk', 'dns', 'edit_log', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
                         if (!empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
-                            $components = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'executable', 'ip', 'log', 'memory', 'module', 'monitor');
+                            $components = array('arp', 'audit_log', 'bios', 'change_log', 'cli_config', 'disk', 'dns', 'edit_log', 'executable', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
                         }
-                        foreach ($components as $component) { ?>
+                        $i = 0;
+                        foreach ($components as $component) {
+                            $i++; ?>
                         <div class="col-lg-1 text-center">
                             <div>
                                 <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
@@ -176,50 +176,13 @@ $instance = & get_instance();
                                 </a>
                             </div>
                         </div>
-                        <?php } ?>
+                        <?php
+                            if ($i === 12 or $i === 24 or $i === 36) {
+                                echo "</div><br><div class=\"row\">";
+                            }
+                        } ?>
                     </div>
-                    <br>
-                    <div class="row">
-                        <?php $components = array('netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item');
-                        if (!empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
-                            $components = array('motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server');
-                        }
-                        foreach ($components as $component) { ?>
-                        <div class="col-lg-1 text-center">
-                            <div>
-                                <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/<?= $component ?>.svg" alt="<?= $component ?>">
-                                    <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
-                                </a>
-                            </div>
-                        </div>
-                        <?php } ?>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <?php $components = array('service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
-                        if (!empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
-                            $components = array('server_item', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
-                        }
-                        foreach ($components as $component) { ?>
-                        <div class="col-lg-1 text-center">
-                            <div>
-                                <a href="<?= url_to('componentsCollection') ?>?components.type=<?= $component ?>" class="position-relative">
-                                    <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/<?= $component ?>.svg" alt="<?= $component ?>">
-                                    <br><?= __(ucwords(str_replace('_', ' ', $component))) ?>
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included[$component] ?></span>
-                                </a>
-                            </div>
-                        </div>
-                        <?php } ?>
-                    </div>
-                    <br>
                 </div>
             </div>
-            <br>
             <?php } ?>
-
-
-
         </main>
