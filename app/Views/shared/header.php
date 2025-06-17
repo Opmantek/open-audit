@@ -615,9 +615,9 @@ foreach ($config->modules as $module) {
                     <div class="col-6" style="padding-bottom: 0px; padding-top: 16px;">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="<?= $homepage ?>" class="link-secondary">Home</a></li>
+                                <li class="breadcrumb-item"><a href="<?= $homepage ?>" class="link-secondary"><?= __('Home') ?></a></li>
                                 <?php if (empty($meta->breadcrumbs)) { ?>
-                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Collection') ?>" class="link-secondary"><?= @ucwords(str_replace('_', ' ', $meta->collection)) ?></a></li>
+                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Collection') ?>" class="link-secondary"><?= __(@ucwords(str_replace('_', ' ', $meta->collection))) ?></a></li>
                                     <?php if (($meta->action === 'read' or $meta->action === 'execute') and !empty($name)) { ?>
                                     <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Read', $meta->id) ?>" class="link-secondary"><?= $name ?></a></li>
                                     <?php }
