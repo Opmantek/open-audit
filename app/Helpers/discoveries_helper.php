@@ -1609,7 +1609,8 @@ if (! function_exists('ip_audit')) {
                     if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
                         $command = 'powershell  -executionpolicy bypass -file ' . $device->install_dir . '\\audit_windows.ps1 -submit_online n -create_file y -debugging 1 -last_seen_by audit_wmi -system_id ' . $device->id . ' -discovery_id ' . $discovery->id;
                     } else {
-                        $command = 'cscript ' . $device->install_dir . '\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=' . $device->id . ' discovery_id=' . $discovery->id;
+                        // $command = 'cscript ' . $device->install_dir . '\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=' . $device->id . ' discovery_id=' . $discovery->id;
+                        $command = 'cscript ' . $device->install_dir . '\\audit_windows.vbs submit_online=n create_file=w debugging=0 last_seen_by=audit_wmi system_id=' . $device->id . ' discovery_id=' . $discovery->id;
                     }
                     $output = execute_windows($device->ip, $credentials_windows, $command, $discovery->id);
                     if (empty($output)) {
@@ -1789,7 +1790,8 @@ if (! function_exists('ip_audit')) {
             }
             unset($destination);
             if ($audit_script !== '') {
-                $command = $instance->config->discovery_linux_script_directory . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
+                // $command = $instance->config->discovery_linux_script_directory . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
+                $command = $instance->config->discovery_linux_script_directory . $script_name . ' submit_online=n create_file=y debugging=1 system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
                 $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
                 $log->command_output = '';
                 $log->command_status = 'notice';
@@ -1807,7 +1809,8 @@ if (! function_exists('ip_audit')) {
                     if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
                         $command = 'powershell -executionpolicy bypass -file ' . $script_name . ' -submit_online n -create_file y -debugging 1 -system_id ' . $device->id . ' -last_seen_by audit_ssh -discovery_id ' . $discovery->id;
                     } else {
-                        $command = 'cscript ' . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
+                        // $command = 'cscript ' . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
+                        $command = 'cscript ' . $script_name . ' submit_online=n create_file=y debugging=1 system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
                     }
                 }
                 $log->command = $command;
