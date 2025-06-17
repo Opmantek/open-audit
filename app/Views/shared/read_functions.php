@@ -51,11 +51,11 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     $export_csv_button = '';
     if ($action === 'execute' and ($collection === 'groups' or $collection === 'queries' or $collection === 'summaries')) {
         if ($style === 'icontext') {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export") . " CSV</a>";
         } elseif ($style === 'icon') {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
         } else {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\">" . __("Export CSV") . "</a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\">" . __("Export") . " CSV</a>";
         }
     }
 
@@ -77,19 +77,19 @@ function read_card_header(string $collection = '', string $id = '', string $icon
         if ($style === 'icontext') {
                 $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection . 'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __("List") . "</a>";
             #if ($collection !== 'database') {
-                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Export', intval($id)) . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export JSON") . "</a>";
+                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . url_to($collection . 'Export', intval($id)) . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export") . " JSON</a>";
             #}
             $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
         } elseif ($style === 'icon') {
             $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection . 'Collection') . "\"><span class=\"fa fa-list text-primary\"></span></a>";
             #if ($collection !== 'database') {
-                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Export', intval($id)) . "\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
+                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . url_to($collection . 'Export', intval($id)) . "\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
             #}
             $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
         } else {
             $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection . 'Collection') . "\">" . __("List") . "</a>";
             #if ($collection !== 'database') {
-                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Export', intval($id)) . "\">" . __("Export JSON") . "</a>";
+                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . url_to($collection . 'Export', intval($id)) . "\">" . __("Export") . " JSON</a>";
             #}
             $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\">" . __("Help") . "</a>";
         }
@@ -97,11 +97,11 @@ function read_card_header(string $collection = '', string $id = '', string $icon
 
     if ($action === 'execute' and $collection !== 'database') {
         if ($style === 'icontext') {
-            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export JSON") . "</a>";
+            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export") . " JSON</a>";
         } elseif ($style === 'icon') {
-            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
+            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
         } else {
-            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\">" . __("Export JSON") . "</a>";
+            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\">" . __("Export") . " JSON</a>";
         }
     }
 
@@ -391,17 +391,17 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
     }
     if ($toolbar === 'icontext') {
         $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-circle-xmark\"></span>" . __("Close") . "</a>";
-        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>
+        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export") . " CSV</a>
         <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("View All") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span>" . __("View All") . "</a>";
     } elseif ($toolbar === 'icon') {
         $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\"><span class=\"fa-regular fa-circle-xmark\"></span></a>";
 
-        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span></a>
+        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span></a>
         <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("View All") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span></a>";
     } else {
         $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\">" . __("Close") . "</a>";
 
-        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\">" . __("Export CSV") . "</a>
+        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\">" . __("Export") . " CSV</a>
         <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("View All") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\">" . __("View All") . "</a>";
     }
     $panel_add_button = '';

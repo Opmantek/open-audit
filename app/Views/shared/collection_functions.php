@@ -34,41 +34,41 @@ function collection_card_header(string $collection = '', string $icon = '', obje
         if ($style === 'icontext') {
             $create_button = "<a id=\"button_create\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection . 'CreateForm') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus text-oa-success\"></span>" . __("Create") . "</a>";
 
-            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import CSV") . "\" href=\"" . url_to($collection . 'ImportForm') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-table-cells-large text-oa-success\"></span>" . __("Import CSV") . "</a>";
+            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import CSV") . "\" href=\"" . url_to($collection . 'ImportForm') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-table-cells-large text-oa-success\"></span>" . __("Import") . " CSV</a>";
 
-            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import JSON") . "\" href=\"" . url_to($collection . 'ImportJSONForm') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-code text-oa-success\"></span>" . __("Import JSON") . "</a>";
+            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import JSON") . "\" href=\"" . url_to($collection . 'ImportJSONForm') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-code text-oa-success\"></span>" . __("Import") . " JSON</a>";
         } elseif ($style === 'icon') {
             $create_button = "<a id=\"button_create\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection . 'CreateForm') . "\"><span class=\"fa fa-plus text-oa-success\"></span></a>";
 
-            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import CSV") . "\" href=\"" . url_to($collection . 'ImportForm') . "\"><span class=\"fa-solid fa-angles-up text-oa-success\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-oa-success\"></span></a>";
+            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import") . " CSV\" href=\"" . url_to($collection . 'ImportForm') . "\"><span class=\"fa-solid fa-angles-up text-oa-success\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-oa-success\"></span></a>";
 
-            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import JSON") . "\" href=\"" . url_to($collection . 'ImportJSONForm') . "\"><span class=\"fa-solid fa-angles-up text-oa-success\"></span>&nbsp;<span class=\"fa-solid fa-code text-oa-success\"></span></a>";
+            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import") . " JSON\" href=\"" . url_to($collection . 'ImportJSONForm') . "\"><span class=\"fa-solid fa-angles-up text-oa-success\"></span>&nbsp;<span class=\"fa-solid fa-code text-oa-success\"></span></a>";
         } else {
             $create_button = "<a id=\"button_create\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection . 'CreateForm') . "\">" . __("Create") . "</a>";
 
-            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import CSV") . "\" href=\"" . url_to($collection . 'ImportForm') . "\">" . __("Import CSV") . "</a>";
+            $import_csv_button = "<a id=\"button_import_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import") . " CSV\" href=\"" . url_to($collection . 'ImportForm') . "\">" . __("Import") . " CSV</a>";
 
-            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import JSON") . "\" href=\"" . url_to($collection . 'ImportJSONForm') . "\">" . __("Import JSON") . "</a>";
+            $import_json_button = "<a id=\"button_import_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Import") . " JSON\" href=\"" . url_to($collection . 'ImportJSONForm') . "\">" . __("Import") . " JSON</a>";
         }
     }
 
     if (strpos($label, 'About') === false) {
         if ($style === 'icontext') {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . $export_link . "csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export CSV") . "</a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . $export_link . "csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export") . " CSV</a>";
 
-            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . $export_link . "json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export JSON") . "</a>";
+            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . $export_link . "json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export") . " JSON</a>";
 
             $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
         } elseif ($style === 'icon') {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . $export_link . "csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . $export_link . "csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
 
-            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . $export_link . "json_data\"><span class=\"fa-solid fa-angle-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
+            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . $export_link . "json_data\"><span class=\"fa-solid fa-angle-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
 
             $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
         } else {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export CSV") . "\" href=\"" . $export_link . "csv\">" . __("Export CSV") . "</a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . $export_link . "csv\">" . __("Export") . " CSV</a>";
 
-            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . $export_link . "json_data\">" . __("Export JSON") . "</a>";
+            $export_json_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . $export_link . "json_data\">" . __("Export") . " JSON</a>";
 
             $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\">" . __("Help") . "</a>";
         }
