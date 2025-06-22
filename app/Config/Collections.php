@@ -11,7 +11,6 @@ class Collections extends BaseConfig
 {
     public $agents;
     public $applications;
-    public $widgets;
     public $attributes;
     public $auth;
     public $baselines;
@@ -61,6 +60,7 @@ class Collections extends BaseConfig
     public $support;
     public $tasks;
     public $users;
+    public $widgets;
 
     public function __construct()
     {
