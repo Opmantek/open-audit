@@ -882,9 +882,9 @@ if (empty($resource->type)) {
                                             } else {
                                                 $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('racksRead', $included['rack_devices'][0]->{'rack_id'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
                                             } ?>
-                                            <?= read_field('rack', $included['rack_devices'][0]->{'racks.name'}, '', '', '', $link) ?>
+                                            <?= read_field('rack', (string)@$included['rack_devices'][0]->{'racks.name'}, '', '', '', $link) ?>
                                             <?php
-                                            if (empty(!$included['rack_devices'][0]->{'position'})) {
+                                            if (!empty($included['rack_devices'][0]->{'position'})) {
                                                 echo read_field('position_in_rack', $included['rack_devices'][0]->{'position'}, '', '', '', '');
                                             }
                                             if (!empty($included['rack_devices'][0]->{'locations.id'})) {
