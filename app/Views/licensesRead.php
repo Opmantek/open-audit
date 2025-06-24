@@ -75,6 +75,13 @@ if ($style === 'icontext') {
                                     </div>
 
                                     <?= read_field('match_string', $resource->match_string, $dictionary->columns->match_string, $update, '', '', '', '', $meta->collection) ?>
+
+                                    <?= read_field('expiry_date', $resource->expiry_date, $dictionary->columns->expiry_date, $update, '', '', '', 'date', $meta->collection) ?>
+
+                                    <?= read_field('end_of_life', $resource->end_of_life, $dictionary->columns->end_of_life, $update, '', '', '', 'date', $meta->collection) ?>
+
+                                    <?= read_field('end_of_service_life', $resource->end_of_service_life, $dictionary->columns->end_of_service_life, $update, '', '', '', 'date', $meta->collection) ?>
+
                                     <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
