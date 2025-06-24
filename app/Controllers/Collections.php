@@ -915,6 +915,8 @@ class Collections extends BaseController
             }
 
             if ($this->resp->meta->collection === 'devices') {
+                unset($this->resp->logs);
+                unset($this->resp->links);
                 $this->resp->included = $this->{'devicesModel'}->includedRead($this->resp->meta->id);
                 $this->resp->dictionary = $dictionary;
                 if ($this->resp->meta->format === 'json_data') {
@@ -947,6 +949,7 @@ class Collections extends BaseController
                     }
                     $this->resp->data = $device;
                 }
+                unset($this->resp->dictionary);
             }
             output($this);
             return true;
