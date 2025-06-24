@@ -34,7 +34,7 @@ if (!function_exists('all_ip_list')) {
             $command = 'nmap -n -sL ' . $discovery->subnet;
         }
         if (php_uname('s') === 'Darwin') {
-            $command = '/usr/local/bin/' . $command;
+            #$command = '/usr/local/bin/' . $command;
         }
         $log->command = $command;
         exec($command, $output, $return_var);
@@ -98,7 +98,7 @@ if (! function_exists('responding_ip_list')) {
                 $command = 'nmap -n -oG - -sP -T4 --max-retries 2 --min-parallelism 200 --max-parallelism 256 --randomize-hosts ' . $discovery->subnet;
             }
             if (php_uname('s') === 'Darwin') {
-                $command = '/usr/local/bin/' . $command;
+                #$command = '/usr/local/bin/' . $command;
             }
             $log->command = $command;
             exec($command, $output, $return_var);
@@ -124,7 +124,7 @@ if (! function_exists('responding_ip_list')) {
                 $command = 'nmap -n -sL ' . $discovery->subnet;
             }
             if (php_uname('s') === 'Darwin') {
-                $command = '/usr/local/bin/' . $command;
+                #$command = '/usr/local/bin/' . $command;
             }
             $log->command = $command;
             exec($command, $output, $return_var);
@@ -537,7 +537,7 @@ if (! function_exists('ip_scan')) {
             $item_start = microtime(true);
             $command = "nmap -n {$timing} {$ping} -sS {$service_version} {$exclude_ip} {$exclude_tcp_ports} {$nmap_tcp_ports} {$timeout} {$ip}";
             if (php_uname('s') === 'Darwin') {
-                $command = '/usr/local/bin/' . $command;
+                #$command = '/usr/local/bin/' . $command;
             }
             exec($command, $output, $return_var);
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -558,7 +558,7 @@ if (! function_exists('ip_scan')) {
             $item_start = microtime(true);
             $command = "nmap -n {$timing} {$ping} -sU {$service_version} {$exclude_ip} {$exclude_udp_ports} {$nmap_udp_ports} {$timeout} {$ip}";
             if (php_uname('s') === 'Darwin') {
-                $command = '/usr/local/bin/' . $command;
+                #$command = '/usr/local/bin/' . $command;
             }
             exec($command, $output, $return_var);
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -584,7 +584,7 @@ if (! function_exists('ip_scan')) {
             $item_start = microtime(true);
             $command = "nmap -n {$timing} {$ping} -sS {$service_version} {$exclude_ip} {$exclude_tcp_ports} {$tcp_ports} {$timeout} {$ip}";
             if (php_uname('s') === 'Darwin') {
-                $command = '/usr/local/bin/' . $command;
+                #$command = '/usr/local/bin/' . $command;
             }
             exec($command, $output, $return_var);
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -610,7 +610,7 @@ if (! function_exists('ip_scan')) {
             $item_start = microtime(true);
             $command = "nmap -n {$timing} {$ping} -sU {$service_version} {$exclude_ip} {$exclude_udp_ports} {$udp_ports} {$timeout} {$ip}";
             if (php_uname('s') === 'Darwin') {
-                $command = '/usr/local/bin/' . $command;
+                #$command = '/usr/local/bin/' . $command;
             }
             exec($command, $output, $return_var);
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -964,7 +964,9 @@ if (! function_exists('ip_audit')) {
         // No SNMP extension, do not run
         if (! extension_loaded('snmp') and $ip_scan->snmp_status === 'true') {
             $log->message = 'PHP extension not loaded, skipping SNMP data retrieval for ' . $device->ip;
+            $log->severity = 5;
             $discoveryLogModel->create($log);
+            $log->severity = 7;
         }
 
         // Test for working SNMP credentials
