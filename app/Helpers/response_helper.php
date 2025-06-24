@@ -1196,18 +1196,17 @@ if (!function_exists('response_get_include')) {
         if (!empty($post)) {
             $include = $post;
         }
-        if (!empty($include)) {
-            if (!in_array($include, $valid_includes)) {
-                log_message('warning', 'Invalid include provided (' . $include . ').');
-                $include = '';
-            } else {
-                if (!empty($post)) {
-                    log_message('debug', 'Set include according to POST (' . $post . ').');
-                } else if (!empty($get)) {
-                    log_message('debug', 'Set include according to GET (' . $get . ').');
+        $include = explode(',', $include);
+        foreach ($include as $key => $value) {
+            if (!empty($value)) {
+                if (!in_array($value, $valid_includes)) {
+                    log_message('warning', 'Invalid include provided (' . $value . ').');
+                    unset($include[$key]);
                 }
             }
         }
+        $include = implode(',', $include);
+        log_message('debug', 'Set include to ' . $include . '.');
         return $include;
     }
 }
