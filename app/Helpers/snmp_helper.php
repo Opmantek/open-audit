@@ -778,12 +778,13 @@ if (!function_exists('my_snmp_real_walk')) {
 
 
 if (!function_exists('snmp_full_walk')) {
-    function snmp_full_walk(string $ip = '', object $credentials = null, int $discovery_id = 0, int $device_id = 0): bool
+    function snmp_full_walk(string $ip = '', ?object $credentials = null, int $discovery_id = 0, int $device_id = 0): bool
     {
         if (empty($discovery_id)) {
             log_message('error', 'No discovery ID to snmp_helper::snmp_full_walk during discovery for device ID ' . @$device_id . ' at IP ' . @$ip);
             return false;
         }
+        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
         $log->discovery_id = $discovery_id;
         $log->ip = (!empty($ip)) ? $ip : '';
@@ -798,7 +799,10 @@ if (!function_exists('snmp_full_walk')) {
             $discoveryLogModel->create($log);
             return false;
         }
-        if (empty($credentials)) {
+        if (is_array($credentials)) {
+            $credentials = $credentials[0];
+        }
+        if (empty($credentials) or !is_object($credentials)) {
             log_message('error', 'No credentials passed to snmp_helper::snmp_full_walk during discovery ' . $discovery_id);
             $log->message = 'No credentials passed to snmp_helper::snmp_full_walk during discovery ' . $discovery_id;
             $log->severity = 5;
@@ -814,12 +818,31 @@ if (!function_exists('snmp_full_walk')) {
             return false;
         }
 
-        # need to delete file with device_id
+        log_message('debug', 'Executing SNMP full walk on device ' . $device_id . ' at ip ' . $ip);
+        $log->message = 'Executing SNMP full walk on device ' . $device_id . ' at ip ' . $ip;
+        $discoveryLogModel->create($log);
+
+        // TODO -  need to delete file with device_id
 
         // Run a full walk
-        $contents = my_snmp_real_walk($ip, $credentials, '.');
+        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+        snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
+        snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+        $snmp = my_snmp_real_walk($ip, $credentials, '.1');
+        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+        if (empty($snmp)) {
+            log_message('debug', 'No result from full SNMP walk for ' . $ip);
+            return false;
+        } else {
+            log_message('debug', 'Result from full SNMP walk for ' . $ip . ' retrieved.');
+        }
+        $contents = '';
+        foreach ($snmp as $key => $value) {
+            $contents .= $key . ' = ' . $value . "\n";
+        }
         if (!empty($contents)) {
             // Write the result to a file
+            // TODO - Where to store these?
             $handle = @fopen(APPPATH . '../other/scripts/' . $device_id . '_snmpwalk.txt', 'w');
             @fwrite($handle, $contents);
             @fclose($handle);
@@ -838,7 +861,7 @@ if (!function_exists('snmp_audit')) {
      * @param  [type] $discovery_id [description]
      * @return [type]               [description]
      */
-    function snmp_audit(string $ip = '', object $credentials = null, int $discovery_id = 0, string $type = 'subnet')
+    function snmp_audit(string $ip = '', ?object $credentials = null, int $discovery_id = 0, string $type = 'subnet')
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
