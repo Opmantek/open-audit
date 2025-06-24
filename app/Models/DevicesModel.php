@@ -561,12 +561,14 @@ class DevicesModel extends BaseModel
         }
 
         if ($this->db->tableExists('arp')) {
-            // $sql = "SELECT arp.*, ip.device_id AS `ip.device_id` FROM `arp` LEFT JOIN `ip` ON (arp.mac = ip.mac AND INET_ATON(arp.ip) = INET_ATON(ip.ip)) WHERE arp.device_id = ? and arp.current = 'y'";
-            $sql = "SELECT arp.*, ip.device_id AS `ip.device_id` FROM `arp` LEFT JOIN `ip` ON (arp.mac = ip.mac) WHERE arp.device_id = ? and arp.current = 'y' GROUP BY arp.mac";
-            $query = $this->db->query($sql, $id);
-            $result = $query->getResult();
-            if (!empty($result)) {
-                $include['arp'] = $result;
+            if (empty($resp_include) or in_array('arp', $resp_include)) {
+                // $sql = "SELECT arp.*, ip.device_id AS `ip.device_id` FROM `arp` LEFT JOIN `ip` ON (arp.mac = ip.mac AND INET_ATON(arp.ip) = INET_ATON(ip.ip)) WHERE arp.device_id = ? and arp.current = 'y'";
+                $sql = "SELECT arp.*, ip.device_id AS `ip.device_id` FROM `arp` LEFT JOIN `ip` ON (arp.mac = ip.mac) WHERE arp.device_id = ? and arp.current = 'y' GROUP BY arp.mac";
+                $query = $this->db->query($sql, $id);
+                $result = $query->getResult();
+                if (!empty($result)) {
+                    $include['arp'] = $result;
+                }
             }
         }
 
@@ -624,11 +626,13 @@ class DevicesModel extends BaseModel
             }
         }
 
-        $sql = "SELECT server.*, certificate.id AS `certificate.id` FROM `server` LEFT JOIN certificate ON (server.certificates = certificate.name and server.device_id = certificate.device_id and certificate.current = 'y') WHERE server.device_id = ? and server.current = 'y'";
-        $query = $this->db->query($sql, $id);
-        $result = $query->getResult();
-        if (!empty($result)) {
-            $include['server'] = $result;
+        if (empty($resp_include) or in_array('server', $resp_include)) {
+            $sql = "SELECT server.*, certificate.id AS `certificate.id` FROM `server` LEFT JOIN certificate ON (server.certificates = certificate.name and server.device_id = certificate.device_id and certificate.current = 'y') WHERE server.device_id = ? and server.current = 'y'";
+            $query = $this->db->query($sql, $id);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include['server'] = $result;
+            }
         }
 
 
@@ -644,44 +648,41 @@ class DevicesModel extends BaseModel
             }
         }
 
-        $sql = "SELECT `rack_devices`.*, devices.name AS `devices.name`, racks.name AS `racks.name`, locations.name AS `locations.name`, locations.id AS `locations.id` FROM `rack_devices` LEFT JOIN devices ON (rack_devices.device_id = devices.id) LEFT JOIN `racks` ON (rack_devices.rack_id = racks.id) LEFT JOIN `locations` ON (racks.location_id = locations.id) WHERE device_id = ?";
-        $query = $this->db->query($sql, $id);
-        $result = $query->getResult();
-        if (!empty($result)) {
-            $include['rack_devices'] = $result;
-        } else {
-            $blank_rack = new stdClass();
-            $blank_rack->{'rack_id'} = 0;
-            $blank_rack->{'position'} = 0;
-            $blank_rack->{'racks.name'} = 'Not in a rack';
-            $blank_rack->{'locations.name'} = '';
-            $blank_rack->{'locations.id'} = 0;
-            $include['rack_devices'][] = $blank_rack;
+        if (empty($resp_include) or in_array('rack', $resp_include)) {
+            $sql = "SELECT `rack_devices`.*, devices.name AS `devices.name`, racks.name AS `racks.name`, locations.name AS `locations.name`, locations.id AS `locations.id` FROM `rack_devices` LEFT JOIN devices ON (rack_devices.device_id = devices.id) LEFT JOIN `racks` ON (rack_devices.rack_id = racks.id) LEFT JOIN `locations` ON (racks.location_id = locations.id) WHERE device_id = ?";
+            $query = $this->db->query($sql, $id);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include['rack_devices'] = $result;
+            } else {
+                $blank_rack = new stdClass();
+                $blank_rack->{'rack_id'} = 0;
+                $blank_rack->{'position'} = 0;
+                $blank_rack->{'racks.name'} = 'Not in a rack';
+                $blank_rack->{'locations.name'} = '';
+                $blank_rack->{'locations.id'} = 0;
+                $include['rack_devices'][] = $blank_rack;
+            }
         }
 
 
 
-        $sql = "SELECT `application`.*, applications.name AS `applications.name`, applications.description AS `applications.description` FROM `application` LEFT JOIN applications ON (`application`.application_id = applications.id) WHERE application.device_id = ?";
-        $query = $this->db->query($sql, $id);
-        $result = $query->getResult();
-        if (!empty($result)) {
-            $include['application'] = $result;
-        }
-
-
-        $sql = "SELECT `clusters`.*, `cluster`.`role`, `cluster`.`id` AS `cluster.id` FROM `clusters` RIGHT JOIN `cluster` ON `clusters`.`id` = `cluster`.`cluster_id` WHERE `cluster`.`device_id` = ?";
-        $query = $this->db->query($sql, $id);
-        $result = $query->getResult();
-        if (!empty($result)) {
-            $include['cluster'] = $result;
-        }
-
-        if (empty($resp_include) or in_array('applications', $resp_include) or $instance->resp->meta->format === 'html') {
-            $sql = "SELECT application.*, applications.name AS `applications.name`, applications.description AS `applications.description` FROM `application` LEFT JOIN applications ON (application.application_id = applications.id) WHERE application.device_id = ?";
+        if (empty($resp_include) or in_array('application', $resp_include)) {
+            $sql = "SELECT `application`.*, applications.name AS `applications.name`, applications.description AS `applications.description` FROM `application` LEFT JOIN applications ON (`application`.application_id = applications.id) WHERE application.device_id = ?";
             $query = $this->db->query($sql, $id);
             $result = $query->getResult();
             if (!empty($result)) {
                 $include['application'] = $result;
+            }
+        }
+
+
+        if (empty($resp_include) or in_array('cluster', $resp_include)) {
+            $sql = "SELECT `clusters`.*, `cluster`.`role`, `cluster`.`id` AS `cluster.id` FROM `clusters` RIGHT JOIN `cluster` ON `clusters`.`id` = `cluster`.`cluster_id` WHERE `cluster`.`device_id` = ?";
+            $query = $this->db->query($sql, $id);
+            $result = $query->getResult();
+            if (!empty($result)) {
+                $include['cluster'] = $result;
             }
         }
 
