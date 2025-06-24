@@ -444,7 +444,7 @@ function getLicenseDetails()
             $license->company = !empty($json->company) ? $json->company : '';
             $license->email = !empty($json->email) ? $json->email : '';
             $license->count = !empty($json->count) ? intval($json->count) : 0;
-            $license->expires = !empty($json->expires) ? date('Y-m-d', $json->expires) : '';
+            $license->expires = !empty($json->expires) ? date('Y-m-d', intval($json->expires)) : '';
             $license->type = !empty($json->license) ? $json->license : '';
         }
         unset($output);
