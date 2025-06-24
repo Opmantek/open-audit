@@ -7,6 +7,14 @@ $type = 'device';
 if (stripos($meta->query_string, 'type=application') !== false) {
     $type = 'application';
 }
+if (empty($included['applications'])) {
+    echo '        <div class="container-fluid">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                You need to create an application before assigning a device. Click <a href="' . url_to('applicationsCreateForm') . '">here</a> to create an application.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>';
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -65,7 +73,7 @@ if (stripos($meta->query_string, 'type=application') !== false) {
                                 <div class="row">
                                     <div class="offset-2 col-8">
                                         <label for="submit" class="form-label">&nbsp;</label>
-                                        <button id="submit" name="submit" type="submit" class="btn btn-primary"><?= __('Submit'); ?></button>
+                                        <button id="submit" name="submit" type="submit" class="btn btn-primary" <?php if (empty($included['applications'])) { echo " disabled"; } ?>><?= __('Submit'); ?></button>
                                     </div>
                                 </div>
 
@@ -95,6 +103,10 @@ if (stripos($meta->query_string, 'type=application') !== false) {
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
+        <?php if ($type === 'device' and empty($included['applications'])) { ?>
+        $('#data\\[attributes\\]\\[application_id\\]').attr("disabled", true);
+        <?php } ?>
+
         <?php if (!empty($org_id)) { ?>
         $('#data\\[attributes\\]\\[org_id\\]').val('<?= $org_id ?>');
         <?php } ?>
