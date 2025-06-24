@@ -676,6 +676,20 @@ window.onload = function () {
                             message = message + '<br><strong><em><?= __('Command') ?>: </em></strong><code>' + row.attributes.command + '</code>';
                         }
                         if (row.attributes.command_output != '') {
+                            if (row.attributes.message == 'Nmap Command (Custom TCP Ports)' || row.attributes.message == 'Nmap Command (Custom UDP Ports)') {
+                                /* Open */
+                                row.attributes.command_output = row.attributes.command_output.replace(/ open /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">open</a> ');
+                                /* Closed */
+                                row.attributes.command_output = row.attributes.command_output.replace(/ closed /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">closed</a> ');
+                                /* Filterred */
+                                row.attributes.command_output = row.attributes.command_output.replace(/ filtered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">filtered</a> ');
+                                /* Unfiltered */
+                                row.attributes.command_output = row.attributes.command_output.replace(/ uniltered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">unfiltered</a> ');
+                                /* Open|Filtered */
+                                row.attributes.command_output = row.attributes.command_output.replace(/ open\|filtered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">open|filtered</a> ');
+                                /* Closed|Filtered */
+                                row.attributes.command_output = row.attributes.command_output.replace(/ closed\|filtered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">closed|filtered</a> ');
+                            }
                             message = message + '<br><strong><em><?= __('Output') ?>: </em></strong><span class="output">' + row.attributes.command_output + '</span>';
                         }
                         if (row.attributes.message.includes('Nmap Command') || row.attributes.message.includes('IP Scan finish') || row.attributes.message.includes('IP Audit finish') || row.attributes.message.includes('Updating discovery log with non-responding IPs') || row.attributes.message.includes('Nmap response scanning completed')) {
