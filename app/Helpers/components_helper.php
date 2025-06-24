@@ -119,7 +119,10 @@ function match_columns($table)
             $match_columns = array('name', 'path');
     }
     if ($table === 'software') {
-            $match_columns = array('name', 'version');
+            // $match_columns = array('name', 'version');
+            // Added location as most software will be blank, but this
+            //       caters to multiple installs of things like Wordpress
+            $match_columns = array('name', 'version', 'location');
     }
     if ($table === 'software_key') {
             $match_columns = array('name', 'string', 'rel', 'edition');
