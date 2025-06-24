@@ -11492,6 +11492,7 @@ if (!function_exists('get_details_from_oid')) {
             case '1.3.6.1.4.1.9.1.320': $device->model = 'Cisco 2651'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.321': $device->model = 'Cisco 826 QuadV'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.3211': $device->model = 'Catalyst 1200-8T-E-2G'; $device->type = 'switch'; break;
+            case '1.3.6.1.4.1.9.1.3216': $device->model = 'Catalyst 1200-24T-4G'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.1.322': $device->model = 'Cisco 826'; $device->type = 'router'; break;
             case '1.3.6.1.4.1.9.1.3220': $device->model = 'Catalyst 1200-48P-4G'; $device->type = 'switch'; break;
             case '1.3.6.1.4.1.9.1.323': $device->model = 'Cisco Catalyst 2950 12'; $device->type = 'switch'; break;
