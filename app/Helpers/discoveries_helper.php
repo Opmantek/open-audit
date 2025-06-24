@@ -1031,7 +1031,7 @@ if (! function_exists('ip_audit')) {
             }
             if (!empty($discovery->device_id)) {
                 // Run a full SNMP walk and store in a file
-                snmp_full_walk($device->ip, $credentials_snmp, $discovery->id, $discovery->device_id);
+                // snmp_full_walk($device->ip, $credentials_snmp, $discovery->id, intval($discovery->device_id));
             }
         }
 
