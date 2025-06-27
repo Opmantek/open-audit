@@ -318,7 +318,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-if (!$db->fieldExists('secutity_zone', 'networks')) {
+if (!$db->fieldExists('security_zone', 'networks')) {
     $sql = "ALTER TABLE `networks` CHANGE `secutity_zone` `security_zone` varchar(200) NOT NULL DEFAULT ''";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

@@ -100,7 +100,7 @@ if (!empty($config->servers)) {
             let html = document.querySelector('html');
             html.classList.add(prefers);
             html.setAttribute('data-bs-theme', prefers);
-            var license_string_id = <?= $config->license_string_id ?>;
+            var license_string_id = <?= isset($config->license_string_id) ? $config->license_string_id : '' ?>;
             var oae_prompt_id = <?= $config->oae_prompt_id ?>;
         </script>
     </head>

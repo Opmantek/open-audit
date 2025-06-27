@@ -71,9 +71,11 @@ class Logon extends Controller
                     break;
                 }
             }
-            $sql = "UPDATE `discoveries` SET `subnet` = ?, `description` = 'Subnet - $subnet', `edited_by` = 'system', `edited_date` = NOW() WHERE id = 1";
-            $db->query($sql, [$subnet]);
-            log_message('info', 'Default discovery subnet auto-populated with ' . $subnet . '.');
+            if ($db->fieldExists('subnet', 'discoveries')) {
+                $sql = "UPDATE `discoveries` SET `subnet` = ?, `description` = 'Subnet - $subnet', `edited_by` = 'system', `edited_date` = NOW() WHERE id = 1";
+                $db->query($sql, [$subnet]);
+                log_message('info', 'Default discovery subnet auto-populated with ' . $subnet . '.');
+            }
         }
 
         // get the server OS
