@@ -2465,34 +2465,34 @@ if [ -z $(echo "$skip_sections" | grep "log,") ]; then
 
 	echo "	<log>" >> "$xml_file"
 	for log in ls /etc/logrotate.d/* ; do
-	        if [ -e "$log" ]; then
-	                log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
-	                log_max_file_size=$(grep -E '\ size\ ' "$log" | grep -oE '[[:digit:]]*')
-	                log_max_file_size_pre=$(grep -E '\ size\ ' "$log" | sed -e 's/size//g' | tr -d '[:space:]')
-	                if [ "$log_max_file_size_pre" != "" ]; then
-	                    nlen="${#log_max_file_size_pre}"
-	                    if [ "${nlen}" > "1" ]; then
-	                       num=$(all_but_last_char "${log_max_file_size_pre}")
-	                       unt=$(last_char "${log_max_file_size_pre}")
-	                       case $unt in
-	                          [kK] )
-	                             log_max_file_size="${num}000"
-	                             ;;
-	                          [mM] )
-	                             log_max_file_size="${num}000000"
-	                             ;;
-	                          *) ;;
-	                       esac
-	                    fi
-	                fi
-	                {
-	                echo "		<item>"
-	                echo "			<name>$(escape_xml "$log")</name>"
-	                echo "			<file_name>$(escape_xml "$log_file_name")</file_name>"
-	                echo "			<max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
-	                echo "		</item>"
-	                } >> "$xml_file"
-	        fi
+		if [ -e "$log" ] && [ -f "$log" ]; then
+			log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
+			log_max_file_size=$(grep -E '\ size\ ' "$log" | grep -oE '[[:digit:]]*')
+			log_max_file_size_pre=$(grep -E '\ size\ ' "$log" | sed -e 's/size//g' | tr -d '[:space:]')
+			if [ "$log_max_file_size_pre" != "" ]; then
+				nlen="${#log_max_file_size_pre}"
+				if [ "${nlen}" > "1" ]; then
+					num=$(all_but_last_char "${log_max_file_size_pre}")
+					unt=$(last_char "${log_max_file_size_pre}")
+					case $unt in
+						[kK] )
+						log_max_file_size="${num}000"
+						;;
+						[mM] )
+						log_max_file_size="${num}000000"
+						;;
+						*) ;;
+					esac
+				fi
+			fi
+			{
+			echo "		<item>"
+			echo "			<name>$(escape_xml "$log")</name>"
+			echo "			<file_name>$(escape_xml "$log_file_name")</file_name>"
+			echo "			<max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
+			echo "		</item>"
+			} >> "$xml_file"
+		fi
 	done
 	echo "	</log>" >> "$xml_file"
 fi
@@ -2802,6 +2802,19 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 		echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
 		echo "		</item>" >> "$xml_file"
 	fi
+	# Detect Wordpress
+	for file in $(find / -path "*wp-includes/version.php" 2>/dev/null); do
+		version=$(grep "wp_version = " "$file" | cut -d\' -f2)
+		if [ -n "$version" ]; then
+			file=$(echo "$file" | sed "s/\/wp-includes\/version\.php//")
+			echo "		<item>" >> "$xml_file"
+			echo "			<name>WordPress</name>" >> "$xml_file"
+			echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+			echo "			<install_directory>$(escape_xml $file)</install_directory>" >> "$xml_file"
+			echo "		</item>" >> "$xml_file"
+		fi
+	done
+
 	case $system_os_family in
 			'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
 				dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
@@ -3658,25 +3671,27 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 	for i in $(apachectl -S 2>/dev/null | grep port); do
 		if [ -n "$i" ]; then
 			name=$(echo "$i" | awk '{ print $4 }')
-			port=$(echo "$i" | awk '{ print $2 }')
-			config_file=$(echo "$i" | cut -d\( -f2 | cut -d: -f1)
-			config_line=$(echo "$i" | cut -d\( -f2 | cut -d: -f2 | cut -d\) -f1)
-			path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
-			{
-			echo "		<item>"
-			echo "			<type>website</type>"
-			echo "			<parent_name>Apache</parent_name>"
-			echo "			<name>$(escape_xml "$name")</name>"
-			echo "			<description></description>"
-			echo "			<id_internal>$(escape_xml "$name")</id_internal>"
-			echo "			<ip></ip>"
-			echo "			<hostname>$(escape_xml "$name")</hostname>"
-			echo "			<port>$(escape_xml "$port")</port>"
-			echo "			<status>$(escape_xml "$apache_status")</status>"
-			echo "			<instance></instance>"
-			echo "			<path>$(escape_xml "$path")</path>"
-			echo "		</item>"
-			} >> "$xml_file"
+			if [ -n "$name" ]; then
+				port=$(echo "$i" | awk '{ print $2 }')
+				config_file=$(echo "$i" | cut -d\( -f2 | cut -d: -f1)
+				config_line=$(echo "$i" | cut -d\( -f2 | cut -d: -f2 | cut -d\) -f1)
+				path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
+				{
+				echo "		<item>"
+				echo "			<type>website</type>"
+				echo "			<parent_name>Apache</parent_name>"
+				echo "			<name>$(escape_xml "$name")</name>"
+				echo "			<description></description>"
+				echo "			<id_internal>$(escape_xml "$name")</id_internal>"
+				echo "			<ip></ip>"
+				echo "			<hostname>$(escape_xml "$name")</hostname>"
+				echo "			<port>$(escape_xml "$port")</port>"
+				echo "			<status>$(escape_xml "$apache_status")</status>"
+				echo "			<instance></instance>"
+				echo "			<path>$(escape_xml "$path")</path>"
+				echo "		</item>"
+				} >> "$xml_file"
+			fi
 		fi
 	done
 
