@@ -317,18 +317,13 @@ if (!function_exists('response_create')) {
         }
 
         // depends on version affecting URI, collection
-        $response->meta->groupby = response_get_groupby($request->getGet('groupby'), $request->getPost('groupby'), $response->meta->collection);
+        $response->meta->groupby = response_get_groupby($request->getGet('groupby'), $response->meta->collection);
 
-        // no dependencies - set in GET or POST
-        $response->meta->offset = response_get_offset($request->getGet('offset'), $request->getPost('offset'));
+        // no dependencies - set in GET or 0
+        $response->meta->offset = (!empty($request->getGet('offset'))) ? intval($request->getGet('offset')) : 0;
 
-        // depends on format - set in GET or POST
-        $response->meta->limit = response_get_limit(
-            $request->getGet('limit'),
-            $request->getPost('limit'),
-            $response->meta->format,
-            $config->page_size
-        );
+        // no dependencies - set in GET or Config
+        $response->meta->limit = (!empty($request->getGet('limit'))) ? intval($request->getGet('limit')) : $config->page_size;
 
         // depends on collection
         $response->meta->properties = response_get_properties(
@@ -939,36 +934,20 @@ if (!function_exists('response_get_groupby')) {
      * @param  string $get  The groupby=table.column name from $_GET
      * @return string $post The groupby=table.column name from $_POST
      */
-    function response_get_groupby($get = '', $post = '', $collection = '')
+    function response_get_groupby(string $get = '', string $collection = '')
     {
-        $db = db_connect();
-        $groupby = '';
-
-        if (!empty($get)) {
-            $groupby = $get;
-            $summary = "Set groupby according to GET ($get).";
-        }
-        if (!empty($post)) {
-            $groupby = $post;
-            $summary = "Set groupby according to POST ($post).";
-        }
-        if ($groupby !== '') {
-            log_message('debug', 'GroupBy: ' . $summary);
-        }
+        $groupby = (!empty($get)) ? $get : '';
         if (!empty($groupby)) {
+            $db = db_connect();
             if (strpos($groupby, '.') !== false) {
                 $temp = explode('.', $groupby);
                 if (!$db->fieldExists($temp[1], $temp[0])) {
-                    $summary = "Invalid groupby supplied ({$groupby}), removed.";
-                    log_message('warning', 'GroupBy: ' . $summary);
                     $groupby = '';
                 } else {
                     $groupby = $temp[0] . '.' . $temp[1];
                 }
             } else {
                 if (!$db->fieldExists($groupby, $collection)) {
-                    $summary = "Invalid groupby supplied ({$groupby}), removed.";
-                    log_message('warning', 'GroupBy: ' . $summary);
                     $groupby = '';
                 } else {
                     $groupby = $collection . '.' . $groupby;
@@ -977,6 +956,8 @@ if (!function_exists('response_get_groupby')) {
         }
         if ($groupby !== '') {
             log_message('debug', 'GroupBy: ' . $groupby);
+        } else if (!empty($get)) {
+            log_message('warning', "GroupBy: Invalid groupby supplied ({$groupby}), removed.");
         }
         return $groupby;
     }
@@ -993,15 +974,9 @@ if (!function_exists('response_get_id')) {
     function response_get_id($id = '', $collection = '', $org_array = [])
     {
         if (empty($id)) {
-            // log_message('debug', 'No ID provided, returning NULL.');
             return null;
         }
         if (is_numeric($id)) {
-            // if (is_integer($id)) {
-            //     log_message('debug', "Integer ID supplied (Provided ID: $id).");
-            // } else {
-            //     log_message('debug', "Numeric ID supplied (Provided ID: $id).");
-            // }
             return intval($id);
         } else {
             if ($collection === 'components') {
@@ -1211,65 +1186,13 @@ if (!function_exists('response_get_include')) {
     }
 }
 
-if (!function_exists('response_get_limit')) {
-    /**
-     * [response_get_limit description]
-     * @param  string  $get        The GET limit variable
-     * @param  string  $post       The POST limit variable
-     * @return integer             The integer to limit the query
-     */
-    function response_get_limit($get = '', $post = '', $format = '', $default_limit = 1000)
-    {
-        $limit = $default_limit;
-        if (!empty($get)) {
-            $limit = intval($get);
-            log_message('debug', 'Set limit according to GET (' . $limit . ').');
-        }
-        if (!empty($post)) {
-            $limit = intval($post);
-            log_message('debug', 'Set limit according to POST (' . $limit . ').');
-        }
-        if ($format === 'html' && empty($limit)) {
-            $limit = intval($default_limit);
-            log_message('debug', 'Set limit according to SCREEN DEFAULT (' . $limit . ').');
-        }
-        if ($format === 'json' && empty($limit)) {
-            $limit = intval($default_limit);
-            log_message('debug', 'Set limit according to JSON DEFAULT (' . $limit . ').');
-        }
-        return $limit;
-    }
-}
-
-if (!function_exists('response_get_offset')) {
-    /**
-     * Determine the requested offset
-     * @param  string  $get        The GET offset variable
-     * @param  string  $post       The POST offset variable
-     * @return integer             The integer to offset the query
-     */
-    function response_get_offset($get = '', $post = ''): ?int
-    {
-        $offset = 0;
-        if (!empty(intval($get))) {
-            $offset = intval($get);
-            log_message('debug', 'Set offset according to GET (' . $offset . ').');
-        }
-        if (!empty(intval($post))) {
-            $offset = intval($post);
-            log_message('debug', 'Set offset according to POST (' . $offset . ').');
-        }
-        return intval($offset);
-    }
-}
-
 if (!function_exists('response_get_org_list')) {
     /**
      * Return the Org IDs list for the given collection for a supplied user
      * @param  object  $user          The requesting user must contain an org_list comma separated string
      * @param  string  $collection    The requested collection
      */
-    function response_get_org_list(stdClass $user = null, string $collection = ''): string
+    function response_get_org_list(?stdClass $user = null, string $collection = ''): string
     {
         $org_list = array();
         $orgsModel = new \App\Models\OrgsModel();
