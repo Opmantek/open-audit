@@ -15,7 +15,7 @@ if (! function_exists('windows_credentials')) {
      *
      * @return false|object         A credentials object with an additional flag for 'sudo' and root, or false
      */
-    function windows_credentials(string $ip = '', array $credentials = array(), int $discovery_id = null)
+    function windows_credentials(string $ip = '', array $credentials = array(), ?int $discovery_id = null)
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
@@ -78,7 +78,7 @@ if (! function_exists('execute_windows')) {
      *
      * @return false|array          An array containing the output and status flag, or false
      */
-    function execute_windows(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null)
+    function execute_windows(string $ip = '', ?object $credentials = null, string $command = '', ?int $discovery_id = null)
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \stdClass();
@@ -217,7 +217,7 @@ if (! function_exists('copy_to_windows')) {
      *
      * @return bool True or False depending on success
      */
-    function copy_to_windows(string $ip = '', object $credentials = null, string $share = '', string $source = '', string $destination = '', int $discovery_id = null): bool
+    function copy_to_windows(string $ip = '', ?object $credentials = null, string $share = '', string $source = '', string $destination = '', ?int $discovery_id = null): bool
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
@@ -444,7 +444,7 @@ if (! function_exists('delete_windows_result')) {
      *
      * @return bool True or False depending on success
      */
-    function delete_windows_result(string $ip = '', object $credentials = null, string $share = '', string $file = '', int $discovery_id = null): bool
+    function delete_windows_result(string $ip = '', ?object $credentials = null, string $share = '', string $file = '', ?int $discovery_id = null): bool
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
@@ -572,7 +572,7 @@ if (!function_exists('copy_from_windows')) {
      *
      * @return bool True or False depending on success
      */
-    function copy_from_windows(string $ip = '', object $credentials = null, string $source = '', string $destination = '', int $discovery_id = null): bool
+    function copy_from_windows(string $ip = '', ?object $credentials = null, string $source = '', string $destination = '', ?int $discovery_id = null): bool
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
@@ -786,7 +786,7 @@ if (! function_exists('wmi_command')) {
      *
      * @return bool|array An array containing the output and status flag, or false
      */
-    function wmi_command(string $ip = '', object $credentials = null, string $command = '', int $discovery_id = null)
+    function wmi_command(string $ip = '', ?object $credentials = null, string $command = '', ?int $discovery_id = null)
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
@@ -931,7 +931,7 @@ if (!function_exists('windows_ips_found')) {
      *
      * @return bool|array An array of discovered IP Addresses, or false
      */
-    function windows_ips_found(string $ip = '', object $credentials = null, int $discovery_id = null)
+    function windows_ips_found(string $ip = '', ?object $credentials = null, ?int $discovery_id = null)
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \stdClass();
@@ -1015,7 +1015,7 @@ if (!function_exists('wmi_audit')) {
      *
      * @return object               The populated device
      */
-    function wmi_audit(string $ip = '', object $credentials = null, int $discovery_id = null): object
+    function wmi_audit(string $ip = '', ?object $credentials = null, ?int $discovery_id = null): object
     {
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \StdClass();
