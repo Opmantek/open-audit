@@ -832,8 +832,10 @@ if (! function_exists('wmi_command')) {
         if (php_uname('s') == 'Linux') {
             if ($command === 'csproduct get uuid') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID';
+            } else if ($command === 'computersystem get name') {
+                $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Name';
             } else if ($command === 'computersystem get domain') {
-                $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty Domain';
+                $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Domain';
             } else if ($command === 'csproduct get vendor') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty Vendor';
             } else if ($command === 'csproduct get IdentifyingNumber') {
