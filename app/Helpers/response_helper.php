@@ -934,7 +934,7 @@ if (!function_exists('response_get_groupby')) {
      * @param  string $get  The groupby=table.column name from $_GET
      * @return string $post The groupby=table.column name from $_POST
      */
-    function response_get_groupby(string $get = '', string $collection = '')
+    function response_get_groupby(?string $get = '', ?string $collection = '')
     {
         $groupby = (!empty($get)) ? $get : '';
         if (!empty($groupby)) {
