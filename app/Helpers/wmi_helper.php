@@ -844,6 +844,8 @@ if (! function_exists('wmi_command')) {
                 $command = 'powershell -c Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Description';
             } else if ($command === 'os get name') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Caption';
+            } else if ($command === 'os get windowsdirectory') {
+                $command = 'powershell -c Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty WindowsDirectory';
             } else {
                 $command = 'wmic ' . $command;
             }
@@ -888,6 +890,8 @@ if (! function_exists('wmi_command')) {
             if ($command === 'os get name') {
                 $command = 'Get-WmiObject -Class Win32_OperatingSystem –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty Caption';
             }
+            } else if ($command === 'os get windowsdirectory') {
+                $command = 'Get-WmiObject -Class Win32_OperatingSystem –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty WindowsDirectory';
 
             $command = 'powershell -c "$password = \'' . $password . '\' | ConvertTo-SecureString -AsPlainText -Force; $credentials = New-Object System.Management.Automation.PsCredential(\'' . $user . '\', $password); ' . $command . '" ';
             $item_start = microtime(true);
@@ -1037,8 +1041,8 @@ if (!function_exists('wmi_audit')) {
         $command = 'csproduct get uuid';
         $wmi_result = wmi_command($ip, $credentials, $command, $discovery_id);
         if ($wmi_result['status'] === 0) {
-            if (!empty($wmi_result['output'][1])) {
-                $details->uuid = $wmi_result['output'][1];
+            if (!empty($wmi_result['output'][0])) {
+                $details->uuid = $wmi_result['output'][0];
             }
             $details->type = 'computer';
         }
@@ -1047,8 +1051,8 @@ if (!function_exists('wmi_audit')) {
         $command = 'csproduct get IdentifyingNumber';
         $wmi_result = wmi_command($ip, $credentials, $command, $discovery_id);
         if ($wmi_result['status'] === 0) {
-            if (!empty($wmi_result['output'][1])) {
-                $details->serial = $wmi_result['output'][1];
+            if (!empty($wmi_result['output'][0])) {
+                $details->serial = trim($wmi_result['output'][0]);
             }
         }
 
@@ -1056,8 +1060,8 @@ if (!function_exists('wmi_audit')) {
         $command = 'csproduct get vendor';
         $wmi_result = wmi_command($ip, $credentials, $command, $discovery_id);
         if ($wmi_result['status'] === 0) {
-            if (!empty($wmi_result['output'][1])) {
-                $details->manufacturer = $wmi_result['output'][1];
+            if (!empty($wmi_result['output'][0])) {
+                $details->manufacturer = trim($wmi_result['output'][0]);
             }
         }
 
@@ -1065,8 +1069,17 @@ if (!function_exists('wmi_audit')) {
         $command = 'os get description';
         $wmi_result = wmi_command($ip, $credentials, $command, $discovery_id);
         if ($wmi_result['status'] === 0) {
-            if (!empty($wmi_result['output'][1])) {
-                $details->description = $wmi_result['output'][1];
+            if (!empty($wmi_result['output'][0])) {
+                $details->description = trim($wmi_result['output'][0]);
+            }
+        }
+
+        // Install Directory
+        $command = 'os get windowsdirectory';
+        $wmi_result = wmi_command($ip, $credentials, $command, $discovery_id);
+        if ($wmi_result['status'] === 0) {
+            if (!empty($wmi_result['output'][0])) {
+                $details->install_dir = trim($wmi_result['output'][0]);
             }
         }
 
@@ -1074,8 +1087,8 @@ if (!function_exists('wmi_audit')) {
         $command = 'computersystem get name';
         $wmi_result = wmi_command($ip, $credentials, $command, $discovery_id);
         if ($wmi_result['status'] === 0) {
-            if (!empty($wmi_result['output'][1])) {
-                $details->hostname = strtolower($wmi_result['output'][1]);
+            if (!empty($wmi_result['output'][0])) {
+                $details->hostname = trim(strtolower($wmi_result['output'][0]));
                 $details->name = $details->hostname;
             }
         }
@@ -1084,8 +1097,8 @@ if (!function_exists('wmi_audit')) {
         $command = 'computersystem get domain';
         $wmi_result = wmi_command($ip, $credentials, $command, $discovery_id);
         if ($wmi_result['status'] === 0) {
-            if (!empty($wmi_result['output'][1])) {
-                $details->domain = strtolower($wmi_result['output'][1]);
+            if (!empty($wmi_result['output'][0])) {
+                $details->domain = trim(strtolower($wmi_result['output'][0]));
                 $details->fqdn = $details->hostname . '.' . $details->domain;
             }
         }
@@ -1094,9 +1107,9 @@ if (!function_exists('wmi_audit')) {
         $command = 'os get name';
         $wmi_result = wmi_command($ip, $credentials, $command, $discovery_id);
         if ($wmi_result['status'] === 0) {
-            if (!empty($wmi_result['output'][1])) {
+            if (!empty($wmi_result['output'][0])) {
                 $details->os_group = 'Windows';
-                $details->os_name = $wmi_result['output'][1];
+                $details->os_name = $wmi_result['output'][0];
                 if (stripos($details->os_name, ' 95') !== false) {
                     $details->os_family = 'Windows 95';
                 }
@@ -1142,13 +1155,13 @@ if (!function_exists('wmi_audit')) {
                 if (stripos($details->os_name, '2019') !== false) {
                     $details->os_family = 'Windows 2019';
                 }
+                if (stripos($details->os_name, '2022') !== false) {
+                    $details->os_family = 'Windows 2022';
+                }
+                if (stripos($details->os_name, '2025') !== false) {
+                    $details->os_family = 'Windows 2025';
+                }
                 $details->os_name = str_replace('®', '', $details->os_name);
-                $details->os_name = trim(substr($details->os_name, 0, stripos($details->os_name, '|')));
-            }
-            if (!empty($wmi_result['output'][1])) {
-                $temp = explode('|', $wmi_result['output'][1]);
-                $details->install_dir = trim((string)$temp[1]);
-                unset($temp);
             }
         }
         $log->file = 'wmi_helper';

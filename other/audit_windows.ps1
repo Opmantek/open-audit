@@ -464,7 +464,7 @@ switch ($Win32_OperatingSystem.OSLanguage) {
 $item.registered_user = $Win32_OperatingSystem.RegisteredUser
 $item.service_pack = [string]$Win32_OperatingSystem.ServicePackMajorVersion
 $item.version = $Win32_OperatingSystem.Version
-$item.install_directory = [string]$Win32_OperatingSystem.Name.Split("|")[1]
+$item.install_directory = [string]$Win32_OperatingSystem.WindowsDirectory
 # TODO
 # Get-ADOrganizationalUnit
 # $item.active_directory_ou = ""
