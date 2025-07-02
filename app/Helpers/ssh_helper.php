@@ -841,7 +841,7 @@ if (! function_exists('ssh_audit')) {
 
         $device = new \StdClass();
         try {
-            $windows_os_name = $ssh->exec('wmic os get name');
+            $windows_os_name = $ssh->exec('powershell -c "Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Caption"');
         } catch (Exception $e) {
             $log->message = "Unsuccessful SSH command attempt, aborting SSH connection.";
             $log->command_status = 'notice';
@@ -864,23 +864,17 @@ if (! function_exists('ssh_audit')) {
         if (!empty($windows_os_name) and stripos($windows_os_name, 'Microsoft Windows') !== false) {
             $device->type = 'computer';
             $device->os_group = 'Windows';
-
-            $temp = str_replace('Name', '', $windows_os_name);
-            $temp = trim((string)$temp);
-            $temp = explode('|', $temp);
-            $device->os_name = trim((string)$temp[0]);
-            unset($temp);
-            $log->command = 'wmic os get name; # os_name';
+            $device->os_name = trim((string)$windows_os_name);
+            $log->command = 'powershell -c "Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Caption"; # os_name';
             $log->command_output = $device->os_name;
             $log->command_status = 'success';
             $log->message = 'SSH command';
             $discoveryLogModel->create($log);
 
-            $temp = $ssh->exec('wmic path win32_computersystemproduct get uuid');
-            $temp = str_replace('UUID', '', $temp);
+            $temp = $ssh->exec('powershell -c "Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID"');
             $device->uuid = trim((string)$temp);
             unset($temp);
-            $log->command = 'wmic path win32_computersystemproduct get uuid; # uuid';
+            $log->command = 'powershell -c "Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID"; # uuid';
             $log->command_output = $device->uuid;
             $log->command_status = 'success';
             $log->message = 'SSH command';
@@ -889,11 +883,10 @@ if (! function_exists('ssh_audit')) {
             }
             $discoveryLogModel->create($log);
 
-            $temp = $ssh->exec('wmic path win32_computersystemproduct get IdentifyingNumber');
-            $temp = str_replace('IdentifyingNumber', '', $temp);
+            $temp = $ssh->exec('powershell -c "Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty IdentifyingNumber"');
             $device->serial = trim((string)$temp);
             unset($temp);
-            $log->command = 'wmic path win32_computersystemproduct get IdentifyingNumber; # serial';
+            $log->command = 'powershell -c "Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty IdentifyingNumber"; # serial';
             $log->command_output = $device->serial;
             $log->command_status = 'success';
             $log->message = 'SSH command';
@@ -902,12 +895,11 @@ if (! function_exists('ssh_audit')) {
             }
             $discoveryLogModel->create($log);
 
-            $temp = $ssh->exec('wmic computersystem get name');
-            $temp = str_replace('Name', '', $temp);
+            $temp = $ssh->exec('powershell -c "Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Name"');
             $device->hostname = strtolower(trim((string)$temp));
             $device->name = $device->hostname;
             unset($temp);
-            $log->command = 'wmic computersystem get name; # hostname';
+            $log->command = 'powershell -c "Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Name"; # hostname';
             $log->command_output = $device->hostname;
             $log->command_status = 'success';
             $log->message = 'SSH command';

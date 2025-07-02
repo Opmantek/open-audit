@@ -343,16 +343,11 @@ function getOs()
     }
     if (php_uname('s') === 'Darwin') {
         $data->os_name = 'OSX';
-        $command_string = 'sw_vers | grep "ProductVersion:" | cut -f2';
-        @exec($command_string, $output, $status);
-        $data->os_version = $output[0];
+        $data->os_version = config('Openaudit')->server_platform;
     }
     if (php_uname('s') === 'Windows NT') {
         $data->os_name = 'Windows';
-        exec('wmic os get caption', $output);
-        if (isset($output[1])) {
-            $data->os_version = $output[1];
-        }
+        $data->os_version = config('Openaudit')->server_platform;
     }
     return $data;
 }

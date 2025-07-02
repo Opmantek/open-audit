@@ -85,27 +85,12 @@ if (! function_exists('server_ip')) {
 
         # windows
         if (php_uname('s') == 'Windows NT') {
-            $command = "wmic nicconfig get ipaddress | findstr /B {";
+            $command = 'powershell -c "Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter \'IPEnabled = True AND MACAddress is not NULL\' | Select-Object -ExpandProperty IPAddress"';
             exec($command, $output, $return_var);
-            if ($return_var == 0) {
-                # success
-                # each line is returned thus: {"192.168.1.140", "fe80::e837:7bea:99a6:13e"} or thus {"192.168.1.140"}
-                # there are multiple empty lines as well
+            if (!empty($output) and is_array($output)) {
                 foreach ($output as $line) {
-                    $line = trim((string)$line);
-                    if ($line != '') {
-                        $line = str_replace('{', '', $line);
-                        $line = str_replace('}', '', $line);
-                        $line = str_replace('"', '', $line);
-                        $line = str_replace(',', '', $line);
-                        if (strpos($line, ' ') !== false) {
-                            $line_array = explode(' ', $line);
-                            foreach ($line_array as $ip) {
-                                $ip_address_array[] = $ip;
-                            }
-                        } else {
-                            $ip_address_array[] = $line;
-                        }
+                    if (!empty(trim((string)$line))) {
+                        $ip_address_array[] = trim((string)$line);
                     }
                 }
             }

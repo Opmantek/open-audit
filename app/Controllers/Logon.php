@@ -83,11 +83,10 @@ class Logon extends Controller
         $server_platform = '';
 
         if ($server_os === 'Windows NT') {
-            $command = 'wmic os get name';
+            $command = 'powershell -c "Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Caption"';
             exec($command, $output);
-            if (!empty($output[1])) {
-                $os = explode('|', $output[1]);
-                $server_platform = $os[0];
+            if (!empty($output[0])) {
+                $server_platform =  trim($output[0]);
             }
         } elseif ($server_os === 'Darwin') {
             $server_platform = 'MacOS';

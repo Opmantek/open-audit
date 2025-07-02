@@ -2,17 +2,6 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
-$this->db = db_connect();
-if (php_uname('s') == "Windows NT") {
-    exec("echo. |WMIC OS Get Caption", $output);
-    if (isset($output[1])) {
-        $operating_system = $output[1];
-    } else {
-        $operating_system = "unknown (You must run Apache as an administrator on Windows to determine this)";
-    }
-} else {
-    $operating_system = php_uname('s');
-}
 ?>
         <main class="container-fluid">
             <div class="card">

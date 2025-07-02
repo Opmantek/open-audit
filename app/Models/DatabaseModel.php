@@ -407,17 +407,7 @@ class DatabaseModel extends BaseModel
     {
         $instance = & get_instance();
         $result = new \stdClass();
-        if (php_uname('s') === 'Windows NT') {
-            exec('echo. |WMIC OS Get Caption', $output);
-            if (isset($output[1])) {
-                $result->operating_system = $output[1];
-            } else {
-                $result->operating_system = 'unknown (You must run Apache as an administrator on Windows to determine this)';
-            }
-        } else {
-            $result->operating_system = php_uname('a');
-        }
-
+        $result->operating_system = config('Openaudit')->server_platform;
         $result->current_version = config('Openaudit')->display_version;
         $result->new_version = config('Openaudit')->displayVersion;
         $result->hostname = php_uname('n');

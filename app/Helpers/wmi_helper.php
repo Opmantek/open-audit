@@ -80,6 +80,11 @@ if (! function_exists('execute_windows')) {
      */
     function execute_windows(string $ip = '', ?object $credentials = null, string $command = '', ?int $discovery_id = null)
     {
+        if (php_uname('s') === 'Darwin') {
+            log_message('warning', 'Winexe not installed on OSX, cannot run execute_windows.');
+            return false;
+        }
+
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $log = new \stdClass();
         $log->file = 'wmi_helper';
@@ -115,31 +120,13 @@ if (! function_exists('execute_windows')) {
             return false;
         }
 
-        if (php_uname('s') === 'Darwin') {
-            if (!file_exists('/usr/local/bin/winexe')) {
-                log_message('warning', 'Winexe not installed on OSX, cannot run execute_windows.');
-                return false;
-            }
-            $temp = explode('@', $credentials->credentials->username);
-            $username = $temp[0];
-            $domain = @$temp[1];
-            unset($temp);
-            $command_string = 'winexe -U ' . $domain . '/' . $username . '%' . $credentials->credentials->password . ' //' . $ip . ' \'' . $command . '\'';
-            $log->command   = 'winexe -U ' . $domain . '/' . $username . '%' . '******' .                            ' //' . $ip . ' \'' . $command . '\'';
-            $log->command_status = 'fail';
-            exec($command_string, $output, $return_var);
-            if (!empty($ouput)) {
-                $log->command_status = 'success';
-            }
-            $discoveryLogModel->create($log);
-        }
-
         if (php_uname('s') === 'Linux') {
             $filepath = ROOTPATH . 'other';
             $filename = credentials_file($ip, $credentials);
             // For an unknown reason, if we attempt to execute an SMB2 command first and it does not work, the return var is NULL, which means success.
             // So before we attempt to actually run the audit script, try a WMIC query using SMB2 and determine which to use for the script.
-            $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A " . $filename . " --uninstall //" . $ip . " \"wmic csproduct get uuid\" 2>&1";
+            // $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A " . $filename . " --uninstall //" . $ip . " \"wmic csproduct get uuid\" 2>&1";
+            $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A " . $filename . " --uninstall //" . $ip . " 'powershell -c \"Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID\"' 2>&1";
             $item_start = microtime(true);
             exec($command_string, $output, $return_var);
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -788,6 +775,11 @@ if (! function_exists('wmi_command')) {
      */
     function wmi_command(string $ip = '', ?object $credentials = null, string $command = '', ?int $discovery_id = null)
     {
+        if (php_uname('s') === 'Darwin') {
+            log_message('warning', 'Winexe not installed on OSX, cannot run execute_windows.');
+            return false;
+        }
+
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
         $return = array('output' => '', 'status' => '');
@@ -837,70 +829,65 @@ if (! function_exists('wmi_command')) {
         $log->message = 'Using credentials named ' . $credentials->name;
         $item_start = microtime(true);
 
-        if (php_uname('s') === 'Darwin') {
-            if (!file_exists('/usr/local/bin/winexe')) {
-                log_message('warning', 'Winexe not installed on OSX, cannot run execute_windows.');
-                return false;
-            }
-            $temp = explode('@', $credentials->credentials->username);
-            $username = $temp[0];
-            $domain = @$temp[1];
-            unset($temp);
-            $command_string = 'winexe -U ' . $domain . '/' . $username . '%' . $credentials->credentials->password . ' //' . $ip . " \"wmic $command\"";
-            $log->command   = 'winexe -U ' . $domain . '/' . $username . '%' . '******' .                            ' //' . $ip . " \"wmic $command\"";
-            $discoveryLogModel->create($log);
-            exec($command_string, $return['output'], $return['status']);
-        }
-
         if (php_uname('s') == 'Linux') {
+            if ($command === 'csproduct get uuid') {
+                $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID';
+            } else if ($command === 'computersystem get domain') {
+                $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty Domain';
+            } else if ($command === 'csproduct get vendor') {
+                $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty Vendor';
+            } else if ($command === 'csproduct get IdentifyingNumber') {
+                $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty IdentifyingNumber';
+            } else if ($command === 'os get description') {
+                $command = 'powershell -c Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Description';
+            } else if ($command === 'os get name') {
+                $command = 'powershell -c Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Caption';
+            } else {
+                $command = 'wmic ' . $command;
+            }
+
             $filepath = ROOTPATH . 'other';
             $filename = credentials_file($ip, $credentials);
-            $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //" . $ip . " \"wmic $command\" 2>&1";
+            // $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //" . $ip . " \"wmic $command\" 2>&1";
+            $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //" . $ip . " \"$command\" 2>&1";
             $log->command   = $command_string;
             $log->message = 'Using credentials named ' . $credentials->name . ' to execute command using winexe-static-2';
             exec($command_string, $return['output'], $return['status']);
-            // if ($return['status'] != '0') {
-            //     $log->command_time_to_execute = (microtime(true) - $item_start);
-            //     $log->command_status = 'notice';
-            //     $log->command_output = json_encode($return['output']);
-            //     $discoveryLogModel->create($log);
-            //     unset($log->id, $log->command_status, $log->command_time_to_execute, $log->command_output);
-            //     $log->command   = str_replace('winexe-static-2', 'winexe-static', $log->command);
-            //     $log->message = 'Using credentials named ' . $credentials->name . ' to execute command using winexe-static';
-            //     $return['output'] = '';
-            //     $command_string = str_replace('winexe-static-2', 'winexe-static', $command_string);
-            //     $item_start = microtime(true);
-            //     exec($command_string, $return['output'], $return['status']);
-            // }
             unlink($filename);
         }
 
         if (php_uname('s') == 'Windows NT') {
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
-            $domain = @$temp[1];
+            $domain = (!empty($temp[1])) ? $temp[1] : '';
             if ($domain != '') {
                 $domain .= '\\';
             }
             unset($temp);
-            $password = $credentials->credentials->password;
-            /*
-            $ doesn't require escaping
-            ' doesn't require escaping when using "password"
-            " doesn't seem to work even when escaped using \"
-            | can only be escaped by "
-            */
-            if ((strpos($password, '"') !== false) and (strpos($password, "'") !== false)) {
-                $log->severity = 5;
-                $log->message = 'Incompatible password (cannot have " or \' in a wmic password).';
-                $log->command = '';
-                $discoveryLogModel->create($log);
-                return false;
+            $user = $domain . $username;
+            $password = str_replace('"', '\"', $credentials->credentials->password);
+            $password = str_replace("'", "\\'", $password);
+
+            if ($command === 'csproduct get uuid') {
+                $command = 'Get-WmiObject -Class Win32_ComputerSystemProduct –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty UUID';
             }
-            $log->message = 'Attempting to execute command';
-            $log->severity = 7;
-            $log->command = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain . $username . '" /password:"' . '*******' . '" ' . $command;
-            $command =      '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain . $username . '" /password:"' . $password . '" ' . $command;
+            if ($command === 'computersystem get domain') {
+                $command = 'Get-WmiObject -Class Win32_ComputerSystemProduct –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty Domain';
+            }
+            if ($command === 'csproduct get vendor') {
+                $command = 'Get-WmiObject -Class Win32_ComputerSystemProduct –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty Vendor';
+            }
+            if ($command === 'csproduct get IdentifyingNumber') {
+                $command = 'Get-WmiObject -Class Win32_ComputerSystemProduct –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty IdentifyingNumber';
+            }
+            if ($command === 'os get description') {
+                $command = 'Get-WmiObject -Class Win32_OperatingSystem –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty Description';
+            }
+            if ($command === 'os get name') {
+                $command = 'Get-WmiObject -Class Win32_OperatingSystem –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty Caption';
+            }
+
+            $command = 'powershell -c "$password = \'' . $password . '\' | ConvertTo-SecureString -AsPlainText -Force; $credentials = New-Object System.Management.Automation.PsCredential(\'' . $user . '\', $password); ' . $command . '" ';
             $item_start = microtime(true);
             exec($command, $return['output'], $return['status']);
             if (empty($return['output'][0])) {
