@@ -181,10 +181,6 @@ function read_card_header(string $collection = '', string $id = '', string $icon
                             </div>
                         </div>
                     </div>\n";
-
-
-
-
     return $return;
 }
 
@@ -319,11 +315,16 @@ function read_select(string $name = '', string $value = '', string $dictionary =
         $values[] = $select;
     }
 
+    $css_select = '';
+    if ($name === 'org_id') {
+        $css_select = 'select2';
+    }
+
     $return =  "                           <div class=\"row\" style=\"padding-top:16px;\">
                                 <div class=\"offset-2 col-8\" style=\"position:relative;\" width=\"100%\">
                                     " . read_field_header($collection, $name, $dictionary, $label) . "
                                     <div class=\"input-group\">
-                                        <select class=\"form-select\" id=\"{$name}\" name=\"{$name}\" data-original-value=\"{$value}\" disabled>\n";
+                                        <select class=\"form-select {$css_select}\" id=\"{$name}\" name=\"{$name}\" data-original-value=\"{$value}\" disabled>\n";
     foreach ($values as $item) {
         $selected = '';
         if ($item->id == $value or (!empty($item->type) and $item->type === 'attributes' and !empty($item->attributes->value) and $item->attributes->value == $value)) {
