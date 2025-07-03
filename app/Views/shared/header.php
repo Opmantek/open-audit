@@ -3,12 +3,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include('lang.php');
 
-// $news = new \stdClass();
-// if (!empty($config->feature_news) and $config->feature_news === 'y') {
-//     if ($meta->collection !== 'news') {
-//         $news = getNews();
-//     }
-// }
+$news = new \stdClass();
+if (!empty($config->feature_news) and $config->feature_news === 'y') {
+    if ($meta->collection !== 'news') {
+        $news = getNews();
+    }
+}
 
 $title = 'Open-AudIT ' . ucfirst($config->product) . ' ' . $config->display_version;
 
