@@ -111,10 +111,15 @@ function create_select(string $field = '', string $label = '', $items = array(),
         $label .= ' <span style="color: #dc3545;">*</span>';
     }
 
+    $css_select = '';
+    if ($field === 'data[attributes][org_id]' or $field === 'data[attributes][location_id]') {
+        $css_select = 'select2';
+    }
+
     $return_string = "\n                                <div class=\"row\" style=\"padding-top:16px; padding-bottom:4px;\">
                                     <div class=\"offset-2 col-8\">
                                         <label class=\"form-label\" for=\"{$field}\">" . $label . "</label>
-                                        <select class=\"form-select\" name=\"{$field}\" id=\"{$field}\" {$required}>\n                                            <option value=\"\">" . __('Choose') . "</option>\n";
+                                        <select class=\"form-select {$css_select}\" name=\"{$field}\" id=\"{$field}\" {$required}>\n                                            <option value=\"\">" . __('Choose') . "</option>\n";
     foreach ($items as $item) {
         $selected = '';
         if ($item->id === 1 and $field === 'data[attributes][org_id]') {

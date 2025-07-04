@@ -316,7 +316,7 @@ function read_select(string $name = '', string $value = '', string $dictionary =
     }
 
     $css_select = '';
-    if ($name === 'org_id') {
+    if ($name === 'org_id' or $name === 'location_id') {
         $css_select = 'select2';
     }
 
