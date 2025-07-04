@@ -224,8 +224,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     <?php } ?>
                                                     <option value="0" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '0') { echo "selected"; } ?>><?= __('None') ?></option>
                                                     <option value="10" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '1') { echo "selected"; } ?>>10</option>
-                                                    <option value="100" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '2') { echo "selected"; } ?>>100</option>
-                                                    <option value="1000" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '3') { echo "selected"; } ?>>1000</option>
+                                                    <option value="100" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '100') { echo "selected"; } ?>>100</option>
+                                                    <option value="1000" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '1000') { echo "selected"; } ?>>1000</option>
                                                 </select>
                                                 <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
@@ -249,9 +249,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     <option value=""><?= __('Not Set') ?></option>
                                                     <?php } ?>
                                                     <option value="0" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '0') { echo "selected"; } ?>><?= __('None') ?></option>
-                                                    <option value="10" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '1') { echo "selected"; } ?>>10</option>
-                                                    <option value="100" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '2') { echo "selected"; } ?>>100</option>
-                                                    <option value="1000" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '3') { echo "selected"; } ?>>1000</option>
+                                                    <option value="10" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '10') { echo "selected"; } ?>>10</option>
+                                                    <option value="100" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '100') { echo "selected"; } ?>>100</option>
+                                                    <option value="1000" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '1000') { echo "selected"; } ?>>1000</option>
                                                 </select>
                                                 <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
