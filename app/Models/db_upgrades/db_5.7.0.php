@@ -58,7 +58,7 @@ $sql = "CREATE TABLE `news` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `short` varchar(200) NOT NULL DEFAULT '',
   `description` varchar(200) NOT NULL DEFAULT '',
-  `type` enum('advertisement','code','config','blog','file','howto','news','notification','other','package','query','release','') NOT NULL DEFAULT '',
+  `type` enum('advertisement','code','config','cve','blog','file','howto','news','notification','other','package','query','release','') NOT NULL DEFAULT '',
   `body` text NOT NULL,
   `published` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `link` varchar(200) NOT NULL DEFAULT '',
