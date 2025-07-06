@@ -21,6 +21,9 @@ $instance = & get_instance();
                     $i = 0;
                     foreach ($included['devices'] as $os) {
                         $i++;
+                        if ($os->attributes->type === 'computer') {
+                            $os->attributes->icon = 'computer';
+                        }
                         ?>
                         <div class="col-lg-1 text-center">
                             <div>
