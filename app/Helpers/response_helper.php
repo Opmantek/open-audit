@@ -987,7 +987,7 @@ if (!function_exists('response_get_id')) {
             $actions = response_valid_actions();
             // TODO - have we already validate the collection before calling this function? If so, remove
             $collections = response_valid_collections();
-            $no_org_id = array('charts', 'configuration', 'roles');
+            $no_org_id = array('configuration', 'roles');
             if (!in_array($id, $actions)) {
                 // Our 'id' is a string, but not an action - therefore it's a name
                 if ($collection === 'database') {
@@ -1241,7 +1241,7 @@ if (!function_exists('response_get_permission_id')) {
     function response_get_permission_id($user, $collection, $action, $received_data, $id)
     {
         $db = db_connect();
-        $collections = array('auth', 'charts', 'configuration', 'database', 'errors', 'help', 'logs', 'news', 'nmis', 'queue', 'roles');
+        $collections = array('auth', 'configuration', 'database', 'errors', 'help', 'logs', 'news', 'nmis', 'queue', 'roles');
 
         if (empty($id) or in_array($collection, $collections)) {
             log_message('debug', 'User permitted to access ' . $action . '::' . $collection);

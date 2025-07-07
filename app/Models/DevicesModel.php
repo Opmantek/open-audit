@@ -1204,11 +1204,6 @@ class DevicesModel extends BaseModel
             $row = $query->getRow();
             $data->org_id = $row->org_id;
         }
-        // Add a count to our chart table, if source is not from a user change
-        if ($source !== 'user') {
-            $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), ?, ?, 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
-            $query = $this->db->query($sql, [$source, $data->org_id]);
-        }
 
         // Check and update any custom fields, if the supplied data key name == the fields.name
         $fieldsModel = new \App\Models\FieldsModel();

@@ -511,7 +511,7 @@ class ComponentsModel extends BaseModel
         }
     }
 
-    public function upsert(string $table = '', object $device = null, array $data = null, array $match_columns = null): bool
+    public function upsert(string $table = '', ?object $device = null, ?array $data = null, ?array $match_columns = null): bool
     {
         $instance = & get_instance();
         if (empty($table)) {
@@ -592,7 +592,7 @@ class ComponentsModel extends BaseModel
             $device->last_seen = $row->last_seen;
         }
 
-        // make sure we have a populated org_id for adding items to the charts table
+        // make sure we have a populated org_id
         if (empty($device->org_id)) {
             $device->org_id = $row->org_id;
         }
@@ -1393,9 +1393,6 @@ class ComponentsModel extends BaseModel
                     $alert_details = "Item added to {$table} - {$alert_details}";
                     $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`, `notes`) VALUES (?, ?, ?, ?, ?, ?, "")';
                     $query = $this->db->query($sql, [intval($device->id), "{$table}", intval($id), 'create', "{$alert_details}", "{$device->last_seen}"]);
-                    // add a count to our chart table
-                    $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '{$table}_create', " . intval($device->org_id) . ', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1';
-                    $query = $this->db->query($sql);
                 }
             }
         }
@@ -1483,9 +1480,6 @@ class ComponentsModel extends BaseModel
                 $alert_details = "Item removed from {$table} - {$alert_details}";
                 $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`, `notes`) VALUES (?, ?, ?, ?, ?, ?, "")';
                 $query = $this->db->query($sql, [intval($device->id), "{$table}", intval($db_item->id), 'delete', "{$alert_details}", "{$device->last_seen}"]);
-                // add a count to our chart table
-                $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '{$table}_delete', " . intval($device->org_id) . ', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1';
-                $query = $this->db->query($sql);
             }
         }
         // ACCESS POINT

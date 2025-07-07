@@ -157,6 +157,7 @@ foreach ($roles as $role) {
         if ($role->name === 'org_admin' or $role->name === 'admin') {
             $permissions->news = 'crud';
             unset($permissions->reports);
+            unset($permissions->charts);
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -164,6 +165,7 @@ foreach ($roles as $role) {
         } else {
             $permissions->news = '';
             unset($permissions->reports);
+            unset($permissions->charts);
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -171,6 +173,11 @@ foreach ($roles as $role) {
         }
     }
 }
+
+$sql = "DROP TABLE IF EXISTS `chart`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = "ALTER TABLE `queries` ADD `commercial` enum('y','n') NOT NULL DEFAULT 'n' AFTER `advanced`";
 $db->query($sql);

@@ -384,7 +384,7 @@ class Dictionary extends BaseController
 
         $files = scandir('/usr/local/open-audit/app/Models');
         foreach ($files as $file) {
-            if (!strpos($file, 'Model.php') or $file === 'BaseModel.php' or $file === 'ChartModel.php' or $file === 'LogonModel.php' or $file === 'NewsModel.php' or $file === 'SearchModel.php') {
+            if (!strpos($file, 'Model.php') or $file === 'BaseModel.php' or $file === 'LogonModel.php' or $file === 'NewsModel.php' or $file === 'SearchModel.php') {
                 continue;
             }
             $model = str_replace('.php', '', $file);

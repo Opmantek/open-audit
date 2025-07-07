@@ -242,7 +242,7 @@ include 'shared/collection_functions.php';
 <?php
 $collections = response_valid_collections();
 foreach ($collections as $collection) {
-    if (in_array($collection, ['baselines_policies', 'baselines_results', 'components', 'database', 'discovery_log', 'integrations_log', 'integrations_rules', 'logs', 'maps', 'news', 'nmis', 'rack_devices', 'sessions', 'support', 'chart', 'help', 'reports', 'search', 'errors'])) {
+    if (in_array($collection, ['baselines_policies', 'baselines_results', 'components', 'database', 'discovery_log', 'integrations_log', 'integrations_rules', 'logs', 'maps', 'news', 'nmis', 'rack_devices', 'sessions', 'support', 'help', 'search', 'errors'])) {
         continue;
     } else {
         $title = $collection;
