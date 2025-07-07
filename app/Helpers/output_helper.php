@@ -590,14 +590,10 @@ if (!function_exists('output')) {
             $output .= "\t</item>\n";
         }
         $output .=  "</" . $instance->resp->meta->collection . ">\n";
-        if ((string)$instance->config->download_reports === 'y') {
-            $instance->response->setContentType('text/xml');
-            $instance->response->noCache();
-            $instance->response->setHeader('Content-Disposition', 'attachment;filename="' . $filename . '.xml"');
-            echo $output;
-        } else {
-            echo "<pre>" . htmlentities($output) . "</pre>";
-        }
+        $instance->response->setContentType('text/xml');
+        $instance->response->noCache();
+        $instance->response->setHeader('Content-Disposition', 'attachment;filename="' . $filename . '.xml"');
+        echo $output;
     }
 
     function create_url($query_parameters = null)

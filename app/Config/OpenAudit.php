@@ -10,8 +10,8 @@ use Config\Database;
 class OpenAudit extends BaseConfig
 {
     # leave for backwards compat $this->displayVersion = '5.6.5';
-    public string $displayVersion = '5.6.5';
-    public int $appVersion = 20250402;
+    public string $displayVersion = '5.8.0';
+    public int $appVersion = 20250615;
 
     public float $microtime = 0;
     public int $collector_connect_timeout = 10;
@@ -32,7 +32,6 @@ class OpenAudit extends BaseConfig
 
     public int $access_token_count;
     public string $access_token_enable;
-    public string $blessed_subnets_use;
     public int $collector_check_minutes;
     public string $components_extra_columns;
     public string $create_change_log;
@@ -80,7 +79,6 @@ class OpenAudit extends BaseConfig
     public string $create_change_log_video;
     public string $create_change_log_vm;
     public string $create_change_log_windows;
-    public int $database_show_row_limit;
     public string $decrypt_credentials;
     public string $default_network_address;
     public string $delete_noncurrent;
@@ -142,12 +140,10 @@ class OpenAudit extends BaseConfig
     public string $discovery_sudo_path;
     public string $discovery_sunos_use_sudo;
     public string $discovery_use_dns;
-    public string $discovery_use_ipmi;
     public string $discovery_use_org_id_match;
     public string $discovery_use_vintage_service;
     public int $discovery_wmi_timeout;
     public string $display_version;
-    public string $download_reports;
     public string $enterprise_env;
     public string $feature_agents_advanced;
     public string $feature_executables;
@@ -160,7 +156,6 @@ class OpenAudit extends BaseConfig
     public string $feature_queries_advanced;
     public string $firstwave_prompt;
     public int $graph_days;
-    public int $gui_trim_characters;
     public string $homepage = 'summaries';
     public int $internal_version;
     public string $license;
@@ -197,7 +192,6 @@ class OpenAudit extends BaseConfig
     public string $message_of_the_day;
     public $modules;
     public string $nmis;
-    public string $nmis_url;
     public string $oae_prompt;
     public string $output_escape_csv;
     public int $page_size;
@@ -206,8 +200,6 @@ class OpenAudit extends BaseConfig
     public string $public_key = '';
     public int $queue_count;
     public int $queue_limit;
-    public string $rss_enable;
-    public string $rss_url;
     public $servers;
     public string $server_ip;
     public string $server_os;
@@ -220,7 +212,7 @@ class OpenAudit extends BaseConfig
             $this->$key = $value;
             return;
         }
-        log_message('error', 'OpenAudit.php::_set called with bad key of ' . $key);
+        // log_message('error', 'OpenAudit.php::_set called with bad key of ' . $key);
         return;
     }
 

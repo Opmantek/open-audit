@@ -398,6 +398,14 @@ class DatabaseModel extends BaseModel
             include "db_upgrades/db_5.6.5.php";
         }
 
+        if (intval(config('Openaudit')->internal_version) < 20250512) {
+            include "db_upgrades/db_5.7.0.php";
+        }
+
+        if (intval(config('Openaudit')->internal_version) < 20250615) {
+            include "db_upgrades/db_5.8.0.php";
+        }
+
         $instance = & get_instance();
         $instance->data = $output;
         return true;
@@ -407,9 +415,9 @@ class DatabaseModel extends BaseModel
     {
         $instance = & get_instance();
         $result = new \stdClass();
-        $result->operating_system = config('Openaudit')->server_platform;
-        $result->current_version = config('Openaudit')->display_version;
-        $result->new_version = config('Openaudit')->displayVersion;
+        $result->operating_system = (!empty(config('Openaudit')->server_platform)) ? config('Openaudit')->server_platform : '';
+        $result->current_version = (!empty(config('Openaudit')->display_version)) ? config('Openaudit')->display_version : '';
+        $result->new_version = (!empty(config('Openaudit')->displayVersion)) ? config('Openaudit')->displayVersion : '';
         $result->hostname = php_uname('n');
         $result->database_platform = $this->db->getPlatform();
         $result->database_version = $this->db->getVersion();

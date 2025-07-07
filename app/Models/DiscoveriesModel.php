@@ -371,9 +371,6 @@ class DiscoveriesModel extends BaseModel
             if (stripos($data->subnet, '-') !== false) {
                 // We have a range and cannot insert a network
                 $warning = 'IP range, instead of subnet supplied. No network entry created.';
-                if ($instance->config->blessed_subnets_use !== 'n') {
-                    $warning .= '<br>Because you are using blessed subnets, please ensure a valid network for this range exists.';
-                }
                 \Config\Services::session()->setFlashdata('warning', $warning);
             }
         }

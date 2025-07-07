@@ -502,7 +502,7 @@ if (! function_exists('dns_validate')) {
 }
 
 /**
- * Read the collection from the database
+ * Test if the passed IP is in an existing network in the database
  *
  * @param  string $ip_address A standard IP
  * @return bool               Returns true if ip is contained in any network in the database, false otherwise
@@ -528,9 +528,6 @@ function check_ip(string $ip = ''): bool
         $instance->config = config('Openaudit');
     }
 
-    if (empty($instance->config->blessed_subnets_use) or trim(strtolower($instance->config->blessed_subnets_use)) !== 'y') {
-        return true;
-    }
     if ($ip === '127.0.0.1' or $ip === '127.0.1.1') {
         return true;
     }
