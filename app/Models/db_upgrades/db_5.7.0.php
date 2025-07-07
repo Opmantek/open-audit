@@ -136,6 +136,16 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM configuration WHERE name = 'public_key'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'public_key','-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEApMn+vnQhefYfQeojGy5t\np7hlZAgNhTshPYIGJida4KmWr72Ttbx/HsLA04HpUpBubeD1haryP30+EAhGDG2Z\nr/ZOMzyVgGngUtC/mNM+ECtst/YpOBZYknkVDftFDB94YDdq/848zawuX2b2ru2s\nrhOT9mXQy0JFHeaDtcDQhFWpcDNZ1fTI/9SNRPy3oCgeoJObGGFw+OLCqfd1PIzy\nWwYfSvddPNUa1DQyEdLsuGvVT9ZBuvjGph/cVLXmQLA8LDZBJDtft26z9auWKx1L\nJaox5k7FTjqCGhh7wgoaRHjOlvOm0dOF+agofoDeGqpsqyD3HZyGoE+f3cYQBFnW\n4yk4xmYR59vY0XDcbxrIqL4j1xYWCemzio5rX1iH9ntRmKcinXQ/m31BL1xjygD0\ntXHSePq2U/5jqsKSyMkrm1nJ39/4mB/+IY8IDwwaygA3kgbW5I4dFL9bDGTVpKs/\nxM48nPgSP23VsnfOLNprCYZoYZzlSDbkKC0fuVmn5N9gFsKORQ14oPYoNcvqRC/e\nFcuneG52bHJhAPRjkkCRBw9bRG45BxR3vS4ougCWuLMF0kIGr6o6AsuvCuWpuslc\nCii4ZwFd49VRQ9jaoluSaDVJJs4YhPP1yqYLV3EEVYw6yXyOVNNdvyExMyIjeSxo\nKW59oQWVc7WoMSxddVzjf1MCAwEAAQ==\n-----END PUBLIC KEY-----','text','y','system','2000-01-01 00:00:00','The public key for Open-AudIT.')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "SELECT * FROM `roles`";
 $roles = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -146,12 +156,14 @@ foreach ($roles as $role) {
     if (!empty($permissions)) {
         if ($role->name === 'org_admin' or $role->name === 'admin') {
             $permissions->news = 'crud';
+            unset($permissions->reports);
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
             log_message('info', (string)$db->getLastQuery());
         } else {
             $permissions->news = '';
+            unset($permissions->reports);
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -160,15 +172,136 @@ foreach ($roles as $role) {
     }
 }
 
-$sql = "DELETE FROM configuration WHERE name = 'public_key'";
+$sql = "ALTER TABLE `queries` ADD `commercial` enum('y','n') NOT NULL DEFAULT 'n' AFTER `advanced`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'public_key','-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEApMn+vnQhefYfQeojGy5t\np7hlZAgNhTshPYIGJida4KmWr72Ttbx/HsLA04HpUpBubeD1haryP30+EAhGDG2Z\nr/ZOMzyVgGngUtC/mNM+ECtst/YpOBZYknkVDftFDB94YDdq/848zawuX2b2ru2s\nrhOT9mXQy0JFHeaDtcDQhFWpcDNZ1fTI/9SNRPy3oCgeoJObGGFw+OLCqfd1PIzy\nWwYfSvddPNUa1DQyEdLsuGvVT9ZBuvjGph/cVLXmQLA8LDZBJDtft26z9auWKx1L\nJaox5k7FTjqCGhh7wgoaRHjOlvOm0dOF+agofoDeGqpsqyD3HZyGoE+f3cYQBFnW\n4yk4xmYR59vY0XDcbxrIqL4j1xYWCemzio5rX1iH9ntRmKcinXQ/m31BL1xjygD0\ntXHSePq2U/5jqsKSyMkrm1nJ39/4mB/+IY8IDwwaygA3kgbW5I4dFL9bDGTVpKs/\nxM48nPgSP23VsnfOLNprCYZoYZzlSDbkKC0fuVmn5N9gFsKORQ14oPYoNcvqRC/e\nFcuneG52bHJhAPRjkkCRBw9bRG45BxR3vS4ougCWuLMF0kIGr6o6AsuvCuWpuslc\nCii4ZwFd49VRQ9jaoluSaDVJJs4YhPP1yqYLV3EEVYw6yXyOVNNdvyExMyIjeSxo\nKW59oQWVc7WoMSxddVzjf1MCAwEAAQ==\n-----END PUBLIC KEY-----','text','y','system','2000-01-01 00:00:00','The public key for Open-AudIT.')";
+$sql = "UPDATE `queries` SET `commercial` = 'y' WHERE `name` IN ('Windows Clients With AntiVirus','Windows Clients Without AntiVirus','Windows Clients With AntiVirus Not UpToDate','Windows Clients With Firewall','Windows Clients Without Firewall','Windows Clients With Firewall Disabled','Windows Servers Firewalls Installed','Windows Servers AntiVirus Installed','Windows Servers Firewalls Not Installed','Windows Servers AntiVirus Not Installed','Banned Software','Approved Software','Ignored Software','Devices Without OS Updates for more than 14 Days','Any Devices Seen less than 7 Days ago','Any Devices Not Seen for more than 7 Days','Any Devices Not Seen for more than 30 Days','Windows Devices Seen less than 7 Days ago','Windows Devices Not Seen for more than 7 Days','Windows Devices Not Seen for more than 30 Days','Windows 10 All','Windows 10 Latest Build','Windows 10 Not Latest Build','Windows 11 All','Windows 11 Latest Build','Windows 11 Not Latest Build','Windows 2019 All','Windows 2019 Latest Build','Windows 2019 Not Latest Build','Windows 2022 All','Windows 2022 Latest Build','Windows 2022 Not Latest Build','Unknown Devices Found in the last 7 Days','Windows Shares Writable by Everyone','Windows Clients Without OS Updates for more than 14 Days','Windows Servers Without OS Updates for more than 14 Days','Linux Without OS Updates for more than 14 Days','Windows 2025 Latest Build','Windows 2025 Not Latest Build')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Devices Discovered Today','Discovery','y','Any devices found today.','SELECT devices.id, devices.icon, devices.type, devices.name, devices.domain, devices.ip, devices.os_family, devices.status, devices.first_seen FROM devices WHERE @filter AND DATE(first_seen) = CURDATE()','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Devices Discovered Yesterday','Discovery','y','Any devices found today.','SELECT devices.id, devices.icon, devices.type, devices.name, devices.domain, devices.ip, devices.os_family, devices.status, devices.first_seen FROM devices WHERE @filter AND DATE(first_seen) = SUBDATE(CURDATE(),1)','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Devices Discovered in the Last 7 Days','Discovery','y','Any devices found today.','SELECT devices.id, devices.icon, devices.type, devices.name, devices.domain, devices.ip, devices.os_family, devices.status, devices.first_seen FROM devices WHERE @filter AND DATE(first_seen) > SUBDATE(CURDATE(),7)','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Devices Discovered in the Last 30 Days','Discovery','y','Any devices found today.','SELECT devices.id, devices.icon, devices.type, devices.name, devices.domain, devices.ip, devices.os_family, devices.status, devices.first_seen FROM devices WHERE @filter AND DATE(first_seen) > SUBDATE(CURDATE(),30)','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Devices Not Seen for 7 Days','Discovery','y','Any devices not seen in the last 7 days.','SELECT devices.id, devices.icon, devices.type, devices.name, devices.domain, devices.ip, devices.os_family, devices.status, devices.first_seen, devices.last_seen, devices.last_seen_by FROM devices WHERE @filter AND DATE(last_seen) < SUBDATE(CURDATE(),7)','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Devices Not Seen for 30 Days','Discovery','y','Any devices not seen in the last 30 days.','SELECT devices.id, devices.icon, devices.type, devices.name, devices.domain, devices.ip, devices.os_family, devices.status, devices.first_seen, devices.last_seen, devices.last_seen_by FROM devices WHERE @filter AND DATE(last_seen) < SUBDATE(CURDATE(),30)','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Devices Not Seen for 90 Days','Discovery','y','Any devices not seen in the last 90 days.','SELECT devices.id, devices.icon, devices.type, devices.name, devices.domain, devices.ip, devices.os_family, devices.status, devices.first_seen, devices.last_seen, devices.last_seen_by FROM devices WHERE @filter AND DATE(last_seen) < SUBDATE(CURDATE(),90)','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Devices Not Seen for 180 Days','Discovery','y','Any devices not seen in the last 180 days.','SELECT devices.id, devices.icon, devices.type, devices.name, devices.domain, devices.ip, devices.os_family, devices.status, devices.first_seen, devices.last_seen, devices.last_seen_by FROM devices WHERE @filter AND DATE(last_seen) < SUBDATE(CURDATE(),180)','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Software Discovered Today','Discovery','y','Any software discovered today.','SELECT devices.id, devices.name, devices.domain, change_log.details, change_log.timestamp FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND DATE(change_log.timestamp) = CURDATE() AND change_log.db_table = \'software\' AND change_log.db_action = \'create\'','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Software Discovered Yesterday','Discovery','y','Any software discovered yesterday.','SELECT devices.id, devices.name, devices.domain, change_log.details, change_log.timestamp FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE DATE(change_log.timestamp) = SUBDATE(CURDATE(),1) AND change_log.db_table = \'software\' AND change_log.db_action = \'create\'','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Software Discovered in the Last 7 Days','Discovery','y','Any software discovered in the last 7 days.','SELECT devices.id, devices.name, devices.domain, change_log.details, change_log.timestamp FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE DATE(change_log.timestamp) = SUBDATE(CURDATE(),7) AND change_log.db_table = \'software\' AND change_log.db_action = \'create\'','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Software Discovered in the Last 30 Days','Discovery','y','Any software discovered in the last 30 days.','SELECT devices.id, devices.name, devices.domain, change_log.details, change_log.timestamp FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE DATE(change_log.timestamp) = SUBDATE(CURDATE(),30) AND change_log.db_table = \'software\' AND change_log.db_action = \'create\'','','n','y','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Devices Discovered Today' LIMIT 1) WHERE sub_resource_id = 10000";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Devices Discovered Yesterday' LIMIT 1) WHERE sub_resource_id = 10001";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Devices Discovered in the Last 7 Days' LIMIT 1) WHERE sub_resource_id = 10002";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Devices Discovered in the Last 30 Days' LIMIT 1) WHERE sub_resource_id = 10003";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Devices Not Seen for 7 Days' LIMIT 1) WHERE sub_resource_id = 30000";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Devices Not Seen for 30 Days' LIMIT 1) WHERE sub_resource_id = 30001";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Devices Not Seen for 90 Days' LIMIT 1) WHERE sub_resource_id = 30002";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Devices Not Seen for 180 Days' LIMIT 1) WHERE sub_resource_id = 30003";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Software Discovered Today' LIMIT 1) WHERE sub_resource_id = 20000";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Software Discovered Yesterday' LIMIT 1) WHERE sub_resource_id = 20001";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Software Discovered in the Last 7 Days' LIMIT 1) WHERE sub_resource_id = 20002";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `type` = 'queries', sub_resource_id = (SELECT id FROM queries WHERE name = 'Software Discovered in the Last 30 Days' LIMIT 1) WHERE sub_resource_id = 20003";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20250512' WHERE `name` = 'internal_version'";

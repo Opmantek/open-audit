@@ -81,7 +81,6 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                 <p>Shipped are a set of default items. These can be found by going to menu: Help → Defaults → <a href="<?= url_to($meta->collection . 'Defaults') ?>"><?= $title ?></a>.</p>
                                 <br>
                                 <?php } ?>
-                                <?php if ($meta->collection !== 'reports') { ?>
                             <h2><?= __('Database Definition') ?></h2>
                             <div class="table-responsive">
                                 <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover">
@@ -129,7 +128,6 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                 </table>
                             </div>
                             <p><br><span style="color: #dc3545;">*</span>&nbsp;<?= __('Note') ?> - <?= __('This column is required by Open-AudIT to create an item of this type') ?></p>
-                                <?php } ?>
                             <?php } ?>
                         </div>
                     </div>

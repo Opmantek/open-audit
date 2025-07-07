@@ -144,13 +144,13 @@ function collection_button_read(string $collection = '', string $id = ''): strin
         $link = '?components.type=' . $collection;
         $collection = 'components';
     }
-    $return = "<td class=\"text-center\"><a title=\"" . __('View') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " " . $class . "\" href=\"" . url_to($collection . 'Read', $id) . "$link\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>";
+    $return = "<td class=\"text-center\"><a id=\"read_" . $collection . "_" . $id . "\" title=\"" . __('View') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " " . $class . "\" href=\"" . url_to($collection . 'Read', $id) . "$link\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>";
     return $return;
 }
 
 function collection_button_execute(string $collection = '', int $id = 0): string
 {
-    $return = "<td class=\"text-center\"><a title=\"" . __('Execute') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-success execute_button\" href=\"" . url_to($collection . 'Execute', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('Execute') . "\" class=\"fa fa-play\" aria-hidden=\"true\"></span></a></td>";
+    $return = "<td class=\"text-center\"><a id=\"execute_" . $collection . "_" . $id . "\" title=\"" . __('Execute') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-success execute_button\" href=\"" . url_to($collection . 'Execute', $id) . "\"><span style=\"width:1rem;\" title=\"" . __('Execute') . "\" class=\"fa fa-play\" aria-hidden=\"true\"></span></a></td>";
     return $return;
 }
 

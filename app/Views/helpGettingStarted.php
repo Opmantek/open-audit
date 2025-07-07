@@ -67,7 +67,7 @@ include 'shared/collection_functions.php';
                             <p><strong><i>The below reporting options are available.</i></strong><br>
                                 <br>
                                 <h4><small>Reports</small></h4>
-                                Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats. <a href="<?= url_to('reportsCollection') ?>">More Information</a>.<br>
+                                Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats. <a href="<?= url_to('queriesCollection') ?>">More Information</a>.<br>
                                 <br>
                                 <h4><small>Queries</small></h4>
                                 Open-AudIT provides many built-in queries and makes it simple to create your own. <a href="<?= url_to('queriesCollection') ?>">More Information</a>.<br>

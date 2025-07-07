@@ -30,7 +30,6 @@ include 'shared/common_functions.php';
                                             <option value="clouds"><?= __('Cloud Discovery') ?></option>
                                             <option value="discoveries"><?= __('Discovery') ?></option>
                                             <option value="integrations"><?= __('Integration') ?></option>
-                                            <option value="reports"><?= __('Report') ?></option>
                                             <option value="queries"><?= __('Query') ?></option>
                                             <!--<option value="summaries"><?= __('Summary') ?></option>-->
                                         </select>
@@ -241,11 +240,6 @@ window.onload = function () {
                 $("#div_options").css('display', 'block');
                 $("#div_options").html(integrations);
             }
-            if ($type == "reports") {
-                $("#div_collector").css('display', 'none');
-                $("#div_options").css('display', 'block');
-                $("#div_options").html(reports);
-            }
             if ($type == "queries") {
                 $("#div_collector").css('display', 'none');
                 $("#div_options").css('display', 'block');
@@ -396,25 +390,6 @@ window.onload = function () {
                                     <div class="offset-2 col-8" style="position:relative;">\
                                         <label for="data[attributes][sub_resource_id]" class="form-label"><?= __('Query') ?></label><br>\
                                         <input readonly required type="text" class="form-control" name="data[attributes][sub_resource_id]" id="data[attributes][sub_resource_id]" value="" placeholder="Please add a Query before creating a task." >\
-                                    </div>\
-                                </div>';
-        <?php } ?>
-
-        <?php if (!empty($included['reports'])) { ?>
-        var reports = '                                <div class="row" style="padding-top:16px;">\
-                                    <div class="offset-2 col-8" style="position:relative;">\
-                                        <label for="data[attributes][sub_resource_id]" class="form-label"><?= __('Report') ?> <span style="color: #dc3545;">*</span></label><br>\
-                                        <select class="form-select" name="data[attributes][sub_resource_id]" id="data[attributes][sub_resource_id]">\
-                                            <option value=""> </option>\
-                                            <?php foreach ($included['reports'] as $item) { ?><option value="<?= $item->id ?>"><?= $item->attributes->name ?></option><?php } ?>\
-                                        </select>\
-                                    </div>\
-                                </div>' + email_format;
-        <?php } else { ?>
-        var reports = '                                <div class="row" style="padding-top:16px;">\
-                                    <div class="offset-2 col-8" style="position:relative;">\
-                                        <label for="data[attributes][sub_resource_id]" class="form-label"><?= __('Report') ?></label><br>\
-                                        <input readonly required type="text" class="form-control" name="data[attributes][sub_resource_id]" id="data[attributes][sub_resource_id]" value="" placeholder="Please add a Report before creating a task." >\
                                     </div>\
                                 </div>';
         <?php } ?>

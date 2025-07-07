@@ -52,20 +52,16 @@ If the Open-AudIT Server has Collectors reporting to it, an additional drop down
 Integrations can be scheduled as desired. This is left to the user.<br>
 <br>
 
-<h5>Reports</h5>
-When you enable a Report to be run on a schedule, the report is emailed to your chosen address. You must have set up email via menu -> Admin -> Enterprise -> Email Config. We also have a "test email" button on that page. Input your details, save it and then test it. You should have a modal box that informs you if it successful or not and obviously a test email should arrive if it is successful. Once you have email configured, your scheduled reports can be configured.<br>
-<br>
-Provide a name, optional description, choose \'Report\' type, select the desired report, provide an email address, choose a format and set the schedule.<br>
-<br>
-Provide an hour (hour only, no minutes as yet), give the task a name (this is not the name of the actual scheduled report itself), select which days you would like the report run, choose which report you would like run, supply an email address and choose a report format and you\'re done.<br>
-<br>
-Reports will be sent with an email body of the report (in html format) and the report attached in the requested format.<br>
-<br>
-
 <h5>Queries</h5>
-Queries take the same arguments as Reports.<br>
+When you enable a Query to be run on a schedule, the query is emailed to your chosen address. You must have set up email via menu -> Admin -> Enterprise -> Email Config. We also have a "test email" button on that page. Input your details, save it and then test it. You should have a modal box that informs you if it successful or not and obviously a test email should arrive if it is successful. Once you have email configured, your scheduled query can be configured.<br>
+<br>
+Provide a name, optional description, choose \'Query\' type, select the desired query, provide an email address, choose a format and set the schedule.<br>
+<br>
+Provide an hour (hour only, no minutes as yet), give the task a name (this is not the name of the actual scheduled query itself), select which days you would like the query run, choose which query you would like run, supply an email address and choose a query format and you\'re done.<br>
+<br>
+Queries will be sent with an email body of the query (in html format) and the query attached in the requested format.<br>
 <br>
 
 <h5>Summaries</h5>
-Summaries take the same arguments as Reports.</p>
+Summaries take the same arguments as Queries.</p>
 <br>';

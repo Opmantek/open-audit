@@ -217,10 +217,8 @@ class SummariesModel extends BaseModel
         $instance = & get_instance();
         $collections = clone $instance->collections;
         foreach ($collections as $name => $collection) {
-            if ($name !== 'reports') {
-                if (!$this->db->tableExists($name) or !$this->db->fieldExists('org_id', $name) and ($name !== 'orgs' and $name !== 'roles')) {
-                    unset($collections->{$name});
-                }
+            if (!$this->db->tableExists($name) or !$this->db->fieldExists('org_id', $name) and ($name !== 'orgs' and $name !== 'roles')) {
+                unset($collections->{$name});
             }
         }
         foreach ($collections as $name => $collection) {
@@ -250,7 +248,6 @@ class SummariesModel extends BaseModel
             unset($collections->executables);
         }
         $collections->maps->count = 1;
-        $collections->reports->count = 12;
         $sql = "SELECT COUNT(*) AS `count` FROM `orgs` WHERE `id` IN (" . implode(',', $orgs) . ")";
         $count = intval($this->db->query($sql)->getResult()[0]->count);
         $collections->orgs->count = $count;

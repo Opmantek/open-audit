@@ -170,7 +170,7 @@ class QueriesModel extends BaseModel
      * @param  integer $id The ID of the group
      * @return array       An array of standard formatted devices, or an empty array
      */
-    public function execute(int $id = 0, object $user = null): array
+    public function execute(int $id = 0, ?object $user = null): array
     {
         $instance = & get_instance();
         $query = $this->builder->getWhere(['id' => intval($id)]);
@@ -332,12 +332,21 @@ class QueriesModel extends BaseModel
             $orgs = array_unique($orgs);
         }
 
+        $instance = & get_instance();
+        $commercial = array();
+        $commercial[] = 'n';
+        if (!empty($instance->config->product) and $instance->config->product !== 'community') {
+            $commercial[] = 'y';
+        }
+
+
         $properties = array();
         $properties[] = 'queries.*';
         $properties[] = 'orgs.name as `orgs.name`';
         $this->builder->select($properties, false);
         $this->builder->join('orgs', 'queries.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
+        $this->builder->whereIn('commercial', $commercial);
         $this->builder->where($where);
         $this->builder->orderBy('queries.name');
         $query = $this->builder->get();
@@ -476,6 +485,7 @@ class QueriesModel extends BaseModel
         $dictionary->columns->advanced = 'Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.';
         $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the Report menu in the web interface.';
         $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
+        $dictionary->columns->commercial = 'Is this query restricted to licensed customers.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;

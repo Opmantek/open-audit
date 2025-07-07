@@ -190,9 +190,6 @@ class TasksModel extends BaseModel
         $queriesModel = new \App\Models\QueriesModel();
         $include['queries'] = $queriesModel->listUser();
 
-        $reportsModel = new \App\Models\ReportsModel();
-        $include['reports'] = $reportsModel->listUser();
-
         $summariesModel = new \App\Models\SummariesModel();
         $include['summaries'] = $summariesModel->listUser();
 

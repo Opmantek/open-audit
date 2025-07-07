@@ -12,7 +12,7 @@ include 'shared/common_functions.php';
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable">
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover">
                             <thead>
                                 <tr>
                                     <td><?= __('Name') ?></td>

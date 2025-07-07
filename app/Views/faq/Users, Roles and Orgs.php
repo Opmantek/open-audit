@@ -90,7 +90,6 @@ Don\'t forget you have granular control over what users can see and do using Rol
 				files<br>
 				groups<br>
 				queries<br>
-				reports<br>
 				roles<br>
 				rules<br>
 				scripts<br>

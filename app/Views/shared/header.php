@@ -225,16 +225,11 @@ if (!empty($config->servers)) {
                                 echo "
                             <li><a class=\"dropdown-item dropdown-toggle first-level-dropdown-toggle\" href=\"#\">" . $category . "</a>\n                            <ul class=\"dropdown-menu\">\n";
                                 foreach ($reports as $report) {
-                                    $link = $report->type . 'Execute';
                                     if ($report->{'attributes'}->{'menu_category'} === $category) {
-                                        if ($report->{'attributes'}->{'menu_category'} === 'Discovery') {
-                                            if (!empty($config->license) and $config->license !== 'commercial' and $config->license !== 'free') {
-                                                echo "                                <li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
-                                            } else {
-                                                echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to($link, $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
-                                            }
+                                        if (!empty($report->{'attributes'}->{'commercial'}) and $report->{'attributes'}->{'commercial'} === 'y' and (empty($config->product) or $config->product === 'community')) {
+                                            echo "                                <li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                         } else {
-                                            echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to($link, $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
+                                            echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('queriesExecute', $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                         }
                                     }
                                 }
@@ -560,9 +555,11 @@ if (!empty($config->servers)) {
                             <a class="nav-link dropdown-toggle" href="#" id="navbarModules" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Modules') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarModules">
 <?php
-foreach ($config->modules as $module) {
-    if (!empty($module->url)) {
-        echo "                              <li><a class=\"dropdown-item\" target=\"_blank\" href=\"" . $module->url . "\">" . $module->name . "</a></li>\n";
+if (!empty($config->modules)) {
+    foreach ($config->modules as $module) {
+        if (!empty($module->url)) {
+            echo "                              <li><a class=\"dropdown-item\" target=\"_blank\" href=\"" . $module->url . "\">" . $module->name . "</a></li>\n";
+        }
     }
 }
 ?>
@@ -572,7 +569,7 @@ foreach ($config->modules as $module) {
                             <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
                                 <li><a class="dropdown-item" href="<?= url_to('appLicenses') ?>?license=eula"><?= __('EULA') ?></a></li>
-<?php if (empty($config->license) or $config->license === 'none') { ?>
+<?php if (empty($config->product) or $config->product === 'community') { ?>
                                 <li><a class="dropdown-item" href='#' data-bs-toggle="modal" data-bs-target="#modalCompareLicense"><?= __('Activate Free License')?></a></li>
 <?php } else { ?>
                                 <li><a class="dropdown-item" href='#' data-bs-toggle="modal" data-bs-target="#modalCompareLicense"><?= __('Buy More Licenses')?></a></li>
@@ -816,7 +813,7 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
         return $return;
     }
     if (empty($instance->resp->meta->permission_requested)) {
-        log_message('error', "menuItem, no permission requested.");
+        // log_message('error', "menuItem, no permission requested for " . $collection);
         return $return;
     }
     // Check if feature matches license

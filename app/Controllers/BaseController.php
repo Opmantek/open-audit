@@ -264,7 +264,6 @@ abstract class BaseController extends Controller
                 $GLOBALS['button'] = 'btn-xs';
             }
             $this->queriesUser = $this->queriesModel->listUser();
-            $this->queriesUser = array_merge($this->queriesUser, $this->reportsModel->listUser());
             $this->queriesUser = array_merge($this->queriesUser, $this->summariesModel->listUser());
             $this->orgsUser = $this->orgsModel->listUser();
             $this->dashboardsModel = model('App\Models\DashboardsModel');

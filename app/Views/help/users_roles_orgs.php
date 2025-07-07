@@ -29,6 +29,6 @@ A user will have a list of associated organizations (orgs). Each org the user ha
 <br>
 All orgs except the default org have a parent. Think of an Org Chart. If a user has permission on an Org, they also have permission on any descendants of that Org.<br>
 <br>
-As at 3.3.2 we have also allowed a user with permission on a child org to see the items from parent orgs for certain collections. Those are: dashboards, discovery_scan_options, fields, files, groups, queries, reports, roles, rules, scripts, summaries, widgets.<br>
+As at 3.3.2 we have also allowed a user with permission on a child org to see the items from parent orgs for certain collections. Those are: dashboards, discovery_scan_options, fields, files, groups, queries, roles, rules, scripts, summaries, widgets.<br>
 <br>
 Don\'t forget you have granular control over what users can see and do using <a href="' . url_to('rolesHelp') . '">Roles</a> in Enterprise.<br></p><br>';

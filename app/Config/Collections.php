@@ -50,7 +50,6 @@ class Collections extends BaseConfig
     public $queries;
     public $rack_devices;
     public $racks;
-    public $reports;
     public $roles;
     public $rules;
     public $scripts;
@@ -475,16 +474,6 @@ class Collections extends BaseConfig
         $this->racks->actions->enterprise = 'crud';
         $this->racks->actions->professional = '';
         $this->racks->actions->community = '';
-
-        $this->reports = new \StdClass();
-        $this->reports->icon = 'fa fa-table';
-        $this->reports->name = 'Reports';
-        $this->reports->edition = 'Professional';
-        $this->reports->orgs = 'b';
-        $this->reports->actions = new \stdClass();
-        $this->reports->actions->enterprise = 'crud';
-        $this->reports->actions->professional = 'crud';
-        $this->reports->actions->community = 'crud';
 
         $this->roles = new \StdClass();
         $this->roles->icon = 'fa fa-lock';

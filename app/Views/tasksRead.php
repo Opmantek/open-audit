@@ -27,7 +27,7 @@ include 'shared/common_functions.php';
                             <input type="hidden" value="<?= $config->uuid ?>" id="uuid" name="uuid">
                             <?php } ?>
 
-                            <?php if ($resource->type === 'queries' or $resource->type === 'reports' or $resource->type === 'summaries') { ?>
+                            <?php if ($resource->type === 'queries' or $resource->type === 'summaries') { ?>
                                 <?= read_field('email_address', $resource->email_address, $dictionary->columns->{'email_address'}, $update, '', '', '', '', $meta->collection) ?>
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
