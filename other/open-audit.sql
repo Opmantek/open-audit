@@ -946,31 +946,6 @@ LOCK TABLES `change_log` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `chart`
---
-
-DROP TABLE IF EXISTS `chart`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `chart` (
-  `when` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `what` varchar(50) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `count` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`when`,`what`,`org_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `chart`
---
-
-LOCK TABLES `chart` WRITE;
-/*!40000 ALTER TABLE `chart` DISABLE KEYS */;
-/*!40000 ALTER TABLE `chart` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `cli_config`
 --
 
@@ -1193,8 +1168,8 @@ LOCK TABLES `configuration` WRITE;
 /*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
 INSERT INTO `configuration` VALUES (NULL,'access_token_count','20','number','y','system','2000-01-01 00:00:00','Allow this many access tokens to be stored in the cookie.');
 INSERT INTO `configuration` VALUES (NULL,'access_token_enable','y','bool','y','system','2000-01-01 00:00:00','Should we enable access tokens for CSRF mitigation.');
-INSERT INTO `configuration` VALUES (NULL,'blessed_subnets_use','y','bool','y','system','2000-01-01 00:00:00','Should we only accept data from the blessed subnets list.');
 INSERT INTO `configuration` VALUES (NULL,'collector_check_minutes','5','number','y','system','2000-01-01 00:00:00','The default check interval for collectors.');
+INSERT INTO `configuration` VALUES (NULL,'components_extra_columns','','text','y','system','2000-01-01 00:00:00','Any extra columns from the devices table to show on the components list page. Should be comman separated, no spaces, column name only.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_arp','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the arp table.');
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_bios','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the bios table.');
