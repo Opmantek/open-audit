@@ -209,7 +209,7 @@ window.onload = function () {
     $(document).ready(function() {
 
         <?php
-        if ($config->device_count === 0) {
+        if ($config->device_count === 0 and empty($config->license_string)) {
             echo "\n            $('#modalCompareLicense').modal('show');\n";
         } ?>
 

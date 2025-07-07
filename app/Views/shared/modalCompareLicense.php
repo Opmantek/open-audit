@@ -22,6 +22,7 @@ $btnEntText = __('Upgrade');
 $message = '';
 $license = (!empty($config->license)) ? strtolower($config->license) : 'none';
 $product = (!empty($config->product)) ? strtolower($config->product) : 'community';
+$binary = (!empty($config->enterprise_binary)) ? true : false;
 
 if ($product === 'enterprise' and $license !== 'free') {
     $highlightEnt = "background: rgba(var(--bs-body-color-rgb), 0.03)";
@@ -52,6 +53,11 @@ if ($product === 'community') {
     $btnFreStyle = 'style="color:white;"';
     $message = 'Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. <a href="' . base_url() . 'index.php/appLicenses?license=eula">EULA</a>.';
 }
+
+if (!$binary) {
+    $message = '<div class="container-fluid"><div class="alert alert-danger alert-dismissable fade show" role="alert">The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from <a href="https://firstwave.com">https://firstwave.com</a>.</div></div>';
+}
+
 
 $button_prompt_never = '';
 $button_prompt_later = '';
@@ -116,7 +122,7 @@ $countries = array(
                 <br>
                 <p><?= $message ?></p>
                 <br>
-                <?php if ($product === 'community') { ?>
+                <?php if ($product === 'community' and $binary) { ?>
                 <div class="row">
                     <div class="row" style="margin-bottom:20px;">
                         <div class="col-4">
@@ -280,13 +286,13 @@ $countries = array(
 
                 <div class="row">
                     <div class="col-6 clearfix pull-left">
-                        <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and (file_exists(ROOTPATH . 'other/enterprise.bin') or file_exists(ROOTPATH . 'other/enterprise.exe'))) {
+                        <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and $binary) {
                             echo $button_prompt_later;
                         } ?>
                     </div>
                     <div class="col-6 clearfix pull-right">
                         <div class="float-end">
-                            <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and (file_exists(ROOTPATH . 'other/enterprise.bin') or file_exists(ROOTPATH . 'other/enterprise.exe'))) {
+                            <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and $binary) {
                                 echo $button_prompt_never;
                             } ?>
                         </div>
@@ -302,7 +308,7 @@ $countries = array(
 $(window).on("load", function() {
     $(document).ready(function () {
         <?php
-        if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and (file_exists(ROOTPATH . 'other/enterprise.bin') or file_exists(ROOTPATH . 'other/enterprise.exe'))) {
+        if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and empty($config->license_string) and $binary) {
             echo "\n            $('#modalCompareLicense').modal('show');\n";
         }
         ?>
@@ -310,6 +316,8 @@ $(window).on("load", function() {
         // console.log("OAE Prompt: <?= $config->oae_prompt ?>");
         // console.log("Date: <?= date('Y-m-d') ?>");
         // console.log("License: <?= $license ?>");
+        // console.log("LicenseString: <?= $config->license_string ?>");
+        // console.log("Binary: <?= (json_encode($binary)) ?>");
     });
 });
 </script>

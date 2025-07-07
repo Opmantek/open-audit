@@ -793,7 +793,6 @@ if (!empty($config->modules)) {
         </div>
 
 <?php
-
 function menuItem($collection = '', $permission = '', $user = null, $route = '', $title = '', $routeExtra = '')
 {
     if (empty($permission)) {
