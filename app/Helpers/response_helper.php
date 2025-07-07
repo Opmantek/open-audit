@@ -125,7 +125,7 @@ if (!function_exists('response_create')) {
 
         # We have what the user is trying to do and to what (if any) item - check permissions
         $permission_requested = response_valid_permissions($response->meta->collection);
-        if (($response->meta->collection === 'dashboards' or $response->meta->collection === 'reports' or $response->meta->collection === 'widgets') and $response->meta->action === 'execute') {
+        if (($response->meta->collection === 'dashboards' or $response->meta->collection === 'widgets') and $response->meta->action === 'execute') {
             $permission_requested['execute'] = 'r';
         }
 
@@ -477,9 +477,6 @@ if (!function_exists('response_create')) {
                 $response->meta->received_data->attributes->value = str_replace("\n", "", $response->meta->received_data->attributes->value);
             }
             // We need Orgs for these, associated with the user, supply them here
-            if ($response->meta->collection === 'reports' and $response->meta->action === 'execute') {
-                $response->meta->orgs = response_get_org_list($instance->user, 'devices');
-            }
             if ($response->meta->collection === 'tasks' and $response->meta->action === 'execute') {
                 $response->meta->orgs = response_get_org_list($instance->user, 'devices');
             }
@@ -990,7 +987,7 @@ if (!function_exists('response_get_id')) {
             $actions = response_valid_actions();
             // TODO - have we already validate the collection before calling this function? If so, remove
             $collections = response_valid_collections();
-            $no_org_id = array('charts', 'configuration', 'reports', 'roles');
+            $no_org_id = array('charts', 'configuration', 'roles');
             if (!in_array($id, $actions)) {
                 // Our 'id' is a string, but not an action - therefore it's a name
                 if ($collection === 'database') {
