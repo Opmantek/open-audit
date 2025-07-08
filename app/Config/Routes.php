@@ -68,6 +68,7 @@ $routes->get('configuration/license_string', 'Configuration::readLicense', ['fil
 $routes->get('configuration/servers', 'Configuration::readServers', ['filter' => \App\Filters\Session::class, 'as' => 'configurationReadServers']);
 $routes->get('configuration/email/execute_form', 'Configuration::executeFormEmail', ['filter' => \App\Filters\Session::class, 'as' => 'configurationExecuteFormEmail']);
 $routes->post('configuration/email/execute_form', 'Configuration::executeEmail', ['filter' => \App\Filters\Session::class, 'as' => 'configurationExecuteEmail']);
+$routes->get('configuration/defaults', 'Collections::defaults/$1', ['filter' => \App\Filters\Session::class, 'as' => 'configurationDefaults']);
 $routes->get('configuration/(:any)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => 'configurationRead']);
 
 $routes->get('database/update', 'Database::update/get', ['filter' => \App\Filters\Session::class, 'as' => 'databaseUpdate']);
