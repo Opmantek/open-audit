@@ -95,7 +95,7 @@ class NetworksModel extends BaseModel
      * @param  integer $id The ID of the group
      * @return array       An array of standard formatted devices, or an empty array
      */
-    public function execute(int $id = 0, object $user = null): array
+    public function execute(int $id = 0, ?object $user = null): array
     {
         return array();
     }
@@ -130,6 +130,23 @@ class NetworksModel extends BaseModel
         $included['locations'] = array();
         $locationsModel = new \App\Models\LocationsModel();
         $included['locations'] = $locationsModel->listUser();
+
+        $included['discovery'] = 0;
+
+        // The first time we try to match subnet and org
+        $sql = "SELECT id FROM discoveries WHERE subnet = ? AND discoveries.org_id = ?";
+        $discoveryResult = $this->db->query($sql, [(string)$network, intval($network->org_id)])->getResult();
+        if (!empty($discoveryResult)) {
+            $included['discovery'] = intval($discoveryResult[0]->id);
+        }
+        // If above fails, try to match subnet and any allowed org
+        if (empty($included['discovery'])) {
+            $sql = "SELECT id FROM discoveries WHERE subnet = ? AND discoveries.org_id IN ($org_list)";
+            $discoveryResult = $this->db->query($sql, [(string)$network])->getResult();
+            if (!empty($discoveryResult)) {
+                $included['discovery'] = intval($discoveryResult[0]->id);
+            }
+        }
 
         return $included;
     }

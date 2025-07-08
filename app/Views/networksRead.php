@@ -201,6 +201,49 @@ window.onload = function () {
 window.onload = function () {
     $(document).ready(function () {
 
+    <?php
+
+    if (empty($included['discovery'])) {
+        $form_contents = '<input type="hidden" id="data[access_token]" name="data[access_token]" value="' . $meta->access_token . '">\
+            <input type="hidden" id="data[type]" name="data[type]" value="discoveries">\
+            <input type="hidden" id="data[execute]" name="data[execute]" value="true">\
+            <input type="hidden" id="data[attributes][org_id]" name="data[attributes][org_id]" value="' . $resource->org_id . '">\
+            <input type="hidden" id="data[attributes][name]" name="data[attributes][name]" value="' . $resource->network . '">\
+            <input type="hidden" id="data[attributes][type]" name="data[attributes][type]" value="subnet">\
+            <input type="hidden" id="data[attributes][subnet]" name="data[attributes][subnet]" value="' . $resource->network . '">';
+        if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
+        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="discoveriesCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish text-oa-success"></span>&nbsp;<?= __('Discover') ?></button></form>');
+
+        <?php } elseif (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
+        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish text-oa-success"></span></button></form>');
+
+        <?php } else { ?>
+        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
+        <?php } ?>
+    <?php } else {
+        if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
+        $(".page-title-middle").append('<a role="button" id="discoveriesButton" class="btn btn-light mb-2" title="<?= __('Discover') ?>" href="<?= url_to('discoveriesExecute', $included['discovery']) ?>"><span style="margin-right:6px;" class="fa-solid fa-satellite-dish text-oa-success"></span><?= __('Discover') ?></a>');
+
+        <?php } elseif (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
+        $(".page-title-middle").append('<a role="button" id="discoveriesButton" class="btn btn-light mb-2" title="<?= __('Discover') ?>" href="<?= url_to('discoveriesExecute', $included['discovery']) ?>"><span class="fa-solid fa-satellite-dish text-oa-success"></span></a>');
+
+        <?php } else { ?>
+        $(".page-title-middle").append('<a role="button" id="discoveriesButton" class="btn btn-light mb-2" title="<?= __('Discover') ?>" href="<?= url_to('discoveriesExecute', $included['discovery']) ?>"><?= __('Discover') ?></a>');
+        <?php } ?>
+    <?php } ?>
+
+
+        $("#discoveriesButton").click(function (e) {
+            $("#liveToastSuccess-header").text("Discovery");
+            $("#liveToastSuccess-body").text("Discovery is executing. Redirecting shortly.");
+            var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
+            var toastList = toastElList.map(function(toastEl) {
+                return new bootstrap.Toast(toastEl)
+            });
+            toastList.forEach(toast => toast.show());
+        });
+
+
         var hash = window.location.hash;
         if (hash == "") {
             hash = "#details"

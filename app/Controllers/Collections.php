@@ -265,6 +265,9 @@ class Collections extends BaseController
                     if ($this->resp->meta->collection === 'rack_devices') {
                         return redirect()->route('racksRead', [$this->resp->meta->received_data->attributes->rack_id]);
                     }
+                    if ($this->resp->meta->collection === 'discoveries' and $this->resp->meta->received_data->execute === 'true') {
+                        return redirect()->route($this->resp->meta->collection . 'Execute', [$id]);
+                    }
                     return redirect()->route($this->resp->meta->collection . 'Read', [$id]);
                 } else {
                     $collection = 'device';
