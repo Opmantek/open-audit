@@ -64,7 +64,7 @@ class Search extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('searchCreate', ['data' => filter_response($this->resp->data), 'meta' => filter_response($this->resp->meta)])
+            view('searchCreate', ['data' => filter_response($this->resp->data), 'meta' => $this->resp->meta])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 }

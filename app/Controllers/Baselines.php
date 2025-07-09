@@ -44,17 +44,18 @@ class Baselines extends BaseController
         $groupsModel = new \App\Models\GroupsModel();
         $this->resp->data = $this->baselinesModel->read($id);
         $this->resp->included['groups'] = $groupsModel->listUser();
+        $meta = filter_response($this->resp->meta);
         return view('shared/header', [
             'config' => $this->config,
             'dictionary' => $this->baselinesModel->dictionary(),
-            'meta' => filter_response($this->resp->meta),
+            'meta' => $meta,
             'orgs' => filter_response($this->orgsUser),
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
             view($this->resp->meta->collection . ucfirst($this->resp->meta->action), [
                 'data' => filter_response($this->resp->data),
-                'meta' => filter_response($this->resp->meta),
+                'meta' => $meta,
                 'included' => filter_response($this->resp->included)])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }

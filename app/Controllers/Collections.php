@@ -335,7 +335,7 @@ class Collections extends BaseController
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
             'dictionary' => $dictionary,
-            'included' => $this->resp->included,
+            'included' => filter_response($this->resp->included),
             'meta' => filter_response($this->resp->meta),
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
@@ -1043,7 +1043,7 @@ class Collections extends BaseController
                 'roles' => filter_response($this->roles),
                 'user' => filter_response($this->user),
                 'name' => @$this->resp->data[0]->attributes->name]) .
-                view($template, ['data' => filter_response($this->resp->data), 'resource' => filter_response($this->resp->data[0]->attributes), 'update' => $update])
+                view($template, ['data' => filter_response($this->resp->data), 'resource' => $this->resp->data[0]->attributes, 'update' => $update])
                 . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         }
     }

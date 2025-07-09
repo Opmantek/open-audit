@@ -1,6 +1,6 @@
 <?php
 
-function read_card_header(string $collection = '', string $id = '', string $icon = '', object $user = null, string $name = '', string $action = 'read'): string
+function read_card_header(string $collection = '', string $id = '', string $icon = '', ?object $user = null, string $name = '', string $action = 'read'): string
 {
     $style = (!empty($user->toolbar_style)) ? $user->toolbar_style : '';
     $collection_title = __(ucwords(str_replace('_', ' ', $collection)));
