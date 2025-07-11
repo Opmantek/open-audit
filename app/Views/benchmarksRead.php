@@ -655,8 +655,12 @@ if (!empty($hour) and !empty($days)) {
             <?php
             foreach ($included['devices'] as $device) {
                 $credentials = '';
+                $disabled = '';
                 if ($device->credentials === 'y') {
                     $credentials = '<span class="fa-solid fa-check text-success"></span>';
+                } else {
+                    $credentials = '<span class="fa-solid fa-xmark text-danger"></span>';
+                    $disabled = 'disabled';
                 }
                 if (is_array($devices_in_benchmark) and !in_array($device->id, $devices_in_benchmark)) { ?>
                     <tr>
@@ -666,7 +670,7 @@ if (!empty($hour) and !empty($days)) {
                                                         } ?></td>
                         <td style="text-align: center;"><?= $credentials ?></td>
                         <td><?= $device->{'orgs.name'} ?>
-                        <td style="text-align: center;"><input class="devices" aria-label="<?= __('Select') ?>" type="checkbox" id="data[attributes][devices][<?= $device->id ?>]" value="<?= $device->id ?>" name="data[attributes][devices][<?= $device->id ?>]"></td>
+                        <td style="text-align: center;"><input <?= $disabled ?> class="devices" aria-label="<?= __('Select') ?>" type="checkbox" id="data[attributes][devices][<?= $device->id ?>]" value="<?= $device->id ?>" name="data[attributes][devices][<?= $device->id ?>]"></td>
                     </tr>
                 <?php } ?>
             <?php } ?>
