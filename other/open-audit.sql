@@ -208,6 +208,8 @@ CREATE TABLE `arp` (
   `ip` varchar(45) NOT NULL DEFAULT '',
   `interface` varchar(45) NOT NULL DEFAULT '',
   `interface_id` int(10) unsigned DEFAULT NULL,
+  `vlan` varchar(200) NOT NULL DEFAULT '',
+  `vlan_id` int(10) unsigned DEFAULT NULL,
   `manufacturer` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),

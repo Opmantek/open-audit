@@ -545,7 +545,7 @@ class DevicesModel extends BaseModel
         }
 
         $include = array();
-        $current = array('access_point', 'antivirus', 'arp', 'bios', 'certificate', 'cli_config', 'disk', 'dns', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
+        $current = array('access_point', 'antivirus', 'bios', 'certificate', 'cli_config', 'disk', 'dns', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows');
         foreach ($current as $table) {
             if (!$this->db->tableExists($table)) {
                 continue;
@@ -563,7 +563,7 @@ class DevicesModel extends BaseModel
         if ($this->db->tableExists('arp')) {
             if (empty($resp_include) or in_array('arp', $resp_include)) {
                 // $sql = "SELECT arp.*, ip.device_id AS `ip.device_id` FROM `arp` LEFT JOIN `ip` ON (arp.mac = ip.mac AND INET_ATON(arp.ip) = INET_ATON(ip.ip)) WHERE arp.device_id = ? and arp.current = 'y'";
-                $sql = "SELECT arp.*, ip.device_id AS `ip.device_id` FROM `arp` LEFT JOIN `ip` ON (arp.mac = ip.mac) WHERE arp.device_id = ? and arp.current = 'y' GROUP BY arp.mac";
+                $sql = "SELECT arp.*, MAX(arp.vlan_id), ip.device_id AS `ip.device_id` FROM `arp` LEFT JOIN `ip` ON (arp.mac = ip.mac) WHERE arp.device_id = ? and arp.current = 'y' GROUP BY arp.mac";
                 $query = $this->db->query($sql, $id);
                 $result = $query->getResult();
                 if (!empty($result)) {

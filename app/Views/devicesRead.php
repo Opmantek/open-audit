@@ -1387,6 +1387,29 @@ if (empty($resource->type)) {
                             <div style="margin-bottom:20px; display:none;" class="card" id="network_section">
                                 <?php $count = !empty($included['network']) ? count($included['network']) : 0; ?>
                                 <?=  device_panel('network', $user->toolbar_style, $resource->id, '', false, $count); ?>
+                                <?php
+                                    $vlan = false;
+                                    $dhcp_enabled = false;
+                                    $connection_status = false;
+                                    foreach ($included['network'] as $row) {
+                                        if (!empty($row->vlan_id)) {
+                                            $vlan = true;
+                                            break;
+                                        }
+                                    }
+                                    foreach ($included['network'] as $row) {
+                                        if (!empty($row->dhcp_enabled)) {
+                                            $dhcp_enabled = true;
+                                            break;
+                                        }
+                                    }
+                                    foreach ($included['network'] as $row) {
+                                        if (!empty($row->connection_status)) {
+                                            $connection_status = true;
+                                            break;
+                                        }
+                                    }
+                                ?>
                                 <div class="card-body">
                                     <div class="row">
                                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
@@ -1398,9 +1421,17 @@ if (empty($resource->type)) {
                                                     <th><?= __('Model') ?></th>
                                                     <th><?= __('Manufacturer') ?></th>
                                                     <th><?= __('Speed') ?></th>
+                                                    <?php if ($connection_status) { ?>
                                                     <th><?= __('Status') ?></th>
+                                                    <?php } ?>
                                                     <th><?= __('Type') ?></th>
+                                                    <?php if ($dhcp_enabled) { ?>
                                                     <th><?= __('DHCP') ?></th>
+                                                    <?php } ?>
+                                                    <?php if ($vlan) { ?>
+                                                    <th><?= __('VLAN') ?></th>
+                                                    <th><?= __('VLAN ID') ?></th>
+                                                    <?php } ?>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1424,9 +1455,17 @@ if (empty($resource->type)) {
                                                     <td><?= $row->model ?></td>
                                                     <td><?= $row->manufacturer ?></td>
                                                     <td><?= $speed ?></td>
+                                                    <?php if ($connection_status) { ?>
                                                     <td><?= $row->connection_status ?></td>
+                                                    <?php } ?>
                                                     <td><?= $row->type ?></td>
+                                                    <?php if ($dhcp_enabled) { ?>
                                                     <td><?= $row->dhcp_enabled ?></td>
+                                                    <?php } ?>
+                                                    <?php if ($vlan) { ?>
+                                                    <td><?= $row->vlan ?></td>
+                                                    <td><?= $row->vlan_id ?></td>
+                                                    <?php } ?>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -2000,10 +2039,24 @@ if (empty($resource->type)) {
                                 <?=  device_panel('arp', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                 <?php
                                 $interface_id = false;
+                                $vlan_id = false;
+                                $vlan = false;
                                 if (!empty($included['arp'])) {
                                     foreach ($included['arp'] as $row) {
                                         if (!empty($row->interface_id)) {
                                             $interface_id = true;
+                                            break;
+                                        }
+                                    }
+                                    foreach ($included['arp'] as $row) {
+                                        if (!empty($row->vlan)) {
+                                            $vlan = true;
+                                            break;
+                                        }
+                                    }
+                                    foreach ($included['arp'] as $row) {
+                                        if (!empty($row->vlan_id)) {
+                                            $vlan_id = true;
                                             break;
                                         }
                                     }
@@ -2022,6 +2075,12 @@ if (empty($resource->type)) {
                                                     <th><?= __('Interface ID') ?></th>
                                                     <?php } ?>
                                                     <th><?= __('MAC Manufacturer') ?></th>
+                                                    <?php if ($vlan) { ?>
+                                                    <th><?= __('VLAN') ?></th>
+                                                    <?php } ?>
+                                                    <?php if ($vlan_id) { ?>
+                                                    <th><?= __('VLAN ID') ?></th>
+                                                    <?php } ?>
                                                     <th class="text-center"><?= __('Device') ?></th>
                                                 </tr>
                                             </thead>
@@ -2045,6 +2104,12 @@ if (empty($resource->type)) {
                                                     <td><?= $row->interface_id ?></td>
                                                     <?php } ?>
                                                     <td><?= $row->manufacturer ?></td>
+                                                    <?php if ($vlan) { ?>
+                                                    <td><?= $row->vlan ?></td>
+                                                    <?php } ?>
+                                                    <?php if ($vlan_id) { ?>
+                                                    <td><?= $row->vlan_id ?></td>
+                                                    <?php } ?>
                                                     <td class="text-center"><?= $row->{'ip.device_id'} ?></td>
                                                 </tr>
                                                 <?php } ?>

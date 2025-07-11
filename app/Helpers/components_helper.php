@@ -15,7 +15,7 @@ function match_columns($table)
             $match_columns = array('name');
     }
     if ($table === 'arp') {
-            $match_columns = array('ip', 'mac', 'interface');
+            $match_columns = array('ip', 'mac', 'interface', 'vlan_id');
     }
     if ($table === 'bios') {
             $match_columns = array('manufacturer', 'model', 'serial', 'smversion', 'version');

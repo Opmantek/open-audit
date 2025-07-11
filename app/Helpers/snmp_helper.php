@@ -2356,15 +2356,8 @@ if (!function_exists('snmp_audit')) {
 
                 snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
                 $temp = my_snmp_get($ip, $credentials, '1.3.6.1.2.1.2.2.1.6.' . $interface->net_index);
-                $interface->mac = '';
-                if (!empty($temp)) {
-                    $interface->mac = format_mac($temp);
-                }
+                $interface->mac = (!empty($temp)) ? format_mac($temp) : '';
                 snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-
-                if (! isset($interface->mac)) {
-                    $interface->mac = (string)'';
-                }
 
                 $interface->model = @$models['.1.3.6.1.2.1.2.2.1.2.' . $interface->net_index];
                 $interface->description = $interface->model;
@@ -2808,6 +2801,179 @@ if (!function_exists('snmp_audit')) {
             }
         }
 
+        // VLANS - ip / mac / interface / vlan
+        $item_start = microtime(true);
+        $vlans = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.46.1.3.1.1.4');
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'VLAN retrieval for '.$ip;
+        $log->command = 'snmpwalk 1.3.6.1.4.1.9.9.46.1.3.1.1.4';
+        $count = (!empty($vlans)) ? count($vlans) : 0;
+        $log->command_output = 'Count: ' . $count;
+        $log->command_status = 'notice';
+        $discoveryLogModel->create($log);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        if (!empty($vlans)) {
+            $snmp_community = $credentials->credentials->community;
+            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+            $overall_start = microtime(true);
+            foreach ($vlans as $key => $value) {
+                $item_start = microtime(true);
+                $vlan_id = str_replace(".1.3.6.1.4.1.9.9.46.1.3.1.1.4.1.", '', $key);
+                if (intval($vlan_id) > 1001 and intval($vlan_id) < 1006) {
+                    // Do not poll as these (1002 - 1005) are internal Cisco Vlans
+                    continue;
+                }
+                // Need to use community@vlan_id
+                $credentials->credentials->community = $snmp_community . '@' . $vlan_id;
+                # log_message('debug', 'Working on VLAN: ' . $vlan_id . ', named: ' . $value . ' on IP: ' . $ip);
+
+                unset($mac_table);
+                $mac_table = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.3.1.1.2');
+
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->message = 'MAC table retrieval for VLAN ' . $vlan_id . ' on ' . $ip;
+                $log->command = 'snmpwalk -v2c -On -c public@' . $vlan_id . ' ' . $ip . ' 1.3.6.1.2.1.3.1.1.2';
+                $count = (!empty($mac_table)) ? count($mac_table) : 0;
+                $log->command_output = 'Count: ' . $count;
+                $log->command_status = 'notice';
+                $discoveryLogModel->create($log);
+                unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+                if (empty($mac_table)) {
+                    # log_message('warning', 'Mac Table empty for VLAN: ' . $vlan_id . ' on IP: ' . $ip);
+                    continue;
+                }
+
+                unset($forwarding_table);
+                $forwarding_table = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.17.4.3.1.1');
+                if (empty($forwarding_table)) {
+                    # log_message('warning', 'Forwarding Table empty for VLAN: ' . $vlan_id . ' on IP: ' . $ip);
+                }
+
+                unset($arp_table);
+                $arp_table = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.17.4.3.1.2');
+                if (empty($arp_table)) {
+                    # log_message('warning', 'ARP Table empty for VLAN: ' . $vlan_id . ' on IP: ' . $ip);
+                }
+
+                unset($bridge);
+                $bridge = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.17.1.4.1.2');
+                if (empty($bridge)) {
+                    # log_message('warning', 'Bridge Table empty for VLAN: ' . $vlan_id . ' on IP: ' . $ip);
+                }
+
+                foreach ($mac_table as $mac_table_oid => $mac) {
+                    $mac = format_mac($mac);
+                    $include_this_mac = true;
+                    if (is_array($interfaces_filtered)) {
+                        foreach ($interfaces_filtered as $interface_filtered) {
+                            if ($interface_filtered->mac === $mac) {
+                                $include_this_mac = false;
+                                break;
+                            }
+                        }
+                    }
+                    if ($include_this_mac) {
+                        log_message('debug', 'Working on MAC: ' . $mac);
+                        $entry = new stdClass();
+                        $entry->vlan = $value;
+                        $entry->vlan_id = $vlan_id;
+                        $entry->mac = format_mac($mac);
+                        $entry->interface_id = '';
+                        $entry->interface = '';
+
+                        unset($explode);
+                        $explode = explode('.', $mac_table_oid);
+                        $entry->ip = implode('.', array_splice($explode, -4));
+                        unset($explode);
+
+                        if (!empty($forwarding_table)) {
+                            $interface_index = '';
+                            $interface_id = '';
+                            foreach ($forwarding_table as $forwarding_table_oid => $forwarding_table_mac) {
+                                if ($entry->mac === format_mac($forwarding_table_mac)) {
+                                    # log_message('warning', 'Hit on forwarding table for MAC: ' . $mac);
+                                    $explode = explode('.', $forwarding_table_oid);
+                                    $tail = implode('.', array_splice($explode, -6));
+                                    # log_message('warning', 'Checking for tail ' . $tail . ' in arp table on IP: ' . $ip);
+                                    if (!empty($arp_table['.1.3.6.1.2.1.17.4.3.1.2.' . $tail])) {
+                                        $interface_index = str_replace('INTEGER: ', '', $arp_table['.1.3.6.1.2.1.17.4.3.1.2.' . $tail]);
+                                        # log_message('warning', 'HIT on arp table for ' . $tail . ', interface index value of ' . $interface_index);
+
+                                        if (empty($bridge)) {
+                                            # log_message('warning', 'Bridge is empty.');
+                                        } else {
+                                            # log_message('warning', 'Bridge is a ' . gettype($bridge));
+                                        }
+
+                                        if (!empty($bridge['.1.3.6.1.2.1.17.1.4.1.2.' . $interface_index])) {
+                                            $interface_id = str_replace('INTEGER: ', '', $bridge['.1.3.6.1.2.1.17.1.4.1.2.' . $interface_index]);
+                                            # log_message('warning', 'HIT on bridge table for ' . $interface_index . ', interface id value of ' . $interface_id);
+                                        } else {
+                                            # log_message('warning', 'InterfaceIndex: ' . $interface_index . ' is not in the bridge array');
+                                            # log_message('warning', json_encode($bridge));
+                                            continue;
+                                        }
+                                        if (empty($connection_ids)) {
+                                            # log_message('warning', 'connection_ids is empty.');
+                                        }
+                                        # log_message('warning', 'Checking connection_ids array for ' . $interface_id . ' index');
+                                        if (!empty($connection_ids['.1.3.6.1.2.1.31.1.1.1.1.' . $interface_id])) {
+                                            # log_message('warning', 'HIT on connections_ids for ' . $interface_id . ' with an interface value of ' . $connection_ids['.1.3.6.1.2.1.31.1.1.1.1.' . $interface_id]);
+                                            $entry->interface_id = $interface_id;
+                                            $entry->interface = $connection_ids['.1.3.6.1.2.1.31.1.1.1.1.' . $interface_id];
+                                            # log_message('warning', json_encode($entry) . "\n\n");
+                                            $arp[] = $entry;
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            # log_message('debug', 'No forwarding table.');
+                        }
+                        # log_message('debug', "");
+                    }
+                }
+            }
+            $log->command_time_to_execute = (microtime(true) - $overall_start);
+            $log->message = 'IP to MAC and Interface retrieval for all VLANs on ' . $ip;
+            $log->command = 'snmpwalk -v2c -On -c $community@' . $vlan_id . ' ' . $ip . ' 1.3.6.1.2.1.3.1.1.2';
+            $count = (!empty($arp)) ? count($arp) : 0;
+            $log->command_output = 'Count: ' . $count;
+            $log->command_status = 'notice';
+            $discoveryLogModel->create($log);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+            $credentials->credentials->community = $snmp_community;
+        }
+
+        $filtered_vlans = array();
+        if (!empty($vlans)) {
+            foreach ($vlans as $key => $value) {
+                $vlan_id = str_replace(".1.3.6.1.4.1.9.9.46.1.3.1.1.4.1.", '', $key);
+                # $filtered_vlans[2504] = "AAPT - TPH Fibre1000";
+                $filtered_vlans[$vlan_id] = $value;
+            }
+            $query = my_snmp_real_walk($ip, $credentials, '1.3.6.1.4.1.9.9.68.1.2.2.1.2');
+            $filtered_vlan_to_interface = array();
+            if (!empty($query)) {
+                foreach ($query as $oid => $value) {
+                    $temp = str_replace('.1.3.6.1.4.1.9.9.68.1.2.2.1.2.', '', $oid);
+                    # $filtered_vlan_to_interface[44] = 2504;
+                    $filtered_vlan_to_interface[$temp] = $value;
+                }
+            }
+            foreach ($interfaces_filtered as &$interface) {
+                if (!empty($filtered_vlan_to_interface[$interface->net_index])) {
+                    $interface->vlan_id = $filtered_vlan_to_interface[$interface->net_index];
+                    if (!empty($filtered_vlans[$interface->vlan_id])) {
+                        $interface->vlan = $filtered_vlans[$interface->vlan_id];
+                    }
+                }
+            }
+        }
+
         // Linked IPs in the ARP table, etc
         $ips_found = array();
 
@@ -2891,7 +3057,22 @@ if (!function_exists('snmp_audit')) {
                                 $item->interface_id = $agentDynamicDsBindingIfIndex[$key];
                             }
                             $item->interface = (!empty($connection_ids['.1.3.6.1.2.1.31.1.1.1.1.' . $agentDynamicDsBindingIfIndex[$key]])) ? $connection_ids['.1.3.6.1.2.1.31.1.1.1.1.' . $agentDynamicDsBindingIfIndex[$key]] : '';
-                            $arp[] = $item;
+
+                            $include_this_mac = true;
+                            if (is_array($return_ips->item)) {
+                                foreach ($return_ips->item as $return_ip) {
+                                    if (trim(strtolower($return_ip->mac)) === trim(strtolower($item->mac))) {
+                                        $include_this_mac = false;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                log_message('warning', 'ReturnIPs->item is not an array for IP ' . $ip);
+                            }
+
+                            if ($include_this_mac) {
+                                $arp[] = $item;
+                            }
                         }
                     }
                 }
@@ -2925,7 +3106,6 @@ if (!function_exists('snmp_audit')) {
             }
         }
 
-        // New for 5.7.0 - store the ARP and MAC tables in the `arp` database table
         if (!empty($temp)) {
             foreach ($temp as $key => $value) {
                 if (!empty($value)) {
@@ -2936,7 +3116,20 @@ if (!function_exists('snmp_audit')) {
                     $item->interface_id = @$explode[11];
                     $item->mac = format_mac($value);
                     $item->manufacturer = '';
-                    if (!empty($item->ip) and !empty($item->mac) and !empty($item->interface)) {
+
+                    $include_this_mac = true;
+                    if (is_array($return_ips->item)) {
+                        foreach ($return_ips->item as $return_ip) {
+                            if (trim(strtolower($return_ip->mac)) === trim(strtolower($item->mac))) {
+                                $include_this_mac = false;
+                                break;
+                            }
+                        }
+                    } else {
+                        log_message('warning', 'ReturnIPs->item is not an array for IP ' . $ip);
+                    }
+
+                    if ($include_this_mac and !empty($item->ip) and !empty($item->mac) and !empty($item->interface)) {
                         $arp[] = $item;
                     }
                 }
@@ -2988,7 +3181,20 @@ if (!function_exists('snmp_audit')) {
                     $item->interface_id = @$explode[11];
                     $item->mac = format_mac($value);
                     $item->manufacturer = '';
-                    if (!empty($item->ip) and !empty($item->mac) and !empty($item->interface)) {
+
+                    $include_this_mac = true;
+                    if (is_array($return_ips->item)) {
+                        foreach ($return_ips->item as $return_ip) {
+                            if (trim(strtolower($return_ip->mac)) === trim(strtolower($item->mac))) {
+                                $include_this_mac = false;
+                                break;
+                            }
+                        }
+                    } else {
+                        log_message('warning', 'ReturnIPs->item is not an array for IP ' . $ip);
+                    }
+
+                    if ($include_this_mac and !empty($item->ip) and !empty($item->mac) and !empty($item->interface)) {
                         $arp[] = $item;
                     }
                 }

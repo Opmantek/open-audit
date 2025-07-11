@@ -14,6 +14,20 @@ if (!$db->fieldExists('notin', 'baselines')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if (!$db->fieldExists('vlan', 'arp')) {
+    $sql = "ALTER TABLE `arp` ADD `vlan` varchar(200) NOT NULL DEFAULT '' AFTER `interface_id`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('vlan_id', 'arp')) {
+    $sql = "ALTER TABLE `arp` ADD `vlan_id` int(10) unsigned DEFAULT NULL AFTER `vlan`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 $sql = "ALTER TABLE packages CHANGE `os` `os` varchar(200) NOT NULL DEFAULT ''";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
