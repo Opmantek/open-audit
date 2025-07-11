@@ -1,5 +1,4 @@
 <?php
-
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -186,6 +185,134 @@ function ssg_definitions()
     $ssg_definitions[] = $item;
 
     $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'ANSSI-BP-028 (enhanced)';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_anssi_bp28_enhanced';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'ANSSI-BP-028 (high)';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_anssi_bp28_high';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'ANSSI-BP-028 (intermediary)';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_anssi_bp28_intermediary';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'ANSSI-BP-028 (minimal)';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_anssi_bp28_minimal';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'CIS Red Hat Enterprise Linux 8 Benchmark for Level 2 - Server';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'CIS Red Hat Enterprise Linux 8 Benchmark for Level 1 - Server';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis_server_l1';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'CIS Red Hat Enterprise Linux 8 Benchmark for Level 1 - Workstation';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis_workstation_l1';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'CIS Red Hat Enterprise Linux 8 Benchmark for Level 2 - Workstation';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis_workstation_l2';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'Unclassified Information in Non-federal Information Systems and Organizations (NIST 800-171)';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cui';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'Australian Cyber Security Centre (ACSC) Essential Eight';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_e8';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'Health Insurance Portability and Accountability Act (HIPAA)';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_hipaa';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'Australian Cyber Security Centre (ACSC) ISM Official';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_ism_o';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'Protection Profile for General Purpose Operating Systems';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_ospp';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'PCI-DSS v4.0 Control Baseline for Red Hat Enterprise Linux 8';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_pci-dss';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'DISA STIG for Red Hat Enterprise Linux 8';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_stig';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'CentOS';
+    $item->os_version = '8';
+    $item->title = 'DISA STIG with GUI for Red Hat Enterprise Linux 8';
+    $item->file = 'ssg-centos8-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_stig_gui';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
     $item->os_family = 'Debian';
     $item->os_version = '12';
     $item->title = 'ANSSI-BP-028 (enhanced)';
@@ -255,6 +382,142 @@ function ssg_definitions()
     $item->title = 'Standard System Security Profile for Debian 12';
     $item->file = 'ssg-debian12-ds-1.2.xml';
     $item->benchmark = 'xccdf_org.ssgproject.content_profile_standard';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'ANSSI-BP-028 (enhanced)';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_anssi_bp28_enhanced';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'ANSSI-BP-028 (high)';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_anssi_bp28_high';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'ANSSI-BP-028 (intermediary)';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_anssi_bp28_intermediary';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'ANSSI-BP-028 (minimal)';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_anssi_bp28_minimal';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'DRAFT - CIS Red Hat Enterprise Linux 10 Benchmark for Level 2 - Server';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'DRAFT - CIS Red Hat Enterprise Linux 10 Benchmark for Level 1 - Server';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis_server_l1';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'DRAFT - CIS Red Hat Enterprise Linux 10 Benchmark for Level 1 - Workstation';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis_workstation_l1';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'DRAFT - CIS Red Hat Enterprise Linux 10 Benchmark for Level 2 - Workstation';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis_workstation_l2';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'Australian Cyber Security Centre (ACSC) Essential Eight';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_e8';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'Health Insurance Portability and Accountability Act (HIPAA)';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_hipaa';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'Australian Cyber Security Centre (ACSC) ISM Official - Base';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_ism_o';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'Australian Cyber Security Centre (ACSC) ISM Official - Secret';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_ism_o_secret';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'Australian Cyber Security Centre (ACSC) ISM Official - Top Secret';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_ism_o_top_secret';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'DRAFT - Protection Profile for General Purpose Operating Systems';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_ospp';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'PCI-DSS v4.0.1 Control Baseline for Red Hat Enterprise Linux 10';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_pci-dss';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'Red Hat STIG for Red Hat Enterprise Linux 10';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_stig';
+    $ssg_definitions[] = $item;
+
+    $item = new \stdClass();
+    $item->os_family = 'RedHat';
+    $item->os_version = '10';
+    $item->title = 'Red Hat STIG for Red Hat Enterprise Linux 10';
+    $item->file = 'ssg-rhel10-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_stig_gui';
     $ssg_definitions[] = $item;
 
     $item = new \stdClass();
@@ -916,50 +1179,50 @@ function ssg_definitions()
     $item = new \stdClass();
     $item->os_family = 'Ubuntu';
     $item->os_version = '22.04';
-    $item->title = 'DRAFT Canonical Ubuntu 22.04 LTS Security Technical Implementation Guide (STIG) DRAFT';
+    $item->title = 'Canonical Ubuntu 22.04 LTS Security Technical Implementation Guide (STIG) V2R3';
     $item->file = 'ssg-ubuntu2204-ds-1.2.xml';
     $item->benchmark = 'xccdf_org.ssgproject.content_profile_stig';
     $ssg_definitions[] = $item;
 
-    // $item = new \stdClass();
-    // $item->os_family = 'Windows 10';
-    // $item->os_version = '';
-    // $item->title = 'Microsoft Windows 10 STIG';
-    // $item->file = 'WindowsClient-10-2.9.xml';
-    // $item->benchmark = 'Microsoft_Windows_10_STIG';
-    // $ssg_definitions[] = $item;
+    $item = new \stdClass();
+    $item->os_family = 'Ubuntu';
+    $item->os_version = '24.04';
+    $item->title = 'CIS Ubuntu Linux 24.04 LTS Benchmark for Level 1 - Server';
+    $item->file = 'ssg-ubuntu2404-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis_level1_server';
+    $ssg_definitions[] = $item;
 
-    // $item = new \stdClass();
-    // $item->os_family = 'Windows 11';
-    // $item->os_version = '';
-    // $item->title = 'Microsoft Windows 11 STIG';
-    // $item->file = 'WindowsClient-11-1.6.xml';
-    // $item->benchmark = 'Microsoft_Windows_11_STIG';
-    // $ssg_definitions[] = $item;
+    $item = new \stdClass();
+    $item->os_family = 'Ubuntu';
+    $item->os_version = '24.04';
+    $item->title = 'CIS Ubuntu Linux 24.04 LTS Benchmark for Level 1 - Workstation';
+    $item->file = 'ssg-ubuntu2404-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis_level1_workstation';
+    $ssg_definitions[] = $item;
 
-    // $item = new \stdClass();
-    // $item->os_family = 'Windows 2016';
-    // $item->os_version = '';
-    // $item->title = 'Microsoft Windows 2016 STIG';
-    // $item->file = 'WindowsServer-2016-MS-2.8.xml';
-    // $item->benchmark = 'Microsoft_Windows_Server_2016_STIG';
-    // $ssg_definitions[] = $item;
+    $item = new \stdClass();
+    $item->os_family = 'Ubuntu';
+    $item->os_version = '24.04';
+    $item->title = 'CIS Ubuntu Linux 24.04 LTS Benchmark for Level 2 - Server';
+    $item->file = 'ssg-ubuntu2404-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis_level2_server';
+    $ssg_definitions[] = $item;
 
-    // $item = new \stdClass();
-    // $item->os_family = 'Windows 2019';
-    // $item->os_version = '';
-    // $item->title = 'Microsoft Windows 2019 STIG';
-    // $item->file = 'WindowsServer-2019-MS-2.9.xml';
-    // $item->benchmark = 'Microsoft_Windows_Server_2019_STIG';
-    // $ssg_definitions[] = $item;
+    $item = new \stdClass();
+    $item->os_family = 'Ubuntu';
+    $item->os_version = '24.04';
+    $item->title = 'CIS Ubuntu Linux 24.04 LTS Benchmark for Level 2 - Workstation';
+    $item->file = 'ssg-ubuntu2404-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_cis_level2_workstation';
+    $ssg_definitions[] = $item;
 
-    // $item = new \stdClass();
-    // $item->os_family = 'Windows 2022';
-    // $item->os_version = '';
-    // $item->title = 'Microsoft Windows 2022 STIG';
-    // $item->file = 'WindowsServer-2022-MS-1.5.xml';
-    // $item->benchmark = 'Microsoft_Windows_Server_2022_STIG';
-    // $ssg_definitions[] = $item;
+    $item = new \stdClass();
+    $item->os_family = 'Ubuntu';
+    $item->os_version = '24.04';
+    $item->title = '(DRAFT) Canonical Ubuntu 24.04 LTS Security Technical Implementation Guide (STIG) V1R1';
+    $item->file = 'ssg-ubuntu2404-ds-1.2.xml';
+    $item->benchmark = 'xccdf_org.ssgproject.content_profile_stig';
+    $ssg_definitions[] = $item;
 
     return $ssg_definitions;
 }

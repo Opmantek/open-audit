@@ -11,6 +11,7 @@ function ssg_definitions()
     \$ssg_definitions = array();\n\n";
 
 $dir = '/usr/local/open-audit/other/ssg-definitions/';
+$dir = '/usr/local/open-audit/public/ssg-definitions/';
 $files = scandir($dir);
 foreach ($files as $file) {
     if (strpos($file, 'Windows') !== false) {
