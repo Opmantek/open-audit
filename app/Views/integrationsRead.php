@@ -31,6 +31,13 @@ if (!empty($resource->attributes->password)) {
 } else {
     $placeholder = __("has not been set");
 }
+if ($style === 'icontext') {
+    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __("Support") . "\" href=\"" . url_to('integrationsDownload', $meta->id) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-comments text-primary\"></span>" . __("Support") . "</a>";
+} elseif ($style === 'icon') {
+    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __("Support") . "\" href=\"" . url_to('integrationsDownload', $meta->id) . "?format=json_data\"><span class=\"fa-solid fa-person-circle-exclamation text-primary\"></span></a>";
+} else {
+    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __("Support") . "\" href=\"" . url_to('integrationsDownload', $meta->id) . "?format=json_data\">" . __("Support") . "</a>";
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -339,6 +346,7 @@ window.onload = function () {
     $(document).ready(function () {
 
         $("#select_internal_type").val("<?= $resource->select_internal_type ?>");
+        $(".page-title-middle").append('<?= $support_button ?>');
 
         /* Delete integration field */
         $('.field_delete_link').click(function () {

@@ -225,7 +225,7 @@ if (!function_exists('output')) {
             echo json_encode($instance->resp);
             return;
         }
-        if ($instance->resp->meta->action === 'download') {
+        if ($instance->resp->meta->format === 'json_data' and $instance->resp->meta->collection === 'discoveries') {
             $data = new \stdClass();
             $data->data = $instance->resp->data;
             $data->included = $instance->resp->included;
@@ -240,6 +240,13 @@ if (!function_exists('output')) {
             $instance->response->setContentType('application/json');
             $instance->response->noCache();
             $instance->response->setHeader('Content-Disposition', 'attachment;filename="support.json"');
+            echo json_encode($instance->resp->data);
+            return;
+        }
+        if ($instance->resp->meta->format === 'json_data' and $instance->resp->meta->collection === 'integrations') {
+            $instance->response->setContentType('application/json');
+            $instance->response->noCache();
+            $instance->response->setHeader('Content-Disposition', 'attachment;filename="integration_support.json"');
             echo json_encode($instance->resp->data);
             return;
         }

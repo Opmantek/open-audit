@@ -82,4 +82,30 @@ class Integrations extends BaseController
         }
         return;
     }
+
+    /**
+     * Download an integration including logs, for support
+     *
+     * @access public
+     * @return void
+     */
+    public function download($id)
+    {
+        $id = intval($id);
+        $this->resp->meta->limit = 10000;
+        $this->resp->data = $this->integrationsModel->read($id);
+        $this->resp->included = $this->integrationsModel->includedRead($id);
+
+        $supportModel = new \App\Models\SupportModel();
+        $this->resp->included['support'] = $supportModel->collection($this->resp);
+
+        if (!empty($this->config->maps_api_key)) {
+            $this->config->maps_api_key = 'Removed from display, but has been set';
+        }
+        if (!empty($this->config->mail_password)) {
+            $this->config->mail_password = 'Removed from display, but has been set';
+        }
+        output($this);
+        return;
+    }
 }

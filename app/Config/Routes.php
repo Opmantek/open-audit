@@ -117,6 +117,7 @@ $routes->post('input/logs', 'Input::logs');
 
 // TODO - Make the HTML template provide the complete list of fields and update that, rather than loop through and find the provided field and remove it
 //        That way we can use the standard 'update' function as per other collections.
+$routes->get('integrations/(:any)/download', 'Integrations::download/$1', ['filter' => \App\Filters\Session::class, 'as' => 'integrationsDownload']);
 $routes->delete('integrations/(:num)/fields/(:num)', 'Integrations::update/$1', ['filter' => \App\Filters\Session::class]);
 $routes->post('integrations_log/reset', 'Collections::reset', ['filter' => \App\Filters\Session::class, 'as' => 'integrations_logReset']);
 
