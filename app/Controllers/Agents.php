@@ -58,7 +58,7 @@ class Agents extends BaseController
             $this->devicesModel = model('App\Models\DevicesModel');
         }
         if (empty($this->config)) {
-            $this->config = new Config\OpenAudit();
+            $this->config = new \Config\OpenAudit();
         }
     }
 
@@ -151,16 +151,18 @@ class Agents extends BaseController
         header('Cache-Control: public');
         header('Content-Description: File Transfer');
         // TODO - test for Windows VS Unis (.ps1 or .sh)
-        if ($id === 'windows') {
+        $name = 'agent.ps1';
+        if ($id === 'windows' or $os === 'windows') {
             header('Content-Disposition: attachment; filename=agent.ps1');
+            $name = 'agent.ps1';
         }
-        if ($id === 'linux' or $id === 'macos') {
+        if ($id === 'linux' or $id === 'macos' or $os === 'linx' or $os = 'macos') {
             header('Content-Disposition: attachment; filename=agent.sh');
+            $name = 'agent.sh';
         }
         header('Content-Type: text');
         header('Content-Transfer-Encoding: binary');
-        echo $file;
-        return;
+        return $this->response->download($name, $file);
     }
 
     /**
