@@ -2678,8 +2678,8 @@ if [ -z $(echo "$skip_sections" | grep "license,") ]; then
 
 	# Open-AudIT
 	if [ -f "/usr/local/open-audit/other/enterprise.bin" ]; then
-		version=$(/usr/local/open-audit/other/enterprise.bin --version)
-		raw=$(/usr/local/open-audit/other/enterprise.bin --license)
+		version=$(/usr/local/open-audit/other/enterprise.bin --version 2>/dev/null)
+		raw=$(/usr/local/open-audit/other/enterprise.bin --license 2>/dev/null)
 		echo "		<item>" >> "$xml_file"
 		echo "			<name>Open-AudIT</name>" >> "$xml_file"
 		echo "			<raw>$(escape_xml $raw)</raw>" >> "$xml_file"
@@ -2692,6 +2692,19 @@ if [ -z $(echo "$skip_sections" | grep "license,") ]; then
 		#     will appear in the software list for a device
 		software="$software \n		<item><name>Open-AudIT</name><version>$(escape_xml $version)</version><url>https://firstwave.com</url><publisher>FirstWave</publisher><location>/usr/local/omk</location></item>"
 	fi
+
+	# Redhat
+	raw=""
+	raw=$(subscription-manager list --available --match-installed 2>/dev/null)
+	if [ -n "$raw" ]; then
+		echo "		<item>" >> "$xml_file"
+		echo "			<name>Redhat Enterprise</name>" >> "$xml_file"
+		echo "			<raw>$(escape_xml $raw)</raw>" >> "$xml_file"
+		echo "			<software_name>$(escape_xml $system_os_name)</software_name>" >> "$xml_file"
+		echo "			<software_version>$(escape_xml $system_os_version)</software_version>" >> "$xml_file"
+		echo "		</item>" >> "$xml_file"
+	fi
+
 
 	echo "	</license>" >> "$xml_file"
 fi
