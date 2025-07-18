@@ -246,6 +246,13 @@ class DevicesModel extends BaseModel
             }
         }
 
+        if (isset($result[0]->manufacturer)) {
+            helper('manufacturers');
+            for ($i = 0; $i < $count; $i++) {
+                $result[$i]->manufacturer_logo = manufacturerLogo($result[$i]->manufacturer);
+            }
+        }
+
         if (isset($result[0]->tags)) {
             for ($i = 0; $i < $count; $i++) {
                 if (!empty($result[$i]->tags)) {
