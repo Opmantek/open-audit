@@ -135,7 +135,7 @@ class NetworksModel extends BaseModel
 
         // The first time we try to match subnet and org
         $sql = "SELECT id FROM discoveries WHERE subnet = ? AND discoveries.org_id = ?";
-        $discoveryResult = $this->db->query($sql, [(string)$network, intval($network->org_id)])->getResult();
+        $discoveryResult = $this->db->query($sql, [(string)$network, intval($result[0]->org_id)])->getResult();
         if (!empty($discoveryResult)) {
             $included['discovery'] = intval($discoveryResult[0]->id);
         }
