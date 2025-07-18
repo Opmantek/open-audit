@@ -404,6 +404,16 @@ window.onload = function () {
                             }
                         },';
                         echo "\n";
+                    } else if ($key === 'manufacturer' and !empty($config->feature_devices_manufacturer_logo) and $config->feature_devices_manufacturer_logo !== 'n') {
+                        echo '{ data: \'attributes.manufacturer\',
+                        render: function (data, type, row, meta) {
+                            if (row.attributes.manufacturer_logo) {
+                                data = \'<td style=\"text-align: center;\"><img src="/brands/\' + row.attributes.manufacturer_logo + \'.svg" alt="\' + data + \'" title="\' + row.attributes.manufacturer + \'" width="50px"></img></td>\';
+                            }
+                            return data;
+                            }
+                        },';
+                        echo "\n";
                     } else if ($key === 'ip') {
                         echo '{ data: \'attributes.ip\',
                         render: function (data, type, row, meta) {
@@ -440,10 +450,12 @@ window.onload = function () {
                     if (in_array($meta->data_order[$i], $columns)) {
                         $visible = 'true';
                     }
-                    if ($meta->data_order[$i] !== 'audit_status' and $meta->data_order[$i] !== 'id' and $meta->data_order[$i] !== 'icon' and $meta->data_order[$i] !== 'delete' and $meta->data_order[$i] !== 'update') {
-                        echo "\n                {className: \"text-start\",  target: $i, width: \"12em\", visible: $visible, name:\"" . $meta->data_order[$i] . "\"},";
+               if ($meta->data_order[$i] === 'audit_status' or $meta->data_order[$i] === 'id' or $meta->data_order[$i] === 'delete' or $meta->data_order[$i] === 'update') {
+                       echo "\n                {className: \"text-center\",  target: $i, width: \"12em\", visible: $visible, name:\"" . $meta->data_order[$i] . "\", sortable: false},";
+                    } else if ($meta->data_order[$i] === 'manufacturer' or $meta->data_order[$i] === 'icon') {
+                        echo "\n                {className: \"text-center\", target: $i, width: \"12em\", visible: $visible, name:\"" . $meta->data_order[$i] . "\"},";
                     } else {
-                        echo "\n                {className: \"text-center\", target: $i, width: \"12em\", visible: $visible, name:\"" . $meta->data_order[$i] . "\", sortable: false},";
+                        echo "\n                {className: \"text-start\", target: $i, width: \"12em\", visible: $visible, name:\"" . $meta->data_order[$i] . "\"},";
                     }
                 }
                 ?>

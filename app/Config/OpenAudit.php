@@ -146,6 +146,7 @@ class OpenAudit extends BaseConfig
     public string $display_version;
     public string $enterprise_env;
     public string $feature_agents_advanced;
+    public string $feature_devices_manufacturer_logo;
     public string $feature_executables;
     public string $feature_news;
     public string $feature_news_last_request_date;
