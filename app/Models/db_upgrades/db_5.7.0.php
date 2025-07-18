@@ -28,6 +28,20 @@ if (!$db->fieldExists('vlan_id', 'arp')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if (!$db->fieldExists('vlan', 'network')) {
+    $sql = "ALTER TABLE `network` ADD `vlan` varchar(200) NOT NULL DEFAULT '' AFTER `iflastchange`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('vlan_id', 'network')) {
+    $sql = "ALTER TABLE `network` ADD `vlan_id` int(10) unsigned DEFAULT NULL AFTER `vlan`";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 $sql = "ALTER TABLE packages CHANGE `os` `os` varchar(200) NOT NULL DEFAULT ''";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

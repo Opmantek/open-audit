@@ -2917,6 +2917,8 @@ CREATE TABLE `network` (
   `slaves` varchar(100) NOT NULL DEFAULT '',
   `ifadminstatus` varchar(100) NOT NULL DEFAULT '',
   `iflastchange` bigint(20) NOT NULL DEFAULT '0',
+  `vlan` varchar(100) NOT NULL DEFAULT '',
+  `vlan_id` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   KEY `net_index` (`net_index`),

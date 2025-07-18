@@ -1391,22 +1391,24 @@ if (empty($resource->type)) {
                                     $vlan = false;
                                     $dhcp_enabled = false;
                                     $connection_status = false;
-                                    foreach ($included['network'] as $row) {
-                                        if (!empty($row->vlan_id)) {
-                                            $vlan = true;
-                                            break;
+                                    if (!empty($included['network'])) {
+                                        foreach ($included['network'] as $row) {
+                                            if (!empty($row->vlan_id)) {
+                                                $vlan = true;
+                                                break;
+                                            }
                                         }
-                                    }
-                                    foreach ($included['network'] as $row) {
-                                        if (!empty($row->dhcp_enabled)) {
-                                            $dhcp_enabled = true;
-                                            break;
+                                        foreach ($included['network'] as $row) {
+                                            if (!empty($row->dhcp_enabled)) {
+                                                $dhcp_enabled = true;
+                                                break;
+                                            }
                                         }
-                                    }
-                                    foreach ($included['network'] as $row) {
-                                        if (!empty($row->connection_status)) {
-                                            $connection_status = true;
-                                            break;
+                                        foreach ($included['network'] as $row) {
+                                            if (!empty($row->connection_status)) {
+                                                $connection_status = true;
+                                                break;
+                                            }
                                         }
                                     }
                                 ?>
