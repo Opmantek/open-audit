@@ -1218,6 +1218,7 @@ INSERT INTO `configuration` VALUES (NULL,'create_change_log_vm','y','bool','y','
 INSERT INTO `configuration` VALUES (NULL,'create_change_log_windows','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the change log table if a change is detected in the windows table.');
 INSERT INTO `configuration` VALUES (NULL,'database_show_row_limit','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to show, rather than download when exporting a database table.');
 INSERT INTO `configuration` VALUES (NULL,'decrypt_credentials','y','bool','y','system','2000-01-01 00:00:00','When we display or export credentials, should we decrypt them.');
+INSERT INTO `configuration` VALUES (NULL,'default_geocode','Uluru, Northern Territory, Australia','text','y','system','2000-01-01 00:00:00','When executing an Integration and the target system requires a GeoCode, use this if we cannot make one from the existing data.');
 INSERT INTO `configuration` VALUES (NULL,'default_network_address','','text','y','system','2000-01-01 00:00:00','The URL used by external devices to talk to Open-AudIT.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent','n','bool','y','system','2000-01-01 00:00:00','Should we delete all non-current data.');
 INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_arp','y','bool','y','system','2000-01-01 00:00:00','Should we delete non-current arp data.');
