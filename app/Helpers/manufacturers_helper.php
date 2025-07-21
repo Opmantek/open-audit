@@ -44,6 +44,7 @@ function manufacturerLogo (string $manufacturer = '')
     if ($logo === '' and mb_stripos($manufacturer, 'Microsoft') !== false) { $logo = 'microsoft'; }
     if ($logo === '' and mb_stripos($manufacturer, 'MikroTik') !== false) { $logo = 'mikrotik'; }
     if ($logo === '' and mb_stripos($manufacturer, 'MSI') !== false) { $logo = 'msi'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Netapp') !== false) { $logo = 'netapp'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Netgear') !== false) { $logo = 'netgear'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Netscaler') !== false) { $logo = 'netscaler'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Nintendo') !== false) { $logo = 'nintendo'; }
@@ -53,11 +54,13 @@ function manufacturerLogo (string $manufacturer = '')
     if ($logo === '' and mb_stripos($manufacturer, 'PCS Systemtechnik') !== false) { $logo = 'pcs'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Raritan') !== false) { $logo = 'raritan'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Red Hat') !== false) { $logo = 'redhat'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Ricoh') !== false) { $logo = 'ricoh'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Seagate') !== false) { $logo = 'seagate'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Siemens') !== false) { $logo = 'siemens'; }
     if ($logo === '' and mb_stripos($manufacturer, 'SonicWall') !== false) { $logo = 'sonicwall'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Sony') !== false) { $logo = 'sony'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Sophos') !== false) { $logo = 'sophos'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Sun Microsystems') !== false) { $logo = 'sun'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Thomson') !== false) { $logo = 'thomson'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Ubiquiti') !== false) { $logo = 'ubiquiti'; }
     if ($logo === '' and mb_stripos($manufacturer, 'VirtualBox') !== false) { $logo = 'virtualbox'; }
