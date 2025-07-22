@@ -311,6 +311,141 @@ if (!function_exists('integrations_pre')) {
             }
         }
 
+        // Any locations in Open-AudIT, but not in NMIS - create
+        foreach ($locations as $location) {
+            $location->send_to_nmis = true;
+            foreach ($external_locations as $external_location) {
+                if ($external_location->_id === 'default') {
+                    $external_location->_id = 'Default Location';
+                }
+                if ($external_location->_id === $location->name) {
+                    // Matching location exists
+                    $location->send_to_nmis = false;
+                    break;
+                }
+            }
+        }
+        $external_location_count = 0;
+        curl_setopt($ch, CURLOPT_POST, true);
+        foreach ($locations as $location) {
+            if ($location->send_to_nmis === true) {
+                $message = "[integrations_pre] " . 'Location: ' . $location->name . ' should be created';
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                $query = $db->query($sql, [$integration->id, microtime(true), $message]);
+
+                $nmis_location = new stdClass();
+                if (!empty($location->geo)) {
+                    $nmis_location->Geocode = $location->geo;
+                } else {
+                    // Build the geocode
+                    $nmis_location->Geocode = (!empty($location->address)) ? $location->address : '';
+                    if (!empty($location->city)) {
+                        if (empty($nmis_location->Geocode)) {
+                            $nmis_location->Geocode = $location->city;
+                        } else {
+                            $nmis_location->Geocode .= ', ' . $location->city;
+                        }
+                    }
+                    if (!empty($location->state)) {
+                        if (empty($nmis_location->Geocode)) {
+                            $nmis_location->Geocode = $location->state;
+                        } else {
+                            $nmis_location->Geocode .= ', ' . $location->state;
+                        }
+                    }
+                    if (!empty($location->postcode)) {
+                        if (empty($nmis_location->Geocode)) {
+                            $nmis_location->Geocode = $location->postcode;
+                        } else {
+                            $nmis_location->Geocode .= ', ' . $location->postcode;
+                        }
+                    }
+                    if (!empty($location->country)) {
+                        if (empty($nmis_location->Geocode)) {
+                            $nmis_location->Geocode = $location->country;
+                        } else {
+                            $nmis_location->Geocode .= ', ' . $location->country;
+                        }
+                    }
+                }
+                if (empty($nmis_location->Geocode)) {
+                    $nmis_location->Geocode = $instance->config->default_geocode;
+                }
+                $nmis_location->Location = $location->name;
+                $nmis_location->Room = $location->room;
+                $nmis_location->Floor = $location->level;
+                $nmis_location->address = $location->address;
+                $nmis_location->Suburb = $location->suburb;
+                $nmis_location->City = $location->city;
+                $nmis_location->State = $location->state;
+                $nmis_location->Postcode = $location->postcode;
+                $nmis_location->Country = $location->country;
+                $nmis_location->Latitude = $location->latitude;
+                $nmis_location->Longitude = $location->longitude;
+
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($nmis_location, JSON_THROW_ON_ERROR));
+                $output = curl_exec($ch);
+                if (!is_string($output) || !strlen($output)) {
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not create location in NMIS.')";
+                    $db->query($sql, [$integration->id, microtime(true)]);
+                    if ($integration->attributes->debug) {
+                        $message = '[integrations_pre] Sent location data: ' . json_encode($nmis_location);
+                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                        $db->query($sql, [$integration->id, microtime(true), $message]);
+                    }
+                    curl_close($ch);
+                    unlink($ckfile);
+                    return array();
+                }
+                try {
+                    $external_location = json_decode($output, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                }
+                if (empty($external_location)) {
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Invalid JSON in result from NMIS. Result: ' . (string)$output)";
+                    $data = array($integration->id, microtime(true));
+                    $query = $db->query($sql, $data);
+                    log_message('error', '[integrations_pre] Invalid JSON in result from NMIS. Result: ' . (string)$output);
+                    curl_close($ch);
+                    unlink($ckfile);
+                    return array();
+                }
+                if (empty($external_location)) {
+                    $message = '[integrations_pre] No JSON in result from NMIS. Result: ' . (string)$output;
+                    log_message('error', $message);
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                    $db->query($sql, [$integration->id, microtime(true), $message]);
+                    curl_close($ch);
+                    unlink($ckfile);
+                    return array();
+                }
+                if (!empty($external_location->error)) {
+                    $message = '[integrations_pre] Error: ' . $external_location->error;
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                    $db->query($sql, [$integration->id, microtime(true), $message]);
+                }
+                if (empty($external_location->error)) {
+                    $external_location_count = $external_location_count + 1;
+                    $message = '[integrations_pre] Location ' . $external_location->{'_id'} . ' created in NMIS.';
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                    $db->query($sql, [$integration->id, microtime(true), $message]);
+                    if ($integration->attributes->debug) {
+                        $message = '[integrations_pre] Received location creation data: ' . $output;
+                        $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                        $db->query($sql, [$integration->id, microtime(true), $message]);
+                    }
+                }
+            }
+        }
+        curl_close($ch);
+        if ($external_location_count > 0) {
+            $message = '[integrations_pre] Created ' . $external_location_count . ' locations in NMIS.';
+            $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+            $db->query($sql, [$integration->id, microtime(true), $message]);
+        }
+
+
         $sql = "UPDATE integrations set locations = ? WHERE id = ?";
         $query = $db->query($sql, [json_encode($location_ids), $integration->id]);
 

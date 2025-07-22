@@ -407,7 +407,7 @@ function getLicenseDetails()
     $license->count = 0;
     $license->expires = '2000-01-01';
     $license->type = '';
-    $license->string = hash('sha256', trim($config->license_string));
+    $license->string = (!empty($config->license_string)) ? hash('sha256', trim($config->license_string)) : '';
 
     // License info
     if (!empty($config->enterprise_binary)) {

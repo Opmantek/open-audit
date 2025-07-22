@@ -110,5 +110,41 @@ function ssh_cisco_audit(string $ip = '', int $discovery_id = 0, array $credenti
     $ssh->disconnect();
     unset($ssh);
 
+
+    $ssh = ssh_connect($ip, $credentials, $discovery_id, 22, 10);
+    if (is_null($ssh)) {
+        return $device;
+    }
+    if (!empty($GLOBALS[$discovery_id . '_' . $ip])) {
+        $device->credentials = array(intval($GLOBALS[$discovery_id . '_' . $ip]));
+        unset($GLOBALS[$discovery_id . '_' . $ip]);
+    }
+    $command_result = '';
+    $ssh->enablePTY();
+    $ssh->setTimeout(20);
+    $ssh->write('terminal length 0' . "\n");
+    sleep(5);
+    $ssh->write('show lic' . "\n");
+    sleep(5);
+    $command_result = $ssh->read();
+    if (!empty($command_result)) {
+        log_message('debug', 'Parsing \'show lic\' for Cisco.');
+    }
+    $explode = explode("\n", $command_result);
+    unset($explode[0]);
+    unset($explode[1]);
+    unset($explode[count($explode)]);
+    $command_result = implode("\n", array_values($explode));
+    if (!empty($command_result)) {
+        $cli = new stdClass();
+        $cli->config = $command_result;
+        $cli->name = 'license';
+        $cli->hash = hash('sha256', $cli->config);
+        $device->cli_config[] = $cli;
+    }
+    unset($cli);
+    $ssh->disconnect();
+    unset($ssh);
+
     return $device;
 }

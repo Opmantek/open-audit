@@ -34,6 +34,9 @@ if ($discovery_id -ne 0) {
     $file = $file + "-" + [string](Get-Date -Uformat "%Y%m%d%H%M%S") + ".json"
 }
 
+# Files array
+$files = '',''
+
 # For developers only to save time when testing other items as these take a while
 $audit_software = 'y'
 $audit_netstat_udp = 'n'
@@ -2420,6 +2423,44 @@ if ($debug -gt 0) {
 #     $count = [int]$result.warranty.count
 #     Write-Host "Warranty, $count entries took $totalSecs seconds"
 # }
+
+
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+$result.file = @()
+Clear-Variable -name item
+foreach ($fil in $files) {
+    if ((Test-Path -Path $fil -PathType Leaf) -or (Test-Path -Path $fil -PathType Container)) {
+        $tempRec = Get-ChildItem -path $fil -recurse | Select-Object -ExpandProperty FullName
+        foreach ($temp_f in $tempRec) {
+            if (Test-Path -Path $temp_f -PathType Leaf) {
+                $item = @{}
+                $temp_f = [string]$temp_f
+                $temp_file = Get-ItemProperty -Path $temp_f
+                $temp_file_acl = get-acl $temp_f
+
+                $item.directory = $temp_file | Select-Object -ExpandProperty DirectoryName
+                $item.full_name = $temp_file | Select-Object -ExpandProperty FullName
+                $item.name = $temp_file | Select-Object -ExpandProperty Name
+                $item.owner = $temp_file_acl | Select-Object -ExpandProperty Owner
+                $item.size = $temp_file | Select-Object -ExpandProperty Length
+                $item.version = (Get-Item $fil).VersionInfo.FileVersion
+
+                # Note that below the format is yyyy-MM-dd. in the VBS it is dd/MM/yyyy
+                $item.last_changed =  [string](Get-Date -Date ($temp_file | Select-Object -ExpandProperty LastWriteTime) -Uformat "%Y-%m-%d %T")
+                # Note that below is the full permissions. In the VBS we only get the numerical access mask
+                $item.permission = $temp_file_acl | Select-Object -ExpandProperty AccessToString
+                # Note the below is for a SHA256. In the VBS, we use SHA1
+                $item.hash = Get-FileHash $temp_f | Select-Object -ExpandProperty Hash
+                $result.file += $item
+            }
+        }
+    }
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.file.count
+    Write-Host "File, $count entries took $totalSecs seconds"
+}
 
 
 $result = $result | ConvertTo-Json

@@ -105,6 +105,16 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM configuration WHERE name = 'default_geocode'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'default_geocode','Uluru, Northern Territory, Australia','text','y','system','2000-01-01 00:00:00','When executing an Integration and the target system requires a GeoCode, use this if we cannot make one from the existing data.')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "DELETE FROM configuration WHERE name = 'components_extra_columns'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

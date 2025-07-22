@@ -80,6 +80,7 @@ class OpenAudit extends BaseConfig
     public string $create_change_log_vm;
     public string $create_change_log_windows;
     public string $decrypt_credentials;
+    public string $default_geocode;
     public string $default_network_address;
     public string $delete_noncurrent;
     public string $delete_noncurrent_arp;
