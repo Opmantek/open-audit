@@ -394,7 +394,7 @@ class ScriptsModel extends BaseModel
         }
         // Unix style paths
         $sql = "SELECT * FROM files WHERE `path` LIKE '/%'";
-        if ($data->based_on === 'audit_windows.vbs') {
+        if ($data->based_on === 'audit_windows.vbs' or $data->based_on === 'audit_windows.ps1') {
             // Windows style paths
             $sql = "SELECT * FROM files WHERE `path` NOT LIKE '/%'";
         }
@@ -408,10 +408,14 @@ class ScriptsModel extends BaseModel
         }
         if (isset($options->files) && is_array($options->files) && count($options->files) > 0) {
             foreach (array_reverse($options->files) as $key => $value) {
-                if ($data->based_on !== 'audit_windows.vbs') {
+                if ($data->based_on !== 'audit_windows.vbs' and $data->based_on !== 'audit_windows.ps1') {
                     $value = str_replace('\\', '\\\\', $value);
                     $replace = $find . "\nfiles[" . intval($key + 1) . ']="' . $value . '"';
-                } else {
+                }
+                if ($data->based_on === 'audit_windows.ps1') {
+                    $files = $files . "'" . str_replace("'", "\'", $value) . "',";
+                }
+                if ($data->based_on === 'audit_windows.vbs') {
                     if (strpos($value, '/') === 0) {
                         // skip this file as it starts with /, hence is a Unix style path
                     } else {
@@ -425,6 +429,12 @@ class ScriptsModel extends BaseModel
                 $file = str_replace($find, $replace, $file);
             }
         }
+
+        if ($data->based_on === 'audit_windows.ps1' and !empty($files)) {
+            $files = substr($files, 0, -1);
+            $file = str_replace("\$files = '',''", "\$files = " . $files, $file);
+        }
+
         if ($data->based_on === 'audit_linux.sh' and !empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
             $sql = "SELECT * FROM executables";
             $result = $this->db->query($sql)->getResult();
