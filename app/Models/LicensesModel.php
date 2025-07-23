@@ -46,7 +46,12 @@ class LicensesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), $resp->meta->collection);
+        $licenses = $query->getResult();
+        foreach ($licenses as &$license) {
+            $temp = $this->read(intval($license->id));
+            $license->used_count = intval($temp[0]->attributes->used_count);
+        }
+        return format_data($licenses, 'licenses');
     }
 
     /**
@@ -100,22 +105,29 @@ class LicensesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $include = array();
+         $instance = & get_instance();
         $query = $this->builder->getWhere(['id' => intval($id)]);
-        $result = $query->getResult();
-        if (empty($result)) {
-            log_message('error', 'No matching license found');
-            return false;
-        } else {
-            $license = $result[0];
+        if ($this->sqlError($this->db->error())) {
+            return array();
         }
-        $sql = "SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, software.name AS `software.name`, software.version AS `software.version` FROM devices LEFT JOIN software ON (devices.id = software.device_id AND software.current = 'y') WHERE software.name LIKE ?";
-        $query = $this->db->query($sql, [$license->match_string]);
-        $include['devices'] = format_data($query->getResult(), 'devices');
-        return ($include);
+        $result = $query->getResult();
+        if ($result[0]->org_descendants === 'n') {
+            $sql = "SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, software.name AS `software.name`, software.version AS `software.version` FROM devices LEFT JOIN software ON (devices.id = software.device_id AND software.current = 'y') WHERE devices.org_id = ? AND software.name LIKE ?";
+            $data_result = $this->db->query($sql, [$result[0]->org_id, $result[0]->match_string])->getResult();
+        } else {
+            $children = $instance->orgsModel->getDescendants([$result[0]->org_id]);
+            $children[] = $result[0]->org_id;
+            $children = implode(',', $children);
+            $sql = "SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, software.name AS `software.name`, software.version AS `software.version` FROM devices LEFT JOIN software ON (devices.id = software.device_id AND software.current = 'y') WHERE devices.org_id IN ({$children}) AND software.name LIKE ?";
+            $data_result = $this->db->query($sql, [$result[0]->match_string])->getResult();
+        }
+        $include = array();
+        $include['devices'] = format_data($data_result, 'devices');
+        return $include;
     }
 
-    /**
+
+   /**
      * Return an array containing arrays of related items to be stored in resp->included
      *
      * @param  int $id The ID of the requested item
@@ -192,8 +204,7 @@ class LicensesModel extends BaseModel
             }
             unset($sql, $data, $data_result);
         } else {
-            $children = $instance->orgsModel->getUserDescendants([$result[0]->org_id]);
-            #$children = $CI->m_orgs->get_children($result[0]->org_id);
+            $children = $instance->orgsModel->getDescendants([$result[0]->org_id]);
             $children[] = $result[0]->org_id;
             $children = implode(',', $children);
             $sql = "SELECT count(software.name) AS `count` FROM devices LEFT JOIN software ON (devices.id = software.device_id AND software.current = 'y') WHERE devices.org_id IN ({$children}) AND software.name LIKE ?";
@@ -252,7 +263,7 @@ class LicensesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name');
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name', 'purchase_count', 'used_count');
         $dictionary->attributes->create = array('name','org_id','org_descendants','purchase_count','match_string');
         $dictionary->attributes->fields = $this->db->getFieldNames($collection);
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection);
