@@ -452,9 +452,9 @@ function createNewsData()
     $config = new \Config\OpenAudit();
     $db = db_connect();
     $data = new \stdClass();
+    $data->action = 'news';
     $data->product = 'Open-AudIT';
     $data->version = $config->display_version;
-    $data->action = 'news';
     $data->product_role = '';
     if (!empty($config->servers)) {
         if (is_string($config->servers)) {
@@ -473,7 +473,6 @@ function createNewsData()
     if (!empty($result[0]->count)) {
         $data->product_role = 'server';
     }
-    $data->internal_version = $config->internal_version;
     $data->products = array();
     if (file_exists($config->commercial_dir . '/bin/oplicense-cli.pl')) {
         $command = $config->commercial_dir . '/bin/oplicense-cli.pl act=license_summary | grep "Valid: yes" -B2 -A4';
@@ -486,7 +485,6 @@ function createNewsData()
             }
         }
     }
-    // $data->uuid = $config->uuid;
     $license = getLicenseDetails();
     if (!empty($license->product)) {
         $data->products[] = 'Open-AudIT';

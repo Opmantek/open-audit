@@ -168,16 +168,23 @@ class NewsModel extends BaseModel
         }
         helper('utility_helper');
         $data = createNewsData();
+        $send = array();
+        foreach ($data as $key => $value) {
+            $send[$key] = $value;
+        }
+
+        $send['products'] = json_encode($send['products']);
+        $send['issues'] = json_encode($send['issues']);
+        $send['features'] = json_encode($send['features']);
+        $send['devices'] = json_encode($send['devices']);
+        $send['stats'] = json_encode($send['stats']);
 
         $client = service('curlrequest');
         try {
             $response = @$client->request('POST', $config->feature_news_url, [
-            # $response = @$client->request('POST', 'http://localhost:8082/', [
                 # 'debug' => true,
                 # 'http_errors' => false,
-                'form_params' => [
-                    $data,
-                ],
+                'form_params' => $send,
             ]);
         } catch (\Exception $e) {
             log_message('critical', 'Requesting news failed: ' . $e->getMessage() . "\n");

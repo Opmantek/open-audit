@@ -686,12 +686,18 @@ if (!empty($config->modules)) {
         <?php
         if (!empty($news->id)) {
             $alert = !empty($news->alert_style) ? $news->alert_style : 'info';
-            $short = !empty($news->short) ? $news->short : '';
-            $title = !empty($news->title) ? $news->title : '';
+
+            if (!empty($news->name) and !empty($news->short)) {
+                $title = $news->name . ' :: ' . $news->short;
+            } else if (!empty($news->name)) {
+                $title = $news->name;
+            } else if (!empty($news->short)) {
+                $title = $news->short;
+            }
             ?>
             <div class="container-fluid">
                 <div class="alert alert-<?= $alert ?> alert-dismissable fade show" role="alert">
-                    <?= $short ?><?= $news->link ?>
+                    <?= $title ?><?= $news->link ?>
                 </div>
             </div>
         <?php } ?>
