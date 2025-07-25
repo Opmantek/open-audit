@@ -51,7 +51,7 @@ class News extends BaseController
         }
         log_message('info', 'ACCESS:news:executeAll::' . $user);
         $this->newsModel = model('App\Models\NewsModel');
-        $this->newsModel->executeAll();
+        $this->newsModel->executeAll('news');
         return redirect()->route('newsCollection');
     }
 

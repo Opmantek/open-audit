@@ -155,7 +155,7 @@ class NewsModel extends BaseModel
      *
      * @return bool    true || false depending on success
      */
-    public function executeAll(): bool
+    public function executeAll(?string $action = 'news'): bool
     {
         if (!$this->db->tableExists('news')) {
             return false;
@@ -172,7 +172,7 @@ class NewsModel extends BaseModel
         foreach ($data as $key => $value) {
             $send[$key] = $value;
         }
-
+        $send['action'] = $action;
         $send['products'] = json_encode($send['products']);
         $send['issues'] = json_encode($send['issues']);
         $send['features'] = json_encode($send['features']);
@@ -187,20 +187,20 @@ class NewsModel extends BaseModel
                 'form_params' => $send,
             ]);
         } catch (\Exception $e) {
-            log_message('critical', 'Requesting news failed: ' . $e->getMessage() . "\n");
+            log_message('error', 'Requesting news failed: ' . $e->getMessage() . "\n");
             return true;
         }
         $body = $response->getBody();
         $body = @json_decode($body);
         if (!is_array($body)) {
-            log_message('critical', 'Body returned but body not an array. Body is a ' . gettype($body));
+            log_message('error', 'Body returned but body not an array. Body is a ' . gettype($body));
             return true;
         }
         if (empty($body)) {
-            log_message('info', 'No news articles returned.');
+            log_message('debug', 'No news articles returned.');
             return true;
         }
-        log_message('info', count($body) . ' news articles returned.');
+        log_message('debug', count($body) . ' news articles returned.');
         foreach ($body as $news) {
             if (empty($news)) {
                 log_message('info', 'No news article populated.');

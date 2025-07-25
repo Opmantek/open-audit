@@ -1290,7 +1290,7 @@ INSERT INTO `configuration` VALUES (NULL,'feature_news','n','bool','y','system',
 INSERT INTO `configuration` VALUES (NULL,'feature_news_last_request_date','2000-01-01','text','y','system','2000-01-01 00:00:00','When did we last request a feed article.');
 INSERT INTO `configuration` VALUES (NULL,'feature_news_remind_days','30','number','n','system','2000-01-01 00:00:00','If not enabled, reminder the user every this number of days.');
 INSERT INTO `configuration` VALUES (NULL,'feature_news_request_days','7','number','n','system','2000-01-01 00:00:00','Make a feed request every this number of days.');
-INSERT INTO `configuration` VALUES (NULL,'feature_news_url','https://open-audit.com/news','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve news articles.');
+INSERT INTO `configuration` VALUES (NULL,'feature_news_url','https://news.firstwave.com/feeds','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve news articles.');
 INSERT INTO `configuration` VALUES (NULL,'feature_powershell_audit','n','bool','y','system','2000-01-01 00:00:00','Use the PowerShell audit script instead of the VBScript audit script in discoveries.');
 INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.');
 INSERT INTO `configuration` VALUES (NULL,'firstwave_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt about FirstWave products.');

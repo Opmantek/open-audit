@@ -164,6 +164,8 @@ class SupportModel extends BaseModel
         $os = getOs();
         $data->os->name = $os->os_name;
         $data->os->version = $os->os_version;
+        $data->os->platform = $os->server_platform;
+        $data->os->server = $os->server_os;
         unset($os);
 
         $data->app->apppath = APPPATH;
