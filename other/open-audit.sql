@@ -1282,7 +1282,7 @@ INSERT INTO `configuration` VALUES (NULL,'discovery_use_org_id_match','n','bool'
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_wmi_timeout','900','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device from Linux via WMI.');
 INSERT INTO `configuration` VALUES (NULL,'display_version','5.6.5','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
-INSERT INTO `configuration` VALUES (NULL,'enterprise_env','','text','y','system','2000-01-01 00:00:00','Set to allow execution not in /tmp for Linux.');
+INSERT INTO `configuration` VALUES (NULL,'enterprise_env','/usr/local/open-audit/writable','text','y','system','2000-01-01 00:00:00','Set to allow execution not in /tmp for Linux.');
 INSERT INTO `configuration` VALUES (NULL,'feature_agents_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Agents to execute commands and download files.');
 INSERT INTO `configuration` VALUES (NULL,'feature_devices_manufacturer_logo','y','bool','y','system','2000-01-01 00:00:00','When viewing the device list, should we show manufacturers logos, not just text.');
 INSERT INTO `configuration` VALUES (NULL,'feature_executables','n','bool','y','system','2000-01-01 00:00:00','Activate the linux based Executables feature.');
