@@ -59,6 +59,7 @@ class Collections extends BaseConfig
     public $support;
     public $tasks;
     public $users;
+    public $vulnerabilities;
     public $widgets;
 
     public function __construct()
@@ -574,6 +575,16 @@ class Collections extends BaseConfig
         $this->users->actions->enterprise = 'crud';
         $this->users->actions->professional = 'crud';
         $this->users->actions->community = 'crud';
+
+        $this->vulnerabilities = new \StdClass();
+        $this->vulnerabilities->icon = 'fa-solid fa-bug';
+        $this->vulnerabilities->name = 'Vulnerabilities';
+        $this->vulnerabilities->edition = 'Enterprise';
+        $this->vulnerabilities->orgs = 'd';
+        $this->vulnerabilities->actions = new \stdClass();
+        $this->vulnerabilities->actions->enterprise = 'crud';
+        $this->vulnerabilities->actions->professional = '';
+        $this->vulnerabilities->actions->community = '';
 
         $this->widgets = new \StdClass();
         $this->widgets->icon = 'fa fa-chart-column';

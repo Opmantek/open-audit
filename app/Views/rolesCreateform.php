@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
 include 'shared/common_functions.php';
-$endpoints = array('agents','applications','attributes','auth','baselines','benchmarks','benchmarks_exceptions','benchmarks_policies','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','executables','fields','files','groups','integrations','licenses','locations','networks','orgs','packages','queries','racks','roles','rules','scripts','search','standards','standards_results','summaries','tasks','users','widgets');
+$endpoints = array('agents','applications','attributes','auth','baselines','benchmarks','benchmarks_exceptions','benchmarks_policies','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','executables','fields','files','groups','integrations','licenses','locations','networks','orgs','packages','queries','racks','roles','rules','scripts','search','standards','standards_results','summaries','tasks','users','vulnerabilities','widgets');
 $permissions = array('c', 'r', 'u', 'd');
 ?>
         <main class="container-fluid">
