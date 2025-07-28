@@ -4822,6 +4822,40 @@ LOCK TABLES `vm` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `vulnerabilities`
+--
+
+DROP TABLE IF EXISTS `vulnerabilities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vulnerabilities` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `cve` varchar(200) NOT NULL DEFAULT '',
+  `published` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `cve_raw` text NOT NULL,
+  `firstwave_raw` text NOT NULL,
+  `other_raw` text NOT NULL,
+  `sql` text NOT NULL,
+  `filter` text NOT NULL,
+  `status` enum('confirmed', 'declined', 'pending', 'other', ''),
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vulnerabilities`
+--
+
+LOCK TABLES `vulnerabilities` WRITE;
+/*!40000 ALTER TABLE `vulnerabilities` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vulnerabilities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `warranty`
 --
 
