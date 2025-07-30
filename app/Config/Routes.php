@@ -96,7 +96,9 @@ $routes->get('discoveries/(:num)/executeForm', 'Discoveries::executeForm/$1', ['
 $routes->post('discoveries/(:num)/executeForm', 'Discoveries::executeCollector/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesExecuteCollector']);
 
 $routes->get('news/execute', 'News::executeAll', ['as' => 'newsExecuteAll']);
-$routes->cli('news/execute', 'Cli::executeNews', ['as' => 'executeNewssAll']);
+$routes->cli('news/execute', 'Cli::executeNews', ['as' => 'executeNewsAll']);
+$routes->cli('news/execute/(:any)', 'Cli::executeNews/$1', ['as' => 'executeNewsAction']);
+
 
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
 $routes->get('api', 'Help::api', ['filter' => \App\Filters\Session::class, 'as' => 'api']);
@@ -137,6 +139,7 @@ $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::cla
 
 $routes->post('util/subnet_size', 'Util::subnetSize');
 $routes->get('util/test_windows_client', 'Util::testWindowsClient');
+$routes->cli('util/feeds', 'Util::feeds');
 $routes->get('dictionary', 'Dictionary::dictionary');
 
 $routes->cli('queue/start', 'Queue::start');

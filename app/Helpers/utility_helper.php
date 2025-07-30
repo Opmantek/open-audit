@@ -291,7 +291,12 @@ function codeToCountry(string $code = '')
 function getOs()
 {
     $data = new stdClass();
-    if (php_uname('s') === 'Linux') {
+    $data->server_os = php_uname('s');
+    $data->server_platform = '';
+    $data->os_name = '';
+    $data->os_version = '';
+
+    if ($data->server_os === 'Linux') {
         $data->os_name = 'linux';
         if (file_exists('/etc/os-release')) {
             $command_string = 'grep PRETTY_NAME= /etc/os-release';
@@ -340,14 +345,36 @@ function getOs()
         if (stripos($data->os_version, 'mint') !== false) {
             $data->os_name = 'Linux (Debian)';
         }
+        $command = 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2';
+        exec($command, $output);
+        if (!empty($output[0])) {
+            $data->server_platform = $output[0];
+        }
     }
-    if (php_uname('s') === 'Darwin') {
+    if ($data->server_os === 'Darwin') {
         $data->os_name = 'OSX';
-        $data->os_version = config('Openaudit')->server_platform;
+        $data->server_platform = 'MacOS';
+        $command = "sw_vers | grep \"ProductVersion:\" | cut -d: -f2 | xargs";
+        exec($command, $output);
+        if (!empty($output[0])) {
+            $data->server_platform .= ' ' . $output[0];
+            unset($output);
+        }
+        $command = "awk '/SOFTWARE LICENSE AGREEMENT FOR macOS/' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print \$NF}' | awk '{print substr(\$0, 0, length(\$0)-1)}'";
+        exec($command, $output);
+        if (!empty($output[0])) {
+            $data->server_platform .= ' ' . $output[0];
+        }
+        $data->os_version = $data->server_platform;
     }
-    if (php_uname('s') === 'Windows NT') {
+    if ($data->server_os === 'Windows NT') {
         $data->os_name = 'Windows';
-        $data->os_version = config('Openaudit')->server_platform;
+        $command = 'powershell -c "Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Caption"';
+        exec($command, $output);
+        if (!empty($output[0])) {
+            $data->server_platform =  trim($output[0]);
+        }
+        $data->os_version = $data->server_platform;
     }
     return $data;
 }
@@ -452,9 +479,9 @@ function createNewsData()
     $config = new \Config\OpenAudit();
     $db = db_connect();
     $data = new \stdClass();
+    $data->action = 'news';
     $data->product = 'Open-AudIT';
     $data->version = $config->display_version;
-    $data->action = 'news';
     $data->product_role = '';
     if (!empty($config->servers)) {
         if (is_string($config->servers)) {
@@ -473,7 +500,6 @@ function createNewsData()
     if (!empty($result[0]->count)) {
         $data->product_role = 'server';
     }
-    $data->internal_version = $config->internal_version;
     $data->products = array();
     if (file_exists($config->commercial_dir . '/bin/oplicense-cli.pl')) {
         $command = $config->commercial_dir . '/bin/oplicense-cli.pl act=license_summary | grep "Valid: yes" -B2 -A4';
@@ -486,7 +512,6 @@ function createNewsData()
             }
         }
     }
-    // $data->uuid = $config->uuid;
     $license = getLicenseDetails();
     if (!empty($license->product)) {
         $data->products[] = 'Open-AudIT';
@@ -538,18 +563,20 @@ function createNewsData()
             for ($i = 0; $i < $count; $i++) {
                 if (strpos($lines[$i], 'CRITICAL') !== false and strpos($lines[$i], 'menuItem, no permission requested') === false) {
                     $line = $lines[$i] . ' ' . $lines[$i + 1];
-                    $line = substr($line, strpos($line, '--> ') + 4);
+                    #$line = substr($line, strpos($line, '--> ') + 4);
                     $line = str_replace("\n", "", $line);
-                    $data->issues[] = 'CRITICAL - ' . $line;
+                    # $data->issues[] = 'CRITICAL - ' . $line;
+                    $data->issues[] = $line;
                 }
             }
             # ERROR - 2024-11-20 17:12:23 --> Could not convert audit submission.
             for ($i = 0; $i < $count; $i++) {
                 if (strpos($lines[$i], 'ERROR') !== false and strpos($lines[$i], 'Response:') === false) {
                     $line = $lines[$i];
-                    $line = substr($line, strpos($line, '--> ') + 4);
+                    #$line = substr($line, strpos($line, '--> ') + 4);
                     $line = str_replace("\n", "", $line);
-                    $data->issues[] = 'ERROR - ' . $line;
+                    # $data->issues[] = 'ERROR - ' . $line;
+                    $data->issues[] = $line;
                 }
             }
             # INFO - 2024-11-21 13:19:56 --> ACCESS:summaries:collection::Administrator

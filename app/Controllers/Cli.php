@@ -279,10 +279,10 @@ class Cli extends Controller
         $queueModel->start();
     }
 
-    public function executeNews()
+    public function executeNews(?string $action = 'news')
     {
-        $newsModel = model('NewsModel');
-        $newsModel->execute();
+        $newsModel = model('App\Models\NewsModel');
+        $newsModel->executeAll($action);
     }
 
     public function executeIntegration($id)

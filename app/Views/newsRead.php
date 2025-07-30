@@ -17,12 +17,16 @@ $actioned_by = !empty($data[0]->attributes->actioned_by) ? $data[0]->attributes-
 $actioned_date = !empty($data[0]->attributes->actioned_date) ? $data[0]->attributes->actioned_date : '';
 $actioned = !empty($data[0]->attributes->actioned) ? $data[0]->attributes->actioned : '';
 $link = !empty($data[0]->attributes->link) ? $data[0]->attributes->link : '';
+$image = '';
+if (!empty($data[0]->attributes->image)) {
+    $image = '<img src="' . $data[0]->attributes->image . '" style="width:100%">';
+}
 
 switch ($data[0]->attributes->type) {
     case 'advertisement':
         $body = htmlspecialchars_decode($data[0]->attributes->body);
         $body = html_entity_decode($body);
-        $name .= "<span class=\"clearfix float-end\"><button id=\"myButton\" class=\"btn btn-success\">" . __('Download') . "</button>";
+        $name .= "<span class=\"clearfix float-end\"><button id=\"myButton\" class=\"btn btn-success\">" . __('Learn More') . "</button>";
         $name .= "<br><a id=\"link\" class=\"visually-hidden\" href=\"" . $link . "\" target=\"_blank\">" . $link . "</a>";
         $actioned = '';
         break;
@@ -73,15 +77,12 @@ switch ($data[0]->attributes->type) {
                                 <?= $description ?>
                                 <br><br>
                                 <?= $body ?><br><br>
+                                <?= $image ?>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <pre>
-                <?= json_encode($data[0], JSON_PRETTY_PRINT) ?>
-            </pre>
         </main>
 
 <script {csp-script-nonce}>

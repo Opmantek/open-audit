@@ -34,6 +34,19 @@ use stdClass;
  */
 class Util extends Controller
 {
+    public function feeds()
+    {
+        helper('utility');
+        $data = createNewsData();
+        $data->devices = json_encode($data->devices);
+        $data->issues = json_encode($data->issues);
+        $data->features = json_encode($data->features);
+        $data->products = json_encode($data->products);
+        $data->stats = json_encode($data->stats);
+        echo json_encode($data) . "\n";
+        exit;
+    }
+
     public function subnetSize()
     {
         // NOTE #1 - We cannot restrict the source (like the Google function below) because it is called from the client browser.

@@ -156,6 +156,10 @@ class ConfigurationModel extends BaseModel
         if (!empty($result[0]->name) and $result[0]->name === 'license_string') {
             $sql = "UPDATE configuration SET value = '' WHERE name IN ('license', 'license_limit', 'license_eula', 'license_footer')";
             $this->db->query($sql);
+            if (!empty($result[0]->value)) {
+                $newsModel = model('App\Models\NewsModel');
+                $newsModel->executeAll('add_license');
+            }
         }
         return true;
     }
