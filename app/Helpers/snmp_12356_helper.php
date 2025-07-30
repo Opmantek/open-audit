@@ -16,8 +16,18 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12356.101.4.1.1.0");
     $details->os_family = 'FortiOS';
-    $details->os_group = 'FortiGate';
-    $details->os_name = 'FortiOS ' . $details->os_version;
+    $details->os_group = 'FortiOS';
+    $details->os_name = 'FortiOS';
+    $sysDescr = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
+    if (stripos($sysDescr, 'fortimail') !== false) {
+        $details->os_name = 'FortiMail';
+    }
+    if (stripos($sysDescr, 'fortiweb') !== false) {
+        $details->os_name = 'FortiWeb';
+    }
+    if ($sysDescr === 'SDP ') {
+        $details->os_name = 'FortiWeb';
+    }
     $details->type = 'firewall';
     return($details);
 };

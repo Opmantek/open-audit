@@ -13,6 +13,8 @@ function manufacturerLogo (string $manufacturer = '')
     if ($logo === '' and mb_stripos($manufacturer, 'AMD') !== false) { $logo = 'amd'; }
     if ($logo === '' and mb_stripos($manufacturer, 'AMERICAN POWER') !== false) { $logo = 'apc'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Apple') !== false) { $logo = 'apple'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Arista') !== false) { $logo = 'arista'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Aruba') !== false) { $logo = 'aruba'; }
     if ($logo === '' and mb_stripos($manufacturer, 'ASUSTeK') !== false) { $logo = 'asus'; }
     if ($logo === '' and mb_stripos($manufacturer, 'ATI Technologies') !== false) { $logo = 'ati'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Barracuda') !== false) { $logo = 'barracuda'; }
