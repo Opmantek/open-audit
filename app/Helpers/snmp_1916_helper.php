@@ -11,7 +11,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
     $details->manufacturer = 'Extreme Networks';
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.2272.1.4.2.0");
-    $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.2272.1.1.7.0");
+    if (empty($details->serial)) {
+        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1");
+    }
+    $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.10.3");
     $details->os_group = 'Extreme';
     $details->os_family = 'XOS';
     $details->os_name = 'ExtremeXOS';
