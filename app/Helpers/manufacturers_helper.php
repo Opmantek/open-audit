@@ -27,6 +27,7 @@ function manufacturerLogo (string $manufacturer = '')
     if ($logo === '' and mb_stripos($manufacturer, 'DigitalOcean') !== false) { $logo = 'digitalocean'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Extreme') !== false) { $logo = 'extreme'; }
     if ($logo === '' and mb_stripos($manufacturer, 'F5') !== false) { $logo = 'f5'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Force10') !== false) { $logo = 'force10'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Fortinet') !== false) { $logo = 'fortinet'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Foundry') !== false) { $logo = 'foundry'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Gaoshengda Technology') !== false) { $logo = 'gaoshengda'; }
