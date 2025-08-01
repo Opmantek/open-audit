@@ -11,5 +11,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
     $details->manufacturer = 'Netscreen Technologies, Inc.';
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.3224.7.1.5.0");
+    $details->os_cpe = 'cpe:2.3:o:juniper:netscreen_screenos';
     return($details);
 };

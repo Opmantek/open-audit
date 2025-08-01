@@ -21,5 +21,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (!empty($temp)) {
         $details->model = trim('DiskStation ' . $temp);
     }
+    $details->os_cpe = 'cpe:2.3:o:synology:diskstation_manager';
     return($details);
 };

@@ -12,11 +12,11 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->manufacturer = 'Mikrotik';
     $details->type = 'router';
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.14988.1.1.7.3.0");
-    $temp = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
-    if (!empty($temp) and $temp === "RouterOS CHR") {
+    $sysDescr = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
+    if (!empty($sysDescr) and $sysDescr === "RouterOS CHR") {
         $details->model = "Cloud Hosted Router";
     } else {
-        $temp = explode(' ', $temp);
+        $temp = explode(' ', $sysDescr);
         unset($temp[0]);
         $details->model = implode(' ', $temp);
         unset($temp);
@@ -26,6 +26,9 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.14988.1.1.17.1.1.4.1");
     if (!empty($details->model) and stripos($details->model, 'RB921UAGS-5SHPacT')) {
         $details->type = 'wireless router';
+    }
+    if (!empty($sysDescr) and stripos($sysDescr, 'RouterOS') !== false) {
+        $details->os_cpe = 'cpe:2.3:o:mikrotik:routeros';
     }
     return($details);
 };

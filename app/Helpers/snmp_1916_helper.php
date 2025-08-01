@@ -19,5 +19,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (stripos($sysDescr, 'switch engine') !== false) {
         $details->os_family = 'Switch Engine';
     }
+    $details->os_cpe = (!empty($details->os_version)) ? 'cpe:2.3:o:extremenetworks:extremexos:' . $details->os_version : 'cpe:2.3:o:extremenetworks:extremexos';
     return($details);
 };

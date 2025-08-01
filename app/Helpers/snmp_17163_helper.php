@@ -19,5 +19,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (empty($details->serial)) {
         $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.17163.1.51.1.2.0");
     }
+    $details->os_cpe = 'cpe:2.3:o:riverbed:rios';
     return($details);
 };

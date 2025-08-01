@@ -18,5 +18,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->os_family = 'ECOS';
     $details->os_name = !empty($details->os_version) ? 'ECOS ' . $details->os_version : 'ECOS';
     $details->type = 'router';
+    $details->os_cpe = (!empty($details->os_version)) ? 'cpe:2.3:o:arubanetworks:arubaos:' . $details->os_version : 'cpe:2.3:o:arubanetworks:arubaos';
     return($details);
 };

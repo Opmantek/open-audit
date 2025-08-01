@@ -358,6 +358,12 @@ class DevicesModel extends BaseModel
                 $data->{$column} =  strtolower($data->{$column});
             }
         }
+        if (empty($data->os_cpe)) {
+            $cpe = cpe_create($data);
+            if (!empty($cpe)) {
+                $data->os_cpe = $cpe;
+            }
+        }
         $data = $this->createFieldData('devices', $data);
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {

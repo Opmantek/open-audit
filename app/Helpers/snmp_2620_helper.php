@@ -17,5 +17,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     unset($temp);
     $details->storage_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.2620.1.6.7.3.6.0"));
+    $details->os_cpe = 'cpe:2.3:o:checkpoint';
     return($details);
 };

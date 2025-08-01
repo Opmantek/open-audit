@@ -18,5 +18,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $os_version_parts = explode(' ', $details->os_version, 2);
     }
     $details->os_name = !empty($os_version_parts[0]) ? 'Extreme Networks. VOSS ' . $os_version_parts[0] : 'Extreme Networks. VOSS';
+    $details->os_cpe = (!empty($details->os_version)) ? 'cpe:2.3:o:extremenetworks:extremexos:' . $details->os_version : 'cpe:2.3:o:extremenetworks:extremexos';
     return($details);
 };

@@ -18,6 +18,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->os_family = 'Extreme Networks. SLX.';
         $details->os_name = 'SLX Operating System';
         $details->os_version = substr($sysDescr, (strpos($sysDescr, 'Version ') + 8));
+        $details->os_cpe = 'cpe:2.3:o:brocade';
     }
     return($details);
 };

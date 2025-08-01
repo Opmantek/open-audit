@@ -17,6 +17,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         for ($i = 0; $i < count($explode); $i++) {
             if (strpos($explode[$i], 'HP_3PAR') !== false) {
                 $details->model = trim($explode[$i]);
+                $details->os_cpe = 'cpe:2.3:o:hpe:3par_os';
             }
             if (strpos($explode[$i], 'Serial number') !== false) {
                 $explode2 = explode(':', $explode[2]);
@@ -28,6 +29,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
                 $details->os_group = '3PAR OS';
                 $details->os_family = '3PAR OS';
                 $details->os_name = 'HPE 3PAR OS ' . $details->os_version;
+                $details->os_cpe = 'cpe:2.3:o:hpe:3par_os';
+                if (!empty($details->os_version)) {
+                    $details->os_cpe .= ':' . $details->os_version;
+                }
             }
         }
     }

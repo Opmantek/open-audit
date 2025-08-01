@@ -22,5 +22,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->os_name = !empty($details->os_name) ? str_replace("\"", "", $details->os_name) : '';
     $details->type = 'computer';
     $details->class = 'hypervisor';
+    $details->os_cpe = 'cpe:2.3:o:vmware:' . strtolower(str_replace(' ', '_', $details->os_family));
     return($details);
 };

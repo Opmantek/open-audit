@@ -23,7 +23,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->os_family = '';
     $details->os_name = '';
     $details->os_cpe = '';
-    $details->os_cpe_manufacturer = 'cisco';
     $details->os_cpe_name = '';
     $details->os_cpe_version = '';
 
@@ -92,6 +91,12 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->os_name = "Cisco IOS";
         $details->os_cpe_name = 'ios';
     }
+    if (stripos($details->description, "Cisco Internetwork Operating System Software") !== false) {
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco IOS';
+        $details->os_name = "Cisco IOS";
+        $details->os_cpe_name = 'ios';
+    }
     if (stripos($details->description, "Cisco IOS Software") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS';
@@ -104,49 +109,43 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->os_name = "Cisco IOS-XE";
         $details->os_cpe_name = 'ios_xe';
     }
-    if (stripos($details->description, "Cisco FX-OS(tm)") !== false) {
-        $details->os_group = 'Cisco';
-        $details->os_family = 'Cisco FX-OS';
-        $details->os_name = "Cisco FX-OS";
-        $details->os_cpe_name = 'ios_xe';
-    }
     if (stripos($details->description, "Cisco Controller") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco IOS-XE';
         $details->os_name = "Cisco IOS-XE";
         $details->os_cpe_name = 'ios_xe';
     }
-    if (stripos($details->description, "Cisco Internetwork Operating System Software") !== false) {
-        $details->os_group = 'Cisco';
-        $details->os_family = 'Cisco IOS';
-        $details->os_name = "Cisco IOS";
-        $details->os_cpe_name = 'ios';
-    }
     if (stripos((string)$i, "Catalyst Operating") !== false) {
         $details->os_group = 'Cisco';
-        $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS";
-        $details->os_cpe_name = 'ios_xe';
+        $details->os_family = 'Cisco CatOS';
+        $details->os_name = "Cisco CatOS";
+        $details->os_cpe_name = 'catos';
     }
     if (stripos($details->description, "Catalyst") !== false and stripos($details->description, "L3 Switch Software") !== false) {
         $details->os_group = 'Cisco';
-        $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS";
-        $details->os_cpe_name = 'ios_xe';
+        $details->os_family = 'Cisco CatOS';
+        $details->os_name = "Cisco CatOS";
+        $details->os_cpe_name = 'catos';
     }
     if (stripos($details->description, "Cisco Systems WS-C") !== false) {
         $details->os_group = 'Cisco';
-        $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS";
-        $details->os_cpe_name = 'ios_xe';
+        $details->os_family = 'Cisco CatOS';
+        $details->os_name = "Cisco CatOS";
+        $details->os_cpe_name = 'catos';
     }
     if (stripos($details->description, "Cisco Systems, Inc. WS-C") !== false) {
         $details->os_group = 'Cisco';
-        $details->os_family = 'Cisco Catalyst OS';
-        $details->os_name = "Cisco Catalyst OS";
-        $details->os_cpe_name = 'ios_xe';
+        $details->os_family = 'Cisco CatOS';
+        $details->os_name = "Cisco CatOS";
+        $details->os_cpe_name = 'catos';
     }
     if (stripos($details->description, "Cisco Firepower") !== false) {
+        $details->os_group = 'Cisco';
+        $details->os_family = 'Cisco FX-OS';
+        $details->os_name = "Cisco FX-OS";
+        $details->os_cpe_name = 'fx-os';
+    }
+    if (stripos($details->description, "Cisco FX-OS(tm)") !== false) {
         $details->os_group = 'Cisco';
         $details->os_family = 'Cisco FX-OS';
         $details->os_name = "Cisco FX-OS";
@@ -161,8 +160,11 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         }
     }
 
-    if (! empty($details->os_cpe_name)) {
-        $details->os_cpe = 'o:' . $details->os_cpe_manufacturer . ':' . $details->os_cpe_name . ':' . $details->os_cpe_version;
+    if (!empty($details->os_cpe_name)) {
+        $details->os_cpe = 'cpe:2.3:o:cisco:' . $details->os_cpe_name;
+        if (!empty($details->os_cpe_version)) {
+            $details->os_cpe = $details->os_cpe  . ':' . $details->os_cpe_version;
+        }
     } else {
         unset($details->os_cpe);
         unset($details->os_cpe_name);

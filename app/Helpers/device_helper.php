@@ -210,7 +210,7 @@ if (!function_exists('audit_convert')) {
 }
 
 if (! function_exists('deviceMatch')) {
-    function deviceMatch(object $details, int $discovery_id = 0, object $match = null)
+    function deviceMatch(object $details, int $discovery_id = 0, ?object $match = null)
     {
         $db = db_connect();
 
@@ -1614,6 +1614,98 @@ function log_array($log, $log_array)
     }
 }
 
+# cpe:2.3:o:cisco:ios:12.1:*:*:*:*:*:*:*
+function cpe_get_type(string $cpe): string
+{
+    $temp = explode(':', $cpe);
+    $item = (!empty($temp[3])) ? $temp[3] : '';
+    return $item;
+}
+
+function cpe_get_vendor(string $cpe): string
+{
+    $temp = explode(':', $cpe);
+    $item = (!empty($temp[4])) ? $temp[4] : '';
+    return $item;
+}
+
+function cpe_get_product(string $cpe): string
+{
+    $temp = explode(':', $cpe);
+    $item = (!empty($temp[5])) ? $temp[5] : '';
+    return $item;
+}
+
+function cpe_get_version(string $cpe): string
+{
+    $temp = explode(':', $cpe);
+    $item = (!empty($temp[6])) ? $temp[6] : '';
+    return $item;
+}
+
+function cpe_create($device)
+{
+    $cpe = '';
+    if (!empty($device->os_family)) {
+        switch (strtolower($device->os_family)) {
+            case 'debian':
+                $cpe = 'o:debian:debian_linux:';
+                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                break;
+
+            case 'macos':
+                $cpe = 'o:apple:macos:';
+                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                break;
+
+            case 'suse':
+                $cpe = 'o:suse:suse_linux:';
+                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                break;
+
+            case 'ubuntu':
+                $cpe = 'o:canonical:ubuntu_linux:';
+                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                break;
+
+            case 'windows 2008':
+                $cpe = 'o:microsoft:windows_server_2008';
+                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                break;
+
+            case 'windows 2019':
+                $cpe = 'o:microsoft:windows_server_2019';
+                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                break;
+
+            case 'windows 2022':
+                $cpe = 'o:microsoft:windows_server_2022';
+                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                break;
+
+            case 'windows 2025':
+                $cpe = 'o:microsoft:windows_server_2025';
+                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                break;
+
+            case 'windows 10':
+                $cpe = 'o:microsoft:windows_10';
+                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                break;
+
+            case 'windows 11':
+                $cpe = 'o:microsoft:windows_11';
+                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                break;
+
+            default:
+                // code...
+                break;
+        }
+        $cpe = 'cpe:2.3:' . $cpe;
+    }
+    return $cpe;
+}
 
 function reset_icons($id = '')
 {

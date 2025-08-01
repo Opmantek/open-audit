@@ -20,5 +20,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     $details->serial = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.674.10895.3000.1.2.100.8.1.2');
     $details->service_tag = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.674.10895.3000.1.2.100.8.1.4');
+    $details->os_cpe = (!empty($details->os_version)) ? 'cpe:2.3:o:dell:networking_' . strtolower($details->osname) . ':' . $details->os_version : 'cpe:2.3:o:dell:networking_' . strtolower($details->osname);
     return($details);
 };

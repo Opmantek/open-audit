@@ -20,5 +20,6 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->os_family = 'EIQ';
     $os_version_parts = explode(' ', $details->os_version);
     $details->os_name = !empty($os_version_parts[2]) ? 'EIQ ' . $os_version_parts[2] : 'EIQ';
+    $details->os_cpe = (!empty($details->os_version)) ? 'cpe:2.3:o:extremenetworks:iq_engine:' . $details->os_version : 'cpe:2.3:o:extremenetworks:iq_engine';
     return($details);
 };

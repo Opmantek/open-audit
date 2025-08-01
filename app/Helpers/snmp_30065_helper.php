@@ -20,6 +20,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->model = trim($temp[1]);
     $temp2 = explode('Arista Networks EOS version ', $temp[0]);
     $details->os_version = trim($temp2[1]);
+    $details->os_cpe = (!empty($details->os_version)) ? 'cpe:2.3:o:arista:eos:' . $details->os_version : 'cpe:2.3:o:arista:eos';
 
     return($details);
 };
