@@ -23,15 +23,19 @@ if (empty($config->product) or $config->product === 'community') {
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
-                                    <?php foreach ($meta->data_order as $key) {
+                                    <th class="text-center"><?= __('Status') ?></th>
+                                    <?php
+                                    foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id' or $key === 'status') {
                                             continue;
                                         }
-                                    ?>
-                                        <th><?= collection_column_name($key) ?></th>
-                                    <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
-                                    <th class="text-center"><?= __('Status') ?></th>
+                                        if ($key === 'affected') {
+                                            echo '<th class="text-center">' . collection_column_name($key) . '</th>';
+                                        } else {
+                                            echo '<th>' . collection_column_name($key) . '</th>';
+                                        }
+                                    }
+                                    if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
                                     <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
                                 </tr>
@@ -40,40 +44,53 @@ if (empty($config->product) or $config->product === 'community') {
                             <?php if (!empty($data)) { ?>
                                 <?php foreach ($data as $item) {
                                     switch ($item->attributes->status) {
-                                        case 'confirmed':
-                                            $item->attributes->status = '<span class="text-success">confirmed</span>';
+
+                                        case 'unlikely':
+                                            $item->attributes->status = '<a href="?vulnerabilities.status=unlikely"><span class="text-info" id="row_' . $item->id . '">' . __('unlikely') . '</a><a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#row_' . $item->id . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . ('The vulnerability has been published no matching software records were detected int he database.') . '"><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC; padding-left:10px"></i></a></span>';
                                             break;
-                                        
-                                        case 'declined':
-                                            $item->attributes->status = '<span class="text-danger">declined</span>';
-                                            break;
-                                        
+
                                         case 'pending':
-                                            $item->attributes->status = '<span class="text-warning">pending</span>';
+                                            $item->attributes->status = '<a href="?vulnerabilities.status=pending"><span class="text-warning" id="row_' . $item->id . '">' . __('pending') . '</a><a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#row_' . $item->id . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . ('The vulnerability has been published but is awaiting further analysis by the user.') . '"><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC; padding-left:10px"></i></a></span>';
                                             break;
-                                        
+
+                                        case 'confirmed':
+                                            $item->attributes->status = '<a href="?vulnerabilities.status=confirmed"><span class="text-success" id="row_' . $item->id . '">' . __('confirmed') . '</a><a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#row_' . $item->id . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . ('The vulnerability has been reviewed by the user and it is relevant to this installation.') . '"><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC; padding-left:10px"></i></a></span>';
+                                            break;
+
+                                        case 'declined':
+                                            $item->attributes->status = '<a href="?vulnerabilities.status=declined"><span class="text-danger" id="row_' . $item->id . '">' . __('declined') . '</a><a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#row_' . $item->id . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . ('The vulnerability has been published but has been determined by the user that it is not relevant to this installation.') . '"><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC; padding-left:10px"></i></a></span>';
+                                            break;
+
                                         case 'other':
-                                            $item->attributes->status = '<span class="text-secondary">other</span>';
+                                            $item->attributes->status = '<span class="text-warning" id="row_' . $item->id . '">' . __('other') . '<a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#row_' . $item->id . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . ('Other.') . '"><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC; padding-left:10px"></i></a></span>';
                                             break;
-                                        
+
                                         case '':
-                                            $item->attributes->status = '<span class="">unknown</span>';
+                                            $item->attributes->status = '<span class="text-warning" id="row_' . $item->id . '">' . __('<blank>') . '<a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#row_' . $item->id . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . ('Record is empty.') . '"><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC; padding-left:10px"></i></a></span>';
                                             break;
-                                        
+
                                         default:
-                                            $item->attributes->status = '<span class="">unknown</span>';
+                                            $item->attributes->status = '<span class="text-warning" id="row_' . $item->id . '">' . __(' ') . '<a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#row_' . $item->id . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . ('Unknown.') . '"><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC; padding-left:10px"></i></a></span>';
                                             break;
+                                    }
+                                    if (is_int($item->attributes->affected)) {
+                                        if (intval($item->attributes->affected) === 0) {
+                                            $item->attributes->affected = '<span class="text-success">' . $item->attributes->affected . '</span>';
+                                        } else {
+                                            $item->attributes->affected = '<span class="text-danger">' . $item->attributes->affected . '</span>';
+                                        }
                                     }
                                     ?>
                                 <tr>
                                     <?= collection_button_read($meta->collection, $item->id) ?>
+                                    <?php echo "<td class=\"text-center\">" . $item->attributes->status . "</td>\n"; ?>
                                     <?php foreach ($meta->data_order as $key) {
-                                        if ($key === 'id' or $key === 'orgs.id') {
+                                        if ($key === 'id' or $key === 'orgs.id' or $key === 'status') {
                                             continue;
                                         }
                                         if ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
                                             echo "<td style=\"white-space: nowrap;\"><a href=\"" . url_to($meta->collection . 'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
-                                        } else if ($key === 'status') {
+                                        } else if ($key === 'affected') {
                                             echo "<td class=\"text-center\">" . $item->attributes->{$key} . "</td>\n";
                                         } else {
                                             echo "<td>" . $item->attributes->{$key} . "</td>\n";
@@ -92,3 +109,21 @@ if (empty($config->product) or $config->product === 'community') {
                 </div>
             </div>
         </main>
+
+<script>
+window.onload = function () {
+    $(document).ready(function () {
+        $("#button_create").remove();
+        $("#button_import_csv").remove();
+        $("#button_export_csv").remove();
+        $("#button_export_json").remove();
+        <?php
+        if (!empty($included['statuses'])) {
+            foreach ($included['statuses'] as $row) {
+                echo '$("#button_' . $row->status . '").html($("#button_' . $row->status . '").html() + " (' . $row->count . ')");' . "\n";
+            }
+        }
+        ?>
+    });
+}
+</script>

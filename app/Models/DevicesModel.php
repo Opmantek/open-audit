@@ -1064,11 +1064,16 @@ class DevicesModel extends BaseModel
         if (!empty($data->last_seen_by)) {
             $source = $data->last_seen_by;
         }
-
+        if (empty($data->os_cpe)) {
+            $cpe = cpe_create($data);
+            if (!empty($cpe)) {
+                $data->os_cpe = $cpe;
+            }
+        }
         if (empty($data->discovery_id)) {
             unset($data->discovery_id);
         }
-        // Get tthe existing device data
+        // Get the existing device data
         $query = $this->builder->getWhere(['id' => intval($id)]);
         $db_entry = $query->getRow();
         // Cater for a short hostname

@@ -60,6 +60,7 @@ class Collections extends BaseConfig
     public $tasks;
     public $users;
     public $vulnerabilities;
+    public $vulnerabilities_filters;
     public $widgets;
 
     public function __construct()
@@ -585,6 +586,16 @@ class Collections extends BaseConfig
         $this->vulnerabilities->actions->enterprise = 'crud';
         $this->vulnerabilities->actions->professional = '';
         $this->vulnerabilities->actions->community = '';
+
+        $this->vulnerabilities_filters = new \StdClass();
+        $this->vulnerabilities_filters->icon = 'fa-solid fa-bug';
+        $this->vulnerabilities_filters->name = 'Vulnerabilities Filters';
+        $this->vulnerabilities_filters->edition = 'Enterprise';
+        $this->vulnerabilities_filters->orgs = 'd';
+        $this->vulnerabilities_filters->actions = new \stdClass();
+        $this->vulnerabilities_filters->actions->enterprise = 'crud';
+        $this->vulnerabilities_filters->actions->professional = '';
+        $this->vulnerabilities_filters->actions->community = '';
 
         $this->widgets = new \StdClass();
         $this->widgets->icon = 'fa fa-chart-column';

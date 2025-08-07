@@ -153,7 +153,8 @@ class Collections extends BaseController
             $this->resp->meta->collection === 'devices' or
             $this->resp->meta->collection === 'discoveries' or
             $this->resp->meta->collection === 'networks' or
-            $this->resp->meta->collection === 'summaries'
+            $this->resp->meta->collection === 'summaries' or
+            $this->resp->meta->collection === 'vulnerabilities'
         ) {
             $this->resp->included = array_merge($this->resp->included, $this->{strtolower($this->resp->meta->collection) . "Model"}->includedCollection());
         }

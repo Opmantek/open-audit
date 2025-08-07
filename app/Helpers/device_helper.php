@@ -1614,96 +1614,253 @@ function log_array($log, $log_array)
     }
 }
 
-# cpe:2.3:o:cisco:ios:12.1:*:*:*:*:*:*:*
-function cpe_get_type(string $cpe): string
+function cpe_get(string $uri, string $cpe): string
 {
+    if (empty($uri) or empty($cpe)) {
+        return '';
+    }
     $temp = explode(':', $cpe);
-    $item = (!empty($temp[3])) ? $temp[3] : '';
-    return $item;
-}
+    $item = '';
+    switch ($uri) {
+        case 'cpe_version':
+            $item = (!empty($temp[1])) ? $temp[1] : '';
+            break;
 
-function cpe_get_vendor(string $cpe): string
-{
-    $temp = explode(':', $cpe);
-    $item = (!empty($temp[4])) ? $temp[4] : '';
-    return $item;
-}
+        case 'part':
+            $item = (!empty($temp[2])) ? $temp[2] : '';
+            break;
 
-function cpe_get_product(string $cpe): string
-{
-    $temp = explode(':', $cpe);
-    $item = (!empty($temp[5])) ? $temp[5] : '';
-    return $item;
-}
+        case 'vendor':
+            $item = (!empty($temp[3])) ? $temp[3] : '';
+            break;
 
-function cpe_get_version(string $cpe): string
-{
-    $temp = explode(':', $cpe);
-    $item = (!empty($temp[6])) ? $temp[6] : '';
+        case 'product':
+            $item = (!empty($temp[4])) ? $temp[4] : '';
+            break;
+
+        case 'version':
+            $item = (!empty($temp[5])) ? $temp[5] : '';
+            break;
+
+        case 'update':
+            $item = (!empty($temp[6])) ? $temp[6] : '';
+            break;
+
+        case 'edition':
+            $item = (!empty($temp[7])) ? $temp[7] : '';
+            break;
+
+        case 'language':
+            $item = (!empty($temp[8])) ? $temp[8] : '';
+            break;
+
+        case 'sw_edition':
+            $item = (!empty($temp[9])) ? $temp[9] : '';
+            break;
+
+        case 'target_sw':
+            $item = (!empty($temp[10])) ? $temp[10] : '';
+            break;
+
+        case 'target_hw':
+            $item = (!empty($temp[11])) ? $temp[11] : '';
+            break;
+
+        default:
+            $item = '';
+            break;
+    }
     return $item;
 }
 
 function cpe_create($device)
 {
     $cpe = '';
-    if (!empty($device->os_family)) {
+    if ($device->type !== 'computer' and !empty($device->sysDescr)) {
+
+        // Aruba
+        if (stripos($device->sysDescr, 'ArubaOS') !== false) {
+            $cpe = 'o:arubanetworks:arubaos';
+        }
+        if (!empty($device->os_name) and stripos($device->os_name, 'ECOS') !== false) {
+            $cpe = 'o:arubanetworks:arubaos';
+        }
+
+        // Dell
+        if (!empty($device->os_family) and $device->os_family = 'Dell OS9') {
+            $cpe = 'o:dell:networking_os9';
+        }
+        if (!empty($device->os_family) and $device->os_family = 'Dell OS10') {
+            $cpe = 'o:dell:networking_os10';
+        }
+
+        // Extreme
+        if (stripos($device->sysDescr, 'SLX Operating System') !== false) {
+            $cpe = 'o:extremenetworks:extremexos';
+        }
+        if (!empty($device->os_family) and $device->os_family === 'EIQ') {
+            $cpe = 'o:extremenetworks:iq_engine';
+        }
+        if (!empty($device->os_name) and stripos($device->os_name, 'Extreme Networks. VOSS') !== false) {
+            $cpe = 'o:extremenetworks:extremexos';
+        }
+
+        // Fortinet
+        if (stripos($device->sysDescr, 'fortimail') !== false) {
+            $cpe = 'o:fortinet:fortimail';
+        }
+        if (stripos($device->sysDescr, 'fortiweb') !== false) {
+            $cpe = 'o:fortinet:fortiweb';
+        }
+        if ($device->sysDescr === 'SDP ') {
+            $cpe = 'o:fortinet:fortiweb';
+        }
+
+        // HP 3PAR
+        if (strpos($device->sysDescr, 'HP_3PAR') !== false) {
+            $explode = explode(',', $device->sysDescr);
+            for ($i = 0; $i < count($explode); $i++) {
+                if (strpos($explode[$i], 'HP_3PAR') !== false) {
+                    $cpe = 'o:hpe:3par_os';
+                }
+                if (strpos($explode[$i], 'InForm OS:') !== false) {
+                    $explode2 = explode(':', $explode[2]);
+                    $device->os_version = trim($explode2[1]);
+                    $cpe = 'o:hpe:3par_os';
+                }
+            }
+        }
+
+        // Juniper
+        if (stripos($device->sysDescr, 'junose') !== false) {
+            $cpe = 'o:juniper:junose';
+        }
+        if (stripos($device->sysDescr, 'junos') !== false) {
+            $cpe = 'o:juniper:junos';
+        }
+        if (!empty($details->manufacturer) and stripos($details->manufacturer, 'Netscreen') !== false) {
+            $cpe = 'o:juniper:netscreen_screenos';
+        }
+
+        // Mikrotik
+        if (stripos($device->sysDescr, 'RouterOS') !== false) {
+            $cpe = 'o:mikrotik:routeros';
+        }
+
+        // Palo Alto
+        if (!empty($details->manufacturer) and stripos($device->manufacturer, 'Palo Alto') !== false) {
+            $cpe = 'o:paloaltonetworks:pan-os';
+        }
+
+        // RiverBed
+        if (!empty($device->manufacturer) and stripos($device->manufacturer, 'Riverbed') !== false) {
+            $cpe = 'o:riverbed:rios';
+        }
+
+        // Synology
+        if (!empty($device->os_name) and stripos($device->os_name, 'Synology') !== false) {
+            $cpe = 'o:synology:diskstation_manager';
+        }
+
+        // Cisco
+        if (stripos($device->sysDescr, "Cisco Internetwork Operating System Software") !== false) {
+            $cpe = 'o:cisco:ios';
+        }
+        if (stripos($device->sysDescr, "Cisco IOS Software") !== false) {
+            $cpe = 'o:cisco:ios';
+        }
+        if (stripos($device->sysDescr, "IOS-XE Software") !== false) {
+            $cpe = 'o:cisco:ios_xe';
+        }
+        if (stripos($device->sysDescr, "IOS XR Software") !== false) {
+            $cpe = 'o:cisco:ios_xr';
+        }
+        if (stripos($device->sysDescr, "Cisco FX-OS(tm)") !== false) {
+            $cpe = 'o:cisco:fx-os';
+        }
+        if (stripos($device->sysDescr, "Cisco Firepower") !== false) {
+            $temp = explode('System Version', $device->sysDescr);
+            $device->os_version = trim($temp[1]);
+            $cpe = 'o:cisco:fx-os';
+        }
+        if (stripos($device->sysDescr, "Cisco Controller") !== false) {
+            $cpe = 'o:cisco:ios_xe';
+        }
+        if (stripos((string)$i, "Catalyst Operating") !== false) {
+            $cpe = 'o:cisco:catos';
+        }
+        if (stripos($device->sysDescr, "Catalyst") !== false and stripos($device->sysDescr, "L3 Switch Software") !== false) {
+            $cpe = 'o:cisco:catos';
+        }
+        if (stripos($device->sysDescr, "Cisco Systems WS-C") !== false) {
+            $cpe = 'o:cisco:catos';
+        }
+        if (stripos($device->sysDescr, "Cisco Systems, Inc. WS-C") !== false) {
+            $cpe = 'o:cisco:catos';
+        }
+        if (stripos($device->sysDescr, 'NX-OS')) {
+            $cpe = 'o:cisco:nx-os';
+        }
+    }
+
+    if (!empty($device->os_family) and $device->type === 'computer') {
         switch (strtolower($device->os_family)) {
+            case 'redhat':
+                $cpe = 'o:redhat:enterprise_linux';
+                break;
+
             case 'debian':
-                $cpe = 'o:debian:debian_linux:';
-                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                $cpe = 'o:debian:debian_linux';
                 break;
 
             case 'macos':
-                $cpe = 'o:apple:macos:';
-                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                $cpe = 'o:apple:macos';
                 break;
 
             case 'suse':
-                $cpe = 'o:suse:suse_linux:';
-                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                $cpe = 'o:suse:suse_linux';
                 break;
 
             case 'ubuntu':
-                $cpe = 'o:canonical:ubuntu_linux:';
-                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+                $cpe = 'o:canonical:ubuntu_linux';
                 break;
 
-            case 'windows 2008':
-                $cpe = 'o:microsoft:windows_server_2008';
-                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+            case 'windows 2016':
+                $cpe = 'o:microsoft:windows_server_2016';
                 break;
 
             case 'windows 2019':
                 $cpe = 'o:microsoft:windows_server_2019';
-                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
                 break;
 
             case 'windows 2022':
                 $cpe = 'o:microsoft:windows_server_2022';
-                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
                 break;
 
             case 'windows 2025':
                 $cpe = 'o:microsoft:windows_server_2025';
-                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
                 break;
 
             case 'windows 10':
                 $cpe = 'o:microsoft:windows_10';
-                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
                 break;
 
             case 'windows 11':
                 $cpe = 'o:microsoft:windows_11';
-                $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
                 break;
 
             default:
-                // code...
+                $cpe = '';
                 break;
         }
-        $cpe = 'cpe:2.3:' . $cpe;
+        if (stripos($device->os_family, 'vmware') !== false) {
+            $cpe = 'o:vmware:' . strtolower(str_replace(' ', '_', $details->os_family));
+        }
     }
+    if (!empty($cpe)) {
+        $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+    }
+    $cpe = 'cpe:2.3:' . $cpe;
     return $cpe;
 }
 

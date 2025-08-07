@@ -53,6 +53,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
                             <?= @$body ?>
 
                             <?php if ($meta->collection !== 'components' and $meta->collection !== 'news') { ?>
+                                <?php if ($meta->collection !== 'vulnerabilities') { ?>
                             <h2><?= __('Creating') ?></h2>
                                 <?php if ($meta->collection !== 'collectors') { ?>
                             <p>An entry can be created using the web interface if the current user logged in has a role that contains the <?= $meta->collection ?>::create permission.<br><br>
@@ -61,6 +62,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
                             <p>You can turn any server into a collector by going to menu -> Admin -> Collectors -> Make this install a Collector. You will need credentials to log on to the server this install will report in to.<br></p>
                                 <?php } ?>
                             <br>
+                        <?php } ?>
                                 <?php if ($execute) { ?>
                             <h2><?= __('Executing') ?></h2>
                             <p><?= $title ?> have the ability to be executed. On the <?= $title ?> collections and details pages is an icon to execute.</p>

@@ -12,10 +12,45 @@ foreach (['confirmed', 'declined', 'pending', 'other'] as $item) {
     $statuses[] = $status;
 }
 $status = new stdClass();
+
 $status->id = '';
 $status->attributes = new stdClass();
 $status->attributes->name = '';
 $statuses[] = $status;
+
+$status->id = 'pending';
+$status->attributes->name = __('pending');
+$statuses[] = $status;
+
+$status->id = 'unlikely';
+$status->attributes->name = __('unlikely');
+$statuses[] = $status;
+
+$status->id = 'confirmed';
+$status->attributes->name = __('confirmed');
+$statuses[] = $status;
+
+$status->id = 'denied';
+$status->attributes->name = __('denied');
+$statuses[] = $status;
+
+$status->id = 'other';
+$status->attributes->name = __('other');
+$statuses[] = $status;
+$style = @$user->toolbar_style;
+if ($style === 'icontext') {
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" class="fa fa-eye text-primary"></span>' . __('Summary') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Devices') . '</a></li>';
+} elseif ($style === 'icon') {
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" title="' . __('Summary') . '" class="fa fa-eye text-primary"></span></a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="fa fa-desktop text-primary"></span></a></li>';
+} else {
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab">' . __('Summary') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -23,232 +58,242 @@ $statuses[] = $status;
                     <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $resource->name) ?>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <?= read_field('name', (!empty($resource->name)) ? $resource->name : '', $dictionary->columns->name, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('cve', (!empty($resource->cve)) ? $resource->cve : '', $dictionary->columns->cve, false, 'CVE', '', '', '', $meta->collection) ?>
-                            <?= read_field('published', (!empty($resource->published)) ? $resource->published : '', $dictionary->columns->published, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_select('status', (!empty($resource->status)) ? $resource->status : '', $dictionary->columns->status, $update, '', $statuses, $meta->collection) ?>
 
-                            <!--
-                            <div class="col-4">
-                                <div class="input-group">
-                                    <select class="form-select" id="status" name="status" disabled>
-                                        <option value="confirmed"><?= __('confirmed') ?></option>
-                                        <option value="declined"><?= __('declined') ?></option>
-                                        <option value="pending"><?= __('pending') ?></option>
-                                        <option value="other"><?= __('other') ?></option>
-                                        <option value=""><?= __('') ?></option>
-                                    </select>
-                                    <div class="float-end" style="padding-left:4px;">
-                                        <div data-attribute="status" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                        <div data-attribute="status" class="btn btn-outline-success submit" style="display: none;\"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                        <div data-attribute="status" class="btn btn-outline-danger cancel" style="display: none;\"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            -->
-
-                            <div class="row" style="padding-top:16px;">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <?= read_field_header($meta->collection, 'description', '', 'Description') ?>
-                                    <div class="input-group">
-                                        <textarea class="form-control" rows="6" id="description" name="description" disabled><?= html_entity_decode(@$resource->firstwave->description) ?></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" style="padding-top:16px;">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <?= read_field_header($meta->collection, 'likelihood', '', 'Likelihood') ?>
-                                    <div class="input-group">
-                                        <textarea class="form-control" rows="4" id="remediation" name="remediation" disabled><?= html_entity_decode(@$resource->firstwave->likelihood) ?></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" style="padding-top:16px;">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <?= read_field_header($meta->collection, 'remediation', '', 'Remediation') ?>
-                                    <div class="input-group">
-                                        <textarea class="form-control" rows="6" id="remediation" name="remediation" disabled><?= html_entity_decode(@$resource->firstwave->remediation) ?></textarea>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="row text-center">
+                        <div class="col-8 offset-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
+                            <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+                                <?= $summary_button ?>
+                                <?= $details_button ?>
+                                <?= $devices_button ?>
+                            </ul>
                         </div>
-                        <div class="col-6">
+                    </div>
+                    <br/>
 
+                    <div class="tab-content">
+                        <div class="tab-pane" id="summary" role="tabpanel" tabindex="0" aria-labelledby="summary">
                             <div class="row">
                                 <div class="col-6">
-                                    <?= read_field('severity', @$resource->firstwave->severity, $dictionary->columns->severity, false, '', '', '', '', $meta->collection) ?>
-                                </div>
-                                <div class="col-6">
-                                    <?= read_field('availability', @$resource->firstwave->impact->availability, $dictionary->columns->availability, false, 'Impact :: Availability', '', '', '', $meta->collection) ?>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <?= read_field('confidentiality', @$resource->firstwave->impact->confidentiality, $dictionary->columns->confidentiality, false, 'Impact :: Confidentiality', '', '', '', $meta->collection) ?>
-                                </div>
-                                <div class="col-6">
-                                    <?= read_field('integrity', @$resource->firstwave->impact->integrity, $dictionary->columns->integrity, false, 'Impact :: Integrity', '', '', '', $meta->collection) ?>
-                                </div>
-                            </div>
+                                    <?= read_field('name', (!empty($resource->name)) ? $resource->name : '', $dictionary->columns->name, false, '', '', '', '', $meta->collection) ?>
 
-                            <div class="row" style="padding-top:16px;">
-                                <div class="col-12" style="position:relative;">
-                                    <hr>
-                                    <h5>Conditions</h5>
-                                    <?php if ($update) { ?>
-                                    <!--<button type="button" id="add_inputs" name="add_inputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="fa fa-plus" aria-hidden="true"></i></button>-->
-                                    <?php } ?>
-                                    <div id="inputs" class="input-group">
-                                        <?php
-                                        $input_count = 0;
-                                        foreach ($resource->filter as $filter) {
-                                            if ($filter->type === 'software') { ?>
-
-                                            <div class="row" style="padding-top:16px;">
-                                                <div class="col-4" style="position:relative;">
-                                                    <div class="input-group">
-                                                        <input disabled type="text" class="form-control" id="filters[<?= $input_count ?>][name]" name="filters[<?= $input_count ?>][name]" value="<?= $filter->name ?>" data-original-value="<?= $filter->name ?>">
-                                                        <div class="float-end" style="padding-left:4px;">
-                                                            <button data-attribute="filters[<?= $input_count ?>][name]" class="btn btn-outline-secondary edit" title="' . __('Edit') . '"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></button>
-                                                            <button data-attribute="filters[<?= $input_count ?>][name]" class="btn btn-outline-success submit" title="' . __('Submit') . '" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></button>
-                                                            <button data-attribute="filters[<?= $input_count ?>][name]" class="btn btn-outline-danger cancel" title="' . __('Cancel') . '" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></button>
-                                                        </div>
-                                                    </div>
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <?= read_field_header($meta->collection, 'status', $dictionary->columns->status) ?>
+                                            <div class="input-group">
+                                                <select class="form-select" id="status" name="status" disabled>
+                                                    <option value="pending"><?= __('pending') ?></option>
+                                                    <option value="unlikely"><?= __('unlikely') ?></option>
+                                                    <option value="confirmed"><?= __('confirmed') ?></option>
+                                                    <option value="declined"><?= __('declined') ?></option>
+                                                    <option value="other"><?= __('other') ?></option>
+                                                    <option value=""><?= __('') ?></option>
+                                                </select>
+                                                <?php if ($update) { ?>
+                                                <div class="float-end" style="padding-left:4px;">
+                                                    <div data-attribute="status" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
+                                                    <div data-attribute="status" class="btn btn-outline-success submit" style="display: none;\"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
+                                                    <div data-attribute="status" class="btn btn-outline-danger cancel" style="display: none;\"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
                                                 </div>
+                                                <?php } ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?= read_field('cve', (!empty($resource->cve)) ? $resource->cve : '', $dictionary->columns->cve, false, 'CVE', '', '', '', $meta->collection) ?>
+                                    <?= read_field('published', (!empty($resource->published)) ? $resource->published : '', $dictionary->columns->published, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('vuln_status', (!empty($resource->vuln_status)) ? $resource->vuln_status : '', $dictionary->columns->vuln_status, false, '', '', '', '', $meta->collection) ?>
 
-                                                <div class="col-4">
-                                                    <div class="input-group">
-                                                        <select class="form-select" id="filters[<?= $input_count ?>][operator]" name="filters[<?= $input_count ?>][operator]" disabled>
-                                                            <option value="eq"><?= __('equals') ?></option>
-                                                            <option value="ne"><?= __('does not equal') ?></option>
-                                                            <option value="gt"><?= __('greater than') ?></option>
-                                                            <option value="ge"><?= __('greater or equals') ?></option>
-                                                            <option value="lt"><?= __('less than') ?></option>
-                                                            <option value="le"><?= __('less or equals') ?></option>
-                                                            <option value="st"><?= __('starts with') ?></option>
-                                                            <option value="li"><?= __('like') ?></option>
-                                                            <option value="nl"><?= __('not like') ?></option>
-                                                            <option value="in"><?= __('in') ?></option>
-                                                            <option value="ni"><?= __('not in') ?></option>
-                                                            <option value="re"><?= __('regex') ?></option>
-                                                        </select>
-                                                        <div class="float-end" style="padding-left:4px;">
-                                                            <div data-attribute="filters[<?= $input_count ?>][operator]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                            <div data-attribute="filters[<?= $input_count ?>][operator]" class="btn btn-outline-success submit" style="display: none;\"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                            <div data-attribute="filters[<?= $input_count ?>][operator]" class="btn btn-outline-danger cancel" style="display: none;\"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
-                                                        </div>
-                                                    </div>
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <?= read_field_header($meta->collection, 'description', '', 'Description') ?>
+                                            <div class="input-group">
+                                                <textarea class="form-control" rows="6" id="description" name="description" disabled><?= @$resource->description ?></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php if (!empty($resource->remediation)) { ?>
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <?= read_field_header($meta->collection, 'remediation', '', 'Remediation') ?>
+                                            <div class="input-group">
+                                                <textarea class="form-control" rows="6" id="remediation" name="remediation" disabled><?= html_entity_decode($resource->remediation) ?></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <?= read_field('severity', @$resource->base_severity, $dictionary->columns->base_severity, false, '', '', '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-6">
+                                            <?= read_field('availability', @$resource->impact_availability, $dictionary->columns->impact_availability, false, 'Impact :: Availability', '', '', '', $meta->collection) ?>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <?= read_field('confidentiality', @$resource->impact_confidentiality, $dictionary->columns->impact_confidentiality, false, 'Impact :: Confidentiality', '', '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-6">
+                                            <?= read_field('integrity', @$resource->impact_integrity, $dictionary->columns->impact_integrity, false, 'Impact :: Integrity', '', '', '', $meta->collection) ?>
+                                        </div>
+                                    </div>
+
+                                    <?php
+                                    $style = '';
+                                    if (empty($included['software'])) {
+                                        $included['software'] = 'No matching packages found in your database.';
+                                        $style = 'style="border-color: #28a745;"';
+                                    }
+                                    ?>
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-1 col-10" style="position:relative;">
+                                            <div class="row" id="header_row_software_12">
+                                                <div class="col-10 clearfix">
+                                                    <label for="software" class="form-label" title="software">Matched Software Names</label>
                                                 </div>
-
-                                                <div class="col-4" style="position:relative;">
-                                                    <div class="input-group">
-                                                        <input disabled type="text" class="form-control" id="" value="<?= $filter->version ?>" data-original-value="<?= $filter->version ?>">
-                                                        <div class="float-end" style="padding-left:4px;">
-                                                            <button data-attribute="filters[<?= $input_count ?>][version]" class="btn btn-outline-secondary edit" title="' . __('Edit') . '"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></button>
-                                                            <button data-attribute="filters[<?= $input_count ?>][version]" class="btn btn-outline-success submit" title="' . __('Submit') . '" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></button>
-                                                            <button data-attribute="filters[<?= $input_count ?>][version]" class="btn btn-outline-danger cancel" title="' . __('Cancel') . '" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></button>
-                                                        </div>
+                                                <div class="col-2">
+                                                    <div class="float-end">
+                                                    <a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#header_row_software_12" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="&lt;code&gt;vulnerabilities.software&lt;/code&gt;&lt;br&gt;Software names from your current database that match this query."><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC;"></i></a>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <?php $input_count += +1;
-                                            }
-                                        } ?>
-                                    </div>
-                                    <hr>
-                                </div>
-                            </div>
-
-                            <div class="row" style="padding-top:16px;">
-                                <div class="col-12" style="position:relative;">
-                                    <h5>SQL</h5>
-                                    <div class="input-group">
-                                        <textarea class="form-control" rows="8" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
-                                        <?php if ($update) { ?>
-                                        <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="sql" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="sql" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div class="input-group">
+                                                <input disabled="" type="text" class="form-control" <?= $style ?> id="software" value="<?= $included['software'] ?>">
+                                            </div>
                                         </div>
-                                        <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
+
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-1 col-10" style="position:relative;">
+                                            <?= read_field_header($meta->collection, 'filter', $dictionary->columns->filter, 'Filter') ?>
+                                            <div class="input-group">
+                                                <textarea class="form-control" rows="8" id="filter" name="filter" data-original-value="<?= htmlentities(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?>" disabled><?= html_entity_decode(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?></textarea>
+                                                <?php if ($update) { ?>
+                                                <div class="float-end" style="padding-left:4px;">
+                                                    <div data-attribute="filter" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                                    <div data-attribute="filter" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                                    <div data-attribute="filter" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                </div>
+                                                <?php } ?>
+                                            </div>
+                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="filter" data-dictionary="<?= $dictionary->columns->filter ?>"><span><br></span></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-1 col-10" style="position:relative;">
+                                            <?php
+                                            $title = '';
+                                            if (!empty($resource->generated) and $resource->generated === 'y') {
+                                                $title = __('Generated') . ' ';
+                                            }
+                                            ?>
+                                            <?= read_field_header($meta->collection, 'sql', $dictionary->columns->sql, $title . 'SQL') ?>
+                                            <div class="input-group">
+                                                <textarea class="form-control" rows="8" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
+                                                <?php if ($update) { ?>
+                                                <div class="float-end" style="padding-left:4px;">
+                                                    <div data-attribute="sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                                    <div data-attribute="sql" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                                    <div data-attribute="sql" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                </div>
+                                                <?php } ?>
+                                            </div>
+                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <br>
 
-            <div class="card">
-                <div class="card-header" style="height:57px;">
-                    <div class="row">
-                        <div class="col-9 clearfix">
-                            <h6 style="padding-top:10px;"><span class="fa fa-desktop oa-icon"></span><?= __('Devices') ?></h6>
+
+                    <div class="tab-content">
+                        <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
+                            <div class="row" style="padding-top:16px;">
+                                <div class="offset-1 col-10" style="position:relative;">
+                                    <?= read_field_header($meta->collection, 'cve_json', $dictionary->columns->cve_json, $dictionary->columns->cve_json) ?>
+
+
+
+                                    <div class="input-group">
+                                        <textarea class="form-control" rows="12" id="other_json" name="other_json" disabled><?= html_entity_decode(json_encode($resource->other_json, JSON_PRETTY_PRINT)) ?></textarea>
+                                    </div>
+                                    <br><br>
+
+                                    <?php
+                                    if (!empty($resource->cve_json)) {
+                                        $rows = substr_count(json_encode($resource->cve_json, JSON_PRETTY_PRINT), "\n");
+                                    ?>
+                                    <div class="input-group">
+                                        <textarea class="form-control" rows="<?= $rows ?>" id="cve_json" name="cve_json" disabled><?= html_entity_decode(json_encode($resource->cve_json, JSON_PRETTY_PRINT)) ?></textarea>
+                                    </div>
+                                    <?php } ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <br>
-                    <div class="table-responsive">
-                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
-                        <thead>
-                            <tr>
-                                <th class="text-center"><?= __('View') ?></th>
-                                <th><?= __('Name') ?></th>
-                                <th><?= __('Orgs Name') ?></th>
-                                <th><?= __('Software Name') ?></th>
-                                <th><?= __('Software Version') ?></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($included['devices'] as $item) { ?>
-                            <tr>
-                                <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
-                                <td><?= $item->attributes->{'devices.name'} ?></td>
-                                <td><?= $item->attributes->{'orgs.name'} ?></td>
-                                <td><?= $item->attributes->{'software.name'} ?></td>
-                                <td><?= $item->attributes->{'software.version'} ?></td>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
+
+
+
+                    <div class="tab-content">
+                        <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
+                            <div class="table-responsive">
+                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                                <thead>
+                                    <tr>
+                                        <th class="text-center"><?= __('View') ?></th>
+                                        <th><?= __('Name') ?></th>
+                                        <th><?= __('Orgs Name') ?></th>
+                                        <th><?= __('Software Name') ?></th>
+                                        <th><?= __('Software Version') ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($included['devices'])) { ?>
+                                    <?php foreach ($included['devices'] as $item) { ?>
+                                    <tr>
+                                        <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                        <td><?= $item->attributes->{'devices.name'} ?></td>
+                                        <td><?= $item->attributes->{'orgs.name'} ?></td>
+                                        <td><?= $item->attributes->{'software.name'} ?></td>
+                                        <td><?= $item->attributes->{'software.version'} ?></td>
+                                    </tr>
+                                    <?php } ?>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
+
+
                 </div>
             </div>
-
         </main>
 
 <script {csp-script-nonce}>
 window.onload = function () {
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#status").val("<?= $resource->status ?>");
-        <?php
-            if (!empty($resource->firstwave->severity) and strtolower($resource->firstwave->severity) === 'high') {
-                echo '                $("#severity").css({"color":"red"});' . "\n";
-            }
-            $attributes = array('availability', 'confidentiality', 'integrity');
-            foreach ($attributes as $attribute) {
-                if (!empty($resource->firstwave->impact->{$attribute}) and strtolower($resource->firstwave->impact->{$attribute}) === 'high') {
-                    echo '                $("#' . $attribute . '").css({"color":"red"});' . "\n";
-                }
-            }
 
-            $input_count = 0;
-            if (!empty($resource->filter)) {
-                foreach ($resource->filter as $filter) {
-                    echo '                $("#filters\\\\[' . $input_count . '\\\\]\\\\[operator\\\\]").val("' . $filter->operator . '");' . "\n";
-                    $input_count += 1;
-                }
-            }
-        ?>
+        var hash = window.location.hash;
+        if (hash == "") {
+            hash = "#summary"
+        }
+        hash && $('ul.nav.nav-pills a[href="' + hash + '"]').tab('show');
 
+        $('ul.nav.nav-pills a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+            window.location.hash = this.hash;
+        });
 
-
-
+        $(".nav-link").click(function(e) {
+            window.scrollTo(0, 0);
+        });
 
     });
 }

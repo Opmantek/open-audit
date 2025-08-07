@@ -44,7 +44,7 @@ class VulnerabilitiesModel extends BaseModel
             }
         }
         if ($status) {
-            $this->builder->whereIn('status', ['confirmed', 'pending', 'other', '']);
+            $this->builder->whereIn('status', ['pending', 'confirmed']);
         }
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
@@ -56,153 +56,215 @@ class VulnerabilitiesModel extends BaseModel
         $instance = & get_instance();
         $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
         $org_list = array_unique($org_list);
-        #$org_list = [1,2,3];
-        // Build the SQL and execute it for any with a status of enabled
+        $org_list = implode(',', $org_list);
+        // Build the SQL and execute it for any with a status of confirmed
         foreach ($result as $row) {
-            if (!empty($row->status) and $row->status === 'confirmed') {
-                if (empty($row->sql)) {
-                    $builder = $this->generateQuery($row);
-                    if (!empty($builder)) {
-                        $builder->whereIn('devices.org_id', [$org_list]);
-                        $get_rows = $builder->get();
-                        $result_rows = $get_rows->getResult();
-                        $row->count = count($result_rows);
-                    }
-                } else {
-                    $org_list = implode(',', $org_list);
-                    $row->sql = str_ireplace(' devices.org_id = @filter', " devices.org_id IN ({$org_list})", $row->sql);
-                    $result_rows = $this->db->query($row->sql)->getResult();
-                    $row->count = count($result_rows);
-                }
+            if (!empty($row->status) and ($row->status === 'confirmed')) {
+                $vQuery = $this->generateQuery($row);
+                $vQuery->sql = $vQuery->sql . " AND devices.org_id IN ({$org_list})";
+                $row->affected = count($this->db->query($vQuery->sql, $vQuery->data)->getResult());
+            } else {
+                $row->affected = (!empty($row->status)) ? $row->status : '';
             }
-            log_message('debug', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()) . "\n");
         }
         return format_data($result, $resp->meta->collection);
     }
 
-    public function generateQuery($vulnerability): ?\CodeIgniter\Database\MySQLi\Builder
+    public function includedCollection()
+    {
+        $included = array();
+        $sql = "SELECT status, COUNT(*) AS `count` FROM vulnerabilities GROUP BY status";
+        $included['statuses'] = $this->db->query($sql)->getResult();
+        return $included;
+    }
+
+    public function makeCondition(string $criteria, string $version, string $operator, bool $vulnerable)
+    {
+        helper('device');
+        helper('components');
+        // log_message('debug', 'Test: ' . $criteria . ' :: ' . $operator);
+        $return = new stdClass();
+        $return->sql = '';
+        $return->sql_raw = '';
+        $return->data = array();
+        if (cpe_get_type($criteria) === 'a') {
+            $version = version_padded($version);
+            $return->sql = '(MATCH(software.name) AGAINST( ? IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' ?)';
+            $return->sql_raw = '(MATCH(software.name) AGAINST("' . cpe_get_product($criteria) . '" IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' "' . $version . '")';
+            $return->data[] = str_replace('_', ' ', cpe_get_product($criteria));
+            $return->data[] = version_padded($version);
+        }
+        if (cpe_get_type($criteria) === 'o') {
+            if (cpe_get_version($criteria) !== '*' and cpe_get_version($criteria) !== '-') {
+                $value = 'cpe:2.3:o:' . cpe_get_vendor($criteria) . ':' . cpe_get_product($criteria) . ':' . cpe_get_version($criteria) . '%';
+            } else {
+                $value = 'cpe:2.3:o:' . cpe_get_vendor($criteria) . ':' . cpe_get_product($criteria) . '%';
+            }
+            if ($vulnerable === false) {
+                $return->sql = '( devices.os_cpe NOT LIKE ? )';
+                $return->sql_raw = '( devices.os_cpe NOT LIKE \'' . $value . '\' )';
+            } else {
+                $return->sql = '( devices.os_cpe LIKE ? )';
+                $return->sql_raw = '( devices.os_cpe LIKE \'' . $value . '\' )';
+            }
+            $return->data[] = $value;
+        }
+        if (cpe_get_type($criteria) === 'h') {
+            if (cpe_get_version($criteria) !== '*' and cpe_get_version($criteria) !== '-') {
+                $value = 'cpe:2.3:h:' . cpe_get_vendor($criteria) . ':' . cpe_get_product($criteria) . ':' . cpe_get_version($criteria) . '%';
+            } else {
+                $value = 'cpe:2.3:h:' . cpe_get_vendor($criteria) . ':' . cpe_get_product($criteria) . '%';
+            }
+            if ($vulnerable === false) {
+                $return->sql = '( devices.os_cpe NOT LIKE ? )';
+                $return->sql_raw = '( devices.os_cpe NOT LIKE \'' . $value . '\' )';
+            } else {
+                $return->sql = '( devices.os_cpe LIKE ? )';
+                $return->sql_raw = '( devices.os_cpe LIKE \'' . $value . '\' )';
+            }
+            $return->data[] = $value;
+        }
+        // log_message('debug', 'RAW: ' . $return->sql_raw);
+        // log_message('debug', 'SQL: ' . $return->sql);
+        // log_message('debug', 'DATA: ' . json_encode($return->data));
+        return $return;
+    }
+
+    public function generateQuery($vulnerability)
     {
         helper('components');
-        $db = db_connect();
-        $builder = $db->table('devices');
-        if (empty($vulnerability->sql) and empty($vulnerability->filter)) {
-            return null;
+        $return = new stdClass();
+        if (is_string($vulnerability)) {
+            $vulnerability = json_decode($vulnerability);
         }
-        if (!empty($vulnerability->filter) and is_string($vulnerability->filter)) {
+        if (is_string($vulnerability->filter)) {
             $vulnerability->filter = json_decode($vulnerability->filter);
         }
-        if (empty($vulnerability->filter)) {
-            log_message('warning', 'Could not decode JSON filter for ' . $vulnerability->name . '.');
-            return null;
-        }
-        $properties = array();
-        $properties[] = 'devices.id AS `devices.id`';
-        $properties[] = 'devices.name AS `devices.name`';
-        $properties[] = 'devices.org_id AS `devices.org_id`';
-        $properties[] = 'orgs.name AS `orgs.name`';
-        $where = array();
-        foreach ($vulnerability->filter as $filter) {
-            if ($filter->type === 'software') {
-                $builder->join('software', 'software.device_id = devices.id', 'left');
-                $where['software.current'] = 'y';
-                $where['software.name'] = $filter->name;
-                $properties[] = 'software.name AS `software.name`';
-                $properties[] = 'software.version AS `software.version`';
-                if (in_array($filter->operator, ['eq', 'ne', 'ge', 'le', 'gt', 'lt', 'like', 'not like'])) {
-                    switch ($filter->operator) {
-                        case 'eq':
-                            $where['software.version'] = $filter->version;
-                            break;
 
-                        case 'ne':
-                            $where['software.version !='] = $filter->version;
-                            break;
+        $sql = '';
+        $sql_raw = '';
+        $types = array();
+        $data = array();
+        $nodeConditions = array();
+        if (!empty($vulnerability->filter) and is_array($vulnerability->filter)) {
+            foreach ($vulnerability->filter as $filter) {
+                if (!empty($filter->nodes) and is_array($filter->nodes)) {
+                    foreach ($filter->nodes as $node) {
+                        # ??? $nodeConditions = array();
+                        if (!empty($node->cpeMatch) and is_array($node->cpeMatch)) {
+                            $conditions = array();
+                            foreach ($node->cpeMatch as $cpeMatch) {
+                                if (cpe_get_type($cpeMatch->criteria) === 'a') {
+                                    $types[] = 'a';
+                                }
+                                if (cpe_get_type($cpeMatch->criteria) === 'h') {
+                                    $types[] = 'h';
+                                }
+                                if (cpe_get_type($cpeMatch->criteria) === 'o') {
+                                    $types[] = 'o';
+                                }
+                                if (!isset($cpeMatch->versionStartIncluding) and !isset($cpeMatch->versionStartExcluding) and !isset($cpeMatch->versionEndIncluding) and !isset($cpeMatch->versionEndExcluding)) {
+                                    // We should have a 1 to 1 match with the CPE
+                                    $operator = '=';
+                                    if (!$cpeMatch->vulnerable) { $operator = '!='; }
+                                    #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
+                                    $temp = $this->makeCondition($cpeMatch->criteria, cpe_get_version($cpeMatch->criteria), $operator, $cpeMatch->vulnerable);
+                                    $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
+                                    if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
 
-                        case 'ge':
-                            $filter->version = version_padded($filter->version);
-                            $where['software.version_padded >='] = $filter->version;
-                            break;
+                                } else {
+                                    $operator = '=';
+                                    if (isset($cpeMatch->versionStartIncluding)) {
+                                        $version = $cpeMatch->versionStartIncluding;
+                                        $operator = '>=';
+                                        if (!$cpeMatch->vulnerable) { $operator = '<'; }
+                                        #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
+                                        if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
+                                    }
 
-                        case 'le':
-                            $filter->version = version_padded($filter->version);
-                            $where['software.version_padded <='] = $filter->version;
-                            break;
+                                    if (isset($cpeMatch->versionStartExcluding)) {
+                                        $version = $cpeMatch->versionStartExcluding;
+                                        $operator = '>';
+                                        if (!$cpeMatch->vulnerable) { $operator = '<='; }
+                                        #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
+                                        if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
+                                    }
 
-                        case 'gt':
-                            $filter->version = version_padded($filter->version);
-                            $where['software.version_padded >'] = $filter->version;
-                            break;
+                                    if (isset($cpeMatch->versionEndIncluding)) {
+                                        $version = $cpeMatch->versionEndIncluding;
+                                        $operator = '<=';
+                                        if (!$cpeMatch->vulnerable) { $operator = '>'; }
+                                        #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
+                                        if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
+                                    }
 
-                        case 'lt':
-                            $filter->version = version_padded($filter->version);
-                            $where['software.version_padded <'] = $filter->version;
-                            break;
+                                    if (isset($cpeMatch->versionEndExcluding)) {
+                                        $version = $cpeMatch->versionEndExcluding;
+                                        $operator = '<';
+                                        if (!$cpeMatch->vulnerable) { $operator = '>='; }
+                                        #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
+                                        if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
+                                    }
 
-                        case 'like':
-                            $where['software.version LIKE'] = $filter->version;
-                            break;
+                                    if ($operator === '=' and $cpeMatch->vulnerable === true) {
+                                        cpe_get_version($cpeMatch->criteria);
+                                        $operator = '!=';
+                                        #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
+                                        if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
 
-                        case 'not like':
-                            $where['software.version NOT LIKE'] = $filter->version;
-                            break;
-
-                        default:
-                            // nothing
-                            break;
-                    }
+                                    } else if ($operator === '=' and $cpeMatch->vulnerable === false) {
+                                        cpe_get_version($cpeMatch->criteria);
+                                        $operator = '!=';
+                                        #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
+                                        if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
+                                    }
+                                }
+                            } // CPEMatch loop
+                            // log_message('debug', 'Conditions: ' . json_encode($conditions));
+                            $o = (!empty($node->operator) and $node->operator === 'OR') ? 'OR' : 'AND';
+                            if (count($conditions) > 1) {
+                                $nodeConditions[] = '(' . implode(' ' . $o . ' ', $conditions) . ')';
+                            } else {
+                                $nodeConditions[] = implode(' ' . $o . ' ', $conditions);
+                            }
+                            // log_message('debug', 'nodeConditions: ' . json_encode($nodeConditions) . "\n");
+                            unset($o);
+                            unset($conditions);
+                        }
+                    } // Node loop
+                    $o = (!empty($filter->operator) and $filter->operator === 'OR') ? 'OR' : 'AND';
+                    $sql = implode(' ' . $o . ' ', $nodeConditions);
+                    unset($o);
                 }
-            }
-
-            if ($filter->type === 'devices') {
-                if (in_array($filter->operator, ['eq', 'ne', 'ge', 'le', 'gt', 'lt', 'like', 'not like'])) {
-                    switch ($filter->operator) {
-                        case 'eq':
-                            $where['devices.' . $filter->name] = $filter->version;
-                            break;
-
-                        case 'ne':
-                            $where['devices.' . $filter->name . ' !='] = $filter->version;
-                            break;
-
-                        case 'ge':
-                            #$filter->version = version_padded($filter->version);
-                            $where['devices.' . $filter->name . ' >='] = $filter->version;
-                            break;
-
-                        case 'le':
-                            #$filter->version = version_padded($filter->version);
-                            $where['devices.' . $filter->name . ' <='] = $filter->version;
-                            break;
-
-                        case 'gt':
-                            #$filter->version = version_padded($filter->version);
-                            $where['devices.' . $filter->name . ' >'] = $filter->version;
-                            break;
-
-                        case 'lt':
-                            #$filter->version = version_padded($filter->version);
-                            $where['devices.' . $filter->name . ' <'] = $filter->version;
-                            break;
-
-                        case 'like':
-                            $where['devices.' . $filter->name . ' LIKE'] = $filter->version;
-                            break;
-
-                        case 'not like':
-                            $where['devices.' . $filter->name . ' NOT LIKE'] = $filter->version;
-                            break;
-
-                        default:
-                            // nothing
-                            break;
-                    }
-                }
-            }
+            }  // Filter loop
+        } else {
+            log_message('warning', 'Empty filter');
         }
-        $builder->select($properties, false);
-        $builder->join('orgs', 'devices.org_id = orgs.id', 'left');
-        $builder->where($where);
-        return $builder;
+        if (in_array('a', $types)) {
+            $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, devices.os_family AS `devices.os_family`, orgs.name AS `orgs.name`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql;
+            $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, devices.os_family AS `devices.os_family`, orgs.name AS `orgs.name`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql_raw;
+        } else if (in_array('o', $types)) {
+            $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql;
+            $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql_raw;
+        }
+
+        // log_message('debug', "NodeConditions: " . json_encode($nodeConditions) . "\n");
+        // log_message('debug', "data: " . json_encode($data) . "\n");
+        $return->sql = $sql;
+        $return->data = $data;
+        return $return;
     }
 
     /**
@@ -217,16 +279,51 @@ class VulnerabilitiesModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        if (!empty($data->filter)) {
+            $filter = $data->filter;
+        }
+        if (!empty($data->filter) and !is_string($data->filter)) {
+            $data->filter = json_encode($data->filter);
+        }
+        if (!empty($data->links) and !is_string($data->links)) {
+            $data->links = json_encode($data->links);
+        }
         $data = $this->createFieldData('vulnerabilities', $data);
         if (empty($data)) {
             return null;
+        }
+        if (empty($filter)) {
+            log_message('error', 'No Filter after createFieldData.');
         }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return null;
         }
-        return (intval($this->db->insertID()));
+        $id = intval($this->db->insertID());
+        // Check if we have any matching packages in the database and set status to unlikely if no result
+        $query = $this->builder->getWhere(['id' => intval($id)]);
+        if ($this->sqlError($this->db->error())) {
+            log_message('warning', 'Could not read vulnerability with ID: ' . $id . ', after create.');
+            return ($id);
+        }
+        $vulnerability = $query->getResult()[0];
+        $vQuery = $this->generateQuery($vulnerability);
+        if (stripos($vQuery->sql, 'software.name') !== false) {
+            $vQuery->sql = $vQuery->sql . " GROUP BY software.name";
+        } else if (stripos($vQuery->sql, 'os_cpe') !== false) {
+            $vQuery->sql = $vQuery->sql . " GROUP BY devices.os_cpe";
+        } else if (stripos($vQuery->sql, 'hw_cpe') !== false) {
+            $vQuery->sql = $vQuery->sql . " GROUP BY devices.hw_cpe";
+        }
+        $result = $this->db->query($vQuery->sql, $vQuery->data)->getResult();
+        if (count($result) === 0) {
+            $data = new stdClass();
+            $data->status = 'unlikely';
+            $this->builder->where('id', intval($id));
+            $this->builder->update($data);
+        }
+        return ($id);
     }
 
     /**
@@ -259,20 +356,36 @@ class VulnerabilitiesModel extends BaseModel
         $instance = & get_instance();
         $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
         $org_list = array_unique($org_list);
+        $org_list = implode(',', $org_list);
 
-        $vulnerability = $this->builder->get(1)->getResult()[0];
+        $included = array();
+        $included['devices'] = array();
+        $included['software'] = '';
+        $vulnerability = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
+        $result = array();
         if (empty($vulnerability->sql)) {
-            $builder = $this->generateQuery($vulnerability);
-            $builder->whereIn('devices.org_id', $org_list);
-            $devices = $builder->get()->getResult();
+            // Make our SQL
+            $vQuery = $this->generateQuery($vulnerability);
+            $vQuery->sql = $vQuery->sql . " AND devices.org_id IN ({$org_list})";
+            $devices = $this->db->query($vQuery->sql, $vQuery->data)->getResult();
+            $included['devices'] = format_data($devices, 'devices');
         } else {
-            $org_list = implode(',', $org_list);
-            $vulnerability->sql = str_ireplace(' devices.org_id = @filter', " devices.org_id IN ({$org_list})", $vulnerability->sql);
-            $devices = $this->db->query($vulnerability->sql)->getResult();
+            // Make our SQL
+            $sql = $vulnerability->sql . " AND devices.org_id IN ({$org_list})";
+            $devices = $this->db->query($sql)->getResult();
+            $included['devices'] = format_data($devices, 'devices');
         }
-        $return = array();
-        $return['devices'] = format_data($devices, 'devices');
-        return $return;
+        if (!empty($devices)) {
+            if (isset($devices[0]->{'software.name'})) {
+                $software = array();
+                foreach ($devices as $row) {
+                    $software[] = $row->{'software.name'};
+                }
+                $software = array_unique($software);
+                $included['software'] = implode(', ', $software);
+            }
+        }
+        return $included;
     }
 
     /**
@@ -342,14 +455,30 @@ class VulnerabilitiesModel extends BaseModel
             return array();
         }
         $item = $query->getResult();
-        $item[0]->firstwave = json_decode($item[0]->firstwave_raw);
-        $item[0]->cve_record = json_decode($item[0]->cve_raw);
         $item[0]->filter = json_decode($item[0]->filter);
+        $item[0]->cve_json = json_decode($item[0]->cve_json);
+        $item[0]->other_json = json_decode($item[0]->other_json);
+        $item[0]->other_json->choices[0]->message->content = json_decode($item[0]->other_json->choices[0]->message->content);
+        $item[0]->generated = 'n';
+
         if (empty($item[0]->sql)) {
-            $builder = $this->generateQuery($item[0]);
-            $builder->where('devices.org_id', '@filter', false);
-            $item[0]->sql = str_replace("\n", " ", (string)$builder->getCompiledSelect(false));
+            $instance = & get_instance();
+            $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+            $org_list = array_unique($org_list);
+            $org_list = implode(',', $org_list);
+            // echo "READ :: Getting for ID: $id\n";
+            $vQuery = $this->generateQuery($item[0]);
+            if (!empty($vQuery->sql)) {
+                $vQuery->sql = $vQuery->sql . " AND devices.org_id IN ({$org_list})";
+                $vQuery->sql = str_replace(' ( ) ', ' ', $vQuery->sql);
+                $devices = $this->db->query($vQuery->sql, $vQuery->data)->getResult();
+                $sql = str_replace("\n", " ", (string)$this->db->getLastQuery());
+                $sql = str_replace(" AND devices.org_id IN ({$org_list})", '', $sql);
+                $item[0]->sql = $sql;
+                $item[0]->generated = 'y';
+            }
         }
+
         return format_data($item, 'vulnerabilities');
     }
 
@@ -377,6 +506,13 @@ class VulnerabilitiesModel extends BaseModel
     {
         // Accept our client data
         $data = $this->updateFieldData('vulnerabilities', $data);
+        if (!empty($data->filter) and !is_string($data->filter)) {
+            $data->filter = json_encode($data->filter);
+        }
+        if (!empty($data->filter) and is_string($data->filter)) {
+            $data->filter = json_decode($data->filter);
+            $data->filter = json_encode($data->filter);
+        }
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
         if ($this->sqlError($this->db->error())) {
@@ -400,7 +536,7 @@ class VulnerabilitiesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'cve', 'name', 'published', 'count', 'status');
+        $dictionary->attributes->collection = array('id', 'cve', 'name', 'published', 'affected');
         $dictionary->attributes->create = array('name', 'org_id', 'cve'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
@@ -418,20 +554,36 @@ class VulnerabilitiesModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->cve  = 'The CVE identifier.';
-        $dictionary->columns->published  = 'Date the CVE was published.';
-        $dictionary->columns->cve_raw  = 'The JSON straight from the NIST CVE feed.';
-        $dictionary->columns->firstwave_raw  = 'Firstwave enriched JSON.';
-        $dictionary->columns->other_raw  = 'Other sourced JSON.';
-        $dictionary->columns->sql  = 'The generated (or manually overridden) SQL to test for this vulnerability.';
+        $dictionary->columns->status = 'The user assigned status of pending, confirmed or declined. This should occur after reviewing the <code>filter</code> and generated <code>SQL</code>. If set to declined, this item will not appear on the Vulnerability list by default.';
+        $dictionary->columns->attack_complexity = 'Complexity of the attack (Low or High).';
+        $dictionary->columns->attack_requirements = '';
+        $dictionary->columns->attack_vector = 'How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).';
+        $dictionary->columns->automatable = '';
+        $dictionary->columns->base_score = 'Overall severity score (0–10).';
+        $dictionary->columns->base_severity = 'Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.';
+        $dictionary->columns->description  = 'Human-readable explanation of the vulnerability.';
+        $dictionary->columns->exploit_maturity = 'Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.';
+        $dictionary->columns->impact_availability = 'A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).';
+        $dictionary->columns->impact_confidentiality = 'A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).';
+        $dictionary->columns->impact_integrity = 'A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).';
+        $dictionary->columns->lastModified = 'Date when the CVE was last updated.';
+        $dictionary->columns->privileges_required = 'Level of privileges needed to exploit (None, Low, High).';
+        $dictionary->columns->published = 'Date and time when the CVE was published.';
+        $dictionary->columns->published_date = 'Date when the CVE was published.';
+        $dictionary->columns->references = '';
+        $dictionary->columns->remediation = '';
+        $dictionary->columns->scope = 'Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.';
+        $dictionary->columns->type = 'Application, Operating System or Hardware.';
+        $dictionary->columns->user_interaction = 'Whether user interaction is required (None, Passive, Active).';
+        $dictionary->columns->vendor = '';
+        $dictionary->columns->vuln_status = '';
         $dictionary->columns->filter  = 'A JSON array of values to test for this vulnerability.';
-        $dictionary->columns->status  = 'Should we display this in the list of Vulberabilities.';
+        $dictionary->columns->sql  = 'The generated (or manually overridden) SQL to test for this vulnerability.';
+        $dictionary->columns->cve_json  = 'The JSON straight from the NIST CVE feed.';
+        $dictionary->columns->other_json  = 'Any other JSON apart from the NIST feed.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
 
-        $dictionary->columns->severity = '';
-        $dictionary->columns->availability = '';
-        $dictionary->columns->confidentiality = '';
-        $dictionary->columns->integrity = '';
         return $dictionary;
     }
 }

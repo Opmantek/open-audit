@@ -350,10 +350,9 @@ function read_select(string $name = '', string $value = '', string $dictionary =
                                             <div data-attribute=\"{$name}\" class=\"btn btn-outline-secondary edit\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></div>
                                             <div data-attribute=\"{$name}\" class=\"btn btn-outline-success submit\" style=\"display: none;\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-check\"></span></div>
                                             <div data-attribute=\"{$name}\" class=\"btn btn-outline-danger cancel\" style=\"display: none;\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-remove\"></span></div>
-                                        </div>
-                                    </div>\n";
+                                        </div>\n";
     }
-    $return .= "                            </div>
+    $return .= "                            </div></div>
                             </div>\n";
     return $return;
 }
