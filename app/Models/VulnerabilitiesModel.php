@@ -87,18 +87,18 @@ class VulnerabilitiesModel extends BaseModel
         $return->sql = '';
         $return->sql_raw = '';
         $return->data = array();
-        if (cpe_get_type($criteria) === 'a') {
+        if (cpe_get('part', $criteria) === 'a') {
             $version = version_padded($version);
             $return->sql = '(MATCH(software.name) AGAINST( ? IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' ?)';
-            $return->sql_raw = '(MATCH(software.name) AGAINST("' . cpe_get_product($criteria) . '" IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' "' . $version . '")';
-            $return->data[] = str_replace('_', ' ', cpe_get_product($criteria));
+            $return->sql_raw = '(MATCH(software.name) AGAINST("' . cpe_get('product', $criteria) . '" IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' "' . $version . '")';
+            $return->data[] = str_replace('_', ' ', cpe_get('product', $criteria));
             $return->data[] = version_padded($version);
         }
-        if (cpe_get_type($criteria) === 'o') {
-            if (cpe_get_version($criteria) !== '*' and cpe_get_version($criteria) !== '-') {
-                $value = 'cpe:2.3:o:' . cpe_get_vendor($criteria) . ':' . cpe_get_product($criteria) . ':' . cpe_get_version($criteria) . '%';
+        if (cpe_get('part', $criteria) === 'o') {
+            if (cpe_get('version', $criteria) !== '*' and cpe_get('version', $criteria) !== '-') {
+                $value = 'cpe:2.3:o:' . cpe_get('vendor', $criteria) . ':' . cpe_get('product', $criteria) . ':' . cpe_get('version', $criteria) . '%';
             } else {
-                $value = 'cpe:2.3:o:' . cpe_get_vendor($criteria) . ':' . cpe_get_product($criteria) . '%';
+                $value = 'cpe:2.3:o:' . cpe_get('vendor', $criteria) . ':' . cpe_get('product', $criteria) . '%';
             }
             if ($vulnerable === false) {
                 $return->sql = '( devices.os_cpe NOT LIKE ? )';
@@ -109,11 +109,11 @@ class VulnerabilitiesModel extends BaseModel
             }
             $return->data[] = $value;
         }
-        if (cpe_get_type($criteria) === 'h') {
-            if (cpe_get_version($criteria) !== '*' and cpe_get_version($criteria) !== '-') {
-                $value = 'cpe:2.3:h:' . cpe_get_vendor($criteria) . ':' . cpe_get_product($criteria) . ':' . cpe_get_version($criteria) . '%';
+        if (cpe_get('part', $criteria) === 'h') {
+            if (cpe_get('version', $criteria) !== '*' and cpe_get('version', $criteria) !== '-') {
+                $value = 'cpe:2.3:h:' . cpe_get('vendor', $criteria) . ':' . cpe_get('product', $criteria) . ':' . cpe_get('version', $criteria) . '%';
             } else {
-                $value = 'cpe:2.3:h:' . cpe_get_vendor($criteria) . ':' . cpe_get_product($criteria) . '%';
+                $value = 'cpe:2.3:h:' . cpe_get('vendor', $criteria) . ':' . cpe_get('product', $criteria) . '%';
             }
             if ($vulnerable === false) {
                 $return->sql = '( devices.os_cpe NOT LIKE ? )';
@@ -154,13 +154,13 @@ class VulnerabilitiesModel extends BaseModel
                         if (!empty($node->cpeMatch) and is_array($node->cpeMatch)) {
                             $conditions = array();
                             foreach ($node->cpeMatch as $cpeMatch) {
-                                if (cpe_get_type($cpeMatch->criteria) === 'a') {
+                                if (cpe_get('part', $cpeMatch->criteria) === 'a') {
                                     $types[] = 'a';
                                 }
-                                if (cpe_get_type($cpeMatch->criteria) === 'h') {
+                                if (cpe_get('part', $cpeMatch->criteria) === 'h') {
                                     $types[] = 'h';
                                 }
-                                if (cpe_get_type($cpeMatch->criteria) === 'o') {
+                                if (cpe_get('part', $cpeMatch->criteria) === 'o') {
                                     $types[] = 'o';
                                 }
                                 if (!isset($cpeMatch->versionStartIncluding) and !isset($cpeMatch->versionStartExcluding) and !isset($cpeMatch->versionEndIncluding) and !isset($cpeMatch->versionEndExcluding)) {
@@ -168,7 +168,7 @@ class VulnerabilitiesModel extends BaseModel
                                     $operator = '=';
                                     if (!$cpeMatch->vulnerable) { $operator = '!='; }
                                     #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
-                                    $temp = $this->makeCondition($cpeMatch->criteria, cpe_get_version($cpeMatch->criteria), $operator, $cpeMatch->vulnerable);
+                                    $temp = $this->makeCondition($cpeMatch->criteria, cpe_get('version', $cpeMatch->criteria), $operator, $cpeMatch->vulnerable);
                                     $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
                                     if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
 
@@ -215,7 +215,7 @@ class VulnerabilitiesModel extends BaseModel
                                     }
 
                                     if ($operator === '=' and $cpeMatch->vulnerable === true) {
-                                        cpe_get_version($cpeMatch->criteria);
+                                        cpe_get('version', $cpeMatch->criteria);
                                         $operator = '!=';
                                         #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
                                         $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
@@ -223,7 +223,7 @@ class VulnerabilitiesModel extends BaseModel
                                         if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
 
                                     } else if ($operator === '=' and $cpeMatch->vulnerable === false) {
-                                        cpe_get_version($cpeMatch->criteria);
+                                        cpe_get('version', $cpeMatch->criteria);
                                         $operator = '!=';
                                         #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
                                         $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
