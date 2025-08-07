@@ -1525,6 +1525,7 @@ CREATE TABLE `devices` (
   `os_name` varchar(100) NOT NULL DEFAULT '',
   `os_version` varchar(200) NOT NULL DEFAULT '',
   `os_cpe` varchar(200) NOT NULL DEFAULT '',
+  `hw_cpe` varchar(200) NOT NULL DEFAULT '',
   `kernel_version` varchar(200) NOT NULL DEFAULT '',
   `tags` text NOT NULL DEFAULT '[]',
   `attached_device_id` int(10) unsigned DEFAULT NULL,
@@ -3732,9 +3733,9 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (NULL,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"auth\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"executables\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (NULL,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"benchmarks\":\"crud\",\"benchmarks_exceptions\":\"crud\",\"benchmarks_policies\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"packages\":\"crud\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (NULL,'user','A standard role that can read all endpoints that contain an org_id.','{\"agents\":\"r\",\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"executables\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"packages\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"standards\":\"\",\"standards_results\":\"\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"auth\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"executables\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"vulnerabilities\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"benchmarks\":\"crud\",\"benchmarks_exceptions\":\"crud\",\"benchmarks_policies\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"packages\":\"crud\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"vulnerabilities\":\"r\",\"widgets\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (NULL,'user','A standard role that can read all endpoints that contain an org_id.','{\"agents\":\"r\",\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"executables\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"packages\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"standards\":\"\",\"standards_results\":\"\",\"vulnerabilities\":\"r\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (NULL,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -4160,6 +4161,7 @@ CREATE TABLE `software` (
   KEY `first_seen` (`first_seen`),
   KEY `last_seen` (`last_seen`),
   KEY `name` (`name`),
+  FULLTEXT KEY `software_name_fulltext` (`name`),
   CONSTRAINT `software_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -4833,13 +4835,33 @@ CREATE TABLE `vulnerabilities` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `cve` varchar(200) NOT NULL DEFAULT '',
+  `status` enum('confirmed', 'declined', 'pending', 'unlikely', 'other', ''),
+  `attack_complexity` varchar(200) NOT NULL DEFAULT '',
+  `attack_requirements` text NOT NULL,
+  `attack_vector` varchar(200) NOT NULL DEFAULT '',
+  `automatable` varchar(200) NOT NULL DEFAULT '',
+  `base_score` varchar(200) NOT NULL DEFAULT '',
+  `base_severity` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `exploit_maturity` varchar(200) NOT NULL DEFAULT '',
+  `impact_availability` varchar(200) NOT NULL DEFAULT '',
+  `impact_confidentiality` varchar(200) NOT NULL DEFAULT '',
+  `impact_integrity` varchar(200) NOT NULL DEFAULT '',
+  `lastModified` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `privileges_required` varchar(200) NOT NULL DEFAULT '',
+  `published_date` date NOT NULL DEFAULT '2000-01-01',
   `published` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `cve_raw` text NOT NULL,
-  `firstwave_raw` text NOT NULL,
-  `other_raw` text NOT NULL,
-  `sql` text NOT NULL,
+  `references` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`references`)),
+  `remediation` text NOT NULL,
+  `scope` text NOT NULL,
+  `type` varchar(200) NOT NULL DEFAULT '',
+  `user_interaction` text NOT NULL,
+  `vendor` varchar(200) NOT NULL DEFAULT '',
+  `vuln_status` varchar(200) NOT NULL DEFAULT '',
   `filter` text NOT NULL,
-  `status` enum('confirmed', 'declined', 'pending', 'other', ''),
+  `sql` text NOT NULL,
+  `cve_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`cve_json`)),
+  `other_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`other_json`)),
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)

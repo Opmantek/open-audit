@@ -540,6 +540,9 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.34', 'Protection of information systems during audit testing', 'Audit tests and other assurance activities involving assessment of operational systems shall be planned and agreed between the tester and appropriate management.";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 $sql = "SELECT * FROM `roles`";
 $roles = $db->query($sql)->getResult();
@@ -552,6 +555,7 @@ foreach ($roles as $role) {
         if ($role->name === 'org_admin' or $role->name === 'admin') {
             $permissions->standards = 'crud';
             $permissions->standards_results = 'crud';
+            $permissions->vulnerabilities = 'crud';
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -559,6 +563,7 @@ foreach ($roles as $role) {
         } else {
             $permissions->standards = '';
             $permissions->standards_results = '';
+            $permissions->vulnerabilities = 'r';
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -566,6 +571,73 @@ foreach ($roles as $role) {
         }
     }
 }
+
+$sql = "SELECT DISTINCT index_name FROM INFORMATION_SCHEMA.STATISTICS WHERE (table_schema, table_name) = ('openaudit', 'software') AND index_type = 'FULLTEXT'";
+$result = $db->query($sql)->getResult();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+if (!empty($result[0]->index_name) and $result[0]->index_name === 'software_name_fulltext') {
+  // we already have an index, leave it
+} else {
+  // Make a new index
+  $sql = "ALTER TABLE `software` ADD FULLTEXT INDEX `software_name_fulltext` (`name`)";
+  $db->query($sql);
+  $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+  log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('hw_cpe', 'devices')) {
+  $sql = "ALTER TABLE devices ADD hw_cpe varchar(200) NOT NULL DEFAULT '' AFTER os_cpe";
+  $db->query($sql);
+  $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+  log_message('info', (string)$db->getLastQuery());
+}
+
+$sql = "DROP TABLE IF EXISTS `vulnerabilities`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "CREATE TABLE `vulnerabilities` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `cve` varchar(200) NOT NULL DEFAULT '',
+  `status` enum('confirmed', 'declined', 'pending', 'unlikely', 'other', ''),
+  `attack_complexity` varchar(200) NOT NULL DEFAULT '',
+  `attack_requirements` text NOT NULL,
+  `attack_vector` varchar(200) NOT NULL DEFAULT '',
+  `automatable` varchar(200) NOT NULL DEFAULT '',
+  `base_score` varchar(200) NOT NULL DEFAULT '',
+  `base_severity` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `exploit_maturity` varchar(200) NOT NULL DEFAULT '',
+  `impact_availability` varchar(200) NOT NULL DEFAULT '',
+  `impact_confidentiality` varchar(200) NOT NULL DEFAULT '',
+  `impact_integrity` varchar(200) NOT NULL DEFAULT '',
+  `lastModified` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `privileges_required` varchar(200) NOT NULL DEFAULT '',
+  `published_date` date NOT NULL DEFAULT '2000-01-01',
+  `published` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `references` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`references`)),
+  `remediation` text NOT NULL,
+  `scope` text NOT NULL,
+  `type` varchar(200) NOT NULL DEFAULT '',
+  `user_interaction` text NOT NULL,
+  `vendor` varchar(200) NOT NULL DEFAULT '',
+  `vuln_status` varchar(200) NOT NULL DEFAULT '',
+  `filter` text NOT NULL,
+  `sql` text NOT NULL,
+  `cve_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`cve_json`)),
+  `other_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`other_json`)),
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20250615' WHERE `name` = 'internal_version'";
