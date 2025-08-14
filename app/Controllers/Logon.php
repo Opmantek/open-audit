@@ -99,7 +99,7 @@ class Logon extends Controller
                 // Request a news item
                 log_message('debug', 'Requesting news articles.');
                 $newsModel = model('NewsModel');
-                $newsModel->executeAll();
+                $newsModel->executeAll('news');
                 $sql = 'UPDATE configuration SET value = ? WHERE name = "feature_news_last_request_date"';
                 $db->query($sql, [date('Y-m-d')]);
             }

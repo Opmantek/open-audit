@@ -122,7 +122,7 @@ function collection_card_header(string $collection = '', string $icon = '', obje
 
         $show_all_button .= "<a id=\"button_declined\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Show Declined") . "\" href=\"" . url_to($collection . 'Collection') . "?vulnerabilities.status=declined\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span><span class=\"text-danger\">" . __("Show Declined") . "</span></a>&nbsp;";
 
-        $show_all_button .= "<span style=\"margin-right:100px;\"></span>";
+        $show_all_button .= "<span style=\"margin-right:50px;\"></span>";
     }
 
     $return = "<div class=\"row\">

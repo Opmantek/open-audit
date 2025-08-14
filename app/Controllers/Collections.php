@@ -420,6 +420,9 @@ class Collections extends BaseController
     public function dictionary($model)
     {
         $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
+        $this->response->setContentType('application/json');
+        $this->response->noCache();;
+        $this->response->setStatusCode($this->resp->meta->header);
         echo json_encode($dictionary);
     }
 

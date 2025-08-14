@@ -40,7 +40,7 @@ class News extends BaseController
      * @return void
      * @throws Exception
      */
-    public function executeAll()
+    public function executeAll(string $action = 'news')
     {
         $session = \Config\Services::session();
         $user = '';
@@ -49,10 +49,18 @@ class News extends BaseController
             $userFromDB = $usersModel->read($session->get('user_id'));
             $user = $userFromDB[0]->attributes->full_name;
         }
-        log_message('info', 'ACCESS:news:executeAll::' . $user);
+        if ($action === 'news') {
+            log_message('info', 'ACCESS:news:executeAll::' . $user);
+        } else if ($action === 'vulnerabilities') {
+            log_message('info', 'ACCESS:news:executeAllVulnerabilities::' . $user);
+        } else {
+            log_message('info', 'ACCESS:news:executeAll::' . $user);
+            log_message('warning', 'Unknown action of ' . $action . ' used in News::executeAll.');
+            return redirect()->route('home');
+        }
         $this->newsModel = model('App\Models\NewsModel');
-        $this->newsModel->executeAll('news');
-        return redirect()->route('newsCollection');
+        $this->newsModel->executeAll($action);
+        return redirect()->route($action . 'Collection');
     }
 
     public function execute($id)

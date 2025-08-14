@@ -97,6 +97,8 @@ $routes->post('discoveries/(:num)/executeForm', 'Discoveries::executeCollector/$
 
 $routes->get('news/execute', 'News::executeAll', ['as' => 'newsExecuteAll']);
 $routes->cli('news/execute', 'Cli::executeNews', ['as' => 'executeNewsAll']);
+$routes->get('news/execute/vulnerabilities', 'News::executeAll/vulnerabilities', ['as' => 'newsExecuteAllVulnerabilities']);
+$routes->cli('news/execute/vulnerabilities', 'Cli::executeNews/vulnerabilities', ['as' => 'executeNewsAllVulnerabilities']);
 $routes->cli('news/execute/(:any)', 'Cli::executeNews/$1', ['as' => 'executeNewsAction']);
 
 

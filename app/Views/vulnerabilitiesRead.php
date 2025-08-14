@@ -120,25 +120,49 @@ if ($style === 'icontext') {
                                         </div>
                                     </div>
                                 <?php } ?>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-5 offset-1">
+                                            <?= read_field('severity', $resource->base_severity, $dictionary->columns->base_severity, false, '', '', '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-5">
+                                            <?= read_field('availability', $resource->impact_availability, $dictionary->columns->impact_availability, false, 'Impact :: Availability', '', '', '', $meta->collection) ?>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-5 offset-1">
+                                            <?= read_field('confidentiality', $resource->impact_confidentiality, $dictionary->columns->impact_confidentiality, false, 'Impact :: Confidentiality', '', '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-5">
+                                            <?= read_field('integrity', $resource->impact_integrity, $dictionary->columns->impact_integrity, false, 'Impact :: Integrity', '', '', '', $meta->collection) ?>
+                                        </div>
+                                    </div>
+
+                                    <?php
+                                    if (!empty($resource->references) and is_array($resource->references)) {
+
+                                        echo "<br><br><div class=\"row\">\n";
+                                        foreach ($resource->references as $link) {
+                                            if ($link->rel !== 'Broken Link') {
+                                                echo "<div class=\"col-10 offset-2\">" . $link->rel . ": <a target=\"_blank\" href=\"" . $link->url . "\">" . $link->url . "</a><br><br></div>\n";
+                                            }
+                                        }
+                                        echo "</div>\n";
+                                    }
+                                    ?>
+
                                 </div>
 
                                 <div class="col-6">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <?= read_field('severity', @$resource->base_severity, $dictionary->columns->base_severity, false, '', '', '', '', $meta->collection) ?>
-                                        </div>
-                                        <div class="col-6">
-                                            <?= read_field('availability', @$resource->impact_availability, $dictionary->columns->impact_availability, false, 'Impact :: Availability', '', '', '', $meta->collection) ?>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <?= read_field('confidentiality', @$resource->impact_confidentiality, $dictionary->columns->impact_confidentiality, false, 'Impact :: Confidentiality', '', '', '', $meta->collection) ?>
-                                        </div>
-                                        <div class="col-6">
-                                            <?= read_field('integrity', @$resource->impact_integrity, $dictionary->columns->impact_integrity, false, 'Impact :: Integrity', '', '', '', $meta->collection) ?>
-                                        </div>
-                                    </div>
+                                    <?php
+                                    if (!empty($resource->products)) {
+                                        foreach ($resource->products as $key => $value) {
+                                            echo read_field('products.' . $key , implode(', ', $value->names), 'Products derived from the CPE product name.', $update, __('Product Name Match from CPE: ') . $key, '', '', '', $meta->collection);
+                                        }
+                                        echo "<br><div class=\"col-10 offset-1\"><hr></div>";
+                                    }
+                                    ?>
+
 
                                     <?php
                                     $style = '';
@@ -148,10 +172,10 @@ if ($style === 'icontext') {
                                     }
                                     ?>
                                     <div class="row" style="padding-top:16px;">
-                                        <div class="offset-1 col-10" style="position:relative;">
+                                        <div class="offset-2 col-8" style="position:relative;">
                                             <div class="row" id="header_row_software_12">
                                                 <div class="col-10 clearfix">
-                                                    <label for="software" class="form-label" title="software">Matched Software Names</label>
+                                                    <label for="software" class="form-label" title="software">Matched Software Names From Your Database</label>
                                                 </div>
                                                 <div class="col-2">
                                                     <div class="float-end">
@@ -164,12 +188,13 @@ if ($style === 'icontext') {
                                             </div>
                                         </div>
                                     </div>
+                                    <br><div class="col-10 offset-1"><hr></div><br>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-1 col-10" style="position:relative;">
                                             <?= read_field_header($meta->collection, 'filter', $dictionary->columns->filter, 'Filter') ?>
                                             <div class="input-group">
-                                                <textarea class="form-control" rows="8" id="filter" name="filter" data-original-value="<?= htmlentities(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?>" disabled><?= html_entity_decode(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?></textarea>
+                                                <textarea class="form-control" rows="12" id="filter" name="filter" data-original-value="<?= htmlentities(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?>" disabled><?= html_entity_decode(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?></textarea>
                                                 <?php if ($update) { ?>
                                                 <div class="float-end" style="padding-left:4px;">
                                                     <div data-attribute="filter" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
@@ -215,14 +240,6 @@ if ($style === 'icontext') {
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-1 col-10" style="position:relative;">
                                     <?= read_field_header($meta->collection, 'cve_json', $dictionary->columns->cve_json, $dictionary->columns->cve_json) ?>
-
-
-
-                                    <div class="input-group">
-                                        <textarea class="form-control" rows="12" id="other_json" name="other_json" disabled><?= html_entity_decode(json_encode($resource->other_json, JSON_PRETTY_PRINT)) ?></textarea>
-                                    </div>
-                                    <br><br>
-
                                     <?php
                                     if (!empty($resource->cve_json)) {
                                         $rows = substr_count(json_encode($resource->cve_json, JSON_PRETTY_PRINT), "\n");

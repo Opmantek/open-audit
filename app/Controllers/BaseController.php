@@ -112,6 +112,7 @@ abstract class BaseController extends Controller
         $this->rolesModel = model('App\Models\RolesModel');
         $this->summariesModel = model('App\Models\SummariesModel');
         $this->usersModel = model('App\Models\UsersModel');
+        $this->vulnerabilitiesModel = model('App\Models\VulnerabilitiesModel');
 
         $this->roles = $this->rolesModel->listAll();
         $this->collections = new \Config\Collections();

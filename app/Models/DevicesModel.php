@@ -1316,6 +1316,7 @@ class DevicesModel extends BaseModel
         $dictionary->columns->os_name = 'Populated by discovery and audit.';
         $dictionary->columns->os_version = 'Populated by discovery and audit.';
         $dictionary->columns->os_cpe = 'Populated by discovery and audit.';
+        $dictionary->columns->hw_cpe = 'Populated by discovery and audit.';
         $dictionary->columns->kernel_version = 'Populated by discovery and audit.';
         $dictionary->columns->tags = 'Manually set by user.';
         $dictionary->columns->attached_device_id = 'Unused.';
@@ -1347,7 +1348,7 @@ class DevicesModel extends BaseModel
         $dictionary->columns->class = 'Derived from device type and OS.';
         $dictionary->columns->function = 'Manually set by user.';
         $dictionary->columns->owner = 'Manually set by user.';
-        $dictionary->columns->location_id = 'Can be set by discovery or user.';
+        $dictionary->columns->location_id = 'Can be set by discovery or user. Uses the ID from the locations table.';
         $dictionary->columns->location_level = 'Manually set by user.';
         $dictionary->columns->location_suite = 'Manually set by user.';
         $dictionary->columns->location_room = 'Manually set by user.';

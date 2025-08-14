@@ -78,7 +78,7 @@ class VulnerabilitiesModel extends BaseModel
         return $included;
     }
 
-    public function makeCondition(string $criteria, string $version, string $operator, bool $vulnerable)
+    public function makeCondition(string $criteria, string $version, string $operator, bool $vulnerable, ?object $products)
     {
         helper('device');
         helper('components');
@@ -87,12 +87,28 @@ class VulnerabilitiesModel extends BaseModel
         $return->sql = '';
         $return->sql_raw = '';
         $return->data = array();
+        $cpeProduct = cpe_get('product', $criteria);
         if (cpe_get('part', $criteria) === 'a') {
             $version = version_padded($version);
-            $return->sql = '(MATCH(software.name) AGAINST( ? IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' ?)';
-            $return->sql_raw = '(MATCH(software.name) AGAINST("' . cpe_get('product', $criteria) . '" IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' "' . $version . '")';
-            $return->data[] = str_replace('_', ' ', cpe_get('product', $criteria));
-            $return->data[] = version_padded($version);
+            if (!empty($products->{$cpeProduct})) {
+                $tempSQL = array();
+                foreach ($products->{$cpeProduct}->names as $name) {
+                    // $tempSQL[] = '(MATCH(software.name) AGAINST(? IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' ?)';
+                    // $return->sql_raw = '(MATCH(software.name) AGAINST("' . $name . '" IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' "' . $version . '")';
+                    $tempSQL[] = '(software.name = ? AND software.version_padded ' . $operator . ' ?)';
+                    $return->sql_raw = 'software.name = "' . $name . '" AND software.version_padded ' . $operator . ' "' . $version . '")';
+                    $return->data[] = $name;
+                    $return->data[] = version_padded($version);
+                }
+                $return->sql = implode(' OR ', $tempSQL);
+            } else {
+                // $return->sql = '(MATCH(software.name) AGAINST(? IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' ?)';
+                // $return->sql_raw = '(MATCH(software.name) AGAINST("' . cpe_get('product', $criteria) . '" IN NATURAL LANGUAGE MODE) AND software.version_padded ' . $operator . ' "' . $version . '")';
+                $return->sql = '(software.name = ? AND software.version_padded ' . $operator . ' ?)';
+                $return->sql_raw = '(software.name = "' . cpe_get('product', $criteria) . '" AND software.version_padded ' . $operator . ' "' . $version . '")';
+                $return->data[] = str_replace('_', ' ', cpe_get('product', $criteria));
+                $return->data[] = version_padded($version);
+            }
         }
         if (cpe_get('part', $criteria) === 'o') {
             if (cpe_get('version', $criteria) !== '*' and cpe_get('version', $criteria) !== '-') {
@@ -140,6 +156,9 @@ class VulnerabilitiesModel extends BaseModel
         if (is_string($vulnerability->filter)) {
             $vulnerability->filter = json_decode($vulnerability->filter);
         }
+        if (is_string($vulnerability->products)) {
+            $vulnerability->products = json_decode($vulnerability->products);
+        }
 
         $sql = '';
         $sql_raw = '';
@@ -150,7 +169,6 @@ class VulnerabilitiesModel extends BaseModel
             foreach ($vulnerability->filter as $filter) {
                 if (!empty($filter->nodes) and is_array($filter->nodes)) {
                     foreach ($filter->nodes as $node) {
-                        # ??? $nodeConditions = array();
                         if (!empty($node->cpeMatch) and is_array($node->cpeMatch)) {
                             $conditions = array();
                             foreach ($node->cpeMatch as $cpeMatch) {
@@ -168,7 +186,7 @@ class VulnerabilitiesModel extends BaseModel
                                     $operator = '=';
                                     if (!$cpeMatch->vulnerable) { $operator = '!='; }
                                     #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
-                                    $temp = $this->makeCondition($cpeMatch->criteria, cpe_get('version', $cpeMatch->criteria), $operator, $cpeMatch->vulnerable);
+                                    $temp = $this->makeCondition($cpeMatch->criteria, cpe_get('version', $cpeMatch->criteria), $operator, $cpeMatch->vulnerable, $vulnerability->products);
                                     $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
                                     if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
 
@@ -179,7 +197,7 @@ class VulnerabilitiesModel extends BaseModel
                                         $operator = '>=';
                                         if (!$cpeMatch->vulnerable) { $operator = '<'; }
                                         #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
-                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable, $vulnerability->products);
                                         $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
                                         if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
                                     }
@@ -189,7 +207,7 @@ class VulnerabilitiesModel extends BaseModel
                                         $operator = '>';
                                         if (!$cpeMatch->vulnerable) { $operator = '<='; }
                                         #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
-                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable, $vulnerability->products);
                                         $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
                                         if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
                                     }
@@ -199,7 +217,7 @@ class VulnerabilitiesModel extends BaseModel
                                         $operator = '<=';
                                         if (!$cpeMatch->vulnerable) { $operator = '>'; }
                                         #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
-                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable, $vulnerability->products);
                                         $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
                                         if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
                                     }
@@ -209,7 +227,7 @@ class VulnerabilitiesModel extends BaseModel
                                         $operator = '<';
                                         if (!$cpeMatch->vulnerable) { $operator = '>='; }
                                         #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
-                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable, $vulnerability->products);
                                         $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
                                         if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
                                     }
@@ -218,7 +236,7 @@ class VulnerabilitiesModel extends BaseModel
                                         cpe_get('version', $cpeMatch->criteria);
                                         $operator = '!=';
                                         #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
-                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable, $vulnerability->products);
                                         $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
                                         if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
 
@@ -226,7 +244,7 @@ class VulnerabilitiesModel extends BaseModel
                                         cpe_get('version', $cpeMatch->criteria);
                                         $operator = '!=';
                                         #log_message('debug', 'Test: ' . $cpeMatch->criteria . ' :: ' . $operator);
-                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable);
+                                        $temp = $this->makeCondition($cpeMatch->criteria, $version, $operator, $cpeMatch->vulnerable, $vulnerability->products);
                                         $data = (!empty($temp->data) and is_array($temp->data) and !empty($temp->sql)) ? array_merge($data, $temp->data) : $data;
                                         if (!empty($temp->sql)) { $conditions[] = $temp->sql; }
                                     }
@@ -256,6 +274,9 @@ class VulnerabilitiesModel extends BaseModel
             $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, devices.os_family AS `devices.os_family`, orgs.name AS `orgs.name`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql;
             $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, devices.os_family AS `devices.os_family`, orgs.name AS `orgs.name`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql_raw;
         } else if (in_array('o', $types)) {
+            $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql;
+            $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql_raw;
+        } else if (in_array('h', $types)) {
             $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql;
             $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql_raw;
         }
@@ -458,7 +479,8 @@ class VulnerabilitiesModel extends BaseModel
         $item[0]->filter = json_decode($item[0]->filter);
         $item[0]->cve_json = json_decode($item[0]->cve_json);
         $item[0]->other_json = json_decode($item[0]->other_json);
-        $item[0]->other_json->choices[0]->message->content = json_decode($item[0]->other_json->choices[0]->message->content);
+        $item[0]->references = json_decode($item[0]->references);
+        $item[0]->products = json_decode($item[0]->products);
         $item[0]->generated = 'n';
 
         if (empty($item[0]->sql)) {
@@ -466,7 +488,6 @@ class VulnerabilitiesModel extends BaseModel
             $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
             $org_list = array_unique($org_list);
             $org_list = implode(',', $org_list);
-            // echo "READ :: Getting for ID: $id\n";
             $vQuery = $this->generateQuery($item[0]);
             if (!empty($vQuery->sql)) {
                 $vQuery->sql = $vQuery->sql . " AND devices.org_id IN ({$org_list})";
@@ -536,7 +557,7 @@ class VulnerabilitiesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'cve', 'name', 'published', 'affected');
+        $dictionary->attributes->collection = array('id', 'cve', 'name', 'vendor', 'published', 'affected');
         $dictionary->attributes->create = array('name', 'org_id', 'cve'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
