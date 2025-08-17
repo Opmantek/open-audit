@@ -947,6 +947,34 @@ if ($debug -gt 0) {
     Write-Host "Monitor, $count entries took $totalSecs seconds"
 }
 
+$itimer = [Diagnostics.Stopwatch]::StartNew()
+$result.vm = @()
+$item = @{}
+Get-VM | ForEach {
+  Clear-Variable -name item
+  $item = @{}
+  $item.name = $_.VMName
+  $item.guest_device_id = $_.Id
+  $item.vm_ident = $_.Id
+  $item.type = "Hyper-V"
+  $item.uuid = ""
+  $item.vm_group = ""
+  $item.config_file = $_.ConfigurationLocation
+  $item.memory_count = [Math]::Round($_.MemoryStartup / 1024 / 1024)
+  $item.cpu_count = $_.ProcessorCount
+  $item.status = $_.State
+  $item.icon = ""
+
+  $uuid = Get-VM -Name $_.VMName | Select-Object Name,@{Name="BIOSGUID";Expression={(Get-WmiObject -ComputerName $_.ComputerName -Namespace "root\virtualization\v2" -Class Msvm_VirtualSystemSettingData -Property BIOSGUID -Filter ("InstanceID = 'Microsoft:{0}'" -f $_.VMId.Guid)).BIOSGUID}}
+  $item.uuid = $uuid.BIOSGUID
+
+  $result.vm += $item
+}
+$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+if ($debug -gt 0) {
+    $count = [int]$result.vm.count
+    Write-Host "VM, $count entries took $totalSecs seconds"
+}
 
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.sound = @()
@@ -993,6 +1021,7 @@ Get-WmiObject -Class Win32_DiskDrive | ForEach {
     if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wdc") -eq 0) { $item.manufacturer = "Western Digital" }
     if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wd ") -eq 0) { $item.manufacturer = "Western Digital" }
     if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("vmware") -eq 0) { $item.manufacturer = "VMware" }
+    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("ct") -eq 0) { $item.manufacturer = "Crucial" }
     $index = $_.Index
     $PhysicalDisk = (Get-PhysicalDisk | Where-Object {$_.DeviceId -eq $index})
     $item.interface_type = $PhysicalDisk.BusType
@@ -1305,7 +1334,7 @@ $result.usb = @()
 $item = @{}
 Get-WmiObject Win32_USBControllerDevice | %{[wmi]($_.Dependent)} | ForEach {
     Clear-Variable -name item
-    if ($_.Description.ToLower() -notlike '*bluetooth*') {
+    if ($_.Description -ne $null -and $_.Description.ToLower() -notlike '*bluetooth*') {
         $item = @{}
         $item.name = $_.name
         $item.class = $_.PNPClass
@@ -2429,29 +2458,31 @@ $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.file = @()
 Clear-Variable -name item
 foreach ($fil in $files) {
-    if ((Test-Path -Path $fil -PathType Leaf) -or (Test-Path -Path $fil -PathType Container)) {
-        $tempRec = Get-ChildItem -path $fil -recurse | Select-Object -ExpandProperty FullName
-        foreach ($temp_f in $tempRec) {
-            if (Test-Path -Path $temp_f -PathType Leaf) {
-                $item = @{}
-                $temp_f = [string]$temp_f
-                $temp_file = Get-ItemProperty -Path $temp_f
-                $temp_file_acl = get-acl $temp_f
+    if ($fil -ne "") {
+        if ((Test-Path -Path $fil -PathType Leaf) -or (Test-Path -Path $fil -PathType Container)) {
+            $tempRec = Get-ChildItem -path $fil -recurse | Select-Object -ExpandProperty FullName
+            foreach ($temp_f in $tempRec) {
+                if (Test-Path -Path $temp_f -PathType Leaf) {
+                    $item = @{}
+                    $temp_f = [string]$temp_f
+                    $temp_file = Get-ItemProperty -Path $temp_f
+                    $temp_file_acl = get-acl $temp_f
 
-                $item.directory = $temp_file | Select-Object -ExpandProperty DirectoryName
-                $item.full_name = $temp_file | Select-Object -ExpandProperty FullName
-                $item.name = $temp_file | Select-Object -ExpandProperty Name
-                $item.owner = $temp_file_acl | Select-Object -ExpandProperty Owner
-                $item.size = $temp_file | Select-Object -ExpandProperty Length
-                $item.version = (Get-Item $fil).VersionInfo.FileVersion
+                    $item.directory = $temp_file | Select-Object -ExpandProperty DirectoryName
+                    $item.full_name = $temp_file | Select-Object -ExpandProperty FullName
+                    $item.name = $temp_file | Select-Object -ExpandProperty Name
+                    $item.owner = $temp_file_acl | Select-Object -ExpandProperty Owner
+                    $item.size = $temp_file | Select-Object -ExpandProperty Length
+                    $item.version = (Get-Item $fil).VersionInfo.FileVersion
 
-                # Note that below the format is yyyy-MM-dd. in the VBS it is dd/MM/yyyy
-                $item.last_changed =  [string](Get-Date -Date ($temp_file | Select-Object -ExpandProperty LastWriteTime) -Uformat "%Y-%m-%d %T")
-                # Note that below is the full permissions. In the VBS we only get the numerical access mask
-                $item.permission = $temp_file_acl | Select-Object -ExpandProperty AccessToString
-                # Note the below is for a SHA256. In the VBS, we use SHA1
-                $item.hash = Get-FileHash $temp_f | Select-Object -ExpandProperty Hash
-                $result.file += $item
+                    # Note that below the format is yyyy-MM-dd. in the VBS it is dd/MM/yyyy
+                    $item.last_changed =  [string](Get-Date -Date ($temp_file | Select-Object -ExpandProperty LastWriteTime) -Uformat "%Y-%m-%d %T")
+                    # Note that below is the full permissions. In the VBS we only get the numerical access mask
+                    $item.permission = $temp_file_acl | Select-Object -ExpandProperty AccessToString
+                    # Note the below is for a SHA256. In the VBS, we use SHA1
+                    $item.hash = Get-FileHash $temp_f | Select-Object -ExpandProperty Hash
+                    $result.file += $item
+                }
             }
         }
     }

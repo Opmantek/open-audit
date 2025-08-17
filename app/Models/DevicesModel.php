@@ -279,7 +279,7 @@ class DevicesModel extends BaseModel
      *
      * @return string   The derived name or an empty string
      */
-    public function deriveName(object $device = null): string
+    public function deriveName(?object $device): string
     {
         if (empty($device)) {
             return '';
@@ -385,6 +385,32 @@ class DevicesModel extends BaseModel
                 $query = $this->db->query($edit_sql, [intval($id), $data->last_seen_by, $weight, $key, $data->last_seen, $value]);
             }
         }
+
+        if (empty($data->vm_uuid)) {
+            $data->vm_uuid = $this->create_vm_uuid($data);
+        }
+
+        // Check if we have a matching entry in the vm table and update it if required
+        if (!empty($data->uuid) and !empty($data->vm_uuid)) {
+            $sql = "SELECT vm.id AS `vm.id`, vm.device_id AS `vm.device_id`, devices.name AS `devices.name` FROM vm, devices WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.uuid != '' AND vm.current = 'y' AND vm.device_id = devices.id";
+            $query = $this->db->query($sql, [$data->uuid, $data->vm_uuid]);
+            if ($query->getNumRows() > 0) {
+                $row = $query->getRow();
+                $temp_vm_id = $row->{'vm.id'};
+                $data->vm_device_id = $row->{'vm.device_id'};
+                $data->vm_server_name = $row->{'devices.name'};
+                $sql = "SELECT name, icon, 'vm' FROM devices WHERE id = ?";
+                $query = $this->db->query($sql, [$id]);
+                $row = $query->getRow();
+                $vm_icon = $row->icon;
+                $vm_name = $row->name;
+                $sql = 'UPDATE vm SET guest_device_id = ?, icon = ?, name = ? WHERE id = ?';
+                $query = $this->db->query($sql, [$id, $vm_icon, $vm_name, intval($temp_vm_id)]);
+                $sql = 'UPDATE devices SET vm_device_id = ?, vm_server_name = ? WHERE id = ?';
+                $query = $this->db->query($sql, [$data->vm_device_id, $data->vm_server_name, $data->id]);
+            }
+        }
+
         return ($id);
     }
 
@@ -1192,9 +1218,13 @@ class DevicesModel extends BaseModel
             }
         }
 
+        if (empty($data->vm_uuid)) {
+            $data->vm_uuid = $this->create_vm_uuid($data);
+        }
+
         // Check if we have a matching entry in the vm table and update it if required
         if (!empty($data->uuid) and !empty($data->vm_uuid)) {
-            $sql = "SELECT vm.id AS `vm.id`, vm.device_id AS `vm.device_id`, devices.hostname AS `devices.hostname` FROM vm, devices WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.uuid != '' AND vm.current = 'y' AND vm.device_id = devices.id;";
+            $sql = "SELECT vm.id AS `vm.id`, vm.device_id AS `vm.device_id`, devices.hostname AS `devices.hostname` FROM vm, devices WHERE (LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?)) AND vm.uuid != '' AND vm.current = 'y' AND vm.device_id = devices.id";
             $query = $this->db->query($sql, [$data->uuid, $data->vm_uuid]);
             if ($query->getNumRows() > 0) {
                 $row = $query->getRow();
@@ -1261,6 +1291,54 @@ class DevicesModel extends BaseModel
         $log->message = 'System update end for ID: ' . $id;
         $log->summary = 'finish function';
         return true;
+    }
+
+    public function create_vm_uuid($data)
+    {
+        $vm_uuid = '';
+        if (!empty($data->uuid) and !empty($data->serial) and stripos($data->serial, 'vmware-') !== false) {
+            // because Windows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
+            // As at VMWare ESXi 7, this works for Linux as well
+            // serial is taken from Win32_ComputerSystemProduct.IdentifyingNumber
+            // Vmware supplies - 564d3739-b4cb-1a7e-fbb1-b10dcc0335e1
+            // audit_windows supples - VMware-56 4d 37 39 b4 cb 1a 7e-fb b1 b1 0d cc 03 35 e1
+            $vm_uuid = str_ireplace('VMware-', '', $data->serial);
+            $vm_uuid = str_ireplace('-', ' ', $vm_uuid);
+            $vm_uuid = strtolower($vm_uuid);
+            $vm_uuid = str_ireplace(' ', '', $vm_uuid);
+            $vm_uuid = substr($vm_uuid, 0, 8);
+            $vm_uuid .= '-';
+            $vm_uuid .= substr($vm_uuid, 8, 4);
+            $vm_uuid .= '-';
+            $vm_uuid .= substr($vm_uuid, 12, 4);
+            $vm_uuid .= '-';
+            $vm_uuid .= substr($vm_uuid, 16, 4);
+            $vm_uuid .= '-';
+            $vm_uuid .= substr($vm_uuid, 20, 12);
+        }
+
+        if (!empty($data->uuid) and empty($vm_uuid) and !empty($data->manufacturer) and $data->manufacturer === 'Microsoft Corporation' and !empty($data->form_factor) and $data->form_factor === 'Virtual') {
+            // For Windows Hyper-V, convert the guest UUID into the UUID Hyper-V supplied.
+            // Ubuntu Guest supplies    - 8334790d-7077-ff40-9df0-1e9f35e8fef7
+            // Windows Hyper-V supplies - 0D793483-7770-40FF-9DF0-1E9F35E8FEF7
+            $vm_uuid = substr($data->uuid, 6, 2);
+            $vm_uuid .= substr($data->uuid, 4, 2);
+            $vm_uuid .= substr($data->uuid, 2, 2);
+            $vm_uuid .= substr($data->uuid, 0, 2);
+            $vm_uuid .= '-';
+            $vm_uuid .= substr($data->uuid, 11, 2);
+            $vm_uuid .= substr($data->uuid, 9, 2);
+            $vm_uuid .= '-';
+            $vm_uuid .= substr($data->uuid, 16, 2);
+            $vm_uuid .= substr($data->uuid, 14, 2);
+            $vm_uuid .= '-';
+            $vm_uuid .= substr($data->uuid, 19);
+            log_message('debug', 'VM UUID: ' . $vm_uuid);
+        }
+        if (!empty($data->uuid) && empty($vm_uuid)) {
+            $vm_uuid = $data->uuid;
+        }
+        return $vm_uuid;
     }
 
     /**
