@@ -6,13 +6,13 @@
     "license": "MIT",
     "require": {
         "php": "^7.3 || ^8.0",
-        "codeigniter4/framework": "4.6.1",
+        "codeigniter4/framework": "4.6.2",
         "ext-json": "*",
         "phpseclib/phpseclib": "^3.0",
         "google/auth": "^1.28",
         "aws/aws-sdk-php": "^3.281",
         "kint-php/kint": "^5.0",
-        "laminas/laminas-escaper": "2.14.0",
+        "laminas/laminas-escaper": "2.17.0",
         "psr/cache": "1.0.1",
         "symfony/deprecation-contracts": "v2.5.2",
         "doctrine/instantiator": "1.5.0",
@@ -30,7 +30,7 @@
         "fakerphp/faker": "^1.9",
         "mikey179/vfsstream": "^1.6",
         "phpunit/phpunit": "^9.6",
-        "codeigniter4/codeigniter4-standard": "^1.1"
+        "codeigniter/coding-standard": "^1.8"
     },
     "suggest": {
         "ext-fileinfo": "Improves mime type detection for files"
