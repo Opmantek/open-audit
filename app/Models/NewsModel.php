@@ -170,6 +170,8 @@ class NewsModel extends BaseModel
      */
     public function executeAll(?string $action = 'news'): bool
     {
+        set_time_limit(600);
+        log_message('debug', 'executeAll called with action ' . $action);
         if (!$this->db->tableExists('news')) {
             return false;
         }
@@ -205,6 +207,8 @@ class NewsModel extends BaseModel
             return true;
         }
         $body = $response->getBody();
+        log_message('debug', 'Bytes in reply: ' . strlen($body));
+        // log_message('debug', 'Body: ' . $body);
         $body = @json_decode($body);
         if (!is_array($body)) {
             log_message('error', 'Body returned but body not an array. Body is a ' . gettype($body));
