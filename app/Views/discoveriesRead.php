@@ -100,20 +100,117 @@ foreach ($included['discovery_scan_options'] as $item) {
                                     <?= read_field('last_run', $resource->last_run, $dictionary->columns->last_run, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('duration', $resource->duration, $dictionary->columns->duration, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('last_finished', $resource->last_finished, $dictionary->columns->last_finished, false, '', '', '', '', $meta->collection) ?>
+                                </div>
+                                <div class="col-6">
                                     <?= read_field('ip_all_count', $resource->ip_all_count, $dictionary->columns->ip_all_count, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('ip_responding_count', $resource->ip_responding_count, $dictionary->columns->ip_responding_count, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('ip_scanned_count', $resource->ip_scanned_count, $dictionary->columns->ip_scanned_count, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('ip_audited_count', $resource->ip_audited_count, $dictionary->columns->ip_audited_count, false, '', '', '', '', $meta->collection) ?>
+                                    <!--
                                     <?= read_field('device_count', $resource->ip_discovered_count, $dictionary->columns->device_count, false, '', '', '', '', $meta->collection) ?>
+                                    -->
                                 </div>
-                                <div class="col-6">
-                                    <br>
-                                    <div class="offset-2 col-8">
-                                        <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                            </div>
+                        </div>
+
+                        <br>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="offset-2 col-8">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col-4 clearfix">
+                                                    <h6 style="padding-top:10px;"><span class="fa fa-chart-bar oa-icon"></span><?= __('Devices') ?></h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row" style="min-height:100px;">
+                                            <?php
+                                            $i = 0;
+                                            foreach ($included['devices'] as $os) {
+                                                $i++;
+                                                if ($os->attributes->type === 'computer') {
+                                                    $os->attributes->icon = 'computer';
+                                                }
+                                                if ($i === 5 or $i === 9 or $i === 13 or $i === 17 or $i === 21 or $i === 25) {
+                                                    echo "</div><br><div class=\"row\">";
+                                                }
+                                                ?>
+                                                <div class="col-lg-3 text-center">
+                                                    <div>
+                                                        <a href="<?= url_to('devicesCollection') ?>?devices.type=<?= $os->attributes->type ?>&devices.discovery_id=<?= $resource->id ?>" class="position-relative">
+                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= $os->attributes->icon ?>.svg" alt="<?= $os->attributes->icon ?>">
+                                                            <br><?= $os->attributes->type ?>
+                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $os->attributes->count ?></span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="offset-2 col-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-4 clearfix">
+                                                <h6 style="padding-top:10px;"><span class="fa fa-chart-bar oa-icon"></span><?= __('Resources') ?></h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row" style="min-height:100px;">
+                                            <div class="col-lg-3 text-center">
+                                                <div>
+                                                    <a href="<?= url_to('devicesCollection') ?>?devices.discovery_id=<?= $resource->id ?>" class="position-relative">
+                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/devices.svg" alt="<?= __('Devices') ?>">
+                                                        <br><?= __('Devices') ?>
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= count($included['devices_count']) ?></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 text-center">
+                                                <div>
+                                                    <a href="<?= url_to('locationsCollection') ?>?locations.id=in(<?= $included['locations_url'] ?>)" class="position-relative">
+                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/locations.svg" alt="<?= __('Locations') ?>">
+                                                        <br><?= __('Locations') ?>
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['locations_count'] ?></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 text-center">
+                                                <div>
+                                                    <a href="<?= url_to('networksCollection') ?>?networks.id=in(<?= $included['networks_url'] ?>)" class="position-relative">
+                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/networks.svg" alt="<?= __('Networks') ?>">
+                                                        <br><?= __('Networks') ?>
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['networks_count'] ?></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 text-center">
+                                                <div>
+                                                    <a href="<?= url_to('orgsCollection') ?>?orgs.id=in(<?= $included['orgs_url'] ?>)" class="position-relative">
+                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/orgs.svg" alt="<?= __('Orgs') ?>">
+                                                        <br><?= __('Orgs') ?>
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['orgs_count'] ?></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
 
                     <div class="tab-content">

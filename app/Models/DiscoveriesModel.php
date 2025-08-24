@@ -594,6 +594,63 @@ class DiscoveriesModel extends BaseModel
         $included['ips'] = array();
         $included['devices'] = array();
 
+        $sql = "SELECT DISTINCT(location_id) FROM devices WHERE devices.discovery_id = $id";
+        $temp = $this->db->query($sql)->getResult();
+        $included['locations_count'] = count($temp);
+        $included['locations_url'] = '';
+        $templ = array();
+        foreach ($temp as $loc) {
+            $templ[] = $loc->location_id;
+        }
+        $included['locations_url'] = implode(',', $templ);
+        unset($temp, $templ);
+
+        $sql = "SELECT DISTINCT(org_id) FROM devices WHERE devices.discovery_id = $id";
+        $temp = $this->db->query($sql)->getResult();
+        $included['orgs_count'] = count($temp);
+        $included['orgs_url'] = '';
+        $templ = array();
+        foreach ($temp as $loc) {
+            $templ[] = $loc->org_id;
+        }
+        $included['orgs_url'] = implode(',', $templ);
+        unset($temp, $templ);
+
+        $sql = "SELECT id FROM devices WHERE devices.discovery_id = $id";
+        $included['devices_count'] = $this->db->query($sql)->getResult();
+
+        $instance = & get_instance();
+        $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        $orgs[] = 1;
+        $orgs = array_unique($orgs);
+        $builder = $this->db->table('devices');
+        $properties = array();
+        $properties[] = 'devices.type AS `type`';
+        $properties[] = 'COUNT(devices.type) AS `count`';
+        $properties[] = 'devices.icon AS `icon`';
+        $builder->select($properties, false);
+        $builder->join('orgs', 'devices.org_id = orgs.id', 'left');
+        $builder->whereIn('orgs.id', $orgs);
+        $builder->where('discovery_id', $id);
+        $builder->groupBy('devices.type');
+        $builder->orderBy('devices.type');
+        $query = $builder->get();
+        if ($this->sqlError($this->db->error())) {
+            return array();
+        }
+        $included['devices'] = format_data($query->getResult(), 'devices');
+
+
+        $sql = "SELECT networks.id AS `networks.id` FROM devices LEFT JOIN ip ON (devices.id = ip.device_id AND ip.current = 'y') LEFT JOIN networks ON (ip.network = networks.network) WHERE devices.discovery_id = ? AND networks.network IS NOT NULL GROUP BY networks.id";
+        $temp = $this->db->query($sql, [$id])->getResult();
+        $included['networks_count'] = count($temp);
+        $templ = array();
+        foreach ($temp as $loc) {
+            $templ[] = $loc->{'networks.id'};
+        }
+        $included['networks_url'] = implode(',', $templ);
+        unset($temp, $templ);
+
         return $included;
     }
 
