@@ -51,6 +51,16 @@ if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
 }
+
+$link = "<a role=\"button\" title=\"" . __('View') . "\" target=\"_blank\" class=\"btn btn-outline-secondary link_button\" href=\"https://www.cve.org/CVERecord?id=" . $resource->cve . "\"><span title=\"" . __('View') . "\" class=\"fa-solid fa-arrow-up-right-from-square\" aria-hidden=\"true\"></span></a>";
+
+if ($resource->type === 'application') {
+    $columns = ['software.name', 'software.version'];
+} else if ($resource->type === 'operating system') {
+    $columns = ['devices.os_name', 'devices.os_version', 'devices.os_cpe'];
+} else {
+    $columns = array();
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -98,9 +108,10 @@ if ($style === 'icontext') {
                                             </div>
                                         </div>
                                     </div>
-                                    <?= read_field('cve', (!empty($resource->cve)) ? $resource->cve : '', $dictionary->columns->cve, false, 'CVE', '', '', '', $meta->collection) ?>
+                                    <?= read_field('cve', (!empty($resource->cve)) ? $resource->cve : '', $dictionary->columns->cve, false, 'CVE', $link, '', '', $meta->collection) ?>
                                     <?= read_field('published', (!empty($resource->published)) ? $resource->published : '', $dictionary->columns->published, false, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('vuln_status', (!empty($resource->vuln_status)) ? $resource->vuln_status : '', $dictionary->columns->vuln_status, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('vuln_status', (!empty($resource->vuln_status)) ? $resource->vuln_status : '', $dictionary->columns->vuln_status, false, 'Vulnerability Status', '', '', '', $meta->collection) ?>
+                                    <?= read_field('scope', (!empty($resource->scope)) ? $resource->scope : '', $dictionary->columns->scope, false, '', '', '', '', $meta->collection) ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
@@ -195,6 +206,7 @@ if ($style === 'icontext') {
                                             <?= read_field_header($meta->collection, 'filter', $dictionary->columns->filter, 'Filter') ?>
                                             <div class="input-group">
                                                 <textarea class="form-control" rows="12" id="filter" name="filter" data-original-value="<?= htmlentities(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?>" disabled><?= html_entity_decode(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?></textarea>
+                                                <!--
                                                 <?php if ($update) { ?>
                                                 <div class="float-end" style="padding-left:4px;">
                                                     <div data-attribute="filter" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
@@ -202,6 +214,7 @@ if ($style === 'icontext') {
                                                     <div data-attribute="filter" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
                                                 </div>
                                                 <?php } ?>
+                                                -->
                                             </div>
                                             <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="filter" data-dictionary="<?= $dictionary->columns->filter ?>"><span><br></span></div>
                                         </div>
@@ -238,14 +251,25 @@ if ($style === 'icontext') {
                     <div class="tab-content">
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row" style="padding-top:16px;">
-                                <div class="offset-1 col-10" style="position:relative;">
-                                    <?= read_field_header($meta->collection, 'cve_json', $dictionary->columns->cve_json, $dictionary->columns->cve_json) ?>
+                                <div class="col-6" style="position:relative;">
+                                    <h5>NVD</h5>
                                     <?php
-                                    if (!empty($resource->cve_json)) {
-                                        $rows = substr_count(json_encode($resource->cve_json, JSON_PRETTY_PRINT), "\n");
+                                    if (!empty($resource->nvd_json)) {
+                                        $rows = substr_count(json_encode($resource->nvd_json, JSON_PRETTY_PRINT), "\n");
                                     ?>
                                     <div class="input-group">
-                                        <textarea class="form-control" rows="<?= $rows ?>" id="cve_json" name="cve_json" disabled><?= html_entity_decode(json_encode($resource->cve_json, JSON_PRETTY_PRINT)) ?></textarea>
+                                        <textarea class="form-control" rows="<?= $rows ?>" id="nvd_json" name="nvd_json" disabled><?= html_entity_decode(json_encode($resource->nvd_json, JSON_PRETTY_PRINT)) ?></textarea>
+                                    </div>
+                                    <?php } ?>
+                                </div>
+                                <div class="col-6" style="position:relative;">
+                                    <h5>Mitre</h5>
+                                    <?php
+                                    if (!empty($resource->mitre_json)) {
+                                        $rows = substr_count(json_encode($resource->mitre_json, JSON_PRETTY_PRINT), "\n");
+                                    ?>
+                                    <div class="input-group">
+                                        <textarea class="form-control" rows="<?= $rows ?>" id="mitre_json" name="mitre_json" disabled><?= html_entity_decode(json_encode($resource->mitre_json, JSON_PRETTY_PRINT)) ?></textarea>
                                     </div>
                                     <?php } ?>
                                 </div>
@@ -264,8 +288,10 @@ if ($style === 'icontext') {
                                         <th class="text-center"><?= __('View') ?></th>
                                         <th><?= __('Name') ?></th>
                                         <th><?= __('Orgs Name') ?></th>
-                                        <th><?= __('Software Name') ?></th>
-                                        <th><?= __('Software Version') ?></th>
+                                        <?php foreach ($columns as $column) {
+                                            $name = ucwords(str_replace('_', ' ', substr($column, strpos($column, '.')+1)));
+                                            echo "<th>" . $name . "</th>\n";
+                                        } ?>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -275,8 +301,9 @@ if ($style === 'icontext') {
                                         <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
                                         <td><?= $item->attributes->{'devices.name'} ?></td>
                                         <td><?= $item->attributes->{'orgs.name'} ?></td>
-                                        <td><?= $item->attributes->{'software.name'} ?></td>
-                                        <td><?= $item->attributes->{'software.version'} ?></td>
+                                        <?php foreach ($columns as $column) {
+                                            echo "<td>" . $item->attributes->{$column} . "</td>\n";
+                                        } ?>
                                     </tr>
                                     <?php } ?>
                                     <?php } ?>
