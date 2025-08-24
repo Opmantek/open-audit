@@ -82,7 +82,7 @@ class Collections extends BaseController
 
         $this->resp->meta->total = 0;
         $this->resp->meta->filtered = 0;
-        if (($this->resp->meta->collection !== 'devices' and $this->resp->meta->collection !== 'components') or $this->resp->meta->format !== 'html') {
+        if (($this->resp->meta->collection !== 'devices' and $this->resp->meta->collection !== 'components' and $this->resp->meta->collection !== 'vulnerabilities') or $this->resp->meta->format !== 'html') {
             $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
             $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
             $this->resp->meta->filtered = count($this->resp->data);

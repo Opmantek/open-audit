@@ -26,6 +26,29 @@ class VulnerabilitiesModel extends BaseModel
      */
     public function collection(object $resp): array
     {
+        $this->builder->select(['count(id) as count'], false);
+        $status = true;
+        foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'vulnerabilities.status' or $filter->name === 'status') {
+                $status = false;
+            }
+            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
+                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
+            } else {
+                $this->builder->{$filter->function}($filter->name, $filter->value);
+            }
+        }
+        if ($status) {
+            $this->builder->whereIn('status', ['pending', 'confirmed']);
+        }
+        $query = $this->builder->get();
+        if ($this->sqlError($this->db->error())) {
+            return array();
+        }
+        $result = $query->getResult();
+        $GLOBALS['recordsFiltered'] = (isset($result[0]->count)) ? intval($result[0]->count) : 0;
+
+        $this->builder = $this->db->table('vulnerabilities');
         $properties = $resp->meta->properties;
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
@@ -59,12 +82,14 @@ class VulnerabilitiesModel extends BaseModel
         $org_list = implode(',', $org_list);
         // Build the SQL and execute it for any with a status of confirmed
         foreach ($result as $row) {
-            if (!empty($row->status) and ($row->status === 'confirmed')) {
+            $row->affected = '';
+            if (!empty($row->status) and ($row->status === 'confirmed' or $row->status === 'pending')) {
                 $vQuery = $this->generateQuery($row);
-                $vQuery->sql = $vQuery->sql . " AND devices.org_id IN ({$org_list})";
-                $row->affected = count($this->db->query($vQuery->sql, $vQuery->data)->getResult());
-            } else {
-                $row->affected = (!empty($row->status)) ? $row->status : '';
+                if (!empty($vQuery->sql) and !empty($vQuery->data)) {
+                    $vQuery->sql = $vQuery->sql . " AND devices.org_id IN ({$org_list})";
+                    $row->affected = count($this->db->query($vQuery->sql, $vQuery->data)->getResult());
+                    // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+                }
             }
         }
         return format_data($result, $resp->meta->collection);
