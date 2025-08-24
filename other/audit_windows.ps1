@@ -118,7 +118,9 @@ if ($result.sys.os_name -like "*2012*") { $result.sys.os_family = "Windows 2012"
 if ($result.sys.os_name -like "*2016*") { $result.sys.os_family = "Windows 2016" }
 if ($result.sys.os_name -like "*2019*") { $result.sys.os_family = "Windows 2019" }
 if ($result.sys.os_name -like "*2022*") { $result.sys.os_family = "Windows 2022" }
-$result.sys.os_version = $Win32_OperatingSystem.Version
+if ($result.sys.os_name -like "*2025*") { $result.sys.os_family = "Windows 2025" }
+$result.sys.os_version = $Win32_OperatingSystem.Version  + "." + [string]$(Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion' UBR).UBR
+$result.sys.os_display_version = (Get-Item 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion').GetValue('DisplayVersion')
 $result.sys.serial = $Win32_ComputerSystemProduct.IdentifyingNumber
 $result.sys.model = $Win32_ComputerSystem | Select-Object -ExpandProperty Model
 $result.sys.manufacturer = $Win32_ComputerSystemProduct.Vendor
@@ -194,6 +196,7 @@ $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.windows = @()
 $item = @{}
 $item.build_number = [string]$Win32_OperatingSystem.BuildNumber + "." + [string]$(Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion' UBR).UBR
+$item.display_version = (Get-Item 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion').GetValue('DisplayVersion')
 $item.user_name = ""
 Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI | ForEach {
     if ($_.LastLoggedOnUser -ne $null -and $_.LastLoggedOnUser -ne "") {

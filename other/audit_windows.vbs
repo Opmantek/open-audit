@@ -960,9 +960,11 @@ if debugging > "0" then wscript.echo "system info" end if
 set colItems = objWMIService.ExecQuery("Select * from Win32_OperatingSystem",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_OperatingSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_OperatingSystem " : end if
 for each objItem in colItems
-    system_os_version = objItem.Version
+    oReg.GetDWORDValue hkey_local_machine, "Software\Microsoft\Windows NT\CurrentVersion", "UBR", build_number
+    system_os_version = objItem.Version & "." & build_number
     windows_build_number = objItem.BuildNumber
     windows_service_pack = objItem.ServicePackMajorVersion
+    oReg.GetDWORDValue hkey_local_machine, "SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion", windows_display_version
     system_os_family = os_family(objItem.Caption)
     system_os_name = objItem.Caption
     system_os_name = replace(system_os_name, "(R)", "")
@@ -1316,6 +1318,7 @@ result.WriteText "      <os_group>Windows</os_group>" & vbcrlf
 result.WriteText "      <os_family>" & escape_xml(system_os_family) & "</os_family>" & vbcrlf
 result.WriteText "      <os_name>" & escape_xml(system_os_name) & "</os_name>" & vbcrlf
 result.WriteText "      <os_version>" & escape_xml(system_os_version) & "</os_version>" & vbcrlf
+result.WriteText "      <os_display_version>" & escape_xml(windows_display_version) & "</os_display_version>" & vbcrlf
 result.WriteText "      <serial>" & escape_xml(system_serial) & "</serial>" & vbcrlf
 result.WriteText "      <model>" & escape_xml(system_model) & "</model>" & vbcrlf
 result.WriteText "      <manufacturer>" & escape_xml(system_manufacturer) & "</manufacturer>" & vbcrlf
@@ -1553,6 +1556,7 @@ result.WriteText "          <language>" & escape_xml(windows_language) & "</lang
 result.WriteText "          <registered_user>" & escape_xml(windows_registered_user) & "</registered_user>" & vbcrlf
 result.WriteText "          <service_pack>" & escape_xml(windows_service_pack) & "</service_pack>" & vbcrlf
 result.WriteText "          <version>" & escape_xml(system_os_version) & "</version>" & vbcrlf
+result.WriteText "          <display_version>" & escape_xml(windows_display_version) & "</display_version>" & vbcrlf
 result.WriteText "          <install_directory>" & escape_xml(windows_install_directory) & "</install_directory>" & vbcrlf
 result.WriteText "          <active_directory_ou>" & escape_xml(windows_active_directory_ou) & "</active_directory_ou>" & vbcrlf
 result.WriteText "      </item>" & vbcrlf
@@ -2635,6 +2639,7 @@ for each objItem In colDiskDrives
         if lcase(left(hard_drive_model, 4)) = "wdc " then hard_drive_manufacturer = "Western Digital" end if
         if lcase(left(hard_drive_model, 3)) = "wd " then hard_drive_manufacturer = "Western Digital" end if
         if lcase(left(hard_drive_model, 6)) = "VMware" then hard_drive_manufacturer = "VMware" end if
+        if lcase(left(hard_drive_model, 2)) = "ct" then hard_drive_manufacturer = "Crucial" end if
     end if
     hard_drive_status = "Not available"
     on error resume next
