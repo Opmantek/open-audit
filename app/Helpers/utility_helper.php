@@ -470,6 +470,8 @@ function getLicenseDetails()
             $license->type = !empty($json->license) ? $json->license : '';
         }
         unset($output);
+    } else {
+        $license->type = 'open-source';
     }
     return $license;
 }
@@ -592,7 +594,7 @@ function createNewsData()
     sort($data->issues);
     $data->issues = array_unique($data->issues);
     $data->issues = array_values($data->issues);
-    $data->issues = array_slice($data->issues, 0, 20);
+    $data->issues = array_slice($data->issues, 0, 10);
 
     $sql = "SELECT type, COUNT(*) AS `count` FROM devices GROUP BY type";
     $devices = $db->query($sql)->getResult();
