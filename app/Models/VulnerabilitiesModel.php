@@ -105,14 +105,23 @@ class VulnerabilitiesModel extends BaseModel
 
     public function makeCondition(string $criteria, string $version, string $operator, bool $vulnerable, ?object $products)
     {
+        // log_message('debug', 'CRITERIA: ' . $criteria . ', VERSION: ' . $version);
         helper('device');
         helper('components');
+        if ($version === '*' or $version === '-') {
+            $version = '';
+        }
         // log_message('debug', 'Test: ' . $criteria . ' :: ' . $operator);
         $return = new stdClass();
         $return->sql = '';
         $return->sql_raw = '';
         $return->data = array();
+        $cpeVendor = cpe_get('vendor', $criteria);
         $cpeProduct = cpe_get('product', $criteria);
+        $cpeVersion = cpe_get('version', $criteria);
+        if ($cpeVersion === '*' or $cpeVersion === '-') {
+            $cpeVersion = '';
+        }
         if (cpe_get('part', $criteria) === 'a') {
             $version = version_padded($version);
             if (!empty($products->{$cpeProduct})) {
@@ -135,20 +144,201 @@ class VulnerabilitiesModel extends BaseModel
                 $return->data[] = version_padded($version);
             }
         }
+        // Operating System based CVEs
         if (cpe_get('part', $criteria) === 'o') {
-            if (cpe_get('version', $criteria) !== '*' and cpe_get('version', $criteria) !== '-') {
-                $value = 'cpe:2.3:o:' . cpe_get('vendor', $criteria) . ':' . cpe_get('product', $criteria) . ':' . cpe_get('version', $criteria) . '%';
+
+            // Windows based CVEs
+            if (strpos($cpeProduct, 'windows_') !== false) {
+                if ($cpeProduct === 'windows_10') {
+                    if (strpos($cpeVersion, '10.') === 0 and empty($version)) {
+                        $return->sql = '(devices.os_cpe LIKE \'cpe:2.3:o:microsoft:windows_10_%\' AND devices.os_version ' . $operator . ' ?)';
+                        $return->data[] = $cpeVersion;
+
+                    } else if (strpos($cpeVersion, '10.') === 0 and !empty($version)) {
+                        $return->sql = '(devices.os_cpe LIKE \'cpe:2.3:o:microsoft:windows_10_%\' AND (devices.os_version ' . $operator . ' ? OR devices.os_version ' . $operator . ' ?))';
+                        $return->data[] = $cpeVersion;
+                        $return->data[] = $version;
+
+                    } else if (strpos($cpeVersion, '2') === 0 and empty($version)) {
+                        $return->sql = '(devices.os_cpe = ?)';
+                        $return->data[] = 'cpe:2.3:o:microsoft:windows_10_' . $cpeVersion;
+
+                    } else if (strpos($cpeVersion, '2') === 0 and !empty($version)) {
+                        $return->sql = '(devices.os_cpe = ? AND devices.os_version = ?)';
+                        $return->data[] = 'cpe:2.3:o:microsoft:windows_10_' . $cpeVersion;
+                        $return->data[] = $version;
+
+                    } else if (empty($cpeVersion) and !empty($version)) {
+                        $return->sql = '(devices.os_cpe LIKE \'cpe:2.3:o:microsoft:windows_10_%\' AND devices.os_version ' . $operator . ' ?)';
+                        $return->data[] = $version;
+
+                    } else {
+                        $return->sql = '(devices.os_cpe LIKE ?)';
+                        $return->data[] = 'cpe:2.3:o:microsoft:windows_10_%';
+                    }
+                }
+                if (strpos($cpeProduct, 'windows_10_') === 0) {
+                    if (strpos($cpeVersion, '10.') === 0 and empty($version)) {
+                        $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct . '\' AND devices.os_version ' . $operator . ' ?)';
+                        $return->data[] = $cpeVersion;
+                    } else if (strpos($cpeVersion, '10.') === 0 and !empty($version)) {
+                        $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct . '\' AND (devices.os_version ' . $operator . ' ? OR devices.os_version ' . $operator . ' ?))';
+                        $return->data[] = $cpeVersion;
+                        $return->data[] = $version;
+                    } else if (empty($cpeVersion) and !empty($version)) {
+                        $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct . '\' AND devices.os_version ' . $operator . ' ?)';
+                        $return->data[] = $version;
+                    } else {
+                        $return->sql = '(devices.os_cpe = ?)';
+                        $return->data[] = 'cpe:2.3:o:microsoft:' . $cpeProduct;
+                    }
+                }
+
+
+                if ($cpeProduct === 'windows_11') {
+                    if (strpos($cpeVersion, '10.') === 0 and empty($version)) {
+                        $return->sql = '(devices.os_cpe LIKE \'cpe:2.3:o:microsoft:windows_11_%\' AND devices.os_version ' . $operator . ' ?)';
+                        $return->data[] = $cpeVersion;
+
+                    } else if (strpos($cpeVersion, '10.') === 0 and !empty($version)) {
+                        $return->sql = '(devices.os_cpe LIKE \'cpe:2.3:o:microsoft:windows_11_%\' AND (devices.os_version ' . $operator . ' ? OR devices.os_version ' . $operator . ' ?))';
+                        $return->data[] = $cpeVersion;
+                        $return->data[] = $version;
+
+                    } else if (strpos($cpeVersion, '2') === 0 and empty($version)) {
+                        $return->sql = '(devices.os_cpe = ?)';
+                        $return->data[] = 'cpe:2.3:o:microsoft:windows_11_' . $cpeVersion;
+
+                    } else if (strpos($cpeVersion, '2') === 0 and !empty($version)) {
+                        $return->sql = '(devices.os_cpe = ? AND devices.os_version = ?)';
+                        $return->data[] = 'cpe:2.3:o:microsoft:windows_11_' . $cpeVersion;
+                        $return->data[] = $version;
+
+                    } else if (empty($cpeVersion) and !empty($version)) {
+                        $return->sql = '(devices.os_cpe LIKE \'cpe:2.3:o:microsoft:windows_11_%\' AND devices.os_version ' . $operator . ' ?)';
+                        $return->data[] = $version;
+
+                    } else {
+                        $return->sql = '(devices.os_cpe LIKE ?)';
+                        $return->data[] = 'cpe:2.3:o:microsoft:windows_11_%';
+                    }
+                }
+                if (strpos($cpeProduct, 'windows_11_') === 0) {
+                    if (strpos($cpeVersion, '10.') === 0 and empty($version)) {
+                        $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct . '\' AND devices.os_version ' . $operator . ' ?)';
+                        $return->data[] = $cpeVersion;
+
+                    } else if (strpos($cpeVersion, '10.') === 0 and !empty($version)) {
+                        $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct . '\' AND (devices.os_version ' . $operator . ' ? OR devices.os_version ' . $operator . ' ?))';
+                        $return->data[] = $cpeVersion;
+                        $return->data[] = $version;
+
+                    } else if (empty($cpeVersion) and !empty($version)) {
+                        $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct . '\' AND devices.os_version ' . $operator . ' ?)';
+                        $return->data[] = $version;
+
+                    } else {
+                        $return->sql = '(devices.os_cpe = ?)';
+                        $return->data[] = 'cpe:2.3:o:microsoft:' . $cpeProduct;
+                    }
+                }
+
+                if (strpos($cpeProduct, 'windows_server') === 0) {
+                    $temp = explode('_', $cpeProduct);
+                    $windowsVersion = $temp[2];
+                    if ($windowsVersion === '2008') {
+                        if (!empty($version)) {
+                            $return->sql = '(devices.os_cpe = ? AND devices.os_version ' . $operator . ' ?)';
+                            $return->data[] = 'cpe:2.3:o:microsoft:windows_server_2008';
+                            $return->data[] = $version;
+                        } else {
+                            $return->sql = '(devices.os_cpe = ?)';
+                            $return->data[] = 'cpe:2.3:o:microsoft:windows_server_2008';
+                        }
+                    }
+                    if ($windowsVersion === '2012') {
+                        if (strpos($cpeVersion, '6.') === 0 and empty($version)) {
+                            $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:windows_server_2012\' AND devices.os_version ' . $operator . ' ?)';
+                            $return->data[] = $cpeVersion;
+                        } else if (strpos($cpeVersion, '6.') === 0 and !empty($version)) {
+                            $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:windows_server_2012\' AND (devices.os_version ' . $operator . ' ? OR devices.os_version ' . $operator . ' ?))';
+                            $return->data[] = $cpeVersion;
+                            $return->data[] = $version;
+                        } else if (empty($cpeVersion) and !empty($version)) {
+                            $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:windows_server_2012\' AND devices.os_version ' . $operator . ' ?)';
+                            $return->data[] = $version;
+                        } else {
+                            $return->sql = '(devices.os_cpe = ?)';
+                            $return->data[] = 'cpe:2.3:o:microsoft:windows_server_2012';
+                        }
+                    }
+                    if (in_array($windowsVersion, ['2016', '2019', '2022', '2025'])) {
+                        if ($cpeProduct === 'windows_server_' . $windowsVersion) {
+                            if (strpos($cpeVersion, '10.') === 0 and empty($version)) {
+                                $return->sql = '(devices.os_cpe LIKE \'cpe:2.3:o:microsoft:windows_server_' . $windowsVersion . '%\' AND devices.os_version ' . $operator . ' ?)';
+                                $return->data[] = $cpeVersion;
+
+                            } else if (strpos($cpeVersion, '10.') === 0 and !empty($version)) {
+                                $return->sql = '(devices.os_cpe LIKE \'cpe:2.3:o:microsoft:windows_server_' . $windowsVersion . '%\' AND (devices.os_version ' . $operator . ' ? OR devices.os_version ' . $operator . ' ?))';
+                                $return->data[] = $cpeVersion;
+                                $return->data[] = $version;
+
+                            } else if (strpos($cpeVersion, '2') === 0 and empty($version)) {
+                                $return->sql = '(devices.os_cpe = ?)';
+                                $return->data[] = 'cpe:2.3:o:microsoft:windows_server_' . $windowsVersion . '_' . $cpeVersion;
+
+                            } else if (strpos($cpeVersion, '2') === 0 and !empty($version)) {
+                                $return->sql = '(devices.os_cpe = ? AND devices.os_version ' . $operator . ' ?)';
+                                $return->data[] = 'cpe:2.3:o:microsoft:windows_server_' . $windowsVersion . '_' . $cpeVersion;
+                                $return->data[] = $version;
+
+                            } else if (empty($cpeVersion) and !empty($version)) {
+                                $return->sql = '(devices.os_cpe LIKE \'cpe:2.3:o:microsoft:windows_server_' . $windowsVersion . '%\' AND devices.os_version ' . $operator . ' ?)';
+                                $return->data[] = $version;
+
+                            } else {
+                                $return->sql = '(devices.os_cpe LIKE ?)';
+                                $return->data[] = 'cpe:2.3:o:microsoft:windows_server_' . $windowsVersion . '_%';
+                            }
+                        }
+                        if (strpos($cpeProduct, 'windows_server_' . $windowsVersion . '_') === 0) {
+                            if (strpos($cpeVersion, '10.') === 0 and empty($version)) {
+                                $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct . '\' AND devices.os_version ' . $operator . ' ?)';
+                                $return->data[] = $cpeVersion;
+
+                            } else if (strpos($cpeVersion, '10.') === 0 and !empty($version)) {
+                                $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct . '\' AND (devices.os_version ' . $operator . ' ? OR devices.os_version ' . $operator . ' ?)';
+                                $return->data[] = $cpeVersion;
+                                $return->data[] = $version;
+
+                            } else if (empty($cpeVersion) and !empty($version)) {
+                                $return->sql = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct . '\' AND devices.os_version ' . $operator . ' ?)';
+                                $return->data[] = $version;
+                                $return->sql_raw = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct . '\' AND devices.os_version ' . $operator . ' ?)';
+
+                            } else {
+                                $return->sql = '(devices.os_cpe = ?)';
+                                $return->data[] = 'cpe:2.3:o:microsoft:' . $cpeProduct;
+                                $return->sql_raw = '(devices.os_cpe = \'cpe:2.3:o:microsoft:' . $cpeProduct. '\')';
+                            }
+                        }
+                    }
+                }
             } else {
-                $value = 'cpe:2.3:o:' . cpe_get('vendor', $criteria) . ':' . cpe_get('product', $criteria) . '%';
+                if ($cpeVersion !== '*' and $cpeVersion !== '-') {
+                    $value = 'cpe:2.3:o:' . $cpeVendor . ':' . $cpeProduct . ':' . $cpeVersion . '%';
+                } else {
+                    $value = 'cpe:2.3:o:' . $cpeVendor . ':' . $cpeProduct . '%';
+                }
+                if ($vulnerable === false) {
+                    $return->sql = '( devices.os_cpe NOT LIKE ? )';
+                    $return->sql_raw = '( devices.os_cpe NOT LIKE \'' . $value . '\' )';
+                } else {
+                    $return->sql = '( devices.os_cpe LIKE ? )';
+                    $return->sql_raw = '( devices.os_cpe LIKE \'' . $value . '\' )';
+                }
+                $return->data[] = $value;
             }
-            if ($vulnerable === false) {
-                $return->sql = '( devices.os_cpe NOT LIKE ? )';
-                $return->sql_raw = '( devices.os_cpe NOT LIKE \'' . $value . '\' )';
-            } else {
-                $return->sql = '( devices.os_cpe LIKE ? )';
-                $return->sql_raw = '( devices.os_cpe LIKE \'' . $value . '\' )';
-            }
-            $return->data[] = $value;
         }
         if (cpe_get('part', $criteria) === 'h') {
             if (cpe_get('version', $criteria) !== '*' and cpe_get('version', $criteria) !== '-') {
@@ -175,6 +365,8 @@ class VulnerabilitiesModel extends BaseModel
     {
         helper('components');
         $return = new stdClass();
+        $return->sql = '';
+        $return->data = array();
         if (is_string($vulnerability)) {
             $vulnerability = json_decode($vulnerability);
         }
@@ -294,20 +486,29 @@ class VulnerabilitiesModel extends BaseModel
             }  // Filter loop
         } else {
             log_message('warning', 'Empty filter');
+            return $return;
         }
-        if (in_array('a', $types)) {
-            $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, devices.os_family AS `devices.os_family`, orgs.name AS `orgs.name`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql;
-            $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, devices.os_family AS `devices.os_family`, orgs.name AS `orgs.name`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql_raw;
-        } else if (in_array('o', $types)) {
-            $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql;
-            $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql_raw;
-        } else if (in_array('h', $types)) {
-            $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql;
-            $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql_raw;
+        $types = array_unique($types);
+        if (count($types) === 1) {
+            if (in_array('a', $types)) {
+                $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, devices.os_family AS `devices.os_family`, orgs.name AS `orgs.name`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql;
+                $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, devices.os_family AS `devices.os_family`, orgs.name AS `orgs.name`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql_raw;
+            } else if (in_array('o', $types)) {
+                $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name`, devices.os_version AS `devices.os_version`, devices.os_cpe AS `devices.os_cpe`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql;
+                $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.os_version AS `devices.os_version`, devices.os_cpe AS `devices.os_cpe`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql_raw;
+            } else if (in_array('h', $types)) {
+                $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql;
+                $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql_raw;
+            }
+        } else {
+            $sql = '';
+            $data = array();
         }
 
         // log_message('debug', "NodeConditions: " . json_encode($nodeConditions) . "\n");
         // log_message('debug', "data: " . json_encode($data) . "\n");
+        // log_message('debug', $sql);
+        // exit;
         $return->sql = $sql;
         $return->data = $data;
         return $return;
@@ -325,6 +526,10 @@ class VulnerabilitiesModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        if (empty($data->cve)) {
+            log_message('error', 'CVE for inserting, but no CVE ID supplied.');
+            return null;
+        }
         if (!empty($data->filter)) {
             $filter = $data->filter;
         }
@@ -339,31 +544,61 @@ class VulnerabilitiesModel extends BaseModel
             return null;
         }
         if (empty($filter)) {
-            log_message('error', 'No Filter after createFieldData.');
+            log_message('warning', 'No Filter after createFieldData.');
         }
-        $this->builder->insert($data);
+
+        // Does this CVE already exist in our database?
+        $existing = $this->builder->getWhere(['cve' => $data->cve])->getResult();
+        $formattedData = new stdClass();
+        foreach ($data as $key => $value) {
+            if ($this->db->fieldExists($key, 'vulnerabilities')) {
+                $formattedData->{$key} = $value;
+            }
+        }
+        if (!empty($existing[0]->cve)) {
+            // We have an existing matching CVE, update it
+            // TODO - combine products from feeds with existing from DB so we don't loose any user customisations
+            $this->builder->where('cve', $existing[0]->cve);
+            $this->builder->update($formattedData);
+        } else {
+            $this->builder->insert($formattedData);
+        }
+        // $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return null;
         }
-        $id = intval($this->db->insertID());
+        if (!empty($existing[0]->cve)) {
+            $id = intval($existing[0]->id);
+        } else {
+            $id = intval($this->db->insertID());
+        }
         // Check if we have any matching packages in the database and set status to unlikely if no result
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
+        $vulnerability = $this->builder->getWhere(['id' => $id])->getResult()[0];
+        if ($this->sqlError($this->db->error()) or empty($vulnerability)) {
             log_message('warning', 'Could not read vulnerability with ID: ' . $id . ', after create.');
             return ($id);
         }
-        $vulnerability = $query->getResult()[0];
         $vQuery = $this->generateQuery($vulnerability);
-        if (stripos($vQuery->sql, 'software.name') !== false) {
-            $vQuery->sql = $vQuery->sql . " GROUP BY software.name";
-        } else if (stripos($vQuery->sql, 'os_cpe') !== false) {
-            $vQuery->sql = $vQuery->sql . " GROUP BY devices.os_cpe";
-        } else if (stripos($vQuery->sql, 'hw_cpe') !== false) {
-            $vQuery->sql = $vQuery->sql . " GROUP BY devices.hw_cpe";
+        $result = false;
+        if (!empty($vQuery->sql)) {
+            if (stripos($vQuery->sql, 'software.name') !== false) {
+                $vQuery->sql = $vQuery->sql . " GROUP BY software.name";
+            } else if (stripos($vQuery->sql, 'os_cpe') !== false) {
+                $vQuery->sql = $vQuery->sql . " GROUP BY devices.os_cpe";
+            } else if (stripos($vQuery->sql, 'hw_cpe') !== false) {
+                $vQuery->sql = $vQuery->sql . " GROUP BY devices.hw_cpe";
+            }
+            if (!empty($vQuery->sql)) {
+                if (stripos($vQuery->sql, 'hw_cpe') === false) {
+                    $result = $this->db->query($vQuery->sql, $vQuery->data)->getResult();
+                    // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+                }
+            } else {
+                log_message('warning', 'No SQL for ' . $id . ', to test status.');
+            }
         }
-        $result = $this->db->query($vQuery->sql, $vQuery->data)->getResult();
-        if (count($result) === 0) {
+        if (empty($result) or count($result) === 0) {
             $data = new stdClass();
             $data->status = 'unlikely';
             $this->builder->where('id', intval($id));
@@ -412,9 +647,11 @@ class VulnerabilitiesModel extends BaseModel
         if (empty($vulnerability->sql)) {
             // Make our SQL
             $vQuery = $this->generateQuery($vulnerability);
-            $vQuery->sql = $vQuery->sql . " AND devices.org_id IN ({$org_list})";
-            $devices = $this->db->query($vQuery->sql, $vQuery->data)->getResult();
-            $included['devices'] = format_data($devices, 'devices');
+            if (!empty($vQuery->sql)) {
+                $vQuery->sql = $vQuery->sql . " AND devices.org_id IN ({$org_list})";
+                $devices = $this->db->query($vQuery->sql, $vQuery->data)->getResult();
+                $included['devices'] = format_data($devices, 'devices');
+            }
         } else {
             // Make our SQL
             $sql = $vulnerability->sql . " AND devices.org_id IN ({$org_list})";
@@ -502,27 +739,25 @@ class VulnerabilitiesModel extends BaseModel
         }
         $item = $query->getResult();
         $item[0]->filter = json_decode($item[0]->filter);
-        $item[0]->cve_json = json_decode($item[0]->cve_json);
-        $item[0]->other_json = json_decode($item[0]->other_json);
+        $item[0]->nvd_json = json_decode($item[0]->nvd_json);
+        $item[0]->mitre_json = json_decode($item[0]->mitre_json);
         $item[0]->references = json_decode($item[0]->references);
         $item[0]->products = json_decode($item[0]->products);
         $item[0]->generated = 'n';
 
-        if (empty($item[0]->sql)) {
-            $instance = & get_instance();
-            $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $org_list = array_unique($org_list);
-            $org_list = implode(',', $org_list);
-            $vQuery = $this->generateQuery($item[0]);
-            if (!empty($vQuery->sql)) {
-                $vQuery->sql = $vQuery->sql . " AND devices.org_id IN ({$org_list})";
-                $vQuery->sql = str_replace(' ( ) ', ' ', $vQuery->sql);
-                $devices = $this->db->query($vQuery->sql, $vQuery->data)->getResult();
-                $sql = str_replace("\n", " ", (string)$this->db->getLastQuery());
-                $sql = str_replace(" AND devices.org_id IN ({$org_list})", '', $sql);
-                $item[0]->sql = $sql;
-                $item[0]->generated = 'y';
-            }
+        $instance = & get_instance();
+        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        $org_list = array_unique($org_list);
+        $org_list = implode(',', $org_list);
+        $vQuery = $this->generateQuery($item[0]);
+        if (!empty($vQuery->sql)) {
+            $vQuery->sql = $vQuery->sql . " AND devices.org_id IN ({$org_list})";
+            $vQuery->sql = str_replace(' ( ) ', ' ', $vQuery->sql);
+            $devices = $this->db->query($vQuery->sql, $vQuery->data)->getResult();
+            $sql = str_replace("\n", " ", (string)$this->db->getLastQuery());
+            $sql = str_replace(" AND devices.org_id IN ({$org_list})", '', $sql);
+            $item[0]->sql = $sql;
+            $item[0]->generated = 'y';
         }
 
         return format_data($item, 'vulnerabilities');
@@ -625,8 +860,8 @@ class VulnerabilitiesModel extends BaseModel
         $dictionary->columns->vuln_status = '';
         $dictionary->columns->filter  = 'A JSON array of values to test for this vulnerability.';
         $dictionary->columns->sql  = 'The generated (or manually overridden) SQL to test for this vulnerability.';
-        $dictionary->columns->cve_json  = 'The JSON straight from the NIST CVE feed.';
-        $dictionary->columns->other_json  = 'Any other JSON apart from the NIST feed.';
+        $dictionary->columns->nvd_json  = 'The JSON record from the NVD feed.';
+        $dictionary->columns->mitre_json = 'The JSON record from Mitre.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
 
