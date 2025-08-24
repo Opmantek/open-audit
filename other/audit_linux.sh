@@ -2150,6 +2150,10 @@ if [ -z $(echo "$skip_sections" | grep "disk,") ]; then
 				hard_drive_manufacturer="Crucial"
 			fi
 
+			if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "^CT" ; then
+				hard_drive_manufacturer="Crucial"
+			fi
+
 			if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "Samsung" ; then
 				hard_drive_manufacturer="Samsung"
 			fi
@@ -2172,9 +2176,17 @@ if [ -z $(echo "$skip_sections" | grep "disk,") ]; then
 				hard_drive_model="VMware Virtual Disk"
 			fi
 
-			if echo "$hard_drive_model" | grep -q "VMware" || echo "$hard_drive_model" | grep -q "Virtual" ; then
+			if echo "$hard_drive_model" | grep -q "VMware" ; then
 				hard_drive_model="VMware Virtual Disk"
 			fi
+
+			if echo "$hard_drive_manufacturer" | grep -q "Msft" && echo "$hard_drive_model" | grep -q "Virtual" ; then
+				hard_drive_manufacturer="Microsoft"
+				hard_drive_model_family="Hyper-V"
+				hard_drive_model="Hyper-V Virtual Disk"
+			fi
+
+
 
 			{
 			echo "		<item>"
