@@ -294,6 +294,41 @@ Disabled as the light grey is a bit too light
     color: rgba(0, 0, 0, 1);
 }
 
+/* PILLS */
+.text-bg-primary
+{
+    background-color: #4fc1e9 !important;
+}
+.text-bg-success
+{
+    background-color: #8cc152 !important;
+}
+.text-bg-danger
+{
+    background-color: #da4453 !important;
+}
+
+
+.text-bg-none
+{
+    background-color: RGBA(108, 117, 125, var(--bs-bg-opacity, 1)) !important;
+}
+.text-bg-low
+{
+    background-color: #4fc1e9 !important;
+}
+.text-bg-medium
+{
+    background-color: RGBA(255, 193, 7, var(--bs-bg-opacity, 1)) !important;
+}
+.text-bg-high
+{
+    background-color: #fd7e14 !important;
+}
+.text-bg-critical
+{
+    background-color: #da4453 !important;
+}
 
 
 /* BUTTONS */
