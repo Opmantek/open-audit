@@ -56,6 +56,7 @@ if (!function_exists('audit_convert')) {
                         }
                     }
                 }
+                // TODO - review this. Should we delete any empty attributes?
                 foreach ($audit as $section => $something) {
                     if ($section !== 'system' && $section !== 'sys') {
                         for ($i = 0; $i < count($audit->{$section}); $i++) {
@@ -1825,6 +1826,14 @@ function cpe_create($device)
                 $cpe = 'o:canonical:ubuntu_linux';
                 break;
 
+            case 'windows 2008':
+                $cpe = 'o:microsoft:windows_server_2008';
+                break;
+
+            case 'windows 2012':
+                $cpe = 'o:microsoft:windows_server_2012';
+                break;
+
             case 'windows 2016':
                 $cpe = 'o:microsoft:windows_server_2016';
                 break;
@@ -1835,18 +1844,30 @@ function cpe_create($device)
 
             case 'windows 2022':
                 $cpe = 'o:microsoft:windows_server_2022';
+                if (!empty($device->os_display_version)) {
+                    $cpe .= '_' . $device->os_display_version;
+                }
                 break;
 
             case 'windows 2025':
                 $cpe = 'o:microsoft:windows_server_2025';
+                if (!empty($device->os_display_version)) {
+                    $cpe .= '_' . $device->os_display_version;
+                }
                 break;
 
             case 'windows 10':
                 $cpe = 'o:microsoft:windows_10';
+                if (!empty($device->os_display_version)) {
+                    $cpe .= '_' . $device->os_display_version;
+                }
                 break;
 
             case 'windows 11':
                 $cpe = 'o:microsoft:windows_11';
+                if (!empty($device->os_display_version)) {
+                    $cpe .= '_' . $device->os_display_version;
+                }
                 break;
 
             default:
