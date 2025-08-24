@@ -1,6 +1,6 @@
 <?php
 
-$output .= "Upgrade database to 5.8.0 commenced.\n\n";
+$output .= "Upgrade database to 6.0.0 commenced.\n\n";
 
 $sql = "DROP TABLE IF EXISTS `standards`";
 $db->query($sql);
@@ -539,7 +539,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.34', 'Protection of information systems during audit testing', 'Audit tests and other assurance activities involving assessment of operational systems shall be planned and agreed between the tester and appropriate management.";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.34', 'Protection of information systems during audit testing', 'Audit tests and other assurance activities involving assessment of operational systems shall be planned and agreed between the tester and appropriate management.', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -594,6 +594,14 @@ if (!$db->fieldExists('hw_cpe', 'devices')) {
   log_message('info', (string)$db->getLastQuery());
 }
 
+
+if (!$db->fieldExists('os_display_version', 'devices')) {
+  $sql = "ALTER TABLE devices ADD os_display_version varchar(200) NOT NULL DEFAULT '' AFTER os_version";
+  $db->query($sql);
+  $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+  log_message('info', (string)$db->getLastQuery());
+}
+
 $sql = "DROP TABLE IF EXISTS `vulnerabilities`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -629,8 +637,9 @@ $sql = "CREATE TABLE `vulnerabilities` (
   `vuln_status` varchar(200) NOT NULL DEFAULT '',
   `filter` text NOT NULL,
   `sql` text NOT NULL,
-  `cve_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`cve_json`)),
-  `other_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`other_json`)),
+  `nvd_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`nvd_json`)),
+  `mitre_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`mitre_json`)),
+  `products` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`products`)),
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -639,17 +648,24 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+if (!$db->fieldExists('display_version', 'windows')) {
+  $sql = "ALTER TABLE windows ADD display_version varchar(20) NOT NULL DEFAULT '' AFTER version";
+  $db->query($sql);
+  $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+  log_message('info', (string)$db->getLastQuery());
+}
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20250615' WHERE `name` = 'internal_version'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE `configuration` SET `value` = '5.8.0' WHERE `name` = 'display_version'";
+$sql = "UPDATE `configuration` SET `value` = '6.0.0' WHERE `name` = 'display_version'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$output .= "Upgrade database to 5.8.0 completed.\n\n";
+$output .= "Upgrade database to 6.0.0 completed.\n\n";
 config('Openaudit')->internal_version = 20250615;
-config('Openaudit')->display_version = '5.8.0';
+config('Openaudit')->display_version = '6.0.0';

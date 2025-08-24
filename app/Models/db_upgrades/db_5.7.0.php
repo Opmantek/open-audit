@@ -29,7 +29,7 @@ if (!$db->fieldExists('vlan_id', 'arp')) {
 }
 
 if (!$db->fieldExists('vlan', 'network')) {
-    $sql = "ALTER TABLE `network` ADD `vlan` varchar(200) NOT NULL DEFAULT '' AFTER `iflastchange`";
+    $sql = "ALTER TABLE `network` ADD `vlan` varchar(100) NOT NULL DEFAULT '' AFTER `iflastchange`";
     $query = $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());

@@ -208,7 +208,7 @@ CREATE TABLE `arp` (
   `ip` varchar(45) NOT NULL DEFAULT '',
   `interface` varchar(45) NOT NULL DEFAULT '',
   `interface_id` int(10) unsigned DEFAULT NULL,
-  `vlan` varchar(200) NOT NULL DEFAULT '',
+  `vlan` varchar(100) NOT NULL DEFAULT '',
   `vlan_id` int(10) unsigned DEFAULT NULL,
   `manufacturer` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -1281,7 +1281,7 @@ INSERT INTO `configuration` VALUES (NULL,'discovery_use_dns','y','bool','y','sys
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_org_id_match','n','bool','y','system','2000-01-01 00:00:00','When matching a device and assign_devices_to_org is set, use that attribute in the relevant match rules.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
 INSERT INTO `configuration` VALUES (NULL,'discovery_wmi_timeout','900','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device from Linux via WMI.');
-INSERT INTO `configuration` VALUES (NULL,'display_version','5.6.5','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (NULL,'display_version','6.0.0','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (NULL,'enterprise_env','/usr/local/open-audit/writable/tmp','text','y','system','2000-01-01 00:00:00','Set to allow execution not in /tmp for Linux.');
 INSERT INTO `configuration` VALUES (NULL,'feature_agents_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Agents to execute commands and download files.');
 INSERT INTO `configuration` VALUES (NULL,'feature_devices_manufacturer_logo','y','bool','y','system','2000-01-01 00:00:00','When viewing the device list, should we show manufacturers logos, not just text.');
@@ -1296,7 +1296,7 @@ INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','
 INSERT INTO `configuration` VALUES (NULL,'firstwave_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt about FirstWave products.');
 INSERT INTO `configuration` VALUES (NULL,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (NULL,'homepage','summaries','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (NULL,'internal_version','20250402','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (NULL,'internal_version','20250615','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
 INSERT INTO `configuration` VALUES (NULL,'license','','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL,'license_eula','','text','n','system','2000-01-01 00:00:00','The date of EULA acceptance.');
 INSERT INTO `configuration` VALUES (NULL,'license_footer','','text','n','system','2000-01-01 00:00:00','Footer text.');
@@ -1524,6 +1524,7 @@ CREATE TABLE `devices` (
   `os_family` varchar(50) NOT NULL DEFAULT '',
   `os_name` varchar(100) NOT NULL DEFAULT '',
   `os_version` varchar(200) NOT NULL DEFAULT '',
+  `os_display_version` varchar(200) NOT NULL DEFAULT '',
   `os_cpe` varchar(200) NOT NULL DEFAULT '',
   `hw_cpe` varchar(200) NOT NULL DEFAULT '',
   `kernel_version` varchar(200) NOT NULL DEFAULT '',
@@ -2920,7 +2921,7 @@ CREATE TABLE `network` (
   `ifadminstatus` varchar(100) NOT NULL DEFAULT '',
   `iflastchange` bigint(20) NOT NULL DEFAULT '0',
   `vlan` varchar(100) NOT NULL DEFAULT '',
-  `vlan_id` varchar(100) NOT NULL DEFAULT '',
+  `vlan_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   KEY `net_index` (`net_index`),
@@ -4737,6 +4738,7 @@ CREATE TABLE `variable` (
   `value` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
+  KEY `device_id_name` (`device_id`, `name`),
   CONSTRAINT `variable_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -4833,9 +4835,9 @@ DROP TABLE IF EXISTS `vulnerabilities`;
 CREATE TABLE `vulnerabilities` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `cve` varchar(200) NOT NULL DEFAULT '',
-  `status` enum('confirmed', 'declined', 'pending', 'unlikely', 'other', ''),
+  `status` enum('confirmed','declined','pending','unlikely','other','') DEFAULT NULL,
   `attack_complexity` varchar(200) NOT NULL DEFAULT '',
   `attack_requirements` text NOT NULL,
   `attack_vector` varchar(200) NOT NULL DEFAULT '',
@@ -4860,8 +4862,8 @@ CREATE TABLE `vulnerabilities` (
   `vuln_status` varchar(200) NOT NULL DEFAULT '',
   `filter` text NOT NULL,
   `sql` text NOT NULL,
-  `cve_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`cve_json`)),
-  `other_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`other_json`)),
+  `nvd_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`nvd_json`)),
+  `mitre_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`mitre_json`)),
   `products` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`products`)),
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -5042,6 +5044,7 @@ CREATE TABLE `windows` (
   `registered_user` varchar(100) NOT NULL DEFAULT '',
   `service_pack` varchar(20) NOT NULL DEFAULT '',
   `version` varchar(20) NOT NULL DEFAULT '',
+  `display_version` varchar(20) NOT NULL DEFAULT '',
   `install_directory` varchar(20) NOT NULL DEFAULT '',
   `active_directory_ou` varchar(200) NOT NULL DEFAULT '',
   `workgroup` varchar(255) NOT NULL DEFAULT '',
