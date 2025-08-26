@@ -591,6 +591,7 @@ if [ -z "$system_os_name" ]; then
 	system_os_name=$(cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2)
 fi
 system_os_version=$(cat /etc/os-release 2>/dev/null | grep -i ^VERSION_ID | cut -d= -f2 | cut -d\" -f2)
+system_os_display_version=$(grep VERSION= /etc/os-release | cut -d\" -f2)
 system_manufacturer=""
 system_model=""
 system_serial=""
@@ -990,6 +991,7 @@ echo "		<os_group>$(escape_xml "$system_os_group")</os_group>"
 echo "		<os_family>$(escape_xml "$system_os_family")</os_family>"
 echo "		<os_name>$(escape_xml "$system_os_name")</os_name>"
 echo "		<os_version>$(escape_xml "$system_os_version")</os_version>"
+echo "      <os_display_version>$(excape_xml "$system_os_display_version")</os_display_version>"
 echo "		<kernel_version>$(escape_xml "$kernel_version")</kernel_version>"
 echo "		<serial>$(escape_xml "$system_serial")</serial>"
 echo "		<model>$(escape_xml "$system_model")</model>"
