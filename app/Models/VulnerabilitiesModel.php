@@ -811,13 +811,40 @@ class VulnerabilitiesModel extends BaseModel
     public function update($id = null, $data = null): bool
     {
         // Accept our client data
+        $id = intval($id);
         $data = $this->updateFieldData('vulnerabilities', $data);
-        if (!empty($data->filter) and !is_string($data->filter)) {
-            $data->filter = json_encode($data->filter);
+        if (!empty($data->filter)) {
+            if (!is_string($data->filter)) {
+                $data->filter = json_encode($data->filter);
+            } else {
+                $data->filter = json_decode($data->filter);
+                $data->filter = json_encode($data->filter);
+            }
         }
-        if (!empty($data->filter) and is_string($data->filter)) {
-            $data->filter = json_decode($data->filter);
-            $data->filter = json_encode($data->filter);
+        if (!empty($data->products)) {
+            $products = new stdClass();
+            foreach ($data->products as $key => $value) {
+                $products->{$key} = array();
+                $values = explode(',', $value);
+                for ($i=0; $i < count($values); $i++) {
+                    $values[$i] = trim($values[$i]);
+                }
+                $products->{$key} = $values;
+            }
+
+            $vuln = $this->read($id);
+            if (is_string($vuln[0]->attributes->products)) {
+                $vuln[0]->attributes->products = json_decode($vuln[0]->attributes->products);
+            }
+            $data->products = new stdClass();
+            foreach ($vuln[0]->attributes->products as $vuln_product_name => $vuln_product_data) {
+                if (empty($data->products->{$vuln_product_name})) {
+                    $data->products->{$vuln_product_name} = new stdClass();
+                }
+                $data->products->{$vuln_product_name}->vendor = $vuln_product_data->vendor;
+                $data->products->{$vuln_product_name}->names = $products->{$vuln_product_name};
+            }
+            $data->products = json_encode($data->products);
         }
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
