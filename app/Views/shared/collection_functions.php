@@ -5,7 +5,7 @@ if (!empty($meta->total) and !empty($meta->limit) and $meta->total > $meta->limi
     $GLOBALS['show_all'] = $meta->total;
 }
 
-function collection_card_header(string $collection = '', string $icon = '', object $user = null, string $label = '', string $url = ''): string
+function collection_card_header(string $collection = '', string $icon = '', ?object $user = null, string $label = '', string $url = ''): string
 {
     $style = (!empty($user->toolbar_style)) ? $user->toolbar_style : '';
     $return = '';
@@ -109,20 +109,6 @@ function collection_card_header(string $collection = '', string $icon = '', obje
         } else {
             $show_all_button = "<a id=\"button_all\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection . 'Collection') . "\">" . __("List") . "</a>";
         }
-    }
-
-    if (strpos($label, 'Vulnerabilities') !== false) {
-        $show_all_button = "<a id=\"button_all\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Show All Statuses") . "\" href=\"" . url_to($collection . 'Collection') . "?vulnerabilities.status=!=\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __("Show All") . "</a>&nbsp;";
-
-        $show_all_button .= "<a id=\"button_unlikely\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Show Unlikely") . "\" href=\"" . url_to($collection . 'Collection') . "?vulnerabilities.status=unlikely\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span><span class=\"text-info\">" . __("Show Unlikely") . "</span></a>&nbsp;";
-
-        $show_all_button .= "<a id=\"button_pending\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Show Pending") . "\" href=\"" . url_to($collection . 'Collection') . "?vulnerabilities.status=pending\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span><span class=\"text-warning\">" . __("Show Pending") . "</span></a>&nbsp;";
-
-        $show_all_button .= "<a id=\"button_confirmed\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Show Confirmed") . "\" href=\"" . url_to($collection . 'Collection') . "?vulnerabilities.status=confirmed\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span><span class=\"text-success\">" . __("Show Confirmed") . "</span></a>&nbsp;";
-
-        $show_all_button .= "<a id=\"button_declined\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Show Declined") . "\" href=\"" . url_to($collection . 'Collection') . "?vulnerabilities.status=declined\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span><span class=\"text-danger\">" . __("Show Declined") . "</span></a>&nbsp;";
-
-        $show_all_button .= "<span style=\"margin-right:50px;\"></span>";
     }
 
     $return = "<div class=\"row\">
