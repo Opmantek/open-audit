@@ -555,6 +555,15 @@ class VulnerabilitiesModel extends BaseModel
         if (!empty($data->links) and !is_string($data->links)) {
             $data->links = json_encode($data->links);
         }
+        if (!empty($data->nvd_json) and !is_string($data->nvd_json)) {
+            $data->nvd_json = json_encode($data->nvd_json);
+        }
+        if (!empty($data->mitre_json) and !is_string($data->mitre_json)) {
+            $data->mitre_json = json_encode($data->mitre_json);
+        }
+        if (!empty($data->products) and !is_string($data->products)) {
+            $data->products = json_encode($data->products);
+        }
         $data = $this->createFieldData('vulnerabilities', $data);
         if (empty($data)) {
             return null;
