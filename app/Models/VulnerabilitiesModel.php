@@ -29,6 +29,19 @@ class VulnerabilitiesModel extends BaseModel
         $this->builder->select(['count(id) as count'], false);
         $status = true;
         foreach ($resp->meta->filter as $filter) {
+
+            if ($filter->name === 'search') {
+                $this->builder->where('(vulnerabilities.name LIKE ' . $this->db->escape($filter->value) .
+                    ' OR vulnerabilities.cve LIKE ' . $this->db->escape(ip_address_to_db($filter->value)) .
+                    ' OR vulnerabilities.vendor LIKE ' . $this->db->escape($filter->value) .
+                    ' OR vulnerabilities.filter LIKE ' . $this->db->escape($filter->value) .
+                    ' OR vulnerabilities.nvd_json LIKE ' . $this->db->escape($filter->value) .
+                    ' OR vulnerabilities.mitre_json LIKE ' . $this->db->escape($filter->value) .
+                    ')');
+                $status = false;
+                continue;
+            }
+
             if ($filter->name === 'vulnerabilities.status' or $filter->name === 'status') {
                 $status = false;
             }
@@ -57,6 +70,19 @@ class VulnerabilitiesModel extends BaseModel
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
         $status = true;
         foreach ($resp->meta->filter as $filter) {
+
+            if ($filter->name === 'search') {
+                $this->builder->where('(vulnerabilities.name LIKE ' . $this->db->escape($filter->value) .
+                    ' OR vulnerabilities.cve LIKE ' . $this->db->escape(ip_address_to_db($filter->value)) .
+                    ' OR vulnerabilities.vendor LIKE ' . $this->db->escape($filter->value) .
+                    ' OR vulnerabilities.filter LIKE ' . $this->db->escape($filter->value) .
+                    ' OR vulnerabilities.nvd_json LIKE ' . $this->db->escape($filter->value) .
+                    ' OR vulnerabilities.mitre_json LIKE ' . $this->db->escape($filter->value) .
+                    ')');
+                $status = false;
+                continue;
+            }
+
             if ($filter->name === 'vulnerabilities.status' or $filter->name === 'status') {
                 $status = false;
             }
