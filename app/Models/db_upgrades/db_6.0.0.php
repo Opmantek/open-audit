@@ -655,6 +655,18 @@ if (!$db->fieldExists('display_version', 'windows')) {
   log_message('info', (string)$db->getLastQuery());
 }
 
+$sql = "SHOW INDEX FROM `variable` WHERE Key_name = 'device_id_name'";
+$result = $db->query($sql)->getResult();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+if (count($result) === 0) {
+    $sql = "ALTER TABLE `variable` ADD INDEX `device_id_name` (`device_id`, `name`)";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20250615' WHERE `name` = 'internal_version'";
 $db->query($sql);
