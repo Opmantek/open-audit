@@ -1806,16 +1806,33 @@ function cpe_create($device)
 
     if (!empty($device->os_family) and $device->type === 'computer') {
         switch (strtolower($device->os_family)) {
-            case 'redhat':
-                $cpe = 'o:redhat:enterprise_linux';
+            // TODO
+            // almalinux:almalinux
+            // alpinelinux:alpine_linux
+            // microsoft:azure_linux
+            // oracle:linux
+            case 'arch':
+                $cpe = 'o:archlinux:arch_linux';
                 break;
 
             case 'debian':
                 $cpe = 'o:debian:debian_linux';
                 break;
 
+            case 'fedora':
+                $cpe = 'o:fedoraproject:fedora';
+                break;
+
             case 'macos':
                 $cpe = 'o:apple:macos';
+                break;
+
+            case 'redhat':
+                $cpe = 'o:redhat:enterprise_linux';
+                break;
+
+            case 'rocky':
+                $cpe = 'o:resf:rocky_linux';
                 break;
 
             case 'suse':
