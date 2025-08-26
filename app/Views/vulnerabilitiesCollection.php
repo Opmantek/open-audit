@@ -63,13 +63,31 @@ window.onload = function () {
         $("#button_import_csv").remove();
         $("#button_export_csv").remove();
         $("#button_export_json").remove();
-<?php
-        if (!empty($included['statuses'])) {
-            foreach ($included['statuses'] as $row) {
-                echo '        $("#button_' . $row->status . '").html($("#button_' . $row->status . '").html() + " (' . $row->count . ')");' . "\n";
+
+        
+        <?php echo '$(".page-title-right").append(\'<div style="padding-right:6px;" class="btn-group btn-group-sm float-start" role="group"><div class="page-title-right"><select class="form-select" id="severity_button" style="background-color:#f8f9fa;"><option value="pending">' . __('Severity') . '</option><option value="!=">' . __('All') . '</option><option value="low">' . __('Low') . '</option><option value="medium">' . __('Medium') . '</option><option value="high">' . __('High') . '</option><option value="critical">' . __('Critical') . '</option></select></div></div><div style="padding-right:12px; padding-left:8px; padding-top:7px;" class="btn-group btn-group-sm float-start" role="group">' . __('or') . '</div><div style="padding-right:6px;" class="btn-group btn-group-sm float-start" role="group"><div class="page-title-right"><select class="form-select" id="status_button" style="background-color:#f8f9fa;"><option value="pending">' . __('Status') . '</option><option value="!=">' . __('All') . '</option><option value="pending">' . __('Pending') . '</option><option value="unlikely">' . __('Unlikely') . '</option><option value="confirmed">' . __('Confirmed') . '</option><option value="declined">' . __('Declined') . '</option></select></div></div>\')'; ?>
+
+        $('#severity_button').on('change', function () {
+            var url = $(this).val(); // get selected value
+            console.log(url);
+            if (url) { // require a URL
+                window.location = "<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=" + url; // redirect
             }
-        }
-        ?>
+            return false;
+        });
+
+        <?php #echo '$(".page-title-right").prepend(\'<div style="padding-right:6px;" class="btn-group btn-group-sm float-start" role="group"><div class="page-title-right"><select class="form-select" id="status_button" style="background-color:#f8f9fa;"><option value="pending">' . __('Status') . '</option><option value="!=">' . __('All') . '</option><option value="pending">' . __('Pending') . '</option><option value="unlikely">' . __('Unlikely') . '</option><option value="confirmed">' . __('Confirmed') . '</option><option value="declined">' . __('Declined') . '</option></select></div></div>\')'; ?>
+
+        $('#status_button').on('change', function () {
+            var url = $(this).val(); // get selected value
+            console.log(url);
+            if (url) { // require a URL
+                window.location = "<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.status=" + url; // redirect
+            }
+            return false;
+        });
+
+
 
 <?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
         // $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __("Update Vulnerabilities") ?>\" href=\"<?= url_to('newsExecuteAllVulnerabilities') ?>\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rss text-primary\"></span><?= __("Update Vulnerabilities") ?></a>");
