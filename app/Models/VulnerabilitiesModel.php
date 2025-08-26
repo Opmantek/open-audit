@@ -515,20 +515,10 @@ class VulnerabilitiesModel extends BaseModel
             return $return;
         }
         $types = array_unique($types);
-        if (count($types) === 1) {
-            if (in_array('a', $types)) {
-                $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, devices.os_family AS `devices.os_family`, orgs.name AS `orgs.name`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql;
-                $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, devices.os_family AS `devices.os_family`, orgs.name AS `orgs.name`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql_raw;
-            } else if (in_array('o', $types)) {
-                $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name`, devices.os_version AS `devices.os_version`, devices.os_cpe AS `devices.os_cpe`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql;
-                $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.os_version AS `devices.os_version`, devices.os_cpe AS `devices.os_cpe`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql_raw;
-            } else if (in_array('h', $types)) {
-                $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql;
-                $sql_raw = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql_raw;
-            }
+        if (in_array('a', $types)) {
+            $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name`, devices.os_family AS `devices.os_family`, software.name AS `software.name`, software.version AS `software.version` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN orgs ON (devices.org_id = orgs.id AND software.current = "y") WHERE ' . $sql;
         } else {
-            $sql = '';
-            $data = array();
+            $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name`, devices.os_name AS `devices.os_name`, devices.os_version AS `devices.os_version`, devices.os_cpe AS `devices.os_cpe` FROM `devices` LEFT JOIN orgs ON (devices.org_id = orgs.id) WHERE ' . $sql;
         }
 
         // log_message('debug', "NodeConditions: " . json_encode($nodeConditions) . "\n");
