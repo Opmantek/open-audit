@@ -339,6 +339,20 @@ if (!function_exists('ip_address_from_db')) {
     }
 }
 
+function search_ip_to_db($ip = '')
+{
+    $return_ip = '';
+    if (strpos($ip, '.') !== false) {
+        $ip = explode('.', $ip);
+        foreach ($ip as $value) {
+            $return_ip .= ' ' . mb_substr("000" . $value, -3);
+        }
+        $return_ip = trim($return_ip);
+        $return_ip = str_replace(' ', '.', $return_ip);
+    }
+    return $return_ip;
+}
+
 if (!function_exists('ip_address_to_db')) {
     function ip_address_to_db($ip = '')
     {

@@ -792,7 +792,8 @@ if (!function_exists('response_get_query_filter')) {
                     foreach ($values as $key => $value) {
                         $values[$key] = trim((string)$values[$key], '"\'');
                         if (($query->name === 'ip' or stripos($query->name, '.ip') !== false) and filter_var($values[$key], FILTER_VALIDATE_IP)) {
-                            $values[$key] = ip_address_to_db($values[$key]);
+                            // $values[$key] = ip_address_to_db($values[$key]);
+                            $values[$key] = search_ip_to_db($values[$key]);
                         }
                         if (is_numeric($values[$key])) {
                             $values[$key] = intval($values[$key]);
@@ -811,7 +812,8 @@ if (!function_exists('response_get_query_filter')) {
                     foreach ($values as $key => $value) {
                         $values[$key] = trim(trim((string)$values[$key]), '"\'');
                         if (($query->name === 'ip' or stripos($query->name, '.ip') !== false) and filter_var($values[$key], FILTER_VALIDATE_IP)) {
-                            $values[$key] = ip_address_to_db($values[$key]);
+                            // $values[$key] = ip_address_to_db($values[$key]);
+                            $values[$key] = search_ip_to_db($values[$key]);
                         }
                         if (is_numeric($values[$key])) {
                             $values[$key] = intval($values[$key]);
@@ -855,7 +857,8 @@ if (!function_exists('response_get_query_filter')) {
                         // this will translate to column==value and hence be covered above
                         // Additionally, if we have 'id' on the end of the name, skip this block and use the next block below to set =
                         if (strpos($query->name, '.ip') === (strlen($query->name) - 3) or $query->name === 'ip') {
-                            $query->value = ip_address_to_db($query->value);
+                            // $query->value = ip_address_to_db($query->value);
+                            $query->value = search_ip_to_db($query->value);
                         }
                         if (strpos($query->value, '%') === false) {
                             $query->value = '%' . $query->value . '%';
