@@ -140,7 +140,7 @@ function match_columns($table)
             $match_columns = array('name', 'sid', 'keys');
     }
     if ($table === 'user_group') {
-            $match_columns = array('name', 'sid');
+            $match_columns = array('name', 'sid', 'members');
     }
     if ($table === 'variable') {
             $match_columns = array('program', 'name', 'value');
