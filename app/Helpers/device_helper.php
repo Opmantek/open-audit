@@ -1787,9 +1787,6 @@ function cpe_create($device)
         if (stripos($device->sysDescr, "Cisco Controller") !== false) {
             $cpe = 'o:cisco:ios_xe';
         }
-        if (stripos((string)$i, "Catalyst Operating") !== false) {
-            $cpe = 'o:cisco:catos';
-        }
         if (stripos($device->sysDescr, "Catalyst") !== false and stripos($device->sysDescr, "L3 Switch Software") !== false) {
             $cpe = 'o:cisco:catos';
         }
@@ -1892,7 +1889,7 @@ function cpe_create($device)
                 break;
         }
         if (stripos($device->os_family, 'vmware') !== false) {
-            $cpe = 'o:vmware:' . strtolower(str_replace(' ', '_', $details->os_family));
+            $cpe = 'o:vmware:' . strtolower(str_replace(' ', '_', $device->os_family));
         }
     }
     if (!empty($cpe)) {
@@ -1967,6 +1964,9 @@ function reset_icons($id = '')
             }
             if (strripos($details->os_name, 'bsd') !== false) {
                 $details->icon = 'bsd';
+            }
+            if (strripos($details->os_name, 'cbl-mariner') !== false) {
+                $details->icon = 'cbl-mariner';
             }
             if (strripos($details->os_name, 'centos') !== false) {
                 $details->icon = 'centos';
