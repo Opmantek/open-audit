@@ -59,7 +59,10 @@ class News extends BaseController
             return redirect()->route('home');
         }
         $this->newsModel = model('App\Models\NewsModel');
-        $this->newsModel->executeAll($action);
+        $id = $this->newsModel->executeAll($action);
+        if (!empty($_POST['data']['attributes']['cve']) and !empty($id) and is_int($id)) {
+            return redirect()->route('vulnerabilitiesRead', [$id]);
+        }
         return redirect()->route($action . 'Collection');
     }
 
