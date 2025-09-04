@@ -143,6 +143,80 @@ system_os_version=$(sw_vers | grep "ProductVersion:" | cut -d: -f2 | xargs)
 system_os_version_major=$(echo "$system_os_version" | cut -d. -f1)
 system_os_version_minor=$(echo "$system_os_version" | cut -d. -f2)
 system_os_name="MacOS $system_os_version"
+system_os_display_version=""
+
+if [[ "$system_os_version_major" -eq 15 ]]; then
+    system_os_display_version="macOS Sequoia"
+fi
+if [[ "$system_os_version_major" -eq 14 ]]; then
+    system_os_display_version="macOS Sonoma"
+fi
+if [[ "$system_os_version_major" -eq 13 ]]; then
+    system_os_display_version="macOS Ventura"
+fi
+if [[ "$system_os_version_major" -eq 12 ]]; then
+    system_os_display_version="macOS Monterey"
+fi
+if [[ "$system_os_version_major" -eq 11 ]]; then
+    system_os_display_version="macOS Big Sur"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 15 ]]; then
+    system_os_display_version="macOS Catalina"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 14 ]]; then
+    system_os_display_version="macOS Mojave"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 13 ]]; then
+    system_os_display_version="macOS High Sierra"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 12 ]]; then
+    system_os_display_version="macOS Sierra"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 11 ]]; then
+    system_os_display_version="OS X El Capitan"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 10 ]]; then
+    system_os_display_version="OS X Yosemite"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 9 ]]; then
+    system_os_display_version="OS X Mavericks"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 8 ]]; then
+    system_os_display_version="OS X Mountain Lion"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 7 ]]; then
+    system_os_display_version="OS X Lion"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 6 ]]; then
+    system_os_display_version="Mac OS X Snow Leopard"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 5 ]]; then
+    system_os_display_version="Mac OS X Leopard"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 4 ]]; then
+    system_os_display_version="Mac OS X Tiger"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 3 ]]; then
+    system_os_display_version="Mac OS X Panther"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 2 ]]; then
+    system_os_display_version="Mac OS X Jaguar"
+fi
+if [[ "$system_os_version_major" -eq 10 ]] && [[ "$system_os_version_minor" -eq 1 ]]; then
+    system_os_display_version="Mac OS X Puma"
+fi
+
+
+
+
+
+
+
+
+
+
+
+
 system_serial=$(system_profiler SPHardwareDataType | grep 'Serial Number (system):' | cut -d':' -f2 | sed 's/^ *//g')
 manufacturer_code=""
 if [[ ${#system_serial} = 11 ]]; then
@@ -190,6 +264,7 @@ echo  "     <os_group>Apple</os_group>" >> $xml_file
 echo  "     <os_family>Apple OSX</os_family>" >> $xml_file
 echo  "     <os_name>$system_os_name</os_name>" >> $xml_file
 echo  "     <os_version>$system_os_version</os_version>" >> $xml_file
+echo  "     <os_display_version>$system_os_display_version</os_display_version>" >> $xml_file
 echo  "     <serial>$system_serial</serial>" >> $xml_file
 echo  "     <model>$system_model</model>" >> $xml_file
 echo  "     <manufacturer>Apple, Inc.</manufacturer>" >> $xml_file
@@ -632,6 +707,14 @@ echo "          <name><![CDATA[$system_os_name]]></name>" >> $xml_file
 echo "          <version><![CDATA[$system_os_version]]></version>" >> $xml_file
 echo "          <publisher>Apple</publisher>" >> $xml_file
 echo "      </item>" >> $xml_file
+
+# include Kernel in software
+kernel=$(uname -srm | cut -d" " -f2 | cut -d- -f1,2)
+echo "      <item>" >> "$xml_file"
+echo "          <name>darwin kernel</name>" >> "$xml_file"
+echo "          <version><![CDATA[$kernel]]></version>" >> "$xml_file"
+echo "      </item>" >> "$xml_file"
+
 software_name=""
 software_version=""
 software_install_source=""
