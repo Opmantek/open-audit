@@ -330,6 +330,27 @@ Disabled as the light grey is a bit too light
     background-color: #da4453 !important;
 }
 
+.text-none
+{
+    color: RGBA(108, 117, 125, var(--bs-bg-opacity, 1)) !important;
+}
+.text-low
+{
+    color: #4fc1e9 !important;
+}
+.text-medium
+{
+    color: RGBA(255, 193, 7, var(--bs-bg-opacity, 1)) !important;
+}
+.text-high
+{
+    color: #fd7e14 !important;
+}
+.text-critical
+{
+    color: #da4453 !important;
+}
+
 
 /* BUTTONS */
 /* the custom 'devices' type button */
