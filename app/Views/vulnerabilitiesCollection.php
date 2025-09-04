@@ -2,7 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
-$data_order = ['view', 'status', 'base_severity', 'cve', 'name', 'vendor', 'published', 'affected']; 
+$data_order = $meta->data_order;
 $url = base_url() . 'index.php/vulnerabilities?format=dataTables';
 foreach ($meta->filter as $filter) {
     if (is_string($filter->value)) {
@@ -12,6 +12,10 @@ foreach ($meta->filter as $filter) {
         $url .= '&' . $filter->name . '=' . $filter->operator . '("' . implode('","', $filter->value) . '")';
     }
 }
+if (!empty($meta->groupby)) {
+    $url .= '&groupby=' . $meta->groupby;
+    $data_order = array('vendor', 'count');
+}
 if (empty($config->product) or $config->product === 'community') {
     echo '        <div class="container-fluid">
             <div class="alert alert-danger alert-dismissable fade show" role="alert">
@@ -20,20 +24,76 @@ if (empty($config->product) or $config->product === 'community') {
             </div>
         </div>';
 }
+$urlFilter = '';
+if (!empty($meta->filter)) {
+    foreach ($meta->filter as $item) {
+        $urlFilter .= '&' . $item->name . '=' . $item->operator . $item->value;
+    }
+}
 ?>
         <main class="container-fluid">
+
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-3 clearfix">
+                                    <h6><span class="oa-icon\"></span>Vulnerabilities with Results</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <?php foreach ($included['severity'] as $key => $value) { ?>
+                                <div class="col-lg-2 text-center">
+                                    <a href="<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=<?= $key ?>&count=>0" class="btn btn-light btn-lg text-bg-<?= (!empty($key)) ? $key : 'success' ?>" role="button">
+                                        <span class="badge rounded-pill text-bg-<?= $key ?>"><?= (!empty($key)) ? $key : 'unknown' ?> :: <?= $value ?></span><br>
+                                    </a>
+                                </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-3 clearfix">
+                                    <h6><span class="oa-icon\"></span>All Vulnerabilities</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <?php foreach ($included['all_severity'] as $key => $value) { ?>
+                                <div class="col-lg-2 text-center">
+                                    <a href="<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=<?= $key ?>" class="btn btn-light btn-lg text-bg-<?= (!empty($key)) ? $key : 'success' ?>" role="button">
+                                        <span class="badge rounded-pill text-bg-<?= $key ?>"><?= (!empty($key)) ? $key : 'unknown' ?> :: <?= $value ?></span><br>
+                                    </a>
+                                </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+
             <div class="card">
                 <div class="card-header">
                     <?= collection_card_header($meta->collection, $meta->icon, $user, '', $meta->query_string) ?>
                 </div>
                 <div class="card-body">
                     <br>
-                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[3,"asc"]]'>
+                    <?php if (empty($meta->groupby)) { ?>
+                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[2,"desc"]]'>
+                    <?php } else { ?>
+                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[0,"desc"]]'>
+                    <?php } ?>
                         <thead>
                             <tr>
 <?php foreach ($data_order as $key) {
                                 $align = '';
-                                if ($key === 'id' or $key === 'affected' or $key === 'view' or strpos($key, '_id') !== false) {
+                                if ($key === 'id' or $key === 'count' or $key === 'view' or strpos($key, '_id') !== false) {
                                     $align = 'text-center dt-body-center';
                                 }
                                 echo '                                <th class="' . $align . '">' . collection_column_name($key) . "</th>\n";
@@ -42,7 +102,7 @@ if (empty($config->product) or $config->product === 'community') {
                             <tr>
 <?php foreach ($data_order as $key) {
                                 echo '                                <th><div class="input-group">';
-                                if ($key !== 'id' and $key !== 'affected' and $key !== 'view') {
+                                if ($key !== 'id' and $key !== 'count' and $key !== 'view') {
                                     echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . collection_column_name($key) . '">';
                                 }
                                 echo "</div></th>\n";
@@ -56,49 +116,57 @@ if (empty($config->product) or $config->product === 'community') {
             </div>
         </main>
 
+
+
+<div class="modal fade" id="requestVulnerabilityModal" tabindex="-1" aria-labelledby="requestVulnerabilityModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="<?= url_to('vulnerabilitiesRequestSingle') ?>" id="vulnerabilityRequestForm">
+                <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="requestVulnerabilityModalLabel"><?= __('Request a Specific CVE') ?></h1>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <!--<label for="basic-url" class="form-label">CVE ID</label>-->
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="data[attributes][cve]" name="data[attributes][cve]" placeholder="CVE-2025-1234" aria-describedby="basic-addon3 basic-addon4">
+                        </div>
+                        <div class="form-text" id="basic-addon4">
+                            <?= __('This CVE will be retrieved and overwrite the existing CVE if it exists.') ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= __('Cancel') ?></button>
+                    <button type="button" type="submit" id="submitV" name="submitV" class="btn btn-primary"><?= __('Submit') ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 <script>
 window.onload = function () {
     $(document).ready(function () {
         $("#button_create").remove();
-        $("#button_import_csv").remove();
         $("#button_export_csv").remove();
         $("#button_export_json").remove();
 
-        
-        <?php echo '$(".page-title-right").append(\'<div style="padding-right:6px;" class="btn-group btn-group-sm float-start" role="group"><div class="page-title-right"><select class="form-select" id="severity_button" style="background-color:#f8f9fa;"><option value="pending">' . __('Severity') . '</option><option value="!=">' . __('All') . '</option><option value="low">' . __('Low') . '</option><option value="medium">' . __('Medium') . '</option><option value="high">' . __('High') . '</option><option value="critical">' . __('Critical') . '</option></select></div></div><div style="padding-right:12px; padding-left:8px; padding-top:7px;" class="btn-group btn-group-sm float-start" role="group">' . __('or') . '</div><div style="padding-right:6px;" class="btn-group btn-group-sm float-start" role="group"><div class="page-title-right"><select class="form-select" id="status_button" style="background-color:#f8f9fa;"><option value="pending">' . __('Status') . '</option><option value="!=">' . __('All') . '</option><option value="pending">' . __('Pending') . '</option><option value="unlikely">' . __('Unlikely') . '</option><option value="confirmed">' . __('Confirmed') . '</option><option value="declined">' . __('Declined') . '</option></select></div></div>\')'; ?>
+        <?php # echo '$(".page-title-right").append(\'<div style="padding-right:6px;" class="btn-group btn-group-sm float-start" role="group"><div class="page-title-right"><select class="form-select" id="severity_button" style="background-color:#f8f9fa;"><option value="pending">' . __('Severity') . '</option><option value="!=">' . __('All') . '</option><option value="low">' . __('Low') . '</option><option value="medium">' . __('Medium') . '</option><option value="high">' . __('High') . '</option><option value="critical">' . __('Critical') . '</option></select></div></div><div style="padding-right:12px; padding-left:8px; padding-top:7px;" class="btn-group btn-group-sm float-start" role="group">' . __('or') . '</div><div style="padding-right:6px;" class="btn-group btn-group-sm float-start" role="group"><div class="page-title-right"><select class="form-select" id="status_button" style="background-color:#f8f9fa;"><option value="pending">' . __('Status') . '</option><option value="!=">' . __('All') . '</option><option value="pending">' . __('Pending') . '</option><option value="unlikely">' . __('Unlikely') . '</option><option value="confirmed">' . __('Confirmed') . '</option><option value="declined">' . __('Declined') . '</option></select></div></div>\')'; ?>
 
-        $('#severity_button').on('change', function () {
-            var url = $(this).val(); // get selected value
-            console.log(url);
-            if (url) { // require a URL
-                window.location = "<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=" + url; // redirect
-            }
-            return false;
+
+        $('#submitV').on('click', function () {
+            console.log('clicked submit');
+            $("#vulnerabilityRequestForm").submit();
         });
 
-        <?php #echo '$(".page-title-right").prepend(\'<div style="padding-right:6px;" class="btn-group btn-group-sm float-start" role="group"><div class="page-title-right"><select class="form-select" id="status_button" style="background-color:#f8f9fa;"><option value="pending">' . __('Status') . '</option><option value="!=">' . __('All') . '</option><option value="pending">' . __('Pending') . '</option><option value="unlikely">' . __('Unlikely') . '</option><option value="confirmed">' . __('Confirmed') . '</option><option value="declined">' . __('Declined') . '</option></select></div></div>\')'; ?>
-
-        $('#status_button').on('change', function () {
-            var url = $(this).val(); // get selected value
-            console.log(url);
-            if (url) { // require a URL
-                window.location = "<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.status=" + url; // redirect
-            }
-            return false;
-        });
-
-
-
-<?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
-        // $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __("Update Vulnerabilities") ?>\" href=\"<?= url_to('newsExecuteAllVulnerabilities') ?>\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rss text-primary\"></span><?= __("Update Vulnerabilities") ?></a>");
-<?php } elseif ($user->toolbar_style === 'icon') { ?>
-        $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __("Update Vulnerabilities") ?>\" href=\"<?= url_to('newsExecuteAllVulnerabilities') ?>\"><span class=\"fa-solid fa-rss text-primary\"></span></a>");
-<?php } elseif ($user->toolbar_style === 'text') { ?>
-        $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __("Update Vulnerabilities") ?>\" href=\"<?= url_to('newsExecuteAllVulnerabilities') ?>\"><?= __("Update Vulnerabilities") ?></a>");
-<?php } ?>
 
         let logSort = {};
         var myDataTable = new DataTable('.dataTableAjax', {
+            autoWidth: false,
             lengthChange: true,
             lengthMenu: [ [10, 25, 50, 1000], [10, 25, 50, 1000] ],
             order: [[ 1, 'asc' ]],
@@ -127,15 +195,6 @@ window.onload = function () {
                                 d.sort = 'vulnerabilities.id';
                             } else {
                                 d.sort = '-vulnerabilities.id';
-                            }
-                        }
-                        if (d.columns[d.order[0].column].data == 'attributes.status') {
-                            logSort.column = 'vulnerabilities.status';
-                            logSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'vulnerabilities.status';
-                            } else {
-                                d.sort = '-vulnerabilities.status';
                             }
                         }
                         if (d.columns[d.order[0].column].data == 'attributes.base_severity') {
@@ -183,13 +242,13 @@ window.onload = function () {
                                 d.sort = '-vulnerabilities.published';
                             }
                         }
-                        if (d.columns[d.order[0].column].data == 'attributes.affected') {
+                        if (d.columns[d.order[0].column].data == 'attributes.count') {
                             logSort.column = 'discovery_log.message';
                             logSort.direction = d.order[0].dir;
                             if (d.order[0].dir == 'asc') {
-                                d.sort = 'vulnerabilities.affected';
+                                d.sort = 'vulnerabilities.count';
                             } else {
-                                d.sort = '-vulnerabilities.affected';
+                                d.sort = '-vulnerabilities.count';
                             }
                         }
                     } else {
@@ -207,39 +266,15 @@ window.onload = function () {
                     delete d.columns;
                 }
             },
-            autoWidth: false,
             columns: [
                 { data: 'attributes.view', 
                     render: function (data, type, row, meta) {
                         return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
                     }
                 },
-                { data: 'attributes.status',
-                    render: function (data, type, row, meta) {
-                        if (row.attributes.status == 'unlikely') {
-                            data = '<h5><a href="?vulnerabilities.status=unlikely" alt="<?= __('The vulnerability has been published no matching software records were detected in the database.') ?>"><span class="badge rounded-pill text-bg-secondary"><?= __('unlikely') ?></span></a></h5>';
-
-                        } else if (row.attributes.status == 'pending') {
-                            data = '<h5><a href="?vulnerabilities.status=pending" title="<?= __('The vulnerability has been published but is awaiting further analysis by the user.') ?>"><span class="badge rounded-pill text-bg-primary"><?= __('pending') ?></span></a></h5>';
-
-                        } else if (row.attributes.status == 'confirmed') {
-                            data = '<h5><a href="?vulnerabilities.status=confirmed" title="<?= __('The vulnerability has been reviewed by the user and it is relevant to this installation.') ?>"><span class="badge rounded-pill text-bg-success"><?= __('confirmed') ?></span></a></h5>';
-
-                        } else if (row.attributes.status == 'declined') {
-                            data = '<h5><a href="?vulnerabilities.status=declined" title="<?= __('The vulnerability has been published but has been determined by the user that it is not relevant to this installation.') ?>"><span class="badge rounded-pill text-bg-danger"><?= __('declined') ?></span></a></h5>';
-
-                        } else if (row.attributes.status == 'other') {
-                            data = '<h5><a href="?vulnerabilities.status=other" title="Other"><span class="badge rounded-pill text-bg-warning"><?= __('other') ?></span></a></h5>';
-
-                        } else {
-                            data = '<h5><a href="?vulnerabilities.status=" title="<?= __('empty') ?>"><span class="badge rounded-pill text-bg-warning" ><?= __('empty') ?></span></a></h5>';
-                        }
-                        return data;
-                    }
-                },
                 { data: 'attributes.base_severity',
                     render: function (data, type, row, meta) {
-                        data = '<h5><a href="?vulnerabilities.base_severity=' + row.attributes.base_severity + '"><span class="badge rounded-pill text-bg-' + row.attributes.base_severity + '">' + row.attributes.base_severity + '</span></a></h5>';
+                        data = '<h5><a href="?<?= $urlFilter ?>&vulnerabilities.base_severity=' + row.attributes.base_severity + '"><span class="badge rounded-pill text-bg-' + row.attributes.base_severity + '">' + row.attributes.base_severity + '</span></a></h5>';
                         return data;
                     }
                 },
@@ -255,17 +290,16 @@ window.onload = function () {
                         return data;
                     }
                 },
-                { data: 'attributes.affected' },
+                { data: 'attributes.count' },
             ],
             columnDefs: [
                 {className: "text-center", target: 0, width: "10em"},
                 {className: "text-center", target: 1, width: "10em"},
                 {className: "text-center", target: 2, width: "10em"},
-                {className: "text-center", target: 3, width: "10em"},
-                {className: "text-start", target: 4, width: "50em"},
-                {className: "text-center", target: 5, width: "10em"},
-                {className: "text-center", target: 6, width: "20em"},
-                {className: "text-center", target: 7, width: "10em", sortable: false}
+                {className: "text-left", target: 3, width: "50em"},
+                {className: "text-center", target: 4, width: "10em"},
+                {className: "text-center", target: 5, width: "20em"},
+                {className: "text-center", target: 6, width: "10em"}
             ],
             info: true,
             layout: {
@@ -283,22 +317,6 @@ window.onload = function () {
                 myDataTable.ajax.reload();
             }
         });
-
-        myDataTable.on('xhr', function (e, settings, json) {
-            $("#logs_notice").show();
-            if (json.recordsFiltered == <?= $config->page_size ?>) {
-                $("#logs_alert").html('Result limited to <?= $config->page_size ?> items as per configuration. There are actually ' + json.recordsTotal + ' discovery logs for this discovery. Use the search facility to refine your data.<button id="logs_button" type="button" class="btn-close" aria-label="Close"></button>');
-                $("#logs_alert").show();
-            } else {
-                $("#logs_alert").hide();
-            }
-        });
-        $(document).on('click', '#logs_button', function() {
-            $(this).parent().hide();
-        });
-
-
-
 
     });
 }
