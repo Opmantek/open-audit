@@ -552,10 +552,18 @@ log_message('info', (string)$db->getLastQuery());
 foreach ($roles as $role) {
     $permissions = json_decode($role->permissions);
     if (!empty($permissions)) {
-        if ($role->name === 'org_admin' or $role->name === 'admin') {
+        if ($role->name === 'admin') {
             $permissions->standards = 'crud';
             $permissions->standards_results = 'crud';
             $permissions->vulnerabilities = 'crud';
+            $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
+            $query = $db->query($sql, [json_encode($permissions), $role->id]);
+            $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+        } else if ($role->name === 'org_admin') {
+            $permissions->standards = 'crud';
+            $permissions->standards_results = 'crud';
+            $permissions->vulnerabilities = 'r';
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -635,14 +643,37 @@ $sql = "CREATE TABLE `vulnerabilities` (
   `user_interaction` text NOT NULL,
   `vendor` varchar(200) NOT NULL DEFAULT '',
   `vuln_status` varchar(200) NOT NULL DEFAULT '',
-  `filter` text NOT NULL,
-  `sql` text NOT NULL,
+  `filter` longtext NOT NULL,
+  `sql` longtext NOT NULL,
   `nvd_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`nvd_json`)),
   `mitre_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`mitre_json`)),
   `products` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`products`)),
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `cve` (`cve`),
+  KEY `vendor` (`vendor`),
+  KEY `published_date` (`published_date`),
+  KEY `products` (`products`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DROP TABLE IF EXISTS `vulnerabilities_cache`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "CREATE TABLE `vulnerabilities_cache` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vulnerability_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `count` int(10) unsigned NOT NULL DEFAULT 0,
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `vulnerabilities_cache_org_id` (`org_id`),
+  CONSTRAINT `vulnerabilities_cache_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

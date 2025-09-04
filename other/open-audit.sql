@@ -4860,14 +4860,19 @@ CREATE TABLE `vulnerabilities` (
   `user_interaction` text NOT NULL,
   `vendor` varchar(200) NOT NULL DEFAULT '',
   `vuln_status` varchar(200) NOT NULL DEFAULT '',
-  `filter` text NOT NULL,
-  `sql` text NOT NULL,
+  `filter` longtext NOT NULL,
+  `sql` longtext NOT NULL,
   `nvd_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`nvd_json`)),
   `mitre_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`mitre_json`)),
   `products` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '{}' CHECK (json_valid(`products`)),
+  `affected` int(10) unsigned NOT NULL DEFAULT '0',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `cve` (`cve`),
+  KEY `vendor` (`vendor`),
+  KEY `published_date` (`published_date`),
+  KEY `products` (`products`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4878,6 +4883,35 @@ CREATE TABLE `vulnerabilities` (
 LOCK TABLES `vulnerabilities` WRITE;
 /*!40000 ALTER TABLE `vulnerabilities` DISABLE KEYS */;
 /*!40000 ALTER TABLE `vulnerabilities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vulnerabilities_cache`
+--
+
+DROP TABLE IF EXISTS `vulnerabilities_cache`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `vulnerabilities_cache` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vulnerability_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `count` int(10) unsigned NOT NULL DEFAULT 0,
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `vulnerabilities_cache_org_id` (`org_id`),
+  CONSTRAINT `vulnerabilities_cache_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vulnerabilities_cache`
+--
+
+LOCK TABLES `vulnerabilities_cache` WRITE;
+/*!40000 ALTER TABLE `vulnerabilities_cache` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vulnerabilities_cache` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
