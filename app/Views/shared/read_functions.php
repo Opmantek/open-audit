@@ -106,7 +106,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     }
 
     $execute_button = "\n";
-    if (($collection === 'baselines' or $collection === 'benchmarks' or $collection === 'clouds' or $collection === 'dashboards' or $collection === 'discoveries' or $collection === 'groups' or $collection === 'integrations' or $collection === 'queries' or $collection === 'summaries' or $collection === 'tasks' or $collection === 'widgets') and !empty($id)) {
+    if (($collection === 'baselines' or $collection === 'benchmarks' or $collection === 'clouds' or $collection === 'dashboards' or $collection === 'discoveries' or $collection === 'groups' or $collection === 'integrations' or $collection === 'queries' or $collection === 'summaries' or $collection === 'tasks' or $collection === 'vulnerabilities' or $collection === 'widgets') and !empty($id)) {
         if ($style === 'icontext') {
             $execute_button = "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2 execute_button\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection . 'Execute', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-play text-oa-success\"></span>" . __("Execute") . "</a>";
         } elseif ($style === 'icon') {
