@@ -353,7 +353,7 @@ if (!function_exists('response_create')) {
             }
         }
 
-        if ($test and !in_array($response->meta->collection, ['benchmarks_policies', 'configuration', 'database', 'discovery_log', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util'])) {
+        if ($test and !in_array($response->meta->collection, ['benchmarks_policies', 'configuration', 'database', 'discovery_log', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util', 'vulnerabilities'])) {
             $item = new \StdClass();
             $item->name = 'orgs.id';
             if ($response->meta->collection !== 'orgs') {
@@ -1510,7 +1510,7 @@ if (!function_exists('response_get_sort')) {
                     $column = $field;
                 }
 
-                if (!empty($table) && !empty($column) && $db->tableExists($table) and $db->fieldExists($column, $table)) {
+                if (!empty($table) && !empty($column) && $db->tableExists($table) and ($db->fieldExists($column, $table) or $column === 'count')) {
                     $sorted[] = "{$table}.{$column}" . ($direction === 'DESC' ? ' DESC' : '');
                 } else {
                     log_message('warning', "Invalid sort attribute supplied for {$collection} ({$property}), removed.");
@@ -1639,6 +1639,8 @@ if (!function_exists('response_valid_permissions')) {
         $permission['resetform'] = 'd';
         $permission['test'] = 'u';
         $permission['update'] = 'u';
+
+        $permission['vendor'] = 'r';
         return $permission;
     }
 }
