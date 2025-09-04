@@ -85,7 +85,7 @@ if ($resource->type === 'application') {
                             <div class="row">
                                 <div class="col-6">
                                     <?= read_field('name', (!empty($resource->name)) ? $resource->name : '', $dictionary->columns->name, false, '', '', '', '', $meta->collection) ?>
-
+                                    <!--
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
                                             <?= read_field_header($meta->collection, 'status', $dictionary->columns->status) ?>
@@ -108,6 +108,7 @@ if ($resource->type === 'application') {
                                             </div>
                                         </div>
                                     </div>
+                                    -->
                                     <?= read_field('cve', (!empty($resource->cve)) ? $resource->cve : '', $dictionary->columns->cve, false, 'CVE', $link, '', '', $meta->collection) ?>
                                     <?= read_field('published', (!empty($resource->published)) ? $resource->published : '', $dictionary->columns->published, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('vuln_status', (!empty($resource->vuln_status)) ? $resource->vuln_status : '', $dictionary->columns->vuln_status, false, 'Vulnerability Status', '', '', '', $meta->collection) ?>
@@ -132,22 +133,7 @@ if ($resource->type === 'application') {
                                     </div>
                                 <?php } ?>
                                     <br>
-                                    <div class="row">
-                                        <div class="col-5 offset-1">
-                                            <?= read_field('severity', $resource->base_severity, $dictionary->columns->base_severity, false, '', '', '', '', $meta->collection) ?>
-                                        </div>
-                                        <div class="col-5">
-                                            <?= read_field('availability', $resource->impact_availability, $dictionary->columns->impact_availability, false, 'Impact :: Availability', '', '', '', $meta->collection) ?>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-5 offset-1">
-                                            <?= read_field('confidentiality', $resource->impact_confidentiality, $dictionary->columns->impact_confidentiality, false, 'Impact :: Confidentiality', '', '', '', $meta->collection) ?>
-                                        </div>
-                                        <div class="col-5">
-                                            <?= read_field('integrity', $resource->impact_integrity, $dictionary->columns->impact_integrity, false, 'Impact :: Integrity', '', '', '', $meta->collection) ?>
-                                        </div>
-                                    </div>
+
 
                                     <?php
                                     if (!empty($resource->references) and is_array($resource->references)) {
@@ -165,6 +151,24 @@ if ($resource->type === 'application') {
                                 </div>
 
                                 <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-5 offset-1">
+                                            <?= read_field('severity', $resource->base_severity, $dictionary->columns->base_severity, false, '', '', '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-5">
+                                            <?= read_field('availability', $resource->impact_availability, $dictionary->columns->impact_availability, false, 'Impact :: Availability', '', '', '', $meta->collection) ?>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-5 offset-1">
+                                            <?= read_field('confidentiality', $resource->impact_confidentiality, $dictionary->columns->impact_confidentiality, false, 'Impact :: Confidentiality', '', '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-5">
+                                            <?= read_field('integrity', $resource->impact_integrity, $dictionary->columns->impact_integrity, false, 'Impact :: Integrity', '', '', '', $meta->collection) ?>
+                                        </div>
+                                    </div>
+                                    <br><div class="col-10 offset-1"><hr></div><br>
+
                                     <?php
                                     if (!empty($resource->products)) {
                                         foreach ($resource->products as $key => $value) {
@@ -201,20 +205,12 @@ if ($resource->type === 'application') {
                                     </div>
                                     <br><div class="col-10 offset-1"><hr></div><br>
 
+                                    <!--
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-1 col-10" style="position:relative;">
                                             <?= read_field_header($meta->collection, 'filter', $dictionary->columns->filter, 'Filter') ?>
                                             <div class="input-group">
                                                 <textarea class="form-control" rows="12" id="filter" name="filter" data-original-value="<?= htmlentities(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?>" disabled><?= html_entity_decode(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?></textarea>
-                                                <!--
-                                                <?php if ($update) { ?>
-                                                <div class="float-end" style="padding-left:4px;">
-                                                    <div data-attribute="filter" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="filter" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="filter" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
-                                                </div>
-                                                <?php } ?>
-                                                -->
                                             </div>
                                             <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="filter" data-dictionary="<?= $dictionary->columns->filter ?>"><span><br></span></div>
                                         </div>
@@ -231,17 +227,10 @@ if ($resource->type === 'application') {
                                             <?= read_field_header($meta->collection, 'sql', $dictionary->columns->sql, $title . 'SQL') ?>
                                             <div class="input-group">
                                                 <textarea class="form-control" rows="8" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
-                                                <?php if ($update) { ?>
-                                                <div class="float-end" style="padding-left:4px;">
-                                                    <div data-attribute="sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="sql" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="sql" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
-                                                </div>
-                                                <?php } ?>
                                             </div>
-                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
                                         </div>
                                     </div>
+                                    -->
                                 </div>
                             </div>
                         </div>
