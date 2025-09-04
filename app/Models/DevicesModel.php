@@ -407,7 +407,7 @@ class DevicesModel extends BaseModel
                 $sql = 'UPDATE vm SET guest_device_id = ?, icon = ?, name = ? WHERE id = ?';
                 $query = $this->db->query($sql, [$id, $vm_icon, $vm_name, intval($temp_vm_id)]);
                 $sql = 'UPDATE devices SET vm_device_id = ?, vm_server_name = ? WHERE id = ?';
-                $query = $this->db->query($sql, [$data->vm_device_id, $data->vm_server_name, $data->id]);
+                $query = $this->db->query($sql, [$data->vm_device_id, $data->vm_server_name, $id]);
             }
         }
 
