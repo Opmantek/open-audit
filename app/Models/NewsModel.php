@@ -168,9 +168,10 @@ class NewsModel extends BaseModel
      *
      * @return bool    true || false depending on success
      */
-    public function executeAll(?string $action = 'news'): bool
+    public function executeAll(?string $action = 'news'): ?int
     {
         set_time_limit(600);
+        $id = 0;
         log_message('debug', 'executeAll called with action ' . $action);
         if (!$this->db->tableExists('news')) {
             return false;
@@ -194,6 +195,17 @@ class NewsModel extends BaseModel
         $send['devices'] = json_encode($send['devices']);
         $send['stats'] = json_encode($send['stats']);
 
+        if (!empty($_POST['data']['attributes']['cve'])) {
+            $cve = strtoupper($_POST['data']['attributes']['cve']);
+            if (preg_match('/^(CVE)\-\d{4}\-\d+/', $cve)) {
+                $send['cve'] = $cve;
+            } else {
+                log_message('warning', 'Invalid CVE ID supplied: ' . $_POST['data']['attributes']['cve']);
+                return null;
+            }
+        }
+
+        // log_message('debug', json_encode($send));
         $client = service('curlrequest');
         try {
             $response = @$client->request('POST', $config->feature_news_url, [
@@ -204,7 +216,7 @@ class NewsModel extends BaseModel
         } catch (\Exception $e) {
             log_message('error', 'Requesting news failed: ' . $e->getMessage() . "\n");
             log_message('error', 'Requesting news failed: ' . json_encode($e) . "\n");
-            return true;
+            return null;
         }
         $body = $response->getBody();
         log_message('debug', 'Bytes in reply: ' . strlen($body));
@@ -212,11 +224,11 @@ class NewsModel extends BaseModel
         $body = @json_decode($body);
         if (!is_array($body)) {
             log_message('error', 'Body returned but body not an array. Body is a ' . gettype($body));
-            return true;
+            return null;
         }
         if (empty($body)) {
             log_message('debug', 'No news articles returned.');
-            return true;
+            return null;
         }
         log_message('debug', count($body) . ' news articles returned.');
         if ($action !== 'vulnerabilities') {
@@ -251,10 +263,10 @@ class NewsModel extends BaseModel
             }
         } else {
             foreach ($body as $vuln) {
-                model('App\Models\VulnerabilitiesModel')->create($vuln->attributes);
+                $id = model('App\Models\VulnerabilitiesModel')->create($vuln->attributes);
             }
         }
-        return true;
+        return $id;
     }
 
     /**
