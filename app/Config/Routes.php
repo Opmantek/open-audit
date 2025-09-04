@@ -100,6 +100,7 @@ $routes->cli('news/execute', 'Cli::executeNews', ['as' => 'executeNewsAll']);
 $routes->get('news/execute/vulnerabilities', 'News::executeAll/vulnerabilities', ['as' => 'newsExecuteAllVulnerabilities']);
 $routes->cli('news/execute/vulnerabilities', 'Cli::executeNews/vulnerabilities', ['as' => 'executeNewsAllVulnerabilities']);
 $routes->cli('news/execute/(:any)', 'Cli::executeNews/$1', ['as' => 'executeNewsAction']);
+$routes->post('vulnerabilities', 'News::executeAll/vulnerabilities', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesRequestSingle']);
 
 
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
@@ -155,6 +156,8 @@ $routes->cli('clouds/(:num)/execute', 'Cli::executeCloud/$1', ['as' => 'executeC
 $routes->cli('devices/(:num)/cloudDevice', 'Cli::cloudDevice/$1', ['as' => 'cloudDevice']);
 
 $routes->patch('devices/(:num)/reset', 'Devices::reset/$1', ['filter' => \App\Filters\Session::class, 'as' => 'DeviceReset']);
+
+$routes->get('vulnerabilities/vendor', 'Vulnerabilities::vendor', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesVendor']);
 
 foreach ($collections as $collection) {
     // Account for users editing the config and including a space character
