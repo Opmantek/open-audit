@@ -17,6 +17,7 @@ function manufacturerLogo (string $manufacturer = '')
     if ($logo === '' and mb_stripos($manufacturer, 'Aruba') !== false) { $logo = 'aruba'; }
     if ($logo === '' and mb_stripos($manufacturer, 'ASUSTeK') !== false) { $logo = 'asus'; }
     if ($logo === '' and mb_stripos($manufacturer, 'ATI Technologies') !== false) { $logo = 'ati'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Axis') !== false) { $logo = 'axis'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Barracuda') !== false) { $logo = 'barracuda'; }
     if ($logo === '' and mb_stripos($manufacturer, 'BroadLink Technology') !== false) { $logo = 'broadlink'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Brocade') !== false) { $logo = 'brocade'; }
@@ -25,11 +26,14 @@ function manufacturerLogo (string $manufacturer = '')
     if ($logo === '' and mb_stripos($manufacturer, 'Citrix') !== false) { $logo = 'citrix'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Dell') !== false) { $logo = 'dell'; }
     if ($logo === '' and mb_stripos($manufacturer, 'DigitalOcean') !== false) { $logo = 'digitalocean'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'D-Link') !== false) { $logo = 'd-link'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Elitegroup') !== false) { $logo = 'elitegroup'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Extreme') !== false) { $logo = 'extreme'; }
     if ($logo === '' and mb_stripos($manufacturer, 'F5') !== false) { $logo = 'f5'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Force10') !== false) { $logo = 'force10'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Fortinet') !== false) { $logo = 'fortinet'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Foundry') !== false) { $logo = 'foundry'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Fujitsu') !== false) { $logo = 'fujitsu'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Gaoshengda Technology') !== false) { $logo = 'gaoshengda'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Gigabyte') !== false) { $logo = 'gigabyte'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Google') !== false) { $logo = 'google'; }
@@ -52,18 +56,23 @@ function manufacturerLogo (string $manufacturer = '')
     if ($logo === '' and mb_stripos($manufacturer, 'Netscaler') !== false) { $logo = 'netscaler'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Nintendo') !== false) { $logo = 'nintendo'; }
     if ($logo === '' and mb_stripos($manufacturer, 'NVIDIA') !== false) { $logo = 'nvidia'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'OpenGear') !== false) { $logo = 'opengear'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Packeteer') !== false) { $logo = 'packeteer'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Palo Alto') !== false) { $logo = 'palo_alto'; }
     if ($logo === '' and mb_stripos($manufacturer, 'PCS Systemtechnik') !== false) { $logo = 'pcs'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Pegatron') !== false) { $logo = 'pegatron'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Raritan') !== false) { $logo = 'raritan'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Red Hat') !== false) { $logo = 'redhat'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Ricoh') !== false) { $logo = 'ricoh'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Samsung') !== false) { $logo = 'samsung'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Seagate') !== false) { $logo = 'seagate'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Shuttle') !== false) { $logo = 'shuttle'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Siemens') !== false) { $logo = 'siemens'; }
     if ($logo === '' and mb_stripos($manufacturer, 'SonicWall') !== false) { $logo = 'sonicwall'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Sony') !== false) { $logo = 'sony'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Sophos') !== false) { $logo = 'sophos'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Sun Microsystems') !== false) { $logo = 'sun'; }
+    if ($logo === '' and $manufacturer === 'Sun') { $logo = 'sun'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Thomson') !== false) { $logo = 'thomson'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Ubiquiti') !== false) { $logo = 'ubiquiti'; }
     if ($logo === '' and mb_stripos($manufacturer, 'VirtualBox') !== false) { $logo = 'virtualbox'; }
