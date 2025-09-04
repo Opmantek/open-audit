@@ -32,5 +32,32 @@ use stdClass;
  */
 class Vulnerabilities extends BaseController
 {
+    public function vendor()
+    {
+        $this->resp->data = $this->vulnerabilitiesModel->vendor();
+        if ($this->resp->meta->format !== 'html') {
+            output($this);
+            return true;
+        }
+        if (empty($this->resp->data)) {
+            if (empty($this->resp->errors)) {
+                \Config\Services::session()->setFlashdata('error', 'No data returned.');
+            } else {
+                \Config\Services::session()->setFlashdata('error', $this->resp->errors);
+            }
+            return redirect()->route('devicesCollection');
+        }
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'dictionary' => $this->queriesModel->dictionary(),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('vulnerabilitiesVendor', ['data' => filter_response($this->resp->data), 'meta' => $this->resp->meta])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+    }
 
 }
