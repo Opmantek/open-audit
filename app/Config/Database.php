@@ -46,6 +46,30 @@ class Database extends Config
     ];
 
     /**
+     * Used by vulnerabilities (has DBDebug disabled)
+     */
+    public array $nodebug = [
+        'DSN'          => '',
+        'hostname'     => '127.0.0.1',
+        'username'     => 'openaudit',
+        'password'     => 'openauditpassword',
+        'database'     => 'openaudit',
+        'DBDriver'     => 'MySQLi',
+        'DBPrefix'     => '',
+        'pConnect'     => false,
+        'DBDebug'      => false,
+        'charset'      => 'utf8mb4',
+        'DBCollat'     => 'utf8mb4_general_ci',
+        'swapPre'      => '',
+        'encrypt'      => false,
+        'compress'     => false,
+        'strictOn'     => false,
+        'failover'     => [],
+        'port'         => 3306,
+        'numberNative' => false,
+    ];
+
+    /**
      * This database connection is used when
      * running PHPUnit database tests.
      */
@@ -94,6 +118,7 @@ class Database extends Config
             if (!empty($json)) {
                 foreach ($json as $key => $value) {
                     $this->default[$key] = $value;
+                    $this->nodebug[$key] = $value;
                 }
             }
         }
