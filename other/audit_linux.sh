@@ -2741,6 +2741,13 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 	echo "			<description>Operating System</description>" >> "$xml_file"
 	echo "		</item>" >> "$xml_file"
 
+	# include Kernel in software
+	kernel=$(uname -srm | cut -d" " -f2 | cut -d- -f1,2)
+	echo "		<item>" >> "$xml_file"
+	echo "			<name>linux kernel</name>" >> "$xml_file"
+	echo "			<version>$(escape_xml $kernel)</version>" >> "$xml_file"
+	echo "		</item>" >> "$xml_file"
+
 	if [ -n "$software" ]; then
 		echo "$software" >> "$xml_file"
 	fi
