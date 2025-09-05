@@ -885,6 +885,7 @@ CREATE TABLE `certificate` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `serial` varchar(100) NOT NULL DEFAULT '',
   `issuer` text NOT NULL,
+  `issuer_name` varchar(200) NOT NULL DEFAULT '';
   `valid_from_raw` varchar(100) NOT NULL DEFAULT '',
   `valid_from` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `valid_to_raw` varchar(100) NOT NULL DEFAULT '',
@@ -892,6 +893,9 @@ CREATE TABLE `certificate` (
   `encryption` varchar(100) NOT NULL DEFAULT '',
   `algorithm` varchar(100) NOT NULL DEFAULT '',
   `version` varchar(100) NOT NULL DEFAULT '',
+  `common_name` varchar(200) NOT NULL DEFAULT '';
+  `subject_key_ident` varchar(200) NOT NULL DEFAULT '';
+  `authority_key_ident` varchar(200) NOT NULL DEFAULT '';
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `certificate_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
@@ -4044,6 +4048,7 @@ CREATE TABLE `server_item` (
   `log_format` varchar(100) NOT NULL DEFAULT '',
   `log_path` varchar(100) NOT NULL DEFAULT '',
   `log_rotation` varchar(100) NOT NULL DEFAULT '',
+  `certificates` varchar(1000) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `server_item_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE

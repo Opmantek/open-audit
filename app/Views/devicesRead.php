@@ -2127,10 +2127,11 @@ if (empty($resource->type)) {
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
-                                                    <th><?= __('Name') ?></th>
-                                                    <th><?= __('Issuer') ?></th>
+                                                    <th><?= __('Common Name') ?></th>
+                                                    <th><?= __('Issuer Name') ?></th>
                                                     <th><?= __('Valid From') ?></th>
                                                     <th><?= __('Valid To') ?></th>
+                                                    <th><?= __('File') ?></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -2138,10 +2139,11 @@ if (empty($resource->type)) {
                                                 foreach ($included['certificate'] as $row) { ?>
                                                 <tr>
                                                     <?= device_component_button_read('certificate', $row->id) ?>
-                                                    <td><?= $row->name ?></td>
-                                                    <td><?= $row->issuer ?></td>
+                                                    <td><?= $row->common_name ?></td>
+                                                    <td><?= $row->issuer_name ?></td>
                                                     <td><?= $row->valid_from ?></td>
                                                     <td><?= $row->valid_to ?></td>
+                                                    <td><?= $row->name ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -2583,14 +2585,21 @@ if (empty($resource->type)) {
                                                             <?php if ($row->type === 'web') { ?>
                                                                 <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                                 <th><?= __('Name') ?></th>
+                                                                <?php if ($row->name === 'IIS') { ?>
                                                                 <th><?= __('Description') ?></th>
+                                                                <?php } ?>
                                                                 <th><?= __('Internal ID') ?></th>
                                                                 <th><?= __('IP') ?></th>
                                                                 <th><?= __('Hostname') ?></th>
                                                                 <th><?= __('Port') ?></th>
                                                                 <th><?= __('Status') ?></th>
+                                                                <?php if ($row->name === 'IIS') { ?>
                                                                 <th><?= __('Instance') ?></th>
+                                                                <?php } ?>
                                                                 <th><?= __('Path') ?></th>
+                                                                <?php if ($row->name !== 'IIS') { ?>
+                                                                <th><?= __('Certificates') ?></th>
+                                                                <?php } ?>
                                                                 <th class="text-center"><?= __('View All') ?></th>
                                                             <?php } elseif ($row->type === 'database') { ?>
                                                                 <th class="text-center" data-orderable="false"><?= __('View') ?></th>
@@ -2611,14 +2620,21 @@ if (empty($resource->type)) {
                                                                     <tr>
                                                                         <?= device_component_button_read('server_item', $server_item->id) ?>
                                                                         <td><?= $server_item->name ?></td>
+                                                                        <?php if ($row->name === 'IIS') { ?>
                                                                         <td><?= $server_item->description ?></td>
+                                                                        <?php } ?>
                                                                         <td><?= $server_item->id_internal ?></td>
                                                                         <td><?= $server_item->ip ?></td>
                                                                         <td><?= $server_item->hostname ?></td>
                                                                         <td><?= $server_item->port ?></td>
                                                                         <td><?= $server_item->status ?></td>
+                                                                        <?php if ($row->name === 'IIS') { ?>
                                                                         <td><?= $server_item->instance ?></td>
+                                                                        <?php } ?>
                                                                         <td><?= $server_item->path ?></td>
+                                                                        <?php if ($row->name !== 'IIS') { ?>
+                                                                        <td><?= str_replace(' ', '<br>', $server_item->certificates) ?></td>
+                                                                        <?php } ?>
                                                                         <td class="text-center"><a role="button" class="btn btn-sm btn-primary" title="<?= __('View') ?>" href="<?=  url_to('componentsCollection') ?>?components.type=server_item&components.device_id=<?= $resource->id ?>"><span class="fa fa-eye text-primary"></span></a></td>
                                                                     </tr>
                                                                 <?php } elseif ($row->type === 'database') { ?>

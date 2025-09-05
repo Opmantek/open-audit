@@ -109,13 +109,12 @@ last_seen_by="audit"
 display=""
 # This should only be set by Discovery when using the debug option
 
-# The pattern matches to check for certificates
-cert_dirs[1]="/etc/ssl/certs/*.pem"
-cert_dirs[2]="/etc/ssl/certs/*.crt"
-cert_dirs[3]="/etc/ssl/private/*.key"
+# The directories check for certificates using .pem, .crt and .key
+cert_dirs[1]="/etc/ssl/certs"
+cert_dirs[2]="/etc/ssl/private"
 
 # NOTE - each skipped section MUST have a trailing comma
-# skip_sections="san,usb,policy,bios,processor,memory,motherboard,optical,video,sound,share,network,ip,disk,vm,partition,log,variable,swap,user,group,software,service,server,certificate,route,netstat,file,executable,"
+# skip_sections="arp,bios,certificate,disk,executable,file,group,ip,license,log,memory,motherboard,netstat,network,optical,partition,policy,processor,route,san,service,share,software,sound,swap,usb,user,variable,video,vm,"
 skip_sections=""
 
 # DO NOT REMOVE THE LINE BELOW
@@ -991,7 +990,7 @@ echo "		<os_group>$(escape_xml "$system_os_group")</os_group>"
 echo "		<os_family>$(escape_xml "$system_os_family")</os_family>"
 echo "		<os_name>$(escape_xml "$system_os_name")</os_name>"
 echo "		<os_version>$(escape_xml "$system_os_version")</os_version>"
-echo "      <os_display_version>$(excape_xml "$system_os_display_version")</os_display_version>"
+echo "      <os_display_version>$(escape_xml "$system_os_display_version")</os_display_version>"
 echo "		<kernel_version>$(escape_xml "$kernel_version")</kernel_version>"
 echo "		<serial>$(escape_xml "$system_serial")</serial>"
 echo "		<model>$(escape_xml "$system_model")</model>"
@@ -3069,6 +3068,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 	fi
 	echo "	<server>" >> "$xml_file"
 
+	# Apache server
 	test=$(which apache2 2>/dev/null)
 	if [ -n "$test" ]; then
 		if [ "$debugging" -gt "0" ]; then
@@ -3122,6 +3122,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		} >> "$xml_file"
 	fi
 
+	# HTTPD server
 	test=$(which httpd 2>/dev/null)
 	if [ -n "$test" ]; then
 		if [ "$debugging" -gt "0" ]; then
@@ -3167,11 +3168,12 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		echo "			<status>$(escape_xml "$apache_status")</status>"
 		echo "			<ip>$(escape_xml "$ip")</ip>"
 		echo "			<port>$(escape_xml "$port")</port>"
+		echo "			<certificates>$(escape_xml "$certificates")</certificates>"
 		echo "		</item>"
 		} >> "$xml_file"
 	fi
 
-	# fix mysqld instead of mysql to prevent mysql-client false positive
+	# MySQL server
 	test=$(which mysqld 2>/dev/null)
 	if [ -n "$test" ]; then
 		if [ "$debugging" -gt "0" ]; then
@@ -3243,7 +3245,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		} >> "$xml_file"
 	fi
 
-	# Custom addition - postgresql
+	# Postgresql server
 	test=$(which psql 2>/dev/null)
 	if [ -n "$test" ]; then
 		if [ "$debugging" -gt "0" ]; then
@@ -3290,8 +3292,8 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		} >> "$xml_file"
 	fi
 
-	# Custom addition - alexander.szele@umanitoba.ca
-	# Pull web server info from nginx
+	# alexander.szele@umanitoba.ca
+	# Nginx server
 	test=$(which nginx 2>/dev/null)
 	if [ -n "$test" ]; then
 		if [ "$debugging" -gt "0" ]; then
@@ -3300,6 +3302,8 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		version=$(nginx -v 2>&1 | cut -d/ -f2)
 		version_string=$(nginx -v 2>&1 | cut -d: -f2 | sed -e 's/^[[:space:]]*//')
 		nginx_status=$(service nginx status 2>/dev/null | grep Active | awk '{ print $2 }')
+		config_file=$(nginx -T 2>/dev/null | head -n1 | cut -d" " -f4 | cut -d: -f1)
+		certificates=$(grep -i ssl_certificate "$config_file" | grep -v '^\s*$\|^\s*\#' | awk '{print $2}' | cut -d\; -f1)
 		port=""
 		ip=""
 		if [ -n $(which netstat) ]; then
@@ -3328,13 +3332,13 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		echo "			<status>$(escape_xml "$nginx_status")</status>"
 		echo "			<ip>$(escape_xml "$ip")</ip>"
 		echo "			<port>$(escape_xml "$port")</port>"
+		echo "			<certificates>$(escape_xml "$certificates")</certificates>"
 		echo "		</item>"
 		} >> "$xml_file"
 	fi
 
-	# Custom addition - alexander.szele@umanitoba.ca
-	# Pull web server info from tomcat
-	# test = PID of java tomcat process
+	# alexander.szele@umanitoba.ca
+	# Tomcat server
 	test=""
 	if [ "$busybox" = "n" ]; then
 		test=$(ps -ef | grep java | grep catalina | grep -v grep | awk '{ print $2 }' 2>/dev/null)
@@ -3384,8 +3388,8 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		done
 	fi
 
-	# Custom addition - alexander.szele@umanitoba.ca
-	# Pull db server info from mongodb
+	# alexander.szele@umanitoba.ca
+	# MongoDB server
 	test=$(which mongo 2>/dev/null)
 	if [ -n "$test" ]; then
 		if [ "$debugging" -gt "0" ]; then
@@ -3436,8 +3440,11 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 	if [ "$debugging" -gt "0" ]; then
 		echo "Server Items"
 	fi
-
 	echo "	<server_item>" >> "$xml_file"
+
+	# mysqld --help --verbose 2>/dev/null | grep -F "Default options are read from the following files in the given order" -A1 | tail -n1
+
+	# MySQL instances
 	datadir=""
 	datadir=$(grep datadir /etc/mysql/mysql.conf.d/mysqld.cnf 2>/dev/null | awk '{ print $3 }')
 	if [ -n "$datadir" ]; then
@@ -3474,6 +3481,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		done
 	fi
 
+	# MySQL instances
 	datadir=""
 	datadir=$(grep datadir /etc/my.cnf 2>/dev/null | cut -d= -f2)
 	if [ -n "$datadir" ]; then
@@ -3510,6 +3518,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		done
 	fi
 
+	# MySQL instances
 	datadir=""
 	datadir=$(grep datadir /etc/mysql/my.cnf 2>/dev/null | awk '{ print $3 }')
 	if [ -n "$datadir" ]; then
@@ -3546,6 +3555,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		done
 	fi
 
+	# MariaDB instances
 	datadir=""
 	datadir=$(grep -IR datadir /etc/mysql/mariadb.conf.d/ 2>/dev/null | cut -d= -f2 | cut -d" " -f2 | sort | uniq)
 	if [ -n "$datadir" ]; then
@@ -3646,9 +3656,8 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		done
 	fi
 
-	# Custom addition - tomcat instances
+	# Tomcat instances
 	instance=0
-		
 	for i in $(ps -ef | grep java | grep catalina | grep -v grep | awk '{ print $2 }' 2>/dev/null); do
 		if [ "$debugging" -gt "0" ]; then
 			echo "	tomcat instances"
@@ -3695,6 +3704,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		fi
 	done
 
+	# Apache instances
 	IFS="$NEWLINEIFS"
 	test=$(apachectl -S 2>/dev/null | grep port)
 	if [ -n "$test" ]; then
@@ -3709,7 +3719,9 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 				port=$(echo "$i" | awk '{ print $2 }')
 				config_file=$(echo "$i" | cut -d\( -f2 | cut -d: -f1)
 				config_line=$(echo "$i" | cut -d\( -f2 | cut -d: -f2 | cut -d\) -f1)
-				path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
+				# path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
+				path=$(grep -i documentroot "$config_file" | grep -v '^\s*$\|^\s*\#' | head -n1 | awk '{print $2}')
+				certificates=$(grep SSLCertificateFile "$config_file" | grep -v '^\s*$\|^\s*\#' | awk '{print $2}')
 				{
 				echo "		<item>"
 				echo "			<type>website</type>"
@@ -3723,12 +3735,14 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 				echo "			<status>$(escape_xml "$apache_status")</status>"
 				echo "			<instance></instance>"
 				echo "			<path>$(escape_xml "$path")</path>"
+				echo "			<certificates>$(escape_xml "$certificates")</certificates>"
 				echo "		</item>"
 				} >> "$xml_file"
 			fi
 		fi
 	done
 
+	# Apache instances
 	test=$(apachectl -S 2>/dev/null  | grep "\*:[[:digit:]]*[[:space:]]" | grep -v NameVirtualHost)
 	if [ -n "$test" ]; then
 		if [ "$debugging" -gt "0" ]; then
@@ -3740,7 +3754,9 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 				port=$(echo "$i" | awk '{ print $1 }' | cut -d: -f2)
 				config_file=$(echo "$i" | cut -d\( -f2 | cut -d: -f1)
 				config_line=$(echo "$i" | cut -d\( -f2 | cut -d: -f2 | cut -d\) -f1)
-				path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
+				# path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
+				path=$(grep -i documentroot "$config_file" | grep -v '^\s*$\|^\s*\#' | head -n1 | awk '{print $2}')
+				certificates=$(grep SSLCertificateFile "$config_file" | grep -v '^\s*$\|^\s*\#' | awk '{print $2}')
 				{
 				echo "		<item>"
 				echo "			<type>website</type>"
@@ -3754,14 +3770,15 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 				echo "			<status>$(escape_xml "$apache_status")</status>"
 				echo "			<instance></instance>"
 				echo "			<path>$(escape_xml "$path")</path>"
+				echo "			<certificates>$(escape_xml "$certificates")</certificates>"
 				echo "		</item>"
 				} >> "$xml_file"
 			fi
 		done
 	fi
 
-	# Custom addition - alexander.szele@umanitoba.ca
-	# Pull db server info from mongodb
+	# alexander.szele@umanitoba.ca
+	# MongoDB instances
 	# Inconsistent results if non-standard configurations are used.
 	if [ -e "/etc/mongod.conf" ]; then
 		datadir=$(grep "^[^#][[:space:]]dbPath" /etc/mongod.conf 2>/dev/null | awk '{ print $2 }')
@@ -3792,12 +3809,18 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		fi
 	fi
 
-	# Custom addition - alexander.szele@umanitoba.ca
-	# Pull website info from nginx
+	# alexander.szele@umanitoba.ca
+	# Nginx instances
 	for i in $(find /etc/nginx/ -type f -name "*.conf" -print0 2>/dev/null | xargs -0 egrep '^([[:space:]])*server_name ' | awk '{ print $1 }' | cut -d':' -f1 | sort | uniq); do
 		if [ -n "$i" ]; then
 			if [ "$debugging" -gt "0" ]; then
 				echo "	nginx using /etc/nginx"
+			fi
+			certificates=$(grep -i ssl_certificate "$i" | grep -v '^\s*$\|^\s*\#' | awk '{print $2}' | cut -d\; -f1)
+			if [ -n "$certificates" ]; then
+				for file in $(echo "$certificates"); do
+					cert_dirs[${#cert_dirs[@]}]="$file"
+				done
 			fi
 			name=""
 			if [ -n "$rev_exists" ]; then
@@ -3824,6 +3847,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 				echo "			<status>$(escape_xml "$nginx_status")</status>"
 				echo "			<instance></instance>"
 				echo "			<path>$(escape_xml "$path")</path>"
+				echo "			<certificates>$(escape_xml "$certificates")</certificates>"
 				echo "		</item>"
 				} >> "$xml_file"
 			done
@@ -3832,7 +3856,6 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 
 	echo "	</server_item>" >> "$xml_file"
 fi
-
 
 
 ##################################
@@ -3845,8 +3868,8 @@ if [ -z $(echo "$skip_sections" | grep "certificate,") ]; then
 	IFS="$NEWLINEIFS"
 	echo "	<certificate>" >> "$xml_file"
 	for dir in ${cert_dirs[@]}; do
-		thesefiles=$(ls "$dir" 2>/dev/null)
-		for file in $(echo "$thesefiles"); do
+		certfiles=$(find "$dir" | grep -e 'pem$' -e 'crt$' -e 'key$' 2>/dev/null)
+		for file in $(echo "$certfiles"); do
 			name="$file"
 			details=$(openssl x509 -text -noout -in "$file" 2>/dev/null)
 			if [ -n "$details" ]; then
@@ -3856,12 +3879,15 @@ if [ -z $(echo "$skip_sections" | grep "certificate,") ]; then
 				else
 					serial=$(trim "$(echo "$details" | grep "Serial" | cut -d: -f2-)")
 				fi
-				issuer=$(echo "$details" | grep "Issuer" | cut -d: -f2-)
+				issuer=$(echo "$details" | grep "Issuer:" | cut -d: -f2-)
 				valid_from_raw=$(echo "$details" | grep "Not Before" | cut -d: -f2-)
 				valid_to_raw=$(echo "$details" | grep "Not After" | cut -d: -f2-)
 				algorithm=$(echo "$details" | grep "Signature Algorithm" | head -n1 | cut -d: -f2-)
-				encryption=""
-				version=$(echo "$details" | grep Version | cut -d: -f2)
+				encryption=$(echo "$details" | grep "Public Key Algorithm:" | head -n1 | cut -d: -f2-)
+				version=$(echo "$details" | grep Version | head -n1 | cut -d: -f2 | cut -d\( -f1)
+				common_name=$(echo "$details" | grep -F "Subject:" | cut -d: -f2)
+				subject_key_ident=$(echo "$details" | grep -F "Subject Key Identifier:" -A1 | tail -n1)
+				authority_key_ident=$(echo "$details" | grep -F "Authority Key Identifier:" -A1 | tail -n1)
 				{
 				echo "		<item>"
 				echo "			<name>$(escape_xml "$name")</name>"
@@ -3872,6 +3898,9 @@ if [ -z $(echo "$skip_sections" | grep "certificate,") ]; then
 				echo "			<algorithm>$(escape_xml "$algorithm")</algorithm>"
 				echo "			<encryption>$(escape_xml "$encryption")</encryption>"
 				echo "			<version>$(escape_xml "$version")</version>"
+				echo "			<common_name>$(escape_xml "$common_name")</common_name>"
+				echo "			<subject_key_ident>$(escape_xml "$subject_key_ident")</subject_key_ident>"
+				echo "			<authority_key_ident>$(escape_xml "$authority_key_ident")</authority_key_ident>"
 				echo "		</item>"
 				} >> "$xml_file"
 			fi

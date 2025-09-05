@@ -671,6 +671,47 @@ class ComponentsModel extends BaseModel
                             $data[$i]->valid_to = gmdate('Y-m-d H:i:s', $to);
                         }
                     }
+                    if (!empty($data[$i]->issuer) and strpos($data[$i]->issuer, 'O = ') !== false) {
+                        $temp = explode('=', $data[$i]->issuer);
+                        for ($j = 0; $j < count($temp); $j++) {
+                            if (strpos($temp[$j], 'O ') === intval(strlen($temp[$j]) -2)) {
+                                $data[$i]->issuer_name = trim($temp[$j + 1]);
+                            break;
+                            }
+                        }
+                        unset($temp);
+                        if (!empty($data[$i]->issuer_name)) {
+                            if (strrpos($data[$i]->issuer_name, ',') !== false) {
+                                $data[$i]->issuer_name = substr($data[$i]->issuer_name, 0, strrpos($data[$i]->issuer_name, ','));
+                            }
+                            $data[$i]->issuer_name = trim($data[$i]->issuer_name);
+                            $data[$i]->issuer_name = trim($data[$i]->issuer_name, '"');
+                            $data[$i]->issuer_name = trim($data[$i]->issuer_name);
+                        }
+                    }
+
+                    if (strpos($data[$i]->common_name, 'CN = ') === false) {
+                        $data[$i]->common_name = 'not provided';
+                    } else {
+                        if (!empty($data[$i]->common_name) and strpos($data[$i]->common_name, 'CN = ') !== false) {
+                            $temp = explode('=', $data[$i]->common_name);
+                            for ($j = 0; $j < count($temp); $j++) {
+                                if (strpos($temp[$j], 'CN ') === intval(strlen($temp[$j]) -3)) {
+                                    $data[$i]->common_name = trim($temp[$j + 1]);
+                                break;
+                                }
+                            }
+                            unset($temp);
+                            if (!empty($data[$i]->common_name)) {
+                                if (strrpos($data[$i]->common_name, ',') !== false) {
+                                    $data[$i]->common_name = substr($data[$i]->common_name, 0, strrpos($data[$i]->common_name, ','));
+                                }
+                                $data[$i]->common_name = trim($data[$i]->common_name);
+                                $data[$i]->common_name = trim($data[$i]->common_name, '"');
+                                $data[$i]->common_name = trim($data[$i]->common_name);
+                            }
+                        }
+                    }
                 }
             }
         }

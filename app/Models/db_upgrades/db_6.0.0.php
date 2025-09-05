@@ -2,6 +2,41 @@
 
 $output .= "Upgrade database to 6.0.0 commenced.\n\n";
 
+if (!$db->fieldExists('certificates', 'server_item')) {
+    $sql = "ALTER TABLE `server_item` ADD `certificates` varchar(1000) NOT NULL DEFAULT '' AFTER `log_rotation`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('issuer_name', 'certificate')) {
+    $sql = "ALTER TABLE `certificate` ADD `issuer_name` varchar(200) NOT NULL DEFAULT '' AFTER `issuer`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('common_name', 'certificate')) {
+    $sql = "ALTER TABLE `certificate` ADD `common_name` varchar(200) NOT NULL DEFAULT '' AFTER `version`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('subject_key_ident', 'certificate')) {
+    $sql = "ALTER TABLE `certificate` ADD `subject_key_ident` varchar(200) NOT NULL DEFAULT '' AFTER `common_name`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('authority_key_ident', 'certificate')) {
+    $sql = "ALTER TABLE `certificate` ADD `authority_key_ident` varchar(200) NOT NULL DEFAULT '' AFTER `subject_key_ident`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 $sql = "DROP TABLE IF EXISTS `standards`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
