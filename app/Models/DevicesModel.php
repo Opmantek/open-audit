@@ -547,10 +547,10 @@ class DevicesModel extends BaseModel
 
         $included = array();
         // No excecutable, file, radio, san, scsi, usb
-        $current = array('antivirus', 'arp', 'audit_log', 'bios', 'change_log', 'cli_config', 'disk', 'dns', 'edit_log', 'file', 'firewall', 'firewall_rule', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $current = array('antivirus', 'arp', 'audit_log', 'bios', 'certificate', 'change_log', 'cli_config', 'disk', 'dns', 'edit_log', 'file', 'firewall', 'firewall_rule', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
 
         if (!empty($instance->config->feature_executables) and $instance->config->feature_executables === 'y') {
-            $current = array('antivirus', 'arp', 'audit_log', 'bios', 'change_log', 'cli_config', 'disk', 'dns', 'edit_log', 'file', 'firewall', 'firewall_rule', 'executable', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            $current = array('antivirus', 'arp', 'audit_log', 'bios', 'certificate', 'change_log', 'cli_config', 'disk', 'dns', 'edit_log', 'file', 'firewall', 'firewall_rule', 'executable', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'route', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         }
 
         foreach ($current as $table) {

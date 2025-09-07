@@ -69,6 +69,17 @@ class ComponentsModel extends BaseModel
                 $filter->name = $table . '.device_id';
             }
         }
+
+        $where = '';
+        foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'search') {
+                if ($table === 'certificate') {
+                    $where = 'AND (certificate.common_name LIKE ' . $this->db->escape($filter->value) . ' OR certificate.issuer_name LIKE ' . $this->db->escape($filter->value) . ')';
+                }
+                continue;
+            }
+        }
+
         if (!in_array($table, ['access_point', 'antivirus', 'arp', 'audit_log', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'cli_config', 'discovery_log', 'disk', 'dns', 'edit_log', 'executable', 'file', 'firewall', 'firewall_rule', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'warranty', 'windows'])) {
             # Invalid table
             $resp->warning = 'Invalid table provided to ComponentsModel::collection, ' . htmlentities($table);
@@ -77,7 +88,7 @@ class ComponentsModel extends BaseModel
         }
 
         // For dataTables
-        $sql = "SELECT count(*) AS `count` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?)";
+        $sql = "SELECT count(*) AS `count` FROM `$table` LEFT JOIN `devices` ON `$table`.device_id = devices.id WHERE devices.org_id IN (?) " . $where;
         $query = $this->db->query($sql, [implode(',', $orgs)]);
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         $result = $query->getResult();
@@ -115,6 +126,13 @@ class ComponentsModel extends BaseModel
         $this->builder->select($properties, false);
         $this->builder->join('devices', $table . '.device_id = devices.id', 'left');
         foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'search') {
+                $filter->name = $table . '.name';
+                if ($table === 'certificate') {
+                    $this->builder->where('(certificate.common_name LIKE ' . $this->db->escape($filter->value) . ' OR certificate.issuer_name LIKE ' . $this->db->escape($filter->value) . ')');
+                }
+                continue;
+            }
             if ($filter->name === 'type' or $filter->name === 'components.type' or $filter->name === $table . '.type') {
                 continue;
             }

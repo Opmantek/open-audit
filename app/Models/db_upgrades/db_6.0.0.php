@@ -37,6 +37,29 @@ if (!$db->fieldExists('authority_key_ident', 'certificate')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+$sql = "DROP TABLE IF EXISTS `certificates`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "CREATE TABLE `certificates` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `serial` varchar(100) NOT NULL DEFAULT '',
+  `active` enum('y','n','') NOT NULL DEFAULT '',
+  `auto_renew` enum('y','n','') NOT NULL DEFAULT '',
+  `managed_by` varchar(100) NOT NULL DEFAULT '',
+  `expire_date` date NOT NULL DEFAULT '2000-01-01',
+  `action_date` date NOT NULL DEFAULT '2000-01-01',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "DROP TABLE IF EXISTS `standards`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -591,6 +614,7 @@ foreach ($roles as $role) {
             $permissions->standards = 'crud';
             $permissions->standards_results = 'crud';
             $permissions->vulnerabilities = 'crud';
+            $permissions->certificates = 'crud';
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -599,6 +623,7 @@ foreach ($roles as $role) {
             $permissions->standards = 'crud';
             $permissions->standards_results = 'crud';
             $permissions->vulnerabilities = 'r';
+            $permissions->certificates = 'crud';
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -607,6 +632,7 @@ foreach ($roles as $role) {
             $permissions->standards = '';
             $permissions->standards_results = '';
             $permissions->vulnerabilities = 'r';
+            $permissions->certificates = 'r';
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

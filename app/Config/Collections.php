@@ -167,6 +167,16 @@ class Collections extends BaseConfig
         $this->benchmarks_policies->actions->professional = '';
         $this->benchmarks_policies->actions->community = '';
 
+        $this->certificates = new \StdClass();
+        $this->certificates->icon = 'fa-solid fa-lock';
+        $this->certificates->name = 'Certificates';
+        $this->certificates->edition = 'Enterprise';
+        $this->certificates->orgs = 'd';
+        $this->certificates->actions = new \stdClass();
+        $this->certificates->actions->enterprise = 'crud';
+        $this->certificates->actions->professional = '';
+        $this->certificates->actions->community = '';
+
         $this->clouds = new \StdClass();
         $this->clouds->icon = 'fa fa-cloud';
         $this->clouds->name = 'Clouds';

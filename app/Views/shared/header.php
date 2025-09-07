@@ -281,6 +281,13 @@ if (!empty($config->servers)) {
                                         <?= menuItem('benchmarks', '', $user, 'benchmarksHelp', __('Learn About') . ' ' . __('Benchmarks')) ?>
                                     </ul>
                                 </li>
+                                <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('certificatesCollection') ?>"><?= __('Certificates') ?></a>
+                                    <ul class="dropdown-menu">
+                                        <?= menuItem('certificates', 'r', $user, 'certificatesCollection', __('List') . ' ' . __('Certificates')) ?>
+                                        <?= menuItem('certificates', 'c', $user, 'certificatesCreateForm', __('Create') . ' ' . __('Certificates')) ?>
+                                        <?= menuItem('certificates', '', $user, 'certificatesHelp', __('Learn About') . ' ' . __('Certificates')) ?>
+                                    </ul>
+                                </li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('clustersCollection') ?>"><?= __('Clusters') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('clusters', 'r', $user, 'clustersCollection', __('List') . ' ' . __('Clusters')) ?>
