@@ -3816,38 +3816,49 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 			if [ "$debugging" -gt "0" ]; then
 				echo "	nginx using /etc/nginx"
 			fi
-			certificates=$(grep -i ssl_certificate "$i" | grep -v '^\s*$\|^\s*\#' | awk '{print $2}' | cut -d\; -f1)
-			if [ -n "$certificates" ]; then
-				for file in $(echo "$certificates"); do
-					cert_dirs[${#cert_dirs[@]}]="$file"
-				done
-			fi
-			name=""
-			if [ -n "$rev_exists" ]; then
-				name=$(echo "$i" | rev | cut -d/ -f1 | rev)
-				name=${name%.conf}
-			fi
-			hostname=$(egrep '^([[:space:]])*server_name ' $i | awk '{ print $2 }' | cut -d';' -f1 | sort | uniq | sed 'N;s/\n/, /')
-			port=""
-			path=$(awk '/location \/ {/,/}/{ print $0 }' $i | grep root | awk '{ print $2 }' | cut -d';' -f1 | sort | uniq)
-			if [ -z $path ]; then
-				path=$(awk '/^([[:space:]])*root /' $i | awk '{ print $2 }' | cut -d';' -f1 | sort | uniq)
-			fi
-			for p in $(egrep '^([[:space:]])*listen ' $i | awk '{ print $2 }' | cut -d: -f2 | cut -d';' -f1 | sort | uniq); do
-		        {
+			count=0
+			for line in $(egrep -n '^([[:space:]])*server {' $i | cut -d: -f1); do
+				server_lines["$count"]="$line"
+				count=$((count+1))
+			done
+			server_lines["$count"]=888888
+			length=${#server_lines[@]}
+			for (( j=0; j<${length}; j++ )); do
+				if [ ${server_lines[$j]} -eq 888888 ]; then
+					continue;
+				fi
+				start="${server_lines[$j]}"
+				end="${server_lines[(($j+1))]}"
+				buffer=$((end-start))
+				port=$(tail -n +$start "$i" | head -n $buffer | grep listen | head -n1 | cut -d\; -f1 | awk '{print $2}')
+				certificate_file=$(tail -n +$start "$i" | head -n $buffer | grep -i "ssl_certificate " | grep -v '^\s*$\|^\s*\#' | head -n1 | awk '{print $2}' | cut -d\; -f1 | head -n1)
+				certificate_name=""
+				if [ -n "$certificate_file" ]; then
+					cert_dirs[${#cert_dirs[@]}]="$certificate_file"
+					certificate_name=$(openssl x509 -text -noout -in "$certificate_file" 2>/dev/null | grep -F "Subject:" | cut -d: -f2)
+				fi
+				name=""
+				if [ -n "$rev_exists" ]; then
+					name=$(echo "$i" | rev | cut -d/ -f1 | rev)
+					name=${name%.conf}
+				fi
+				hostname=$(tail -n +$start "$i" | head -n "$buffer" | egrep '^([[:space:]])*server_name ' $i | head -n1 | awk '{ print $2 }' | cut -d';' -f1 | sort | uniq | sed 'N;s/\n/, /')
+				path=$(tail -n +$start "$i" | head -n "$buffer" | awk '/location \/ {/,/}/{ print $0 }' $i | head -n1 | grep root | awk '{ print $2 }' | cut -d';' -f1 | sort | uniq)
+				if [ -z $path ]; then
+					path=$(awk '/^([[:space:]])*root /' $i | awk '{ print $2 }' | cut -d';' -f1 | sort | uniq)
+				fi
+				{
 				echo "		<item>"
 				echo "			<type>website</type>"
 				echo "			<parent_name>NGINX</parent_name>"
 				echo "			<name>$(escape_xml "$name")</name>"
-				echo "			<description></description>"
 				echo "			<id_internal>$(escape_xml "$name")</id_internal>"
-				echo "			<ip></ip>"
 				echo "			<hostname>$(escape_xml "$hostname")</hostname>"
-				echo "			<port>$(escape_xml "$p")</port>"
+				echo "			<port>$(escape_xml "$port")</port>"
 				echo "			<status>$(escape_xml "$nginx_status")</status>"
-				echo "			<instance></instance>"
 				echo "			<path>$(escape_xml "$path")</path>"
-				echo "			<certificates>$(escape_xml "$certificates")</certificates>"
+				echo "			<certificate_file>$(escape_xml "$certificate_file")</certificate_file>"
+				echo "			<certificate_name>$(escape_xml "$certificate_name")</certificate_name>"
 				echo "		</item>"
 				} >> "$xml_file"
 			done
