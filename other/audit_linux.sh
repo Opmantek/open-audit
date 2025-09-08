@@ -3712,70 +3712,219 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 			echo "	apache using apachectl"
 		fi
 	fi
+
+	tempfile=`pwd`"/$system_hostname-temp"
+	touch "$tempfile"
 	for i in $(apachectl -S 2>/dev/null | grep port); do
 		if [ -n "$i" ]; then
 			name=$(echo "$i" | awk '{ print $4 }')
 			if [ -n "$name" ]; then
+				hitfirst="n"
+				certificate_file=""
 				port=$(echo "$i" | awk '{ print $2 }')
 				config_file=$(echo "$i" | cut -d\( -f2 | cut -d: -f1)
-				config_line=$(echo "$i" | cut -d\( -f2 | cut -d: -f2 | cut -d\) -f1)
-				# path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
 				path=$(grep -i documentroot "$config_file" | grep -v '^\s*$\|^\s*\#' | head -n1 | awk '{print $2}')
-				certificates=$(grep SSLCertificateFile "$config_file" | grep -v '^\s*$\|^\s*\#' | awk '{print $2}')
-				{
-				echo "		<item>"
-				echo "			<type>website</type>"
-				echo "			<parent_name>Apache</parent_name>"
-				echo "			<name>$(escape_xml "$name")</name>"
-				echo "			<description></description>"
-				echo "			<id_internal>$(escape_xml "$name")</id_internal>"
-				echo "			<ip></ip>"
-				echo "			<hostname>$(escape_xml "$name")</hostname>"
-				echo "			<port>$(escape_xml "$port")</port>"
-				echo "			<status>$(escape_xml "$apache_status")</status>"
-				echo "			<instance></instance>"
-				echo "			<path>$(escape_xml "$path")</path>"
-				echo "			<certificates>$(escape_xml "$certificates")</certificates>"
-				echo "		</item>"
-				} >> "$xml_file"
+				# Check the config file, first for <VirtualHost $name $port
+				for line in $(cat "$config_file"); do
+					if [ -n $(echo "$line" | grep -i -F "<virtualhost" | grep " $name" | grep ":$port") ]; then
+						hitfirst="y"
+					else
+						if [ "$hitfirst" = "y" ]; then
+							# Add to the temp file
+							echo "$line" >> "$tempfile"
+						fi
+					fi
+					if [ -n $(echo "$line" | grep -i -F "</virtualhost>") ]; then
+						if [ "$hitfirst" = "y" ]; then
+							# parse the inbetween lines looking for variable
+							if [ -n $(grep -i ServerName $tempfile | grep $name) ]; then
+								certificate_file=$(grep -i "SSLCertificateFile" "$tempfile" | awk '{print $2}')
+								echo "" > $tempfile
+								break;
+							fi
+						fi
+					fi
+				done
+				hitfirst=""
+				# And if we didn't get any certificates, check for <VirtualHost $name
+				if [ -z "$certificate_file" ]; then
+					 for line in $(cat "$config_file"); do
+						  if [ -n $(echo "$line" | grep -i -F "<virtualhost" | grep " $name") ]; then
+								hitfirst="y"
+						  else
+								if [ "$hitfirst" = "y" ]; then
+									 # Add to the temp file
+									 echo "$line" >> "$tempfile"
+								fi
+						  fi
+						  if [ -n $(echo "$line" | grep -i -F "</virtualhost>") ]; then
+								 if [ "$hitfirst" = "y" ]; then
+									  # parse the inbetween lines looking for variable
+									  if [ -n $(grep -i ServerName $tempfile | grep $name) ]; then
+											certificate_file=$(grep -i "SSLCertificateFile" "$tempfile" | awk '{print $2}')
+											echo "" > $tempfile
+											break;
+									  fi
+								 fi
+						  fi
+					 done
+				fi
+
+				hitfirst=""
+				# And if we still didn't get any certificates, check for <VirtualHost $port
+				if [ -z "$certificate_file" ]; then
+					for line in $(cat "$config_file"); do
+						if [ -n $(echo "$line" | grep -i -F "<virtualhost" | grep -F ":$port") ]; then
+							hitfirst="y"
+						else
+							if [ "$hitfirst" = "y" ]; then
+								 # Add to the temp file
+								 echo "$line" >> "$tempfile"
+							fi
+						fi
+						if [ -n $(echo "$line" | grep -i -F "</virtualhost>") ]; then
+							if [ "$hitfirst" = "y" ]; then
+								# parse the inbetween lines looking for variable
+								if [ -n $(grep -i ServerName $tempfile | grep $name) ]; then
+									certificate_file=$(grep -i "SSLCertificateFile" "$tempfile" | awk '{print $2}')
+									echo "" > $tempfile
+									break;
+								fi
+							fi
+						fi
+					done
+				fi
+				hitfirst=""
 			fi
 		fi
+		if [ -n "$certificate_file" ]; then
+			certificate_name=$(openssl x509 -text -noout -in "$certificate_file" 2>/dev/null | grep -F "Subject:" | cut -d: -f2)
+		fi
+		{
+		echo "		<item>"
+		echo "			<type>website</type>"
+		echo "			<parent_name>Apache</parent_name>"
+		echo "			<name>$(escape_xml "$name")</name>"
+		echo "			<id_internal>$(escape_xml "$name")</id_internal>"
+		echo "			<hostname>$(escape_xml "$name")</hostname>"
+		echo "			<port>$(escape_xml "$port")</port>"
+		echo "			<status>$(escape_xml "$apache_status")</status>"
+		echo "			<path>$(escape_xml "$path")</path>"
+		echo "			<certificate_file>$(escape_xml "$certificate_file")</certificate_file>"
+		echo "			<certificate_name>$(escape_xml "$certificate_name")</certificate_name>"
+		echo "		</item>"
+		} >> "$xml_file"
 	done
 
-	# Apache instances
-	test=$(apachectl -S 2>/dev/null  | grep "\*:[[:digit:]]*[[:space:]]" | grep -v NameVirtualHost)
-	if [ -n "$test" ]; then
-		if [ "$debugging" -gt "0" ]; then
-			echo "	apache using apachectl for VirtualHosts"
-		fi
-		for i in $(apachectl -S 2>/dev/null  | grep "\*:[[:digit:]]*[[:space:]]" | grep -v NameVirtualHost); do
-			if [ -n "$i" ]; then
-				name=$(echo "$i" | awk '{ print $2 }')
+	for i in $(apachectl -S 2>/dev/null  | grep "\*:[[:digit:]]*[[:space:]]" | grep -v NameVirtualHost); do
+		if [ -n "$i" ]; then
+			name=$(echo "$i" | awk '{ print $2 }')
+			if [ -n "$name" ]; then
+				hitfirst="n"
+				certificate_file=""
+				certificate_name=""
 				port=$(echo "$i" | awk '{ print $1 }' | cut -d: -f2)
 				config_file=$(echo "$i" | cut -d\( -f2 | cut -d: -f1)
-				config_line=$(echo "$i" | cut -d\( -f2 | cut -d: -f2 | cut -d\) -f1)
-				# path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
 				path=$(grep -i documentroot "$config_file" | grep -v '^\s*$\|^\s*\#' | head -n1 | awk '{print $2}')
-				certificates=$(grep SSLCertificateFile "$config_file" | grep -v '^\s*$\|^\s*\#' | awk '{print $2}')
-				{
-				echo "		<item>"
-				echo "			<type>website</type>"
-				echo "			<parent_name>Apache</parent_name>"
-				echo "			<name>$(escape_xml "$name")</name>"
-				echo "			<description></description>"
-				echo "			<id_internal>$(escape_xml "$name")</id_internal>"
-				echo "			<ip></ip>"
-				echo "			<hostname>$(escape_xml "$name")</hostname>"
-				echo "			<port>$(escape_xml "$port")</port>"
-				echo "			<status>$(escape_xml "$apache_status")</status>"
-				echo "			<instance></instance>"
-				echo "			<path>$(escape_xml "$path")</path>"
-				echo "			<certificates>$(escape_xml "$certificates")</certificates>"
-				echo "		</item>"
-				} >> "$xml_file"
+				# Check the config file, first for <VirtualHost $name $port
+				for line in $(cat "$config_file"); do
+					test=$(echo "$line" | grep -v '^\s*$\|^\s*\#' | grep -i -F "<virtualhost" | grep " $name" | grep ":$port")
+					if [ -n "$test" ]; then
+						hitfirst="y"
+					else
+						if [ "$hitfirst" = "y" ]; then
+							# Add to the temp file
+							echo "$line" >> "$tempfile"
+						fi
+					fi
+					test=$(echo "$line" | grep -v '^\s*$\|^\s*\#' | grep -i -F "</virtualhost>")
+					if [ -n "$test" ]; then
+						if [ "$hitfirst" = "y" ]; then
+							# parse the inbetween lines looking for variable
+							if [ -n $(grep -i ServerName $tempfile | grep $name) ]; then
+								certificate_file=$(grep -i "SSLCertificateFile" "$tempfile" | awk '{print $2}')
+								echo "" > $tempfile
+								break;
+							fi
+						fi
+					fi
+				done
+
+				hitfirst=""
+				# And if we didn't get any certificates, check for <VirtualHost $name
+				if [ -z "$certificate_file" ]; then
+					 for line in $(cat "$config_file"); do
+					 	test=$(echo "$line" | grep -v '^\s*$\|^\s*\#' | grep -i -F "<virtualhost" | grep " $name")
+						if [ -n "$test" ]; then
+							hitfirst="y"
+						else
+							if [ "$hitfirst" = "y" ]; then
+									# Add to the temp file
+									echo "$line" >> "$tempfile"
+							fi
+						fi
+						test=$(echo "$line" | grep -i -F "</virtualhost>")
+						if [ -n "$test" ]; then
+							if [ "$hitfirst" = "y" ]; then
+								# parse the inbetween lines looking for variable
+								if [ -n $(grep -i ServerName $tempfile | grep $name) ]; then
+									certificate_file=$(grep -i "SSLCertificateFile" "$tempfile" | awk '{print $2}')
+									echo "" > $tempfile
+									break;
+								fi
+							fi
+						fi
+					 done
+				fi
+
+				hitfirst=""
+				# And if we still didn't get any certificates, check for <VirtualHost $port
+				if [ -z "$certificate_file" ]; then
+					for line in $(cat "$config_file"); do
+						test=$(echo "$line" | grep -i -F "<virtualhost" | grep -F ":$port")
+						if [ -n "$test" ]; then
+							hitfirst="y"
+						else
+							if [ "$hitfirst" = "y" ]; then
+								 # Add to the temp file
+								 echo "$line" >> "$tempfile"
+							fi
+						fi
+						test=$(echo "$line" | grep -i -F "</VirtualHost>")
+						if [ -n "$test" ]; then
+							if [ "$hitfirst" = "y" ]; then
+								# parse the inbetween lines looking for variable
+								if [ -n $(grep -i ServerName $tempfile | grep $name) ]; then
+									certificate_file=$(grep -i "SSLCertificateFile" "$tempfile" | awk '{print $2}')
+									echo "" > $tempfile
+									break;
+								fi
+							fi
+						fi
+					done
+				fi
+				hitfirst=""
 			fi
-		done
-	fi
+		fi
+		if [ -n "$certificate_file" ]; then
+			certificate_name=$(openssl x509 -text -noout -in "$certificate_file" 2>/dev/null | grep -F "Subject:" | cut -d: -f2)
+		fi
+		{
+		echo "		<item>"
+		echo "			<type>website</type>"
+		echo "			<parent_name>Apache</parent_name>"
+		echo "			<name>$(escape_xml "$name")</name>"
+		echo "			<id_internal>$(escape_xml "$name")</id_internal>"
+		echo "			<hostname>$(escape_xml "$name")</hostname>"
+		echo "			<port>$(escape_xml "$port")</port>"
+		echo "			<status>$(escape_xml "$apache_status")</status>"
+		echo "			<path>$(escape_xml "$path")</path>"
+		echo "			<certificate_file>$(escape_xml "$certificate_file")</certificate_file>"
+		echo "			<certificate_name>$(escape_xml "$certificate_name")</certificate_name>"
+		echo "		</item>"
+		} >> "$xml_file"
+	done
+
 
 	# alexander.szele@umanitoba.ca
 	# MongoDB instances
