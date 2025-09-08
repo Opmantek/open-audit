@@ -113,9 +113,9 @@ class CertificatesModel extends BaseModel
         $certificate = $this->read($id);
         $certificate = $certificate[0];
 
-        $sql = "SELECT server_item.parent_name AS `server_item.parent_name`, server_item.name AS `server_item.name`, server_item.status AS `server_item.status`, server_item.type AS `server_item.type`, server_item.current AS `server_item.current`, devices.id AS `devices.id`, devices.name AS `devices.name` FROM server_item LEFT JOIN devices ON (server_item.device_id = devices.id) LEFT JOIN certificate ON (certificate.device_id = devices.id) WHERE server_item.certificates = certificate.name AND certificate.serial = ? AND devices.org_id IN (" . $orgs . ")";
+        $sql = "SELECT server_item.parent_name AS `server_item.parent_name`, server_item.name AS `server_item.name`, server_item.status AS `server_item.status`, server_item.type AS `server_item.type`, server_item.current AS `server_item.current`, devices.id AS `devices.id`, devices.name AS `devices.name` FROM server_item LEFT JOIN devices ON (server_item.device_id = devices.id) LEFT JOIN certificate ON (certificate.device_id = devices.id) WHERE server_item.certificate_file = certificate.name AND certificate.serial = ? AND devices.org_id IN (" . $orgs . ")";
         $result = $this->db->query($sql, [$certificate->attributes->serial])->getResult();
-        log_message('error', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        // log_message('error', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
         $current = 'n';
         foreach ($result as $device) {
             if ($device->{'server_item.current'} === 'y') {

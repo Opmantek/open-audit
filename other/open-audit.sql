@@ -4080,7 +4080,8 @@ CREATE TABLE `server_item` (
   `log_format` varchar(100) NOT NULL DEFAULT '',
   `log_path` varchar(100) NOT NULL DEFAULT '',
   `log_rotation` varchar(100) NOT NULL DEFAULT '',
-  `certificates` varchar(1000) NOT NULL DEFAULT '',
+  `certificate_file` varchar(200) NOT NULL DEFAULT '',
+  `certificate_name` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `server_item_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE

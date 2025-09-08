@@ -1163,6 +1163,28 @@ class ComponentsModel extends BaseModel
                 if (empty($data[$i]->server_id)) {
                     unset($data[$i]->server_id);
                 }
+                if (!empty($data[$i]->certificate_name)) {
+                    if (strpos($data[$i]->certificate_name, 'CN = ') === false) {
+                        $data[$i]->certificate_name = '';
+                    } else {
+                        $temp = explode('=', $data[$i]->certificate_name);
+                        for ($j = 0; $j < count($temp); $j++) {
+                            if (strpos($temp[$j], 'CN ') === intval(strlen($temp[$j]) -3)) {
+                                $data[$i]->certificate_name = trim($temp[$j + 1]);
+                            break;
+                            }
+                        }
+                        unset($temp);
+                        if (!empty($data[$i]->certificate_name)) {
+                            if (strrpos($data[$i]->certificate_name, ',') !== false) {
+                                $data[$i]->certificate_name = substr($data[$i]->certificate_name, 0, strrpos($data[$i]->certificate_name, ','));
+                            }
+                            $data[$i]->certificate_name = trim($data[$i]->certificate_name);
+                            $data[$i]->certificate_name = trim($data[$i]->certificate_name, '"');
+                            $data[$i]->certificate_name = trim($data[$i]->certificate_name);
+                        }
+                    }
+                }
             }
         }
 

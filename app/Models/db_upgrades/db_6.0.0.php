@@ -2,8 +2,15 @@
 
 $output .= "Upgrade database to 6.0.0 commenced.\n\n";
 
-if (!$db->fieldExists('certificates', 'server_item')) {
-    $sql = "ALTER TABLE `server_item` ADD `certificates` varchar(1000) NOT NULL DEFAULT '' AFTER `log_rotation`";
+if (!$db->fieldExists('certificate_file', 'server_item')) {
+    $sql = "ALTER TABLE `server_item` ADD `certificate_file` varchar(200) NOT NULL DEFAULT '' AFTER `log_rotation`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('certificate_name', 'server_item')) {
+    $sql = "ALTER TABLE `server_item` ADD `certificate_name` varchar(200) NOT NULL DEFAULT '' AFTER `certificate_file`";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());

@@ -2598,7 +2598,7 @@ if (empty($resource->type)) {
                                                                 <?php } ?>
                                                                 <th><?= __('Path') ?></th>
                                                                 <?php if ($row->name !== 'IIS') { ?>
-                                                                <th><?= __('Certificates') ?></th>
+                                                                <th><?= __('Certificate Name') ?></th>
                                                                 <?php } ?>
                                                                 <th class="text-center"><?= __('View All') ?></th>
                                                             <?php } elseif ($row->type === 'database') { ?>
@@ -2633,7 +2633,7 @@ if (empty($resource->type)) {
                                                                         <?php } ?>
                                                                         <td><?= $server_item->path ?></td>
                                                                         <?php if ($row->name !== 'IIS') { ?>
-                                                                        <td><?= str_replace(' ', '<br>', $server_item->certificates) ?></td>
+                                                                        <td><?= str_replace(' ', '<br>', $server_item->certificate_name) ?></td>
                                                                         <?php } ?>
                                                                         <td class="text-center"><a role="button" class="btn btn-sm btn-primary" title="<?= __('View') ?>" href="<?=  url_to('componentsCollection') ?>?components.type=server_item&components.device_id=<?= $resource->id ?>"><span class="fa fa-eye text-primary"></span></a></td>
                                                                     </tr>
