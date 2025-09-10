@@ -13,11 +13,12 @@ include 'shared/create_functions.php';
                         <div class="col-md-6">
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
+                                <input type="hidden" value='ISO 27001' id="data[attributes][type]" name="data[attributes][type]" />
 
                                 <?= create_text_field('data[attributes][name]', __('Name'), $dictionary->attributes->create) ?>
                                 <?= create_select('data[attributes][org_id]', __('Organisation'), $orgs, $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][description]', __('Description'), $dictionary->attributes->create) ?>
-                                <?= create_text_field('data[attributes][type]', __('Type'), $dictionary->attributes->create, 'ISO 27001') ?>
+                                <?= create_text_field('type', __('Type'), $dictionary->attributes->create, 'ISO 27001') ?>
 
                                 <br>
                                 <div class="row">
@@ -56,6 +57,7 @@ include 'shared/create_functions.php';
 window.onload = function () {
     $(document).ready(function () {
         $("#data\\[attributes\\]\\[name\\]").focus();
+        $("#type").prop('disabled', true);
         $(document).on('change', "#data\\[attributes\\]\\[resource\\]", function () {
             if ($("#data\\[attributes\\]\\[resource\\]").val() == 'orgs') {
                 $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'type', text: 'Type' }));
