@@ -219,6 +219,7 @@ if (empty($resource->type)) {
                                                 echo read_field('VM Host', $resource->vm_server_name, $dictionary->columns->vm_server_name, '', false, $link);
                                             }
                                             ?>
+                                            <?= read_field('os_cpe', $resource->os_cpe, $dictionary->columns->os_cpe, false, '', '', '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
                                             <?= read_field('domain', $resource->domain, $dictionary->columns->domain, $update, '', '', '', '', $meta->collection) ?>

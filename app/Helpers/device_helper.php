@@ -1894,8 +1894,8 @@ function cpe_create($device)
     }
     if (!empty($cpe)) {
         $cpe = (!empty($device->os_version)) ? $cpe . ':' . $device->os_version : $cpe;
+        $cpe = 'cpe:2.3:' . $cpe;
     }
-    $cpe = 'cpe:2.3:' . $cpe;
     return $cpe;
 }
 
