@@ -4195,6 +4195,7 @@ CREATE TABLE `software` (
   `email` varchar(255) NOT NULL DEFAULT '',
   `type` varchar(200) NOT NULL DEFAULT '',
   `version_padded` text NOT NULL,
+  `version_raw` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   KEY `first_seen` (`first_seen`),

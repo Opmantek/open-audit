@@ -2,6 +2,12 @@
 
 $output .= "Upgrade database to 6.0.0 commenced.\n\n";
 
+if (!$db->fieldExists('version_raw', 'software')) {
+    $sql = "ALTER TABLE `software` ADD `version_raw` varchar(255) NOT NULL DEFAULT '' AFTER `version_padded`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 if (!$db->fieldExists('certificate_file', 'server_item')) {
     $sql = "ALTER TABLE `server_item` ADD `certificate_file` varchar(200) NOT NULL DEFAULT '' AFTER `log_rotation`";
     $db->query($sql);
