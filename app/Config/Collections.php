@@ -19,6 +19,7 @@ class Collections extends BaseConfig
     public $benchmarks;
     public $benchmarks_exceptions;
     public $benchmarks_policies;
+    public $certificates;
     public $clouds;
     public $clusters;
     public $collectors;
