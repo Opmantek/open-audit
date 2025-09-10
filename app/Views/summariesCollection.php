@@ -17,6 +17,9 @@ include 'shared/collection_functions.php';
                     <?php
                     $i = 0;
                     foreach ($included['collections'] as $name => $collection) {
+                        if ($name === 'collectors' and $collection->count === 0) {
+                            continue;
+                        }
                         $i++;
                         $color = 'darkgrey';
                         $link = '#';
