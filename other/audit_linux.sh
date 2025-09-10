@@ -2848,14 +2848,40 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 		fi
 	done
 
+	# Note the new parsing for Debian and Redhat based distro's.
+	# We take versions like 1:2.38.1-5+deb12u3 and make them 2.38.1
+	# The entire canonical version is now stored in version_raw
+
 	case $system_os_family in
 			'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
-				dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
-					sed -e 's/\&.*]]/]]/' >> "$xml_file"
+				# dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" | sed -e 's/\&.*]]/]]/' >> "$xml_file"
+				for package in $(dpky-query --list | grep ^ii); do
+					name=$(echo "$package" | awk '{print $2}')
+					version=$(echo "$package" | awk '{print $3}' | cut -d: -f2 | cut -d- -f1 | cut -d+ -f1 | cut -d~ -f1)
+					version_raw=version=$(echo "$package" | awk '{print $3}')
+					description=$(echo "$package" | awk '{print $5}')
+					echo "		<item>" >> "$xml_file"
+					echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+					echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+					echo "			<version_raw>$(escape_xml $version_raw)</version_raw>" >> "$xml_file"
+					echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
+					echo "		</item>" >> "$xml_file"
+				done
 				;;
 			'CentOS' | 'RedHat' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' )
-				rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" |\
-					sed -e 's/\&.*]]/]]/' >> "$xml_file"
+				# rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" | sed -e 's/\&.*]]/]]/' >> "$xml_file"
+				for package in $(rpm -qa --queryformat="%{NAME}\t%{VERSION}\t%{VERSION}-%{RELEASE}\t%{URL}\n"); do
+					name=$(echo "$package" | awk '{print $1}')
+					version=$(echo "$package" | awk '{print $2}')
+					version_raw=$(echo "$package" | awk '{print $3}')
+					url=$(echo "$package" | awk '{print $4}')
+					echo "		<item>" >> "$xml_file"
+					echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+					echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+					echo "			<version_raw>$(escape_xml $version_raw)</version_raw>" >> "$xml_file"
+					echo "			<url>$(url $description)</url>" >> "$xml_file"
+					echo "		</item>" >> "$xml_file"
+				done
 				;;
 			'Alpine Linux' )
 				for package in $(apk info); do
@@ -3706,7 +3732,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 
 	# Apache instances
 	IFS="$NEWLINEIFS"
-	test=$(apachectl -S 2>/dev/null | grep port)
+	test=$(apachectl -S 2>/dev/null | grep "port ")
 	if [ -n "$test" ]; then
 		if [ "$debugging" -gt "0" ]; then
 			echo "	apache using apachectl"
@@ -3715,7 +3741,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 
 	tempfile=`pwd`"/$system_hostname-temp"
 	touch "$tempfile"
-	for i in $(apachectl -S 2>/dev/null | grep port); do
+	for i in $(apachectl -S 2>/dev/null | grep "port "); do
 		if [ -n "$i" ]; then
 			name=$(echo "$i" | awk '{ print $4 }')
 			if [ -n "$name" ]; then
