@@ -262,7 +262,7 @@ class OrgsModel extends BaseModel
         return $return;
     }
 
-    public function import(array $csv = null)
+    public function import(?array $csv = null)
     {
         $instance = & get_instance();
 
@@ -359,7 +359,7 @@ class OrgsModel extends BaseModel
         $this->builder->join('orgs o2', 'orgs.parent_id = o2.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
-        $this->builder->orderBy('name');
+        $this->builder->orderBy('name', 'DESC');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

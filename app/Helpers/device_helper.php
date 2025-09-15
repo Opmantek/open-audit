@@ -1799,6 +1799,9 @@ function cpe_create($device)
         if (stripos($device->sysDescr, 'NX-OS')) {
             $cpe = 'o:cisco:nx-os';
         }
+        if (stripos($device->sysDescr, 'Adaptive Security Appliance') !== false) {
+            $cpe = 'o:cisco:adaptive_security_appliance_software';
+        }
     }
 
     if (!empty($device->os_family) and $device->type === 'computer') {
