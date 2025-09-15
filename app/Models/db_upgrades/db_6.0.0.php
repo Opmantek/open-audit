@@ -73,6 +73,16 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DROP TABLE IF EXISTS `standards_results`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DROP TABLE IF EXISTS `standards_policies`";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "DROP TABLE IF EXISTS `standards`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -90,32 +100,6 @@ $sql = "CREATE TABLE `standards` (
   KEY `org_id` (`org_id`),
   CONSTRAINT `standards_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
-$sql = "DROP TABLE IF EXISTS `standards_policies`";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
-$sql = "CREATE TABLE `standards_policies` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `type` varchar(200) NOT NULL DEFAULT '',
-  `class` varchar(200) NOT NULL DEFAULT '',
-  `section` varchar(200) NOT NULL DEFAULT '',
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `type` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
-$sql = "DROP TABLE IF EXISTS `standards_results`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -149,6 +133,24 @@ $sql = "CREATE TABLE `standards_results` (
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
+
+$sql = "CREATE TABLE `standards_policies` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `type` varchar(200) NOT NULL DEFAULT '',
+  `class` varchar(200) NOT NULL DEFAULT '',
+  `section` varchar(200) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `type` (`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
 
 $sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.1', 'Policies for information security', 'Information security policy and topic-specific policies shall be de-fined, approved by management, published, communicated to and acknowledged by relevant personnel and relevant interested parties and reviewed at planned intervals and if significant changes occur.', 'system', NOW());";
 $db->query($sql);
