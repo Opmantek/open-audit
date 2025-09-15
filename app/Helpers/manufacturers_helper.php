@@ -35,6 +35,7 @@ function manufacturerLogo (string $manufacturer = '')
     if ($logo === '' and mb_stripos($manufacturer, 'Foundry') !== false) { $logo = 'foundry'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Fujitsu') !== false) { $logo = 'fujitsu'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Gaoshengda Technology') !== false) { $logo = 'gaoshengda'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Geekom') !== false) { $logo = 'geekom'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Gigabyte') !== false) { $logo = 'gigabyte'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Google') !== false) { $logo = 'google'; }
     if ($logo === '' and mb_stripos($manufacturer, 'H3C') !== false) { $logo = 'h3c'; }
