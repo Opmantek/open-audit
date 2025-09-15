@@ -133,7 +133,7 @@ nb-configuration.xml
 /.phpunit.*.cache
 
 app/Attachments/*
-app/Models/VulnerabilitiesModel.php
+# app/Models/VulnerabilitiesModel.php
 public/js/highcharts-9.3.1.min.js
 other/enterprise*
 other/ssg-results/*.html
