@@ -261,7 +261,7 @@ echo  "     <ip>$system_ip</ip>" >> $xml_file
 echo  "     <class></class>" >> $xml_file
 echo  "     <type>computer</type>" >> $xml_file
 echo  "     <os_group>Apple</os_group>" >> $xml_file
-echo  "     <os_family>Apple OSX</os_family>" >> $xml_file
+echo  "     <os_family>MacOS</os_family>" >> $xml_file
 echo  "     <os_name>$system_os_name</os_name>" >> $xml_file
 echo  "     <os_version>$system_os_version</os_version>" >> $xml_file
 echo  "     <os_display_version>$system_os_display_version</os_display_version>" >> $xml_file

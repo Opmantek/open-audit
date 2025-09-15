@@ -448,6 +448,7 @@ if (!empty($config->servers)) {
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="<?= url_to('vulnerabilitiesCollection') ?>"><?= __('Vulnerabilities') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('vulnerabilities', 'r', $user, 'vulnerabilitiesCollection', __('List') . ' ' . __('Vulnerabilities')) ?>
+                                        <?= menuItem('vulnerabilities', 'c', $user, 'configurationCollection', __('Configure') . ' ' . __('Vulnerabilities'), '?configuration.name=likefeature_vulnerabilities') ?>
                                         <?= menuItem('vulnerabilities', '', $user, 'vulnerabilitiesDefaults', __('Default') . ' ' . __('Vulnerabilities')) ?>
                                         <?= menuItem('vulnerabilities', '', $user, 'vulnerabilitiesHelp', __('Learn About') . ' ' . __('Vulnerabilities')) ?>
                                     </ul>

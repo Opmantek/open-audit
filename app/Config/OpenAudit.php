@@ -156,6 +156,10 @@ class OpenAudit extends BaseConfig
     public int $feature_news_remind_days;
     public string $feature_powershell_audit;
     public string $feature_queries_advanced;
+    public string $feature_vulnerabilities;
+    public string $feature_vulnerabilities_interval;
+    public string $feature_vulnerabilities_date;
+    public string $feature_vulnerabilities_vendors;
     public string $firstwave_prompt;
     public int $graph_days;
     public string $homepage = 'summaries';

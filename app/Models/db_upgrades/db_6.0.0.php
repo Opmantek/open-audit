@@ -772,6 +772,41 @@ if (count($result) === 0) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if (empty(config('Openaudit')->feature_vulnerabilities)) {
+    $sql = "INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities','y','bool','y','system','2000-01-01 00:00:00','Enable the vulnerabilities feature.')";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (empty(config('Openaudit')->feature_vulnerabilities_interval)) {
+    $sql = "INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_interval','60','number','y','system','2000-01-01 00:00:00','Check for new vulnerabilities every X minutes.')";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (empty(config('Openaudit')->feature_vulnerabilities_date)) {
+    $sql = "INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_date','2025-01-01','date','y','system','2000-01-01 00:00:00','Retrieve vulnerabilities since this date.')";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (empty(config('Openaudit')->feature_vulnerabilities_vendors)) {
+    $sql = "INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_vendors','[\'microsoft\',\'google\',\'mozilla\',\'adobe\',\'apple\']','text','y','system','2000-01-01 00:00:00','Report on vulnerabilities from these vendors.')";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (empty(config('Openaudit')->feature_vulnerabilities_url)) {
+    $sql = "INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_url','https://news.firstwave.com/feeds','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve vulnerability data.')";
+    $query = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20250615' WHERE `name` = 'internal_version'";
 $db->query($sql);

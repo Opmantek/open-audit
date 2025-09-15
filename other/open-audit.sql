@@ -885,7 +885,7 @@ CREATE TABLE `certificate` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `serial` varchar(100) NOT NULL DEFAULT '',
   `issuer` text NOT NULL,
-  `issuer_name` varchar(200) NOT NULL DEFAULT '';
+  `issuer_name` varchar(200) NOT NULL DEFAULT '',
   `valid_from_raw` varchar(100) NOT NULL DEFAULT '',
   `valid_from` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `valid_to_raw` varchar(100) NOT NULL DEFAULT '',
@@ -893,9 +893,9 @@ CREATE TABLE `certificate` (
   `encryption` varchar(100) NOT NULL DEFAULT '',
   `algorithm` varchar(100) NOT NULL DEFAULT '',
   `version` varchar(100) NOT NULL DEFAULT '',
-  `common_name` varchar(200) NOT NULL DEFAULT '';
-  `subject_key_ident` varchar(200) NOT NULL DEFAULT '';
-  `authority_key_ident` varchar(200) NOT NULL DEFAULT '';
+  `common_name` varchar(200) NOT NULL DEFAULT '',
+  `subject_key_ident` varchar(200) NOT NULL DEFAULT '',
+  `authority_key_ident` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `certificate_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
@@ -1322,13 +1322,18 @@ INSERT INTO `configuration` VALUES (NULL,'enterprise_env','/usr/local/open-audit
 INSERT INTO `configuration` VALUES (NULL,'feature_agents_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Agents to execute commands and download files.');
 INSERT INTO `configuration` VALUES (NULL,'feature_devices_manufacturer_logo','y','bool','y','system','2000-01-01 00:00:00','When viewing the device list, should we show manufacturers logos, not just text.');
 INSERT INTO `configuration` VALUES (NULL,'feature_executables','n','bool','y','system','2000-01-01 00:00:00','Activate the linux based Executables feature.');
-INSERT INTO `configuration` VALUES (NULL,'feature_news','n','bool','y','system','2000-01-01 00:00:00','Use online requests for news, updates, queries and packages.');
+INSERT INTO `configuration` VALUES (NULL,'feature_news','y','bool','y','system','2000-01-01 00:00:00','Use online requests for news, updates, queries and packages.');
 INSERT INTO `configuration` VALUES (NULL,'feature_news_last_request_date','2000-01-01','text','y','system','2000-01-01 00:00:00','When did we last request a feed article.');
 INSERT INTO `configuration` VALUES (NULL,'feature_news_remind_days','30','number','n','system','2000-01-01 00:00:00','If not enabled, reminder the user every this number of days.');
 INSERT INTO `configuration` VALUES (NULL,'feature_news_request_days','7','number','n','system','2000-01-01 00:00:00','Make a feed request every this number of days.');
 INSERT INTO `configuration` VALUES (NULL,'feature_news_url','https://news.firstwave.com/feeds','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve news articles.');
-INSERT INTO `configuration` VALUES (NULL,'feature_powershell_audit','n','bool','y','system','2000-01-01 00:00:00','Use the PowerShell audit script instead of the VBScript audit script in discoveries.');
+INSERT INTO `configuration` VALUES (NULL,'feature_powershell_audit','y','bool','y','system','2000-01-01 00:00:00','Use the PowerShell audit script instead of the VBScript audit script in discoveries.');
 INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.');
+INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities','y','bool','y','system','2000-01-01 00:00:00','Enable the vulnerabilities feature.');
+INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_interval','60','number','y','system','2000-01-01 00:00:00','Check for new vulnerabilities every X minutes.');
+INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_date','2025-01-01','date','y','system','2000-01-01 00:00:00','Retrieve vulnerabilities since this date.');
+INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_vendors','[\'microsoft\',\'google\',\'mozilla\',\'adobe\',\'apple\']','text','y','system','2000-01-01 00:00:00','Report on vulnerabilities from these vendors.');
+INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_url','https://news.firstwave.com/feeds','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve vulnerability data.');
 INSERT INTO `configuration` VALUES (NULL,'firstwave_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt about FirstWave products.');
 INSERT INTO `configuration` VALUES (NULL,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (NULL,'homepage','summaries','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');

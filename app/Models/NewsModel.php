@@ -139,19 +139,19 @@ class NewsModel extends BaseModel
             }
             model('App\Models\QueriesModel')->create($data);
         }
-        // if ($item->type === 'vulnerabilities') {
-        //     if (empty($instance->user->permissions['vulnerabilities']) or strpos($instance->user->permissions['vulnerabilities'], 'c') === false or strpos($instance->user->permissions['vulnerabilities'], 'u') === false or strpos($instance->user->permissions['vulnerabilities'], 'd') === false) {
-        //         log_message('info', $instance->user->full_name . ' does not have permission to execute news to create/update/delete vulnerabilities.');
-        //         return false;
-        //     }
+        if ($item->type === 'vulnerabilities') {
+            if (empty($instance->user->permissions['vulnerabilities']) or strpos($instance->user->permissions['vulnerabilities'], 'c') === false or strpos($instance->user->permissions['vulnerabilities'], 'u') === false or strpos($instance->user->permissions['vulnerabilities'], 'd') === false) {
+                log_message('info', $instance->user->full_name . ' does not have permission to execute news to create/update/delete vulnerabilities.');
+                return false;
+            }
 
-        //     $attributes = $item->body[0]->attributes;
-        //     $data = $this->createFieldData('vulnerabilities', $item->body[0]->attributes);
-        //     if (empty($data)) {
-        //         return false;
-        //     }
-        //     model('App\Models\VulnerabilitiesModel')->create($data);
-        // }
+            $attributes = $item->body[0]->attributes;
+            $data = $this->createFieldData('vulnerabilities', $item->body[0]->attributes);
+            if (empty($data)) {
+                return false;
+            }
+            model('App\Models\VulnerabilitiesModel')->create($data);
+        }
         $data = new \stdClass();
         $data->read = 'y';
         $data->actioned = 'y';
@@ -188,6 +188,7 @@ class NewsModel extends BaseModel
         foreach ($data as $key => $value) {
             $send[$key] = $value;
         }
+
         $send['action'] = $action;
         $send['products'] = json_encode($send['products']);
         $send['issues'] = json_encode($send['issues']);
@@ -203,6 +204,9 @@ class NewsModel extends BaseModel
                 log_message('warning', 'Invalid CVE ID supplied: ' . $_POST['data']['attributes']['cve']);
                 return null;
             }
+        } else if ($action === 'vulnerabilities') {
+            $send['vendors'] = $config->feature_vulnerabilities_vendors;
+            $send['from'] = $config->feature_vulnerabilities_date;
         }
 
         // log_message('debug', json_encode($send));

@@ -1371,7 +1371,7 @@ if (! function_exists('ssh_audit')) {
         if (!empty($device->os_group) and trim(strtolower($device->os_group)) === 'darwin') {
             $device->os_group = 'Apple';
             $device->type = 'computer';
-            $device->os_family = 'Apple OSX';
+            $device->os_family = 'MacOS';
             if (!empty($device->osx_os_version)) {
                 $device->os_name = 'MacOS ' . $device->osx_os_version;
             }
