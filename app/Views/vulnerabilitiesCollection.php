@@ -148,21 +148,17 @@ if (!empty($meta->filter)) {
 
 
 
-<script>
+<script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function () {
         $("#button_create").remove();
         $("#button_export_csv").remove();
         $("#button_export_json").remove();
 
-        <?php # echo '$(".page-title-right").append(\'<div style="padding-right:6px;" class="btn-group btn-group-sm float-start" role="group"><div class="page-title-right"><select class="form-select" id="severity_button" style="background-color:#f8f9fa;"><option value="pending">' . __('Severity') . '</option><option value="!=">' . __('All') . '</option><option value="low">' . __('Low') . '</option><option value="medium">' . __('Medium') . '</option><option value="high">' . __('High') . '</option><option value="critical">' . __('Critical') . '</option></select></div></div><div style="padding-right:12px; padding-left:8px; padding-top:7px;" class="btn-group btn-group-sm float-start" role="group">' . __('or') . '</div><div style="padding-right:6px;" class="btn-group btn-group-sm float-start" role="group"><div class="page-title-right"><select class="form-select" id="status_button" style="background-color:#f8f9fa;"><option value="pending">' . __('Status') . '</option><option value="!=">' . __('All') . '</option><option value="pending">' . __('Pending') . '</option><option value="unlikely">' . __('Unlikely') . '</option><option value="confirmed">' . __('Confirmed') . '</option><option value="declined">' . __('Declined') . '</option></select></div></div>\')'; ?>
-
-
         $('#submitV').on('click', function () {
             console.log('clicked submit');
             $("#vulnerabilityRequestForm").submit();
         });
-
 
         let logSort = {};
         var myDataTable = new DataTable('.dataTableAjax', {
@@ -252,12 +248,12 @@ window.onload = function () {
                             }
                         }
                     } else {
-                        if (devSort.direction == 'asc') {
-                            d.sort = '-' + devSort.column;
-                            devSort.direction = 'desc';
+                        if (logSort.direction == 'asc') {
+                            d.sort = '-' + logSort.column;
+                            logSort.direction = 'desc';
                         } else {
-                            d.sort = devSort.column;
-                            devSort.direction = 'asc';
+                            d.sort = logSort.column;
+                            logSort.direction = 'asc';
                         }
                     }
                     delete d.start;
