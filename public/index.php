@@ -24,7 +24,7 @@ if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
 }
 
 // Increase the memory limit
-ini_set('memory_limit', '1024M');
+ini_set('memory_limit', '4096M');
 
 /*
  *---------------------------------------------------------------
