@@ -708,7 +708,7 @@ class ComponentsModel extends BaseModel
                         }
                     }
 
-                    if (strpos($data[$i]->common_name, 'CN = ') === false) {
+                    if (empty($data[$i]->common_name) or strpos($data[$i]->common_name, 'CN = ') === false) {
                         $data[$i]->common_name = 'not provided';
                     } else {
                         if (!empty($data[$i]->common_name) and strpos($data[$i]->common_name, 'CN = ') !== false) {
