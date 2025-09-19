@@ -1124,7 +1124,7 @@ window.onload = function () {
                 { data: 'attributes.icon',
                     render: function (icon) {
                         return icon
-                            ? '<img style="width:30px;" src="<?= base_url() ?>device_images/' + icon + '.svg">'
+                            ? '<img style="width:42px;" src="<?= base_url() ?>device_images/' + icon + '.svg">'
                             : '';
                     }
                 },
