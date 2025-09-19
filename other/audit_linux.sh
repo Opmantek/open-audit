@@ -785,6 +785,9 @@ fi
 
 # Get the System Model
 if [ -z "$system_model" ]; then
+	system_model=$(hostnamectl 2>/dev/null | grep -F "Hardware Model" | cut -d: -f2)
+fi
+if [ -z "$system_model" ]; then
 	system_model=$(dmidecode -s system-product-name 2>/dev/null | grep -v "^#" | head -1)
 fi
 if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
@@ -809,6 +812,9 @@ if [ -z "$dbus_identifier" ]; then
 fi
 
 # Get the System Manufacturer
+if [ -z "$system_manufacturer" ]; then
+	system_manufacturer=$(hostnamectl 2>/dev/null | grep -F "Hardware Vendor" | cut -d: -f2)
+fi
 if [ -z "$system_manufacturer" ]; then
 	system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null | grep -v "^#" | head -1)
 fi
@@ -835,6 +841,8 @@ if [ -z "$system_model" ] && [ -n "$(which dmidecode 2>/dev/null)" ]; then
 	fi
 fi
 
+vm_vendor=$(systemd-detect-virt 2>/dev/null | grep -v none)
+
 # Get the System Uptime
 system_uptime=$(cut -d. -f1 < /proc/uptime)
 
@@ -849,7 +857,15 @@ if [ "$system_model" = "Bochs" -o \
 	 "$system_model" = "HVM domU" -o \
 	 "$system_model" = "VirtualBox" ]; then
 	system_form_factor="Virtual"
-else
+fi
+if [ -z "$system_form_factor" ]; then
+	system_form_factor=$(hostnamectl chassis 2>/dev/null)
+	if [ "$system_form_factor" = "vm" ]; then
+		system_form_factor="Virtual"
+	fi
+	system_form_factor=$(pcase $system_form_factor)
+fi
+if [ -z "$system_form_factor" ]; then
 	system_form_factor=$(dmidecode -s chassis-type 2>/dev/null | grep -v "^#" | head -1)
 	if [ "$system_form_factor" = "<OUT OF SPEC>" ]; then
 		system_form_factor="Unknown"
@@ -863,15 +879,18 @@ if [ -z "$system_form_factor" ]; then
 fi
 
 # Get OS bits
-system_pc_os_bit=$(uname -m | grep 64 | cut -d_ -f2)
-if [ -z "$system_pc_os_bit" ]; then
-	system_pc_os_bit=$(uname -i | grep 64 | cut -d_ -f2)
+os_bit=$(uname -m | grep 64 | cut -d_ -f2)
+if [ -z "$os_bit" ]; then
+	os_bit=$(uname -i | grep 64 | cut -d_ -f2)
 fi
-if [ -z "$system_pc_os_bit" ]; then
-	system_pc_os_bit=32
+if [ -z "$os_bit" ]; then
+	os_bit=32
 fi
 
-system_pc_os_arch=$(uname -m 2>/dev/null)
+os_arch=$(hostnamectl 2>/dev/null | grep -F Architecture | cut -d: -f2)
+if [ -z "$os_arch" ]; then
+	os_arch=$(uname -m 2>/dev/null)
+fi
 
 # Get the System Memory
 # system_pc_memory=$(grep MemTotal /proc/meminfo | cut -d: -f2 | cut -dk -f1)
@@ -997,8 +1016,9 @@ echo "		<model>$(escape_xml "$system_model")</model>"
 echo "		<manufacturer>$(escape_xml "$system_manufacturer")</manufacturer>"
 echo "		<uptime>$(escape_xml "$system_uptime")</uptime>"
 echo "		<form_factor>$(escape_xml "$system_form_factor")</form_factor>"
-echo "		<os_bit>$(escape_xml "$system_pc_os_bit")</os_bit>"
-echo "		<os_arch>$(escape_xml "$system_pc_os_arch")</os_arch>"
+echo "		<os_bit>$(escape_xml "$os_bit")</os_bit>"
+echo "		<os_arch>$(escape_xml "$os_arch")</os_arch>"
+echo "		<vm_vendor>$(escape_xml "$vm_vendor")</vm_vendor>"
 echo "		<memory_count>$(escape_xml "$system_pc_memory")</memory_count>"
 echo "		<processor_count>$(escape_xml "$system_pc_total_threads")</processor_count>"
 echo "		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>"
@@ -1345,7 +1365,7 @@ if [ -z $(echo "$skip_sections" | grep "memory,") ]; then
 				memory_detail=$(echo "$bank_info" | awk '/Type:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' | awk '{gsub(" ","");print}')
 
 				if [ "$memory_detail" = "<OUT OF SPEC>" ]; then
-					system_form_factor="Unknown"
+					memory_form_factor="Unknown"
 				fi
 
 				memory_form_factor=$(echo "$bank_info" | awk '/Form Factor/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' | cut -d" " -f1)
