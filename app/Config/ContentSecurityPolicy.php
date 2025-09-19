@@ -57,6 +57,13 @@ class ContentSecurityPolicy extends BaseConfig
     public $scriptSrc = "'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com maps.google.com";
 
     /**
+     * Lists allowed scripts' element URLs.
+     *
+     * @var string|string[]
+     */
+    public $scriptSrcElem = "'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com maps.google.com";
+
+    /**
      * Lists allowed stylesheets' URLs.
      *
      * @var string|string[]
