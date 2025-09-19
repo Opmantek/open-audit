@@ -4,7 +4,7 @@
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
 $permissions = array('c','r','u','d');
-$endpoints = array('agents','applications','attributes','auth','baselines','benchmarks','benchmarks_exceptions','benchmarks_policies','certificates','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','executables','fields','files','groups','integrations','licenses','locations','networks','orgs','packages','queries','racks','rack_devices','roles','rules','scripts','search','standards','standards_results','summaries','tasks','users','vulnerabilities','widgets');
+$endpoints = array('agents','applications','attributes','auth','baselines','benchmarks','benchmarks_exceptions','benchmarks_policies','certificates','clouds','clusters','collectors','components','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_scan_options','executables','fields','files','groups','integrations','licenses','locations','networks','orgs','packages','queries','racks','rack_devices','roles','rules','scripts','search','standards','standards_results','summaries','tasks','users','vendors','vulnerabilities','widgets');
 $item_permissions = $resource->permissions;
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {

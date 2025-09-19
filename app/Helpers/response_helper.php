@@ -353,7 +353,7 @@ if (!function_exists('response_create')) {
             }
         }
 
-        if ($test and !in_array($response->meta->collection, ['benchmarks_policies', 'configuration', 'database', 'discovery_log', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util', 'vulnerabilities'])) {
+        if ($test and !in_array($response->meta->collection, ['benchmarks_policies', 'configuration', 'database', 'discovery_log', 'errors', 'help', 'nmis', 'roles', 'san', 'test', 'util', 'vendors', 'vulnerabilities'])) {
             $item = new \StdClass();
             $item->name = 'orgs.id';
             if ($response->meta->collection !== 'orgs') {

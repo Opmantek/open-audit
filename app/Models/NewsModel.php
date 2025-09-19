@@ -174,13 +174,13 @@ class NewsModel extends BaseModel
         $id = 0;
         log_message('debug', 'executeAll called with action ' . $action);
         if (!$this->db->tableExists('news')) {
-            return false;
+            return null;
         }
         $config = new \Config\OpenAudit();
         if (empty($config->feature_news) or $config->feature_news !== 'y') {
             // Do not run
             log_message('info', 'News not executed because config item set to n.');
-            return true;
+            return null;
         }
         helper('utility_helper');
         $data = createNewsData();
@@ -205,11 +205,10 @@ class NewsModel extends BaseModel
                 return null;
             }
         } else if ($action === 'vulnerabilities') {
-            $send['vendors'] = $config->feature_vulnerabilities_vendors;
+            $send['vendors'] = model('App\Models\VendorsModel')->getUse();
             $send['from'] = $config->feature_vulnerabilities_date;
         }
 
-        // log_message('debug', json_encode($send));
         $client = service('curlrequest');
         try {
             $response = @$client->request('POST', $config->feature_news_url, [
@@ -223,19 +222,21 @@ class NewsModel extends BaseModel
             return null;
         }
         $body = $response->getBody();
-        log_message('debug', 'Bytes in reply: ' . strlen($body));
-        // log_message('debug', 'Body: ' . $body);
+        // log_message('debug', 'Bytes in reply: ' . strlen($body));
         $body = @json_decode($body);
-        if (!is_array($body)) {
-            log_message('error', 'Body returned but body not an array. Body is a ' . gettype($body));
+        if (!is_array($body) and $action !== 'vendors') {
+	    log_message('error', 'Body returned but body not an array. Body is a ' . gettype($body));
             return null;
-        }
+	}
+	if (!empty($body) and $action === 'vendors') {
+	    $body = (array)$body;
+	}
         if (empty($body)) {
-            log_message('debug', 'No news articles returned.');
+            log_message('debug', 'No ' . $action . ' articles returned.');
             return null;
         }
         log_message('debug', count($body) . ' news articles returned.');
-        if ($action !== 'vulnerabilities') {
+        if ($action !== 'vulnerabilities' and $action !== 'vendors') {
             foreach ($body as $news) {
                 if (empty($news)) {
                     log_message('info', 'No news article populated.');
@@ -265,11 +266,16 @@ class NewsModel extends BaseModel
                     $this->db->query($sql, [$news->name, $news->short, $news->description, $news->type, $news->body, $news->published, $news->link, $news->image, $news->expires, $news->alert_style, $news->version]);
                 }
             }
-        } else {
+	} else if ($action === 'vulnerabilities') {
             foreach ($body as $vuln) {
                 $id = model('App\Models\VulnerabilitiesModel')->create($vuln->attributes);
             }
-        }
+	} else if ($action === 'vendors') {
+	    foreach ($body as $key => $value) {
+	        $value->name = $key;
+	        $id = model('App\Models\VendorsModel')->upsert($value);
+	    }
+	}
         return $id;
     }
 

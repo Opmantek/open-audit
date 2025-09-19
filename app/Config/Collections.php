@@ -60,6 +60,7 @@ class Collections extends BaseConfig
     public $support;
     public $tasks;
     public $users;
+    public $vendors;
     public $vulnerabilities;
     public $vulnerabilities_filters;
     public $widgets;
@@ -587,6 +588,16 @@ class Collections extends BaseConfig
         $this->users->actions->enterprise = 'crud';
         $this->users->actions->professional = 'crud';
         $this->users->actions->community = 'crud';
+
+        $this->vendors = new \StdClass();
+        $this->vendors->icon = 'fa-solid fa-industry';
+        $this->vendors->name = 'Vendors';
+        $this->vendors->edition = 'Enterprise';
+        $this->vendors->orgs = 'd';
+        $this->vendors->actions = new \stdClass();
+        $this->vendors->actions->enterprise = 'crud';
+        $this->vendors->actions->professional = '';
+        $this->vendors->actions->community = '';
 
         $this->vulnerabilities = new \StdClass();
         $this->vulnerabilities->icon = 'fa-solid fa-bug';

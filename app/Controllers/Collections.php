@@ -80,6 +80,11 @@ class Collections extends BaseController
             exit();
         }
 
+        $update = false;
+        if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false and strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, 'u') !== false) {
+            $update = true;
+        }
+
         $this->resp->meta->total = 0;
         $this->resp->meta->filtered = 0;
         if (($this->resp->meta->collection !== 'devices' and $this->resp->meta->collection !== 'components' and $this->resp->meta->collection !== 'vulnerabilities') or $this->resp->meta->format !== 'html') {
@@ -154,7 +159,8 @@ class Collections extends BaseController
             $this->resp->meta->collection === 'discoveries' or
             $this->resp->meta->collection === 'networks' or
             $this->resp->meta->collection === 'summaries' or
-            $this->resp->meta->collection === 'vulnerabilities'
+            $this->resp->meta->collection === 'vulnerabilities' or
+            $this->resp->meta->collection === 'vendors'
         ) {
             $this->resp->included = array_merge($this->resp->included, $this->{strtolower($this->resp->meta->collection) . "Model"}->includedCollection());
         }
@@ -198,6 +204,7 @@ class Collections extends BaseController
             'meta' => filter_response($this->resp->meta),
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
+            'update' => $update,
             'user' => filter_response($this->user)]) .
             view($view, ['data' => filter_response($this->resp->data), 'included' => filter_response($this->resp->included), 'dictionary' => $dictionary])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);

@@ -1332,7 +1332,6 @@ INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities','y','bool','y','system','2000-01-01 00:00:00','Enable the vulnerabilities feature.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_interval','60','number','y','system','2000-01-01 00:00:00','Check for new vulnerabilities every X minutes.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_date','2025-01-01','date','y','system','2000-01-01 00:00:00','Retrieve vulnerabilities since this date.');
-INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_vendors','[\'microsoft\',\'google\',\'mozilla\',\'adobe\',\'apple\']','text','y','system','2000-01-01 00:00:00','Report on vulnerabilities from these vendors.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_url','https://news.firstwave.com/feeds','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve vulnerability data.');
 INSERT INTO `configuration` VALUES (NULL,'firstwave_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt about FirstWave products.');
 INSERT INTO `configuration` VALUES (NULL,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
@@ -4352,19 +4351,19 @@ INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational contro
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.8', 'Information security in project management', 'Information security shall be integrated into project management.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.9', 'Inventory of information and other associated assets', 'And inventory of information and other associated assets, including owners, shall be developed and maintained', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.10', 'Acceptable use of information and other associated assets', 'Rules for the accepable use and procedures for handling information and other associated assets shall be identified, documented and implemented', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.11', 'Return of assets', 'Personnel and other interested parties as appropriate shall return all the organization\'s assets in their possession upon change or termination of their employment, contract or agreement', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.11', 'Return of assets', 'Personnel and other interested parties as appropriate shall return all the organizations assets in their possession upon change or termination of their employment, contract or agreement', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.12', 'Classification of Information', 'Information shall be classified according to the information security needs of the organization based on confidentiality, integrity, availability and relevant interested party requirements.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.13', 'Labelling of information', 'An appropriate set of procedures for information labelling shall be developea and Implemented in accordance wit the Information clas sification scheme adopted by the organization', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.14', 'Information transfer', 'Information transfer rules, procedures, or agreements shall be in place for all types of transter facilities within the organization and between the organization and other parties', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.15', 'Access control', 'Rules to control physical and logical access to information and other associated assets shall be established and implemented based on business and information security requirements.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.16', 'Identity management', 'The full life cycle of identitites shall be managed', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.17', 'Authentication Information', 'Allocation and management of authentication information shall be controlled by a management process, including advising personnel on appropriate handling of authentication information', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.18', 'Access rights', 'Access rights to information and other associated assets shall be provisioned. reviewed, modified and removed in accordance with the organization\'s topic-specific policy on and rules for access control', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.18', 'Access rights', 'Access rights to information and other associated assets shall be provisioned. reviewed, modified and removed in accordance with the organizations topic-specific policy on and rules for access control', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.19', 'Information security in supplier relationships', 'Processes and procedures shall be defined and implemented to manage the information security risks associated with the use of suppliers products or services.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.20', 'Addressing information security within supplier agreements', 'Relevant information security requirements shall be established and agreed with each supplier based on the type of supplier relationship', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.21', 'Managing information security in the information and communication technology(ICT) supply chain', 'Processes and procedures shall be defined and implemented to manage the information security risks associated with the ICT products and services supply chain', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.22', 'Monitoring, review and change management of supplier services', 'The organization shall regularly monitor, review, evaluate and manage change in supplier information security practices and service delivery.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.23', 'Information security for use of cloud services', 'Processes for acquisition, use, management and exit from cloud services shall be established in accordance with the organization\'s information security requirements.', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.23', 'Information security for use of cloud services', 'Processes for acquisition, use, management and exit from cloud services shall be established in accordance with the organizations information security requirements.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.24', 'Information security incident management planning and preparation', 'The organization shall plan and prepare for managing information security incidents by defining, establishing and communicating information security incident management processes, roles and responsibilities.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.25', 'Assessment and decision on information security events', 'The organization shall assess information security events and decide if they are to be categorized as information security incidents.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.26', 'Response to information security incidents', 'Information security incidents shall be responded to in accordance with the documented procedures', 'system', NOW());
@@ -4372,20 +4371,20 @@ INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational contro
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.28', 'Collection of evidence', 'The organization shall establish and implement procedures for the identification, collection, acquisition and preservation of evidence related to information security events', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.29', 'Information security during disruption', 'The organization shall plan how to maintain information security at an appropriate level during disruption', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.30', 'ICT readiness for business continuity', 'ICT readiness shall be planned, implemented, maintained and tested based on business continuity objectives and ICT continuity requirements.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.31', 'Legal, statutory, regulatory and contractual requirements', 'Legal, statutory, regulatory and contractual requirements relevant to information security and the organization;s approach to meet these requirements shall be identified, documented and kept up to date.', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.31', 'Legal, statutory, regulatory and contractual requirements', 'Legal, statutory, regulatory and contractual requirements relevant to information security and the organizations approach to meet these requirements shall be identified, documented and kept up to date.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.32', 'Intellectual property rights', 'The organization shall implement appropriate procedures to protect intellectual property rights.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.33', 'Protection of records', 'Records shall be protected from loss, destruction, falsification, unauthorized access and unauthorized release.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.34', 'Privacy and protetion of personal identifiable information (PII)', 'The organization shall identify and meet the requirements regarding the preservation of privacy and protection of PII according to applicable laes and regulations and contractual requirements.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.35', 'Independent review of information security', 'The organization\'s approach to managing information security and its implementation including people, processes and technologies shall be reviewed independently at planned intervals, or when significant changes occur.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.36', 'Compliance with policies, rules and standards for information security', 'Compliance with the organization\'s information security policy, topic-specific policies, rules and standards shall be regularly reviewed.', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.35', 'Independent review of information security', 'The organizations approach to managing information security and its implementation including people, processes and technologies shall be reviewed independently at planned intervals, or when significant changes occur.', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.36', 'Compliance with policies, rules and standards for information security', 'Compliance with the organizations information security policy, topic-specific policies, rules and standards shall be regularly reviewed.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Organizational controls', '5.37', 'Documented operating procedures', 'Operating procedures for information processing facilities shall be documented and made available to personnel who need them.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.1', 'Screening', 'Background verification checks on all candidates to become personnel shall be carried out prior to joining the organization and on an ongoing basis taking into consideration applicable laws, regulations and ethics and be proportional to the business requirements, the classification of the information to be accessed and perceived risks.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.2', 'Terms and conditions of employment', 'The employment contractual agreements shall state the personnel\'s and the organization\'s responsibilities for information security.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.3', 'Information security awaremess education and training', 'Personnel of the organization and relevant interested parties shall receive appropriate information security awareness , education and training and regular updates of the organization\'s information security policy, topic-specific policies and procedures, as relevant for their job function.', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.2', 'Terms and conditions of employment', 'The employment contractual agreements shall state the personnels and the organizations responsibilities for information security.', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.3', 'Information security awaremess education and training', 'Personnel of the organization and relevant interested parties shall receive appropriate information security awareness , education and training and regular updates of the organizations information security policy, topic-specific policies and procedures, as relevant for their job function.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.4', 'Disciplinary process', 'A disciplinary process shall be formalized and communicated to take actions against personnel and toher relevant interested parties who have committed and information security policy violation.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.5', 'Responsibilities after termination or change of employment', 'Information security responsibilities and duties that remain valid after termination or change of employment shall be defined, enforced and communicated to relevant personnel and other interested parties.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.6', 'Condifentiality or non-disclosure agreements', 'Confidentiality or non-disclosure agreements reflecting the organization\'s needs for the protection of information shall be identified, documented, regularly reviewed and signed by personnel and other relevant interested parites.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.7', 'Remote working', 'Security measures shall be implemented when personnel are working remotely to protect information accessed, processed or stored outside the organization\'s premises.', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.6', 'Condifentiality or non-disclosure agreements', 'Confidentiality or non-disclosure agreements reflecting the organizations needs for the protection of information shall be identified, documented, regularly reviewed and signed by personnel and other relevant interested parites.', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.7', 'Remote working', 'Security measures shall be implemented when personnel are working remotely to protect information accessed, processed or stored outside the organizations premises.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'People controls', '6.8', 'Information security event reporting', 'The organization shall provide mecanism for personnel to report observed or suspected information security events through appropriate channels in a timely manner.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.1', 'Physical security perimeters', 'Security peimeters shall be defined and used to protect areas that contain information and other associated assets.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.2', 'Physical entry', 'Secure areas shall be protected by appropriate entry controls and access points.', 'system', NOW());
@@ -4396,7 +4395,7 @@ INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.7', 'Clear desk and clear screen', 'Clear desk rules for papers and removable storage media and clear screen rules for information processing facilities shall be defined and appropriately enforced.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.8', 'Equipment siting and protection', 'Equipment shall be sited securely and protected.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.9', 'Security of assets off-premises', 'Off-site assets shall be protected.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.10', 'Storage media', 'Storage media shall be managed through their life cycle of acquisition, use, transportation and disposal in accordance with the organization\'s classification scheme and handling requirements.', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.10', 'Storage media', 'Storage media shall be managed through their life cycle of acquisition, use, transportation and disposal in accordance with the organizations classification scheme and handling requirements.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.11', 'Supporting utilities', 'Information processing facilities shall be protected from power faliures and other disruptions caused by failures in supporting utilities.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.12', 'Cabling security', 'Cables carrying power, data or supporting information services shall be protected from interception, interference or damage.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Physical controls', '7.13', 'Equipment maintenance', 'Equipment shall be maintained correctly to ensure availability, integrity and confidentiality of information.', 'system', NOW());
@@ -4408,7 +4407,7 @@ INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological control
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.5', 'Secure authentication', 'Secure authentication technologies and procedures shall be implemented based on information access restrictions and the topic-specific policy on access control.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.6', 'Capacity management', 'The use of resources shall be monitored and adjusted in line with current and expected capacity requirements.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.7', 'Protection against malware', 'Protection against malware shall be implemented and supported by appropriate user awareness.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.8', 'Management of technical vulnerabilities', 'Information about technical vulnerabilities of information systems in use shall be obtained, the organization\'s exposure to such vulnerabilities shall be evaluated and appropriate measures shall be taken.', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.8', 'Management of technical vulnerabilities', 'Information about technical vulnerabilities of information systems in use shall be obtained, the organizations exposure to such vulnerabilities shall be evaluated and appropriate measures shall be taken.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.9', 'Configuration management', 'Configurations, including security configurations, of hardware, software, services and networks shall be established, documented, implemented, monitored and reviewed.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.10', 'Information deletion', 'Information stored in information systems, devices or in any other storage media shall be deleted when no longer required.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.11', 'Data masking', 'Data masking shall be used in accordance with the organisations topic-specific policy on access control and other related topic-specific policies, and business requirements, taking applicable legislation into consideration.', 'system', NOW());
@@ -4422,7 +4421,7 @@ INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological control
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.19', 'Installation of software on operational systems', 'Procedures and measures shall be implemented to securely manage software installation on operational systems.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.20', 'Network security', 'Networks and network devices shall be secured managed and controlled to protect information in systems and applications.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.21', 'Security of network services', 'Security mechanisms, service levels and service requirements of network services shall be identified, implemented and monitored.', 'system', NOW());
-INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.22', 'Segregation of networks', 'Groups of information services, users and information systems shall be segregated in the organization\'s networks', 'system', NOW());
+INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.22', 'Segregation of networks', 'Groups of information services, users and information systems shall be segregated in the organizations networks', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.23', 'Web filtering', 'Access to external websites shall be managed to reduce exposure to malicious content.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.24', 'Use of cryptography', 'Rules for the effective use of cryptography, including cryptographic key management, shall be defined and implemented.', 'system', NOW());
 INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.25', 'Secure development life cycle', 'Rules for secure development of software and systems shall be established and applied.', 'system', NOW());
@@ -4795,6 +4794,46 @@ CREATE TABLE `variable` (
 LOCK TABLES `variable` WRITE;
 /*!40000 ALTER TABLE `variable` DISABLE KEYS */;
 /*!40000 ALTER TABLE `variable` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vendors`
+--
+
+DROP TABLE IF EXISTS `vendors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vendors` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `critical` int(10) unsigned NOT NULL DEFAULT 0,
+  `high` int(10) unsigned NOT NULL DEFAULT 0,
+  `medium` int(10) unsigned NOT NULL DEFAULT 0,
+  `low` int(10) unsigned NOT NULL DEFAULT 0,
+  `none` int(10) unsigned NOT NULL DEFAULT 0,
+  `use` enum('y', 'n', '') NOT NULL DEFAULT 'n',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vendors`
+--
+
+LOCK TABLES `vendors` WRITE;
+/*!40000 ALTER TABLE `vendors` DISABLE KEYS */;
+INSERT INTO `vendors` VALUES (null, 'adobe', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'apple', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'canonical', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'cisco', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'google', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'microsoft', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'mozilla', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'redhat', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+/*!40000 ALTER TABLE `vendors` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
