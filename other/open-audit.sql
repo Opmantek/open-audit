@@ -1610,6 +1610,7 @@ CREATE TABLE `devices` (
   `location_longitude` float(10,6) NOT NULL DEFAULT '0.000000',
   `asset_number` varchar(50) NOT NULL DEFAULT '',
   `asset_tag` text NOT NULL,
+  `vm_vendor` varchar(50) NOT NULL DEFAULT ''
   `vm_server_name` varchar(150) NOT NULL DEFAULT '',
   `vm_device_id` int(10) unsigned DEFAULT NULL,
   `vm_group` varchar(150) NOT NULL DEFAULT '',

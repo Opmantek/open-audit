@@ -678,9 +678,15 @@ if (!$db->fieldExists('hw_cpe', 'devices')) {
   log_message('info', (string)$db->getLastQuery());
 }
 
-
 if (!$db->fieldExists('os_display_version', 'devices')) {
   $sql = "ALTER TABLE devices ADD os_display_version varchar(200) NOT NULL DEFAULT '' AFTER os_version";
+  $db->query($sql);
+  $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+  log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('vm_vendor', 'devices')) {
+  $sql = "ALTER TABLE devices ADD vm_vendor varchar(50) NOT NULL DEFAULT '' AFTER asset_tag";
   $db->query($sql);
   $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
   log_message('info', (string)$db->getLastQuery());
