@@ -392,7 +392,7 @@ window.onload = function () {
                         },';
                         echo "\n";
                     } else if ($key === 'icon') {
-                        $size = '40px';
+                        $size = '42px';
                         if ($GLOBALS['button'] === 'btn-xs') {
                             $size = '30px';
                         }
