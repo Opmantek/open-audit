@@ -121,6 +121,21 @@ class Logon extends Controller
         if (!$db->tableExists('auth') and intval($config->internal_version) < 20240822) {
             $alert = 'Active Directory and openLDAP logins will not work until the database has been upgraded.<br>Please logon with a <i>local</i> \'admin\' user, to upgrade the database.';
         }
+        if (!empty($config->feature_vulnerabilities) and $config->feature_vulnerabilities === 'y' and !empty($config->enterprise_binary)) {
+            $vulnerabilities = model('App\Models\VulnerabilitiesModel')->listAll();
+            if (empty($vulnerabilities)) {
+                if (php_uname('s') === 'Windows NT') {
+                    $command = "%comspec% /c start c:\\xampp\\php\\php.exe c:\\xampp\\htdocs\\open-audit\\index.php news execute vulnerabilities";
+                    pclose(popen($command, 'r'));
+                } else {
+                    log_message('debug', 'Requesting vulnerabilities');
+                    $command = 'php /usr/local/open-audit/public/index.php news execute vulnerabilities > /dev/null 2>&1 &';
+                    log_message('debug', $command);
+                    exec($command, $output);
+                }
+            }
+        }
+
         return view('logon', ['config' =>$config, 'methods' => $methods, 'alert' => $alert]);
     }
 
