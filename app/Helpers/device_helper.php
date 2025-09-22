@@ -1995,6 +1995,12 @@ function reset_icons($id = '')
             if (strripos($details->os_name, 'oracle') !== false) {
                 $details->icon = 'oracle';
             }
+            if (strripos($details->os_name, 'raspbian') !== false) {
+                $details->icon = 'debian';
+            }
+            if ((strripos($details->os_name, 'red hat') !== false) or (strripos($details->os_name, 'redhat') !== false)) {
+                $details->icon = 'redhat';
+            }
             if (strripos($details->os_name, 'slackware') !== false) {
                 $details->icon = 'slackware';
             }
@@ -2006,9 +2012,6 @@ function reset_icons($id = '')
             }
             if (strripos($details->os_name, 'suse') !== false) {
                 $details->icon = 'suse';
-            }
-            if ((strripos($details->os_name, 'red hat') !== false) or (strripos($details->os_name, 'redhat') !== false)) {
-                $details->icon = 'redhat';
             }
             if (strripos($details->os_name, 'ubuntu') !== false) {
                 $details->icon = 'ubuntu';
