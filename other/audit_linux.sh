@@ -567,6 +567,13 @@ fi
 if [ -z "$system_uuid" ] && [ -f "/sys/devices/virtual/dmi/id/product_uuid" ]; then
 	system_uuid=$(cat /sys/devices/virtual/dmi/id/product_uuid 2>/dev/null)
 fi
+if [ -z "$system_uuid" ]; then
+	system_uuid=$(cat /proc/cpuinfo 2>/dev/null | grep ^Serial | cut -d: -f2)
+fi
+if [ -z "$system_uuid" ]; then
+	system_uuid=$(cat /sys/firmware/devicetree/base/serial-number 2>/dev/null)
+fi
+
 
 # Get the hostname & domain
 system_domain=$(hostname -d 2>/dev/null | grep -v \(none\))
@@ -714,6 +721,10 @@ if [ "$system_os_family" == "debian" ] || [ "$system_os_family" == "Debian GNU/L
 	system_os_family="Debian"
 fi
 
+if [[ "$system_os_family" == *"Raspbian"* ]] || [[ "$system_os_family" == *"raspbian"* ]]; then
+	system_os_family="Raspbian"
+fi
+
 if [ "$system_os_family" == "ubuntu" ]; then
 	system_os_family="Ubuntu"
 fi
@@ -767,20 +778,22 @@ fi
 if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#" | head -1)
 fi
-
 if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		system_serial=$(lshal 2>/dev/null | grep "system.hardware.serial" | cut -d\' -f2)
 	fi
 fi
-
 if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	system_serial=$(cat /sys/class/dmi/id/product_serial 2>/dev/null)
 fi
-
 if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	# Ubiquiti
 	system_serial=$(grep serialno /proc/ubnthal/system.info 2>/dev/null | cut -d= -f2)
+fi
+
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
+	# Raspberry Pi
+	system_serial=$(cat /proc/cpuinfo 2>/dev/null | grep ^Serial | cut -d: -f2)
 fi
 
 # Get the System Model
@@ -803,6 +816,10 @@ fi
 if [ -z "$system_model" ]; then
 	# Ubiquiti #2 - for some $SHELL reason, this doesn't appear to work
 	system_model=$(info 2>/dev/null | grep Model | awk '{ print $2 }')
+fi
+if [ -z "$system_model" ]; then
+	# Raspberry Pi
+	system_model=$(cat /sys/firmware/devicetree/base/model 2>/dev/null)
 fi
 
 # get the systemd identifier
@@ -876,6 +893,9 @@ if [ -z "$system_form_factor" ]; then
 	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		system_form_factor=$(lshal | grep "system.chassis.type" | cut -d\' -f2)
 	fi
+fi
+if [ -z "$system_form_factor" ] && [[ "$system_model" = *"Raspberry Pi"* ]]; then
+	system_form_factor="Desktop"
 fi
 
 # Get OS bits
@@ -1203,6 +1223,9 @@ if [ -z $(echo "$skip_sections" | grep "bios,") ]; then
 
 	# Get the BIOS revision
 	bios_revision=$(dmidecode 2>/dev/null | grep "BIOS Revision" | cut -d: -f2)
+	if [ -z "$bios_revision" ]; then
+		bios_revision=$(cat /proc/cpuinfo 2>/dev/null | grep ^Revision | cut -d: -f2)
+	fi
 	bios_revision=$(trim "$bios_revision")
 
 	# Make the BIOS Description using the manufacturer - Firmware Rev
@@ -1232,6 +1255,8 @@ if [ -z $(echo "$skip_sections" | grep "bios,") ]; then
 		bios_date=$(cat /sys/devices/virtual/dmi/id/bios_date 2>/dev/null)
 	fi
 
+	bios_model=$(cat /proc/cpuinfo 2>/dev/null | grep ^Hardware | cut -d: -f2)
+
 	#'''''''''''''''''''''''''''''''''
 	#' Write to the audit file       '
 	#'''''''''''''''''''''''''''''''''
@@ -1242,6 +1267,7 @@ if [ -z $(echo "$skip_sections" | grep "bios,") ]; then
 		echo "		<item>"
 		echo "			<description>$(escape_xml "$bios_description")</description>"
 		echo "			<manufacturer>$(escape_xml "$bios_manufacturer")</manufacturer>"
+		echo "			<model>$(escape_xml "$bios_model")</model>"
 		echo "			<serial>$(escape_xml "$bios_serial")</serial>"
 		echo "			<smversion>$(escape_xml "$bios_smversion")</smversion>"
 		echo "			<version>$(escape_xml "$bios_version")</version>"
@@ -1261,20 +1287,24 @@ if [ -z $(echo "$skip_sections" | grep "processor,") ]; then
 		echo "Processor Info"
 	fi
 
-	# Get processor socket type
-	processor_socket=$(dmidecode -t processor 2>/dev/null | grep Upgrade | head -n1 | cut -d: -f2 2>/dev/null)
-
-	# Get processor description
+	# Description
 	processor_description=$(grep "model name" /proc/cpuinfo | head -n1 | cut -d: -f2)
 	if [ -z "$processor_description" ]; then
 		processor_description=$(grep "system type" /proc/cpuinfo | head -n1 | cut -d: -f2)
 	fi
-	# Get processor speed
+
+	# Socket
+	processor_socket=$(dmidecode -t processor 2>/dev/null | grep Upgrade | head -n1 | cut -d: -f2 2>/dev/null)
+
+	# Speed
 	processor_speed=$(grep "cpu MHz" /proc/cpuinfo | head -n1 | cut -d: -f2 | awk '{printf("%d\n",$1 + 0.5)}')
 	if [ -z "$processor_speed" ]; then
 		processor_speed=$(grep "CPUClock" /proc/cpuinfo | head -n1 | cut -d: -f2 | awk '{printf("%d\n",$1 + 0.5)}')
 	fi
-	# Get processor manufacturer
+	if [ -z "$processor_speed" ]; then
+		processor_speed=$(lscpu 2>/dev/null | grep "^CPU max MHz" | cut -d: -f2 | cut -d. -f1 | awk '{print $1}')
+	fi
+	# Manufacturer
 	processor_manufacturer=$(grep vendor_id /proc/cpuinfo | head -n1 | cut -d: -f2)
 
 	if [ "$processor_socket" = "<OUT OF SPEC>" ]; then
@@ -1284,7 +1314,7 @@ if [ -z $(echo "$skip_sections" | grep "processor,") ]; then
 	if [ -z "$processor_description" ] && [ -f "/proc/ubnthal/system.info" ]; then
 		# Ubiquiti device
 		processor_description=$(grep "system type" /proc/cpuinfo 2>/dev/null | head -n1 | cut -d: -f2)
-		if [ "$processor_description" = *"UBNT"* ]; then
+		if [[ "$processor_description" = *"UBNT"* ]]; then
 			processor_description=""
 			processor_description=$(grep "cpu model" /proc/cpuinfo 2>/dev/null | head -n1 | cut -d: -f2)
 		fi
@@ -1297,29 +1327,31 @@ if [ -z $(echo "$skip_sections" | grep "processor,") ]; then
 		system_pc_cores_x_processor=$(grep processor /proc/cpuinfo | count)
 		system_pc_threads_x_processor=$(grep processor /proc/cpuinfo | count)
 		system_pc_physical_processors=1
+	fi
 
-		if [ "$processor_description" = *"ARM"* ]; then
-			processor_socket="arm"
-		fi
-		if [ "$processor_description" = *"Arm"* ]; then
-			processor_socket="arm"
-		fi
-		if [ "$processor_description" = *"MIPS"* ] || [ "$isa" = *"mips" ]; then
-			processor_socket="mips"
-		fi
-		if [ "$hardware" = *"Broadcom"* ]; then
-			processor_manufacturer="Broadcom"
-		fi
-		if [ "$processor_description" = *"Qualcomm"* ]; then
-			processor_manufacturer="Qualcomm"
-		fi
-		if [ "$processor_description" = *"Cavium"* ]; then
-			processor_manufacturer="Cavium"
-		fi
+	if [[ "$processor_description" = *"ARM"* ]]; then
+		processor_socket="arm"
+	fi
+	if [[ "$processor_description" = *"Arm"* ]]; then
+		processor_socket="arm"
+	fi
+	if [[ "$processor_description" = *"MIPS"* ]] || [ "$isa" = *"mips" ]; then
+		processor_socket="mips"
+	fi
+	if [[ "$hardware" = *"Broadcom"* ]]; then
+		processor_manufacturer="Broadcom"
+	fi
+	if [[ "$processor_description" = *"Qualcomm"* ]]; then
+		processor_manufacturer="Qualcomm"
+	fi
+	if [[ "$processor_description" = *"Cavium"* ]]; then
+		processor_manufacturer="Cavium"
 	fi
 
 	total_cores=$(( $system_pc_cores_x_processor * $system_pc_physical_processors ))
 	total_logical_processors=$(( $system_pc_threads_x_processor * $system_pc_physical_processors ))
+
+	processor_architecture=$(lscpu 2>/dev/null | grep ^Architecture | awk '{print $2}')
 
 	#'''''''''''''''''''''''''''''''''
 	#' Write to the audit file       '
@@ -1331,6 +1363,7 @@ if [ -z $(echo "$skip_sections" | grep "processor,") ]; then
 	echo "			<core_count>$(escape_xml "$total_cores")</core_count>"
 	echo "			<logical_count>$(escape_xml "$total_logical_processors")</logical_count>"
 	echo "			<socket>$(escape_xml "$processor_socket")</socket>"
+	echo "			<architecture>$(escape_xml "$processor_architecture")</architecture>"
 	echo "			<description>$(escape_xml "$processor_description")</description>"
 	echo "			<speed>$(escape_xml "$processor_speed")</speed>"
 	echo "			<manufacturer>$(escape_xml "$processor_manufacturer")</manufacturer>"
@@ -1820,13 +1853,13 @@ if [ -z $(echo "$skip_sections" | grep "network,") ]; then
 
 			net_index=$(cat /sys/class/net/$net_card_id/ifindex)
 
-			if [ "$net_card_pci" = 'virtual' ]; then
+			if [ "$net_card_pci" = "virtual" ]; then
 				net_card_model="Virtual Interface"
 				net_card_manufacturer="Linux"
 			elif [ "$(which lspci 2>/dev/null)" != "" ]; then
 				net_card_model=$(lspci -vms "$net_card_pci" | grep -v "$net_card_pci" | grep ^Device | cut -d: -f2 | cut -c2-)
 				net_card_manufacturer=$(lspci -vms "$net_card_pci" | grep ^Vendor | cut -d: -f2 | cut -c2-)
-			elif [ "$system_model" = *"VMware"* ]; then
+			elif [[ "$system_model" = *"VMware"* ]]; then
 				net_card_model="PCI bridge"
 				net_card_manufacturer="VMware"
 			else
@@ -2134,6 +2167,9 @@ if [ -z $(echo "$skip_sections" | grep "disk,") ]; then
 				hard_drive_model=$(lsblk -lbndo MODEL /dev/"$disk")
 			fi
 			hard_drive_serial=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_SERIAL_SHORT= | cut -d= -f2)
+			if [ -z "$hard_drive_serial" ]; then
+				hard_drive_serial=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_SERIAL= | cut -d= -f2)
+			fi
 			hard_drive_size=$(lsblk -lbndo SIZE /dev/"$disk")
 			if [ "$hard_drive_size" -gt 1048576 ]; then
 				hard_drive_size=$((hard_drive_size / 1024 / 1024))
@@ -2872,16 +2908,19 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 	# We take versions like 1:2.38.1-5+deb12u3 and make them 2.38.1
 	# The entire canonical version is now stored in version_raw
 
+
+	IFS="$NEWLINEIFS"
 	case $system_os_family in
 			'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
+				# https://serverfault.com/questions/604541/debian-packages-version-convention
 				# dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" | sed -e 's/\&.*]]/]]/' >> "$xml_file"
-				for package in $(dpky-query --list | grep ^ii); do
+				for package in $(dpkg-query --list | grep ^ii); do
 					name=$(echo "$package" | awk '{print $2}')
 					version=$(echo "$package" | awk '{print $3}' | cut -d: -f2 | cut -d- -f1 | cut -d+ -f1 | cut -d~ -f1)
 					version_raw=version=$(echo "$package" | awk '{print $3}')
 					description=$(echo "$package" | awk '{print $5}')
 					echo "		<item>" >> "$xml_file"
-					echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+					echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
 					echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
 					echo "			<version_raw>$(escape_xml $version_raw)</version_raw>" >> "$xml_file"
 					echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
@@ -2896,7 +2935,7 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 					version_raw=$(echo "$package" | awk '{print $3}')
 					url=$(echo "$package" | awk '{print $4}')
 					echo "		<item>" >> "$xml_file"
-					echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+					echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
 					echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
 					echo "			<version_raw>$(escape_xml $version_raw)</version_raw>" >> "$xml_file"
 					echo "			<url>$(url $description)</url>" >> "$xml_file"
@@ -4206,7 +4245,7 @@ if [ -z $(echo "$skip_sections" | grep "netstat,") ]; then
 		if [ "$program" != "LISTEN" ]; then
 			program=$(echo "$program" | cut -d\/ -f2)
 		else
-			if [ $(echo "$line" | awk '{print $7}' | cut -d: -f1) = 'users' ]; then
+			if [ $(echo "$line" | awk '{print $7}' | cut -d: -f1) = "users" ]; then
 				program=$(echo "$line" | awk '{print $7}' | cut -d\" -f2)
 			else
 				program=$(echo "$line" | awk '{print $7}' | cut -d\/ -f2)
