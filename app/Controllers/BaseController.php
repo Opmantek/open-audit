@@ -77,6 +77,7 @@ abstract class BaseController extends Controller
     public $summariesModel;
     public $user;
     public $usersModel;
+    public $vulnerabilitiesModel;
 
     /**
      * @return void

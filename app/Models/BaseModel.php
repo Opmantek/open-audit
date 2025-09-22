@@ -26,13 +26,14 @@ class BaseModel extends Model
      * @param  object|null  $data   The object of data attributes
      * @return object
      */
-    public function createFieldData(string $table = '', object $data = null)
+    public function createFieldData(string $table, object $data)
     {
         $db = db_connect();
         $insert_data = new stdClass();
         $instance = & get_instance();
 
-        $dictionary = $instance->{strtolower($table) . 'Model'}->dictionary();
+        #$dictionary = @$instance->{strtolower($table) . 'Model'}->dictionary();
+        $dictionary = model('App\Models\\' . ucfirst($table) . 'Model')->dictionary();
 
         # Our MUST have attributes
         foreach ($dictionary->attributes->create as $field) {
@@ -71,7 +72,7 @@ class BaseModel extends Model
             }
         }
         if ($db->fieldExists('edited_date', $table)) {
-            $insert_data->edited_date = $instance->config->timestamp;
+            $insert_data->edited_date = (!empty($instance->config->timestamp)) ? $instance->config->timestamp : date('Y-m-d hh:ii:ss');
         }
         return $insert_data;
     }
@@ -84,7 +85,7 @@ class BaseModel extends Model
      * @param  object|null  $data   The object of data attributes
      * @return object
      */
-    public function updateFieldData(string $table = '', object $data = null)
+    public function updateFieldData(string $table, object $data)
     {
         $db = db_connect();
         $update_data = new stdClass();

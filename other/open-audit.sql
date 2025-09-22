@@ -4825,14 +4825,13 @@ CREATE TABLE `vendors` (
 
 LOCK TABLES `vendors` WRITE;
 /*!40000 ALTER TABLE `vendors` DISABLE KEYS */;
-INSERT INTO `vendors` VALUES (null, 'adobe', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'apple', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'canonical', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'cisco', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'google', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'microsoft', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'mozilla', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'redhat', 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'adobe', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'apple', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'cisco', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'google', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'microsoft', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'mozilla', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
+INSERT INTO `vendors` VALUES (null, 'redhat', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `vendors` ENABLE KEYS */;
 UNLOCK TABLES;
 

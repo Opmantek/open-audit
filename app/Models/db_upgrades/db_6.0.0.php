@@ -788,6 +788,41 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "INSERT INTO `vendors` VALUES (null, 'adobe', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `vendors` VALUES (null, 'apple', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `vendors` VALUES (null, 'cisco', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `vendors` VALUES (null, 'google', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `vendors` VALUES (null, 'microsoft', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `vendors` VALUES (null, 'mozilla', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `vendors` VALUES (null, 'redhat', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 if (!$db->fieldExists('display_version', 'windows')) {
   $sql = "ALTER TABLE windows ADD display_version varchar(20) NOT NULL DEFAULT '' AFTER version";
   $db->query($sql);
