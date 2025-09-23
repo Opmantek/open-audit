@@ -208,7 +208,7 @@ CREATE TABLE `arp` (
   `ip` varchar(45) NOT NULL DEFAULT '',
   `interface` varchar(45) NOT NULL DEFAULT '',
   `interface_id` int(10) unsigned DEFAULT NULL,
-  `vlan` varchar(100) NOT NULL DEFAULT '',
+  `vlan` varchar(200) NOT NULL DEFAULT '',
   `vlan_id` int(10) unsigned DEFAULT NULL,
   `manufacturer` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -1609,7 +1609,7 @@ CREATE TABLE `devices` (
   `location_longitude` float(10,6) NOT NULL DEFAULT '0.000000',
   `asset_number` varchar(50) NOT NULL DEFAULT '',
   `asset_tag` text NOT NULL,
-  `vm_vendor` varchar(50) NOT NULL DEFAULT ''
+  `vm_vendor` varchar(50) NOT NULL DEFAULT '',
   `vm_server_name` varchar(150) NOT NULL DEFAULT '',
   `vm_device_id` int(10) unsigned DEFAULT NULL,
   `vm_group` varchar(150) NOT NULL DEFAULT '',
@@ -4782,7 +4782,7 @@ CREATE TABLE `variable` (
   `value` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
-  KEY `device_id_name` (`device_id`, `name`),
+  KEY `device_id_name` (`device_id`,`name`),
   CONSTRAINT `variable_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -4807,12 +4807,12 @@ CREATE TABLE `vendors` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `critical` int(10) unsigned NOT NULL DEFAULT 0,
-  `high` int(10) unsigned NOT NULL DEFAULT 0,
-  `medium` int(10) unsigned NOT NULL DEFAULT 0,
-  `low` int(10) unsigned NOT NULL DEFAULT 0,
-  `none` int(10) unsigned NOT NULL DEFAULT 0,
-  `use` enum('y', 'n', '') NOT NULL DEFAULT 'n',
+  `critical` int(10) unsigned NOT NULL DEFAULT '0',
+  `high` int(10) unsigned NOT NULL DEFAULT '0',
+  `medium` int(10) unsigned NOT NULL DEFAULT '0',
+  `low` int(10) unsigned NOT NULL DEFAULT '0',
+  `none` int(10) unsigned NOT NULL DEFAULT '0',
+  `use` enum('y','n','') NOT NULL DEFAULT 'n',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -4955,7 +4955,8 @@ CREATE TABLE `vulnerabilities` (
   KEY `cve` (`cve`),
   KEY `vendor` (`vendor`),
   KEY `published_date` (`published_date`),
-  KEY `products` (`products`)
+  KEY `cvevendor` (`cve`,`vendor`),
+  KEY `vendorbaseseverity` (`vendor`,`base_severity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4978,9 +4979,9 @@ DROP TABLE IF EXISTS `vulnerabilities_cache`;
 
 CREATE TABLE `vulnerabilities_cache` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `vulnerability_id` int(10) unsigned NOT NULL DEFAULT 1,
-  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
-  `count` int(10) unsigned NOT NULL DEFAULT 0,
+  `vulnerability_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `count` int(10) unsigned NOT NULL DEFAULT '0',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `vulnerabilities_cache_org_id` (`org_id`),

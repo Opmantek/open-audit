@@ -740,7 +740,8 @@ $sql = "CREATE TABLE `vulnerabilities` (
   KEY `cve` (`cve`),
   KEY `vendor` (`vendor`),
   KEY `published_date` (`published_date`),
-  KEY `products` (`products`)
+  KEY `cvevendor` (`cve`,`vendor`),
+  KEY `vendorbaseseverity` (`vendor`,`base_severity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
