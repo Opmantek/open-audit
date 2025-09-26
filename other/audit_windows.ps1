@@ -953,25 +953,29 @@ if ($debug -gt 0) {
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.vm = @()
 $item = @{}
-Get-VM | ForEach {
-  Clear-Variable -name item
-  $item = @{}
-  $item.name = $_.VMName
-  $item.guest_device_id = $_.Id
-  $item.vm_ident = $_.Id
-  $item.type = "Hyper-V"
-  $item.uuid = ""
-  $item.vm_group = ""
-  $item.config_file = $_.ConfigurationLocation
-  $item.memory_count = [Math]::Round($_.MemoryStartup / 1024 / 1024)
-  $item.cpu_count = $_.ProcessorCount
-  $item.status = $_.State
-  $item.icon = ""
+try {
+    Get-VM | ForEach {
+      Clear-Variable -name item
+      $item = @{}
+      $item.name = $_.VMName
+      $item.guest_device_id = $_.Id
+      $item.vm_ident = $_.Id
+      $item.type = "Hyper-V"
+      $item.uuid = ""
+      $item.vm_group = ""
+      $item.config_file = $_.ConfigurationLocation
+      $item.memory_count = [Math]::Round($_.MemoryStartup / 1024 / 1024)
+      $item.cpu_count = $_.ProcessorCount
+      $item.status = $_.State
+      $item.icon = ""
 
-  $uuid = Get-VM -Name $_.VMName | Select-Object Name,@{Name="BIOSGUID";Expression={(Get-WmiObject -ComputerName $_.ComputerName -Namespace "root\virtualization\v2" -Class Msvm_VirtualSystemSettingData -Property BIOSGUID -Filter ("InstanceID = 'Microsoft:{0}'" -f $_.VMId.Guid)).BIOSGUID}}
-  $item.uuid = $uuid.BIOSGUID
+      $uuid = Get-VM -Name $_.VMName | Select-Object Name,@{Name="BIOSGUID";Expression={(Get-WmiObject -ComputerName $_.ComputerName -Namespace "root\virtualization\v2" -Class Msvm_VirtualSystemSettingData -Property BIOSGUID -Filter ("InstanceID = 'Microsoft:{0}'" -f $_.VMId.Guid)).BIOSGUID}}
+      $item.uuid = $uuid.BIOSGUID
 
-  $result.vm += $item
+      $result.vm += $item
+    }
+} catch {
+    Write-Host "Get-VM not installed, continuing."
 }
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
 if ($debug -gt 0) {
