@@ -63,6 +63,7 @@ function manufacturerLogo (string $manufacturer = '')
     if ($logo === '' and mb_stripos($manufacturer, 'PCS Systemtechnik') !== false) { $logo = 'pcs'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Pegatron') !== false) { $logo = 'pegatron'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Raritan') !== false) { $logo = 'raritan'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Raspberry') !== false) { $logo = 'raspberry'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Red Hat') !== false) { $logo = 'redhat'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Ricoh') !== false) { $logo = 'ricoh'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Samsung') !== false) { $logo = 'samsung'; }
