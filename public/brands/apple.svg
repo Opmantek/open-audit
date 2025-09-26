@@ -1,1 +1,41 @@
-<svg viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M291.813 84.366c18.398-24.248 43.974-24.366 43.974-24.366s3.804 22.797-14.472 44.758c-19.515 23.45-41.697 19.613-41.697 19.613s-4.165-18.442 12.195-40.005zm-9.855 55.974c9.465 0 27.03-13.01 49.894-13.01 39.357 0 54.84 28.005 54.84 28.005s-30.282 15.482-30.282 53.049c0 42.379 37.723 56.985 37.723 56.985s-26.37 74.22-61.988 74.22c-16.359 0-29.077-11.024-46.314-11.024-17.565 0-34.996 11.435-46.35 11.435-32.524.001-73.614-70.405-73.614-126.999 0-55.681 34.78-84.891 67.402-84.891 21.207 0 37.664 12.23 48.689 12.23z" fill="#737373"/></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 400 300"
+   fill-rule="evenodd"
+   clip-rule="evenodd"
+   version="1.1"
+   id="svg2904"
+   sodipodi:docname="apple.svg"
+   width="400"
+   height="300"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2908" />
+  <sodipodi:namedview
+     id="namedview2906"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="2.105"
+     inkscape:cx="203.80048"
+     inkscape:cy="148.45606"
+     inkscape:window-width="1866"
+     inkscape:window-height="1011"
+     inkscape:window-x="54"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2904" />
+  <path
+     d="M 211.813,34.366 C 230.211,10.118 255.787,10 255.787,10 c 0,0 3.804,22.797 -14.472,44.758 -19.515,23.45 -41.697,19.613 -41.697,19.613 0,0 -4.165,-18.442 12.195,-40.005 z m -9.855,55.974 c 9.465,0 27.03,-13.01 49.894,-13.01 39.357,0 54.84,28.005 54.84,28.005 0,0 -30.282,15.482 -30.282,53.049 0,42.379 37.723,56.985 37.723,56.985 0,0 -26.37,74.22 -61.988,74.22 -16.359,0 -29.077,-11.024 -46.314,-11.024 -17.565,0 -34.996,11.435 -46.35,11.435 -32.524,10e-4 -73.613999,-70.405 -73.613999,-126.999 0,-55.681 34.779999,-84.891 67.401999,-84.891 21.207,0 37.664,12.23 48.689,12.23 z"
+     fill="#737373"
+     id="path2902" />
+</svg>
