@@ -2903,6 +2903,19 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 			echo "		</item>" >> "$xml_file"
 		fi
 	done
+	# Detect Joomla
+	for file in $(find / -path "*language/en-GB/langmetadata.xml" 2>/dev/null); do
+		version=$(grep -F "<version>" "$file" | cut -d\> -f2 | cut -d\< -f1)
+		if [ -n "$version" ]; then
+			file=$(echo "$file" | sed "s/\/language\/en-GB\/langmetadata\.xml//")
+			echo "		<item>" >> "$xml_file"
+			echo "			<name>Joomla</name>" >> "$xml_file"
+			echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+			echo "			<install_directory>$(escape_xml $file)</install_directory>" >> "$xml_file"
+			echo "		</item>" >> "$xml_file"
+		fi
+	done
+
 
 	# Note the new parsing for Debian and Redhat based distro's.
 	# We take versions like 1:2.38.1-5+deb12u3 and make them 2.38.1
