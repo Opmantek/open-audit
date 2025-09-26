@@ -2,6 +2,8 @@
 
 $output .= "Upgrade database to 6.0.0 commenced.\n\n";
 
+helper('device');
+
 if (!$db->fieldExists('version_raw', 'software')) {
     $sql = "ALTER TABLE `software` ADD `version_raw` varchar(255) NOT NULL DEFAULT '' AFTER `version_padded`";
     $db->query($sql);
@@ -870,6 +872,18 @@ if (empty(config('Openaudit')->feature_vulnerabilities_url)) {
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
+
+// Set ALL os_cpe
+$sql = "SELECT id, type, sysDescr, model, manufacturer, os_name, os_family, os_group, os_version, os_display_version FROM devices";
+$result = $db->query($sql)->getResult();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+foreach ($result as $device) {
+    $os_cpe = cpe_create($device);
+    $sql = "UPDATE devices SET os_cpe = ? WHERE id = ?";
+    $db->query($sql, [$os_cpe, $device->id]);
+}
+
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20250615' WHERE `name` = 'internal_version'";
