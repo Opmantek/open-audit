@@ -30,6 +30,10 @@ if (!empty($meta->filter)) {
         $urlFilter .= '&' . $item->name . '=' . $item->operator . $item->value;
     }
 }
+$disabled = 'disabled';
+if ($update) {
+    $disabled = '';
+} 
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -59,10 +63,6 @@ if (!empty($meta->filter)) {
                                     if (!empty($included['indb'][$key]->use) and $included['indb'][$key]->use === 'y') {
                                         $checked = 'checked';
                                     }
-                                    $disabled = 'disabled';
-                                    if ($update) {
-                                        $disabled = '';
-                                    } 
                                 ?>
                                 <tr>
                                     <td class="text-left"><a href="<?= base_url() ?>index.php/vulnerabilities?vulnerabilities.vendor=<?= $key ?>"><?= $key ?></a></td>
