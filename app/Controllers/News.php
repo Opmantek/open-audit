@@ -42,8 +42,8 @@ class News extends BaseController
      */
     public function executeAll(string $action = 'news')
     {
-	set_time_limit(600);
-	$session = \Config\Services::session();
+        set_time_limit(600);
+        $session = \Config\Services::session();
         $user = '';
         if (!empty($session->get('user_id'))) {
             $usersModel = model('UsersModel');
@@ -54,9 +54,9 @@ class News extends BaseController
             log_message('info', 'ACCESS:news:executeAll::' . $user);
         } else if ($action === 'vulnerabilities') {
             log_message('info', 'ACCESS:news:executeAllVulnerabilities::' . $user);
-	} else if ($action === 'vendors') {
-	    log_message('info', 'ACCESS:news:executeAllVendors::' . $user);
-	} else {
+        } else if ($action === 'vendors') {
+            log_message('info', 'ACCESS:news:executeAllVendors::' . $user);
+        } else {
             log_message('info', 'ACCESS:news:executeAll::' . $user);
             log_message('warning', 'Unknown action of ' . $action . ' used in News::executeAll.');
             return redirect()->route('home');
@@ -66,7 +66,7 @@ class News extends BaseController
         if (!empty($_POST['data']['attributes']['cve']) and !empty($id) and is_int($id)) {
             return redirect()->route('vulnerabilitiesRead', [$id]);
         }
-	return redirect()->route($action . 'Collection');
+        return redirect()->route($action . 'Collection');
     }
 
     public function execute($id)
