@@ -90,7 +90,7 @@ class Collections extends BaseController
         if (($this->resp->meta->collection !== 'devices' and $this->resp->meta->collection !== 'components' and $this->resp->meta->collection !== 'vulnerabilities') or $this->resp->meta->format !== 'html') {
             $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
             $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
-            $this->resp->meta->filtered = count($this->resp->data);
+            $this->resp->meta->filtered = (!empty($this->resp->data)) ? count($this->resp->data) : 0;
         }
 
         if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['warning']) and $this->resp->meta->format === 'html') {
@@ -168,7 +168,7 @@ class Collections extends BaseController
         if ($this->resp->meta->format !== 'html') {
             if (!empty($GLOBALS['collection'])) {
                 // This is dataTables response
-                $this->resp->recordsTotal = count($this->resp->data);
+                $this->resp->recordsTotal = (!empty($this->resp->data)) ? count($this->resp->data) : 0;
                 $this->resp->recordsFiltered = 0;
                 if (!empty($GLOBALS['recordsFiltered'])) {
                     $this->resp->recordsFiltered = $GLOBALS['recordsFiltered'];
