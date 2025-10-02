@@ -227,55 +227,55 @@ class NewsModel extends BaseModel
         if (!is_array($body) and $action !== 'vendors') {
         log_message('error', 'Body returned but body not an array. Body is a ' . gettype($body));
             return null;
-    }
-    if (!empty($body) and $action === 'vendors') {
-        $body = (array)$body;
-    }
-    if (empty($body)) {
-        log_message('debug', 'No ' . $action . ' articles returned.');
-        return null;
-    }
-    log_message('debug', count($body) . ' news articles returned.');
-    if ($action !== 'vulnerabilities' and $action !== 'vendors') {
-        foreach ($body as $news) {
-            if (empty($news)) {
-                log_message('info', 'No news article populated.');
-                continue;
+        }
+        if (!empty($body) and $action === 'vendors') {
+            $body = (array)$body;
+        }
+        if (empty($body)) {
+            log_message('debug', 'No ' . $action . ' articles returned.');
+            return null;
+        }
+        log_message('debug', count($body) . ' news articles returned.');
+        if ($action !== 'vulnerabilities' and $action !== 'vendors') {
+            foreach ($body as $news) {
+                if (empty($news)) {
+                    log_message('info', 'No news article populated.');
+                    continue;
+                }
+                $news->name = !empty($news->name) ? $news->name : '';
+                $news->short = !empty($news->short) ? $news->short : '';
+                $news->description = !empty($news->description) ? $news->description : '';
+                $news->type = !empty($news->type) ? $news->type : '';
+                $news->body = !empty($news->body) ? $news->body : '';
+                $news->published = !empty($news->published) ? $news->published : '';
+                $news->link = !empty($news->link) ? $news->link : '';
+                $news->image = !empty($news->image) ? $news->image : '';
+                $news->expires = !empty($news->expires) ? $news->expires : '2100-01-01';
+                $news->alert_style = !empty($news->alert_style) ? $news->alert_style : 'primary';
+                $news->version = !empty($news->version) ? $news->version : '';
+                if (empty($body)) {
+                    return true;
+                }
+                $sql = "SELECT COUNT(id) AS `count` FROM news WHERE name = ?";
+                $count = $this->db->query($sql, [$news->name])->getResult()[0]->count;
+                $count = intval($count);
+                if ($count === 0) {
+                    // This is a new article, store it
+                    #$sql = "INSERT INTO news VALUES (null, name, short, description, type, body, published, link, image, requested, expires, alert_style, version, read, actioned, actioned_by, actioned_date)";
+                    $sql = "INSERT INTO news VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 'n', 'n', '', '2001-01-01')";
+                    $this->db->query($sql, [$news->name, $news->short, $news->description, $news->type, $news->body, $news->published, $news->link, $news->image, $news->expires, $news->alert_style, $news->version]);
+                }
             }
-            $news->name = !empty($news->name) ? $news->name : '';
-            $news->short = !empty($news->short) ? $news->short : '';
-            $news->description = !empty($news->description) ? $news->description : '';
-            $news->type = !empty($news->type) ? $news->type : '';
-            $news->body = !empty($news->body) ? $news->body : '';
-            $news->published = !empty($news->published) ? $news->published : '';
-            $news->link = !empty($news->link) ? $news->link : '';
-            $news->image = !empty($news->image) ? $news->image : '';
-            $news->expires = !empty($news->expires) ? $news->expires : '2100-01-01';
-            $news->alert_style = !empty($news->alert_style) ? $news->alert_style : 'primary';
-            $news->version = !empty($news->version) ? $news->version : '';
-            if (empty($body)) {
-                return true;
-            }
-            $sql = "SELECT COUNT(id) AS `count` FROM news WHERE name = ?";
-            $count = $this->db->query($sql, [$news->name])->getResult()[0]->count;
-            $count = intval($count);
-            if ($count === 0) {
-                // This is a new article, store it
-                #$sql = "INSERT INTO news VALUES (null, name, short, description, type, body, published, link, image, requested, expires, alert_style, version, read, actioned, actioned_by, actioned_date)";
-                $sql = "INSERT INTO news VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 'n', 'n', '', '2001-01-01')";
-                $this->db->query($sql, [$news->name, $news->short, $news->description, $news->type, $news->body, $news->published, $news->link, $news->image, $news->expires, $news->alert_style, $news->version]);
+        } else if ($action === 'vulnerabilities') {
+                foreach ($body as $vuln) {
+                    $id = model('App\Models\VulnerabilitiesModel')->create($vuln->attributes);
+                }
+        } else if ($action === 'vendors') {
+            foreach ($body as $key => $value) {
+                $value->name = $key;
+                $id = model('App\Models\VendorsModel')->upsert($value);
             }
         }
-    } else if ($action === 'vulnerabilities') {
-            foreach ($body as $vuln) {
-                $id = model('App\Models\VulnerabilitiesModel')->create($vuln->attributes);
-            }
-    } else if ($action === 'vendors') {
-        foreach ($body as $key => $value) {
-            $value->name = $key;
-            $id = model('App\Models\VendorsModel')->upsert($value);
-        }
-    }
         return $id;
     }
 
