@@ -110,7 +110,7 @@ if (!empty($config->servers)) {
         <nav class="navbar navbar-expand-md">
             <div class="container-fluid">
                 <a class="navbar-brand" style="color: white;" href="<?= $homepage ?>">
-                    <img class="rounded-circle border border-white border-0" style="width:25px; height: 25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Logo">
+                    <img class="rounded-circle border border-white border-0" style="width:25px; height: 25px; margin-right:6px;" src="<?= base_url('images/Open-AudIT.svg') ?>" alt="Open-AudIT Logo">
                     <?= $title . "\n" ?>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
@@ -643,12 +643,12 @@ if (!empty($config->modules)) {
                     </div>
 
                     <div class="col-6 clearfix text-end" style="padding-bottom: 2px; padding-top: 10px;">
-                        <form class="float-end" method="post" action="<?= url_to('searchCreate') ?>">
+                        <form class="float-end" method="post" action="<?= url_to('searchCreate') ?>" role="search">
                             <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
                             <div class="btn-group" role="group">
                                 <input type="hidden" name="data[access_token]" value="<?= $meta->access_token; ?>">
-                                <label style="padding-top:5px;">Search&nbsp;</label>
-                                <input type="text"   name="data[attributes][value]" class="form-control form-control-sm" style="border: 1px solid #adb5bd" placeholder="Device Name or IP">
+                                <label style="padding-top:5px;" id="searchLabel"><?= __('Search') ?>&nbsp;</label>
+                                <input type="text"   name="data[attributes][value]" aria-labelledby="searchLabel" class="form-control form-control-sm" style="border: 1px solid #adb5bd" placeholder="Device Name or IP">
                                 <input type="hidden" name="data[attributes][tables]"  value='["devices"]'>
                                 <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","domain","dns_hostname","dns_domain","sysName"]'>
                                 <button class="btn btn-sm btn-outline-secondary" type="submit" title="Submit"><span class="fa fa-search" title="<?= __('Search') ?>"></span></button>

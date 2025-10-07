@@ -83,7 +83,7 @@ if (!empty($meta->properties) and is_array($meta->properties)) {
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button c_change_primary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down text-primary"></span></button>
+                                <button class="btn btn-outline-secondary panel-button c_change_primary" aria-label="Click to dropdown" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down text-primary"></span></button>
                             </div>
                         </div>
                     </div>
@@ -141,7 +141,7 @@ if (!empty($meta->properties) and is_array($meta->properties)) {
                                         if ($key !== 'audit_status' and $key !== 'icon' and $key !== 'id' and $key !== 'delete' and $key !== 'update') {
                                             echo'<hr><input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTableSearchField" placeholder="Search ' . collection_column_name(str_replace('ip__', '', $key)) . '">';
                                         } else if ($key === 'update') {
-                                            echo "<hr><button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"margin-left:5em; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></button>\n";
+                                            echo "<hr><button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"margin-left:5em; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\" title=\"Bulk Edit\" id=\"bulkEditButton\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></button>\n";
                                             echo "<input aria-label='" . __('Select All') . "' type=\"checkbox\" name=\"select_all\" id=\"select_all\">\n";
                                         } else {
                                             echo '<hr style="padding-bottom:31px;">';
@@ -399,7 +399,7 @@ window.onload = function () {
                         echo '{ data: \'attributes.icon\',
                             render: function (icon) {
                                 return icon
-                                    ? \'<img style="width:' . $size . ';" src="' . base_url() . 'device_images/\' + icon + \'.svg"/>\'
+                                    ? \'<img style="width:' . $size . ';" src="' . base_url() . 'device_images/\' + icon + \'.svg" alt="\' + icon + \'"/>\'
                                     : \'\';
                             }
                         },';
@@ -434,7 +434,7 @@ window.onload = function () {
                     } else if ($key === 'update') {
                         echo '{ data: \'attributes.id\',
                             render: function (data, type, row, meta) {
-                                return "<td style=\"text-align: center;\"><input aria-label=\'Select\' type=\'checkbox\' id=\'ids[" + row.attributes.id + "]\' value=\'" + row.attributes.id + "\' name=\'ids[" + row.attributes.id + "]\' ></td>";
+                                return "<td style=\"text-align: center;\"><input aria-labelledby=\'bulkEditButton\' aria-label=\'Select\' type=\'checkbox\' id=\'ids[" + row.attributes.id + "]\' value=\'" + row.attributes.id + "\' name=\'ids[" + row.attributes.id + "]\' ></td>";
                             }
                         },';
                         echo "\n";

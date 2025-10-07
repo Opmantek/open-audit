@@ -46,13 +46,13 @@ if ($update) {
                         <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[0,"asc"]]'>
                             <thead>
                                 <tr>
-                                    <th class="text-left" style="width:50em"><?= __('Vendor') ?></th>
-                                    <th class="text-center" style="width:20em"><?= __('Critical') ?></th>
-                                    <th class="text-center" style="width:20em"><?= __('High') ?></th>
-                                    <th class="text-center" style="width:20em"><?= __('Medium') ?></th>
-                                    <th class="text-center" style="width:20em"><?= __('Low') ?></th>
-                                    <th class="text-center" style="width:20em"><?= __('None') ?></th>
-                                    <th class="text-center" style="width:20em"><?= __('Use') ?></th>
+                                    <th role="columnheader" class="text-left" style="width:50em"><?= __('Vendor') ?></th>
+                                    <th role="columnheader" class="text-center" style="width:20em"><?= __('Critical') ?></th>
+                                    <th role="columnheader" class="text-center" style="width:20em"><?= __('High') ?></th>
+                                    <th role="columnheader" class="text-center" style="width:20em"><?= __('Medium') ?></th>
+                                    <th role="columnheader" class="text-center" style="width:20em"><?= __('Low') ?></th>
+                                    <th role="columnheader" class="text-center" style="width:20em"><?= __('None') ?></th>
+                                    <th role="columnheader" class="text-center" style="width:20em" id="usedLabel" title="Use this vendor for vulnerability reporting."><?= __('Use') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,13 +66,13 @@ if ($update) {
                                 ?>
                                 <tr>
                                     <td class="text-left"><a href="<?= base_url() ?>index.php/vulnerabilities?vulnerabilities.vendor=<?= $key ?>"><?= $key ?></a></td>
-                                    <td class="text-center text-critical"><?= $included['indb'][$key]->critical ?></td>
-                                    <td class="text-center text-high"><?= $included['indb'][$key]->high ?></td>
-                                    <td class="text-center text-medium"><?= $included['indb'][$key]->medium ?></td>
-                                    <td class="text-center text-low"><?= $included['indb'][$key]->low ?></td>
-                                    <td class="text-center text-none"><?= $included['indb'][$key]->none ?></td>
+                                    <td class="text-center text-critical" style="font-size:16px; font-weight: bold;"><?= $included['indb'][$key]->critical ?></td>
+                                    <td class="text-center text-high" style="font-size:16px; font-weight: bold;"><?= $included['indb'][$key]->high ?></td>
+                                    <td class="text-center text-medium" style="font-size:16px; font-weight: bold;"><?= $included['indb'][$key]->medium ?></td>
+                                    <td class="text-center text-low" style="font-size:16px; font-weight: bold;"><?= $included['indb'][$key]->low ?></td>
+                                    <td class="text-center text-none" style="font-size:16px; font-weight: bold;"><?= $included['indb'][$key]->none ?></td>
                                     <!--<td class="text-center"><?= $included['indb'][$key]->use ?></td>-->
-                                    <td class="text-center"><input class="useflag" name="<?= $key ?>" type="checkbox" --data-id="<?= intval($included['indb'][$key]->id) ?>" value="<?= $included['indb'][$key]->use ?>" <?= $checked ?> <?= $disabled ?>></td>
+                                    <td class="text-center"><input aria-labelledby="usedLabel" class="useflag" name="<?= $key ?>" type="checkbox" --data-id="<?= intval($included['indb'][$key]->id) ?>" value="<?= $included['indb'][$key]->use ?>" <?= $checked ?> <?= $disabled ?>></td>
                                 </tr>
                                 <?php } ?>
                             <?php } ?>
@@ -96,14 +96,14 @@ if ($update) {
                                 if ($key === 'name') {
                                     $align = 'text-left dt-body-left';
                                 }
-                                echo '                                <th class="' . $align . '">' . collection_column_name($key) . "</th>\n";
+                                echo '                                <th role="columnheader" class="' . $align . '">' . collection_column_name($key) . "</th>\n";
                             } ?>
                             </tr>
                             <tr>
 <?php foreach ($data_order as $key) {
                                 echo '                                <th><div class="input-group">';
                                 if ($key !== 'id' and $key !== 'count' and $key !== 'view') {
-                                    echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . collection_column_name($key) . '">';
+                                    echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . collection_column_name($key) . '" title="Search ' . collection_column_name($key) . '">';
                                 }
                                 echo "</div></th>\n";
                             } ?>
@@ -227,27 +227,27 @@ window.onload = function () {
                 { data: 'attributes.name' },
                 { data: 'attributes.critical',
                     render: function (data, type, row, meta) {
-                        return '<span class="text-center text-critical">' + row.attributes.critical + '</span>';
+                        return '<span class="text-center text-critical" style="font-size:16px; font-weight: bold;">' + row.attributes.critical + '</span>';
                     }
                 },
                 { data: 'attributes.high',
                     render: function (data, type, row, meta) {
-                        return '<span class="text-center text-high">' + row.attributes.high + '</span>';
+                        return '<span class="text-center text-high" style="font-size:16px; font-weight: bold;">' + row.attributes.high + '</span>';
                     }
                 },
                 { data: 'attributes.medium',
                     render: function (data, type, row, meta) {
-                        return '<span class="text-center text-medium">' + row.attributes.medium + '</span>';
+                        return '<span class="text-center text-medium" style="font-size:16px; font-weight: bold;">' + row.attributes.medium + '</span>';
                     }
                 },
                 { data: 'attributes.low',
                     render: function (data, type, row, meta) {
-                        return '<span class="text-center text-low">' + row.attributes.low + '</span>';
+                        return '<span class="text-center text-low" style="font-size:16px; font-weight: bold;">' + row.attributes.low + '</span>';
                     }
                 },
                 { data: 'attributes.none',
                     render: function (data, type, row, meta) {
-                        return '<span class="text-center text-none">' + row.attributes.none + '</span>';
+                        return '<span class="text-center text-none" style="font-size:16px; font-weight: bold;">' + row.attributes.none + '</span>';
                     }
                 },
                 { data: 'attributes.use',
@@ -256,7 +256,7 @@ window.onload = function () {
                         if (row.attributes.use == 'y') {
                             $checked = 'checked';
                         }
-                        return '<input class="useflag" name="<?= $key ?>" --data-id="' + row.attributes.id + '" type="checkbox" value="' + row.attributes.use + '" ' + $checked + ' <?= $disabled ?>>';
+                        return '<input class="useflag" aria-labelledby="usedLabel" name="<?= $key ?>" --data-id="' + row.attributes.id + '" type="checkbox" value="' + row.attributes.use + '" ' + $checked + ' <?= $disabled ?>>';
                     }
                 },
             ],

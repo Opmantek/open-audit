@@ -1,7 +1,7 @@
 <span style="margin-top:30px;"></span>
 <footer class="mt-auto">
       <div class="container-fluid" style="padding-right: 0px; padding-left: 0px;">
-            <div class="alert alert-secondary" style="margin-bottom: 0px; padding-bottom: 0px;">
+            <div class="alert alert-secondary" style="margin-bottom: 0px; padding-bottom: 0px; color: #000;">
                 <div class="row">
                     <div class="col-8">
                         <p class="text-start">
