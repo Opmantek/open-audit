@@ -873,6 +873,11 @@ if (empty(config('Openaudit')->feature_vulnerabilities_url)) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+$sql = "INSERT INTO `tasks` VALUES (null, 'Vulnerabilitiy Retrieval', 1, 'Retrieve an updated vulnerability list.', 0, '', 'y', 'vulnerabilities', 1, 1, '*', "*", "*", 0, 0, '2001-02-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00')";
+$result = $db->query($sql)->getResult();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 // Set ALL os_cpe
 $sql = "SELECT id, type, sysDescr, model, manufacturer, os_name, os_family, os_group, os_version, os_display_version FROM devices";
 $result = $db->query($sql)->getResult();
