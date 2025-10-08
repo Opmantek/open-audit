@@ -50,7 +50,7 @@
 # Below are the default settings
 
 # submit the audit to the Open-AudIT server
-submit_online="n"
+submit_online="y"
 
 discovery_id=""
 
@@ -59,9 +59,6 @@ create_file="y"
 
 # the address of the Open-AudIT server "submit" page
 url="http://localhost/open-audit/index.php/input/devices"
-
-# optional - assign any PCs audited to this Location - take the location_id from Open-AudIT interface
-location_id=""
 
 # optional - assign any PCs audited to this Org - take the org_id from Open-AudIT interface
 org_id=""
@@ -334,8 +331,6 @@ for arg in "$@"; do
 			help="y" ;;
 		"last_seen_by" )
 			last_seen_by="$parameter_value" ;;
-		"location_id" )
-			location_id="$parameter_value" ;;
 		"org_id" )
 			org_id="$parameter_value" ;;
 		"submit_online" )
@@ -391,12 +386,8 @@ if [ "$help" = "y" ]; then
 	echo "      y - Display this help output."
 	echo "     *n - Do not display this output."
 	echo ""
-	echo "  location_id"
-	echo "       - The location_id (an integer) taken from Open-AudIT. If set the device will be associated to that Location."
-	echo ""
-	echo ""
 	echo "  org_id"
-	echo "       - The org_id (an integer) taken from Open-AudIT. If set the device will be associated to that Organisation."
+	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
 	echo ""
 	echo "  san_audit"
 	echo "     *y - Should we audit a SAN if it is detected"
@@ -464,7 +455,6 @@ if [ "$debugging" -gt 0 ]; then
 	echo "Submit Online       $submit_online"
 	echo "Debugging Level     $debugging"
 	echo "Discovery ID        $discovery_id"
-	echo "Location Id         $location_id"
 	echo "Org Id              $org_id"
 	echo "Script Name         $script_name"
 	echo "URL                 $url"
@@ -1001,7 +991,6 @@ echo "		<os_arch>$(escape_xml "$system_pc_os_arch")</os_arch>"
 echo "		<memory_count>$(escape_xml "$system_pc_memory")</memory_count>"
 echo "		<processor_count>$(escape_xml "$system_pc_total_threads")</processor_count>"
 echo "		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>"
-echo "		<location_id>$(escape_xml "$location_id")</location_id>"
 echo "		<org_id>$(escape_xml "$org_id")</org_id>"
 echo "		<dbus_identifier>$(escape_xml "$dbus_identifier")</dbus_identifier>"
 echo "		<last_os_update>$(escape_xml "$last_os_update")</last_os_update>"
@@ -2465,34 +2454,34 @@ if [ -z $(echo "$skip_sections" | grep "log,") ]; then
 
 	echo "	<log>" >> "$xml_file"
 	for log in ls /etc/logrotate.d/* ; do
-		if [ -e "$log" ] && [ -f "$log" ]; then
-			log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
-			log_max_file_size=$(grep -E '\ size\ ' "$log" | grep -oE '[[:digit:]]*')
-			log_max_file_size_pre=$(grep -E '\ size\ ' "$log" | sed -e 's/size//g' | tr -d '[:space:]')
-			if [ "$log_max_file_size_pre" != "" ]; then
-				nlen="${#log_max_file_size_pre}"
-				if [ "${nlen}" > "1" ]; then
-					num=$(all_but_last_char "${log_max_file_size_pre}")
-					unt=$(last_char "${log_max_file_size_pre}")
-					case $unt in
-						[kK] )
-						log_max_file_size="${num}000"
-						;;
-						[mM] )
-						log_max_file_size="${num}000000"
-						;;
-						*) ;;
-					esac
-				fi
-			fi
-			{
-			echo "		<item>"
-			echo "			<name>$(escape_xml "$log")</name>"
-			echo "			<file_name>$(escape_xml "$log_file_name")</file_name>"
-			echo "			<max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
-			echo "		</item>"
-			} >> "$xml_file"
-		fi
+	        if [ -e "$log" ]; then
+	                log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
+	                log_max_file_size=$(grep -E '\ size\ ' "$log" | grep -oE '[[:digit:]]*')
+	                log_max_file_size_pre=$(grep -E '\ size\ ' "$log" | sed -e 's/size//g' | tr -d '[:space:]')
+	                if [ "$log_max_file_size_pre" != "" ]; then
+	                    nlen="${#log_max_file_size_pre}"
+	                    if [ "${nlen}" > "1" ]; then
+	                       num=$(all_but_last_char "${log_max_file_size_pre}")
+	                       unt=$(last_char "${log_max_file_size_pre}")
+	                       case $unt in
+	                          [kK] )
+	                             log_max_file_size="${num}000"
+	                             ;;
+	                          [mM] )
+	                             log_max_file_size="${num}000000"
+	                             ;;
+	                          *) ;;
+	                       esac
+	                    fi
+	                fi
+	                {
+	                echo "		<item>"
+	                echo "			<name>$(escape_xml "$log")</name>"
+	                echo "			<file_name>$(escape_xml "$log_file_name")</file_name>"
+	                echo "			<max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
+	                echo "		</item>"
+	                } >> "$xml_file"
+	        fi
 	done
 	echo "	</log>" >> "$xml_file"
 fi
@@ -2577,16 +2566,6 @@ if [ -z $(echo "$skip_sections" | grep "user,") ]; then
 		echo "			<sid>$(escape_xml "$sid")</sid>" >> $xml_file
 		echo "			<home>$(escape_xml "$home")</home>" >> $xml_file
 		echo "			<shell>$(escape_xml "$shell")</shell>" >> $xml_file
-
-		password_expires=$(chage -l "$name" 2>/dev/null | grep -i "^Password expires" | cut -d: -f2)
-		echo "                  <password_expires>$(escape_xml "$password_expires")</password_expires>" >> $xml_file
-
-		password_last_changed=$(chage -l "$name" 2>/dev/null | grep -i "^Last password change" | cut -d: -f2 | xargs -I {} date -d "{}" +"%F 00:00:00")
-		echo "                  <password_last_changed>$(escape_xml "$password_last_changed")</password_last_changed>" >> $xml_file
-
-		last_logon=$(lastlog -u "$name" 2>/dev/null | sed '1d' | awk '{$1=$2=$3=$4=""; print substr($0,5)}' | xargs -I {} date -d "{}" +"%Y-%m-%d %H:%M:%S")
-		echo "                  <last_logon>$(escape_xml "$last_logon")</last_logon>" >> $xml_file
-
 		test1=$(grep "^$name:" /etc/shadow 2>/dev/null | cut -d: -f8)
 		test2=$(grep "^$name:" /etc/shadow 2>/dev/null | cut -d: -f2)
 		today=$(($(date --utc +%s)/86400))
@@ -2667,49 +2646,6 @@ fi
 
 
 ########################################################
-# LICENSE$ SECTION                                     #
-########################################################
-if [ -z $(echo "$skip_sections" | grep "license,") ]; then
-	if [ "$debugging" -gt "0" ]; then
-		echo "License Info"
-	fi
-	software=""
-	echo "	<license>" >> "$xml_file"
-
-	# Open-AudIT
-	if [ -f "/usr/local/open-audit/other/enterprise.bin" ]; then
-		version=$(/usr/local/open-audit/other/enterprise.bin --version 2>/dev/null)
-		raw=$(/usr/local/open-audit/other/enterprise.bin --license 2>/dev/null)
-		echo "		<item>" >> "$xml_file"
-		echo "			<name>Open-AudIT</name>" >> "$xml_file"
-		echo "			<raw>$(escape_xml $raw)</raw>" >> "$xml_file"
-		echo "			<software_name>Open-AudIT</software_name>" >> "$xml_file"
-		echo "			<software_version>$(escape_xml $version)</software_version>" >> "$xml_file"
-		echo "		</item>" >> "$xml_file"
-		# Add this package to the software list.
-		# Not strictly required for Open-AudIT because we have the below,
-		#     but provided as an example so other manually installed software
-		#     will appear in the software list for a device
-		software="$software \n		<item><name>Open-AudIT</name><version>$(escape_xml $version)</version><url>https://firstwave.com</url><publisher>FirstWave</publisher><location>/usr/local/omk</location></item>"
-	fi
-
-	# Redhat
-	raw=""
-	raw=$(subscription-manager list --available --match-installed 2>/dev/null)
-	if [ -n "$raw" ]; then
-		echo "		<item>" >> "$xml_file"
-		echo "			<name>Redhat Enterprise</name>" >> "$xml_file"
-		echo "			<raw>$(escape_xml $raw)</raw>" >> "$xml_file"
-		echo "			<software_name>$(escape_xml $system_os_name)</software_name>" >> "$xml_file"
-		echo "			<software_version>$(escape_xml $system_os_version)</software_version>" >> "$xml_file"
-		echo "		</item>" >> "$xml_file"
-	fi
-
-
-	echo "	</license>" >> "$xml_file"
-fi
-
-########################################################
 # SOFTWARE SECTION                                     #
 ########################################################
 if [ -z $(echo "$skip_sections" | grep "software,") ]; then
@@ -2719,18 +2655,12 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 	IFS='
 	'
 	echo "	<software>" >> "$xml_file"
-
 	# include OS in software
 	echo "		<item>" >> "$xml_file"
 	echo "			<name>$(escape_xml $system_os_name)</name>" >> "$xml_file"
 	echo "			<version>$(escape_xml $system_os_version)</version>" >> "$xml_file"
 	echo "			<description>Operating System</description>" >> "$xml_file"
 	echo "		</item>" >> "$xml_file"
-
-	if [ -n "$software" ]; then
-		echo "$software" >> "$xml_file"
-	fi
-
 	# Detect FirstWave applications
 	if [ -f "/usr/local/omk/bin/show_versions.pl" ]; then
 		for package in $(/usr/local/omk/bin/show_versions.pl 2>/dev/null); do
@@ -2815,25 +2745,12 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 		echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
 		echo "		</item>" >> "$xml_file"
 	fi
-	# Detect Wordpress
-	for file in $(find / -path "*wp-includes/version.php" 2>/dev/null); do
-		version=$(grep "wp_version = " "$file" | cut -d\' -f2)
-		if [ -n "$version" ]; then
-			file=$(echo "$file" | sed "s/\/wp-includes\/version\.php//")
-			echo "		<item>" >> "$xml_file"
-			echo "			<name>WordPress</name>" >> "$xml_file"
-			echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
-			echo "			<install_directory>$(escape_xml $file)</install_directory>" >> "$xml_file"
-			echo "		</item>" >> "$xml_file"
-		fi
-	done
-
 	case $system_os_family in
 			'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
 				dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
 					sed -e 's/\&.*]]/]]/' >> "$xml_file"
 				;;
-			'CentOS' | 'RedHat' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' )
+			'CentOS' | 'RedHat' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' | 'Rocky'* )
 				rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" |\
 					sed -e 's/\&.*]]/]]/' >> "$xml_file"
 				;;
@@ -3684,27 +3601,25 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 	for i in $(apachectl -S 2>/dev/null | grep port); do
 		if [ -n "$i" ]; then
 			name=$(echo "$i" | awk '{ print $4 }')
-			if [ -n "$name" ]; then
-				port=$(echo "$i" | awk '{ print $2 }')
-				config_file=$(echo "$i" | cut -d\( -f2 | cut -d: -f1)
-				config_line=$(echo "$i" | cut -d\( -f2 | cut -d: -f2 | cut -d\) -f1)
-				path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
-				{
-				echo "		<item>"
-				echo "			<type>website</type>"
-				echo "			<parent_name>Apache</parent_name>"
-				echo "			<name>$(escape_xml "$name")</name>"
-				echo "			<description></description>"
-				echo "			<id_internal>$(escape_xml "$name")</id_internal>"
-				echo "			<ip></ip>"
-				echo "			<hostname>$(escape_xml "$name")</hostname>"
-				echo "			<port>$(escape_xml "$port")</port>"
-				echo "			<status>$(escape_xml "$apache_status")</status>"
-				echo "			<instance></instance>"
-				echo "			<path>$(escape_xml "$path")</path>"
-				echo "		</item>"
-				} >> "$xml_file"
-			fi
+			port=$(echo "$i" | awk '{ print $2 }')
+			config_file=$(echo "$i" | cut -d\( -f2 | cut -d: -f1)
+			config_line=$(echo "$i" | cut -d\( -f2 | cut -d: -f2 | cut -d\) -f1)
+			path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
+			{
+			echo "		<item>"
+			echo "			<type>website</type>"
+			echo "			<parent_name>Apache</parent_name>"
+			echo "			<name>$(escape_xml "$name")</name>"
+			echo "			<description></description>"
+			echo "			<id_internal>$(escape_xml "$name")</id_internal>"
+			echo "			<ip></ip>"
+			echo "			<hostname>$(escape_xml "$name")</hostname>"
+			echo "			<port>$(escape_xml "$port")</port>"
+			echo "			<status>$(escape_xml "$apache_status")</status>"
+			echo "			<instance></instance>"
+			echo "			<path>$(escape_xml "$path")</path>"
+			echo "		</item>"
+			} >> "$xml_file"
 		fi
 	done
 
