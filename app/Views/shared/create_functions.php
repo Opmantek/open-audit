@@ -20,6 +20,10 @@ function create_card_header(string $collection = '', string $icon = '', object $
         $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\">" . __("Help") . "</a>";
     }
 
+    if ($collection === 'rack_devices') {
+        $collection_button = '';
+    }
+
     // TODO - Get rid of the nasty style hack in the middle section
     $return = "<div class=\"row\">
                         <div class=\"col-4 clearfix\">
