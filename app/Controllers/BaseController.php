@@ -181,6 +181,19 @@ abstract class BaseController extends Controller
         # Parse the input and create our response
         $this->resp = response_create($this);
 
+        // No EULA accepted
+        if (empty($this->config->license_eula)) {
+            // Running commercial code
+            if (!empty($this->config->enterprise_binary)) {
+                // Requesting a dashboard or summary
+                if (!empty($this->resp->meta->collection) and ($this->resp->meta->collection === 'dashboards' or $this->resp->meta->collection === 'summaries')) {
+                    // Require EULA acceptance.
+                    header('Location: ' . url_to('configurationEULA'));
+                    exit;
+                }
+            }
+        }
+
         if (!empty($this->resp->meta->collection)) {
             // $this->dictionary->link = 'For more detailed information, check the Open-AudIT <a href="' . url_to($this->resp->meta->collection . 'Help') . '">Knowledge Base</a>.';
             $this->dictionary->link = 'For more detailed information, check the Open-AudIT Knowledge Base.';

@@ -65,6 +65,7 @@ $routes->delete('components/(:num)/(:any)', 'Components::delete/$1/$2', ['filter
 $routes->get('components/(:num)/(:any)/download', 'Components::download/$1/$2');
 
 $routes->get('configuration/license_string', 'Configuration::readLicense', ['filter' => \App\Filters\Session::class, 'as' => 'configurationReadLicense']);
+$routes->get('configuration/license_eula', 'Configuration::eula', ['filter' => \App\Filters\Session::class, 'as' => 'configurationEULA']);
 $routes->get('configuration/servers', 'Configuration::readServers', ['filter' => \App\Filters\Session::class, 'as' => 'configurationReadServers']);
 $routes->get('configuration/email/execute_form', 'Configuration::executeFormEmail', ['filter' => \App\Filters\Session::class, 'as' => 'configurationExecuteFormEmail']);
 $routes->post('configuration/email/execute_form', 'Configuration::executeEmail', ['filter' => \App\Filters\Session::class, 'as' => 'configurationExecuteEmail']);

@@ -133,6 +133,10 @@ if (!function_exists('response_create')) {
             $response->meta->action = 'read';
         }
 
+        if ($response->meta->collection === 'configuration' and $response->meta->action === 'eula') {
+            $response->meta->action = 'read';
+        }
+
         if ($response->meta->collection === 'configuration' and $response->meta->action === 'executeemail') {
             $response->meta->action = 'create';
         }
@@ -570,7 +574,15 @@ if (!function_exists('response_create')) {
                 $response->meta->limit = intval($response->meta->limit);
             }
             if (!empty($response->errors)) {
+                $redirect = false;
+                if ($response->errors = "EULA must be accepted to use commercial functions.") {
+                    $redirect = true;
+                }
                 \Config\Services::session()->setFlashdata('error', $response->errors);
+                if ($redirect) {
+                    header('Location: ' . url_to('configurationEULA'));
+                    exit;
+                }
             }
             unset($response->meta->user_details);
             unset($response->meta->config);

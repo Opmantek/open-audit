@@ -33,6 +33,46 @@ use stdClass;
  */
 class Configuration extends BaseController
 {
+
+    /**
+     * Display the EULA and wait for accept
+     *
+     * @access public
+     * @return void
+     */
+    public function eula()
+    {
+        if (empty($this->config->enterprise_binary)) {
+            // Update the EULA
+        }
+
+        $eulaText = file_get_contents(ROOTPATH . 'other/licenses/eula.txt');
+        $acceptedBy = '';
+        $acceptedOn = '';
+        $rows = $this->configurationModel->listAll();
+        foreach ($rows as $row) {
+            if ($row->name === 'license_eula') {
+                $acceptedBy = $row->edited_by;
+                $acceptedOn = $row->edited_date;
+            }
+        }
+
+        return view('shared/header', [
+            'config' => $this->config,
+            'dashboards' => filter_response($this->dashboards),
+            'meta' => filter_response($this->resp->meta),
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('configurationEULA', ['eulaText' => $eulaText, 'acceptedBy' => $acceptedBy, 'acceptedOn' => $acceptedOn])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+        return true;
+    }
+
+
+
+
     /**
      * Provide the custom form for licenses
      *

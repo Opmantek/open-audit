@@ -311,15 +311,6 @@ class OpenAudit extends BaseConfig
             }
         }
 
-        if (!empty($this->license_eula)) {
-            try {
-                $this->license_eula = json_decode($this->license_eula, false, 512, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                $this->license_eula = '';
-            }
-        }
-
         if (empty($this->page_size)) {
             $this->page_size = 1000;
         }
