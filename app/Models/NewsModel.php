@@ -177,9 +177,14 @@ class NewsModel extends BaseModel
             return null;
         }
         $config = new \Config\OpenAudit();
-        if (empty($config->feature_news) or $config->feature_news !== 'y') {
+        if (empty($config->feature_news) or $config->feature_news !== 'y' and $action === 'news') {
             // Do not run
             log_message('info', 'News not executed because config item set to n.');
+            return null;
+        }
+        if (empty($config->feature_vulnerabilities) or $config->feature_vulnerabilities !== 'y' and ($action === 'vulnerabilities' or $action === 'vendors')) {
+            // Do not run
+            log_message('info', 'Vulnerabilities not executed because config item set to n.');
             return null;
         }
         helper('utility_helper');

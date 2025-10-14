@@ -203,6 +203,7 @@ class OpenAudit extends BaseConfig
     public int $page_size;
     public string $process_netstat_windows_dns;
     public string $product = 'community';
+    public string $product_name = 'community';
     public string $public_key = '';
     public int $queue_count;
     public int $queue_limit;
@@ -289,8 +290,18 @@ class OpenAudit extends BaseConfig
 
         if (empty($this->product) or empty($this->license_string)) {
             $this->product = 'community';
+            $this->product_name = 'community';
             $this->license_footer = '';
         }
+        $this->product_name = $this->product;
+        if (empty($this->license_string)) {
+            foreach ($binaries as $binary) {
+                if (file_exists($binary)) {
+                    $this->product_name = 'basic';
+                }
+            }
+        }
+
         if (!empty($this->servers)) {
             try {
                 $this->servers = json_decode($this->servers, false, 512, JSON_THROW_ON_ERROR);
@@ -377,7 +388,7 @@ class OpenAudit extends BaseConfig
             }
         }
 
-        if (php_uname('s') === 'Darwin') {
+        if (php_uname('s') === 'Darwin' and file_exists('/usr/local/oac/enterprise.pl')) {
             $this->enterprise_binary = '/opt/homebrew/bin/perl /usr/local/oac/enterprise.pl';
         }
 

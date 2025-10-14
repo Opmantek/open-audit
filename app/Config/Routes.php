@@ -99,6 +99,7 @@ $routes->get('news/execute', 'News::executeAll', ['as' => 'newsExecuteAll']);
 $routes->cli('news/execute', 'Cli::executeNews', ['as' => 'executeNewsAll']);
 $routes->get('news/execute/vulnerabilities', 'News::executeAll/vulnerabilities', ['as' => 'newsExecuteAllVulnerabilities']);
 $routes->cli('news/execute/vulnerabilities', 'Cli::executeNews/vulnerabilities', ['as' => 'executeNewsAllVulnerabilities']);
+$routes->cli('news/execute/vendors', 'Cli::executeNews/vendors', ['as' => 'executeNewsAllVendors']);
 $routes->cli('news/execute/(:any)', 'Cli::executeNews/$1', ['as' => 'executeNewsAction']);
 $routes->post('vulnerabilities', 'News::executeAll/vulnerabilities', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesRequestSingle']);
 

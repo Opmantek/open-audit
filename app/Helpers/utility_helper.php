@@ -298,58 +298,44 @@ function getOs()
 
     if ($data->server_os === 'Linux') {
         $data->os_name = 'linux';
-        if (file_exists('/etc/os-release')) {
-            $command_string = 'grep PRETTY_NAME= /etc/os-release';
-            exec($command_string, $output, $status);
-            $data->os_version = str_replace('PRETTY_NAME=', '', $output[0]);
-            $data->os_version = str_replace('"', '', $data->os_version);
-            if (empty($data->os_version)) {
-                $command_string = 'grep ^NAME= /etc/os-release';
-                exec($command_string, $output, $status);
-                $data->os_version = str_replace('NAME=', '', $output[0]);
-                $data->os_version = str_replace('"', '', $data->os_version);
-            }
-        } elseif (file_exists('/etc/issue.net')) {
-            $file_contents = file('/etc/issue.net');
-            $data->os_version = trim((string)$file_contents[0]);
-            unset($file_contents);
-        } elseif (file_exists('/etc/redhat-release')) {
-            // RedHat 6 doesn't have /etc/os-release
-            $data->os_version = 'RedHat';
-        }
-        if ((stripos($data->os_version, 'red') !== false) && (stripos($data->os_version, 'hat') !== false)) {
-            $data->os_name = 'Linux (Redhat)';
-        }
-        if (stripos($data->os_version, 'centos') !== false) {
-            $data->os_name = 'Linux (Redhat)';
-        }
-        if (stripos($data->os_version, 'fedora') !== false) {
-            $data->os_name = 'Linux (Redhat)';
-        }
-        if (stripos($data->os_version, 'alma') !== false) {
-            $data->os_name = 'Linux (Redhat)';
-        }
-        if (stripos($data->os_version, 'oracle') !== false) {
-            $data->os_name = 'Linux (Redhat)';
-        }
-        if (stripos($data->os_version, 'rocky') !== false) {
-            $data->os_name = 'Linux (Redhat)';
-        }
 
-        if (stripos($data->os_version, 'debian') !== false) {
-            $data->os_name = 'Linux (Debian)';
-        }
-        if (stripos($data->os_version, 'ubuntu') !== false) {
-            $data->os_name = 'Linux (Debian)';
-        }
-        if (stripos($data->os_version, 'mint') !== false) {
-            $data->os_name = 'Linux (Debian)';
-        }
         $command = 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2';
         exec($command, $output);
         if (!empty($output[0])) {
             $data->server_platform = $output[0];
         }
+
+        if ((stripos($data->server_platform, 'red') !== false) && (stripos($data->server_platform, 'hat') !== false)) {
+            $data->os_name = 'Linux (Redhat)';
+        }
+        if (stripos($data->server_platform, 'centos') !== false) {
+            $data->os_name = 'Linux (Redhat)';
+        }
+        if (stripos($data->server_platform, 'fedora') !== false) {
+            $data->os_name = 'Linux (Redhat)';
+        }
+        if (stripos($data->server_platform, 'alma') !== false) {
+            $data->os_name = 'Linux (Redhat)';
+        }
+        if (stripos($data->server_platform, 'oracle') !== false) {
+            $data->os_name = 'Linux (Redhat)';
+        }
+        if (stripos($data->server_platform, 'rocky') !== false) {
+            $data->os_name = 'Linux (Redhat)';
+        }
+        if (stripos($data->server_platform, 'debian') !== false) {
+            $data->os_name = 'Linux (Debian)';
+        }
+        if (stripos($data->server_platform, 'ubuntu') !== false) {
+            $data->os_name = 'Linux (Debian)';
+        }
+        if (stripos($data->server_platform, 'mint') !== false) {
+            $data->os_name = 'Linux (Debian)';
+        }
+        if (empty($data->server_platform)) {
+            $data->os_name = 'Linux (Other)';
+        }
+
     }
     if ($data->server_os === 'Darwin') {
         $data->os_name = 'OSX';

@@ -10,7 +10,7 @@ if (!empty($config->feature_news) and $config->feature_news === 'y') {
     }
 }
 
-$title = 'Open-AudIT ' . ucfirst($config->product) . ' ' . $config->display_version;
+$title = 'Open-AudIT ' . ucfirst($config->product_name) . ' ' . $config->display_version;
 
 // sort our queries, summaries and reports
 $reports = array();
