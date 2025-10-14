@@ -19,7 +19,10 @@ include 'shared/common_functions.php';
                             <?= read_field('last_run', $resource->last_run, $dictionary->columns->last_run, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('first_run', $resource->first_run, $dictionary->columns->first_run, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
+
+                            <?php if ($resource->type !== 'vulnerabilities') { ?>
                             <?= read_select('sub_resource_id', $resource->sub_resource_id, $dictionary->columns->sub_resource_id . ' Links to <code>' . $resource->type . '.id</code>.', $update, ucwords($resource->type) . ' ' . __('Name'), $included[$resource->type], $meta->collection) ?>
+                            <?php } ?>
 
                             <?php if (!empty($included['collectors']) and $resource->type === 'discoveries') { ?>
                                 <?= read_select('uuid', $resource->uuid, $dictionary->columns->uuid, $update, __('Collector (UUID)'), $included['collectors'], $response->collection) ?>
