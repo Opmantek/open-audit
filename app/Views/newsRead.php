@@ -5,10 +5,12 @@
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
 
-if ($data[0]->attributes->type !== 'advertisement') {
+if ($data[0]->attributes->type !== 'advertisement' and $data[0]->attributes->type !== 'cve') {
     $name = !empty($data[0]->attributes->short) ? ucwords($data[0]->attributes->type) . ' :: ' . html_entity_decode($data[0]->attributes->short) : '';
-} else {
+} else if ($data[0]->attributes->type === 'advertisement') {
     $name = html_entity_decode($data[0]->attributes->name);
+} else if ($data[0]->attributes->type === 'cve') {
+    $name = !empty($data[0]->attributes->short) ? html_entity_decode($data[0]->attributes->short) : '';
 }
 $description = !empty($data[0]->attributes->description) ? html_entity_decode($data[0]->attributes->description) . '<br><br>' : '';
 $short = !empty($data[0]->attributes->short) ? html_entity_decode($data[0]->attributes->short) . '<br><br>' : '';
@@ -62,6 +64,19 @@ switch ($data[0]->attributes->type) {
     default:
         // code...
         break;
+}
+
+if ($data[0]->attributes->type === 'cve') {
+    if (!empty($included['results'])) {
+        $body = "Number of detected vulnerabilities in total: " . count($included['results']) . "<br><br>The below CVE's have been detected on devices you have audited.<br><br>To take advantage of Open-AudIT's vulnerability detection and reporting features, <a href=\"https://firstwave.com/products/network-discovery-and-inventory-software/\">upgrade to Open-AudIT Enterprise</a> today.<br><br>";
+        foreach ($included['results'] as $item) {
+            #$body .= '<a href="https://www.cve.org/CVERecord?id=' . $item->cve . '" target="_blank">' . $item->cve . '</a>, ';
+            $body .= $item->cve . ', ';
+        }
+    }
+    $body = substr($body, 0, -2);
+    $body = $body . '.';
+
 }
 ?>
         <main class="container-fluid">
