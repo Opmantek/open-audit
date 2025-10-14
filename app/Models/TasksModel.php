@@ -99,6 +99,9 @@ class TasksModel extends BaseModel
             $instance = & get_instance();
             $data->uuid = $instance->config->uuid;
         }
+        if (empty($data->sub_resource_id) and ($data->type === 'vulnerabilities' or $data->type === 'vendors')) {
+            $data->sub_resource_id = 0;
+        }
         $data = $this->createFieldData('tasks', $data);
         if (empty($data)) {
             return null;
