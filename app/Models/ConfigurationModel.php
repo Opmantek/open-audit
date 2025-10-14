@@ -154,11 +154,31 @@ class ConfigurationModel extends BaseModel
         $sql = "SELECT * FROM configuration WHERE id = ?";
         $result = $this->db->query($sql, [$id])->getResult();
         if (!empty($result[0]->name) and $result[0]->name === 'license_string') {
+            $instance = & get_instance();
             $sql = "UPDATE configuration SET value = '' WHERE name IN ('license', 'license_limit', 'license_eula', 'license_footer')";
             $this->db->query($sql);
             if (!empty($result[0]->value)) {
                 $newsModel = model('App\Models\NewsModel');
                 $newsModel->executeAll('add_license');
+            }
+            // NOTE - We call the enterprise binary here to update the config items related to the license
+            //        This way, when the page redirects, it has an updated product / product_name already in the DB
+            //        and it shows straight away, without an additional page refresh.
+            if (!empty($instance->config->enterprise_binary)) {
+                if (php_uname('s') === 'Windows NT') {
+                    $command = "%comspec% /c start /b " . $instance->config->enterprise_binary . ' --license';
+                    $cwd = getcwd();
+                    chdir('C:\\xampp\\open-audit\\other');
+                    @exec($command, $output);
+                    pclose(popen($command, 'r'));
+                    chdir($cwd);
+                } else {
+                    $command = $instance->config->enterprise_binary . ' --license';
+                    if (!empty($instance->config->enterprise_env) and strpos($command, 'enterprise.bin') !== false) {
+                        $command = 'export PAR_GLOBAL_TMPDIR=' . $instance->config->enterprise_env . '; ' . $command;
+                    }
+                    @exec($command, $output);
+                }
             }
         }
         return true;
