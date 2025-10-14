@@ -1475,6 +1475,36 @@ class ComponentsModel extends BaseModel
                     $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`, `notes`) VALUES (?, ?, ?, ?, ?, ?, "")';
                     $query = $this->db->query($sql, [intval($device->id), "{$table}", intval($id), 'create', "{$alert_details}", "{$device->last_seen}"]);
                 }
+
+
+                if ($table === 'software') {
+                    if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y') {
+                        $builder = $this->db->table('vulnerabilities');
+                        $builder->select('id');
+                        $builder->like('filter', $data_item->name);
+                        $result = $builder->get()->getResult();
+                        $alert = false;
+                        if (!empty($result)) {
+                            $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
+                            foreach ($result as $vulnerability) {
+                                $vResult = $vulnerabilitiesModel->execute(intval($vulnerability->id), []);
+                                if (!empty($vResult)) {
+                                    $sql = "SELECT * FROM `news` WHERE type = 'cve' LIMIT 1";
+                                    $newsItems = $this->db->query($sql)->getResult();
+                                    if (!empty($vResult) and $instance->config->product !== 'enterprise') {
+                                        if (!empty($newsItems)) {
+                                            $sql = "UPDATE `news` SET `version` = ?, `read` = 'n' WHERE id = ?";
+                                             $this->db->query($sql, [intval($newsItems[0]->version + 1), $newsItems[0]->id]);
+                                        } else {
+                                            $sql = "INSERT INTO `news` VALUES (null, 'You have vulnerable programs!', 'Some programs in your database have current CVE records.', 'Open-AudIT has detected installed programs matching current CVE vulnerabilities. To report on these and more, upgrade to Open-AudIT Enterprise.', 'cve', 'body', NOW(), 'link', '', '', '', 'danger', '1', 'n', 'n', '', '2000-01-01 00:00:00')";
+                                            $this->db->query($sql);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
