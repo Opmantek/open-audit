@@ -411,6 +411,20 @@ class DevicesModel extends BaseModel
             }
         }
 
+        // New device - run all matching vulnerabilities
+        if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y' and !empty($data->os_cpe)) {
+            $builder = $this->db->table('vulnerabilities');
+            $builder->select('id');
+            $builder->like('filter', $data->os_cpe);
+            $result = $builder->get();
+            if (!empty($result)) {
+                $vulnerabilitiesModel = model('Vulnerabilities');
+                foreach ($result as $vulnerability) {
+                    $vResult = $vulnerabilitiesModel->execute($vulnerability->id, []);
+                }
+            }
+        }
+
         return ($id);
     }
 
