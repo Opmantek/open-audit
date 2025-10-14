@@ -296,7 +296,19 @@ class NewsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        return array();
+        $return = array();
+        $sql = "SELECT * FROM `news` WHERE id = " . $id;
+        $result = $this->db->query($sql)->getResult();
+        if (!empty($result[0])) {
+            $news = $result[0];
+            log_message('debug', json_encode($news));
+        }
+        if ($news->type !== 'cve') {
+            return array();
+        }
+        $sql = 'SELECT SUM(vulnerabilities_cache.count), vulnerabilities.cve from vulnerabilities_cache left join vulnerabilities on (vulnerabilities_cache.vulnerability_id = vulnerabilities.id) group by vulnerabilities.cve ORDER BY cve';
+        $return['results'] = $this->db->query($sql)->getResult();
+        return $return;
     }
 
     /**
