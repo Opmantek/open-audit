@@ -1476,6 +1476,16 @@ class ComponentsModel extends BaseModel
                     $query = $this->db->query($sql, [intval($device->id), "{$table}", intval($id), 'create', "{$alert_details}", "{$device->last_seen}"]);
                 }
 
+                if (!empty($instance->config->feature_syslog_components) and $instance->config->feature_syslog_components === 'y'  and php_uname('s') === 'Linux') {
+                    openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
+                    $json = new stdClass();
+                    $json->id = $id;
+                    $json->type = $table;
+                    $json->device_id = (!empty($device->id)) ? $device->id : '';
+                    $json->name = (!empty($data_item->name)) ? $data_item->name : '';
+                    syslog(LOG_INFO, 'RECORD:' . $table . ':create:' . $id . '::' . json_encode($json));
+                    closelog();
+                }
 
                 if ($table === 'software') {
                     if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y') {
@@ -1592,6 +1602,18 @@ class ComponentsModel extends BaseModel
                 $sql = 'INSERT INTO change_log (device_id, db_table, db_row, db_action, details, `timestamp`, `notes`) VALUES (?, ?, ?, ?, ?, ?, "")';
                 $query = $this->db->query($sql, [intval($device->id), "{$table}", intval($db_item->id), 'delete', "{$alert_details}", "{$device->last_seen}"]);
             }
+
+            if (!empty($instance->config->feature_syslog_components) and $instance->config->feature_syslog_components === 'y' and php_uname('s') === 'Linux') {
+                openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
+                $json = new stdClass();
+                $json->id = $id;
+                $json->type = $table;
+                $json->device_id = (!empty($device->id)) ? $device->id : '';
+                $json->name = (!empty($data_item->name)) ? $data_item->name : '';
+                syslog(LOG_INFO, 'RECORD:' . $table . ':delete:' . $id . '::' . json_encode($json));
+                closelog();
+            }
+
         }
         // ACCESS POINT
         if ((string)$table === 'access_point') {

@@ -156,6 +156,9 @@ class OpenAudit extends BaseConfig
     public int $feature_news_remind_days;
     public string $feature_powershell_audit;
     public string $feature_queries_advanced;
+    public string $feature_syslog_access;
+    public string $feature_syslog_components;
+    public string $feature_syslog_devices;
     public string $feature_vulnerabilities;
     public string $feature_vulnerabilities_interval;
     public string $feature_vulnerabilities_date;
@@ -297,7 +300,7 @@ class OpenAudit extends BaseConfig
         if (empty($this->license_string)) {
             foreach ($binaries as $binary) {
                 if (file_exists($binary)) {
-                    $this->product_name = 'basic';
+                    $this->product_name = 'free';
                 }
             }
         }

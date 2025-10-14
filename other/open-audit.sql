@@ -1329,6 +1329,9 @@ INSERT INTO `configuration` VALUES (NULL,'feature_news_request_days','7','number
 INSERT INTO `configuration` VALUES (NULL,'feature_news_url','https://news.firstwave.com/feeds','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve news articles.');
 INSERT INTO `configuration` VALUES (NULL,'feature_powershell_audit','y','bool','y','system','2000-01-01 00:00:00','Use the PowerShell audit script instead of the VBScript audit script in discoveries.');
 INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.');
+INSERT INTO `configuration` VALUES (NULL,'feature_syslog_access','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT log access to syslog (Linux only).');
+INSERT INTO `configuration` VALUES (NULL,'feature_syslog_components','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a change is detected in a component table.');
+INSERT INTO `configuration` VALUES (NULL,'feature_syslog_devices','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a new device detected.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities','y','bool','y','system','2000-01-01 00:00:00','Enable the vulnerabilities feature.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_interval','60','number','y','system','2000-01-01 00:00:00','Check for new vulnerabilities every X minutes.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_date','2025-01-01','date','y','system','2000-01-01 00:00:00','Retrieve vulnerabilities since this date.');

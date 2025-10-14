@@ -259,6 +259,12 @@ abstract class BaseController extends Controller
         }
         log_message('info', $message);
 
+        if (!empty($this->config->feature_syslog_access) and $this->config->feature_syslog_access === 'y' and php_uname('s') === 'Linux') {
+            openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
+            syslog(LOG_INFO, $message);
+            closelog();
+        }
+
         // Load our $this->{$collection}Model
         $collection = ucfirst($this->resp->meta->collection);
         if (strpos($collection, '_') !== false) {

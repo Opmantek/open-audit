@@ -377,6 +377,18 @@ class DevicesModel extends BaseModel
         $sql = "INSERT INTO change_log VALUES (null, ?, 'devices', ?, 'create', 'Item added to devices', '', '2000-01-01 00:00:00', '', '', '', null, '', NOW())";
         $this->db->query($sql, [$id, $id]);
 
+        if (!empty($instance->config->feature_syslog_devices) and $instance->config->feature_syslog_devices === 'y' and php_uname('s') === 'Linux') {
+            openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
+            $json = new stdClass();
+            $json->id = $id;
+            $json->name = (!empty($data->name)) ? $data->name : '';
+            $json->ip = (!empty($data->ip)) ? $data->ip : '';
+            $json->os_group = (!empty($data->os_group)) ? $data->os_group : '';
+            $json->type = (!empty($data->type)) ? $data->type : '';
+            syslog(LOG_INFO, 'RECORD:devices:create:' . $id . '::' . json_encode($json));
+            closelog();
+        }
+
         $weight = weight($data->last_seen_by);
         $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'first_seen', 'instance_options', 'credentials', 'discovery_id');
         foreach ($data as $key => $value) {
