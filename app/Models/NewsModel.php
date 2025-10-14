@@ -211,7 +211,11 @@ class NewsModel extends BaseModel
             }
         } else if ($action === 'vulnerabilities') {
             $send['vendors'] = model('App\Models\VendorsModel')->getUse();
-            $send['from'] = $config->feature_vulnerabilities_date;
+        }
+        if ($action === 'vulnerabilities' or $action === 'vendors') {
+            unset($send['issues']);
+            $send['issues'] = array();
+            $send['last_request_date'] = $config->feature_vulnerabilities_last_request_datetime;
         }
 
         $client = service('curlrequest');

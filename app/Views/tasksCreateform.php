@@ -31,6 +31,7 @@ include 'shared/common_functions.php';
                                             <option value="discoveries"><?= __('Discovery') ?></option>
                                             <option value="integrations"><?= __('Integration') ?></option>
                                             <option value="queries"><?= __('Query') ?></option>
+                                            <option value="vendors"><?= __('Vendors') ?></option>
                                             <option value="vulnerabilities"><?= __('Vulnerabilities') ?></option>
                                             <!--<option value="summaries"><?= __('Summary') ?></option>-->
                                         </select>
@@ -250,6 +251,11 @@ window.onload = function () {
                 $("#div_collector").css('display', 'none');
                 $("#div_options").css('display', 'block');
                 $("#div_options").html(summaries);
+            }
+            if ($type == "vendors") {
+                $("#div_collector").css('display', 'none');
+                $("#div_options").css('display', 'none');
+                $("#div_options").html('');
             }
             if ($type == "vulnerabilities") {
                 $("#div_collector").css('display', 'none');
