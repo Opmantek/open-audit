@@ -172,7 +172,7 @@ if ($resource->type === 'application') {
                                     <?php
                                     if (!empty($resource->products)) {
                                         foreach ($resource->products as $key => $value) {
-                                            echo read_field('products.' . $key , implode(', ', $value->names), 'Products derived from the CPE product name.', $update, __('Product Name Match from CPE: ') . $key, '', '', '', $meta->collection);
+                                            echo read_field('products.' . $key , implode(', ', $value->names), 'Products derived from the CPE product name.', false, __('Product Name Match from CPE: ') . $key, '', '', '', $meta->collection);
                                         }
                                         echo "<br><div class=\"col-10 offset-1\"><hr></div>";
                                     }
@@ -205,32 +205,23 @@ if ($resource->type === 'application') {
                                     </div>
                                     <br><div class="col-10 offset-1"><hr></div><br>
 
-                                    <!--
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-1 col-10" style="position:relative;">
-                                            <?= read_field_header($meta->collection, 'filter', $dictionary->columns->filter, 'Filter') ?>
+                                            <?= read_field_header($meta->collection, 'sql', $dictionary->columns->sql, 'SQL') ?>
                                             <div class="input-group">
-                                                <textarea class="form-control" rows="12" id="filter" name="filter" data-original-value="<?= htmlentities(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?>" disabled><?= html_entity_decode(json_encode($resource->filter, JSON_PRETTY_PRINT)) ?></textarea>
+                                                <textarea class="form-control" rows="14" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
+                                                <?php if ($update) { ?>
+                                                <div class="float-end" style="padding-left:4px;">
+                                                    <div data-attribute="sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                                    <div data-attribute="sql" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                                    <div data-attribute="sql" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                </div>
+                                                <?php } ?>
                                             </div>
-                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="filter" data-dictionary="<?= $dictionary->columns->filter ?>"><span><br></span></div>
+                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
                                         </div>
                                     </div>
 
-                                    <div class="row" style="padding-top:16px;">
-                                        <div class="offset-1 col-10" style="position:relative;">
-                                            <?php
-                                            $title = '';
-                                            if (!empty($resource->generated) and $resource->generated === 'y') {
-                                                $title = __('Generated') . ' ';
-                                            }
-                                            ?>
-                                            <?= read_field_header($meta->collection, 'sql', $dictionary->columns->sql, $title . 'SQL') ?>
-                                            <div class="input-group">
-                                                <textarea class="form-control" rows="8" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    -->
                                 </div>
                             </div>
                         </div>
@@ -240,7 +231,7 @@ if ($resource->type === 'application') {
                     <div class="tab-content">
                         <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
                             <div class="row" style="padding-top:16px;">
-                                <div class="col-6" style="position:relative;">
+                                <div class="col-8 offset-2" style="position:relative;">
                                     <h5>NVD</h5>
                                     <?php
                                     if (!empty($resource->nvd_json)) {
@@ -248,17 +239,6 @@ if ($resource->type === 'application') {
                                     ?>
                                     <div class="input-group">
                                         <textarea class="form-control" rows="<?= $rows ?>" id="nvd_json" name="nvd_json" disabled><?= html_entity_decode(json_encode($resource->nvd_json, JSON_PRETTY_PRINT)) ?></textarea>
-                                    </div>
-                                    <?php } ?>
-                                </div>
-                                <div class="col-6" style="position:relative;">
-                                    <h5>Mitre</h5>
-                                    <?php
-                                    if (!empty($resource->mitre_json)) {
-                                        $rows = substr_count(json_encode($resource->mitre_json, JSON_PRETTY_PRINT), "\n");
-                                    ?>
-                                    <div class="input-group">
-                                        <textarea class="form-control" rows="<?= $rows ?>" id="mitre_json" name="mitre_json" disabled><?= html_entity_decode(json_encode($resource->mitre_json, JSON_PRETTY_PRINT)) ?></textarea>
                                     </div>
                                     <?php } ?>
                                 </div>
