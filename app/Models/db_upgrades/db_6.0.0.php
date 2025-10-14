@@ -932,6 +932,16 @@ $result = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "DELETE FROM `configuration` WHERE `name` = 'feature_syslog_vulnerabilities'";
+$result = $db->query($sql)->getResult();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_syslog_vulnerabilities','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a device has a vulnerability detected.')";
+$result = $db->query($sql)->getResult();
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20250615' WHERE `name` = 'internal_version'";
 $db->query($sql);

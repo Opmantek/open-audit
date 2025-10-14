@@ -1499,9 +1499,20 @@ class ComponentsModel extends BaseModel
                             foreach ($result as $vulnerability) {
                                 $vResult = $vulnerabilitiesModel->execute(intval($vulnerability->id), []);
                                 if (!empty($vResult)) {
-                                    $sql = "SELECT * FROM `news` WHERE type = 'cve' LIMIT 1";
-                                    $newsItems = $this->db->query($sql)->getResult();
-                                    if (!empty($vResult) and $instance->config->product !== 'enterprise') {
+                                    if ($instance->config->product === 'enterprise') {
+                                        if (!empty($instance->config->feature_syslog_vulnerabilities) and $instance->config->feature_syslog_vulnerabilities === 'y'  and php_uname('s') === 'Linux') {
+                                            openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
+                                            $json = new stdClass();
+                                            $json->id = $vulnerability->id;
+                                            $json->cve = $vulnerability->cve;
+                                            $json->device_id = (!empty($device->id)) ? $device->id : '';
+                                            syslog(LOG_INFO, 'RECORD:vulnerabilities:match:' . $vulnerability->cve . '::' . json_encode($json));
+                                            closelog();
+                                        }
+                                    }
+                                    if ($instance->config->product !== 'enterprise') {
+                                        $sql = "SELECT * FROM `news` WHERE type = 'cve' LIMIT 1";
+                                        $newsItems = $this->db->query($sql)->getResult();
                                         if (!empty($newsItems)) {
                                             $sql = "UPDATE `news` SET `version` = ?, `read` = 'n' WHERE id = ?";
                                              $this->db->query($sql, [intval($newsItems[0]->version + 1), $newsItems[0]->id]);

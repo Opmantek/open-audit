@@ -1332,6 +1332,7 @@ INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','
 INSERT INTO `configuration` VALUES (NULL,'feature_syslog_access','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT log access to syslog (Linux only).');
 INSERT INTO `configuration` VALUES (NULL,'feature_syslog_components','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a change is detected in a component table.');
 INSERT INTO `configuration` VALUES (NULL,'feature_syslog_devices','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a new device detected.');
+INSERT INTO `configuration` VALUES (NULL,'feature_syslog_vulnerabilities','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a device has a vulnerability detected.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities','y','bool','y','system','2000-01-01 00:00:00','Enable the vulnerabilities feature.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_interval','60','number','y','system','2000-01-01 00:00:00','Check for new vulnerabilities every X minutes.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_date','2025-01-01','date','y','system','2000-01-01 00:00:00','Retrieve vulnerabilities since this date.');
