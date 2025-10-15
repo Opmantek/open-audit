@@ -1478,12 +1478,8 @@ class ComponentsModel extends BaseModel
 
                 if (!empty($instance->config->feature_syslog_components) and $instance->config->feature_syslog_components === 'y'  and php_uname('s') === 'Linux') {
                     openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
-                    $json = new stdClass();
-                    $json->id = $id;
-                    $json->type = $table;
-                    $json->device_id = (!empty($device->id)) ? $device->id : '';
-                    $json->name = (!empty($data_item->name)) ? $data_item->name : '';
-                    syslog(LOG_INFO, 'RECORD:' . $table . ':create:' . $id . '::' . json_encode($json));
+                    $message = 'CEF:0|FirstWave|Open-AudIT|' . $instance->config->display_version . '|2|' . $table . ' Created|5|id=' . $id . ' name=' . $data_item->name . ' type=' . $table . ' device_id=' . $device->id;
+                    syslog(LOG_INFO, $message);
                     closelog();
                 }
 
@@ -1502,11 +1498,8 @@ class ComponentsModel extends BaseModel
                                     if ($instance->config->product === 'enterprise') {
                                         if (!empty($instance->config->feature_syslog_vulnerabilities) and $instance->config->feature_syslog_vulnerabilities === 'y'  and php_uname('s') === 'Linux') {
                                             openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
-                                            $json = new stdClass();
-                                            $json->id = $vulnerability->id;
-                                            $json->cve = $vulnerability->cve;
-                                            $json->device_id = (!empty($device->id)) ? $device->id : '';
-                                            syslog(LOG_INFO, 'RECORD:vulnerabilities:match:' . $vulnerability->cve . '::' . json_encode($json));
+                                            $message = 'CEF:0|FirstWave|Open-AudIT|' . $instance->config->display_version . '|3|Vulnerability|5|id=' . $vulnerability->id . ' cve=' . $vulnerability->cve . ' device_id=' . $device->id;
+                                            syslog(LOG_INFO, $message);
                                             closelog();
                                         }
                                     }
@@ -1616,12 +1609,8 @@ class ComponentsModel extends BaseModel
 
             if (!empty($instance->config->feature_syslog_components) and $instance->config->feature_syslog_components === 'y' and php_uname('s') === 'Linux') {
                 openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
-                $json = new stdClass();
-                $json->id = $id;
-                $json->type = $table;
-                $json->device_id = (!empty($device->id)) ? $device->id : '';
-                $json->name = (!empty($data_item->name)) ? $data_item->name : '';
-                syslog(LOG_INFO, 'RECORD:' . $table . ':delete:' . $id . '::' . json_encode($json));
+                $message = 'CEF:0|FirstWave|Open-AudIT|' . $instance->config->display_version . '|4|' . $table . ' Removed|5|id=' . $id . ' name=' . @$data_item->name . ' type=' . $table . ' device_id=' . $device->id;
+                syslog(LOG_INFO, $message);
                 closelog();
             }
 

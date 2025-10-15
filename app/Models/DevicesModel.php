@@ -379,13 +379,8 @@ class DevicesModel extends BaseModel
 
         if (!empty($instance->config->feature_syslog_devices) and $instance->config->feature_syslog_devices === 'y' and php_uname('s') === 'Linux') {
             openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
-            $json = new stdClass();
-            $json->id = $id;
-            $json->name = (!empty($data->name)) ? $data->name : '';
-            $json->ip = (!empty($data->ip)) ? $data->ip : '';
-            $json->os_group = (!empty($data->os_group)) ? $data->os_group : '';
-            $json->type = (!empty($data->type)) ? $data->type : '';
-            syslog(LOG_INFO, 'RECORD:devices:create:' . $id . '::' . json_encode($json));
+            $message = 'CEF:0|FirstWave|Open-AudIT|' . $instance->config->display_version . '|1|Device Created|5|id=' . $id . ' ip=' . @$data->ip . ' name=' . $data->name . ' type=' . $data->type;
+            syslog(LOG_INFO, $message);
             closelog();
         }
 
