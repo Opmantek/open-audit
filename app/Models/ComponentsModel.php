@@ -1486,7 +1486,7 @@ class ComponentsModel extends BaseModel
                 if ($table === 'software') {
                     if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y') {
                         $builder = $this->db->table('vulnerabilities');
-                        $builder->select('id');
+                        $builder->select('id, cve');
                         $builder->like('filter', $data_item->name);
                         $result = $builder->get()->getResult();
                         $alert = false;
