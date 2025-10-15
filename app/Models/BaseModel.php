@@ -33,7 +33,11 @@ class BaseModel extends Model
         $instance = & get_instance();
 
         #$dictionary = @$instance->{strtolower($table) . 'Model'}->dictionary();
-        $dictionary = model('App\Models\\' . ucfirst($table) . 'Model')->dictionary();
+        $modelTable = ucfirst($table);
+        if ($modelTable === 'Rack_devices') {
+            $modelTable = 'RackDevices';
+        }
+        $dictionary = model('App\Models\\' . $modelTable . 'Model')->dictionary();
 
         # Our MUST have attributes
         foreach ($dictionary->attributes->create as $field) {
