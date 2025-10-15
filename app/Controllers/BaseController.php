@@ -265,7 +265,7 @@ abstract class BaseController extends Controller
             if (in_array(strtolower($this->resp->meta->action), ['create', 'update', 'delete'])) {
                 $severity = 5;
             }
-            $message = 'CEF:0|FirstWave|Open-AudIT|' . $instance->config->display_version . '|5|Access|' . $severity . '|collection=' . strtolower($this->resp->meta->collection) . ' action=' . strtolower($this->resp->meta->action) . ' user=' . $log_user;
+            $message = 'CEF:0|FirstWave|Open-AudIT|' . $this->config->display_version . '|5|Access|' . $severity . '|collection=' . strtolower($this->resp->meta->collection) . ' action=' . strtolower($this->resp->meta->action) . ' user=' . $log_user;
             syslog(LOG_INFO, $message);
             closelog();
         }
