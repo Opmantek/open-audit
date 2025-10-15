@@ -1011,6 +1011,21 @@ class Collections extends BaseController
                 $breadcrumb->name = $this->resp->data[0]->attributes->name;
                 $this->resp->meta->breadcrumbs[] = $breadcrumb;
             }
+            if ($this->resp->meta->collection === 'rack_devices') {
+                $this->resp->meta->breadcrumbs = array();
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('racksCollection');
+                $breadcrumb->name = 'Racks';
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('racksRead', $this->resp->data[0]->attributes->rack_id);
+                $breadcrumb->name = $this->resp->data[0]->attributes->{'racks.name'};
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('rack_devicesRead', $this->resp->data[0]->id);
+                $breadcrumb->name = $this->resp->data[0]->attributes->name;
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+            }
             if ($this->resp->meta->collection === 'discoveries') {
                 nmapInstalled(true);
                 nmapSuid(true);
