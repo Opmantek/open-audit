@@ -59,9 +59,9 @@ include('shared/lang.php');
                     var testWin = navigator.userAgent.match(/Windows NT/i);
                     if (testWin) {
                         $("#script_type").val("windows");
-                        $("#go_button").attr("href", "<?= site_url() ?>/scripts/windows/download");
-                        $("#go_link").attr("href", "<?= site_url() ?>/scripts/windows/download");
-                        $("#go_link").html("<?= site_url() ?>/scripts/windows/download");
+                        $("#go_button").attr("href", "<?= site_url() ?>/scripts/windows-ps1/download");
+                        $("#go_link").attr("href", "<?= site_url() ?>/scripts/windows-ps1/download");
+                        $("#go_link").html("<?= site_url() ?>/scripts/windows-ps1/download");
                     }
 
                     var testLin = navigator.userAgent.match(/Linux /i);
@@ -212,7 +212,7 @@ include('shared/lang.php');
                                                                     <option value="linux"><?= __('Linux') ?></option>
                                                                     <option value="osx"><?= __('MacOS') ?></option>
                                                                     <option value="solaris"><?= __('Solaris') ?></option>
-                                                                    <option value="windows"><?= __('Windows') ?></option>
+                                                                    <option value="windows-ps1"><?= __('Windows') ?></option>
                                                                 </select>
                                                                 <a href="#" id="go_button" role="button" class="btn btn-success float-end"><?= __('Go') ?></a>
                                                             </div>
