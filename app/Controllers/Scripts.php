@@ -65,6 +65,6 @@ class Scripts extends BaseController
         header($header);
         header('Content-Transfer-Encoding: binary');
         echo $scriptContents;
-        return;
+        exit;
     }
 }
