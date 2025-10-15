@@ -88,10 +88,8 @@ function collection_card_header(string $collection = '', string $icon = '', ?obj
         }
     }
 
-
-
-        $defaults_button = '';
-    if (in_array($collection, ['agents', 'attributes', 'configuration', 'dashboards', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'packages', 'queries', 'roles', 'rules', 'summaries', 'users', 'vendors', 'widgets'])) {
+    $defaults_button = '';
+    if (in_array($collection, ['agents', 'attributes', 'configuration', 'dashboards', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'packages', 'queries', 'roles', 'rules', 'summaries', 'users', 'widgets'])) {
         if ($style === 'icontext') {
             $defaults_button = "<a id=\"button_default_items\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Default Items") . "\" href=\"" . url_to($collection . 'Defaults') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-gears text-primary\"></span>" . __("Default Items") . "</a>";
         } elseif ($style === 'icon') {
