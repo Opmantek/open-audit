@@ -628,11 +628,15 @@ if (!empty($config->modules)) {
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="<?= $homepage ?>" class="link-secondary"><?= __('Home') ?></a></li>
-                                <?php if (empty($meta->breadcrumbs)) { ?>
-                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Collection') ?>" class="link-secondary"><?= __(@ucwords(str_replace('_', ' ', $meta->collection))) ?></a></li>
-                                    <?php if (($meta->action === 'read' or $meta->action === 'execute') and !empty($name)) { ?>
-                                    <li class="breadcrumb-item"><a href="<?= url_to($meta->collection . 'Read', $meta->id) ?>" class="link-secondary"><?= $name ?></a></li>
-                                    <?php }
+                                <?php if (empty($meta->breadcrumbs)) {
+                                    $breadcrumb_collection = $meta->collection;
+                                    if ($meta->collection === 'rack_devices') {
+                                        $breadcrumb_collection = 'racks';
+                                    }
+                                    echo '<li class="breadcrumb-item"><a href="' . url_to($breadcrumb_collection . 'Collection') . '" class="link-secondary">' .__(@ucwords(str_replace('_', ' ', $breadcrumb_collection))) . "</a></li>\n";
+                                    if (($meta->action === 'read' or $meta->action === 'execute') and !empty($name)) {
+                                        echo '<li class="breadcrumb-item"><a href="' . url_to($breadcrumb_collection . 'Read', $meta->id) . '" class="link-secondary">' . $name . "</a></li>\n";
+                                    }
                                 } else {
                                     foreach ($meta->breadcrumbs as $breadcrumb) { ?>
                                         <li class="breadcrumb-item"><a href="<?= $breadcrumb->url ?>" class="link-secondary"><?= $breadcrumb->name ?></a></li>
