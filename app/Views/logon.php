@@ -22,6 +22,7 @@ include('shared/lang.php');
         <script {csp-script-nonce} src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
         <script {csp-script-nonce} src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
         <script {csp-script-nonce} src="<?= base_url('js/fa-v4-shims.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/select2.full.min.js') ?>"></script>
         <script {csp-script-nonce} src="<?= base_url('js/open-audit.js') . '?v=' . time() ?>"></script>
 
         <!-- CSS -->
@@ -29,11 +30,16 @@ include('shared/lang.php');
         <link href="<?= base_url('css/bootstrap.css') ?>"                 rel="stylesheet">
         <link href="<?= base_url('css/dataTables.bootstrap5.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/font-awesome.css') ?>"              rel="stylesheet">
+        <link href="<?= base_url('css/select2.min.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/select2-bootstrap-5-theme.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/open-audit.css') . '?v=' . time() ?>" rel="stylesheet">
 
         <script {csp-script-nonce}>
             window.onload = function () {
                 $(document).ready(function () {
+                    help_windows = "To execute the Windows powershell script, open a command prompt as Administrator and use the following command:<br><code>powershell.exe -executionpolicy bypass -file .\\audit_windows.ps1</code>";
+                    help_other = "To execute the audit script, open a terminal and use the following command:<br><code>sudo ./audit_linux.sh</code>. Note, you may need to make the script executable with <code>chmod +x audit_linux.sh</code> first.";
+
                     let prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                     let html = document.querySelector('html');
                     html.classList.add(prefers);
@@ -55,13 +61,13 @@ include('shared/lang.php');
                     $("#username").val("admin");
                     $("#password").val("password");
                     <?php } ?>
-
                     var testWin = navigator.userAgent.match(/Windows NT/i);
                     if (testWin) {
-                        $("#script_type").val("windows");
+                        $("#script_type").val("windows-ps1");
                         $("#go_button").attr("href", "<?= site_url() ?>/scripts/windows-ps1/download");
                         $("#go_link").attr("href", "<?= site_url() ?>/scripts/windows-ps1/download");
                         $("#go_link").html("<?= site_url() ?>/scripts/windows-ps1/download");
+                        $("#help").html(help_windows);
                     }
 
                     var testLin = navigator.userAgent.match(/Linux /i);
@@ -70,6 +76,7 @@ include('shared/lang.php');
                         $("#go_link").attr("href", "<?= site_url() ?>/scripts/linux/download");
                         $("#go_link").html("<?= site_url() ?>/scripts/linux/download");
                         $("#script_type").val("linux");
+                        $("#help").html(help_other.replace(/audit_linux/g, "audit_" + $(this).val()));
                     }
 
                     var testOsx = navigator.userAgent.match(/Mac OS X/i);
@@ -78,12 +85,18 @@ include('shared/lang.php');
                         $("#go_link").attr("href", "<?= site_url() ?>/scripts/osx/download");
                         $("#go_link").html("<?= site_url() ?>/scripts/osx/download");
                         $("#script_type").val("osx");
+                        $("#help").html(help_other.replace(/audit_linux/g, "audit_" + $(this).val()));
                     }
 
                     $( "#script_type" ).change(function() {
                         $("#go_button").attr("href", "<?= site_url() ?>/scripts/" + $(this).val() + "/download");
                         $("#go_link").attr("href", "<?= site_url() ?>/scripts/" + $(this).val() + "/download");
                         $("#go_link").html("<?= site_url() ?>/scripts/" + $(this).val() + "/download");
+                        if ($(this).val() == "windows-ps1") {
+                            $("#help").html(help_windows);
+                        } else {
+                            $("#help").html(help_other.replace(/audit_linux/g, "audit_" + $(this).val()));
+                        }
                     });
 
 
@@ -227,6 +240,9 @@ include('shared/lang.php');
                                                     echo __('You may want to copy and paste this URL in an email to your staff.');
                                                 }
                                                 ?>
+                                                <br>
+                                                <br>
+                                                <div id="help"></div>
                                             </div>
                                         </span>
                                         <br>&nbsp;
