@@ -683,6 +683,13 @@ if (!$db->fieldExists('hw_cpe', 'devices')) {
   log_message('info', (string)$db->getLastQuery());
 }
 
+if (!$db->fieldExists('cve', 'devices')) {
+  $sql = "ALTER TABLE devices ADD `cve` text NOT NULL AFTER identification";
+  $db->query($sql);
+  $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+  log_message('info', (string)$db->getLastQuery());
+}
+
 if (!$db->fieldExists('os_display_version', 'devices')) {
   $sql = "ALTER TABLE devices ADD os_display_version varchar(200) NOT NULL DEFAULT '' AFTER os_version";
   $db->query($sql);

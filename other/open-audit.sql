@@ -1690,6 +1690,7 @@ CREATE TABLE `devices` (
   `instance_options` text NOT NULL,
   `discovery_id` int(10) unsigned DEFAULT NULL,
   `identification` text NOT NULL,
+  `cve` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
