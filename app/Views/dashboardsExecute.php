@@ -180,7 +180,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                             for ($col = 1; $col < ($columns + 1); $col++) {
                                 foreach ($resource->options->widgets as $widget) {
                                     if ($widget->position == (($row * $columns) + $col)) {
-                                        echo "                               <div data-num=\"col $col, row $row, pos $widget->position\" id=\"widget_" . $widget->widget_id . "\" class=\"$colWidth\" style=\"padding: 10px 15px;\"></div>\n";
+                                        echo "                               <div data-num=\"col $col, row $row, pos $widget->position\" id=\"widget_" . $widget->widget_id . "\" class=\"$colWidth\" style=\"padding: 50px 15px;\"></div>\n";
                                     }
                                 }
                             }
