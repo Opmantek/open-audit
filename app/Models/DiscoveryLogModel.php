@@ -18,7 +18,7 @@ class DiscoveryLogModel extends BaseModel
         $this->builder = $this->db->table('discovery_log');
     }
 
-    public function getByIp(int $id = null): array
+    public function getByIp(?int $id = null): array
     {
         $config = config('Openaudit');
         $instance = & get_instance();
@@ -548,7 +548,7 @@ class DiscoveryLogModel extends BaseModel
         return $query->getResult();
     }
 
-    public function import(array $csv = null)
+    public function import(?array $csv = null)
     {
     }
 
