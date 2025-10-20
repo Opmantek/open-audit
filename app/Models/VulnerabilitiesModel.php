@@ -267,7 +267,7 @@ class VulnerabilitiesModel extends BaseModel
         }
         log_message('debug', 'Executing vulnerability ' . $id . ', CVE: ' . $vulnerability->cve);
         if (empty($orgs)) {
-            $orgsModel = model('orgsModel');
+            $orgsModel = new \App\Models\OrgsModel();
             $allOrgs = $orgsModel->listAll();
             foreach ($allOrgs as $singleOrg) {
                 $orgs[] = $singleOrg->id;
@@ -618,7 +618,7 @@ class VulnerabilitiesModel extends BaseModel
             return false;
         }
         if (empty($orgs)) {
-            $orgsModel = model('orgsModel');
+            $orgsModel = new \App\Models\OrgsModel();
             $allOrgs = $orgsModel->listAll();
             foreach ($allOrgs as $singleOrg) {
                 $orgs[] = $singleOrg->id;
@@ -647,7 +647,7 @@ class VulnerabilitiesModel extends BaseModel
         $db = \Config\Database::connect('nodebug');
         $builder = $db->table('vulnerabilities');
         $vulnerabilities = $builder->get()->getResult();
-        $orgsModel = model('orgsModel');
+        $orgsModel = new \App\Models\OrgsModel();
         $allOrgs = $orgsModel->listAll();
         foreach ($allOrgs as $singleOrg) {
             $orgs[] = $singleOrg->id;
