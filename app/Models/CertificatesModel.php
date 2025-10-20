@@ -165,6 +165,7 @@ class CertificatesModel extends BaseModel
         $this->builder->join('orgs', 'certificates.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->orderBy('certificates.name', 'ASC');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

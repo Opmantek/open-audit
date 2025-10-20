@@ -182,7 +182,7 @@ class LocationsModel extends BaseModel
         $this->builder->join('devices', 'locations.id = devices.location_id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
-        $this->builder->orderBy('name');
+        $this->builder->orderBy('locations.name', 'ASC');
         $this->builder->groupBy('locations.id');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {

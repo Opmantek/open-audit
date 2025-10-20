@@ -847,6 +847,7 @@ class DiscoveriesModel extends BaseModel
         $this->builder->join('orgs', 'discoveries.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->orderBy('discoveries.name', 'ASC');
         $instance = & get_instance();
         if ($instance->config->product  !== 'enterprise') {
             $this->builder->where('discoveries.type !=', 'seed');

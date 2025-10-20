@@ -141,6 +141,7 @@ class BenchmarksPoliciesModel extends BaseModel
         $properties[] = 'benchmarks_policies.*';
         $this->builder->select($properties, false);
         $this->builder->where($where);
+        $this->builder->orderBy('benchmarks_policies.name', 'ASC');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

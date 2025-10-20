@@ -144,6 +144,7 @@ class BaselinesResultsModel extends BaseModel
         $this->builder->join('baselines', 'baselines_results.baseline_id = baselines.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->orderBy('baselines.name', 'ASC');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

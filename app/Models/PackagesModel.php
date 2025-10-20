@@ -169,6 +169,7 @@ class PackagesModel extends BaseModel
         $this->builder->join('orgs', 'packages.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->orderBy('packages.name', 'ASC');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

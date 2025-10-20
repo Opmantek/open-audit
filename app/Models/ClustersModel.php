@@ -220,6 +220,7 @@ class ClustersModel extends BaseModel
         $this->builder->join('orgs', 'clusters.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->orderBy('clusters.name', 'ASC');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

@@ -154,6 +154,7 @@ class CredentialsModel extends BaseModel
         $this->builder->join('orgs', 'credentials.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->orderBy('credentials.name', 'ASC');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

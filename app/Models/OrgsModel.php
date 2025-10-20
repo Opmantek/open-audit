@@ -359,7 +359,7 @@ class OrgsModel extends BaseModel
         $this->builder->join('orgs o2', 'orgs.parent_id = o2.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
-        $this->builder->orderBy('name', 'DESC');
+        $this->builder->orderBy('orgs.name', 'ASC');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();

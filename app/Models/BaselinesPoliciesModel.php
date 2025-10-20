@@ -353,6 +353,7 @@ class BaselinesPoliciesModel extends BaseModel
         $this->builder->join('orgs', 'baselines_policies.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
         $this->builder->where($where);
+        $this->builder->orderBy('baselines_policies.name', 'ASC');
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
