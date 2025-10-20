@@ -45,8 +45,14 @@ class Logon extends Controller
 {
     public function createForm()
     {
-        $session = session();
+        $start = microtime(true);
         $config =  new \Config\OpenAudit();
+
+        $duration = (microtime(true) - $start);
+        log_message('debug', 'Config, ' . $duration);
+        $start = microtime(true);
+
+        $session = session();
         if (!empty($session->get('user_id'))) {
             if ($config->device_count === 0) {
                 return redirect()->to(url_to('welcome'));
@@ -54,6 +60,10 @@ class Logon extends Controller
                 return redirect()->to(url_to('home'));
             }
         }
+        $duration = (microtime(true) - $start);
+        log_message('debug', 'Session, ' . $duration);
+        $start = microtime(true);
+
         $db = db_connect();
         $sql = "SELECT * FROM discoveries WHERE id = 1";
         $result = $db->query($sql)->getResult();
@@ -77,7 +87,9 @@ class Logon extends Controller
                 log_message('info', 'Default discovery subnet auto-populated with ' . $subnet . '.');
             }
         }
-
+        $duration = (microtime(true) - $start);
+        log_message('debug', 'Discoveries, ' . $duration);
+        $start = microtime(true);
         helper('utility');
         $os = getOS();
         $server_os = $os->server_os;
@@ -91,6 +103,10 @@ class Logon extends Controller
         $db->query($sql, [$server_platform]);
         log_message('info', 'Config auto-populated with ServerPlatform ' . $server_platform . '.');
 
+        $duration = (microtime(true) - $start);
+        log_message('debug', 'Config, ' . $duration);
+        $start = microtime(true);
+
         if (!empty($config->feature_news) and $config->feature_news === 'y') {
             $request_days = (!empty($config->feature_news_request_days)) ? intval($config->feature_news_request_days) : 7;
             $last_request_date = (!empty($config->feature_news_last_request_date)) ? strtotime("+" . $request_days . " days", strtotime($config->feature_news_last_request_date)) : strtotime('2001-01-01');
@@ -98,12 +114,24 @@ class Logon extends Controller
             if ($last_request_date < $today) {
                 // Request a news item
                 log_message('debug', 'Requesting news articles.');
-                $newsModel = model('NewsModel');
-                $newsModel->executeAll('news');
+                if (php_uname('s') === 'Windows NT') {
+                    $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . "index.php news execute";
+                    @exec($command, $output);
+                    pclose(popen($command, 'r'));
+                } elseif (php_uname('s') === 'Darwin') {
+                    $command = 'php ' . FCPATH . 'index.php news execute > /dev/null 2>&1 &';
+                    @exec($command, $output);
+                } else {
+                    $command = 'nohup php ' . FCPATH . 'index.php news execute > /dev/null 2>&1 &';
+                    @exec($command, $output);
+                }
                 $sql = 'UPDATE configuration SET value = ? WHERE name = "feature_news_last_request_date"';
                 $db->query($sql, [date('Y-m-d')]);
             }
         }
+        $duration = (microtime(true) - $start);
+        log_message('debug', 'News, ' . $duration);
+        $start = microtime(true);
 
         $methods = array();
         if ($db->tableExists('auth')) {
@@ -121,20 +149,31 @@ class Logon extends Controller
         if (!$db->tableExists('auth') and intval($config->internal_version) < 20240822) {
             $alert = 'Active Directory and openLDAP logins will not work until the database has been upgraded.<br>Please logon with a <i>local</i> \'admin\' user, to upgrade the database.';
         }
+
+        $duration = (microtime(true) - $start);
+        log_message('debug', 'Auth, ' . $duration);
+        $start = microtime(true);
+
         if (!empty($config->feature_vulnerabilities) and $config->feature_vulnerabilities === 'y' and !empty($config->enterprise_binary)) {
             $vulnerabilities = model('App\Models\VulnerabilitiesModel')->listAll();
             if (empty($vulnerabilities)) {
+                log_message('debug', 'Requesting vulnerabilities');
                 if (php_uname('s') === 'Windows NT') {
-                    $command = "%comspec% /c start c:\\xampp\\php\\php.exe c:\\xampp\\htdocs\\open-audit\\index.php news execute vulnerabilities";
+                    $command = "%comspec% /c start c:\\xampp\\php\\php.exe " . FCPATH . "index.php news execute vulnerabilities";
                     pclose(popen($command, 'r'));
+                } elseif (php_uname('s') === 'Darwin') {
+                    $command = 'php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
+                    @exec($command, $output);
                 } else {
-                    log_message('debug', 'Requesting vulnerabilities');
-                    $command = 'php /usr/local/open-audit/public/index.php news execute vulnerabilities > /dev/null 2>&1 &';
-                    log_message('debug', $command);
+                    $command = 'nohup php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
                     exec($command, $output);
                 }
             }
         }
+
+        $duration = (microtime(true) - $start);
+        log_message('debug', 'Vulnerabilities, ' . $duration);
+        $start = microtime(true);
 
         return view('logon', ['config' =>$config, 'methods' => $methods, 'alert' => $alert]);
     }
