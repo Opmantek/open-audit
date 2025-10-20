@@ -100,6 +100,25 @@ class RolesModel extends BaseModel
         return array();
     }
 
+    public function includedCollection(): array
+    {
+        $return = array();
+        $roles = $this->listAll();
+        foreach ($roles as $role) {
+            $return[$role->name] = 0;
+            $sql = "SELECT COUNT(*) AS `count` FROM users WHERE `roles` LIKE '%\"" . $role->name . "\"%'";
+            log_message('debug', $sql);
+            $result = $this->db->query($sql)->getResult();
+            if ($this->sqlError($this->db->error())) {
+                return array();
+            }
+            if (!empty($result[0]->count)) {
+                $return[$role->name] = intval($result[0]->count);
+            }
+        }
+        return $return;
+    }
+
     /**
      * Read the entire collection from the database
      *

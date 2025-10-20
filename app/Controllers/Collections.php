@@ -158,6 +158,7 @@ class Collections extends BaseController
             $this->resp->meta->collection === 'devices' or
             $this->resp->meta->collection === 'discoveries' or
             $this->resp->meta->collection === 'networks' or
+            $this->resp->meta->collection === 'roles' or
             $this->resp->meta->collection === 'summaries' or
             $this->resp->meta->collection === 'vulnerabilities' or
             $this->resp->meta->collection === 'vendors'
