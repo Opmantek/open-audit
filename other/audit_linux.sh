@@ -4258,7 +4258,7 @@ if [ -z $(echo "$skip_sections" | grep "netstat,") ]; then
 		if [ "$program" != "LISTEN" ]; then
 			program=$(echo "$program" | cut -d\/ -f2)
 		else
-			if [ $(echo "$line" | awk '{print $7}' | cut -d: -f1) = "users" ]; then
+			if [[ $(echo "$line" | awk '{print $7}' | cut -d: -f1) = "users" ]]; then
 				program=$(echo "$line" | awk '{print $7}' | cut -d\" -f2)
 			else
 				program=$(echo "$line" | awk '{print $7}' | cut -d\/ -f2)
