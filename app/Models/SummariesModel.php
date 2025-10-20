@@ -218,7 +218,9 @@ class SummariesModel extends BaseModel
         $collections = clone $instance->collections;
         foreach ($collections as $name => $collection) {
             if (!$this->db->tableExists($name) or !$this->db->fieldExists('org_id', $name) and ($name !== 'orgs' and $name !== 'roles')) {
-                unset($collections->{$name});
+                if ($name !== 'news') {
+                    unset($collections->{$name});
+                }
             }
         }
         foreach ($collections as $name => $collection) {
@@ -254,6 +256,9 @@ class SummariesModel extends BaseModel
         $sql = "SELECT COUNT(*) AS `count` FROM `roles`";
         $count = intval($this->db->query($sql)->getResult()[0]->count);
         $collections->roles->count = $count;
+        $sql = "SELECT COUNT(*) AS `count` FROM `news`";
+        $count = intval($this->db->query($sql)->getResult()[0]->count);
+        $collections->news->count = $count;
         unset($collections->baselines_policies);
         unset($collections->baselines_results);
         unset($collections->rack_devices);
