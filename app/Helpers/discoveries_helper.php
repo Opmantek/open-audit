@@ -2065,6 +2065,7 @@ if (! function_exists('ip_audit')) {
                 $discoveryLogModel->create($log);
             }
             $audit->system->id = $audit_device;
+            $audit->system->cve = ' ';
             if (empty($audit_device)) {
                 // insert a new system
                 # Set the device org_id based on this discovery

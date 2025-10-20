@@ -9,6 +9,7 @@ $networksModel = new \App\Models\NetworksModel();
 $devicesModel = new \App\Models\DevicesModel();
 $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 $componentsModel = new \App\Models\ComponentsModel();
+$vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
 
 helper('components');
 helper('device');
@@ -57,7 +58,7 @@ if (empty($device->system->last_seen_by)) {
 if (!empty($device->system->os_installation_date)) {
     $device->system->os_installation_date = date("Y-m-d", strtotime($device->system->os_installation_date));
 }
-
+$device->system->cve = '';
 $status = '';
 if (empty($id)) {
     // insert a new system
@@ -102,6 +103,7 @@ if (empty($id)) {
     $device->system->last_seen = $db_device[0]->attributes->last_seen;
     $device->system->last_seen_by = $db_device[0]->attributes->last_seen_by;
 }
+
 $log = new \stdClass();
 $log->id = $initial_log_id;
 $log->device_id = $device->system->id;
@@ -149,6 +151,9 @@ foreach ($device as $key => $value) {
 $rulesModel = new \App\Models\RulesModel();
 $rulesModel->execute(null, @intval($device->system->discovery_id), 'update', intval($device->system->id));
 
-# Because Rules may set the last_seen_by, update it here.
+// Test for vulnerabilities
+$vulnerabilitiesModel->executeDevice($device->system->id);
+
+// Because Rules may set the last_seen_by, update it here.
 $sql = "UPDATE devices SET last_seen_by = ? WHERE id = ?";
 $db->query($sql, [$device->system->last_seen_by, $device->system->id]);

@@ -318,6 +318,7 @@ class DevicesModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        $instance = get_instance();
 
         $parameters = new \stdClass();
         $parameters->input = $data;
@@ -348,7 +349,6 @@ class DevicesModel extends BaseModel
             $data->first_seen = $data->last_seen;
         }
         if (empty($data->last_seen)) {
-            $instance = get_instance();
             $data->last_seen = $instance->config->timestamp;
             $data->first_seen = $data->last_seen;
         }
@@ -364,6 +364,7 @@ class DevicesModel extends BaseModel
                 $data->os_cpe = $cpe;
             }
         }
+        $data->cve = '';
         $data = $this->createFieldData('devices', $data);
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
@@ -419,18 +420,49 @@ class DevicesModel extends BaseModel
         }
 
         // New device - run all matching vulnerabilities
-        if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y' and !empty($data->os_cpe)) {
-            $builder = $this->db->table('vulnerabilities');
-            $builder->select('id');
-            $builder->like('filter', $data->os_cpe);
-            $result = $builder->get();
-            if (!empty($result)) {
-                $vulnerabilitiesModel = model('Vulnerabilities');
-                foreach ($result as $vulnerability) {
-                    $vResult = $vulnerabilitiesModel->execute($vulnerability->id, []);
-                }
-            }
-        }
+        // if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y' and !empty($data->os_cpe)) {
+        //     $cpe = explode(':', $data->os_cpe);
+        //     $os_cpe = $cpe[0] . ':' . $cpe[1] . ':' . $cpe[2] . ':' . $cpe[3] . ':' . $cpe[4];
+        //     $builder = $this->db->table('vulnerabilities');
+        //     $builder->select('id', 'cve');
+        //     $builder->like('filter', $os_cpe);
+        //     $result = $builder->get();
+        //     if (!empty($result)) {
+        //         $vulnerabilitiesModel = model('Vulnerabilities');
+        //         foreach ($result as $vulnerability) {
+        //             $vResult = $vulnerabilitiesModel->execute($vulnerability->id, []);
+        //             if (!empty($vResult)) {
+        //                 if ($instance->config->product === 'enterprise') {
+        //                     foreach ($vResult as $dev) {
+        //                         if ($dev->id == $id) {
+        //                             // We have a hit, add this vulnerability to devices.cve
+        //                             $sql = "UPDATE `devices` SET `cve` = concat(`cve`, '," . $vulnerability->cve . "') WHERE `id` = " . $id;
+        //                             $this->db->query($sql);
+        //                             // And add a syslog
+        //                             if (!empty($instance->config->feature_syslog_vulnerabilities) and $instance->config->feature_syslog_vulnerabilities === 'y'  and php_uname('s') === 'Linux') {
+        //                                 openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
+        //                                 $message = 'CEF:0|FirstWave|Open-AudIT|' . $instance->config->display_version . '|3|Vulnerability|5|id=' . $vulnerability->id . ' cve=' . $vulnerability->cve . ' device_id=' . $device->id;
+        //                                 syslog(LOG_INFO, $message);
+        //                                 closelog();
+        //                             }
+        //                         }
+        //                     }
+        //                 }
+        //                 if ($instance->config->product !== 'enterprise') {
+        //                     $sql = "SELECT * FROM `news` WHERE type = 'cve' LIMIT 1";
+        //                     $newsItems = $this->db->query($sql)->getResult();
+        //                     if (!empty($newsItems)) {
+        //                         $sql = "UPDATE `news` SET `version` = ?, `read` = 'n' WHERE id = ?";
+        //                         $this->db->query($sql, [intval($newsItems[0]->version + 1), $newsItems[0]->id]);
+        //                     } else {
+        //                         $sql = "INSERT INTO `news` VALUES (null, 'You have vulnerable programs!', 'Some programs in your database have current CVE records.', 'Open-AudIT has detected installed programs matching current CVE vulnerabilities. To report on these and more, upgrade to Open-AudIT Enterprise.', 'cve', 'body', NOW(), 'link', '', '', '', 'danger', '1', 'n', 'n', '', '2000-01-01 00:00:00')";
+        //                         $this->db->query($sql);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         return ($id);
     }
@@ -695,7 +727,6 @@ class DevicesModel extends BaseModel
             }
         }
 
-
         $no_current = array('attachment', 'audit_log', 'change_log', 'credential', 'edit_log', 'image');
         foreach ($no_current as $table) {
             if (empty($resp_include) or in_array($table, $resp_include)) {
@@ -725,8 +756,6 @@ class DevicesModel extends BaseModel
             }
         }
 
-
-
         if (empty($resp_include) or in_array('application', $resp_include)) {
             $sql = "SELECT `application`.*, applications.name AS `applications.name`, applications.description AS `applications.description` FROM `application` LEFT JOIN applications ON (`application`.application_id = applications.id) WHERE application.device_id = ?";
             $query = $this->db->query($sql, $id);
@@ -735,7 +764,6 @@ class DevicesModel extends BaseModel
                 $include['application'] = $result;
             }
         }
-
 
         if (empty($resp_include) or in_array('cluster', $resp_include)) {
             $sql = "SELECT `clusters`.*, `cluster`.`role`, `cluster`.`id` AS `cluster.id` FROM `clusters` RIGHT JOIN `cluster` ON `clusters`.`id` = `cluster`.`cluster_id` WHERE `cluster`.`device_id` = ?";
@@ -788,6 +816,20 @@ class DevicesModel extends BaseModel
             $include['status'] = $attributes;
             $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'type']);
             $include['type'] = $attributes;
+        }
+
+        if ($instance->config->product === 'enterprise') {
+            $sql = "SELECT `cve` FROM devices WHERE id = ?";
+            $query = $this->db->query($sql, [$id]);
+            $result = $query->getResult();
+            if (!empty($result[0]->cve)) {
+                $cves = explode(',', $result[0]->cve);
+                $cves = "'" . implode("','", $cves) . "'";
+                $sql = "SELECT id, name, base_severity, cve FROM vulnerabilities WHERE cve IN ($cves)";
+                $query = $this->db->query($sql);
+                $include['vulnerabilities'] = $query->getResult();
+                log_message('debug', json_encode($include['vulnerabilities']));
+            }
         }
 
         if (empty($resp_include) or in_array('nmis', $resp_include) or in_array('firstwave', $resp_include) or $instance->resp->meta->format === 'html') {
@@ -1533,6 +1575,7 @@ class DevicesModel extends BaseModel
         $dictionary->columns->instance_options = 'Derived from cloud discovery.';
         $dictionary->columns->discovery_id = 'Derived from discovery.';
         $dictionary->columns->identification = 'Derived from discovery.';
+        $dictionary->columns->cve = 'A comma separated list of applicable CVEs.';
 
 
         return $dictionary;
