@@ -44,9 +44,13 @@ include 'shared/collection_functions.php';
                                         ?>
                                     <?php }
                                     echo '<td class="text-center"><a title="View" role="button" class="btn btn-sm btn-devices" href="' . url_to('usersCollection') .'?users.roles=like' . $item->attributes->name . '" style="width:2rem;">' . $included[$item->attributes->name] . '</a></td>';
-                                    if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
-                                        <?= collection_button_delete(intval($item->id)) ?>
-                                    <?php } ?>
+                                    if (strpos($user->permissions[$meta->collection], 'd') !== false) {
+                                        if (!in_array($item->attributes->name, ['admin', 'org_admin', 'user', 'collector'])) {
+                                            echo collection_button_delete(intval($item->id));
+                                        } else {
+                                            echo "<td></td>";
+                                        }
+                                    } ?>
                                 </tr>
                                 <?php } ?>
                             <?php } ?>
