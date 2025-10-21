@@ -4,22 +4,25 @@
 
 $intro = '<p>Open-AudIT can download, parse and use NIST CVE Vulnerability reports.</p>
 <br>
-<p>A vulnerability item in Open-AudIT can be thought of as essentially a query against your database to determine your potential exposure to a given CVE report. A vulnerability is made up of the CVE repport, along with enrichment data from FirstWave. These two items are combined, along with user input to produce a suitable query.</p>
+<p>A vulnerability item in Open-AudIT can be thought of as essentially a query against your database to determine your potential exposure to a given CVE report. A vulnerability is made up of the CVE repport, along with enrichment data from FirstWave. These two items are combined to produce a suitable query that is automatically downloaded from FirstWave.</p>
 <br>
 
 <hr>
 <h2>Notes</h2>
-<p>A vulnerability will only be displayed by default where its status is either pending or confirmed. Vulnerabilities with other statues can be displayed using the buttons in the panel header.</p>
 
-<p>A vulnerability can be editied and more specific package names provided where the enrichment data is insufficient.</p>
+<p>A vulnerability can be editied and more specific package names provided where the enrichment data is insufficient or the generated SQL isn\'t quite correct.</p>
 
-<p>Any attributes followed by a * indicate that CVSS data less than v4 was used to complete this field. By default, we attempt to use v4 fields, however if they are not populated we will fallback to the previous version for attributes.</p>
+<p>Any attributes followed by a * indicate that CVSS data less than v4 was used to complete this field. By default, we attempt to use v4 fields, however if they are not populated we will fallback to the previous version(s) for attributes.</p>
 
 <p><i><span class="text-primary">Open-AudIT does <strong>not</strong> provide vulnerability reports for the following:</span></i>
+<ul>
 <li>Libraries (ie, code that another program might include). These are typically items like Wordpress extensions, drupal extensions, node.js libraries, Android / iPhone / Windows libraries, python libraries, etc.</li><br>
+
 <li>A CVE item that does not contain a filter to determine the affected item.</li><br>
-<li>A CVE initially published before 1st August, 2025.</li><br>
-<li>Vulnerabilities initially published 1 week prior to your first request for vulnerabilities from FirstWave. Only those new vulnerabilities from the time of your request, minus one week will be retrieved. We see no sense in returning vulnerabilities from (potentially) years prior.</li>
+
+<li>Vulnerabilities initially published before 1st January, 2025 (by default). We see no sense in returning vulnerabilities from years prior.</li><br>
+
+<li>CVEs with a status of received, awaiting analysis, undergoing analysis. These CVEs (mostly) do not contain sufficient information to enable us to generate a correct SQL query.</li><br>
 </ul>
 
 <br>
@@ -29,12 +32,6 @@ $intro = '<p>Open-AudIT can download, parse and use NIST CVE Vulnerability repor
 <p><a href="https://www.first.org/cvss/v4-0/specification-document">https://www.first.org/cvss/v4-0/specification-document</a></p>
 
 <br>
-<br>
-<hr>
-<h2>Status</h2>
-<p>The Status field is manually set, initially by determining if there are matching items in your database. If so, the status is set to <i>pending</i>. If not, the status is set to <i>unlikely</i>. The user should review these items and if they determine a CVE is relevant to their environment, the status should be changed to <i>confirmed</i>. Conversely, if the CVE is determined to not be applicable, the status should be set to <i>declined</i>. By default on vulnerabilities with a status of pending or confirmed are shown on the initial vulnerability list screen.</p>
-
-
 <br>
 <hr>
 <h2>Vulnerability Status</h2>
@@ -88,7 +85,7 @@ Scope is known as Authorization Scope, representing whether a vulnerability affe
 
 The only two valid values for this attribute are:<br>
 <ul>
-  <li><strrong>unchanged</strong> — The exploited vulnerability only impacts resources within the same security authority as the vulnerable component. In other words, the attacker’s actions stay within the original trust boundary.</li>
+  <li><strrong>unchanged</strong> — The exploited vulnerability only impacts resources within the same security authority as the vulnerable component. In other words, the attacker’s actions stay within the original trust boundary.</li><br>
 
   <li><strrong>changed</strong> — The exploited vulnerability can affect resources beyond the security authority of the vulnerable component. This usually means a privilege or trust boundary is crossed (for example, escaping from a container to the host OS).</li>
 </ul>

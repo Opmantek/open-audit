@@ -52,8 +52,6 @@ if ($style === 'icontext') {
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
 }
 
-$link = "<a role=\"button\" title=\"" . __('View') . "\" target=\"_blank\" class=\"btn btn-outline-secondary link_button\" href=\"https://www.cve.org/CVERecord?id=" . $resource->cve . "\"><span title=\"" . __('View') . "\" class=\"fa-solid fa-arrow-up-right-from-square\" aria-hidden=\"true\"></span></a>";
-
 if ($resource->type === 'application') {
     $columns = ['software.name', 'software.version'];
 } else if ($resource->type === 'operating system') {
@@ -83,55 +81,30 @@ if ($resource->type === 'application') {
                     <div class="tab-content">
                         <div class="tab-pane" id="summary" role="tabpanel" tabindex="0" aria-labelledby="summary">
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-5">
                                     <?= read_field('name', (!empty($resource->name)) ? $resource->name : '', $dictionary->columns->name, false, '', '', '', '', $meta->collection) ?>
-                                    <!--
-                                    <div class="row" style="padding-top:16px;">
-                                        <div class="offset-2 col-8" style="position:relative;">
-                                            <?= read_field_header($meta->collection, 'status', $dictionary->columns->status) ?>
-                                            <div class="input-group">
-                                                <select class="form-select" id="status" name="status" disabled>
-                                                    <option value="pending"><?= __('pending') ?></option>
-                                                    <option value="unlikely"><?= __('unlikely') ?></option>
-                                                    <option value="confirmed"><?= __('confirmed') ?></option>
-                                                    <option value="declined"><?= __('declined') ?></option>
-                                                    <option value="other"><?= __('other') ?></option>
-                                                    <option value=""><?= __('') ?></option>
-                                                </select>
-                                                <?php if ($update) { ?>
-                                                <div class="float-end" style="padding-left:4px;">
-                                                    <div data-attribute="status" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                    <div data-attribute="status" class="btn btn-outline-success submit" style="display: none;\"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                    <div data-attribute="status" class="btn btn-outline-danger cancel" style="display: none;\"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
-                                                </div>
-                                                <?php } ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    -->
-                                    <?= read_field('cve', (!empty($resource->cve)) ? $resource->cve : '', $dictionary->columns->cve, false, 'CVE', $link, '', '', $meta->collection) ?>
-                                    <?= read_field('published', (!empty($resource->published)) ? $resource->published : '', $dictionary->columns->published, false, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('vuln_status', (!empty($resource->vuln_status)) ? $resource->vuln_status : '', $dictionary->columns->vuln_status, false, 'Vulnerability Status', '', '', '', $meta->collection) ?>
-                                    <?= read_field('scope', (!empty($resource->scope)) ? $resource->scope : '', $dictionary->columns->scope, false, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('cve', (!empty($resource->cve)) ? $resource->cve : '', $dictionary->columns->cve, false, 'CVE', "<a role=\"button\" title=\"" . __('View') . "\" target=\"_blank\" class=\"btn btn-outline-secondary link_button\" href=\"https://www.cve.org/CVERecord?id=" . $resource->cve . "\"><span title=\"" . __('View') . "\" class=\"fa-solid fa-arrow-up-right-from-square\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                    <?= read_field('vendor', (!empty($resource->vendor)) ? $resource->vendor : '', $dictionary->columns->vendor, false, 'Vendor', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.vendor=" . $resource->vendor . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                    <?= read_field('published', (!empty($resource->published)) ? $resource->published : '', $dictionary->columns->published, false, '', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.published_date=" . $resource->published_date . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                    <?= read_field('vuln_status', (!empty($resource->vuln_status)) ? $resource->vuln_status : '', $dictionary->columns->vuln_status, false, 'Vulnerability Status', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.vuln_status=" . $resource->vuln_status . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                    <?= read_field('scope', (!empty($resource->scope)) ? $resource->scope : '', $dictionary->columns->scope, false, '', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.scope=" . $resource->scope . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <?= read_field_header($meta->collection, 'description', '', 'Description') ?>
+                                            <?= read_field_header($meta->collection, 'description', $dictionary->columns->description, 'Description') ?>
                                             <div class="input-group">
                                                 <textarea class="form-control" rows="6" id="description" name="description" disabled><?= @$resource->description ?></textarea>
                                             </div>
                                         </div>
                                     </div>
-                                    <?php if (!empty($resource->remediation)) { ?>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <?= read_field_header($meta->collection, 'remediation', '', 'Remediation') ?>
+                                            <?= read_field_header($meta->collection, 'remediation', $dictionary->columns->remediation, 'Remediation') ?>
                                             <div class="input-group">
                                                 <textarea class="form-control" rows="6" id="remediation" name="remediation" disabled><?= html_entity_decode($resource->remediation) ?></textarea>
                                             </div>
                                         </div>
                                     </div>
-                                <?php } ?>
                                     <br>
 
 
@@ -150,23 +123,41 @@ if ($resource->type === 'application') {
 
                                 </div>
 
-                                <div class="col-6">
+                                <div class="col-7">
                                     <div class="row">
-                                        <div class="col-5 offset-1">
-                                            <?= read_field('severity', $resource->base_severity, $dictionary->columns->base_severity, false, '', '', '', '', $meta->collection) ?>
+                                        <div class="col-4">
+                                            <?= read_field('severity', $resource->base_severity, $dictionary->columns->base_severity, false, '', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.base_severity=" . $resource->base_severity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
                                         </div>
-                                        <div class="col-5">
-                                            <?= read_field('availability', $resource->impact_availability, $dictionary->columns->impact_availability, false, 'Impact :: Availability', '', '', '', $meta->collection) ?>
+                                        <div class="col-4">
+                                            <?= read_field('availability', $resource->impact_availability, $dictionary->columns->impact_availability, false, 'Impact :: Availability', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.impact_availability=" . $resource->impact_availability . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_field('complexity', $resource->attack_complexity, $dictionary->columns->attack_complexity, false, 'Attack :: Complexity', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.attack_complexity=" . $resource->attack_complexity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-5 offset-1">
-                                            <?= read_field('confidentiality', $resource->impact_confidentiality, $dictionary->columns->impact_confidentiality, false, 'Impact :: Confidentiality', '', '', '', $meta->collection) ?>
+                                        <div class="col-4">
+                                            <?= read_field('score', $resource->base_score, $dictionary->columns->base_score, false, 'Score', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.base_score=" . $resource->base_score . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
                                         </div>
-                                        <div class="col-5">
-                                            <?= read_field('integrity', $resource->impact_integrity, $dictionary->columns->impact_integrity, false, 'Impact :: Integrity', '', '', '', $meta->collection) ?>
+                                        <div class="col-4">
+                                            <?= read_field('confidentiality', $resource->impact_confidentiality, $dictionary->columns->impact_confidentiality, false, 'Impact :: Confidentiality', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.impact_confidentiality=" . $resource->impact_confidentiality . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_field('requirements', $resource->attack_requirements, $dictionary->columns->attack_requirements, false, 'Attack :: Requirements', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.attack_requirements=" . $resource->attack_requirements . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <?= read_field('maturity', $resource->exploit_maturity, $dictionary->columns->exploit_maturity, false, 'Maturity', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.exploit_maturity=" . $resource->exploit_maturity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_field('integrity', $resource->impact_integrity, $dictionary->columns->impact_integrity, false, 'Impact :: Integrity', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.impact_integrity=" . $resource->impact_integrity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_field('vector', $resource->attack_vector, $dictionary->columns->attack_vector, false, 'Attack :: Vector', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.attack_vector=" . $resource->attack_vector . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                        </div>
+                                    </div>
+
                                     <br><div class="col-10 offset-1"><hr></div><br>
 
                                     <?php
@@ -307,6 +298,12 @@ window.onload = function () {
         $(".nav-link").click(function(e) {
             window.scrollTo(0, 0);
         });
+
+        $('#severity').addClass('text-<?= $resource->base_severity ?>');
+        $('#score').addClass('text-<?= $resource->base_severity ?>');
+        $('#availability').addClass('text-<?= $resource->impact_availability ?>');
+        $('#confidentiality').addClass('text-<?= $resource->impact_confidentiality ?>');
+        $('#integrity').addClass('text-<?= $resource->impact_integrity ?>');
 
     });
 }

@@ -12,10 +12,6 @@ foreach ($meta->filter as $filter) {
         $url .= '&' . $filter->name . '=' . $filter->operator . '("' . implode('","', $filter->value) . '")';
     }
 }
-if (!empty($meta->groupby)) {
-    $url .= '&groupby=' . $meta->groupby;
-    $data_order = array('vendor', 'count');
-}
 if (empty($config->product) or $config->product === 'community') {
     echo '        <div class="container-fluid">
             <div class="alert alert-danger alert-dismissable fade show" role="alert">
@@ -84,11 +80,7 @@ if (!empty($meta->filter)) {
                 </div>
                 <div class="card-body">
                     <br>
-                    <?php if (empty($meta->groupby)) { ?>
                     <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[2,"desc"]]'>
-                    <?php } else { ?>
-                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[0,"desc"]]'>
-                    <?php } ?>
                         <thead>
                             <tr>
 <?php foreach ($data_order as $key) {
@@ -97,11 +89,17 @@ if (!empty($meta->filter)) {
                                     $align = 'text-center dt-body-center';
                                 }
                                 echo '                                <th class="' . $align . '">' . collection_column_name($key) . "</th>\n";
+                                if ($key === 'id') {
+                                    echo '                                <th class="' . $align . '">Devices' . "</th>\n";
+                                }
                             } ?>
                             </tr>
                             <tr>
 <?php foreach ($data_order as $key) {
                                 echo '                                <th><div class="input-group">';
+                                if ($key === 'id') {
+                                    echo "</div></th>\n                                <th><div class=\"input-group\">";
+                                }
                                 if ($key !== 'id' and $key !== 'count' and $key !== 'view') {
                                     echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . collection_column_name($key) . '">';
                                 }
@@ -263,9 +261,14 @@ window.onload = function () {
                 }
             },
             columns: [
-                { data: 'attributes.view', 
+                { data: 'attributes.view',
                     render: function (data, type, row, meta) {
                         return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                    }
+                },
+                { data: 'attributes.id',
+                    render: function (data, type, row, meta) {
+                        return "<a title=\"<?= __('Devices') ?>\" role=\"button\" class=\"btn <?= $GLOBALS['button'] ?> btn-devices\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "#devices\"><span style=\"width:1rem;\" title=\"<?= __('Devices') ?>\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
                     }
                 },
                 { data: 'attributes.base_severity',
@@ -292,10 +295,11 @@ window.onload = function () {
                 {className: "text-center", target: 0, width: "10em"},
                 {className: "text-center", target: 1, width: "10em"},
                 {className: "text-center", target: 2, width: "10em"},
-                {className: "text-left", target: 3, width: "50em"},
-                {className: "text-center", target: 4, width: "10em"},
-                {className: "text-center", target: 5, width: "20em"},
-                {className: "text-center", target: 6, width: "10em"}
+                {className: "text-center", target: 3, width: "10em"},
+                {className: "text-left", target: 4, width: "50em"},
+                {className: "text-center", target: 5, width: "10em"},
+                {className: "text-center", target: 6, width: "20em"},
+                {className: "text-center", target: 7, width: "10em"}
             ],
             info: true,
             layout: {

@@ -702,7 +702,7 @@ class VulnerabilitiesModel extends BaseModel
         $dictionary->link = '';
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = 'The identifier column (integer) in the database (read only).';
-        $dictionary->columns->name = 'The name given to this item. Ideally it should be unique.';
+        $dictionary->columns->name = 'The name given to this item.';
         $dictionary->columns->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
         $dictionary->columns->cve  = 'The CVE identifier.';
         $dictionary->columns->status = 'The user assigned status of pending, confirmed or declined. This should occur after reviewing the <code>filter</code> and generated <code>SQL</code>. If set to declined, this item will not appear on the Vulnerability list by default.';
@@ -724,7 +724,7 @@ class VulnerabilitiesModel extends BaseModel
         $dictionary->columns->published = 'Date and time when the CVE was published.';
         $dictionary->columns->published_date = 'Date when the CVE was published.';
         $dictionary->columns->references = '';
-        $dictionary->columns->remediation = '';
+        $dictionary->columns->remediation = 'The recommanded process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.';
         $dictionary->columns->scope = 'Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.';
         $dictionary->columns->type = 'Application, Operating System or Hardware.';
         $dictionary->columns->user_interaction = 'Whether user interaction is required (None, Passive, Active).';
