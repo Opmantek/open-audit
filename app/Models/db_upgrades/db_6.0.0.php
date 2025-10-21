@@ -888,12 +888,12 @@ if (empty(config('Openaudit')->feature_vulnerabilities_last_request_datetime)) {
 }
 
 $sql = "INSERT INTO `tasks` VALUES (null, 'Vulnerabilitiy Retrieval', 1, 'Retrieve an updated vulnerability list.', 0, '', 'y', 'vulnerabilities', '*/5', '*', '*', '*', '*', 0, 0, '2001-02-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `tasks` VALUES (null, 'Vendor Retrieval', 1, 'Retrieve an updated vendor list.', 0, '', 'y', 'vendors', 5, 1, '*', '*', '*', 0, 0, '2001-02-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
@@ -910,72 +910,72 @@ foreach ($result as $device) {
 
 // Syslog Feature flags
 $sql = "DELETE FROM `configuration` WHERE `name` = 'feature_syslog_access'";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'feature_syslog_access','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT log access to syslog (Linux only).')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "DELETE FROM `configuration` WHERE `name` = 'feature_syslog_components'";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'feature_syslog_components','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a change is detected in a component table.')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "DELETE FROM `configuration` WHERE `name` = 'feature_syslog_devices'";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'feature_syslog_devices','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a new device detected.')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "DELETE FROM `configuration` WHERE `name` = 'feature_syslog_vulnerabilities'";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `configuration` VALUES (NULL,'feature_syslog_vulnerabilities','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a device has a vulnerability detected.')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 // New Widgets
 $sql = "INSERT INTO `widgets` VALUES (null,'Top 10 Vulnerable Devices',1,'','pie','','','','','Devices','','',0,'','SELECT devices.id AS `description`, devices.name AS `name`, LENGTH(devices.cve) - LENGTH(REPLACE(devices.cve, \',\', \'\')) AS `count` FROM devices WHERE @filter AND devices.cve > \'\' ORDER BY (LENGTH(devices.cve) - LENGTH(REPLACE(devices.cve, \',\', \'\'))) DESC LIMIT 10','devices?devices.id=@description','system','2000-01-01 00:00:00')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 $top10 = intval($db->insertID());
 
 $sql = "INSERT INTO `widgets` VALUES (null,'Top 25 Vendors of Vulnerabilities',1,'','pie','','','','','Devices','','',0,'','SELECT vulnerabilities.vendor AS `description`, vulnerabilities.vendor AS `name`, COUNT(vulnerabilities.id) AS `count` FROM `vulnerabilities` LEFT JOIN `orgs` ON `vulnerabilities`.`org_id` = `orgs`.`id`  WHERE @filter GROUP BY vulnerabilities.vendor ORDER BY `count` LIMIT 25','vulnerabilities?vulnerabilities.vendor=@description','system','2000-01-01 00:00:00')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 $top25 = intval($db->insertID());
 
 $sql = "INSERT INTO `widgets` VALUES (null,'Vulnerabilities Outstanding from Microsoft',1,'','pie','','','','','Devices','','',0,'','SELECT vulnerabilities.base_severity AS `name`, COUNT(vulnerabilities_cache.vulnerability_id) AS `count`, \'\' AS `description` FROM vulnerabilities_cache LEFT JOIN vulnerabilities ON (vulnerabilities_cache.vulnerability_id = vulnerabilities.id) WHERE @filter AND vulnerabilities.vendor = \'microsoft\' GROUP BY base_severity','vulnerabilities?vulnerabilities.base_severity=@name&vulnerabilities.vendor=microsoft&count=>0','system','2000-01-01 00:00:00')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 $microsoft = intval($db->insertID());
 
 $sql = "INSERT INTO `widgets` VALUES (null,'Vulnerabilities By Severity',1,'','pie','','','','','Devices','','',0,'','SELECT vulnerabilities.base_severity AS `name`, COUNT(vulnerabilities_cache.vulnerability_id) AS `count`, \'\' AS `description` FROM vulnerabilities_cache LEFT JOIN vulnerabilities ON (vulnerabilities_cache.vulnerability_id = vulnerabilities.id) WHERE @filter GROUP BY base_severity','vulnerabilities?vulnerabilities.base_severity=@name&count=>0','system','2000-01-01 00:00:00')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 $severity = intval($db->insertID());
 
 $sql = "SELECT id, name FROM widgets WHERE name IN ('Open Windows Shares', 'Windows Clients AntiVirus Status', 'Windows 11 Latest Build', 'Windows 2025 Server Latest Build', 'Devices Audited per Day', 'New Devices Discovered per Day', 'Hardware Additions per Day', 'New Software Discovered per Day')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
@@ -986,7 +986,7 @@ foreach ($result as $widget) {
 
 // New Dashboard
 $sql = "INSERT INTO `dashboards` VALUES (null,'Security Dashboard',1,'org',0,'Security Information','y','{\"layout\":\"4x3\",\"widget_count\":12,\"widgets\":[{\"size\":1,\"position\":1,\"widget_id\":" . $widgets['Open Windows Shares'] . "},{\"size\":1,\"position\":2,\"widget_id\":" . $widgets['Windows Clients AntiVirus Status'] . "},{\"size\":1,\"position\":3,\"widget_id\":" . $widgets['Windows 11 Latest Build'] . "},{\"size\":1,\"position\":4,\"widget_id\":" . $widgets['Windows 2025 Server Latest Build'] . "},{\"size\":1,\"position\":5,\"widget_id\":" . $top10 . "},{\"size\":1,\"position\":6,\"widget_id\":" . $top25 . "},{\"size\":1,\"position\":7,\"widget_id\":" . $microsoft . "},{\"size\":1,\"position\":8,\"widget_id\":" . $severity . "},{\"size\":1,\"position\":9,\"widget_id\":" . $widgets['Devices Audited per Day'] . "},{\"size\":1,\"position\":10,\"widget_id\":" . $widgets['New Devices Discovered per Day'] . "},{\"size\":1,\"position\":11,\"widget_id\":" . $widgets['Hardware Additions per Day'] . "},{\"size\":1,\"position\":12,\"widget_id\":" . $widgets['New Software Discovered per Day'] . "}]}','system','2000-01-01 00:00:00')";
-$result = $db->query($sql)->getResult();
+$result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
