@@ -723,7 +723,7 @@ class VulnerabilitiesModel extends BaseModel
         $dictionary->columns->products = '';
         $dictionary->columns->published = 'Date and time when the CVE was published.';
         $dictionary->columns->published_date = 'Date when the CVE was published.';
-        $dictionary->columns->references = '';
+        $dictionary->columns->references = 'An array of object representing external links to more information.';
         $dictionary->columns->remediation = 'The recommanded process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.';
         $dictionary->columns->scope = 'Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.';
         $dictionary->columns->type = 'Application, Operating System or Hardware.';
