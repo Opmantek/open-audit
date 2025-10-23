@@ -66,6 +66,14 @@ foreach ($meta->filter as $filter) {
 if (!empty($meta->properties) and is_array($meta->properties)) {
     $url .= '&properties=' . implode(',', $meta->properties);
 }
+$show_reset = false;
+if (!empty($meta->filter)) {
+    foreach ($meta->filter as $filter) {
+        if ($filter->name === 'devices.type' or $filter->name === 'devices.os_family') {
+            $show_reset = true;
+        }
+    }
+}
 ?>
        <main class="container-fluid">
 
@@ -120,41 +128,83 @@ if (!empty($meta->properties) and is_array($meta->properties)) {
             <br>
             <?php } ?>
 
-            <div class="card">
-                <div class="card-header">
-                    <?= collection_card_header($meta->collection, $meta->icon, $user, '', $meta->query_string) ?>
-                </div>
-                <div class="card-body">
-                    <br>
-                    <form action="<?= base_url() ?>index.php/devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
-                        <div class="table-responsive">
-                            <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDevices">
-                                <thead>
-                                    <tr>
-                                    <?php foreach ($meta->data_order as $key) {
-                                        $align = '';
-                                        if ($key === 'audit_status' or $key === 'icon' or $key === 'id' or strpos($key, '_id') !== false or $key === 'delete' or $key === 'update') {
-                                            $align = 'text-center dt-body-center';
-                                        } ?>
-                                        <th class="<?= $align ?>"><?= collection_column_name(str_replace('ip__', '', $key)) ?>
-                                        <?php
-                                        if ($key !== 'audit_status' and $key !== 'icon' and $key !== 'id' and $key !== 'delete' and $key !== 'update') {
-                                            echo'<hr><input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTableSearchField" placeholder="Search ' . collection_column_name(str_replace('ip__', '', $key)) . '">';
-                                        } else if ($key === 'update') {
-                                            echo "<hr><button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"margin-left:5em; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\" title=\"Bulk Edit\" id=\"bulkEditButton\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></button>\n";
-                                            echo "<input aria-label='" . __('Select All') . "' type=\"checkbox\" name=\"select_all\" id=\"select_all\">\n";
-                                        } else {
-                                            echo '<hr style="padding-bottom:31px;">';
-                                        } ?>
-                                        </th>
+
+            <div class="row">
+                <div class="col-2">
+                    <div class="card">
+                        <div class="card-header" style="min-height:57px;">
+                            <div class="row clearfix">
+                                <h6 style="padding-top:10px">
+                                    Operating Systems
+                                    <?php if ($show_reset) { ?>
+                                    <a href="<?= base_url() ?>index.php/devices"><span class="float-end fa-solid fa-ban" style="padding-top:2px; padding-right:10px;"></span></a>
                                     <?php } ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                                </h6>
+                            </div>
                         </div>
-                    </form>
+                        <div class="card-body">
+                            <?php foreach ($included['os_family'] as $os) { ?>
+                            <img style="width:32px; padding-bottom:5px;" src="http://localhost:8080/device_images/<?= str_replace(' ', '_', $os) ?>.svg" alt="<?= $os ?>"><a href="<?= base_url() ?>index.php/devices?devices.os_family=<?= $os ?>" style="padding-left: 10px;"><?= $os ?></a><br><hr style="margin: 6px;">
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card">
+                        <div class="card-header" style="min-height:56px;">
+                            <div class="row clearfix">
+                                <h6 style="padding-top:10px">
+                                    Types
+                                    <?php if ($show_reset) { ?>
+                                    <a href="<?= base_url() ?>index.php/devices"><span class="float-end fa-solid fa-ban" style="padding-top:2px; padding-right:10px;"></span></a>
+                                    <?php } ?>
+                                </h6>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <?php foreach ($included['types'] as $type) { ?>
+                            <img style="width:22px; padding-bottom:5px;" src="http://localhost:8080/device_images/<?= str_replace(' ', '_', $type) ?>.svg" alt="<?= $type ?>"><a href="<?= base_url() ?>index.php/devices?devices.type=<?= $type ?>" style="padding-left: 10px;"><?= $type ?></a><br><hr style="margin: 6px;">
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <div class="card">
+                        <div class="card-header">
+                            <?= collection_card_header($meta->collection, $meta->icon, $user, '', $meta->query_string) ?>
+                        </div>
+                        <div class="card-body">
+                            <br>
+                            <form action="<?= base_url() ?>index.php/devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
+                                <div class="table-responsive">
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDevices">
+                                        <thead>
+                                            <tr>
+                                            <?php foreach ($meta->data_order as $key) {
+                                                $align = '';
+                                                if ($key === 'audit_status' or $key === 'icon' or $key === 'id' or strpos($key, '_id') !== false or $key === 'delete' or $key === 'update') {
+                                                    $align = 'text-center dt-body-center';
+                                                } ?>
+                                                <th class="<?= $align ?>"><?= collection_column_name(str_replace('ip__', '', $key)) ?>
+                                                <?php
+                                                if ($key !== 'audit_status' and $key !== 'icon' and $key !== 'id' and $key !== 'delete' and $key !== 'update') {
+                                                    echo'<hr><input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTableSearchField" placeholder="Search ' . collection_column_name(str_replace('ip__', '', $key)) . '">';
+                                                } else if ($key === 'update') {
+                                                    echo "<hr><button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"margin-left:5em; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\" title=\"Bulk Edit\" id=\"bulkEditButton\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></button>\n";
+                                                    echo "<input aria-label='" . __('Select All') . "' type=\"checkbox\" name=\"select_all\" id=\"select_all\">\n";
+                                                } else {
+                                                    echo '<hr style="padding-bottom:31px;">';
+                                                } ?>
+                                                </th>
+                                            <?php } ?>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

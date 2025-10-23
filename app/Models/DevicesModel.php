@@ -615,6 +615,24 @@ class DevicesModel extends BaseModel
             $result = $query->getResult();
             $included[$table] = intval($result[0]->count);
         }
+
+        $sql = "SELECT DISTINCT os_family FROM devices WHERE `type` = 'computer' AND os_family != '' ORDER BY os_family";
+        $query = $this->db->query($sql);
+        $result = $query->getResult();
+        $included['os_family'] = array();
+        foreach ($result as $row) {
+            $included['os_family'][] = $row->os_family;
+        }
+
+        $sql = "SELECT DISTINCT type FROM devices WHERE `type` != '' ORDER BY type";
+        $query = $this->db->query($sql);
+        $result = $query->getResult();
+        $included['types'] = array();
+        foreach ($result as $row) {
+            $included['types'][] = $row->type;
+        }
+
+
         return $included;
     }
 
