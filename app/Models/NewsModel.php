@@ -216,6 +216,13 @@ class NewsModel extends BaseModel
             unset($send['issues']);
             $send['issues'] = array();
             $send['last_request_date'] = $config->feature_vulnerabilities_last_request_datetime;
+            $sql = "SELECT `cve` FROM `vulnerabilities`";
+            $result = $this->db->query($sql)->getResult();
+            $send['cves'] = array();
+            foreach ($result as $row) {
+                $send['cves'][] = $row->cve;
+            }
+            $send['cves'] = json_encode($send['cves']);
         }
 
         $client = service('curlrequest');
