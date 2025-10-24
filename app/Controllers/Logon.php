@@ -64,6 +64,8 @@ class Logon extends Controller
         log_message('debug', 'Session, ' . $duration);
         $start = microtime(true);
 
+        helper('network');
+
         $db = db_connect();
         $sql = "SELECT * FROM discoveries WHERE id = 1";
         $result = $db->query($sql)->getResult();
@@ -102,6 +104,12 @@ class Logon extends Controller
         $sql = 'UPDATE configuration SET value = ? WHERE name = "server_platform"';
         $db->query($sql, [$server_platform]);
         log_message('info', 'Config auto-populated with ServerPlatform ' . $server_platform . '.');
+
+        $server_ip = server_ip();
+        $server_ip = explode(',', $server_ip)[0];
+        $sql = 'UPDATE configuration SET value = ? WHERE name = "server_ip"';
+        $db->query($sql, [$server_ip]);
+        log_message('info', 'Config auto-populated with ServerIP ' . $server_ip . '.');
 
         $duration = (microtime(true) - $start);
         log_message('debug', 'Config, ' . $duration);
