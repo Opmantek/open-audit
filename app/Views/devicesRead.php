@@ -181,10 +181,10 @@ if (empty($resource->type)) {
                                             <?= read_field('manufacturer', $resource->manufacturer, $dictionary->columns->manufacturer, $update, '', $link, '', '', $meta->collection) ?>
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.os_group=" . urlencode($resource->os_group) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('os_group', $resource->os_group, $dictionary->columns->os_group, $update, __('OS Group'), $link, '', '', $meta->collection) ?>
+                                            <?= read_select('criticality', $resource->criticality, $dictionary->columns->criticality, $update, __('Criticality'), $included['criticality'], $meta->collection) ?>
                                             <?php if (!empty($resource->type) and stripos($resource->type, 'printer') !== false and !empty($resource->snmp_oid)) { ?>
                                                 <?= read_field('printer_color', $resource->printer_color, $dictionary->columns->printer_color, false, __('Color'), '', '', '', $meta->collection) ?>
                                             <?php } ?>
-
                                         </div>
                                         <div class="col-4">
                                             <?= read_field('ip', $resource->ip, $dictionary->columns->ip, $update, '', '', '', '', $meta->collection) ?>
@@ -192,6 +192,7 @@ if (empty($resource->type)) {
                                             <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.model=" . urlencode($resource->model) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('model', $resource->model, $dictionary->columns->model, $update, '', $link, '', '', $meta->collection) ?>
                                             <?= read_field('os_name', $resource->os_name, $dictionary->columns->os_name, $update, '', '', '', '', $meta->collection) ?>
+                                            <?= read_select('sensitivity', $resource->sensitivity, $dictionary->columns->sensitivity, $update, __('Sensitivity'), $included['sensitivity'], $meta->collection) ?>
                                             <?php if (!empty($resource->type) and stripos($resource->type, 'printer') !== false and !empty($resource->snmp_oid)) { ?>
                                                 <?= read_field('printer_duplex', $resource->printer_duplex, $dictionary->columns->printer_duplex, false, __('Duplex'), '', '', '', $meta->collection) ?>
                                             <?php } ?>

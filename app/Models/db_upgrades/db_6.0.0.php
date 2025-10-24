@@ -698,10 +698,94 @@ if (!$db->fieldExists('os_display_version', 'devices')) {
 }
 
 if (!$db->fieldExists('vm_vendor', 'devices')) {
-  $sql = "ALTER TABLE devices ADD vm_vendor varchar(50) NOT NULL DEFAULT '' AFTER asset_tag";
-  $db->query($sql);
-  $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-  log_message('info', (string)$db->getLastQuery());
+    $sql = "ALTER TABLE devices ADD vm_vendor varchar(50) NOT NULL DEFAULT '' AFTER asset_tag";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('criticality', 'devices')) {
+    $sql = "ALTER TABLE devices ADD `criticality` varchar(100) NOT NULL DEFAULT '' AFTER owner";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','extreme','extreme','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','very high','very high','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','high','high','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','medium','medium','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','low','low','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','unassigned','unassigned','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('sensitivity', 'devices')) {
+    $sql = "ALTER TABLE devices ADD `sensitivity` varchar(100) NOT NULL DEFAULT '' AFTER criticality";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','top secret','top secret','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','secret','secret','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','confidential','confidential','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','private','private','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','sensitive','sensitive','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','public','public','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','unclassified','unclassified','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+
+    $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','unassigned','unassigned','system','2000-01-01 00:00:00')";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
 }
 
 $sql = "DROP TABLE IF EXISTS `vulnerabilities`";

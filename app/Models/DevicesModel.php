@@ -834,6 +834,10 @@ class DevicesModel extends BaseModel
             $include['status'] = $attributes;
             $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'type']);
             $include['type'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'criticality']);
+            $include['criticality'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'sensitivity']);
+            $include['sensitivity'] = $attributes;
         }
 
         if ($instance->config->product === 'enterprise') {
@@ -1566,6 +1570,32 @@ class DevicesModel extends BaseModel
         $dictionary->columns->nmis_poller_uuid = 'Used with Integrations and FirstWave monitoring applications.';
         $dictionary->columns->nmis_customer = 'Used with Integrations and FirstWave monitoring applications.';
         $dictionary->columns->oae_manage = 'Unused.';
+        $dictionary->columns->criticality = 'extreme - Without which, the organisation would fail.
+
+very high - Functions that are essential for the organisation\'s survival and must be restored immediately.
+
+high - Important functions that should be restored quickly but may have a slightly longer recovery time.
+
+medium - Functions that are necessary but can tolerate longer downtime.
+
+low - Non-essential functions that can be delayed without significant impact.
+
+unassigned - The default until set.';
+        $dictionary->columns->sensitivity = 'top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
+
+secret - Military / Government classification. Disclosure would cause serious damage to national security.
+
+confidential - Military / Government and Private Sector classification. Data that is confidential includes trade secrets, intellectual data, application programming code, and other data that could seriously affect the organization if unauthorized disclosure occurred. Data at this level would be available only to personnel in the organization whose work needs, or is directly related to, the accessed data. Access to confidential data usually requires authorization for each access.
+
+private - Private Sector classification. Data that is private includes any information related to personnel, including human resources records, medical records, and salary information, that is used only within the organization.
+
+sensitive - Military / Government and Private Sector classification. Data that is sensitive includes organizational financial information and requires extra measures to ensure its CIA and accuracy. Disclosure might harm national security.
+
+public - Private Sector classification. Public data is data that is generally shared with the public and would not cause a negative impact on the organization. Examples of public data include how many people work in the organization and what products an organization manufactures or sells.
+
+unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
+
+unassigned - The default until set.';
         $dictionary->columns->snmp_oid = 'Populated from SNMP discovery.';
         $dictionary->columns->sysDescr = 'Populated from SNMP discovery.';
         $dictionary->columns->sysObjectID = 'Populated from SNMP discovery.';

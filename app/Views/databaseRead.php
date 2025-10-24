@@ -117,7 +117,7 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                                         <td><?= $column->max_length ?></td>
                                         <td><?= $column->primary_key ?></td>
                                         <td><?php if (!empty($column->values)) { echo html_entity_decode($column->values); } ?></td>
-                                        <td><?= @$dictionary->columns->{$column->name} ?></td>
+                                        <td><?= @nl2br(@$dictionary->columns->{$column->name}) ?></td>
                                     </tr>
                                     <?php } ?>
                                 </tbody>

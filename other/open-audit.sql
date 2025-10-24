@@ -494,6 +494,20 @@ INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Other','Other
 INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Server','Server','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Software','Software','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','User','User','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','extreme','extreme','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','very high','very high','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','high','high','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','medium','medium','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','low','low','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','criticality','unassigned','unassigned','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','top secret','top secret','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','secret','secret','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','confidential','confidential','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','private','private','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','sensitive','sensitive','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','public','public','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','unclassified','unclassified','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'devices','sensitivity','unassigned','unassigned','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1604,6 +1618,8 @@ CREATE TABLE `devices` (
   `class` varchar(100) NOT NULL DEFAULT '',
   `function` varchar(100) NOT NULL DEFAULT '',
   `owner` varchar(100) NOT NULL DEFAULT '',
+  `criticality` varchar(100) NOT NULL DEFAULT 'unassigned',
+  `sensitivity` varchar(100) NOT NULL DEFAULT 'unassigned',
   `location_id` int(10) unsigned NOT NULL DEFAULT '1',
   `location_level` varchar(100) NOT NULL DEFAULT '',
   `location_suite` varchar(100) NOT NULL DEFAULT '',

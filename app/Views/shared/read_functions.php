@@ -233,7 +233,7 @@ function read_field_header(string $collection = '', string $name = '', string $d
                                                 </div>
                                                 <div class="col-2">
                                                     <div class="float-end">
-                                                    <a role="button" tabindex="0" class="btn btn-clear btn-sm"           data-bs-container="#header_row_' . $name . '_' . $count . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . $field . str_replace('"', '\"', __($dictionary)) . '"><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC;"></i></a>
+                                                    <a role="button" tabindex="0" class="btn btn-clear btn-sm"           data-bs-container="#header_row_' . $name . '_' . $count . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . $field . nl2br(str_replace('"', '\"', __($dictionary))) . '"><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC;"></i></a>
                                                     </div>
                                                 </div>
                                             </div>';
@@ -335,8 +335,10 @@ function read_select(string $name = '', string $value = '', string $dictionary =
                 $selected .= ' label="none"';
             }
             $return .= "                                            <option value=\"{$item->attributes->value}\"{$selected}>" . $item->attributes->name . "</option>\n";
+
         } elseif (!empty($item->type) and $item->type === 'discovery_scan_options') {
             $return .= "                                            <option value=\"{$item->attributes->id}\"{$selected}>{$item->attributes->name}</option>\n";
+
         } else {
             if ($item->id === '') {
                 $selected .= ' label="none"';
