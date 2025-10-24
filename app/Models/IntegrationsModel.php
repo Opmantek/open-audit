@@ -363,7 +363,7 @@ class IntegrationsModel extends BaseModel
                     unset($exploded_url);
                 }
                 if ($device->devices->ip === '127.0.0.1' or $device->devices->ip === '127.0.1.1') {
-                    $ip = explode(',', $instance->config->ip);
+                    $ip = explode(',', $instance->config->server_ip);
                     if (!empty($ip[0])) {
                         $device->devices->ip = $ip[0];
                     }
