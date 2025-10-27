@@ -39,16 +39,17 @@ As well as the usual reporting, we also have a few new widgets available for Das
 
 <li>A CVE item that does not contain a filter to determine the affected item(s).</li><br>
 
-<li>Vulnerabilities initially published before 1st January, 2025 (by default). We see no sense in returning vulnerabilities from years prior.</li><br>
+<li>Vulnerabilities initially published before 1st January, 2025 (by default). We see no sense in returning vulnerabilities from years prior. This can be changed in the configuration.</li><br>
 
-<li>CVEs with a status of received, awaiting analysis, undergoing analysis. These CVEs (mostly) do not contain sufficient information to enable us to generate a correct SQL query.</li><br>
+<li>CVEs with a status of received, awaiting analysis, undergoing analysis, rejected. These CVEs (mostly) do not contain sufficient information to enable us to generate a correct SQL query.</li><br>
 </ul>
 
 <br>
 <br>
 <hr>
 <h2>Links</h2>
-<p><a href="https://www.first.org/cvss/v4-0/specification-document">https://www.first.org/cvss/v4-0/specification-document</a></p>
+
+<p>Thanks to <a href="https://www.first.org" target="_blank">first.org</a> for this information. <a href="https://www.first.org/cvss/v4-0/specification-document" target="_blank">https://www.first.org/cvss/v4-0/specification-document</a></p>
 
 <br>
 <br>
@@ -114,3 +115,13 @@ The only two valid values for this attribute are:<br>
 ';
 
 $body = '';
+
+/*
+https://new-support.first.org/support/solutions/articles/158000409737-can-i-use-this-picture-content-application-
+
+By default, FIRST grants permission for standards it develops to be implemented and/or adopted by FIRST members and non-members at no cost in perpetuity. The default license for any standard is Creative Commons CC-BY-SA (Attribution+ShareAlike). Exceptions must be approved by the FIRST Board.
+
+In case you want to use the results of a SIG, group that aims to be a standard, yes, you can use it, including the contents of the standards and any byproducts. We ask for the proper reference (Attribution) and that if you share this material, that it be shared under a similar license.
+
+Publications and presentations from FIRST Events might have a different license applied. In case the license is not explicit, please reach out for clarification.
+*/
