@@ -3,40 +3,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
-$statuses = array();
-foreach (['confirmed', 'declined', 'pending', 'other'] as $item) {
-    $status = new stdClass();
-    $status->id = $item;
-    $status->attributes = new stdClass();
-    $status->attributes->name = __($item);
-    $statuses[] = $status;
-}
-$status = new stdClass();
-
-$status->id = '';
-$status->attributes = new stdClass();
-$status->attributes->name = '';
-$statuses[] = $status;
-
-$status->id = 'pending';
-$status->attributes->name = __('pending');
-$statuses[] = $status;
-
-$status->id = 'unlikely';
-$status->attributes->name = __('unlikely');
-$statuses[] = $status;
-
-$status->id = 'confirmed';
-$status->attributes->name = __('confirmed');
-$statuses[] = $status;
-
-$status->id = 'denied';
-$status->attributes->name = __('denied');
-$statuses[] = $status;
-
-$status->id = 'other';
-$status->attributes->name = __('other');
-$statuses[] = $status;
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" class="fa fa-eye text-primary"></span>' . __('Summary') . '</a></li>';
@@ -281,7 +247,6 @@ if ($resource->type === 'application') {
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#status").val("<?= $resource->status ?>");
 
         var hash = window.location.hash;
         if (hash == "") {

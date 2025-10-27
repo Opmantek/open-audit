@@ -2,7 +2,8 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
-$data_order = $meta->data_order;
+#$data_order = $meta->data_order;
+$data_order = ['id', 'count', 'base_severity', 'cve', 'name', 'vendor', 'published'];
 $url = base_url() . 'index.php/vulnerabilities?format=dataTables';
 foreach ($meta->filter as $filter) {
     if (is_string($filter->value)) {
@@ -41,7 +42,7 @@ if (!empty($meta->filter)) {
                         <div class="card-body">
                             <div class="row">
                                 <?php foreach ($included['severity'] as $key => $value) { ?>
-                                <div class="col-lg-2 text-center">
+                                <div class="col-lg-3 text-center">
                                     <a href="<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=<?= $key ?>&count=>0" class="btn btn-light btn-lg text-bg-<?= (!empty($key)) ? $key : 'success' ?>" role="button">
                                         <span class="badge rounded-pill text-bg-<?= $key ?>"><?= (!empty($key)) ? $key : 'unknown' ?> :: <?= $value ?></span><br>
                                     </a>
@@ -62,7 +63,7 @@ if (!empty($meta->filter)) {
                         <div class="card-body">
                             <div class="row">
                                 <?php foreach ($included['all_severity'] as $key => $value) { ?>
-                                <div class="col-lg-2 text-center">
+                                <div class="col-lg-3 text-center">
                                     <a href="<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=<?= $key ?>" class="btn btn-light btn-lg text-bg-<?= (!empty($key)) ? $key : 'success' ?>" role="button">
                                         <span class="badge rounded-pill text-bg-<?= $key ?>"><?= (!empty($key)) ? $key : 'unknown' ?> :: <?= $value ?></span><br>
                                     </a>
@@ -80,26 +81,24 @@ if (!empty($meta->filter)) {
                 </div>
                 <div class="card-body">
                     <br>
-                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[2,"desc"]]'>
+                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[2,"asc"],[1,"desc"]]'>
                         <thead>
                             <tr>
 <?php foreach ($data_order as $key) {
                                 $align = '';
-                                if ($key === 'id' or $key === 'count' or $key === 'view' or strpos($key, '_id') !== false) {
+                                if ($key === 'id' or $key === 'count' or $key === 'view' or $key === 'count' or strpos($key, '_id') !== false) {
                                     $align = 'text-center dt-body-center';
                                 }
+                                if ($key === 'id') { $key = 'View Vulnerability'; }
+                                if ($key === 'base_severity') { $key = 'Severity'; }
+                                if ($key === 'cve') { $key = 'CVE'; }
+                                if ($key === 'count') { $key = 'Device Count'; }
                                 echo '                                <th class="' . $align . '">' . collection_column_name($key) . "</th>\n";
-                                if ($key === 'id') {
-                                    echo '                                <th class="' . $align . '">Devices' . "</th>\n";
-                                }
                             } ?>
                             </tr>
                             <tr>
 <?php foreach ($data_order as $key) {
                                 echo '                                <th><div class="input-group">';
-                                if ($key === 'id') {
-                                    echo "</div></th>\n                                <th><div class=\"input-group\">";
-                                }
                                 if ($key !== 'id' and $key !== 'count' and $key !== 'view') {
                                     echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . collection_column_name($key) . '">';
                                 }
@@ -163,7 +162,6 @@ window.onload = function () {
             autoWidth: false,
             lengthChange: true,
             lengthMenu: [ [10, 25, 50, 1000], [10, 25, 50, 1000] ],
-            order: [[ 1, 'asc' ]],
             pageLength: 25,
             processing: true,
             searching: true,
@@ -266,9 +264,9 @@ window.onload = function () {
                         return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
                     }
                 },
-                { data: 'attributes.id',
+                { data: 'attributes.count',
                     render: function (data, type, row, meta) {
-                        return "<a title=\"<?= __('Devices') ?>\" role=\"button\" class=\"btn <?= $GLOBALS['button'] ?> btn-devices\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "#devices\"><span style=\"width:1rem;\" title=\"<?= __('Devices') ?>\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
+                        return "<a title=\"<?= __('Devices') ?>\" role=\"button\" class=\"btn <?= $GLOBALS['button'] ?> btn-devices\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "#devices\"><strong>" + row.attributes.count + "</strong></a>";
                     }
                 },
                 { data: 'attributes.base_severity',
@@ -289,7 +287,6 @@ window.onload = function () {
                         return data;
                     }
                 },
-                { data: 'attributes.count' },
             ],
             columnDefs: [
                 {className: "text-center", target: 0, width: "10em"},
@@ -297,9 +294,8 @@ window.onload = function () {
                 {className: "text-center", target: 2, width: "10em"},
                 {className: "text-center", target: 3, width: "10em"},
                 {className: "text-left", target: 4, width: "50em"},
-                {className: "text-center", target: 5, width: "10em"},
-                {className: "text-center", target: 6, width: "20em"},
-                {className: "text-center", target: 7, width: "10em"}
+                {className: "text-center", target: 5, width: "20em"},
+                {className: "text-center", target: 6, width: "15em"}
             ],
             info: true,
             layout: {
