@@ -164,7 +164,7 @@ class NewsModel extends BaseModel
 
 
     /**
-     * Execute a request for All news articles
+     * Execute a request to retrieve any news articles from FirstWave
      *
      * @return bool    true || false depending on success
      */
@@ -270,16 +270,30 @@ class NewsModel extends BaseModel
                 $news->alert_style = !empty($news->alert_style) ? $news->alert_style : 'primary';
                 $news->version = !empty($news->version) ? $news->version : '';
                 if (empty($body)) {
-                    return true;
+                    return null;
                 }
-                $sql = "SELECT COUNT(id) AS `count` FROM news WHERE name = ?";
-                $count = $this->db->query($sql, [$news->name])->getResult()[0]->count;
-                $count = intval($count);
-                if ($count === 0) {
+                $sql = "SELECT id FROM news WHERE name = ?";
+                $result = $this->db->query($sql, [$news->name])->getResult();
+                if (!empty($result[0]->id)) {
+                    $id = intval($result[0]->id);
+                }
+                if (empty($id)) {
                     // This is a new article, store it
                     #$sql = "INSERT INTO news VALUES (null, name, short, description, type, body, published, link, image, requested, expires, alert_style, version, read, actioned, actioned_by, actioned_date)";
                     $sql = "INSERT INTO news VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 'n', 'n', '', '2001-01-01')";
                     $this->db->query($sql, [$news->name, $news->short, $news->description, $news->type, $news->body, $news->published, $news->link, $news->image, $news->expires, $news->alert_style, $news->version]);
+                } else {
+                    // Update this article
+                    $news = $this->updateFieldData('news', $news);
+                    $this->builder->set('actioned', 'n');
+                    $this->builder->set('actioned_by', '');
+                    $this->builder->set('actioned_date', '');
+
+                    $this->builder->where('id', intval($id));
+                    $this->builder->update($news);
+                    if ($this->db->error()) {
+                        return null;
+                    }
                 }
             }
         } else if ($action === 'vulnerabilities') {
