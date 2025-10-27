@@ -279,6 +279,11 @@ window.onload = function () {
             }
         });
 
+        /* This stops the sort when clicking in a search text box in the table header */
+        $(".dataTablesearchField").on("click", function(e) {
+            e.stopPropagation();
+        });
+
         $(".dataTablesearchField").on("keypress", function (evtObj) {
             // console.log(evtObj.keyCode);
             if (evtObj.keyCode == 13) {

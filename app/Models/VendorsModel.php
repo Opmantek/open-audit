@@ -135,7 +135,8 @@ class VendorsModel extends BaseModel
     {
         $return = array();
         $return['indb'] = array();
-        $sql = "SELECT vulnerabilities.vendor, vulnerabilities.base_severity, COUNT(vulnerabilities.id) AS `count`, vendors.use, vendors.id FROM vulnerabilities LEFT JOIN vendors ON vulnerabilities.vendor = vendors.name GROUP BY vulnerabilities.vendor, vulnerabilities.base_severity";
+        $sql = "SELECT vulnerabilities.vendor, vulnerabilities.base_severity, COUNT(vulnerabilities.id) AS `count`, vendors.use, vendors.id FROM vendors LEFT JOIN vulnerabilities ON vulnerabilities.vendor = vendors.name GROUP BY vulnerabilities.vendor, vulnerabilities.base_severity";
+
         $result = $this->db->query($sql)->getResult();
         foreach ($result as $row) {
             if (empty($row->vendor)) {
@@ -156,15 +157,22 @@ class VendorsModel extends BaseModel
             }
             $return['indb'][$row->vendor]->{$row->base_severity} = intval($row->count);
         }
-        foreach ($return['indb'] as $key => $value) {
-            if ($return['indb'][$key]->critical === 0 and
-                $return['indb'][$key]->high === 0 and
-                $return['indb'][$key]->medium === 0 and
-                $return['indb'][$key]->low === 0 and
-                $return['indb'][$key]->none === 0) {
-                unset($return['indb'][$key]);
+        // Account for vendors with no local vulnerabilities entries
+        $sql = "SELECT * FROM vendors WHERE `use` = 'y'";
+        $result = $this->db->query($sql)->getResult();
+        foreach ($result as $row) {
+            if (empty($return['indb'][$row->name])) {
+                $return['indb'][$row->name] = new stdClass();
+                $return['indb'][$row->name]->critical = 0;
+                $return['indb'][$row->name]->high = 0;
+                $return['indb'][$row->name]->medium = 0;
+                $return['indb'][$row->name]->low = 0;
+                $return['indb'][$row->name]->none = 0;
+                $return['indb'][$row->name]->use = $row->use;
+                $return['indb'][$row->name]->id = $row->id;
             }
         }
+
         return $return;
     }
 
@@ -304,7 +312,7 @@ class VendorsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('vendor', 'critical', 'high', 'medium', 'low', 'none', 'use');
+        $dictionary->attributes->collection = array('name', 'critical', 'high', 'medium', 'low', 'none', 'use');
         $dictionary->attributes->create = array('vendor'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
