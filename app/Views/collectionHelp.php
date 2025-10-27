@@ -117,9 +117,9 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                             </td>
                                             <?php if (!empty($dictionary->columns->{$column->name})) { ?>
                                                 <?php if (is_string($dictionary->columns->{$column->name})) { ?>
-                                                <td><?= $dictionary->columns->{$column->name} ?></td>
+                                                <td><?= nl2br($dictionary->columns->{$column->name}) ?></td>
                                                 <?php } else { ?>
-                                                <td><pre><?= json_encode($dictionary->columns->{$column->name}) ?></td>
+                                                <td><pre><?= json_encode($dictionary->columns->{$column->name}, JSON_PRETTY_PRINT) ?></td>
                                                 <?php } ?>
                                             <?php } else { ?>
                                                 <td></td>
