@@ -394,7 +394,6 @@ class VulnerabilitiesModel extends BaseModel
         $included['severity']->high = 0;
         $included['severity']->medium = 0;
         $included['severity']->low = 0;
-        $included['severity']->none = 0;
         $sql = "SELECT vulnerabilities.base_severity, COUNT(DISTINCT `vulnerabilities_cache`.`vulnerability_id`) AS `count` FROM `vulnerabilities` LEFT JOIN `vulnerabilities_cache` ON `vulnerabilities`.`id` = `vulnerabilities_cache`.`vulnerability_id` WHERE `vulnerabilities_cache`.`org_id` IN (" . implode(',', $org_list) . ") AND `count` > 0 GROUP BY `vulnerabilities`.`base_severity` ";
 
         $result = $this->db->query($sql)->getResult();
@@ -406,7 +405,6 @@ class VulnerabilitiesModel extends BaseModel
         $included['all_severity']->high = 0;
         $included['all_severity']->medium = 0;
         $included['all_severity']->low = 0;
-        $included['all_severity']->none = 0;
         $sql = "SELECT vulnerabilities.base_severity, COUNT(vulnerabilities.id) AS `count` FROM `vulnerabilities` GROUP BY `vulnerabilities`.`base_severity` ";
         $result = $this->db->query($sql)->getResult();
         foreach($result as $row) {
@@ -705,12 +703,18 @@ class VulnerabilitiesModel extends BaseModel
         $dictionary->columns->name = 'The name given to this item.';
         $dictionary->columns->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
         $dictionary->columns->cve  = 'The CVE identifier.';
-        $dictionary->columns->status = 'The user assigned status of pending, confirmed or declined. This should occur after reviewing the <code>filter</code> and generated <code>SQL</code>. If set to declined, this item will not appear on the Vulnerability list by default.';
-        $dictionary->columns->affected = '';
         $dictionary->columns->attack_complexity = 'Complexity of the attack (Low or High).';
-        $dictionary->columns->attack_requirements = '';
+        $dictionary->columns->attack_requirements = 'Either none or present.
+
+<strong>None</strong> - The successful attack does not depend on the deployment and execution conditions of the vulnerable system. The attacker can expect to be able to reach the vulnerability and execute the exploit under all or most instances of the vulnerability.
+
+<strong>Present</strong> - The successful attack depends on the presence of specific deployment and execution conditions of the vulnerable system that enable the attack. These include:
+
+A race condition must be won to successfully exploit the vulnerability. The successfulness of the attack is conditioned on execution conditions that are not under full control of the attacker. The attack may need to be launched multiple times against a single target before being successful.
+
+Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).';
         $dictionary->columns->attack_vector = 'How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).';
-        $dictionary->columns->automatable = '';
+        $dictionary->columns->automatable = 'The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).';
         $dictionary->columns->base_score = 'Overall severity score (0–10).';
         $dictionary->columns->base_severity = 'Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.';
         $dictionary->columns->description  = 'Human-readable explanation of the vulnerability.';
@@ -718,9 +722,9 @@ class VulnerabilitiesModel extends BaseModel
         $dictionary->columns->impact_availability = 'A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).';
         $dictionary->columns->impact_confidentiality = 'A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).';
         $dictionary->columns->impact_integrity = 'A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).';
-        $dictionary->columns->lastModified = 'Date when the CVE was last updated.';
+        $dictionary->columns->lastModified = 'Date and time when the CVE was last updated.';
         $dictionary->columns->privileges_required = 'Level of privileges needed to exploit (None, Low, High).';
-        $dictionary->columns->products = '';
+        $dictionary->columns->products = 'A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.';
         $dictionary->columns->published = 'Date and time when the CVE was published.';
         $dictionary->columns->published_date = 'Date when the CVE was published.';
         $dictionary->columns->references = 'An array of object representing external links to more information.';
