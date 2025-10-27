@@ -76,6 +76,7 @@ class News extends BaseController
         $this->newsModel->execute($id);
         $news = $this->newsModel->read($id);
         if (in_array($news[0]->attributes->type, ['config', 'package', 'query'])) {
+            $_SESSION['success'] = ucfirst($news[0]->attributes->type) . ' updated.';
             return redirect()->route('newsRead', [$id]);
         }
         if (in_array($news[0]->attributes->type, ['advertisement', 'blog', 'howto', 'news', 'notification', 'other', 'release', ''])) {
