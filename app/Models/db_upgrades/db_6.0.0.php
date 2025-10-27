@@ -705,7 +705,7 @@ if (!$db->fieldExists('vm_vendor', 'devices')) {
 }
 
 if (!$db->fieldExists('criticality', 'devices')) {
-    $sql = "ALTER TABLE devices ADD `criticality` varchar(100) NOT NULL DEFAULT '' AFTER owner";
+    $sql = "ALTER TABLE devices ADD `criticality` varchar(100) NOT NULL DEFAULT 'unassigned' AFTER owner";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
@@ -742,7 +742,7 @@ if (!$db->fieldExists('criticality', 'devices')) {
 }
 
 if (!$db->fieldExists('sensitivity', 'devices')) {
-    $sql = "ALTER TABLE devices ADD `sensitivity` varchar(100) NOT NULL DEFAULT '' AFTER criticality";
+    $sql = "ALTER TABLE devices ADD `sensitivity` varchar(100) NOT NULL DEFAULT 'unassigned' AFTER criticality";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
