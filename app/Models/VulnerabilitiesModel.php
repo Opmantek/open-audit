@@ -515,11 +515,11 @@ class VulnerabilitiesModel extends BaseModel
         if (strpos($item[0]->filter, 'cpe:2.3:h:') !== false) {
             $_SESSION['warning'] = 'The devices.hw_cpe attribute is not automatically populated during discovery. Use Rules to populate the hw_cpe attribute.';
         }
-        $item[0]->filter = json_decode($item[0]->filter);
-        $item[0]->nvd_json = json_decode($item[0]->nvd_json);
-        $item[0]->mitre_json = json_decode($item[0]->mitre_json);
-        $item[0]->references = json_decode($item[0]->references);
-        $item[0]->products = json_decode($item[0]->products);
+        $item[0]->filter = @json_decode($item[0]->filter);
+        $item[0]->nvd_json = @json_decode($item[0]->nvd_json);
+        $item[0]->mitre_json = @json_decode($item[0]->mitre_json);
+        $item[0]->references = @json_decode($item[0]->references);
+        $item[0]->products = @json_decode($item[0]->products);
         return format_data($item, 'vulnerabilities');
     }
 
