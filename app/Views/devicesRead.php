@@ -992,6 +992,7 @@ if (empty($resource->type)) {
                                                 <tr>
                                                     <th class="text-center" data-orderable="false"><?= __('View') ?></th>
                                                     <th><?= __('Name') ?></th>
+                                                    <th><?= __('Vendor') ?></th>
                                                     <th><?= __('CVE') ?></th>
                                                     <th class="text-center"><?= __('Severity') ?></th>
                                                 </tr>
@@ -1001,6 +1002,7 @@ if (empty($resource->type)) {
                                                 <tr>
                                                     <td class="text-center"><span style="display:none;"><?= $row->id ?></span><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('vulnerabilitiesRead', $row->id) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
                                                     <td><?= $row->name ?></td>
+                                                    <td><?= $row->vendor ?></td>
                                                     <td><?= $row->cve ?></td>
                                                     <td class="text-center"><span class="badge rounded-pill text-bg-<?= $row->base_severity ?>"><?= $row->base_severity ?></span></td>
                                                 </tr>

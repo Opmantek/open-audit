@@ -265,7 +265,7 @@ class VulnerabilitiesModel extends BaseModel
             log_message('warning', 'No SQL for vulnerability ' . $id . ', CVE: ' . $vulnerability->cve);
             return array();
         }
-        log_message('debug', 'Executing vulnerability ' . $id . ', CVE: ' . $vulnerability->cve);
+        // log_message('debug', 'Executing vulnerability ' . $id . ', CVE: ' . $vulnerability->cve);
         if (empty($orgs)) {
             $orgsModel = new \App\Models\OrgsModel();
             $allOrgs = $orgsModel->listAll();
@@ -286,98 +286,50 @@ class VulnerabilitiesModel extends BaseModel
     }
 
     /**
-     * Execute a all vulnerabilities for a given device. Also updates vulnerabilities_cache.
+     * Execute all vulnerabilities. Also updates vulnerabilities_cache.
      *
-     * @param  $id   int   The integer ID of the device
+     * @param  $id   int   Optional, the integer ID of a device, which will cause devices.cve to be updated
      *
      * @return void
      */
-    public function executeDevice(int $id): void
+    public function executeAll(?int $id = 0): void
     {
+        if (!empty($id)) {
+            $cves = array();
+        }
         $instance = & get_instance();
-        if (empty($instance->config->feature_vulnerabilities) or $instance->config->feature_vulnerabilities !== 'y') {
-            return;
-        }
-        $sql = "SELECT os_cpe FROM devices WHERE id = ?";
-        $query = $this->db->query($sql, [$id]);
-        $result = $query->getResult();
-        if (empty($query)) {
-            log_message('warning', 'Invalid device id: ' . $id . ', supplied to VulnerabilitiesModel::executeDevice');
-            return;
-        }
-        $device = $result[0];
-        $cpe = explode(':', $device->os_cpe);
-        $os_cpe = $cpe[0] . ':' . $cpe[1] . ':' . $cpe[2] . ':' . $cpe[3] . ':' . $cpe[4];
-        $cves = array();
-
-        $this->builder->select('id, cve');
-        $this->builder->like('filter', $os_cpe);
         $vulnerabilities = $this->builder->get()->getResult();
-        log_message('debug', json_encode($vulnerabilities));
-        if (!empty($vulnerabilities)) {
-            foreach ($vulnerabilities as $vulnerability) {
-                $vResult = $this->execute(intval($vulnerability->id), []);
-                if (!empty($vResult)) {
-                    foreach ($vResult as $dev) {
-                        if ($dev->id == $id) {
-                            // We have a hit, add this vulnerability to devices.cve
-                            $cves[] = $vulnerability->cve;
-                            // And add a syslog
-                            if (!empty($instance->config->feature_syslog_vulnerabilities) and $instance->config->feature_syslog_vulnerabilities === 'y'  and php_uname('s') === 'Linux') {
-                                openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
-                                $message = 'CEF:0|FirstWave|Open-AudIT|' . $instance->config->display_version . '|3|Vulnerability|5|id=' . $vulnerability->id . ' cve=' . $vulnerability->cve . ' device_id=' . $id;
-                                syslog(LOG_INFO, $message);
-                                closelog();
-                            }
+        foreach ($vulnerabilities as $vulnerability) {
+            $result = $this->execute(intval($vulnerability->id));
+            if (!empty($id)) {
+                foreach ($result as $device) {
+                    if ($device->id === $id) {
+                        $cves[] = $vulnerability->cve;
+                        if (!empty($instance->config->feature_syslog_vulnerabilities) and $instance->config->feature_syslog_vulnerabilities === 'y'  and php_uname('s') === 'Linux') {
+                            openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
+                            $message = 'CEF:0|FirstWave|Open-AudIT|' . $instance->config->display_version . '|3|Vulnerability|5|id=' . $vulnerability->id . ' cve=' . $vulnerability->cve . ' device_id=' . $id;
+                            syslog(LOG_INFO, $message);
+                            closelog();
                         }
                     }
                 }
             }
         }
-        $sql = "SELECT name FROM `software` WHERE `device_id` = ? AND `current` = 'y'";
-        $query = $this->db->query($sql, [$id]);
-        $software = $query->getResult();
-        if (!empty($software)) {
-            foreach ($software as $row) {
-                $this->builder->select('id, cve');
-                $this->builder->like('filter', $row->name);
-                $vulnerabilities = $this->builder->get()->getResult();
-                if (empty($vulnerabilities)) {
-                    continue;
-                }
-                foreach ($vulnerabilities as $vulnerabilitiy) {
-                    $vResult = $this->execute(intval($vulnerability->id), []);
-                    if (!empty($vResult)) {
-                        foreach ($vResult as $dev) {
-                            if ($dev->id == $id) {
-                                // We have a hit, add this vulnerability to devices.cve
-                                $cves[] = $vulnerability->cve;
-                                // And add a syslog
-                                if (!empty($instance->config->feature_syslog_vulnerabilities) and $instance->config->feature_syslog_vulnerabilities === 'y'  and php_uname('s') === 'Linux') {
-                                    openlog("Open-AudIT[" . getmypid() . "]", 0, LOG_LOCAL0);
-                                    $message = 'CEF:0|FirstWave|Open-AudIT|' . $instance->config->display_version . '|3|Vulnerability|5|id=' . $vulnerability->id . ' cve=' . $vulnerability->cve . ' device_id=' . $id;
-                                    syslog(LOG_INFO, $message);
-                                    closelog();
-                                }
-                            }
-                        }
-                    }
-                }
+        if (!empty($id)) {
+            if (!empty($cves) and $instance->config->product === 'enterprise') {
+                $sql = "UPDATE devices SET cve = '" . implode(',', $cves) . "' WHERE id = ?";
+                $query = $this->db->query($sql, [$id]);
             }
-        }
-        if (!empty($cves) and $instance->config->product === 'enterprise') {
-            $sql = "UPDATE devices SET cve = '" . implode(',', $cves) . "' WHERE id = ?";
-            $query = $this->db->query($sql, [$id]);
-        }
-        if (!empty($cves) and $instance->config->product !== 'enterprise') {
-            $sql = "SELECT * FROM `news` WHERE type = 'cve' LIMIT 1";
-            $newsItems = $this->db->query($sql)->getResult();
-            if (!empty($newsItems)) {
-                $sql = "UPDATE `news` SET `version` = ?, `read` = 'n' WHERE id = ?";
-                $this->db->query($sql, [intval($newsItems[0]->version + 1), $newsItems[0]->id]);
-            } else {
-                $sql = "INSERT INTO `news` VALUES (null, 'You have vulnerable programs!', 'Some programs in your database have current CVE records.', 'Open-AudIT has detected installed programs matching current CVE vulnerabilities. To report on these and more, upgrade to Open-AudIT Enterprise.', 'cve', 'body', NOW(), 'link', '', '', '', 'danger', '1', 'n', 'n', '', '2000-01-01 00:00:00')";
-                $this->db->query($sql);
+            if (!empty($cves) and $instance->config->product !== 'enterprise') {
+                $sql = "SELECT * FROM `news` WHERE type = 'cve' LIMIT 1";
+                $newsItems = $this->db->query($sql)->getResult();
+                if (!empty($newsItems)) {
+                    $sql = "UPDATE `news` SET `version` = ?, `read` = 'n' WHERE id = ?";
+                    $this->db->query($sql, [intval($newsItems[0]->version + 1), $newsItems[0]->id]);
+                } else {
+                    $sql = "INSERT INTO `news` VALUES (null, 'You have vulnerable programs!', 'Some programs in your database have current CVE records.', 'Open-AudIT has detected installed programs matching current CVE vulnerabilities. To report on these and more, upgrade to Open-AudIT Enterprise.', 'cve', 'body', NOW(), 'link', '', '', '', 'danger', '1', 'n', 'n', '', '2000-01-01 00:00:00')";
+                    $this->db->query($sql);
+                }
             }
         }
     }
@@ -517,7 +469,7 @@ class VulnerabilitiesModel extends BaseModel
         }
         $item[0]->filter = @json_decode($item[0]->filter);
         $item[0]->nvd_json = @json_decode($item[0]->nvd_json);
-        $item[0]->mitre_json = @json_decode($item[0]->mitre_json);
+        $item[0]->mitre_json = (!empty($item[0]->mitre_json)) ? json_decode($item[0]->mitre_json) : '';
         $item[0]->references = @json_decode($item[0]->references);
         $item[0]->products = @json_decode($item[0]->products);
         return format_data($item, 'vulnerabilities');

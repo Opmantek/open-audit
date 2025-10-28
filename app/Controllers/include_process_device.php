@@ -144,7 +144,7 @@ foreach ($device as $key => $value) {
     if ($key !== 'system' && $key !== 'audit_wmi_fail' && $key !== 'dns') {
         log_message('debug', 'Update component ' . $key . ' start');
         $componentsModel->upsert($key, $device->system, $device->{$key});
-        log_message('debug', 'Update component ' . $key . ' finish');
+        // log_message('debug', 'Update component ' . $key . ' finish');
     }
 }
 
@@ -152,7 +152,7 @@ $rulesModel = new \App\Models\RulesModel();
 $rulesModel->execute(null, @intval($device->system->discovery_id), 'update', intval($device->system->id));
 
 // Test for vulnerabilities
-$vulnerabilitiesModel->executeDevice($device->system->id);
+$vulnerabilitiesModel->executeAll(intval($device->system->id));
 
 // Because Rules may set the last_seen_by, update it here.
 $sql = "UPDATE devices SET last_seen_by = ? WHERE id = ?";
