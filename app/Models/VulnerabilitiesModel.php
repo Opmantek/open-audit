@@ -296,6 +296,8 @@ class VulnerabilitiesModel extends BaseModel
     {
         if (!empty($id)) {
             $cves = array();
+            $sql = "UPDATE devices SET cve = '' WHERE id = ?";
+            $this->db->query($sql, [$id]);
         }
         $instance = & get_instance();
         $vulnerabilities = $this->builder->get()->getResult();
