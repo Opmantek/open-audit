@@ -207,6 +207,7 @@ class NewsModel extends BaseModel
                 $send['cve'] = $cve;
             } else {
                 log_message('warning', 'Invalid CVE ID supplied: ' . $_POST['data']['attributes']['cve']);
+                $_SESSION['warning'] = 'Invalid CVE ID supplied: ' . $_POST['data']['attributes']['cve'];
                 return null;
             }
         } else if ($action === 'vulnerabilities') {
@@ -241,7 +242,8 @@ class NewsModel extends BaseModel
         // log_message('debug', 'Bytes in reply: ' . strlen($body));
         $body = @json_decode($body);
         if (!is_array($body) and $action !== 'vendors') {
-        log_message('error', 'Body returned but body not an array. Body is a ' . gettype($body));
+            log_message('error', 'Body returned but body not an array. Body is a ' . gettype($body));
+            $_SESSION['warning'] = 'No ' . $action . ' returned.';
             return null;
         }
         if (!empty($body) and $action === 'vendors') {
@@ -249,6 +251,7 @@ class NewsModel extends BaseModel
         }
         if (empty($body)) {
             log_message('debug', 'No ' . $action . ' articles returned.');
+            $_SESSION['warning'] = 'No ' . $action . ' returned.';
             return null;
         }
         log_message('debug', count($body) . ' news articles returned.');

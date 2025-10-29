@@ -163,7 +163,8 @@ class Devices extends BaseController
             return true;
         }
         if ($this->resp->meta->format === 'html') {
-            log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
+            log_message('error', 'Device not created.');
+            $_SESSION['warning'] = 'Device not created.';
             return redirect()->route('devicesCollection');
         }
     }

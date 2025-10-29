@@ -12,7 +12,7 @@ include 'shared/common_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>" accept-charset="utf-8" enctype="multipart/form-data">
+                            <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>" accept-charset="utf-8" enctype="multipart/form-data" id="devicesCreateform" name="devicesCreateform">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
 
@@ -97,8 +97,7 @@ include 'shared/common_functions.php';
 window.onload = function () {
     $(document).ready(function () {
         $("#data\\[attributes\\]\\[type\\]").val("computer");
-    });
-    $(document).ready(function () {
+
         $(document).on('change', '#input_type', function (e) {
             var showDiv = $("#input_type").val();
             $("#manual_input").css('display', 'none');
@@ -112,18 +111,22 @@ window.onload = function () {
                 $("#submit_button").css('display', 'none');
             }
         });
-    });
 
-    function choose_type() {
-        var showDiv = document.getElementById("data[attributes][type]").value;
-        $("#printer").css('display', 'none');
-        $("#phone").css('display', 'none');
-        if (showDiv == "printer") {
-            $("#printer").css('display', 'block');
+        document.getElementById('devicesCreateform').addEventListener('submit', function(event) {
+            $("#submit").html("<span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"></span>&nbsp;<?= __('Creating Device') ?>");
+        });
+
+        function choose_type() {
+            var showDiv = document.getElementById("data[attributes][type]").value;
+            $("#printer").css('display', 'none');
+            $("#phone").css('display', 'none');
+            if (showDiv == "printer") {
+                $("#printer").css('display', 'block');
+            }
+            if (showDiv.indexOf("modem") != -1 || showDiv.indexOf("phone") != -1) {
+                $("#phone").css('display', 'block');
+            }
         }
-        if (showDiv.indexOf("modem") != -1 || showDiv.indexOf("phone") != -1) {
-            $("#phone").css('display', 'block');
-        }
-    }
+    });
 }
 </script>
