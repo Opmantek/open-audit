@@ -277,6 +277,7 @@ class VulnerabilitiesModel extends BaseModel
         $this->updateCacheSingle($id);
         // Run the SQL for the required Orgs and return the result
         $sql = $vulnerability->sql . " AND devices.org_id IN (" . implode(',', $orgs) . ")";
+        $sql = $vulnerability->sql . " AND devices.org_id IN (" . implode(',', $orgs) . ") GROUP BY devices.id";
         $query = $this->db->query($sql);
         $devices = array();
         if (!empty($query)) {
@@ -579,6 +580,7 @@ class VulnerabilitiesModel extends BaseModel
         foreach ($orgs as $org) {
             set_time_limit(60);
             $sql = $vulnerability->sql . " AND devices.org_id = " . $org;
+            $sql = $vulnerability->sql . " AND devices.org_id = " . $org . " GROUP BY devices.id";
             $query = $this->db->query($sql);
             if (!empty($query)) {
                 $devices = $query->getResult();
