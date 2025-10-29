@@ -968,12 +968,14 @@ if (empty(config('Openaudit')->feature_vulnerabilities_last_request_datetime)) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-$sql = "INSERT INTO `tasks` VALUES (null, 'Vulnerabilitiy Retrieval', 1, 'Retrieve an updated vulnerability list.', 0, '', 'y', 'vulnerabilities', '*/5', '*', '*', '*', '*', 0, 0, '2001-02-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00')";
+// Retrieve the vulnerabilitiy list every hour on a random minute between 5 and 55
+$sql = "INSERT INTO `tasks` VALUES (null, 'Vulnerabilitiy Retrieval', 1, 'Retrieve an updated vulnerability list.', 0, '', 'y', 'vulnerabilities', FLOOR(RAND()*(55-5)+5), '*', '*', '*', '*', 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `tasks` VALUES (null, 'Vendor Retrieval', 1, 'Retrieve an updated vendor list.', 0, '', 'y', 'vendors', 5, 1, '*', '*', '*', 0, 0, '2001-02-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00')";
+// A daily task randomly between 1 and 6 AM, between 5 and 55 minute
+$sql = "INSERT INTO `tasks` VALUES (null, 'Vendor Retrieval', 1, 'Retrieve an updated vendor list.', 0, '', 'y', 'vendors', FLOOR(RAND()*(55-5)+5), FLOOR(RAND()*(5)+1), '*', '*', '*', 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
