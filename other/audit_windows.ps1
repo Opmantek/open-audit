@@ -42,6 +42,10 @@ $audit_software = 'y'
 $audit_netstat_udp = 'n'
 $audit_firewall_rule = 'n'
 
+# NOTE - each skipped section MUST have a trailing comma
+# skip_sections = "antivirus,arp,bios,certificate,disk,dns,file,firewall,ip,log,memory,monitor,motherboard,netstat,network,optical,partition,policy,print_queue,processor,route,scsi,server,service,share,software,sound,task,usb,user,user_group,variable,video,vm,"
+$skip_sections=""
+
 if ($debug -gt 0) {
     Write-Host "================"
     Write-Host "Starting Audit"
@@ -481,619 +485,665 @@ if ($debug -gt 0) {
 }
 
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.bios = @()
-Clear-Variable -name item
-$item = @{}
-$item.description = $Win32_BIOS | Select-Object -ExpandProperty Description
-$item.manufacturer = $Win32_BIOS | Select-Object -ExpandProperty Manufacturer
-$item.serial = $Win32_BIOS | Select-Object -ExpandProperty SerialNumber
-$item.smversion = $Win32_BIOS | Select-Object -ExpandProperty SMBIOSBIOSVersion
-$item.version = $Win32_BIOS | Select-Object -ExpandProperty Version
-$item.asset_tag = $Win32_SystemEnclosure | Select-Object -ExpandProperty SMBIOSAssetTag
-$result.bios += $item
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    Write-Host "Bios, 1 entry took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.certificate = @()
-$item = @{}
-Get-ChildItem -Recurse Cert: -ErrorAction Ignore | WHERE FriendlyName -ne "" | Select FriendlyName, SerialNumber, Issuer, NotAfter, NotBefore, SignatureAlgorithm, Version, @{Name='NotAfterFormatted';Expression={Get-Date -Date $_.NotAfter -Uformat "%Y-%m-%d %R"}}, @{Name='NotBeforeFormatted';Expression={Get-Date -Date $_.NotBefore -Uformat "%Y-%m-%d %R"}} | ForEach {
-    $item = @{}
-    $item.name = $_.FriendlyName
-    $item.serial = $_.SerialNumber
-    $item.issuer = $_.Issuer
-    $item.valid_from_raw = [string]$_.NotBefore
-    $item.valid_from = $_.NotBeforeFormatted
-    $item.valid_to_raw = [string]$_.NotAfter
-    $item.valid_to = $_.NotAfterFormatted
-    $item.encryption = ""
-    $item.algorithm = $_.SignatureAlgorithm
-    $item.version = $_.Version
-
-    if ($item.name -ne $null) {
-        $result.certificate += $item
-    }
-    Clear-Variable -name item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.certificate.count
-    Write-Host "Certificate, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.scsi = @()
-$item = @{}
-Get-WmiObject -Class Win32_SCSIController | ForEach {
-  Clear-Variable -name item
-  $item = @{}
-  $item.model = $_.name
-  $item.manufacturer = $_.Manufacturer
-  $item.device = $_.PNPDeviceID
-  $item.type = 'other'
-  $result.scsi += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.scsi.count
-    Write-Host "SCSI, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.processor = @()
-$item = @{}
-Clear-Variable -name item
-$item = @{}
-# NOTE - Computers with multiple physical CPUs return an array
-#        but those with a single CPU return an object, hence the test below
-if ($Win32_Processor[0] -ne $null) {
-    $processor = $Win32_Processor[0]
-} else {
-    $processor = $Win32_Processor
-}
-$item.physical_count = [int]$Win32_ComputerSystem.NumberOfProcessors
-$item.core_count = $item.physical_count * [int]$processor.NumberOfCores
-$item.logical_count = $item.physical_count * [int]$processor.NumberOfLogicalProcessors
-$item.speed = $processor.MaxClockSpeed
-$item.manufacturer = $processor.Manufacturer
-$item.architecture = "Unknown"
-if ($processor.Architecture -eq '0' ) { $item.architecture = 'x86' }
-if ($processor.Architecture -eq '1' ) { $item.architecture = 'MIPS' }
-if ($processor.Architecture -eq '2' ) { $item.architecture = 'Alpha' }
-if ($processor.Architecture -eq '3' ) { $item.architecture = 'PowerPC' }
-if ($processor.Architecture -eq '5' ) { $item.architecture = 'ARM' }
-if ($processor.Architecture -eq '6' ) { $item.architecture = 'Itanium' }
-if ($processor.Architecture -eq '9' ) { $item.architecture = 'x64' }
-$item.description = $processor.Name
-if ($item.description -ne $null) {
-    $item.description = $item.description.Replace("(R)", "").Replace("(TM)", "").Replace("(r)", "").Replace("(tm)", "")
-    $item.description = $item.description -replace '\s{2,}', ' '
-}
-if ($item.description -eq 'Apple silicon') {
-    $item.architecture = 'ARM'
-}
-$item.socket = ''
-if ($processor.UpgradeMethod -eq 1) { $item.socket = 'Other' }
-if ($processor.UpgradeMethod -eq 2) { $item.socket = 'Unknown' }
-if ($processor.UpgradeMethod -eq 3) { $item.socket = 'Daughter Board' }
-if ($processor.UpgradeMethod -eq 4) { $item.socket = 'ZIF Socket' }
-if ($processor.UpgradeMethod -eq 5) { $item.socket = 'Replaceable Piggy Back' }
-if ($processor.UpgradeMethod -eq 6) { $item.socket = 'None' }
-if ($processor.UpgradeMethod -eq 7) { $item.socket = 'LIF Socket' }
-if ($processor.UpgradeMethod -eq 8) { $item.socket = 'Slot 1' }
-if ($processor.UpgradeMethod -eq 9) { $item.socket = 'Slot 2' }
-if ($processor.UpgradeMethod -eq 10) { $item.socket = '370 Pin Socket' }
-if ($processor.UpgradeMethod -eq 11) { $item.socket = 'Slot A' }
-if ($processor.UpgradeMethod -eq 12) { $item.socket = 'Slot M' }
-if ($processor.UpgradeMethod -eq 13) { $item.socket = 'Socket 423' }
-if ($processor.UpgradeMethod -eq 14) { $item.socket = 'Socket A (462)' }
-if ($processor.UpgradeMethod -eq 15) { $item.socket = 'Socket 478' }
-if ($processor.UpgradeMethod -eq 16) { $item.socket = 'Socket 754' }
-if ($processor.UpgradeMethod -eq 17) { $item.socket = 'Socket 940' }
-if ($processor.UpgradeMethod -eq 18) { $item.socket = 'Socket 939' }
-if ($processor.UpgradeMethod -eq 19) { $item.socket = 'Socket mPGA 604' }
-if ($processor.UpgradeMethod -eq 20) { $item.socket = 'Socket LGA 771' }
-if ($processor.UpgradeMethod -eq 21) { $item.socket = 'Socket LGA 775' }
-if ($processor.UpgradeMethod -eq 22) { $item.socket = 'Socket S1' }
-if ($processor.UpgradeMethod -eq 23) { $item.socket = 'Socket AM2' }
-if ($processor.UpgradeMethod -eq 24) { $item.socket = 'Socket F (1207)' }
-if ($processor.UpgradeMethod -eq 25) { $item.socket = 'Socket LGA 1366' }
-if ($processor.UpgradeMethod -eq 26) { $item.socket = 'Socket G34' }
-if ($processor.UpgradeMethod -eq 27) { $item.socket = 'Socket AM3' }
-if ($processor.UpgradeMethod -eq 28) { $item.socket = 'Socket C32' }
-if ($processor.UpgradeMethod -eq 29) { $item.socket = 'Socket LGA 1156' }
-if ($processor.UpgradeMethod -eq 30) { $item.socket = 'Socket LGA 1567' }
-if ($processor.UpgradeMethod -eq 31) { $item.socket = 'Socket PGA 988A' }
-if ($processor.UpgradeMethod -eq 32) { $item.socket = 'Socket BGA 1288' }
-if ($processor.UpgradeMethod -eq 33) { $item.socket = 'Socket rPGA 988B' }
-if ($processor.UpgradeMethod -eq 34) { $item.socket = 'Socket BGA 1023' }
-if ($processor.UpgradeMethod -eq 35) { $item.socket = 'Socket BGA 1224' }
-if ($processor.UpgradeMethod -eq 36) { $item.socket = 'Socket LGA 1155' }
-if ($processor.UpgradeMethod -eq 37) { $item.socket = 'Socket LGA 1356' }
-if ($processor.UpgradeMethod -eq 38) { $item.socket = 'Socket LGA 2011' }
-if ($processor.UpgradeMethod -eq 39) { $item.socket = 'Socket FS1' }
-if ($processor.UpgradeMethod -eq 40) { $item.socket = 'Socket FS2' }
-if ($processor.UpgradeMethod -eq 41) { $item.socket = 'Socket FM1' }
-if ($processor.UpgradeMethod -eq 42) { $item.socket = 'Socket FM2' }
-if ($processor.UpgradeMethod -eq 43) { $item.socket = 'Socket LGA 2011-3' }
-if ($processor.UpgradeMethod -eq 44) { $item.socket = 'Socket LGA 1356-3' }
-if ($processor.UpgradeMethod -eq 185) { $item.socket = 'Socket P (478)' }
-$processor_type = $item.socket
-$result.processor += $item
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    Write-Host "Processor, 1 entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.memory = @()
-$Win32_PhysicalMemory | ForEach {
-  Clear-Variable -name item
-  $item = @{}
-    $item.bank = $_.DeviceLocator
-    $item.size = $_.Capacity /1024 /1024
-    $item.speed = $_.Speed
-    if ($item.speed -eq $null) {
-        $item.speed = 0
-    }
-    $item.serial = $_.SerialNumber
-    $item.tag = $_.Tag
-
-  $item.form_factor = 'Unknown'
-  if ( $_.FormFactor -eq 1) { $item.form_factor = 'Other' }
-  if ( $_.FormFactor -eq 2) { $item.form_factor = 'SIP' }
-  if ( $_.FormFactor -eq 3) { $item.form_factor = 'DIP' }
-  if ( $_.FormFactor -eq 4) { $item.form_factor = 'ZIP' }
-  if ( $_.FormFactor -eq 5) { $item.form_factor = 'SOJ' }
-  if ( $_.FormFactor -eq 6) { $item.form_factor = 'Proprietary' }
-  if ( $_.FormFactor -eq 7) { $item.form_factor = 'SIMM' }
-  if ( $_.FormFactor -eq 8) { $item.form_factor = 'DIMM' }
-  if ( $_.FormFactor -eq 9) { $item.form_factor = 'TSOP' }
-  if ( $_.FormFactor -eq 10) { $item.form_factor = 'PGA' }
-  if ( $_.FormFactor -eq 11) { $item.form_factor = 'RIMM' }
-  if ( $_.FormFactor -eq 12) { $item.form_factor = 'SODIMM' }
-  if ( $_.FormFactor -eq 13) { $item.form_factor = 'SRIMM' }
-  if ( $_.FormFactor -eq 14) { $item.form_factor = 'SMD' }
-  if ( $_.FormFactor -eq 15) { $item.form_factor = 'SSMP' }
-  if ( $_.FormFactor -eq 16) { $item.form_factor = 'QFP' }
-  if ( $_.FormFactor -eq 17) { $item.form_factor = 'TQFP' }
-  if ( $_.FormFactor -eq 18) { $item.form_factor = 'SOIC' }
-  if ( $_.FormFactor -eq 19) { $item.form_factor = 'LCC' }
-  if ( $_.FormFactor -eq 20) { $item.form_factor = 'PLCC' }
-  if ( $_.FormFactor -eq 21) { $item.form_factor = 'BGA' }
-  if ( $_.FormFactor -eq 22) { $item.form_factor = 'FPBGA' }
-  if ( $_.FormFactor -eq 23) { $item.form_factor = 'LGA' }
-
-  $item.detail = 'Unknown'
-    if ( $_.MemoryType -eq 0) { $item.detail = 'Unknown' }
-    if ( $_.MemoryType -eq 1) { $item.detail = 'Other' }
-    if ( $_.MemoryType -eq 2) { $item.detail = 'DRAM' }
-    if ( $_.MemoryType -eq 3) { $item.detail = 'Synchronous DRAM' }
-    if ( $_.MemoryType -eq 4) { $item.detail = 'Cache DRAM' }
-    if ( $_.MemoryType -eq 5) { $item.detail = 'EDO' }
-    if ( $_.MemoryType -eq 6) { $item.detail = 'EDRAM' }
-    if ( $_.MemoryType -eq 7) { $item.detail = 'VRAM' }
-    if ( $_.MemoryType -eq 8) { $item.detail = 'SRAM' }
-    if ( $_.MemoryType -eq 9) { $item.detail = 'RAM' }
-    if ( $_.MemoryType -eq 10) { $item.detail = 'ROM' }
-    if ( $_.MemoryType -eq 11) { $item.detail = 'Flash' }
-    if ( $_.MemoryType -eq 12) { $item.detail = 'EEPROM' }
-    if ( $_.MemoryType -eq 13) { $item.detail = 'FEPROM' }
-    if ( $_.MemoryType -eq 14) { $item.detail = 'EPROM' }
-    if ( $_.MemoryType -eq 15) { $item.detail = 'CDRAM' }
-    if ( $_.MemoryType -eq 16) { $item.detail = '3DRAM' }
-    if ( $_.MemoryType -eq 17) { $item.detail = 'SDRAM' }
-    if ( $_.MemoryType -eq 18) { $item.detail = 'SGRAM' }
-    if ( $_.MemoryType -eq 19) { $item.detail = 'RDRAM' }
-    if ( $_.MemoryType -eq 20) { $item.detail = 'DDR' }
-    if ( $_.MemoryType -eq 21) { $item.detail = 'DDR-2' }
-    if ( $_.MemoryType -eq 22) { $item.detail = 'DDR-3' }
-
-  $item.type = 'Unknown'
-    if ( $_.TypeDetail -eq 1 ) { $item.type = 'Reserved' }
-    if ( $_.TypeDetail -eq 2 ) { $item.type = 'Other' }
-    if ( $_.TypeDetail -eq 4 ) { $item.type = 'Unknown' }
-    if ( $_.TypeDetail -eq 8 ) { $item.type = 'Fast-paged' }
-    if ( $_.TypeDetail -eq 16 ) { $item.type = 'Static column' }
-    if ( $_.TypeDetail -eq 32 ) { $item.type = 'Pseudo-static' }
-    if ( $_.TypeDetail -eq 64 ) { $item.type = 'RAMBUS' }
-    if ( $_.TypeDetail -eq 128 ) { $item.type = 'Synchronous' }
-    if ( $_.TypeDetail -eq 256 ) { $item.type = 'CMOS' }
-    if ( $_.TypeDetail -eq 512 ) { $item.type = 'EDO' }
-    if ( $_.TypeDetail -eq 1024 ) { $item.type = 'Window DRAM' }
-    if ( $_.TypeDetail -eq 2048 ) { $item.type = 'Cache DRAM' }
-    if ( $_.TypeDetail -eq 4096 ) { $item.type = 'Non-volatile' }
-
-    $result.memory += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.memory.count
-    Write-Host "Memory, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.motherboard = @()
-$item = @{}
-$Win32_BaseBoard | ForEach {
-  Clear-Variable -name item
-  $item = @{}
-  $item.model = $_.Product
-  $item.manufacturer = $_.Manufacturer
-  $item.serial = $_.SerialNumber
-  # Note below is technically incorrect. We just put the number of physical processors installed here
-  $item.processor_slot_count = [int]($Win32_ComputerSystem.NumberOfProcessors)
-  $item.processor_type = $processor_type
-  $item.memory_slot_count = (Get-WmiObject -Class Win32_PhysicalMemoryArray).MemoryDevices
-  $result.motherboard += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    Write-Host "Motherboard, 1 entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.optical = @()
-$item = @{}
-Get-WmiObject -Class Win32_CDROMDrive | ForEach {
-  Clear-Variable -name item
-  $item = @{}
-  $item.description = $_.Caption
-  $item.model = $_.Caption
-  $item.device = $_.DeviceID
-  $item.mount_point = $_.Drive
-  $item.serial = if ($_.SerialNumber) { $item.SerialNumber } else { "" }
-  $result.optical += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.optical.count
-    Write-Host "Optical, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.video = @()
-$item = @{}
-Get-WmiObject -Class Win32_VideoController | ForEach {
-  Clear-Variable -name item
-  $item = @{}
-    if ( ($_.Caption -eq 'vnc') -or ($_.Caption -eq "Microsoft Basic Render Driver") -or ($_.Caption -eq "DameWare") -or ($_.Caption -eq "Innobec SideWindow") -or ($_.Caption -eq "ConfigMgr Remote Control Driver") -or ($_.Caption -eq "Mirage Driver") -or ($_.Caption -eq "VNC Mirror Driver") -or ($_.Caption -eq "Microsoft SMS Mirror Driver") ) {
-      continue
-  }
-  $item.model = $_.Name
-  $item.device = $_.PNPDeviceID
-  $item.manufacturer = $_.AdapterCompatibility
-  $item.size = [Math]::Round($_.AdapterRAM / 1024 / 1024)
-  $result.video += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.video.count
-    Write-Host "Video, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.monitor = @()
-$item = @{}
-$monitors = Get-WmiObject -Namespace root\wmi -Class WMIMonitorID -ErrorAction Ignore | Sort -Descending
-ForEach ($monitor in $monitors) {
+if ($skip_sections.Contains("bios,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.bios = @()
     Clear-Variable -name item
     $item = @{}
-    $thisMonitor = (Get-WmiObject Win32_PnPEntity -Filter "Service='monitor'" | Where-Object {$monitor.InstanceName.TrimEnd('0').TrimEnd('_') -contains $_.DeviceID})
-    $item.device = $thisMonitor.deviceid
-    $path = "HKLM:\SYSTEM\CurrentControlSet\Enum\" + $item.device + "\Device Parameters"
-    $edid = (Get-ItemProperty $path EDID -ErrorAction SilentlyContinue).EDID
-    $HorizontalSize = $edid[21]
-    $VerticalSize = $edid[22]
-    $item.size = [Math]::Round([Math]::Sqrt($HorizontalSize*$HorizontalSize + $VerticalSize*$VerticalSize) / 2.54)
-    $item.model = ""
-    for ($i = 54; $i -lt 109; $i += 18) {
-        if ((Get-LittleEndianInt $edid $i) -eq 0xff) {
-            for ($j = $i+5; $edid[$j] -ne 10 -and $j -lt $i+18; $j++) { $item.serial += [char]$edid[$j] }
-        }
-        if ((Get-LittleEndianInt $edid $i) -eq 0xfc) {
-            for ($j = $i+5; $edid[$j] -ne 10 -and $j -lt $i+18; $j++) { $item.model += [char]$edid[$j] }
-        }
+    $item.description = $Win32_BIOS | Select-Object -ExpandProperty Description
+    $item.manufacturer = $Win32_BIOS | Select-Object -ExpandProperty Manufacturer
+    $item.serial = $Win32_BIOS | Select-Object -ExpandProperty SerialNumber
+    $item.smversion = $Win32_BIOS | Select-Object -ExpandProperty SMBIOSBIOSVersion
+    $item.version = $Win32_BIOS | Select-Object -ExpandProperty Version
+    $item.asset_tag = $Win32_SystemEnclosure | Select-Object -ExpandProperty SMBIOSAssetTag
+    $result.bios += $item
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        Write-Host "Bios, 1 entry took $totalSecs seconds"
     }
-    $res = Get-WmiObject -Namespace root\wmi -Class WmiMonitorListedSupportedSourceModes | Where-Object {$_.InstanceName -eq $monitor.InstanceName}
-    $pmsmi = $res.PreferredMonitorSourceModeIndex
-    $item.description = [string]$res.MonitorSourceModes[$pmsmi].HorizontalActivePixels + " x " + [string]$res.MonitorSourceModes[$pmsmi].VerticalActivePixels
-    $item.aspect_ratio = ""
-    $item.aspect_ratio = switch ($item.description) {
-        {@("854 x 450", "1280 x 720", "1366 x 768", "1920 x 1080", "2048 x 1152", "3840 x 2160", "7680 x 4320", "15360 x 8640") -contains $_ } { "16:9" }
-        {@("320 x 240", "640 x 480", "768 x 576", "800 x 600", "1024 x 768", "1400 x 1050", "1600 x 1200", "2048 x 1536", "4096 x 3072") -contains $_ } { "4:3" }
-        {@("320 x 200", "1280 x 800", "1680 x 1050", "1920 x 1200", "2220 x 1080", "2560 x 1600", "3840 x 2400") -contains $_ } { "16:10" }
-        {@("720 x 480", "1152 x 768", "1440 x 960", "2560 x 1440") -contains $_ } { "3:2" }
-        {@("800 x 480", "1280 x 768") -contains $_ } { "5:3" }
-        {@("1280 x 1024", "2560 x 2048", "3200 x 1800") -contains $_ } { "5:4" }
-        {@("1920 x 800", "2560 x 1080", "2880 x 1200", "3440 x 1440", "3840 x 1600", "5160 x 2160", "4320 x 1800", "5120 x 2160", "5760 x 2400", "6880 x 2880", "7680 x 3200", "7680 x 3240", "8640 x 3600", "10240 x 4320") -contains $_ } { "21:9" }
-        default { "" }
-    }
-    if ($item.aspect_ratio -eq "" -and $item.description -contains "10240 x ") {
-        $item.aspect_ratio = "16:9"
-    }
-    if ($item.aspect_ratio -eq "" -and $item.description -contains "2048 x ") {
-        $item.aspect_ratio = "16:9"
-    }
-    $interface = (Get-WMIObject -NameSpace root\wmi -Class WmiMonitorConnectionParams | Where-Object {$_.InstanceName -eq $monitor.InstanceName})
-    $item.interface = Switch ($interface.VideoOutputTechnology){
-        "-2" { "Uninitialized" }
-        "-1" { "Unknown" }
-        "0"  { "VGA" }
-        "1"  { "SVGA" }
-        "2"  { "Composite" }
-        "3"  { "Component" }
-        "4"  { "DVI" }
-        "5"  { "HDMI" }
-        "6"  { "LVDS" }
-        "8"  { "D_IPN" }
-        "9"  { "SDI" }
-        "10" { "DisplayPort-External" }
-        "11" { "DisplayPort-Embedded" }
-        "12" { "UDI-External" }
-        "13" { "UDI-Embedded" }
-        "14" { "SDTV-Dongle" }
-        "15" { "MiraCast" }
-        "2147483648" { "Laptop Internal" }
-        default { $interface.VideoOutputTechnology }
-    }
-    $manufacturer = ($monitor.ManufacturerName -notmatch 0 | ForEach{[char]$_}) -join "";
-    $item.manufacturer = switch ($manufacturer) {
-        "___" { "Targa" }
-        "ACR" { "Acer" }
-        "ACT" { "Targa" }
-        "ADI" { "ADI" }
-        "AOC" { "AOC International" }
-        "API" { "Acer" }
-        "APP" { "Apple" }
-        "ART" { "ArtMedia" }
-        "AST" { "AST Research" }
-        "AUO" { "AU Optronics" }
-        "BMM" { "BMM" }
-        "BNQ" { "BenQ Corporation" }
-        "BOE" { "BOE Display Technology" }
-        "CPL" { "Compal" }
-        "CPQ" { "Compaq" }
-        "CTX" { "Chuntex" }
-        "DEC" { "Digital Equipment Corporation" }
-        "DEL" { "Dell" }
-        "DPC" { "Delta" }
-        "DWE" { "Daewoo" }
-        "ECS" { "Elitegroup Computer Systems" }
-        "EIZ" { "EIZO" }
-        "EPI" { "Envision" }
-        "FCM" { "Funai" }
-        "FUS" { "Fujitsu" }
-        "GSM" { "LG Electronics" }
-        "GWY" { "Gateway 2000" }
-        "HEI" { "Hyundai" }
-        "HIQ" { "Hyundai ImageQuest" }
-        "HIT" { "Hitachi" }
-        "HPN" { "Hewlett Packard" }
-        "HSD" { "Hanns.G" }
-        "HSL" { "Hansol Electronics" }
-        "HTC" { "Hitachi" }
-        "HWP" { "Hewlett Packard" }
-        "IBM" { "IBM" }
-        "ICL" { "Fujitsu" }
-        "IFS" { "InFocus" }
-        "IQT" { "Hyundai" }
-        "IVM" { "Idek Iiyama" }
-        "KDS" { "KDS USA" }
-        "KFC" { "KFC Computek" }
-        "LEN" { "Lenovo" }
-        "LGD" { "LG Display" }
-        "LKM" { "ADLAS / AZALEA" }
-        "LNK" { "LINK Technologies" }
-        "LPL" { "LG Philips" }
-        "LTN" { "Lite-On" }
-        "MAG" { "MAG InnoVision" }
-        "MAX" { "Maxdata Computer" }
-        "MEI" { "Panasonic" }
-        "MEL" { "Mitsubishi Electronics" }
-        "MIR" { "Miro" }
-        "MTC" { "MITAC" }
-        "NAN" { "NANAO" }
-        "NEC" { "NEC" }
-        "NOK" { "Nokia" }
-        "NVD" { "Nvidia" }
-        "OQI" { "Optiquest" }
-        "PBN" { "Packard Bell" }
-        "PCK" { "Daewoo" }
-        "PDC" { "Polaroid" }
-        "PGS" { "Princeton Graphic Systems" }
-        "PHL" { "Philips" }
-        "PNP" { "Plug n Play (Microsoft)" }
-        "PRT" { "Princeton" }
-        "REL" { "Relisys" }
-        "SAM" { "Samsung" }
-        "SEC" { "Samsung" }
-        "SHP" { "Sharp" }
-        "SMC" { "Samtron" }
-        "SMI" { "Smile" }
-        "SNI" { "Siemens Nixdorf" }
-        "SNY" { "Sony Corporation" }
-        "SPT" { "Sceptre" }
-        "SRC" { "Shamrock Technology" }
-        "STN" { "Samtron" }
-        "STP" { "Sceptre" }
-        "TAT" { "Tatung" }
-        "TOS" { "Toshiba" }
-        "TRL" { "Royal Information Company" }
-        "TSB" { "Toshiba" }
-        "UNM" { "Unisys" }
-        "VSC" { "ViewSonic" }
-        "WTC" { "Wen Technology" }
-        "ZCM" { "Zenith Data Systems" }
-        default { $manufacturer }
-    }
-    $item.device = ([System.Text.Encoding]::UTF8.GetString($monitor.ProductCodeID)) -replace "`0", ""
-    $year = $monitor.YearOfManufacture
-    $week = $monitor.WeekOfManufacture
-    $item.manufacture_date = ((get-date -Date "$year/01/01").AddDays((7*$week))).ToString("MM/yyyy")
-    $result.monitor += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.monitor.count
-    Write-Host "Monitor, $count entries took $totalSecs seconds"
 }
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.vm = @()
-$item = @{}
-try {
-    Get-VM | ForEach {
+
+if ($skip_sections.Contains("certificate,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.certificate = @()
+    $item = @{}
+    Get-ChildItem -Recurse Cert: -ErrorAction Ignore | WHERE FriendlyName -ne "" | Select FriendlyName, SerialNumber, Issuer, NotAfter, NotBefore, SignatureAlgorithm, Version, @{Name='NotAfterFormatted';Expression={Get-Date -Date $_.NotAfter -Uformat "%Y-%m-%d %R"}}, @{Name='NotBeforeFormatted';Expression={Get-Date -Date $_.NotBefore -Uformat "%Y-%m-%d %R"}} | ForEach {
+        $item = @{}
+        $item.name = $_.FriendlyName
+        $item.serial = $_.SerialNumber
+        $item.issuer = $_.Issuer
+        $item.valid_from_raw = [string]$_.NotBefore
+        $item.valid_from = $_.NotBeforeFormatted
+        $item.valid_to_raw = [string]$_.NotAfter
+        $item.valid_to = $_.NotAfterFormatted
+        $item.encryption = ""
+        $item.algorithm = $_.SignatureAlgorithm
+        $item.version = $_.Version
+
+        if ($item.name -ne $null) {
+            $result.certificate += $item
+        }
+        Clear-Variable -name item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.certificate.count
+        Write-Host "Certificate, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("scsi,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.scsi = @()
+    $item = @{}
+    Get-WmiObject -Class Win32_SCSIController | ForEach {
       Clear-Variable -name item
       $item = @{}
-      $item.name = $_.VMName
-      $item.guest_device_id = $_.Id
-      $item.vm_ident = $_.Id
-      $item.type = "Hyper-V"
-      $item.uuid = ""
-      $item.vm_group = ""
-      $item.config_file = $_.ConfigurationLocation
-      $item.memory_count = [Math]::Round($_.MemoryStartup / 1024 / 1024)
-      $item.cpu_count = $_.ProcessorCount
-      $item.status = $_.State
-      $item.icon = ""
-
-      $uuid = Get-VM -Name $_.VMName | Select-Object Name,@{Name="BIOSGUID";Expression={(Get-WmiObject -ComputerName $_.ComputerName -Namespace "root\virtualization\v2" -Class Msvm_VirtualSystemSettingData -Property BIOSGUID -Filter ("InstanceID = 'Microsoft:{0}'" -f $_.VMId.Guid)).BIOSGUID}}
-      $item.uuid = $uuid.BIOSGUID
-
-      $result.vm += $item
+      $item.model = $_.name
+      $item.manufacturer = $_.Manufacturer
+      $item.device = $_.PNPDeviceID
+      $item.type = 'other'
+      $result.scsi += $item
     }
-} catch {
-    Write-Host "Get-VM not installed, continuing."
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.vm.count
-    Write-Host "VM, $count entries took $totalSecs seconds"
-}
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.sound = @()
-$item = @{}
-Get-WmiObject -Class Win32_SoundDevice | ForEach {
-  Clear-Variable -name item
-  $item = @{}
-  $item.model = $_.Name
-  $item.device = $_.DeviceID
-  $item.manufacturer = $_.Manufacturer
-  $result.sound += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.sound.count
-    Write-Host "Sound, $count entries took $totalSecs seconds"
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.scsi.count
+        Write-Host "SCSI, $count entries took $totalSecs seconds"
+    }
 }
 
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.disk = @()
-$item = @{}
-Get-WmiObject -Class Win32_DiskDrive | ForEach {
+if ($skip_sections.Contains("processor,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.processor = @()
+    $item = @{}
     Clear-Variable -name item
     $item = @{}
-    $item.model = $_.Name
-    $item.device = $_.DeviceID
-    $item.manufacturer = $_.Manufacturer
-    $item.caption = $_.Caption
-    $item.hard_drive_index = $_.Index
-    $item.scsi_logical_unit = $_.SCSITargetId
-    $item.model = $_.Model
-    if ($item.model.IndexOf("VMware") -eq 0) { $item.model = "VMware Virtual Disk" }
-    $item.firmware = if ($_.FirmwareRevision) { $_.FirmwareRevision } Else { "" }
-    $item.serial = if ($_.SerialNumber) { $_.SerialNumber } Else { "" }
-    $item.size = [Math]::Round($_.size / 1024 / 1024)
-    $item.partitions = $_.Partitions
-    $model = $item.model.ToLower();
-    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("hitachi") -eq 0) { $item.manufacturer = "Hitachi" }
-    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("maxtor") -eq 0) { $item.manufacturer = "Maxtor" }
-    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("sandisk") -eq 0) { $item.manufacturer = "SanDisk" }
-    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("toshiba") -eq 0) { $item.manufacturer = "Toshiba" }
-    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("st") -eq 0) { $item.manufacturer = "Seagate" }
-    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wdc") -eq 0) { $item.manufacturer = "Western Digital" }
-    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wd ") -eq 0) { $item.manufacturer = "Western Digital" }
-    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("vmware") -eq 0) { $item.manufacturer = "VMware" }
-    if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("ct") -eq 0) { $item.manufacturer = "Crucial" }
-    $index = $_.Index
-    $PhysicalDisk = (Get-PhysicalDisk | Where-Object {$_.DeviceId -eq $index})
-    $item.interface_type = $PhysicalDisk.BusType
-    $item.status = $PhysicalDisk.HealthStatus
-    $result.disk += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.disk.count
-    Write-Host "Disk, $count entries took $totalSecs seconds"
+    # NOTE - Computers with multiple physical CPUs return an array
+    #        but those with a single CPU return an object, hence the test below
+    if ($Win32_Processor[0] -ne $null) {
+        $processor = $Win32_Processor[0]
+    } else {
+        $processor = $Win32_Processor
+    }
+    $item.physical_count = [int]$Win32_ComputerSystem.NumberOfProcessors
+    $item.core_count = $item.physical_count * [int]$processor.NumberOfCores
+    $item.logical_count = $item.physical_count * [int]$processor.NumberOfLogicalProcessors
+    $item.speed = $processor.MaxClockSpeed
+    $item.manufacturer = $processor.Manufacturer
+    $item.architecture = "Unknown"
+    if ($processor.Architecture -eq '0' ) { $item.architecture = 'x86' }
+    if ($processor.Architecture -eq '1' ) { $item.architecture = 'MIPS' }
+    if ($processor.Architecture -eq '2' ) { $item.architecture = 'Alpha' }
+    if ($processor.Architecture -eq '3' ) { $item.architecture = 'PowerPC' }
+    if ($processor.Architecture -eq '5' ) { $item.architecture = 'ARM' }
+    if ($processor.Architecture -eq '6' ) { $item.architecture = 'Itanium' }
+    if ($processor.Architecture -eq '9' ) { $item.architecture = 'x64' }
+    $item.description = $processor.Name
+    if ($item.description -ne $null) {
+        $item.description = $item.description.Replace("(R)", "").Replace("(TM)", "").Replace("(r)", "").Replace("(tm)", "")
+        $item.description = $item.description -replace '\s{2,}', ' '
+    }
+    if ($item.description -eq 'Apple silicon') {
+        $item.architecture = 'ARM'
+    }
+    $item.socket = ''
+    if ($processor.UpgradeMethod -eq 1) { $item.socket = 'Other' }
+    if ($processor.UpgradeMethod -eq 2) { $item.socket = 'Unknown' }
+    if ($processor.UpgradeMethod -eq 3) { $item.socket = 'Daughter Board' }
+    if ($processor.UpgradeMethod -eq 4) { $item.socket = 'ZIF Socket' }
+    if ($processor.UpgradeMethod -eq 5) { $item.socket = 'Replaceable Piggy Back' }
+    if ($processor.UpgradeMethod -eq 6) { $item.socket = 'None' }
+    if ($processor.UpgradeMethod -eq 7) { $item.socket = 'LIF Socket' }
+    if ($processor.UpgradeMethod -eq 8) { $item.socket = 'Slot 1' }
+    if ($processor.UpgradeMethod -eq 9) { $item.socket = 'Slot 2' }
+    if ($processor.UpgradeMethod -eq 10) { $item.socket = '370 Pin Socket' }
+    if ($processor.UpgradeMethod -eq 11) { $item.socket = 'Slot A' }
+    if ($processor.UpgradeMethod -eq 12) { $item.socket = 'Slot M' }
+    if ($processor.UpgradeMethod -eq 13) { $item.socket = 'Socket 423' }
+    if ($processor.UpgradeMethod -eq 14) { $item.socket = 'Socket A (462)' }
+    if ($processor.UpgradeMethod -eq 15) { $item.socket = 'Socket 478' }
+    if ($processor.UpgradeMethod -eq 16) { $item.socket = 'Socket 754' }
+    if ($processor.UpgradeMethod -eq 17) { $item.socket = 'Socket 940' }
+    if ($processor.UpgradeMethod -eq 18) { $item.socket = 'Socket 939' }
+    if ($processor.UpgradeMethod -eq 19) { $item.socket = 'Socket mPGA 604' }
+    if ($processor.UpgradeMethod -eq 20) { $item.socket = 'Socket LGA 771' }
+    if ($processor.UpgradeMethod -eq 21) { $item.socket = 'Socket LGA 775' }
+    if ($processor.UpgradeMethod -eq 22) { $item.socket = 'Socket S1' }
+    if ($processor.UpgradeMethod -eq 23) { $item.socket = 'Socket AM2' }
+    if ($processor.UpgradeMethod -eq 24) { $item.socket = 'Socket F (1207)' }
+    if ($processor.UpgradeMethod -eq 25) { $item.socket = 'Socket LGA 1366' }
+    if ($processor.UpgradeMethod -eq 26) { $item.socket = 'Socket G34' }
+    if ($processor.UpgradeMethod -eq 27) { $item.socket = 'Socket AM3' }
+    if ($processor.UpgradeMethod -eq 28) { $item.socket = 'Socket C32' }
+    if ($processor.UpgradeMethod -eq 29) { $item.socket = 'Socket LGA 1156' }
+    if ($processor.UpgradeMethod -eq 30) { $item.socket = 'Socket LGA 1567' }
+    if ($processor.UpgradeMethod -eq 31) { $item.socket = 'Socket PGA 988A' }
+    if ($processor.UpgradeMethod -eq 32) { $item.socket = 'Socket BGA 1288' }
+    if ($processor.UpgradeMethod -eq 33) { $item.socket = 'Socket rPGA 988B' }
+    if ($processor.UpgradeMethod -eq 34) { $item.socket = 'Socket BGA 1023' }
+    if ($processor.UpgradeMethod -eq 35) { $item.socket = 'Socket BGA 1224' }
+    if ($processor.UpgradeMethod -eq 36) { $item.socket = 'Socket LGA 1155' }
+    if ($processor.UpgradeMethod -eq 37) { $item.socket = 'Socket LGA 1356' }
+    if ($processor.UpgradeMethod -eq 38) { $item.socket = 'Socket LGA 2011' }
+    if ($processor.UpgradeMethod -eq 39) { $item.socket = 'Socket FS1' }
+    if ($processor.UpgradeMethod -eq 40) { $item.socket = 'Socket FS2' }
+    if ($processor.UpgradeMethod -eq 41) { $item.socket = 'Socket FM1' }
+    if ($processor.UpgradeMethod -eq 42) { $item.socket = 'Socket FM2' }
+    if ($processor.UpgradeMethod -eq 43) { $item.socket = 'Socket LGA 2011-3' }
+    if ($processor.UpgradeMethod -eq 44) { $item.socket = 'Socket LGA 1356-3' }
+    if ($processor.UpgradeMethod -eq 185) { $item.socket = 'Socket P (478)' }
+    $processor_type = $item.socket
+    $result.processor += $item
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        Write-Host "Processor, 1 entries took $totalSecs seconds"
+    }
 }
 
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.partition = @()
-$item = @{}
-Get-WmiObject -Class Win32_LogicalDisk -Filter 'DriveType = "2" or DriveType = "3"' | ForEach {
-    Clear-Variable -name item
+if ($skip_sections.Contains("memory,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.memory = @()
+    $Win32_PhysicalMemory | ForEach {
+      Clear-Variable -name item
+      $item = @{}
+        $item.bank = $_.DeviceLocator
+        $item.size = $_.Capacity /1024 /1024
+        $item.speed = $_.Speed
+        if ($item.speed -eq $null) {
+            $item.speed = 0
+        }
+        $item.serial = $_.SerialNumber
+        $item.tag = $_.Tag
+
+      $item.form_factor = 'Unknown'
+      if ( $_.FormFactor -eq 1) { $item.form_factor = 'Other' }
+      if ( $_.FormFactor -eq 2) { $item.form_factor = 'SIP' }
+      if ( $_.FormFactor -eq 3) { $item.form_factor = 'DIP' }
+      if ( $_.FormFactor -eq 4) { $item.form_factor = 'ZIP' }
+      if ( $_.FormFactor -eq 5) { $item.form_factor = 'SOJ' }
+      if ( $_.FormFactor -eq 6) { $item.form_factor = 'Proprietary' }
+      if ( $_.FormFactor -eq 7) { $item.form_factor = 'SIMM' }
+      if ( $_.FormFactor -eq 8) { $item.form_factor = 'DIMM' }
+      if ( $_.FormFactor -eq 9) { $item.form_factor = 'TSOP' }
+      if ( $_.FormFactor -eq 10) { $item.form_factor = 'PGA' }
+      if ( $_.FormFactor -eq 11) { $item.form_factor = 'RIMM' }
+      if ( $_.FormFactor -eq 12) { $item.form_factor = 'SODIMM' }
+      if ( $_.FormFactor -eq 13) { $item.form_factor = 'SRIMM' }
+      if ( $_.FormFactor -eq 14) { $item.form_factor = 'SMD' }
+      if ( $_.FormFactor -eq 15) { $item.form_factor = 'SSMP' }
+      if ( $_.FormFactor -eq 16) { $item.form_factor = 'QFP' }
+      if ( $_.FormFactor -eq 17) { $item.form_factor = 'TQFP' }
+      if ( $_.FormFactor -eq 18) { $item.form_factor = 'SOIC' }
+      if ( $_.FormFactor -eq 19) { $item.form_factor = 'LCC' }
+      if ( $_.FormFactor -eq 20) { $item.form_factor = 'PLCC' }
+      if ( $_.FormFactor -eq 21) { $item.form_factor = 'BGA' }
+      if ( $_.FormFactor -eq 22) { $item.form_factor = 'FPBGA' }
+      if ( $_.FormFactor -eq 23) { $item.form_factor = 'LGA' }
+
+      $item.detail = 'Unknown'
+        if ( $_.MemoryType -eq 0) { $item.detail = 'Unknown' }
+        if ( $_.MemoryType -eq 1) { $item.detail = 'Other' }
+        if ( $_.MemoryType -eq 2) { $item.detail = 'DRAM' }
+        if ( $_.MemoryType -eq 3) { $item.detail = 'Synchronous DRAM' }
+        if ( $_.MemoryType -eq 4) { $item.detail = 'Cache DRAM' }
+        if ( $_.MemoryType -eq 5) { $item.detail = 'EDO' }
+        if ( $_.MemoryType -eq 6) { $item.detail = 'EDRAM' }
+        if ( $_.MemoryType -eq 7) { $item.detail = 'VRAM' }
+        if ( $_.MemoryType -eq 8) { $item.detail = 'SRAM' }
+        if ( $_.MemoryType -eq 9) { $item.detail = 'RAM' }
+        if ( $_.MemoryType -eq 10) { $item.detail = 'ROM' }
+        if ( $_.MemoryType -eq 11) { $item.detail = 'Flash' }
+        if ( $_.MemoryType -eq 12) { $item.detail = 'EEPROM' }
+        if ( $_.MemoryType -eq 13) { $item.detail = 'FEPROM' }
+        if ( $_.MemoryType -eq 14) { $item.detail = 'EPROM' }
+        if ( $_.MemoryType -eq 15) { $item.detail = 'CDRAM' }
+        if ( $_.MemoryType -eq 16) { $item.detail = '3DRAM' }
+        if ( $_.MemoryType -eq 17) { $item.detail = 'SDRAM' }
+        if ( $_.MemoryType -eq 18) { $item.detail = 'SGRAM' }
+        if ( $_.MemoryType -eq 19) { $item.detail = 'RDRAM' }
+        if ( $_.MemoryType -eq 20) { $item.detail = 'DDR' }
+        if ( $_.MemoryType -eq 21) { $item.detail = 'DDR-2' }
+        if ( $_.MemoryType -eq 22) { $item.detail = 'DDR-3' }
+
+      $item.type = 'Unknown'
+        if ( $_.TypeDetail -eq 1 ) { $item.type = 'Reserved' }
+        if ( $_.TypeDetail -eq 2 ) { $item.type = 'Other' }
+        if ( $_.TypeDetail -eq 4 ) { $item.type = 'Unknown' }
+        if ( $_.TypeDetail -eq 8 ) { $item.type = 'Fast-paged' }
+        if ( $_.TypeDetail -eq 16 ) { $item.type = 'Static column' }
+        if ( $_.TypeDetail -eq 32 ) { $item.type = 'Pseudo-static' }
+        if ( $_.TypeDetail -eq 64 ) { $item.type = 'RAMBUS' }
+        if ( $_.TypeDetail -eq 128 ) { $item.type = 'Synchronous' }
+        if ( $_.TypeDetail -eq 256 ) { $item.type = 'CMOS' }
+        if ( $_.TypeDetail -eq 512 ) { $item.type = 'EDO' }
+        if ( $_.TypeDetail -eq 1024 ) { $item.type = 'Window DRAM' }
+        if ( $_.TypeDetail -eq 2048 ) { $item.type = 'Cache DRAM' }
+        if ( $_.TypeDetail -eq 4096 ) { $item.type = 'Non-volatile' }
+
+        $result.memory += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.memory.count
+        Write-Host "Memory, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("motherboard,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.motherboard = @()
     $item = @{}
-    $item.device = $_.DeviceID
-    $item.mount_type = "partition"
-    $item.size = [Math]::Round($_.Size / 1024 / 1024)
-    $item.description = $_.Caption
-    $item.format = $_.FileSystem
-    $item.free = [Math]::Round($_.FreeSpace / 1024 / 1024)
-    $item.mount_point = $_.Caption
-    $item.name = if ($_.VolumeName) { $_.VolumeName } else { "" }
-    $item.serial = if ($_.VolumeSerialNumber) { $_.VolumeSerialNumber } else { "" }
-    if ($_.DriveType = "2") {$item.type = "local removable"}
-    if ($_.DriveType = "3") {$item.type = "local"}
-    $item.used = [Math]::Round($item.size - $item.free)
-    $Win32_LogicalDiskToPartition | ForEach {
-        if ($_.Dependent.IndexOf($item.device) -ne "null") {
-            $item.hard_drive_index = ((($_.Antecedent.split('"'))[1].split('#'))[1].split(','))[0]
-        }
+    $Win32_BaseBoard | ForEach {
+      Clear-Variable -name item
+      $item = @{}
+      $item.model = $_.Product
+      $item.manufacturer = $_.Manufacturer
+      $item.serial = $_.SerialNumber
+      # Note below is technically incorrect. We just put the number of physical processors installed here
+      $item.processor_slot_count = [int]($Win32_ComputerSystem.NumberOfProcessors)
+      $item.processor_type = $processor_type
+      $item.memory_slot_count = (Get-WmiObject -Class Win32_PhysicalMemoryArray).MemoryDevices
+      $result.motherboard += $item
     }
-    $name = $_.Name
-    $item.encryption_status = ""
-    $item.encryption_method = ""
-    $Win32_EncryptableVolume | ForEach {
-        if ($_.DriveLetter -eq $name) {
-            if ($_.ProtectionStatus -eq 0) { $item.encryption_status = "off" }
-            if ($_.ProtectionStatus -eq 1) { $item.encryption_status = "on" }
-            if ($_.ProtectionStatus -eq 2) { $item.encryption_status = "unknown" }
-
-            if ($_.EncryptionMethod -eq 0) { $item.encryption_method = "NOT ENCRYPTED" }
-            if ($_.EncryptionMethod -eq 1) { $item.encryption_method = "AES 128 WITH DIFFUSER" }
-            if ($_.EncryptionMethod -eq 2) { $item.encryption_method = "AES 256 WITH DIFFUSER" }
-            if ($_.EncryptionMethod -eq 3) { $item.encryption_method = "AES 128" }
-            if ($_.EncryptionMethod -eq 4) { $item.encryption_method = "AES 256" }
-            if ($_.EncryptionMethod -eq 5) { $item.encryption_method = "HARDWARE ENCRYPTION" }
-            if ($_.EncryptionMethod -eq 6) { $item.encryption_method = "XTS-AES 128" }
-            if ($_.EncryptionMethod -eq 7) { $item.encryption_method = "XTS-AES 256 WITH DIFFUSER" }
-        }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        Write-Host "Motherboard, 1 entries took $totalSecs seconds"
     }
-
-  $result.partition += $item
 }
-if ($Win32_MappedLogicalDisk) {
-  $Win32_MappedLogicalDisk | ForEach {
+
+
+if ($skip_sections.Contains("optical,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.optical = @()
+    $item = @{}
+    Get-WmiObject -Class Win32_CDROMDrive | ForEach {
+      Clear-Variable -name item
+      $item = @{}
+      $item.description = $_.Caption
+      $item.model = $_.Caption
+      $item.device = $_.DeviceID
+      $item.mount_point = $_.Drive
+      $item.serial = if ($_.SerialNumber) { $item.SerialNumber } else { "" }
+      $result.optical += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.optical.count
+        Write-Host "Optical, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("video,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.video = @()
+    $item = @{}
+    Get-WmiObject -Class Win32_VideoController | ForEach {
+      Clear-Variable -name item
+      $item = @{}
+        if ( ($_.Caption -eq 'vnc') -or ($_.Caption -eq "Microsoft Basic Render Driver") -or ($_.Caption -eq "DameWare") -or ($_.Caption -eq "Innobec SideWindow") -or ($_.Caption -eq "ConfigMgr Remote Control Driver") -or ($_.Caption -eq "Mirage Driver") -or ($_.Caption -eq "VNC Mirror Driver") -or ($_.Caption -eq "Microsoft SMS Mirror Driver") ) {
+          continue
+      }
+      $item.model = $_.Name
+      $item.device = $_.PNPDeviceID
+      $item.manufacturer = $_.AdapterCompatibility
+      $item.size = [Math]::Round($_.AdapterRAM / 1024 / 1024)
+      $result.video += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.video.count
+        Write-Host "Video, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("monitor,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.monitor = @()
+    $item = @{}
+    $monitors = Get-WmiObject -Namespace root\wmi -Class WMIMonitorID -ErrorAction Ignore | Sort -Descending
+    ForEach ($monitor in $monitors) {
+        Clear-Variable -name item
+        $item = @{}
+        $thisMonitor = (Get-WmiObject Win32_PnPEntity -Filter "Service='monitor'" | Where-Object {$monitor.InstanceName.TrimEnd('0').TrimEnd('_') -contains $_.DeviceID})
+        $item.device = $thisMonitor.deviceid
+        $path = "HKLM:\SYSTEM\CurrentControlSet\Enum\" + $item.device + "\Device Parameters"
+        $edid = (Get-ItemProperty $path EDID -ErrorAction SilentlyContinue).EDID
+        $HorizontalSize = $edid[21]
+        $VerticalSize = $edid[22]
+        $item.size = [Math]::Round([Math]::Sqrt($HorizontalSize*$HorizontalSize + $VerticalSize*$VerticalSize) / 2.54)
+        $item.model = ""
+        for ($i = 54; $i -lt 109; $i += 18) {
+            if ((Get-LittleEndianInt $edid $i) -eq 0xff) {
+                for ($j = $i+5; $edid[$j] -ne 10 -and $j -lt $i+18; $j++) { $item.serial += [char]$edid[$j] }
+            }
+            if ((Get-LittleEndianInt $edid $i) -eq 0xfc) {
+                for ($j = $i+5; $edid[$j] -ne 10 -and $j -lt $i+18; $j++) { $item.model += [char]$edid[$j] }
+            }
+        }
+        $res = Get-WmiObject -Namespace root\wmi -Class WmiMonitorListedSupportedSourceModes | Where-Object {$_.InstanceName -eq $monitor.InstanceName}
+        $pmsmi = $res.PreferredMonitorSourceModeIndex
+        $item.description = [string]$res.MonitorSourceModes[$pmsmi].HorizontalActivePixels + " x " + [string]$res.MonitorSourceModes[$pmsmi].VerticalActivePixels
+        $item.aspect_ratio = ""
+        $item.aspect_ratio = switch ($item.description) {
+            {@("854 x 450", "1280 x 720", "1366 x 768", "1920 x 1080", "2048 x 1152", "3840 x 2160", "7680 x 4320", "15360 x 8640") -contains $_ } { "16:9" }
+            {@("320 x 240", "640 x 480", "768 x 576", "800 x 600", "1024 x 768", "1400 x 1050", "1600 x 1200", "2048 x 1536", "4096 x 3072") -contains $_ } { "4:3" }
+            {@("320 x 200", "1280 x 800", "1680 x 1050", "1920 x 1200", "2220 x 1080", "2560 x 1600", "3840 x 2400") -contains $_ } { "16:10" }
+            {@("720 x 480", "1152 x 768", "1440 x 960", "2560 x 1440") -contains $_ } { "3:2" }
+            {@("800 x 480", "1280 x 768") -contains $_ } { "5:3" }
+            {@("1280 x 1024", "2560 x 2048", "3200 x 1800") -contains $_ } { "5:4" }
+            {@("1920 x 800", "2560 x 1080", "2880 x 1200", "3440 x 1440", "3840 x 1600", "5160 x 2160", "4320 x 1800", "5120 x 2160", "5760 x 2400", "6880 x 2880", "7680 x 3200", "7680 x 3240", "8640 x 3600", "10240 x 4320") -contains $_ } { "21:9" }
+            default { "" }
+        }
+        if ($item.aspect_ratio -eq "" -and $item.description -contains "10240 x ") {
+            $item.aspect_ratio = "16:9"
+        }
+        if ($item.aspect_ratio -eq "" -and $item.description -contains "2048 x ") {
+            $item.aspect_ratio = "16:9"
+        }
+        $interface = (Get-WMIObject -NameSpace root\wmi -Class WmiMonitorConnectionParams | Where-Object {$_.InstanceName -eq $monitor.InstanceName})
+        $item.interface = Switch ($interface.VideoOutputTechnology){
+            "-2" { "Uninitialized" }
+            "-1" { "Unknown" }
+            "0"  { "VGA" }
+            "1"  { "SVGA" }
+            "2"  { "Composite" }
+            "3"  { "Component" }
+            "4"  { "DVI" }
+            "5"  { "HDMI" }
+            "6"  { "LVDS" }
+            "8"  { "D_IPN" }
+            "9"  { "SDI" }
+            "10" { "DisplayPort-External" }
+            "11" { "DisplayPort-Embedded" }
+            "12" { "UDI-External" }
+            "13" { "UDI-Embedded" }
+            "14" { "SDTV-Dongle" }
+            "15" { "MiraCast" }
+            "2147483648" { "Laptop Internal" }
+            default { $interface.VideoOutputTechnology }
+        }
+        $manufacturer = ($monitor.ManufacturerName -notmatch 0 | ForEach{[char]$_}) -join "";
+        $item.manufacturer = switch ($manufacturer) {
+            "___" { "Targa" }
+            "ACR" { "Acer" }
+            "ACT" { "Targa" }
+            "ADI" { "ADI" }
+            "AOC" { "AOC International" }
+            "API" { "Acer" }
+            "APP" { "Apple" }
+            "ART" { "ArtMedia" }
+            "AST" { "AST Research" }
+            "AUO" { "AU Optronics" }
+            "BMM" { "BMM" }
+            "BNQ" { "BenQ Corporation" }
+            "BOE" { "BOE Display Technology" }
+            "CPL" { "Compal" }
+            "CPQ" { "Compaq" }
+            "CTX" { "Chuntex" }
+            "DEC" { "Digital Equipment Corporation" }
+            "DEL" { "Dell" }
+            "DPC" { "Delta" }
+            "DWE" { "Daewoo" }
+            "ECS" { "Elitegroup Computer Systems" }
+            "EIZ" { "EIZO" }
+            "EPI" { "Envision" }
+            "FCM" { "Funai" }
+            "FUS" { "Fujitsu" }
+            "GSM" { "LG Electronics" }
+            "GWY" { "Gateway 2000" }
+            "HEI" { "Hyundai" }
+            "HIQ" { "Hyundai ImageQuest" }
+            "HIT" { "Hitachi" }
+            "HPN" { "Hewlett Packard" }
+            "HSD" { "Hanns.G" }
+            "HSL" { "Hansol Electronics" }
+            "HTC" { "Hitachi" }
+            "HWP" { "Hewlett Packard" }
+            "IBM" { "IBM" }
+            "ICL" { "Fujitsu" }
+            "IFS" { "InFocus" }
+            "IQT" { "Hyundai" }
+            "IVM" { "Idek Iiyama" }
+            "KDS" { "KDS USA" }
+            "KFC" { "KFC Computek" }
+            "LEN" { "Lenovo" }
+            "LGD" { "LG Display" }
+            "LKM" { "ADLAS / AZALEA" }
+            "LNK" { "LINK Technologies" }
+            "LPL" { "LG Philips" }
+            "LTN" { "Lite-On" }
+            "MAG" { "MAG InnoVision" }
+            "MAX" { "Maxdata Computer" }
+            "MEI" { "Panasonic" }
+            "MEL" { "Mitsubishi Electronics" }
+            "MIR" { "Miro" }
+            "MTC" { "MITAC" }
+            "NAN" { "NANAO" }
+            "NEC" { "NEC" }
+            "NOK" { "Nokia" }
+            "NVD" { "Nvidia" }
+            "OQI" { "Optiquest" }
+            "PBN" { "Packard Bell" }
+            "PCK" { "Daewoo" }
+            "PDC" { "Polaroid" }
+            "PGS" { "Princeton Graphic Systems" }
+            "PHL" { "Philips" }
+            "PNP" { "Plug n Play (Microsoft)" }
+            "PRT" { "Princeton" }
+            "REL" { "Relisys" }
+            "SAM" { "Samsung" }
+            "SEC" { "Samsung" }
+            "SHP" { "Sharp" }
+            "SMC" { "Samtron" }
+            "SMI" { "Smile" }
+            "SNI" { "Siemens Nixdorf" }
+            "SNY" { "Sony Corporation" }
+            "SPT" { "Sceptre" }
+            "SRC" { "Shamrock Technology" }
+            "STN" { "Samtron" }
+            "STP" { "Sceptre" }
+            "TAT" { "Tatung" }
+            "TOS" { "Toshiba" }
+            "TRL" { "Royal Information Company" }
+            "TSB" { "Toshiba" }
+            "UNM" { "Unisys" }
+            "VSC" { "ViewSonic" }
+            "WTC" { "Wen Technology" }
+            "ZCM" { "Zenith Data Systems" }
+            default { $manufacturer }
+        }
+        $item.device = ([System.Text.Encoding]::UTF8.GetString($monitor.ProductCodeID)) -replace "`0", ""
+        $year = $monitor.YearOfManufacture
+        $week = $monitor.WeekOfManufacture
+        $item.manufacture_date = ((get-date -Date "$year/01/01").AddDays((7*$week))).ToString("MM/yyyy")
+        $result.monitor += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.monitor.count
+        Write-Host "Monitor, $count entries took $totalSecs seconds"
+    }
+}
+
+if ($skip_sections.Contains("vm,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.vm = @()
+    $item = @{}
+    try {
+        Get-VM | ForEach {
+          Clear-Variable -name item
+          $item = @{}
+          $item.name = $_.VMName
+          $item.guest_device_id = $_.Id
+          $item.vm_ident = $_.Id
+          $item.type = "Hyper-V"
+          $item.uuid = ""
+          $item.vm_group = ""
+          $item.config_file = $_.ConfigurationLocation
+          $item.memory_count = [Math]::Round($_.MemoryStartup / 1024 / 1024)
+          $item.cpu_count = $_.ProcessorCount
+          $item.status = $_.State
+          $item.icon = ""
+
+          $uuid = Get-VM -Name $_.VMName | Select-Object Name,@{Name="BIOSGUID";Expression={(Get-WmiObject -ComputerName $_.ComputerName -Namespace "root\virtualization\v2" -Class Msvm_VirtualSystemSettingData -Property BIOSGUID -Filter ("InstanceID = 'Microsoft:{0}'" -f $_.VMId.Guid)).BIOSGUID}}
+          $item.uuid = $uuid.BIOSGUID
+
+          $result.vm += $item
+        }
+    } catch {
+        Write-Host "Get-VM not installed, continuing."
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.vm.count
+        Write-Host "VM, $count entries took $totalSecs seconds"
+    }
+}
+
+if ($skip_sections.Contains("sound,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.sound = @()
+    $item = @{}
+    Get-WmiObject -Class Win32_SoundDevice | ForEach {
+      Clear-Variable -name item
+      $item = @{}
+      $item.model = $_.Name
+      $item.device = $_.DeviceID
+      $item.manufacturer = $_.Manufacturer
+      $result.sound += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.sound.count
+        Write-Host "Sound, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("disk,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.disk = @()
+    $item = @{}
+    Get-WmiObject -Class Win32_DiskDrive | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        $item.model = $_.Name
+        $item.device = $_.DeviceID
+        $item.manufacturer = $_.Manufacturer
+        $item.caption = $_.Caption
+        $item.hard_drive_index = $_.Index
+        $item.scsi_logical_unit = $_.SCSITargetId
+        $item.model = $_.Model
+        if ($item.model.IndexOf("VMware") -eq 0) { $item.model = "VMware Virtual Disk" }
+        $item.firmware = if ($_.FirmwareRevision) { $_.FirmwareRevision } Else { "" }
+        $item.serial = if ($_.SerialNumber) { $_.SerialNumber } Else { "" }
+        $item.size = [Math]::Round($_.size / 1024 / 1024)
+        $item.partitions = $_.Partitions
+        $model = $item.model.ToLower();
+        if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("hitachi") -eq 0) { $item.manufacturer = "Hitachi" }
+        if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("maxtor") -eq 0) { $item.manufacturer = "Maxtor" }
+        if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("sandisk") -eq 0) { $item.manufacturer = "SanDisk" }
+        if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("toshiba") -eq 0) { $item.manufacturer = "Toshiba" }
+        if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("st") -eq 0) { $item.manufacturer = "Seagate" }
+        if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wdc") -eq 0) { $item.manufacturer = "Western Digital" }
+        if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("wd ") -eq 0) { $item.manufacturer = "Western Digital" }
+        if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("vmware") -eq 0) { $item.manufacturer = "VMware" }
+        if ($item.manufacturer -eq "(Standard disk drives)" -and $model.IndexOf("ct") -eq 0) { $item.manufacturer = "Crucial" }
+        $index = $_.Index
+        $PhysicalDisk = (Get-PhysicalDisk | Where-Object {$_.DeviceId -eq $index})
+        $item.interface_type = $PhysicalDisk.BusType
+        $item.status = $PhysicalDisk.HealthStatus
+        $result.disk += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.disk.count
+        Write-Host "Disk, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("partition,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.partition = @()
+    $item = @{}
+    Get-WmiObject -Class Win32_LogicalDisk -Filter 'DriveType = "2" or DriveType = "3"' | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        $item.device = $_.DeviceID
+        $item.mount_type = "partition"
+        $item.size = [Math]::Round($_.Size / 1024 / 1024)
+        $item.description = $_.Caption
+        $item.format = $_.FileSystem
+        $item.free = [Math]::Round($_.FreeSpace / 1024 / 1024)
+        $item.mount_point = $_.Caption
+        $item.name = if ($_.VolumeName) { $_.VolumeName } else { "" }
+        $item.serial = if ($_.VolumeSerialNumber) { $_.VolumeSerialNumber } else { "" }
+        if ($_.DriveType = "2") {$item.type = "local removable"}
+        if ($_.DriveType = "3") {$item.type = "local"}
+        $item.used = [Math]::Round($item.size - $item.free)
+        $Win32_LogicalDiskToPartition | ForEach {
+            if ($_.Dependent.IndexOf($item.device) -ne "null") {
+                $item.hard_drive_index = ((($_.Antecedent.split('"'))[1].split('#'))[1].split(','))[0]
+            }
+        }
+        $name = $_.Name
+        $item.encryption_status = ""
+        $item.encryption_method = ""
+        $Win32_EncryptableVolume | ForEach {
+            if ($_.DriveLetter -eq $name) {
+                if ($_.ProtectionStatus -eq 0) { $item.encryption_status = "off" }
+                if ($_.ProtectionStatus -eq 1) { $item.encryption_status = "on" }
+                if ($_.ProtectionStatus -eq 2) { $item.encryption_status = "unknown" }
+
+                if ($_.EncryptionMethod -eq 0) { $item.encryption_method = "NOT ENCRYPTED" }
+                if ($_.EncryptionMethod -eq 1) { $item.encryption_method = "AES 128 WITH DIFFUSER" }
+                if ($_.EncryptionMethod -eq 2) { $item.encryption_method = "AES 256 WITH DIFFUSER" }
+                if ($_.EncryptionMethod -eq 3) { $item.encryption_method = "AES 128" }
+                if ($_.EncryptionMethod -eq 4) { $item.encryption_method = "AES 256" }
+                if ($_.EncryptionMethod -eq 5) { $item.encryption_method = "HARDWARE ENCRYPTION" }
+                if ($_.EncryptionMethod -eq 6) { $item.encryption_method = "XTS-AES 128" }
+                if ($_.EncryptionMethod -eq 7) { $item.encryption_method = "XTS-AES 256 WITH DIFFUSER" }
+            }
+        }
+
+      $result.partition += $item
+    }
+    if ($Win32_MappedLogicalDisk) {
+      $Win32_MappedLogicalDisk | ForEach {
+            Clear-Variable -name item
+            $item = @{}
+            $item.bootable = ""
+            $item.device = $_.DeviceID
+            $item.description = $_.Caption
+            $item.format = $_.FileSystem
+            $item.free = [Math]::Round($_.FreeSpace / 1024 / 1024)
+            $item.hard_drive_index = ""
+            $item.mount_point = $_.Caption
+            $item.mount_type = "mount point"
+            $item.name = if ($_.VolumeName) { $_.VolumeName } else { "" }
+            $item.partition_disk_index = ""
+            $item.serial = if ($_.VolumeSerialNumber) { $_.VolumeSerialNumber } else { "" }
+            $item.size = [Math]::Round($_.Size / 1024 / 1024)
+            $item.type = "smb"
+            $item.used = [Math]::Round($item.size - $item.free)
+
+            $result.partition += $item
+        }
+    }
+    Get-WmiObject -Class Win32_Volume -Filter 'DriveLetter = NULL' | ForEach {
         Clear-Variable -name item
         $item = @{}
         $item.bootable = ""
-        $item.device = $_.DeviceID
         $item.description = $_.Caption
+        $item.device = $_.DeviceID
         $item.format = $_.FileSystem
         $item.free = [Math]::Round($_.FreeSpace / 1024 / 1024)
         $item.hard_drive_index = ""
@@ -1103,662 +1153,664 @@ if ($Win32_MappedLogicalDisk) {
         $item.partition_disk_index = ""
         $item.serial = if ($_.VolumeSerialNumber) { $_.VolumeSerialNumber } else { "" }
         $item.size = [Math]::Round($_.Size / 1024 / 1024)
-        $item.type = "smb"
+        $item.type = "volume"
         $item.used = [Math]::Round($item.size - $item.free)
 
         $result.partition += $item
     }
-}
-Get-WmiObject -Class Win32_Volume -Filter 'DriveLetter = NULL' | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.bootable = ""
-    $item.description = $_.Caption
-    $item.device = $_.DeviceID
-    $item.format = $_.FileSystem
-    $item.free = [Math]::Round($_.FreeSpace / 1024 / 1024)
-    $item.hard_drive_index = ""
-    $item.mount_point = $_.Caption
-    $item.mount_type = "mount point"
-    $item.name = if ($_.VolumeName) { $_.VolumeName } else { "" }
-    $item.partition_disk_index = ""
-    $item.serial = if ($_.VolumeSerialNumber) { $_.VolumeSerialNumber } else { "" }
-    $item.size = [Math]::Round($_.Size / 1024 / 1024)
-    $item.type = "volume"
-    $item.used = [Math]::Round($item.size - $item.free)
-
-    $result.partition += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.partition.count
-    Write-Host "Volume, $count entries took $totalSecs seconds"
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.partition.count
+        Write-Host "Volume, $count entries took $totalSecs seconds"
+    }
 }
 
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.share = @()
-Get-WmiObject -Class Win32_Share -filter 'type = "0"' | Select Path, Name, Description | ForEach {
-  Clear-Variable -name item
-  $item = @{}
-  $item.path = $_.Path
-  $item.name = $_ | Select -ExpandProperty Name
-  $item.description = $_.Description
-  $item.size = 0
-  if (($_.Path) -and $_.Path -ne "C:\WINNT" -and $_.Path -ne "C:\WINDOWS" -and $_.Path -ne "C:\" -and ($_.Path.ToCharArray() | Select-Object -First 1) -ne "\" -and $_.Path.Length -gt 3) {
-      try {
-          $item.size = [Int]((Get-ChildItem -Path $_.Path -Recurse | Measure-Object -Sum Length).Sum / 1024 / 1024)
-      } catch {
-          $item.size = 0
-          if ($item.description -eq "") {
-              $item.description = "Cannot read folder size."
+if ($skip_sections.Contains("share,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.share = @()
+    Get-WmiObject -Class Win32_Share -filter 'type = "0"' | Select Path, Name, Description | ForEach {
+      Clear-Variable -name item
+      $item = @{}
+      $item.path = $_.Path
+      $item.name = $_ | Select -ExpandProperty Name
+      $item.description = $_.Description
+      $item.size = 0
+      if (($_.Path) -and $_.Path -ne "C:\WINNT" -and $_.Path -ne "C:\WINDOWS" -and $_.Path -ne "C:\" -and ($_.Path.ToCharArray() | Select-Object -First 1) -ne "\" -and $_.Path.Length -gt 3) {
+          try {
+              $item.size = [Int]((Get-ChildItem -Path $_.Path -Recurse | Measure-Object -Sum Length).Sum / 1024 / 1024)
+          } catch {
+              $item.size = 0
+              if ($item.description -eq "") {
+                  $item.description = "Cannot read folder size."
+              }
           }
       }
-  }
-  $share_permissions = ""
-  Get-WmiObject -Class Win32_LogicalShareAccess | ForEach {
-      $SecuritySetting = $_.SecuritySetting
-      $temp = $SecuritySetting.Split('"')
-      $ShareName = $temp[1]
-      $permission = ""
-      if ($ShareName -eq $item.name) {
+      $share_permissions = ""
+      Get-WmiObject -Class Win32_LogicalShareAccess | ForEach {
+          $SecuritySetting = $_.SecuritySetting
+          $temp = $SecuritySetting.Split('"')
+          $ShareName = $temp[1]
           $permission = ""
-          $temp = $_.Trustee.Split('"')
-          $trustee = $temp[1]
-          $sid = [WMI]"root\cimv2:win32_sid.sid='$trustee'"
-          $account = $sid.ReferencedDomainName
-          if ($account) {
-              $account = $account + " " + $sid.AccountName
-          } else {
-              $account = $sid.AccountName
+          if ($ShareName -eq $item.name) {
+              $permission = ""
+              $temp = $_.Trustee.Split('"')
+              $trustee = $temp[1]
+              $sid = [WMI]"root\cimv2:win32_sid.sid='$trustee'"
+              $account = $sid.ReferencedDomainName
+              if ($account) {
+                  $account = $account + " " + $sid.AccountName
+              } else {
+                  $account = $sid.AccountName
+              }
+              If ($_.AccessMask -band 1048576 ) {
+                  $permission = ',"Synchronize"'
+              }
+              If ($_.AccessMask -band 524288) {
+                  $permission = $permission + ',"Write owner"'
+              }
+              If ($_.AccessMask -band 262144) {
+                  $permission = $permission + ',"Write ACL"'
+              }
+              If ($_.AccessMask -band 131072) {
+                  $permission = $permission + ',"Read security"'
+              }
+              If ($_.AccessMask -band 65536) {
+                  $permission = $permission + ',"Delete"'
+              }
+              If ($_.AccessMask -band 256) {
+                  $permission = $permission + ',"Write attributes"'
+              }
+              If ($_.AccessMask -band 128) {
+                  $permission = $permission + ',"Read attributes"'
+              }
+              If ($_.AccessMask -band 64) {
+                  $permission = $permission + ',"Delete dir"'
+              }
+              If ($_.AccessMask -band 32) {
+                  $permission = $permission + ',"Execute"'
+              }
+              If ($_.AccessMask -band 16) {
+                  $permission = $permission + ',"Write extended attributes"'
+              }
+              If ($_.AccessMask -band 8) {
+                  $permission = $permission + ',"Read extended attributes"'
+              }
+              If ($_.AccessMask -band 4) {
+                  $permission = $permission + ',"Append"'
+              }
+              If ($_.AccessMask -band 2) {
+                  $permission = $permission + ',"Write"'
+              }
+              If ($_.AccessMask -band 1) {
+                  $permission = $permission + ',"Read"'
+              }
+                $permission = $permission.Substring(1,($permission.Length-1));
+                $share_permissions = $share_permissions + '"' + $account + '":[' + $permission + "],"
           }
-          If ($_.AccessMask -band 1048576 ) {
-              $permission = ',"Synchronize"'
+          if ($share_permissions.Length -gt 1) {
+              $item.users = "{" + $share_permissions.Substring(0, ($share_permissions.Length - 1)) + "}"
           }
-          If ($_.AccessMask -band 524288) {
-              $permission = $permission + ',"Write owner"'
-          }
-          If ($_.AccessMask -band 262144) {
-              $permission = $permission + ',"Write ACL"'
-          }
-          If ($_.AccessMask -band 131072) {
-              $permission = $permission + ',"Read security"'
-          }
-          If ($_.AccessMask -band 65536) {
-              $permission = $permission + ',"Delete"'
-          }
-          If ($_.AccessMask -band 256) {
-              $permission = $permission + ',"Write attributes"'
-          }
-          If ($_.AccessMask -band 128) {
-              $permission = $permission + ',"Read attributes"'
-          }
-          If ($_.AccessMask -band 64) {
-              $permission = $permission + ',"Delete dir"'
-          }
-          If ($_.AccessMask -band 32) {
-              $permission = $permission + ',"Execute"'
-          }
-          If ($_.AccessMask -band 16) {
-              $permission = $permission + ',"Write extended attributes"'
-          }
-          If ($_.AccessMask -band 8) {
-              $permission = $permission + ',"Read extended attributes"'
-          }
-          If ($_.AccessMask -band 4) {
-              $permission = $permission + ',"Append"'
-          }
-          If ($_.AccessMask -band 2) {
-              $permission = $permission + ',"Write"'
-          }
-          If ($_.AccessMask -band 1) {
-              $permission = $permission + ',"Read"'
-          }
-            $permission = $permission.Substring(1,($permission.Length-1));
-            $share_permissions = $share_permissions + '"' + $account + '":[' + $permission + "],"
       }
-      if ($share_permissions.Length -gt 1) {
-          $item.users = "{" + $share_permissions.Substring(0, ($share_permissions.Length - 1)) + "}"
-      }
-  }
-  $result.share += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.share.count
-    Write-Host "Share, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.network = @()
-$item = @{}
-Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter "IPEnabled = True or (ServiceName<>'' AND ServiceName<>'vwifimp' AND ServiceName<>'AsyncMac' AND ServiceName<>'VMnetx' AND ServiceName<>'VMnetadapter' AND ServiceName<>'Rasl2tp' AND ServiceName<>'msloop' AND ServiceName<>'PptpMiniport' AND ServiceName<>'Raspti' AND ServiceName<>'NDISWan' AND ServiceName<>'NdisWan4' AND ServiceName<>'RasPppoe' AND ServiceName<>'NdisIP' AND ServiceName<>'tunmp' AND Description<>'PPP Adapter.') AND MACAddress is not NULL" | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.dns_server = ""
-    $item.net_index = if ($_.Index) { $_ | select -ExpandProperty Index } Else { "" }
-    $item.mac = if ($_.MACAddress) { $_.MACAddress } Else { "" }
-    $item.description = if ($_.Description) { $_.Description } Else { "" }
-    $item.dhcp_enabled = [string]$_.DHCPEnabled
-    $item.dhcp_server = if ($_.DHCPServer) { $_.DHCPServer } Else { "" }
-    $item.dns_server = if ($_.DNSServerSearchOrder) { $_.DNSServerSearchOrder  -join "," } Else { "" }
-    $item.dns_host_name = if ($_.DNSHostName) { $_.DNSHostName } Else { "" }
-    $item.dns_domain = if ($_.DNSDomain) { $_.DNSDomain } Else { "" }
-    $item.dhcp_lease_obtained = if ($_.DHCPLeaseObtained) { [string]($_.ConvertToDateTime($_.DHCPLeaseObtained) -f "yyyy/MM/ddy") } Else { "" }
-    $item.dhcp_lease_expires = if ($_.DHCPLeaseExpires) { [string]($_.ConvertToDateTime($_.DHCPLeaseExpires) -f "yyyy/MM/ddy") } Else { "" }
-    $item.ip_enabled = [string]$_.IPEnabled
-    $item.dns_domain_reg_enabled = [string]$_.DomainDNSRegistrationEnabled
-    $item.net_wins_primary = if ($_.WINSPrimaryServer) { $_.WINSPrimaryServer } Else { "" }
-    $item.net_wins_lmhosts_enabled = [string]$_.WINSEnableLMHostsLookup
-    $item.net_wins_secondary = if ($_.WINSSecondaryServer) { $_.WINSSecondaryServer } Else { "" }
-    $Win32_NetworkAdapter | ForEach {
-        if ($item.net_index -eq $_.index) {
-            $item.type = $_.AdapterType
-            $item.manufacturer = $_.Manufacturer
-            $item.model = $_.ProductName
-            $item.connection = $_.NetConnectionID
-            $item.connection_status = $_.NetConnectionStatus
-            $item.speed = if ($_.MaxSpeed) { [int]$_.MaxSpeed } else { 0 }
-            if ($item.connection_status -eq 0 ) { $item.connection_status = "Disconnected" }
-            if ($item.connection_status -eq 1 ) { $item.connection_status = "Connecting" }
-            if ($item.connection_status -eq 2 ) { $item.connection_status = "Connected" }
-            if ($item.connection_status -eq 3 ) { $item.connection_status = "Disconnecting" }
-            if ($item.connection_status -eq 4 ) { $item.connection_status = "Hardware not present" }
-            if ($item.connection_status -eq 5 ) { $item.connection_status = "Hardware disabled" }
-            if ($item.connection_status -eq 6 ) { $item.connection_status = "Hardware malfunction" }
-            if ($item.connection_status -eq 7 ) { $item.connection_status = "Media disconnected" }
-            if ($item.connection_status -eq 8 ) { $item.connection_status = "Authenticating" }
-            if ($item.connection_status -eq 9 ) { $item.connection_status = "Authentication succeeded" }
-            if ($item.connection_status -eq 10 ) { $item.connection_status = "Authentication failed" }
-            if ($item.connection_status -eq 11 ) { $item.connection_status = "Invalid address" }
-            if ($item.connection_status -eq 12 ) { $item.connection_status = "Credentials required" }
-        }
+      $result.share += $item
     }
-    $result.network += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.network.count
-    Write-Host "Network, $count entries took $totalSecs seconds"
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.share.count
+        Write-Host "Share, $count entries took $totalSecs seconds"
+    }
 }
 
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$ip_address_array = @()
-$result.ip = @()
-$item = @{}
-$dns_server = ""
-Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter "IPEnabled = True AND MACAddress is not NULL" | ForEach {
-    for ($i = 0; $i -lt $_.IPAddress.Length; $i++) {
+if ($skip_sections.Contains("network,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.network = @()
+    $item = @{}
+    Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter "IPEnabled = True or (ServiceName<>'' AND ServiceName<>'vwifimp' AND ServiceName<>'AsyncMac' AND ServiceName<>'VMnetx' AND ServiceName<>'VMnetadapter' AND ServiceName<>'Rasl2tp' AND ServiceName<>'msloop' AND ServiceName<>'PptpMiniport' AND ServiceName<>'Raspti' AND ServiceName<>'NDISWan' AND ServiceName<>'NdisWan4' AND ServiceName<>'RasPppoe' AND ServiceName<>'NdisIP' AND ServiceName<>'tunmp' AND Description<>'PPP Adapter.') AND MACAddress is not NULL" | ForEach {
         Clear-Variable -name item
         $item = @{}
-        $item.ip = if ($_.IPAddress[$i]) { [string]$_.IPAddress[$i] } Else { "" }
-        if ($item.ip -ne "") {
-            $item.mac = if ($_.MACAddress) { $_.MACAddress } Else { "" }
-            $item.net_index = if ($_.Index) { $_.Index } Else { "" }
-            $item.subnet = if ($_.IPSubnet[$i]) { $_.IPSubnet[$i] } Else { "" }
-            $item.version = 4
-            if ($item.ip.Length -gt 15) {
-                $item.version = 6
+        $item.dns_server = ""
+        $item.net_index = if ($_.Index) { $_ | select -ExpandProperty Index } Else { "" }
+        $item.mac = if ($_.MACAddress) { $_.MACAddress } Else { "" }
+        $item.description = if ($_.Description) { $_.Description } Else { "" }
+        $item.dhcp_enabled = [string]$_.DHCPEnabled
+        $item.dhcp_server = if ($_.DHCPServer) { $_.DHCPServer } Else { "" }
+        $item.dns_server = if ($_.DNSServerSearchOrder) { $_.DNSServerSearchOrder  -join "," } Else { "" }
+        $item.dns_host_name = if ($_.DNSHostName) { $_.DNSHostName } Else { "" }
+        $item.dns_domain = if ($_.DNSDomain) { $_.DNSDomain } Else { "" }
+        $item.dhcp_lease_obtained = if ($_.DHCPLeaseObtained) { [string]($_.ConvertToDateTime($_.DHCPLeaseObtained) -f "yyyy/MM/ddy") } Else { "" }
+        $item.dhcp_lease_expires = if ($_.DHCPLeaseExpires) { [string]($_.ConvertToDateTime($_.DHCPLeaseExpires) -f "yyyy/MM/ddy") } Else { "" }
+        $item.ip_enabled = [string]$_.IPEnabled
+        $item.dns_domain_reg_enabled = [string]$_.DomainDNSRegistrationEnabled
+        $item.net_wins_primary = if ($_.WINSPrimaryServer) { $_.WINSPrimaryServer } Else { "" }
+        $item.net_wins_lmhosts_enabled = [string]$_.WINSEnableLMHostsLookup
+        $item.net_wins_secondary = if ($_.WINSSecondaryServer) { $_.WINSSecondaryServer } Else { "" }
+        $Win32_NetworkAdapter | ForEach {
+            if ($item.net_index -eq $_.index) {
+                $item.type = $_.AdapterType
+                $item.manufacturer = $_.Manufacturer
+                $item.model = $_.ProductName
+                $item.connection = $_.NetConnectionID
+                $item.connection_status = $_.NetConnectionStatus
+                $item.speed = if ($_.MaxSpeed) { [int]$_.MaxSpeed } else { 0 }
+                if ($item.connection_status -eq 0 ) { $item.connection_status = "Disconnected" }
+                if ($item.connection_status -eq 1 ) { $item.connection_status = "Connecting" }
+                if ($item.connection_status -eq 2 ) { $item.connection_status = "Connected" }
+                if ($item.connection_status -eq 3 ) { $item.connection_status = "Disconnecting" }
+                if ($item.connection_status -eq 4 ) { $item.connection_status = "Hardware not present" }
+                if ($item.connection_status -eq 5 ) { $item.connection_status = "Hardware disabled" }
+                if ($item.connection_status -eq 6 ) { $item.connection_status = "Hardware malfunction" }
+                if ($item.connection_status -eq 7 ) { $item.connection_status = "Media disconnected" }
+                if ($item.connection_status -eq 8 ) { $item.connection_status = "Authenticating" }
+                if ($item.connection_status -eq 9 ) { $item.connection_status = "Authentication succeeded" }
+                if ($item.connection_status -eq 10 ) { $item.connection_status = "Authentication failed" }
+                if ($item.connection_status -eq 11 ) { $item.connection_status = "Invalid address" }
+                if ($item.connection_status -eq 12 ) { $item.connection_status = "Credentials required" }
             }
-            $result.ip += $item
-            $ip_address_array += $result.ip
-            $dns_server = if ($_.DNSServerSearchOrder[0]) { $_.DNSServerSearchOrder[0] }
         }
+        $result.network += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.network.count
+        Write-Host "Network, $count entries took $totalSecs seconds"
     }
 }
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.ip.count
-    Write-Host "IP, $count entries took $totalSecs seconds"
-}
 
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-if ($dns_server) {
-    $result.dns = @()
+if ($skip_sections.Contains("ip,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $ip_address_array = @()
+    $result.ip = @()
     $item = @{}
-    Get-WmiObject -Namespace root\MicrosoftDNS -ComputerName $dns_server -Class MicrosoftDNS_AType  -ErrorAction Ignore | ForEach {
-        Clear-Variable -name item
-        $item = @{}
-        $temp = $_.OwnerName.Split("#")
-        $item.name = $temp[0]
-        $item.fqdn = $_.OwnerName
-        $item.ip = $_.IPAddress
-        $result.dns += $item
+    $dns_server = ""
+    Get-WmiObject -Class Win32_NetworkAdapterConfiguration -filter "IPEnabled = True AND MACAddress is not NULL" | ForEach {
+        for ($i = 0; $i -lt $_.IPAddress.Length; $i++) {
+            Clear-Variable -name item
+            $item = @{}
+            $item.ip = if ($_.IPAddress[$i]) { [string]$_.IPAddress[$i] } Else { "" }
+            if ($item.ip -ne "") {
+                $item.mac = if ($_.MACAddress) { $_.MACAddress } Else { "" }
+                $item.net_index = if ($_.Index) { $_.Index } Else { "" }
+                $item.subnet = if ($_.IPSubnet[$i]) { $_.IPSubnet[$i] } Else { "" }
+                $item.version = 4
+                if ($item.ip.Length -gt 15) {
+                    $item.version = 6
+                }
+                $result.ip += $item
+                $ip_address_array += $result.ip
+                $dns_server = if ($_.DNSServerSearchOrder[0]) { $_.DNSServerSearchOrder[0] }
+            }
+        }
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.ip.count
+        Write-Host "IP, $count entries took $totalSecs seconds"
     }
 }
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.dns.count
-    Write-Host "DNS, $count entries took $totalSecs seconds"
-}
 
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.usb = @()
-$item = @{}
-Get-WmiObject Win32_USBControllerDevice | %{[wmi]($_.Dependent)} | ForEach {
-    Clear-Variable -name item
-    if ($_.Description -ne $null -and $_.Description.ToLower() -notlike '*bluetooth*') {
+if ($skip_sections.Contains("dns,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    if ($dns_server) {
+        $result.dns = @()
         $item = @{}
-        $item.name = $_.name
-        $item.class = $_.PNPClass
-        $item.availability = $_.Availability
-        switch ($_.Availability) {
-            "1" { $item.availability = "1 - Other" }
-            "2" { $item.availability = "2 - Unknown" }
-            "3" { $item.availability = "3 - Running/Full Power" }
-            "4" { $item.availability = "4 - Warning" }
-            "5" { $item.availability = "5 - In Test" }
-            "6" { $item.availability = "6 - Not Applicable" }
-            "7" { $item.availability = "7 - Power Off" }
-            "8" { $item.availability = "8 - Off Line" }
-            "9" { $item.availability = "9 - Off Duty" }
-            "10" { $item.availability = "10 - Degraded" }
-            "11" { $item.availability = "11 - Not Installed" }
-            "12" { $item.availability = "12 - Install Error" }
-            "13" { $item.availability = "13 - Power Save - Unknown" }
-            "14" { $item.availability = "14 - Power Save - Low Power Mode" }
-            "15" { $item.availability = "15 - Power Save - Standby" }
-            "16" { $item.availability = "16 - Power Cycle" }
-            "17" { $item.availability = "17 - Power Save - Warning" }
-            "18" { $item.availability = "18 - Paused" }
-            "19" { $item.availability = "19 - Not Ready" }
-            "20" { $item.availability = "20 - Not Configured" }
-            "21" { $item.availability = "21 - Quiesced" }
-            default { $item.availability = "0 - Available" }
+        Get-WmiObject -Namespace root\MicrosoftDNS -ComputerName $dns_server -Class MicrosoftDNS_AType  -ErrorAction Ignore | ForEach {
+            Clear-Variable -name item
+            $item = @{}
+            $temp = $_.OwnerName.Split("#")
+            $item.name = $temp[0]
+            $item.fqdn = $_.OwnerName
+            $item.ip = $_.IPAddress
+            $result.dns += $item
         }
-        $item.config_manager_error_code = $_.ConfigManagerErrorCode
-        switch ($_.ConfigManagerErrorCode) {
-            "0" { $item.config_manager_error_code = "0 - This device is working properly." }
-            "1" { $item.config_manager_error_code = "1 - This device is not configured correctly." }
-            "2" { $item.config_manager_error_code = "2 - Windows cannot load the driver for this device." }
-            "3" { $item.config_manager_error_code = "3 - The driver for this device might be corrupted, or your system may be running low on memory or other resources." }
-            "4" { $item.config_manager_error_code = "4 - This device is not working properly. One of its drivers or your registry might be corrupted." }
-            "5" { $item.config_manager_error_code = "5 - The driver for this device needs a resource that Windows cannot manage." }
-            "6" { $item.config_manager_error_code = "6 - The boot configuration for this device conflicts with other devices." }
-            "7" { $item.config_manager_error_code = "7 - Cannot filter." }
-            "8" { $item.config_manager_error_code = "8 - The driver loader for the device is missing." }
-            "9" { $item.config_manager_error_code = "9 - This device is not working properly because the controlling firmware is reporting the resources for the device incorrectly." }
-            "10" { $item.config_manager_error_code = "10 - This device cannot start." }
-            "11" { $item.config_manager_error_code = "11 - This device failed." }
-            "12" { $item.config_manager_error_code = "12 - This device cannot find enough free resources that it can use." }
-            "13" { $item.config_manager_error_code = "13 - Windows cannot verify this device's resources." }
-            "14" { $item.config_manager_error_code = "14 - This device cannot work properly until you restart your computer." }
-            "15" { $item.config_manager_error_code = "15 - This device is not working properly because there is probably a re-enumeration problem." }
-            "16" { $item.config_manager_error_code = "16 - Windows cannot identify all the resources this device uses." }
-            "17" { $item.config_manager_error_code = "17 - This device is asking for an unknown resource type." }
-            "18" { $item.config_manager_error_code = "18 - Reinstall the drivers for this device." }
-            "19" { $item.config_manager_error_code = "19 - Failure using the VxD loader." }
-            "20" { $item.config_manager_error_code = "20 - Your registry might be corrupted." }
-            "21" { $item.config_manager_error_code = "21 - System failure: Try changing the driver for this device. If that does not work, see your hardware documentation. Windows is removing this device." }
-            "22" { $item.config_manager_error_code = "22 - This device is disabled." }
-            "23" { $item.config_manager_error_code = "23 - System failure: Try changing the driver for this device. If that doesn't work, see your hardware documentation." }
-            "24" { $item.config_manager_error_code = "24 - This device is not present, is not working properly, or does not have all its drivers installed." }
-            "25" { $item.config_manager_error_code = "25 - Windows is still setting up this device." }
-            "26" { $item.config_manager_error_code = "26 - Windows is still setting up this device." }
-            "27" { $item.config_manager_error_code = "27 - This device does not have valid log configuration." }
-            "28" { $item.config_manager_error_code = "28 - The drivers for this device are not installed." }
-            "29" { $item.config_manager_error_code = "29 - This device is disabled because the firmware of the device did not give it the required resources." }
-            "30" { $item.config_manager_error_code = "30 - This device is using an Interrupt Request (IRQ) resource that another device is using." }
-            "31" { $item.config_manager_error_code = "31 - This device is not working properly because Windows cannot load the drivers required for this device." }
-        }
-        $item.description = $_.Description
-        $item.device = $_.DeviceID
-        $item.manufacturer = $_.Manufacturer
-        $item.present = "false"
-        if ($_.Present) {
-            $item.present = "true"
-        }
-        $item.serial = ""
-        $item.status = $_.Status
-        $result.usb += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.dns.count
+        Write-Host "DNS, $count entries took $totalSecs seconds"
     }
 }
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.usb.count
-    Write-Host "USB, $count entries took $totalSecs seconds"
+
+
+if ($skip_sections.Contains("usb,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.usb = @()
+    $item = @{}
+    Get-WmiObject Win32_USBControllerDevice | %{[wmi]($_.Dependent)} | ForEach {
+        Clear-Variable -name item
+        if ($_.Description -ne $null -and $_.Description.ToLower() -notlike '*bluetooth*') {
+            $item = @{}
+            $item.name = $_.name
+            $item.class = $_.PNPClass
+            $item.availability = $_.Availability
+            switch ($_.Availability) {
+                "1" { $item.availability = "1 - Other" }
+                "2" { $item.availability = "2 - Unknown" }
+                "3" { $item.availability = "3 - Running/Full Power" }
+                "4" { $item.availability = "4 - Warning" }
+                "5" { $item.availability = "5 - In Test" }
+                "6" { $item.availability = "6 - Not Applicable" }
+                "7" { $item.availability = "7 - Power Off" }
+                "8" { $item.availability = "8 - Off Line" }
+                "9" { $item.availability = "9 - Off Duty" }
+                "10" { $item.availability = "10 - Degraded" }
+                "11" { $item.availability = "11 - Not Installed" }
+                "12" { $item.availability = "12 - Install Error" }
+                "13" { $item.availability = "13 - Power Save - Unknown" }
+                "14" { $item.availability = "14 - Power Save - Low Power Mode" }
+                "15" { $item.availability = "15 - Power Save - Standby" }
+                "16" { $item.availability = "16 - Power Cycle" }
+                "17" { $item.availability = "17 - Power Save - Warning" }
+                "18" { $item.availability = "18 - Paused" }
+                "19" { $item.availability = "19 - Not Ready" }
+                "20" { $item.availability = "20 - Not Configured" }
+                "21" { $item.availability = "21 - Quiesced" }
+                default { $item.availability = "0 - Available" }
+            }
+            $item.config_manager_error_code = $_.ConfigManagerErrorCode
+            switch ($_.ConfigManagerErrorCode) {
+                "0" { $item.config_manager_error_code = "0 - This device is working properly." }
+                "1" { $item.config_manager_error_code = "1 - This device is not configured correctly." }
+                "2" { $item.config_manager_error_code = "2 - Windows cannot load the driver for this device." }
+                "3" { $item.config_manager_error_code = "3 - The driver for this device might be corrupted, or your system may be running low on memory or other resources." }
+                "4" { $item.config_manager_error_code = "4 - This device is not working properly. One of its drivers or your registry might be corrupted." }
+                "5" { $item.config_manager_error_code = "5 - The driver for this device needs a resource that Windows cannot manage." }
+                "6" { $item.config_manager_error_code = "6 - The boot configuration for this device conflicts with other devices." }
+                "7" { $item.config_manager_error_code = "7 - Cannot filter." }
+                "8" { $item.config_manager_error_code = "8 - The driver loader for the device is missing." }
+                "9" { $item.config_manager_error_code = "9 - This device is not working properly because the controlling firmware is reporting the resources for the device incorrectly." }
+                "10" { $item.config_manager_error_code = "10 - This device cannot start." }
+                "11" { $item.config_manager_error_code = "11 - This device failed." }
+                "12" { $item.config_manager_error_code = "12 - This device cannot find enough free resources that it can use." }
+                "13" { $item.config_manager_error_code = "13 - Windows cannot verify this device's resources." }
+                "14" { $item.config_manager_error_code = "14 - This device cannot work properly until you restart your computer." }
+                "15" { $item.config_manager_error_code = "15 - This device is not working properly because there is probably a re-enumeration problem." }
+                "16" { $item.config_manager_error_code = "16 - Windows cannot identify all the resources this device uses." }
+                "17" { $item.config_manager_error_code = "17 - This device is asking for an unknown resource type." }
+                "18" { $item.config_manager_error_code = "18 - Reinstall the drivers for this device." }
+                "19" { $item.config_manager_error_code = "19 - Failure using the VxD loader." }
+                "20" { $item.config_manager_error_code = "20 - Your registry might be corrupted." }
+                "21" { $item.config_manager_error_code = "21 - System failure: Try changing the driver for this device. If that does not work, see your hardware documentation. Windows is removing this device." }
+                "22" { $item.config_manager_error_code = "22 - This device is disabled." }
+                "23" { $item.config_manager_error_code = "23 - System failure: Try changing the driver for this device. If that doesn't work, see your hardware documentation." }
+                "24" { $item.config_manager_error_code = "24 - This device is not present, is not working properly, or does not have all its drivers installed." }
+                "25" { $item.config_manager_error_code = "25 - Windows is still setting up this device." }
+                "26" { $item.config_manager_error_code = "26 - Windows is still setting up this device." }
+                "27" { $item.config_manager_error_code = "27 - This device does not have valid log configuration." }
+                "28" { $item.config_manager_error_code = "28 - The drivers for this device are not installed." }
+                "29" { $item.config_manager_error_code = "29 - This device is disabled because the firmware of the device did not give it the required resources." }
+                "30" { $item.config_manager_error_code = "30 - This device is using an Interrupt Request (IRQ) resource that another device is using." }
+                "31" { $item.config_manager_error_code = "31 - This device is not working properly because Windows cannot load the drivers required for this device." }
+            }
+            $item.description = $_.Description
+            $item.device = $_.DeviceID
+            $item.manufacturer = $_.Manufacturer
+            $item.present = "false"
+            if ($_.Present) {
+                $item.present = "true"
+            }
+            $item.serial = ""
+            $item.status = $_.Status
+            $result.usb += $item
+        }
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.usb.count
+        Write-Host "USB, $count entries took $totalSecs seconds"
+    }
 }
 
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.print_queue = @()
-$item = @{}
-$Win32_Printer = Get-WmiObject Win32_Printer -Filter "NOT Name LIKE '%microsoft%' AND NOT Name LIKE '%windows%' AND NOT Name LIKE '%fax%' AND NOT Name LIKE '%onenote%' AND NOT Name LIKE '%pdf%'" -ErrorAction Ignore
-if ($Win32_Printer -ne $null) {
-    $Win32_Printer | ForEach {
+if ($skip_sections.Contains("print_queue,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.print_queue = @()
+    $item = @{}
+    $Win32_Printer = Get-WmiObject Win32_Printer -Filter "NOT Name LIKE '%microsoft%' AND NOT Name LIKE '%windows%' AND NOT Name LIKE '%fax%' AND NOT Name LIKE '%onenote%' AND NOT Name LIKE '%pdf%'" -ErrorAction Ignore
+    if ($Win32_Printer -ne $null) {
+        $Win32_Printer | ForEach {
+            Clear-Variable -name item
+            if ($_.Attributes -and 64) {
+                $item = @{}
+                $item.name = $_.Name
+                $item.description = if ($_.Comment) { $_.Comment } Else { "" }
+                $item.device = $_.DeviceID
+                $item.driver = $_.DriverName
+                $item.port_name = $_.PortName
+                $item.shared = $_.Shared
+                $item.shared_name = $_.ShareName
+                $item.location = $_.Location
+                $item.color = "False"
+                foreach ($capability in $_.CapabilityDescriptions) {
+                    if ($capability -like '*Color*') {
+                        $item.color = "True"
+                    }
+                }
+                $item.duplex = "False"
+                foreach ($capability in $_.CapabilityDescriptions) {
+                    if ($capability -like '*Duplex*') {
+                        $item.duplex = "True"
+                    }
+                }
+                $item.model = $_.DriverName
+                $item.model = $item.model.Replace(" PCL 5e", "")
+                $item.model = $item.model.Replace(" PCL 5", "")
+                $item.model = $item.model.Replace(" PCL5", "")
+                $item.model = $item.model.Replace(" PCL 6e", "")
+                $item.model = $item.model.Replace(" PCL 6", "")
+                $item.model = $item.model.Replace(" PCL6", "")
+                $item.model = $item.model.Replace(" PCL", "")
+                $item.model = $item.model.Replace(" PS", "")
+                $item.manufacturer = ""
+                if ($item.model -like "*Aficio*") { $item.manufacturer = "Ricoh" }
+                if ($item.model -like "*AGFA*") { $item.manufacturer = "Agfa" }
+                if ($item.model -like "*Apple Laser*") { $item.manufacturer = "Apple Computer, Inc." }
+                if ($item.model -like "*Brother*") { $item.manufacturer = "Brother" }
+                if ($item.model -like "*Canon*") { $item.manufacturer = "Canon" }
+                if ($item.model -like "*Color-MFPe*") { $item.manufacturer = "Toshiba" }
+                if ($item.model -like "*Datamax*") { $item.manufacturer = "Datamax" }
+                if ($item.model -like "*Dell*") { $item.manufacturer = "Dell" }
+                if ($item.model -like "*DYMO*") { $item.manufacturer = "Dymo" }
+                if ($item.model -like "*EasyCoder*") { $item.manufacturer = "Intermec" }
+                if ($item.model -like "*Epson*") { $item.manufacturer = "Epson" }
+                if ($item.model -like "*Fiery*") { $item.manufacturer = "Konica Minolta" }
+                if ($item.model -like "*Fuji*") { $item.manufacturer = "Fujitsu" }
+                if ($item.model -like "*FX ApeosPort*") { $item.manufacturer = "Fujitsu" }
+                if ($item.model -like "*FX DocuCentre") { $item.manufacturer = "Fujitsu" }
+                if ($item.model -like "*FX DocuPrint*") { $item.manufacturer = "Fujitsu" }
+                if ($item.model -like "*FX DocuWide*")  { $item.manufacturer = "Fujitsu" }
+                if ($item.model -like "*FX Document*") { $item.manufacturer = "Xerox" }
+                if ($item.model -like "*GelSprinter*") { $item.manufacturer = "Ricoh" }
+                if ($item.model -like "*HP *") { $item.manufacturer = "Hewlett Packard" }
+                if ($item.model -like "*Konica*") { $item.manufacturer = "Konica Minolta" }
+                if ($item.model -like "*Kyocera*") { $item.manufacturer = "Kyocera Mita" }
+                if ($item.model -like "*LAN-Fax*") { $item.manufacturer = "Ricoh" }
+                if ($item.model -like "*Lexmark*") { $item.manufacturer = "Lexmark" }
+                if ($item.model -like "*Mita*") { $item.manufacturer = "Kyocera Mita" }
+                if ($item.model -like "*Muratec*") { $item.manufacturer = "Muratec" }
+                if ($item.model -like "*Oce*") { $item.manufacturer = "Oce" }
+                if ($item.model -like "*Oki*") { $item.manufacturer = "Oki" }
+                if ($item.model -like "*Panaboard*") { $item.manufacturer = "Panasonic" }
+                if ($item.model -like "*Ricoh*") { $item.manufacturer = "Ricoh" }
+                if ($item.model -like "*Samsung*") { $item.manufacturer = "Samsung" }
+                if ($item.model -like "*Sharp*") { $item.manufacturer = "Sharp" }
+                if ($item.model -like "*SP 3*") { $item.manufacturer = "Ricoh" }
+                if ($item.model -like "*Tektronix*") { $item.manufacturer = "Tektronix" }
+                if ($item.model -like "*Toshiba*") { $item.manufacturer = "Toshiba" }
+                if ($item.model -like "*Xerox*") { $item.manufacturer = "Xerox" }
+                if ($item.model -like "*ZDesigner*") { $item.manufacturer = "Zebra" }
+                if ($item.model -like "*Zebra*") { $item.manufacturer = "Zebra" }
+                $item.type = "Unknown"
+                if ($_.MarkingTechnology -eq 1 ) { $item.type = "Other" }
+                if ($_.MarkingTechnology -eq 2 ) { $item.type = "Unknown" }
+                if ($_.MarkingTechnology -eq 3 ) { $item.type = "Electrophotographic LED" }
+                if ($_.MarkingTechnology -eq 4 ) { $item.type = "Electrophotographic Laser" }
+                if ($_.MarkingTechnology -eq 5 ) { $item.type = "Electrophotographic Other" }
+                if ($_.MarkingTechnology -eq 6 ) { $item.type = "Impact Moving Head Dot Matrix 9pin" }
+                if ($_.MarkingTechnology -eq 7 ) { $item.type = "Impact Moving Head Dot Matrix 24pin" }
+                if ($_.MarkingTechnology -eq 8 ) { $item.type = "Impact Moving Head Dot Matrix Other" }
+                if ($_.MarkingTechnology -eq 9 ) { $item.type = "Impact Moving Head Fully Formed" }
+                if ($_.MarkingTechnology -eq 10 ) { $item.type = "Impact Band" }
+                if ($_.MarkingTechnology -eq 11 ) { $item.type = "Impact Other" }
+                if ($_.MarkingTechnology -eq 12 ) { $item.type = "Inkjet Aqueous" }
+                if ($_.MarkingTechnology -eq 13 ) { $item.type = "Inkjet Solid" }
+                if ($_.MarkingTechnology -eq 14 ) { $item.type = "Inkjet Other" }
+                if ($_.MarkingTechnology -eq 15 ) { $item.type = "Pen" }
+                if ($_.MarkingTechnology -eq 16 ) { $item.type = "Thermal Transfer" }
+                if ($_.MarkingTechnology -eq 17 ) { $item.type = "Thermal Sensitive" }
+                if ($_.MarkingTechnology -eq 18 ) { $item.type = "Thermal Diffusion" }
+                if ($_.MarkingTechnology -eq 19 ) { $item.type = "Thermal Other" }
+                if ($_.MarkingTechnology -eq 20 ) { $item.type = "Electroerosion" }
+                if ($_.MarkingTechnology -eq 21 ) { $item.type = "Electrostatic" }
+                if ($_.MarkingTechnology -eq 22 ) { $item.type = "Photographic Microfiche" }
+                if ($_.MarkingTechnology -eq 23 ) { $item.type = "Photographic Imagesetter" }
+                if ($_.MarkingTechnology -eq 24 ) { $item.type = "Photographic Other" }
+                if ($_.MarkingTechnology -eq 25 ) { $item.type = "Ion Deposition" }
+                if ($_.MarkingTechnology -eq 26 ) { $item.type = "eBeam" }
+                if ($_.MarkingTechnology -eq 27 ) { $item.type = "Typesetter" }
+                $item.status = ""
+                if ($_.ExtendedPrinterStatus -eq 1 ) { $item.status = "Other" }
+                if ($_.ExtendedPrinterStatus -eq 2 ) { $item.status = "Unknown" }
+                if ($_.ExtendedPrinterStatus -eq 3 ) { $item.status = "Idle" }
+                if ($_.ExtendedPrinterStatus -eq 4 ) { $item.status = "Printing" }
+                if ($_.ExtendedPrinterStatus -eq 5 ) { $item.status = "Warming Up" }
+                if ($_.ExtendedPrinterStatus -eq 6 ) { $item.status = "Stopped Printing" }
+                if ($_.ExtendedPrinterStatus -eq 7 ) { $item.status = "Offline" }
+                if ($_.ExtendedPrinterStatus -eq 8 ) { $item.status = "Paused" }
+                if ($_.ExtendedPrinterStatus -eq 9 ) { $item.status = "Error" }
+                if ($_.ExtendedPrinterStatus -eq 10 ) { $item.status = "Busy" }
+                if ($_.ExtendedPrinterStatus -eq 11 ) { $item.status = "Not Available" }
+                if ($_.ExtendedPrinterStatus -eq 12 ) { $item.status = "Waiting" }
+                if ($_.ExtendedPrinterStatus -eq 13 ) { $item.status = "Processing" }
+                if ($_.ExtendedPrinterStatus -eq 14 ) { $item.status = "Initialization" }
+                if ($_.ExtendedPrinterStatus -eq 15 ) { $item.status = "Power Save" }
+                if ($_.ExtendedPrinterStatus -eq 16 ) { $item.status = "Pending Deletion" }
+                if ($_.ExtendedPrinterStatus -eq 17 ) { $item.status = "I/O Active" }
+                if ($_.ExtendedPrinterStatus -eq 18 ) { $item.status = "Manual Feed" }
+                $item.capabilities = [string]::join(", ", $_.CapabilityDescriptions)
+                $result.print_queue += $item
+            }
+        }
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.printer.count
+        Write-Host "Printer, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("task,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.task = @()
+    $item = @{}
+    Get-ScheduledTask | Select-Object *, @{Name="RunAs";Expression={ $_.principal.userid }} | ForEach {
         Clear-Variable -name item
-        if ($_.Attributes -and 64) {
+        $item = @{}
+        $item.name = $_.TaskName
+        $item.status = [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum].GetEnumNames()[$_.State]
+        $item.creator = ""
+        $item.schedule = ""
+        $item.task = $_.Actions.Execute + " " + $_.Actions.Arguments
+        $item.state = [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum].GetEnumNames()[$_.State]
+        $item.runas = if ($_.RunAs) { $_.RunAs } else { "" }
+        $item.comment = if ($_.Description) { $_.Description } else { "" }
+        $item.next_run = ""
+        $item.last_run = ""
+        $item.last_result = ""
+        Get-ScheduledTaskInfo -TaskPath $_.TaskPath -TaskName $_.TaskName | ForEach {
+            if ($_.NextRunTime) {
+                $item.next_run = $_.NextRunTime.ToString("yyyy/MM/dd H:mm:ss tt")
+            }
+            if ($_.LastRunTime) {
+                $item.last_run = $_.LastRunTime.ToString("yyyy/MM/dd H:mm:ss tt")
+            }
+            $LastTaskResult = '{0:x}' -f $_.LastTaskResult
+            $item.last_result = switch($LastTaskResult) {
+                "41300" {"The task is ready to run at its next scheduled time."}
+                "41301" {"The task is currently running."}
+                "41302" {"The task will not run at the scheduled times because it has been disabled."}
+                "41303" {"The task has not yet run."}
+                "41304" {"There are no more runs scheduled for this task."}
+                "41305" {"One or more of the properties that are needed to run this task on a schedule have not been set."}
+                "41306" {"The last run of the task was terminated by the user."}
+                "41307" {"Either the task has no triggers or the existing triggers are disabled or not set."}
+                "41308" {"Event triggers do not have set run times."}
+                "4131B" {"The task is registered, but not all specified triggers will start the task."}
+                "4131C" {"The task is registered, but may fail to start. Batch logon privilege needs to be enabled for the task principal."}
+                "41325" {"The Task Scheduler service has asked the task to run."}
+                "40010004" {"The system cannot open the file"}
+                "80041309" {"A task's trigger is not found."}
+                "8004130A" {"One or more of the properties required to run this task have not been set."}
+                "8004130B" {"There is no running instance of the task."}
+                "8004130C" {"The Task Scheduler service is not installed on this computer."}
+                "8004130D" {"The task object could not be opened."}
+                "8004130E" {"The object is either an invalid task object or is not a task object."}
+                "8004130F" {"No account information could be found in the Task Scheduler security database for the task indicated."}
+                "80041310" {"Unable to establish existence of the account specified."}
+                "80041311" {"Corruption was detected in the Task Scheduler security database; the database has been reset."}
+                "80041312" {"Task Scheduler security services are available only on Windows NT."}
+                "80041313" {"The task object version is either unsupported or invalid."}
+                "80041314" {"The task has been configured with an unsupported combination of account settings and run time options."}
+                "80041315" {"The Task Scheduler Service is not running."}
+                "80041316" {"The task XML contains an unexpected node."}
+                "80041317" {"The task XML contains an element or attribute from an unexpected namespace."}
+                "80041318" {"The task XML contains a value which is incorrectly formatted or out of range."}
+                "80041319" {"The task XML is missing a required element or attribute."}
+                "8004131A" {"The task XML is malformed."}
+                "8004131D" {"The task XML contains too many nodes of the same type."}
+                "8004131E" {"The task cannot be started after the trigger end boundary."}
+                "8004131F" {"An instance of this task is already running."}
+                "80041320" {"The task will not run because the user is not logged on."}
+                "80041321" {"The task image is corrupt or has been tampered with."}
+                "80041322" {"The Task Scheduler service is not available."}
+                "80041323" {"The Task Scheduler service is too busy to handle your request. Please try again later."}
+                "80041324" {"The Task Scheduler service attempted to run the task, but the task did not run due to one of the constraints in the task definition."}
+                "80041326" {"The task is disabled."}
+                "80041327" {"The task has properties that are not compatible with earlier versions of Windows."}
+                "80041328" {"The task settings do not allow the task to start on demand."}
+                "default" {$LastTaskResult}
+            }
+            if (!$item.last_result) {
+                $item.last_result = $_.LastTaskResult
+            }
+        }
+      $result.task += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.task.count
+        Write-Host "Task, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("variable,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.variable = @()
+    $item = @{}
+    Get-WmiObject Win32_Environment -filter "SystemVariable = True and username = '<SYSTEM>'" | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        $item.program = "environment"
+        $item.name = $_.Name
+        $item.value = $_.VariableValue
+        $result.variable += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.variable.count
+        Write-Host "Variable, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("log,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.log = @()
+    $item = @{}
+    Get-WmiObject Win32_NTEventLogFile | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        $item.name = $_.LogFileName
+        $item.file_name = $_.Name
+        $item.file_size = $_.FileSize / 1024
+        $item.max_file_size = $_.MaxFileSize / 1024
+        $item.overwrite = $_.OverWritePolicy
+        $result.log += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.log.count
+        Write-Host "Log, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("user,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.user = @()
+    $item = @{}
+    $Win32_UserProfile = Get-WmiObject Win32_UserProfile -ErrorAction Ignore
+    $Win32_UserAccount = Get-WmiObject Win32_UserAccount -ErrorAction Ignore
+    $LocalUser = Get-LocalUser -ErrorAction Ignore
+    if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainRole -ne 5)) {
+        $Win32_UserAccount | ForEach {
+            Clear-Variable -name item
+            $item = @{}
+            $item.caption = $_.Caption
+            if ($_.Disabled) { $item.disabled = "true" } else { $item.disabled = "false" }
+            $item.domain  = $_.Domain
+            $item.full_name  = $_.FullName
+            $item.name = $_.Name
+            if ($_.PasswordChangeable) { $item.password_changeable = "true" } else { $item.password_changeable = "false" }
+            if ($_.PasswordExpires) { $item.password_expires = "true" } else { $item.password_expires = "false" }
+            if ($_.PasswordRequired) { $item.password_required = "true" } else { $item.password_required = "false" }
+            $item.sid  = $_.SID
+            $item.status  = $_.Status
+            $item.password_last_changed  = ""
+            $item.last_logon = ""
+            $item.user_home = ""
+
+            # Below breaks because Get-LocalGroupMember is broken
+            # https://superuser.com/questions/1131901/get-localgroupmember-generates-error-for-administrators-group
+            # https://github.com/PowerShell/PowerShell/issues/2996
+            # $item.groups = Get-LocalGroup | Where-Object {  $item.sid -in ($_ | Get-LocalGroupMember | Select-Object -ExpandProperty "SID") } | Select-Object -ExpandProperty "Name"
+
+            $Win32_UserProfile | ForEach {
+                if ($_.SID -eq $item.sid) {
+                    if ($_.LocalPath -ne "") {
+                        $item.user_home = $_.LocalPath
+                    }
+                    if ($_.LastUseTime -ne "" -and $_.LastUseTime -ne 0 -and $_.LastUseTime -ne $null) {
+                        $item.last_logon = [Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime).tostring('yyyy-MM-dd HH:mm:ss')
+                    }
+                }
+            }
+            $LocalUser | ForEach {
+                if ($_.SID -eq $item.sid) {
+                    if ($_.PasswordLastSet -ne "" -and $_.PasswordLastSet -ne 0 -and $_.PasswordLastSet -ne $null) {
+                        $item.password_last_changed = $_.PasswordLastSet.ToString("yyyy-MM-dd H:m:s")
+                    }
+                }
+            }
+            $result.user += $item
+        }
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.user.count
+        Write-Host "User, $count entries took $totalSecs seconds"
+    }
+}
+
+
+if ($skip_sections.Contains("user_group,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.user_group = @()
+    $item = @{}
+    if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainRole -ne 5)) {
+        Get-WmiObject Win32_Group | ForEach {
+            Clear-Variable -name item
             $item = @{}
             $item.name = $_.Name
-            $item.description = if ($_.Comment) { $_.Comment } Else { "" }
-            $item.device = $_.DeviceID
-            $item.driver = $_.DriverName
-            $item.port_name = $_.PortName
-            $item.shared = $_.Shared
-            $item.shared_name = $_.ShareName
-            $item.location = $_.Location
-            $item.color = "False"
-            foreach ($capability in $_.CapabilityDescriptions) {
-                if ($capability -like '*Color*') {
-                    $item.color = "True"
-                }
+            $item.description  = $_.Description
+            $item.sid = if ($_.SID) { $_.SID } else { "" }
+            $members = @()
+            Get-LocalGroupMember $_.Name -ErrorAction Ignore | Sort-Object -Property Name | ForEach {
+                $members += $_.Name
             }
-            $item.duplex = "False"
-            foreach ($capability in $_.CapabilityDescriptions) {
-                if ($capability -like '*Duplex*') {
-                    $item.duplex = "True"
-                }
-            }
-            $item.model = $_.DriverName
-            $item.model = $item.model.Replace(" PCL 5e", "")
-            $item.model = $item.model.Replace(" PCL 5", "")
-            $item.model = $item.model.Replace(" PCL5", "")
-            $item.model = $item.model.Replace(" PCL 6e", "")
-            $item.model = $item.model.Replace(" PCL 6", "")
-            $item.model = $item.model.Replace(" PCL6", "")
-            $item.model = $item.model.Replace(" PCL", "")
-            $item.model = $item.model.Replace(" PS", "")
-            $item.manufacturer = ""
-            if ($item.model -like "*Aficio*") { $item.manufacturer = "Ricoh" }
-            if ($item.model -like "*AGFA*") { $item.manufacturer = "Agfa" }
-            if ($item.model -like "*Apple Laser*") { $item.manufacturer = "Apple Computer, Inc." }
-            if ($item.model -like "*Brother*") { $item.manufacturer = "Brother" }
-            if ($item.model -like "*Canon*") { $item.manufacturer = "Canon" }
-            if ($item.model -like "*Color-MFPe*") { $item.manufacturer = "Toshiba" }
-            if ($item.model -like "*Datamax*") { $item.manufacturer = "Datamax" }
-            if ($item.model -like "*Dell*") { $item.manufacturer = "Dell" }
-            if ($item.model -like "*DYMO*") { $item.manufacturer = "Dymo" }
-            if ($item.model -like "*EasyCoder*") { $item.manufacturer = "Intermec" }
-            if ($item.model -like "*Epson*") { $item.manufacturer = "Epson" }
-            if ($item.model -like "*Fiery*") { $item.manufacturer = "Konica Minolta" }
-            if ($item.model -like "*Fuji*") { $item.manufacturer = "Fujitsu" }
-            if ($item.model -like "*FX ApeosPort*") { $item.manufacturer = "Fujitsu" }
-            if ($item.model -like "*FX DocuCentre") { $item.manufacturer = "Fujitsu" }
-            if ($item.model -like "*FX DocuPrint*") { $item.manufacturer = "Fujitsu" }
-            if ($item.model -like "*FX DocuWide*")  { $item.manufacturer = "Fujitsu" }
-            if ($item.model -like "*FX Document*") { $item.manufacturer = "Xerox" }
-            if ($item.model -like "*GelSprinter*") { $item.manufacturer = "Ricoh" }
-            if ($item.model -like "*HP *") { $item.manufacturer = "Hewlett Packard" }
-            if ($item.model -like "*Konica*") { $item.manufacturer = "Konica Minolta" }
-            if ($item.model -like "*Kyocera*") { $item.manufacturer = "Kyocera Mita" }
-            if ($item.model -like "*LAN-Fax*") { $item.manufacturer = "Ricoh" }
-            if ($item.model -like "*Lexmark*") { $item.manufacturer = "Lexmark" }
-            if ($item.model -like "*Mita*") { $item.manufacturer = "Kyocera Mita" }
-            if ($item.model -like "*Muratec*") { $item.manufacturer = "Muratec" }
-            if ($item.model -like "*Oce*") { $item.manufacturer = "Oce" }
-            if ($item.model -like "*Oki*") { $item.manufacturer = "Oki" }
-            if ($item.model -like "*Panaboard*") { $item.manufacturer = "Panasonic" }
-            if ($item.model -like "*Ricoh*") { $item.manufacturer = "Ricoh" }
-            if ($item.model -like "*Samsung*") { $item.manufacturer = "Samsung" }
-            if ($item.model -like "*Sharp*") { $item.manufacturer = "Sharp" }
-            if ($item.model -like "*SP 3*") { $item.manufacturer = "Ricoh" }
-            if ($item.model -like "*Tektronix*") { $item.manufacturer = "Tektronix" }
-            if ($item.model -like "*Toshiba*") { $item.manufacturer = "Toshiba" }
-            if ($item.model -like "*Xerox*") { $item.manufacturer = "Xerox" }
-            if ($item.model -like "*ZDesigner*") { $item.manufacturer = "Zebra" }
-            if ($item.model -like "*Zebra*") { $item.manufacturer = "Zebra" }
-            $item.type = "Unknown"
-            if ($_.MarkingTechnology -eq 1 ) { $item.type = "Other" }
-            if ($_.MarkingTechnology -eq 2 ) { $item.type = "Unknown" }
-            if ($_.MarkingTechnology -eq 3 ) { $item.type = "Electrophotographic LED" }
-            if ($_.MarkingTechnology -eq 4 ) { $item.type = "Electrophotographic Laser" }
-            if ($_.MarkingTechnology -eq 5 ) { $item.type = "Electrophotographic Other" }
-            if ($_.MarkingTechnology -eq 6 ) { $item.type = "Impact Moving Head Dot Matrix 9pin" }
-            if ($_.MarkingTechnology -eq 7 ) { $item.type = "Impact Moving Head Dot Matrix 24pin" }
-            if ($_.MarkingTechnology -eq 8 ) { $item.type = "Impact Moving Head Dot Matrix Other" }
-            if ($_.MarkingTechnology -eq 9 ) { $item.type = "Impact Moving Head Fully Formed" }
-            if ($_.MarkingTechnology -eq 10 ) { $item.type = "Impact Band" }
-            if ($_.MarkingTechnology -eq 11 ) { $item.type = "Impact Other" }
-            if ($_.MarkingTechnology -eq 12 ) { $item.type = "Inkjet Aqueous" }
-            if ($_.MarkingTechnology -eq 13 ) { $item.type = "Inkjet Solid" }
-            if ($_.MarkingTechnology -eq 14 ) { $item.type = "Inkjet Other" }
-            if ($_.MarkingTechnology -eq 15 ) { $item.type = "Pen" }
-            if ($_.MarkingTechnology -eq 16 ) { $item.type = "Thermal Transfer" }
-            if ($_.MarkingTechnology -eq 17 ) { $item.type = "Thermal Sensitive" }
-            if ($_.MarkingTechnology -eq 18 ) { $item.type = "Thermal Diffusion" }
-            if ($_.MarkingTechnology -eq 19 ) { $item.type = "Thermal Other" }
-            if ($_.MarkingTechnology -eq 20 ) { $item.type = "Electroerosion" }
-            if ($_.MarkingTechnology -eq 21 ) { $item.type = "Electrostatic" }
-            if ($_.MarkingTechnology -eq 22 ) { $item.type = "Photographic Microfiche" }
-            if ($_.MarkingTechnology -eq 23 ) { $item.type = "Photographic Imagesetter" }
-            if ($_.MarkingTechnology -eq 24 ) { $item.type = "Photographic Other" }
-            if ($_.MarkingTechnology -eq 25 ) { $item.type = "Ion Deposition" }
-            if ($_.MarkingTechnology -eq 26 ) { $item.type = "eBeam" }
-            if ($_.MarkingTechnology -eq 27 ) { $item.type = "Typesetter" }
-            $item.status = ""
-            if ($_.ExtendedPrinterStatus -eq 1 ) { $item.status = "Other" }
-            if ($_.ExtendedPrinterStatus -eq 2 ) { $item.status = "Unknown" }
-            if ($_.ExtendedPrinterStatus -eq 3 ) { $item.status = "Idle" }
-            if ($_.ExtendedPrinterStatus -eq 4 ) { $item.status = "Printing" }
-            if ($_.ExtendedPrinterStatus -eq 5 ) { $item.status = "Warming Up" }
-            if ($_.ExtendedPrinterStatus -eq 6 ) { $item.status = "Stopped Printing" }
-            if ($_.ExtendedPrinterStatus -eq 7 ) { $item.status = "Offline" }
-            if ($_.ExtendedPrinterStatus -eq 8 ) { $item.status = "Paused" }
-            if ($_.ExtendedPrinterStatus -eq 9 ) { $item.status = "Error" }
-            if ($_.ExtendedPrinterStatus -eq 10 ) { $item.status = "Busy" }
-            if ($_.ExtendedPrinterStatus -eq 11 ) { $item.status = "Not Available" }
-            if ($_.ExtendedPrinterStatus -eq 12 ) { $item.status = "Waiting" }
-            if ($_.ExtendedPrinterStatus -eq 13 ) { $item.status = "Processing" }
-            if ($_.ExtendedPrinterStatus -eq 14 ) { $item.status = "Initialization" }
-            if ($_.ExtendedPrinterStatus -eq 15 ) { $item.status = "Power Save" }
-            if ($_.ExtendedPrinterStatus -eq 16 ) { $item.status = "Pending Deletion" }
-            if ($_.ExtendedPrinterStatus -eq 17 ) { $item.status = "I/O Active" }
-            if ($_.ExtendedPrinterStatus -eq 18 ) { $item.status = "Manual Feed" }
-            $item.capabilities = [string]::join(", ", $_.CapabilityDescriptions)
-            $result.print_queue += $item
+            $item.members = [string]::join(", ", $members)
+            $result.user_group += $item
         }
     }
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.printer.count
-    Write-Host "Printer, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.task = @()
-$item = @{}
-Get-ScheduledTask | Select-Object *, @{Name="RunAs";Expression={ $_.principal.userid }} | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.name = $_.TaskName
-    $item.status = [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum].GetEnumNames()[$_.State]
-    $item.creator = ""
-    $item.schedule = ""
-    $item.task = $_.Actions.Execute + " " + $_.Actions.Arguments
-    $item.state = [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum].GetEnumNames()[$_.State]
-    $item.runas = if ($_.RunAs) { $_.RunAs } else { "" }
-    $item.comment = if ($_.Description) { $_.Description } else { "" }
-    $item.next_run = ""
-    $item.last_run = ""
-    $item.last_result = ""
-    Get-ScheduledTaskInfo -TaskPath $_.TaskPath -TaskName $_.TaskName | ForEach {
-        if ($_.NextRunTime) {
-            $item.next_run = $_.NextRunTime.ToString("yyyy/MM/dd H:mm:ss tt")
-        }
-        if ($_.LastRunTime) {
-            $item.last_run = $_.LastRunTime.ToString("yyyy/MM/dd H:mm:ss tt")
-        }
-        $LastTaskResult = '{0:x}' -f $_.LastTaskResult
-        $item.last_result = switch($LastTaskResult) {
-            "41300" {"The task is ready to run at its next scheduled time."}
-            "41301" {"The task is currently running."}
-            "41302" {"The task will not run at the scheduled times because it has been disabled."}
-            "41303" {"The task has not yet run."}
-            "41304" {"There are no more runs scheduled for this task."}
-            "41305" {"One or more of the properties that are needed to run this task on a schedule have not been set."}
-            "41306" {"The last run of the task was terminated by the user."}
-            "41307" {"Either the task has no triggers or the existing triggers are disabled or not set."}
-            "41308" {"Event triggers do not have set run times."}
-            "4131B" {"The task is registered, but not all specified triggers will start the task."}
-            "4131C" {"The task is registered, but may fail to start. Batch logon privilege needs to be enabled for the task principal."}
-            "41325" {"The Task Scheduler service has asked the task to run."}
-            "40010004" {"The system cannot open the file"}
-            "80041309" {"A task's trigger is not found."}
-            "8004130A" {"One or more of the properties required to run this task have not been set."}
-            "8004130B" {"There is no running instance of the task."}
-            "8004130C" {"The Task Scheduler service is not installed on this computer."}
-            "8004130D" {"The task object could not be opened."}
-            "8004130E" {"The object is either an invalid task object or is not a task object."}
-            "8004130F" {"No account information could be found in the Task Scheduler security database for the task indicated."}
-            "80041310" {"Unable to establish existence of the account specified."}
-            "80041311" {"Corruption was detected in the Task Scheduler security database; the database has been reset."}
-            "80041312" {"Task Scheduler security services are available only on Windows NT."}
-            "80041313" {"The task object version is either unsupported or invalid."}
-            "80041314" {"The task has been configured with an unsupported combination of account settings and run time options."}
-            "80041315" {"The Task Scheduler Service is not running."}
-            "80041316" {"The task XML contains an unexpected node."}
-            "80041317" {"The task XML contains an element or attribute from an unexpected namespace."}
-            "80041318" {"The task XML contains a value which is incorrectly formatted or out of range."}
-            "80041319" {"The task XML is missing a required element or attribute."}
-            "8004131A" {"The task XML is malformed."}
-            "8004131D" {"The task XML contains too many nodes of the same type."}
-            "8004131E" {"The task cannot be started after the trigger end boundary."}
-            "8004131F" {"An instance of this task is already running."}
-            "80041320" {"The task will not run because the user is not logged on."}
-            "80041321" {"The task image is corrupt or has been tampered with."}
-            "80041322" {"The Task Scheduler service is not available."}
-            "80041323" {"The Task Scheduler service is too busy to handle your request. Please try again later."}
-            "80041324" {"The Task Scheduler service attempted to run the task, but the task did not run due to one of the constraints in the task definition."}
-            "80041326" {"The task is disabled."}
-            "80041327" {"The task has properties that are not compatible with earlier versions of Windows."}
-            "80041328" {"The task settings do not allow the task to start on demand."}
-            "default" {$LastTaskResult}
-        }
-        if (!$item.last_result) {
-            $item.last_result = $_.LastTaskResult
-        }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.user_group.count
+        Write-Host "User Group, $count entries took $totalSecs seconds"
     }
-  $result.task += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.task.count
-    Write-Host "Task, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.variable = @()
-$item = @{}
-Get-WmiObject Win32_Environment -filter "SystemVariable = True and username = '<SYSTEM>'" | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.program = "environment"
-    $item.name = $_.Name
-    $item.value = $_.VariableValue
-    $result.variable += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.variable.count
-    Write-Host "Variable, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.log = @()
-$item = @{}
-Get-WmiObject Win32_NTEventLogFile | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.name = $_.LogFileName
-    $item.file_name = $_.Name
-    $item.file_size = $_.FileSize / 1024
-    $item.max_file_size = $_.MaxFileSize / 1024
-    $item.overwrite = $_.OverWritePolicy
-    $result.log += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.log.count
-    Write-Host "Log, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.user = @()
-$item = @{}
-$Win32_UserProfile = Get-WmiObject Win32_UserProfile -ErrorAction Ignore
-$Win32_UserAccount = Get-WmiObject Win32_UserAccount -ErrorAction Ignore
-$LocalUser = Get-LocalUser -ErrorAction Ignore
-if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainRole -ne 5)) {
-    $Win32_UserAccount | ForEach {
-        Clear-Variable -name item
-        $item = @{}
-        $item.caption = $_.Caption
-        if ($_.Disabled) { $item.disabled = "true" } else { $item.disabled = "false" }
-        $item.domain  = $_.Domain
-        $item.full_name  = $_.FullName
-        $item.name = $_.Name
-        if ($_.PasswordChangeable) { $item.password_changeable = "true" } else { $item.password_changeable = "false" }
-        if ($_.PasswordExpires) { $item.password_expires = "true" } else { $item.password_expires = "false" }
-        if ($_.PasswordRequired) { $item.password_required = "true" } else { $item.password_required = "false" }
-        $item.sid  = $_.SID
-        $item.status  = $_.Status
-        $item.password_last_changed  = ""
-        $item.last_logon = ""
-        $item.user_home = ""
-
-        # Below breaks because Get-LocalGroupMember is broken
-        # https://superuser.com/questions/1131901/get-localgroupmember-generates-error-for-administrators-group
-        # https://github.com/PowerShell/PowerShell/issues/2996
-        # $item.groups = Get-LocalGroup | Where-Object {  $item.sid -in ($_ | Get-LocalGroupMember | Select-Object -ExpandProperty "SID") } | Select-Object -ExpandProperty "Name"
-
-        $Win32_UserProfile | ForEach {
-            if ($_.SID -eq $item.sid) {
-                if ($_.LocalPath -ne "") {
-                    $item.user_home = $_.LocalPath
-                }
-                if ($_.LastUseTime -ne "" -and $_.LastUseTime -ne 0 -and $_.LastUseTime -ne $null) {
-                    $item.last_logon = [Management.ManagementDateTimeConverter]::ToDateTime($_.LastUseTime).tostring('yyyy-MM-dd HH:mm:ss')
-                }
-            }
-        }
-        $LocalUser | ForEach {
-            if ($_.SID -eq $item.sid) {
-                if ($_.PasswordLastSet -ne "" -and $_.PasswordLastSet -ne 0 -and $_.PasswordLastSet -ne $null) {
-                    $item.password_last_changed = $_.PasswordLastSet.ToString("yyyy-MM-dd H:m:s")
-                }
-            }
-        }
-        $result.user += $item
-    }
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.user.count
-    Write-Host "User, $count entries took $totalSecs seconds"
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.user_group = @()
-$item = @{}
-if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainRole -ne 5)) {
-    Get-WmiObject Win32_Group | ForEach {
-        Clear-Variable -name item
-        $item = @{}
-        $item.name = $_.Name
-        $item.description  = $_.Description
-        $item.sid = if ($_.SID) { $_.SID } else { "" }
-        $members = @()
-        Get-LocalGroupMember $_.Name -ErrorAction Ignore | Sort-Object -Property Name | ForEach {
-            $members += $_.Name
-        }
-        $item.members = [string]::join(", ", $members)
-        $result.user_group += $item
-    }
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.user_group.count
-    Write-Host "User Group, $count entries took $totalSecs seconds"
 }
 
 
@@ -1789,152 +1841,159 @@ if ($debug -gt 0) {
     ProductState    = 0xF000
 }
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.antivirus = @()
-$item = @{}
-Get-CimInstance -Namespace root\SecurityCenter2 -ClassName AntiVirusProduct -ErrorAction Ignore | ForEach {
-    Clear-Variable -name item
+if ($skip_sections.Contains("antivirus,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.antivirus = @()
     $item = @{}
-    [UInt32]$state = $_.productState
-    $item.name = $_.displayName
-    $item.executable = $_.pathToSignedProductExe
-    $item.reportable = $_.pathToSignedReportingExe
-    $item.owner = [string]([ProductOwner]($state -band [ProductFlags]::ProductOwner))
-    $item.state = [string]([ProductState]($state -band [ProductFlags]::ProductState))
-    $item.status = [string]([SignatureStatus]($state -band [ProductFlags]::SignatureStatus))
-    $result.antivirus += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.route.count
-    Write-Host "AntiVirus, $count entries took $totalSecs seconds"
-}
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.firewall = @()
-$item = @{}
-$fwStatus = 'On'
-Get-CimInstance -Namespace root/SecurityCenter2 -ClassName FirewallProduct -ErrorAction Ignore | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    [UInt32]$state = $_.productState
-    $item.name = $_.displayName
-    $item.executable = $_.pathToSignedProductExe
-    $item.reportable = $_.pathToSignedReportingExe
-    $item.owner = [string]([ProductOwner]($state -band [ProductFlags]::ProductOwner))
-    $item.state = [string]([ProductState]($state -band [ProductFlags]::ProductState))
-    $item.status = [string]([SignatureStatus]($state -band [ProductFlags]::SignatureStatus))
-    $result.firewall += $item
-    if ($item.state -eq 'On') {
-        $fwStatus = 'Off';
+    Get-CimInstance -Namespace root\SecurityCenter2 -ClassName AntiVirusProduct -ErrorAction Ignore | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        [UInt32]$state = $_.productState
+        $item.name = $_.displayName
+        $item.executable = $_.pathToSignedProductExe
+        $item.reportable = $_.pathToSignedReportingExe
+        $item.owner = [string]([ProductOwner]($state -band [ProductFlags]::ProductOwner))
+        $item.state = [string]([ProductState]($state -band [ProductFlags]::ProductState))
+        $item.status = [string]([SignatureStatus]($state -band [ProductFlags]::SignatureStatus))
+        $result.antivirus += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.route.count
+        Write-Host "AntiVirus, $count entries took $totalSecs seconds"
     }
 }
 
-Clear-Variable -name item
-$fw = 'false'
-Get-WmiObject Win32_Service | ForEach {
-    if ($_.DisplayName -eq "Windows Defender Firewall") {
-        $executable = $_.PathName
-        $fw ='true'
-    }
-}
-if ($fw -eq 'true') {
+
+if ($skip_sections.Contains("firewall,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.firewall = @()
     $item = @{}
-    $item.name = 'Windows Defender Firewall'
-    $item.executable = $executable
-    $item.reportable = ''
-    $item.owner = 'Windows'
-    $item.state = $fwStatus
-    $item.status = ''
-    $result.firewall += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.route.count
-    Write-Host "Firewall, $count entries took $totalSecs seconds"
-}
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.firewall_rule = @()
-$item = @{}
-
-if ($audit_firewall_rule -eq 'y') {
-    # Only run when Windows Firewall is On
-    if ($fwstatus -eq "On") {
-        # Only run when executing as an Agent because it takes too long for a discovery
-        if ($file -eq "output.json") {
-            Get-NetFirewallRule | Select-Object DisplayName, InstanceID, DisplayGroup, Description, Enabled, Profile, Direction, Action, RuleGroup, @{Name='LocalPort';Expression={($PSItem | Get-NetFirewallPortFilter).LocalPort}}, @{Name='RemotePort';Expression={($PSItem | Get-NetFirewallPortFilter).RemotePort}}, @{Name='RemoteAddress';Expression={($PSItem | Get-NetFirewallAddressFilter).RemoteAddress}}, @{Name='Protocol';Expression={($PSItem | Get-NetFirewallPortFilter).Protocol}} | ForEach {
-                Clear-Variable -name item
-                $item = @{}
-                $item.name = [string]$_.DisplayName
-                $item.external_ident = [string]$_.InstanceID
-                $item.group = [string]$_.DisplayGroup
-                $item.description = [string]$_.Description
-                $item.enabled = [string]$_.Enabled
-                $item.profile = [string]$_.Profile
-                $item.direction = [string]$_.Direction
-                $item.action = [string]$_.Action
-                $item.local_port = [string]$_.LocalPort
-                $item.remote_port = [string]$_.RemotePort
-                $item.remote_address = [string]$_.RemoteAddress
-                $item.protocol = [string]$_.Protocol
-                $item.rule_group = [string]$_.RuleGroup
-                $item.firewall = 'Windows Defender'
-                $result.firewall_rule += $item
-            }
-            $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-            if ($debug -gt 0) {
-                $count = [int]$result.firewall_rule.count
-                Write-Host "Firewall Rules, $count entries took $totalSecs seconds"
-            }
+    $fwStatus = 'On'
+    Get-CimInstance -Namespace root/SecurityCenter2 -ClassName FirewallProduct -ErrorAction Ignore | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        [UInt32]$state = $_.productState
+        $item.name = $_.displayName
+        $item.executable = $_.pathToSignedProductExe
+        $item.reportable = $_.pathToSignedReportingExe
+        $item.owner = [string]([ProductOwner]($state -band [ProductFlags]::ProductOwner))
+        $item.state = [string]([ProductState]($state -band [ProductFlags]::ProductState))
+        $item.status = [string]([SignatureStatus]($state -band [ProductFlags]::SignatureStatus))
+        $result.firewall += $item
+        if ($item.state -eq 'On') {
+            $fwStatus = 'Off';
         }
     }
-} # End of audit_firewall_rule
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.software = @()
-$item = @{}
-$item.name = $Win32_OperatingSystem.Caption
-$item.version = $Win32_OperatingSystem.Version
-$item.publisher = "Microsoft Corporation"
-$item.description = "Operating System"
-$result.software += $item
-
-Get-WmiObject Win32_Service | ForEach {
-    if ($_.DisplayName -eq "Windows Defender Firewall" -and $_.State -eq "Running") {
+    Clear-Variable -name item
+    $fw = 'false'
+    Get-WmiObject Win32_Service | ForEach {
+        if ($_.DisplayName -eq "Windows Defender Firewall") {
+            $executable = $_.PathName
+            $fw ='true'
+        }
+    }
+    if ($fw -eq 'true') {
         $item = @{}
         $item.name = 'Windows Defender Firewall'
-        $item.version = $Win32_OperatingSystem.Version
-        $item.publisher = 'Microsoft Corporation'
-        $item.url = 'https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/'
-        $result.software += $item
+        $item.executable = $executable
+        $item.reportable = ''
+        $item.owner = 'Windows'
+        $item.state = $fwStatus
+        $item.status = ''
+        $result.firewall += $item
     }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.route.count
+        Write-Host "Firewall, $count entries took $totalSecs seconds"
+    }
+
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.firewall_rule = @()
+    $item = @{}
+
+    if ($audit_firewall_rule -eq 'y') {
+        # Only run when Windows Firewall is On
+        if ($fwstatus -eq "On") {
+            # Only run when executing as an Agent because it takes too long for a discovery
+            if ($file -eq "output.json") {
+                Get-NetFirewallRule | Select-Object DisplayName, InstanceID, DisplayGroup, Description, Enabled, Profile, Direction, Action, RuleGroup, @{Name='LocalPort';Expression={($PSItem | Get-NetFirewallPortFilter).LocalPort}}, @{Name='RemotePort';Expression={($PSItem | Get-NetFirewallPortFilter).RemotePort}}, @{Name='RemoteAddress';Expression={($PSItem | Get-NetFirewallAddressFilter).RemoteAddress}}, @{Name='Protocol';Expression={($PSItem | Get-NetFirewallPortFilter).Protocol}} | ForEach {
+                    Clear-Variable -name item
+                    $item = @{}
+                    $item.name = [string]$_.DisplayName
+                    $item.external_ident = [string]$_.InstanceID
+                    $item.group = [string]$_.DisplayGroup
+                    $item.description = [string]$_.Description
+                    $item.enabled = [string]$_.Enabled
+                    $item.profile = [string]$_.Profile
+                    $item.direction = [string]$_.Direction
+                    $item.action = [string]$_.Action
+                    $item.local_port = [string]$_.LocalPort
+                    $item.remote_port = [string]$_.RemotePort
+                    $item.remote_address = [string]$_.RemoteAddress
+                    $item.protocol = [string]$_.Protocol
+                    $item.rule_group = [string]$_.RuleGroup
+                    $item.firewall = 'Windows Defender'
+                    $result.firewall_rule += $item
+                }
+                $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+                if ($debug -gt 0) {
+                    $count = [int]$result.firewall_rule.count
+                    Write-Host "Firewall Rules, $count entries took $totalSecs seconds"
+                }
+            }
+        }
+    } # End of audit_firewall_rule
 }
 
-Clear-Variable -name item
-$item = @{}
-$item.name = "PowerShell"
-$item.version = [string]$PSVersionTable.PSVersion
-$item.publisher = "Microsoft Corporation"
-$item.url = "https://docs.microsoft.com/en-us/powershell/"
-$result.software += $item
 
-Get-AppxPackage -Name Microsoft.MicrosoftEdge.Stable | Sort-Object -Descending Version | Select-Object -first 1 | ForEach {
+if ($skip_sections.Contains("software,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.software = @()
+    $item = @{}
+    $item.name = $Win32_OperatingSystem.Caption
+    $item.version = $Win32_OperatingSystem.Version
+    $item.publisher = "Microsoft Corporation"
+    $item.description = "Operating System"
+    $result.software += $item
+
+    Get-WmiObject Win32_Service | ForEach {
+        if ($_.DisplayName -eq "Windows Defender Firewall" -and $_.State -eq "Running") {
+            $item = @{}
+            $item.name = 'Windows Defender Firewall'
+            $item.version = $Win32_OperatingSystem.Version
+            $item.publisher = 'Microsoft Corporation'
+            $item.url = 'https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/'
+            $result.software += $item
+        }
+    }
+
     Clear-Variable -name item
     $item = @{}
-    $item.name = "Edge"
-    $item.version = $_.Version
+    $item.name = "PowerShell"
+    $item.version = [string]$PSVersionTable.PSVersion
     $item.publisher = "Microsoft Corporation"
-    $item.url = "https://www.microsoft.com/en-us/edge"
+    $item.url = "https://docs.microsoft.com/en-us/powershell/"
     $result.software += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.user_group.count
-    Write-Host "Software 1, 3 entries took $totalSecs seconds"
-}
 
-if ($audit_software -eq 'y') {
+    Get-AppxPackage -Name Microsoft.MicrosoftEdge.Stable | Sort-Object -Descending Version | Select-Object -first 1 | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        $item.name = "Edge"
+        $item.version = $_.Version
+        $item.publisher = "Microsoft Corporation"
+        $item.url = "https://www.microsoft.com/en-us/edge"
+        $result.software += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.user_group.count
+        Write-Host "Software 1, 3 entries took $totalSecs seconds"
+    }
+
+
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne '' -and $_.DisplayName -ne $null } | ForEach {
         $item = @{}
@@ -2191,180 +2250,151 @@ if ($audit_software -eq 'y') {
     }
 } # End of audit_software
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.service = @()
-$item = @{}
-Get-WmiObject Win32_Service | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.name = $_.name
-    $item.description = $_.DisplayName
-    $item.executable = $_.PathName
-    $item.user = $_.StartName
-    if ($item.user -eq $null) {
-        $item.user = ""
-    }
-    $item.start_mode = $_.StartMode
-    $item.state = $_.State
-    $result.service += $item
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.service.count
-    Write-Host "Service, $count entries took $totalSecs seconds"
-}
 
-
-$result.server = @()
-$result.server_item = @()
-$item = @{}
-$test = Get-Service -name "W3SVC" -ErrorAction Ignore
-if ($test.Status -ne $null -and $test.Status.ToString() -eq "Running") {
+if ($skip_sections.Contains("service,") -eq $false) {
     $itimer = [Diagnostics.Stopwatch]::StartNew()
-    # Get IIS details
-    Clear-Variable -name item
+    $result.service = @()
     $item = @{}
-    $item.type = 'web';
-    $item.name = 'IIS';
-    $item.version = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$env:SystemRoot\system32\inetsrv\InetMgr.exe").ProductVersion
-    $service = Get-Service -Name W3SVC
-    $item.status = $service.Status.ToString()
-    $result.server += $item
-
-    # Get the individual websites now
-    Get-Website -ErrorAction Ignore | ForEach {
+    Get-WmiObject Win32_Service | ForEach {
         Clear-Variable -name item
         $item = @{}
-        $item.type = 'website'
         $item.name = $_.name
-        $item.parent_name = 'IIS'
-        $item.id_internal = $_.id
-        $item.status = [string]$_.state
-        $item.path = $_.physicalPath
-        $item.path = $item.path.replace("%SystemDrive%", "$Env:SystemDrive")
-        $bindings = $_.bindings.Collection.bindingInformation
-        $item.ip = $($bindings -split ":")[0]
-        $item.port = $($bindings -split ":")[1]
-        $item.hostname = $($bindings -split ":")[2]
-        $item.size = [math]::ceiling((Get-ChildItem $item.path -force -Recurse -ErrorAction SilentlyContinue| measure Length -sum).sum / 1Mb)
-        $item.instance = $_.applicationPool
-        $item.log_status = $_.logfile.enabled.ToString()
-        $item.log_format = $_.logfile.logFormat
-        $item.log_path = $_.logfile.directory + "\W3SVC" + $_.id
-        $item.log_rotation = ''
-        if ($_.logfile.period -eq 'MaxSize') {
-            if ($_.logfile.truncateSize -eq -1) {
-                $item.log_rotation = 'Unlimited file size'
-            } else {
-                $item.log_rotation = "When file size reaches $([int]($_.logfile.truncateSize / 1Mb)) MB"
-            }
-        } else {
-            $item.log_rotation = $_.logfile.period;
+        $item.description = $_.DisplayName
+        $item.executable = $_.PathName
+        $item.user = $_.StartName
+        if ($item.user -eq $null) {
+            $item.user = ""
         }
-        $result.server_item += $item
+        $item.start_mode = $_.StartMode
+        $item.state = $_.State
+        $result.service += $item
     }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
-        $count = [int]$result.server_item.count
-        $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-        Write-Host "IIS, $count entries took $totalSecs seconds"
+        $count = [int]$result.service.count
+        Write-Host "Service, $count entries took $totalSecs seconds"
     }
 }
 
-$test = Get-Service -name "MSSQLSERVER"  -ErrorAction Ignore
-if ($test.Status -ne $null -and $test.Status.ToString() -eq "Running") {
-    $itimer = [Diagnostics.Stopwatch]::StartNew()
-    # Get MSSQL details
-    Clear-Variable -name item
+
+if ($skip_sections.Contains("server,") -eq $false) {
+    $result.server = @()
+    $result.server_item = @()
     $item = @{}
-    $item.type = 'database'
-    $item.status = (Get-Service -name "MSSQLSERVER").Status.ToString()
-    $item.name = 'SQL Server'
-    $item.version = (Invoke-SqlCmd -query "SELECT SERVERPROPERTY('productversion')").Column1.ToString()
-    $item.edition = (Invoke-SqlCmd -query "SELECT SERVERPROPERTY('edition')").Column1.ToString()
-    $item.port = (Get-ItemProperty HKLM:\Software\Microsoft\MSSQLServer\MSSQLServer\SuperSocketNetLib\Tcp).TcpPort
-    $result.server += $item
-
-    # Get the individual databases now
-    $instances = [System.Data.Sql.SqlDataSourceEnumerator]::Instance.GetDataSources()
-    $count = 0
-    if ($instances -ne $null) {
-        $instances | ForEach {
-            if ($_.InstanceName -eq "") {
-                $instanceName = '.'
-            } else {
-                $instanceName = '.\' + $_.InstanceName
-            }
-            Get-SqlDatabase -ServerInstance $instanceName -ErrorAction SilentlyContinue | ForEach {
-                $count = $count + 1
-                Clear-Variable -name item
-                $item = @{}
-                $item.type = 'database'
-                $item.parent_name = 'SQL Server'
-                $item.name = $_.Name
-                $item.id_internal = $_.ID
-                $item.instance = $instanceName
-                $item.size = $_.size
-                $item.path = $_.PrimaryFilePath
-                $item.details_creation_date = $_.CreateDate
-                $result.server_item += $item
-            }
-        }
-    }
-    if ($debug -gt 0) {
-        $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-        Write-Host "SQL, $count entries took $totalSecs seconds"
-    }
-}
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.netstat = @()
-$item = @{}
-# Get-NetTCPConnection -State Listen | Select-Object -Property *,@{'Name' = 'ProcessName';'Expression'={(Get-Process -Id $_.OwningProcess).Name}} | ForEach {
-Get-NetTCPConnection -State Listen | ForEach {
-    Clear-Variable -name item
-    $item = @{}
-    $item.protocol = "tcp"
-    if ($_.LocalAddress.IndexOf(":") -ne -1) {
-        $item.protocol = "tcp6"
-    }
-    if ($_.LocalAddress.IndexOf(".") -ne -1) {
-        $item.protocol = "tcp4"
-    }
-    $item.ip = $_.LocalAddress
-    $item.port = $_.LocalPort
-    $item.processId = $_.OwningProcess
-    Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
-        $item.program = $_.CommandLine
-        if ($item.program -eq $null) {
-            $item.program = $_.Name
-        }
-    }
-    if ($item.program -eq $null) {
-        $item.program = ""
-    }
-    if ($item.port -ne "" -and $item.port -ne $null -and $item.program -ne "") {
-        # Added this check because in testing we managed to get an entry without a port or associated program
-        $result.netstat += $item
-    }
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.netstat.count
-    Write-Host "Netstat TCP, $count entries took $totalSecs seconds"
-}
-
-if ($audit_netstat_udp -eq 'y') {
-    $itimer = [Diagnostics.Stopwatch]::StartNew()
-    Get-NetUDPEndpoint | ForEach {
+    $test = Get-Service -name "W3SVC" -ErrorAction Ignore
+    if ($test.Status -ne $null -and $test.Status.ToString() -eq "Running") {
+        $itimer = [Diagnostics.Stopwatch]::StartNew()
+        # Get IIS details
         Clear-Variable -name item
         $item = @{}
-        $item.protocol = "udp"
+        $item.type = 'web';
+        $item.name = 'IIS';
+        $item.version = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$env:SystemRoot\system32\inetsrv\InetMgr.exe").ProductVersion
+        $service = Get-Service -Name W3SVC
+        $item.status = $service.Status.ToString()
+        $result.server += $item
+
+        # Get the individual websites now
+        Get-Website -ErrorAction Ignore | ForEach {
+            Clear-Variable -name item
+            $item = @{}
+            $item.type = 'website'
+            $item.name = $_.name
+            $item.parent_name = 'IIS'
+            $item.id_internal = $_.id
+            $item.status = [string]$_.state
+            $item.path = $_.physicalPath
+            $item.path = $item.path.replace("%SystemDrive%", "$Env:SystemDrive")
+            $bindings = $_.bindings.Collection.bindingInformation
+            $item.ip = $($bindings -split ":")[0]
+            $item.port = $($bindings -split ":")[1]
+            $item.hostname = $($bindings -split ":")[2]
+            $item.size = [math]::ceiling((Get-ChildItem $item.path -force -Recurse -ErrorAction SilentlyContinue| measure Length -sum).sum / 1Mb)
+            $item.instance = $_.applicationPool
+            $item.log_status = $_.logfile.enabled.ToString()
+            $item.log_format = $_.logfile.logFormat
+            $item.log_path = $_.logfile.directory + "\W3SVC" + $_.id
+            $item.log_rotation = ''
+            if ($_.logfile.period -eq 'MaxSize') {
+                if ($_.logfile.truncateSize -eq -1) {
+                    $item.log_rotation = 'Unlimited file size'
+                } else {
+                    $item.log_rotation = "When file size reaches $([int]($_.logfile.truncateSize / 1Mb)) MB"
+                }
+            } else {
+                $item.log_rotation = $_.logfile.period;
+            }
+            $result.server_item += $item
+        }
+        if ($debug -gt 0) {
+            $count = [int]$result.server_item.count
+            $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+            Write-Host "IIS, $count entries took $totalSecs seconds"
+        }
+    }
+
+    $test = Get-Service -name "MSSQLSERVER"  -ErrorAction Ignore
+    if ($test.Status -ne $null -and $test.Status.ToString() -eq "Running") {
+        $itimer = [Diagnostics.Stopwatch]::StartNew()
+        # Get MSSQL details
+        Clear-Variable -name item
+        $item = @{}
+        $item.type = 'database'
+        $item.status = (Get-Service -name "MSSQLSERVER").Status.ToString()
+        $item.name = 'SQL Server'
+        $item.version = (Invoke-SqlCmd -query "SELECT SERVERPROPERTY('productversion')").Column1.ToString()
+        $item.edition = (Invoke-SqlCmd -query "SELECT SERVERPROPERTY('edition')").Column1.ToString()
+        $item.port = (Get-ItemProperty HKLM:\Software\Microsoft\MSSQLServer\MSSQLServer\SuperSocketNetLib\Tcp).TcpPort
+        $result.server += $item
+
+        # Get the individual databases now
+        $instances = [System.Data.Sql.SqlDataSourceEnumerator]::Instance.GetDataSources()
+        $count = 0
+        if ($instances -ne $null) {
+            $instances | ForEach {
+                if ($_.InstanceName -eq "") {
+                    $instanceName = '.'
+                } else {
+                    $instanceName = '.\' + $_.InstanceName
+                }
+                Get-SqlDatabase -ServerInstance $instanceName -ErrorAction SilentlyContinue | ForEach {
+                    $count = $count + 1
+                    Clear-Variable -name item
+                    $item = @{}
+                    $item.type = 'database'
+                    $item.parent_name = 'SQL Server'
+                    $item.name = $_.Name
+                    $item.id_internal = $_.ID
+                    $item.instance = $instanceName
+                    $item.size = $_.size
+                    $item.path = $_.PrimaryFilePath
+                    $item.details_creation_date = $_.CreateDate
+                    $result.server_item += $item
+                }
+            }
+        }
+        if ($debug -gt 0) {
+            $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+            Write-Host "SQL, $count entries took $totalSecs seconds"
+        }
+    }
+}
+
+
+if ($skip_sections.Contains("netstat,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.netstat = @()
+    $item = @{}
+    # Get-NetTCPConnection -State Listen | Select-Object -Property *,@{'Name' = 'ProcessName';'Expression'={(Get-Process -Id $_.OwningProcess).Name}} | ForEach {
+    Get-NetTCPConnection -State Listen | ForEach {
+        Clear-Variable -name item
+        $item = @{}
+        $item.protocol = "tcp"
         if ($_.LocalAddress.IndexOf(":") -ne -1) {
-            $item.protocol = "udp6"
+            $item.protocol = "tcp6"
         }
         if ($_.LocalAddress.IndexOf(".") -ne -1) {
-            $item.protocol = "udp4"
+            $item.protocol = "tcp4"
         }
         $item.ip = $_.LocalAddress
         $item.port = $_.LocalPort
@@ -2386,53 +2416,91 @@ if ($audit_netstat_udp -eq 'y') {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.netstat.count
-        Write-Host "Netstat UDP, $count entries took $totalSecs seconds"
+        Write-Host "Netstat TCP, $count entries took $totalSecs seconds"
     }
-} # End of audit_netstat_udp
 
-
-
-
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.route = @()
-$item = @{}
-Get-NetRoute | Where-Object AddressFamily -eq "IPv4" | 
-    Where-Object NextHop -ne "0.0.0.0" | 
-    Where-Object NextHop -ne "127.0.0.1" | 
-    Where-Object NextHop -notin $ip_address_array | ForEach {
-
-    Clear-Variable -name item
-    $item = @{}
-    $item.DestinationPrefix = $_.DestinationPrefix
-    $item.destination = ""
-    $item.mask = ""
-    $item.metric = $_.RouteMetric
-    $item.next_hop = $_.NextHop
-    $item.protocol = $_.Protocol
-    switch ($_.TypeOfRoute) {
-        "1" { $item.type = "Other" }
-        "2" { $item.type = "Invalid" }
-        "3" { $item.type = "Direct" }
-        "4" { $item.type = "Indirect" }
-        default { $item.type = "Unknown" }
-    }
-    $split = $_.DestinationPrefix.Split('/')
-    $item.destination = $split[0]
-    $prefix = $split[1]
-    $bitString = ('1' * $prefix).PadRight(32, '0')
-    $ipString = [String]::Empty
-    for ( $i=0 ;$i -lt 32; $i+=8) {
-        $byteString = $bitString.Substring($i, 8)
-        $ipString += "$([Convert]::ToInt32($byteString, 2))."
-    }
-    $item.mask = $ipString.ToString().TrimEnd('.')
-
-    $result.route += $item
+    if ($audit_netstat_udp -eq 'y') {
+        $itimer = [Diagnostics.Stopwatch]::StartNew()
+        Get-NetUDPEndpoint | ForEach {
+            Clear-Variable -name item
+            $item = @{}
+            $item.protocol = "udp"
+            if ($_.LocalAddress.IndexOf(":") -ne -1) {
+                $item.protocol = "udp6"
+            }
+            if ($_.LocalAddress.IndexOf(".") -ne -1) {
+                $item.protocol = "udp4"
+            }
+            $item.ip = $_.LocalAddress
+            $item.port = $_.LocalPort
+            $item.processId = $_.OwningProcess
+            Get-WmiObject Win32_Process | Where-Object ProcessId -eq $_.OwningProcess | ForEach {
+                $item.program = $_.CommandLine
+                if ($item.program -eq $null) {
+                    $item.program = $_.Name
+                }
+            }
+            if ($item.program -eq $null) {
+                $item.program = ""
+            }
+            if ($item.port -ne "" -and $item.port -ne $null -and $item.program -ne "") {
+                # Added this check because in testing we managed to get an entry without a port or associated program
+                $result.netstat += $item
+            }
+        }
+        $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+        if ($debug -gt 0) {
+            $count = [int]$result.netstat.count
+            Write-Host "Netstat UDP, $count entries took $totalSecs seconds"
+        }
+    } # End of audit_netstat_udp
 }
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.route.count
-    Write-Host "Route, $count entries took $totalSecs seconds"
+
+
+
+
+if ($skip_sections.Contains("route,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.route = @()
+    $item = @{}
+    Get-NetRoute | Where-Object AddressFamily -eq "IPv4" | 
+        Where-Object NextHop -ne "0.0.0.0" | 
+        Where-Object NextHop -ne "127.0.0.1" | 
+        Where-Object NextHop -notin $ip_address_array | ForEach {
+
+        Clear-Variable -name item
+        $item = @{}
+        $item.DestinationPrefix = $_.DestinationPrefix
+        $item.destination = ""
+        $item.mask = ""
+        $item.metric = $_.RouteMetric
+        $item.next_hop = $_.NextHop
+        $item.protocol = $_.Protocol
+        switch ($_.TypeOfRoute) {
+            "1" { $item.type = "Other" }
+            "2" { $item.type = "Invalid" }
+            "3" { $item.type = "Direct" }
+            "4" { $item.type = "Indirect" }
+            default { $item.type = "Unknown" }
+        }
+        $split = $_.DestinationPrefix.Split('/')
+        $item.destination = $split[0]
+        $prefix = $split[1]
+        $bitString = ('1' * $prefix).PadRight(32, '0')
+        $ipString = [String]::Empty
+        for ( $i=0 ;$i -lt 32; $i+=8) {
+            $byteString = $bitString.Substring($i, 8)
+            $ipString += "$([Convert]::ToInt32($byteString, 2))."
+        }
+        $item.mask = $ipString.ToString().TrimEnd('.')
+
+        $result.route += $item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.route.count
+        Write-Host "Route, $count entries took $totalSecs seconds"
+    }
 }
 
 
@@ -2461,43 +2529,45 @@ if ($debug -gt 0) {
 # }
 
 
-$itimer = [Diagnostics.Stopwatch]::StartNew()
-$result.file = @()
-Clear-Variable -name item
-foreach ($fil in $files) {
-    if ($fil -ne "") {
-        if ((Test-Path -Path $fil -PathType Leaf) -or (Test-Path -Path $fil -PathType Container)) {
-            $tempRec = Get-ChildItem -path $fil -recurse | Select-Object -ExpandProperty FullName
-            foreach ($temp_f in $tempRec) {
-                if (Test-Path -Path $temp_f -PathType Leaf) {
-                    $item = @{}
-                    $temp_f = [string]$temp_f
-                    $temp_file = Get-ItemProperty -Path $temp_f
-                    $temp_file_acl = get-acl $temp_f
+if ($skip_sections.Contains("file,") -eq $false) {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.file = @()
+    Clear-Variable -name item
+    foreach ($fil in $files) {
+        if ($fil -ne "") {
+            if ((Test-Path -Path $fil -PathType Leaf) -or (Test-Path -Path $fil -PathType Container)) {
+                $tempRec = Get-ChildItem -path $fil -recurse | Select-Object -ExpandProperty FullName
+                foreach ($temp_f in $tempRec) {
+                    if (Test-Path -Path $temp_f -PathType Leaf) {
+                        $item = @{}
+                        $temp_f = [string]$temp_f
+                        $temp_file = Get-ItemProperty -Path $temp_f
+                        $temp_file_acl = get-acl $temp_f
 
-                    $item.directory = $temp_file | Select-Object -ExpandProperty DirectoryName
-                    $item.full_name = $temp_file | Select-Object -ExpandProperty FullName
-                    $item.name = $temp_file | Select-Object -ExpandProperty Name
-                    $item.owner = $temp_file_acl | Select-Object -ExpandProperty Owner
-                    $item.size = $temp_file | Select-Object -ExpandProperty Length
-                    $item.version = (Get-Item $fil).VersionInfo.FileVersion
+                        $item.directory = $temp_file | Select-Object -ExpandProperty DirectoryName
+                        $item.full_name = $temp_file | Select-Object -ExpandProperty FullName
+                        $item.name = $temp_file | Select-Object -ExpandProperty Name
+                        $item.owner = $temp_file_acl | Select-Object -ExpandProperty Owner
+                        $item.size = $temp_file | Select-Object -ExpandProperty Length
+                        $item.version = (Get-Item $fil).VersionInfo.FileVersion
 
-                    # Note that below the format is yyyy-MM-dd. in the VBS it is dd/MM/yyyy
-                    $item.last_changed =  [string](Get-Date -Date ($temp_file | Select-Object -ExpandProperty LastWriteTime) -Uformat "%Y-%m-%d %T")
-                    # Note that below is the full permissions. In the VBS we only get the numerical access mask
-                    $item.permission = $temp_file_acl | Select-Object -ExpandProperty AccessToString
-                    # Note the below is for a SHA256. In the VBS, we use SHA1
-                    $item.hash = Get-FileHash $temp_f | Select-Object -ExpandProperty Hash
-                    $result.file += $item
+                        # Note that below the format is yyyy-MM-dd. in the VBS it is dd/MM/yyyy
+                        $item.last_changed =  [string](Get-Date -Date ($temp_file | Select-Object -ExpandProperty LastWriteTime) -Uformat "%Y-%m-%d %T")
+                        # Note that below is the full permissions. In the VBS we only get the numerical access mask
+                        $item.permission = $temp_file_acl | Select-Object -ExpandProperty AccessToString
+                        # Note the below is for a SHA256. In the VBS, we use SHA1
+                        $item.hash = Get-FileHash $temp_f | Select-Object -ExpandProperty Hash
+                        $result.file += $item
+                    }
                 }
             }
         }
     }
-}
-$totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-if ($debug -gt 0) {
-    $count = [int]$result.file.count
-    Write-Host "File, $count entries took $totalSecs seconds"
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.file.count
+        Write-Host "File, $count entries took $totalSecs seconds"
+    }
 }
 
 
