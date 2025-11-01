@@ -114,7 +114,7 @@ cert_dirs[1]="/etc/ssl/certs"
 cert_dirs[2]="/etc/ssl/private"
 
 # NOTE - each skipped section MUST have a trailing comma
-# skip_sections="arp,bios,certificate,disk,executable,file,group,ip,license,log,memory,motherboard,netstat,network,optical,partition,policy,processor,route,san,service,share,software,sound,swap,usb,user,variable,video,vm,"
+# skip_sections="arp,bios,certificate,disk,executable,file,group,ip,license,log,memory,motherboard,netstat,network,optical,partition,policy,processor,route,san,server,service,share,software,sound,swap,usb,user,variable,video,vm,"
 skip_sections=""
 
 # DO NOT REMOVE THE LINE BELOW
