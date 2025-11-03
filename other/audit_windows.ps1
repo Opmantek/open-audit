@@ -38,7 +38,6 @@ if ($discovery_id -ne 0) {
 $files = '',''
 
 # For developers only to save time when testing other items as these take a while
-$audit_software = 'y'
 $audit_netstat_udp = 'n'
 $audit_firewall_rule = 'n'
 
@@ -56,7 +55,12 @@ if ($debug -gt 0) {
     Write-Host "Organisation: $org_id"
     Write-Host "Debug:        $debugging"
     Write-Host "SystemID:     $system_id"
-    Write-Host "File          $file"
+    Write-Host "File:         $file"
+}
+
+$internet = Test-Connection -ComputerName "8.8.8.8" -Count 2 -Quiet
+if ($debug -gt 0) {
+    Write-Host "Online:       $internet"
     Write-Host "================"
 }
 
@@ -65,6 +69,10 @@ function Get-LittleEndianInt($array, $index) {
     [Array]::Copy($array, $index, $temp, 0, 4)
     [Array]::Reverse($temp)
     [System.BitConverter]::ToInt32($temp, 0)
+}
+
+if ($debug -gt 0) {
+    Write-Host "system:       " -NoNewline
 }
 
 $internet = Test-Connection -ComputerName "8.8.8.8" -Count 2 -Quiet
@@ -194,9 +202,12 @@ if ($location_id -ne 0) {
 $itimer.Stop()
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
 if ($debug -gt 0) {
-    Write-Host "System, 1 entry took $totalSecs seconds"
+    Write-Host "1 entry took $totalSecs seconds"
 }
 
+if ($debug -gt 0) {
+    Write-Host "windows:      " -NoNewline
+}
 $itimer = [Diagnostics.Stopwatch]::StartNew()
 $result.windows = @()
 $item = @{}
@@ -482,11 +493,14 @@ $item.install_directory = [string]$Win32_OperatingSystem.WindowsDirectory
 $result.windows += $item
 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
 if ($debug -gt 0) {
-    Write-Host "Windows, 1 entry took $totalSecs seconds"
+    Write-Host "1 entry took $totalSecs seconds"
 }
 
 
 if ($skip_sections.Contains("bios,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "bios:         " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.bios = @()
     Clear-Variable -name item
@@ -500,12 +514,15 @@ if ($skip_sections.Contains("bios,") -eq $false) {
     $result.bios += $item
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
-        Write-Host "Bios, 1 entry took $totalSecs seconds"
+        Write-Host "1 entry took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("certificate,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "certificate:  " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.certificate = @()
     $item = @{}
@@ -530,12 +547,15 @@ if ($skip_sections.Contains("certificate,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.certificate.count
-        Write-Host "Certificate, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("scsi,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "scsi:         " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.scsi = @()
     $item = @{}
@@ -551,12 +571,15 @@ if ($skip_sections.Contains("scsi,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.scsi.count
-        Write-Host "SCSI, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("processor,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "processor:    " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.processor = @()
     $item = @{}
@@ -640,12 +663,15 @@ if ($skip_sections.Contains("processor,") -eq $false) {
     $result.processor += $item
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
-        Write-Host "Processor, 1 entries took $totalSecs seconds"
+        Write-Host "1 entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("memory,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "memory:       " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.memory = @()
     $Win32_PhysicalMemory | ForEach {
@@ -730,12 +756,15 @@ if ($skip_sections.Contains("memory,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.memory.count
-        Write-Host "Memory, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("motherboard,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "motherboard:  " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.motherboard = @()
     $item = @{}
@@ -753,12 +782,15 @@ if ($skip_sections.Contains("motherboard,") -eq $false) {
     }
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
-        Write-Host "Motherboard, 1 entries took $totalSecs seconds"
+        Write-Host "1 entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("optical,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "optical:      " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.optical = @()
     $item = @{}
@@ -775,12 +807,15 @@ if ($skip_sections.Contains("optical,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.optical.count
-        Write-Host "Optical, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("video,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "video:        " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.video = @()
     $item = @{}
@@ -799,12 +834,15 @@ if ($skip_sections.Contains("video,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.video.count
-        Write-Host "Video, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("monitor,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "monitor:      " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.monitor = @()
     $item = @{}
@@ -969,16 +1007,19 @@ if ($skip_sections.Contains("monitor,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.monitor.count
-        Write-Host "Monitor, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 if ($skip_sections.Contains("vm,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "vm:           " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.vm = @()
     $item = @{}
     try {
-        Get-VM | ForEach {
+        Get-VM -ErrorAction Ignore | ForEach {
           Clear-Variable -name item
           $item = @{}
           $item.name = $_.VMName
@@ -999,16 +1040,19 @@ if ($skip_sections.Contains("vm,") -eq $false) {
           $result.vm += $item
         }
     } catch {
-        Write-Host "Get-VM not installed, continuing."
+        # Write-Host "Get-VM not installed, continuing."
     }
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.vm.count
-        Write-Host "VM, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 if ($skip_sections.Contains("sound,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "sound:        " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.sound = @()
     $item = @{}
@@ -1023,12 +1067,15 @@ if ($skip_sections.Contains("sound,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.sound.count
-        Write-Host "Sound, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("disk,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "disk:         " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.disk = @()
     $item = @{}
@@ -1066,12 +1113,15 @@ if ($skip_sections.Contains("disk,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.disk.count
-        Write-Host "Disk, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("partition,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "partition:    " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.partition = @()
     $item = @{}
@@ -1162,12 +1212,15 @@ if ($skip_sections.Contains("partition,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.partition.count
-        Write-Host "Volume, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("share,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "share:        " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.share = @()
     Get-WmiObject -Class Win32_Share -filter 'type = "0"' | Select Path, Name, Description | ForEach {
@@ -1258,12 +1311,15 @@ if ($skip_sections.Contains("share,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.share.count
-        Write-Host "Share, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("network,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "network:      " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.network = @()
     $item = @{}
@@ -1314,12 +1370,15 @@ if ($skip_sections.Contains("network,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.network.count
-        Write-Host "Network, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("ip,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "ip:           " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $ip_address_array = @()
     $result.ip = @()
@@ -1347,12 +1406,15 @@ if ($skip_sections.Contains("ip,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.ip.count
-        Write-Host "IP, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("dns,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "dns:          " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     if ($dns_server) {
         $result.dns = @()
@@ -1370,12 +1432,15 @@ if ($skip_sections.Contains("dns,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.dns.count
-        Write-Host "DNS, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("usb,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "usb:          " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.usb = @()
     $item = @{}
@@ -1460,12 +1525,15 @@ if ($skip_sections.Contains("usb,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.usb.count
-        Write-Host "USB, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("print_queue,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "print_queue:  " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.print_queue = @()
     $item = @{}
@@ -1598,12 +1666,15 @@ if ($skip_sections.Contains("print_queue,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.printer.count
-        Write-Host "Printer, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("task,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "task:         " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.task = @()
     $item = @{}
@@ -1683,12 +1754,15 @@ if ($skip_sections.Contains("task,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.task.count
-        Write-Host "Task, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("variable,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "variable:     " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.variable = @()
     $item = @{}
@@ -1703,12 +1777,15 @@ if ($skip_sections.Contains("variable,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.variable.count
-        Write-Host "Variable, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("log,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "log:          " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.log = @()
     $item = @{}
@@ -1725,12 +1802,15 @@ if ($skip_sections.Contains("log,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.log.count
-        Write-Host "Log, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("user,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "user:         " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.user = @()
     $item = @{}
@@ -1783,12 +1863,15 @@ if ($skip_sections.Contains("user,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.user.count
-        Write-Host "User, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("user_group,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "user_group:   " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.user_group = @()
     $item = @{}
@@ -1810,7 +1893,7 @@ if ($skip_sections.Contains("user_group,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.user_group.count
-        Write-Host "User Group, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
@@ -1843,6 +1926,9 @@ if ($skip_sections.Contains("user_group,") -eq $false) {
 }
 
 if ($skip_sections.Contains("antivirus,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "antivirus:    " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.antivirus = @()
     $item = @{}
@@ -1861,12 +1947,15 @@ if ($skip_sections.Contains("antivirus,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.route.count
-        Write-Host "AntiVirus, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
 
 if ($skip_sections.Contains("firewall,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "firewall:     " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.firewall = @()
     $item = @{}
@@ -1907,8 +1996,8 @@ if ($skip_sections.Contains("firewall,") -eq $false) {
     }
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
-        $count = [int]$result.route.count
-        Write-Host "Firewall, $count entries took $totalSecs seconds"
+        $count = [int]$result.firewall.count
+        Write-Host "$count entries took $totalSecs seconds"
     }
 
     $itimer = [Diagnostics.Stopwatch]::StartNew()
@@ -1916,6 +2005,9 @@ if ($skip_sections.Contains("firewall,") -eq $false) {
     $item = @{}
 
     if ($audit_firewall_rule -eq 'y') {
+        if ($debug -gt 0) {
+            Write-Host "fw_rule:      " -NoNewline
+        }
         # Only run when Windows Firewall is On
         if ($fwstatus -eq "On") {
             # Only run when executing as an Agent because it takes too long for a discovery
@@ -1942,7 +2034,7 @@ if ($skip_sections.Contains("firewall,") -eq $false) {
                 $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
                 if ($debug -gt 0) {
                     $count = [int]$result.firewall_rule.count
-                    Write-Host "Firewall Rules, $count entries took $totalSecs seconds"
+                    Write-Host "$count entries took $totalSecs seconds"
                 }
             }
         }
@@ -1951,6 +2043,9 @@ if ($skip_sections.Contains("firewall,") -eq $false) {
 
 
 if ($skip_sections.Contains("software,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "software 1:   " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.software = @()
     $item = @{}
@@ -1990,10 +2085,13 @@ if ($skip_sections.Contains("software,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.user_group.count
-        Write-Host "Software 1, 3 entries took $totalSecs seconds"
+        Write-Host "3 entries took $totalSecs seconds"
     }
 
     $itimer = [Diagnostics.Stopwatch]::StartNew()
+    if ($debug -gt 0) {
+        Write-Host "software 2:   " -NoNewline
+    }
     Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne '' -and $_.DisplayName -ne $null } | ForEach {
         $item = @{}
         $item.name = $_.DisplayName
@@ -2051,11 +2149,14 @@ if ($skip_sections.Contains("software,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.software.count
-        Write-Host "Software 2, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 
 
     $itimer = [Diagnostics.Stopwatch]::StartNew()
+    if ($debug -gt 0) {
+        Write-Host "software 3:   " -NoNewline
+    }
     Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne '' -and $_.DisplayName -ne $null } | ForEach {
         $item = @{}
         $item.name = $_.DisplayName
@@ -2112,11 +2213,14 @@ if ($skip_sections.Contains("software,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.software.count
-        Write-Host "Software 3, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 
 
     $itimer = [Diagnostics.Stopwatch]::StartNew()
+    if ($debug -gt 0) {
+        Write-Host "software 4:   " -NoNewline
+    }
     Get-WmiObject Win32_InstalledStoreProgram -ErrorAction Ignore | ForEach {
         $item = @{}
         $microsoft = 'n'
@@ -2158,11 +2262,14 @@ if ($skip_sections.Contains("software,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.software.count
-        Write-Host "Software 4, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 
 
     $itimer = [Diagnostics.Stopwatch]::StartNew()
+    if ($debug -gt 0) {
+        Write-Host "software 5:   " -NoNewline
+    }
     Get-WmiObject Win32_QuickFixEngineering | ForEach {
         $item = @{}
         $item.name = $_.HotFixID
@@ -2193,10 +2300,13 @@ if ($skip_sections.Contains("software,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.software.count
-        Write-Host "Software 5, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 
     $itimer = [Diagnostics.Stopwatch]::StartNew()
+    if ($debug -gt 0) {
+        Write-Host "software 6:   " -NoNewline
+    }
     Get-WmiObject Win32_OptionalFeature -ErrorAction Ignore | WHERE {$_.InstallState -eq 1} | ForEach {
         $item = @{}
         $item.name = $_.Caption
@@ -2215,12 +2325,15 @@ if ($skip_sections.Contains("software,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.software.count
-        Write-Host "Software 6, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 
 
-    $itimer = [Diagnostics.Stopwatch]::StartNew()
     if (Get-Command "get-WindowsFeature" -errorAction SilentlyContinue) { 
+        $itimer = [Diagnostics.Stopwatch]::StartNew()
+        if ($debug -gt 0) {
+            Write-Host "software 7:   " -NoNewline
+        }
         Get-WindowsFeature -ErrorAction Ignore | WHERE Installed | Select DisplayName, Description, @{name='Version';expression={"{0}.{1}" -f $_.AdditionalInfo.MajorVersion,$_.AdditionalInfo.MinorVersion }} | ForEach {
             $item = @{}
             $item.name = $_.DisplayName
@@ -2246,13 +2359,16 @@ if ($skip_sections.Contains("software,") -eq $false) {
         $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
         if ($debug -gt 0) {
             $count = [int]$result.software.count
-            Write-Host "Software 7, $count entries took $totalSecs seconds"
+            Write-Host "$count entries took $totalSecs seconds"
         }
     }
 } # End of audit_software
 
 
 if ($skip_sections.Contains("service,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "service:      " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.service = @()
     $item = @{}
@@ -2273,7 +2389,7 @@ if ($skip_sections.Contains("service,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.service.count
-        Write-Host "Service, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
@@ -2284,6 +2400,9 @@ if ($skip_sections.Contains("server,") -eq $false) {
     $item = @{}
     $test = Get-Service -name "W3SVC" -ErrorAction Ignore
     if ($test.Status -ne $null -and $test.Status.ToString() -eq "Running") {
+        if ($debug -gt 0) {
+            Write-Host "server IIS:   " -NoNewline
+        }
         $itimer = [Diagnostics.Stopwatch]::StartNew()
         # Get IIS details
         Clear-Variable -name item
@@ -2330,12 +2449,15 @@ if ($skip_sections.Contains("server,") -eq $false) {
         if ($debug -gt 0) {
             $count = [int]$result.server_item.count
             $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-            Write-Host "IIS, $count entries took $totalSecs seconds"
+            Write-Host "$count entries took $totalSecs seconds"
         }
     }
 
     $test = Get-Service -name "MSSQLSERVER"  -ErrorAction Ignore
     if ($test.Status -ne $null -and $test.Status.ToString() -eq "Running") {
+        if ($debug -gt 0) {
+            Write-Host "server SQL:   " -NoNewline
+        }
         $itimer = [Diagnostics.Stopwatch]::StartNew()
         # Get MSSQL details
         Clear-Variable -name item
@@ -2376,13 +2498,16 @@ if ($skip_sections.Contains("server,") -eq $false) {
         }
         if ($debug -gt 0) {
             $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-            Write-Host "SQL, $count entries took $totalSecs seconds"
+            Write-Host "$count entries took $totalSecs seconds"
         }
     }
 }
 
 
 if ($skip_sections.Contains("netstat,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "netstat TCP:  " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.netstat = @()
     $item = @{}
@@ -2417,10 +2542,13 @@ if ($skip_sections.Contains("netstat,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.netstat.count
-        Write-Host "Netstat TCP, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 
     if ($audit_netstat_udp -eq 'y') {
+        if ($debug -gt 0) {
+            Write-Host "netstat UDP:  " -NoNewline
+        }
         $itimer = [Diagnostics.Stopwatch]::StartNew()
         Get-NetUDPEndpoint | ForEach {
             Clear-Variable -name item
@@ -2452,7 +2580,7 @@ if ($skip_sections.Contains("netstat,") -eq $false) {
         $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
         if ($debug -gt 0) {
             $count = [int]$result.netstat.count
-            Write-Host "Netstat UDP, $count entries took $totalSecs seconds"
+            Write-Host "$count entries took $totalSecs seconds"
         }
     } # End of audit_netstat_udp
 }
@@ -2461,6 +2589,9 @@ if ($skip_sections.Contains("netstat,") -eq $false) {
 
 
 if ($skip_sections.Contains("route,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "route:        " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.route = @()
     $item = @{}
@@ -2500,7 +2631,7 @@ if ($skip_sections.Contains("route,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.route.count
-        Write-Host "Route, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
 }
 
@@ -2531,6 +2662,9 @@ if ($skip_sections.Contains("route,") -eq $false) {
 
 
 if ($skip_sections.Contains("file,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "file:         " -NoNewline
+    }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.file = @()
     Clear-Variable -name item
@@ -2567,8 +2701,12 @@ if ($skip_sections.Contains("file,") -eq $false) {
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.file.count
-        Write-Host "File, $count entries took $totalSecs seconds"
+        Write-Host "$count entries took $totalSecs seconds"
     }
+}
+
+if ($debug -gt 0) {
+    Write-Host "================"
 }
 
 
@@ -2578,23 +2716,44 @@ $result = $result -replace '[\u2019\u2018]', "'"
 $result = $result -replace '[\u201C\u201D]', '\"'
 
 if ($submit_online -eq "y") {
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    if ($debug -gt 0) {
+        Write-Host "submitting online: " -NoNewline
+    }
     try {
         $Response = Invoke-WebRequest -UseBasicParsing "$url" -Method POST -Body "data=$result"
-        $StatusCode = $Response.StatusCode
+        [int]$StatusCode = $Response.StatusCode
+        if ($debug -gt 0) {
+            $totalSecs = [math]::Round($itimer.Elapsed.TotalSeconds,2)
+            Write-Host "complete took $totalSecs seconds"
+            if ($StatusCode -ne 200) {
+                Write-Host "Submission Status: $StatusCode"
+            }
+        }
     } catch {
-        $StatusCode = $_.Exception.Response.StatusCode.value__
-    }
-    if ($debug -gt 0) {
-        "Submission Status: $StatusCode"
+        [int]$StatusCode = $_.Exception.Response.StatusCode
+        $errorMessage = $_.Exception.Message
+        if ($debug -gt 0) {
+            $totalSecs = [math]::Round($itimer.Elapsed.TotalSeconds,2)
+            Write-Host "failed took $totalSecs seconds"
+            Write-Host "Submission Status: $StatusCode"
+            Write-Host "Error Message: $errorMessage"
+        }
     }
 }
 
 if ($create_file -eq "y") {
+    if ($debug -gt 0) {
+        Write-Host "creating file: " -NoNewline
+    }
     $result | Out-File $file
+    if ($debug -gt 0) {
+        Write-Host "complete. File: $file"
+    }
 }
 
 $timer.Stop()
 $totalSecs =  [math]::Round($timer.Elapsed.TotalSeconds,0)
 if ($debug -gt 0) {
-    Write-Host "Script took $totalSecs seconds to complete."
+    Write-Host "Script total time: $totalSecs seconds to complete."
 }
