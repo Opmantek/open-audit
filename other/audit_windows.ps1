@@ -67,6 +67,7 @@ function Get-LittleEndianInt($array, $index) {
     [System.BitConverter]::ToInt32($temp, 0)
 }
 
+$internet = Test-Connection -ComputerName "8.8.8.8" -Count 2 -Quiet
 $Win32_BIOS = Get-WmiObject -Class Win32_BIOS
 $Win32_ComputerSystem = Get-WmiObject -Class Win32_ComputerSystem
 $Win32_ComputerSystemProduct = Get-WmiObject -Class Win32_ComputerSystemProduct
@@ -1792,7 +1793,7 @@ if ($skip_sections.Contains("user_group,") -eq $false) {
     $result.user_group = @()
     $item = @{}
     if (($Win32_ComputerSystem.DomainRole -ne 4) -and ($Win32_ComputerSystem.DomainRole -ne 5)) {
-        Get-WmiObject Win32_Group | ForEach {
+        Get-WmiObject Win32_Group -Filter "LocalAccount=True" | ForEach {
             Clear-Variable -name item
             $item = @{}
             $item.name = $_.Name
@@ -1978,21 +1979,19 @@ if ($skip_sections.Contains("software,") -eq $false) {
     $item.url = "https://docs.microsoft.com/en-us/powershell/"
     $result.software += $item
 
-    Get-AppxPackage -Name Microsoft.MicrosoftEdge.Stable | Sort-Object -Descending Version | Select-Object -first 1 | ForEach {
-        Clear-Variable -name item
-        $item = @{}
-        $item.name = "Edge"
-        $item.version = $_.Version
-        $item.publisher = "Microsoft Corporation"
-        $item.url = "https://www.microsoft.com/en-us/edge"
-        $result.software += $item
-    }
+    Clear-Variable -name item
+    $item = @{}
+    $item.name = "Edge"
+    $item.version = (Get-ItemProperty -Path HKCU:\Software\Microsoft\Edge\BLBeacon -Name version).version
+    $item.publisher = "Microsoft Corporation"
+    $item.url = "https://www.microsoft.com/en-us/edge"
+    $result.software += $item
+
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
         $count = [int]$result.user_group.count
         Write-Host "Software 1, 3 entries took $totalSecs seconds"
     }
-
 
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne '' -and $_.DisplayName -ne $null } | ForEach {
@@ -2090,18 +2089,20 @@ if ($skip_sections.Contains("software,") -eq $false) {
             $item.system_component  = $_.SystemComponent
         }
 
-        $name = [string]$_.DisplayName
-        $package = Get-Package -name "$name" -ErrorAction Ignore
-        if ($package -ne $null) {
-            $package | ForEach {
-                if ($_.MetaData["InstalledDate"][0] -ne $null) {
-                    $item.installed_on = $_.MetaData["InstalledDate"][0]
-                }
-                if ($_.MetaData["InstallDate"][0] -ne $null) {
-                    $item.installed_on = $_.MetaData["InstallDate"][0]
-                }
-                if ($_.MetaData["Date"][0] -ne $null) {
-                    $item.installed_on = $_.MetaData["Date"][0]
+        if ($online -eq $true) {
+            $name = [string]$_.DisplayName
+            $package = Get-Package -name "$name" -ErrorAction Ignore
+            if ($package -ne $null) {
+                $package | ForEach {
+                    if ($_.MetaData["InstalledDate"][0] -ne $null) {
+                        $item.installed_on = $_.MetaData["InstalledDate"][0]
+                    }
+                    if ($_.MetaData["InstallDate"][0] -ne $null) {
+                        $item.installed_on = $_.MetaData["InstallDate"][0]
+                    }
+                    if ($_.MetaData["Date"][0] -ne $null) {
+                        $item.installed_on = $_.MetaData["Date"][0]
+                    }
                 }
             }
         }
