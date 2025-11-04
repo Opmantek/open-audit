@@ -247,9 +247,9 @@ execute_install ()
 
     # Copy the agent into this directory
     if [ ! -f "$scriptPath/agent.sh" ]; then
-        path="${url}agents/macos/download"
+        path="${url}agents/linux/download"
         if [ "$agentId" ]; then
-            path="${url}agents/${agentId}/download/macos"
+            path="${url}agents/${agentId}/download/linux"
         fi
         if [ "$debug" = "y" ]; then
             echo "Downloading agent from ${path} to ${programPath}/agent.sh" > `tty`
@@ -289,10 +289,11 @@ execute_install ()
 
     if [ ! -f /etc/cron.d/open-audit-agent ]; then
         # Setup a new cron
-        minute=$(date +%M)
+        minute=$(($RANDOM % 60))
+        hour=$(($RANDOM % 24))
         echo "# m h dom month dow user command
-# run the task checker every 13:01
-$minute 13 * * *   root    /usr/local/Open-AudIT-Agent/agent.sh >/dev/null 2>&1" > /etc/cron.d/open-audit-agent
+# run the task checker every $hour:$minute
+$minute $hour * * *   root    /usr/local/Open-AudIT-Agent/agent.sh >/dev/null 2>&1" > /etc/cron.d/open-audit-agent
     fi
 
     if [ "$debug" = "y" ]; then
