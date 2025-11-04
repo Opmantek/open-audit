@@ -224,6 +224,7 @@ class NewsModel extends BaseModel
                 $send['cves'][] = $row->cve;
             }
             $send['cves'] = json_encode($send['cves']);
+            $send['from'] = (!empty($config->feature_vulnerabilities_date)) ? $config->feature_vulnerabilities_date : '2025-01-01';
         }
 
         $client = service('curlrequest');
