@@ -279,12 +279,13 @@ execute_install ()
     if [ "$debug" = "y" ]; then
         echo "Creating crontab entry"
     fi
-    minute=$(date +%M)
+    minute=$(jot -r 1 1 60)
+    hour=$(jot -r 1 9 12)
     echo "
 
 # m h dom month dow user command
-# run the Open-AudIT Agent at 13:$minute every day
-$minute 13 * * *   root    /usr/local/Open-AudIT-Agent/agent.sh >/dev/null 2>&1" > /etc/crontab
+# run the Open-AudIT Agent at $hour:$minute every day
+$minute $hour * * *   root    /usr/local/Open-AudIT-Agent/agent.sh >/dev/null 2>&1" > /etc/crontab
 
     if [ "$debug" = "y" ]; then
         echo "Agent copied."
@@ -292,50 +293,6 @@ $minute 13 * * *   root    /usr/local/Open-AudIT-Agent/agent.sh >/dev/null 2>&1"
         echo "-----------------"
         echo ""
     fi
-
-    #     launch_file="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-    # <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
-    # <plist version=\"1.0\">
-    # <dict>
-    #     <key>Label</key>
-    #     <string>com.firstwave.open-audit-agent</string>
-
-    #     <key>ProgramArguments</key>
-    #     <array>
-    #         <string>/usr/local/Open-AudIT-Agent/agent.sh</string>
-    #     </array>
-
-    #     <key>Nice</key>
-    #     <integer>1</integer>
-
-    #     <key>Minute</key>
-    #     <integer>${minute}</integer>
-
-    #     <key>Hour</key>
-    #     <integer>14</integer>
-
-
-    #     <key>StandardErrorPath</key>
-    #     <string>/tmp/Open-AudIT-Agent.err</string>
-
-    #     <key>StandardOutPath</key>
-    #     <string>/tmp/Open-AudIT-Agent.out</string>
-    # </dict>
-    # </plist>"
-
-    # echo "${launchfile}" >> "/Library/LaunchDaemons/com.firstwave.open-audit-agent.plist"
-    # $(xattr -d com.apple.provenance /Library/LaunchDaemons/com.firstwave.open-audit-agent.plist)
-    # $(launchctl enable system/com.firstwave.open-audit-agent.plist)
-    # $(launchctl bootstrap system /Library/LaunchDaemons/com.firstwave.open-audit-agent.plist)
-
-    # cd /Library/LaunchDaemons
-    # launchctl print-disabled system
-    # launchctl print system/com.firstwave.open-audit-agent
-
-
-    # launchctl enable system/com.firstwave.open-audit-agent
-    # launchctl load /Library/LaunchDaemons/com.firstwave.open-audit-agent.plist
-    # launchctl kickstart -kp system/com.firstwave.open-audit-agent
 }
 
 execute_uninstall ()
