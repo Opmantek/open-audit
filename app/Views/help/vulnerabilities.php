@@ -4,13 +4,13 @@
 
 $intro = '<p>Open-AudIT can download, parse and use NIST CVE Vulnerability reports.</p>
 <br>
-<p>A vulnerability item in Open-AudIT can be thought of as essentially a query against your database to determine your potential exposure to a given CVE report. A vulnerability is made up of the CVE repport, along with enrichment data from FirstWave. These two items are combined to produce a suitable query that is automatically downloaded from FirstWave.</p>
+<p>A vulnerability item in Open-AudIT can be thought of as essentially a query against your database to determine your potential exposure to a given CVE report. A vulnerability is made up of the CVE report, along with enrichment data from FirstWave. These two items are combined to produce a suitable query that is automatically downloaded from FirstWave.</p>
 <br>
 <p>
 
 How do they work?<br>
 <br>
-Our new feature called Vulnerabilities gives you the ability to quickly determine if any devices are affected by any CVE (Common Vulnerability Exposure) records - but how?<br>
+Our new feature called Vulnerabilities gives you the ability to quickly determine if any devices are affected by any CVE (Common Vulnerability Exposure) - but how?<br>
 <br>
 FirstWave constantly consumes the output from the Nist NVD feed. We take this and apply a few restrictions, then extract the affected programs and build a SQL query for reporting. Your Open-AudIT instance reaches out to FirstWave and requests any new vulnerabilities on a regular basis. When it receives a new vulnerability record, it is run against the database and the result stored. Each time a device is processed, all matching vulnerabilities are again executed and the result stored. This means when viewing a vulnerability list, we don\'t need to calculate all affected devices - we already have the result. When you view an individual vulnerability record, we do indeed recalculate the result for this singular vulnerability.<br>
 <br>
@@ -20,7 +20,7 @@ In addition to this, we also calculate the result of all vulnerabilities for all
 <br>
 In your instance of Open-AudIT, we allow you to select which vendors you care about. i.e. there\'s no use retrieving vulnerability records from a vendor whose software you do not use or have installed. By default, our vendor list is Adobe, Apple, Cisco, Google, Microsoft, Mozilla, and Redhat.<br>
 <br>
-This all sounds very simple, but behind the scenes a LOT is going on. For instance, the vulnerability record contains a list of affected software - but those software names do not match what we receive when we audit a computer. A good example is Apache. Typically, a vulnerability record will say the affected software is http_server. In reality, this appears as apache2 (Ubuntu), httpd (Redhat), Apache HTTP Server (Windows) - and others. So, we have to first determine what is the actual name of the program we receive when we ask a computer - which may be multiple. After that we must parse the NVD record and create a matching SQL statement. Allowing for multiple program names as above, and multiple versions, version ranges, and even multiple different pieces of software (an example is Thunderbird and Firefox in a single CVE). And your instance of Open-AudIT must take this and apply Orgs filtering as well. And that\'s just a single vulnerability record. What about determining which records you have and don\'t have? What about adding a vendor to the list later? So many things to consider!<br>
+This all sounds very simple, but behind the scenes a <b>lot</b> is going on. For instance, the CVE record contains a list of affected software - but those software names do not match what we receive when we audit a computer. A good example is Apache. Typically, a CVE record will say the affected software is http_server. In reality, this appears as apache2 (Ubuntu), httpd (Redhat), Apache HTTP Server (Windows) - and others. So, we have to first determine what is the actual name of the program we receive when we ask a computer, and there may be multiple names. After that we must parse the CVE record and create a matching SQL statement. Allowing for multiple program names as above, and multiple versions, version ranges, and even multiple different pieces of software (an example is Thunderbird and Firefox in a single CVE). And your instance of Open-AudIT must take this and apply Orgs filtering as well. And that\'s just a single CVE. What about determining which CVEs you have and don\'t have? What about adding a vendor to the list later? So many things to consider!<br>
 <br>
 As well as the usual reporting, we also have a few new widgets available for Dashboards, based on Vulnerabilities data.<br>
 <br>

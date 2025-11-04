@@ -276,7 +276,6 @@ class VulnerabilitiesModel extends BaseModel
         // Update the cache
         $this->updateCacheSingle($id);
         // Run the SQL for the required Orgs and return the result
-        $sql = $vulnerability->sql . " AND devices.org_id IN (" . implode(',', $orgs) . ")";
         $sql = $vulnerability->sql . " AND devices.org_id IN (" . implode(',', $orgs) . ") GROUP BY devices.id";
         $query = $this->db->query($sql);
         $devices = array();
@@ -579,7 +578,6 @@ class VulnerabilitiesModel extends BaseModel
         }
         foreach ($orgs as $org) {
             set_time_limit(60);
-            $sql = $vulnerability->sql . " AND devices.org_id = " . $org;
             $sql = $vulnerability->sql . " AND devices.org_id = " . $org . " GROUP BY devices.id";
             $query = $this->db->query($sql);
             if (!empty($query)) {
@@ -684,14 +682,14 @@ Network injection. The attacker must inject themselves into the logical network 
         $dictionary->columns->published = 'Date and time when the CVE was published.';
         $dictionary->columns->published_date = 'Date when the CVE was published.';
         $dictionary->columns->references = 'An array of object representing external links to more information.';
-        $dictionary->columns->remediation = 'The recommanded process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.';
+        $dictionary->columns->remediation = 'The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.';
         $dictionary->columns->scope = 'Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.';
         $dictionary->columns->type = 'Application, Operating System or Hardware.';
         $dictionary->columns->user_interaction = 'Whether user interaction is required (None, Passive, Active).';
         $dictionary->columns->vendor = 'The vendor taken from the CPE.';
         $dictionary->columns->vuln_status = 'The NVD assigned base status.';
         $dictionary->columns->filter  = 'A JSON array of values to test for this vulnerability.';
-        $dictionary->columns->sql  = 'The generated SQL query to test for this vulnerability. This field can be editied to correct the query as required.';
+        $dictionary->columns->sql  = 'The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.';
         $dictionary->columns->nvd_json  = 'The JSON record from the NVD feed.';
         $dictionary->columns->mitre_json = 'The JSON record from Mitre.';
         $dictionary->columns->edited_by = 'The name of the user who last changed or added this item (read only).';
