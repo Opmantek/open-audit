@@ -1059,16 +1059,84 @@ if (! function_exists('ip_audit')) {
             $ip_scan->ssh_status = 'false';
         }
 
-        if (stripos($device->os_name, 'extreme networks') !== false or stripos($device->os_group, 'extreme networks') !== false) {
-            $log->message = 'Extreme Networks device setting SSH status to false for ' . $device->ip;
-            $log->severity = 5;
-            $discoveryLogModel->create($log);
-            $log->severity = 7;
-            $ip_scan->ssh_status = 'false';
-        }
-
         // SSH Audit
         $credentials_ssh = false;
+
+        if (stripos($device->manufacturer, 'Cisco') !== false and $device->os_family === 'Cisco IOS' and $ip_scan->ssh_status === 'true') {
+            $log->severity = 7;
+            $log->message = 'CLI Config for Cisco for ' . $device->ip;
+            $discoveryLogModel->create($log);
+            helper('ssh_cisco');
+            $ssh_device = ssh_cisco_audit($device->ip, intval($discovery->id), $credentials);
+            log_message('debug', json_encode($ssh_device));
+            foreach ($ssh_device as $key => $value) {
+                if (!empty($value) and $key !== 'cli_config') {
+                    $device->{$key} = $value;
+                }
+            }
+            if (!empty($ssh_device->cli_config) and is_array($ssh_device->cli_config)) {
+                $cli_config = $ssh_device->cli_config;
+            }
+            $ip_scan->ssh_status = 'false';
+            unset($ssh_device);
+        }
+
+        if (stripos($device->os_name, 'extreme networks') !== false or stripos($device->os_group, 'extreme networks') !== false and $ip_scan->ssh_status === 'true') {
+            $log->severity = 7;
+            $log->message = 'CLI Config for Extreme Networks for ' . $device->ip;
+            $discoveryLogModel->create($log);
+            helper('ssh_extreme');
+            $ssh_device = ssh_extreme_audit($device->ip, intval($discovery->id), $credentials);
+            log_message('debug', json_encode($ssh_device));
+            foreach ($ssh_device as $key => $value) {
+                if (!empty($value) and $key !== 'cli_config') {
+                    $device->{$key} = $value;
+                }
+            }
+            if (!empty($ssh_device->cli_config) and is_array($ssh_device->cli_config)) {
+                $cli_config = $ssh_device->cli_config;
+            }
+            $ip_scan->ssh_status = 'false';
+            unset($ssh_device);
+        }
+
+        if (stripos($device->manufacturer, 'Fortinet') !== false and $ip_scan->ssh_status === 'true') {
+            $log->severity = 7;
+            $log->message = 'CLI Config for Fortinet for ' . $device->ip;
+            $discoveryLogModel->create($log);
+            helper('ssh_fortinet');
+            $ssh_device = ssh_fortinet_audit($device->ip, intval($discovery->id), $credentials);
+            log_message('debug', json_encode($ssh_device));
+            foreach ($ssh_device as $key => $value) {
+                if (!empty($value) and $key !== 'cli_config') {
+                    $device->{$key} = $value;
+                }
+            }
+            if (!empty($ssh_device->cli_config) and is_array($ssh_device->cli_config)) {
+                $cli_config = $ssh_device->cli_config;
+            }
+            $ip_scan->ssh_status = 'false';
+            unset($ssh_device);
+        }
+
+        if (stripos($device->manufacturer, 'Juniper') !== false and $ip_scan->ssh_status === 'true') {
+            $log->severity = 7;
+            $log->message = 'CLI Config for Juniper for ' . $device->ip;
+            $discoveryLogModel->create($log);
+            helper('ssh_juniper');
+            $ssh_device = ssh_juniper_audit($device->ip, intval($discovery->id), $credentials);
+            log_message('debug', json_encode($ssh_device));
+            foreach ($ssh_device as $key => $value) {
+                if (!empty($value) and $key !== 'cli_config') {
+                    $device->{$key} = $value;
+                }
+            }
+            if (!empty($ssh_device->cli_config) and is_array($ssh_device->cli_config)) {
+                $cli_config = $ssh_device->cli_config;
+            }
+            $ip_scan->ssh_status = 'false';
+            unset($ssh_device);
+        }
 
         if (stripos($device->manufacturer, 'Palo Alto') !== false and $device->os_group === 'Pan-OS' and $ip_scan->ssh_status === 'true') {
             $log->severity = 7;
@@ -1089,12 +1157,12 @@ if (! function_exists('ip_audit')) {
             unset($ssh_device);
         }
 
-        if (stripos($device->manufacturer, 'Cisco') !== false and $device->os_family === 'Cisco IOS' and $ip_scan->ssh_status === 'true') {
+        if (stripos($device->manufacturer, 'Hewlett Packard') !== false and stripos($device->sysDescr, 'HP J') === 0 and $device->type === 'switch' and $ip_scan->ssh_status === 'true') {
             $log->severity = 7;
-            $log->message = 'CLI Config for Cisco for ' . $device->ip;
+            $log->message = 'CLI Config for Procurve for ' . $device->ip;
             $discoveryLogModel->create($log);
-            helper('ssh_cisco');
-            $ssh_device = ssh_cisco_audit($device->ip, intval($discovery->id), $credentials);
+            helper('ssh_procurve');
+            $ssh_device = ssh_procurve_audit($device->ip, intval($discovery->id), $credentials);
             log_message('debug', json_encode($ssh_device));
             foreach ($ssh_device as $key => $value) {
                 if (!empty($value) and $key !== 'cli_config') {
