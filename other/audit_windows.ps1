@@ -2075,12 +2075,14 @@ if ($skip_sections.Contains("software,") -eq $false) {
     $result.software += $item
 
     Clear-Variable -name item
-    $item = @{}
-    $item.name = "Edge"
-    $item.version = (Get-ItemProperty -Path HKCU:\Software\Microsoft\Edge\BLBeacon -Name version).version
-    $item.publisher = "Microsoft Corporation"
-    $item.url = "https://www.microsoft.com/en-us/edge"
-    $result.software += $item
+    if (Test-Path -path "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" -PathType Leaf) {
+        $item = @{}
+        $item.name = "Edge"
+        $item.version = (Get-Item "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe").VersionInfo.ProductVersion
+        $item.publisher = "Microsoft Corporation"
+        $item.url = "https://www.microsoft.com/en-us/edge"
+        $result.software += $item
+    }
 
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
