@@ -144,7 +144,7 @@ if (!empty($meta->filter)) {
                         </div>
                         <div class="card-body">
                             <?php foreach ($included['os_family'] as $os) { ?>
-                            <img style="width:32px; padding-bottom:5px;" src="<?= base_url() ?>device_images/<?= str_replace(' ', '_', $os) ?>.svg" alt="<?= $os ?>"><a href="<?= url_to('devicesCollection') ?>?devices.os_family=<?= $os ?>" style="padding-left: 10px;"><?= $os ?></a><br><hr style="margin: 6px;">
+                            <img style="width:32px; padding-bottom:5px;" src="<?= base_url() ?>device_images/<?= strtolower(str_replace(' ', '_', $os)) ?>.svg" alt="<?= $os ?>"><a href="<?= url_to('devicesCollection') ?>?devices.os_family=<?= $os ?>" style="padding-left: 10px;"><?= $os ?></a><br><hr style="margin: 6px;">
                             <?php } ?>
                         </div>
                     </div>
@@ -162,7 +162,7 @@ if (!empty($meta->filter)) {
                         </div>
                         <div class="card-body">
                             <?php foreach ($included['types'] as $type) { ?>
-                            <img style="width:22px; padding-bottom:5px;" src="<?= base_url() ?>device_images/<?= str_replace(' ', '_', $type) ?>.svg" alt="<?= $type ?>"><a href="<?= url_to('devicesCollection') ?>?devices.type=<?= $type ?>" style="padding-left: 10px;"><?= $type ?></a><br><hr style="margin: 6px;">
+                            <img style="width:22px; padding-bottom:5px;" src="<?= base_url() ?>device_images/<?= strtolower(str_replace(' ', '_', $type)) ?>.svg" alt="<?= $type ?>"><a href="<?= url_to('devicesCollection') ?>?devices.type=<?= $type ?>" style="padding-left: 10px;"><?= $type ?></a><br><hr style="margin: 6px;">
                             <?php } ?>
                         </div>
                     </div>
