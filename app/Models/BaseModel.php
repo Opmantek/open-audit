@@ -44,7 +44,7 @@ class BaseModel extends Model
             if (!isset($data->{$field}) or $data->{$field} === '') {
                 $session = \Config\Services::session();
                 $session->setFlashdata('error', "Object in {$table} could not be created, no {$field} supplied.");
-                log_message('warning', "Object in {$table} could not be created, no {$field} supplied.");
+                log_message('warning', "Object in {$table} could not be created, no {$field} supplied. Data: " . json_encode($data));
                 return false;
             }
         }
