@@ -123,11 +123,11 @@ function collection_card_header(string $collection = '', string $icon = '', ?obj
 
     if ($collection === 'vulnerabilities') {
         if ($style === 'icontext') {
-            $show_all_button = "<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Update Vulnerabilities") . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rss text-primary\"></span>" . __("Update Vulnerabilities") . "</a>";
+            $show_all_button = "<a id=\"update_vulnerabilities\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Update Vulnerabilities") . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rss text-primary\"></span>" . __("Update Vulnerabilities") . "</a>";
         } elseif ($style === 'icon') {
-            $show_all_button = "<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Update Vulnerabilities") . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\"><span class=\"fa-solid fa-rss text-primary\"></span></a>";
+            $show_all_button = "<a id=\"update_vulnerabilities\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Update Vulnerabilities") . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\"><span class=\"fa-solid fa-rss text-primary\"></span></a>";
         } else {
-            $show_all_button = "<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Update Vulnerabilities") . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\">" . __("Update Vulnerabilities") . "</a>";
+            $show_all_button = "<a id=\"update_vulnerabilities\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Update Vulnerabilities") . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\">" . __("Update Vulnerabilities") . "</a>";
         }
 
         $import_csv_button = "<button id=\"request_vulnerability\"  data-bs-toggle=\"modal\" data-bs-target=\"#requestVulnerabilityModal\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Request Vulnerability") . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rss text-primary\"></span>" . __("Request Vulnerability") . "</button>";
