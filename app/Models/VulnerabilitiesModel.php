@@ -183,6 +183,9 @@ class VulnerabilitiesModel extends BaseModel
         if (!empty($data->references) and !is_string($data->references)) {
             $data->references = json_encode($data->references);
         }
+        if (empty($data->name) and !empty($data->cve)) {
+            $data->name = $data->cve;
+        }
         $data = $this->createFieldData('vulnerabilities', $data);
         if (empty($data)) {
             return null;
