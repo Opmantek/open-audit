@@ -1525,11 +1525,12 @@ if (! function_exists('ip_audit')) {
         if ($device->type !== 'computer' and !empty($device->os_version) and !empty($device->os_name)) {
             $sql = "SELECT COUNT(*) AS `count` FROM software WHERE device_id = ?";
             $result = $db->query($sql, [$device->id])->getResult();
-            if (intval($result[0]->count) < 2) {
+            if (empty($result[0]->count) or intval($result[0]->count) < 2) {
                 // We have one or no entries in software - insert this
-                $software = new stdCLass();
-                $software->name = $device->os_name;
-                $software->version = $device->os_version;
+                $sortware = array();
+                $software[0] = new stdCLass();
+                $software[0]->name = $device->os_name;
+                $software[0]->version = $device->os_version;
                 $log->command_status = 'notice';
                 $log->message = 'Processing Software OS for ' . $device->ip;
                 $discoveryLogModel->create($log);
