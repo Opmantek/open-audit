@@ -1335,7 +1335,7 @@ class ComponentsModel extends BaseModel
                 $count = count($match_columns);
                 for ($i = 0; $i < $count; $i++) {
                     // and test if the variables match
-                    if (isset($data_item->{$match_columns[$i]}) and isset($output_item->{$match_columns[$i]}) and (string)$data_item->{$match_columns[$i]} === (string)$output_item->{$match_columns[$i]}) {
+                    if (isset($data_item->{$match_columns[$i]}) and isset($output_item->{$match_columns[$i]}) and mb_strtolower((string)$data_item->{$match_columns[$i]}) === mb_strtolower((string)$output_item->{$match_columns[$i]})) {
                         // they match so increment the count
                         $match_count++;
                     }
@@ -1368,7 +1368,7 @@ class ComponentsModel extends BaseModel
                 $match_count = 0;
                 $count = count($match_columns);
                 for ($i = 0; $i < $count; $i++) {
-                    if (isset($data_item->{$match_columns[$i]}) and isset($db_item->{$match_columns[$i]}) and (string)$data_item->{$match_columns[$i]} === (string)$db_item->{$match_columns[$i]} and $db_item->updated !== 'y') {
+                    if (isset($data_item->{$match_columns[$i]}) and isset($db_item->{$match_columns[$i]}) and mb_strtolower((string)$data_item->{$match_columns[$i]}) === mb_strtolower((string)$db_item->{$match_columns[$i]}) and $db_item->updated !== 'y') {
                         $match_count++;
                     }
                 }
