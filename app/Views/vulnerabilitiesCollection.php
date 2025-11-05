@@ -153,8 +153,18 @@ window.onload = function () {
         $("#button_export_json").remove();
 
         $('#submitV').on('click', function () {
-            console.log('clicked submit');
+            $('#submitV').html("<span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"></span>&nbsp;<?= __('Updating') ?>");
             $("#vulnerabilityRequestForm").submit();
+        });
+
+        // If a user clicks Update Vulnerabilities, disable the other buttons and show a spinner to indicate activity
+        document.getElementById('update_vulnerabilities').addEventListener('click', function(event) {
+            $("#update_vulnerabilities").html("<span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"></span>&nbsp;<?= __('Updating') ?>");
+            $("#update_vulnerabilities").attr("href", "#");
+            $("#button_import_json").attr("href", "#");
+            $("#request_vulnerability").attr("data-bs-target", "");
+            $("#vendors").attr("href", "#");
+            window.location.href = "<?= url_to('newsExecuteAllVulnerabilities') ?>";
         });
 
         let logSort = {};
