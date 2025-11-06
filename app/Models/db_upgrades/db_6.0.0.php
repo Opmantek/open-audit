@@ -1039,7 +1039,7 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 $top10 = intval($db->insertID());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Top 25 Vendors of Vulnerabilities',1,'','pie','','','','','Devices','','',0,'','SELECT vulnerabilities.vendor AS `description`, vulnerabilities.vendor AS `name`, COUNT(vulnerabilities.id) AS `count` FROM `vulnerabilities` LEFT JOIN `orgs` ON `vulnerabilities`.`org_id` = `orgs`.`id`  WHERE @filter GROUP BY vulnerabilities.vendor ORDER BY `count` LIMIT 25','vulnerabilities?vulnerabilities.vendor=@description','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Top 10 Vendors of Vulnerabilities',1,'','pie','','','','','Devices','','',0,'','SELECT vulnerabilities.vendor AS `description`, vulnerabilities.vendor AS `name`, COUNT(vulnerabilities.id) AS `count` FROM `vulnerabilities` LEFT JOIN `orgs` ON `vulnerabilities`.`org_id` = `orgs`.`id`  WHERE @filter GROUP BY vulnerabilities.vendor ORDER BY `count` LIMIT 10','vulnerabilities?vulnerabilities.vendor=@description','system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
