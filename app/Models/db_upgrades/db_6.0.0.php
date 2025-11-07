@@ -4,6 +4,21 @@ $output .= "Upgrade database to 6.0.0 commenced.\n\n";
 
 helper('device');
 
+$sql = "ALTER TABLE `users` CHANGE `lang` `lang` varchar(10) NOT NULL DEFAULT 'en'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `users` SET `lang` = 'zh' WHERE `lang` = 'zh-tw'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `users` SET `lang` = 'pb' WHERE `lang` = 'pt-br'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 if (!$db->fieldExists('version_raw', 'software')) {
     $sql = "ALTER TABLE `software` ADD `version_raw` varchar(255) NOT NULL DEFAULT '' AFTER `version_padded`";
     $db->query($sql);
