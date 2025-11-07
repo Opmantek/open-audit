@@ -12,11 +12,11 @@ function read_card_header(string $collection = '', string $id = '', string $icon
 
     if ($collection !== 'database' and strpos($user->permissions[$collection], 'c') !== false) {
         if ($style === 'icontext') {
-            $create_button = "<a role=\"button\" id=\"button_create\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection . 'CreateForm') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus text-oa-success\"></span>" . __("Create") . "</a>";
+            $create_button = "<a role=\"button\" id=\"button_create\" class=\"btn btn-light mb-2\" title=\"" . __('Create') . "\" href=\"" . url_to($collection . 'CreateForm') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus text-oa-success\"></span>" . __('Create') . "</a>";
         } elseif ($style === 'icon') {
-            $create_button = "<a role=\"button\" id=\"button_create\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection . 'CreateForm') . "\"><span class=\"fa fa-plus text-oa-success\"></span></a>";
+            $create_button = "<a role=\"button\" id=\"button_create\" class=\"btn btn-light mb-2\" title=\"" . __('Create') . "\" href=\"" . url_to($collection . 'CreateForm') . "\"><span class=\"fa fa-plus text-oa-success\"></span></a>";
         } else {
-            $create_button = "<a role=\"button\" id=\"button_create\" class=\"btn btn-light mb-2\" title=\"" . __("Create") . "\" href=\"" . url_to($collection . 'CreateForm') . "\">" . __("Create") . "</a>";
+            $create_button = "<a role=\"button\" id=\"button_create\" class=\"btn btn-light mb-2\" title=\"" . __('Create') . "\" href=\"" . url_to($collection . 'CreateForm') . "\">" . __('Create') . "</a>";
         }
     } else {
         $create_button = "\n";
@@ -28,11 +28,11 @@ function read_card_header(string $collection = '', string $id = '', string $icon
             // Not allowed to delete these
         } else {
             if ($style === 'icontext') {
-                $delete_button = "<button id=\"button_delete\" type=\"button\" class=\"btn btn-light mb-2 delete_link\" title=\"" . __("Delete") . "\" data-collection=\"$collection\" data-id=\"$id\" data-name=\"$name\"><span style=\"margin-right:6px;\" class=\"fa fa-trash-o text-danger\"></span>" . __("Delete") . "</button>";
+                $delete_button = "<button id=\"button_delete\" type=\"button\" class=\"btn btn-light mb-2 delete_link\" title=\"" . __('Delete') . "\" data-collection=\"$collection\" data-id=\"$id\" data-name=\"$name\"><span style=\"margin-right:6px;\" class=\"fa fa-trash-o text-danger\"></span>" . __('Delete') . "</button>";
             } elseif ($style === 'icon') {
-                $delete_button = "<button id=\"button_delete\" type=\"button\" class=\"btn btn-light mb-2 delete_link\" title=\"" . __("Delete") . "\" data-collection=\"$collection\" data-id=\"$id\" data-name=\"$name\"><span class=\"fa fa-trash-o text-danger\"></span></button>";
+                $delete_button = "<button id=\"button_delete\" type=\"button\" class=\"btn btn-light mb-2 delete_link\" title=\"" . __('Delete') . "\" data-collection=\"$collection\" data-id=\"$id\" data-name=\"$name\"><span class=\"fa fa-trash-o text-danger\"></span></button>";
             } else {
-                $delete_button = "<button id=\"button_delete\" type=\"button\" class=\"btn btn-light mb-2 delete_link\" title=\"" . __("Delete") . "\" data-collection=\"$collection\" data-id=\"$id\" data-name=\"$name\">" . __("Delete") . "</button>";
+                $delete_button = "<button id=\"button_delete\" type=\"button\" class=\"btn btn-light mb-2 delete_link\" title=\"" . __('Delete') . "\" data-collection=\"$collection\" data-id=\"$id\" data-name=\"$name\">" . __('Delete') . "</button>";
             }
         }
     }
@@ -40,33 +40,33 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     $device_reset_button = "\n";
     if ($collection === 'devices' and !empty($id) and strpos($user->permissions[$collection], 'u') !== false) {
         if ($style === 'icontext') {
-            $device_reset_button = "<button id=\"button_reset\" type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Reset") . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rotate-right text-warning\"></span>" . __("Reset") . "</button>";
+            $device_reset_button = "<button id=\"button_reset\" type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Reset') . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rotate-right text-warning\"></span>" . __('Reset') . "</button>";
         } elseif ($style === 'icon') {
-            $device_reset_button = "<button id=\"button_reset\" type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Reset") . "\"><span class=\"fa-solid fa-rotate-right text-warning\"></span></button>";
+            $device_reset_button = "<button id=\"button_reset\" type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Reset') . "\"><span class=\"fa-solid fa-rotate-right text-warning\"></span></button>";
         } else {
-            $device_reset_button = "<button id=\"button_reset\" type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Reset") . "\">" . __("Reset") . "</button>";
+            $device_reset_button = "<button id=\"button_reset\" type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Reset') . "\">" . __('Reset') . "</button>";
         }
     }
 
     $export_csv_button = '';
     if ($action === 'execute' and ($collection === 'groups' or $collection === 'queries' or $collection === 'summaries')) {
         if ($style === 'icontext') {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export") . " CSV</a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " CSV\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __('Export') . " CSV</a>";
         } elseif ($style === 'icon') {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " CSV\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
         } else {
-            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\">" . __("Export") . " CSV</a>";
+            $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " CSV\" href=\"" . url_to($collection . 'Execute', $id) . "?format=csv\">" . __('Export') . " CSV</a>";
         }
     }
 
     $read_button = '';
     if ($action === 'execute') {
         if ($style === 'icontext') {
-            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Details") . "\" href=\"" . url_to($collection . 'Read', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span>" . __("Details") . "</a>";
+            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Details') . "\" href=\"" . url_to($collection . 'Read', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span>" . __('Details') . "</a>";
         } elseif ($style === 'icon') {
-            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Details") . "\" href=\"" . url_to($collection . 'Read', $id) . "\"><span class=\"fa fa-eye text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
+            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Details') . "\" href=\"" . url_to($collection . 'Read', $id) . "\"><span class=\"fa fa-eye text-primary\"></span>&nbsp;<span class=\"fa-solid fa-table-cells-large text-primary\"></span></a>";
         } else {
-            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Details") . "\" href=\"" . url_to($collection . 'Read', $id) . "\">" . __("Details") . "</a>";
+            $read_button = "<a id=\"button_read\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Details') . "\" href=\"" . url_to($collection . 'Read', $id) . "\">" . __('Details') . "</a>";
         }
     }
 
@@ -75,44 +75,44 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     $help_button = "";
     if ($collection !== 'database') {
         if ($style === 'icontext') {
-                $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection . 'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __("List") . "</a>";
+                $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('List') . "\" href=\"" . url_to($collection . 'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __('List') . "</a>";
             #if ($collection !== 'database') {
-                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . url_to($collection . 'Export', intval($id)) . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export") . " JSON</a>";
+                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " JSON\" href=\"" . url_to($collection . 'Export', intval($id)) . "\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __('Export') . " JSON</a>";
             #}
-            $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
+            $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __('Help') . "</a>";
         } elseif ($style === 'icon') {
-            $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection . 'Collection') . "\"><span class=\"fa fa-list text-primary\"></span></a>";
+            $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('List') . "\" href=\"" . url_to($collection . 'Collection') . "\"><span class=\"fa fa-list text-primary\"></span></a>";
             #if ($collection !== 'database') {
-                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . url_to($collection . 'Export', intval($id)) . "\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
+                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " JSON\" href=\"" . url_to($collection . 'Export', intval($id)) . "\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
             #}
-            $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
+            $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($collection . 'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
         } else {
-            $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("List") . "\" href=\"" . url_to($collection . 'Collection') . "\">" . __("List") . "</a>";
+            $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('List') . "\" href=\"" . url_to($collection . 'Collection') . "\">" . __('List') . "</a>";
             #if ($collection !== 'database') {
-                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . url_to($collection . 'Export', intval($id)) . "\">" . __("Export") . " JSON</a>";
+                $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " JSON\" href=\"" . url_to($collection . 'Export', intval($id)) . "\">" . __('Export') . " JSON</a>";
             #}
-            $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($collection . 'Help') . "\">" . __("Help") . "</a>";
+            $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($collection . 'Help') . "\">" . __('Help') . "</a>";
         }
     }
 
     if ($action === 'execute' and $collection !== 'database') {
         if ($style === 'icontext') {
-            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export") . " JSON</a>";
+            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " JSON\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __('Export') . " JSON</a>";
         } elseif ($style === 'icon') {
-            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " JSON\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
+            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " JSON\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\"><span class=\"fa-solid fa-angles-down text-primary\"></span>&nbsp;<span class=\"fa-solid fa-code text-primary\"></span></a>";
         } else {
-            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export JSON") . "\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\">" . __("Export") . " JSON</a>";
+            $export_button = "<a id=\"button_export_json\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " JSON\" href=\"" . url_to($collection . 'Execute', intval($id)) . "?format=json_data\">" . __('Export') . " JSON</a>";
         }
     }
 
     $execute_button = "\n";
     if (($collection === 'baselines' or $collection === 'benchmarks' or $collection === 'clouds' or $collection === 'dashboards' or $collection === 'discoveries' or $collection === 'groups' or $collection === 'integrations' or $collection === 'queries' or $collection === 'summaries' or $collection === 'tasks' or $collection === 'vulnerabilities' or $collection === 'widgets') and !empty($id)) {
         if ($style === 'icontext') {
-            $execute_button = "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2 execute_button\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection . 'Execute', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-play text-oa-success\"></span>" . __("Execute") . "</a>";
+            $execute_button = "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2 execute_button\" title=\"" . __('Execute') . "\" href=\"" . url_to($collection . 'Execute', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-play text-oa-success\"></span>" . __('Execute') . "</a>";
         } elseif ($style === 'icon') {
-            $execute_button = "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2 execute_button\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection . 'Execute', $id) . "\"><span class=\"fa fa-play text-oa-success\"></span></a>";
+            $execute_button = "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2 execute_button\" title=\"" . __('Execute') . "\" href=\"" . url_to($collection . 'Execute', $id) . "\"><span class=\"fa fa-play text-oa-success\"></span></a>";
         } else {
-            $execute_button = "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2 execute_button\" title=\"" . __("Execute") . "\" href=\"" . url_to($collection . 'Execute', $id) . "\">" . __("Execute") . "</a>";
+            $execute_button = "\n<a id=\"button_execute\" role=\"button\" class=\"btn btn-light mb-2 execute_button\" title=\"" . __('Execute') . "\" href=\"" . url_to($collection . 'Execute', $id) . "\">" . __('Execute') . "</a>";
         }
     }
     if ($action === 'execute') {
@@ -133,22 +133,22 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     $download_button = '';
     if ($collection === 'scripts' and !empty($id)) {
         if ($style === 'icontext') {
-            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-download text-primary\"></span>" . __("Download") . "</a>";
+            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Download') . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-download text-primary\"></span>" . __('Download') . "</a>";
         } elseif ($style === 'icon') {
-            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span class=\"fa fa-download text-primary\"></span></a>";
+            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Download') . "\" href=\"" . url_to('scriptsDownload', $id) . "\"><span class=\"fa fa-download text-primary\"></span></a>";
         } else {
-            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Download") . "\" href=\"" . url_to('scriptsDownload', $id) . "\">" . __("Download") . "</a>";
+            $download_button = "<a id=\"button_download\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Download') . "\" href=\"" . url_to('scriptsDownload', $id) . "\">" . __('Download') . "</a>";
         }
     }
 
     $report_button = '';
     if ($collection === 'standards' and !empty($id)) {
         if ($style === 'icontext') {
-            $report_button = "<a id=\"button_report\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Report") . "\" href=\"" . url_to($collection . 'Read', $id) . "?format=report\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-print text-primary\"></span>" . __("Report") . "</a>";
+            $report_button = "<a id=\"button_report\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Report') . "\" href=\"" . url_to($collection . 'Read', $id) . "?format=report\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-print text-primary\"></span>" . __('Report') . "</a>";
         } elseif ($style === 'icon') {
-            $report_button = "<a id=\"button_report\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Report") . "\" href=\"" . url_to($collection . 'Read', $id) . "?format=report\"><span class=\"fa-solid fa-print text-primary\"></span></a>";
+            $report_button = "<a id=\"button_report\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Report') . "\" href=\"" . url_to($collection . 'Read', $id) . "?format=report\"><span class=\"fa-solid fa-print text-primary\"></span></a>";
         } else {
-            $report_button = "<a id=\"button_report\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Report") . "\" href=\"" . url_to($collection . 'Read', $id) . "?format=report\">" . __("Report") . "</a>";
+            $report_button = "<a id=\"button_report\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Report') . "\" href=\"" . url_to($collection . 'Read', $id) . "?format=report\">" . __('Report') . "</a>";
         }
     }
 
@@ -392,38 +392,38 @@ function device_panel(string $name = '', string $toolbar = '', int $device_id = 
         $name = 'server';
     }
     if ($toolbar === 'icontext') {
-        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-circle-xmark\"></span>" . __("Close") . "</a>";
-        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __("Export") . " CSV</a>
-        <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("View All") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span>" . __("View All") . "</a>";
+        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __('Close') . "\" href=\"#\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-circle-xmark\"></span>" . __('Close') . "</a>";
+        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " CSV\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span>" . __('Export') . " CSV</a>
+        <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('View All') . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span>" . __('View All') . "</a>";
     } elseif ($toolbar === 'icon') {
-        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\"><span class=\"fa-regular fa-circle-xmark\"></span></a>";
+        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __('Close') . "\"><span class=\"fa-regular fa-circle-xmark\"></span></a>";
 
-        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span></a>
-        <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("View All") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span></a>";
+        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " CSV\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-angles-down text-primary\"></span></a>
+        <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('View All') . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\"><span style=\"margin-right:6px;\" class=\"fa fa-eye text-primary\"></span></a>";
     } else {
-        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __("Close") . "\" href=\"#\">" . __("Close") . "</a>";
+        $panel_close_button = "<a role=\"button\" class=\"btn btn-light mb-2 section_toggle\" tabindex=0 data-section=\"" . $name . "_section\" title=\"" . __('Close') . "\" href=\"#\">" . __('Close') . "</a>";
 
-        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Export") . " CSV\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\">" . __("Export") . " CSV</a>
-        <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("View All") . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\">" . __("View All") . "</a>";
+        $export_button = "<a role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " CSV\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "&format=csv\">" . __('Export') . " CSV</a>
+        <a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('View All') . "\" href=\"" . url_to('componentsCollection') . "?components.type=" . $export_name . "&components.device_id=" . $device_id . "\">" . __('View All') . "</a>";
     }
     $panel_add_button = '';
     if ($update) {
         if ($name === 'applications' or $name === 'attachments' or $name === 'credentials' or $name === 'clusters' or $name === 'images') {
             if ($toolbar === 'icontext') {
-                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus text-oa-success\"></span>" . __("Add") . "</a>";
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add') . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span style=\"margin-right:6px;\" class=\"fa fa-plus text-oa-success\"></span>" . __('Add') . "</a>";
             } elseif ($toolbar === 'icon') {
-                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span class=\"fa fa-plus text-oa-success\"></span></a>";
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add') . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\"><span class=\"fa fa-plus text-oa-success\"></span></a>";
             } else {
-                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\">" . __("Add") . "</a>";
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add') . "\" href=\"" . url_to('componentsCreateForm', $name, $device_id) . "\">" . __('Add') . "</a>";
             }
         }
         if ($name === 'tags') {
             if ($toolbar === 'icontext') {
-                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"#\" id=\"add_tags\"><span style=\"margin-right:6px;\" class=\"fa fa-plus text-oa-success\"></span>" . __("Add") . "</a>";
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add') . "\" href=\"#\" id=\"add_tags\"><span style=\"margin-right:6px;\" class=\"fa fa-plus text-oa-success\"></span>" . __('Add') . "</a>";
             } elseif ($toolbar === 'icon') {
-                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"#\" id=\"add_tags\"><span class=\"fa fa-plus text-oa-success\"></span></a>";
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add') . "\" href=\"#\" id=\"add_tags\"><span class=\"fa fa-plus text-oa-success\"></span></a>";
             } else {
-                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __("Add") . "\" href=\"#\" id=\"add_tags\">" . __("Add") . "</a>";
+                $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add') . "\" href=\"#\" id=\"add_tags\">" . __('Add') . "</a>";
             }
         }
     }

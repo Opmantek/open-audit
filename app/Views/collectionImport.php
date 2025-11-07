@@ -134,14 +134,14 @@ if ($collection === "users") {
     $extra = "The fields 'roles' and 'orgs' are stored as JSON arrays. You should use single quotes in the JSON (the import routine will convert them).</p><p>For an example, use the web interface to create a user and then go to menu -> Admin -> Database -> List Tables and click on Users. Then export to CSV.";
 }
 
-$example = '<br><h4>Example</h4><p>Below is an example of the required csv format.<br><br>
-The minimum required attributes for attributes are ' . $values . '.<br><br>
-You should not include the edited_by and edited_date fields. These will be automatically set.<br><br>
-If you include the "id" field <strong>and</strong> set it with a number, that item will be updated rather than created.<br><br>';
+$example = '<br><h4>' . __('Example') . '</h4><p>' . __('Below is an example of the required csv format.') . '<br><br>
+' . __('The minimum required attributes for attributes are') . ' ' . $values . '.<br><br>
+' . __('You should not include the edited_by and edited_date fields. These will be automatically set.') . '<br><br>
+' . __('If you include the "id" field <strong>and</strong> set it with a number, that item will be updated rather than created.') . '<br><br>';
 if ($extra !== '') {
     $example .= $extra . '<br><br>';
 }
-$example .= 'You should use a header line containing the names of the columns you wish to populate, then your data lines below that.<br><br>
+$example .= __('You should use a header line containing the names of the columns you wish to populate, then your data lines below that.') . '<br><br>
 <table class="table ' . $GLOBALS['table'] . ' table-striped table-hover"><tbody>' . $sample . '</tbody></table>';
 ?>
 <main class="container-fluid">

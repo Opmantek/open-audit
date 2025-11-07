@@ -28,7 +28,7 @@ if ($product === 'enterprise' and $license !== 'free') {
     $highlightEnt = "background: rgba(var(--bs-body-color-rgb), 0.03)";
     $btnEnt = 'btn-success';
     $btnEntStyle = 'style="color:white;"';
-    $message = 'Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.';
+    $message = __('Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.');
     $btnEntText = __('Buy More');
 }
 
@@ -36,7 +36,7 @@ if ($product === 'professional') {
     $highlightEnt = "background: rgba(var(--bs-body-color-rgb), 0.03)";
     $btnEnt = 'btn-success';
     $btnEntStyle = 'style="color:white;"';
-    $message = 'Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.';
+    $message = __('Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.');
     $btnProText = __('Buy More');
 }
 
@@ -44,18 +44,18 @@ if ($license === 'free' and $product === 'enterprise') {
     $highlightPro = "background: rgba(var(--bs-body-color-rgb), 0.03)";
     $btnPro = 'btn-success';
     $btnProStyle = 'style="color:white;"';
-    $message = 'Open-AudIT Professional. The world\'s most flexible network discovery and audit solution. All the features of Community plus: Interactive Dashboards, Geographical Maps, Scheduled Time-based or Historical Reporting, Commercial Support.';
+    $message = __('Open-AudIT Professional. The world\'s most flexible network discovery and audit solution. All the features of Community plus: Interactive Dashboards, Geographical Maps, Scheduled Time-based or Historical Reporting, Commercial Support.');
 }
 
 if ($product === 'community') {
     $highlightFre = "background: rgba(var(--bs-body-color-rgb), 0.03)";
     $btnFre = 'btn-success';
     $btnFreStyle = 'style="color:white;"';
-    $message = 'Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. <a href="' . base_url() . 'index.php/appLicenses?license=eula">EULA</a>.';
+    $message = __('Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href="' . base_url() . 'index.php/appLicenses?license=eula">EULA</a>. Note that the 100 device Enterprise license does not include support.');
 }
 
 if (!$binary) {
-    $message = '<div class="container-fluid"><div class="alert alert-danger alert-dismissable fade show" role="alert">The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from <a href="https://firstwave.com">https://firstwave.com</a>.</div></div>';
+    $message = '<div class="container-fluid"><div class="alert alert-danger alert-dismissable fade show" role="alert">' . __('The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from') . ' <a href="https://firstwave.com">https://firstwave.com</a>.</div></div>';
 }
 
 
@@ -152,8 +152,17 @@ $countries = array(
                                 } ?>
                             </select>
                         </div>
-                        <div class="col-4 text-center">
-                            <button type="button" id="createFree" class="btn btn-success" style="margin-top: 2em;">Submit</button>
+                        <div class="col-3 text-left" style="padding-top: 14px; padding-left: 30px;">
+                            <span>
+                                <br>
+                              <label class="form-check-label" for="eula">
+                                <?= __('I have read the EULA.') ?>
+                              </label>
+                              <input class="form-check-input" type="checkbox" value="" id="eula" required>
+                            </span>
+                        </div>
+                        <div class="col-1 text-left" style="padding-right:10px;">
+                            <button type="button" id="createFree" class="btn btn-success" style="margin-top: 2em;"><?= __('Submit') ?></button>
                         </div>
                     </div>
                 </div>

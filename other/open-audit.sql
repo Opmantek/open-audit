@@ -4763,7 +4763,7 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL DEFAULT '',
   `roles` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`roles`)),
   `orgs` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`orgs`)),
-  `lang` enum('cs','de','en','es','fr','pt-br','zh-tw') NOT NULL DEFAULT 'en',
+  `lang` varchar(10) NOT NULL DEFAULT 'en',
   `active` varchar(1) NOT NULL DEFAULT 'y',
   `ldap` text NOT NULL,
   `type` enum('agent','collector','user') NOT NULL DEFAULT 'user',

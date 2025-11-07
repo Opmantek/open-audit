@@ -37,8 +37,8 @@ include('shared/lang.php');
         <script {csp-script-nonce}>
             window.onload = function () {
                 $(document).ready(function () {
-                    help_windows = "To execute the Windows powershell script, open a command prompt as Administrator and use the following command:<br><code>powershell.exe -executionpolicy bypass -file .\\audit_windows.ps1</code>";
-                    help_other = "To execute the audit script, open a terminal and use the following command:<br><code>sudo ./audit_linux.sh</code>. Note, you may need to make the script executable with <code>chmod +x audit_linux.sh</code> first.";
+                    help_windows = "<?= __('To execute the Windows powershell script, open a command prompt as Administrator and use the following command') ?>:<br><code>powershell.exe -executionpolicy bypass -file .\\audit_windows.ps1</code>";
+                    help_other = "<?= __('To execute the audit script, open a terminal and use the following command') ?>:<br><code>sudo ./audit_linux.sh</code>. <?= __('Note, you may need to make the script executable with') ?> <code>chmod +x audit_linux.sh</code> <?= __('first') ?>.";
 
                     let prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                     let html = document.querySelector('html');
@@ -53,7 +53,7 @@ include('shared/lang.php');
                             // console.log("request fail");
                         } else {
                             // console.log("out of date");
-                            $("#default_text").html("Open-AudIT " + data.version + " was released on " + data.date + ".<br>Download your updated version from <a href=\"https://firstwave.com\">https://firstwave.com</a>.<br>View the release notes on the <a href=\"" + data.releasenotes + "\">wiki</a>.");
+                            $("#default_text").html("Open-AudIT " + data.version + " was released on " + data.date + ".<br><?= __('Download your updated version from') ?> <a href=\"https://firstwave.com\">https://firstwave.com</a>.<br><?= __('View the release notes on the') ?> <a href=\"" + data.releasenotes + "\">wiki</a>.");
                         }
                     });
 
@@ -131,14 +131,14 @@ include('shared/lang.php');
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
                                         <div class="offset-3 col-6" style="position:relative;">
-                                            <label class="form-label text-secondary" for="username">Username</label>
+                                            <label class="form-label text-secondary" for="username"><?= __('Username') ?></label>
                                             <input class="form-control" type="text" id="username" name="username" />
                                         </div>
                                     </div> 
 
                                     <div class="row" style="padding-top:16px; padding-bottom:4px;">
                                         <div class="offset-3 col-6" style="position:relative;">
-                                            <label class="form-label text-secondary" for="password">Password</label>
+                                            <label class="form-label text-secondary" for="password"><?= __('Password') ?></label>
                                             <input class="form-control" type="password" id="password" name="password" />
                                         </div>
                                     </div> 
@@ -166,7 +166,7 @@ include('shared/lang.php');
                                                     $class = 'float-start';
                                                 }
                                                 ?>
-                                            <button type="submit" class="btn btn-primary <?= $class ?>" id="submit" name="submit" <?= $disabled; ?>>Submit</button>
+                                            <button type="submit" class="btn btn-primary <?= $class ?>" id="submit" name="submit" <?= $disabled; ?>><?= __('Submit') ?></button>
                                             <?php
                                             if (!empty($methods)) {
                                                 foreach ($methods as $method) {
@@ -199,16 +199,16 @@ include('shared/lang.php');
                                     <?php if ($config->device_count === 0) { ?>
                                     <div class="row">
                                         <div class="offset-4 col-4" style="position:relative;">
-                                            <div class="well well-sm text-secondary" style="padding:10px; margin:4px; background:#d9edf7;">No devices are in the database.</div>
-                                            <div class="well well-sm text-secondary" style="padding:10px; margin:4px; background:#dff0d8;">Initial login credentials are admin / password.</div>
-                                            <div class="well well-sm text-secondary" style="padding:10px; margin:4px; background:#f2dede;">Please log in and change these ASAP.</div>
+                                            <div class="well well-sm text-secondary" style="padding:10px; margin:4px; background:#d9edf7;"><?= __('No devices are in the database.') ?></div>
+                                            <div class="well well-sm text-secondary" style="padding:10px; margin:4px; background:#dff0d8;"><?= __('Initial login credentials are') ?> admin / password.</div>
+                                            <div class="well well-sm text-secondary" style="padding:10px; margin:4px; background:#f2dede;"><?= __('Please log in and change these ASAP.') ?></div>
                                         </div>
                                     </div>
                                     <?php } ?>
 
                                     <div class="row">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                        <br><span id="default_text" class="text-secondary">Don't forget about the Open-AudIT wiki for all your documentation.<br><a target='_blank' href='https://docs.community.firstwave.com/wiki/spaces/OA'>https://docs.community.firstwave.com/wiki/spaces/OA</a></span>
+                                        <br><span id="default_text" class="text-secondary"><?= __('Don\'t forget about the Open-AudIT wiki for all your documentation.') ?><br><a target='_blank' href='https://docs.community.firstwave.com/wiki/spaces/OA'>https://docs.community.firstwave.com/wiki/spaces/OA</a></span>
                                         </div>
                                         <span align='center'>
                                             <br>
@@ -235,7 +235,7 @@ include('shared/lang.php');
                                                 <br>
                                                 <?= __('The direct link for the script is') ?>&nbsp;<a href="#" id="go_link">#</a><br>
                                                 <?php if (stripos(base_url(), 'localhost') !== false or stripos(base_url(), '127.0.0') !== false) {
-                                                    echo __('<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.');
+                                                    echo '<br> ' . __('<strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.');
                                                 } else {
                                                     echo __('You may want to copy and paste this URL in an email to your staff.');
                                                 }

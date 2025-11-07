@@ -57,7 +57,7 @@ include 'shared/read_functions.php';
                                         <?php } } ?>
                                         </tbody>
                                     </table>
-                                    <div id="links" style="display: none;"><br><br><div class="col-12" style="position:relative;"><div class="row"><div class="col-12 clearfix"><label for="link_name" class="form-label" title="link_name">Name</label></div></div><div class="input-group"><input type="text" class="form-control" id="link_name" value="" /></div></div><br><div class="col-12" style="position:relative;"><div class="row"><div class="col-12 clearfix"><label for="link_name" class="form-label" title="link_name">Link</label></div></div><div class="input-group"><input type="text" class="form-control" id="link_link" value="" /></div></div><br><button class="btn btn-primary link_add_item" type="button">Submit</button></div>
+                                    <div id="links" style="display: none;"><br><br><div class="col-12" style="position:relative;"><div class="row"><div class="col-12 clearfix"><label for="link_name" class="form-label" title="link_name">Name</label></div></div><div class="input-group"><input type="text" class="form-control" id="link_name" value="" /></div></div><br><div class="col-12" style="position:relative;"><div class="row"><div class="col-12 clearfix"><label for="link_name" class="form-label" title="link_name">Link</label></div></div><div class="input-group"><input type="text" class="form-control" id="link_link" value="" /></div></div><br><button class="btn btn-primary link_add_item" type="button"><?= __('Submit') ?></button></div>
                                 </div>
                             </div>
 

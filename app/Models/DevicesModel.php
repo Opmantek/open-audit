@@ -1525,7 +1525,7 @@ class DevicesModel extends BaseModel
         $dictionary->columns->oae_manage = 'Unused.';
         $dictionary->columns->criticality = 'extreme - Without which, the organisation would fail.
 
-very high - Functions that are essential for the organisation\'s survival and must be restored immediately.
+very high - Functions that are essential for the organisations survival and must be restored immediately.
 
 high - Important functions that should be restored quickly but may have a slightly longer recovery time.
 

@@ -60,9 +60,9 @@ window.onload = function () {
 
         <?php if (strpos($resource->name, 'password') !== false) {
             if ($resource->value !== '') { ?>
-                $("#value").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#value").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#value").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#value").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 

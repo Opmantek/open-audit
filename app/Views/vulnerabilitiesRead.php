@@ -8,14 +8,17 @@ if ($style === 'icontext') {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" class="fa fa-eye text-primary"></span>' . __('Summary') . '</a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Devices') . '</a></li>';
+    $sql_button = '<li class="nav-item" role="presentation"><a href="#sql" class="nav-link" id="sql-tab"><span style="margin-right:6px;" class="fa fa-code text-primary" ></span>' . __('SQL') . '</a></li>';
 } elseif ($style === 'icon') {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" title="' . __('Summary') . '" class="fa fa-eye text-primary"></span></a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="fa fa-desktop text-primary"></span></a></li>';
+    $sql_button = '<li class="nav-item" role="presentation"><a href="#sql" class="nav-link" id="sql-tab"><span style="margin-right:6px;" title="' . __('SQL') . '" class="fa fa-code text-primary"></span></a></li>';
 } else {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab">' . __('Summary') . '</a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
+    $sql_button = '<li class="nav-item" role="presentation"><a href="#sql" class="nav-link" id="sql-tab">' . __('SQL') . '</a></li>';
 }
 
 if ($resource->type === 'application') {
@@ -39,6 +42,7 @@ if ($resource->type === 'application') {
                                 <?= $summary_button ?>
                                 <?= $details_button ?>
                                 <?= $devices_button ?>
+                                <?= $sql_button ?>
                             </ul>
                         </div>
                     </div>
@@ -160,25 +164,6 @@ if ($resource->type === 'application') {
                                             </div>
                                         </div>
                                     </div>
-                                    <br><div class="col-10 offset-1"><hr></div><br>
-
-                                    <div class="row" style="padding-top:16px;">
-                                        <div class="offset-1 col-10" style="position:relative;">
-                                            <?= read_field_header($meta->collection, 'sql', $dictionary->columns->sql, 'SQL') ?>
-                                            <div class="input-group">
-                                                <textarea class="form-control" rows="14" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
-                                                <?php if ($update) { ?>
-                                                <div class="float-end" style="padding-left:4px;">
-                                                    <div data-attribute="sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="sql" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="sql" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
-                                                </div>
-                                                <?php } ?>
-                                            </div>
-                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
@@ -239,6 +224,30 @@ if ($resource->type === 'application') {
                     </div>
 
 
+                    <div class="tab-content">
+                        <div class="tab-pane" id="sql" role="tabpanel" tabindex="0" aria-labelledby="details">
+                            <div class="row" style="padding-top:16px;">
+                                <div class="col-8 offset-2" style="position:relative;">
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-1 col-10" style="position:relative;">
+                                            <?= read_field_header($meta->collection, 'sql', $dictionary->columns->sql, 'SQL') ?>
+                                            <div class="input-group">
+                                                <textarea class="form-control" rows="14" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
+                                                <?php if ($update) { ?>
+                                                <div class="float-end" style="padding-left:4px;">
+                                                    <div data-attribute="sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
+                                                    <div data-attribute="sql" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
+                                                    <div data-attribute="sql" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                </div>
+                                                <?php } ?>
+                                            </div>
+                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>

@@ -4,10 +4,10 @@
 
 $intro = '<p>Tasks can be one of several distinct types: Baseline, Discovery, Report, Query, Summary or Collector.</p>
     <br>
-    <h2>How Does it Work?</h2>
+    <h2>' . __('How Does it Work?') . '</h2>
     <p>Attributes are stored for Open-AudIT to use for particular fields, at present all fields are based on the devices, locations, orgs and queries tables. The attributes you can edit are associated with the following columns: Class, Environment, Status & Type.</p>';
 
-$body = '<h2>Notes</h2>
+$body = '<h2>' . __('Notes') . '</h2>
 <p>All tasks can be created the same in Windows and Linux. Tasks use the CRON method for scheduling execution.<br>
 <br>
 Minute: (0-59)<br>

@@ -103,7 +103,7 @@ if ($style === 'icontext') {
                                         echo read_field('credentials.client_id', $resource->credentials->client_id, $dictionary->columns->client_id, $update, '', '', '', '', $meta->collection);
                                         echo read_field('credentials.client_secret', '', $dictionary->columns->client_secret, $update, '', '', '', 'password', $meta->collection);
                                     } elseif ($resource->type === 'google') {
-                                        echo read_field('credentials.json', '', $dictionary->columns->json, $update, __("Google JSON Credentials"), '', '', 'password', $meta->collection);
+                                        echo read_field('credentials.json', '', $dictionary->columns->json, $update, __('Google JSON Credentials'), '', '', 'password', $meta->collection);
                                     } ?>
                                     <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
@@ -191,25 +191,25 @@ window.onload = function () {
 
         <?php if (isset($resource->credentials->client_secret)) {
             if ($resource->credentials->client_secret !== '') { ?>
-                $("#credentials\\.client_secret").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#credentials\\.client_secret").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#credentials\\.client_secret").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#credentials\\.client_secret").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 
         <?php if (isset($resource->credentials->json)) {
             if ($resource->credentials->json !== '') { ?>
-                $("#credentials\\.json").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#credentials\\.json").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#credentials\\.json").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#credentials\\.json").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 
         <?php if (isset($resource->credentials->secret_key)) {
             if ($resource->credentials->secret_key !== '') { ?>
-                $("#credentials\\.secret_key").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#credentials\\.secret_key").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#credentials\\.secret_key").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#credentials\\.secret_key").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 

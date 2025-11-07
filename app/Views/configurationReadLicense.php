@@ -91,7 +91,7 @@ window.onload = function () {
     $(document).ready(function () {
 
         $('.remove_license').click(function (e) {
-            if (confirm("<?= __("Are you sure?") ?>\n<?= __("This will permanently DELETE this license.") ?>") !== true) {
+            if (confirm("<?= __('Are you sure?') ?>\n<?= __('This will permanently DELETE this license.') ?>") !== true) {
                 return;
             }
             div = $(this).attr("data-name")

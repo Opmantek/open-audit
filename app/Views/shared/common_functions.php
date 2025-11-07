@@ -10,7 +10,7 @@ function aboutNotesDiv (string $collection = '', object $dictionary = null)
     }
     if (! empty($dictionary->notes)) {
         $return .= "<h4 class=\"text-center\">" . __('Notes') . "</h4><br>";
-        $return .= html_entity_decode($dictionary->notes);
+        $return .= html_entity_decode(__($dictionary->notes));
     }
     return $return;
 }
@@ -24,8 +24,8 @@ function fieldsInfoDiv (object $dictionary = null, array $fieldsList = [])
     $return .= "<h4 class=\"text-center\">" . __('Fields') . "</h4><br>";
     foreach ($dictionary->columns as $key => $value) {
         if ($value !== 'Unused.' and $value !== '' and $key !== 'id' and $key !== 'edited_by' and $key !== 'edited_date' and (in_array($key, $fieldsList) or empty($fieldsList))) {
-            $key = ($key === 'org_id') ? strtolower(__('Organisation')) : $key;
-            $return .= "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";
+            // $key = ($key === 'org_id') ? strtolower(__('Organisation')) : $key;
+            $return .= "<code>$key:</code> " . html_entity_decode(__($value)) . "<br><br>";
         }
     }
     return $return;

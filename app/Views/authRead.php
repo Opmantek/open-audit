@@ -100,18 +100,18 @@ window.onload = function () {
         $("#ldap_dn_password").val("");
         <?php if (isset($resource->ldap_dn_password)) {
             if ($resource->ldap_dn_password !== '') { ?>
-                $("#ldap_dn_password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#ldap_dn_password").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#ldap_dn_password").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#ldap_dn_password").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 
         $("#client_secret").val("");
         <?php if (isset($resource->client_secret)) {
             if ($resource->client_secret !== '') { ?>
-                $("#client_secret").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#client_secret").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#client_secret").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#client_secret").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
     });

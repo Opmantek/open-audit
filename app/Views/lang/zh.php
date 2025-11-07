@@ -1,10 +1,9 @@
 <?php
+$GLOBALS["lang"][' Default, currently '] = ' 默认, 目前 ';
 
-$GLOBALS["lang"][' Default, currently '] = '默认, 目前';
+$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = ' 现在支持语言文件。 要更改用户使用此语言,请单击 ';
 
-$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = '现在支持语言文件。 要更改用户使用此语言,请单击';
-
-$GLOBALS["lang"][' seconds'] = '秒数';
+$GLOBALS["lang"][' seconds'] = ' 秒数';
 
 $GLOBALS["lang"]['10 Minutes'] = '10分钟';
 
@@ -14,191 +13,189 @@ $GLOBALS["lang"]['30 Minutes'] = '30分钟';
 
 $GLOBALS["lang"]['5 Minutes'] = '5分钟';
 
-$GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br > <strong>NOTE </strong > - 您正在从本地的 Open-AudIT 服务器访问此 URL 。 在其它机器上运行时, 下载的脚本将无法提交 。 如果需要审计其他机器,请从任何远程机器下载脚本,不要在Open-AudIT服务器本身上使用浏览器.';
+$GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br/> <strong>说明</strong> 您正在从本地的 Open-AudIT 服务器访问此 URL 。 在其它机器上运行时, 下载的脚本将无法提交 。 如果需要审计其他机器,请从任何远程机器下载脚本,不要在Open-AudIT服务器本身上使用浏览器.';
 
-$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '(原始内容存档于2017-03-26). p><strong class="text-danger". 注</强> - 您必须有工作 SSH 或 SSH 密钥证书才能执行目标设备的基准。</p>';
+$GLOBALS["lang"]['<p></p>'] = '<p></p>';
 
-$GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong > Baseline </strong > - 包含基准定义和单个政策测试的总体文件。 <br > <br > <strong > 政策 </strong > - 包含在基线中的单个测试。 每个测试都是针对特定项目. 一个例子是测试SSH 版本 1.2.3 <br> <strong > <Details </strong > - 基线可以比较净统计端口、用户和软件. <br> <strong > > <Software </strong > - 为了比较软件,我们检查名称和版本。 由于版本编号并非全部在格式上标准化,当我们收到审计结果时,我们创建了一个新的属性,称为软件_插件,与每个软件包的其他软件细节一起存储在数据库中. 因此,使用软件政策的基线在运行于一个未经1.10(至少)审计的设备时不会起作用。 软件政策可以针对版本的"等值","大于"或"等于或大于"进行测试. <br> <br> <strong>Netstat Ports </strong> -Netstat Ports使用端口号,协议和程序的组合. 如果所有人都在场,则政策通过。<br><br><strong>>Users</strong>-用户的工作类似于Netstat Ports。 如果用户有匹配的名称、状态和密码细节(可更改、过期、需要),则政策通过。<br> <br> </p>';
+$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">说明</strong> - 您必须有工作 SSH 或 SSH 密钥证书来执行目标设备的基准 。</p>';
 
-$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p> 语句 一个位置是一个物理地址,可以拥有与之相关的设备. <br> <br> 您可以指定它坐标( lat/ long), 如果指定了设备, 该位置将出现在 Open-AudIT Enterprise地图上. <br> <br></p>';
+$GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong>基线</strong> - 包含基线定义和个别政策测试的总体文件。<br/> <br/> <strong>政策</strong> - 基线范围内的个别试验。 每个测试都是针对特定项目. 例如,测试SSH 1.2.3版本。<br/> <br/> <strong>细节</strong> - 基线可以比较净统计端口、用户和软件。<br/> <br/> <strong>软件</strong> - 为了比较软件,我们检查名称和版本。 由于版本编号并非全部在格式上标准化,当我们收到审计结果时,我们创建了一个新的属性,称为软件_插件,与每个软件包的其他软件细节一起存储在数据库中. 因此,使用软件政策的基线在运行于一个未经1.10(至少)审计的设备时不会起作用。 软件政策可以针对版本的"对等","大于"或"等于或大于"进行测试.<br/> <br/> <strong>净点端口</strong> - Netstat Ports使用端口号,协议和程序的组合. 如果所有人都在场,则政策通过。<br/> <br/> <strong>用户</strong> -用户的工作类似于Netstat Ports. 如果用户有匹配的名称,状态和密码细节(可更改,到期,需要),则政策通过.<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br>Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br> <br></p>'] = '<p>一个网络来自发现条目和设备属性. <br> <br> Open-AudIT可以配置到只能接受这里包含的网络的审计结果. 要设置此选项, 请设置属性 < code> blessed_ subnets_ use </code>. < br> < br></p>';
+$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p>一个位置是一个物理地址,可以拥有与之相关的设备.<br/> <br/>您可以指定它坐标( lat/ 长) , 如果指定了设备, 位置将会出现在 Open-AudIT Enterprise 地图上 。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>摘要将显示一个项目列表,按<code>表 </code>和<code>栏目 </code>属性指定的属性的不同值分组. <br> <br>当执行一个摘要时,结果将是该<code>表 </code>和<code>栏目 </code>的不同值列表. 在允许用户查看匹配设备的值上会有链接. <br> <br> <br> 如果包含 <code> extra_colins </code> 的属性,那么产生的页面除了标准设备列外,还会包含这些列. <br> <br></p>';
+$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br></p>'] = '<p>网络来源于发现条目和设备属性.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>代理允许您在没有发现的情况下审核个人计算机。 安装代理, 它会每天与服务器进行登录, 并自己审计 。 如果你的电脑有防火墙,审计数据仍然会在Open-AudIT中出现。</p><p> 测试 < strong > if </ strong > 时 代理人应当进行操作,所有三项测试都必须通过(如果测试确定的话)。 < 强> 然后 </ 强> 已采取行动。</p>';
+$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>汇总将显示一个项目列表,按定义中指定的属性的不同值分组。 <code>table</code> 和 <code>column</code> 属性。<br/> <br/>当执行一个摘要时,结果将是列出一个与此相关的不同数值清单。 <code>table</code> 和 <code>column</code>。 。 。 在允许用户查看匹配设备的值上会有链接.<br/> <br/>如果属性 <code>extra_columns</code> 中,生成的页面除标准设备列外,还将包含这些列。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '<p>应用程序由您,用户定义并存储在 Open-AudIT 中使用和连接设备. <br> <br></p>';
+$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>特工让你在没有发现的情况下审核个人电脑 安装代理, 它会每天与服务器进行登录, 并自己审计 。 如果你的计算机有防火墙 审计数据仍然会在Open-AudIT中出现</p><p>测试时 <strong>若为</strong> 代理人应当进行操作,所有三项测试都必须通过(如果测试确定的话)。 <strong>礛</strong> 采取了这些行动。</p>';
 
-$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>属性为 Open-AudIT 存储,用于特定的字段。</p>';
+$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '<p>应用程序由您,用户定义,并为Open-AudIT存储,以便使用和连接设备.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '<p> 能够确定哪些机器配置相同是系统管理和审计 – 的主要部分, 现在报告这一点将变得简单和自动化。 一旦您定义了基线, 它将自动运行在预定时间表上的一组设备上 。 这些已执行基线的输出将可用于网页查看、导入第三方系统或甚至用作打印报告。<br> <br>基线使您能够将审计数据与您先前定义的一组属性(你的基线)结合起来,以确定设备的合规性。<br> <br> > 例如,您可以从运行Centos 6的设备中创建基线,该设备在集群中充当您的阿帕切服务器之一。 您知道这个特定的服务器是按您想要的方式配置的, 但是您不确定集群中的其他服务器是否配置完全相同 。 基线允许您确定此值。 <br > < br > < /p>';
+$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>属性被存储用于 Open-AudIT 用于特定字段.</p>';
 
-$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>模块存储在Open-AudIT中,用于关联设备,以便更好地记录、管理和估计许可费用。<br> <br></p>';
+$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '<p>能够确定哪些机器配置相同,是系统管理和审计的主要部分 — — 而现在报告情况将变得简单和自动化。 一旦您定义了基线, 它将自动运行在预定时间表上的一组设备上 。 这些已执行基线的产出将可供网页浏览、输入第三方系统或甚至作为印刷报告。<br/> <br/> 基线使您能够将审计数据与之前定义的一组属性(你的基线)结合起来,以确定设备的合规性.<br/> <br/> 例如,您可能从运行 Centos 6 的设备创建基线,该设备在集群中充当您的 apache 服务器之一 。 您知道这个特定的服务器是按您想要的方式配置的, 但是您不确定集群中的其他服务器是否配置完全相同 。 基线可以让你确定这一点。<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>components是一个通用术语,用于存储设备属性的表格. 这些表格是: access_point, arp, bios, 证书, cli_config, 磁盘, dns, 文件, ip, 日志, 内存, 模块, 显示器, 母板, netstat, 网络, nmap, 光学, 页面文件, 分区, 政策, 打印_ queue, 处理器, 收音机, 路由, san, scsi, 服务器, 服务器_项目, 服务, 共享, 软件, 软件_ key, 声音, 任务, usb, 用户, 用户_ 组, 变量, 视频, vm, 窗口。 </p><p> 此外,我们还将以下表格归类为设备相关:应用程序、附件、集群、证书、图像。</p>';
+$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>集群存储在Open-AudIT中,用于关联设备,以便更好地记录,管理和估计许可成本.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>证书在存储到数据库时会加密. <br> <br>当一个发现运行时,一个设备的证书会先被检索并测试连接(从<code>证书</code>表). 如果失败, 那么与给定的 Org <code> crediences.org_id </code> 相关的证书也会通过设备测试. 工作证书保存在证书表的单个设备级别(注 - 在表格名称中没有"s"). <br> <br> SSH密钥在SSH用户名/密码之前进行测试. 在测试 SSH 时, 证书也会被标记为与 sudo 合作或成为 root. < br> < br> 为方便使用, Windows 密码中不应包含单引号或双引号. 这是一个远程的WMI限制,而不是Open-AudIT限制. <br> <br></p>';
+$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>组件是一个通用术语,用于存储设备属性的表格。 这些表格是: access_point, arp, bios, 证书, cli_config, 磁盘, dns, 文件, ip, 许可证, 日志, 内存, 模块, 显示器, 母板, netstat, 网络, nmap, 光学, 页面文件, 分区, 政策, print_queue, 处理器, 收音机, 路由, san, scsi, 服务器, 服务器_项目, 服务, 共享, 软件, 软件_ key, 声音, 任务, usb, 用户, 用户_组, 变量, 视频, vm, 窗口.</p><p> 此外,我们还将以下表格归类为设备相关:应用程序、附件、集群、证书、图像。</p>';
 
-$GLOBALS["lang"]['<p>Credentials are used to access devices.<br> <br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br> <br></p>'] = '<p>证书用于访问设备。 <br> <br> 配置证书应当是您在安装 Open-AudIT 后首先要做的事情之一。<br> <br></p>';
+$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>证书保存在数据库时会加密.<br/> <br/>当发现器运行时,设备会先检索并测试其证书,以便连接(从 <code>credential</code> 页:1 如果失败, 那么与给定 Org 相关的证书 <code>credentials.org_id</code> 也对该装置进行测试。 工作证书保存在证书表的单个设备级别(注-表名中没有"s").<br/> <br/>SSH 密钥在 SSH 用户名/ 密码前进行测试. 在测试 SSH 时, 证书也会被标记为与 sudo 合作或成为 root 。<br/> <br/>为方便使用,Windows密码不应包含单引号或双引号. 这是远程WMI限制,而不是Open-AudIT限制.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br> <br></p>'] = '<p> 保护好你的架子, 并分配设备到他们的位置。 你已经在Open-AudIT中拥有了你的设备,你知道自己的位置. Open-AudIT 扩展此选项, 允许您创建一个机架并给它分配设备 。 Open-AudIT甚至会提供机架和内装设备的可视化. 如果您提供了设备图片,该图片将被用于可视化. 您可以查看屏幕上的架子, 并看到同样的东西, 如果你站在屏幕的前面你会看到。 < br> < br></p>';
+$GLOBALS["lang"]['<p>Credentials are used to access devices.<br> <br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br> <br></p>'] = '<p>证书用于访问设备。<br/> <br/>配置证书应该是您安装 Open-AudIT 后首先做的事情之一.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br> <br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br> <br>Expand on the stored fields easily with your own custom attributes.<br> <br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br> <br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br> <br></p>'] = '<p>网络上的设备需要管理。 但你的唱片怎么更新? 电子表格 - defintley no. 数小时后,如果不是几天,就会过时。 为什么手动尝试跟上。 使用Open-AudIT自动扫描您的网络并记录您的设备——制造商,模型,串行和超过100个其他属性. 软件,服务,磁盘,开放端口,用户等的完整清单. 自动查看属性是否已被添加,删除或更改. <br> <br>> <Once Open-AudIT已设置,您可以坐下来放松. 例如,我们本周发现了哪些新设备? 这周安装了什么样的新软件? 上个月是否有硬件变化 ? < br > < br> 扩展到存储的字段上, 容易使用您的自定义属性 。 < br > < br> 甚至添加无法连接到您的网络或您的 Open- AudIT 服务器无法访问的设备 。 < br > < br> < 计算机、 开关、 路由器、 打印机或您的网络上的任何其他设备 - Open- AudIT 可以全部审计 。 < br> < br > < /p>';
+$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br> <br></p>'] = '<p>确定你的架子 并分配设备到他们的位置 你已经在Open-AudIT中拥有了你的设备,你知道自己的位置. Open-AudIT 扩展此选项, 允许您创建一个机架并给它分配设备 。 Open-AudIT甚至会提供机架和内装设备的可视化. 如果您提供了设备图片,该图片将被用于可视化. 你可以看屏幕上的架子, 并看到同样的东西 你会看到,如果你站在它前面。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>'] = '<p>发现是Open-AudIT所作所为的核心。 <br> <br>你怎么会知道“我的网络是什么?><br> <br>发现是准备的数据项目,可以让你在一次点击中运行一个网络上的发现,而不每次输入该网络的细节。 <br> <br> <br></p>';
+$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br> <br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br> <br>Expand on the stored fields easily with your own custom attributes.<br> <br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br> <br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br> <br></p>'] = '<p>需要管理您网络上的设备 。 但你的唱片怎么更新? 电子表格 - defintley no. 数小时后,如果不是几天,就会过时。 为什么手动尝试跟上。 使用Open-AudIT自动扫描您的网络并记录您的设备——制造商,模型,串行和超过100个其他属性. 软件,服务,磁盘,开放端口,用户等的完整清单. 自动查看属性是否已添加、删除或更改 。<br/> <br/>一旦Open-AudIT被设定,你可以坐下来放松. 例如,我们本周发现了哪些新设备? 这周安装了什么样的新软件? 上个月有什么硬件变化吗?<br/> <br/>以自定义属性在存储的字段上轻松扩展 。<br/> <br/>甚至添加没有连接到您的网络的设备, 或是您 Open-AudIT 服务器无法访问的设备 。<br/> <br/>计算机、开关、路由器、打印机或网络上的任何其他设备 - Open-AudIT可以对所有设备进行审计。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '<p> 发现 选项是在<a href=>./configation?configation.name=discovery_default_scan_option>=configation </a>中更改的全局设置. 如果您持有Open-AudIT Entertainment许可证,这些许可证可按规定在每次发现时确定,此外,还可按要求自行定制。 发现 选项如下(包括扫描单个IP的提示时间):<br/><br><strong>UltraFast</strong>:<i>1秒</i>。 只扫描Open-AudIT需要用来与设备交谈的端口,并检测一个IOS设备(WMI,SSH,SNMP,Apple Sync). <code>openQQfiltered </code> 端口被视为打开。 <code>filtered </code> 端口不视为打开。 设备必须响应 Nmap ping 。 使用侵略性计时器。 < br></ > strong > SuperFast </strong > : <i> 5秒 </i>。 扫描前10个TCP和UDP端口,以及端口62078(Apple IOS检测). <code>openQQfiltered </code> 端口被视为打开。 <code>filtered </code> 端口不视为打开。 设备必须响应 Nmap ping 。 使用侵略性计时.<br/QQbr/QQstrong>Fast</strong>:<i>40秒</i>. 扫描前100个TCP和UDP端口,以及端口62078(Apple IOS检测). <code>openQQfiltered </code> 端口被视为打开。 <code>filtered </code> 端口不视为打开。 设备必须响应 Nmap ping 。 使用侵略性计时.<br/></></><强>中ed(Classic)</strong强>:<i>90秒</i>. 和传统的Open-AudIT扫描差不多 我们能做的一样 扫描前1000TCP端口,以及62078(Apple IOS检测)和UDP 161(SNMP). <code>openQQfiltered </code> 端口被视为打开。 一个 <code>filtered </code>端口被认为是开放的(并将触发设备检测). 无论Nmap ping的响应如何,设备都会被扫描. 使用侵略性计时.<br/></><r/><r>> 中ed </strongr>>:<i>100秒</i>. 扫描前1000TCP和前100 UDP端口,以及端口62078(Apple IOS检测). <code>openQQfiltered </code> 端口被视为打开。 <code>filtered </code> 端口不视为打开。 设备必须响应 Nmap ping 。 使用侵略性计时.<br/><r/><rstrongr>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r r r r>r>r>r l>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>i>r>r>r>r>r>r>r>r>r>r>i>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>r>. 扫描前1000TCP和前100 UDP端口,以及端口62078(Apple IOS检测). 版本检测启用 。 <code>openQQfiltered </code> 端口被视为打开。 一个 <code>filtered </code>端口被认为是开放的(并将触发设备检测). 设备必须响应 Nmap ping 。 使用正常时间. < br/></></ ><strstrong > UlSlow </strstrong > : <i>20分钟 </i>. 未建议。 扫描1000顶TCP和UDP端口,以及62078端口(Apple IOS检测). 无论Nmap ping的响应如何,设备都会被扫描. 版本检测启用 。 <code>openQQfiltered </code> 端口被视为打开。 一个 <code>filtered </code>端口被认为是开放的(并将触发设备检测). 使用礼貌的计时. <br/></></强>Custom </强>:<i>未知时间</i>. 当更改标准发现预设设置以外的选项时 。 < br>< br></ p>';
+$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>'] = '<p>发现是Open-AudIT工作的核心。<br/> <br/>不然你怎么知道"我的网络里有什么?"<br/> <br/>发现被准备了数据项,使您能够一次点击一次在网络上运行发现,而不每次输入网络的细节.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code> only. If requested using the web interface, they return the standard column attribute list.<br> <br></p>'] = '<p> Groups被用作符合所需条件的简单设备列表. 如果使用 JSON 请求, 它们只返回 < code> devices.id </code> 列表 。 如果使用网络界面请求,它们会返回标准列属性列表. <br> <br></p>';
+$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '<p>发现 选项是一个全局设置,在 <a href="../configuration?configuration.name=discovery_default_scan_option">配置</a>。 。 。 如果您持有Open-AudIT Entertainment许可证,这些许可证可按规定在每次发现时确定,此外,还可按要求自行定制。 发现 选项如下(包括扫描单个IP的提示时间):<br/><br/><strong>超快视</strong>数字 : <i>1秒钟</i>。 。 。 只扫描Open-AudIT需要用来与设备交谈的端口,并检测一个IOS设备(WMI,SSH,SNMP,Apple Sync). 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口不视为开放。 设备必须响应 Nmap ping 。 使用攻击性的时间。<br/><br><strong>超级快感</strong>数字 : <i>5秒钟</i>。 。 。 扫描前10个TCP和UDP端口,以及端口62078(Apple IOS检测). 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口不视为开放。 设备必须响应 Nmap ping 。 使用攻击性的时间。<br><br/><strong>快点</strong>数字 : <i>40秒钟</i>。 。 。 扫描前100个TCP和UDP端口,以及端口62078(Apple IOS检测). 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口不视为开放。 设备必须响应 Nmap ping 。 使用攻击性的时间。<br/><br/><strong>介质( Classic)</strong>数字 : <i>90 秒钟</i>。 。 。 和传统的Open-AudIT扫描差不多 我们能做的一样 扫描前1000TCP端口,以及62078(Apple IOS检测)和UDP 161(SNMP). 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口被视为开放(并将触发设备检测). 无论Nmap ping的响应如何,设备都会被扫描. 使用攻击性的时间。<br/><br/><strong>中型</strong>数字 : <i>100 秒钟</i>。 。 。 扫描前1000TCP和前100 UDP端口,以及端口62078(Apple IOS检测). 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口不视为开放。 设备必须响应 Nmap ping 。 使用攻击性的时间。<br/><br/><strong>慢点</strong>数字 : <i>4分钟</i>。 。 。 扫描前1000TCP和前100 UDP端口,以及端口62078(Apple IOS检测). 版本检测启用 。 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口被视为开放(并将触发设备检测). 设备必须响应 Nmap ping 。 使用正常的时间。<br/><br/><strong>超低线</strong>数字 : <i>20分钟</i>。 。 。 未建议。 扫描1000顶TCP和UDP端口,以及62078端口(Apple IOS检测). 无论Nmap ping的响应如何,设备都会被扫描. 版本检测启用 。 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口被视为开放(并将触发设备检测). 用礼貌的时机<br/><br/><strong>自定义</strong>数字 : <i>未知时间</i>。 。 。 当标准发现预设设置以外的选项被更改时.<br/><br/></br></br></p>';
+
+$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code> only. If requested using the web interface, they return the standard column attribute list.<br> <br></p>'] = '<p>组作为符合所需条件的简单设备列表. 如果要求使用JSON,他们将返回一份清单。 <code>devices.id</code> 仅此而已。 如果请求使用网络界面,它们会返回标准列属性列表.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you are using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br> <br><strong>Helpful Documentation</strong><br> <br>
         <a href="/index.php/auth/help">General Auth Help</a><br> <br>
         <a href="/index.php/faq?name=Using Entra for Auth">Using Entra for Auth</a><br> <br>
         <a href="/index.php/faq?name=Using OKTA for Auth">Using OKTA for Auth</a><br> <br>
         <a href="/index.php/faq?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br> <br>
-        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>'] = '<p> 如果用户登录到 Open-AudIT 无法访问搜索 LDAP(而您正在使用 OpenLDAP),您可以使用另一个有此访问权限的账户. 使用<code>ldap_dn_count</code>和<code>ldap_dn_password</code>来配置此语句.<br><br><strong>帮助文档</strong><br><br>
-<a href=\'/index.php/auth/help> Auth General Help </a></br> <br> (中文(简体) ).
-<a href=\'/index.php/faq?name=Using Entra for Auth> </a></br> <br> 请检查url=值 (帮助)
-<a href=\'/index.php/faq?name=使用OKTA换Auth\' > 使用OKTA换Auth</a></br> <br>
-<a href=\'/index.php/faq?name=Troubleshooting LDAP Logins> <Troubleshooting LDAP Logins</a></br> <br> (中文(简体) ).
-<a href=\'/index.php/faq?name=用户、角色和兽群><用户、角色和兽群</a><br><br></p>';
+        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>'] = '<p>如果登录到 Open-AudIT 的用户无法访问搜索 LDAP(您正在使用 OpenLDAP),您可以使用另一个有此访问权限的账户. 使用 <code>ldap_dn_account</code> 和 <code>ldap_dn_password</code> 来配置此选项。<br/> <br/><strong>帮助文档</strong><br/> <br/><a href="/index.php/auth/help">Auth 帮助</a><br/> <br/><a href="/index.php/faq?name=Using Entra for Auth">为 Auth 使用 Entra</a><br/> <br/><a href="/index.php/faq?name=Using OKTA for Auth">对 Auth 使用 OKTA</a><br/> <br/><a href="/index.php/faq?name=Troubleshooting LDAP Logins">清除 LDAP 登录中的问题</a><br/> <br/><a href="/index.php/faq?name=Users, Roles and Orgs">用户、角色和类</a><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br> <br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a <code>device</code>, valid <i>types</i> are: <code>class</code>, <code>environment</code>, <code>status</code> and <code>type</code>. If the <i>resource</i> is <code>locations</code> or <code>org</code> the only valid <i>type</i> is <code>type</code>. If the <i>resource</i> is a <code>query</code> the only valid <i>type</i> is <code>menu_category</code>.</p>'] = '<p> 语句 如果您添加了设备类型, 您需要手动将 . svg 格式化的文件复制到目录 : < br><em> Linux </em > : /usr/local/open- object/ public/device_images < br><em> Windows </em > : c:\xampp\htdocs\open-opopen-object_device > <br> 如果您添加了位置类型, 您需要手动将 32x32px 格式化的文件复制到目录 : < br><m> Linux </ / open- obleadit/publict/image/map_icons < br><m> Windows </em > : c:\xampp\hthtdoc\-op\ audit\images_p> 。 当<i>资源<i>为<code>device</code>时,有效的<i>类型</i>为:<code>class</code>,<code>环境</code>,<code>status</code>和<code>类型</code>. 如果<i>资源<i>是<code>位置</code>或<code>org</code> 唯一有效的<i>类型</i>是<code>类型</code>。 如果<i>资源<i>是一个<code>query</code> 唯一有效的<i>类型</i>是<code>菜单_分类</code>。</p>';
+$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br> <br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a <code>device</code>, valid <i>types</i> are: <code>class</code>, <code>environment</code>, <code>status</code> and <code>type</code>. If the <i>resource</i> is <code>locations</code> or <code>org</code> the only valid <i>type</i> is <code>type</code>. If the <i>resource</i> is a <code>query</code> the only valid <i>type</i> is <code>menu_category</code>.</p>'] = '<p>如果您添加了设备类型, 要显示相关的图标, 您必须手动将 . svg 格式化的文件复制到目录 :<br/><em>链接</em>:/usr/当地/公开审计/公共/设备图像<br/><em>窗口</em>: c:\ xampp\htdocs\ open- audit\ device_images<br/> <br/>如果您添加了位置类型, 要显示相关的图标, 您必须手动将 32x32px 图标复制到目录 :<br/><em>链接</em>:/usr/当地/公开审计/公共/图像/地图_图片<br/><em>窗口</em>: c:\ xampp\htdocs\ open- audit\ images\ map_icons</p><p>当 <i>资源</i> 是一个 <code>device</code>无效 <i>类型</i> 它们是: <code>class</code>, (中文). <code>environment</code>, (中文). <code>status</code> 和 <code>type</code>。 。 。 如果 <i>资源</i> 这是 <code>locations</code> 或者说 <code>org</code> 唯一有效的数据 <i>类型</i> 这是 <code>type</code>。 。 。 如果 <i>资源</i> 是一个 <code>query</code> 唯一有效的数据 <i>类型</i> 这是 <code>menu_category</code>。 。 。</p>';
 
-$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>'] = '<p> 如果您打算完全审计您的云端机器, 请不要忘记您还需要在 Open- AudIT 中保存的证书。 </p><p> 如果您正在使用微软 Azure( 22 for SSH, etc. 检查您的虚拟机 - > 网络规则 。 < br > < br></p>';
+$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>'] = '<p>如果你打算完全审计你的云机, 不要忘记你也会需要那些在Open-AudIT中保存的证书.</p><p>如果您正在使用微软 Azure( 22 for SSH, etc. 检查您的虚拟机 - > 网易规则.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br> <br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br> <br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br> <br></p>'] = '<p> 如果选择列表类型,将启用“值”字段。 您应该在此设置一个可选值的逗号分隔列表 。 当字段被编辑时,这些字段将显示在一个下拉框中。 <br> <br> 和其他大多数属性一样,字段可以被编辑。 按您通常的意愿使用批量编辑功能, 您将会看到字段可供输入 。 < br> < br> 查看设备细节屏幕, 打开包含字段的部分, 并且( 如果您有足够的访问权限) 您可以点击字段值来编辑它 。 < br> < br></ p>';
+$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br> <br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br> <br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br> <br></p>'] = '<p>如果选择列表类型,将启用“值”字段。 您应该在此设置一个可选值的逗号分隔列表 。 当字段被编辑时, 这些字段会显示在一个下拉框中 。<br/> <br/>与大多数其它属性一样,Fields可以被批量编辑. 按您通常的意愿使用批量编辑功能, 您将会看到字段可供输入 。<br/> <br/>查看设备细节屏幕,打开包含字段的部分,并且(如果您有足够的访问权限)可以点击字段值进行编辑.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '<p> 在日益变化的计算机安全世界中,每天都发现并补齐新的弱点,因此,执行安全合规必须是一个持续的过程。 它还需要包括调整政策以及定期评估和风险监测的方法。 OpenSCAP生态系统为快速、成本效益高和灵活地实施这些进程提供了工具和定制政策。 </p>';
+$GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '<p>在日益变化的计算机安全世界中,每天都发现和补上新的弱点,因此,执行安全规定必须是一个持续的过程。 它还需要包括调整政策以及定期评估和风险监测的方法。 OpenSCAP生态系统为快速、成本效益高和灵活地实施这些进程提供了工具和定制政策。</p>';
 
-$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>集成允许您为 Open-AudIT 设置设备选择和调度,以与外部系统交谈. <br> <br></p>';
+$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>集成允许您设置设备选择和调度,用于Open-AudIT与外部系统交谈.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>It is easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen over time. All the devices discovered last week, last month or any other period. New software found. What about devices that have not been seen - where are they? How useful to be able to specify these items over time.<br> <br></p>'] = '<p> 语句 随着时间的推移,很容易看到报告极其有用。 不仅可以看到Open-AudIT的数据,现在也可以看到它随着时间的推移所看到的. 上个星期、上个月或任何其他时期发现的所有装置。 找到新软件 。 那没有被看见的装置呢? 它们在哪里? 如何在一段时间内指定这些项目。<br> < br></p>';
+$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>在链接页面的底部找到 Nmap 计时细节 <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html 页面存档备份,存于互联网档案馆.</a>。 。 。 从该页:<br/> <br/><em>若您使用良好的宽带或网路连接, 有些人喜欢T5, 人们有时会指定-T2(Polite),因为他们认为崩溃主机的可能性较小,或者因为他们认为自己在一般情况下是礼貌的. 他们常常不知道T2到底有多慢 他们的扫描可能比默认扫描要长十倍. 机器崩溃和带宽问题在默认的计时选项-T3(Normal)中是罕见的,所以我通常建议谨慎的扫描仪使用. 刻录版本检测比玩计时值减少这些问题更有效.</em><footer>高顿 <i>费奥多</i> 里昂</footer><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>Nmap计时详情见此链接页的下方<a href=\'https://nmap.org/book/man-performance.html\'目标="_blank">https://nmap.org/book/man-perforce.html</a>. 从该页面看:<br><br><em>> 如果您在连接一个像样的宽带或醚网,我建议始终使用-T4(主动性)。 有些人喜欢T5, 人们有时会指定-T2(Polite),因为他们认为崩溃主机的可能性较小,或者因为他们认为自己在一般情况下是礼貌的. 他们常常不知道T2到底有多慢 他们的扫描可能比默认扫描要长十倍. 机器崩溃和带宽问题在默认的计时选项-T3(Normal)中是罕见的,所以我通常建议谨慎的扫描仪使用. 刻录版本检测比玩计时值减少这些问题更有效。</em><footer>Gordon<i>Fyodor</i> 里昂 </脚 > > > > > > > > > > > > > > > > > > > > > > >';
+$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '<p>可以配置Open-AudIT,使用不同的方法认证一个用户,此外,还可以根据组成员身份,使用指定的角色和类词创建用户账户.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '<p> Open-AudIT可以配置,以使用不同方法认证一个用户,此外,还可以使用基于组成员资格的指定角色和类词创建用户账户. <br> <br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>'] = '<p>打开Aud IT可以检索文件或文件目录的细节,并根据Open-AudIT数据库中的其他属性来监测这些文件的变化.<br/> <br/>这个功能在Linux Open-AudIT服务器的框外工作,但需要在Windows Open-AudIT服务器下更改服务账户名称.<br/> <br/>支持的客户端是Windows和Linux.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>'] = '<p> 打开奥德 IT可以检索文件或文件目录的细节,并根据Open-AudIT数据库中的其他属性来监控这些文件的更改. <br> <br>这个功能在Linux Open-AudIT服务器的框外工作,但需要在Windows Open-AudIT服务器下更改服务账户名称. <br> <br>支持客户端是Windows和Linux.<br> <br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>'] = '<p>打开Aud IT可以检索一个文件的详情,询问本地软件包管理器是否知道,并根据Open-AudIT数据库中的其他属性来监测这些文件的更改.<br/> <br/>支持的客户端只有Linux.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>'] = '<p> 打开奥德 IT可以检索一个文件的细节,询问本地软件包管理器是否为它所知,并根据Open-AudIT数据库中的其他属性对这些文件进行监控.<br><br><支持客户端仅是Linux.<br><br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br> <br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br> <br></p>'] = '<p>打开Aud IT可以在与每个设备相关的自定义字段存储信息.<br/> <br/>附加字段创建后,它可以像数据库中任何其他属性一样用于查询和分组.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br> <br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br> <br></p>'] = '<p> Open-AudIT 可以存储与每个设备相关的自定义字段中的信息. <br> <br> 一旦创建了附加字段,它就可以像数据库中任何其他属性一样用于查询和组中. <br> <br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Open-AudIT带来许多内置的查询. 如果您需要特定查询, 且预装的查询都不符合您的需要, 很容易创建新查询并加载到 Open- AudIT 中进行运行 。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p> 打开奥德 它带来了许多内置的询问。 如果您需要特定查询, 且预装的查询都不符合您的需要, 很容易创建新的查询并加载到 Open- AudIT 中以进行运行 。 <br> <br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Open-AudIT 有许多内置摘要。 如果您需要特定的摘要, 且预装摘要中没有符合您的需要, 很容易创建新的摘要并加载到 Open-AudIT 中运行。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p> 打开奥德 它包含许多内置摘要。 如果您需要具体摘要, 且预装摘要中没有一个符合您的需要, 很容易创建新的摘要并加载到 Open- AudIT 中运行 。 <br> < br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>'] = '<p>Open-AudIT由FirstWave以惊人的支持水平支持. 如果你更喜欢一个积极的支持者群体, 也一样。 你还能在哪里直接和开发者交谈,并在24小时内得到回复? 用其他产品试试看! 惊人的支持。 完全停下来。 你需要支持,我们提供支持。 没有如果或但是。 广大供养. 期间。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>'] = '<p> Open-AudIT由FirstWave以惊人的支持水平支持. 如果你更喜欢一个积极的支持者群体, 也一样。 你还能在哪里直接和开发者交谈,并在24小时内得到回复? 用其他产品试试看! 惊人的支持。 完全停下来。 你需要支持,我们提供支持。 没有如果或但是。 广大供养. 周期。<br><br></p>';
+$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '<p>Open-AudIT提供盒外的多租位!<br/> <br/>Open-AudIT中的 Orgs(组织)是一个关键项目. 一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将它与一个被指派的"Roles"列表结合起来,该列表定义了他们可以对分配给他们可以访问的Orgs的项目采取什么行动. 一个用户"orgs"和"roles"的组合定义了他们在Open-AudIT内所能做和不能做的.<br/> <br/>Open-AudIT中的大部分项目被分配到一个 Org. 设备,位置,网络等.<br/> <br/>兽人可以生孩子. 想想组织图(树)结构. 如果用户可以访问特定的Org,他们也可以访问Orgs后裔. 详情请见此 <a href="/index.php/faq?name=Users, Roles and Orgs">财务问题</a>。 。 。</p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '在 Open-AudIT 中, <p> Open-AudIT 中提供多租位! <br> <br> Orgs(组织)是一个关键项目。 一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将它与一个被指派的"Roles"列表结合起来,该列表定义了他们可以对分配给他们可以访问的Orgs的项目采取什么行动. 用户"orgs"和"roles"的组合定义了他们在Open-AudIT内所能做和不能做的. <br> <br>在Open-AudIT中的大多数项目被分配到一个Org. 设备,位置,网络等. <br> <br>Orgs可以拥有孩子Orgs. 想想组织图(树)结构. 如果用户可以访问特定的Org,他们也可以访问Orgs后裔. 更多信息请参见此<a href=/index.php/faq?name=用户,角色和兽类>. FAQ</a>.</p>';
+$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '<p>Open-AudIT提供盒外的多租位!<br/> <br/>Open-AudIT中的 Orgs(组织)是一个关键项目. 一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将它与一个被指派的"Roles"列表结合起来,该列表定义了他们可以对分配给他们可以访问的Orgs的项目采取什么行动. 一个用户"orgs"和"roles"的组合定义了他们在Open-AudIT内所能做和不能做的.<br/> <br/>Open-AudIT中的大部分项目被分配到一个 Org. 设备,位置,网络等.<br/> <br/>兽人可以生孩子. 想想组织图(树)结构. 如果用户可以访问特定的Org,他们也可以访问Orgs后裔.</p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '在 Open-AudIT 中, <p> Open-AudIT 中提供多租位! <br> <br> Orgs(组织)是一个关键项目。 一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将它与一个被指派的"Roles"列表结合起来,该列表定义了他们可以对分配给他们可以访问的Orgs的项目采取什么行动. 用户"orgs"和"roles"的组合定义了他们在Open-AudIT内所能做和不能做的. <br> <br>在Open-AudIT中的大多数项目被分配到一个Org. 设备,位置,网络等. <br> <br>Orgs可以拥有孩子Orgs. 想想组织图(树)结构. 如果用户可以访问特定的Org,他们也可以访问Orgs的后代. </p>';
-
-$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br></p>'] = '<p>快速查看您网络上设备的状态。<br> <br></p>';
+$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br></p>'] = '<p>快速查看您网络上设备的状态 。<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned Roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>
         Get the complete Open-AudIT Enterprise experience. Creating roles allows fine grained control over what your users can do within Open-AudIT.<br> <br>
-        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>在 Open-Aud 中的 Roles 它是一个关键项目。 一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将此与指定角色列表结合起来,该列表定义了他们可以对其可以访问的Orgs项目采取的行动. 一个用户"orgs"和"roles"的组合定义了他们在 Open-AudIT 内能做什么和不能做什么. <br> <br>
-获得完整的Open-AudIT Enterprise体验. 创建角色可以对用户在 Open-AudIT 中所能做的事情进行精细的逐条控制. <br> <br>
-授权的主要方法(用户可以做什么)基于用户角色. 默认角色被定义为管理员,org_admin,记者和用户. 每个角色对每个端点都有一组权限(创建,读,更新,删除). 在 Open-AudIT Entertainment 中启用了定义更多角色和编辑现有角色的能力. <br> <br> Roles 也可以在LDAP(主动目录和OpenLDAP)的授权下使用. 企业许可设施有能力为每个定义的角色定制LDAP组. <br> <br></p>';
+        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>在开放奥德的作用 它是一个关键项目。 一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将此与指定角色列表结合起来,该列表定义了他们可以对其可以访问的Orgs项目采取的行动. 一个用户"orgs"和"roles"的组合定义了他们在Open-AudIT内所能做和不能做的.<br/> <br/>获得完整的Open-AudIT Enterprise体验. 创建角色可以对用户在 Open-AudIT 内所能做的事情进行精细的粒化控制.<br/> <br/>授权的主要方法(用户可以做什么)基于用户角色. 默认角色被定义为管理员,org_admin,记者和用户. 每个角色对每个端点都有一组权限(创建,读,更新,删除). 在Open-AudIT Entertainment中启用了定义额外角色和编辑现有角色的能力.<br/> <br/>角色也可以在LDAP(主动目录和OpenLDAP)的授权下使用. 企业许可的设施有能力为每个确定的角色定制LDAP组.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p> 规则检查属性,并根据适当的规则制作粗体。</p>';
+$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p>规则审查属性,并根据适当的规则制作琴谱.</p>';
 
-$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br> <br></p>'] = '<p>扫描选项允许您在发现时轻松应用一组选项. <br> <br></p>';
+$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br> <br></p>'] = '<p>扫描选项可以方便地对发现应用一组选项.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br> <br>
-        </p>'] = '<p>由Google地图提供的简单,直观,准确的地理测绘. 开放-AudIT杠杆 谷歌地图提供设备位置的现场,交互式地理绘图. 街道地址自动转换为地理编码和经度/纬度. <br> <br>
-</p> 语句';
+        </p>'] = '<p>由Google地图提供的简单,直观,准确的地理测绘. 开放-AudIT杠杆 谷歌地图提供设备位置的现场,交互式地理绘图. 街道地址自动转换为地理编码和经度/纬度.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>'] = '<p>软件包用于确定是否安装了抗病毒,备份,防火墙,批准或禁止的软件. <br> <br></p>';
+$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>'] = '<p>软件包用于确定是否安装了抗病毒,备份,防火墙,批准或禁止的软件.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '<p>一些有效子网属性的例子有:192.168.1.1(一个IP地址),192.168.1.0/24(一个子网),192.168.1-3.1-20(一个IP地址范围). <br> <br><em>NOTE</em> - 只有子网(根据例子——192.168.1.0/24)才能自动为Open-AudIT创建一个有效的网络. <br> <br> 如果您使用活动目录类型, 请确保您拥有适当的证书, 可以在<a href=> 中与您的域控制器交谈. / 证书\' > 证书<a>. <br> <br> <br></p>';
+$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '<p>一些有效的Subnet属性的例子有:192.168.1.1(一个IP地址),192.168.1.0/24(一个子网),192.168.1-3.1-20(一个IP地址的范围).<br/> <br/><em>说明</em> - 只有子网(根据实例——192.168.1.0/24)才能自动为Open-AudIT建立一个有效的网络。 <br/> <br/>如果您使用活动目录类型, 请确保您有合适的证书可以和您的域控制器交谈 。 <a href="../credentials">全权证书</a>。 。 。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '<p>支持的客户端只有Linux. <br> <br></p>';
+$GLOBALS["lang"]['<p>Standards are stored in Open-AudIT.<br /><br /><br /><br /></p>'] = '<p>标准存储在Open-AudIT中.<br/><br/><br/><br/></p>';
 
-$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '<p>任务有对应 unix cron 调度的时间表 。 分钟、 小时、 日_ 月、 月、 日_ 周的属性都按照 cron 定义行事 。 您可以使用逗号分隔值( 无空格) 选择其中的多个 。 您可以使用 *. < br > < br> < 代码 > 类型 < code > 选择任务的每个值, 可以是: 基线、 采集器、 发现、 查询、 报告或摘要 。 < br > < br> 如果您想要安排基线或发现, 您需要在创建任务之前创建这些值 。 您必须使用<code>sub_resource_id</code>中项目类型的ID。 例如,如果您想要安排发现器,请在<code>sub_resource_id</code>中使用该特定的发现器ID.<br><br><code>uuid</code>的值是每个Open-AudIT服务器所特有的. 您的独特值可以在配置中找到. <br> <br> <code>options </code>属性是一个JSON文档,包含执行任务所需的任何额外属性. 报告、查询和摘要的额外属性为:<code>email_address </code>和<code>format </code>。 Bselines 的额外属性为 <code>group_id</code>. <br> <br></p>';
+$GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '<p>支持的客户端只有Linux.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The <code>type</code> of the location will assign its icon.<br> <br></p>'] = '<p>该位置的 <code>类型 </code>将指定其图标。<br> <br></p>';
+$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '<p>任务有对应 unix cron 时间表的时间表 。 分钟、 小时、 日_ 月、 月、 日_ 周的属性都按照 cron 定义行事 。 您可以使用逗号分隔值( 无空格) 选择其中的多个 。 您可以使用 * 选择每个值。<br/> <br/>那个 <code>type</code> 任务可以是:基线、收集器、发现、查询、报告或摘要。<br/> <br/>如果您想要安排基线或发现, 您需要在创建任务前创建这些任务 。 您必须在 <code>sub_resource_id</code>。 。 。 例如,如果您想要安排发现,请在 <code>sub_resource_id</code>。 。 。<br/> <br/>值为 <code>uuid</code> 指定每个 Open-AudIT 服务器。 您的独特价值可以在配置中找到 。<br/> <br/>那个 <code>options</code> 属性是 JSON 文档,其中包含执行任务所需的任何额外属性。 报告、查询和摘要的额外属性是: <code>email_address</code> 和 <code>format</code>。 。 。 Bselines 的额外属性是: <code>group_id</code>。 。 。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '<p> 语句 属性端点允许您在 Open-AudIT 中将定制值添加到不同的属性中,此时此特性在设备上的类,环境,状态和类型属性,位置和兽类的类型属性以及查询的菜单类. 如果您查看了其中一种类型的项目( 显示 Lkocation) , 您会注意到必须从下拉框中选择类型属性 。 这就是这些值被存储的地方。 因此,如果您想要为位置添加新类型,请使用属性特性添加该类型。</p>';
+$GLOBALS["lang"]['<p>The <code>type</code> of the location will assign its icon.<br> <br></p>'] = '<p>那个 <code>type</code> 图标。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br> <br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br> <br></p>'] = '<p> 语句 Collectors 特性使您能够轻松地管理许多执行网络发现的"collector"计算机. 所有收集器都由服务器集中控制. 收集器和服务器之间唯一需要的网络端口是80和/或443. <br> <br>,这使得管理不同的网络变得迅速、简单和简单。 Open-AudIT Enterprise许可证持有者获得单一的集邮许可证,并有权按要求购买更多。<br> <br></p>';
+$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '<p>属性端点允许您在 Open-AudIT 中将定制值添加到不同的属性中,此时此特性在设备上的类,环境,状态和类型属性,位置和兽类的类型属性以及查询的菜单类. 如果您查看了其中一种类型的项目( 显示 Lkocation) , 您会注意到必须从下拉框中选择类型属性 。 这就是这些值被存储的地方。 因此,如果您想要为位置添加新类型,请使用属性特性添加该类型。</p>';
 
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>'] = '<p> 您的 SQL <em> must </em> 中的SELECT 部分包含完全合格的列。 IE - <code>SELECT设备.id AS ‘devices.id\', 设备.name AS`devices.name`.</code>.<br><br> 您的SQL<em> must</em> 中的部分包含 <code>WHERE@filter</code>,所以Open-AudIT知道将您的查询限制在相应的Orgs。 不包含此条件的 SQL 会导致查询失败, 除非您有管理员角色. < br> < br> 一个实例查询 SQL 显示在具有"Linux" - < br><xcode > SELECT 设备属性的设备上的属性. id AS `devices.id\', device.icon AS `devices.icon\', 设备. 类型为 AS ‘devices.type\',设备.name AS ‘devices.name\',设备.os_name AS ‘devices.os_name\' 从设备中调出 @ filter and 设备.os_group = "Linux" </code><br > <br></p>';
+$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br> <br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br> <br></p>'] = '<p>Collectors 特性使您能够轻松地管理许多执行网络发现的"collector"计算机. 所有收集器都由服务器集中控制. 收集器和服务器之间唯一需要的网络端口是80和/或443.<br/> <br/>它使管理不同的网络变得迅速、简单和简单。 Open-AudIT Enterprise许可证持有者获得单一的收集许可证,并有权按要求购买更多。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br> <br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br> <br></p>'] = '<p>您的 SQL 的 SELECT 区域 <em> must </em> 只包含 <code>DISTINCT(devices.id) </code>.<br> <br> 您的SQL <em> must </em> 中的部分包含 <code>WHERE@filter </code>,所以Open-AudIT知道将您的查询限制在相应的 Orgs。 不包含此条件的 SQL 将导致组无法创建 。 < br> < br> 一个 SQL 选择所有运行 Debian OS - < code> SELECT DISTINCT( devices. id) 的设备的例子 从@ filter 和设备.os_family = "Debian" </code></br> <br></p>的设备中获取';
+$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>'] = '<p>您的 SQL 中的 SELECT 部分 <em>必须</em> 包含完全合格的栏目。 爱 - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>。 。 。<br/> <br/>您的SQL 的哪个部分 <em>必须</em> 包含 <code>WHERE @filter</code> 所以Open-AudIT知道将您的查询限制在相应的Orgs. 不包含此条件的 SQL 将导致查询无法创建, 除非您拥有管理员角色 。<br/> <br/>一个实例查询 SQL 显示在设备上的属性 <code>os_group</code> “ Linux” 属性 - <br/><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>'] = '<p> 语句 许可证端点允许您跟踪设备上发现的许可证数量。 < br> < br> 要创建条目来跟踪您的许可证, 以提供名称、 组织、 获得的许可证数量和软件名称 。 球场上 <code> match_string </code> 您必须提供您想要跟踪的软件的名称, 您可以在匹配_ 字符串中将% 的符号(%) 作为通配符。 < br> < br></p>';
+$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br> <br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br> <br></p>'] = '<p>您的 SQL 中的 SELECT 部分 <em>必须</em> 只包含 <code>DISTINCT(devices.id)</code>。 。 。<br/> <br/>您的SQL 的哪个部分 <em>必须</em> 包含 <code>WHERE @filter</code> 所以Open-AudIT知道将您的查询限制在相应的Orgs. 不包含此条件的 SQL 将导致组无法创建 。<br/> <br/>SQL 选择所有运行 Debian OS 的设备的例子 - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br> <br></p>'] = '<p> 语句 网络格式应为192.168.1.0/24. <br> <br></p>';
+$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>'] = '<p>许可端点允许您追踪设备上发现的许可数量 。<br/> <br/>要创建一个条目来跟踪您的驾照 <em>必须</em> 提供名称、组织、获得的许可证数量和软件名称。 现场 <code>match_string</code> 您必须提供您想要跟踪的软件的名称,您可以在匹配_字符串中将% 的符号作为通配符。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>'] = '<p> 语句 初级和可选次级项目应具有完全的资质 -- -- 即设备。 类型或软件.name.<br> <br></p>';
+$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br> <br></p>'] = '<p>该网络的格式应为192.168.1.0/24。<br/> <br/></p>';
+
+$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>'] = '<p>初级和可选次级项目应具有完全的资质 -- -- 即设备。 类型或软件。 名称。<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>There is no need to do anything if you are running Open-AudIT on a Linux server.<br>
 <br>
 Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.<br>
 <br>
-See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '<p> 语句 如果您正在 Linux 服务器上运行 Open- AudIT , 无需做任何事情 。 < br>
-< br> (英语)
-然而,Windows客户端很好,不需要特殊动作. . 要启用这个功能,审计脚本必须在目标Windows系统上本地运行. 它不能远程运行,因为我们在运行一个Windows机上的审计脚本时会和WMI通话一样,同时瞄准第二个Windows机. 要做到这一点,我们需要将审计脚本复制到目标Windows机器,然后运行. 不幸的是,Apache运行在下面的服务账户是本地系统账户。 该账户无法访问远程(基于网络)资源。 要解决这个问题,服务必须在另一个账户下进行。 仅使用本地管理员账户是很容易的, 但是只要您有所需的权限, 您就可以尝试您喜欢的任何账户 。 本地系统账户的本地访问权限与本地管理员账户相同。<br>
-< br> (英语)
-参见我们关于启用<a href=\'/index.php/faq的页面?name=运行 Open-AudIT Apache Service under Windows">运行 Open-AudIT Apache Service under Windows</a></p>';
+See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '<p>如果您正在 Linux 服务器上运行 Open-AudIT , 则无需做任何事情 。<br/><br/>然而,Windows客户端很好,不需要特殊动作. . 要启用这个功能,审计脚本必须在目标Windows系统上本地运行. 它不能远程运行,因为我们在运行一个Windows机上的审计脚本时会和WMI通话一样,同时瞄准第二个Windows机. 要做到这一点,我们需要将审计脚本复制到目标Windows机器,然后运行. 不幸的是,Apache运行在下面的服务账户是本地系统账户。 该账户无法访问远程(基于网络)资源。 要解决这个问题,服务必须在另一个账户下进行。 仅使用本地管理员账户是很容易的, 但是只要您有所需的权限, 您就可以尝试您喜欢的任何账户 。 当地系统账户与当地署长账户一样有当地访问权。<br/><br/>见我们关于启用的页面 <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">在窗口下运行 Open-AudIT Apache 服务</a></p>';
 
-$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>'] = '<p> 语句 这些设备生活在架子内。<br> <br></p>';
+$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>'] = '<p>这些是生活在架子内的装置.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p> 语句 此端点允许您添加您的云基础设施细节 。 Open-AudIT随后将使用本地的 API 伸手到您的云中并返回您的服务器, 就像 Open-AudIT 中的任何其他设备一样。 <br> <br><em>NOTE </em> - 要使用此功能, 我们 <em> must </em> 启用配置项目匹配_mac(用于 AWS) 和匹配_hostname(用于 Azure) 。 这将在首次执行云发现时自动完成。 <br> <br> 您云的证书(<a href=]/index.php/faq?name=微软证书) 云发现中使用的Azure">Azure</a>或<a href=\'/index.php/faq?name=云发现中使用的亚马逊AWS的证书">AWS</a>)是需要的.<br><br></p>';
+$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p>此端点允许您添加您的云基础设施细节 。 Open-AudIT随后会使用他们的本地 API 伸手到您的云端并返回您的服务器,就像Open-AudIT中的任何其他设备一样.<br/> <br/><em>说明</em> - 为了使用这个功能,我们 <em>必须</em> 启用配置项目匹配_mac(对于AWS)和匹配_hostname(对于Azure). 首次执行云的发现时会自动完成此任务.<br/> <br/>云层的全权证书( E)<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">阿苏雷</a> 或者说 <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">自动取款机</a>要求这样做。<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>我们最初设置带有默认选项的默认脚本列表. 这些默认脚本无法删除 。 您可以根据需要创建额外的脚本供您使用. 您的脚本将基于现有的脚本之一, 并应用自定义选项 。 脚本可以按菜单从列表页面下载 - > 发现 - > 审计脚本 - > 列表 审计脚本<br><br></p>';
+$GLOBALS["lang"]['<p>Vulnerabilities reporting based on the NIST CVE feed.<br> <br></p>'] = '<p>基于NIST CVE种子的脆弱度报告.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>在使用Regex进行匹配时,可在<a href=>https://www.php.net/manual/en/regexp.regic.meta.php\'目标="_blank"上找到一个帮助的页面. ưμ㼯A 与Perl Regex的一些区别可参见"https://www.php.net/manual/en/Reference.pcre.pattern.differences.php"目标="\'_blank\'>here</a>.</p>';
+$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>我们最初设置带有默认选项的默认脚本列表. 这些默认脚本无法删除 。 您可以根据需要创建额外的脚本供您使用. 您的脚本将基于现有的脚本之一, 并应用自定义选项 。 脚本可以按菜单从列表页面下载 - > 发现 - > 审计脚本 - > 列表审计脚本<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>'] = '<p> Widgets 很容易被创建,以便在您的仪表板上显示环境所特有的内容. <br> <br></p>';
+$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>在使用Regex进行匹配时,可以在 <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> ưμ㼯A</a>。 。 。 可以找到 Perl Regex 的一些差异 <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">这里</a>。 。 。</p>';
 
-$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>'] = '<p> 带有 Open-AudIT 专业和企业,你可以自动化 和安排发现, 报告生成, 或基线检查运行 当你想运行, 并随需要。 安排你的发现 晚上运行,报告 生成和电子邮件给关键人员 每天早上。 复杂或简单的调度,设备发现和报表生成只是一击即逝. <br> <br>为每个子网或AD控制器创建单个发现时间表,在为目标受众创建的报告中添加. 开发简单或复杂的时间表,以支持公司需求,避免备份或对业务的影响,或只是分散负载和速度审计完成. <br> <br></p>';
+$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>'] = '<p>部件可以很容易地被创造出来,在仪表板上显示你环境特有的东西.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>'] = '<p> 语句 您可以为任何现有的审计脚本创建包含所有选项的脚本 - 不仅仅是Windows. AIX,ESX,Linux,OSX和Windows全部覆盖. <br> <br></p>';
+$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>'] = '<p>使用 Open-AudIT 专业和企业,你可以自动化 和安排发现, 报告生成, 或基线检查运行 当你想运行, 并随需要。 安排你的发现 晚上运行,报告 生成和电子邮件给关键人员 每天早上。 复杂或简单的调度,设备发现和报告生成只是一击即逝.<br/> <br/>为每个子网或AD控制器创建单个发现时间表,在为目标受众创建的报告中添加。 开发简单或复杂的时间表,以支持公司需求,避免备份或对业务的影响,或只是分散负载和速度审计完成.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>'] = '<p> 语句 您可以在匹配_ 字符串中将% 的签名% 作为通配符。 < br > < br></p>';
+$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>'] = '<p>您可以为任何现有的审计脚本创建包含所有选项的脚本 - 不仅仅是Windows. AIX,ESX,Linux,OSX和Windows全部覆盖.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br> <br></p>'] = '<p>你的架子有助于精确地完善设备所在位置。<br> <br></p>';
+$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>'] = '<p>您可以在匹配_ 字符串中将% 的标志作为通配符 。<br/> <br/></p>';
 
-$GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = '谷歌地图 API 密码 此功能需要密钥 .';
+$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br> <br></p>'] = '<p>你的架子有助于精确地完善你的设备所在位置.<br/> <br/></p>';
 
-$GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = '将执行此基准的 JSON 设备标识组 .';
+$GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = '谷歌地图 API 密码 此功能需要密钥 。';
 
-$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = '包含指定给此用户的 Orgs 的 JSON 文件 。 ID取自<code>orgs.id</code>. 如果用户可以接触一个Org,他们可以接触Orgs后裔.';
+$GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = '将执行此基准的 JSON 设备标识组 。';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = 'JSON 文档,根据<code>scripts.type </code>,包含所需的属性.';
+$GLOBALS["lang"]['A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.'] = '与从 CVE 中提取的软件名称相匹配的 JSON 阵列,由 Open-AudIT 检索的软件名称丰富.';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes overriding the chosen discovery_scan_options.'] = 'JSON 文档, 包含高于所选发现的必需属性_ 扫描_ 选项 .';
+$GLOBALS["lang"]['A JSON array of values to test for this vulnerability.'] = '测试这种脆弱性的JSON系列值。';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes overriding the default device match options.'] = 'JSON 文档, 包含默认设备匹配选项上必须的属性 .';
+$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = '包含指定给此用户的 Orgs 的 JSON 文件 。 身份证从 <code>orgs.id</code>。 。 。 如果用户可以接触一个Org,他们可以接触Orgs后裔.';
 
-$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = '包含指定给该用户的角色的 JSON 文件 。 角色名称取自<code>roles.name</code>.';
+$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = '包含所需属性的 JSON 文件,取决于 <code>scripts.type</code>。 。 。';
 
-$GLOBALS["lang"]['A JSON object containing an array of attributes to change if the match occurs.'] = '包含一系列属性的 JSON 对象,如果匹配发生,则要更改 .';
+$GLOBALS["lang"]['A JSON document containing the required attributes overriding the chosen discovery_scan_options.'] = 'JSON 文档, 包含高于所选发现的必需属性_ 扫描_ 选项 。';
 
-$GLOBALS["lang"]['A JSON object containing an array of attributes to match.'] = 'JSON 对象包含一系列匹配的属性 .';
+$GLOBALS["lang"]['A JSON document containing the required attributes overriding the default device match options.'] = 'JSON 文档, 包含默认设备匹配选项上必须的属性 。';
 
-$GLOBALS["lang"]['A JSON object containing collection specific options.'] = '一个包含收藏特定选项的 JSON 对象 .';
+$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = '包含指定给该用户的角色的 JSON 文件 。 角色名称取自 <code>roles.name</code>。 。 。';
 
-$GLOBALS["lang"]['A JSON object populated via a Cloud discovery.'] = 'JSON通过云号发现而发现的物体.';
+$GLOBALS["lang"]['A JSON object containing an array of attributes to change if the match occurs.'] = '包含一系列属性的 JSON 对象,如果匹配发生,则要更改 。';
 
-$GLOBALS["lang"]['A JSON representation containing the details of the queue item to be executed.'] = '包含要执行的队列项目细节的 JSON 描述 .';
+$GLOBALS["lang"]['A JSON object containing an array of attributes to match.'] = 'JSON 对象包含一系列匹配的属性 。';
 
-$GLOBALS["lang"]['A JSON representation of the fields for this integration.'] = 'JSON代表这一一体化的领域.';
+$GLOBALS["lang"]['A JSON object containing collection specific options.'] = '一个包含收藏特定选项的 JSON 对象 。';
 
-$GLOBALS["lang"]['A JSON representation of the individual tests and their results on all devices this baseline has been run against.'] = 'JSON对所有装置的个别试验及其结果作了说明,但这一基准被对照.';
+$GLOBALS["lang"]['A JSON object populated via a Cloud discovery.'] = 'JSON通过云号发现而发现的物体';
 
-$GLOBALS["lang"]['A JSON representation of the tests that make up this policy.'] = 'JSON代表构成这项政策的测试.';
+$GLOBALS["lang"]['A JSON representation containing the details of the queue item to be executed.'] = '包含要执行的队列项目细节的 JSON 描述 。';
 
-$GLOBALS["lang"]['A URL to a file to download.'] = '要下载的文件的 URL .';
+$GLOBALS["lang"]['A JSON representation of the fields for this integration.'] = 'JSON代表这一一体化的领域。';
+
+$GLOBALS["lang"]['A JSON representation of the individual tests and their results on all devices this baseline has been run against.'] = 'JSON对所有装置的个别试验及其结果作了说明,但这一基准被对照。';
+
+$GLOBALS["lang"]['A JSON representation of the tests that make up this policy.'] = 'JSON代表构成这项政策的测试。';
+
+$GLOBALS["lang"]['A URL to a file to download.'] = '要下载的文件的 URL 。';
 
 $GLOBALS["lang"]['A calculated field that displays the number of times this piece of software was found on the computers in the selected Org (and its descendants if configured).'] = '一个计算出来的字段,显示此软件件在所选 Org 中的计算机上被发现的次数(如果配置的话它的后代).';
 
-$GLOBALS["lang"]['A collector is either in Collector or Stand-Alone mode.'] = '收藏家要么是收集器,要么是备用状态.';
+$GLOBALS["lang"]['A collector is either in Collector or Stand-Alone mode.'] = '收藏家要么是收集器,要么是备用状态。';
+
+$GLOBALS["lang"]['A comma separated list of applicable CVEs.'] = '一个逗号分离的可适用的CVE列表.';
 
 $GLOBALS["lang"]['A comma separated list of values, one of which can be selected.'] = '一个逗号分隔的数值列表,其中之一可以选择.';
 
@@ -212,7 +209,7 @@ $GLOBALS["lang"]['A lower number means it will be applied before other rules.'] 
 
 $GLOBALS["lang"]['A lower number means it will be applied before other rules. The default weight is 100.'] = '更低的数值意味着它将被应用在其他规则之前. 默认重量为100.';
 
-$GLOBALS["lang"]['A password (stored as a hash) that enables logon when using application authentication.'] = '在使用应用程序认证时允许登录的密码( 存储为散列) .';
+$GLOBALS["lang"]['A password (stored as a hash) that enables logon when using application authentication.'] = '在使用应用程序认证时允许登录的密码( 存储为散列) 。';
 
 $GLOBALS["lang"]['A routing domain or address space where the IP addresses and MAC addresses are unique.'] = '一个路由域或地址空间,其中IP地址和MAC地址是独一无二的.';
 
@@ -220,11 +217,17 @@ $GLOBALS["lang"]['A security zone is a administrative domain or policy domain wi
 
 $GLOBALS["lang"]['A short description of the log entry.'] = '日志条目简介.';
 
-$GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = '匹配 <code>software.name </code>属性的字符串。 您可以使用% 的标准 SQL 通配符来匹配一个或多个字符 .';
+$GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = '匹配 <code>software.name</code> 属性。 您可以使用% 的标准 SQL 通配符来匹配一个或多个字符 。';
+
+$GLOBALS["lang"]['A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).'] = '影响可用性的脆弱性可能使攻击者破坏服务、崩溃系统或造成拒绝服务(DoS)(无、低、高)。';
+
+$GLOBALS["lang"]['A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).'] = '影响保密性的脆弱性可能使攻击者能够读取敏感数据,如个人信息、证书或专有商业数据(None、Low、High)。';
+
+$GLOBALS["lang"]['A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).'] = '影响完整性的脆弱性可能允许攻击者修改数据,注入恶意代码,或改变系统配置(None,Low,High).';
 
 $GLOBALS["lang"]['AD Group'] = 'AD 组';
 
-$GLOBALS["lang"]['ADSL, HFC, ISDN, etc.'] = 'ADSL、氢氟碳化合物、ISDN等.';
+$GLOBALS["lang"]['ADSL, HFC, ISDN, etc.'] = 'ADSL、氢氟碳化合物、ISDN等';
 
 $GLOBALS["lang"]['AIX'] = '大赦国际';
 
@@ -232,7 +235,9 @@ $GLOBALS["lang"]['ALL IPs'] = '所有实施伙伴';
 
 $GLOBALS["lang"]['API / Web Access'] = 'API / 网络访问';
 
-$GLOBALS["lang"]['API Key required.'] = '需要 API 密钥 .';
+$GLOBALS["lang"]['API Documentation'] = 'API 文档';
+
+$GLOBALS["lang"]['API Key required.'] = '需要 API 密钥 。';
 
 $GLOBALS["lang"]['API Result'] = 'API 结果';
 
@@ -272,6 +277,10 @@ $GLOBALS["lang"]['action_command'] = '行动指挥';
 
 $GLOBALS["lang"]['Action Command'] = '行动指挥';
 
+$GLOBALS["lang"]['action_date'] = '行动日期';
+
+$GLOBALS["lang"]['Action Date'] = '行动日期';
+
 $GLOBALS["lang"]['action_devices_assigned_to_location'] = '指定到位置的动作设备';
 
 $GLOBALS["lang"]['Action Devices Assigned To Location'] = '指定到位置的动作设备';
@@ -288,11 +297,25 @@ $GLOBALS["lang"]['action_uninstall'] = '动作卸载';
 
 $GLOBALS["lang"]['Action Uninstall'] = '动作卸载';
 
+$GLOBALS["lang"]['actioned'] = '已采取行动';
+
+$GLOBALS["lang"]['Actioned'] = '已采取行动';
+
+$GLOBALS["lang"]['actioned_by'] = '由';
+
+$GLOBALS["lang"]['Actioned By'] = '由';
+
+$GLOBALS["lang"]['actioned_date'] = '行动日期';
+
+$GLOBALS["lang"]['Actioned Date'] = '行动日期';
+
 $GLOBALS["lang"]['actions'] = '行动';
 
 $GLOBALS["lang"]['Actions'] = '行动';
 
 $GLOBALS["lang"]['Activate'] = '启动';
+
+$GLOBALS["lang"]['Activate Free License'] = '激活自由许可证';
 
 $GLOBALS["lang"]['Activate Key'] = '激活密钥';
 
@@ -358,6 +381,8 @@ $GLOBALS["lang"]['address'] = '地址';
 
 $GLOBALS["lang"]['Address'] = '地址';
 
+$GLOBALS["lang"]['Admin'] = '管理员';
+
 $GLOBALS["lang"]['admin_status'] = '管理状态';
 
 $GLOBALS["lang"]['Admin Status'] = '管理状态';
@@ -377,6 +402,10 @@ $GLOBALS["lang"]['Aggressive'] = '侵略性';
 $GLOBALS["lang"]['Aland Islands'] = '奥兰群岛';
 
 $GLOBALS["lang"]['Albania'] = '阿尔巴尼亚';
+
+$GLOBALS["lang"]['alert_style'] = '提醒样式';
+
+$GLOBALS["lang"]['Alert Style'] = '提醒样式';
 
 $GLOBALS["lang"]['Algeria'] = '阿尔及利亚';
 
@@ -400,19 +429,21 @@ $GLOBALS["lang"]['Amazon AWS Fields'] = '亚马逊AWS 字段';
 
 $GLOBALS["lang"]['American Samoa'] = '美属萨摩亚';
 
-$GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = '<code>基准标记.id</code>的数组.';
+$GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = '数组 <code>benchmarks.id</code>。 。 。';
 
-$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = '<code>devices.id </code>的数组.';
+$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = '数组 <code>devices.id</code>。 。 。';
 
-$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = '一个加密的JSON文档,根据<code>creditities.type</code>,包含所需的属性.';
+$GLOBALS["lang"]['An array of object representing external links to more information.'] = '表示更多信息的外部链接的对象组。';
+
+$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = '加密的 JSON 文档,其中根据 <code>credentials.type</code>。 。 。';
 
 $GLOBALS["lang"]['An indication of the level of service required by this site.'] = '说明本站所需服务水平.';
 
-$GLOBALS["lang"]['An internal field that indicates if the discovery has completed.'] = '显示发现是否完成的内部领域.';
+$GLOBALS["lang"]['An internal field that indicates if the discovery has completed.'] = '显示发现是否完成的内部领域。';
 
 $GLOBALS["lang"]['An optional GeoCode'] = '可选的地理代码';
 
-$GLOBALS["lang"]['An optional password to use sudo.'] = '使用 sudo 的可选密码 .';
+$GLOBALS["lang"]['An optional password to use sudo.'] = '使用 sudo 的可选密码 。';
 
 $GLOBALS["lang"]['Andorra'] = '安道尔';
 
@@ -432,23 +463,23 @@ $GLOBALS["lang"]['Any TCP ports (comma seperated, no spaces) you wish to exclude
 
 $GLOBALS["lang"]['Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = '您想要从此发现中排除任何 UDP 端口( 压缩、 无空格 ) 。 仅在使用Nmap 7+时可用.';
 
-$GLOBALS["lang"]['Any additional documentation you need.'] = '任何需要的额外文件.';
+$GLOBALS["lang"]['Any additional documentation you need.'] = '任何需要的额外文件。';
 
-$GLOBALS["lang"]['Any additional notes you care to make.'] = '任何你想要补充的笔记.';
+$GLOBALS["lang"]['Any additional notes you care to make.'] = '任何你想要补充的笔记。';
 
-$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.'] = '任何设备在运行审计脚本( 如果设置) 时都会被指定给此 Org 。 链接到 <code>orgs.id </code>.';
+$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.'] = '任何设备在运行审计脚本( 如果设置) 时都会被指定给此 Org 。 链接到 <code>orgs.id</code>。 。 。';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.'] = '如果设定, 任何已发现的设备都会被指定到此位置 。 链接到 <code>位置.id </code>.';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.'] = '如果设定, 任何已发现的设备都会被指定到此位置 。 链接到 <code>locations.id</code>。 。 。';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.'] = '在运行审计脚本(如果设置)时,任何发现的设备都会被分配到此位置. 链接到 <code>位置.id </code>.';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.'] = '在运行审计脚本(如果设置)时,任何发现的设备都会被分配到此位置. 链接到 <code>locations.id</code>。 。 。';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.'] = '如果设置, 任何发现的设备都将被指定给此 Org 。 如果没有设定,它们会被分配到此发现的<code>org_id</code>. 链接到 <code>orgs.id </code>.';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.'] = '如果设置, 任何发现的设备都将被指定给此 Org 。 如果没有设定,则指定给 <code>org_id</code> 这个发现。 链接到 <code>orgs.id</code>。 。 。';
 
-$GLOBALS["lang"]['Any required filter. NOTE: When type = traffic, this represents the font-awesome icon.'] = '任何需要的过滤器。 注:当类型 = 流量时,这代表字体良好的图标.';
+$GLOBALS["lang"]['Any required filter. NOTE: When type = traffic, this represents the font-awesome icon.'] = '任何需要的过滤器。 注:当类型 = 流量时,这代表字体良好的图标。';
 
-$GLOBALS["lang"]['Any specific TCP ports you wish tested (comma seperated, no spaces).'] = '您想要测试的任何特定的 TCP 端口( 已连接, 无空格) .';
+$GLOBALS["lang"]['Any specific TCP ports you wish tested (comma seperated, no spaces).'] = '您想要测试的任何特定的 TCP 端口( 已连接, 无空格) 。';
 
-$GLOBALS["lang"]['Any specific UDP ports you wish tested (comma seperated, no spaces).'] = '任何您想要测试的 UDP 特定端口( 已连接, 无空格 ) .';
+$GLOBALS["lang"]['Any specific UDP ports you wish tested (comma seperated, no spaces).'] = '任何您想要测试的 UDP 特定端口( 已连接, 无空格 ) 。';
 
 $GLOBALS["lang"]['Application'] = '应用程序';
 
@@ -457,6 +488,8 @@ $GLOBALS["lang"]['application_id'] = '应用程序标识';
 $GLOBALS["lang"]['Application ID'] = '应用程序标识';
 
 $GLOBALS["lang"]['Application Licenses'] = '申请许可证';
+
+$GLOBALS["lang"]['Application, Operating System or Hardware.'] = '应用,操作系统或硬件.';
 
 $GLOBALS["lang"]['applications'] = '应用程序';
 
@@ -480,7 +513,7 @@ $GLOBALS["lang"]['Are you sure you want to delete this output item?'] = '您确�
 
 $GLOBALS["lang"]['Are you sure? This will remove all queue entries and prevent the remaining IPs from being discovered.'] = '你确定吗? 这将删除所有队列条目,防止发现剩余的IP.';
 
-$GLOBALS["lang"]['Are you sure? This will reset the queue processing count and could cause load on the server.'] = '你确定吗? 这将重置队列处理计数, 并可能导致服务器负载 .';
+$GLOBALS["lang"]['Are you sure? This will reset the queue processing count and could cause load on the server.'] = '你确定吗? 这将重置队列处理计数, 并可能导致服务器负载 。';
 
 $GLOBALS["lang"]['area'] = '区域';
 
@@ -496,13 +529,13 @@ $GLOBALS["lang"]['Arp'] = '阿尔普';
 
 $GLOBALS["lang"]['Aruba'] = '阿鲁巴';
 
-$GLOBALS["lang"]['As per the attributes for device environments. Production, Training, et al.'] = '根据设备环境的属性. 生产、培训等.';
+$GLOBALS["lang"]['As per the attributes for device environments. Production, Training, et al.'] = '根据设备环境的属性. 生产、培训等';
 
-$GLOBALS["lang"]['As you have Collectors registered, please choose where to execute this discovery.'] = '已注册的收集器请选择执行此发现的地点 .';
+$GLOBALS["lang"]['As you have Collectors registered, please choose where to execute this discovery.'] = '已注册的收集器请选择执行此发现的地点 。';
 
 $GLOBALS["lang"]['Ask me later'] = '以后再问我';
 
-$GLOBALS["lang"]['Ask the Community for help or contribute answers for others.'] = '向社区寻求帮助或为他人提供答案.';
+$GLOBALS["lang"]['Ask the Community for help or contribute answers for others.'] = '向社区寻求帮助或为他人提供答案。';
 
 $GLOBALS["lang"]['aspect_ratio'] = '光谱比';
 
@@ -556,6 +589,18 @@ $GLOBALS["lang"]['attachments'] = '附录';
 
 $GLOBALS["lang"]['Attachments'] = '附录';
 
+$GLOBALS["lang"]['attack_complexity'] = '攻击复杂度';
+
+$GLOBALS["lang"]['Attack Complexity'] = '攻击复杂度';
+
+$GLOBALS["lang"]['attack_requirements'] = '攻击要求';
+
+$GLOBALS["lang"]['Attack Requirements'] = '攻击要求';
+
+$GLOBALS["lang"]['attack_vector'] = '攻击矢量';
+
+$GLOBALS["lang"]['Attack Vector'] = '攻击矢量';
+
 $GLOBALS["lang"]['Attribute'] = '属性';
 
 $GLOBALS["lang"]['attributes'] = '属性';
@@ -594,15 +639,29 @@ $GLOBALS["lang"]['Australia'] = '澳大利亚';
 
 $GLOBALS["lang"]['Austria'] = '奥地利';
 
-$GLOBALS["lang"]['auth'] = '自动';
-
 $GLOBALS["lang"]['Auth'] = '自动';
+
+$GLOBALS["lang"]['auth'] = '自动';
 
 $GLOBALS["lang"]['Authentication Passphrase'] = '认证密码句';
 
+$GLOBALS["lang"]['authority_key_ident'] = '权威密钥标识符';
+
+$GLOBALS["lang"]['Authority Key Ident'] = '权威密钥标识符';
+
 $GLOBALS["lang"]['Auto'] = '自动';
 
+$GLOBALS["lang"]['auto_renew'] = '自动更新';
+
+$GLOBALS["lang"]['Auto Renew'] = '自动更新';
+
 $GLOBALS["lang"]['Auto populated by the Open-AudIT Server.'] = '由 Open-AudIT 服务器自动居住.';
+
+$GLOBALS["lang"]['AutoRenew'] = '自动续签';
+
+$GLOBALS["lang"]['automatable'] = '可自动调制';
+
+$GLOBALS["lang"]['Automatable'] = '可自动调制';
 
 $GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = '基于收集器OS自动配置.';
 
@@ -638,6 +697,14 @@ $GLOBALS["lang"]['Barbados'] = '巴巴多斯';
 
 $GLOBALS["lang"]['Base DN'] = '基础DNA';
 
+$GLOBALS["lang"]['base_score'] = '基数';
+
+$GLOBALS["lang"]['Base Score'] = '基数';
+
+$GLOBALS["lang"]['base_severity'] = '基部严重性';
+
+$GLOBALS["lang"]['Base Severity'] = '基部严重性';
+
 $GLOBALS["lang"]['based_on'] = '基于';
 
 $GLOBALS["lang"]['Based On'] = '基于';
@@ -667,10 +734,6 @@ $GLOBALS["lang"]['baselines_results'] = '基线';
 $GLOBALS["lang"]['Baselines Results'] = '基线';
 
 $GLOBALS["lang"]['Basic'] = '基础';
-
-$GLOBALS["lang"]['batch'] = '批次';
-
-$GLOBALS["lang"]['Batch'] = '批次';
 
 $GLOBALS["lang"]['Belarus'] = '白俄罗斯';
 
@@ -717,6 +780,10 @@ $GLOBALS["lang"]['Bhutan'] = '不丹';
 $GLOBALS["lang"]['bios'] = '生物';
 
 $GLOBALS["lang"]['Bios'] = '生物';
+
+$GLOBALS["lang"]['body'] = '体质';
+
+$GLOBALS["lang"]['Body'] = '体质';
 
 $GLOBALS["lang"]['Bolivia'] = '玻利维亚';
 
@@ -772,6 +839,8 @@ $GLOBALS["lang"]['Bulgaria'] = '保加利亚';
 
 $GLOBALS["lang"]['Bulk Edit'] = '批量编辑';
 
+$GLOBALS["lang"]['Bulk Editing Device Attributes'] = '批量编辑设备属性';
+
 $GLOBALS["lang"]['Burkina Faso'] = '布基纳法索';
 
 $GLOBALS["lang"]['Burundi'] = '布隆迪';
@@ -783,6 +852,8 @@ $GLOBALS["lang"]['Business Requirements'] = '业务要求';
 $GLOBALS["lang"]['Buy'] = '买';
 
 $GLOBALS["lang"]['Buy More'] = '买更多';
+
+$GLOBALS["lang"]['Buy More Licenses'] = '购买更多许可证';
 
 $GLOBALS["lang"]['By'] = '以';
 
@@ -800,15 +871,17 @@ $GLOBALS["lang"]['CPUs'] = 'CPU 组合';
 
 $GLOBALS["lang"]['CSV'] = '简历';
 
-$GLOBALS["lang"]['Calculated from discovery.'] = '从发现中计算出来.';
+$GLOBALS["lang"]['CVE'] = '简历';
 
-$GLOBALS["lang"]['Calculated total number of valid IP addresses for this network.'] = '计算了此网络的有效IP地址总数 .';
+$GLOBALS["lang"]['Calculated from discovery.'] = '从发现中计算出来';
 
-$GLOBALS["lang"]['Calculated upon completion, the time taken to execute this item.'] = '完成时计算出执行此项目所需的时间 .';
+$GLOBALS["lang"]['Calculated total number of valid IP addresses for this network.'] = '计算了此网络的有效IP地址总数 。';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = '当集成运行时计算,并包含该集成中设备的JSON表示. 每个链接到<code>devices.id</code>.';
+$GLOBALS["lang"]['Calculated upon completion, the time taken to execute this item.'] = '完成时计算出执行此项目所需的时间 。';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = '合并运行时计算,并包含该合并地点的JSON代表。 每一个链接到<code>locations.id</code>.';
+$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = '当集成运行时计算,并包含该集成中设备的JSON表示. 每个链接 <code>devices.id</code>。 。 。';
+
+$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = '合并运行时计算,并包含该合并地点的JSON代表。 每个链接 <code>locations.id</code>。 。 。';
 
 $GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected from Open-AudIT.'] = '当集成运行时计算,并包含从Open-AudIT中选择的设备数量.';
 
@@ -824,21 +897,23 @@ $GLOBALS["lang"]['Cameroon'] = '喀麦隆';
 
 $GLOBALS["lang"]['Campus Area Network'] = '校园区域网';
 
-$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code> or blank.'] = '可以是<code>活动</code>,<code>被动</code>或空白.';
+$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code> or blank.'] = '可能会 <code>active</code>, (中文). <code>passive</code> 或空白。';
 
-$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.'] = '可以是<code>application</code>,<code>compute</code>,<code>数据库</code>,<code>存储</code>,<code>虚拟化</code>,<code>web</code>,<code>其他</code>或空白.';
+$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.'] = '可能会 <code>application</code>, (中文). <code>compute</code>, (中文). <code>database</code>, (中文). <code>storage</code>, (中文). <code>virtualisation</code>, (中文). <code>web</code>, (中文). <code>other</code> 或空白。';
 
-$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.'] = '可以是<code>auto</code>,<code>固定</code>,<code>其他</code>或空白.';
+$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.'] = '可能会 <code>auto</code>, (中文). <code>fixed</code>, (中文). <code>other</code> 或空白。';
 
-$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.'] = '可以是<code>高可用性</code>,<code>负载平衡</code>,<code>性能</code>,<code>存储</code>,<code>其他</code>或空白.';
+$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.'] = '可能会 <code>high availability</code>, (中文). <code>load balancing</code>, (中文). <code>performance</code>, (中文). <code>storage</code>, (中文). <code>other</code> 或空白。';
 
-$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.'] = '可以是<code>line</code>,<code>pie</code>或<code>traffic</code>.';
+$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.'] = '可能会 <code>line</code>, (中文). <code>pie</code> 或者说 <code>traffic</code>。 。 。';
 
-$GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = '可以是<code>用户</code>或<code>收集 </code>.';
+$GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = '可能会 <code>user</code> 或者说 <code>collector</code>。 。 。';
 
 $GLOBALS["lang"]['Can be set by discovery or user.'] = '可以通过发现或用户设定.';
 
-$GLOBALS["lang"]['Can the user edit this item.'] = '用户能否编辑此项目 .';
+$GLOBALS["lang"]['Can be set by discovery or user. Uses the ID from the locations table.'] = '可以通过发现或用户设定. 使用位置表的ID。';
+
+$GLOBALS["lang"]['Can the user edit this item.'] = '用户能否编辑此项目 。';
 
 $GLOBALS["lang"]['Canada'] = '加拿大';
 
@@ -868,6 +943,14 @@ $GLOBALS["lang"]['certificate'] = '证书';
 
 $GLOBALS["lang"]['Certificate'] = '证书';
 
+$GLOBALS["lang"]['certificate_file'] = '证书文件';
+
+$GLOBALS["lang"]['Certificate File'] = '证书文件';
+
+$GLOBALS["lang"]['certificate_name'] = '证书名称';
+
+$GLOBALS["lang"]['Certificate Name'] = '证书名称';
+
 $GLOBALS["lang"]['certificates'] = '证书';
 
 $GLOBALS["lang"]['Certificates'] = '证书';
@@ -886,17 +969,13 @@ $GLOBALS["lang"]['change_type'] = '更改类型';
 
 $GLOBALS["lang"]['Change Type'] = '更改类型';
 
-$GLOBALS["lang"]['chart'] = '图表';
-
-$GLOBALS["lang"]['Chart'] = '图表';
-
 $GLOBALS["lang"]['check_minutes'] = '检查分钟';
 
 $GLOBALS["lang"]['Check Minutes'] = '检查分钟';
 
 $GLOBALS["lang"]['Check for SSH on these ports'] = '检查这些端口的 SSH';
 
-$GLOBALS["lang"]['Check this port for any SSH service.'] = '检查此端口是否为 SSH 服务 .';
+$GLOBALS["lang"]['Check this port for any SSH service.'] = '检查此端口是否为 SSH 服务 。';
 
 $GLOBALS["lang"]['Chile'] = '地址';
 
@@ -936,9 +1015,9 @@ $GLOBALS["lang"]['class_text'] = '类文本';
 
 $GLOBALS["lang"]['Class Text'] = '类文本';
 
-$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = '单击删除按钮从 Open-AudIT 中删除示例设备。 <br> 这将从数据库中删除以下设备 .';
+$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = '单击“删除”按钮从 Open-AudIT 中删除示例设备。<br/>这将从数据库中删除以下设备 。 ';
 
-$GLOBALS["lang"]['Click the Import button below to populate Open-AudIT with example device data.'] = '单击下面的导入按钮,将 Open-AudIT 添加到示例设备数据中.';
+$GLOBALS["lang"]['Click the Import button below to populate Open-AudIT with example device data.'] = '单击下面的导入按钮,将 Open-AudIT 添加到示例设备数据中。';
 
 $GLOBALS["lang"]['Client ID'] = '客户身份';
 
@@ -1056,6 +1135,14 @@ $GLOBALS["lang"]['comments'] = '评论';
 
 $GLOBALS["lang"]['Comments'] = '评论';
 
+$GLOBALS["lang"]['commercial'] = '商业';
+
+$GLOBALS["lang"]['Commercial'] = '商业';
+
+$GLOBALS["lang"]['common_name'] = '通用名称';
+
+$GLOBALS["lang"]['Common Name'] = '通用名称';
+
 $GLOBALS["lang"]['Commonly referred to as the clientId.'] = '一般称为客户端Id.';
 
 $GLOBALS["lang"]['Commonly referred to as the clientSecret.'] = '一般称为客户端Secret.';
@@ -1070,6 +1157,10 @@ $GLOBALS["lang"]['Comoros the'] = '科摩罗';
 
 $GLOBALS["lang"]['Compact'] = '压缩';
 
+$GLOBALS["lang"]['Company'] = '企业';
+
+$GLOBALS["lang"]['Complexity of the attack (Low or High).'] = '攻击的复杂性(低或高).';
+
 $GLOBALS["lang"]['Component Table'] = '构成部分表';
 
 $GLOBALS["lang"]['Components (All Devices)'] = '组件( 所有设备)';
@@ -1078,11 +1169,9 @@ $GLOBALS["lang"]['Compute'] = '计算';
 
 $GLOBALS["lang"]['Condition'] = '条件';
 
-$GLOBALS["lang"]['config'] = '配置';
-
 $GLOBALS["lang"]['Config'] = '配置';
 
-$GLOBALS["lang"]['Config Default, currently '] = '配置默认值, 目前';
+$GLOBALS["lang"]['Config Default, currently '] = '配置默认值, 目前 ';
 
 $GLOBALS["lang"]['config_file'] = '配置文件';
 
@@ -1095,6 +1184,8 @@ $GLOBALS["lang"]['Config Manager Error Code'] = '配置管理器错误代码';
 $GLOBALS["lang"]['configuration'] = '配置';
 
 $GLOBALS["lang"]['Configuration'] = '配置';
+
+$GLOBALS["lang"]['Configure'] = '配置';
 
 $GLOBALS["lang"]['Congo'] = '刚果';
 
@@ -1132,9 +1223,9 @@ $GLOBALS["lang"]['contained_in'] = '包含在';
 
 $GLOBALS["lang"]['Contained In'] = '包含在';
 
-$GLOBALS["lang"]['Contains a JSON object details the associated widgets and their positions.'] = '包含一个 JSON 对象,详细列出相关的部件及其位置 .';
+$GLOBALS["lang"]['Contains a JSON object details the associated widgets and their positions.'] = '包含一个 JSON 对象,详细列出相关的部件及其位置 。';
 
-$GLOBALS["lang"]['Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.'] = '包含决定我们是否应使用 ssh, snmp 和 wmi 发现选项的字段 。 一个JSON对象.';
+$GLOBALS["lang"]['Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.'] = '包含决定我们是否应使用 ssh, snmp 和 wmi 发现选项的字段 。 一个JSON对象。';
 
 $GLOBALS["lang"]['Context Engine ID'] = '背景引擎标识';
 
@@ -1148,7 +1239,7 @@ $GLOBALS["lang"]['Cook Islands'] = '库克群岛';
 
 $GLOBALS["lang"]['Copy and paste an audit result'] = '复制并粘贴审计结果';
 
-$GLOBALS["lang"]['Copy and paste the below to the forums, another instance of Open-AudIT or anywhere else you need to provide this item.'] = '复制并粘贴到论坛、 Open-AudIT 或您需要提供该项目的任何地方.';
+$GLOBALS["lang"]['Copy and paste the below to the forums, another instance of Open-AudIT or anywhere else you need to provide this item.'] = '复制并粘贴到论坛、 Open-AudIT 或您需要提供该项目的任何地方。';
 
 $GLOBALS["lang"]['core_count'] = '核心数';
 
@@ -1208,13 +1299,9 @@ $GLOBALS["lang"]['Create Internal From External'] = '从外部创建内部';
 
 $GLOBALS["lang"]['Create NMIS Devices from Open-AudIT'] = '从 Open-AudIT 创建 NSIS 设备';
 
-$GLOBALS["lang"]['Create Open-AudIT Devices from '] = '创建 Open-AudIT 设备从';
+$GLOBALS["lang"]['Create Open-AudIT Devices from '] = '创建 Open-AudIT 设备从 ';
 
 $GLOBALS["lang"]['Create Open-AudIT Devices from NMIS'] = '创建 Open-AudIT NMIS 设备';
-
-$GLOBALS["lang"]['created_at'] = '创建时间';
-
-$GLOBALS["lang"]['Created At'] = '创建时间';
 
 $GLOBALS["lang"]['created_by'] = '创建者';
 
@@ -1225,6 +1312,10 @@ $GLOBALS["lang"]['created_date'] = '创建日期';
 $GLOBALS["lang"]['Created Date'] = '创建日期';
 
 $GLOBALS["lang"]['Creating'] = '创建';
+
+$GLOBALS["lang"]['Creating Device'] = '创建设备';
+
+$GLOBALS["lang"]['Creating a Query'] = '创建查询';
 
 $GLOBALS["lang"]['creator'] = '创建者';
 
@@ -1238,6 +1329,22 @@ $GLOBALS["lang"]['credentials'] = '全权证书';
 
 $GLOBALS["lang"]['Credentials'] = '全权证书';
 
+$GLOBALS["lang"]['Credentials Client ID'] = '身份验证客户端标识';
+
+$GLOBALS["lang"]['Credentials Subscription ID'] = '全权证书订阅 身份证';
+
+$GLOBALS["lang"]['Credentials Tenant ID'] = '身份证';
+
+$GLOBALS["lang"]['Credentials for Amazon AWS used in Cloud Discovery'] = 'Cloud Discovery 中使用的 Amazon AWS 证书';
+
+$GLOBALS["lang"]['Credentials for Microsoft Azure used in Cloud Discovery'] = '微软的全权证书 Azure 用于云发现';
+
+$GLOBALS["lang"]['Critical'] = '关键';
+
+$GLOBALS["lang"]['criticality'] = '关键度';
+
+$GLOBALS["lang"]['Criticality'] = '关键度';
+
 $GLOBALS["lang"]['Croatia'] = '克罗地亚';
 
 $GLOBALS["lang"]['Cuba'] = '古巴';
@@ -1248,13 +1355,17 @@ $GLOBALS["lang"]['Current'] = '当前';
 
 $GLOBALS["lang"]['Current Discovery Processes'] = '当前发现进程';
 
-$GLOBALS["lang"]['Current date & time is '] = '当前日期和时间是( T)';
+$GLOBALS["lang"]['Current date & time is '] = '当前日期和时间是( T) ';
 
-$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = '目前支持的类型有:<code>snmp</code>,<code>snmp_v3</code>,<code>ssh</code>,<code>ssh_key</code>或<code>窗口</code>.';
+$GLOBALS["lang"]['Currently Installed'] = '目前已安装';
+
+$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = '目前支持的类型是 <code>snmp</code>, (中文). <code>snmp_v3</code>, (中文). <code>ssh</code>, (中文). <code>ssh_key</code> 或者说 <code>windows</code>。 。 。';
 
 $GLOBALS["lang"]['Custom TCP Ports'] = '自定义 TCP 端口';
 
 $GLOBALS["lang"]['Custom UDP Ports'] = '自定义 UDP 港口';
+
+$GLOBALS["lang"]['Cve'] = '简历';
 
 $GLOBALS["lang"]['Cyprus'] = '塞浦路斯';
 
@@ -1330,6 +1441,12 @@ $GLOBALS["lang"]['Date Received'] = '收到日期';
 
 $GLOBALS["lang"]['Date Y-M-D'] = '约会Y-M-D';
 
+$GLOBALS["lang"]['Date and time when the CVE was last updated.'] = 'CVE最后一次更新的日期和时间.';
+
+$GLOBALS["lang"]['Date and time when the CVE was published.'] = 'CVE出版日期和时间.';
+
+$GLOBALS["lang"]['Date when the CVE was published.'] = 'CVE出版日期.';
+
 $GLOBALS["lang"]['DateTime Now'] = '现在约会时间';
 
 $GLOBALS["lang"]['DateTime Y-M-D H:M:S'] = '日期时间 Y -M -D (英语). H:M:S (韩语)';
@@ -1360,7 +1477,9 @@ $GLOBALS["lang"]['Default Value'] = '默认值';
 
 $GLOBALS["lang"]['Default of 389. Normally 636 used for Active Directory LDAPS.'] = '默认389。 通常636用于活动目录LDAPS.';
 
-$GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = 'LDAP 和活动目录的<code>3</code>的默认值.';
+$GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = '默认 <code>3</code> 用于 LDAP 和活动目录。';
+
+$GLOBALS["lang"]['Defaults'] = '默认';
 
 $GLOBALS["lang"]['delay_minutes'] = '延迟分钟';
 
@@ -1380,19 +1499,15 @@ $GLOBALS["lang"]['Delete from Application'] = '删除应用程序';
 
 $GLOBALS["lang"]['Delete from Cluster'] = '从集群删除';
 
-$GLOBALS["lang"]['deleted_at'] = '删除时间';
-
-$GLOBALS["lang"]['Deleted At'] = '删除时间';
-
 $GLOBALS["lang"]['Denmark'] = '丹麦';
 
 $GLOBALS["lang"]['Derived by audit or manually set by user.'] = '由审计衍生或用户手动设定.';
 
 $GLOBALS["lang"]['Derived by audit.'] = '由审计衍生.';
 
-$GLOBALS["lang"]['Derived from <code>rack_devices.device_id</code>.'] = '衍生自<code>rack_devices.device_id</code>.';
+$GLOBALS["lang"]['Derived from <code>rack_devices.device_id</code>.'] = '来源 <code>rack_devices.device_id</code>。 。 。';
 
-$GLOBALS["lang"]['Derived from <code>rack_devices.rack_id</code>.'] = '衍生自<code>rack_devices.rack_id</code>.';
+$GLOBALS["lang"]['Derived from <code>rack_devices.rack_id</code>.'] = '来源 <code>rack_devices.rack_id</code>。 。 。';
 
 $GLOBALS["lang"]['Derived from Collector discovery.'] = '来源于收集器的发现.';
 
@@ -1400,11 +1515,11 @@ $GLOBALS["lang"]['Derived from OS Name.'] = '衍生自OS名称.';
 
 $GLOBALS["lang"]['Derived from cloud discovery.'] = '衍生自云发现.';
 
-$GLOBALS["lang"]['Derived from device audits.'] = '来自设备审计.';
+$GLOBALS["lang"]['Derived from device audits.'] = '来自设备审计。';
 
 $GLOBALS["lang"]['Derived from device type and OS.'] = '衍生自设备类型和OS.';
 
-$GLOBALS["lang"]['Derived from discovery.'] = '来源于发现.';
+$GLOBALS["lang"]['Derived from discovery.'] = '来源于发现。';
 
 $GLOBALS["lang"]['Derived from hostname, sysName, dns Hostname and IP in that order.'] = '从主机名, sysName, dns hostname 和 IP 按此顺序衍生.';
 
@@ -1434,9 +1549,9 @@ $GLOBALS["lang"]['Device'] = '设备';
 
 $GLOBALS["lang"]['Device Audits'] = '设备审计';
 
-$GLOBALS["lang"]['device_id'] = '设备标识';
-
 $GLOBALS["lang"]['Device ID'] = '设备标识';
+
+$GLOBALS["lang"]['device_id'] = '设备标识';
 
 $GLOBALS["lang"]['device_id_a'] = '设备 ID A';
 
@@ -1474,7 +1589,7 @@ $GLOBALS["lang"]['Devices Assigned To Org'] = '指定给 Org 的设备';
 
 $GLOBALS["lang"]['Devices Audited'] = '已审计设备';
 
-$GLOBALS["lang"]['Devices Created in '] = '创建于';
+$GLOBALS["lang"]['Devices Created in '] = '创建于 ';
 
 $GLOBALS["lang"]['Devices Created in Open-AudIT'] = '在 Open-AudIT 中创建的设备';
 
@@ -1498,19 +1613,19 @@ $GLOBALS["lang"]['Devices Not Seen 90 Days'] = '未见设备 90 天';
 
 $GLOBALS["lang"]['Devices Retrieved via API'] = '通过 API 获取的设备';
 
-$GLOBALS["lang"]['Devices Selected from '] = '从选中的设备';
+$GLOBALS["lang"]['Devices Selected from '] = '从选中的设备 ';
 
 $GLOBALS["lang"]['Devices Selected from Open-AudIT'] = '从 Open-AudIT 中选择的设备';
 
-$GLOBALS["lang"]['Devices Updated in '] = '设备更新于';
+$GLOBALS["lang"]['Devices Updated in '] = '设备更新于 ';
 
 $GLOBALS["lang"]['Devices Updated in Open-AudIT'] = '在 Open-AudIT 中更新的设备';
 
-$GLOBALS["lang"]['Devices are being benchmarked.'] = '设备正在基准化.';
+$GLOBALS["lang"]['Devices are being benchmarked.'] = '设备正在基准化。';
 
-$GLOBALS["lang"]['Devices are not being benchmarked.'] = '设备没有设定基准 .';
+$GLOBALS["lang"]['Devices are not being benchmarked.'] = '设备没有设定基准 。';
 
-$GLOBALS["lang"]['Devices could be benchmarked.'] = '设备可以设定基准 .';
+$GLOBALS["lang"]['Devices could be benchmarked.'] = '设备可以设定基准 。';
 
 $GLOBALS["lang"]['Devices in Running State'] = '运行状态中的设备';
 
@@ -1518,7 +1633,7 @@ $GLOBALS["lang"]['Devices in Stopped State'] = '停止状态中的设备';
 
 $GLOBALS["lang"]['Devices in this'] = '此设备';
 
-$GLOBALS["lang"]['Devired from type or OS.'] = '从类型或OS.';
+$GLOBALS["lang"]['Devired from type or OS.'] = '从类型或OS。';
 
 $GLOBALS["lang"]['dhcp_enabled'] = 'Dhcp 启用';
 
@@ -1536,7 +1651,7 @@ $GLOBALS["lang"]['dhcp_server'] = 'Dhcp 服务器';
 
 $GLOBALS["lang"]['Dhcp Server'] = 'Dhcp 服务器';
 
-$GLOBALS["lang"]['Did the command complete successfully and return expected data.'] = '命令是否成功完成并返回预期数据 .';
+$GLOBALS["lang"]['Did the command complete successfully and return expected data.'] = '命令是否成功完成并返回预期数据 。';
 
 $GLOBALS["lang"]['direction'] = '方向';
 
@@ -1562,6 +1677,10 @@ $GLOBALS["lang"]['Discoveries'] = '发现';
 
 $GLOBALS["lang"]['Discovery'] = '发现';
 
+$GLOBALS["lang"]['Discovery Change Logs'] = '发现更改日志';
+
+$GLOBALS["lang"]['Discovery Data Retention'] = '发现数据保留';
+
 $GLOBALS["lang"]['discovery_id'] = '发现身份';
 
 $GLOBALS["lang"]['Discovery ID'] = '发现身份';
@@ -1571,6 +1690,8 @@ $GLOBALS["lang"]['Discovery Issues'] = '发现问题';
 $GLOBALS["lang"]['discovery_log'] = '发现日志';
 
 $GLOBALS["lang"]['Discovery Log'] = '发现日志';
+
+$GLOBALS["lang"]['Discovery Match Options'] = '发现匹配选项';
 
 $GLOBALS["lang"]['Discovery Name'] = '发现名称';
 
@@ -1591,6 +1712,10 @@ $GLOBALS["lang"]['Discovery Scan Options'] = '发现扫描选项';
 $GLOBALS["lang"]['disk'] = '磁盘';
 
 $GLOBALS["lang"]['Disk'] = '磁盘';
+
+$GLOBALS["lang"]['display_version'] = '显示版本';
+
+$GLOBALS["lang"]['Display Version'] = '显示版本';
 
 $GLOBALS["lang"]['Display in Menu'] = '在菜单中显示';
 
@@ -1628,21 +1753,21 @@ $GLOBALS["lang"]['dns_server'] = 'Dns 服务器';
 
 $GLOBALS["lang"]['Dns Server'] = 'Dns 服务器';
 
-$GLOBALS["lang"]['Do not scan these TCP ports.'] = '不要扫描这些 TCP 端口 .';
+$GLOBALS["lang"]['Do not scan these TCP ports.'] = '不要扫描这些 TCP 端口 。';
 
-$GLOBALS["lang"]['Do not scan these UDP ports.'] = '不要扫描这些 UDP 端口 .';
+$GLOBALS["lang"]['Do not scan these UDP ports.'] = '不要扫描这些 UDP 端口 。';
 
 $GLOBALS["lang"]['Do not show me again'] = '别再给我看';
 
-$GLOBALS["lang"]['Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.'] = '您想要使用安全运输( LDAPS) 或普通的未加密的 LDAP .';
+$GLOBALS["lang"]['Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.'] = '您想要使用安全运输( LDAPS) 或普通的未加密的 LDAP 。';
 
-$GLOBALS["lang"]['Do you wish to see the standard sidebar on the left.'] = '您是否想要看到左侧的标准边栏 .';
+$GLOBALS["lang"]['Do you wish to see the standard sidebar on the left.'] = '您是否想要看到左侧的标准边栏 。';
 
 $GLOBALS["lang"]['documentation'] = '文档';
 
 $GLOBALS["lang"]['Documentation'] = '文档';
 
-$GLOBALS["lang"]['Does the license apply to child Orgs.'] = '许可证是否适用于儿童兽人.';
+$GLOBALS["lang"]['Does the license apply to child Orgs.'] = '许可证是否适用于儿童兽人。';
 
 $GLOBALS["lang"]['domain'] = '域名';
 
@@ -1668,7 +1793,7 @@ $GLOBALS["lang"]['Dominica'] = '多米尼克';
 
 $GLOBALS["lang"]['Dominican Republic'] = '多米尼加共和国';
 
-$GLOBALS["lang"]['Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.'] = '别牵我的手,我知道我在干嘛 没有过滤器和加入自定义表格的能力 .';
+$GLOBALS["lang"]['Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.'] = '别牵我的手,我知道我在干嘛 没有过滤器和加入自定义表格的能力 。';
 
 $GLOBALS["lang"]['Download'] = '下载';
 
@@ -1718,6 +1843,24 @@ $GLOBALS["lang"]['Egypt'] = '埃及';
 
 $GLOBALS["lang"]['Either Amazon, Google or Microsoft.'] = '无论是亚马逊,谷歌还是微软.';
 
+$GLOBALS["lang"]['Either none or present.
+
+<strong>None</strong> - The successful attack does not depend on the deployment and execution conditions of the vulnerable system. The attacker can expect to be able to reach the vulnerability and execute the exploit under all or most instances of the vulnerability.
+
+<strong>Present</strong> - The successful attack depends on the presence of specific deployment and execution conditions of the vulnerable system that enable the attack. These include:
+
+A race condition must be won to successfully exploit the vulnerability. The successfulness of the attack is conditioned on execution conditions that are not under full control of the attacker. The attack may need to be launched multiple times against a single target before being successful.
+
+Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).'] = '要么没有,要么现在。
+
+<strong>无</strong> - 攻击的成功不取决于脆弱系统的部署和执行条件。 攻击者可以期望能够达到脆弱性,并在所有或大多数脆弱性情况下进行剥削。
+
+<strong>现</strong> - 攻击成功与否,取决于脆弱系统的具体部署和执行条件。 其中包括:
+
+必须赢得一个种族条件,以成功地利用脆弱性。 攻击成功与否取决于执行条件,而这些条件并非完全由攻击者控制。 在成功之前,可能需要对单一目标进行多次攻击。
+
+网络注射. 攻击者必须在目标与受害者请求的资源之间注入逻辑网络路径(例如需要路径上攻击者的弱点).';
+
 $GLOBALS["lang"]['El Salvador'] = '萨尔瓦多';
 
 $GLOBALS["lang"]['email'] = '电子邮件';
@@ -1727,6 +1870,8 @@ $GLOBALS["lang"]['Email'] = '电子邮件';
 $GLOBALS["lang"]['email_address'] = '电子邮件地址';
 
 $GLOBALS["lang"]['Email Address'] = '电子邮件地址';
+
+$GLOBALS["lang"]['Email Configuration'] = '电子邮件配置';
 
 $GLOBALS["lang"]['Email to send test to'] = '发送测试的电子邮件';
 
@@ -1800,6 +1945,8 @@ $GLOBALS["lang"]['Error'] = '错误';
 
 $GLOBALS["lang"]['Error Code'] = '错误代码';
 
+$GLOBALS["lang"]['Established'] = '已设立';
+
 $GLOBALS["lang"]['Estonia'] = '爱沙尼亚';
 
 $GLOBALS["lang"]['Ethernet MAC'] = '以太网MAC';
@@ -1840,6 +1987,8 @@ $GLOBALS["lang"]['Exclude Udp Ports'] = '不包括 Udp 端口';
 
 $GLOBALS["lang"]['Exclude these IP addresses from being Nmap scanned.'] = '排除这些IP地址进行Nmap扫描.';
 
+$GLOBALS["lang"]['Excluded'] = '不包括';
+
 $GLOBALS["lang"]['exclusion_reasons'] = '排除理由';
 
 $GLOBALS["lang"]['Exclusion Reasons'] = '排除理由';
@@ -1872,17 +2021,27 @@ $GLOBALS["lang"]['Existing Room'] = '现有房间';
 
 $GLOBALS["lang"]['Existing Row'] = '现有行';
 
+$GLOBALS["lang"]['expire_date'] = '过期日期';
+
+$GLOBALS["lang"]['Expire Date'] = '过期日期';
+
 $GLOBALS["lang"]['expire_minutes'] = '过期分钟';
 
 $GLOBALS["lang"]['Expire Minutes'] = '过期分钟';
+
+$GLOBALS["lang"]['expires'] = '过期';
+
+$GLOBALS["lang"]['Expires'] = '过期';
 
 $GLOBALS["lang"]['expiry_date'] = '过期日期';
 
 $GLOBALS["lang"]['Expiry Date'] = '过期日期';
 
-$GLOBALS["lang"]['Export CSV'] = '导出 CSV';
+$GLOBALS["lang"]['exploit_maturity'] = '剥削';
 
-$GLOBALS["lang"]['Export JSON'] = '导出 JSON';
+$GLOBALS["lang"]['Exploit Maturity'] = '剥削';
+
+$GLOBALS["lang"]['Export'] = '导出';
 
 $GLOBALS["lang"]['Export by Device'] = '通过设备导出';
 
@@ -1914,13 +2073,11 @@ $GLOBALS["lang"]['Extra Columns'] = '额外列';
 
 $GLOBALS["lang"]['Extra and more verbose logging is generated for troubleshooting.'] = '额外的和更多的动词记录生成用于排除故障.';
 
+$GLOBALS["lang"]['FAQ'] = '财务问题';
+
 $GLOBALS["lang"]['FQDN'] = '东帝汶国防军';
 
 $GLOBALS["lang"]['FW Revision'] = 'FW 修订';
-
-$GLOBALS["lang"]['factories'] = '工厂';
-
-$GLOBALS["lang"]['Factories'] = '工厂';
 
 $GLOBALS["lang"]['Fail'] = '失败';
 
@@ -1956,8 +2113,6 @@ $GLOBALS["lang"]['fields'] = '字段';
 
 $GLOBALS["lang"]['Fiji the Fiji Islands'] = '斐济、斐济群岛';
 
-$GLOBALS["lang"]['file'] = '文件';
-
 $GLOBALS["lang"]['File'] = '文件';
 
 $GLOBALS["lang"]['File Import'] = '文件导入';
@@ -1984,6 +2139,10 @@ $GLOBALS["lang"]['files_id'] = '文件编号';
 
 $GLOBALS["lang"]['Files ID'] = '文件编号';
 
+$GLOBALS["lang"]['filter'] = '过滤器';
+
+$GLOBALS["lang"]['Filter'] = '过滤器';
+
 $GLOBALS["lang"]['filtered'] = '过滤';
 
 $GLOBALS["lang"]['Filtered'] = '过滤';
@@ -2004,6 +2163,8 @@ $GLOBALS["lang"]['firmware_revision'] = '固件修订';
 
 $GLOBALS["lang"]['Firmware Revision'] = '固件修订';
 
+$GLOBALS["lang"]['First Name'] = '名称';
+
 $GLOBALS["lang"]['first_run'] = '第一个运行';
 
 $GLOBALS["lang"]['First Run'] = '第一个运行';
@@ -2020,17 +2181,19 @@ $GLOBALS["lang"]['Fixed'] = '固定';
 
 $GLOBALS["lang"]['Floor'] = '楼层';
 
-$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = '跟踪下面的任何链接并发现如何使用 Open-AudIT 查找 <b> 您的网络上有什么?</b>';
+$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = '跟踪下面的任何链接并发现如何使用 Open-AudIT 查找 <b>你的网络上有什么?</b>';
 
 $GLOBALS["lang"]['For a seed discovery, should I only discover IPs in the private IP address space.'] = '对于种子发现,我是否应该只在私人IP地址空间中发现IP.';
 
-$GLOBALS["lang"]['For a seed discovery, should I only discover IPs on the chosen subnet.'] = '对于种子的发现,我是否只 发现IP在选定的子网.';
+$GLOBALS["lang"]['For a seed discovery, should I only discover IPs on the chosen subnet.'] = '对于种子的发现,我是否只 发现IP在选定的子网。';
 
-$GLOBALS["lang"]['For a seed discovery, should I ping the subnet before running the discovery.'] = '对于种子的发现, 我应该在运行 发现之前打开子网.';
+$GLOBALS["lang"]['For a seed discovery, should I ping the subnet before running the discovery.'] = '对于种子的发现, 我应该在运行 发现之前打开子网。';
 
-$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.'] = '用于原始 SQL 查询的高级条目 。 根据查询,您必须在您的 SQL 中包含 <code> WHERE @ filter and <code> .';
+$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.'] = '用于原始 SQL 查询的高级条目 。 根据查询,您必须包含 <code>WHERE @filter AND<code> in your SQL.</code></code>';
 
-$GLOBALS["lang"]['For licenses that are not perpetual, when does the license expire.'] = '对于不是永久的许可证,许可证何时到期.';
+$GLOBALS["lang"]['For licenses that are not perpetual, when does the license expire.'] = '对于不是永久的许可证,许可证何时到期。';
+
+$GLOBALS["lang"]['For more detailed information, check the Open-AudIT Knowledge Base.'] = '详情请查看Open-AudIT知识库.';
 
 $GLOBALS["lang"]['form_factor'] = '窗体因子';
 
@@ -2049,10 +2212,6 @@ $GLOBALS["lang"]['France, French Republic'] = '法国、法兰西共和国';
 $GLOBALS["lang"]['free'] = '免费';
 
 $GLOBALS["lang"]['Free'] = '免费';
-
-$GLOBALS["lang"]['free_percent'] = '免费百分比';
-
-$GLOBALS["lang"]['Free Percent'] = '免费百分比';
 
 $GLOBALS["lang"]['French'] = '法语';
 
@@ -2116,13 +2275,13 @@ $GLOBALS["lang"]['Ghana'] = '加纳';
 
 $GLOBALS["lang"]['Gibraltar'] = '直布罗陀';
 
+$GLOBALS["lang"]['Global Discovery Options'] = '全球发现选项';
+
 $GLOBALS["lang"]['Go'] = '走开';
 
 $GLOBALS["lang"]['Google Compute Fields'] = '谷歌计算字段';
 
-$GLOBALS["lang"]['graph'] = '图';
-
-$GLOBALS["lang"]['Graph'] = '图';
+$GLOBALS["lang"]['Google Maps API Key'] = '谷歌地图 API 密钥';
 
 $GLOBALS["lang"]['Greater Than'] = '超过';
 
@@ -2186,6 +2345,8 @@ $GLOBALS["lang"]['hardware_revision'] = '硬件修订';
 
 $GLOBALS["lang"]['Hardware Revision'] = '硬件修订';
 
+$GLOBALS["lang"]['Has this policy been applied in this organization.'] = '这个组织是否实行过这项政策。';
+
 $GLOBALS["lang"]['hash'] = '哈许';
 
 $GLOBALS["lang"]['Hash'] = '哈许';
@@ -2202,15 +2363,19 @@ $GLOBALS["lang"]['Height in RU'] = '在 RU 中的高度';
 
 $GLOBALS["lang"]['Help'] = '帮助';
 
+$GLOBALS["lang"]['Help and Frequently Asked Questions'] = '帮助和常问问题';
+
+$GLOBALS["lang"]['high'] = '高级';
+
 $GLOBALS["lang"]['High'] = '高级';
 
 $GLOBALS["lang"]['High Availability'] = '高可用性';
 
 $GLOBALS["lang"]['Holy See (Vatican City State)'] = '罗马教廷(瓦蒂坎州)';
 
-$GLOBALS["lang"]['home'] = '页 次';
-
 $GLOBALS["lang"]['Home'] = '页 次';
+
+$GLOBALS["lang"]['home'] = '页 次';
 
 $GLOBALS["lang"]['Home Area Network'] = '家园区域网';
 
@@ -2230,31 +2395,43 @@ $GLOBALS["lang"]['hour'] = '小时';
 
 $GLOBALS["lang"]['Hour'] = '小时';
 
+$GLOBALS["lang"]['How and Why is Open-AudIT More Secure'] = '开放-AudIT如何和为什么更加安全';
+
 $GLOBALS["lang"]['How long did the command take to execute.'] = '命令执行需要多长时间.';
 
-$GLOBALS["lang"]['How long should Nmap wait for a response, per device.'] = 'Nmap应该等待多久 每个设备的反应.';
+$GLOBALS["lang"]['How long should Nmap wait for a response, per device.'] = 'Nmap应该等待多久 每个设备的反应。';
 
-$GLOBALS["lang"]['How many circuit feed to this rack.'] = '这个架子有多少个电路.';
+$GLOBALS["lang"]['How many circuit feed to this rack.'] = '这个架子有多少个电路';
 
-$GLOBALS["lang"]['How many policies results in a fail.'] = '有多少政策导致失败.';
+$GLOBALS["lang"]['How many policies results in a fail.'] = '有多少政策导致失败。';
 
-$GLOBALS["lang"]['How many policies results in a pass.'] = '有多少政策取得了成功.';
+$GLOBALS["lang"]['How many policies results in a pass.'] = '有多少政策取得了成功。';
 
-$GLOBALS["lang"]['How many power sockets in this rack.'] = '这个架子有多少个电源插座.';
+$GLOBALS["lang"]['How many power sockets in this rack.'] = '这个架子有多少个电源插座';
 
 $GLOBALS["lang"]['How many rack units in height is this rack.'] = '高处有多少架子是这个架子.';
 
 $GLOBALS["lang"]['How often should the collector ask the server for a task.'] = '收藏家应该多久向服务器询问一个任务.';
 
-$GLOBALS["lang"]['How should we select devices to be integrated (using an Attribute, Query or a Group).'] = '我们应该如何选择要集成的设备(使用属性、查询或组).';
+$GLOBALS["lang"]['How should we select devices to be integrated (using an Attribute, Query or a Group).'] = '我们应该如何选择要集成的设备(使用属性、查询或组)。';
+
+$GLOBALS["lang"]['How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).'] = '如何利用脆弱性(例如网络、邻近、地方、物质)。';
 
 $GLOBALS["lang"]['How to compare'] = '如何比较';
 
+$GLOBALS["lang"]['Human-readable explanation of the vulnerability.'] = '人能读到的关于脆弱性的解释。';
+
 $GLOBALS["lang"]['Hungary'] = '匈牙利';
+
+$GLOBALS["lang"]['hw_cpe'] = '高调';
+
+$GLOBALS["lang"]['Hw Cpe'] = '高调';
 
 $GLOBALS["lang"]['hyperthreading'] = '超线程';
 
 $GLOBALS["lang"]['Hyperthreading'] = '超线程';
+
+$GLOBALS["lang"]['I have read the EULA.'] = '我读过欧洲国际法。';
 
 $GLOBALS["lang"]['id'] = '身份证';
 
@@ -2262,11 +2439,11 @@ $GLOBALS["lang"]['ID'] = 'ID';
 
 $GLOBALS["lang"]['IF'] = '若为';
 
-$GLOBALS["lang"]['IOS Version'] = 'IOS 版本';
-
-$GLOBALS["lang"]['ip'] = '执行伙伴';
+$GLOBALS["lang"]['IOS Version'] = 'iOS 版本';
 
 $GLOBALS["lang"]['IP'] = '执行伙伴';
+
+$GLOBALS["lang"]['ip'] = '执行伙伴';
 
 $GLOBALS["lang"]['IP Address'] = 'IP 地址';
 
@@ -2276,6 +2453,8 @@ $GLOBALS["lang"]['IP Last Seen'] = 'IP 最后一个视图';
 
 $GLOBALS["lang"]['IP Set By'] = 'IP 设置为';
 
+$GLOBALS["lang"]['ISO 27001 only.'] = '仅限ISO 27001。';
+
 $GLOBALS["lang"]['Iceland'] = '冰岛';
 
 $GLOBALS["lang"]['icon'] = '图标';
@@ -2284,7 +2463,7 @@ $GLOBALS["lang"]['Icon'] = '图标';
 
 $GLOBALS["lang"]['Icon and Text'] = '图标和文本';
 
-$GLOBALS["lang"]['Icon only, text only or icon and text.'] = '只有图标,只有文本或图标和文本.';
+$GLOBALS["lang"]['Icon only, text only or icon and text.'] = '只有图标,只有文本或图标和文本。';
 
 $GLOBALS["lang"]['id_internal'] = '内部';
 
@@ -2302,25 +2481,25 @@ $GLOBALS["lang"]['If'] = '若为';
 
 $GLOBALS["lang"]['If a port responds with filtered, should we consider it available.'] = '如果一个端口用过滤器响应,我们是否认为它可用.';
 
-$GLOBALS["lang"]['If a port responds with open|filtered, should we consider it available.'] = '如果一个端口有被打开的过滤器响应, 我们是否认为它可用 .';
+$GLOBALS["lang"]['If a port responds with open|filtered, should we consider it available.'] = '如果一个端口有被打开的过滤器响应, 我们是否认为它可用 。';
 
 $GLOBALS["lang"]['If a remote device does not exist in the Open-AudIT selected devices, should we delete it from the external system.'] = '如果在Open-AudIT所选设备中不存在远程设备,我们是否应该从外部系统中删除.';
 
-$GLOBALS["lang"]['If an Open-AudIT device has been changed, should we update the external system.'] = '如果 Open-AudIT 设备已被更改, 我们是否应该更新外部系统 .';
+$GLOBALS["lang"]['If an Open-AudIT device has been changed, should we update the external system.'] = '如果 Open-AudIT 设备已被更改, 我们是否应该更新外部系统 。';
 
 $GLOBALS["lang"]['If an Open-AudIT device is not on the external system, should we create it.'] = '如果一个 Open-AudIT 设备不在外部系统中,我们是否应该创建它.';
 
 $GLOBALS["lang"]['If an agent reports its primary IP is in this subnet, perform the actions.'] = '如果代理报称其主IP在此子网中,则执行动作.';
 
-$GLOBALS["lang"]['If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.'] = '如果检测到任何这些( 压缩、 无空格 ) 端口, 假设 SSH 运行在端口上, 并将其用于审计 。 不需要将此端口添加到自定义 TCP 端口 - 它将自动添加 .';
+$GLOBALS["lang"]['If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.'] = '如果检测到任何这些( 压缩、 无空格 ) 端口, 假设 SSH 运行在端口上, 并将其用于审计 。 不需要将此端口添加到自定义 TCP 端口 - 它将自动添加 。';
 
-$GLOBALS["lang"]['If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.'] = '如果设定了, 则持有一个 JSON 阵列, 由该用户选择查看的特定设备列组成, 但配置默认值除外 .';
+$GLOBALS["lang"]['If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.'] = '如果设定了, 则持有一个 JSON 阵列, 由该用户选择查看的特定设备列组成, 但配置默认值除外 。';
 
-$GLOBALS["lang"]['If the agent OS family (case insensitive) contains this string, perform the actions.'] = '如果代理 OS 家族( 大小写不敏感) 包含此字符串, 请执行动作 .';
+$GLOBALS["lang"]['If the agent OS family (case insensitive) contains this string, perform the actions.'] = '如果代理 OS 家族( 大小写不敏感) 包含此字符串, 请执行动作 。';
 
-$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>'] = '如果满足下列条件:<br><ul><li>a 角色指定了 ad_ group </li><li> a Org 指定了一个 ad_ group </li><li> an LDAP 数据 服务器在 LDAP (无论是活动目录还是 OpenLDAP) 中已使用设置为 y </li><li> 的 roles 用户, 并且处于指定的 ad_ groups </li></ ul > 中 该用户无需在 Open-AudIT 中创建账户即可登录到 Open-AudIT 。 Open-AudIT将查询相关LDAP,如果用户属于需要的组,但不属于Open-AudIT,其Open-AudIT内部的用户属性(名称,全名,电子邮件,角色,orgs等)将自动被覆盖并登录. <br> <br>';
+$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>'] = '符合下列条件的: 1.<br/><ul><li>a 角色指定了组</li><li>一个 Org 指定了一个 ad_ 组</li><li>一个 LDAP 服务器已使用_ roles 设置为 Y</li><li>用户存在于 LDAP( 无论是活动目录还是 OpenLDAP) , 并存在于指定的 ad_ groups</li></ul>该用户无需在 Open-AudIT 中创建账户即可登录到 Open-AudIT 。 Open-AudIT将查询相关的LDAP,如果用户属于需要的组,但不属于Open-AudIT,其Open-AudIT内部的用户属性(名称,全名,电子邮件,角色,orgs等)将自动被登录并登录.<br/> <br/>';
 
-$GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.'] = '如果登录到 Open-AudIT 的用户无法访问搜索 LDAP, 您可以使用另一个有此访问权限的账户 .';
+$GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.'] = '如果登录到 Open-AudIT 的用户无法访问搜索 LDAP, 您可以使用另一个有此访问权限的账户 。';
 
 $GLOBALS["lang"]['If this many or more minutes have passed since the device contacted the server, perform the actions.'] = '如果设备联系到服务器后这多或多分钟已经过去,请执行动作.';
 
@@ -2342,17 +2521,25 @@ $GLOBALS["lang"]['Image'] = '图像';
 
 $GLOBALS["lang"]['Images'] = '图像';
 
+$GLOBALS["lang"]['impact_availability'] = '影响';
+
+$GLOBALS["lang"]['Impact Availability'] = '影响';
+
+$GLOBALS["lang"]['impact_confidentiality'] = '影响 保密';
+
+$GLOBALS["lang"]['Impact Confidentiality'] = '影响 保密';
+
+$GLOBALS["lang"]['impact_integrity'] = '完整性';
+
+$GLOBALS["lang"]['Impact Integrity'] = '完整性';
+
 $GLOBALS["lang"]['implementation_notes'] = '执行说明';
 
 $GLOBALS["lang"]['Implementation Notes'] = '执行说明';
 
 $GLOBALS["lang"]['Import'] = '导入';
 
-$GLOBALS["lang"]['Import CSV'] = '导入 CSV';
-
 $GLOBALS["lang"]['Import Example Data'] = '导入示例数据';
-
-$GLOBALS["lang"]['Import JSON'] = '导入 JSON';
 
 $GLOBALS["lang"]['improvement_opportunities'] = '改善机会';
 
@@ -2363,6 +2550,8 @@ $GLOBALS["lang"]['In'] = '内';
 $GLOBALS["lang"]['Inactive'] = '非活动';
 
 $GLOBALS["lang"]['Include'] = '包含';
+
+$GLOBALS["lang"]['Incomplete'] = '不完整';
 
 $GLOBALS["lang"]['Index'] = '指数';
 
@@ -2390,7 +2579,7 @@ $GLOBALS["lang"]['Inputs'] = '输入';
 
 $GLOBALS["lang"]['Insane'] = '神经病';
 
-$GLOBALS["lang"]['Insert example data and discover all that Open-AudIT can tell you.'] = '插入示例数据并发现 Open-AudIT 能告诉你的所有信息 .';
+$GLOBALS["lang"]['Insert example data and discover all that Open-AudIT can tell you.'] = '插入示例数据并发现 Open-AudIT 能告诉你的所有信息 。';
 
 $GLOBALS["lang"]['Insert your Purchased license Key'] = '插入您的密码 购买许可证 密钥';
 
@@ -2420,7 +2609,11 @@ $GLOBALS["lang"]['installed_on'] = '安装于';
 
 $GLOBALS["lang"]['Installed On'] = '安装于';
 
-$GLOBALS["lang"]['Installing'] = '安装';
+$GLOBALS["lang"]['Installing on Linux'] = '在 Linux 上安装';
+
+$GLOBALS["lang"]['Installing on MacOS'] = '在 MacOS 上安装';
+
+$GLOBALS["lang"]['Installing on Windows'] = '在窗口上安装';
 
 $GLOBALS["lang"]['instance'] = '实例';
 
@@ -2488,7 +2681,7 @@ $GLOBALS["lang"]['Internal Field Name'] = '内部字段名称';
 
 $GLOBALS["lang"]['Internal ID'] = '内部标识';
 
-$GLOBALS["lang"]['Internal JSON array of valid access tokens for this user.'] = '内部 JSON 阵列, 此用户的有效访问符 .';
+$GLOBALS["lang"]['Internal JSON array of valid access tokens for this user.'] = '内部 JSON 阵列, 此用户的有效访问符 。';
 
 $GLOBALS["lang"]['Introduction'] = '导言';
 
@@ -2554,17 +2747,19 @@ $GLOBALS["lang"]['Iraq'] = '伊拉克';
 
 $GLOBALS["lang"]['Ireland'] = '爱尔兰';
 
-$GLOBALS["lang"]['Is FRU'] = '是FRU吗';
+$GLOBALS["lang"]['Is FRU'] = '是FRU吗?';
 
-$GLOBALS["lang"]['is_fru'] = '是芙鲁吗';
+$GLOBALS["lang"]['is_fru'] = '是芙鲁吗?';
 
-$GLOBALS["lang"]['Is Fru'] = '是芙鲁吗';
+$GLOBALS["lang"]['Is Fru'] = '是芙鲁吗?';
 
 $GLOBALS["lang"]['Is the NMIS server local (on this Open-AudIT server) or remote?'] = 'NSIS服务器是本地的(在这个Open-AudIT服务器上)还是远程的?';
 
-$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = '这个账户正常吗? 如果设置为<code>n</code>,则用户无法登录.';
+$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = '这个账户正常吗? 如果设置为 <code>n</code>,用户无法登录。';
 
-$GLOBALS["lang"]['Is this task enabled (y/n).'] = '是否启用此任务( y/ n) .';
+$GLOBALS["lang"]['Is this query restricted to licensed customers.'] = '此查询是否仅限于有执照的客户 。';
+
+$GLOBALS["lang"]['Is this task enabled (y/n).'] = '是否启用此任务( y/ n) 。';
 
 $GLOBALS["lang"]['Isle of Man'] = '马恩岛';
 
@@ -2576,9 +2771,15 @@ $GLOBALS["lang"]['issuer'] = '发行商';
 
 $GLOBALS["lang"]['Issuer'] = '发行商';
 
+$GLOBALS["lang"]['issuer_name'] = '发行者名称';
+
+$GLOBALS["lang"]['Issuer Name'] = '发行者名称';
+
 $GLOBALS["lang"]['Issues'] = '问题';
 
 $GLOBALS["lang"]['Italy'] = '意大利';
+
+$GLOBALS["lang"]['Items not in Baseline'] = '非基线项目';
 
 $GLOBALS["lang"]['JSON'] = '贾森';
 
@@ -2644,6 +2845,8 @@ $GLOBALS["lang"]['last_logon'] = '最后一个登录';
 
 $GLOBALS["lang"]['Last Logon'] = '最后一个登录';
 
+$GLOBALS["lang"]['Last Name'] = '姓';
+
 $GLOBALS["lang"]['last_os_update'] = '最后一个 Os 更新';
 
 $GLOBALS["lang"]['Last Os Update'] = '最后一个 Os 更新';
@@ -2667,6 +2870,10 @@ $GLOBALS["lang"]['Last Seen By'] = '最后见到 以';
 $GLOBALS["lang"]['last_user'] = '最后一个用户';
 
 $GLOBALS["lang"]['Last User'] = '最后一个用户';
+
+$GLOBALS["lang"]['lastModified'] = '最后修改';
+
+$GLOBALS["lang"]['LastModified'] = '最后修改';
 
 $GLOBALS["lang"]['latitude'] = '纬度';
 
@@ -2692,6 +2899,10 @@ $GLOBALS["lang"]['ldap_dn_password'] = 'Ldap Dn 密码';
 
 $GLOBALS["lang"]['Ldap Dn Password'] = 'Ldap Dn 密码';
 
+$GLOBALS["lang"]['Learn About'] = '学习关于';
+
+$GLOBALS["lang"]['Learn More'] = '学习更多';
+
 $GLOBALS["lang"]['lease_expiry_date'] = '租赁到期日期';
 
 $GLOBALS["lang"]['Lease Expiry Date'] = '租赁到期日期';
@@ -2711,6 +2922,8 @@ $GLOBALS["lang"]['Less Than or Equals'] = '小于或等于';
 $GLOBALS["lang"]['level'] = '职等';
 
 $GLOBALS["lang"]['Level'] = '职等';
+
+$GLOBALS["lang"]['Level of privileges needed to exploit (None, Low, High).'] = '开发所需的特权水平(无、低、高)。';
 
 $GLOBALS["lang"]['Liberia'] = '利比里亚';
 
@@ -2734,7 +2947,7 @@ $GLOBALS["lang"]['limit'] = '限制';
 
 $GLOBALS["lang"]['Limit'] = '限制';
 
-$GLOBALS["lang"]['Limit the query to the first X items.'] = '将查询限制在第一批 X 项 .';
+$GLOBALS["lang"]['Limit the query to the first X items.'] = '将查询限制在第一批 X 项 。';
 
 $GLOBALS["lang"]['Limited to 100 rows.'] = '限于百行.';
 
@@ -2762,21 +2975,19 @@ $GLOBALS["lang"]['Link'] = '链接';
 
 $GLOBALS["lang"]['Link (Advanced)'] = '链接( 高级)';
 
-$GLOBALS["lang"]['linked_row'] = '链接行';
-
-$GLOBALS["lang"]['Linked Row'] = '链接行';
-
-$GLOBALS["lang"]['linked_table'] = '链接表格';
-
-$GLOBALS["lang"]['Linked Table'] = '链接表格';
+$GLOBALS["lang"]['Linked Files'] = '链接文件';
 
 $GLOBALS["lang"]['links'] = '链接';
 
 $GLOBALS["lang"]['Links'] = '链接';
 
-$GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.'] = '将此发现链接到关联云(如果需要). 链接到 <code>clouds.id</code>.';
+$GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.'] = '将此发现链接到关联云(如果需要). 链接到 <code>clouds.id</code>。 。 。';
 
-$GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = '链接到 <code>发现_scan_options.id </code>.';
+$GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = '链接到 <code>discovery_scan_options.id</code>。 。 。';
+
+$GLOBALS["lang"]['Links to <code>standards.id</code>'] = '链接到 <code>standards.id</code>';
+
+$GLOBALS["lang"]['Links to <standards_policies.id</code>'] = '链接到 <standards_policies.id< code=""></standards_policies.id<>';
 
 $GLOBALS["lang"]['Linux'] = '链接';
 
@@ -2799,6 +3010,8 @@ $GLOBALS["lang"]['local_port'] = '本地端口';
 $GLOBALS["lang"]['Local Port'] = '本地端口';
 
 $GLOBALS["lang"]['Localhost'] = '本地主机';
+
+$GLOBALS["lang"]['Localisation'] = '本地化';
 
 $GLOBALS["lang"]['Location'] = '地点';
 
@@ -2876,17 +3089,21 @@ $GLOBALS["lang"]['log_status'] = '日志状态';
 
 $GLOBALS["lang"]['Log Status'] = '日志状态';
 
-$GLOBALS["lang"]['Logical Cores '] = '逻辑核心';
+$GLOBALS["lang"]['Logical Cores '] = '逻辑核心 ';
 
 $GLOBALS["lang"]['logical_count'] = '逻辑计算';
 
 $GLOBALS["lang"]['Logical Count'] = '逻辑计算';
+
+$GLOBALS["lang"]['Logout'] = '注销';
 
 $GLOBALS["lang"]['Logs'] = '日志';
 
 $GLOBALS["lang"]['longitude'] = '经度';
 
 $GLOBALS["lang"]['Longitude'] = '经度';
+
+$GLOBALS["lang"]['low'] = '低档';
 
 $GLOBALS["lang"]['Low'] = '低档';
 
@@ -2916,6 +3133,10 @@ $GLOBALS["lang"]['maintenance_expires'] = '保养过期';
 
 $GLOBALS["lang"]['Maintenance Expires'] = '保养过期';
 
+$GLOBALS["lang"]['Make My Default Dashboard'] = '制作我的默认板';
+
+$GLOBALS["lang"]['Make this install a Collector'] = '将此安装为收藏器';
+
 $GLOBALS["lang"]['Malawi'] = '马拉维';
 
 $GLOBALS["lang"]['Malaysia'] = '马来西亚';
@@ -2926,13 +3147,23 @@ $GLOBALS["lang"]['Mali'] = '马里';
 
 $GLOBALS["lang"]['Malta'] = '马耳他';
 
+$GLOBALS["lang"]['Manage'] = '管理';
+
+$GLOBALS["lang"]['Manage Licenses'] = '管理许可证';
+
 $GLOBALS["lang"]['Manage in NMIS'] = '在 NMIS 中管理';
+
+$GLOBALS["lang"]['Managed'] = '管理';
+
+$GLOBALS["lang"]['managed_by'] = '管理单位';
+
+$GLOBALS["lang"]['Managed By'] = '管理单位';
 
 $GLOBALS["lang"]['Manual Input'] = '手动输入';
 
 $GLOBALS["lang"]['Manually set by user, defaults to Production.'] = '用户手动设定,默认为Production.';
 
-$GLOBALS["lang"]['Manually set by user.'] = '用户手动设定 .';
+$GLOBALS["lang"]['Manually set by user.'] = '用户手动设定 。';
 
 $GLOBALS["lang"]['manufacture_date'] = '制造日期';
 
@@ -3000,6 +3231,10 @@ $GLOBALS["lang"]['May'] = '5月(半天会议)';
 
 $GLOBALS["lang"]['Mayotte'] = '马约特';
 
+$GLOBALS["lang"]['Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.'] = '衡量脆弱性受到攻击的可能性,其依据是目前开发技术、开发代码可用性或积极、“无处不在”开发的现状。';
+
+$GLOBALS["lang"]['medium'] = '中型';
+
 $GLOBALS["lang"]['Medium'] = '中型';
 
 $GLOBALS["lang"]['members'] = '成员';
@@ -3038,7 +3273,7 @@ $GLOBALS["lang"]['metric'] = '计量';
 
 $GLOBALS["lang"]['Metric'] = '计量';
 
-$GLOBALS["lang"]['Metropolitan Area Network'] = '都市地区网';
+$GLOBALS["lang"]['Metropolitan Area Network'] = '都市地区网.';
 
 $GLOBALS["lang"]['Mexico'] = '墨西哥';
 
@@ -3049,10 +3284,6 @@ $GLOBALS["lang"]['Microsoft Azure Fields'] = '微软 Azure 字段';
 $GLOBALS["lang"]['microtime'] = '微时间';
 
 $GLOBALS["lang"]['Microtime'] = '微时间';
-
-$GLOBALS["lang"]['migrations'] = '移徙';
-
-$GLOBALS["lang"]['Migrations'] = '移徙';
 
 $GLOBALS["lang"]['minute'] = '分钟';
 
@@ -3075,6 +3306,8 @@ $GLOBALS["lang"]['Module'] = '模块';
 $GLOBALS["lang"]['module_index'] = '模块索引';
 
 $GLOBALS["lang"]['Module Index'] = '模块索引';
+
+$GLOBALS["lang"]['Modules'] = '模块';
 
 $GLOBALS["lang"]['Moldova'] = '摩尔多瓦';
 
@@ -3142,15 +3375,11 @@ $GLOBALS["lang"]['NMIS Poller'] = 'NMIS POLLER 系统';
 
 $GLOBALS["lang"]['NMIS Role'] = '国家管理信息系统 作用';
 
-$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.'] = '注 - 您可以将 < code> decrypt_creditities</code> 的配置项目设置为 < code>n</code> , 防止在下面显示纯文本证书.';
+$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.'] = '注 - 您可以设置配置项目, 防止下面显示纯文本证书 <code>decrypt_credentials</code> 改为: <code>n</code>。 。 。';
 
 $GLOBALS["lang"]['name'] = '名称';
 
 $GLOBALS["lang"]['Name'] = '名称';
-
-$GLOBALS["lang"]['namespace'] = '命名空间';
-
-$GLOBALS["lang"]['Namespace'] = '命名空间';
 
 $GLOBALS["lang"]['Namibia'] = '纳米比亚';
 
@@ -3208,6 +3437,8 @@ $GLOBALS["lang"]['New Row Name'] = '新建行名称';
 
 $GLOBALS["lang"]['New Zealand'] = '新西兰';
 
+$GLOBALS["lang"]['News'] = '新闻';
+
 $GLOBALS["lang"]['next_hop'] = '下一个跳';
 
 $GLOBALS["lang"]['Next Hop'] = '下一个跳';
@@ -3227,6 +3458,8 @@ $GLOBALS["lang"]['Niue'] = '纽埃';
 $GLOBALS["lang"]['nmap'] = '地图';
 
 $GLOBALS["lang"]['Nmap'] = '地图';
+
+$GLOBALS["lang"]['Nmap Port Scanning Responses'] = 'Nmap 端口扫描响应';
 
 $GLOBALS["lang"]['nmap_tcp_ports'] = 'Nmap Tcp 端口';
 
@@ -3276,7 +3509,7 @@ $GLOBALS["lang"]['No'] = '没有';
 
 $GLOBALS["lang"]['No Devices Returned'] = '没有设备返回';
 
-$GLOBALS["lang"]['No Google Maps API Key present, you will not be able to display the map.'] = '没有谷歌地图 API 密钥当前, 您无法显示地图 .';
+$GLOBALS["lang"]['No Google Maps API Key present, you will not be able to display the map.'] = '没有谷歌地图 API 密钥当前, 您无法显示地图 。';
 
 $GLOBALS["lang"]['No License for Professional or Enterprise'] = '无专业或企业许可证';
 
@@ -3284,7 +3517,7 @@ $GLOBALS["lang"]['No Results'] = '无结果';
 
 $GLOBALS["lang"]['No data in License Key'] = '许可证密钥中没有数据';
 
-$GLOBALS["lang"]['No database upgrade required at this time.'] = '目前不需要更新数据库 .';
+$GLOBALS["lang"]['No database upgrade required at this time.'] = '目前不需要更新数据库 。';
 
 $GLOBALS["lang"]['Node'] = '节点';
 
@@ -3322,7 +3555,15 @@ $GLOBALS["lang"]['notes'] = '页:1';
 
 $GLOBALS["lang"]['Notice'] = '通知';
 
+$GLOBALS["lang"]['notin'] = '笔记';
+
+$GLOBALS["lang"]['Notin'] = '笔记';
+
 $GLOBALS["lang"]['November'] = '11月(半天会议)';
+
+$GLOBALS["lang"]['nvd_json'] = '恩夫德·杰森(英语:Nvd Json)';
+
+$GLOBALS["lang"]['Nvd Json'] = '恩夫德·杰森(英语:Nvd Json)';
 
 $GLOBALS["lang"]['ORDER BY'] = '命令';
 
@@ -3352,15 +3593,15 @@ $GLOBALS["lang"]['Omk Uuid'] = '奥姆克·威德';
 
 $GLOBALS["lang"]['On'] = '打开';
 
-$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.'] = '一种为<code>3x2</code>,<code>4x2</code>,<code>4x3</code>或<code>4x4</code>.';
+$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.'] = '一个 <code>3x2</code>, (中文). <code>4x2</code>, (中文). <code>4x3</code> 或者说 <code>4x4</code>。 。 。';
 
-$GLOBALS["lang"]['One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.'] = '校园区网之一 云网 企业民营网 家园区网 局域网 都市区网 被动光学局域网 个人区网 存储区网 系统区网 虚拟民营网 广域网 无线局域网.';
+$GLOBALS["lang"]['One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.'] = '校园区网之一 云网 企业民营网 家园区网 局域网 都市区网 被动光学局域网 个人区网 存储区网 系统区网 虚拟民营网 广域网 无线局域网';
 
 $GLOBALS["lang"]['One of Development, Disaster Recovery, Evaluation, Pre-Production, Production, Testing, Training, User Acceptance Testing'] = '发展、灾后恢复、评价、前期生产、生产、测试、培训、用户接受测试';
 
-$GLOBALS["lang"]['One of allocated, delegated, planning, reserved, unallocated, unknown, unmanaged. Defaults to allocated.'] = '其中分配,授权,规划,预留,未分配,未知,未管理. 默认分配 .';
+$GLOBALS["lang"]['One of allocated, delegated, planning, reserved, unallocated, unknown, unmanaged. Defaults to allocated.'] = '其中分配,授权,规划,预留,未分配,未知,未管理. 默认分配 。';
 
-$GLOBALS["lang"]['One of either <code>active directory</code> or <code>openldap</code>.'] = '<code>活动目录</code>或<code>openldap</code>中的一种.';
+$GLOBALS["lang"]['One of either <code>active directory</code> or <code>openldap</code>.'] = '其中一个 <code>active directory</code> 或者说 <code>openldap</code>。 。 。';
 
 $GLOBALS["lang"]['One of: antivirus, backup, firewall, approved, banned, ignored or other.'] = '其中:抗病毒,备份,防火墙,批准,禁止,忽略或其他.';
 
@@ -3374,6 +3615,8 @@ $GLOBALS["lang"]['Open-AudIT Device Selection'] = 'Open-AudIT 设备选择';
 
 $GLOBALS["lang"]['Open-AudIT Enterprise'] = 'Open-AudIT 企业';
 
+$GLOBALS["lang"]['Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.'] = '开放AudIT企业. 大型网络的高尺度灵活发现和审计解决方案. 专业+的所有特征:基线,文件审计,云发现,Rack管理,可配置角色基础访问控制包括Active Directory和LDAP.';
+
 $GLOBALS["lang"]['Open-AudIT Field Name'] = '打开 AudIT 字段名称';
 
 $GLOBALS["lang"]['Open-AudIT Licenses'] = '开放AudIT许可证';
@@ -3381,6 +3624,10 @@ $GLOBALS["lang"]['Open-AudIT Licenses'] = '开放AudIT许可证';
 $GLOBALS["lang"]['Open-AudIT Options'] = '打开AudIT 选项';
 
 $GLOBALS["lang"]['Open-AudIT Professional'] = '专业人员';
+
+$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = '开放AudIT专业. 这个世界';
+
+$GLOBALS["lang"]['Open-AudIT and Nmap'] = '打开AudIT和Nmap';
 
 $GLOBALS["lang"]['OpenScap is Installed'] = 'OpenScap 已安装';
 
@@ -3406,7 +3653,9 @@ $GLOBALS["lang"]['optical'] = '光学';
 
 $GLOBALS["lang"]['Optical'] = '光学';
 
-$GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = '经Open-AudIT审计的可选版本. 使用% 签名% 作为通配符 .';
+$GLOBALS["lang"]['Optimized'] = '优化';
+
+$GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = '经Open-AudIT审计的可选版本. 使用% 签名% 作为通配符 。';
 
 $GLOBALS["lang"]['options'] = '选项';
 
@@ -3428,9 +3677,13 @@ $GLOBALS["lang"]['organisation'] = '日历';
 
 $GLOBALS["lang"]['Organisation Descendants'] = '后代组织';
 
+$GLOBALS["lang"]['Organisations'] = '组织';
+
 $GLOBALS["lang"]['orgs'] = '鸟类';
 
 $GLOBALS["lang"]['Orgs'] = '鸟类';
+
+$GLOBALS["lang"]['Orgs Name'] = '兽名';
 
 $GLOBALS["lang"]['orientation'] = '方向';
 
@@ -3451,6 +3704,10 @@ $GLOBALS["lang"]['Os Bit'] = '奥斯比特';
 $GLOBALS["lang"]['os_cpe'] = '奥斯 Cpe';
 
 $GLOBALS["lang"]['Os Cpe'] = '奥斯 Cpe';
+
+$GLOBALS["lang"]['os_display_version'] = 'Os 显示版本';
+
+$GLOBALS["lang"]['Os Display Version'] = 'Os 显示版本';
 
 $GLOBALS["lang"]['os_family'] = '奥斯家庭';
 
@@ -3512,6 +3769,8 @@ $GLOBALS["lang"]['outputs'] = '产出';
 
 $GLOBALS["lang"]['Outputs'] = '产出';
 
+$GLOBALS["lang"]['Overall severity score (0–10).'] = '总严重程度分(0–10).';
+
 $GLOBALS["lang"]['overwrite'] = '覆盖';
 
 $GLOBALS["lang"]['Overwrite'] = '覆盖';
@@ -3520,11 +3779,9 @@ $GLOBALS["lang"]['owner'] = '拥有者';
 
 $GLOBALS["lang"]['Owner'] = '拥有者';
 
-$GLOBALS["lang"]['PHP'] = 'ƯΜ㼯A';
+$GLOBALS["lang"]['PHP'] = 'ưμ㼯A';
 
 $GLOBALS["lang"]['POD'] = 'POD 密码';
-
-$GLOBALS["lang"]['package'] = '软件包';
 
 $GLOBALS["lang"]['Package'] = '软件包';
 
@@ -3584,9 +3841,9 @@ $GLOBALS["lang"]['Passed'] = '已经通过';
 
 $GLOBALS["lang"]['Passive Optical Local Area Network'] = '被动光学局域网';
 
-$GLOBALS["lang"]['password'] = '密码';
-
 $GLOBALS["lang"]['Password'] = '密码';
+
+$GLOBALS["lang"]['password'] = '密码';
 
 $GLOBALS["lang"]['password_changeable'] = '密码可更改';
 
@@ -3621,6 +3878,8 @@ $GLOBALS["lang"]['path'] = '路径';
 $GLOBALS["lang"]['Path'] = '路径';
 
 $GLOBALS["lang"]['Performance'] = '业绩';
+
+$GLOBALS["lang"]['Performed'] = '已执行';
 
 $GLOBALS["lang"]['permission'] = '权限';
 
@@ -3668,9 +3927,9 @@ $GLOBALS["lang"]['Pid'] = '管道';
 
 $GLOBALS["lang"]['Pie Chart'] = '派图';
 
-$GLOBALS["lang"]['ping'] = 'Ing';
+$GLOBALS["lang"]['ping'] = 'ing';
 
-$GLOBALS["lang"]['Ping'] = 'Ing';
+$GLOBALS["lang"]['Ping'] = 'ing';
 
 $GLOBALS["lang"]['Pitcairn Islands'] = '皮特凯恩群岛';
 
@@ -3678,9 +3937,9 @@ $GLOBALS["lang"]['placement'] = '安置情况';
 
 $GLOBALS["lang"]['Placement'] = '安置情况';
 
-$GLOBALS["lang"]['Please have an Open-AudIT administrator logon and upgrade the database.'] = '请有一个 Open-AudIT 管理员登录并升级数据库 .';
+$GLOBALS["lang"]['Please have an Open-AudIT administrator logon and upgrade the database.'] = '请有一个 Open-AudIT 管理员登录并升级数据库 。';
 
-$GLOBALS["lang"]['Please note that the select box will override the text input box.'] = '请注意,选定的框将覆盖文本输入框.';
+$GLOBALS["lang"]['Please note that the select box will override the text input box.'] = '请注意,选定的框将覆盖文本输入框。';
 
 $GLOBALS["lang"]['Please set using'] = '请使用';
 
@@ -3692,7 +3951,7 @@ $GLOBALS["lang"]['Poland'] = '波兰';
 
 $GLOBALS["lang"]['Policies'] = '政策';
 
-$GLOBALS["lang"]['Policies have exceptions.'] = '政策有例外.';
+$GLOBALS["lang"]['Policies have exceptions.'] = '政策有例外。';
 
 $GLOBALS["lang"]['policy'] = '政策';
 
@@ -3708,17 +3967,17 @@ $GLOBALS["lang"]['Policy Results'] = '政策成果';
 
 $GLOBALS["lang"]['Polite'] = '礼貌';
 
-$GLOBALS["lang"]['Populated by audit.'] = '通过审计进行.';
+$GLOBALS["lang"]['Populated by audit.'] = '通过审计进行。';
 
-$GLOBALS["lang"]['Populated by discovery and audit.'] = '以发现和审计为主.';
+$GLOBALS["lang"]['Populated by discovery and audit.'] = '以发现和审计为主。';
 
-$GLOBALS["lang"]['Populated dynamically.'] = '充满活力.';
+$GLOBALS["lang"]['Populated dynamically.'] = '充满活力。';
 
 $GLOBALS["lang"]['Populated from DNS.'] = '由DNS传播.';
 
-$GLOBALS["lang"]['Populated from SNMP discovery.'] = '由 SNMP 发现而成.';
+$GLOBALS["lang"]['Populated from SNMP discovery.'] = '由 SNMP 发现而成。';
 
-$GLOBALS["lang"]['Populated from device audits.'] = '由设备审计提供.';
+$GLOBALS["lang"]['Populated from device audits.'] = '由设备审计提供。';
 
 $GLOBALS["lang"]['Populated from hostname.'] = '从主机名复制.';
 
@@ -3726,9 +3985,9 @@ $GLOBALS["lang"]['Populated from machine-id on Linux.'] = '由Linux上的机器�
 
 $GLOBALS["lang"]['Populated from the IP for the default route or the IP detected in discovery.'] = '用于默认路径或发现时检测到的IP的IP充值.';
 
-$GLOBALS["lang"]['Populated from the hostname command.'] = '从主机名命令复制 .';
+$GLOBALS["lang"]['Populated from the hostname command.'] = '从主机名命令复制 。';
 
-$GLOBALS["lang"]['Populated with additional data from the external system, in a JSON representation.'] = '以外部系统的额外数据作为JSON代表.';
+$GLOBALS["lang"]['Populated with additional data from the external system, in a JSON representation.'] = '以外部系统的额外数据作为JSON代表。';
 
 $GLOBALS["lang"]['port'] = '端口';
 
@@ -3767,6 +4026,10 @@ $GLOBALS["lang"]['Power Circuit'] = '电路';
 $GLOBALS["lang"]['power_sockets'] = '电袜';
 
 $GLOBALS["lang"]['Power Sockets'] = '电袜';
+
+$GLOBALS["lang"]['Predictable'] = '可预见';
+
+$GLOBALS["lang"]['Preferences'] = '首选项';
 
 $GLOBALS["lang"]['Prerequisites'] = '先决条件';
 
@@ -3816,6 +4079,10 @@ $GLOBALS["lang"]['Priority'] = '优先权';
 
 $GLOBALS["lang"]['Privacy Passphrase'] = '隐私密码句';
 
+$GLOBALS["lang"]['privileges_required'] = '所需特权';
+
+$GLOBALS["lang"]['Privileges Required'] = '所需特权';
+
 $GLOBALS["lang"]['processor'] = '处理器';
 
 $GLOBALS["lang"]['Processor'] = '处理器';
@@ -3838,6 +4105,12 @@ $GLOBALS["lang"]['product_name'] = '产品名称';
 
 $GLOBALS["lang"]['Product Name'] = '产品名称';
 
+$GLOBALS["lang"]['Product Name Match from CPE: '] = 'CPE产品名称匹配 : ';
+
+$GLOBALS["lang"]['products'] = '产品';
+
+$GLOBALS["lang"]['Products'] = '产品';
+
 $GLOBALS["lang"]['profile'] = '简介';
 
 $GLOBALS["lang"]['Profile'] = '简介';
@@ -3853,6 +4126,14 @@ $GLOBALS["lang"]['Protocol'] = '议定书';
 $GLOBALS["lang"]['provider'] = '供应商';
 
 $GLOBALS["lang"]['Provider'] = '供应商';
+
+$GLOBALS["lang"]['published'] = '已出版';
+
+$GLOBALS["lang"]['Published'] = '已出版';
+
+$GLOBALS["lang"]['published_date'] = '发布日期';
+
+$GLOBALS["lang"]['Published Date'] = '发布日期';
 
 $GLOBALS["lang"]['publisher'] = '出版商';
 
@@ -3944,9 +4225,9 @@ $GLOBALS["lang"]['rack_id'] = '麦克身份证';
 
 $GLOBALS["lang"]['Rack ID'] = '麦克身份证';
 
-$GLOBALS["lang"]['racks'] = '垃圾袋';
-
 $GLOBALS["lang"]['Racks'] = '垃圾袋';
+
+$GLOBALS["lang"]['racks'] = '垃圾袋';
 
 $GLOBALS["lang"]['radio'] = '无线电';
 
@@ -3957,6 +4238,12 @@ $GLOBALS["lang"]['Radio MAC'] = 'MAC电台';
 $GLOBALS["lang"]['rationale'] = '理由';
 
 $GLOBALS["lang"]['Rationale'] = '理由';
+
+$GLOBALS["lang"]['raw'] = '原始内容';
+
+$GLOBALS["lang"]['Raw'] = '原始内容';
+
+$GLOBALS["lang"]['read'] = '读取';
 
 $GLOBALS["lang"]['Read'] = '读取';
 
@@ -3969,6 +4256,10 @@ $GLOBALS["lang"]['Redirect URI'] = '重定向 URI';
 $GLOBALS["lang"]['redirect_uri'] = '调整 Uri 方向';
 
 $GLOBALS["lang"]['Redirect Uri'] = '调整 Uri 方向';
+
+$GLOBALS["lang"]['references'] = '参考资料';
+
+$GLOBALS["lang"]['References'] = '参考资料';
 
 $GLOBALS["lang"]['region'] = '地区';
 
@@ -4010,9 +4301,17 @@ $GLOBALS["lang"]['reportable'] = '可报告';
 
 $GLOBALS["lang"]['Reportable'] = '可报告';
 
+$GLOBALS["lang"]['Reports'] = '报告';
+
 $GLOBALS["lang"]['request'] = '请求';
 
 $GLOBALS["lang"]['Request'] = '请求';
+
+$GLOBALS["lang"]['Request a Specific CVE'] = '具体请求a 简历';
+
+$GLOBALS["lang"]['requested'] = '请求';
+
+$GLOBALS["lang"]['Requested'] = '请求';
 
 $GLOBALS["lang"]['require_port'] = '需要端口';
 
@@ -4043,6 +4342,8 @@ $GLOBALS["lang"]['Response'] = '回应';
 $GLOBALS["lang"]['responsibility'] = '责任';
 
 $GLOBALS["lang"]['Responsibility'] = '责任';
+
+$GLOBALS["lang"]['Restore my Licenses'] = '恢复我的驾照';
 
 $GLOBALS["lang"]['Restrict to Private'] = '限于私人';
 
@@ -4124,13 +4425,15 @@ $GLOBALS["lang"]['Run Discovery'] = '运行发现';
 
 $GLOBALS["lang"]['Run Discovery on Devices'] = '在设备上运行发现';
 
-$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = '运行一个发现并查找<b> 您的网络上有什么?</b>';
+$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = '调查一下发现 <b>你的网络上有什么?</b>';
 
 $GLOBALS["lang"]['Run this Command'] = '运行此命令';
 
 $GLOBALS["lang"]['runas'] = '鲁纳斯';
 
 $GLOBALS["lang"]['Runas'] = '鲁纳斯';
+
+$GLOBALS["lang"]['Running Open-AudIT Apache Service Under Windows'] = '在窗口下运行 Open-AudIT Apache 服务';
 
 $GLOBALS["lang"]['Russian Federation'] = '俄罗斯联邦';
 
@@ -4162,7 +4465,7 @@ $GLOBALS["lang"]['SID'] = '小岛屿发展中国家';
 
 $GLOBALS["lang"]['SM Version'] = 'SM 版本';
 
-$GLOBALS["lang"]['SNMP (v1 / v2)'] = 'SNMP (v1 / v2) (韩语)';
+$GLOBALS["lang"]['SNMP (v1 / v2)'] = 'SNMP (v1 / v2) (韩语).';
 
 $GLOBALS["lang"]['SNMP Details'] = 'SNMP 状态 细节';
 
@@ -4170,7 +4473,7 @@ $GLOBALS["lang"]['SNMP OID'] = 'SNMP OID 编辑器';
 
 $GLOBALS["lang"]['SNMP Version'] = 'SNMP 版本';
 
-$GLOBALS["lang"]['SNMP v3'] = 'SNMP v3 (英语)';
+$GLOBALS["lang"]['SNMP v3'] = 'SNMP v3 (英语).';
 
 $GLOBALS["lang"]['SQL'] = 'SQL 数据';
 
@@ -4222,13 +4525,19 @@ $GLOBALS["lang"]['scan_options'] = '扫描选项';
 
 $GLOBALS["lang"]['Scan Options'] = '扫描选项';
 
-$GLOBALS["lang"]['Scan the Nmap top number of TCP ports.'] = '扫描 TCP 端口的 Nmap 顶号 .';
+$GLOBALS["lang"]['Scan Options ID'] = '扫描选项 ID';
 
-$GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = '扫描 UDP 端口的 Nmap 顶号 .';
+$GLOBALS["lang"]['Scan the Nmap top number of TCP ports.'] = '扫描 TCP 端口的 Nmap 顶号 。';
+
+$GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = '扫描 UDP 端口的 Nmap 顶号 。';
 
 $GLOBALS["lang"]['schedule'] = '时间表';
 
 $GLOBALS["lang"]['Schedule'] = '时间表';
+
+$GLOBALS["lang"]['scope'] = '范围';
+
+$GLOBALS["lang"]['Scope'] = '范围';
 
 $GLOBALS["lang"]['script_timeout'] = '脚本超时';
 
@@ -4259,6 +4568,8 @@ $GLOBALS["lang"]['Search'] = '搜索';
 $GLOBALS["lang"]['Search For a Device'] = '搜索设备';
 
 $GLOBALS["lang"]['Search for Device'] = '搜索设备';
+
+$GLOBALS["lang"]['Searching Using DataTables'] = '使用数据表搜索';
 
 $GLOBALS["lang"]['secondary'] = '中学';
 
@@ -4338,7 +4649,11 @@ $GLOBALS["lang"]['Select a Table'] = '选择表格';
 
 $GLOBALS["lang"]['Senegal'] = '塞内加尔';
 
-$GLOBALS["lang"]['September'] = '9月 (中文(简体) )';
+$GLOBALS["lang"]['sensitivity'] = '敏感性';
+
+$GLOBALS["lang"]['Sensitivity'] = '敏感性';
+
+$GLOBALS["lang"]['September'] = '9月 (中文(简体) ).';
 
 $GLOBALS["lang"]['Serbia'] = '塞尔维亚';
 
@@ -4371,6 +4686,8 @@ $GLOBALS["lang"]['Server Is'] = '服务器是';
 $GLOBALS["lang"]['server_item'] = '服务器项目';
 
 $GLOBALS["lang"]['Server Item'] = '服务器项目';
+
+$GLOBALS["lang"]['Server Status'] = '服务器状态';
 
 $GLOBALS["lang"]['Servers'] = '服务器';
 
@@ -4428,7 +4745,7 @@ $GLOBALS["lang"]['set_by'] = '设定';
 
 $GLOBALS["lang"]['Set By'] = '设定';
 
-$GLOBALS["lang"]['Set the size (normal or compact) of the tables on the List screens.'] = '设置列表屏幕上表格的大小(正常或紧凑).';
+$GLOBALS["lang"]['Set the size (normal or compact) of the tables on the List screens.'] = '设置列表屏幕上表格的大小(正常或紧凑)。';
 
 $GLOBALS["lang"]['severity'] = '严重性';
 
@@ -4437,6 +4754,8 @@ $GLOBALS["lang"]['Severity'] = '严重性';
 $GLOBALS["lang"]['severity_text'] = '严重性文本';
 
 $GLOBALS["lang"]['Severity Text'] = '严重性文本';
+
+$GLOBALS["lang"]['Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.'] = '严重性从 <code>base_score</code> 也可以是:无,低,中,高,临界之一.';
 
 $GLOBALS["lang"]['Seychelles'] = '塞舌尔';
 
@@ -4460,11 +4779,17 @@ $GLOBALS["lang"]['Shell'] = '贝壳';
 
 $GLOBALS["lang"]['Ship Date'] = '船舶日期';
 
+$GLOBALS["lang"]['short'] = '短数';
+
+$GLOBALS["lang"]['Short'] = '短数';
+
 $GLOBALS["lang"]['Should I remove all non-current data from this device?'] = '我应该从这个设备中删除所有非当前数据吗?';
 
-$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = '如果使用此文件( 或模式) 来排除文件被报告 。 通常情况下,对于审计文件,此设置为<code>y</code>.';
+$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = '如果使用此文件( 或模式) 来排除文件被报告 。 通常情况下,对于审计文件,此设定为 <code>y</code>。 。 。';
 
-$GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = '我们是否应该从远程服务中添加设备, 本地.';
+$GLOBALS["lang"]['Should this vendor be used when retrieving vulnerabilities from FirstWave.'] = '如果在从FirstWave检索弱点时使用该供应商。';
+
+$GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = '我们是否应该从远程服务中添加设备, 本地。';
 
 $GLOBALS["lang"]['Should we apply this license to the selected Org as well as the Orgs children?'] = '我们是否应该对被选中的Org以及Orgs的孩子发放这种许可证?';
 
@@ -4474,17 +4799,17 @@ $GLOBALS["lang"]['Should we consider an open|filtered port to be an open port - 
 
 $GLOBALS["lang"]['Should we expose this group in the web interface.'] = '我们是否应该在网络界面中曝光这个组.';
 
-$GLOBALS["lang"]['Should we expose this query in the list of reports under the Report menu in the web interface.'] = '如果我们在网络界面“报告”菜单下的报告列表中披露此查询.';
+$GLOBALS["lang"]['Should we expose this query in the list of reports under the Report menu in the web interface.'] = '如果我们在网络界面“报告”菜单下的报告列表中披露此查询。';
 
-$GLOBALS["lang"]['Should we expose this query in the list of reports under the Reports menu in the web interface.'] = '如果我们在网络界面的《报告》菜单下的报告列表中披露这一查询.';
+$GLOBALS["lang"]['Should we expose this query in the list of reports under the Reports menu in the web interface.'] = '如果我们在网络界面的《报告》菜单下的报告列表中披露这一查询。';
 
-$GLOBALS["lang"]['Should we install Open-Scap on the target machine.'] = '我们应该在目标机器上安装Open-Scap.';
+$GLOBALS["lang"]['Should we install Open-Scap on the target machine.'] = '我们应该在目标机器上安装Open-Scap';
 
-$GLOBALS["lang"]['Should we match a device based mac address even if its a known likely duplicate from VMware.'] = '我们是否应该匹配基于设备的 mac 地址, 即使它可能从 VMware 复制 .';
+$GLOBALS["lang"]['Should we match a device based mac address even if its a known likely duplicate from VMware.'] = '我们是否应该匹配基于设备的 mac 地址, 即使它可能从 VMware 复制 。';
 
 $GLOBALS["lang"]['Should we match a device based on its DNS fqdn.'] = '我们是否应该匹配基于其DNS fqdn的设备.';
 
-$GLOBALS["lang"]['Should we match a device based on its DNS hostname.'] = '是否匹配基于 DNS 主机名的设备 .';
+$GLOBALS["lang"]['Should we match a device based on its DNS hostname.'] = '是否匹配基于 DNS 主机名的设备 。';
 
 $GLOBALS["lang"]['Should we match a device based on its UUID.'] = '如果我们匹配一个基于其UUID的设备.';
 
@@ -4492,13 +4817,13 @@ $GLOBALS["lang"]['Should we match a device based on its dbus id.'] = '我们是�
 
 $GLOBALS["lang"]['Should we match a device based on its fqdn.'] = '我们是否应该匹配一个基于fqdn的设备.';
 
-$GLOBALS["lang"]['Should we match a device based on its hostname and UUID.'] = '是否匹配基于主机名和 UUID 的设备 .';
+$GLOBALS["lang"]['Should we match a device based on its hostname and UUID.'] = '是否匹配基于主机名和 UUID 的设备 。';
 
-$GLOBALS["lang"]['Should we match a device based on its hostname and dbus id.'] = '是否匹配基于主机名和 dbus id 的设备 .';
+$GLOBALS["lang"]['Should we match a device based on its hostname and dbus id.'] = '是否匹配基于主机名和 dbus id 的设备 。';
 
-$GLOBALS["lang"]['Should we match a device based on its hostname and serial.'] = '我们是否应该匹配基于其主机名和序列的设备 .';
+$GLOBALS["lang"]['Should we match a device based on its hostname and serial.'] = '我们是否应该匹配基于其主机名和序列的设备 。';
 
-$GLOBALS["lang"]['Should we match a device based on its ip if we have an existing device with no data.'] = '如果我们有一个没有数据的现有设备, 我们是否应该根据它的 ip 来匹配一个设备 .';
+$GLOBALS["lang"]['Should we match a device based on its ip if we have an existing device with no data.'] = '如果我们有一个没有数据的现有设备, 我们是否应该根据它的 ip 来匹配一个设备 。';
 
 $GLOBALS["lang"]['Should we match a device based on its ip.'] = '我们是否应该匹配基于其ip的设备.';
 
@@ -4510,15 +4835,15 @@ $GLOBALS["lang"]['Should we match a device based on its serial number.'] = '我�
 
 $GLOBALS["lang"]['Should we match a device based only on its SNMP sysName and serial.'] = '我们是否应该匹配一个仅基于其SNMP sysName和串行的设备.';
 
-$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName.'] = '我们是否应该匹配仅基于其 SNMP sys 的设备Name.';
+$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName.'] = '我们是否应该匹配仅基于其 SNMP sys 的设备Name';
 
-$GLOBALS["lang"]['Should we match a device based only on its hostname.'] = '我们是否应该只根据其主机名匹配一个设备 .';
+$GLOBALS["lang"]['Should we match a device based only on its hostname.'] = '我们是否应该只根据其主机名匹配一个设备 。';
 
-$GLOBALS["lang"]['Should we ping the IP before attempting to scan it? If it does not respond to the ping, skip this device.'] = '在试图扫描前, 要不要先查一下IP? 如果它不响应 ping , 请跳过此设备 .';
+$GLOBALS["lang"]['Should we ping the IP before attempting to scan it? If it does not respond to the ping, skip this device.'] = '在试图扫描前, 要不要先查一下IP? 如果它不响应 ping , 请跳过此设备 。';
 
-$GLOBALS["lang"]['Should we populate the external system from our local devices.'] = '如果我们把外部系统从本地设备中充斥出来.';
+$GLOBALS["lang"]['Should we populate the external system from our local devices.'] = '如果我们把外部系统从本地设备中充斥出来';
 
-$GLOBALS["lang"]['Should we run an audit and submit it (y/n).'] = '我们是否应该进行审计并提交(y/n).';
+$GLOBALS["lang"]['Should we run an audit and submit it (y/n).'] = '我们是否应该进行审计并提交(y/n)。';
 
 $GLOBALS["lang"]['Should we test for SNMP using UDP port 161.'] = '是否应该使用UDP端口161测试SNMP.';
 
@@ -4528,9 +4853,9 @@ $GLOBALS["lang"]['Should we test for WMI using TCP port 135.'] = '我们应该�
 
 $GLOBALS["lang"]['Should we uninstall the agent (y/n).'] = '是否应该解除代理(y/n).';
 
-$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.'] = '我们是否应该使用这种方法验证用户证书 。 设定为<code>y</code>或<code>n</code>.';
+$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.'] = '我们是否应该使用这种方法验证用户证书 。 设定为 <code>y</code> 或者说 <code>n</code>。 。 。';
 
-$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.'] = '如果我们使用这种方法来充斥用户角色. 字段 < code> us_ auth </code> 必须设置为 < code>y </code> 才能使用。 设定为<code>y</code>或<code>n</code>.';
+$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.'] = '如果我们使用这种方法来充斥用户角色. 实地 <code>use_auth</code> 必须设定为 <code>y</code> 用这个 设定为 <code>y</code> 或者说 <code>n</code>。 。 。';
 
 $GLOBALS["lang"]['Show All'] = '全部显示';
 
@@ -4656,7 +4981,7 @@ $GLOBALS["lang"]['Specific to Azure.'] = '特指阿苏尔.';
 
 $GLOBALS["lang"]['Specific to OKTA.'] = '具体到OKTA.';
 
-$GLOBALS["lang"]['Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.'] = '指定一个以逗号分隔的目标列表(无空格),以排除在扫描之外。 您通过的清单使用正常的 Nmap 语法, 因此可以包括主机名、 CIDR 网块、 octet 范围等 .';
+$GLOBALS["lang"]['Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.'] = '指定一个以逗号分隔的目标列表(无空格),以排除在扫描之外。 您通过的清单使用正常的 Nmap 语法, 因此可以包括主机名、 CIDR 网块、 octet 范围等 。';
 
 $GLOBALS["lang"]['speed'] = '速度';
 
@@ -4688,9 +5013,9 @@ $GLOBALS["lang"]['ssh_ports'] = 'Ssh 端口';
 
 $GLOBALS["lang"]['Ssh Ports'] = 'Ssh 端口';
 
-$GLOBALS["lang"]['ssh_timeout'] = 'Sh 超时';
+$GLOBALS["lang"]['ssh_timeout'] = 'sh 超时';
 
-$GLOBALS["lang"]['Ssh Timeout'] = 'Sh 超时';
+$GLOBALS["lang"]['Ssh Timeout'] = 'sh 超时';
 
 $GLOBALS["lang"]['Stand-Alone'] = '无人驾驶';
 
@@ -4754,6 +5079,10 @@ $GLOBALS["lang"]['sub_type'] = '子类型';
 
 $GLOBALS["lang"]['Sub Type'] = '子类型';
 
+$GLOBALS["lang"]['subject_key_ident'] = '主题密钥标识符';
+
+$GLOBALS["lang"]['Subject Key Ident'] = '主题密钥标识符';
+
 $GLOBALS["lang"]['Submit'] = '提交';
 
 $GLOBALS["lang"]['Submitted From'] = '提交日期';
@@ -4772,6 +5101,8 @@ $GLOBALS["lang"]['Success'] = '成绩';
 
 $GLOBALS["lang"]['Sudan'] = '苏丹';
 
+$GLOBALS["lang"]['Sudo Password'] = 'Sudo 密码';
+
 $GLOBALS["lang"]['Sudo Password (optional)'] = 'Sudo 密码( 可选)';
 
 $GLOBALS["lang"]['suite'] = '套间';
@@ -4782,8 +5113,6 @@ $GLOBALS["lang"]['summaries'] = '摘要';
 
 $GLOBALS["lang"]['Summaries'] = '摘要';
 
-$GLOBALS["lang"]['summary'] = '目 录';
-
 $GLOBALS["lang"]['Summary'] = '目 录';
 
 $GLOBALS["lang"]['Sunday'] = '礼拜';
@@ -4792,7 +5121,9 @@ $GLOBALS["lang"]['supplier'] = '供应商';
 
 $GLOBALS["lang"]['Supplier'] = '供应商';
 
-$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = '支持的类型为<code>subnet</code>,<code>种子</code>和<code>活动目录</code>.';
+$GLOBALS["lang"]['Support'] = '支助';
+
+$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = '支持类型为 <code>subnet</code>, (中文). <code>seed</code> 和 <code>active directory</code>。 。 。';
 
 $GLOBALS["lang"]['Suriname'] = '苏里南';
 
@@ -4878,7 +5209,7 @@ $GLOBALS["lang"]['tags'] = '标记';
 
 $GLOBALS["lang"]['Tags'] = '标记';
 
-$GLOBALS["lang"]['Tags :: '] = '* 标记';
+$GLOBALS["lang"]['Tags :: '] = '* 标记 ';
 
 $GLOBALS["lang"]['Taiwan'] = '台湾';
 
@@ -4932,33 +5263,37 @@ $GLOBALS["lang"]['Text'] = '文本';
 
 $GLOBALS["lang"]['Thailand'] = '泰国';
 
-$GLOBALS["lang"]['The Active Directory domain to retrieve a list of subnets from.'] = '从中获取子网列表的 Active Directory 域 .';
+$GLOBALS["lang"]['The Active Directory domain to retrieve a list of subnets from.'] = '从中获取子网列表的 Active Directory 域 。';
 
-$GLOBALS["lang"]['The Active Directory server to retrieve a list of subnets from.'] = '活动目录服务器从中获取子网列表 .';
+$GLOBALS["lang"]['The Active Directory server to retrieve a list of subnets from.'] = '活动目录服务器从中获取子网列表 。';
 
-$GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = '拥有此品之云. 链接到 <code>clouds.id</code>.';
+$GLOBALS["lang"]['The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).'] = '可自动调试的度量衡抓住了问题的答案 <strong>攻击者能否将针对这种脆弱性的剥削事件自动化到多个目标?</strong> 根据杀戮链的1 -4步骤 这些步骤是侦察、武器化、交货和剥削(未界定,否,是)。';
 
-$GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = '专家组曾管理基线。 链接到 <code> groups.id </code>.';
+$GLOBALS["lang"]['The CVE identifier.'] = 'CVE识别码.';
 
-$GLOBALS["lang"]['The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.'] = 'NTU 设备表( 设备. 名称将显示) 的ID 在连接的这一端 。 链接到 <code>devices.id </code>.';
+$GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = '拥有此品之云. 链接到 <code>clouds.id</code>。 。 。';
 
-$GLOBALS["lang"]['The ID from the imported benchmark policy.'] = '进口基准政策的ID.';
+$GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = '专家组曾管理基线。 链接到 <code>groups.id</code>。 。 。';
 
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.'] = '连接此端位置表( 位置. name 将显示) 的ID 。 链接到 <code>位置.id </code>. A位置通常为<code>FROM</code>位置.';
+$GLOBALS["lang"]['The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.'] = 'NTU 设备表( 设备. 名称将显示) 的ID 在连接的这一端 。 链接到 <code>devices.id</code>。 。 。';
 
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.'] = '连接此端位置表( 位置. name 将显示) 的ID 。 链接到 <code>位置.id </code>. B位置通常是 <code>TO </code>位置.';
+$GLOBALS["lang"]['The ID from the imported benchmark policy.'] = '进口基准政策的ID。';
 
-$GLOBALS["lang"]['The ID of the associated device (if any). Links to <code>devices.id</code>.'] = '相关设备的ID( 如果有的话) 。 链接到 <code>devices.id </code>.';
+$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.'] = '连接此端位置表( 位置. name 将显示) 的ID 。 链接到 <code>locations.id</code>。 。 。 A位置通常是 <code>FROM</code> 地点。';
 
-$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = '相关发现的ID. 链接到 <code>发现.id </code>';
+$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.'] = '连接此端位置表( 位置. name 将显示) 的ID 。 链接到 <code>locations.id</code>。 。 。 B位置通常是 <code>TO</code> 地点。';
 
-$GLOBALS["lang"]['The ID of the item of the associated type.'] = '相关类型项目的ID .';
+$GLOBALS["lang"]['The ID of the associated device (if any). Links to <code>devices.id</code>.'] = '相关设备的ID( 如果有的话) 。 链接到 <code>devices.id</code>。 。 。';
 
-$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = '此 Orgs 父 Org 的标识 。 链接到 <code>orgs.id </code>';
+$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = '相关发现的ID. 链接到 <code>discoveries.id</code>';
 
-$GLOBALS["lang"]['The ID provided by the provider.'] = '提供人提供的身份证.';
+$GLOBALS["lang"]['The ID of the item of the associated type.'] = '相关类型项目的ID 。';
 
-$GLOBALS["lang"]['The ID retrieved from a Cloud discovery.'] = '身份是从云号发现中找到的.';
+$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = '此 Orgs 父 Org 的标识 。 链接到 <code>orgs.id</code>';
+
+$GLOBALS["lang"]['The ID provided by the provider.'] = '提供人提供的身份证。';
+
+$GLOBALS["lang"]['The ID retrieved from a Cloud discovery.'] = '身份是从云号发现中找到的';
 
 $GLOBALS["lang"]['The IP address of this collector used to communicate with the server.'] = '此收藏器的IP地址曾与服务器通信.';
 
@@ -4970,35 +5305,41 @@ $GLOBALS["lang"]['The IP of the internal interface.'] = '内部接口的IP.';
 
 $GLOBALS["lang"]['The ISP or Telco providing this link.'] = '提供这种链接的ISP或Telco.';
 
+$GLOBALS["lang"]['The JSON record from Mitre.'] = '米特雷的JSON唱片.';
+
+$GLOBALS["lang"]['The JSON record from the NVD feed.'] = 'JSON唱片来自NVD的种子.';
+
 $GLOBALS["lang"]['The LDAP OU of this user (if LDAP is used).'] = '这个用户的LDAP OU(如果使用LDAP).';
 
-$GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = '包含此网络的位置 。 链接到 <code>位置.id </code>.';
+$GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = '包含此网络的位置 。 链接到 <code>locations.id</code>。 。 。';
 
-$GLOBALS["lang"]['The Nmap timing preset.'] = 'Nmap 计时预设 .';
+$GLOBALS["lang"]['The NVD assigned base status.'] = 'NVD指定了基础状态.';
 
-$GLOBALS["lang"]['The OS this package should be reported against. Blank for all. Use the percent sign % as a wildcard. Will be tested against os_group, os_family and os_name in that order.'] = '这套软件包应对照OS报告。 空为众生. 使用% 签名% 作为通配符 。 将按此顺序测试 os_ group, os_ family 和 os_ name .';
+$GLOBALS["lang"]['The Nmap timing preset.'] = 'Nmap 计时预设 。';
+
+$GLOBALS["lang"]['The OS this package should be reported against. Blank for all. Use the percent sign % as a wildcard. Will be tested against os_group, os_family and os_name in that order.'] = '这套软件包应对照OS报告。 空为众生. 使用% 签名% 作为通配符 。 将按此顺序测试 os_ group, os_ family 和 os_ name 。';
 
 $GLOBALS["lang"]['The Open-AudIT API'] = '开放的AudIT API';
 
-$GLOBALS["lang"]['The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.'] = '链接云的Open-AudIT id. 链接到 <code>clouds.id</code>.';
+$GLOBALS["lang"]['The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.'] = '链接云的Open-AudIT id. 链接到 <code>clouds.id</code>。 。 。';
 
 $GLOBALS["lang"]['The Open-AudIT server code was exeucted within this file.'] = '开放的奥德 IT服务器代码在此文件中被执行.';
 
 $GLOBALS["lang"]['The Open-AudIT server code was exeucted within this function.'] = '开放的奥德 IT服务器代码在此功能内被执行.';
 
-$GLOBALS["lang"]['The Organisation that owns this item. Links to <code>orgs.id</code>.'] = '拥有此项目的组织 。 链接到 <code>orgs.id </code>.';
+$GLOBALS["lang"]['The Organisation that owns this item. Links to <code>orgs.id</code>.'] = '拥有此项目的组织 。 链接到 <code>orgs.id</code>。 。 。';
 
-$GLOBALS["lang"]['The Process Identifier of the running associated discovery.'] = '运行中相关发现的流程识别符 .';
+$GLOBALS["lang"]['The Process Identifier of the running associated discovery.'] = '运行中相关发现的流程识别符 。';
 
-$GLOBALS["lang"]['The RU positon of the top of this device.'] = '这个装置顶部的RU正体.';
+$GLOBALS["lang"]['The RU positon of the top of this device.'] = '这个装置顶部的RU正体';
 
 $GLOBALS["lang"]['The SNMP community string.'] = 'SNMP社区字符串.';
 
-$GLOBALS["lang"]['The SNMP v3 Authentication Passphrase.'] = 'SNMP v3 认证密码句 .';
+$GLOBALS["lang"]['The SNMP v3 Authentication Passphrase.'] = 'SNMP v3 认证密码句 。';
 
 $GLOBALS["lang"]['The SNMP v3 Authentication Protocol.'] = 'SNMP v3 认证协议.';
 
-$GLOBALS["lang"]['The SNMP v3 Privacy Passphrase.'] = 'SNMP v3 隐私密码句 .';
+$GLOBALS["lang"]['The SNMP v3 Privacy Passphrase.'] = 'SNMP v3 隐私密码句 。';
 
 $GLOBALS["lang"]['The SNMP v3 Privacy Protocol.'] = 'SNMP v3 隐私协议.';
 
@@ -5008,33 +5349,33 @@ $GLOBALS["lang"]['The SNMP v3 Security Name.'] = 'SNMP v3 安全名称.';
 
 $GLOBALS["lang"]['The SNMPv3 context Engine ID (optional).'] = 'SNMPv3 上下文引擎 ID (可选).';
 
-$GLOBALS["lang"]['The SNMPv3 context Name (optional).'] = 'SNMPv3 上下文名称( 可选) .';
+$GLOBALS["lang"]['The SNMPv3 context Name (optional).'] = 'SNMPv3 上下文名称( 可选) 。';
 
 $GLOBALS["lang"]['The URL of the external system.'] = '外部系统的URL.';
 
-$GLOBALS["lang"]['The URL of your Open-AudIT Server that this Collector will report to (no trailing slash).'] = '您的 Open-AudIT 的 URL 服务器, 此收藏器将报告( 没有跟踪斜线 ) .';
+$GLOBALS["lang"]['The URL of your Open-AudIT Server that this Collector will report to (no trailing slash).'] = '您的 Open-AudIT 的 URL 服务器, 此收藏器将报告( 没有跟踪斜线 ) 。';
 
 $GLOBALS["lang"]['The URL the audit scripts should submit their result to.'] = '审计脚本应当向URL提交结果.';
 
 $GLOBALS["lang"]['The actual full name of this user.'] = '此用户的实际全名.';
 
-$GLOBALS["lang"]['The associated baseline. Links to <code>baselines.id</code>.'] = '相关基线。 链接到 <code>基线.id</code>.';
+$GLOBALS["lang"]['The associated baseline. Links to <code>baselines.id</code>.'] = '相关基线。 链接到 <code>baselines.id</code>。 。 。';
 
-$GLOBALS["lang"]['The associated discovery (if required). Links to <code>discoveries.id</code>.'] = '相关发现(如有需要). 链接到 <code>discoveries.id </code>.';
+$GLOBALS["lang"]['The associated discovery (if required). Links to <code>discoveries.id</code>.'] = '相关发现(如有需要). 链接到 <code>discoveries.id</code>。 。 。';
 
-$GLOBALS["lang"]['The attribute to test (from the <code>devices</code> table).'] = '测试的属性( 从 < code> devices </code> 表) .';
+$GLOBALS["lang"]['The attribute to test (from the <code>devices</code> table).'] = '测试的属性(来自 <code>devices</code> 页:1';
 
-$GLOBALS["lang"]['The attribute to test (must match an external field name from below).'] = '测试的属性( 必须从下面匹配外部字段名称) .';
+$GLOBALS["lang"]['The attribute to test (must match an external field name from below).'] = '测试的属性( 必须从下面匹配外部字段名称) 。';
 
-$GLOBALS["lang"]['The audit script upon which to base your customisations.'] = '您自定义所依据的审计脚本 .';
+$GLOBALS["lang"]['The audit script upon which to base your customisations.'] = '您自定义所依据的审计脚本 。';
 
-$GLOBALS["lang"]['The base path from which to search for Users.'] = '查找用户的基础路径 .';
+$GLOBALS["lang"]['The base path from which to search for Users.'] = '查找用户的基础路径 。';
 
-$GLOBALS["lang"]['The benchmark type.'] = '基准类型.';
+$GLOBALS["lang"]['The benchmark type.'] = '基准类型。';
 
 $GLOBALS["lang"]['The building the rack is located in.'] = '车架所在的建筑.';
 
-$GLOBALS["lang"]['The calculated number of devices to be created externally.'] = '外部创建的设备的计算数量 .';
+$GLOBALS["lang"]['The calculated number of devices to be created externally.'] = '外部创建的设备的计算数量 。';
 
 $GLOBALS["lang"]['The calculated number of devices to be created in Open-AudIT.'] = 'Open-AudIT中要创建的设备的计算数量.';
 
@@ -5044,9 +5385,9 @@ $GLOBALS["lang"]['The column name from the foreign table. Should be one of: clas
 
 $GLOBALS["lang"]['The command executed upon the target device or Open-AudIT server code executed during discovery.'] = '在发现时执行的目标设备或Open-AudIT服务器代码上执行的命令.';
 
-$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.'] = '组别配置为:<code>active/active</code>,<code>active/被动</code>,<code>N+1</code>,<code>N+M</code>,<code>N-to-1</code>,<code>N-to-N</code>,<cde>其他</code>或空白.';
+$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.'] = '您集群的配置可以是: <code>active/active</code>, (中文). <code>active/passive</code>, (中文). <code>N+1</code>, (中文). <code>N+M</code>, (中文). <code>N-to-1</code>, (中文). <code>N-to-N</code>, (中文). <code>other</code> 或空白。';
 
-$GLOBALS["lang"]['The credentials password. If the credentials are an SSH Key, this is the password used to unlock the key and is optional.'] = '证书密码 如果证书是 SSH 密钥, 这是用于解锁密钥的密码, 是可选的 .';
+$GLOBALS["lang"]['The credentials password. If the credentials are an SSH Key, this is the password used to unlock the key and is optional.'] = '证书密码 如果证书是 SSH 密钥, 这是用于解锁密钥的密码, 是可选的 。';
 
 $GLOBALS["lang"]['The credentials username.'] = '证书用户名.';
 
@@ -5054,35 +5395,37 @@ $GLOBALS["lang"]['The current status of the Cloud Discovery.'] = '云发现者�
 
 $GLOBALS["lang"]['The current status of the discovery.'] = '发现现状.';
 
-$GLOBALS["lang"]['The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.'] = '该用户默认显示的仪表板 。 链接到 <code>dashboards.id</code>.';
+$GLOBALS["lang"]['The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.'] = '该用户默认显示的仪表板 。 链接到 <code>dashboards.id</code>。 。 。';
 
 $GLOBALS["lang"]['The database version and web version are inconsistent.'] = '数据库版本和网页版本不一致.';
 
 $GLOBALS["lang"]['The date of license expiration.'] = '执照失效日期.';
 
-$GLOBALS["lang"]['The date the software is discontinued by the manufacturer. Usually replaced by a newer version. Maintenance may still be available.'] = '该软件被制造商终止的日期。 通常被较新的版本所取代. 仍可提供维修.';
+$GLOBALS["lang"]['The date the software is discontinued by the manufacturer. Usually replaced by a newer version. Maintenance may still be available.'] = '该软件被制造商终止的日期。 通常被较新的版本所取代. 仍可提供维修。';
 
-$GLOBALS["lang"]['The date the software no longer receives updates and is effectively discontinued altogether. Maintenance is discontinued.'] = '该软件不再得到更新的日期实际上完全停止。 维护工作中止.';
+$GLOBALS["lang"]['The date the software no longer receives updates and is effectively discontinued altogether. Maintenance is discontinued.'] = '该软件不再得到更新的日期实际上完全停止。 维护工作中止。';
 
-$GLOBALS["lang"]['The date this item was changed or added (read only). NOTE - This is the timestamp from the server.'] = '本项目更改或添加的日期(仅阅读)。 注 - 这是服务器发送的时间戳 .';
+$GLOBALS["lang"]['The date this item was changed or added (read only). NOTE - This is the timestamp from the server.'] = '本项目更改或添加的日期(仅阅读)。 注 - 这是服务器发送的时间戳 。';
 
-$GLOBALS["lang"]['The date/time when this result was created.'] = '创建此结果的日期/ 时间 .';
+$GLOBALS["lang"]['The date/time when this result was created.'] = '创建此结果的日期/ 时间 。';
 
-$GLOBALS["lang"]['The day of the month when this task should execute (* for every day).'] = '执行这项任务的月份日(*每天).';
+$GLOBALS["lang"]['The day of the month when this task should execute (* for every day).'] = '执行这项任务的月份日(*每天)。';
 
-$GLOBALS["lang"]['The day of the week when this task should execute (* for every day).'] = '每周执行这项任务的当天(*每天).';
+$GLOBALS["lang"]['The day of the week when this task should execute (* for every day).'] = '每周执行这项任务的当天(*每天)。';
 
-$GLOBALS["lang"]['The default language assigned to any user created by this method.'] = '此方法创建的任何用户都使用默认语言 .';
+$GLOBALS["lang"]['The default language assigned to any user created by this method.'] = '此方法创建的任何用户都使用默认语言 。';
 
 $GLOBALS["lang"]['The device must respond to an Nmap ping before it is considered online.'] = '该设备必须响应Nmap ping,然后才被视为在线.';
 
-$GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>.'] = 'Open-AudIT内部的设备. 链接到 <code>devices.id </code>.';
+$GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>.'] = 'Open-AudIT内部的设备. 链接到 <code>devices.id</code>。 。 。';
 
 $GLOBALS["lang"]['The direct link for the script is'] = '脚本的直接链接是';
 
 $GLOBALS["lang"]['The email address of the reciever'] = '回信器的电子邮件地址';
 
-$GLOBALS["lang"]['The entire associated baseline this result is from.'] = '这一结果来自整个相关基线.';
+$GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = '来自FirstWave的企业二进制必须持有许可证。 请从 Open-AudIT 下载';
+
+$GLOBALS["lang"]['The entire associated baseline this result is from.'] = '这一结果来自整个相关基线。';
 
 $GLOBALS["lang"]['The externally referenced location ID. Usually populated by Cloud audits.'] = '外部引用的地点编号 。 通常以Cloud审计为居民.';
 
@@ -5090,137 +5433,151 @@ $GLOBALS["lang"]['The first time that Open-AudIT retrieved details of this devic
 
 $GLOBALS["lang"]['The floor the rack is located on.'] = '架子位于地面上.';
 
-$GLOBALS["lang"]['The foreign table to reference. Should be one of: devices, locations, orgs or queries.'] = '外表为参考. 应该是设备、地点、兽群或查询之一.';
+$GLOBALS["lang"]['The foreign table to reference. Should be one of: devices, locations, orgs or queries.'] = '外表为参考. 应该是设备、地点、兽群或查询之一。';
 
-$GLOBALS["lang"]['The format used for the output to be emailed.'] = '以电子邮件传送输出所使用的格式 .';
+$GLOBALS["lang"]['The format used for the output to be emailed.'] = '以电子邮件传送输出所使用的格式 。';
 
-$GLOBALS["lang"]['The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.'] = '完全合格的栏目,可编组。 注:当类型=流量时,这代表红色查询编号.';
+$GLOBALS["lang"]['The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.'] = '完全合格的栏目,可编组。 注:当类型=流量时,这代表红色查询编号。';
 
 $GLOBALS["lang"]['The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).'] = '完全合格表. 栏目. 多个可以提供,用逗号分隔(没有空格).';
 
-$GLOBALS["lang"]['The group of devices on which the baseline was run against.'] = '基线所对应的一组装置.';
+$GLOBALS["lang"]['The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.'] = '生成的 SQL 查询以测试此脆弱性 。 可以编辑此字段, 以便按要求更正查询 。';
 
-$GLOBALS["lang"]['The group that provides a list of devices for the integration. Links to <code>groups.id</code>.'] = '提供集成设备列表的组. 链接到 <code> groups.id </code>.';
+$GLOBALS["lang"]['The group of devices on which the baseline was run against.'] = '基线所对应的一组装置。';
 
-$GLOBALS["lang"]['The hour of the day when this task should execute (* for every hour).'] = '执行这项任务的当天时间(*每个小时).';
+$GLOBALS["lang"]['The group that provides a list of devices for the integration. Links to <code>groups.id</code>.'] = '提供集成设备列表的组. 链接到 <code>groups.id</code>。 。 。';
 
-$GLOBALS["lang"]['The id of the linked device. Links to <code>devices.id</code>'] = '链接设备的ID. 链接到 <code>devices.id </code>';
+$GLOBALS["lang"]['The hour of the day when this task should execute (* for every hour).'] = '执行这项任务的当天时间(*每个小时)。';
+
+$GLOBALS["lang"]['The id of the linked device. Links to <code>devices.id</code>'] = '链接设备的ID. 链接到 <code>devices.id</code>';
 
 $GLOBALS["lang"]['The identifier column (integer) in the database (read only).'] = '数据库中的标识栏(整数)(只读).';
 
-$GLOBALS["lang"]['The importance of this baseline (not used yet).'] = '这一基线的重要性(尚未使用).';
+$GLOBALS["lang"]['The importance of this baseline (not used yet).'] = '这一基线的重要性(尚未使用)。';
 
-$GLOBALS["lang"]['The integer of severity.'] = '严重程度的整数.';
+$GLOBALS["lang"]['The integer of severity.'] = '严重程度的整数。';
 
-$GLOBALS["lang"]['The ip address of the Auth method.'] = 'Auth 方法的 ip 地址 .';
+$GLOBALS["lang"]['The ip address of the Auth method.'] = 'Auth 方法的 ip 地址 。';
 
 $GLOBALS["lang"]['The language to translate the web interface into for the user.'] = '为用户翻译网页界面的语言.';
 
-$GLOBALS["lang"]['The last date and time this item was executed (read only).'] = '此项目的最后日期和时间被执行( 只读) .';
+$GLOBALS["lang"]['The last date and time this item was executed (read only).'] = '此项目的最后日期和时间被执行( 只读) 。';
 
 $GLOBALS["lang"]['The last time that Open-AudIT retrieved details of this device.'] = 'Open-AudIT最后一次检索此设备的细节.';
 
-$GLOBALS["lang"]['The last time this benchmarks was executed.'] = '上一次执行这一基准.';
+$GLOBALS["lang"]['The last time this benchmarks was executed.'] = '上一次执行这一基准。';
 
-$GLOBALS["lang"]['The last time this integration was run.'] = '最后一次进行这种整合.';
+$GLOBALS["lang"]['The last time this integration was run.'] = '最后一次进行这种整合。';
 
 $GLOBALS["lang"]['The line number assigned by the provider to the line at this end of the connection.'] = '连接的这一端由提供者指定给线路的行号.';
 
-$GLOBALS["lang"]['The location the rack is located in. Links to <code>locations.id</code>.'] = '车架所在位置. 链接到 <code>位置.id </code>.';
+$GLOBALS["lang"]['The location the rack is located in. Links to <code>locations.id</code>.'] = '车架所在位置. 链接到 <code>locations.id</code>。 。 。';
 
-$GLOBALS["lang"]['The locations address.'] = '地点地址.';
+$GLOBALS["lang"]['The locations address.'] = '地点地址';
 
-$GLOBALS["lang"]['The locations area.'] = '地点.';
+$GLOBALS["lang"]['The locations area.'] = '地点';
 
-$GLOBALS["lang"]['The locations city.'] = '地点城市.';
+$GLOBALS["lang"]['The locations city.'] = '地点城市。';
 
 $GLOBALS["lang"]['The locations country.'] = '地点国.';
 
-$GLOBALS["lang"]['The locations district.'] = '地点区.';
+$GLOBALS["lang"]['The locations district.'] = '地点区。';
 
-$GLOBALS["lang"]['The locations latitude.'] = '位置纬度.';
+$GLOBALS["lang"]['The locations latitude.'] = '位置纬度。';
 
-$GLOBALS["lang"]['The locations level.'] = '地点级别.';
+$GLOBALS["lang"]['The locations level.'] = '地点级别。';
 
-$GLOBALS["lang"]['The locations longitude.'] = '位置经纬度.';
+$GLOBALS["lang"]['The locations longitude.'] = '位置经纬度。';
 
-$GLOBALS["lang"]['The locations phone.'] = '地点电话.';
+$GLOBALS["lang"]['The locations phone.'] = '地点电话。';
 
-$GLOBALS["lang"]['The locations postcode.'] = '地点邮编码.';
+$GLOBALS["lang"]['The locations postcode.'] = '地点邮编码。';
 
-$GLOBALS["lang"]['The locations region.'] = '地点区域.';
+$GLOBALS["lang"]['The locations region.'] = '地点区域。';
 
-$GLOBALS["lang"]['The locations room.'] = '地点的房间.';
+$GLOBALS["lang"]['The locations room.'] = '地点的房间。';
 
-$GLOBALS["lang"]['The locations state.'] = '地点州.';
+$GLOBALS["lang"]['The locations state.'] = '地点州。';
 
-$GLOBALS["lang"]['The locations suburb.'] = '地点在郊区.';
+$GLOBALS["lang"]['The locations suburb.'] = '地点在郊区';
 
-$GLOBALS["lang"]['The locations suite.'] = '地点套房.';
+$GLOBALS["lang"]['The locations suite.'] = '地点套房。';
 
 $GLOBALS["lang"]['The maximum physical weight (in KGs) this rack can hold.'] = '最大物理重量(以KGs计) 这个架子可以保持.';
 
 $GLOBALS["lang"]['The maximum total BTUs this rack is rated for.'] = '这个架子的最大总BTU被评为.';
 
-$GLOBALS["lang"]['The minute of the hour when this task should execute (* for every minute).'] = '此任务执行时的分钟( * 每分钟) .';
+$GLOBALS["lang"]['The minute of the hour when this task should execute (* for every minute).'] = '此任务执行时的分钟( * 每分钟) 。';
 
-$GLOBALS["lang"]['The month of the year when this task should execute (* for every month).'] = '这一任务应当执行的年份的月份(*每月).';
+$GLOBALS["lang"]['The month of the year when this task should execute (* for every month).'] = '这一任务应当执行的年份的月份(*每月)。';
 
-$GLOBALS["lang"]['The name given to this item. Ideally it should be unique.'] = '本项目的名称 。 理想的情况应该是独一无二的.';
+$GLOBALS["lang"]['The name given to this item.'] = '本项目的名称 。';
 
-$GLOBALS["lang"]['The name given to this user (used to login). Ideally it should be unique.'] = '给这个用户的名称( 用于登录) 。 理想的情况应该是独一无二的.';
+$GLOBALS["lang"]['The name given to this item. Ideally it should be unique.'] = '本项目的名称 。 理想的情况应该是独一无二的。';
+
+$GLOBALS["lang"]['The name given to this user (used to login). Ideally it should be unique.'] = '给这个用户的名称( 用于登录) 。 理想的情况应该是独一无二的。';
 
 $GLOBALS["lang"]['The name of the associated cloud (if required).'] = '相关云名称(如有需要).';
 
-$GLOBALS["lang"]['The name of the software package, as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = '软件包的名称,由Open-AudIT审计. 使用% 签名% 作为通配符 .';
+$GLOBALS["lang"]['The name of the software package, as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = '软件包的名称,由Open-AudIT审计. 使用% 签名% 作为通配符 。';
 
-$GLOBALS["lang"]['The name of the user who last changed or added this item (read only).'] = '最后更改或添加此项目的用户名称( 只读) .';
+$GLOBALS["lang"]['The name of the user who last changed or added this item (read only).'] = '最后更改或添加此项目的用户名称( 只读) 。';
 
 $GLOBALS["lang"]['The name provided by the provider.'] = '供养者提供之名.';
 
 $GLOBALS["lang"]['The network in the format 192.168.1.0/24.'] = '网易格式192.168.1.0/24.';
 
-$GLOBALS["lang"]['The network subnet to execute the discovery on.'] = '执行此发现的网络子网 .';
+$GLOBALS["lang"]['The network subnet to execute the discovery on.'] = '执行此发现的网络子网 。';
 
-$GLOBALS["lang"]['The number of RUs this device occupies.'] = '此设备占用的 RU 数量 .';
+$GLOBALS["lang"]['The number of RUs this device occupies.'] = '此设备占用的 RU 数量 。';
 
-$GLOBALS["lang"]['The number of associated locations. Links to <code>locations.cloud_id</code>.'] = '相关地点的数目。 链接到 <code>位置.cloud_id </code>.';
+$GLOBALS["lang"]['The number of associated locations. Links to <code>locations.cloud_id</code>.'] = '相关地点的数目。 链接到 <code>locations.cloud_id</code>。 。 。';
 
-$GLOBALS["lang"]['The number of associated networks. Links to <code>networks.cloud_id</code>.'] = '关联网络的数量. 链接到 <code>网络.cloud_id </code>.';
+$GLOBALS["lang"]['The number of associated networks. Links to <code>networks.cloud_id</code>.'] = '关联网络的数量. 链接到 <code>networks.cloud_id</code>。 。 。';
 
-$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = '此云中已审计设备的数量 。 链接到<code>devices.cloud_id</code>和<code>devices.serial</code>.';
+$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = '此云中已审计设备的数量 。 链接到 <code>devices.cloud_id</code> 和 <code>devices.serial</code>。 。 。';
+
+$GLOBALS["lang"]['The number of critical severity vulnerabilities held by FirstWave (not in your database).'] = 'FirstWave持有的临界严重弱点数量(不在您的数据库中).';
 
 $GLOBALS["lang"]['The number of devices found by this discovery.'] = '这个发现发现的装置数量.';
 
-$GLOBALS["lang"]['The number of devices in the associated group.'] = '关联组中的设备数量 .';
+$GLOBALS["lang"]['The number of devices in the associated group.'] = '关联组中的设备数量 。';
 
-$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = '此云中具有运行状态的设备数量 。 链接到 <code>devices.cloud_id</code>和 <code>devices.instance_state</code>.';
+$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = '此云中具有运行状态的设备数量 。 链接到 <code>devices.cloud_id</code> 和 <code>devices.instance_state</code>。 。 。';
 
-$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = '此云中已停止状态的设备数量 。 链接到 <code>devices.cloud_id</code>和 <code>devices.instance_state</code>.';
+$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = '此云中已停止状态的设备数量 。 链接到 <code>devices.cloud_id</code> 和 <code>devices.instance_state</code>。 。 。';
 
-$GLOBALS["lang"]['The number of devices in this cloud. Links to <code>devices.cloud_id</code>.'] = '此云器数. 链接到 <code>devices.cloud_id</code>.';
+$GLOBALS["lang"]['The number of devices in this cloud. Links to <code>devices.cloud_id</code>.'] = '此云器数. 链接到 <code>devices.cloud_id</code>。 。 。';
 
-$GLOBALS["lang"]['The number of devices this benchmark will be executed upon. Derived from <code>benchmarks.devices</code>.'] = '此基准将执行设备的数量 。 衍生自<code>基准标记.devices</code>.';
+$GLOBALS["lang"]['The number of devices this benchmark will be executed upon. Derived from <code>benchmarks.devices</code>.'] = '此基准将执行设备的数量 。 来源 <code>benchmarks.devices</code>。 。 。';
 
-$GLOBALS["lang"]['The number of devices to limit this discovery to.'] = '限制此发现的装置数量 .';
+$GLOBALS["lang"]['The number of devices to limit this discovery to.'] = '限制此发现的装置数量 。';
 
-$GLOBALS["lang"]['The number of purchased licenses.'] = '购买许可证的数量.';
+$GLOBALS["lang"]['The number of high severity vulnerabilities held by FirstWave (not in your database).'] = 'FirstWave持有的高度脆弱性数量(不在您的数据库中).';
+
+$GLOBALS["lang"]['The number of low severity vulnerabilities held by FirstWave (not in your database).'] = 'FirstWave持有的低度弱点数量(不在数据库中).';
+
+$GLOBALS["lang"]['The number of medium severity vulnerabilities held by FirstWave (not in your database).'] = 'FirstWave持有的中等严重性弱点数量(不在数据库中)。';
+
+$GLOBALS["lang"]['The number of purchased licenses.'] = '购买许可证的数量。';
 
 $GLOBALS["lang"]['The number of seconds to try and communicate with the target IP.'] = '尝试与目标IP通信的秒数.';
 
-$GLOBALS["lang"]['The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.'] = '选第二栏. 注:当类型=流量时,这代表黄色查询id.';
+$GLOBALS["lang"]['The number of vulnerabilities without a severity held by FirstWave (not in your database).'] = 'FirstWave(不在数据库中)持有的不严重弱点数量。';
 
-$GLOBALS["lang"]['The optional third column. NOTE: When type = traffic, this represents the green query id.'] = '选第三栏. 注:当类型=流量时,这代表绿色查询编号.';
+$GLOBALS["lang"]['The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.'] = '选第二栏. 注:当类型=流量时,这代表黄色查询id。';
+
+$GLOBALS["lang"]['The optional third column. NOTE: When type = traffic, this represents the green query id.'] = '选第三栏. 注:当类型=流量时,这代表绿色查询编号。';
 
 $GLOBALS["lang"]['The orientation of this device.'] = '这个装置的方向.';
 
-$GLOBALS["lang"]['The password for the dn_account attribute.'] = 'Dn_count 属性的密码 .';
+$GLOBALS["lang"]['The password for the dn_account attribute.'] = 'dn_count 属性的密码 。';
 
 $GLOBALS["lang"]['The password used to access the external system.'] = '用于访问外部系统的密码.';
 
-$GLOBALS["lang"]['The path to the file or directory.'] = '文件或目录的路径 .';
+$GLOBALS["lang"]['The path to the file or directory.'] = '文件或目录的路径 。';
 
-$GLOBALS["lang"]['The path to the file or directory. Directories should end with a trailing slash.'] = '文件或目录的路径 。 Directories的结尾应该有一个后遗症.';
+$GLOBALS["lang"]['The path to the file or directory. Directories should end with a trailing slash.'] = '文件或目录的路径 。 Directories的结尾应该有一个后遗症。';
 
 $GLOBALS["lang"]['The physical depth (in CMs) of the rack.'] = '机架的物理深度(在CMS中).';
 
@@ -5232,21 +5589,21 @@ $GLOBALS["lang"]['The physical weight (in KGs) of the rack when empty.'] = '架�
 
 $GLOBALS["lang"]['The physical width (in CMs) of the rack.'] = '机架的物理宽度(在CMS中).';
 
-$GLOBALS["lang"]['The pod (if any) that this rack is part of.'] = '这个架子是其中的一部分.';
+$GLOBALS["lang"]['The pod (if any) that this rack is part of.'] = '这个架子是其中的一部分';
 
-$GLOBALS["lang"]['The power circuit this rack attaches to.'] = '这个架子的电路.';
+$GLOBALS["lang"]['The power circuit this rack attaches to.'] = '这个架子的电路';
 
-$GLOBALS["lang"]['The primary database table upon which to base this widget.'] = '用于此部件的主数据库表 .';
+$GLOBALS["lang"]['The primary database table upon which to base this widget.'] = '用于此部件的主数据库表 。';
 
-$GLOBALS["lang"]['The process identifier of this queue item.'] = '此队列项的进程标识符 .';
+$GLOBALS["lang"]['The process identifier of this queue item.'] = '此队列项的进程标识符 。';
 
 $GLOBALS["lang"]['The process that was used last to retrieve details about the device'] = '最后用于获取设备细节的过程';
 
-$GLOBALS["lang"]['The query that provides a list of devices for the integration. Links to <code>queries.id</code>.'] = '提供集成设备列表的查询. 链接到 <code>queries.id </code>.';
+$GLOBALS["lang"]['The query that provides a list of devices for the integration. Links to <code>queries.id</code>.'] = '提供集成设备列表的查询. 链接到 <code>queries.id</code>。 。 。';
 
 $GLOBALS["lang"]['The rack asset number.'] = '架子资产号.';
 
-$GLOBALS["lang"]['The rack asset tag.'] = '机架资产标签.';
+$GLOBALS["lang"]['The rack asset tag.'] = '机架资产标签。';
 
 $GLOBALS["lang"]['The rack bar code.'] = '架子条码.';
 
@@ -5256,23 +5613,25 @@ $GLOBALS["lang"]['The rack serial.'] = '架子连载.';
 
 $GLOBALS["lang"]['The rack series.'] = '架子丛书.';
 
-$GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = '此设备的架子位于其中. 链接到 <code>racks.id </code>.';
+$GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = '此设备的架子位于其中. 链接到 <code>racks.id</code>。 。 。';
 
-$GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = '您目录的正则域名标记 。 Eg - <code>open-audit.lan</code>.';
+$GLOBALS["lang"]['The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.'] = '处理和解决已查明的安全弱点的建议进程。 这通常涉及采用补丁、更新或其他措施,以消除脆弱性造成的风险。';
 
-$GLOBALS["lang"]['The result of the command.'] = '命令的结果.';
+$GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = '您目录的正则域名标记 。 爱格 - <code>open-audit.lan</code>。 。 。';
 
-$GLOBALS["lang"]['The room the rack is located in.'] = '车架所在的房间.';
+$GLOBALS["lang"]['The result of the command.'] = '命令的结果。';
+
+$GLOBALS["lang"]['The room the rack is located in.'] = '车架所在的房间';
 
 $GLOBALS["lang"]['The row the rack is located in.'] = '架子所在的行.';
 
-$GLOBALS["lang"]['The secret key used in conjunction with your AWS EC2 API key.'] = '与您的 AWS EC2 API 密钥结合使用的密钥 .';
+$GLOBALS["lang"]['The secret key used in conjunction with your AWS EC2 API key.'] = '与您的 AWS EC2 API 密钥结合使用的密钥 。';
 
 $GLOBALS["lang"]['The software end-of-life date.'] = '软件报废日期.';
 
 $GLOBALS["lang"]['The software end-of-service-life date.'] = '软件报废使用年限.';
 
-$GLOBALS["lang"]['The specific database column from the specified database table.'] = '指定数据库表格中的特定数据库列.';
+$GLOBALS["lang"]['The specific database column from the specified database table.'] = '指定数据库表格中的特定数据库列。';
 
 $GLOBALS["lang"]['The specific database table.'] = '具体数据库表.';
 
@@ -5280,17 +5639,17 @@ $GLOBALS["lang"]['The standard Nmap timing options. We usually use -T4 (Aggressi
 
 $GLOBALS["lang"]['The status of this integration'] = '这种一体化的现状';
 
-$GLOBALS["lang"]['The status of this queued item.'] = '此队列项的状态 .';
+$GLOBALS["lang"]['The status of this queued item.'] = '此队列项的状态 。';
 
-$GLOBALS["lang"]['The target IP this log entry referers to (if any).'] = '目标IP 此日志条目引用( 如果有) .';
+$GLOBALS["lang"]['The target IP this log entry referers to (if any).'] = '目标IP 此日志条目引用( 如果有) 。';
 
 $GLOBALS["lang"]['The template for the link to be generated per result line.'] = '每个结果行生成的链接模板.';
 
 $GLOBALS["lang"]['The text for the bottom of the chart in a line chart (only).'] = '直线图中图底的文字(仅限).';
 
-$GLOBALS["lang"]['The text that is displayed.'] = '显示的文本 .';
+$GLOBALS["lang"]['The text that is displayed.'] = '显示的文本 。';
 
-$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2001-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = '时间戳之后,这项任务应该进行。 例如,在2017年6月1日10时后运行一个任务,设定为 <code>2017-06-01 09:59:00 </code>. 此值应为零加法( e, 09, 不是 9) 。 这个值默认为<code>2001-01-01 00:00</code>,这意味着默认情况下,一个预定任务将在下一个预定执行时间运行.';
+$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = '时间戳之后,这项任务应该进行。 例如,在2017年6月1日早上10点后执行一个任务,设定为 <code>2017-06-01 09:59:00</code>。 。 。 此值应为零加法( e, 09, 不是 9) 。 此值默认为 <code>2000-01-01 00:00:00</code> 这意味着默认情况下,一个预定任务将在下一个预定执行时间运行.';
 
 $GLOBALS["lang"]['The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.'] = '根据Nmap通常使用的前10,100或1000(或无)TCP端口.';
 
@@ -5300,7 +5659,7 @@ $GLOBALS["lang"]['The total BTU output by this rack.'] = 'BTU的总输出通过�
 
 $GLOBALS["lang"]['The type of device.'] = '器类.';
 
-$GLOBALS["lang"]['The type of organisation.'] = '组织的类型.';
+$GLOBALS["lang"]['The type of organisation.'] = '组织的类型。';
 
 $GLOBALS["lang"]['The type of rack (compute, power, network, etc).'] = '机架类型(计算,功率,网络等).';
 
@@ -5308,57 +5667,59 @@ $GLOBALS["lang"]['The type of task to run. One of: baseline, benchmark, cloud di
 
 $GLOBALS["lang"]['The type of the integration (usually named after the external system).'] = '集成类型(通常以外部系统命名).';
 
-$GLOBALS["lang"]['The unique identifier of this server.'] = '此服务器的唯一标识符 .';
+$GLOBALS["lang"]['The unique identifier of this server.'] = '此服务器的唯一标识符 。';
 
-$GLOBALS["lang"]['The user account this collector uses. Links to <code>users.id</code>.'] = '此收藏器使用的用户账户 。 链接到 <code>用户.id </code>.';
+$GLOBALS["lang"]['The user account this collector uses. Links to <code>users.id</code>.'] = '此收藏器使用的用户账户 。 链接到 <code>users.id</code>。 。 。';
 
 $GLOBALS["lang"]['The username used to access the external system.'] = '用于访问外部系统的用户名.';
 
-$GLOBALS["lang"]['The users email address.'] = '用户电子邮件地址 .';
+$GLOBALS["lang"]['The users email address.'] = '用户电子邮件地址 。';
 
-$GLOBALS["lang"]['The usual hours of operation at this site.'] = '这里正常的营业时间.';
+$GLOBALS["lang"]['The usual hours of operation at this site.'] = '这里正常的营业时间';
 
-$GLOBALS["lang"]['The value assigned to the item.'] = '分配给项目的值 .';
+$GLOBALS["lang"]['The value assigned to the item.'] = '分配给项目的值 。';
 
-$GLOBALS["lang"]['The value that is stored for this particular item.'] = '此特定项目的存储值 .';
+$GLOBALS["lang"]['The value that is stored for this particular item.'] = '此特定项目的存储值 。';
 
-$GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = '安装 Open-AudIT 的主机上的网络目录( 需要后继斜线) .';
+$GLOBALS["lang"]['The vendor name as per CPE entries.'] = 'CPE条目中的供应商名称。';
 
-$GLOBALS["lang"]['The widget at position '] = '位置上的部件';
+$GLOBALS["lang"]['The vendor taken from the CPE.'] = '卖主从CPE中取走.';
 
-$GLOBALS["lang"]['The width of this device.'] = '此设备的宽度 .';
+$GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = '安装 Open-AudIT 的主机上的网络目录( 需要后继斜线) 。';
+
+$GLOBALS["lang"]['The widget at position '] = '位置上的部件 ';
+
+$GLOBALS["lang"]['The width of this device.'] = '此设备的宽度 。';
 
 $GLOBALS["lang"]['Then'] = '礛';
 
-$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = '此属性作为 JSON 对象存储 。 它是所有收藏的列表,并载有收藏名称以及 <code>c</code>,<code>r</code>,<code>u</code>和,或<code>d</code>,代表创建、阅读、更新和删除。 这些是用户可以对来自该特定收藏的物品采取的行动.';
+$GLOBALS["lang"]['This CVE will be retrieved and overwrite the existing CVE if it exists.'] = '如果 CVE 存在, 它将被检索并覆盖它 。';
+
+$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = '此属性作为 JSON 对象存储 。 它是所有藏品的列表,包含藏品名称以及 <code>c</code>, (中文). <code>r</code>, (中文). <code>u</code> 和,或 <code>d</code> 表示创建、读取、更新和删除。 这些是用户可以对来自该特定收藏的物品采取的行动。';
 
 $GLOBALS["lang"]['This can be either a varchar (a text field), a list (a list of values that can be selected) or a date.'] = '这可以是 varchar(文本字段),列表(可以选择的数值列表)或日期.';
 
-$GLOBALS["lang"]['This collectors universally unique identifier.'] = '这个收藏家具有普遍独特的识别特征.';
+$GLOBALS["lang"]['This collectors universally unique identifier.'] = '这个收藏家具有普遍独特的识别特征。';
 
-$GLOBALS["lang"]['This description is auto-populated and should ideally be left as-is.'] = '这种描述是自动流行的,最好还是保持原样.';
+$GLOBALS["lang"]['This description is auto-populated and should ideally be left as-is.'] = '这种描述是自动流行的,最好还是保持原样。';
 
-$GLOBALS["lang"]['This feature requires a Professional or an Enterprise license.'] = '这一特点需要专业或企业许可证.';
+$GLOBALS["lang"]['This feature requires a Professional or an Enterprise license.'] = '这一特点需要专业或企业许可证。';
 
-$GLOBALS["lang"]['This is generally the primary column, unless otherwise configured. NOTE: When type = traffic, this represents the secondary text.'] = '这一般是主列,除非另有配置. 注:当类型=流量时,这是次要文本.';
+$GLOBALS["lang"]['This is generally the primary column, unless otherwise configured. NOTE: When type = traffic, this represents the secondary text.'] = '这一般是主列,除非另有配置. 注:当类型=流量时,这是次要文本。';
 
 $GLOBALS["lang"]['This item must match the value of the attribute selected or contains the ID of the query to be used.'] = '本项目必须匹配所选属性的值或包含要使用的查询的ID.';
 
-$GLOBALS["lang"]['This item must match the value of the attribute selected.'] = '此项目必须匹配所选属性的值 .';
+$GLOBALS["lang"]['This item must match the value of the attribute selected.'] = '此项目必须匹配所选属性的值 。';
 
 $GLOBALS["lang"]['This license expires on'] = '此许可证过期于';
 
 $GLOBALS["lang"]['This should be set to either 1 or the height of the rack.'] = '这应当设定为1或架高.';
 
-$GLOBALS["lang"]['This will auto-populate.'] = '这会自动流行.';
+$GLOBALS["lang"]['This will auto-populate.'] = '这会自动流行。';
 
-$GLOBALS["lang"]['This will considerably slow the discovery scan.'] = '这将大大减缓发现扫描的速度.';
+$GLOBALS["lang"]['This will considerably slow the discovery scan.'] = '这将大大减缓发现扫描的速度。';
 
 $GLOBALS["lang"]['Thursday'] = '星期四';
-
-$GLOBALS["lang"]['time'] = '时间';
-
-$GLOBALS["lang"]['Time'] = '时间';
 
 $GLOBALS["lang"]['time_caption'] = '时间说明';
 
@@ -5408,6 +5769,10 @@ $GLOBALS["lang"]['Traffic Light'] = '交通灯';
 
 $GLOBALS["lang"]['Trinidad and Tobago'] = '特立尼达和多巴哥';
 
+$GLOBALS["lang"]['Troubleshooting LDAP Logins'] = '清除 LDAP 登录中的问题';
+
+$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"'] = '用Open-AudIT Entertainment的FREE 100设备许可证尝试所有最新的特性. 请读"a href=\"';
+
 $GLOBALS["lang"]['Tuesday'] = '星期二';
 
 $GLOBALS["lang"]['Tunisia'] = '突尼斯';
@@ -5456,10 +5821,6 @@ $GLOBALS["lang"]['Udp Ports'] = 'Udp 端口';
 
 $GLOBALS["lang"]['Uganda'] = '乌干达';
 
-$GLOBALS["lang"]['uid'] = '用户';
-
-$GLOBALS["lang"]['Uid'] = '用户';
-
 $GLOBALS["lang"]['Ukraine'] = '乌克兰';
 
 $GLOBALS["lang"]['uninstall'] = '卸载';
@@ -5486,7 +5847,7 @@ $GLOBALS["lang"]['Unlock Pin'] = '解锁键';
 
 $GLOBALS["lang"]['Unscheduled'] = '未排定';
 
-$GLOBALS["lang"]['Unused as at 5.2.0.'] = '未使用,为5.2.0.';
+$GLOBALS["lang"]['Unused as at 5.2.0.'] = '未使用,为5.2.0。';
 
 $GLOBALS["lang"]['Unused.'] = '无用.';
 
@@ -5510,27 +5871,25 @@ $GLOBALS["lang"]['Update Internal From External'] = '从外部更新内部';
 
 $GLOBALS["lang"]['Update NMIS Devices from Open-AudIT'] = '从 Open-AudIT 更新 NSIS 设备';
 
-$GLOBALS["lang"]['Update Open-AudIT Devices from '] = '更新 Open-AudIT 设备从';
+$GLOBALS["lang"]['Update Open-AudIT Devices from '] = '更新 Open-AudIT 设备从 ';
 
 $GLOBALS["lang"]['Update Open-AudIT Devices from NMIS'] = '更新 Open-AudIT NMIS 设备';
-
-$GLOBALS["lang"]['updated_at'] = '更新时间';
-
-$GLOBALS["lang"]['Updated At'] = '更新时间';
 
 $GLOBALS["lang"]['Updated each time discovery has been executed with IPs detected to be responding.'] = '每次发现被执行时都会更新,检测到IP响应.';
 
 $GLOBALS["lang"]['Updated each time discovery has been executed with IPs that have been scanned by Nmap.'] = '每次发现都用Nmap扫描过的IP执行更新.';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to audit.'] = '每次发现时都会更新 我们用能够审计的设备执行.';
+$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to audit.'] = '每次发现时都会更新 我们用能够审计的设备执行';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to query.'] = '每次发现被执行时都会更新, 设备我们能够查询 .';
+$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to query.'] = '每次发现被执行时都会更新, 设备我们能够查询 。';
 
 $GLOBALS["lang"]['Updated each time discovery has been executed.'] = '每次发现执行后都会更新.';
 
 $GLOBALS["lang"]['Updated each time the discovery has been executed.'] = '每次发现被执行时都会更新.';
 
-$GLOBALS["lang"]['Updated each time the discovery has completed execution.'] = '每次发现完成后都会更新.';
+$GLOBALS["lang"]['Updated each time the discovery has completed execution.'] = '每次发现完成后都会更新';
+
+$GLOBALS["lang"]['Updating'] = '更新';
 
 $GLOBALS["lang"]['Upgrade'] = '升级';
 
@@ -5551,6 +5910,10 @@ $GLOBALS["lang"]['Uruguay, Eastern Republic of'] = '乌拉圭,东共和国';
 $GLOBALS["lang"]['usb'] = '用户b';
 
 $GLOBALS["lang"]['Usb'] = '用户b';
+
+$GLOBALS["lang"]['use'] = '使用';
+
+$GLOBALS["lang"]['Use'] = '使用';
 
 $GLOBALS["lang"]['use_authentication'] = '使用认证';
 
@@ -5582,25 +5945,21 @@ $GLOBALS["lang"]['used_count'] = '已使用的计数';
 
 $GLOBALS["lang"]['Used Count'] = '已使用的计数';
 
-$GLOBALS["lang"]['used_percent'] = '使用百分比';
-
-$GLOBALS["lang"]['Used Percent'] = '使用百分比';
-
 $GLOBALS["lang"]['Used by OpenLDAP only.'] = '仅由OpenLDAP使用.';
 
 $GLOBALS["lang"]['Used internally when discovering a single device.'] = '发现单个设备时内部使用.';
 
-$GLOBALS["lang"]['Used internally when discovering a single device. Links to <code>devices.id</code>.'] = '发现单个设备时内部使用. 链接到 <code>devices.id </code>.';
+$GLOBALS["lang"]['Used internally when discovering a single device. Links to <code>devices.id</code>.'] = '发现单个设备时内部使用. 链接到 <code>devices.id</code>。 。 。';
 
-$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.'] = '当 LDAP 服务器被配置以填充用户细节时使用 - 这包括他们可以访问的 Orgs 。 如果用户属于此 LDAP 组, 它们会被指定为此 org .';
+$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.'] = '当 LDAP 服务器被配置以填充用户细节时使用 - 这包括他们可以访问的 Orgs 。 如果用户属于此 LDAP 组, 它们会被指定为此 org 。';
 
 $GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.'] = '当 LDAP 服务器被配置以添加用户细节时使用 - 这包括他们被指派的角色 。 如果一个用户在这个LDAP组中,他们就被分配这个角色.';
 
-$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = '搜索 OpenLDAP 时用于匹配用户 uid 组成员 。 <code>memberUid </code>的默认值。 仅由OpenLDAP使用.';
+$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = '搜索 OpenLDAP 时用于匹配用户 uid 组成员 。 默认 <code>memberUid</code>。 。 。 仅由OpenLDAP使用.';
 
-$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications.'] = '用于整合和第一Wave监测应用程序.';
+$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications.'] = '用于整合和第一Wave监测应用程序。';
 
-$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications. Set to y if working SNMP detected by discovery.'] = '用于整合和第一Wave监测应用程序。 如果通过发现检测到工作 SNMP 则设定为 Y .';
+$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications. Set to y if working SNMP detected by discovery.'] = '用于整合和第一Wave监测应用程序。 如果通过发现检测到工作 SNMP 则设定为 Y 。';
 
 $GLOBALS["lang"]['user'] = '用户';
 
@@ -5616,6 +5975,10 @@ $GLOBALS["lang"]['user_id'] = '用户代号';
 
 $GLOBALS["lang"]['User ID'] = '用户代号';
 
+$GLOBALS["lang"]['user_interaction'] = '用户交互';
+
+$GLOBALS["lang"]['User Interaction'] = '用户交互';
+
 $GLOBALS["lang"]['User Membership Attribute'] = '用户成员属性';
 
 $GLOBALS["lang"]['user_name'] = '用户名';
@@ -5624,13 +5987,19 @@ $GLOBALS["lang"]['User Name'] = '用户名';
 
 $GLOBALS["lang"]['User Policies'] = '用户政策';
 
-$GLOBALS["lang"]['username'] = '用户名';
-
 $GLOBALS["lang"]['Username'] = '用户名';
+
+$GLOBALS["lang"]['username'] = '用户名';
 
 $GLOBALS["lang"]['users'] = '用户';
 
 $GLOBALS["lang"]['Users'] = '用户';
+
+$GLOBALS["lang"]['Users, Roles and Orgs'] = '用户、角色和类';
+
+$GLOBALS["lang"]['Using Entra for Auth'] = '为 Auth 使用 Entra';
+
+$GLOBALS["lang"]['Using OKTA for Auth'] = '对 Auth 使用 OKTA';
 
 $GLOBALS["lang"]['Usually Mb/s, from Location A.'] = '通常为Mb/s,来自地点A.';
 
@@ -5641,6 +6010,10 @@ $GLOBALS["lang"]['Usually Mb/s, to Location A.'] = '通常为Mb/s,到位置A.';
 $GLOBALS["lang"]['Usually Mb/s, to Location B.'] = '通常为Mb/s,到B位置.';
 
 $GLOBALS["lang"]['Uzbekistan'] = '乌兹别克斯坦';
+
+$GLOBALS["lang"]['VLAN'] = '维也纳';
+
+$GLOBALS["lang"]['VLAN ID'] = '维兰身份证';
 
 $GLOBALS["lang"]['valid_from'] = '有效来源';
 
@@ -5682,6 +6055,10 @@ $GLOBALS["lang"]['vendor'] = '供应商';
 
 $GLOBALS["lang"]['Vendor'] = '供应商';
 
+$GLOBALS["lang"]['vendors'] = '供应商';
+
+$GLOBALS["lang"]['Vendors'] = '供应商';
+
 $GLOBALS["lang"]['Venezuela'] = '委内瑞拉';
 
 $GLOBALS["lang"]['version'] = '版本';
@@ -5691,6 +6068,10 @@ $GLOBALS["lang"]['Version'] = '版本';
 $GLOBALS["lang"]['version_padded'] = '版本添加';
 
 $GLOBALS["lang"]['Version Padded'] = '版本添加';
+
+$GLOBALS["lang"]['version_raw'] = '版本 Raw';
+
+$GLOBALS["lang"]['Version Raw'] = '版本 Raw';
 
 $GLOBALS["lang"]['version_string'] = '版本字符串';
 
@@ -5718,7 +6099,15 @@ $GLOBALS["lang"]['Virtual Private Network'] = '虚拟私人网络';
 
 $GLOBALS["lang"]['Virtualisation'] = '虚拟化';
 
-$GLOBALS["lang"]['Visit our YouTube channel for instructional videos.'] = '访问我们的YouTube频道 教学视频.';
+$GLOBALS["lang"]['Visit our YouTube channel for instructional videos.'] = '访问我们的YouTube频道 教学视频。';
+
+$GLOBALS["lang"]['vlan'] = '瓦兰';
+
+$GLOBALS["lang"]['Vlan'] = '瓦兰';
+
+$GLOBALS["lang"]['vlan_id'] = 'Vlan 身份证';
+
+$GLOBALS["lang"]['Vlan ID'] = 'Vlan 身份证';
 
 $GLOBALS["lang"]['vm'] = '声波';
 
@@ -5739,6 +6128,26 @@ $GLOBALS["lang"]['Vm Ident'] = 'Vm 标识';
 $GLOBALS["lang"]['vm_server_name'] = 'Vm 服务器名称';
 
 $GLOBALS["lang"]['Vm Server Name'] = 'Vm 服务器名称';
+
+$GLOBALS["lang"]['vm_vendor'] = 'Vm 供应商';
+
+$GLOBALS["lang"]['Vm Vendor'] = 'Vm 供应商';
+
+$GLOBALS["lang"]['vuln_status'] = 'Vuln 状态';
+
+$GLOBALS["lang"]['Vuln Status'] = 'Vuln 状态';
+
+$GLOBALS["lang"]['vulnerabilities'] = '脆弱性';
+
+$GLOBALS["lang"]['Vulnerabilities'] = '脆弱性';
+
+$GLOBALS["lang"]['vulnerabilities_cache'] = '脆弱缓存';
+
+$GLOBALS["lang"]['Vulnerabilities Cache'] = '脆弱缓存';
+
+$GLOBALS["lang"]['vulnerability_id'] = '脆弱性识别';
+
+$GLOBALS["lang"]['Vulnerability ID'] = '脆弱性识别';
 
 $GLOBALS["lang"]['WHERE'] = '何处';
 
@@ -5776,6 +6185,8 @@ $GLOBALS["lang"]['Web'] = '网页';
 
 $GLOBALS["lang"]['Webserver'] = 'Web 服务器';
 
+$GLOBALS["lang"]['Website'] = '网站';
+
 $GLOBALS["lang"]['Wednesday'] = '星期三';
 
 $GLOBALS["lang"]['weight'] = '重量';
@@ -5802,17 +6213,11 @@ $GLOBALS["lang"]['Welcome to FirstWave Open-AudIT'] = '欢迎来到第一Wave Op
 
 $GLOBALS["lang"]['Western Sahara'] = '西撒哈拉';
 
-$GLOBALS["lang"]['what'] = '什麽';
+$GLOBALS["lang"]['What Can I Expect if I Have no Credentials'] = '如果我没有证书,我能期望什么?';
 
-$GLOBALS["lang"]['What'] = '什麽';
+$GLOBALS["lang"]['What is the purpose of this rack.'] = '这个架子的目的是什么?';
 
-$GLOBALS["lang"]['What is the purpose of this rack.'] = '这个架子的目的是什么.';
-
-$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = '这个位置是什么类型 。 在 < code> 属性 </code> 表格中保存的允许类型.';
-
-$GLOBALS["lang"]['when'] = '何时';
-
-$GLOBALS["lang"]['When'] = '何时';
+$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = '这个位置是什么类型 。 持有的允许类型 <code>attributes</code> 表单。';
 
 $GLOBALS["lang"]['When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?'] = '在从外部系统整合设备时,如果设备在Open-AudIT中不存在,我们应该创建它吗?';
 
@@ -5820,29 +6225,37 @@ $GLOBALS["lang"]['When integrating devices from the external system, if the devi
 
 $GLOBALS["lang"]['When retrieve an external device, should we run discovery upon it?'] = '在取回一个外部设备时,我们是否应该进行发现?';
 
-$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.'] = '计划执行此基准时 。 衍生自关联的<code> tasks.type</code>和<code> tasks.sub_resource_id</code>.';
+$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.'] = '计划执行此基准时 。 衍生自关联 <code>tasks.type</code> 和 <code>tasks.sub_resource_id</code>。 。 。';
 
-$GLOBALS["lang"]['When this log was created.'] = '此日志创建时 .';
+$GLOBALS["lang"]['When this log was created.'] = '此日志创建时 。';
 
-$GLOBALS["lang"]['When this queue item started processing.'] = '当此队列项目开始处理时 .';
+$GLOBALS["lang"]['When this queue item started processing.'] = '当此队列项目开始处理时 。';
 
-$GLOBALS["lang"]['When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.'] = '当我们收到一个开放的端口时,我们是否应该尝试测试目前运行在端口上的服务版本? 这有助于确认实际运行的服务.';
+$GLOBALS["lang"]['When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.'] = '当我们执行这一基线时,我们是否应当检查该基线政策中没有的装置上的项目。';
+
+$GLOBALS["lang"]['When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.'] = '当我们收到一个开放的端口时,我们是否应该尝试测试目前运行在端口上的服务版本? 这有助于确认实际运行的服务。';
 
 $GLOBALS["lang"]['where'] = '何处';
 
 $GLOBALS["lang"]['Where'] = '何处';
 
-$GLOBALS["lang"]['Where on the Device Details screen you would like to see this field appear.'] = '在设备细节屏幕上您想要看到此字段的出现 .';
+$GLOBALS["lang"]['Where on the Device Details screen you would like to see this field appear.'] = '在设备细节屏幕上您想要看到此字段的出现 。';
 
 $GLOBALS["lang"]['Where the rack is in the row.'] = '架在行处.';
 
-$GLOBALS["lang"]['Which OS this benchmark applies to.'] = '此基准适用于哪一个 OS .';
+$GLOBALS["lang"]['Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.'] = '脆弱性是否利用影响、可得性和保密性影响其自身以外的组成部分。';
 
-$GLOBALS["lang"]['Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.'] = '哪些设备应从外部系统创建 Open-AudIT( 如果有的话) 。 使用全部, 无或给定属性 .';
+$GLOBALS["lang"]['Whether user interaction is required (None, Passive, Active).'] = '是否需要用户交互(无,被动,主动).';
 
-$GLOBALS["lang"]['Which sub-menu should we display this query in.'] = '我们应该在哪个子菜单中显示此查询 .';
+$GLOBALS["lang"]['Which OS this benchmark applies to.'] = '此基准适用于哪一个 OS 。';
 
-$GLOBALS["lang"]['Who made this rack.'] = '谁做的这个架子.';
+$GLOBALS["lang"]['Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.'] = '哪些设备应从外部系统创建 Open-AudIT( 如果有的话) 。 使用全部, 无或给定属性 。';
+
+$GLOBALS["lang"]['Which sub-menu should we display this query in.'] = '我们应该在哪个子菜单中显示此查询 。';
+
+$GLOBALS["lang"]['Who made this rack.'] = '谁做的这个架子。';
+
+$GLOBALS["lang"]['Why Windows Server Only?'] = '为什么只有Windows服务器?';
 
 $GLOBALS["lang"]['Why do we exclude this policy?'] = '为什么我们排斥这一政策?';
 
@@ -5850,7 +6263,7 @@ $GLOBALS["lang"]['Wide Area Network'] = '广域网';
 
 $GLOBALS["lang"]['Widget'] = '部件';
 
-$GLOBALS["lang"]['Widget # '] = '部件 #';
+$GLOBALS["lang"]['Widget # '] = '部件 # ';
 
 $GLOBALS["lang"]['Widget Type'] = '部件类型';
 
@@ -5865,6 +6278,8 @@ $GLOBALS["lang"]['Width'] = '宽度';
 $GLOBALS["lang"]['windows'] = '窗口';
 
 $GLOBALS["lang"]['Windows'] = '窗口';
+
+$GLOBALS["lang"]['Windows Test Script'] = '窗口测试脚本';
 
 $GLOBALS["lang"]['Wireless Local Area Network'] = '无线局域网';
 
@@ -5890,37 +6305,37 @@ $GLOBALS["lang"]['Yemen'] = '也门';
 
 $GLOBALS["lang"]['Yes'] = '对';
 
-$GLOBALS["lang"]['You may want to copy and paste this URL in an email to your staff.'] = '您可能想要在电子邮件中复制并粘贴此 URL .';
+$GLOBALS["lang"]['You may want to copy and paste this URL in an email to your staff.'] = '您可能想要在电子邮件中复制并粘贴此 URL 。';
 
-$GLOBALS["lang"]['You must delete your existing license before adding a new license.'] = '您必须先删除您已有的许可证, 然后再添加新的许可证 .';
+$GLOBALS["lang"]['You must delete your existing license before adding a new license.'] = '您必须先删除您已有的许可证, 然后再添加新的许可证 。';
 
 $GLOBALS["lang"]['YouTube Tutorials'] = 'YouTube 教习';
 
-$GLOBALS["lang"]['Your AWS EC2 API key.'] = '您的 AWS EC2 API 密钥 .';
+$GLOBALS["lang"]['Your AWS EC2 API key.'] = '您的 AWS EC2 API 密钥 。';
 
-$GLOBALS["lang"]['Your Google Compute credentials as JSON.'] = '您的谷歌计算证书为 JSON .';
+$GLOBALS["lang"]['Your Google Compute credentials as JSON.'] = '您的谷歌计算证书为 JSON 。';
 
 $GLOBALS["lang"]['Your Licenses'] = '您的驾照';
 
 $GLOBALS["lang"]['Your Microsoft Azure Client ID.'] = '你的微软Azure客户端ID.';
 
-$GLOBALS["lang"]['Your Microsoft Azure Client Secret.'] = '您的微软 Azure 客户端机密 .';
+$GLOBALS["lang"]['Your Microsoft Azure Client Secret.'] = '您的微软 Azure 客户端机密 。';
 
-$GLOBALS["lang"]['Your Microsoft Azure Subscription ID.'] = '您的微软 Azure 订阅 ID .';
+$GLOBALS["lang"]['Your Microsoft Azure Subscription ID.'] = '您的微软 Azure 订阅 ID 。';
 
-$GLOBALS["lang"]['Your Microsoft Azure Tennant ID.'] = '你的微软Azure Tennant ID.';
+$GLOBALS["lang"]['Your Microsoft Azure Tennant ID.'] = '你的微软Azure Tennant ID。';
 
-$GLOBALS["lang"]['Your SQL to select attributes that will populate this query.'] = '您的 SQL 选择将包含此查询的属性 .';
+$GLOBALS["lang"]['Your SQL to select attributes that will populate this query.'] = '您的 SQL 选择将包含此查询的属性 。';
 
-$GLOBALS["lang"]['Your SQL to select devices that will populate this group.'] = '您的 SQL 要选择将包含此组的设备 .';
+$GLOBALS["lang"]['Your SQL to select devices that will populate this group.'] = '您的 SQL 要选择将包含此组的设备 。';
 
-$GLOBALS["lang"]['Your SSH key.'] = '你的SSH钥匙.';
+$GLOBALS["lang"]['Your SSH key.'] = '你的SSH钥匙';
 
-$GLOBALS["lang"]['Your access credentials, as per that clouds native API.'] = '您的访问权限, 根据云的本地API.';
+$GLOBALS["lang"]['Your access credentials, as per that clouds native API.'] = '您的访问权限, 根据云的本地API。';
 
-$GLOBALS["lang"]['Your description of the status of this connection (provisioned, retired, etc).'] = '您描述此连接的状况( 已提供、 已退休等) .';
+$GLOBALS["lang"]['Your description of the status of this connection (provisioned, retired, etc).'] = '您描述此连接的状况( 已提供、 已退休等) 。';
 
-$GLOBALS["lang"]['Your description of this item.'] = '你对这个项目的描述.';
+$GLOBALS["lang"]['Your description of this item.'] = '你对这个项目的描述。';
 
 $GLOBALS["lang"]['Your generic name for this piece of software'] = '此软件的通用名称';
 
@@ -5938,7 +6353,7 @@ $GLOBALS["lang"]['active/active'] = '活动/活动';
 
 $GLOBALS["lang"]['active/passive'] = '活动/被动';
 
-$GLOBALS["lang"]['ad hoc'] = '特设';
+$GLOBALS["lang"]['advertisement'] = '广告';
 
 $GLOBALS["lang"]['alert'] = '警报';
 
@@ -5962,15 +6377,23 @@ $GLOBALS["lang"]['backup'] = '备份';
 
 $GLOBALS["lang"]['banned'] = '被禁止';
 
+$GLOBALS["lang"]['blog'] = '博客';
+
 $GLOBALS["lang"]['bottom'] = '下边';
+
+$GLOBALS["lang"]['browser_lang'] = '浏览器(_L)';
 
 $GLOBALS["lang"]['building'] = '大楼';
 
 $GLOBALS["lang"]['cloud'] = '阴云';
 
+$GLOBALS["lang"]['code'] = '代码';
+
 $GLOBALS["lang"]['collector'] = '收藏家';
 
 $GLOBALS["lang"]['compute'] = '计算';
+
+$GLOBALS["lang"]['config'] = '配置';
 
 $GLOBALS["lang"]['contains'] = '包含';
 
@@ -5980,11 +6403,11 @@ $GLOBALS["lang"]['created'] = '创建';
 
 $GLOBALS["lang"]['critical'] = '关键';
 
+$GLOBALS["lang"]['cve'] = '简历';
+
 $GLOBALS["lang"]['database'] = '数据库';
 
 $GLOBALS["lang"]['debug'] = '调试';
-
-$GLOBALS["lang"]['defined process'] = '定义进程';
 
 $GLOBALS["lang"]['delegated'] = '授权';
 
@@ -6008,13 +6431,39 @@ $GLOBALS["lang"]['equals'] = '等于';
 
 $GLOBALS["lang"]['error'] = '错误';
 
+$GLOBALS["lang"]['established'] = '已设立';
+
 $GLOBALS["lang"]['excluded'] = '不包括';
 
 $GLOBALS["lang"]['expired'] = '过期';
 
+$GLOBALS["lang"]['extreme - Without which, the organisation would fail.
+
+very high - Functions that are essential for the organisations survival and must be restored immediately.
+
+high - Important functions that should be restored quickly but may have a slightly longer recovery time.
+
+medium - Functions that are necessary but can tolerate longer downtime.
+
+low - Non-essential functions that can be delayed without significant impact.
+
+unassigned - The default until set.'] = '极端 - 否则,本组织将失败。
+
+非常崇高 -- -- 对各组织生存至关重要,必须立即恢复的职能。
+
+高度 - 应迅速恢复但恢复时间可能稍长的重要功能。
+
+中 - 必要但可容忍较长停机时间的函数。
+
+低 - 可以延迟而无重大影响的非基本功能.
+
+未指定 - 直到设定默认值 。';
+
 $GLOBALS["lang"]['fail'] = '失败';
 
 $GLOBALS["lang"]['false'] = '虚假';
+
+$GLOBALS["lang"]['file'] = '文件';
 
 $GLOBALS["lang"]['firewall'] = '防火墙';
 
@@ -6044,11 +6493,15 @@ $GLOBALS["lang"]['here'] = '这里';
 
 $GLOBALS["lang"]['high availability'] = '高可用性';
 
+$GLOBALS["lang"]['howto'] = '怎样';
+
 $GLOBALS["lang"]['ignored'] = '忽略';
 
 $GLOBALS["lang"]['in'] = '内';
 
 $GLOBALS["lang"]['inactive'] = '不活动';
+
+$GLOBALS["lang"]['incomplete'] = '不完整';
 
 $GLOBALS["lang"]['info'] = '信息';
 
@@ -6072,7 +6525,7 @@ $GLOBALS["lang"]['load balancing'] = '负载平衡';
 
 $GLOBALS["lang"]['location'] = '地点';
 
-$GLOBALS["lang"]['managed and measurable'] = '管理和可衡量';
+$GLOBALS["lang"]['managed'] = '管理';
 
 $GLOBALS["lang"]['microsoft'] = '微软';
 
@@ -6080,11 +6533,11 @@ $GLOBALS["lang"]['mount point'] = '挂载点';
 
 $GLOBALS["lang"]['network'] = '网络';
 
+$GLOBALS["lang"]['news'] = '新闻';
+
 $GLOBALS["lang"]['no'] = '无';
 
 $GLOBALS["lang"]['node'] = '节点';
-
-$GLOBALS["lang"]['non-existent'] = '不存在';
 
 $GLOBALS["lang"]['none'] = '无';
 
@@ -6098,15 +6551,19 @@ $GLOBALS["lang"]['not like'] = '不喜欢';
 
 $GLOBALS["lang"]['notice'] = '通知';
 
+$GLOBALS["lang"]['notification'] = '通知';
+
 $GLOBALS["lang"]['okta'] = '罢';
 
 $GLOBALS["lang"]['openldap'] = '打开';
 
 $GLOBALS["lang"]['optimized'] = '优化';
 
-$GLOBALS["lang"]['optionally '] = '可选';
+$GLOBALS["lang"]['optionally '] = '可选 ';
 
 $GLOBALS["lang"]['other'] = '其他项目';
+
+$GLOBALS["lang"]['package'] = '软件包';
 
 $GLOBALS["lang"]['partition'] = '分区';
 
@@ -6116,9 +6573,13 @@ $GLOBALS["lang"]['pending'] = '待处理';
 
 $GLOBALS["lang"]['performance'] = '业绩';
 
+$GLOBALS["lang"]['performed'] = '执行';
+
 $GLOBALS["lang"]['pie'] = '馅饼';
 
 $GLOBALS["lang"]['planning'] = '规划';
+
+$GLOBALS["lang"]['predictable'] = '可预见';
 
 $GLOBALS["lang"]['query'] = '查询';
 
@@ -6130,7 +6591,7 @@ $GLOBALS["lang"]['rear-right'] = '后侧';
 
 $GLOBALS["lang"]['regex'] = '缩写';
 
-$GLOBALS["lang"]['repeatable but intuitive'] = '可重复但直观';
+$GLOBALS["lang"]['release'] = '释放';
 
 $GLOBALS["lang"]['reserved'] = '保留';
 
@@ -6151,6 +6612,36 @@ $GLOBALS["lang"]['storage'] = '存储';
 $GLOBALS["lang"]['timestamp'] = '时间戳';
 
 $GLOBALS["lang"]['top'] = '顶端';
+
+$GLOBALS["lang"]['top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
+
+secret - Military / Government classification. Disclosure would cause serious damage to national security.
+
+confidential - Military / Government and Private Sector classification. Data that is confidential includes trade secrets, intellectual data, application programming code, and other data that could seriously affect the organization if unauthorized disclosure occurred. Data at this level would be available only to personnel in the organization whose work needs, or is directly related to, the accessed data. Access to confidential data usually requires authorization for each access.
+
+private - Private Sector classification. Data that is private includes any information related to personnel, including human resources records, medical records, and salary information, that is used only within the organization.
+
+sensitive - Military / Government and Private Sector classification. Data that is sensitive includes organizational financial information and requires extra measures to ensure its CIA and accuracy. Disclosure might harm national security.
+
+public - Private Sector classification. Public data is data that is generally shared with the public and would not cause a negative impact on the organization. Examples of public data include how many people work in the organization and what products an organization manufactures or sells.
+
+unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
+
+unassigned - The default until set.'] = '绝密 - 军事/政府分类. 披露会对国家安全造成特别严重的危险。
+
+机密 - 军事/政府分类。 披露会对国家安全造成严重损害。
+
+机密-军事/政府和私营部门分类。 保密数据包括商业秘密,知识数据,应用编程代码,以及如果发生未经授权的披露可能严重影响组织的其他数据. 这一级别的数据只提供给其工作需要或与所获取数据直接相关的组织人员。 访问机密数据通常需要每次访问的授权.
+
+私营部门分类。 私人数据包括与人员有关的任何信息,包括人力资源记录、医疗记录和薪金信息,仅在组织内使用。
+
+军事/政府和私营部门分类。 敏感数据包括组织财务信息,需要额外措施以确保其中央情报局和准确性。 披露可能会损害国家安全。
+
+公共-私营部门分类。 公共数据是一般与公众共享的数据,不会对组织产生负面影响. 公共数据的例子包括有多少人在该组织工作,以及一个组织制造或销售什么产品。
+
+未分类----军事/政府分类。 通常可以向公众散发的任何信息,而不会对国家利益造成任何威胁。
+
+未指定 - 直到设定默认值 。';
 
 $GLOBALS["lang"]['traffic'] = '运输';
 
@@ -6667,3 +7158,4 @@ $GLOBALS["lang"]['YE'] = 'YE';
 $GLOBALS["lang"]['ZM'] = 'ZM';
 
 $GLOBALS["lang"]['ZW'] = 'ZW';
+

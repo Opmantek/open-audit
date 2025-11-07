@@ -72,7 +72,7 @@ window.onload = function () {
                                     \
                                     <div class="row" style="padding-top:16px;">\
                                         <div class="offset-2 col-8" style="position:relative;">\
-                                            <label for="data[attributes][credentials][security_level]" class="form-label"><?= __("Security Level") ?></label><br>\
+                                            <label for="data[attributes][credentials][security_level]" class="form-label"><?= __('Security Level') ?></label><br>\
                                             <select class="form-select data_type" name="data[attributes][credentials][security_level]" id="data[attributes][credentials][security_level]">\
                                                 <option value="noAuthNoPriv">noAuthNoPriv</option>\
                                                 <option value="authNoPriv">authNoPriv</option>\
@@ -83,7 +83,7 @@ window.onload = function () {
                                     \
                                     <div class="row" style="padding-top:16px;">\
                                         <div class="offset-2 col-8" style="position:relative;">\
-                                            <label for="data[attributes][credentials][authentication_protocol]" class="form-label"><?= __("Authentication Protocol") ?></label><br>\
+                                            <label for="data[attributes][credentials][authentication_protocol]" class="form-label"><?= __('Authentication Protocol') ?></label><br>\
                                             <select class="form-select data_type" name="data[attributes][credentials][authentication_protocol]" id="data[attributes][credentials][authentication_protocol]">\
                                                 <option value="MD5">MD5</option>\
                                                 <option value="SHA">SHA</option>\
@@ -95,7 +95,7 @@ window.onload = function () {
                                     \
                                     <div class="row" style="padding-top:16px;">\
                                         <div class="offset-2 col-8" style="position:relative;">\
-                                            <label for="data[attributes][credentials][privacy_protocol]" class="form-label"><?= __("Privacy Protocol") ?></label><br>\
+                                            <label for="data[attributes][credentials][privacy_protocol]" class="form-label"><?= __('Privacy Protocol') ?></label><br>\
                                             <select class="form-select data_type" name="data[attributes][credentials][privacy_protocol]" id="data[attributes][credentials][privacy_protocol]">\
                                                 <option value="AES">AES</option>\
                                                 <option value="DES">DES</option>\

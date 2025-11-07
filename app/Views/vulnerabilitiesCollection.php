@@ -35,43 +35,25 @@ if (!empty($meta->filter)) {
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-3 clearfix">
-                                    <h6><span class="oa-icon\"></span>Vulnerabilities with Results</h6>
+                                    <h6 style="padding-top: 10px; padding-bottom:8px;"><span class="fa-solid fa-bug oa-icon\"></span>&nbsp;<?= __('Vulnerabilities and Results') ?></h6>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <?php foreach ($included['severity'] as $key => $value) { ?>
-                                <div class="col-lg-3 text-center">
+                                <?php foreach ($included['severity'] as $key => $value) {
+                                    $from = (!empty($included['all_severity']->{$key})) ? intval($included['all_severity']->{$key}) : 0; ?>
+                                <div class="col-lg-3 text-center" style="padding-top: 18px;">
                                     <a href="<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=<?= $key ?>&count=>0" class="btn btn-light btn-lg text-bg-<?= (!empty($key)) ? $key : 'success' ?>" role="button">
-                                        <span class="badge rounded-pill text-bg-<?= $key ?>"><?= (!empty($key)) ? $key : 'unknown' ?> :: <?= $value ?></span><br>
+                                        <span class="badge rounded-pill text-bg-<?= $key ?>"><?= (!empty($key)) ? $key : 'unknown' ?> :: <?= $value ?> / <?= $from ?></span><br>
                                     </a>
                                 </div>
                                 <?php } ?>
+                                <br>&nbsp;
                             </div>
                         </div>
                     </div>
                     <br>
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-3 clearfix">
-                                    <h6><span class="oa-icon\"></span>All Vulnerabilities</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <?php foreach ($included['all_severity'] as $key => $value) { ?>
-                                <div class="col-lg-3 text-center">
-                                    <a href="<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=<?= $key ?>" class="btn btn-light btn-lg text-bg-<?= (!empty($key)) ? $key : 'success' ?>" role="button">
-                                        <span class="badge rounded-pill text-bg-<?= $key ?>"><?= (!empty($key)) ? $key : 'unknown' ?> :: <?= $value ?></span><br>
-                                    </a>
-                                </div>
-                                <?php } ?>
-                            </div>
-                        </div>
-                    </div>
                     <br>
 
 
@@ -100,7 +82,7 @@ if (!empty($meta->filter)) {
 <?php foreach ($data_order as $key) {
                                 echo '                                <th><div class="input-group">';
                                 if ($key !== 'id' and $key !== 'count' and $key !== 'view') {
-                                    echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . collection_column_name($key) . '">';
+                                    echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="' . __('Search')  . ' ' . collection_column_name($key) . '">';
                                 }
                                 echo "</div></th>\n";
                             } ?>

@@ -1,10 +1,9 @@
 <?php
+$GLOBALS["lang"][' Default, currently '] = ' Výchozí, v současnosti ';
 
-$GLOBALS["lang"][' Default, currently '] = 'Výchozí, v současnosti';
+$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = ' je nyní podporován jazykovým souborem. Chcete-li změnit svého uživatele používat tento jazyk, klikněte ';
 
-$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = 'je nyní podporován jazykovým souborem. Chcete-li změnit svého uživatele používat tento jazyk, klikněte';
-
-$GLOBALS["lang"][' seconds'] = 'sekund';
+$GLOBALS["lang"][' seconds'] = ' sekund';
 
 $GLOBALS["lang"]['10 Minutes'] = '10 minut';
 
@@ -14,169 +13,165 @@ $GLOBALS["lang"]['30 Minutes'] = '30 minut';
 
 $GLOBALS["lang"]['5 Minutes'] = '5 minut';
 
-$GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '< br > < strong > POZOR < / strong > - Přistupujete k tomuto URL z místního Open- Audit serveru. Stáhnutý skript nebude schopen zaslat při spuštění na jiném stroji. Pokud potřebujete provést audit jiných strojů, stáhněte si prosím skript z libovolného vzdáleného stroje, nikoli pomocí prohlížeče na samotném serveru Open- Audit.';
+$GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br/> <strong>POZNÁMKA</strong> - Přistupujete k tomuto URL z místního Open- Audit serveru. Stáhnutý skript nebude schopen zaslat při spuštění na jiném stroji. Pokud potřebujete provést audit jiných strojů, stáhněte si prosím skript z libovolného vzdáleného stroje, nikoli pomocí prohlížeče na samotném serveru Open- Audit.';
 
-$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '< p > < silná třída = "text- dangement" > POZNÁMKA < / strong > - Pro provedení referenčních hodnot na cílovém zařízení musíte mít pracovní SSH nebo SSH Key. < / p >';
+$GLOBALS["lang"]['<p></p>'] = '<p></p>';
 
-$GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '< p > < silný > výchozí hodnota < / silný > - zastřešující dokument, který obsahuje základní definici a jednotlivé politické testy. < br > < brr > < silný > politika < / silný > - Jednotlivé testy obsažené v výchozí hodnotě. Každá zkouška je pro určitou položku. Příkladem by bylo testování SSH verze 1.2.3. < br > < br > < strong > Details < / strong > - Základnice mohou porovnat porty netstat, uživatele a software. < br > < br > < strong > Software < / strong > - Pro porovnání softwaru zkontroluje název a verzi. Protože čísla verzí nejsou ve formátu standardizovaná, když obdržíme výsledek auditu, vytvoříme nový atribut nazvaný software _ padded, který uložíme do databáze spolu se zbytkem informací o softwaru pro každý balíček. Z tohoto důvodu nebude při provozu proti zařízení, které nebylo zkontrolováno podle bodu 1.10 (alespoň), fungovat základní linie využívající softwarové politiky. Zásady softwaru mohou testovat proti verzi, která je "rovna", "větší než" nebo "rovna nebo větší než". < br > < br > < silný > Netstat Ports < / silný > - Netstat Ports používají kombinaci čísla portu, protokolu a programu. Pokud jsou všechny přítomny, politika projde. < br > < br > < silný > Uživatelé < / silný > - Uživatelé pracují podobně jako Netstat Ports. Existuje-li uživatel se shodným názvem, statusem a heslem (proměnlivé, vyprší, vyžaduje), politika projde. < br > < br > < / p >';
+$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">POZNÁMKA</strong> - Musíte mít pracovní SSH nebo SSH Key pověření provádět referenční hodnoty na cílovém zařízení.</p>';
 
-$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '< p > Umístění je fyzická adresa, která může mít zařízení s ním spojená. < br > < br > Můžete ji přiřadit souřadnice (lat / long) a pokud jsou přiřazena zařízení, zobrazí se umístění na mapě Open- Audit Enterprise. < br > < br > < / p >';
+$GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong>Výchozí</strong> - zastřešující dokument, který obsahuje základní definici a jednotlivé politické testy.<br/> <br/> <strong>Politika</strong> - Jednotlivé testy obsažené v základní linii. Každá zkouška je pro určitou položku. Příkladem by bylo testování SSH verze 1.2.3.<br/> <br/> <strong>Podrobnosti</strong> - Základní linie mohou porovnat porty netstat, uživatele a software.<br/> <br/> <strong>Software</strong> - Pro porovnání software jsme zkontrolovat jméno a verzi. Protože čísla verzí nejsou ve formátu standardizovaná, když obdržíme výsledek auditu, vytvoříme nový atribut nazvaný software _ padded, který uložíme do databáze spolu se zbytkem informací o softwaru pro každý balíček. Z tohoto důvodu nebude při provozu proti zařízení, které nebylo zkontrolováno podle bodu 1.10 (alespoň), fungovat základní linie využívající softwarové politiky. Zásady softwaru mohou testovat proti verzi, která je "rovna", "větší než" nebo "rovná se nebo větší než".<br/> <br/> <strong>Porty Netstat</strong> - Netstat Ports používají kombinaci čísla portu, protokolu a programu. Pokud jsou všichni přítomni, politika projde.<br/> <br/> <strong>Uživatelé</strong> - Uživatelé pracují podobně jako Netstat Ports. Existuje-li uživatel s odpovídajícím názvem, statusem a heslem podrobnosti (proměnlivé, vyprší, vyžaduje), pak politika projde.<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br>Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br> <br></p>'] = '< p > Síť je odvozena z vyhledávacích položek a atributů zařízení. < br > < br > Open- Audit lze konfigurovat pouze pro přijetí výsledků auditu ze sítí zde obsažených. Chcete-li to nastavit, přejděte do konfigurace a nastavte atribut < kód > požehnaný _ subnets _ use < / code >. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p>Lokalita je fyzická adresa, která s tím může být spojena.<br/> <br/>Můžete ho přiřadit souřadnice (lat / long) a pokud jsou přiřazena zařízení, zobrazí se umístění na mapě Open- Audit Enterprise.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '< p > Souhrn zobrazí seznam položek, seskupených podle odlišných hodnot atributu specifikovaných v tabulce < / kód > a < kód > sloupec < / kód > atributy. < br > < br > Při provedení shrnutí bude výsledkem seznam odlišných hodnot pro tento < kód > tabulku < / kód > a < kód > sloupec < / kód >. Na hodnotách budou odkazy, které umožní uživateli vidět odpovídající zařízení. < br > < br > Pokud je atribut < code > extra _ columns < / code > obsažen, výsledná stránka bude obsahovat tyto sloupce kromě standardních sloupců zařízení. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br></p>'] = '<p>Síť je odvozena z vyhledávacích položek a atributů zařízení.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '< p > Agenti vám umožní audit PC bez objevu. Nainstalujte agent a to bude check-in se serverem každý den a audit sám. Nezáleží na tom, zda jsou vaše počítače firewalled, auditní data se stále objeví v Open- Audit. < / p > < p > Při zkoušce < silné > pokud < / silné > činidlo by mělo provádět kroky, všechny tři zkoušky musí projít (je-li zkouška nastavena). < silný > Pak < / silný > opatření byla přijata. < / p >';
+$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>Souhrn zobrazí seznam položek seskupených podle odlišných hodnot atributu specifikovaného <code>table</code> a <code>column</code> atributy.<br/> <br/>Když je proveden souhrn, výsledek bude seznam odlišných hodnot pro tento <code>table</code> a <code>column</code>. Na hodnotách budou odkazy umožňující uživateli vidět odpovídající zařízení.<br/> <br/>Pokud atribut <code>extra_columns</code> je obsažen, výsledná stránka bude obsahovat tyto sloupce kromě standardních sloupců zařízení.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '< p > Aplikace jsou definovány vámi, uživatelem a uloženy pro Open- AudiT pro použití a spojení se zařízeními. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>Agenti vám dovolili kontrolovat počítače bez odhalení. Nainstalujte agent a to bude check-in se serverem každý den a audit sám. Nezáleží na tom, zda jsou vaše počítače firewalled, auditní data se stále objeví v Open- Audit.</p><p>Při zkoušce <strong>pokud</strong> činidlo by mělo provádět kroky, všechny tři zkoušky musí projít (je-li zkouška nastavena). <strong>Pak</strong> jsou přijata opatření.</p>';
 
-$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '< p > Atributy jsou uloženy pro Open- AudiT pro použití pro konkrétní pole. < / p >';
+$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '<p>Aplikace jsou definovány vámi, uživatelem a uloženy pro Open- Audit pro použití a spojení se zařízeními.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '< p > Být schopen určit, které stroje jsou nakonfigurovány stejně, je hlavní součástí správy systémů a auditu & ndash; a nyní podávání zpráv o tom bude jednoduché a automatizované. Jakmile definujete výchozí hodnotu, bude automaticky běžet proti sadě zařízení v předem stanoveném rozvrhu. Výstup těchto provedených základních linií bude k dispozici pro prohlížení webových stránek, import do systému třetích stran nebo dokonce jako tisková zpráva. < br > < br > Základy vám umožní kombinovat auditní data se souborem atributů, které jste dříve definovali (vaše základní) pro určení shody zařízení. < br > < br > Například - můžete vytvořit výchozí hodnotu ze zařízení spuštěného Centos 6, které funguje jako jeden z vašich apache serverů ve clusteru. Víte, že tento konkrétní server je nakonfigurován přesně tak, jak chcete, ale nejste si jisti, zda jsou ostatní servery v clusteru nakonfigurovány přesně stejně. Základní linie vám umožní určit toto. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>Atributy jsou uloženy pro Open- AudiT pro použití pro konkrétní pole.</p>';
 
-$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '< p > Clusters jsou uloženy v Open- Audit pro propojení zařízení pro lepší zaznamenávání, správu a odhad licenčních nákladů. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '<p>Být schopen určit, které stroje jsou nakonfigurovány stejně, je hlavní součástí správy systémů a auditu - a nyní bude podávání zpráv o tom bude jednoduché a automatizované. Jakmile definujete výchozí hodnotu, bude automaticky běžet proti sadě zařízení v předem stanoveném rozvrhu. Výstup těchto provedených základních linií bude k dispozici pro prohlížení webových stránek, import do systému třetích stran nebo dokonce jako tisková zpráva.<br/> <br/> Základní parametry vám umožní kombinovat auditní data se souborem atributů, které jste dříve definovali (základní) pro určení shody zařízení.<br/> <br/> Například - můžete vytvořit výchozí hodnotu ze zařízení spuštěného Centos 6, které funguje jako jeden ze serverů Apache v clusteru. Víte, že tento konkrétní server je nakonfigurován přesně tak, jak chcete, ale nejste si jisti, zda jsou ostatní servery v clusteru nakonfigurovány přesně stejně. Základní linie vám umožní určit toto.<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '< p > Komponenty je obecný výraz používaný pro tabulky, které ukládají atributy pro zařízení. Tyto tabulky jsou: access _ point, arp, bios, certifikát, cli _ config, disk, dns, file, ip, log, paměť, modul, monitor, základní deska, netstat, síť, nmap, optické, pagefile, oddíl, politika, tisk _ fronta, procesor, rádio, route, san, scsi, server, server _ prvek, služba, sdílení, software, software _ key, zvuk, úkol, usb, uživatel, uživatel _ skupina, proměnná, video, vm, windows. < / p > < p > Kromě toho třídíme následující tabulky také jako související zařízení: aplikace, připojení, cluster, kreditní, obrázek. < / p >';
+$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>Clusters jsou uloženy v Open- Audit pro připojení zařízení pro lepší záznam, správu a odhad licenčních nákladů.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '< p > Kredity jsou šifrovány, pokud jsou uloženy v databázi. < br > < br > Když je spuštěn Discovery, zařízení má své pověřovací listiny získané a testované pro připojení jako první (z tabulky < code > credential < / code >). Pokud selžou, pak se proti zařízení také zkouší pověřovací listina spojená s daným Org < code > creditials.org _ id < / code >. Pracovní údaje jsou uloženy na úrovni jednotlivých zařízení v kreditní tabulce (poznámka - ne "s" v názvu tabulky). < br > < br > SSH klávesy jsou testovány před SSH uživatelské jméno / heslo. Při testování SSH budou údaje označeny také jako práce se sudo nebo je root. < br > < br > Pro snadné použití by neměla Windows hesla obsahovat ani jednu nebo dvojitou citaci. Toto je omezení WMI na dálku, ne omezení Open- Audit. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>Komponenty je obecný výraz používaný pro tabulky, které ukládají atributy pro zařízení. Tyto tabulky jsou: access _ point, arp, bios, certifikát, cli _ config, disk, dns, file, ip, licence, log, paměť, modul, monitor, základní deska, netstat, síť, nmap, optické, pagefile, oddíl, politika, print _ front, procesor, rádio, route, san, scsi, server, server _ item, služba, sdílení, software, software _ key, zvuk, úkol, usb, uživatel, uživatel _ skupina, proměnná, video, vm, okna.</p><p> Kromě toho třídíme následující tabulky také jako související zařízení: aplikace, příloha, cluster, kreditní, obrázek.</p>';
 
-$GLOBALS["lang"]['<p>Credentials are used to access devices.<br> <br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br> <br></p>'] = '< p > Kredity se používají pro přístup k zařízením. < br > < br > Konfigurační pověření by měla být jednou z prvních věcí, kterou uděláte po instalaci Open- AudiT. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>Kredity jsou šifrovány, když jsou uloženy v databázi.<br/> <br/>Když běží Discovery, zařízení má své pověřovací listiny získané a testovány pro připojení jako první (z <code>credential</code> Tabulka). Pokud selžou, pak pověřovací listiny spojené s daným Org <code>credentials.org_id</code> je také testován proti zařízení. Pracovní údaje se ukládají na úrovni jednotlivých zařízení v kreditní tabulce (poznámka - ne "s" v názvu tabulky).<br/> <br/>SSH klíče jsou testovány před SSH uživatelské jméno / heslo. Při testování SSH budou pověřovací listiny také označeny jako práce se sudo nebo být kořen.<br/> <br/>Pro snadné použití by neměla Windows hesla obsahovat ani jednu nebo dvě citace. Toto je omezení WMI na dálku, ne omezení Open- Audit.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br> <br></p>'] = '< p > Definujte své regály a přiřaďte zařízení do jejich pozic. Už máte zařízení v Open- Auditu a znáte své pozice. Open- Audit rozšiřuje toto, aby vám umožnilo vytvořit rack a přiřadit zařízení k němu. Open- Audit bude dokonce poskytovat vizualizaci racku a zařízení obsažené uvnitř. Pokud poskytnete obrázek zařízení, bude tento obrázek použit při vizualizaci. Můžete se podívat na stojan na obrazovce a vidět stejné položky, které byste viděli, kdybyste stáli před ním. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Credentials are used to access devices.<br> <br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br> <br></p>'] = '<p>Kredity se používají k přístupu k zařízením.<br/> <br/>Nastavení pověření by mělo být jednou z prvních věcí, kterou uděláte po instalaci Open- Audit.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br> <br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br> <br>Expand on the stored fields easily with your own custom attributes.<br> <br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br> <br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br> <br></p>'] = '< p > Zařízení ve Vaší síti je třeba spravovat. Ale jak se vaše záznamy aktualizují? Tabulka - ne definitivní. To bude zastaralé během hodin, ne-li dnů. Proč manuálně držet krok. Pomocí Open- Auditu automaticky skenujete sítě a zaznamenáváte zařízení - výrobce, model, sériový a více než 100 dalších atributů. Kompletní seznamy softwaru, služeb, disků, otevřených portů, uživatelů atd. Automaticky zjistit, zda atribut byl přidán, odstraněn nebo změněn. < br > < br > Po nastavení Open- Audit, můžete sedět a relaxovat. Mají změny zprávy e-mailem pro vás na rozvrhu, například - jaké nové zařízení jsme objevili tento týden? Jaký nový software byl nainstalován tento týden? Byly v minulém měsíci nějaké změny hardwaru? < br > < br > Expand na uložených polích snadno s vašimi vlastními atributy. < br > < br > Dokonce přidat zařízení, která nejsou připojena k vaší síti nebo zařízení, kam váš Open- AudiT server nemůže dosáhnout. < br > < br > Počítače, spínače, routery, tiskárny nebo jakékoli jiné zařízení ve vaší síti - Open- Audit je může všechny ověřit. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br> <br></p>'] = '<p>Definujte své regály a přiřaďte zařízení do jejich pozic. Už máte zařízení v Open- Auditu a znáte své pozice. Open- Audit rozšiřuje toto, aby vám umožnilo vytvořit rack a přiřadit zařízení k němu. Open- Audit bude dokonce poskytovat vizualizaci racku a zařízení obsažené uvnitř. Pokud poskytnete obrázek zařízení, bude tento obrázek použit při vizualizaci. Můžete se podívat na stojan na obrazovce a vidět stejné položky, které byste viděli, kdybyste stáli před ním.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>'] = '< p > Discovery jsou jádrem toho, co Open- Audit dělá. < br > < br > Jak jinak byste věděli "Co je v mé síti?" < br > < br > Discovery jsou připravené datové položky, které vám umožní spustit objev na síti jediným kliknutím, aniž byste pokaždé zadali podrobnosti této sítě. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br> <br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br> <br>Expand on the stored fields easily with your own custom attributes.<br> <br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br> <br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br> <br></p>'] = '<p>Zařízení ve vaší síti je třeba spravovat. Ale jak se vaše záznamy aktualizují? Tabulka - ne definitivní. To bude zastaralé během hodin, ne-li dnů. Proč manuálně držet krok. Pomocí Open- Auditu automaticky skenujete sítě a zaznamenáváte zařízení - výrobce, model, sériový a více než 100 dalších atributů. Kompletní seznamy softwaru, služeb, disků, otevřených portů, uživatelů atd. Automaticky zjistit, zda atribut byl přidán, odstraněn nebo změněn.<br/> <br/>Jakmile je Open- Audit nastaven, můžete sedět a relaxovat. Mají změny zprávy e-mailem pro vás na rozvrhu, například - jaké nové zařízení jsme objevili tento týden? Jaký nový software byl nainstalován tento týden? Byly minulý měsíc nějaké změny hardwaru?<br/> <br/>Rozšiřte si uložená pole snadno pomocí vlastních vlastních atributů.<br/> <br/>Dokonce přidat zařízení, která nejsou připojena k vaší síti, nebo zařízení, ke kterým váš Open- Audit server nemůže dosáhnout.<br/> <br/>Počítače, spínače, routery, tiskárny nebo jakékoliv jiné zařízení ve vaší síti - Open- Audit je může všechny kontrolovat.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '< p > Objevení Možnosti jsou globální nastavení změněné v konfiguraci < a href =.. "/ konfiguration.name = discovery _ default _ scan _ option" > konfigurace < / a >. Máte-li Open- Audit Enterprise licence tyto jsou nastavitelné na objev a navíc futher přizpůsobitelné podle potřeby. Objevení Volby jsou následující (včetně indicitave time to scan an an individual IP): < br / > < br > < strong > UltraFast < / strong >: < i > 1 sekunda < / i >. Vyhledat pouze porty, které Open- Audit potřebuje použít k komunikaci se zařízením a detekci zařízení IOS (WMI, SSH, SNMP, Apple Sync). < code > open code 124; filtrovaný < / code > port je považován za otevřený. < kód > filtrovaný < / kód > port není považován za otevřený. Zařízení musí reagovat na ping Nmap. Použijte agresivní načasování. Prohledejte top 10 TCP a UDP portů, stejně jako port 62078 (detekce Apple IOS). < code > open code 124; filtrovaný < / code > port je považován za otevřený. < kód > filtrovaný < / kód > port není považován za otevřený. Zařízení musí reagovat na ping Nmap. Použijte agresivní načasování. Skenujte horní 100 TCP a UDP portů, stejně jako port 62078 (detekce Apple IOS). < code > open code 124; filtrovaný < / code > port je považován za otevřený. < kód > filtrovaný < / kód > port není považován za otevřený. Zařízení musí reagovat na ping Nmap. Použijte agresivní načasování. < br / > < br / > < silné > střední (Classic) < / silné >: < i > 90 sekund < / i >. Tak blízko k tradičnímu Open- Auditskému skenu, jak jen to půjde. Skenujte top 1000 TCP portů, stejně jako 62078 (detekce Apple IOS) a UDP 161 (SNMP). < code > open code 124; filtrovaný < / code > port je považován za otevřený. < kód > filtrovaný < / kód > port je považován za otevřený (a bude detekce spouštěcího zařízení). Zařízení jsou skenována bez ohledu na reakci na Nmapový ping. Použijte agresivní načasování. Prohledej top 1000 TCP a 100 UDP portů, stejně jako port 62078 (detekce Apple IOS). < code > open code 124; filtrovaný < / code > port je považován za otevřený. < kód > filtrovaný < / kód > port není považován za otevřený. Zařízení musí reagovat na ping Nmap. Použijte agresivní načasování. Prohledej top 1000 TCP a 100 UDP portů, stejně jako port 62078 (detekce Apple IOS). Detekce verzí povolena. < code > open code 124; filtrovaný < / code > port je považován za otevřený. < kód > filtrovaný < / kód > port je považován za otevřený (a bude detekce spouštěcího zařízení). Zařízení musí reagovat na ping Nmap. Použijte normální načasování. Nedoporučuje se. Prohledej top 1000 TCP a UDP portů, stejně jako port 62078 (detekce Apple IOS). Zařízení jsou skenována bez ohledu na reakci na Nmapový ping. Detekce verzí povolena. < code > open code 124; filtrovaný < / code > port je považován za otevřený. < kód > filtrovaný < / kód > port je považován za otevřený (a bude detekce spouštěcího zařízení). Použijte slušné načasování. < br / > < br / > < silné > Vlastní < / silné >: < i > Neznámý čas < / i >. Pokud jsou změněny jiné možnosti než nastavené standardním přednastaveným objevem. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>'] = '<p>Objevy jsou jádrem toho, co Open- Audit dělá.<br/> <br/>Jak jinak bys věděl, co je na mé síti?<br/> <br/>Objevy jsou připravené datové položky, které vám umožní spustit objev na síti jediným kliknutím, aniž byste pokaždé zadali podrobnosti této sítě.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code> only. If requested using the web interface, they return the standard column attribute list.<br> <br></p>'] = '< p > Skupiny se používají jako jednoduché seznamy zařízení, která odpovídají požadovaným podmínkám. Na požádání pomocí JSON vrátí pouze seznam kódů < > devices.id < / code >. Na požádání pomocí webového rozhraní vrátí standardní seznam atributů sloupce. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '<p>Objevení Možnosti jsou globální nastavení změnil v <a href="../configuration?configuration.name=discovery_default_scan_option">konfigurace</a>. Máte-li Open- Audit Enterprise licence tyto jsou nastavitelné na objev a navíc futher přizpůsobitelné podle potřeby. Objevení Možnosti jsou následující (včetně indicitave času pro skenování individuální IP):<br/><br/><strong>UltraFast</strong>: <i>1 sekunda</i>. Vyhledat pouze porty, které Open- Audit potřebuje použít k komunikaci se zařízením a detekci zařízení IOS (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port je považován za otevřený. A <code>filtered</code> přístav není považován za otevřený. Zařízení musí reagovat na ping Nmap. Použij agresivní načasování.<br/><br><strong>SuperFast</strong>: <i>5 sekund</i>. Prohledejte top 10 TCP a UDP portů, stejně jako port 62078 (detekce Apple IOS). An <code>open|filtered</code> port je považován za otevřený. A <code>filtered</code> přístav není považován za otevřený. Zařízení musí reagovat na ping Nmap. Použij agresivní načasování.<br><br/><strong>Rychle.</strong>: <i>40 sekund</i>. Skenujte horní 100 TCP a UDP portů, stejně jako port 62078 (detekce Apple IOS). An <code>open|filtered</code> port je považován za otevřený. A <code>filtered</code> přístav není považován za otevřený. Zařízení musí reagovat na ping Nmap. Použij agresivní načasování.<br/><br/><strong>Střední (Classic)</strong>: <i>90 sekund</i>. Tak blízko k tradičnímu Open- Auditskému skenu, jak jen to půjde. Skenujte top 1000 TCP portů, stejně jako 62078 (detekce Apple IOS) a UDP 161 (SNMP). An <code>open|filtered</code> port je považován za otevřený. A <code>filtered</code> port je považován za otevřený (a bude detekce spouštěcího zařízení). Zařízení jsou skenována bez ohledu na reakci na Nmapový ping. Použij agresivní načasování.<br/><br/><strong>Střední</strong>: <i>100 sekund</i>. Prohledej top 1000 TCP a 100 UDP portů, stejně jako port 62078 (detekce Apple IOS). An <code>open|filtered</code> port je považován za otevřený. A <code>filtered</code> přístav není považován za otevřený. Zařízení musí reagovat na ping Nmap. Použij agresivní načasování.<br/><br/><strong>Pomalu.</strong>: <i>4 minuty</i>. Prohledej top 1000 TCP a 100 UDP portů, stejně jako port 62078 (detekce Apple IOS). Detekce verzí povolena. An <code>open|filtered</code> port je považován za otevřený. A <code>filtered</code> port je považován za otevřený (a bude detekce spouštěcího zařízení). Zařízení musí reagovat na ping Nmap. Použijte normální načasování.<br/><br/><strong>UltraSlow</strong>: <i>20 minut</i>. Nedoporučuje se. Prohledej top 1000 TCP a UDP portů, stejně jako port 62078 (detekce Apple IOS). Zařízení jsou skenována bez ohledu na reakci na Nmapový ping. Detekce verzí povolena. An <code>open|filtered</code> port je považován za otevřený. A <code>filtered</code> port je považován za otevřený (a bude detekce spouštěcího zařízení). Použij slušné načasování.<br/><br/><strong>Vlastní</strong>: <i>Neznámý čas</i>. Pokud jsou změněny jiné možnosti, než které jsou nastaveny standardním přednastaveným objevem.<br/><br/></br></br></p>';
+
+$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code> only. If requested using the web interface, they return the standard column attribute list.<br> <br></p>'] = '<p>Skupiny se používají jako jednoduché seznamy zařízení, která odpovídají požadovaným podmínkám. Na požádání pomocí JSON vrátí seznam <code>devices.id</code> pouze. Na požádání pomocí webového rozhraní vrátí standardní seznam atributů sloupce.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you are using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br> <br><strong>Helpful Documentation</strong><br> <br>
         <a href="/index.php/auth/help">General Auth Help</a><br> <br>
         <a href="/index.php/faq?name=Using Entra for Auth">Using Entra for Auth</a><br> <br>
         <a href="/index.php/faq?name=Using OKTA for Auth">Using OKTA for Auth</a><br> <br>
         <a href="/index.php/faq?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br> <br>
-        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>'] = '< p > Pokud uživatel přihlášení na Open- Audit nemá přístup k vyhledávání LDAP (a používáte OpenLDAP), můžete použít jiný účet, který má tento přístup. Použijte < kód > ldap _ dn _ account < / code > a < kód > ldap _ dn _ hesla < / code > pro konfiguraci tohoto. < br > < br > < silný > Užitečná dokumentace < / silný > < br > < br >
-< a href = "/ index.php / auth / help" > General Auth Help < / a > < br > < br >
-< a href = "/ index.php / faq? name = Using Entra for Auth" > Using Entra for Auth < / a > < br > < br >
-< a href = "/ index.php / faq? name = Using OKTA for Auth" > Using OKTA for Auth < / a > < br > < br >
-< a href = "/ index.php / faq? name = Troubleshooting LDAP Logins" > Troubleshooting LDAP Logins < / a > < br > < br >
-< a href = "/ index.php / faq? name = Users, Roles and Orgs" > Users, Roles and Orgs < / a > < br > < br > < / p >';
+        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>'] = '<p>Pokud uživatel přihlášení na Open- Audit nemá přístup k vyhledávání LDAP (a používáte OpenLDAP), můžete použít jiný účet, který má tento přístup. Použijte <code>ldap_dn_account</code> a <code>ldap_dn_password</code> Nastavit to.<br/> <br/><strong>Užitečná dokumentace</strong><br/> <br/><a href="/index.php/auth/help">Nápověda pro generála Autha</a><br/> <br/><a href="/index.php/faq?name=Using Entra for Auth">Použití Entra pro Auth</a><br/> <br/><a href="/index.php/faq?name=Using OKTA for Auth">Použití OKTA pro Auth</a><br/> <br/><a href="/index.php/faq?name=Troubleshooting LDAP Logins">Řešení problémů LDAP Logins</a><br/> <br/><a href="/index.php/faq?name=Users, Roles and Orgs">Uživatelé, Roles a Orgs</a><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br> <br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a <code>device</code>, valid <i>types</i> are: <code>class</code>, <code>environment</code>, <code>status</code> and <code>type</code>. If the <i>resource</i> is <code>locations</code> or <code>org</code> the only valid <i>type</i> is <code>type</code>. If the <i>resource</i> is a <code>query</code> the only valid <i>type</i> is <code>menu_category</code>.</p>'] = '< p > Pokud přidáte typ zařízení, k zobrazení přidružené ikony budete muset ručně zkopírovat soubor .svg formátted do adresáře: < br > < em > Linux < / em >: / usr / local / open- audit / public / device _ images < br > < em > Windows < / em >: c:\ xampp\ htdocs\ open- audit\ device _ images < br > < br > Pokud přidáte typ umístění, zobrazíte příslušnou ikonu, abyste mohli ručně kopírovat ikonu 32x32px do adresáře: < br > < em > Linux < / em >: / usr / local / open- audit / public > br > < em > Pokud < i > zdroj < / i > je < kód > zařízení < / kód >, platí < i > typy < / i > jsou: < kód > třída < / kód >, < kód > prostředí < / kód >, < kód > stav < / kód > a < kód > typ < / kód >. Pokud < i > zdroj < / i > je < kód > umístění < / kód > nebo < kód > org < / kód > pouze platný < i > typ < / i > je < kód > typ < / kód >. Pokud < i > zdroj < / i > je < kód > dotaz < / kód > pouze platný < i > typ < / i > je < kód > menu _ kategorie < / kód >. < / p >';
+$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br> <br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a <code>device</code>, valid <i>types</i> are: <code>class</code>, <code>environment</code>, <code>status</code> and <code>type</code>. If the <i>resource</i> is <code>locations</code> or <code>org</code> the only valid <i>type</i> is <code>type</code>. If the <i>resource</i> is a <code>query</code> the only valid <i>type</i> is <code>menu_category</code>.</p>'] = '<p>Pokud přidáte typ zařízení, k zobrazení související ikony budete muset ručně zkopírovat soubor .svg formátovaný do adresáře:<br/><em>Linux</em>: / usr / local / open- audit / public / device _ images<br/><em>Okna</em>: c:\ xampp\ htdocs\ open-audit\ device _ images<br/> <br/>Pokud přidáte typ umístění, pro zobrazení související ikony budete muset ikonu 32x32px ručně zkopírovat do adresáře:<br/><em>Linux</em>: / usr / local / open- audit / public / images / map _ icons<br/><em>Okna</em>: c:\ xampp\ htdocs\ open- audit\ images\ map _ icons</p><p>Kdy <i>zdroj</i> je <code>device</code>, platné <i>typy</i> jsou: <code>class</code>, <code>environment</code>, <code>status</code> a <code>type</code>. Pokud <i>zdroj</i> vá <code>locations</code> nebo <code>org</code> jediná platná <i>typ</i> vá <code>type</code>. Pokud <i>zdroj</i> je <code>query</code> jediná platná <i>typ</i> vá <code>menu_category</code>.</p>';
 
-$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>'] = '< p > Pokud máte v úmyslu provést kompletní audit svých cloudových strojů, nezapomeňte, že budete také potřebovat tyto pověřovací listiny uložené v Open- Auditu. < / p > < p > Ujistěte se, že povolíte správné porty, pokud používáte Microsoft Azure (22 pro SSH, atd.). Zkontrolujte si pravidla virtuálního stroje - > Networking. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>'] = '<p>Pokud máte v úmyslu provést kompletní audit svých cloudových strojů, nezapomeňte, že budete také potřebovat tyto pověřovací listiny uložené v Open- Auditu.</p><p>Ujistěte se, že povolíte správné porty, pokud používáte Microsoft Azure (22 pro SSH, atd.). Zkontrolujte si virtuální stroj - > Pravidla Networking.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br> <br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br> <br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br> <br></p>'] = '< p > Pokud zvolíte typ seznamu, bude povoleno pole "value". Zde byste měli umístit oddělený seznam volitelných hodnot. Tyto budou zobrazeny v rozbalovacím poli vždy, když je pole editováno. < br > < br > Jako většina jiných atributů, Pole lze editovat volně. Použijte funkci Bulk Edit jako obvykle a uvidíte, že pole jsou k dispozici pro vstup. < br > < br > Zobrazit obrazovku podrobnosti zařízení, otevřete sekci obsahující pole a (pokud máte dostatečný přístup) můžete kliknout na hodnotu pole pro jeho úpravu. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br> <br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br> <br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br> <br></p>'] = '<p>Pokud zvolíte typ List, bude povoleno pole "value". Zde byste měli umístit oddělený seznam volitelných hodnot. Tyto budou zobrazeny v rozbalovací krabici pokaždé, když je pole editováno.<br/> <br/>Stejně jako většina jiných atributů, Fields lze volně upravovat. Použijte funkci Bulk Edit, jak byste normálně chtěli, a uvidíte, že pole jsou k dispozici pro vstup.<br/> <br/>Zobrazit obrazovku podrobností zařízení, otevřít sekci obsahující pole a (pokud máte dostatečný přístup) můžete kliknout na hodnotu pole pro jeho úpravu.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '< p > V neustále se měnícím světě počítačové bezpečnosti, kde jsou objevována nová zranitelná místa a každý den opravována, musí být prosazování dodržování bezpečnosti nepřetržitým procesem. Musí rovněž zahrnovat způsob, jak provádět úpravy politik, jakož i pravidelné hodnocení a sledování rizik. Ekosystém OpenSCAP poskytuje nástroje a přizpůsobitelné politiky pro rychlé, nákladově efektivní a flexibilní provádění těchto procesů. < / p >';
+$GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '<p>V neustále se měnícím světě počítačové bezpečnosti, kde jsou objevována nová zranitelná místa a každý den je třeba vynucovat dodržování bezpečnosti, musí být nepřetržitý proces. Musí rovněž zahrnovat způsob, jak provádět úpravy politik, jakož i pravidelné hodnocení a sledování rizik. Ekosystém OpenSCAP poskytuje nástroje a přizpůsobitelné politiky pro rychlé, nákladově efektivní a flexibilní provádění těchto procesů.</p>';
 
-$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '< p > Integrace vám umožní nastavit výběr zařízení a plány pro Open- AudiT pro komunikaci s vnějšími systémy. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>Integrace vám umožní nastavit výběr zařízení a plány pro Open- AudiT pro komunikaci s externími systémy.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>It is easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen over time. All the devices discovered last week, last month or any other period. New software found. What about devices that have not been seen - where are they? How useful to be able to specify these items over time.<br> <br></p>'] = '< p > Je snadné vidět, že zprávy v průběhu času jsou velmi užitečné. Nejen, že můžete vidět Open- Audit data, ale nyní to, co viděl v průběhu času. Všechna zařízení byla objevena minulý týden, minulý měsíc nebo jiné období. Našel se nový software. A co zařízení, která nebyla viděna - kde jsou? Jak užitečné je určit tyto položky v čase. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>Informace o načasování Nmap naleznete v dolní části této připojené stránky <a href="https://nmap.org/book/man-performance.html" target="_blank">Viz poznámka pod čarou1.</a>. Z této stránky:<br/> <br/><em>Pokud jste na slušné širokopásmové nebo ethernetové připojení, doporučuji vždy používat -T4 (Agresivní). Někteří lidé milují -T5 (Insane), i když je příliš agresivní na můj vkus. Lidé někdy specifikují -T2 (Polite), protože si myslí, že je méně pravděpodobné, že havaruje hostitele nebo protože se považují za zdvořilé obecně. Často si neuvědomují, jak pomalé je -T2. Jejich sken může trvat desetkrát déle než standardní sken. Strojové zkraty a problémy s šířkou pásma jsou vzácné s výchozími možnostmi načasování -T3 (Normal), a proto obvykle doporučuji, aby pro opatrné skenery. Omitující detekce verzí je mnohem účinnější než hraní si s hodnotami načasování při snižování těchto problémů.</em><footer>Gordone. <i>Fjodor</i> Lyon</footer><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '< p > Načasování Nmap se nachází v dolní části této propojené stránky < a href = "https: / / nmap.org / book / man-execumente.html" target = "_ blank" > https: / / nmap.org / book / man-execumence.html < / a >. Z této stránky: < br > < br > < em > Pokud jste na slušném širokopásmovém připojení nebo ethernet připojení, doporučuji vždy používat -T4 (Agresivní). Někteří lidé milují -T5 (Insane), i když je příliš agresivní na můj vkus. Lidé někdy specifikují -T2 (Polite), protože si myslí, že je méně pravděpodobné, že havaruje hostitele nebo protože se považují za zdvořilé obecně. Často si neuvědomují, jak pomalé je -T2. Jejich sken může trvat desetkrát déle než standardní sken. Strojové zkraty a problémy s šířkou pásma jsou vzácné s výchozími možnostmi načasování -T3 (Normal), a proto obvykle doporučuji, aby pro opatrné skenery. Detekce omitující verze je mnohem účinnější než hraní s časovými hodnotami při snižování těchto problémů. < / em > < footer > Gordon < i > Fjodor < / i > Lyon < / footer > < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '<p>Open-Audit lze konfigurovat tak, aby používal různé metody pro ověření uživatele a navíc vytvořil uživatelský účet pomocí přiřazených rolí a orgů založených na členství ve skupině.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '< p > Open- Audit lze konfigurovat tak, aby používaly různé metody k ověření pravosti uživatele a kromě toho vytvořily uživatelský účet pomocí přiřazených rolí a orgů založených na členství ve skupině. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>'] = '<p>Open- Aud IT může získat podrobnosti o souboru nebo adresáři souborů a sledovat tyto soubory pro změny podle jiných atributů v databázi Open- AudiT.<br/> <br/>Tato funkce funguje v rámečku pro Linux Open- Audit servery, ale potřebuje změnu názvu servisního účtu pod Windows Open- Audit serverem.<br/> <br/>Podporovanými klienty jsou Windows a Linux.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>'] = '< p > Open- Aud IT může získat podrobnosti o souboru nebo adresáři souborů a sledovat tyto soubory pro změny podle jiných atributů v databázi Open- AudiT. < br > < br > Tato funkce funguje v krabici pro servery Linux Open- AudiT, ale potřebuje změnu názvu servisního účtu pod serverem Windows Open- AudiT. < br > < br > Podporované klienty jsou Windows a Linux. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>'] = '<p>Open- Aud IT může získat podrobnosti o souboru, zeptat se místního správce balíků, zda jsou mu známy, a sledovat tyto soubory pro změny podle jiných atributů v databázi Open- AudiT.<br/> <br/>Podporovaní klienti jsou pouze Linux.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>'] = '< p > Open- Aud IT může získat podrobnosti o souboru, zeptat se místního správce balíku, zda jsou mu známy, a sledovat tyto soubory pro změny podle jiných atributů v databázi Open- AudiT. < br > < br > Podporované klienty jsou pouze Linux. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br> <br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br> <br></p>'] = '<p>Open- Aud IT může ukládat informace do vlastních polí, která jsou spojena s každým zařízením.<br/> <br/>Jakmile bylo vytvořeno další pole, může být použito v dotazech a skupinách stejně jako jakýkoli jiný atribut v databázi.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br> <br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br> <br></p>'] = '< p > Open- Audit může ukládat informace do vlastních polí, která jsou spojena s každým zařízením. < br > < br > Jakmile bylo vytvořeno dodatečné pole, může být použito v dotazech a skupinách stejně jako jakýkoli jiný atribut v databázi. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Open- Audit je dodáván s mnoha dotazy. Pokud požadujete konkrétní dotaz a žádný z předem balených dotazů neodpovídá vašim potřebám, je poměrně snadné vytvořit nový a načíst jej do Open- Audit pro běh.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '< p > Open- Aud IT přichází s mnoha dotazy zabudované. Pokud požadujete konkrétní dotaz a žádný z předem balených dotazů neodpovídá vašim potřebám, je poměrně snadné vytvořit nový a načíst jej do Open- AudiT pro běh. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Open- Audit je dodáván s mnoha shrnutími. Pokud potřebujete konkrétní shrnutí a žádný z předem balených souhrnů neodpovídá vašim potřebám, je poměrně snadné vytvořit nový a načíst jej do Open- Auditu pro běh.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '< p > Open- Aud IT přichází s mnoha souhrny zabudované. Pokud potřebujete konkrétní souhrn a žádný z předem balených souhrnů neodpovídá vašim potřebám, je poměrně snadné vytvořit nový a načíst jej do Open- AudiT pro běh. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>'] = '<p>Open- Audit je podporován firstWave s úžasnou úrovní podpory. Pokud dáváte přednost aktivní komunitě podpůrných dárců, pak také. Kde jinde můžete mluvit přímo s vývojáři a získat odpověď do 24 hodin? Jen to zkuste s jinými produkty! Úžasná podpora. Zastavit. Potřebujete podporu, my ji poskytujeme. Žádné jestli nebo ale. Skvělá podpora. Tečka.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>'] = '< p > Open- Audit je podporován firstWave s úžasnou úrovní podpory. Pokud dáváte přednost aktivní komunitě podpůrných dárců, pak také. Kde jinde můžete mluvit přímo s vývojáři a získat odpověď do 24 hodin? Jen to zkuste s jinými produkty! Úžasná podpora. Zastavit. Potřebujete podporu, my ji poskytujeme. Žádné jestli nebo ale. Skvělá podpora. Období. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '<p>Open- Audit poskytuje multinájemnost z krabice!<br/> <br/>Klíčovou položkou jsou orgány (organizace) v Open- Audit. Uživatel má primární Org, stejně jako seznam Orgů, ke kterým může přístup. Uživatel to kombinuje se seznamem přiřazených "Roles", který definuje, jaké akce mohou přijmout na položky přidělené k Orgs mají přístup k. Kombinace uživatelských "orgs" a "rolí" definuje, co mohou a nemohou dělat v rámci Open- Auditu.<br/> <br/>Většina položek v Open- Audit jsou přiřazeny k Org. Zařízení, umístění, sítě, atd.<br/> <br/>Orgové můžou mít děti. Představte si organizační strukturu grafu (stromu). Pokud má uživatel přístup k určitému Orgu, má také přístup k potomkům těchto Orgů. Více informací naleznete zde. <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '< p > Open- Audit poskytuje multi- tenancy mimo box! < br > < br > Orgs (organizace) v Open- Audit jsou klíčové položky. Uživatel má primární Org, stejně jako seznam Orgů, ke kterým může přístup. Uživatel to kombinuje se seznamem přiřazených "Roles", který definuje, jaké akce mohou přijmout na položky přidělené k Orgs mají přístup k. Kombinace uživatelů "orgs" a "roles" definují, co mohou a nemohou dělat v rámci Open- Audit. < br > < br > Většina položek v Open- Audit jsou přiřazeny k Org. Zařízení, umístění, sítě, atd. < br > < br > Orgs mohou mít dětské Orgy. Představte si organizační strukturu grafu (stromu). Pokud má uživatel přístup k určitému Orgu, má také přístup k potomkům těchto Orgů. Více informací naleznete zde < a href = "/ index.php / faq? name = Users, Roles and Orgs" > FAQ < / a >. < / p >';
+$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '<p>Open- Audit poskytuje multinájemnost z krabice!<br/> <br/>Klíčovou položkou jsou orgány (organizace) v Open- Audit. Uživatel má primární Org, stejně jako seznam Orgů, ke kterým může přístup. Uživatel to kombinuje se seznamem přiřazených "Roles", který definuje, jaké akce mohou přijmout na položky přidělené k Orgs mají přístup k. Kombinace uživatelských "orgs" a "rolí" definuje, co mohou a nemohou dělat v rámci Open- Auditu.<br/> <br/>Většina položek v Open- Audit jsou přiřazeny k Org. Zařízení, umístění, sítě, atd.<br/> <br/>Orgové můžou mít děti. Představte si organizační strukturu grafu (stromu). Pokud má uživatel přístup k určitému Orgu, má také přístup k potomkům těchto Orgů.</p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '< p > Open- Audit poskytuje multi- tenancy mimo box! < br > < br > Orgs (organizace) v Open- Audit jsou klíčové položky. Uživatel má primární Org, stejně jako seznam Orgů, ke kterým může přístup. Uživatel to kombinuje se seznamem přiřazených "Roles", který definuje, jaké akce mohou přijmout na položky přidělené k Orgs mají přístup k. Kombinace uživatelů "orgs" a "roles" definují, co mohou a nemohou dělat v rámci Open- Audit. < br > < br > Většina položek v Open- Audit jsou přiřazeny k Org. Zařízení, umístění, sítě, atd. < br > < br > Orgs mohou mít dětské Orgy. Představte si organizační strukturu grafu (stromu). Pokud má uživatel přístup k určitému Orgu, má také přístup k potomkům těchto Orgů. < / p >';
-
-$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br></p>'] = '< p > Rychlé zobrazení stavu zařízení ve Vaší síti. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br></p>'] = '<p>Rychle si prohlédněte stav zařízení ve vaší síti.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned Roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>
         Get the complete Open-AudIT Enterprise experience. Creating roles allows fine grained control over what your users can do within Open-AudIT.<br> <br>
-        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '< p > Role v Open- Aud IT je klíčová položka. Uživatel má primární Org, stejně jako seznam Orgů, ke kterým může přístup. Uživatel to kombinuje se seznamem přiřazených Roles, které definují, jaké akce mohou přijmout na položky přidělené k Orgs, ke kterým mají přístup. Kombinace uživatelů "orgs" a "roles" definují, co mohou a nemohou dělat v rámci Open- Audit. < br > < br >
-Získejte kompletní Open- Audit Enterprise zkušenosti. Vytvoření rolí umožňuje jemné zrnité ovládání nad tím, co vaši uživatelé mohou dělat v rámci Open- Audit. < br > < br >
-Primární metoda pro povolování (co může uživatel udělat) je založena na uživatelích Roles. Výchozí role jsou definovány jako admin, org _ admin, reporter a uživatel. Každá role má soubor oprávnění (Vytvořit, přečíst, Aktualizovat, Smazat) pro každý koncový bod. Schopnost definovat další role a upravovat stávající role je povolena v Open- Audit Enterprise. < br > < br > Roles lze použít také s povolením LDAP (Active Directory and OpenLDAP). Podniky licencované instalace mají schopnost přizpůsobit skupinu LDAP pro každou definovanou roli. < br > < br > < / p >';
+        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>Role v Open- Aud IT je klíčová položka. Uživatel má primární Org, stejně jako seznam Orgů, ke kterým může přístup. Uživatel to kombinuje se seznamem přiřazených Roles, které definují, jaké akce mohou přijmout na položky přidělené k Orgs, ke kterým mají přístup. Kombinace uživatelských "orgs" a "rolí" definuje, co mohou a nemohou dělat v rámci Open- Auditu.<br/> <br/>Získejte kompletní Open- Audit Enterprise zkušenosti. Vytvoření rolí umožňuje jemné zrnité ovládání nad tím, co vaši uživatelé mohou dělat v rámci Open- Audit.<br/> <br/>Primární metoda pro povolování (co může uživatel udělat) je založena na uživatelích Roles. Výchozí role jsou definovány jako admin, org _ admin, reporter a uživatel. Každá role má soubor oprávnění (Vytvořit, přečíst, Aktualizovat, Smazat) pro každý koncový bod. Schopnost definovat další role a upravovat stávající role je povolena v Open- Audit Enterprise.<br/> <br/>Roles lze také použít s povolením LDAP (Active Directory and OpenLDAP). Firma licencovaná zařízení mají schopnost přizpůsobit skupinu LDAP pro každou definovanou roli.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '< p > Pravidla zkoumají atributy a dělají kahnges na základě příslušného pravidla. < / p >';
+$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p>Pravidla zkoumají atributy a vytvářejí kahny na základě příslušného pravidla.</p>';
 
-$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br> <br></p>'] = '< p > Možnosti skenování vám umožní snadno použít sadu možností k objevení. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br> <br></p>'] = '<p>Skenování možností vám umožní snadno použít sadu možností k objevu.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br> <br>
-        </p>'] = '< p > Jednoduché, intuitivní, přesné geografické mapování poskytované mapami Google. Open- Audit páky Mapy Google poskytují živé, interaktivní geografické mapování umístění zařízení. Automatická přeměna adresy ulic na geokódy a zeměpisnou délku / zeměpisnou šířku. < br > < br >
-< / p >';
+        </p>'] = '<p>Jednoduché, intuitivní, přesné geografické mapování poskytované Mapami Google. Open- Audit páky Mapy Google poskytují živé, interaktivní geografické mapování umístění zařízení. Automatická přeměna adresy ulic na geokódy a zeměpisnou délku / zeměpisnou šířku.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>'] = '< p > Software Packages se používají k určení, zda je nainstalován antivirový, záložní, firewall, schválený nebo zakázaný software. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>'] = '<p>Software Packages se používají k určení, zda je nainstalován antivirový, záložní, firewall, schválený nebo zakázaný software.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '< p > Některé příklady platných atributů Subnet jsou: 192.168.1.1 (jednotná IP adresa), 192.168.1.0 / 24 (a subnet), 192.168.1-3.1-20 (řada IP adres). < br > < br > < em > NOTE < / em > - Pouze subnet (podle příkladů - 192.168.1.0 / 24) bude moci automaticky vytvořit platnou síť pro Open- Audit. < br > < br > Pokud používáte typ Active Directory, ujistěte se, že máte příslušné pověřovací listiny, abyste mohli mluvit se svým ovladačem domény již v < a href =. "/ pověření" > pověření < / a >. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '<p>Některé příklady platných atributů Subnet jsou: 192.168.1.1 (jedna IP adresa), 192.168.1.0 / 24 (a subnet), 192.168.1-3.1-20 (řada IP adres).<br/> <br/><em>POZNÁMKA</em> - Pouze podsíť (podle příkladů - 192.168.1.0 / 24) bude schopna automaticky vytvořit platnou síť pro Open- Audit. <br/> <br/>Pokud používáte typ Active Directory, ujistěte se, že máte příslušné pověřovací listiny, aby se vaše Domain Controller již v <a href="../credentials">pověření</a>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '< p > Podporovaní klienti jsou pouze Linux. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Standards are stored in Open-AudIT.<br /><br /><br /><br /></p>'] = '<p>Standardy jsou uloženy v Open- Auditu.<br/><br/><br/><br/></p>';
 
-$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '< p > Úkoly mají plán, který odráží unix cron plán. Atributy pro minutu, hodinu, den _ z _ měsíce, měsíc, den _ z _ týdne všechny fungují podle definice cron. Můžete si vybrat násobky z nich pomocí čárkově oddělených hodnot (bez mezer). Můžete si vybrat každou hodnotu pomocí *. < br > < br > The < code > type < / code > of the job can be one of: baseline, collectors, objevies, questions, reports or summary. < br > < br > Pokud si přejete naplánovat výchozí hodnotu nebo Discovery, budete je muset vytvořit před vytvořením úkolů. Musíte použít ID typu položky v < kódu > sub _ resource _ id < / code >. Pokud si například přejete naplánovat Discovery, použijte konkrétní ID Discovery v < code > sub _ resource _ id < / code >. < br > < br > Hodnota pro < code > uid < / code > je specifická pro každý Open- Audit server. Vaši jedinečnou hodnotu naleznete v konfiguraci. < br > < br > Možnosti < / code > atribut je dokument JSON obsahující jakékoli další atributy potřebné pro spuštění úkolu. Další atributy pro zprávy, dotazy a shrnutí jsou: < code > email _ address < / code > a < code > format < / code >. Přídavný atribut pro Bselines je < kód > skupina _ id < / kód >. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '<p>Podporovaní klienti jsou pouze Linux.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The <code>type</code> of the location will assign its icon.<br> <br></p>'] = '< p > < kód > typ < / kód > umístění přiřadí svou ikonu. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '<p>Úkoly mají plán, který odpovídá unixovému cron plánu. Atributy pro minutu, hodinu, den _ z _ měsíce, měsíc, den _ z _ týdne všechny fungují podle definice cron. Můžete si vybrat násobky z nich pomocí čárkově oddělených hodnot (bez mezer). Můžete si vybrat každou hodnotu pomocí *.<br/> <br/>• <code>type</code> Úkolem může být: základní linie, sběratelé, objevy, dotazy, zprávy nebo shrnutí.<br/> <br/>Chcete-li naplánovat výchozí nebo objevení, budete muset vytvořit tyto před vytvořením úkolů. Musíte použít ID typu položky v <code>sub_resource_id</code>. Například pokud chcete naplánovat Discovery, použijte tento konkrétní ID Objevení v <code>sub_resource_id</code>.<br/> <br/>Hodnota pro <code>uuid</code> je specifický pro každý Open- Audit server. Vaši jedinečnou hodnotu naleznete v konfiguraci.<br/> <br/>• <code>options</code> atribut je dokument JSON obsahující všechny další atributy potřebné pro spuštění úkolu. Další atributy pro zprávy, dotazy a shrnutí jsou: <code>email_address</code> a <code>format</code>. Další atribut pro Bselines je <code>group_id</code>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '< p > Konečný parametr Atributy vám umožní přidat vlastní hodnoty do různých atributů v Open- Audit, v současné době tato funkce funguje na atributy třídy, životního prostředí, stavu a typu na zařízení, atributu Typ jak pro umístění a Orgy, stejně jako kategorie nabídky pro dotazy. Pokud si prohlížíte položku jednoho z prchavých typů (řekněme pohled na Lkotion), všimnete si, že atribut Type musí být vybrán z krabičky "drop-down". Tady jsou tyto hodnoty uloženy. Proto, pokud byste chtěli přidat nový typ, který bude vybrán pro umístění, přidejte jej pomocí funkce Atributy. < / p >';
+$GLOBALS["lang"]['<p>The <code>type</code> of the location will assign its icon.<br> <br></p>'] = '<p>• <code>type</code> umístění přiřadí ikonu.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br> <br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br> <br></p>'] = '< p > Funkce Collectors vám umožní snadno spravovat mnoho "kolektorů" počítačů, které provádějí objev sítě. Všichni sběratelé jsou centrálně ovládáni ze serveru. Jediné požadované síťové porty mezi Sběratelem a Serverem jsou 80 a / nebo 443. < br > < br > Díky tomu je řízení různých sítí rychlé, snadné a jednoduché. Open- Audit Enterprise licensees get a single collector licence included and have the option to buy more as required.. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '<p>Konečný parametr Atributy vám umožní přidat vlastní hodnoty do různých atributů v Open- Audit, v současné době tato funkce funguje na atributy třídy, životního prostředí, stavu a typu na zařízení, atributu Typ jak pro umístění a Orgy, stejně jako kategorie nabídky pro dotazy. Pokud si prohlížíte položku jednoho z prchavých typů (řekněme pohled na Lkotion), všimnete si, že atribut Type musí být vybrán z krabičky "drop-down". Tady jsou tyto hodnoty uloženy. Proto, pokud byste chtěli přidat nový typ, který bude vybrán pro umístění, přidejte jej pomocí funkce Atributy.</p>';
 
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>'] = '< p > Část SELECT vašeho SQL < em > musí < / em > obsahovat plně kvalifikované sloupce. IE - < kód > SELECT devices.id AS "devices.id", devices.name AS \'devices.name "... < / code >. < br > < br > KDE část vašeho SQL < em > must < / em > contact < code > Where @ filter < / code > so Open- Audit knows to limit your query to the approval orgs. SQL neobsahující tuto podmínku povede k selhání dotazu, pokud nemáte admin roli. < br > < br > Příklad dotazu SQL zobrazující atributy na zařízeních, která mají < kód > os _ group < / code > atribut" Linux "- < br > < kód > SELECT devices.id AS\' devices.id \', devices.icon AS\' devices.icon \', zařízení. typ AS\' devices.type \', devices.name AS\' devices.name \', devices.os _ name AS\' devices.os _ name \'From ectives Where @ filter AND devices.os _ group =" Linux "< / code > < br > < br > < / p >';
+$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br> <br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br> <br></p>'] = '<p>Funkce Collectors vám umožní snadno spravovat mnoho "kolektorů" počítačů, které provádějí objev sítě. Všichni sběratelé jsou centrálně ovládáni ze serveru. Jediné požadované síťové porty mezi Sběratelem a Serverem jsou80 a / nebo443.<br/> <br/>Díky tomu je řízení rozdílných sítí rychlé, snadné a jednoduché. Open- Audit Enterprise licensees získat jeden sběratelský licence v ceně a mají možnost koupit více podle potřeby..<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br> <br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br> <br></p>'] = '< p > Část SELECT vašeho SQL < em > musí < / em > obsahuje pouze < kód > DISTINCT (devices.id) < / kód >. < br > < br > KDE část vašeho SQL < em > musí < / em > obsahovat < kód > Where @ filter < / code >, takže Open- Audit ví omezit váš dotaz na příslušné Orgy. SQL neobsahující tuto podmínku povede k tomu, že skupina nebude vytvořena. < br > < br > Příklad pro SQL pro výběr všech zařízení spuštěných Debian OS - < kód > SELECT DISTINCT (devices.id) Ze zařízení Where @ filter AND devices.os _ family = "Debian" < / code > < br > < br > < / p >';
+$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>'] = '<p>Část SELECT vašeho SQL <em>musí</em> obsahují plně kvalifikované sloupce. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br/> <br/>KDE část vašeho SQL <em>musí</em> obsahovat <code>WHERE @filter</code> Open- Audit ví, že váš dotaz má omezit na příslušné Orgy. SQL neobsahující tuto podmínku bude mít za následek, že dotaz nebude vytvořen, pokud nemáte roli admin.<br/> <br/>Příklad dotazu SQL zobrazující atributy na zařízeních, která mají <code>os_group</code> atribut "Linux" - <br/><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>'] = '< p > Licenční endpoint vám umožní sledovat počet licencí nalezených na vašich zařízeních. < br > < br > Chcete-li vytvořit záznam pro sledování licencí, které < em > musí < / em > poskytnout jméno, organizaci, počet nabytých licencí a název softwaru. Na poli < kód > match _ string < / code > musíte uvést název softwaru, který chcete sledovat, můžete použít znak procenta (%) jako divokou kartu v match _ string. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br> <br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br> <br></p>'] = '<p>Část SELECT vašeho SQL <em>musí</em> pouze obsahovat <code>DISTINCT(devices.id)</code>.<br/> <br/>KDE část vašeho SQL <em>musí</em> obsahovat <code>WHERE @filter</code> Open- Audit ví, že váš dotaz má omezit na příslušné Orgy. SQL neobsahující tuto podmínku bude mít za následek, že skupina nebude vytvořena.<br/> <br/>Příklad pro SQL pro výběr všech zařízení spuštěných Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br> <br></p>'] = '< p > Síť by měla být ve formátu 192.168.1.0 /24';
+$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>'] = '<p>Endpoint licence vám umožní sledovat počet licencí nalezených na vašich zařízeních.<br/> <br/>Chcete-li vytvořit položku sledovat vaše licence <em>musí</em> poskytnout jméno, organizaci, počet nabytých licencí a název softwaru. Na hřišti <code>match_string</code> musíte poskytnout název softwaru, který chcete sledovat, můžete použít znak procenta (%) jako divokou kartu v match _ string.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>'] = '< p > Primární a volitelné sekundární položky by měly být plně kvalifikovány - tj., zařízení. typ nebo software.name. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br> <br></p>'] = '<p>Síť by měla být ve formátu 192.168.1.0 /24.<br/> <br/></p>';
+
+$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>'] = '<p>Primární a volitelné sekundární položky by měly být plně kvalifikovány - tj., zařízení. typ nebo software. jméno.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>There is no need to do anything if you are running Open-AudIT on a Linux server.<br>
 <br>
 Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.<br>
 <br>
-See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '< p > Pokud provozujete Open- Audit na Linuxovém serveru, není třeba nic dělat. < br >
-< br >
-Klienti Windows jsou v pořádku a nevyžadují žádné speciální akce, nicméně.... pro umožnění této funkce musí být auditní skript spuštěn lokálně na cílovém systému Windows. Nemůže být spuštěn na dálku, jak to děláme s WMI hovory při spuštění auditního skriptu na jednom zařízení Windows, při cílení na druhý Windows stroj. K tomu potřebujeme zkopírovat kontrolní skript do cílového zařízení Windows a pak jej spustit. Bohužel servisní účet, pod kterým Apache běží, je účet Local System. Tento účet nemá přístup ke vzdáleným (síťovým) zdrojům. K řešení této otázky musí být služba vedena na jiném účtu. Nejjednodušší je použít účet místního správce, ale můžete zkusit jakýkoli účet, který se vám líbí, pokud má požadované výsady. Účet místního systému má stejný místní přístup jako účet místního správce. < br >
-< br >
-Viz naše stránka o povolení < a href = "/ index.php / faq? name = Spustit Open- Audit Apache Service Under Windows" > Spustit Open- Audit Apache Service Under Windows < / a > < / p >';
+See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '<p>Pokud provozujete Open- Audit na Linux serveru, není třeba nic dělat.<br/><br/>Klienti Windows jsou v pořádku a nevyžadují žádné speciální akce, nicméně.... pro umožnění této funkce musí být auditní skript spuštěn lokálně na cílovém systému Windows. Nemůže být spuštěn na dálku, jak to děláme s WMI hovory při spuštění auditního skriptu na jednom zařízení Windows, při cílení na druhý Windows stroj. K tomu potřebujeme zkopírovat kontrolní skript do cílového zařízení Windows a pak jej spustit. Bohužel servisní účet, pod kterým Apache běží, je účet Local System. Tento účet nemá přístup ke vzdáleným (síťovým) zdrojům. K řešení této otázky musí být služba vedena na jiném účtu. Nejjednodušší je použít účet místního správce, ale můžete zkusit jakýkoli účet, který se vám líbí, pokud má požadované výsady. Účet místního systému má stejný místní přístup jako účet místního správce.<br/><br/>Viz naše stránka o povolení <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Běh Open- Audit Apache Service pod Windows</a></p>';
 
-$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>'] = '< p > Jedná se o zařízení, která žijí uvnitř stojanu. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>'] = '<p>Tohle jsou zařízení, která žijí v regálu.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '< p > Tento koncový bod vám umožní přidat podrobnosti o vaší cloudové infrastruktuře. Open- Audit pak osloví vaše mraky pomocí jejich nativní API a vrátí vaše servery, stejně jako každé jiné zařízení v Open- Auditu. < br > < br > < em > POZOR < / em > - Pro použití této funkce, musíme < / em > umožnit konfigurační položky shodovat _ mac (pro AWS) a match _ hostname (pro Azure). To bude provedeno automaticky při prvním provedení objevu cloudu. < br > < br > Kredity pro váš cloud (< a href = "/ index.php / faq? name = Kredity pro Microsoft Azure used in Cloud Discovery" > Azure < / a > or < a href = "/ index.php / faq? name = Creditionals for Amazon AWS used in Cloud Discovery" > AWS < / a >) jsou povinné. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p>Tento koncový bod vám umožní přidat podrobnosti o vaší cloudové infrastruktuře. Open- Audit pak osloví vaše mraky pomocí jejich rodné API a vrátí vaše servery, stejně jako každé jiné zařízení v Open- Audit.<br/> <br/><em>POZNÁMKA</em> - Pro použití této funkce, jsme <em>musí</em> zapněte konfigurační položky match _ mac (pro AWS) a match _ hostname (pro Azure). To bude provedeno automaticky při prvním objevu mraků.<br/> <br/>Kredity pro váš cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> nebo <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) jsou povinné.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '< p > Nejprve nastavíme výchozí seznam skriptů s výchozími možnostmi. Tyto výchozí skripty nelze smazat. Můžete vytvořit další skripty pro vaše použití dle potřeby. Váš skript bude založen na jednom ze stávajících skriptů a budou použity vlastní možnosti. Scénáře pak můžete stáhnout ze seznamu v menu - > Objevte - > Auditní skripty - > Seznam Auditní skripty < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Vulnerabilities reporting based on the NIST CVE feed.<br> <br></p>'] = '<p>Zranitelnost se hlásí na základě NIST kanálu.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '< p > Při použití Regex pro porovnání, užitečné stránky lze nalézt na < a href = "https: / / www.php.net / manual / en / regefp.reference.meta.php" target = "_ blank" > Webová stránka PHP < / a >. Některé rozdíly od Perl Regex lze nalézt < a href = "https: / / www.php.net / manual / en / reference.pcre.pattern.differences.php" target = "_ blank" > zde < / a >. < / p >';
+$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>Zpočátku jsme nastavili výchozí seznam skriptů s výchozími možnostmi. Tyto výchozí skripty nelze smazat. Můžete vytvořit další skripty pro vaše použití dle potřeby. Váš skript bude založen na jednom ze stávajících skriptů a budou použity vlastní možnosti. Scénáře pak můžete stáhnout ze seznamu v menu - > Objevte - > Auditní skripty - > Seznam textů pro audit<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>'] = '< p > Widgets lze snadno vytvořit tak, aby na přístrojových deskách zobrazovalo vše, co je specifické pro Vaše prostředí. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>Při použití Regex pro porovnání, užitečné stránky naleznete na <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> Webová stránka PHP</a>. Některé rozdíly na Perl Regex lze nalézt <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">Tady.</a>.</p>';
 
-$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>'] = '< p > S Open- Audit Profesionální a Enterprise můžete automatizovat a naplánovat objevy, hlásit generace, nebo základní kontroly spustit, když chcete, a tak často, jak budete potřebovat. Naplánujte si své objevy běžet v noci a zprávy, které mají být generovány a emailem klíčové personál každé ráno. Komplexní nebo jednoduché plány, objevování zařízení a generování hlášení je jen kliknutí. < br > < br > Vytvořit individuální plány objevů pro každý subnet nebo AD regulátor, přidat ve zprávách, které mají být vytvořeny pro cílené publikum. Vypracovat jednoduché nebo složité plány na podporu potřeb společnosti, vyhnout se zálohám nebo dopadu na provoz, nebo jednoduše rozšířit zatížení a zrychlit dokončení auditu. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>'] = '<p>Widgety lze snadno vytvořit, aby se na přístrojových deskách ukázalo, co je specifické pro vaše prostředí.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>'] = '< p > Můžete vytvořit skript se všemi možnostmi pro některý ze stávajících skriptů - nejen Windows. AIX, ESX, Linux, OSX a Windows jsou pokryty. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>'] = '<p>S Open- Audit Profesionální a Enterprise můžete automatizovat a naplánovat objevy, hlásit generace, nebo základní kontroly spustit, když chcete, a tak často, jak budete potřebovat. Naplánujte si své objevy běžet v noci a zprávy, které mají být generovány a emailem klíčové personál každé ráno. Komplexní nebo jednoduché plány, objev zařízení a report generace je jen kliknutí.<br/> <br/>Vytvořit jednotlivé plány objevů pro každý subnet nebo AD regulátor, přidat ve zprávách, které mají být vytvořeny pro cílené publikum. Vypracovat jednoduché nebo složité plány na podporu potřeb společnosti, vyhnout se zálohám nebo dopad na operace, nebo jednoduše rozšířit zatížení a zrychlit dokončení auditu.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>'] = '< p > Můžete použít znak% jako divokou kartu v match _ string. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>'] = '<p>Můžete vytvořit skript se všemi možnostmi pro některý ze stávajících skriptů - nejen Windows. AIX, ESX, Linux, OSX a Windows jsou pokryty.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br> <br></p>'] = '< p > Vaše regály pomáhají přesně určit, kde jsou vaše zařízení umístěna. < br > < br > < / p >';
+$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>'] = '<p>V match _ string můžete použít znak% jako divokou kartu.<br/> <br/></p>';
+
+$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br> <br></p>'] = '<p>Vaše regály pomáhají přesně určit, kde se vaše zařízení nacházejí.<br/> <br/></p>';
 
 $GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = 'Mapy Google API Pro tuto funkci je nutný klíč.';
 
 $GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = 'JSON pole ID zařízení, které bude mít tuto referenční hodnotu provedeno.';
 
-$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = 'Dokument JSON obsahující Orgy přidělené tomuto uživateli. Identifikátory odebrané z < kódu > orgs.id < / kód >. Pokud má uživatel přístup k Orgu, má přístup k potomkům Orgů.';
+$GLOBALS["lang"]['A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.'] = 'JSON pole objektů odpovídající softwarové jméno převzaté z CVE, obohacené o softwarové jméno získané Open- Audit.';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = 'Dokument JSON obsahující požadované atributy podle kódu < > scripts.type < / code >.';
+$GLOBALS["lang"]['A JSON array of values to test for this vulnerability.'] = 'JSON pole hodnot pro testování této zranitelnosti.';
+
+$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = 'Dokument JSON obsahující Orgy přidělené tomuto uživateli. Průkazy totožnosti odebrané <code>orgs.id</code>. Pokud má uživatel přístup k Orgu, má přístup k potomkům Orgů.';
+
+$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = 'Dokument JSON obsahující požadované atributy v závislosti na <code>scripts.type</code>.';
 
 $GLOBALS["lang"]['A JSON document containing the required attributes overriding the chosen discovery_scan_options.'] = 'Dokument JSON obsahující požadované atributy převažující nad zvoleným objevem _ scan _ options.';
 
 $GLOBALS["lang"]['A JSON document containing the required attributes overriding the default device match options.'] = 'Dokument JSON obsahující požadované atributy převažující nad výchozími možnostmi shody zařízení.';
 
-$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = 'Dokument JSON obsahující role přidělené tomuto uživateli. Název role převzatý z < kódu > roles.name < / kód >.';
+$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = 'Dokument JSON obsahující role přidělené tomuto uživateli. Název role převzatý z <code>roles.name</code>.';
 
 $GLOBALS["lang"]['A JSON object containing an array of attributes to change if the match occurs.'] = 'JSON objekt obsahující řadu atributů pro změnu, pokud dojde k zápasu.';
 
@@ -200,6 +195,8 @@ $GLOBALS["lang"]['A calculated field that displays the number of times this piec
 
 $GLOBALS["lang"]['A collector is either in Collector or Stand-Alone mode.'] = 'Sběratel je buď v režimu Sběratel, nebo Stand- Alone.';
 
+$GLOBALS["lang"]['A comma separated list of applicable CVEs.'] = 'Oddělený seznam platných CVEs čárka.';
+
 $GLOBALS["lang"]['A comma separated list of values, one of which can be selected.'] = 'Samostatný seznam hodnot, z nichž jeden může být vybrán.';
 
 $GLOBALS["lang"]['A command to run. When the agent is Windows based, this command is run from within the powershell agent.'] = 'Příkaz k útěku. Když je agent založen na Windows, je tento příkaz spuštěn zevnitř Powershell agenta.';
@@ -220,7 +217,13 @@ $GLOBALS["lang"]['A security zone is a administrative domain or policy domain wi
 
 $GLOBALS["lang"]['A short description of the log entry.'] = 'Krátký popis záznamu.';
 
-$GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = 'Řetězec, který odpovídá atributu < code > software.name < / code >. K porovnání jednoho nebo více znaků můžete použít standardní SQL divokou kartu procenta (%).';
+$GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = 'Řetězec, který odpovídá <code>software.name</code> atribut. K porovnání jednoho nebo více znaků můžete použít standardní SQL divokou kartu procenta (%).';
+
+$GLOBALS["lang"]['A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).'] = 'Nezranitelnost ovlivňující dostupnost může útočníkům umožnit narušit služby, havarijní systémy, nebo způsobit popírání služeb (DoS) (žádné, nízké, vysoké).';
+
+$GLOBALS["lang"]['A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).'] = 'Nezranitelnost, která má vliv na důvěrnost, může útočníkům umožnit číst citlivé údaje, jako jsou osobní údaje, pověřovací listiny nebo proprietární obchodní údaje (žádné, nízké, vysoké).';
+
+$GLOBALS["lang"]['A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).'] = 'Nezranitelnost ovlivňující integritu může útočníkům umožnit modifikovat data, aplikovat škodlivý kód nebo měnit konfigurace systému (Žádný, nízký, vysoký).';
 
 $GLOBALS["lang"]['AD Group'] = 'Skupina AD';
 
@@ -231,6 +234,8 @@ $GLOBALS["lang"]['AIX'] = 'AIX';
 $GLOBALS["lang"]['ALL IPs'] = 'Všechny IP';
 
 $GLOBALS["lang"]['API / Web Access'] = 'API / Web Access';
+
+$GLOBALS["lang"]['API Documentation'] = 'Dokumentace API';
 
 $GLOBALS["lang"]['API Key required.'] = 'Požadovaný API klíč.';
 
@@ -272,6 +277,10 @@ $GLOBALS["lang"]['action_command'] = 'Akční příkaz';
 
 $GLOBALS["lang"]['Action Command'] = 'Akční příkaz';
 
+$GLOBALS["lang"]['action_date'] = 'Datum akce';
+
+$GLOBALS["lang"]['Action Date'] = 'Datum akce';
+
 $GLOBALS["lang"]['action_devices_assigned_to_location'] = 'Akční zařízení určená k umístění';
 
 $GLOBALS["lang"]['Action Devices Assigned To Location'] = 'Akční zařízení určená k umístění';
@@ -288,11 +297,25 @@ $GLOBALS["lang"]['action_uninstall'] = 'Odinstalovat akci';
 
 $GLOBALS["lang"]['Action Uninstall'] = 'Odinstalovat akci';
 
+$GLOBALS["lang"]['actioned'] = 'Zařízeno';
+
+$GLOBALS["lang"]['Actioned'] = 'Zařízeno';
+
+$GLOBALS["lang"]['actioned_by'] = 'Aced';
+
+$GLOBALS["lang"]['Actioned By'] = 'Aced';
+
+$GLOBALS["lang"]['actioned_date'] = 'Přijaté datum';
+
+$GLOBALS["lang"]['Actioned Date'] = 'Přijaté datum';
+
 $GLOBALS["lang"]['actions'] = 'Akce';
 
 $GLOBALS["lang"]['Actions'] = 'Akce';
 
 $GLOBALS["lang"]['Activate'] = 'Aktivovat';
+
+$GLOBALS["lang"]['Activate Free License'] = 'Aktivovat licenci zdarma';
 
 $GLOBALS["lang"]['Activate Key'] = 'Aktivovat klíč';
 
@@ -358,6 +381,8 @@ $GLOBALS["lang"]['address'] = 'Adresa';
 
 $GLOBALS["lang"]['Address'] = 'Adresa';
 
+$GLOBALS["lang"]['Admin'] = 'Admin';
+
 $GLOBALS["lang"]['admin_status'] = 'Admin Status';
 
 $GLOBALS["lang"]['Admin Status'] = 'Admin Status';
@@ -377,6 +402,10 @@ $GLOBALS["lang"]['Aggressive'] = 'Agresivní';
 $GLOBALS["lang"]['Aland Islands'] = 'Alandské ostrovy';
 
 $GLOBALS["lang"]['Albania'] = 'Albánie';
+
+$GLOBALS["lang"]['alert_style'] = 'Styl upozornění';
+
+$GLOBALS["lang"]['Alert Style'] = 'Styl upozornění';
 
 $GLOBALS["lang"]['Algeria'] = 'Alžírsko';
 
@@ -400,11 +429,13 @@ $GLOBALS["lang"]['Amazon AWS Fields'] = 'Amazon AWS Pole';
 
 $GLOBALS["lang"]['American Samoa'] = 'Americká Samoa';
 
-$GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = 'Pole < kód > benchmarks.id < / kód >.';
+$GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = 'Soubor <code>benchmarks.id</code>.';
 
-$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = 'Pole < kód > devices.id < / kód >.';
+$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = 'Soubor <code>devices.id</code>.';
 
-$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = 'Zašifrovaný dokument JSON obsahující požadované atributy v závislosti na < code > crestials.type < / code >.';
+$GLOBALS["lang"]['An array of object representing external links to more information.'] = 'Soubor objektů reprezentujících externí odkazy na více informací.';
+
+$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = 'Zašifrovaný JSON dokument obsahující požadované atributy v závislosti na <code>credentials.type</code>.';
 
 $GLOBALS["lang"]['An indication of the level of service required by this site.'] = 'Uvedení úrovně služby požadované touto stránkou.';
 
@@ -436,13 +467,13 @@ $GLOBALS["lang"]['Any additional documentation you need.'] = 'Každá další do
 
 $GLOBALS["lang"]['Any additional notes you care to make.'] = 'Jakékoliv další poznámky, které chcete udělat.';
 
-$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.'] = 'Všechna zařízení budou přiřazena k tomuto Orgu při spuštění jejich auditního skriptu (je-li nastaven). Odkazy na < kód > orgs.id < / kód >.';
+$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.'] = 'Všechna zařízení budou přiřazena k tomuto Orgu při spuštění jejich auditního skriptu (je-li nastaven). Odkazy na <code>orgs.id</code>.';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.'] = 'Všechna objevená zařízení budou přiřazena k tomuto místu, pokud budou nastavena. Odkazy na < kód > locations.id < / kód >.';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.'] = 'Všechna objevená zařízení budou přiřazena k tomuto místu, pokud budou nastavena. Odkazy na <code>locations.id</code>.';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.'] = 'Veškerá objevená zařízení budou přiřazena k tomuto místu, jakmile spustí svůj auditní skript (je-li nastaven). Odkazy na < kód > locations.id < / kód >.';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.'] = 'Veškerá objevená zařízení budou přiřazena k tomuto místu, jakmile spustí svůj auditní skript (je-li nastaven). Odkazy na <code>locations.id</code>.';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.'] = 'Všechna objevená zařízení budou přiřazena k tomuto Orgu, pokud budou nastavena. Pokud nejsou nastaveny, jsou přiřazeny < kód > org _ id < / kód > tohoto objevu. Odkazy na < kód > orgs.id < / kód >.';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.'] = 'Všechna objevená zařízení budou přiřazena k tomuto Orgu, pokud budou nastavena. Pokud nejsou nastaveny, jsou přiřazeny k <code>org_id</code> tohoto objevu. Odkazy na <code>orgs.id</code>.';
 
 $GLOBALS["lang"]['Any required filter. NOTE: When type = traffic, this represents the font-awesome icon.'] = 'Jakýkoliv požadovaný filtr. POZNÁMKA: Když typ = provoz, to představuje font- úžasné ikonu.';
 
@@ -457,6 +488,8 @@ $GLOBALS["lang"]['application_id'] = 'ID žádosti';
 $GLOBALS["lang"]['Application ID'] = 'ID žádosti';
 
 $GLOBALS["lang"]['Application Licenses'] = 'Licence';
+
+$GLOBALS["lang"]['Application, Operating System or Hardware.'] = 'Aplikace, operační systém nebo hardware.';
 
 $GLOBALS["lang"]['applications'] = 'Žádosti';
 
@@ -500,7 +533,7 @@ $GLOBALS["lang"]['As per the attributes for device environments. Production, Tra
 
 $GLOBALS["lang"]['As you have Collectors registered, please choose where to execute this discovery.'] = 'Jak jste zaregistrovali Sběratele, vyberte prosím, kde provést tento objev.';
 
-$GLOBALS["lang"]['Ask me later'] = 'Zeptej se mě později';
+$GLOBALS["lang"]['Ask me later'] = 'Zeptej se mě později.';
 
 $GLOBALS["lang"]['Ask the Community for help or contribute answers for others.'] = 'Požádejte Společenství o pomoc nebo přispívejte odpověďmi pro ostatní.';
 
@@ -556,6 +589,18 @@ $GLOBALS["lang"]['attachments'] = 'Přílohy';
 
 $GLOBALS["lang"]['Attachments'] = 'Přílohy';
 
+$GLOBALS["lang"]['attack_complexity'] = 'Útočná komplexita';
+
+$GLOBALS["lang"]['Attack Complexity'] = 'Útočná komplexita';
+
+$GLOBALS["lang"]['attack_requirements'] = 'Požadavky na útok';
+
+$GLOBALS["lang"]['Attack Requirements'] = 'Požadavky na útok';
+
+$GLOBALS["lang"]['attack_vector'] = 'Útočný vektor';
+
+$GLOBALS["lang"]['Attack Vector'] = 'Útočný vektor';
+
 $GLOBALS["lang"]['Attribute'] = 'Atribut';
 
 $GLOBALS["lang"]['attributes'] = 'Atributy';
@@ -594,15 +639,29 @@ $GLOBALS["lang"]['Australia'] = 'Austrálie';
 
 $GLOBALS["lang"]['Austria'] = 'Rakousko';
 
-$GLOBALS["lang"]['auth'] = 'Auth';
-
 $GLOBALS["lang"]['Auth'] = 'Auth';
+
+$GLOBALS["lang"]['auth'] = 'Auth';
 
 $GLOBALS["lang"]['Authentication Passphrase'] = 'Oprávnění Passprase';
 
+$GLOBALS["lang"]['authority_key_ident'] = 'Ident klíče orgánu';
+
+$GLOBALS["lang"]['Authority Key Ident'] = 'Ident klíče orgánu';
+
 $GLOBALS["lang"]['Auto'] = 'Automaticky';
 
+$GLOBALS["lang"]['auto_renew'] = 'Automaticky obnovit';
+
+$GLOBALS["lang"]['Auto Renew'] = 'Automaticky obnovit';
+
 $GLOBALS["lang"]['Auto populated by the Open-AudIT Server.'] = 'Auto obsazené Open- Audit Serverem.';
+
+$GLOBALS["lang"]['AutoRenew'] = 'AutoRenew';
+
+$GLOBALS["lang"]['automatable'] = 'Automatické';
+
+$GLOBALS["lang"]['Automatable'] = 'Automatické';
 
 $GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = 'Automaticky obydlené na základě systému Sběratelů.';
 
@@ -638,6 +697,14 @@ $GLOBALS["lang"]['Barbados'] = 'Barbados';
 
 $GLOBALS["lang"]['Base DN'] = 'Základna DN';
 
+$GLOBALS["lang"]['base_score'] = 'Základní skóre';
+
+$GLOBALS["lang"]['Base Score'] = 'Základní skóre';
+
+$GLOBALS["lang"]['base_severity'] = 'Základna';
+
+$GLOBALS["lang"]['Base Severity'] = 'Základna';
+
 $GLOBALS["lang"]['based_on'] = 'Na základě';
 
 $GLOBALS["lang"]['Based On'] = 'Na základě';
@@ -667,10 +734,6 @@ $GLOBALS["lang"]['baselines_results'] = 'Základní výsledky';
 $GLOBALS["lang"]['Baselines Results'] = 'Základní výsledky';
 
 $GLOBALS["lang"]['Basic'] = 'Základní';
-
-$GLOBALS["lang"]['batch'] = 'Č. š.:';
-
-$GLOBALS["lang"]['Batch'] = 'Č. š.:';
 
 $GLOBALS["lang"]['Belarus'] = 'Bělorusko';
 
@@ -717,6 +780,10 @@ $GLOBALS["lang"]['Bhutan'] = 'Bhútán';
 $GLOBALS["lang"]['bios'] = 'Bios';
 
 $GLOBALS["lang"]['Bios'] = 'Bios';
+
+$GLOBALS["lang"]['body'] = 'Tělo';
+
+$GLOBALS["lang"]['Body'] = 'Tělo';
 
 $GLOBALS["lang"]['Bolivia'] = 'Bolívie';
 
@@ -772,6 +839,8 @@ $GLOBALS["lang"]['Bulgaria'] = 'Bulharsko';
 
 $GLOBALS["lang"]['Bulk Edit'] = 'Name';
 
+$GLOBALS["lang"]['Bulk Editing Device Attributes'] = 'Atributy pro editování hromadných zařízení';
+
 $GLOBALS["lang"]['Burkina Faso'] = 'Burkina Faso';
 
 $GLOBALS["lang"]['Burundi'] = 'Burundi';
@@ -783,6 +852,8 @@ $GLOBALS["lang"]['Business Requirements'] = 'Obchodní požadavky';
 $GLOBALS["lang"]['Buy'] = 'Koupit';
 
 $GLOBALS["lang"]['Buy More'] = 'Koupit více';
+
+$GLOBALS["lang"]['Buy More Licenses'] = 'Koupit další licence';
 
 $GLOBALS["lang"]['By'] = 'By';
 
@@ -800,15 +871,17 @@ $GLOBALS["lang"]['CPUs'] = 'CPU';
 
 $GLOBALS["lang"]['CSV'] = 'CSV';
 
+$GLOBALS["lang"]['CVE'] = 'CVE';
+
 $GLOBALS["lang"]['Calculated from discovery.'] = 'Vypočítaná z objevu.';
 
 $GLOBALS["lang"]['Calculated total number of valid IP addresses for this network.'] = 'Vypočítaný celkový počet platných IP adres pro tuto síť.';
 
 $GLOBALS["lang"]['Calculated upon completion, the time taken to execute this item.'] = 'Vypočteno po dokončení, čas potřebný k provedení této položky.';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = 'Vypočteno při spuštění integrace a obsahuje JSON reprezentaci zařízení v této integraci. Každý odkaz na < kód > devices.id < / kód >.';
+$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = 'Vypočteno při spuštění integrace a obsahuje JSON reprezentaci zařízení v této integraci. Každý odkaz na <code>devices.id</code>.';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = 'Vypočteno při spuštění integrace a obsahuje JSON reprezentaci míst v této integraci. Každý odkaz na < kód > locations.id < / kód >.';
+$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = 'Vypočteno při spuštění integrace a obsahuje JSON reprezentaci míst v této integraci. Každý odkaz na <code>locations.id</code>.';
 
 $GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected from Open-AudIT.'] = 'Vypočteno při spuštění integrace a obsahuje počet zařízení vybraných z Open- Audit.';
 
@@ -824,19 +897,21 @@ $GLOBALS["lang"]['Cameroon'] = 'Kamerun';
 
 $GLOBALS["lang"]['Campus Area Network'] = 'Campus Area Network';
 
-$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code> or blank.'] = 'Může být < kód > aktivní < / kód >, < kód > pasivní < / kód > nebo prázdný.';
+$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code> or blank.'] = 'Může být <code>active</code>, <code>passive</code> nebo prázdné.';
 
-$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.'] = 'Může být < kód > aplikace < / kód >, < kód > vypočítat < / kód >, < kód > databáze < / kód >, < kód > uložení < / kód >, < kód > virtualizace < / kód >, < kód > web < / kód >, < kód >, < kód > ostatní < / kód > nebo prázdný.';
+$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.'] = 'Může být <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> nebo prázdné.';
 
-$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.'] = 'Může být < kód > auto < / kód >, < kód > pevný < / kód >, < kód > ostatní < / kód > nebo prázdný.';
+$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.'] = 'Může být <code>auto</code>, <code>fixed</code>, <code>other</code> nebo prázdné.';
 
-$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.'] = 'Může být < kód > vysoká dostupnost < / kód >, < kód > vyvažování nákladu < / kód >, < kód > výkonnost < / kód >, < kód > uložení < / kód >, < kód > ostatní < / kód > nebo prázdný.';
+$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.'] = 'Může být <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> nebo prázdné.';
 
-$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.'] = 'Může být < kód > řádek < / kód >, < kód > pie < / kód > nebo < kód > provoz < / kód >.';
+$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.'] = 'Může být <code>line</code>, <code>pie</code> nebo <code>traffic</code>.';
 
-$GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = 'Může být < kód > uživatel < / kód > nebo < kód > kolektor < / kód >.';
+$GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = 'Může být <code>user</code> nebo <code>collector</code>.';
 
 $GLOBALS["lang"]['Can be set by discovery or user.'] = 'Lze nastavit objevem nebo uživatelem.';
+
+$GLOBALS["lang"]['Can be set by discovery or user. Uses the ID from the locations table.'] = 'Lze nastavit objevem nebo uživatelem. Používá ID z tabulky lokací.';
 
 $GLOBALS["lang"]['Can the user edit this item.'] = 'Může uživatel upravit tuto položku.';
 
@@ -868,6 +943,14 @@ $GLOBALS["lang"]['certificate'] = 'Osvědčení';
 
 $GLOBALS["lang"]['Certificate'] = 'Osvědčení';
 
+$GLOBALS["lang"]['certificate_file'] = 'Soubor osvědčení';
+
+$GLOBALS["lang"]['Certificate File'] = 'Soubor osvědčení';
+
+$GLOBALS["lang"]['certificate_name'] = 'Jméno certifikátu';
+
+$GLOBALS["lang"]['Certificate Name'] = 'Jméno certifikátu';
+
 $GLOBALS["lang"]['certificates'] = 'Osvědčení';
 
 $GLOBALS["lang"]['Certificates'] = 'Osvědčení';
@@ -885,10 +968,6 @@ $GLOBALS["lang"]['Change Log'] = 'Změnit záznam';
 $GLOBALS["lang"]['change_type'] = 'Typ změny';
 
 $GLOBALS["lang"]['Change Type'] = 'Typ změny';
-
-$GLOBALS["lang"]['chart'] = 'Graf';
-
-$GLOBALS["lang"]['Chart'] = 'Graf';
 
 $GLOBALS["lang"]['check_minutes'] = 'Zkontrolovat zápis';
 
@@ -936,7 +1015,7 @@ $GLOBALS["lang"]['class_text'] = 'Třída Text';
 
 $GLOBALS["lang"]['Class Text'] = 'Třída Text';
 
-$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = 'Kliknutím na tlačítko Smazat odstraníte ukázková zařízení z Open- Audit. < br > Tím se odstraní níže uvedená zařízení z databáze.';
+$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = 'Kliknutím na tlačítko Smazat odstraníte příkladová zařízení z Open- Audit.<br/>Tím se odstraní níže uvedená zařízení z databáze. ';
 
 $GLOBALS["lang"]['Click the Import button below to populate Open-AudIT with example device data.'] = 'Kliknutím na tlačítko Import zalistujte Open- Audit s daty příkladového zařízení.';
 
@@ -1056,6 +1135,14 @@ $GLOBALS["lang"]['comments'] = 'Poznámky';
 
 $GLOBALS["lang"]['Comments'] = 'Poznámky';
 
+$GLOBALS["lang"]['commercial'] = 'Obchodní';
+
+$GLOBALS["lang"]['Commercial'] = 'Obchodní';
+
+$GLOBALS["lang"]['common_name'] = 'Obecný název';
+
+$GLOBALS["lang"]['Common Name'] = 'Obecný název';
+
 $GLOBALS["lang"]['Commonly referred to as the clientId.'] = 'Běžně označované jako klientId.';
 
 $GLOBALS["lang"]['Commonly referred to as the clientSecret.'] = 'Běžně označované jako KlientSecret.';
@@ -1070,6 +1157,10 @@ $GLOBALS["lang"]['Comoros the'] = 'Komory';
 
 $GLOBALS["lang"]['Compact'] = 'Kompaktní';
 
+$GLOBALS["lang"]['Company'] = 'Společnost';
+
+$GLOBALS["lang"]['Complexity of the attack (Low or High).'] = 'Komplex útoku (Low nebo High).';
+
 $GLOBALS["lang"]['Component Table'] = 'Tabulka součástí';
 
 $GLOBALS["lang"]['Components (All Devices)'] = 'Součásti (všechna zařízení)';
@@ -1078,11 +1169,9 @@ $GLOBALS["lang"]['Compute'] = 'Výpočet';
 
 $GLOBALS["lang"]['Condition'] = 'Stav';
 
-$GLOBALS["lang"]['config'] = 'Nastavení';
-
 $GLOBALS["lang"]['Config'] = 'Nastavení';
 
-$GLOBALS["lang"]['Config Default, currently '] = 'Nastavení Výchozí, v současné době';
+$GLOBALS["lang"]['Config Default, currently '] = 'Nastavení Výchozí, v současné době ';
 
 $GLOBALS["lang"]['config_file'] = 'Nastavit soubor';
 
@@ -1095,6 +1184,8 @@ $GLOBALS["lang"]['Config Manager Error Code'] = 'Chyba správce nastavení';
 $GLOBALS["lang"]['configuration'] = 'Nastavení';
 
 $GLOBALS["lang"]['Configuration'] = 'Nastavení';
+
+$GLOBALS["lang"]['Configure'] = 'Nastavit';
 
 $GLOBALS["lang"]['Congo'] = 'Kongo';
 
@@ -1208,13 +1299,9 @@ $GLOBALS["lang"]['Create Internal From External'] = 'Vytvořit vnitřní z exter
 
 $GLOBALS["lang"]['Create NMIS Devices from Open-AudIT'] = 'Vytvořit zařízení NMIS z Open- Audit';
 
-$GLOBALS["lang"]['Create Open-AudIT Devices from '] = 'Vytvořit Open- Audit Zařízení';
+$GLOBALS["lang"]['Create Open-AudIT Devices from '] = 'Vytvořit Open- Audit Zařízení ';
 
 $GLOBALS["lang"]['Create Open-AudIT Devices from NMIS'] = 'Vytvořit Open- Audit Zařízení z NMIS';
-
-$GLOBALS["lang"]['created_at'] = 'Vytvořeno v';
-
-$GLOBALS["lang"]['Created At'] = 'Vytvořeno v';
 
 $GLOBALS["lang"]['created_by'] = 'Vytvořil';
 
@@ -1225,6 +1312,10 @@ $GLOBALS["lang"]['created_date'] = 'Vytvořeno datum';
 $GLOBALS["lang"]['Created Date'] = 'Vytvořeno datum';
 
 $GLOBALS["lang"]['Creating'] = 'Vytváření';
+
+$GLOBALS["lang"]['Creating Device'] = 'Vytvoření zařízení';
+
+$GLOBALS["lang"]['Creating a Query'] = 'Vytvoření dotazu';
 
 $GLOBALS["lang"]['creator'] = 'Stvořitel';
 
@@ -1238,6 +1329,22 @@ $GLOBALS["lang"]['credentials'] = 'Úvěry';
 
 $GLOBALS["lang"]['Credentials'] = 'Úvěry';
 
+$GLOBALS["lang"]['Credentials Client ID'] = 'Kredity ID klienta';
+
+$GLOBALS["lang"]['Credentials Subscription ID'] = 'Předplatné kreditů ID';
+
+$GLOBALS["lang"]['Credentials Tenant ID'] = 'Kredity ID';
+
+$GLOBALS["lang"]['Credentials for Amazon AWS used in Cloud Discovery'] = 'Úvěry pro Amazon AWS používané v Cloud Discovery';
+
+$GLOBALS["lang"]['Credentials for Microsoft Azure used in Cloud Discovery'] = 'Kredity pro Microsoft Azure použitý v Cloud Discovery';
+
+$GLOBALS["lang"]['Critical'] = 'Kritický';
+
+$GLOBALS["lang"]['criticality'] = 'Kritičnost';
+
+$GLOBALS["lang"]['Criticality'] = 'Kritičnost';
+
 $GLOBALS["lang"]['Croatia'] = 'Chorvatsko';
 
 $GLOBALS["lang"]['Cuba'] = 'Kuba';
@@ -1248,13 +1355,17 @@ $GLOBALS["lang"]['Current'] = 'Běžný měsíc';
 
 $GLOBALS["lang"]['Current Discovery Processes'] = 'Aktuální práce na objevování';
 
-$GLOBALS["lang"]['Current date & time is '] = 'Aktuální datum & čas je';
+$GLOBALS["lang"]['Current date & time is '] = 'Aktuální datum & čas je ';
 
-$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = 'V současnosti podporované typy jsou < kód > snmp < / kód >, < kód > snmp _ v3 < / kód >, < kód > ssh < / kód >, < kód > ssh _ key < / kód > nebo < kód > okna < / kód >.';
+$GLOBALS["lang"]['Currently Installed'] = 'Aktuálně nainstalovaný';
+
+$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = 'V současné době podporované typy jsou <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> nebo <code>windows</code>.';
 
 $GLOBALS["lang"]['Custom TCP Ports'] = 'Vlastní TCP porty';
 
 $GLOBALS["lang"]['Custom UDP Ports'] = 'Vlastní UDP Přístavy';
+
+$GLOBALS["lang"]['Cve'] = 'Cve';
 
 $GLOBALS["lang"]['Cyprus'] = 'Kypr';
 
@@ -1330,6 +1441,12 @@ $GLOBALS["lang"]['Date Received'] = 'Datum přijetí';
 
 $GLOBALS["lang"]['Date Y-M-D'] = 'Datum Y- M- D';
 
+$GLOBALS["lang"]['Date and time when the CVE was last updated.'] = 'Datum a čas, kdy byla CVE naposledy aktualizována.';
+
+$GLOBALS["lang"]['Date and time when the CVE was published.'] = 'Datum a čas zveřejnění CVE.';
+
+$GLOBALS["lang"]['Date when the CVE was published.'] = 'Datum zveřejnění CVE.';
+
 $GLOBALS["lang"]['DateTime Now'] = 'DateTime Now';
 
 $GLOBALS["lang"]['DateTime Y-M-D H:M:S'] = 'DateTime Y- M- D M: S';
@@ -1350,7 +1467,7 @@ $GLOBALS["lang"]['Dbus Identifier'] = 'Identifikátor Dbus';
 
 $GLOBALS["lang"]['Debug'] = 'Vyladit';
 
-$GLOBALS["lang"]['December'] = 'Prosinec';
+$GLOBALS["lang"]['December'] = 'prosinec';
 
 $GLOBALS["lang"]['Default'] = 'Výchozí';
 
@@ -1360,7 +1477,9 @@ $GLOBALS["lang"]['Default Value'] = 'Výchozí hodnota';
 
 $GLOBALS["lang"]['Default of 389. Normally 636 used for Active Directory LDAPS.'] = 'Výchozí hodnota 389. Normálně 636 používá pro Active Directory LDAPS.';
 
-$GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = 'Výchozí hodnota < kódu > 3 < / kód > pro LDAP a aktivní adresář.';
+$GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = 'Výchozí <code>3</code> pro LDAP a Active Directory.';
+
+$GLOBALS["lang"]['Defaults'] = 'Výchozí';
 
 $GLOBALS["lang"]['delay_minutes'] = 'Zpoždění zápisu';
 
@@ -1380,19 +1499,15 @@ $GLOBALS["lang"]['Delete from Application'] = 'Smazat z aplikace';
 
 $GLOBALS["lang"]['Delete from Cluster'] = 'Smazat z Clusteru';
 
-$GLOBALS["lang"]['deleted_at'] = 'Vymazáno na';
-
-$GLOBALS["lang"]['Deleted At'] = 'Vymazáno na';
-
 $GLOBALS["lang"]['Denmark'] = 'Dánsko';
 
 $GLOBALS["lang"]['Derived by audit or manually set by user.'] = 'Odvozené auditem nebo ručně nastavené uživatelem.';
 
 $GLOBALS["lang"]['Derived by audit.'] = 'Odvozené auditem.';
 
-$GLOBALS["lang"]['Derived from <code>rack_devices.device_id</code>.'] = 'Odvozené z < kódu > rack _ devices.device _ id < / code >.';
+$GLOBALS["lang"]['Derived from <code>rack_devices.device_id</code>.'] = 'Odvozené od <code>rack_devices.device_id</code>.';
 
-$GLOBALS["lang"]['Derived from <code>rack_devices.rack_id</code>.'] = 'Odvozené z < kódu > rack _ devices.rack _ id < / code >.';
+$GLOBALS["lang"]['Derived from <code>rack_devices.rack_id</code>.'] = 'Odvozené od <code>rack_devices.rack_id</code>.';
 
 $GLOBALS["lang"]['Derived from Collector discovery.'] = 'Odvozené z objevu Sběratele.';
 
@@ -1434,9 +1549,9 @@ $GLOBALS["lang"]['Device'] = 'Zařízení';
 
 $GLOBALS["lang"]['Device Audits'] = 'Audity zařízení';
 
-$GLOBALS["lang"]['device_id'] = 'ID zařízení';
-
 $GLOBALS["lang"]['Device ID'] = 'ID zařízení';
+
+$GLOBALS["lang"]['device_id'] = 'ID zařízení';
 
 $GLOBALS["lang"]['device_id_a'] = 'ID zařízení A';
 
@@ -1474,7 +1589,7 @@ $GLOBALS["lang"]['Devices Assigned To Org'] = 'Zařízení určená pro Org';
 
 $GLOBALS["lang"]['Devices Audited'] = 'Auditované zařízení';
 
-$GLOBALS["lang"]['Devices Created in '] = 'Zařízení vytvořená v';
+$GLOBALS["lang"]['Devices Created in '] = 'Zařízení vytvořená v ';
 
 $GLOBALS["lang"]['Devices Created in Open-AudIT'] = 'Zařízení vytvořená v Open- Audit';
 
@@ -1498,11 +1613,11 @@ $GLOBALS["lang"]['Devices Not Seen 90 Days'] = 'Zařízení, která nebyla vidě
 
 $GLOBALS["lang"]['Devices Retrieved via API'] = 'Zařízení retrieved via API';
 
-$GLOBALS["lang"]['Devices Selected from '] = 'Vybraná zařízení';
+$GLOBALS["lang"]['Devices Selected from '] = 'Vybraná zařízení ';
 
 $GLOBALS["lang"]['Devices Selected from Open-AudIT'] = 'Zařízení vybraná z Open- Audit';
 
-$GLOBALS["lang"]['Devices Updated in '] = 'Zařízení aktualizovaná';
+$GLOBALS["lang"]['Devices Updated in '] = 'Zařízení aktualizovaná ';
 
 $GLOBALS["lang"]['Devices Updated in Open-AudIT'] = 'Aktualizovaná zařízení v Open- Audit';
 
@@ -1562,6 +1677,10 @@ $GLOBALS["lang"]['Discoveries'] = 'Objevy';
 
 $GLOBALS["lang"]['Discovery'] = 'Objevení';
 
+$GLOBALS["lang"]['Discovery Change Logs'] = 'Záznamy o změně objevu';
+
+$GLOBALS["lang"]['Discovery Data Retention'] = 'Retence údajů o objevení';
+
 $GLOBALS["lang"]['discovery_id'] = 'ID objevu';
 
 $GLOBALS["lang"]['Discovery ID'] = 'ID objevu';
@@ -1571,6 +1690,8 @@ $GLOBALS["lang"]['Discovery Issues'] = 'Objevení otázek';
 $GLOBALS["lang"]['discovery_log'] = 'Log objevů';
 
 $GLOBALS["lang"]['Discovery Log'] = 'Log objevů';
+
+$GLOBALS["lang"]['Discovery Match Options'] = 'Možnosti vyhledávání shody';
 
 $GLOBALS["lang"]['Discovery Name'] = 'Název objevu';
 
@@ -1591,6 +1712,10 @@ $GLOBALS["lang"]['Discovery Scan Options'] = 'Možnosti vyhledávání';
 $GLOBALS["lang"]['disk'] = 'Disk';
 
 $GLOBALS["lang"]['Disk'] = 'Disk';
+
+$GLOBALS["lang"]['display_version'] = 'Verze displeje';
+
+$GLOBALS["lang"]['Display Version'] = 'Verze displeje';
 
 $GLOBALS["lang"]['Display in Menu'] = 'Zobrazit v nabídce';
 
@@ -1632,7 +1757,7 @@ $GLOBALS["lang"]['Do not scan these TCP ports.'] = 'Neskenujte tyto TCP porty.';
 
 $GLOBALS["lang"]['Do not scan these UDP ports.'] = 'Neskenujte tyto UDP porty.';
 
-$GLOBALS["lang"]['Do not show me again'] = 'Už mi to neukazuj';
+$GLOBALS["lang"]['Do not show me again'] = 'Už mi to neukazuj.';
 
 $GLOBALS["lang"]['Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.'] = 'Chcete použít zabezpečenou přepravu (LDAPS) nebo pravidelný nešifrovaný LDAP.';
 
@@ -1642,7 +1767,7 @@ $GLOBALS["lang"]['documentation'] = 'Dokumentace';
 
 $GLOBALS["lang"]['Documentation'] = 'Dokumentace';
 
-$GLOBALS["lang"]['Does the license apply to child Orgs.'] = 'Platí licence pro dětské Orgy.';
+$GLOBALS["lang"]['Does the license apply to child Orgs.'] = 'Platí licence pro dětské Orgy?';
 
 $GLOBALS["lang"]['domain'] = 'Oblast';
 
@@ -1718,6 +1843,24 @@ $GLOBALS["lang"]['Egypt'] = 'Egypt';
 
 $GLOBALS["lang"]['Either Amazon, Google or Microsoft.'] = 'Buď Amazon, Google nebo Microsoft.';
 
+$GLOBALS["lang"]['Either none or present.
+
+<strong>None</strong> - The successful attack does not depend on the deployment and execution conditions of the vulnerable system. The attacker can expect to be able to reach the vulnerability and execute the exploit under all or most instances of the vulnerability.
+
+<strong>Present</strong> - The successful attack depends on the presence of specific deployment and execution conditions of the vulnerable system that enable the attack. These include:
+
+A race condition must be won to successfully exploit the vulnerability. The successfulness of the attack is conditioned on execution conditions that are not under full control of the attacker. The attack may need to be launched multiple times against a single target before being successful.
+
+Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).'] = 'Buď žádné nebo přítomné.
+
+<strong>Žádné</strong> - Úspěšný útok nezávisí na podmínkách nasazení a provedení zranitelného systému. Útočník může očekávat, že bude schopen dosáhnout zranitelnosti a provést vykořisťování za všech nebo většiny případů zranitelnosti.
+
+<strong>Přítomnost</strong> - Úspěšný útok závisí na přítomnosti konkrétních podmínek nasazení a provedení zranitelného systému, který útok umožňuje. Patří mezi ně:
+
+Závodní podmínka musí být získána k úspěšnému využití zranitelnosti. Úspěch útoku je podmíněn podmínkami provedení, které nejsou pod plnou kontrolou útočníka. Útok může být třeba zahájit několikrát proti jedinému cíli, než bude úspěšný.
+
+Síťový vstřik. Útočník se musí vpíchnout do logické sítě mezi cílem a zdrojem požadovaným obětí (např. zranitelnosti vyžadující útočníka na cestě).';
+
 $GLOBALS["lang"]['El Salvador'] = 'Salvador';
 
 $GLOBALS["lang"]['email'] = 'E-mail';
@@ -1727,6 +1870,8 @@ $GLOBALS["lang"]['Email'] = 'E-mail';
 $GLOBALS["lang"]['email_address'] = 'E-mailová adresa';
 
 $GLOBALS["lang"]['Email Address'] = 'E-mailová adresa';
+
+$GLOBALS["lang"]['Email Configuration'] = 'Nastavení e-mailu';
 
 $GLOBALS["lang"]['Email to send test to'] = 'Email pro odeslání testu na';
 
@@ -1800,6 +1945,8 @@ $GLOBALS["lang"]['Error'] = 'Chyba';
 
 $GLOBALS["lang"]['Error Code'] = 'Kód chyby';
 
+$GLOBALS["lang"]['Established'] = 'Zřízení';
+
 $GLOBALS["lang"]['Estonia'] = 'Estonsko';
 
 $GLOBALS["lang"]['Ethernet MAC'] = 'Ethernet MAC';
@@ -1840,6 +1987,8 @@ $GLOBALS["lang"]['Exclude Udp Ports'] = 'Exclude Udp Ports';
 
 $GLOBALS["lang"]['Exclude these IP addresses from being Nmap scanned.'] = 'Vyjměte tyto IP adresy z skenování Nmap.';
 
+$GLOBALS["lang"]['Excluded'] = 'Vyloučeno';
+
 $GLOBALS["lang"]['exclusion_reasons'] = 'Důvody vyloučení';
 
 $GLOBALS["lang"]['Exclusion Reasons'] = 'Důvody vyloučení';
@@ -1872,17 +2021,27 @@ $GLOBALS["lang"]['Existing Room'] = 'Existující místnost';
 
 $GLOBALS["lang"]['Existing Row'] = 'Stávající řádek';
 
+$GLOBALS["lang"]['expire_date'] = 'Datum ukončení';
+
+$GLOBALS["lang"]['Expire Date'] = 'Datum ukončení';
+
 $GLOBALS["lang"]['expire_minutes'] = 'Konec zápisu';
 
 $GLOBALS["lang"]['Expire Minutes'] = 'Konec zápisu';
+
+$GLOBALS["lang"]['expires'] = 'Platí';
+
+$GLOBALS["lang"]['Expires'] = 'Platí';
 
 $GLOBALS["lang"]['expiry_date'] = 'Datum skončení platnosti';
 
 $GLOBALS["lang"]['Expiry Date'] = 'Datum skončení platnosti';
 
-$GLOBALS["lang"]['Export CSV'] = 'Exportovat CSV';
+$GLOBALS["lang"]['exploit_maturity'] = 'Exploit maturity';
 
-$GLOBALS["lang"]['Export JSON'] = 'Exportovat JSON';
+$GLOBALS["lang"]['Exploit Maturity'] = 'Exploit maturity';
+
+$GLOBALS["lang"]['Export'] = 'Vývoz';
 
 $GLOBALS["lang"]['Export by Device'] = 'Export by Device';
 
@@ -1914,13 +2073,11 @@ $GLOBALS["lang"]['Extra Columns'] = 'Extra sloupce';
 
 $GLOBALS["lang"]['Extra and more verbose logging is generated for troubleshooting.'] = 'Extra a další logování verbózy je generován pro řešení problémů.';
 
+$GLOBALS["lang"]['FAQ'] = 'FAQ';
+
 $GLOBALS["lang"]['FQDN'] = 'FQDN';
 
 $GLOBALS["lang"]['FW Revision'] = 'Revize FW';
-
-$GLOBALS["lang"]['factories'] = 'Továrny';
-
-$GLOBALS["lang"]['Factories'] = 'Továrny';
 
 $GLOBALS["lang"]['Fail'] = 'Selhání';
 
@@ -1956,8 +2113,6 @@ $GLOBALS["lang"]['fields'] = 'Pole';
 
 $GLOBALS["lang"]['Fiji the Fiji Islands'] = 'Fidži Fidži';
 
-$GLOBALS["lang"]['file'] = 'Soubor';
-
 $GLOBALS["lang"]['File'] = 'Soubor';
 
 $GLOBALS["lang"]['File Import'] = 'Importovat soubor';
@@ -1984,6 +2139,10 @@ $GLOBALS["lang"]['files_id'] = 'ID souborů';
 
 $GLOBALS["lang"]['Files ID'] = 'ID souborů';
 
+$GLOBALS["lang"]['filter'] = 'Filtr';
+
+$GLOBALS["lang"]['Filter'] = 'Filtr';
+
 $GLOBALS["lang"]['filtered'] = 'Filtrované';
 
 $GLOBALS["lang"]['Filtered'] = 'Filtrované';
@@ -2004,6 +2163,8 @@ $GLOBALS["lang"]['firmware_revision'] = 'Revize firmwaru';
 
 $GLOBALS["lang"]['Firmware Revision'] = 'Revize firmwaru';
 
+$GLOBALS["lang"]['First Name'] = 'Jméno';
+
 $GLOBALS["lang"]['first_run'] = 'První běh';
 
 $GLOBALS["lang"]['First Run'] = 'První běh';
@@ -2020,7 +2181,7 @@ $GLOBALS["lang"]['Fixed'] = 'Pevné';
 
 $GLOBALS["lang"]['Floor'] = 'Podlaha';
 
-$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = 'Následujte některý z níže uvedených odkazů a zjistěte, jak používat Open- Audit, abyste zjistili < b > Co je na Vaší síti? < / b >';
+$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = 'Postupujte podle některého z níže uvedených odkazů a zjistit, jak používat Open- Audit zjistit <b>Co je na vaší síti?</b>';
 
 $GLOBALS["lang"]['For a seed discovery, should I only discover IPs in the private IP address space.'] = 'Pro objev semen, bych měl objevit pouze IP v soukromém IP adresním prostoru.';
 
@@ -2028,7 +2189,7 @@ $GLOBALS["lang"]['For a seed discovery, should I only discover IPs on the chosen
 
 $GLOBALS["lang"]['For a seed discovery, should I ping the subnet before running the discovery.'] = 'Pro objev semen, bych měl ping podsíť před spuštěním objevu.';
 
-$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.'] = 'Pro pokročilý vstup syrového SQL dotazu. Podle dotazů musíte do svého SQL zahrnout < kód > Where @ filter A < kód >.';
+$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.'] = 'Pro pokročilý vstup syrového SQL dotazu. Podle dotazů, musíte zahrnovat <code>WHERE @filter AND<code> in your SQL.</code></code>';
 
 $GLOBALS["lang"]['For licenses that are not perpetual, when does the license expire.'] = 'Pro licence, které nejsou trvalé, kdy vyprší licence.';
 
@@ -2049,10 +2210,6 @@ $GLOBALS["lang"]['France, French Republic'] = 'Francie, Francie';
 $GLOBALS["lang"]['free'] = 'Volný';
 
 $GLOBALS["lang"]['Free'] = 'Volný';
-
-$GLOBALS["lang"]['free_percent'] = 'Volné procento';
-
-$GLOBALS["lang"]['Free Percent'] = 'Volné procento';
 
 $GLOBALS["lang"]['French'] = 'Francouzština';
 
@@ -2082,7 +2239,7 @@ $GLOBALS["lang"]['GROUP BY'] = 'SKUPINA BY';
 
 $GLOBALS["lang"]['Gabon'] = 'Gabon';
 
-$GLOBALS["lang"]['Gambia the'] = 'Gambie';
+$GLOBALS["lang"]['Gambia the'] = 'Gambie.';
 
 $GLOBALS["lang"]['gateway'] = 'Brána';
 
@@ -2116,13 +2273,13 @@ $GLOBALS["lang"]['Ghana'] = 'Ghana';
 
 $GLOBALS["lang"]['Gibraltar'] = 'Gibraltar';
 
-$GLOBALS["lang"]['Go'] = 'Běž';
+$GLOBALS["lang"]['Global Discovery Options'] = 'Možnosti globálního odhalení';
+
+$GLOBALS["lang"]['Go'] = 'Běž.';
 
 $GLOBALS["lang"]['Google Compute Fields'] = 'Google Compute Fields';
 
-$GLOBALS["lang"]['graph'] = 'Graf';
-
-$GLOBALS["lang"]['Graph'] = 'Graf';
+$GLOBALS["lang"]['Google Maps API Key'] = 'Google Maps API Klíč';
 
 $GLOBALS["lang"]['Greater Than'] = 'Větší než';
 
@@ -2186,9 +2343,11 @@ $GLOBALS["lang"]['hardware_revision'] = 'Revize hardwaru';
 
 $GLOBALS["lang"]['Hardware Revision'] = 'Revize hardwaru';
 
-$GLOBALS["lang"]['hash'] = 'Haš';
+$GLOBALS["lang"]['Has this policy been applied in this organization.'] = 'Byla tato politika uplatňována v této organizaci.';
 
-$GLOBALS["lang"]['Hash'] = 'Haš';
+$GLOBALS["lang"]['hash'] = 'Haš.';
+
+$GLOBALS["lang"]['Hash'] = 'Haš.';
 
 $GLOBALS["lang"]['Head'] = 'Hlava';
 
@@ -2202,15 +2361,19 @@ $GLOBALS["lang"]['Height in RU'] = 'Výška v ŽP';
 
 $GLOBALS["lang"]['Help'] = 'Nápověda';
 
+$GLOBALS["lang"]['Help and Frequently Asked Questions'] = 'Pomoc a často kladené otázky';
+
+$GLOBALS["lang"]['high'] = 'Vysoká';
+
 $GLOBALS["lang"]['High'] = 'Vysoká';
 
 $GLOBALS["lang"]['High Availability'] = 'Vysoká dostupnost';
 
 $GLOBALS["lang"]['Holy See (Vatican City State)'] = 'Svatý stolec (Vatikánský městský stát)';
 
-$GLOBALS["lang"]['home'] = 'Domů';
-
 $GLOBALS["lang"]['Home'] = 'Domů';
+
+$GLOBALS["lang"]['home'] = 'Domů';
 
 $GLOBALS["lang"]['Home Area Network'] = 'Síť domovské oblasti';
 
@@ -2230,6 +2393,8 @@ $GLOBALS["lang"]['hour'] = 'Hodina';
 
 $GLOBALS["lang"]['Hour'] = 'Hodina';
 
+$GLOBALS["lang"]['How and Why is Open-AudIT More Secure'] = 'Jak a proč je Open- Audit bezpečnější';
+
 $GLOBALS["lang"]['How long did the command take to execute.'] = 'Jak dlouho to velení trvalo.';
 
 $GLOBALS["lang"]['How long should Nmap wait for a response, per device.'] = 'Jak dlouho by měl Nmap čekat na odpověď, na zařízení.';
@@ -2248,13 +2413,23 @@ $GLOBALS["lang"]['How often should the collector ask the server for a task.'] = 
 
 $GLOBALS["lang"]['How should we select devices to be integrated (using an Attribute, Query or a Group).'] = 'Jak bychom měli vybrat zařízení, která mají být integrována (pomocí Atribute, Query nebo Group).';
 
+$GLOBALS["lang"]['How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).'] = 'Jak se využívá zranitelnost (např. síť, přilehlé, místní, fyzické).';
+
 $GLOBALS["lang"]['How to compare'] = 'Jak porovnat';
 
+$GLOBALS["lang"]['Human-readable explanation of the vulnerability.'] = 'Lidočitelné vysvětlení zranitelnosti.';
+
 $GLOBALS["lang"]['Hungary'] = 'Maďarsko';
+
+$GLOBALS["lang"]['hw_cpe'] = 'Hw Cpe';
+
+$GLOBALS["lang"]['Hw Cpe'] = 'Hw Cpe';
 
 $GLOBALS["lang"]['hyperthreading'] = 'Hypertenze';
 
 $GLOBALS["lang"]['Hyperthreading'] = 'Hypertenze';
+
+$GLOBALS["lang"]['I have read the EULA.'] = 'Četl jsem EULA.';
 
 $GLOBALS["lang"]['id'] = 'ID';
 
@@ -2264,9 +2439,9 @@ $GLOBALS["lang"]['IF'] = 'IF';
 
 $GLOBALS["lang"]['IOS Version'] = 'Verze IOS';
 
-$GLOBALS["lang"]['ip'] = 'IP';
-
 $GLOBALS["lang"]['IP'] = 'IP';
+
+$GLOBALS["lang"]['ip'] = 'IP';
 
 $GLOBALS["lang"]['IP Address'] = 'IP adresa';
 
@@ -2275,6 +2450,8 @@ $GLOBALS["lang"]['IP Addresses'] = 'IP adresy';
 $GLOBALS["lang"]['IP Last Seen'] = 'Name';
 
 $GLOBALS["lang"]['IP Set By'] = 'Nastavení IP podle';
+
+$GLOBALS["lang"]['ISO 27001 only.'] = 'Pouze ISO27001.';
 
 $GLOBALS["lang"]['Iceland'] = 'Island';
 
@@ -2318,7 +2495,7 @@ $GLOBALS["lang"]['If set, holds a JSON array of specific device columns this use
 
 $GLOBALS["lang"]['If the agent OS family (case insensitive) contains this string, perform the actions.'] = 'Pokud agent OS rodina (případ necitlivý) obsahuje tento řetězec, provést akce.';
 
-$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>'] = 'Pokud jsou splněny tyto podmínky: < br > < ul > < li > a Role má přidělenou ad _ group < / li > < li > Org má přiděleno ad _ group < / li > < li > LDAP Server používá _ role nastavené na y < / li > < li > uživatel existuje v LDAP (ať už je to Active Directory nebo OpenLDAP) a je v přiřazených ad _ groups < / li > < / ul > Tento uživatel se může přihlásit na Open- Audit bez účtu v Open- Audit je třeba vytvořit. Open- Audit bude dotaz LDAP v daném případě a pokud je uživatel v požadovaných skupinách, ale ne v Open- Audit, jejich uživatelské atributy (jméno, celé jméno, e-mail, role, orgs, atd.) v rámci Open- Auditu budou automaticky zalidněny a budou přihlášeny. < br > < br >';
+$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>'] = 'Pokud jsou splněny tyto podmínky:<br/><ul><li>Role má přiřazenou ad _ group</li><li>Org má přidělenou ad _ skupinu</li><li>LDAP Server má nastavené _ role na y</li><li>uživatel existuje v LDAP (ať už je to Active Directory nebo OpenLDAP) a je v přiřazených ad _ groups</li></ul>Tento uživatel se může přihlásit na Open- Audit bez účtu v Open- Audit je třeba vytvořit. Open-Audit bude dotaz LDAP v daném a pokud je uživatel v požadovaných skupinách, ale ne v Open-Audit, jejich uživatelské atributy (jméno, celé jméno, e-mail, role, orgs, atd.) v rámci Open-Audit budou automaticky zalidněny a budou přihlášeny.<br/> <br/>';
 
 $GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.'] = 'Pokud uživatel přihlášení na Open- Audit nemá přístup k vyhledávání LDAP, můžete použít jiný účet, který má tento přístup.';
 
@@ -2342,17 +2519,25 @@ $GLOBALS["lang"]['Image'] = 'Obrázek';
 
 $GLOBALS["lang"]['Images'] = 'Obrázky';
 
+$GLOBALS["lang"]['impact_availability'] = 'Dostupnost dopadu';
+
+$GLOBALS["lang"]['Impact Availability'] = 'Dostupnost dopadu';
+
+$GLOBALS["lang"]['impact_confidentiality'] = 'Důvěrnost dopadu';
+
+$GLOBALS["lang"]['Impact Confidentiality'] = 'Důvěrnost dopadu';
+
+$GLOBALS["lang"]['impact_integrity'] = 'Integrita dopadu';
+
+$GLOBALS["lang"]['Impact Integrity'] = 'Integrita dopadu';
+
 $GLOBALS["lang"]['implementation_notes'] = 'Prováděcí poznámky';
 
 $GLOBALS["lang"]['Implementation Notes'] = 'Prováděcí poznámky';
 
 $GLOBALS["lang"]['Import'] = 'Importovat';
 
-$GLOBALS["lang"]['Import CSV'] = 'Importovat CSV';
-
 $GLOBALS["lang"]['Import Example Data'] = 'Importovat ukázková data';
-
-$GLOBALS["lang"]['Import JSON'] = 'Importovat JSON';
 
 $GLOBALS["lang"]['improvement_opportunities'] = 'Zlepšení příležitostí';
 
@@ -2363,6 +2548,8 @@ $GLOBALS["lang"]['In'] = 'V';
 $GLOBALS["lang"]['Inactive'] = 'Neaktivní';
 
 $GLOBALS["lang"]['Include'] = 'Zahrnout';
+
+$GLOBALS["lang"]['Incomplete'] = 'Nekompletní';
 
 $GLOBALS["lang"]['Index'] = 'Index';
 
@@ -2420,7 +2607,11 @@ $GLOBALS["lang"]['installed_on'] = 'Instalováno';
 
 $GLOBALS["lang"]['Installed On'] = 'Instalováno';
 
-$GLOBALS["lang"]['Installing'] = 'Instalace';
+$GLOBALS["lang"]['Installing on Linux'] = 'Instalace na Linux';
+
+$GLOBALS["lang"]['Installing on MacOS'] = 'Instalace na MacOS';
+
+$GLOBALS["lang"]['Installing on Windows'] = 'Instalace na Windows';
 
 $GLOBALS["lang"]['instance'] = 'Soud';
 
@@ -2562,7 +2753,9 @@ $GLOBALS["lang"]['Is Fru'] = 'Is Fru';
 
 $GLOBALS["lang"]['Is the NMIS server local (on this Open-AudIT server) or remote?'] = 'Je server NMIS lokální (na tomto Open- Audit serveru) nebo vzdálený?';
 
-$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = 'Je ten účet aktivní? Pokud je nastaveno na < kód > n < / kód >, uživatel se nemůže přihlásit.';
+$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = 'Je ten účet aktivní? Pokud je nastaveno na <code>n</code>Uživatel se nemůže přihlásit.';
+
+$GLOBALS["lang"]['Is this query restricted to licensed customers.'] = 'Je tento dotaz omezen na licencované zákazníky.';
 
 $GLOBALS["lang"]['Is this task enabled (y/n).'] = 'Je tento úkol povolen (y / n).';
 
@@ -2576,9 +2769,15 @@ $GLOBALS["lang"]['issuer'] = 'Emitent';
 
 $GLOBALS["lang"]['Issuer'] = 'Emitent';
 
+$GLOBALS["lang"]['issuer_name'] = 'Název emitenta';
+
+$GLOBALS["lang"]['Issuer Name'] = 'Název emitenta';
+
 $GLOBALS["lang"]['Issues'] = 'Otázky';
 
 $GLOBALS["lang"]['Italy'] = 'Itálie';
+
+$GLOBALS["lang"]['Items not in Baseline'] = 'Ustanovení čl.';
 
 $GLOBALS["lang"]['JSON'] = 'JSON';
 
@@ -2594,7 +2793,7 @@ $GLOBALS["lang"]['Jersey'] = 'Jersey';
 
 $GLOBALS["lang"]['Jordan'] = 'Jordánsko';
 
-$GLOBALS["lang"]['July'] = 'Červenec';
+$GLOBALS["lang"]['July'] = 'červenec';
 
 $GLOBALS["lang"]['June'] = 'Červen';
 
@@ -2630,7 +2829,7 @@ $GLOBALS["lang"]['language'] = 'Jazyk';
 
 $GLOBALS["lang"]['Language'] = 'Jazyk';
 
-$GLOBALS["lang"]['Lao'] = 'Lao';
+$GLOBALS["lang"]['Lao'] = 'Lao.';
 
 $GLOBALS["lang"]['last_changed'] = 'Poslední změna';
 
@@ -2643,6 +2842,8 @@ $GLOBALS["lang"]['Last Finished'] = 'Naposledy dokončeno';
 $GLOBALS["lang"]['last_logon'] = 'Poslední logon';
 
 $GLOBALS["lang"]['Last Logon'] = 'Poslední logon';
+
+$GLOBALS["lang"]['Last Name'] = 'Jméno';
 
 $GLOBALS["lang"]['last_os_update'] = 'Poslední aktualizace Os';
 
@@ -2668,6 +2869,10 @@ $GLOBALS["lang"]['last_user'] = 'Poslední uživatel';
 
 $GLOBALS["lang"]['Last User'] = 'Poslední uživatel';
 
+$GLOBALS["lang"]['lastModified'] = 'LastModifikované';
+
+$GLOBALS["lang"]['LastModified'] = 'LastModifikované';
+
 $GLOBALS["lang"]['latitude'] = 'Zeměpisná šířka';
 
 $GLOBALS["lang"]['Latitude'] = 'Zeměpisná šířka';
@@ -2692,6 +2897,10 @@ $GLOBALS["lang"]['ldap_dn_password'] = 'Name';
 
 $GLOBALS["lang"]['Ldap Dn Password'] = 'Name';
 
+$GLOBALS["lang"]['Learn About'] = 'Přečtěte si o';
+
+$GLOBALS["lang"]['Learn More'] = 'Přečtěte si více';
+
 $GLOBALS["lang"]['lease_expiry_date'] = 'Datum vypršení leasingu';
 
 $GLOBALS["lang"]['Lease Expiry Date'] = 'Datum vypršení leasingu';
@@ -2711,6 +2920,8 @@ $GLOBALS["lang"]['Less Than or Equals'] = 'Méně než nebo se rovná';
 $GLOBALS["lang"]['level'] = 'Úroveň';
 
 $GLOBALS["lang"]['Level'] = 'Úroveň';
+
+$GLOBALS["lang"]['Level of privileges needed to exploit (None, Low, High).'] = 'Úroveň privilegií potřebných k využití (žádná, nízká, vysoká).';
 
 $GLOBALS["lang"]['Liberia'] = 'Libérie';
 
@@ -2762,21 +2973,19 @@ $GLOBALS["lang"]['Link'] = 'Odkaz';
 
 $GLOBALS["lang"]['Link (Advanced)'] = 'Odkaz (Advanced)';
 
-$GLOBALS["lang"]['linked_row'] = 'Související řádek';
-
-$GLOBALS["lang"]['Linked Row'] = 'Související řádek';
-
-$GLOBALS["lang"]['linked_table'] = 'Propojená tabulka';
-
-$GLOBALS["lang"]['Linked Table'] = 'Propojená tabulka';
+$GLOBALS["lang"]['Linked Files'] = 'Spojené soubory';
 
 $GLOBALS["lang"]['links'] = 'Odkazy';
 
 $GLOBALS["lang"]['Links'] = 'Odkazy';
 
-$GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.'] = 'Spojuje tento objev s souvisejícím cloudem (je-li vyžadováno). Odkazy na < kód > clouds.id < / kód >.';
+$GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.'] = 'Spojuje tento objev s souvisejícím cloudem (je-li vyžadováno). Odkazy na <code>clouds.id</code>.';
 
-$GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = 'Odkazy na < kód > objev _ scan _ options.id < / kód >.';
+$GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = 'Odkazy na <code>discovery_scan_options.id</code>.';
+
+$GLOBALS["lang"]['Links to <code>standards.id</code>'] = 'Odkazy na <code>standards.id</code>';
+
+$GLOBALS["lang"]['Links to <standards_policies.id</code>'] = 'Odkazy na <standards_policies.id< code=""></standards_policies.id<>';
 
 $GLOBALS["lang"]['Linux'] = 'Linux';
 
@@ -2799,6 +3008,8 @@ $GLOBALS["lang"]['local_port'] = 'Místní přístav';
 $GLOBALS["lang"]['Local Port'] = 'Místní přístav';
 
 $GLOBALS["lang"]['Localhost'] = 'Localhost';
+
+$GLOBALS["lang"]['Localisation'] = 'Lokalizace';
 
 $GLOBALS["lang"]['Location'] = 'Umístění';
 
@@ -2876,17 +3087,21 @@ $GLOBALS["lang"]['log_status'] = 'Stav záznamu';
 
 $GLOBALS["lang"]['Log Status'] = 'Stav záznamu';
 
-$GLOBALS["lang"]['Logical Cores '] = 'Logická jádra';
+$GLOBALS["lang"]['Logical Cores '] = 'Logická jádra ';
 
 $GLOBALS["lang"]['logical_count'] = 'Logický počet';
 
 $GLOBALS["lang"]['Logical Count'] = 'Logický počet';
+
+$GLOBALS["lang"]['Logout'] = 'Odhlášení';
 
 $GLOBALS["lang"]['Logs'] = 'Záznamy';
 
 $GLOBALS["lang"]['longitude'] = 'Délka';
 
 $GLOBALS["lang"]['Longitude'] = 'Délka';
+
+$GLOBALS["lang"]['low'] = 'Nízká';
 
 $GLOBALS["lang"]['Low'] = 'Nízká';
 
@@ -2916,6 +3131,10 @@ $GLOBALS["lang"]['maintenance_expires'] = 'Vyšetření údržby';
 
 $GLOBALS["lang"]['Maintenance Expires'] = 'Vyšetření údržby';
 
+$GLOBALS["lang"]['Make My Default Dashboard'] = 'Make My Výchozí Přístrojová deska';
+
+$GLOBALS["lang"]['Make this install a Collector'] = 'Vytvořte tuto instalaci Sběratel';
+
 $GLOBALS["lang"]['Malawi'] = 'Malawi';
 
 $GLOBALS["lang"]['Malaysia'] = 'Malajsie';
@@ -2926,7 +3145,17 @@ $GLOBALS["lang"]['Mali'] = 'Mali';
 
 $GLOBALS["lang"]['Malta'] = 'Malta';
 
+$GLOBALS["lang"]['Manage'] = 'Správa';
+
+$GLOBALS["lang"]['Manage Licenses'] = 'Správa licencí';
+
 $GLOBALS["lang"]['Manage in NMIS'] = 'Správa v NMIS';
+
+$GLOBALS["lang"]['Managed'] = 'Správa';
+
+$GLOBALS["lang"]['managed_by'] = 'Správa';
+
+$GLOBALS["lang"]['Managed By'] = 'Správa';
 
 $GLOBALS["lang"]['Manual Input'] = 'Ruční vstup';
 
@@ -3000,6 +3229,10 @@ $GLOBALS["lang"]['May'] = 'May';
 
 $GLOBALS["lang"]['Mayotte'] = 'Mayotte';
 
+$GLOBALS["lang"]['Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.'] = 'Měří pravděpodobnost útoku na zranitelnost a vychází ze současného stavu technik využití, využije dostupnost kódů nebo aktivního využívání "v divočině".';
+
+$GLOBALS["lang"]['medium'] = 'Střední';
+
 $GLOBALS["lang"]['Medium'] = 'Střední';
 
 $GLOBALS["lang"]['members'] = 'Členové';
@@ -3050,10 +3283,6 @@ $GLOBALS["lang"]['microtime'] = 'Mikročas';
 
 $GLOBALS["lang"]['Microtime'] = 'Mikročas';
 
-$GLOBALS["lang"]['migrations'] = 'Migrace';
-
-$GLOBALS["lang"]['Migrations'] = 'Migrace';
-
 $GLOBALS["lang"]['minute'] = 'Minuta';
 
 $GLOBALS["lang"]['Minute'] = 'Minuta';
@@ -3075,6 +3304,8 @@ $GLOBALS["lang"]['Module'] = 'Modul';
 $GLOBALS["lang"]['module_index'] = 'Index modulu';
 
 $GLOBALS["lang"]['Module Index'] = 'Index modulu';
+
+$GLOBALS["lang"]['Modules'] = 'Moduly';
 
 $GLOBALS["lang"]['Moldova'] = 'Moldavsko';
 
@@ -3142,19 +3373,15 @@ $GLOBALS["lang"]['NMIS Poller'] = 'NIS Poller';
 
 $GLOBALS["lang"]['NMIS Role'] = 'NIS Úloha';
 
-$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.'] = 'POZNÁMKA - Níže můžete zabránit zobrazení jednoduchých textových údajů nastavením konfigurační položky pro < code > decrypt _ entifications < / code > na < code > n < / code >.';
+$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.'] = 'POZNÁMKA - Můžete zabránit tomu, aby níže byly zobrazeny jednoduché textové údaje nastavením konfigurační položky pro <code>decrypt_credentials</code> do <code>n</code>.';
 
 $GLOBALS["lang"]['name'] = 'Název';
 
 $GLOBALS["lang"]['Name'] = 'Název';
 
-$GLOBALS["lang"]['namespace'] = 'Name';
-
-$GLOBALS["lang"]['Namespace'] = 'Name';
-
 $GLOBALS["lang"]['Namibia'] = 'Namibie';
 
-$GLOBALS["lang"]['Nauru'] = 'Nauru';
+$GLOBALS["lang"]['Nauru'] = 'Nauru.';
 
 $GLOBALS["lang"]['Nepal'] = 'Nepál';
 
@@ -3208,6 +3435,8 @@ $GLOBALS["lang"]['New Row Name'] = 'Název nového řádku';
 
 $GLOBALS["lang"]['New Zealand'] = 'Nový Zéland';
 
+$GLOBALS["lang"]['News'] = 'Zprávy';
+
 $GLOBALS["lang"]['next_hop'] = 'Další hop';
 
 $GLOBALS["lang"]['Next Hop'] = 'Další hop';
@@ -3227,6 +3456,8 @@ $GLOBALS["lang"]['Niue'] = 'Niue';
 $GLOBALS["lang"]['nmap'] = 'Nmap';
 
 $GLOBALS["lang"]['Nmap'] = 'Nmap';
+
+$GLOBALS["lang"]['Nmap Port Scanning Responses'] = 'Nmap Port Scanning Responses';
 
 $GLOBALS["lang"]['nmap_tcp_ports'] = 'Nmap Tcp Ports';
 
@@ -3272,7 +3503,7 @@ $GLOBALS["lang"]['nmis_role'] = 'Nmis Role';
 
 $GLOBALS["lang"]['Nmis Role'] = 'Nmis Role';
 
-$GLOBALS["lang"]['No'] = 'Ne';
+$GLOBALS["lang"]['No'] = 'Ne.';
 
 $GLOBALS["lang"]['No Devices Returned'] = 'Žádná vrácená zařízení';
 
@@ -3322,7 +3553,15 @@ $GLOBALS["lang"]['notes'] = 'Poznámky';
 
 $GLOBALS["lang"]['Notice'] = 'Oznámení';
 
-$GLOBALS["lang"]['November'] = 'Listopad';
+$GLOBALS["lang"]['notin'] = 'Notin';
+
+$GLOBALS["lang"]['Notin'] = 'Notin';
+
+$GLOBALS["lang"]['November'] = 'listopad';
+
+$GLOBALS["lang"]['nvd_json'] = 'Nvd Json';
+
+$GLOBALS["lang"]['Nvd Json'] = 'Nvd Json';
 
 $GLOBALS["lang"]['ORDER BY'] = 'USNESENÍ';
 
@@ -3352,7 +3591,7 @@ $GLOBALS["lang"]['Omk Uuid'] = 'Omk Uuid';
 
 $GLOBALS["lang"]['On'] = 'Zapnout';
 
-$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.'] = 'Jeden z < kódu > 3x2 < / kód >, < kód > 4x2 < / kód >, < kód > 4x3 < / kód > nebo < kód > 4x4 < / kód >.';
+$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.'] = 'Jeden z <code>3x2</code>, <code>4x2</code>, <code>4x3</code> nebo <code>4x4</code>.';
 
 $GLOBALS["lang"]['One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.'] = 'Jeden z Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Pasivní Optical Local Area Network, Personal Area Network, Storage-Area Network, System- Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.';
 
@@ -3360,7 +3599,7 @@ $GLOBALS["lang"]['One of Development, Disaster Recovery, Evaluation, Pre-Product
 
 $GLOBALS["lang"]['One of allocated, delegated, planning, reserved, unallocated, unknown, unmanaged. Defaults to allocated.'] = 'Jeden z přidělených, delegovaných, plánovacích, vyhrazených, nepřidělených, neznámých, neřízených. Chyby přidělené.';
 
-$GLOBALS["lang"]['One of either <code>active directory</code> or <code>openldap</code>.'] = 'Jeden z < kódu > aktivní adresář < / kód > nebo < kód > openldap < / kód >.';
+$GLOBALS["lang"]['One of either <code>active directory</code> or <code>openldap</code>.'] = 'Jeden z obou <code>active directory</code> nebo <code>openldap</code>.';
 
 $GLOBALS["lang"]['One of: antivirus, backup, firewall, approved, banned, ignored or other.'] = 'Jeden z: antivirus, záložní, firewall, schválen, zakázán, ignorován nebo jiný.';
 
@@ -3374,6 +3613,8 @@ $GLOBALS["lang"]['Open-AudIT Device Selection'] = 'Výběr zařízení Open- Aud
 
 $GLOBALS["lang"]['Open-AudIT Enterprise'] = 'Open- Audit Enterprise';
 
+$GLOBALS["lang"]['Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.'] = 'Audit Enterprise. Flexibilní řešení pro vyhledávání a audit velkých sítí. Všechny funkce Professional plus: Základní linie, Auditing souborů, Cloud Discovery, Rack Management, Konfigurovatelné Role založené řízení přístupu včetně Active Directory a LDAP.';
+
 $GLOBALS["lang"]['Open-AudIT Field Name'] = 'Název pole Open- Audit';
 
 $GLOBALS["lang"]['Open-AudIT Licenses'] = 'Open- Audit Licenses';
@@ -3381,6 +3622,10 @@ $GLOBALS["lang"]['Open-AudIT Licenses'] = 'Open- Audit Licenses';
 $GLOBALS["lang"]['Open-AudIT Options'] = 'Open- Audit Možnosti';
 
 $GLOBALS["lang"]['Open-AudIT Professional'] = 'Open- Audit Professional';
+
+$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = 'Open- Audit Professional. Svět\\';
+
+$GLOBALS["lang"]['Open-AudIT and Nmap'] = 'Open- Audit a Nmap';
 
 $GLOBALS["lang"]['OpenScap is Installed'] = 'OpenScap je nainstalován';
 
@@ -3406,6 +3651,8 @@ $GLOBALS["lang"]['optical'] = 'Optické';
 
 $GLOBALS["lang"]['Optical'] = 'Optické';
 
+$GLOBALS["lang"]['Optimized'] = 'Optimalizováno';
+
 $GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = 'Volitelná verze, kterou ověřil Open- Audit. Použijte procento znaménka% jako divokou kartu.';
 
 $GLOBALS["lang"]['options'] = 'Možnosti';
@@ -3428,9 +3675,13 @@ $GLOBALS["lang"]['organisation'] = 'Organizace';
 
 $GLOBALS["lang"]['Organisation Descendants'] = 'Organizace';
 
+$GLOBALS["lang"]['Organisations'] = 'Organizace';
+
 $GLOBALS["lang"]['orgs'] = 'Orgy';
 
 $GLOBALS["lang"]['Orgs'] = 'Orgy';
+
+$GLOBALS["lang"]['Orgs Name'] = 'Název orgánů';
 
 $GLOBALS["lang"]['orientation'] = 'Orientace';
 
@@ -3451,6 +3702,10 @@ $GLOBALS["lang"]['Os Bit'] = 'Os Bit';
 $GLOBALS["lang"]['os_cpe'] = 'Os Cpe';
 
 $GLOBALS["lang"]['Os Cpe'] = 'Os Cpe';
+
+$GLOBALS["lang"]['os_display_version'] = 'Verze displeje Os';
+
+$GLOBALS["lang"]['Os Display Version'] = 'Verze displeje Os';
 
 $GLOBALS["lang"]['os_family'] = 'Rodina Os';
 
@@ -3512,6 +3767,8 @@ $GLOBALS["lang"]['outputs'] = 'Výstupy';
 
 $GLOBALS["lang"]['Outputs'] = 'Výstupy';
 
+$GLOBALS["lang"]['Overall severity score (0–10).'] = 'Celkové skóre závažnosti (0- 10).';
+
 $GLOBALS["lang"]['overwrite'] = 'Přepsat';
 
 $GLOBALS["lang"]['Overwrite'] = 'Přepsat';
@@ -3523,8 +3780,6 @@ $GLOBALS["lang"]['Owner'] = 'Majitel';
 $GLOBALS["lang"]['PHP'] = 'PHP';
 
 $GLOBALS["lang"]['POD'] = 'POD';
-
-$GLOBALS["lang"]['package'] = 'Balení';
 
 $GLOBALS["lang"]['Package'] = 'Balení';
 
@@ -3584,9 +3839,9 @@ $GLOBALS["lang"]['Passed'] = 'Prošlo';
 
 $GLOBALS["lang"]['Passive Optical Local Area Network'] = 'Pasivní optická lokální síť';
 
-$GLOBALS["lang"]['password'] = 'Heslo';
-
 $GLOBALS["lang"]['Password'] = 'Heslo';
+
+$GLOBALS["lang"]['password'] = 'Heslo';
 
 $GLOBALS["lang"]['password_changeable'] = 'Heslo Měnitelné';
 
@@ -3621,6 +3876,8 @@ $GLOBALS["lang"]['path'] = 'Cesta';
 $GLOBALS["lang"]['Path'] = 'Cesta';
 
 $GLOBALS["lang"]['Performance'] = 'Výkonnost';
+
+$GLOBALS["lang"]['Performed'] = 'Vyrobeno';
 
 $GLOBALS["lang"]['permission'] = 'Povolení';
 
@@ -3768,6 +4025,10 @@ $GLOBALS["lang"]['power_sockets'] = 'Power Sockets';
 
 $GLOBALS["lang"]['Power Sockets'] = 'Power Sockets';
 
+$GLOBALS["lang"]['Predictable'] = 'Předvídatelné';
+
+$GLOBALS["lang"]['Preferences'] = 'Předvolby';
+
 $GLOBALS["lang"]['Prerequisites'] = 'Předpoklady';
 
 $GLOBALS["lang"]['Prerequisites and Tests'] = 'Předpoklady a zkoušky';
@@ -3816,6 +4077,10 @@ $GLOBALS["lang"]['Priority'] = 'Priorita';
 
 $GLOBALS["lang"]['Privacy Passphrase'] = 'Privacy Passprase';
 
+$GLOBALS["lang"]['privileges_required'] = 'Požadované výsady';
+
+$GLOBALS["lang"]['Privileges Required'] = 'Požadované výsady';
+
 $GLOBALS["lang"]['processor'] = 'Procesor';
 
 $GLOBALS["lang"]['Processor'] = 'Procesor';
@@ -3838,6 +4103,12 @@ $GLOBALS["lang"]['product_name'] = 'Název produktu';
 
 $GLOBALS["lang"]['Product Name'] = 'Název produktu';
 
+$GLOBALS["lang"]['Product Name Match from CPE: '] = 'Název výrobku Shoda z CPE: ';
+
+$GLOBALS["lang"]['products'] = 'Produkty';
+
+$GLOBALS["lang"]['Products'] = 'Produkty';
+
 $GLOBALS["lang"]['profile'] = 'Profil';
 
 $GLOBALS["lang"]['Profile'] = 'Profil';
@@ -3853,6 +4124,14 @@ $GLOBALS["lang"]['Protocol'] = 'Protokol';
 $GLOBALS["lang"]['provider'] = 'Poskytovatel';
 
 $GLOBALS["lang"]['Provider'] = 'Poskytovatel';
+
+$GLOBALS["lang"]['published'] = 'Zveřejněno';
+
+$GLOBALS["lang"]['Published'] = 'Zveřejněno';
+
+$GLOBALS["lang"]['published_date'] = 'Datum zveřejnění';
+
+$GLOBALS["lang"]['Published Date'] = 'Datum zveřejnění';
 
 $GLOBALS["lang"]['publisher'] = 'Vydavatel';
 
@@ -3944,9 +4223,9 @@ $GLOBALS["lang"]['rack_id'] = 'Průkaz totožnosti';
 
 $GLOBALS["lang"]['Rack ID'] = 'Průkaz totožnosti';
 
-$GLOBALS["lang"]['racks'] = 'Uzávěry';
-
 $GLOBALS["lang"]['Racks'] = 'Uzávěry';
+
+$GLOBALS["lang"]['racks'] = 'Uzávěry';
 
 $GLOBALS["lang"]['radio'] = 'Rádio';
 
@@ -3957,6 +4236,12 @@ $GLOBALS["lang"]['Radio MAC'] = 'Rádio MAC';
 $GLOBALS["lang"]['rationale'] = 'Odvolání';
 
 $GLOBALS["lang"]['Rationale'] = 'Odvolání';
+
+$GLOBALS["lang"]['raw'] = 'Surové';
+
+$GLOBALS["lang"]['Raw'] = 'Surové';
+
+$GLOBALS["lang"]['read'] = 'Čtení';
 
 $GLOBALS["lang"]['Read'] = 'Čtení';
 
@@ -3969,6 +4254,10 @@ $GLOBALS["lang"]['Redirect URI'] = 'Přesměrovat URI';
 $GLOBALS["lang"]['redirect_uri'] = 'Přesměrovat Uri';
 
 $GLOBALS["lang"]['Redirect Uri'] = 'Přesměrovat Uri';
+
+$GLOBALS["lang"]['references'] = 'Odkazy';
+
+$GLOBALS["lang"]['References'] = 'Odkazy';
 
 $GLOBALS["lang"]['region'] = 'Oblast';
 
@@ -4010,9 +4299,17 @@ $GLOBALS["lang"]['reportable'] = 'Oznamováno';
 
 $GLOBALS["lang"]['Reportable'] = 'Oznamováno';
 
+$GLOBALS["lang"]['Reports'] = 'Zprávy';
+
 $GLOBALS["lang"]['request'] = 'Žádost';
 
 $GLOBALS["lang"]['Request'] = 'Žádost';
+
+$GLOBALS["lang"]['Request a Specific CVE'] = 'Žádost o zvláštní CVE';
+
+$GLOBALS["lang"]['requested'] = 'Požadováno';
+
+$GLOBALS["lang"]['Requested'] = 'Požadováno';
 
 $GLOBALS["lang"]['require_port'] = 'Vyžadovat přístav';
 
@@ -4043,6 +4340,8 @@ $GLOBALS["lang"]['Response'] = 'Odpověď';
 $GLOBALS["lang"]['responsibility'] = 'Odpovědnost';
 
 $GLOBALS["lang"]['Responsibility'] = 'Odpovědnost';
+
+$GLOBALS["lang"]['Restore my Licenses'] = 'Obnovit mé licence';
 
 $GLOBALS["lang"]['Restrict to Private'] = 'Omezení na soukromé';
 
@@ -4124,13 +4423,15 @@ $GLOBALS["lang"]['Run Discovery'] = 'Spustit vyhledávání';
 
 $GLOBALS["lang"]['Run Discovery on Devices'] = 'Spustit vyhledávání na zařízeních';
 
-$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = 'Spustit objev a zjistit < b > Co na vaší síti? < / b >';
+$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = 'Spusťte objev a zjistěte <b>Co je na vaší síti?</b>';
 
 $GLOBALS["lang"]['Run this Command'] = 'Spustit tento příkaz';
 
 $GLOBALS["lang"]['runas'] = 'Runy';
 
 $GLOBALS["lang"]['Runas'] = 'Runy';
+
+$GLOBALS["lang"]['Running Open-AudIT Apache Service Under Windows'] = 'Běh Open- Audit Apache Service pod Windows';
 
 $GLOBALS["lang"]['Russian Federation'] = 'Ruská federace';
 
@@ -4222,6 +4523,8 @@ $GLOBALS["lang"]['scan_options'] = 'Možnosti skenování';
 
 $GLOBALS["lang"]['Scan Options'] = 'Možnosti skenování';
 
+$GLOBALS["lang"]['Scan Options ID'] = 'Name';
+
 $GLOBALS["lang"]['Scan the Nmap top number of TCP ports.'] = 'Naskenujte Nmapový horní počet TCP portů.';
 
 $GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = 'Naskenujte horní číslo Nmap portů UDP.';
@@ -4229,6 +4532,10 @@ $GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = 'Naskenujte horní 
 $GLOBALS["lang"]['schedule'] = 'Plán';
 
 $GLOBALS["lang"]['Schedule'] = 'Plán';
+
+$GLOBALS["lang"]['scope'] = 'Oblast působnosti';
+
+$GLOBALS["lang"]['Scope'] = 'Oblast působnosti';
 
 $GLOBALS["lang"]['script_timeout'] = 'Timeout skriptu';
 
@@ -4259,6 +4566,8 @@ $GLOBALS["lang"]['Search'] = 'Hledat';
 $GLOBALS["lang"]['Search For a Device'] = 'Hledat zařízení';
 
 $GLOBALS["lang"]['Search for Device'] = 'Hledat zařízení';
+
+$GLOBALS["lang"]['Searching Using DataTables'] = 'Vyhledávání pomocí datových tabulek';
 
 $GLOBALS["lang"]['secondary'] = 'Sekundární';
 
@@ -4338,6 +4647,10 @@ $GLOBALS["lang"]['Select a Table'] = 'Vybrat tabulku';
 
 $GLOBALS["lang"]['Senegal'] = 'Senegal';
 
+$GLOBALS["lang"]['sensitivity'] = 'Citlivost';
+
+$GLOBALS["lang"]['Sensitivity'] = 'Citlivost';
+
 $GLOBALS["lang"]['September'] = 'Září';
 
 $GLOBALS["lang"]['Serbia'] = 'Srbsko';
@@ -4371,6 +4684,8 @@ $GLOBALS["lang"]['Server Is'] = 'Server je';
 $GLOBALS["lang"]['server_item'] = 'Položka serveru';
 
 $GLOBALS["lang"]['Server Item'] = 'Položka serveru';
+
+$GLOBALS["lang"]['Server Status'] = 'Stav serveru';
 
 $GLOBALS["lang"]['Servers'] = 'Servery';
 
@@ -4438,6 +4753,8 @@ $GLOBALS["lang"]['severity_text'] = 'Závažnost Text';
 
 $GLOBALS["lang"]['Severity Text'] = 'Závažnost Text';
 
+$GLOBALS["lang"]['Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.'] = 'Závažnost se vypočítá z <code>base_score</code> a může být jedním z: žádný, nízký, střední, vysoký, kritický.';
+
 $GLOBALS["lang"]['Seychelles'] = 'Seychely';
 
 $GLOBALS["lang"]['share'] = 'Podíl';
@@ -4460,9 +4777,15 @@ $GLOBALS["lang"]['Shell'] = 'Shell';
 
 $GLOBALS["lang"]['Ship Date'] = 'Datum přepravy';
 
+$GLOBALS["lang"]['short'] = 'Krátké';
+
+$GLOBALS["lang"]['Short'] = 'Krátké';
+
 $GLOBALS["lang"]['Should I remove all non-current data from this device?'] = 'Mám odstranit všechna nesoučasná data z tohoto zařízení?';
 
-$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = 'Je-li tento soubor (nebo vzor) použit k vyloučení souborů z hlášení. Pro audit souborů je to nastaveno na < kód > y < / kód >.';
+$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = 'Je-li tento soubor (nebo vzor) použit k vyloučení souborů z hlášení. Normálně, k auditu souborů, to je nastaveno na <code>y</code>.';
+
+$GLOBALS["lang"]['Should this vendor be used when retrieving vulnerabilities from FirstWave.'] = 'Měl by být tento prodejce použit při získávání slabých míst z FirstWave.';
 
 $GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = 'Měli bychom přidávat zařízení ze vzdálené služby, lokálně.';
 
@@ -4528,15 +4851,15 @@ $GLOBALS["lang"]['Should we test for WMI using TCP port 135.'] = 'Měli bychom o
 
 $GLOBALS["lang"]['Should we uninstall the agent (y/n).'] = 'Měli bychom odinstalovat agenta (y / n).';
 
-$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.'] = 'Měli bychom použít tuto metodu k ověření uživatelských údajů. Nastavit na < kód > y < / kód > nebo < kód > n < / kód >.';
+$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.'] = 'Měli bychom použít tuto metodu k ověření uživatelských údajů. Nastavit na <code>y</code> nebo <code>n</code>.';
 
-$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.'] = 'Použijeme tuto metodu k zalidnění uživatelských rolí. Pole < kód > use _ auth < / kód > musí být nastaveno na < kód > y < / kód >, aby se toto používalo. Nastavit na < kód > y < / kód > nebo < kód > n < / kód >.';
+$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.'] = 'Použijeme tuto metodu k zalidnění uživatelských rolí. Pole <code>use_auth</code> musí být nastaveno na <code>y</code> použít tohle. Nastavit na <code>y</code> nebo <code>n</code>.';
 
 $GLOBALS["lang"]['Show All'] = 'Zobrazit vše';
 
-$GLOBALS["lang"]['sid'] = 'Side';
+$GLOBALS["lang"]['sid'] = 'Side.';
 
-$GLOBALS["lang"]['Sid'] = 'Side';
+$GLOBALS["lang"]['Sid'] = 'Side.';
 
 $GLOBALS["lang"]['sidebar'] = 'Sidebar';
 
@@ -4754,6 +5077,10 @@ $GLOBALS["lang"]['sub_type'] = 'Podtyp';
 
 $GLOBALS["lang"]['Sub Type'] = 'Podtyp';
 
+$GLOBALS["lang"]['subject_key_ident'] = 'Name';
+
+$GLOBALS["lang"]['Subject Key Ident'] = 'Name';
+
 $GLOBALS["lang"]['Submit'] = 'Odeslat';
 
 $GLOBALS["lang"]['Submitted From'] = 'Předáno';
@@ -4772,6 +5099,8 @@ $GLOBALS["lang"]['Success'] = 'Úspěch';
 
 $GLOBALS["lang"]['Sudan'] = 'Súdán';
 
+$GLOBALS["lang"]['Sudo Password'] = 'Heslo Sudo';
+
 $GLOBALS["lang"]['Sudo Password (optional)'] = 'Sudo Heslo (nepovinné)';
 
 $GLOBALS["lang"]['suite'] = 'Suite';
@@ -4782,8 +5111,6 @@ $GLOBALS["lang"]['summaries'] = 'Shrnutí';
 
 $GLOBALS["lang"]['Summaries'] = 'Shrnutí';
 
-$GLOBALS["lang"]['summary'] = 'Shrnutí';
-
 $GLOBALS["lang"]['Summary'] = 'Shrnutí';
 
 $GLOBALS["lang"]['Sunday'] = 'Neděle';
@@ -4792,7 +5119,9 @@ $GLOBALS["lang"]['supplier'] = 'Dodavatel';
 
 $GLOBALS["lang"]['Supplier'] = 'Dodavatel';
 
-$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = 'Podporované typy jsou < kód > subnet < / kód >, < kód > osivo < / kód > a < kód > aktivní adresář < / kód >.';
+$GLOBALS["lang"]['Support'] = 'Podpora';
+
+$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = 'Podporované typy jsou <code>subnet</code>, <code>seed</code> a <code>active directory</code>.';
 
 $GLOBALS["lang"]['Suriname'] = 'Surinam';
 
@@ -4878,7 +5207,7 @@ $GLOBALS["lang"]['tags'] = 'Značky';
 
 $GLOBALS["lang"]['Tags'] = 'Značky';
 
-$GLOBALS["lang"]['Tags :: '] = 'Tagy:';
+$GLOBALS["lang"]['Tags :: '] = 'Tagy: ';
 
 $GLOBALS["lang"]['Taiwan'] = 'Tchaj-wan';
 
@@ -4936,25 +5265,29 @@ $GLOBALS["lang"]['The Active Directory domain to retrieve a list of subnets from
 
 $GLOBALS["lang"]['The Active Directory server to retrieve a list of subnets from.'] = 'Server Active Directory pro získání seznamu podsítí.';
 
-$GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = 'Cloud, který vlastní tuto položku. Odkazy na < kód > clouds.id < / kód >.';
+$GLOBALS["lang"]['The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).'] = 'Automatic metric zachycuje odpověď na otázku <strong>Může útočník automatizovat vykořisťovací akce pro tuto zranitelnost napříč více cíli?</strong> Na základě kroků 1-4 zabijáckého řetězce. Tyto kroky jsou průzkum, zbrojení, dodání a vykořisťování (Není určeno, Ne, Ano).';
 
-$GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = 'Skupina vedla Baseline. Odkazy na < kód > groups.id < / kód >.';
+$GLOBALS["lang"]['The CVE identifier.'] = 'Identifikátor CVE.';
 
-$GLOBALS["lang"]['The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.'] = 'ID z tabulky zařízení (devices.name bude zobrazeno) NTU na tomto konci spojení. Odkazy na < kód > devices.id < / kód >.';
+$GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = 'Cloud, který vlastní tuto položku. Odkazy na <code>clouds.id</code>.';
+
+$GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = 'Skupina vedla Baseline. Odkazy na <code>groups.id</code>.';
+
+$GLOBALS["lang"]['The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.'] = 'ID z tabulky zařízení (devices.name bude zobrazeno) NTU na tomto konci spojení. Odkazy na <code>devices.id</code>.';
 
 $GLOBALS["lang"]['The ID from the imported benchmark policy.'] = 'Identifikátor z dovážené referenční politiky.';
 
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.'] = 'ID z tabulky umístění (zobrazí se locations.name) tohoto konce spojení. Odkazy na < kód > locations.id < / kód >. Umístění A je obvykle < kód > OD < / kód > místo.';
+$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.'] = 'ID z tabulky umístění (zobrazí se locations.name) tohoto konce spojení. Odkazy na <code>locations.id</code>. Umístění A je obvykle <code>FROM</code> Místo.';
 
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.'] = 'ID z tabulky umístění (zobrazí se locations.name) tohoto konce spojení. Odkazy na < kód > locations.id < / kód >. Umístění B je obvykle < kód > TO < / kód > umístění.';
+$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.'] = 'ID z tabulky umístění (zobrazí se locations.name) tohoto konce spojení. Odkazy na <code>locations.id</code>. B místo je obvykle <code>TO</code> Místo.';
 
-$GLOBALS["lang"]['The ID of the associated device (if any). Links to <code>devices.id</code>.'] = 'Identifikace případného souvisejícího zařízení. Odkazy na < kód > devices.id < / kód >.';
+$GLOBALS["lang"]['The ID of the associated device (if any). Links to <code>devices.id</code>.'] = 'Identifikace případného souvisejícího zařízení. Odkazy na <code>devices.id</code>.';
 
-$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = 'Identifikace souvisejícího objevu. Odkaz na < kód > objevies.id < / kód >';
+$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = 'Identifikace souvisejícího objevu. Spojen s <code>discoveries.id</code>';
 
 $GLOBALS["lang"]['The ID of the item of the associated type.'] = 'Identifikátor položky přidruženého typu.';
 
-$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = 'Identifikace tohoto orgs rodičovského org. Odkaz na < kód > orgs.id < / kód >';
+$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = 'Identifikace tohoto orgs rodičovského org. Spojen s <code>orgs.id</code>';
 
 $GLOBALS["lang"]['The ID provided by the provider.'] = 'Identifikátor poskytnutý poskytovatelem.';
 
@@ -4970,9 +5303,15 @@ $GLOBALS["lang"]['The IP of the internal interface.'] = 'IP interního rozhraní
 
 $GLOBALS["lang"]['The ISP or Telco providing this link.'] = 'ISP nebo Telco poskytují tento odkaz.';
 
+$GLOBALS["lang"]['The JSON record from Mitre.'] = 'Záznam JSON z Mitre.';
+
+$GLOBALS["lang"]['The JSON record from the NVD feed.'] = 'Záznamy z NVD.';
+
 $GLOBALS["lang"]['The LDAP OU of this user (if LDAP is used).'] = 'LDAP OU tohoto uživatele (je-li použit LDAP).';
 
-$GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = 'Poloha, která obsahuje tuto síť. Odkazy na < kód > locations.id < / kód >.';
+$GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = 'Poloha, která obsahuje tuto síť. Odkazy na <code>locations.id</code>.';
+
+$GLOBALS["lang"]['The NVD assigned base status.'] = 'NVD přidělil status základny.';
 
 $GLOBALS["lang"]['The Nmap timing preset.'] = 'Načasování Nmapu.';
 
@@ -4980,13 +5319,13 @@ $GLOBALS["lang"]['The OS this package should be reported against. Blank for all.
 
 $GLOBALS["lang"]['The Open-AudIT API'] = 'Open- Audit API';
 
-$GLOBALS["lang"]['The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.'] = 'Open- Audit ID propojeného cloudu. Odkazy na < kód > clouds.id < / kód >.';
+$GLOBALS["lang"]['The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.'] = 'Open- Audit ID propojeného cloudu. Odkazy na <code>clouds.id</code>.';
 
 $GLOBALS["lang"]['The Open-AudIT server code was exeucted within this file.'] = 'Open- Aud Kód IT serveru byl exeucted v tomto souboru.';
 
 $GLOBALS["lang"]['The Open-AudIT server code was exeucted within this function.'] = 'Open- Aud Kód IT serveru byl exeucted v rámci této funkce.';
 
-$GLOBALS["lang"]['The Organisation that owns this item. Links to <code>orgs.id</code>.'] = 'Organizace, která vlastní tuto položku. Odkazy na < kód > orgs.id < / kód >.';
+$GLOBALS["lang"]['The Organisation that owns this item. Links to <code>orgs.id</code>.'] = 'Organizace, která vlastní tuto položku. Odkazy na <code>orgs.id</code>.';
 
 $GLOBALS["lang"]['The Process Identifier of the running associated discovery.'] = 'Identifikátor procesu příslušného objevu.';
 
@@ -5018,11 +5357,11 @@ $GLOBALS["lang"]['The URL the audit scripts should submit their result to.'] = '
 
 $GLOBALS["lang"]['The actual full name of this user.'] = 'Skutečné celé jméno tohoto uživatele.';
 
-$GLOBALS["lang"]['The associated baseline. Links to <code>baselines.id</code>.'] = 'Související výchozí hodnota. Odkazy na < kód > baselines.id < / kód >.';
+$GLOBALS["lang"]['The associated baseline. Links to <code>baselines.id</code>.'] = 'Související výchozí hodnota. Odkazy na <code>baselines.id</code>.';
 
-$GLOBALS["lang"]['The associated discovery (if required). Links to <code>discoveries.id</code>.'] = 'Související objev (v případě potřeby). Odkazy na < kód > objevies.id < / kód >.';
+$GLOBALS["lang"]['The associated discovery (if required). Links to <code>discoveries.id</code>.'] = 'Související objev (v případě potřeby). Odkazy na <code>discoveries.id</code>.';
 
-$GLOBALS["lang"]['The attribute to test (from the <code>devices</code> table).'] = 'Atribut k testování (z tabulky < kód > zařízení < / kód >).';
+$GLOBALS["lang"]['The attribute to test (from the <code>devices</code> table).'] = 'Atribut k testování (od <code>devices</code> Tabulka).';
 
 $GLOBALS["lang"]['The attribute to test (must match an external field name from below).'] = 'Atribut pro test (musí odpovídat názvu vnějšího pole níže).';
 
@@ -5044,7 +5383,7 @@ $GLOBALS["lang"]['The column name from the foreign table. Should be one of: clas
 
 $GLOBALS["lang"]['The command executed upon the target device or Open-AudIT server code executed during discovery.'] = 'Příkaz proveden na cílovém zařízení nebo Open- Audit server kód proveden při objevování.';
 
-$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.'] = 'Konfigurace vašeho seskupení může být: < kód > aktivní / aktivní < / kód >, < kód > aktivní / pasivní < / kód >, < kód > N + 1 < / kód >, < kód > N + M < / kód >, < kód > N-to-1 < / kód >, < kód > N-to-N < / kód >, < kód > ostatní < / kód > nebo prázdný.';
+$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.'] = 'Konfigurace vašeho clusteru může být: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> nebo prázdné.';
 
 $GLOBALS["lang"]['The credentials password. If the credentials are an SSH Key, this is the password used to unlock the key and is optional.'] = 'Heslo. Pokud jsou pověřovací listiny SSH Key, toto je heslo používané k odemknutí klíče a je volitelné.';
 
@@ -5054,7 +5393,7 @@ $GLOBALS["lang"]['The current status of the Cloud Discovery.'] = 'Současný sta
 
 $GLOBALS["lang"]['The current status of the discovery.'] = 'Současný stav objevu.';
 
-$GLOBALS["lang"]['The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.'] = 'Přístrojová deska, která bude zobrazena ve výchozím nastavení pro tohoto uživatele. Odkazy na < kód > dashboards.id < / kód >.';
+$GLOBALS["lang"]['The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.'] = 'Přístrojová deska, která bude zobrazena ve výchozím nastavení pro tohoto uživatele. Odkazy na <code>dashboards.id</code>.';
 
 $GLOBALS["lang"]['The database version and web version are inconsistent.'] = 'Databázová verze a webová verze jsou nekonzistentní.';
 
@@ -5076,11 +5415,13 @@ $GLOBALS["lang"]['The default language assigned to any user created by this meth
 
 $GLOBALS["lang"]['The device must respond to an Nmap ping before it is considered online.'] = 'Zařízení musí reagovat na ping Nmap předtím, než je považováno za online.';
 
-$GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>.'] = 'Zařízení v Open- Audit. Odkazy na < kód > devices.id < / kód >.';
+$GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>.'] = 'Zařízení v Open- Audit. Odkazy na <code>devices.id</code>.';
 
 $GLOBALS["lang"]['The direct link for the script is'] = 'Přímý odkaz pro skript je';
 
 $GLOBALS["lang"]['The email address of the reciever'] = 'E-mailová adresa příjemce';
+
+$GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = 'Pro licenci je vyžadována podniková binárka z FirstWave. Stáhněte si prosím Open- Audit z';
 
 $GLOBALS["lang"]['The entire associated baseline this result is from.'] = 'Tento výsledek je odvozen z celé související výchozí hodnoty.';
 
@@ -5098,13 +5439,15 @@ $GLOBALS["lang"]['The fully qualified column upon which to group by. NOTE: When 
 
 $GLOBALS["lang"]['The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).'] = 'Plně kvalifikovaný stůl. Násobek může být poskytnut, oddělený čárkou (bez mezer).';
 
+$GLOBALS["lang"]['The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.'] = 'Vygenerovaný SQL dotaz pro testování této zranitelnosti. Toto pole lze upravit tak, aby bylo možné dotaz opravit podle potřeby.';
+
 $GLOBALS["lang"]['The group of devices on which the baseline was run against.'] = 'Skupina zařízení, na nichž byla základní hodnota spuštěna proti.';
 
-$GLOBALS["lang"]['The group that provides a list of devices for the integration. Links to <code>groups.id</code>.'] = 'Skupina, která poskytuje seznam zařízení pro integraci. Odkazy na < kód > groups.id < / kód >.';
+$GLOBALS["lang"]['The group that provides a list of devices for the integration. Links to <code>groups.id</code>.'] = 'Skupina, která poskytuje seznam zařízení pro integraci. Odkazy na <code>groups.id</code>.';
 
 $GLOBALS["lang"]['The hour of the day when this task should execute (* for every hour).'] = 'Hodina dne, kdy má být tento úkol vykonán (* za každou hodinu).';
 
-$GLOBALS["lang"]['The id of the linked device. Links to <code>devices.id</code>'] = 'Identifikace propojeného zařízení. Odkazy na < kód > device.id < / kód >';
+$GLOBALS["lang"]['The id of the linked device. Links to <code>devices.id</code>'] = 'Identifikace propojeného zařízení. Odkazy na <code>devices.id</code>';
 
 $GLOBALS["lang"]['The identifier column (integer) in the database (read only).'] = 'Identifikátor sloupce (celé číslo) v databázi (pouze pro čtení).';
 
@@ -5126,7 +5469,7 @@ $GLOBALS["lang"]['The last time this integration was run.'] = 'Naposledy byla ta
 
 $GLOBALS["lang"]['The line number assigned by the provider to the line at this end of the connection.'] = 'Číslo řádku přidělené poskytovatelem na řádku na tomto konci spojení.';
 
-$GLOBALS["lang"]['The location the rack is located in. Links to <code>locations.id</code>.'] = 'Umístění rack se nachází v. Odkazy na < kód > locations.id < / kód >.';
+$GLOBALS["lang"]['The location the rack is located in. Links to <code>locations.id</code>.'] = 'Umístění rack se nachází v. Odkazy na <code>locations.id</code>.';
 
 $GLOBALS["lang"]['The locations address.'] = 'Adresa míst.';
 
@@ -5166,6 +5509,8 @@ $GLOBALS["lang"]['The minute of the hour when this task should execute (* for ev
 
 $GLOBALS["lang"]['The month of the year when this task should execute (* for every month).'] = 'Měsíc roku, kdy má být tento úkol vykonán (* za každý měsíc).';
 
+$GLOBALS["lang"]['The name given to this item.'] = 'Název uvedený v této položce.';
+
 $GLOBALS["lang"]['The name given to this item. Ideally it should be unique.'] = 'Název uvedený v této položce. V ideálním případě by to mělo být jedinečné.';
 
 $GLOBALS["lang"]['The name given to this user (used to login). Ideally it should be unique.'] = 'Jméno dané tomuto uživateli (používá se k přihlášení). V ideálním případě by to mělo být jedinečné.';
@@ -5184,29 +5529,39 @@ $GLOBALS["lang"]['The network subnet to execute the discovery on.'] = 'Síťová
 
 $GLOBALS["lang"]['The number of RUs this device occupies.'] = 'Počet ŽP, které toto zařízení využívá.';
 
-$GLOBALS["lang"]['The number of associated locations. Links to <code>locations.cloud_id</code>.'] = 'Počet přidružených míst. Odkazy na < kód > locations.cloud _ id < / kód >.';
+$GLOBALS["lang"]['The number of associated locations. Links to <code>locations.cloud_id</code>.'] = 'Počet přidružených míst. Odkazy na <code>locations.cloud_id</code>.';
 
-$GLOBALS["lang"]['The number of associated networks. Links to <code>networks.cloud_id</code>.'] = 'Počet přidružených sítí. Odkazy na < code > networks.cloud _ id < / code >.';
+$GLOBALS["lang"]['The number of associated networks. Links to <code>networks.cloud_id</code>.'] = 'Počet přidružených sítí. Odkazy na <code>networks.cloud_id</code>.';
 
-$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = 'Počet kontrolovaných zařízení v tomto cloudu. Odkazy na < code > devices.cloud _ id < / code > a < code > devices.serial < / code >.';
+$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = 'Počet kontrolovaných zařízení v tomto cloudu. Odkazy na <code>devices.cloud_id</code> a <code>devices.serial</code>.';
+
+$GLOBALS["lang"]['The number of critical severity vulnerabilities held by FirstWave (not in your database).'] = 'Počet kritických zranitelných míst v držení FirstWave (není ve vaší databázi).';
 
 $GLOBALS["lang"]['The number of devices found by this discovery.'] = 'Počet zařízení nalezených tímto objevem.';
 
 $GLOBALS["lang"]['The number of devices in the associated group.'] = 'Počet zařízení v přidružené skupině.';
 
-$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Počet zařízení v tomto cloudu se stavem běhu. Odkazy na < code > devices.cloud _ id < / code > a < code > devices.instance _ state < / code >.';
+$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Počet zařízení v tomto cloudu se stavem běhu. Odkazy na <code>devices.cloud_id</code> a <code>devices.instance_state</code>.';
 
-$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Počet zařízení v tomto cloudu se stavu zastavil. Odkazy na < code > devices.cloud _ id < / code > a < code > devices.instance _ state < / code >.';
+$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Počet zařízení v tomto cloudu se stavu zastavil. Odkazy na <code>devices.cloud_id</code> a <code>devices.instance_state</code>.';
 
-$GLOBALS["lang"]['The number of devices in this cloud. Links to <code>devices.cloud_id</code>.'] = 'Počet zařízení v tomto cloudu. Odkazy na < kód > devices.cloud _ id < / kód >.';
+$GLOBALS["lang"]['The number of devices in this cloud. Links to <code>devices.cloud_id</code>.'] = 'Počet zařízení v tomto cloudu. Odkazy na <code>devices.cloud_id</code>.';
 
-$GLOBALS["lang"]['The number of devices this benchmark will be executed upon. Derived from <code>benchmarks.devices</code>.'] = 'Počet zařízení, na která bude tato referenční hodnota provedena. Odvozené z < kódu > benchmarks.setts < / kód >.';
+$GLOBALS["lang"]['The number of devices this benchmark will be executed upon. Derived from <code>benchmarks.devices</code>.'] = 'Počet zařízení, na která bude tato referenční hodnota provedena. Odvozené od <code>benchmarks.devices</code>.';
 
 $GLOBALS["lang"]['The number of devices to limit this discovery to.'] = 'Počet zařízení k omezení tohoto objevu.';
+
+$GLOBALS["lang"]['The number of high severity vulnerabilities held by FirstWave (not in your database).'] = 'Počet vysoce závažných zranitelných míst v držení FirstWave (není ve vaší databázi).';
+
+$GLOBALS["lang"]['The number of low severity vulnerabilities held by FirstWave (not in your database).'] = 'Počet slabých míst nízké závažnosti v držení FirstWave (není ve vaší databázi).';
+
+$GLOBALS["lang"]['The number of medium severity vulnerabilities held by FirstWave (not in your database).'] = 'Počet středně závažných zranitelností v držení FirstWave (není ve vaší databázi).';
 
 $GLOBALS["lang"]['The number of purchased licenses.'] = 'Počet zakoupených licencí.';
 
 $GLOBALS["lang"]['The number of seconds to try and communicate with the target IP.'] = 'Počet sekund pro pokus o komunikaci s cílovou IP.';
+
+$GLOBALS["lang"]['The number of vulnerabilities without a severity held by FirstWave (not in your database).'] = 'Počet zranitelných míst bez závažnosti v držení FirstWave (není ve vaší databázi).';
 
 $GLOBALS["lang"]['The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.'] = 'Volitelný sekundární sloupec. POZNÁMKA: Pokud typ = provoz, to představuje žlutý dotaz id.';
 
@@ -5242,7 +5597,7 @@ $GLOBALS["lang"]['The process identifier of this queue item.'] = 'Identifikátor
 
 $GLOBALS["lang"]['The process that was used last to retrieve details about the device'] = 'Proces, který byl použit jako poslední k získání detailů o zařízení';
 
-$GLOBALS["lang"]['The query that provides a list of devices for the integration. Links to <code>queries.id</code>.'] = 'Dotaz, který poskytuje seznam zařízení pro integraci. Odkazy na < kód > queries.id < / kód >.';
+$GLOBALS["lang"]['The query that provides a list of devices for the integration. Links to <code>queries.id</code>.'] = 'Dotaz, který poskytuje seznam zařízení pro integraci. Odkazy na <code>queries.id</code>.';
 
 $GLOBALS["lang"]['The rack asset number.'] = 'Číslo aktiva rack.';
 
@@ -5256,9 +5611,11 @@ $GLOBALS["lang"]['The rack serial.'] = 'Série racků.';
 
 $GLOBALS["lang"]['The rack series.'] = 'Série racků.';
 
-$GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = 'Věšák, ve kterém je to zařízení. Odkazy na < kód > criss.id < / kód >.';
+$GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = 'Věšák, ve kterém je to zařízení. Odkazy na <code>racks.id</code>.';
 
-$GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = 'Pravidelná notace domény vašeho adresáře. Eg - < kód > open- audit.lan < / kód >.';
+$GLOBALS["lang"]['The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.'] = 'Doporučený proces řešení a stanovení zjištěných bezpečnostních zranitelností. To obvykle zahrnuje použití náplastí, aktualizací nebo jiných opatření k odstranění rizika, které představují slabiny.';
+
+$GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = 'Pravidelná notace domény vašeho adresáře. Eg... <code>open-audit.lan</code>.';
 
 $GLOBALS["lang"]['The result of the command.'] = 'Výsledek příkazu.';
 
@@ -5290,7 +5647,7 @@ $GLOBALS["lang"]['The text for the bottom of the chart in a line chart (only).']
 
 $GLOBALS["lang"]['The text that is displayed.'] = 'Text, který je zobrazen.';
 
-$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2001-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = 'Časová známka, po které by měl tento úkol běžet. Například spustit úkol po 1. červnu 2017 v 10 hodin, nastavit na < kód > 2017-06-01 09: 59: 00 < / kód >. Tato hodnota by měla být nulová (tj. 09, ne 9). Tato hodnota selže na < code > 2001-01-01 00: 00: 00 < / code >, což znamená, že ve výchozím nastavení, bude plánovaný úkol probíhat v příštím plánovaném čase provedení.';
+$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = 'Časová známka, po které by měl tento úkol běžet. Například, spustit úkol po 1. června 2017 v 10 hodin, nastavit na <code>2017-06-01 09:59:00</code>. Tato hodnota by měla být nulová (tj. 09, ne 9). Tato hodnota selhává <code>2000-01-01 00:00:00</code> což znamená, že ve výchozím nastavení bude v příštím plánovaném čase provedení probíhat plánovaný úkol.';
 
 $GLOBALS["lang"]['The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.'] = 'Top 10, 100 nebo 1000 (nebo žádné) TCP portů běžně používané podle Nmap.';
 
@@ -5310,7 +5667,7 @@ $GLOBALS["lang"]['The type of the integration (usually named after the external 
 
 $GLOBALS["lang"]['The unique identifier of this server.'] = 'Jedinečný identifikátor tohoto serveru.';
 
-$GLOBALS["lang"]['The user account this collector uses. Links to <code>users.id</code>.'] = 'Uživatelský účet tohoto sběratele. Odkazy na < kód > users.id < / kód >.';
+$GLOBALS["lang"]['The user account this collector uses. Links to <code>users.id</code>.'] = 'Uživatelský účet tohoto sběratele. Odkazy na <code>users.id</code>.';
 
 $GLOBALS["lang"]['The username used to access the external system.'] = 'Uživatelské jméno používané k přístupu do vnějšího systému.';
 
@@ -5322,15 +5679,21 @@ $GLOBALS["lang"]['The value assigned to the item.'] = 'Hodnota přiřazená polo
 
 $GLOBALS["lang"]['The value that is stored for this particular item.'] = 'Hodnota, která je uložena pro tuto konkrétní položku.';
 
+$GLOBALS["lang"]['The vendor name as per CPE entries.'] = 'Jméno prodejce podle CPE záznamů.';
+
+$GLOBALS["lang"]['The vendor taken from the CPE.'] = 'Prodejce z CPE.';
+
 $GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = 'Webový adresář na hostiteli, který je nainstalován Open- AudiT (vyžaduje vlečné lomítko).';
 
-$GLOBALS["lang"]['The widget at position '] = 'Widget v pozici';
+$GLOBALS["lang"]['The widget at position '] = 'Widget v pozici ';
 
 $GLOBALS["lang"]['The width of this device.'] = 'Šířka tohoto zařízení.';
 
 $GLOBALS["lang"]['Then'] = 'Pak';
 
-$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = 'Tento atribut je uložen jako JSON objekt. Jedná se o seznam všech sbírek a obsahuje název sbírky spolu s < kódem > c < / kód >, < kód > r < / kód >, < kód > u < / kód > a, nebo < kód > d < / kód >, který představuje vytvoření, čtení, aktualizaci a odstranění. To jsou akce, které uživatel může provádět na položky z této konkrétní sbírky.';
+$GLOBALS["lang"]['This CVE will be retrieved and overwrite the existing CVE if it exists.'] = 'Toto CVE bude získáno a přepsat existující CVE, pokud existuje.';
+
+$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = 'Tento atribut je uložen jako JSON objekt. Je to seznam všech kolekcí a obsahuje název kolekce spolu s <code>c</code>, <code>r</code>, <code>u</code> a nebo <code>d</code> které představují vytvoření, čtení, aktualizaci a smazání. To jsou akce, které uživatel může provádět na položky z této konkrétní sbírky.';
 
 $GLOBALS["lang"]['This can be either a varchar (a text field), a list (a list of values that can be selected) or a date.'] = 'Může to být buď varchar (textové pole), seznam (seznam hodnot, které lze vybrat) nebo datum.';
 
@@ -5355,10 +5718,6 @@ $GLOBALS["lang"]['This will auto-populate.'] = 'Tohle bude mít vlastní populac
 $GLOBALS["lang"]['This will considerably slow the discovery scan.'] = 'Tohle značně zpomalí sken objevů.';
 
 $GLOBALS["lang"]['Thursday'] = 'Čtvrtek';
-
-$GLOBALS["lang"]['time'] = 'Čas';
-
-$GLOBALS["lang"]['Time'] = 'Čas';
 
 $GLOBALS["lang"]['time_caption'] = 'Časový záznam';
 
@@ -5408,6 +5767,10 @@ $GLOBALS["lang"]['Traffic Light'] = 'Dopravní světlo';
 
 $GLOBALS["lang"]['Trinidad and Tobago'] = 'Trinidad a Tobago';
 
+$GLOBALS["lang"]['Troubleshooting LDAP Logins'] = 'Řešení problémů LDAP Logins';
+
+$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"'] = 'Vyzkoušejte všechny nejnovější funkce s licencí zařízení Open- Audit Enterprise ZDARMA 100. Přečtěte si prosím < a href =\ "';
+
 $GLOBALS["lang"]['Tuesday'] = 'Úterý';
 
 $GLOBALS["lang"]['Tunisia'] = 'Tunisko';
@@ -5455,10 +5818,6 @@ $GLOBALS["lang"]['udp_ports'] = 'Udp Ports';
 $GLOBALS["lang"]['Udp Ports'] = 'Udp Ports';
 
 $GLOBALS["lang"]['Uganda'] = 'Uganda';
-
-$GLOBALS["lang"]['uid'] = 'Uid';
-
-$GLOBALS["lang"]['Uid'] = 'Uid';
 
 $GLOBALS["lang"]['Ukraine'] = 'Ukrajina';
 
@@ -5510,13 +5869,9 @@ $GLOBALS["lang"]['Update Internal From External'] = 'Aktualizovat interní z ext
 
 $GLOBALS["lang"]['Update NMIS Devices from Open-AudIT'] = 'Aktualizace zařízení NMIS z Open- Audit';
 
-$GLOBALS["lang"]['Update Open-AudIT Devices from '] = 'Aktualizovat Open- Audit Zařízení';
+$GLOBALS["lang"]['Update Open-AudIT Devices from '] = 'Aktualizovat Open- Audit Zařízení ';
 
 $GLOBALS["lang"]['Update Open-AudIT Devices from NMIS'] = 'Aktualizovat Open- Audit Zařízení z NMIS';
-
-$GLOBALS["lang"]['updated_at'] = 'Aktualizováno';
-
-$GLOBALS["lang"]['Updated At'] = 'Aktualizováno';
 
 $GLOBALS["lang"]['Updated each time discovery has been executed with IPs detected to be responding.'] = 'Aktualizováno pokaždé, když byl proveden objev s IP zjištěno, že reagují.';
 
@@ -5531,6 +5886,8 @@ $GLOBALS["lang"]['Updated each time discovery has been executed.'] = 'Aktualizov
 $GLOBALS["lang"]['Updated each time the discovery has been executed.'] = 'Aktualizováno pokaždé, když byl objev popraven.';
 
 $GLOBALS["lang"]['Updated each time the discovery has completed execution.'] = 'Aktualizováno pokaždé, když objev dokončil popravu.';
+
+$GLOBALS["lang"]['Updating'] = 'Aktualizace';
 
 $GLOBALS["lang"]['Upgrade'] = 'Aktualizovat';
 
@@ -5551,6 +5908,10 @@ $GLOBALS["lang"]['Uruguay, Eastern Republic of'] = 'Uruguay, Východní republik
 $GLOBALS["lang"]['usb'] = 'Usb';
 
 $GLOBALS["lang"]['Usb'] = 'Usb';
+
+$GLOBALS["lang"]['use'] = 'Použití';
+
+$GLOBALS["lang"]['Use'] = 'Použití';
 
 $GLOBALS["lang"]['use_authentication'] = 'Použít autentizaci';
 
@@ -5582,21 +5943,17 @@ $GLOBALS["lang"]['used_count'] = 'Použitý počet';
 
 $GLOBALS["lang"]['Used Count'] = 'Použitý počet';
 
-$GLOBALS["lang"]['used_percent'] = 'Použitý procentní podíl';
-
-$GLOBALS["lang"]['Used Percent'] = 'Použitý procentní podíl';
-
 $GLOBALS["lang"]['Used by OpenLDAP only.'] = 'Používá pouze OpenLDAP.';
 
 $GLOBALS["lang"]['Used internally when discovering a single device.'] = 'Používá se interně při objevování jediného zařízení.';
 
-$GLOBALS["lang"]['Used internally when discovering a single device. Links to <code>devices.id</code>.'] = 'Používá se interně při objevování jediného zařízení. Odkazy na < kód > devices.id < / kód >.';
+$GLOBALS["lang"]['Used internally when discovering a single device. Links to <code>devices.id</code>.'] = 'Používá se interně při objevování jediného zařízení. Odkazy na <code>devices.id</code>.';
 
 $GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.'] = 'Používá se při konfiguraci LDAP serverů pro zalidnění uživatelských detailů - to zahrnuje Orgs, k nimž mají přístup. Pokud je uživatel v této LDAP skupině, jsou přiřazeny tento org.';
 
 $GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.'] = 'Používá se při konfiguraci LDAP serverů pro zalidnění uživatelských detailů - to zahrnuje Roles, které jsou přiřazeny. Pokud je uživatel v této LDAP skupině, jsou přiřazeny tuto roli.';
 
-$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = 'Používá se při vyhledávání OpenLDAP pro porovnání uživatelů uid se členy skupin. Výchozí < kód > memberUid < / kód >. Používá pouze OpenLDAP.';
+$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = 'Používá se při vyhledávání OpenLDAP pro porovnání uživatelů uid se členy skupin. Výchozí <code>memberUid</code>. Používá pouze OpenLDAP.';
 
 $GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications.'] = 'Používá se s aplikací pro monitorování Integrations a FirstWave.';
 
@@ -5616,6 +5973,10 @@ $GLOBALS["lang"]['user_id'] = 'ID uživatele';
 
 $GLOBALS["lang"]['User ID'] = 'ID uživatele';
 
+$GLOBALS["lang"]['user_interaction'] = 'Interakce uživatelů';
+
+$GLOBALS["lang"]['User Interaction'] = 'Interakce uživatelů';
+
 $GLOBALS["lang"]['User Membership Attribute'] = 'Atribut uživatele členství';
 
 $GLOBALS["lang"]['user_name'] = 'Uživatelské jméno';
@@ -5624,13 +5985,19 @@ $GLOBALS["lang"]['User Name'] = 'Uživatelské jméno';
 
 $GLOBALS["lang"]['User Policies'] = 'Uživatelské politiky';
 
-$GLOBALS["lang"]['username'] = 'Uživatelské jméno';
-
 $GLOBALS["lang"]['Username'] = 'Uživatelské jméno';
+
+$GLOBALS["lang"]['username'] = 'Uživatelské jméno';
 
 $GLOBALS["lang"]['users'] = 'Uživatelé';
 
 $GLOBALS["lang"]['Users'] = 'Uživatelé';
+
+$GLOBALS["lang"]['Users, Roles and Orgs'] = 'Uživatelé, Roles a Orgs';
+
+$GLOBALS["lang"]['Using Entra for Auth'] = 'Použití Entra pro Auth';
+
+$GLOBALS["lang"]['Using OKTA for Auth'] = 'Použití OKTA pro Auth';
 
 $GLOBALS["lang"]['Usually Mb/s, from Location A.'] = 'Obvykle Mb / s, z Location A.';
 
@@ -5641,6 +6008,10 @@ $GLOBALS["lang"]['Usually Mb/s, to Location A.'] = 'Obvykle Mb / s, na místo A.
 $GLOBALS["lang"]['Usually Mb/s, to Location B.'] = 'Obvykle Mb / s, na místo B.';
 
 $GLOBALS["lang"]['Uzbekistan'] = 'Uzbekistán';
+
+$GLOBALS["lang"]['VLAN'] = 'VLAN';
+
+$GLOBALS["lang"]['VLAN ID'] = 'VIN ID';
 
 $GLOBALS["lang"]['valid_from'] = 'Platné od';
 
@@ -5682,6 +6053,10 @@ $GLOBALS["lang"]['vendor'] = 'Prodejce';
 
 $GLOBALS["lang"]['Vendor'] = 'Prodejce';
 
+$GLOBALS["lang"]['vendors'] = 'Prodejci';
+
+$GLOBALS["lang"]['Vendors'] = 'Prodejci';
+
 $GLOBALS["lang"]['Venezuela'] = 'Venezuela';
 
 $GLOBALS["lang"]['version'] = 'Verze';
@@ -5691,6 +6066,10 @@ $GLOBALS["lang"]['Version'] = 'Verze';
 $GLOBALS["lang"]['version_padded'] = 'Name';
 
 $GLOBALS["lang"]['Version Padded'] = 'Name';
+
+$GLOBALS["lang"]['version_raw'] = 'Verze syrová';
+
+$GLOBALS["lang"]['Version Raw'] = 'Verze syrová';
 
 $GLOBALS["lang"]['version_string'] = 'Verze String';
 
@@ -5720,6 +6099,14 @@ $GLOBALS["lang"]['Virtualisation'] = 'Virtualizace';
 
 $GLOBALS["lang"]['Visit our YouTube channel for instructional videos.'] = 'Navštivte náš kanál YouTube pro instruktážní videa.';
 
+$GLOBALS["lang"]['vlan'] = 'Vlan';
+
+$GLOBALS["lang"]['Vlan'] = 'Vlan';
+
+$GLOBALS["lang"]['vlan_id'] = 'Vlan ID';
+
+$GLOBALS["lang"]['Vlan ID'] = 'Vlan ID';
+
 $GLOBALS["lang"]['vm'] = 'Vm';
 
 $GLOBALS["lang"]['Vm'] = 'Vm';
@@ -5739,6 +6126,26 @@ $GLOBALS["lang"]['Vm Ident'] = 'Vm Ident';
 $GLOBALS["lang"]['vm_server_name'] = 'Name';
 
 $GLOBALS["lang"]['Vm Server Name'] = 'Name';
+
+$GLOBALS["lang"]['vm_vendor'] = 'Vm Vendor';
+
+$GLOBALS["lang"]['Vm Vendor'] = 'Vm Vendor';
+
+$GLOBALS["lang"]['vuln_status'] = 'Stav vulnu';
+
+$GLOBALS["lang"]['Vuln Status'] = 'Stav vulnu';
+
+$GLOBALS["lang"]['vulnerabilities'] = 'Zranitelnost';
+
+$GLOBALS["lang"]['Vulnerabilities'] = 'Zranitelnost';
+
+$GLOBALS["lang"]['vulnerabilities_cache'] = 'Cache zranitelnosti';
+
+$GLOBALS["lang"]['Vulnerabilities Cache'] = 'Cache zranitelnosti';
+
+$GLOBALS["lang"]['vulnerability_id'] = 'Identifikace zranitelnosti';
+
+$GLOBALS["lang"]['Vulnerability ID'] = 'Identifikace zranitelnosti';
 
 $GLOBALS["lang"]['WHERE'] = 'KDE';
 
@@ -5776,6 +6183,8 @@ $GLOBALS["lang"]['Web'] = 'Web';
 
 $GLOBALS["lang"]['Webserver'] = 'Webserver';
 
+$GLOBALS["lang"]['Website'] = 'Internetová stránka';
+
 $GLOBALS["lang"]['Wednesday'] = 'Středa';
 
 $GLOBALS["lang"]['weight'] = 'Hmotnost';
@@ -5794,7 +6203,7 @@ $GLOBALS["lang"]['weight_max'] = 'Hmotnost Max';
 
 $GLOBALS["lang"]['Weight Max'] = 'Hmotnost Max';
 
-$GLOBALS["lang"]['Welcome'] = 'Vítejte';
+$GLOBALS["lang"]['Welcome'] = 'Vítejte.';
 
 $GLOBALS["lang"]['Welcome Dashboard'] = 'Vítejte na palubní desce';
 
@@ -5802,17 +6211,11 @@ $GLOBALS["lang"]['Welcome to FirstWave Open-AudIT'] = 'Vítejte v FirstWave Open
 
 $GLOBALS["lang"]['Western Sahara'] = 'Západní Sahara';
 
-$GLOBALS["lang"]['what'] = 'Co';
-
-$GLOBALS["lang"]['What'] = 'Co';
+$GLOBALS["lang"]['What Can I Expect if I Have no Credentials'] = 'Co mohu očekávat, když nemám žádné kredity';
 
 $GLOBALS["lang"]['What is the purpose of this rack.'] = 'Jaký je účel tohoto stojanu.';
 
-$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = 'Jaký je typ tohoto místa. Povolené typy v tabulce < kód > atributy < / kód >.';
-
-$GLOBALS["lang"]['when'] = 'Kdy';
-
-$GLOBALS["lang"]['When'] = 'Kdy';
+$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = 'Jaký je typ tohoto místa. Povolené typy držené v <code>attributes</code> Stůl.';
 
 $GLOBALS["lang"]['When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?'] = 'Při integraci zařízení z externího systému, pokud zařízení neexistuje v Open- Audit bychom měli vytvořit?';
 
@@ -5820,11 +6223,13 @@ $GLOBALS["lang"]['When integrating devices from the external system, if the devi
 
 $GLOBALS["lang"]['When retrieve an external device, should we run discovery upon it?'] = 'Až získáme externí zařízení, měli bychom na něj spustit objev?';
 
-$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.'] = 'Pokud má být tato referenční hodnota provedena. Odvozené z přidruženého < code > tasks.type < / code > a < code > tacks.sub _ resource _ id < / code >.';
+$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.'] = 'Pokud má být tato referenční hodnota provedena. Odvozené od přidružených <code>tasks.type</code> a <code>tasks.sub_resource_id</code>.';
 
 $GLOBALS["lang"]['When this log was created.'] = 'Když byl tento záznam vytvořen.';
 
 $GLOBALS["lang"]['When this queue item started processing.'] = 'Když tato fronta položka začala zpracovávat.';
+
+$GLOBALS["lang"]['When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.'] = 'Při provádění této základní hodnoty, měli bychom zkontrolovat položky na zařízeních, které nejsou v politice pro tuto základní hodnotu.';
 
 $GLOBALS["lang"]['When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.'] = 'Když obdržíme otevřený port, měli bychom se pokusit otestovat verzi služby, která na něm právě probíhá? To pomáhá při potvrzení skutečné služby provozu.';
 
@@ -5836,13 +6241,19 @@ $GLOBALS["lang"]['Where on the Device Details screen you would like to see this 
 
 $GLOBALS["lang"]['Where the rack is in the row.'] = 'Kde je věšák v řadě.';
 
+$GLOBALS["lang"]['Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.'] = 'Zda zranitelnost ovlivňuje komponenty mimo její vlastní použití Impact, Dostupnost a důvěrnost.';
+
+$GLOBALS["lang"]['Whether user interaction is required (None, Passive, Active).'] = 'Zda je vyžadována interakce uživatelů (žádná, pasivní, aktivní).';
+
 $GLOBALS["lang"]['Which OS this benchmark applies to.'] = 'Na který OS se tato referenční hodnota vztahuje.';
 
 $GLOBALS["lang"]['Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.'] = 'Která zařízení by měla Open- Audit vytvořit z externího systému (pokud existuje). Použití All, Žádný nebo daný Atribut.';
 
 $GLOBALS["lang"]['Which sub-menu should we display this query in.'] = 'V jakém podmenu bychom měli tento dotaz zobrazit.';
 
-$GLOBALS["lang"]['Who made this rack.'] = 'Kdo to udělal.';
+$GLOBALS["lang"]['Who made this rack.'] = 'Kdo to udělal?';
+
+$GLOBALS["lang"]['Why Windows Server Only?'] = 'Proč jen Windows Server?';
 
 $GLOBALS["lang"]['Why do we exclude this policy?'] = 'Proč tuto politiku vylučujeme?';
 
@@ -5850,7 +6261,7 @@ $GLOBALS["lang"]['Wide Area Network'] = 'Široká síť oblastí';
 
 $GLOBALS["lang"]['Widget'] = 'Widget';
 
-$GLOBALS["lang"]['Widget # '] = 'Widget #';
+$GLOBALS["lang"]['Widget # '] = 'Widget # ';
 
 $GLOBALS["lang"]['Widget Type'] = 'Typ widgetu';
 
@@ -5865,6 +6276,8 @@ $GLOBALS["lang"]['Width'] = 'Šířka';
 $GLOBALS["lang"]['windows'] = 'Okna';
 
 $GLOBALS["lang"]['Windows'] = 'Okna';
+
+$GLOBALS["lang"]['Windows Test Script'] = 'Name';
 
 $GLOBALS["lang"]['Wireless Local Area Network'] = 'Bezdrátová síť místních oblastí';
 
@@ -5888,7 +6301,7 @@ $GLOBALS["lang"]['Yellow Query'] = 'Žlutý dotaz';
 
 $GLOBALS["lang"]['Yemen'] = 'Jemen';
 
-$GLOBALS["lang"]['Yes'] = 'Ano';
+$GLOBALS["lang"]['Yes'] = 'Ano.';
 
 $GLOBALS["lang"]['You may want to copy and paste this URL in an email to your staff.'] = 'Můžete chtít zkopírovat a vložit tuto URL v e-mailu pro své zaměstnance.';
 
@@ -5938,9 +6351,9 @@ $GLOBALS["lang"]['active/active'] = 'aktivní / aktivní';
 
 $GLOBALS["lang"]['active/passive'] = 'aktivní / pasivní';
 
-$GLOBALS["lang"]['ad hoc'] = 'ad hoc';
+$GLOBALS["lang"]['advertisement'] = 'reklama';
 
-$GLOBALS["lang"]['alert'] = 'varování';
+$GLOBALS["lang"]['alert'] = 'Varování';
 
 $GLOBALS["lang"]['all'] = 'všechny';
 
@@ -5962,15 +6375,23 @@ $GLOBALS["lang"]['backup'] = 'zálohování';
 
 $GLOBALS["lang"]['banned'] = 'zakázáno';
 
+$GLOBALS["lang"]['blog'] = 'blog';
+
 $GLOBALS["lang"]['bottom'] = 'dole';
+
+$GLOBALS["lang"]['browser_lang'] = 'browser _ lang';
 
 $GLOBALS["lang"]['building'] = 'budova';
 
 $GLOBALS["lang"]['cloud'] = 'oblak';
 
+$GLOBALS["lang"]['code'] = 'Kód';
+
 $GLOBALS["lang"]['collector'] = 'kolektor';
 
 $GLOBALS["lang"]['compute'] = 'výpočet';
+
+$GLOBALS["lang"]['config'] = 'config';
 
 $GLOBALS["lang"]['contains'] = 'obsahuje';
 
@@ -5980,11 +6401,11 @@ $GLOBALS["lang"]['created'] = 'vytvořeno';
 
 $GLOBALS["lang"]['critical'] = 'kritický';
 
+$GLOBALS["lang"]['cve'] = 'cve';
+
 $GLOBALS["lang"]['database'] = 'databáze';
 
 $GLOBALS["lang"]['debug'] = 'ladění';
-
-$GLOBALS["lang"]['defined process'] = 'definovaný proces';
 
 $GLOBALS["lang"]['delegated'] = 'přeneseno';
 
@@ -6008,19 +6429,45 @@ $GLOBALS["lang"]['equals'] = 'rovná se';
 
 $GLOBALS["lang"]['error'] = 'chyba';
 
+$GLOBALS["lang"]['established'] = 'stanovené';
+
 $GLOBALS["lang"]['excluded'] = 'vyloučena';
 
 $GLOBALS["lang"]['expired'] = 'vypršela';
+
+$GLOBALS["lang"]['extreme - Without which, the organisation would fail.
+
+very high - Functions that are essential for the organisations survival and must be restored immediately.
+
+high - Important functions that should be restored quickly but may have a slightly longer recovery time.
+
+medium - Functions that are necessary but can tolerate longer downtime.
+
+low - Non-essential functions that can be delayed without significant impact.
+
+unassigned - The default until set.'] = 'extreme - Bez toho by organizace neuspěla.
+
+velmi vysoká - funkce, které jsou nezbytné pro přežití organizací a musí být okamžitě obnoveny.
+
+vysoká - Důležité funkce, které by měly být obnoveny rychle, ale mohou mít mírně delší dobu zotavení.
+
+medium - funkce, které jsou nezbytné, ale mohou tolerovat delší prostoje.
+
+nízké - Non- základní funkce, které mohou být odloženy bez výrazného dopadu.
+
+unaloshed - Výchozí až do nastavení.';
 
 $GLOBALS["lang"]['fail'] = 'selhání';
 
 $GLOBALS["lang"]['false'] = 'false';
 
+$GLOBALS["lang"]['file'] = 'soubor';
+
 $GLOBALS["lang"]['firewall'] = 'firewall';
 
 $GLOBALS["lang"]['fixed'] = 'pevný';
 
-$GLOBALS["lang"]['floor'] = 'podlaha';
+$GLOBALS["lang"]['floor'] = 'Podlaha';
 
 $GLOBALS["lang"]['front'] = 'vpředu';
 
@@ -6030,7 +6477,7 @@ $GLOBALS["lang"]['front-right'] = 'přední strana vpravo';
 
 $GLOBALS["lang"]['github'] = 'github';
 
-$GLOBALS["lang"]['google'] = 'google';
+$GLOBALS["lang"]['google'] = 'Google';
 
 $GLOBALS["lang"]['greater or equals'] = 'větší nebo rovno';
 
@@ -6040,9 +6487,11 @@ $GLOBALS["lang"]['group'] = 'skupina';
 
 $GLOBALS["lang"]['head'] = 'hlava';
 
-$GLOBALS["lang"]['here'] = 'tady';
+$GLOBALS["lang"]['here'] = 'Tady.';
 
 $GLOBALS["lang"]['high availability'] = 'vysoká dostupnost';
+
+$GLOBALS["lang"]['howto'] = 'Jak';
 
 $GLOBALS["lang"]['ignored'] = 'ignorováno';
 
@@ -6050,9 +6499,11 @@ $GLOBALS["lang"]['in'] = 'n';
 
 $GLOBALS["lang"]['inactive'] = 'neaktivní';
 
+$GLOBALS["lang"]['incomplete'] = 'neúplná';
+
 $GLOBALS["lang"]['info'] = 'info';
 
-$GLOBALS["lang"]['int, text, bool (y/n), etc'] = 'int, text, bool (y / n) atd';
+$GLOBALS["lang"]['int, text, bool (y/n), etc'] = 'int, text, bool (y / n) atd.';
 
 $GLOBALS["lang"]['is licensed to'] = 'je licencován';
 
@@ -6064,7 +6515,7 @@ $GLOBALS["lang"]['less than'] = 'méně než';
 
 $GLOBALS["lang"]['license'] = 'licence';
 
-$GLOBALS["lang"]['like'] = 'jako';
+$GLOBALS["lang"]['like'] = 'Jako';
 
 $GLOBALS["lang"]['line'] = 'řádek';
 
@@ -6072,7 +6523,7 @@ $GLOBALS["lang"]['load balancing'] = 'vyvažování nákladu';
 
 $GLOBALS["lang"]['location'] = 'místo';
 
-$GLOBALS["lang"]['managed and measurable'] = 'řízený a měřitelný';
+$GLOBALS["lang"]['managed'] = 'řízeno';
 
 $GLOBALS["lang"]['microsoft'] = 'microsoft';
 
@@ -6080,11 +6531,11 @@ $GLOBALS["lang"]['mount point'] = 'bod montáže';
 
 $GLOBALS["lang"]['network'] = 'síť';
 
+$GLOBALS["lang"]['news'] = 'novinky';
+
 $GLOBALS["lang"]['no'] = 'ne';
 
 $GLOBALS["lang"]['node'] = 'uzel';
-
-$GLOBALS["lang"]['non-existent'] = 'neexistující';
 
 $GLOBALS["lang"]['none'] = 'žádný';
 
@@ -6098,27 +6549,35 @@ $GLOBALS["lang"]['not like'] = 'ne jako';
 
 $GLOBALS["lang"]['notice'] = 'oznámení';
 
+$GLOBALS["lang"]['notification'] = 'oznámení';
+
 $GLOBALS["lang"]['okta'] = 'okta';
 
 $GLOBALS["lang"]['openldap'] = 'openldap';
 
 $GLOBALS["lang"]['optimized'] = 'optimalizováno';
 
-$GLOBALS["lang"]['optionally '] = 'volitelně';
+$GLOBALS["lang"]['optionally '] = 'volitelně ';
 
 $GLOBALS["lang"]['other'] = 'ostatní';
+
+$GLOBALS["lang"]['package'] = 'balíček';
 
 $GLOBALS["lang"]['partition'] = 'oddíl';
 
 $GLOBALS["lang"]['pass'] = 'projít';
 
-$GLOBALS["lang"]['pending'] = 'probíhající';
+$GLOBALS["lang"]['pending'] = 'Probíhající';
 
 $GLOBALS["lang"]['performance'] = 'výkon';
+
+$GLOBALS["lang"]['performed'] = 'provedeno';
 
 $GLOBALS["lang"]['pie'] = 'koláč';
 
 $GLOBALS["lang"]['planning'] = 'plánování';
+
+$GLOBALS["lang"]['predictable'] = 'předvídatelné';
 
 $GLOBALS["lang"]['query'] = 'dotaz';
 
@@ -6130,11 +6589,11 @@ $GLOBALS["lang"]['rear-right'] = 'vpravo dozadu';
 
 $GLOBALS["lang"]['regex'] = 'regex';
 
-$GLOBALS["lang"]['repeatable but intuitive'] = 'opakovatelné, ale intuitivní';
+$GLOBALS["lang"]['release'] = 'uvolnění';
 
 $GLOBALS["lang"]['reserved'] = 'vyhrazeno';
 
-$GLOBALS["lang"]['right'] = 'správně';
+$GLOBALS["lang"]['right'] = 'Správně.';
 
 $GLOBALS["lang"]['room'] = 'pokoj';
 
@@ -6151,6 +6610,36 @@ $GLOBALS["lang"]['storage'] = 'skladování';
 $GLOBALS["lang"]['timestamp'] = 'časové razítko';
 
 $GLOBALS["lang"]['top'] = 'nahoře';
+
+$GLOBALS["lang"]['top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
+
+secret - Military / Government classification. Disclosure would cause serious damage to national security.
+
+confidential - Military / Government and Private Sector classification. Data that is confidential includes trade secrets, intellectual data, application programming code, and other data that could seriously affect the organization if unauthorized disclosure occurred. Data at this level would be available only to personnel in the organization whose work needs, or is directly related to, the accessed data. Access to confidential data usually requires authorization for each access.
+
+private - Private Sector classification. Data that is private includes any information related to personnel, including human resources records, medical records, and salary information, that is used only within the organization.
+
+sensitive - Military / Government and Private Sector classification. Data that is sensitive includes organizational financial information and requires extra measures to ensure its CIA and accuracy. Disclosure might harm national security.
+
+public - Private Sector classification. Public data is data that is generally shared with the public and would not cause a negative impact on the organization. Examples of public data include how many people work in the organization and what products an organization manufactures or sells.
+
+unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
+
+unassigned - The default until set.'] = 'přísně tajné - vojensko-vládní klasifikace. Zveřejnění by způsobilo mimořádně vážné nebezpečí pro národní bezpečnost.
+
+tajné - vojensko-vládní klasifikace. Zveřejnění by způsobilo vážnou škodu národní bezpečnosti.
+
+důvěrné - klasifikace vojenského / vládního a soukromého sektoru. Mezi důvěrné údaje patří obchodní tajemství, intelektuální data, programovací kód aplikace a další údaje, které by mohly vážně ovlivnit organizaci, pokud by došlo k neoprávněnému zveřejnění. Údaje na této úrovni by byly k dispozici pouze pracovníkům v organizaci, jejichž pracovní potřeby nebo s nimi přímo souvisí. Přístup k důvěrným údajům obvykle vyžaduje povolení pro každý přístup.
+
+klasifikace soukromého sektoru. Údaje, které jsou soukromé, zahrnují veškeré informace týkající se personálu, včetně záznamů o lidských zdrojích, lékařských záznamů a mzdových informací, které se používají pouze v rámci organizace.
+
+citlivé - klasifikace vojenského / vládního a soukromého sektoru. Údaje, které jsou citlivé, zahrnují organizační finanční informace a vyžadují další opatření k zajištění její CIA a přesnosti. Zveřejnění by mohlo poškodit národní bezpečnost.
+
+veřejná - klasifikace soukromého sektoru. Veřejná data jsou obecně sdílená s veřejností a nemají negativní dopad na organizaci. Příklady veřejných údajů zahrnují, kolik lidí pracuje v organizaci a jaké produkty organizace vyrábí nebo prodává.
+
+neklasifikované - vojenské / vládní klasifikace. Veškeré informace, které mohou být obecně distribuovány veřejnosti bez ohrožení národního zájmu.
+
+unaloshed - Výchozí až do nastavení.';
 
 $GLOBALS["lang"]['traffic'] = 'provoz';
 
@@ -6667,3 +7156,4 @@ $GLOBALS["lang"]['YE'] = 'YE';
 $GLOBALS["lang"]['ZM'] = 'ZM';
 
 $GLOBALS["lang"]['ZW'] = 'ZW';
+

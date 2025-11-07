@@ -4,11 +4,11 @@
 include 'shared/collection_functions.php';
 $help_button = "";
 if ($user->toolbar_style === 'icontext') {
-    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($meta->collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __("Help") . "</a>";
+    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($meta->collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __('Help') . "</a>";
 } elseif ($user->toolbar_style === 'icon') {
-    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($meta->collection . 'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
+    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($meta->collection . 'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
 } else {
-    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __("Help") . "\" href=\"" . url_to($meta->collection . 'Help') . "\">" . __("Help") . "</a>";
+    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($meta->collection . 'Help') . "\">" . __('Help') . "</a>";
 }
 $instance = & get_instance();
 $colour = '';

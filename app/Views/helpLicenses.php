@@ -11,7 +11,7 @@ $class = '';
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-4 offset-4">
+                        <div class="col-6 offset-3">
                             <?php if (!empty($license)) { ?>
                             <h1 class="text-center"><?= strtoupper($license) ?></h1>
                             <?php } ?>
@@ -20,11 +20,11 @@ $class = '';
 <?php if (!empty($license_contents)) { ?>
     <?= $license_contents ?>
 <?php } else { ?>
-The purpose of this licensing page is to list the products and licenses included in Firstwave Commercial products including products based upon open source works.
+<?= __('The purpose of this licensing page is to list the products and licenses included in Firstwave Commercial products including products based upon open source works.
 
 Open-AudIT is licensed from Firstwave under AGPLv3 or later with Enterprise and Professional functionality licensed under commercial terms.
 
-Open-AudIT when downloaded from FirstWave may include the following libraries and projects, which are supplied unmodified and licensed as indicated:
+Open-AudIT when downloaded from FirstWave may include the following libraries and projects, which are supplied unmodified and licensed as indicated:') ?>
 </pre>
 
 <table style="width:100%;">
@@ -81,7 +81,7 @@ Open-AudIT when downloaded from FirstWave may include the following libraries an
         </tr>
         <tr>
             <td>HighCharts</td>
-            <td>Proprietary. If you want to modify HighCharts you may require a <a target="_blank" href="https://shop.highcharts.com">license</a>, you do not require a HighCharts license to use Firstwave products. License <a href="https://shop.highcharts.com/license" target="_blank">details</a>.</td>
+            <td><?= ('Proprietary. If you want to modify HighCharts you may require a') ?> <a target="_blank" href="https://shop.highcharts.com"><?= __('license') ?></a>, <?= __('you do not require a HighCharts license to use Firstwave products. License') ?> <a href="https://shop.highcharts.com/license" target="_blank"><?= __('details') ?></a>.</td>
         </tr>
     </tbody>
 </table>

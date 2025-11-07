@@ -1,5 +1,4 @@
 <?php
-
 $GLOBALS["lang"][' Default, currently '] = ' Default, currently ';
 
 $GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = ' is now supported with a language file. To change your user to use this language, click ';
@@ -16,13 +15,15 @@ $GLOBALS["lang"]['5 Minutes'] = '5 Minutes';
 
 $GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.';
 
+$GLOBALS["lang"]['<p></p>'] = '<p></p>';
+
 $GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>';
 
 $GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>';
 
 $GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>';
 
-$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br>Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br> <br></p>'] = '<p>A network is derived from discovery entries and device attributes.<br> <br>Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br> <br></p>';
+$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br></p>'] = '<p>A network is derived from discovery entries and device attributes.<br> <br></p>';
 
 $GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>';
 
@@ -36,7 +37,7 @@ $GLOBALS["lang"]['<p>Being able to determine which machines are configured the s
 
 $GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>';
 
-$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>';
+$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>';
 
 $GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>';
 
@@ -73,8 +74,6 @@ $GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabl
 $GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>';
 
 $GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>';
-
-$GLOBALS["lang"]['<p>It is easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen over time. All the devices discovered last week, last month or any other period. New software found. What about devices that have not been seen - where are they? How useful to be able to specify these items over time.<br> <br></p>'] = '<p>It is easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen over time. All the devices discovered last week, last month or any other period. New software found. What about devices that have not been seen - where are they? How useful to be able to specify these items over time.<br> <br></p>';
 
 $GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>';
 
@@ -116,6 +115,8 @@ $GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backu
 
 $GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>';
 
+$GLOBALS["lang"]['<p>Standards are stored in Open-AudIT.<br /><br /><br /><br /></p>'] = '<p>Standards are stored in Open-AudIT.<br /><br /><br /><br /></p>';
+
 $GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '<p>Supported clients are Linux only.<br> <br></p>';
 
 $GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>';
@@ -150,6 +151,8 @@ $GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>
 
 $GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>';
 
+$GLOBALS["lang"]['<p>Vulnerabilities reporting based on the NIST CVE feed.<br> <br></p>'] = '<p>Vulnerabilities reporting based on the NIST CVE feed.<br> <br></p>';
+
 $GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>';
 
 $GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>';
@@ -167,6 +170,10 @@ $GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are locat
 $GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = 'A Google Maps API Key is required for this function.';
 
 $GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = 'A JSON array of device IDs that will have this benchmark executed.';
+
+$GLOBALS["lang"]['A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.'] = 'A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.';
+
+$GLOBALS["lang"]['A JSON array of values to test for this vulnerability.'] = 'A JSON array of values to test for this vulnerability.';
 
 $GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = 'A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.';
 
@@ -200,6 +207,8 @@ $GLOBALS["lang"]['A calculated field that displays the number of times this piec
 
 $GLOBALS["lang"]['A collector is either in Collector or Stand-Alone mode.'] = 'A collector is either in Collector or Stand-Alone mode.';
 
+$GLOBALS["lang"]['A comma separated list of applicable CVEs.'] = 'A comma separated list of applicable CVEs.';
+
 $GLOBALS["lang"]['A comma separated list of values, one of which can be selected.'] = 'A comma separated list of values, one of which can be selected.';
 
 $GLOBALS["lang"]['A command to run. When the agent is Windows based, this command is run from within the powershell agent.'] = 'A command to run. When the agent is Windows based, this command is run from within the powershell agent.';
@@ -222,6 +231,12 @@ $GLOBALS["lang"]['A short description of the log entry.'] = 'A short description
 
 $GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = 'A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.';
 
+$GLOBALS["lang"]['A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).'] = 'A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).';
+
+$GLOBALS["lang"]['A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).'] = 'A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).';
+
+$GLOBALS["lang"]['A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).'] = 'A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).';
+
 $GLOBALS["lang"]['AD Group'] = 'AD Group';
 
 $GLOBALS["lang"]['ADSL, HFC, ISDN, etc.'] = 'ADSL, HFC, ISDN, etc.';
@@ -231,6 +246,8 @@ $GLOBALS["lang"]['AIX'] = 'AIX';
 $GLOBALS["lang"]['ALL IPs'] = 'ALL IPs';
 
 $GLOBALS["lang"]['API / Web Access'] = 'API / Web Access';
+
+$GLOBALS["lang"]['API Documentation'] = 'API Documentation';
 
 $GLOBALS["lang"]['API Key required.'] = 'API Key required.';
 
@@ -272,6 +289,10 @@ $GLOBALS["lang"]['action_command'] = 'Action Command';
 
 $GLOBALS["lang"]['Action Command'] = 'Action Command';
 
+$GLOBALS["lang"]['action_date'] = 'Action Date';
+
+$GLOBALS["lang"]['Action Date'] = 'Action Date';
+
 $GLOBALS["lang"]['action_devices_assigned_to_location'] = 'Action Devices Assigned To Location';
 
 $GLOBALS["lang"]['Action Devices Assigned To Location'] = 'Action Devices Assigned To Location';
@@ -288,11 +309,25 @@ $GLOBALS["lang"]['action_uninstall'] = 'Action Uninstall';
 
 $GLOBALS["lang"]['Action Uninstall'] = 'Action Uninstall';
 
+$GLOBALS["lang"]['actioned'] = 'Actioned';
+
+$GLOBALS["lang"]['Actioned'] = 'Actioned';
+
+$GLOBALS["lang"]['actioned_by'] = 'Actioned By';
+
+$GLOBALS["lang"]['Actioned By'] = 'Actioned By';
+
+$GLOBALS["lang"]['actioned_date'] = 'Actioned Date';
+
+$GLOBALS["lang"]['Actioned Date'] = 'Actioned Date';
+
 $GLOBALS["lang"]['actions'] = 'Actions';
 
 $GLOBALS["lang"]['Actions'] = 'Actions';
 
 $GLOBALS["lang"]['Activate'] = 'Activate';
+
+$GLOBALS["lang"]['Activate Free License'] = 'Activate Free License';
 
 $GLOBALS["lang"]['Activate Key'] = 'Activate Key';
 
@@ -358,6 +393,8 @@ $GLOBALS["lang"]['address'] = 'Address';
 
 $GLOBALS["lang"]['Address'] = 'Address';
 
+$GLOBALS["lang"]['Admin'] = 'Admin';
+
 $GLOBALS["lang"]['admin_status'] = 'Admin Status';
 
 $GLOBALS["lang"]['Admin Status'] = 'Admin Status';
@@ -377,6 +414,10 @@ $GLOBALS["lang"]['Aggressive'] = 'Aggressive';
 $GLOBALS["lang"]['Aland Islands'] = 'Aland Islands';
 
 $GLOBALS["lang"]['Albania'] = 'Albania';
+
+$GLOBALS["lang"]['alert_style'] = 'Alert Style';
+
+$GLOBALS["lang"]['Alert Style'] = 'Alert Style';
 
 $GLOBALS["lang"]['Algeria'] = 'Algeria';
 
@@ -403,6 +444,8 @@ $GLOBALS["lang"]['American Samoa'] = 'American Samoa';
 $GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = 'An array of <code>benchmarks.id</code>.';
 
 $GLOBALS["lang"]['An array of <code>devices.id</code>.'] = 'An array of <code>devices.id</code>.';
+
+$GLOBALS["lang"]['An array of object representing external links to more information.'] = 'An array of object representing external links to more information.';
 
 $GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = 'An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.';
 
@@ -457,6 +500,8 @@ $GLOBALS["lang"]['application_id'] = 'Application ID';
 $GLOBALS["lang"]['Application ID'] = 'Application ID';
 
 $GLOBALS["lang"]['Application Licenses'] = 'Application Licenses';
+
+$GLOBALS["lang"]['Application, Operating System or Hardware.'] = 'Application, Operating System or Hardware.';
 
 $GLOBALS["lang"]['applications'] = 'Applications';
 
@@ -556,6 +601,18 @@ $GLOBALS["lang"]['attachments'] = 'Attachments';
 
 $GLOBALS["lang"]['Attachments'] = 'Attachments';
 
+$GLOBALS["lang"]['attack_complexity'] = 'Attack Complexity';
+
+$GLOBALS["lang"]['Attack Complexity'] = 'Attack Complexity';
+
+$GLOBALS["lang"]['attack_requirements'] = 'Attack Requirements';
+
+$GLOBALS["lang"]['Attack Requirements'] = 'Attack Requirements';
+
+$GLOBALS["lang"]['attack_vector'] = 'Attack Vector';
+
+$GLOBALS["lang"]['Attack Vector'] = 'Attack Vector';
+
 $GLOBALS["lang"]['Attribute'] = 'Attribute';
 
 $GLOBALS["lang"]['attributes'] = 'Attributes';
@@ -594,15 +651,29 @@ $GLOBALS["lang"]['Australia'] = 'Australia';
 
 $GLOBALS["lang"]['Austria'] = 'Austria';
 
-$GLOBALS["lang"]['auth'] = 'Auth';
-
 $GLOBALS["lang"]['Auth'] = 'Auth';
+
+$GLOBALS["lang"]['auth'] = 'Auth';
 
 $GLOBALS["lang"]['Authentication Passphrase'] = 'Authentication Passphrase';
 
+$GLOBALS["lang"]['authority_key_ident'] = 'Authority Key Ident';
+
+$GLOBALS["lang"]['Authority Key Ident'] = 'Authority Key Ident';
+
 $GLOBALS["lang"]['Auto'] = 'Auto';
 
+$GLOBALS["lang"]['auto_renew'] = 'Auto Renew';
+
+$GLOBALS["lang"]['Auto Renew'] = 'Auto Renew';
+
 $GLOBALS["lang"]['Auto populated by the Open-AudIT Server.'] = 'Auto populated by the Open-AudIT Server.';
+
+$GLOBALS["lang"]['AutoRenew'] = 'AutoRenew';
+
+$GLOBALS["lang"]['automatable'] = 'Automatable';
+
+$GLOBALS["lang"]['Automatable'] = 'Automatable';
 
 $GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = 'Automatically populated based on the Collectors OS.';
 
@@ -638,6 +709,14 @@ $GLOBALS["lang"]['Barbados'] = 'Barbados';
 
 $GLOBALS["lang"]['Base DN'] = 'Base DN';
 
+$GLOBALS["lang"]['base_score'] = 'Base Score';
+
+$GLOBALS["lang"]['Base Score'] = 'Base Score';
+
+$GLOBALS["lang"]['base_severity'] = 'Base Severity';
+
+$GLOBALS["lang"]['Base Severity'] = 'Base Severity';
+
 $GLOBALS["lang"]['based_on'] = 'Based On';
 
 $GLOBALS["lang"]['Based On'] = 'Based On';
@@ -667,10 +746,6 @@ $GLOBALS["lang"]['baselines_results'] = 'Baselines Results';
 $GLOBALS["lang"]['Baselines Results'] = 'Baselines Results';
 
 $GLOBALS["lang"]['Basic'] = 'Basic';
-
-$GLOBALS["lang"]['batch'] = 'Batch';
-
-$GLOBALS["lang"]['Batch'] = 'Batch';
 
 $GLOBALS["lang"]['Belarus'] = 'Belarus';
 
@@ -717,6 +792,10 @@ $GLOBALS["lang"]['Bhutan'] = 'Bhutan';
 $GLOBALS["lang"]['bios'] = 'Bios';
 
 $GLOBALS["lang"]['Bios'] = 'Bios';
+
+$GLOBALS["lang"]['body'] = 'Body';
+
+$GLOBALS["lang"]['Body'] = 'Body';
 
 $GLOBALS["lang"]['Bolivia'] = 'Bolivia';
 
@@ -772,6 +851,8 @@ $GLOBALS["lang"]['Bulgaria'] = 'Bulgaria';
 
 $GLOBALS["lang"]['Bulk Edit'] = 'Bulk Edit';
 
+$GLOBALS["lang"]['Bulk Editing Device Attributes'] = 'Bulk Editing Device Attributes';
+
 $GLOBALS["lang"]['Burkina Faso'] = 'Burkina Faso';
 
 $GLOBALS["lang"]['Burundi'] = 'Burundi';
@@ -783,6 +864,8 @@ $GLOBALS["lang"]['Business Requirements'] = 'Business Requirements';
 $GLOBALS["lang"]['Buy'] = 'Buy';
 
 $GLOBALS["lang"]['Buy More'] = 'Buy More';
+
+$GLOBALS["lang"]['Buy More Licenses'] = 'Buy More Licenses';
 
 $GLOBALS["lang"]['By'] = 'By';
 
@@ -799,6 +882,8 @@ $GLOBALS["lang"]['CPU'] = 'CPU';
 $GLOBALS["lang"]['CPUs'] = 'CPUs';
 
 $GLOBALS["lang"]['CSV'] = 'CSV';
+
+$GLOBALS["lang"]['CVE'] = 'CVE';
 
 $GLOBALS["lang"]['Calculated from discovery.'] = 'Calculated from discovery.';
 
@@ -838,6 +923,8 @@ $GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = 'Can b
 
 $GLOBALS["lang"]['Can be set by discovery or user.'] = 'Can be set by discovery or user.';
 
+$GLOBALS["lang"]['Can be set by discovery or user. Uses the ID from the locations table.'] = 'Can be set by discovery or user. Uses the ID from the locations table.';
+
 $GLOBALS["lang"]['Can the user edit this item.'] = 'Can the user edit this item.';
 
 $GLOBALS["lang"]['Canada'] = 'Canada';
@@ -868,6 +955,14 @@ $GLOBALS["lang"]['certificate'] = 'Certificate';
 
 $GLOBALS["lang"]['Certificate'] = 'Certificate';
 
+$GLOBALS["lang"]['certificate_file'] = 'Certificate File';
+
+$GLOBALS["lang"]['Certificate File'] = 'Certificate File';
+
+$GLOBALS["lang"]['certificate_name'] = 'Certificate Name';
+
+$GLOBALS["lang"]['Certificate Name'] = 'Certificate Name';
+
 $GLOBALS["lang"]['certificates'] = 'Certificates';
 
 $GLOBALS["lang"]['Certificates'] = 'Certificates';
@@ -885,10 +980,6 @@ $GLOBALS["lang"]['Change Log'] = 'Change Log';
 $GLOBALS["lang"]['change_type'] = 'Change Type';
 
 $GLOBALS["lang"]['Change Type'] = 'Change Type';
-
-$GLOBALS["lang"]['chart'] = 'Chart';
-
-$GLOBALS["lang"]['Chart'] = 'Chart';
 
 $GLOBALS["lang"]['check_minutes'] = 'Check Minutes';
 
@@ -1056,6 +1147,14 @@ $GLOBALS["lang"]['comments'] = 'Comments';
 
 $GLOBALS["lang"]['Comments'] = 'Comments';
 
+$GLOBALS["lang"]['commercial'] = 'Commercial';
+
+$GLOBALS["lang"]['Commercial'] = 'Commercial';
+
+$GLOBALS["lang"]['common_name'] = 'Common Name';
+
+$GLOBALS["lang"]['Common Name'] = 'Common Name';
+
 $GLOBALS["lang"]['Commonly referred to as the clientId.'] = 'Commonly referred to as the clientId.';
 
 $GLOBALS["lang"]['Commonly referred to as the clientSecret.'] = 'Commonly referred to as the clientSecret.';
@@ -1070,6 +1169,10 @@ $GLOBALS["lang"]['Comoros the'] = 'Comoros the';
 
 $GLOBALS["lang"]['Compact'] = 'Compact';
 
+$GLOBALS["lang"]['Company'] = 'Company';
+
+$GLOBALS["lang"]['Complexity of the attack (Low or High).'] = 'Complexity of the attack (Low or High).';
+
 $GLOBALS["lang"]['Component Table'] = 'Component Table';
 
 $GLOBALS["lang"]['Components (All Devices)'] = 'Components (All Devices)';
@@ -1077,8 +1180,6 @@ $GLOBALS["lang"]['Components (All Devices)'] = 'Components (All Devices)';
 $GLOBALS["lang"]['Compute'] = 'Compute';
 
 $GLOBALS["lang"]['Condition'] = 'Condition';
-
-$GLOBALS["lang"]['config'] = 'Config';
 
 $GLOBALS["lang"]['Config'] = 'Config';
 
@@ -1095,6 +1196,8 @@ $GLOBALS["lang"]['Config Manager Error Code'] = 'Config Manager Error Code';
 $GLOBALS["lang"]['configuration'] = 'Configuration';
 
 $GLOBALS["lang"]['Configuration'] = 'Configuration';
+
+$GLOBALS["lang"]['Configure'] = 'Configure';
 
 $GLOBALS["lang"]['Congo'] = 'Congo';
 
@@ -1212,10 +1315,6 @@ $GLOBALS["lang"]['Create Open-AudIT Devices from '] = 'Create Open-AudIT Devices
 
 $GLOBALS["lang"]['Create Open-AudIT Devices from NMIS'] = 'Create Open-AudIT Devices from NMIS';
 
-$GLOBALS["lang"]['created_at'] = 'Created At';
-
-$GLOBALS["lang"]['Created At'] = 'Created At';
-
 $GLOBALS["lang"]['created_by'] = 'Created By';
 
 $GLOBALS["lang"]['Created By'] = 'Created By';
@@ -1225,6 +1324,10 @@ $GLOBALS["lang"]['created_date'] = 'Created Date';
 $GLOBALS["lang"]['Created Date'] = 'Created Date';
 
 $GLOBALS["lang"]['Creating'] = 'Creating';
+
+$GLOBALS["lang"]['Creating Device'] = 'Creating Device';
+
+$GLOBALS["lang"]['Creating a Query'] = 'Creating a Query';
 
 $GLOBALS["lang"]['creator'] = 'Creator';
 
@@ -1238,6 +1341,22 @@ $GLOBALS["lang"]['credentials'] = 'Credentials';
 
 $GLOBALS["lang"]['Credentials'] = 'Credentials';
 
+$GLOBALS["lang"]['Credentials Client ID'] = 'Credentials Client ID';
+
+$GLOBALS["lang"]['Credentials Subscription ID'] = 'Credentials Subscription ID';
+
+$GLOBALS["lang"]['Credentials Tenant ID'] = 'Credentials Tenant ID';
+
+$GLOBALS["lang"]['Credentials for Amazon AWS used in Cloud Discovery'] = 'Credentials for Amazon AWS used in Cloud Discovery';
+
+$GLOBALS["lang"]['Credentials for Microsoft Azure used in Cloud Discovery'] = 'Credentials for Microsoft Azure used in Cloud Discovery';
+
+$GLOBALS["lang"]['Critical'] = 'Critical';
+
+$GLOBALS["lang"]['criticality'] = 'Criticality';
+
+$GLOBALS["lang"]['Criticality'] = 'Criticality';
+
 $GLOBALS["lang"]['Croatia'] = 'Croatia';
 
 $GLOBALS["lang"]['Cuba'] = 'Cuba';
@@ -1250,11 +1369,15 @@ $GLOBALS["lang"]['Current Discovery Processes'] = 'Current Discovery Processes';
 
 $GLOBALS["lang"]['Current date & time is '] = 'Current date & time is ';
 
+$GLOBALS["lang"]['Currently Installed'] = 'Currently Installed';
+
 $GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = 'Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.';
 
 $GLOBALS["lang"]['Custom TCP Ports'] = 'Custom TCP Ports';
 
 $GLOBALS["lang"]['Custom UDP Ports'] = 'Custom UDP Ports';
+
+$GLOBALS["lang"]['Cve'] = 'Cve';
 
 $GLOBALS["lang"]['Cyprus'] = 'Cyprus';
 
@@ -1330,6 +1453,12 @@ $GLOBALS["lang"]['Date Received'] = 'Date Received';
 
 $GLOBALS["lang"]['Date Y-M-D'] = 'Date Y-M-D';
 
+$GLOBALS["lang"]['Date and time when the CVE was last updated.'] = 'Date and time when the CVE was last updated.';
+
+$GLOBALS["lang"]['Date and time when the CVE was published.'] = 'Date and time when the CVE was published.';
+
+$GLOBALS["lang"]['Date when the CVE was published.'] = 'Date when the CVE was published.';
+
 $GLOBALS["lang"]['DateTime Now'] = 'DateTime Now';
 
 $GLOBALS["lang"]['DateTime Y-M-D H:M:S'] = 'DateTime Y-M-D H:M:S';
@@ -1362,6 +1491,8 @@ $GLOBALS["lang"]['Default of 389. Normally 636 used for Active Directory LDAPS.'
 
 $GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = 'Default of <code>3</code> for LDAP and Active Directory.';
 
+$GLOBALS["lang"]['Defaults'] = 'Defaults';
+
 $GLOBALS["lang"]['delay_minutes'] = 'Delay Minutes';
 
 $GLOBALS["lang"]['Delay Minutes'] = 'Delay Minutes';
@@ -1379,10 +1510,6 @@ $GLOBALS["lang"]['Delete NMIS Devices if not in Open-AudIT'] = 'Delete NMIS Devi
 $GLOBALS["lang"]['Delete from Application'] = 'Delete from Application';
 
 $GLOBALS["lang"]['Delete from Cluster'] = 'Delete from Cluster';
-
-$GLOBALS["lang"]['deleted_at'] = 'Deleted At';
-
-$GLOBALS["lang"]['Deleted At'] = 'Deleted At';
 
 $GLOBALS["lang"]['Denmark'] = 'Denmark';
 
@@ -1434,9 +1561,9 @@ $GLOBALS["lang"]['Device'] = 'Device';
 
 $GLOBALS["lang"]['Device Audits'] = 'Device Audits';
 
-$GLOBALS["lang"]['device_id'] = 'Device ID';
-
 $GLOBALS["lang"]['Device ID'] = 'Device ID';
+
+$GLOBALS["lang"]['device_id'] = 'Device ID';
 
 $GLOBALS["lang"]['device_id_a'] = 'Device ID A';
 
@@ -1562,6 +1689,10 @@ $GLOBALS["lang"]['Discoveries'] = 'Discoveries';
 
 $GLOBALS["lang"]['Discovery'] = 'Discovery';
 
+$GLOBALS["lang"]['Discovery Change Logs'] = 'Discovery Change Logs';
+
+$GLOBALS["lang"]['Discovery Data Retention'] = 'Discovery Data Retention';
+
 $GLOBALS["lang"]['discovery_id'] = 'Discovery ID';
 
 $GLOBALS["lang"]['Discovery ID'] = 'Discovery ID';
@@ -1571,6 +1702,8 @@ $GLOBALS["lang"]['Discovery Issues'] = 'Discovery Issues';
 $GLOBALS["lang"]['discovery_log'] = 'Discovery Log';
 
 $GLOBALS["lang"]['Discovery Log'] = 'Discovery Log';
+
+$GLOBALS["lang"]['Discovery Match Options'] = 'Discovery Match Options';
 
 $GLOBALS["lang"]['Discovery Name'] = 'Discovery Name';
 
@@ -1591,6 +1724,10 @@ $GLOBALS["lang"]['Discovery Scan Options'] = 'Discovery Scan Options';
 $GLOBALS["lang"]['disk'] = 'Disk';
 
 $GLOBALS["lang"]['Disk'] = 'Disk';
+
+$GLOBALS["lang"]['display_version'] = 'Display Version';
+
+$GLOBALS["lang"]['Display Version'] = 'Display Version';
 
 $GLOBALS["lang"]['Display in Menu'] = 'Display in Menu';
 
@@ -1718,6 +1855,24 @@ $GLOBALS["lang"]['Egypt'] = 'Egypt';
 
 $GLOBALS["lang"]['Either Amazon, Google or Microsoft.'] = 'Either Amazon, Google or Microsoft.';
 
+$GLOBALS["lang"]['Either none or present.
+
+<strong>None</strong> - The successful attack does not depend on the deployment and execution conditions of the vulnerable system. The attacker can expect to be able to reach the vulnerability and execute the exploit under all or most instances of the vulnerability.
+
+<strong>Present</strong> - The successful attack depends on the presence of specific deployment and execution conditions of the vulnerable system that enable the attack. These include:
+
+A race condition must be won to successfully exploit the vulnerability. The successfulness of the attack is conditioned on execution conditions that are not under full control of the attacker. The attack may need to be launched multiple times against a single target before being successful.
+
+Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).'] = 'Either none or present.
+
+<strong>None</strong> - The successful attack does not depend on the deployment and execution conditions of the vulnerable system. The attacker can expect to be able to reach the vulnerability and execute the exploit under all or most instances of the vulnerability.
+
+<strong>Present</strong> - The successful attack depends on the presence of specific deployment and execution conditions of the vulnerable system that enable the attack. These include:
+
+A race condition must be won to successfully exploit the vulnerability. The successfulness of the attack is conditioned on execution conditions that are not under full control of the attacker. The attack may need to be launched multiple times against a single target before being successful.
+
+Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).';
+
 $GLOBALS["lang"]['El Salvador'] = 'El Salvador';
 
 $GLOBALS["lang"]['email'] = 'Email';
@@ -1727,6 +1882,8 @@ $GLOBALS["lang"]['Email'] = 'Email';
 $GLOBALS["lang"]['email_address'] = 'Email Address';
 
 $GLOBALS["lang"]['Email Address'] = 'Email Address';
+
+$GLOBALS["lang"]['Email Configuration'] = 'Email Configuration';
 
 $GLOBALS["lang"]['Email to send test to'] = 'Email to send test to';
 
@@ -1800,6 +1957,8 @@ $GLOBALS["lang"]['Error'] = 'Error';
 
 $GLOBALS["lang"]['Error Code'] = 'Error Code';
 
+$GLOBALS["lang"]['Established'] = 'Established';
+
 $GLOBALS["lang"]['Estonia'] = 'Estonia';
 
 $GLOBALS["lang"]['Ethernet MAC'] = 'Ethernet MAC';
@@ -1840,6 +1999,8 @@ $GLOBALS["lang"]['Exclude Udp Ports'] = 'Exclude Udp Ports';
 
 $GLOBALS["lang"]['Exclude these IP addresses from being Nmap scanned.'] = 'Exclude these IP addresses from being Nmap scanned.';
 
+$GLOBALS["lang"]['Excluded'] = 'Excluded';
+
 $GLOBALS["lang"]['exclusion_reasons'] = 'Exclusion Reasons';
 
 $GLOBALS["lang"]['Exclusion Reasons'] = 'Exclusion Reasons';
@@ -1872,17 +2033,27 @@ $GLOBALS["lang"]['Existing Room'] = 'Existing Room';
 
 $GLOBALS["lang"]['Existing Row'] = 'Existing Row';
 
+$GLOBALS["lang"]['expire_date'] = 'Expire Date';
+
+$GLOBALS["lang"]['Expire Date'] = 'Expire Date';
+
 $GLOBALS["lang"]['expire_minutes'] = 'Expire Minutes';
 
 $GLOBALS["lang"]['Expire Minutes'] = 'Expire Minutes';
+
+$GLOBALS["lang"]['expires'] = 'Expires';
+
+$GLOBALS["lang"]['Expires'] = 'Expires';
 
 $GLOBALS["lang"]['expiry_date'] = 'Expiry Date';
 
 $GLOBALS["lang"]['Expiry Date'] = 'Expiry Date';
 
-$GLOBALS["lang"]['Export CSV'] = 'Export CSV';
+$GLOBALS["lang"]['exploit_maturity'] = 'Exploit Maturity';
 
-$GLOBALS["lang"]['Export JSON'] = 'Export JSON';
+$GLOBALS["lang"]['Exploit Maturity'] = 'Exploit Maturity';
+
+$GLOBALS["lang"]['Export'] = 'Export';
 
 $GLOBALS["lang"]['Export by Device'] = 'Export by Device';
 
@@ -1914,13 +2085,11 @@ $GLOBALS["lang"]['Extra Columns'] = 'Extra Columns';
 
 $GLOBALS["lang"]['Extra and more verbose logging is generated for troubleshooting.'] = 'Extra and more verbose logging is generated for troubleshooting.';
 
+$GLOBALS["lang"]['FAQ'] = 'FAQ';
+
 $GLOBALS["lang"]['FQDN'] = 'FQDN';
 
 $GLOBALS["lang"]['FW Revision'] = 'FW Revision';
-
-$GLOBALS["lang"]['factories'] = 'Factories';
-
-$GLOBALS["lang"]['Factories'] = 'Factories';
 
 $GLOBALS["lang"]['Fail'] = 'Fail';
 
@@ -1956,8 +2125,6 @@ $GLOBALS["lang"]['fields'] = 'Fields';
 
 $GLOBALS["lang"]['Fiji the Fiji Islands'] = 'Fiji the Fiji Islands';
 
-$GLOBALS["lang"]['file'] = 'File';
-
 $GLOBALS["lang"]['File'] = 'File';
 
 $GLOBALS["lang"]['File Import'] = 'File Import';
@@ -1984,6 +2151,10 @@ $GLOBALS["lang"]['files_id'] = 'Files ID';
 
 $GLOBALS["lang"]['Files ID'] = 'Files ID';
 
+$GLOBALS["lang"]['filter'] = 'Filter';
+
+$GLOBALS["lang"]['Filter'] = 'Filter';
+
 $GLOBALS["lang"]['filtered'] = 'Filtered';
 
 $GLOBALS["lang"]['Filtered'] = 'Filtered';
@@ -2003,6 +2174,8 @@ $GLOBALS["lang"]['Firmware'] = 'Firmware';
 $GLOBALS["lang"]['firmware_revision'] = 'Firmware Revision';
 
 $GLOBALS["lang"]['Firmware Revision'] = 'Firmware Revision';
+
+$GLOBALS["lang"]['First Name'] = 'First Name';
 
 $GLOBALS["lang"]['first_run'] = 'First Run';
 
@@ -2049,10 +2222,6 @@ $GLOBALS["lang"]['France, French Republic'] = 'France, French Republic';
 $GLOBALS["lang"]['free'] = 'Free';
 
 $GLOBALS["lang"]['Free'] = 'Free';
-
-$GLOBALS["lang"]['free_percent'] = 'Free Percent';
-
-$GLOBALS["lang"]['Free Percent'] = 'Free Percent';
 
 $GLOBALS["lang"]['French'] = 'French';
 
@@ -2116,13 +2285,13 @@ $GLOBALS["lang"]['Ghana'] = 'Ghana';
 
 $GLOBALS["lang"]['Gibraltar'] = 'Gibraltar';
 
+$GLOBALS["lang"]['Global Discovery Options'] = 'Global Discovery Options';
+
 $GLOBALS["lang"]['Go'] = 'Go';
 
 $GLOBALS["lang"]['Google Compute Fields'] = 'Google Compute Fields';
 
-$GLOBALS["lang"]['graph'] = 'Graph';
-
-$GLOBALS["lang"]['Graph'] = 'Graph';
+$GLOBALS["lang"]['Google Maps API Key'] = 'Google Maps API Key';
 
 $GLOBALS["lang"]['Greater Than'] = 'Greater Than';
 
@@ -2186,6 +2355,8 @@ $GLOBALS["lang"]['hardware_revision'] = 'Hardware Revision';
 
 $GLOBALS["lang"]['Hardware Revision'] = 'Hardware Revision';
 
+$GLOBALS["lang"]['Has this policy been applied in this organization.'] = 'Has this policy been applied in this organization.';
+
 $GLOBALS["lang"]['hash'] = 'Hash';
 
 $GLOBALS["lang"]['Hash'] = 'Hash';
@@ -2202,15 +2373,19 @@ $GLOBALS["lang"]['Height in RU'] = 'Height in RU';
 
 $GLOBALS["lang"]['Help'] = 'Help';
 
+$GLOBALS["lang"]['Help and Frequently Asked Questions'] = 'Help and Frequently Asked Questions';
+
+$GLOBALS["lang"]['high'] = 'High';
+
 $GLOBALS["lang"]['High'] = 'High';
 
 $GLOBALS["lang"]['High Availability'] = 'High Availability';
 
 $GLOBALS["lang"]['Holy See (Vatican City State)'] = 'Holy See (Vatican City State)';
 
-$GLOBALS["lang"]['home'] = 'Home';
-
 $GLOBALS["lang"]['Home'] = 'Home';
+
+$GLOBALS["lang"]['home'] = 'Home';
 
 $GLOBALS["lang"]['Home Area Network'] = 'Home Area Network';
 
@@ -2230,6 +2405,8 @@ $GLOBALS["lang"]['hour'] = 'Hour';
 
 $GLOBALS["lang"]['Hour'] = 'Hour';
 
+$GLOBALS["lang"]['How and Why is Open-AudIT More Secure'] = 'How and Why is Open-AudIT More Secure';
+
 $GLOBALS["lang"]['How long did the command take to execute.'] = 'How long did the command take to execute.';
 
 $GLOBALS["lang"]['How long should Nmap wait for a response, per device.'] = 'How long should Nmap wait for a response, per device.';
@@ -2248,13 +2425,23 @@ $GLOBALS["lang"]['How often should the collector ask the server for a task.'] = 
 
 $GLOBALS["lang"]['How should we select devices to be integrated (using an Attribute, Query or a Group).'] = 'How should we select devices to be integrated (using an Attribute, Query or a Group).';
 
+$GLOBALS["lang"]['How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).'] = 'How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).';
+
 $GLOBALS["lang"]['How to compare'] = 'How to compare';
 
+$GLOBALS["lang"]['Human-readable explanation of the vulnerability.'] = 'Human-readable explanation of the vulnerability.';
+
 $GLOBALS["lang"]['Hungary'] = 'Hungary';
+
+$GLOBALS["lang"]['hw_cpe'] = 'Hw Cpe';
+
+$GLOBALS["lang"]['Hw Cpe'] = 'Hw Cpe';
 
 $GLOBALS["lang"]['hyperthreading'] = 'Hyperthreading';
 
 $GLOBALS["lang"]['Hyperthreading'] = 'Hyperthreading';
+
+$GLOBALS["lang"]['I have read the EULA.'] = 'I have read the EULA.';
 
 $GLOBALS["lang"]['id'] = 'ID';
 
@@ -2264,9 +2451,9 @@ $GLOBALS["lang"]['IF'] = 'IF';
 
 $GLOBALS["lang"]['IOS Version'] = 'IOS Version';
 
-$GLOBALS["lang"]['ip'] = 'IP';
-
 $GLOBALS["lang"]['IP'] = 'IP';
+
+$GLOBALS["lang"]['ip'] = 'IP';
 
 $GLOBALS["lang"]['IP Address'] = 'IP Address';
 
@@ -2275,6 +2462,8 @@ $GLOBALS["lang"]['IP Addresses'] = 'IP Addresses';
 $GLOBALS["lang"]['IP Last Seen'] = 'IP Last Seen';
 
 $GLOBALS["lang"]['IP Set By'] = 'IP Set By';
+
+$GLOBALS["lang"]['ISO 27001 only.'] = 'ISO 27001 only.';
 
 $GLOBALS["lang"]['Iceland'] = 'Iceland';
 
@@ -2342,17 +2531,25 @@ $GLOBALS["lang"]['Image'] = 'Image';
 
 $GLOBALS["lang"]['Images'] = 'Images';
 
+$GLOBALS["lang"]['impact_availability'] = 'Impact Availability';
+
+$GLOBALS["lang"]['Impact Availability'] = 'Impact Availability';
+
+$GLOBALS["lang"]['impact_confidentiality'] = 'Impact Confidentiality';
+
+$GLOBALS["lang"]['Impact Confidentiality'] = 'Impact Confidentiality';
+
+$GLOBALS["lang"]['impact_integrity'] = 'Impact Integrity';
+
+$GLOBALS["lang"]['Impact Integrity'] = 'Impact Integrity';
+
 $GLOBALS["lang"]['implementation_notes'] = 'Implementation Notes';
 
 $GLOBALS["lang"]['Implementation Notes'] = 'Implementation Notes';
 
 $GLOBALS["lang"]['Import'] = 'Import';
 
-$GLOBALS["lang"]['Import CSV'] = 'Import CSV';
-
 $GLOBALS["lang"]['Import Example Data'] = 'Import Example Data';
-
-$GLOBALS["lang"]['Import JSON'] = 'Import JSON';
 
 $GLOBALS["lang"]['improvement_opportunities'] = 'Improvement Opportunities';
 
@@ -2363,6 +2560,8 @@ $GLOBALS["lang"]['In'] = 'In';
 $GLOBALS["lang"]['Inactive'] = 'Inactive';
 
 $GLOBALS["lang"]['Include'] = 'Include';
+
+$GLOBALS["lang"]['Incomplete'] = 'Incomplete';
 
 $GLOBALS["lang"]['Index'] = 'Index';
 
@@ -2420,7 +2619,11 @@ $GLOBALS["lang"]['installed_on'] = 'Installed On';
 
 $GLOBALS["lang"]['Installed On'] = 'Installed On';
 
-$GLOBALS["lang"]['Installing'] = 'Installing';
+$GLOBALS["lang"]['Installing on Linux'] = 'Installing on Linux';
+
+$GLOBALS["lang"]['Installing on MacOS'] = 'Installing on MacOS';
+
+$GLOBALS["lang"]['Installing on Windows'] = 'Installing on Windows';
 
 $GLOBALS["lang"]['instance'] = 'Instance';
 
@@ -2564,6 +2767,8 @@ $GLOBALS["lang"]['Is the NMIS server local (on this Open-AudIT server) or remote
 
 $GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = 'Is this account active? If set to <code>n</code>, the user cannot logon.';
 
+$GLOBALS["lang"]['Is this query restricted to licensed customers.'] = 'Is this query restricted to licensed customers.';
+
 $GLOBALS["lang"]['Is this task enabled (y/n).'] = 'Is this task enabled (y/n).';
 
 $GLOBALS["lang"]['Isle of Man'] = 'Isle of Man';
@@ -2576,9 +2781,15 @@ $GLOBALS["lang"]['issuer'] = 'Issuer';
 
 $GLOBALS["lang"]['Issuer'] = 'Issuer';
 
+$GLOBALS["lang"]['issuer_name'] = 'Issuer Name';
+
+$GLOBALS["lang"]['Issuer Name'] = 'Issuer Name';
+
 $GLOBALS["lang"]['Issues'] = 'Issues';
 
 $GLOBALS["lang"]['Italy'] = 'Italy';
+
+$GLOBALS["lang"]['Items not in Baseline'] = 'Items not in Baseline';
 
 $GLOBALS["lang"]['JSON'] = 'JSON';
 
@@ -2644,6 +2855,8 @@ $GLOBALS["lang"]['last_logon'] = 'Last Logon';
 
 $GLOBALS["lang"]['Last Logon'] = 'Last Logon';
 
+$GLOBALS["lang"]['Last Name'] = 'Last Name';
+
 $GLOBALS["lang"]['last_os_update'] = 'Last Os Update';
 
 $GLOBALS["lang"]['Last Os Update'] = 'Last Os Update';
@@ -2667,6 +2880,10 @@ $GLOBALS["lang"]['Last Seen By'] = 'Last Seen By';
 $GLOBALS["lang"]['last_user'] = 'Last User';
 
 $GLOBALS["lang"]['Last User'] = 'Last User';
+
+$GLOBALS["lang"]['lastModified'] = 'LastModified';
+
+$GLOBALS["lang"]['LastModified'] = 'LastModified';
 
 $GLOBALS["lang"]['latitude'] = 'Latitude';
 
@@ -2692,6 +2909,10 @@ $GLOBALS["lang"]['ldap_dn_password'] = 'Ldap Dn Password';
 
 $GLOBALS["lang"]['Ldap Dn Password'] = 'Ldap Dn Password';
 
+$GLOBALS["lang"]['Learn About'] = 'Learn About';
+
+$GLOBALS["lang"]['Learn More'] = 'Learn More';
+
 $GLOBALS["lang"]['lease_expiry_date'] = 'Lease Expiry Date';
 
 $GLOBALS["lang"]['Lease Expiry Date'] = 'Lease Expiry Date';
@@ -2711,6 +2932,8 @@ $GLOBALS["lang"]['Less Than or Equals'] = 'Less Than or Equals';
 $GLOBALS["lang"]['level'] = 'Level';
 
 $GLOBALS["lang"]['Level'] = 'Level';
+
+$GLOBALS["lang"]['Level of privileges needed to exploit (None, Low, High).'] = 'Level of privileges needed to exploit (None, Low, High).';
 
 $GLOBALS["lang"]['Liberia'] = 'Liberia';
 
@@ -2762,13 +2985,7 @@ $GLOBALS["lang"]['Link'] = 'Link';
 
 $GLOBALS["lang"]['Link (Advanced)'] = 'Link (Advanced)';
 
-$GLOBALS["lang"]['linked_row'] = 'Linked Row';
-
-$GLOBALS["lang"]['Linked Row'] = 'Linked Row';
-
-$GLOBALS["lang"]['linked_table'] = 'Linked Table';
-
-$GLOBALS["lang"]['Linked Table'] = 'Linked Table';
+$GLOBALS["lang"]['Linked Files'] = 'Linked Files';
 
 $GLOBALS["lang"]['links'] = 'Links';
 
@@ -2777,6 +2994,10 @@ $GLOBALS["lang"]['Links'] = 'Links';
 $GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.'] = 'Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.';
 
 $GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = 'Links to <code>discovery_scan_options.id</code>.';
+
+$GLOBALS["lang"]['Links to <code>standards.id</code>'] = 'Links to <code>standards.id</code>';
+
+$GLOBALS["lang"]['Links to <standards_policies.id</code>'] = 'Links to <standards_policies.id</code>';
 
 $GLOBALS["lang"]['Linux'] = 'Linux';
 
@@ -2799,6 +3020,8 @@ $GLOBALS["lang"]['local_port'] = 'Local Port';
 $GLOBALS["lang"]['Local Port'] = 'Local Port';
 
 $GLOBALS["lang"]['Localhost'] = 'Localhost';
+
+$GLOBALS["lang"]['Localisation'] = 'Localisation';
 
 $GLOBALS["lang"]['Location'] = 'Location';
 
@@ -2882,11 +3105,15 @@ $GLOBALS["lang"]['logical_count'] = 'Logical Count';
 
 $GLOBALS["lang"]['Logical Count'] = 'Logical Count';
 
+$GLOBALS["lang"]['Logout'] = 'Logout';
+
 $GLOBALS["lang"]['Logs'] = 'Logs';
 
 $GLOBALS["lang"]['longitude'] = 'Longitude';
 
 $GLOBALS["lang"]['Longitude'] = 'Longitude';
+
+$GLOBALS["lang"]['low'] = 'Low';
 
 $GLOBALS["lang"]['Low'] = 'Low';
 
@@ -2916,6 +3143,10 @@ $GLOBALS["lang"]['maintenance_expires'] = 'Maintenance Expires';
 
 $GLOBALS["lang"]['Maintenance Expires'] = 'Maintenance Expires';
 
+$GLOBALS["lang"]['Make My Default Dashboard'] = 'Make My Default Dashboard';
+
+$GLOBALS["lang"]['Make this install a Collector'] = 'Make this install a Collector';
+
 $GLOBALS["lang"]['Malawi'] = 'Malawi';
 
 $GLOBALS["lang"]['Malaysia'] = 'Malaysia';
@@ -2926,7 +3157,17 @@ $GLOBALS["lang"]['Mali'] = 'Mali';
 
 $GLOBALS["lang"]['Malta'] = 'Malta';
 
+$GLOBALS["lang"]['Manage'] = 'Manage';
+
+$GLOBALS["lang"]['Manage Licenses'] = 'Manage Licenses';
+
 $GLOBALS["lang"]['Manage in NMIS'] = 'Manage in NMIS';
+
+$GLOBALS["lang"]['Managed'] = 'Managed';
+
+$GLOBALS["lang"]['managed_by'] = 'Managed By';
+
+$GLOBALS["lang"]['Managed By'] = 'Managed By';
 
 $GLOBALS["lang"]['Manual Input'] = 'Manual Input';
 
@@ -3000,6 +3241,10 @@ $GLOBALS["lang"]['May'] = 'May';
 
 $GLOBALS["lang"]['Mayotte'] = 'Mayotte';
 
+$GLOBALS["lang"]['Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.'] = 'Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.';
+
+$GLOBALS["lang"]['medium'] = 'Medium';
+
 $GLOBALS["lang"]['Medium'] = 'Medium';
 
 $GLOBALS["lang"]['members'] = 'Members';
@@ -3050,10 +3295,6 @@ $GLOBALS["lang"]['microtime'] = 'Microtime';
 
 $GLOBALS["lang"]['Microtime'] = 'Microtime';
 
-$GLOBALS["lang"]['migrations'] = 'Migrations';
-
-$GLOBALS["lang"]['Migrations'] = 'Migrations';
-
 $GLOBALS["lang"]['minute'] = 'Minute';
 
 $GLOBALS["lang"]['Minute'] = 'Minute';
@@ -3075,6 +3316,8 @@ $GLOBALS["lang"]['Module'] = 'Module';
 $GLOBALS["lang"]['module_index'] = 'Module Index';
 
 $GLOBALS["lang"]['Module Index'] = 'Module Index';
+
+$GLOBALS["lang"]['Modules'] = 'Modules';
 
 $GLOBALS["lang"]['Moldova'] = 'Moldova';
 
@@ -3148,10 +3391,6 @@ $GLOBALS["lang"]['name'] = 'Name';
 
 $GLOBALS["lang"]['Name'] = 'Name';
 
-$GLOBALS["lang"]['namespace'] = 'Namespace';
-
-$GLOBALS["lang"]['Namespace'] = 'Namespace';
-
 $GLOBALS["lang"]['Namibia'] = 'Namibia';
 
 $GLOBALS["lang"]['Nauru'] = 'Nauru';
@@ -3208,6 +3447,8 @@ $GLOBALS["lang"]['New Row Name'] = 'New Row Name';
 
 $GLOBALS["lang"]['New Zealand'] = 'New Zealand';
 
+$GLOBALS["lang"]['News'] = 'News';
+
 $GLOBALS["lang"]['next_hop'] = 'Next Hop';
 
 $GLOBALS["lang"]['Next Hop'] = 'Next Hop';
@@ -3227,6 +3468,8 @@ $GLOBALS["lang"]['Niue'] = 'Niue';
 $GLOBALS["lang"]['nmap'] = 'Nmap';
 
 $GLOBALS["lang"]['Nmap'] = 'Nmap';
+
+$GLOBALS["lang"]['Nmap Port Scanning Responses'] = 'Nmap Port Scanning Responses';
 
 $GLOBALS["lang"]['nmap_tcp_ports'] = 'Nmap Tcp Ports';
 
@@ -3322,7 +3565,15 @@ $GLOBALS["lang"]['notes'] = 'Notes';
 
 $GLOBALS["lang"]['Notice'] = 'Notice';
 
+$GLOBALS["lang"]['notin'] = 'Notin';
+
+$GLOBALS["lang"]['Notin'] = 'Notin';
+
 $GLOBALS["lang"]['November'] = 'November';
+
+$GLOBALS["lang"]['nvd_json'] = 'Nvd Json';
+
+$GLOBALS["lang"]['Nvd Json'] = 'Nvd Json';
 
 $GLOBALS["lang"]['ORDER BY'] = 'ORDER BY';
 
@@ -3374,6 +3625,8 @@ $GLOBALS["lang"]['Open-AudIT Device Selection'] = 'Open-AudIT Device Selection';
 
 $GLOBALS["lang"]['Open-AudIT Enterprise'] = 'Open-AudIT Enterprise';
 
+$GLOBALS["lang"]['Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.'] = 'Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.';
+
 $GLOBALS["lang"]['Open-AudIT Field Name'] = 'Open-AudIT Field Name';
 
 $GLOBALS["lang"]['Open-AudIT Licenses'] = 'Open-AudIT Licenses';
@@ -3381,6 +3634,10 @@ $GLOBALS["lang"]['Open-AudIT Licenses'] = 'Open-AudIT Licenses';
 $GLOBALS["lang"]['Open-AudIT Options'] = 'Open-AudIT Options';
 
 $GLOBALS["lang"]['Open-AudIT Professional'] = 'Open-AudIT Professional';
+
+$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = 'Open-AudIT Professional. The world\\';
+
+$GLOBALS["lang"]['Open-AudIT and Nmap'] = 'Open-AudIT and Nmap';
 
 $GLOBALS["lang"]['OpenScap is Installed'] = 'OpenScap is Installed';
 
@@ -3406,6 +3663,8 @@ $GLOBALS["lang"]['optical'] = 'Optical';
 
 $GLOBALS["lang"]['Optical'] = 'Optical';
 
+$GLOBALS["lang"]['Optimized'] = 'Optimized';
+
 $GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = 'Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.';
 
 $GLOBALS["lang"]['options'] = 'Options';
@@ -3428,9 +3687,13 @@ $GLOBALS["lang"]['organisation'] = 'Organisation';
 
 $GLOBALS["lang"]['Organisation Descendants'] = 'Organisation Descendants';
 
+$GLOBALS["lang"]['Organisations'] = 'Organisations';
+
 $GLOBALS["lang"]['orgs'] = 'Orgs';
 
 $GLOBALS["lang"]['Orgs'] = 'Orgs';
+
+$GLOBALS["lang"]['Orgs Name'] = 'Orgs Name';
 
 $GLOBALS["lang"]['orientation'] = 'Orientation';
 
@@ -3451,6 +3714,10 @@ $GLOBALS["lang"]['Os Bit'] = 'Os Bit';
 $GLOBALS["lang"]['os_cpe'] = 'Os Cpe';
 
 $GLOBALS["lang"]['Os Cpe'] = 'Os Cpe';
+
+$GLOBALS["lang"]['os_display_version'] = 'Os Display Version';
+
+$GLOBALS["lang"]['Os Display Version'] = 'Os Display Version';
 
 $GLOBALS["lang"]['os_family'] = 'Os Family';
 
@@ -3512,6 +3779,8 @@ $GLOBALS["lang"]['outputs'] = 'Outputs';
 
 $GLOBALS["lang"]['Outputs'] = 'Outputs';
 
+$GLOBALS["lang"]['Overall severity score (0–10).'] = 'Overall severity score (0–10).';
+
 $GLOBALS["lang"]['overwrite'] = 'Overwrite';
 
 $GLOBALS["lang"]['Overwrite'] = 'Overwrite';
@@ -3523,8 +3792,6 @@ $GLOBALS["lang"]['Owner'] = 'Owner';
 $GLOBALS["lang"]['PHP'] = 'PHP';
 
 $GLOBALS["lang"]['POD'] = 'POD';
-
-$GLOBALS["lang"]['package'] = 'Package';
 
 $GLOBALS["lang"]['Package'] = 'Package';
 
@@ -3584,9 +3851,9 @@ $GLOBALS["lang"]['Passed'] = 'Passed';
 
 $GLOBALS["lang"]['Passive Optical Local Area Network'] = 'Passive Optical Local Area Network';
 
-$GLOBALS["lang"]['password'] = 'Password';
-
 $GLOBALS["lang"]['Password'] = 'Password';
+
+$GLOBALS["lang"]['password'] = 'Password';
 
 $GLOBALS["lang"]['password_changeable'] = 'Password Changeable';
 
@@ -3621,6 +3888,8 @@ $GLOBALS["lang"]['path'] = 'Path';
 $GLOBALS["lang"]['Path'] = 'Path';
 
 $GLOBALS["lang"]['Performance'] = 'Performance';
+
+$GLOBALS["lang"]['Performed'] = 'Performed';
 
 $GLOBALS["lang"]['permission'] = 'Permission';
 
@@ -3768,6 +4037,10 @@ $GLOBALS["lang"]['power_sockets'] = 'Power Sockets';
 
 $GLOBALS["lang"]['Power Sockets'] = 'Power Sockets';
 
+$GLOBALS["lang"]['Predictable'] = 'Predictable';
+
+$GLOBALS["lang"]['Preferences'] = 'Preferences';
+
 $GLOBALS["lang"]['Prerequisites'] = 'Prerequisites';
 
 $GLOBALS["lang"]['Prerequisites and Tests'] = 'Prerequisites and Tests';
@@ -3816,6 +4089,10 @@ $GLOBALS["lang"]['Priority'] = 'Priority';
 
 $GLOBALS["lang"]['Privacy Passphrase'] = 'Privacy Passphrase';
 
+$GLOBALS["lang"]['privileges_required'] = 'Privileges Required';
+
+$GLOBALS["lang"]['Privileges Required'] = 'Privileges Required';
+
 $GLOBALS["lang"]['processor'] = 'Processor';
 
 $GLOBALS["lang"]['Processor'] = 'Processor';
@@ -3838,6 +4115,12 @@ $GLOBALS["lang"]['product_name'] = 'Product Name';
 
 $GLOBALS["lang"]['Product Name'] = 'Product Name';
 
+$GLOBALS["lang"]['Product Name Match from CPE: '] = 'Product Name Match from CPE: ';
+
+$GLOBALS["lang"]['products'] = 'Products';
+
+$GLOBALS["lang"]['Products'] = 'Products';
+
 $GLOBALS["lang"]['profile'] = 'Profile';
 
 $GLOBALS["lang"]['Profile'] = 'Profile';
@@ -3853,6 +4136,14 @@ $GLOBALS["lang"]['Protocol'] = 'Protocol';
 $GLOBALS["lang"]['provider'] = 'Provider';
 
 $GLOBALS["lang"]['Provider'] = 'Provider';
+
+$GLOBALS["lang"]['published'] = 'Published';
+
+$GLOBALS["lang"]['Published'] = 'Published';
+
+$GLOBALS["lang"]['published_date'] = 'Published Date';
+
+$GLOBALS["lang"]['Published Date'] = 'Published Date';
 
 $GLOBALS["lang"]['publisher'] = 'Publisher';
 
@@ -3944,9 +4235,9 @@ $GLOBALS["lang"]['rack_id'] = 'Rack ID';
 
 $GLOBALS["lang"]['Rack ID'] = 'Rack ID';
 
-$GLOBALS["lang"]['racks'] = 'Racks';
-
 $GLOBALS["lang"]['Racks'] = 'Racks';
+
+$GLOBALS["lang"]['racks'] = 'Racks';
 
 $GLOBALS["lang"]['radio'] = 'Radio';
 
@@ -3957,6 +4248,12 @@ $GLOBALS["lang"]['Radio MAC'] = 'Radio MAC';
 $GLOBALS["lang"]['rationale'] = 'Rationale';
 
 $GLOBALS["lang"]['Rationale'] = 'Rationale';
+
+$GLOBALS["lang"]['raw'] = 'Raw';
+
+$GLOBALS["lang"]['Raw'] = 'Raw';
+
+$GLOBALS["lang"]['read'] = 'Read';
 
 $GLOBALS["lang"]['Read'] = 'Read';
 
@@ -3969,6 +4266,10 @@ $GLOBALS["lang"]['Redirect URI'] = 'Redirect URI';
 $GLOBALS["lang"]['redirect_uri'] = 'Redirect Uri';
 
 $GLOBALS["lang"]['Redirect Uri'] = 'Redirect Uri';
+
+$GLOBALS["lang"]['references'] = 'References';
+
+$GLOBALS["lang"]['References'] = 'References';
 
 $GLOBALS["lang"]['region'] = 'Region';
 
@@ -4010,9 +4311,17 @@ $GLOBALS["lang"]['reportable'] = 'Reportable';
 
 $GLOBALS["lang"]['Reportable'] = 'Reportable';
 
+$GLOBALS["lang"]['Reports'] = 'Reports';
+
 $GLOBALS["lang"]['request'] = 'Request';
 
 $GLOBALS["lang"]['Request'] = 'Request';
+
+$GLOBALS["lang"]['Request a Specific CVE'] = 'Request a Specific CVE';
+
+$GLOBALS["lang"]['requested'] = 'Requested';
+
+$GLOBALS["lang"]['Requested'] = 'Requested';
 
 $GLOBALS["lang"]['require_port'] = 'Require Port';
 
@@ -4043,6 +4352,8 @@ $GLOBALS["lang"]['Response'] = 'Response';
 $GLOBALS["lang"]['responsibility'] = 'Responsibility';
 
 $GLOBALS["lang"]['Responsibility'] = 'Responsibility';
+
+$GLOBALS["lang"]['Restore my Licenses'] = 'Restore my Licenses';
 
 $GLOBALS["lang"]['Restrict to Private'] = 'Restrict to Private';
 
@@ -4131,6 +4442,8 @@ $GLOBALS["lang"]['Run this Command'] = 'Run this Command';
 $GLOBALS["lang"]['runas'] = 'Runas';
 
 $GLOBALS["lang"]['Runas'] = 'Runas';
+
+$GLOBALS["lang"]['Running Open-AudIT Apache Service Under Windows'] = 'Running Open-AudIT Apache Service Under Windows';
 
 $GLOBALS["lang"]['Russian Federation'] = 'Russian Federation';
 
@@ -4222,6 +4535,8 @@ $GLOBALS["lang"]['scan_options'] = 'Scan Options';
 
 $GLOBALS["lang"]['Scan Options'] = 'Scan Options';
 
+$GLOBALS["lang"]['Scan Options ID'] = 'Scan Options ID';
+
 $GLOBALS["lang"]['Scan the Nmap top number of TCP ports.'] = 'Scan the Nmap top number of TCP ports.';
 
 $GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = 'Scan the Nmap top number of UDP ports.';
@@ -4229,6 +4544,10 @@ $GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = 'Scan the Nmap top 
 $GLOBALS["lang"]['schedule'] = 'Schedule';
 
 $GLOBALS["lang"]['Schedule'] = 'Schedule';
+
+$GLOBALS["lang"]['scope'] = 'Scope';
+
+$GLOBALS["lang"]['Scope'] = 'Scope';
 
 $GLOBALS["lang"]['script_timeout'] = 'Script Timeout';
 
@@ -4259,6 +4578,8 @@ $GLOBALS["lang"]['Search'] = 'Search';
 $GLOBALS["lang"]['Search For a Device'] = 'Search For a Device';
 
 $GLOBALS["lang"]['Search for Device'] = 'Search for Device';
+
+$GLOBALS["lang"]['Searching Using DataTables'] = 'Searching Using DataTables';
 
 $GLOBALS["lang"]['secondary'] = 'Secondary';
 
@@ -4338,6 +4659,10 @@ $GLOBALS["lang"]['Select a Table'] = 'Select a Table';
 
 $GLOBALS["lang"]['Senegal'] = 'Senegal';
 
+$GLOBALS["lang"]['sensitivity'] = 'Sensitivity';
+
+$GLOBALS["lang"]['Sensitivity'] = 'Sensitivity';
+
 $GLOBALS["lang"]['September'] = 'September';
 
 $GLOBALS["lang"]['Serbia'] = 'Serbia';
@@ -4371,6 +4696,8 @@ $GLOBALS["lang"]['Server Is'] = 'Server Is';
 $GLOBALS["lang"]['server_item'] = 'Server Item';
 
 $GLOBALS["lang"]['Server Item'] = 'Server Item';
+
+$GLOBALS["lang"]['Server Status'] = 'Server Status';
 
 $GLOBALS["lang"]['Servers'] = 'Servers';
 
@@ -4438,6 +4765,8 @@ $GLOBALS["lang"]['severity_text'] = 'Severity Text';
 
 $GLOBALS["lang"]['Severity Text'] = 'Severity Text';
 
+$GLOBALS["lang"]['Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.'] = 'Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.';
+
 $GLOBALS["lang"]['Seychelles'] = 'Seychelles';
 
 $GLOBALS["lang"]['share'] = 'Share';
@@ -4460,9 +4789,15 @@ $GLOBALS["lang"]['Shell'] = 'Shell';
 
 $GLOBALS["lang"]['Ship Date'] = 'Ship Date';
 
+$GLOBALS["lang"]['short'] = 'Short';
+
+$GLOBALS["lang"]['Short'] = 'Short';
+
 $GLOBALS["lang"]['Should I remove all non-current data from this device?'] = 'Should I remove all non-current data from this device?';
 
 $GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = 'Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.';
+
+$GLOBALS["lang"]['Should this vendor be used when retrieving vulnerabilities from FirstWave.'] = 'Should this vendor be used when retrieving vulnerabilities from FirstWave.';
 
 $GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = 'Should we add devices from the remote service, locally.';
 
@@ -4754,6 +5089,10 @@ $GLOBALS["lang"]['sub_type'] = 'Sub Type';
 
 $GLOBALS["lang"]['Sub Type'] = 'Sub Type';
 
+$GLOBALS["lang"]['subject_key_ident'] = 'Subject Key Ident';
+
+$GLOBALS["lang"]['Subject Key Ident'] = 'Subject Key Ident';
+
 $GLOBALS["lang"]['Submit'] = 'Submit';
 
 $GLOBALS["lang"]['Submitted From'] = 'Submitted From';
@@ -4772,6 +5111,8 @@ $GLOBALS["lang"]['Success'] = 'Success';
 
 $GLOBALS["lang"]['Sudan'] = 'Sudan';
 
+$GLOBALS["lang"]['Sudo Password'] = 'Sudo Password';
+
 $GLOBALS["lang"]['Sudo Password (optional)'] = 'Sudo Password (optional)';
 
 $GLOBALS["lang"]['suite'] = 'Suite';
@@ -4782,8 +5123,6 @@ $GLOBALS["lang"]['summaries'] = 'Summaries';
 
 $GLOBALS["lang"]['Summaries'] = 'Summaries';
 
-$GLOBALS["lang"]['summary'] = 'Summary';
-
 $GLOBALS["lang"]['Summary'] = 'Summary';
 
 $GLOBALS["lang"]['Sunday'] = 'Sunday';
@@ -4791,6 +5130,8 @@ $GLOBALS["lang"]['Sunday'] = 'Sunday';
 $GLOBALS["lang"]['supplier'] = 'Supplier';
 
 $GLOBALS["lang"]['Supplier'] = 'Supplier';
+
+$GLOBALS["lang"]['Support'] = 'Support';
 
 $GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = 'Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.';
 
@@ -4936,6 +5277,10 @@ $GLOBALS["lang"]['The Active Directory domain to retrieve a list of subnets from
 
 $GLOBALS["lang"]['The Active Directory server to retrieve a list of subnets from.'] = 'The Active Directory server to retrieve a list of subnets from.';
 
+$GLOBALS["lang"]['The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).'] = 'The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).';
+
+$GLOBALS["lang"]['The CVE identifier.'] = 'The CVE identifier.';
+
 $GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = 'The Cloud that owns this item. Links to <code>clouds.id</code>.';
 
 $GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = 'The Group used to run the Baseline. Links to <code>groups.id</code>.';
@@ -4970,9 +5315,15 @@ $GLOBALS["lang"]['The IP of the internal interface.'] = 'The IP of the internal 
 
 $GLOBALS["lang"]['The ISP or Telco providing this link.'] = 'The ISP or Telco providing this link.';
 
+$GLOBALS["lang"]['The JSON record from Mitre.'] = 'The JSON record from Mitre.';
+
+$GLOBALS["lang"]['The JSON record from the NVD feed.'] = 'The JSON record from the NVD feed.';
+
 $GLOBALS["lang"]['The LDAP OU of this user (if LDAP is used).'] = 'The LDAP OU of this user (if LDAP is used).';
 
 $GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = 'The Location that contains this network. Links to <code>locations.id</code>.';
+
+$GLOBALS["lang"]['The NVD assigned base status.'] = 'The NVD assigned base status.';
 
 $GLOBALS["lang"]['The Nmap timing preset.'] = 'The Nmap timing preset.';
 
@@ -5082,6 +5433,8 @@ $GLOBALS["lang"]['The direct link for the script is'] = 'The direct link for the
 
 $GLOBALS["lang"]['The email address of the reciever'] = 'The email address of the reciever';
 
+$GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = 'The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from';
+
 $GLOBALS["lang"]['The entire associated baseline this result is from.'] = 'The entire associated baseline this result is from.';
 
 $GLOBALS["lang"]['The externally referenced location ID. Usually populated by Cloud audits.'] = 'The externally referenced location ID. Usually populated by Cloud audits.';
@@ -5097,6 +5450,8 @@ $GLOBALS["lang"]['The format used for the output to be emailed.'] = 'The format 
 $GLOBALS["lang"]['The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.'] = 'The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.';
 
 $GLOBALS["lang"]['The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).'] = 'The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).';
+
+$GLOBALS["lang"]['The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.'] = 'The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.';
 
 $GLOBALS["lang"]['The group of devices on which the baseline was run against.'] = 'The group of devices on which the baseline was run against.';
 
@@ -5166,6 +5521,8 @@ $GLOBALS["lang"]['The minute of the hour when this task should execute (* for ev
 
 $GLOBALS["lang"]['The month of the year when this task should execute (* for every month).'] = 'The month of the year when this task should execute (* for every month).';
 
+$GLOBALS["lang"]['The name given to this item.'] = 'The name given to this item.';
+
 $GLOBALS["lang"]['The name given to this item. Ideally it should be unique.'] = 'The name given to this item. Ideally it should be unique.';
 
 $GLOBALS["lang"]['The name given to this user (used to login). Ideally it should be unique.'] = 'The name given to this user (used to login). Ideally it should be unique.';
@@ -5190,6 +5547,8 @@ $GLOBALS["lang"]['The number of associated networks. Links to <code>networks.clo
 
 $GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = 'The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.';
 
+$GLOBALS["lang"]['The number of critical severity vulnerabilities held by FirstWave (not in your database).'] = 'The number of critical severity vulnerabilities held by FirstWave (not in your database).';
+
 $GLOBALS["lang"]['The number of devices found by this discovery.'] = 'The number of devices found by this discovery.';
 
 $GLOBALS["lang"]['The number of devices in the associated group.'] = 'The number of devices in the associated group.';
@@ -5204,9 +5563,17 @@ $GLOBALS["lang"]['The number of devices this benchmark will be executed upon. De
 
 $GLOBALS["lang"]['The number of devices to limit this discovery to.'] = 'The number of devices to limit this discovery to.';
 
+$GLOBALS["lang"]['The number of high severity vulnerabilities held by FirstWave (not in your database).'] = 'The number of high severity vulnerabilities held by FirstWave (not in your database).';
+
+$GLOBALS["lang"]['The number of low severity vulnerabilities held by FirstWave (not in your database).'] = 'The number of low severity vulnerabilities held by FirstWave (not in your database).';
+
+$GLOBALS["lang"]['The number of medium severity vulnerabilities held by FirstWave (not in your database).'] = 'The number of medium severity vulnerabilities held by FirstWave (not in your database).';
+
 $GLOBALS["lang"]['The number of purchased licenses.'] = 'The number of purchased licenses.';
 
 $GLOBALS["lang"]['The number of seconds to try and communicate with the target IP.'] = 'The number of seconds to try and communicate with the target IP.';
+
+$GLOBALS["lang"]['The number of vulnerabilities without a severity held by FirstWave (not in your database).'] = 'The number of vulnerabilities without a severity held by FirstWave (not in your database).';
 
 $GLOBALS["lang"]['The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.'] = 'The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.';
 
@@ -5258,6 +5625,8 @@ $GLOBALS["lang"]['The rack series.'] = 'The rack series.';
 
 $GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = 'The rack this device is located in. Links to <code>racks.id</code>.';
 
+$GLOBALS["lang"]['The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.'] = 'The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.';
+
 $GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = 'The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.';
 
 $GLOBALS["lang"]['The result of the command.'] = 'The result of the command.';
@@ -5290,7 +5659,7 @@ $GLOBALS["lang"]['The text for the bottom of the chart in a line chart (only).']
 
 $GLOBALS["lang"]['The text that is displayed.'] = 'The text that is displayed.';
 
-$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2001-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = 'The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2001-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.';
+$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = 'The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.';
 
 $GLOBALS["lang"]['The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.'] = 'The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.';
 
@@ -5322,6 +5691,10 @@ $GLOBALS["lang"]['The value assigned to the item.'] = 'The value assigned to the
 
 $GLOBALS["lang"]['The value that is stored for this particular item.'] = 'The value that is stored for this particular item.';
 
+$GLOBALS["lang"]['The vendor name as per CPE entries.'] = 'The vendor name as per CPE entries.';
+
+$GLOBALS["lang"]['The vendor taken from the CPE.'] = 'The vendor taken from the CPE.';
+
 $GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = 'The web directory on the host that Open-AudIT is installed (requires a trailing slash).';
 
 $GLOBALS["lang"]['The widget at position '] = 'The widget at position ';
@@ -5329,6 +5702,8 @@ $GLOBALS["lang"]['The widget at position '] = 'The widget at position ';
 $GLOBALS["lang"]['The width of this device.'] = 'The width of this device.';
 
 $GLOBALS["lang"]['Then'] = 'Then';
+
+$GLOBALS["lang"]['This CVE will be retrieved and overwrite the existing CVE if it exists.'] = 'This CVE will be retrieved and overwrite the existing CVE if it exists.';
 
 $GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = 'This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.';
 
@@ -5355,10 +5730,6 @@ $GLOBALS["lang"]['This will auto-populate.'] = 'This will auto-populate.';
 $GLOBALS["lang"]['This will considerably slow the discovery scan.'] = 'This will considerably slow the discovery scan.';
 
 $GLOBALS["lang"]['Thursday'] = 'Thursday';
-
-$GLOBALS["lang"]['time'] = 'Time';
-
-$GLOBALS["lang"]['Time'] = 'Time';
 
 $GLOBALS["lang"]['time_caption'] = 'Time Caption';
 
@@ -5408,6 +5779,10 @@ $GLOBALS["lang"]['Traffic Light'] = 'Traffic Light';
 
 $GLOBALS["lang"]['Trinidad and Tobago'] = 'Trinidad and Tobago';
 
+$GLOBALS["lang"]['Troubleshooting LDAP Logins'] = 'Troubleshooting LDAP Logins';
+
+$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"'] = 'Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"';
+
 $GLOBALS["lang"]['Tuesday'] = 'Tuesday';
 
 $GLOBALS["lang"]['Tunisia'] = 'Tunisia';
@@ -5455,10 +5830,6 @@ $GLOBALS["lang"]['udp_ports'] = 'Udp Ports';
 $GLOBALS["lang"]['Udp Ports'] = 'Udp Ports';
 
 $GLOBALS["lang"]['Uganda'] = 'Uganda';
-
-$GLOBALS["lang"]['uid'] = 'Uid';
-
-$GLOBALS["lang"]['Uid'] = 'Uid';
 
 $GLOBALS["lang"]['Ukraine'] = 'Ukraine';
 
@@ -5514,10 +5885,6 @@ $GLOBALS["lang"]['Update Open-AudIT Devices from '] = 'Update Open-AudIT Devices
 
 $GLOBALS["lang"]['Update Open-AudIT Devices from NMIS'] = 'Update Open-AudIT Devices from NMIS';
 
-$GLOBALS["lang"]['updated_at'] = 'Updated At';
-
-$GLOBALS["lang"]['Updated At'] = 'Updated At';
-
 $GLOBALS["lang"]['Updated each time discovery has been executed with IPs detected to be responding.'] = 'Updated each time discovery has been executed with IPs detected to be responding.';
 
 $GLOBALS["lang"]['Updated each time discovery has been executed with IPs that have been scanned by Nmap.'] = 'Updated each time discovery has been executed with IPs that have been scanned by Nmap.';
@@ -5531,6 +5898,8 @@ $GLOBALS["lang"]['Updated each time discovery has been executed.'] = 'Updated ea
 $GLOBALS["lang"]['Updated each time the discovery has been executed.'] = 'Updated each time the discovery has been executed.';
 
 $GLOBALS["lang"]['Updated each time the discovery has completed execution.'] = 'Updated each time the discovery has completed execution.';
+
+$GLOBALS["lang"]['Updating'] = 'Updating';
 
 $GLOBALS["lang"]['Upgrade'] = 'Upgrade';
 
@@ -5551,6 +5920,10 @@ $GLOBALS["lang"]['Uruguay, Eastern Republic of'] = 'Uruguay, Eastern Republic of
 $GLOBALS["lang"]['usb'] = 'Usb';
 
 $GLOBALS["lang"]['Usb'] = 'Usb';
+
+$GLOBALS["lang"]['use'] = 'Use';
+
+$GLOBALS["lang"]['Use'] = 'Use';
 
 $GLOBALS["lang"]['use_authentication'] = 'Use Authentication';
 
@@ -5582,10 +5955,6 @@ $GLOBALS["lang"]['used_count'] = 'Used Count';
 
 $GLOBALS["lang"]['Used Count'] = 'Used Count';
 
-$GLOBALS["lang"]['used_percent'] = 'Used Percent';
-
-$GLOBALS["lang"]['Used Percent'] = 'Used Percent';
-
 $GLOBALS["lang"]['Used by OpenLDAP only.'] = 'Used by OpenLDAP only.';
 
 $GLOBALS["lang"]['Used internally when discovering a single device.'] = 'Used internally when discovering a single device.';
@@ -5616,6 +5985,10 @@ $GLOBALS["lang"]['user_id'] = 'User ID';
 
 $GLOBALS["lang"]['User ID'] = 'User ID';
 
+$GLOBALS["lang"]['user_interaction'] = 'User Interaction';
+
+$GLOBALS["lang"]['User Interaction'] = 'User Interaction';
+
 $GLOBALS["lang"]['User Membership Attribute'] = 'User Membership Attribute';
 
 $GLOBALS["lang"]['user_name'] = 'User Name';
@@ -5624,13 +5997,19 @@ $GLOBALS["lang"]['User Name'] = 'User Name';
 
 $GLOBALS["lang"]['User Policies'] = 'User Policies';
 
-$GLOBALS["lang"]['username'] = 'Username';
-
 $GLOBALS["lang"]['Username'] = 'Username';
+
+$GLOBALS["lang"]['username'] = 'Username';
 
 $GLOBALS["lang"]['users'] = 'Users';
 
 $GLOBALS["lang"]['Users'] = 'Users';
+
+$GLOBALS["lang"]['Users, Roles and Orgs'] = 'Users, Roles and Orgs';
+
+$GLOBALS["lang"]['Using Entra for Auth'] = 'Using Entra for Auth';
+
+$GLOBALS["lang"]['Using OKTA for Auth'] = 'Using OKTA for Auth';
 
 $GLOBALS["lang"]['Usually Mb/s, from Location A.'] = 'Usually Mb/s, from Location A.';
 
@@ -5641,6 +6020,10 @@ $GLOBALS["lang"]['Usually Mb/s, to Location A.'] = 'Usually Mb/s, to Location A.
 $GLOBALS["lang"]['Usually Mb/s, to Location B.'] = 'Usually Mb/s, to Location B.';
 
 $GLOBALS["lang"]['Uzbekistan'] = 'Uzbekistan';
+
+$GLOBALS["lang"]['VLAN'] = 'VLAN';
+
+$GLOBALS["lang"]['VLAN ID'] = 'VLAN ID';
 
 $GLOBALS["lang"]['valid_from'] = 'Valid From';
 
@@ -5682,6 +6065,10 @@ $GLOBALS["lang"]['vendor'] = 'Vendor';
 
 $GLOBALS["lang"]['Vendor'] = 'Vendor';
 
+$GLOBALS["lang"]['vendors'] = 'Vendors';
+
+$GLOBALS["lang"]['Vendors'] = 'Vendors';
+
 $GLOBALS["lang"]['Venezuela'] = 'Venezuela';
 
 $GLOBALS["lang"]['version'] = 'Version';
@@ -5691,6 +6078,10 @@ $GLOBALS["lang"]['Version'] = 'Version';
 $GLOBALS["lang"]['version_padded'] = 'Version Padded';
 
 $GLOBALS["lang"]['Version Padded'] = 'Version Padded';
+
+$GLOBALS["lang"]['version_raw'] = 'Version Raw';
+
+$GLOBALS["lang"]['Version Raw'] = 'Version Raw';
 
 $GLOBALS["lang"]['version_string'] = 'Version String';
 
@@ -5720,6 +6111,14 @@ $GLOBALS["lang"]['Virtualisation'] = 'Virtualisation';
 
 $GLOBALS["lang"]['Visit our YouTube channel for instructional videos.'] = 'Visit our YouTube channel for instructional videos.';
 
+$GLOBALS["lang"]['vlan'] = 'Vlan';
+
+$GLOBALS["lang"]['Vlan'] = 'Vlan';
+
+$GLOBALS["lang"]['vlan_id'] = 'Vlan ID';
+
+$GLOBALS["lang"]['Vlan ID'] = 'Vlan ID';
+
 $GLOBALS["lang"]['vm'] = 'Vm';
 
 $GLOBALS["lang"]['Vm'] = 'Vm';
@@ -5739,6 +6138,26 @@ $GLOBALS["lang"]['Vm Ident'] = 'Vm Ident';
 $GLOBALS["lang"]['vm_server_name'] = 'Vm Server Name';
 
 $GLOBALS["lang"]['Vm Server Name'] = 'Vm Server Name';
+
+$GLOBALS["lang"]['vm_vendor'] = 'Vm Vendor';
+
+$GLOBALS["lang"]['Vm Vendor'] = 'Vm Vendor';
+
+$GLOBALS["lang"]['vuln_status'] = 'Vuln Status';
+
+$GLOBALS["lang"]['Vuln Status'] = 'Vuln Status';
+
+$GLOBALS["lang"]['vulnerabilities'] = 'Vulnerabilities';
+
+$GLOBALS["lang"]['Vulnerabilities'] = 'Vulnerabilities';
+
+$GLOBALS["lang"]['vulnerabilities_cache'] = 'Vulnerabilities Cache';
+
+$GLOBALS["lang"]['Vulnerabilities Cache'] = 'Vulnerabilities Cache';
+
+$GLOBALS["lang"]['vulnerability_id'] = 'Vulnerability ID';
+
+$GLOBALS["lang"]['Vulnerability ID'] = 'Vulnerability ID';
 
 $GLOBALS["lang"]['WHERE'] = 'WHERE';
 
@@ -5776,6 +6195,8 @@ $GLOBALS["lang"]['Web'] = 'Web';
 
 $GLOBALS["lang"]['Webserver'] = 'Webserver';
 
+$GLOBALS["lang"]['Website'] = 'Website';
+
 $GLOBALS["lang"]['Wednesday'] = 'Wednesday';
 
 $GLOBALS["lang"]['weight'] = 'Weight';
@@ -5802,17 +6223,11 @@ $GLOBALS["lang"]['Welcome to FirstWave Open-AudIT'] = 'Welcome to FirstWave Open
 
 $GLOBALS["lang"]['Western Sahara'] = 'Western Sahara';
 
-$GLOBALS["lang"]['what'] = 'What';
-
-$GLOBALS["lang"]['What'] = 'What';
+$GLOBALS["lang"]['What Can I Expect if I Have no Credentials'] = 'What Can I Expect if I Have no Credentials';
 
 $GLOBALS["lang"]['What is the purpose of this rack.'] = 'What is the purpose of this rack.';
 
 $GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = 'What is the type of this location. Allowable types held in <code>attributes</code> table.';
-
-$GLOBALS["lang"]['when'] = 'When';
-
-$GLOBALS["lang"]['When'] = 'When';
 
 $GLOBALS["lang"]['When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?'] = 'When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?';
 
@@ -5826,6 +6241,8 @@ $GLOBALS["lang"]['When this log was created.'] = 'When this log was created.';
 
 $GLOBALS["lang"]['When this queue item started processing.'] = 'When this queue item started processing.';
 
+$GLOBALS["lang"]['When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.'] = 'When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.';
+
 $GLOBALS["lang"]['When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.'] = 'When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.';
 
 $GLOBALS["lang"]['where'] = 'Where';
@@ -5836,6 +6253,10 @@ $GLOBALS["lang"]['Where on the Device Details screen you would like to see this 
 
 $GLOBALS["lang"]['Where the rack is in the row.'] = 'Where the rack is in the row.';
 
+$GLOBALS["lang"]['Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.'] = 'Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.';
+
+$GLOBALS["lang"]['Whether user interaction is required (None, Passive, Active).'] = 'Whether user interaction is required (None, Passive, Active).';
+
 $GLOBALS["lang"]['Which OS this benchmark applies to.'] = 'Which OS this benchmark applies to.';
 
 $GLOBALS["lang"]['Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.'] = 'Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.';
@@ -5843,6 +6264,8 @@ $GLOBALS["lang"]['Which devices should Open-AudIT create from the external syste
 $GLOBALS["lang"]['Which sub-menu should we display this query in.'] = 'Which sub-menu should we display this query in.';
 
 $GLOBALS["lang"]['Who made this rack.'] = 'Who made this rack.';
+
+$GLOBALS["lang"]['Why Windows Server Only?'] = 'Why Windows Server Only?';
 
 $GLOBALS["lang"]['Why do we exclude this policy?'] = 'Why do we exclude this policy?';
 
@@ -5865,6 +6288,8 @@ $GLOBALS["lang"]['Width'] = 'Width';
 $GLOBALS["lang"]['windows'] = 'Windows';
 
 $GLOBALS["lang"]['Windows'] = 'Windows';
+
+$GLOBALS["lang"]['Windows Test Script'] = 'Windows Test Script';
 
 $GLOBALS["lang"]['Wireless Local Area Network'] = 'Wireless Local Area Network';
 
@@ -5938,7 +6363,7 @@ $GLOBALS["lang"]['active/active'] = 'active/active';
 
 $GLOBALS["lang"]['active/passive'] = 'active/passive';
 
-$GLOBALS["lang"]['ad hoc'] = 'ad hoc';
+$GLOBALS["lang"]['advertisement'] = 'advertisement';
 
 $GLOBALS["lang"]['alert'] = 'alert';
 
@@ -5962,15 +6387,23 @@ $GLOBALS["lang"]['backup'] = 'backup';
 
 $GLOBALS["lang"]['banned'] = 'banned';
 
+$GLOBALS["lang"]['blog'] = 'blog';
+
 $GLOBALS["lang"]['bottom'] = 'bottom';
+
+$GLOBALS["lang"]['browser_lang'] = 'browser_lang';
 
 $GLOBALS["lang"]['building'] = 'building';
 
 $GLOBALS["lang"]['cloud'] = 'cloud';
 
+$GLOBALS["lang"]['code'] = 'code';
+
 $GLOBALS["lang"]['collector'] = 'collector';
 
 $GLOBALS["lang"]['compute'] = 'compute';
+
+$GLOBALS["lang"]['config'] = 'config';
 
 $GLOBALS["lang"]['contains'] = 'contains';
 
@@ -5980,11 +6413,11 @@ $GLOBALS["lang"]['created'] = 'created';
 
 $GLOBALS["lang"]['critical'] = 'critical';
 
+$GLOBALS["lang"]['cve'] = 'cve';
+
 $GLOBALS["lang"]['database'] = 'database';
 
 $GLOBALS["lang"]['debug'] = 'debug';
-
-$GLOBALS["lang"]['defined process'] = 'defined process';
 
 $GLOBALS["lang"]['delegated'] = 'delegated';
 
@@ -6008,13 +6441,39 @@ $GLOBALS["lang"]['equals'] = 'equals';
 
 $GLOBALS["lang"]['error'] = 'error';
 
+$GLOBALS["lang"]['established'] = 'established';
+
 $GLOBALS["lang"]['excluded'] = 'excluded';
 
 $GLOBALS["lang"]['expired'] = 'expired';
 
+$GLOBALS["lang"]['extreme - Without which, the organisation would fail.
+
+very high - Functions that are essential for the organisations survival and must be restored immediately.
+
+high - Important functions that should be restored quickly but may have a slightly longer recovery time.
+
+medium - Functions that are necessary but can tolerate longer downtime.
+
+low - Non-essential functions that can be delayed without significant impact.
+
+unassigned - The default until set.'] = 'extreme - Without which, the organisation would fail.
+
+very high - Functions that are essential for the organisations survival and must be restored immediately.
+
+high - Important functions that should be restored quickly but may have a slightly longer recovery time.
+
+medium - Functions that are necessary but can tolerate longer downtime.
+
+low - Non-essential functions that can be delayed without significant impact.
+
+unassigned - The default until set.';
+
 $GLOBALS["lang"]['fail'] = 'fail';
 
 $GLOBALS["lang"]['false'] = 'false';
+
+$GLOBALS["lang"]['file'] = 'file';
 
 $GLOBALS["lang"]['firewall'] = 'firewall';
 
@@ -6044,11 +6503,15 @@ $GLOBALS["lang"]['here'] = 'here';
 
 $GLOBALS["lang"]['high availability'] = 'high availability';
 
+$GLOBALS["lang"]['howto'] = 'howto';
+
 $GLOBALS["lang"]['ignored'] = 'ignored';
 
 $GLOBALS["lang"]['in'] = 'in';
 
 $GLOBALS["lang"]['inactive'] = 'inactive';
+
+$GLOBALS["lang"]['incomplete'] = 'incomplete';
 
 $GLOBALS["lang"]['info'] = 'info';
 
@@ -6072,7 +6535,7 @@ $GLOBALS["lang"]['load balancing'] = 'load balancing';
 
 $GLOBALS["lang"]['location'] = 'location';
 
-$GLOBALS["lang"]['managed and measurable'] = 'managed and measurable';
+$GLOBALS["lang"]['managed'] = 'managed';
 
 $GLOBALS["lang"]['microsoft'] = 'microsoft';
 
@@ -6080,11 +6543,11 @@ $GLOBALS["lang"]['mount point'] = 'mount point';
 
 $GLOBALS["lang"]['network'] = 'network';
 
+$GLOBALS["lang"]['news'] = 'news';
+
 $GLOBALS["lang"]['no'] = 'no';
 
 $GLOBALS["lang"]['node'] = 'node';
-
-$GLOBALS["lang"]['non-existent'] = 'non-existent';
 
 $GLOBALS["lang"]['none'] = 'none';
 
@@ -6098,6 +6561,8 @@ $GLOBALS["lang"]['not like'] = 'not like';
 
 $GLOBALS["lang"]['notice'] = 'notice';
 
+$GLOBALS["lang"]['notification'] = 'notification';
+
 $GLOBALS["lang"]['okta'] = 'okta';
 
 $GLOBALS["lang"]['openldap'] = 'openldap';
@@ -6108,6 +6573,8 @@ $GLOBALS["lang"]['optionally '] = 'optionally ';
 
 $GLOBALS["lang"]['other'] = 'other';
 
+$GLOBALS["lang"]['package'] = 'package';
+
 $GLOBALS["lang"]['partition'] = 'partition';
 
 $GLOBALS["lang"]['pass'] = 'pass';
@@ -6116,9 +6583,13 @@ $GLOBALS["lang"]['pending'] = 'pending';
 
 $GLOBALS["lang"]['performance'] = 'performance';
 
+$GLOBALS["lang"]['performed'] = 'performed';
+
 $GLOBALS["lang"]['pie'] = 'pie';
 
 $GLOBALS["lang"]['planning'] = 'planning';
+
+$GLOBALS["lang"]['predictable'] = 'predictable';
 
 $GLOBALS["lang"]['query'] = 'query';
 
@@ -6130,7 +6601,7 @@ $GLOBALS["lang"]['rear-right'] = 'rear-right';
 
 $GLOBALS["lang"]['regex'] = 'regex';
 
-$GLOBALS["lang"]['repeatable but intuitive'] = 'repeatable but intuitive';
+$GLOBALS["lang"]['release'] = 'release';
 
 $GLOBALS["lang"]['reserved'] = 'reserved';
 
@@ -6151,6 +6622,36 @@ $GLOBALS["lang"]['storage'] = 'storage';
 $GLOBALS["lang"]['timestamp'] = 'timestamp';
 
 $GLOBALS["lang"]['top'] = 'top';
+
+$GLOBALS["lang"]['top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
+
+secret - Military / Government classification. Disclosure would cause serious damage to national security.
+
+confidential - Military / Government and Private Sector classification. Data that is confidential includes trade secrets, intellectual data, application programming code, and other data that could seriously affect the organization if unauthorized disclosure occurred. Data at this level would be available only to personnel in the organization whose work needs, or is directly related to, the accessed data. Access to confidential data usually requires authorization for each access.
+
+private - Private Sector classification. Data that is private includes any information related to personnel, including human resources records, medical records, and salary information, that is used only within the organization.
+
+sensitive - Military / Government and Private Sector classification. Data that is sensitive includes organizational financial information and requires extra measures to ensure its CIA and accuracy. Disclosure might harm national security.
+
+public - Private Sector classification. Public data is data that is generally shared with the public and would not cause a negative impact on the organization. Examples of public data include how many people work in the organization and what products an organization manufactures or sells.
+
+unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
+
+unassigned - The default until set.'] = 'top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
+
+secret - Military / Government classification. Disclosure would cause serious damage to national security.
+
+confidential - Military / Government and Private Sector classification. Data that is confidential includes trade secrets, intellectual data, application programming code, and other data that could seriously affect the organization if unauthorized disclosure occurred. Data at this level would be available only to personnel in the organization whose work needs, or is directly related to, the accessed data. Access to confidential data usually requires authorization for each access.
+
+private - Private Sector classification. Data that is private includes any information related to personnel, including human resources records, medical records, and salary information, that is used only within the organization.
+
+sensitive - Military / Government and Private Sector classification. Data that is sensitive includes organizational financial information and requires extra measures to ensure its CIA and accuracy. Disclosure might harm national security.
+
+public - Private Sector classification. Public data is data that is generally shared with the public and would not cause a negative impact on the organization. Examples of public data include how many people work in the organization and what products an organization manufactures or sells.
+
+unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
+
+unassigned - The default until set.';
 
 $GLOBALS["lang"]['traffic'] = 'traffic';
 
@@ -6667,3 +7168,4 @@ $GLOBALS["lang"]['YE'] = 'YE';
 $GLOBALS["lang"]['ZM'] = 'ZM';
 
 $GLOBALS["lang"]['ZW'] = 'ZW';
+

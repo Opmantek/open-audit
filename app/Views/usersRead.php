@@ -8,6 +8,61 @@ $self_update = $update;
 if ($resource->id === $user->id) {
     $self_update = true;
 }
+$path = 'c:\\xampp\\open-audit\\app\\Views\\lang';
+if (php_uname('s') !== 'Windows NT') {
+    $path = '/usr/local/open-audit/app/Views/lang';
+}
+$files = array_diff(scandir($path), array('.', '..', '.DS_Store'));
+
+$lang["sq"] = "Albanian";
+$lang["ar"] = "Arabic";
+$lang["az"] = "Azerbaijani";
+$lang["eu"] = "Basque";
+$lang["bg"] = "Bulgarian";
+$lang["bn"] = "Bengali";
+$lang["ca"] = "Catalan";
+$lang["zh"] = "Chinese";
+$lang["zt"] = "Chinese (traditional)";
+$lang["cs"] = "Czech";
+$lang["da"] = "Danish";
+$lang["nl"] = "Dutch";
+$lang["en"] = "English";
+$lang["eo"] = "Esperanto";
+$lang["et"] = "Estonian";
+$lang["gl"] = "Galician";
+$lang["de"] = "German";
+$lang["el"] = "Greek";
+$lang["fi"] = "Finnish";
+$lang["fr"] = "French";
+$lang["ga"] = "Irish";
+$lang["he"] = "Hebrew";
+$lang["hi"] = "Hindi";
+$lang["hu"] = "Hungarian";
+$lang["id"] = "Indonesian";
+$lang["it"] = "Italian";
+$lang["ja"] = "Japanese";
+$lang["ko"] = "Korean";
+$lang["ky"] = "Kyrgyz";
+$lang["lt"] = "Lithuanian";
+$lang["lv"] = "Latvian";
+$lang["ms"] = "Malay";
+$lang["nb"] = "Norwegian";
+$lang["fa"] = "Persian";
+$lang["pb"] = "Portuguese (Brazil)";
+$lang["pl"] = "Polish";
+$lang["pt"] = "Portuguese";
+$lang["ro"] = "Romanian";
+$lang["ru"] = "Russian";
+$lang["sk"] = "Slovak";
+$lang["sl"] = "Slovenian";
+$lang["es"] = "Spanish";
+$lang["sv"] = "Swedish";
+$lang["th"] = "Thai";
+$lang["tl"] = "Tagalog";
+$lang["tr"] = "Turkish";
+$lang["uk"] = "Ukrainian";
+$lang["ur"] = "Urdu";
+$lang["vi"] = "Vietnamese";
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -35,13 +90,20 @@ if ($resource->id === $user->id) {
                                     <?= read_field_header($meta->collection, 'lang', $dictionary->columns->lang, 'Language') ?>
                                     <div class="input-group">
                                         <select class="form-select" id="lang" name="lang" data-original-value="<?= $resource->lang ?>" disabled>
-                                        <option value='cs' <?php if ($resource->lang === 'cs') { echo 'selected'; } ?>><?php echo __('Czech'); ?></option>
-                                        <option value='de' <?php if ($resource->lang === 'de') { echo 'selected'; } ?>><?php echo __('German'); ?></option>
-                                        <option value='en' <?php if ($resource->lang === 'en') { echo 'selected'; } ?>><?php echo __('English'); ?></option>
-                                        <option value='es' <?php if ($resource->lang === 'es') { echo 'selected'; } ?>><?php echo __('Spanish'); ?></option>
-                                        <option value='fr' <?php if ($resource->lang === 'fr') { echo 'selected'; } ?>><?php echo __('French'); ?></option>
-                                        <option value='pt-br' <?php if ($resource->lang === 'pt-br') { echo 'selected'; } ?>><?php echo __('Brazilian Portuguese'); ?></option>
-                                        <option value='zh-tw' <?php if ($resource->lang === 'zh-tw') { echo 'selected'; } ?>><?php echo __('Traditional Chinese'); ?></option>
+                                            <?php foreach ($files as $file) {
+                                                $file = str_replace('.php', '', $file);
+                                                echo "<option value='$file'";
+                                                if ($resource->lang === $file) {
+                                                    echo 'selected';
+                                                }
+                                                echo ">";
+                                                $display = $file;
+                                                if (!empty($lang[$file])) {
+                                                    $display = $lang[$file];
+                                                }
+                                                echo $display . "</option>\n";
+                                            }
+                                            ?>
                                         </select>
                                         <?php if ($self_update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
@@ -168,9 +230,9 @@ window.onload = function () {
         $("#list_table_format").val("<?= $resource->list_table_format ?>");
         <?php if (isset($resource->password)) {
             if ($resource->password !== '') { ?>
-                $("#password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#password").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#password").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#password").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
     });

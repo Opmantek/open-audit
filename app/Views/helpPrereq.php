@@ -12,22 +12,22 @@ include 'shared/collection_functions.php';
                     <div class="row">
                         <div class="col-8 offset-2">
                             <p class="fs-1">Nmap</p>
-                            <p><br>Open-AudIT uses Nmap in its Discovery function. Without Nmap, Open-AudIT will not function correctly. Every Open-AudIT install assumes Nmap is installed and will also test for it on the Discovery web pages. More information about Open-AudIT and Nmap is available here - <a href="<?= url_to('helpFAQ') ?>?name=Open-AudIT+and+Nmap">Open-AudIT and Nmap</a>.</p><br>
-                            <p class="fs-1">Permissions</p>
-                            <p><br>Open-AudIT needs specific directory permissions to be able to create files, upload results, etc. Please set as below.</p><br>
-                            <p class="fs-3">Linux</p>
-                            <p id="cron_file_permission">This file tells Linux to poll the application to determine if there are any scheduled tasks that should be run.</p>
+                            <p><br><?= ('Open-AudIT uses Nmap in its Discovery function. Without Nmap, Open-AudIT will not function correctly. Every Open-AudIT install assumes Nmap is installed and will also test for it on the Discovery web pages. More information about Open-AudIT and Nmap is available here') ?> - <a href="<?= url_to('helpFAQ') ?>?name=Open-AudIT+and+Nmap">Open-AudIT and Nmap</a>.</p><br>
+                            <p class="fs-1"><?= ('Permissions') ?></p>
+                            <p><br><?= ('Open-AudIT needs specific directory permissions to be able to create files, upload results, etc. Please set as below.') ?></p><br>
+                            <p class="fs-3"><?= ('Linux') ?></p>
+                            <p id="cron_file_permission"><?= ('This file tells Linux to poll the application to determine if there are any scheduled tasks that should be run.') ?></p>
                             <pre>chmod 644 /etc/cron.d/open-audit</pre><br>
-                            <p>This is the directory where we store any attachments to devices.</p>
+                            <p><?= ('This is the directory where we store any attachments to devices.') ?></p>
                             <pre>chmod 777 <?= APPPATH ?>Attachments</pre><br>
-                            <p>Our framework uploads files here for processing, then deletes them. Think submitted audit results, etc.</p>
+                            <p><?= ('Our framework uploads files here for processing, then deletes them. Think submitted audit results, etc.') ?></p>
                             <pre>chmod 777 <?= ROOTPATH ?>writable/uploads</pre><br>
-                            <p>The application creates temporary audit scrtips here, copies them to the target machines, then deletes them.</p>
+                            <p><?= ('The application creates temporary audit scrtips here, copies them to the target machines, then deletes them.') ?></p>
                             <pre>chmod 777 <?= ROOTPATH ?>other/scripts</pre><br>
-                            <p>Any user uploaded images are placed here.</p>
+                            <p><?= ('Any user uploaded images are placed here.') ?></p>
                             <pre>chmod 777 <?= ROOTPATH ?>public/custom_images</pre><br>
                             <p class="fs-1">Cron</p>
-                            <p id="cron_file_exists">A sample cron file for Linux is below. This should be placed in /etc/cron.d/open-audit</p><br>
+                            <p id="cron_file_exists"><?= ('A sample cron file for Linux is below. This should be placed in') ?> /etc/cron.d/open-audit</p><br>
                             <pre># m h dom month dow user command<br .># run the task checker each minute<br>* * * * *   root    php <?= ROOTPATH ?>public/index.php tasks execute >/dev/null 2>&1</pre>
                             <br>
 

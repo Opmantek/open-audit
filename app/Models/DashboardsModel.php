@@ -254,38 +254,7 @@ class DashboardsModel extends BaseModel
 
         $dictionary->about = '<p>Quickly view the status of devices on your network.<br> <br></p>';
 
-        $dictionary->notes = '<p>3 x 2<br> <table class="table table-bordered">
-                                        <tbody>
-                                            <tr>
-                                                <td rowspan="2">Sidebar</td>
-                                                <td>Widget #1</td>
-                                                <td>Widget #2</td>
-                                                <td>Widget #3</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Widget #4</td>
-                                                <td>Widget #5</td>
-                                                <td>Widget #6</td>
-                                            </tr>
-                                        </tbody>
-                                    </table> <br> <br> </p>
-                                    <p>4 x 2<br><table class="table table-bordered">
-                                        <tbody>
-                                            <tr>
-                                                <td rowspan="2">Sidebar</td>
-                                                <td>Widget #1</td>
-                                                <td>Widget #2</td>
-                                                <td>Widget #3</td>
-                                                <td>Widget #4</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Widget #5</td>
-                                                <td>Widget #6</td>
-                                                <td>Widget #7</td>
-                                                <td>Widget #8</td>
-                                            </tr>
-                                        </tbody>
-                                    </table><br> <br> </p>';
+        $dictionary->notes = '';
 
         $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';

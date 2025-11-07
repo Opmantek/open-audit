@@ -19,31 +19,31 @@ $operating_system = $config->server_platform;
                             <br>
 
 
-                You are running version <?= $config->display_version ?> of Open-AudIT.<br>
-                Your Host is: <?= php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br>
-                Your database platform is <?= $db->getPlatform()." (version ".$db->getVersion().")"; ?>.<br>
-                Your web server is <?= getenv("SERVER_SOFTWARE") ?> .<br>
-                Your PHP version is <?= phpversion(); ?> and it's current time is <?= $config->timestamp ?>.<br><br>
+                <?= __('You are running version') ?>: <?= $config->display_version ?> of Open-AudIT.<br>
+                <?= __('Your Host is') ?>: <?= php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br>
+                <?= __('Your database platform is') ?>: <?= $db->getPlatform() . " (" . __('version') . " " . $db->getVersion() . ")"; ?>.<br>
+                <?= __('Your web server is') ?>: <?= getenv("SERVER_SOFTWARE") ?> .<br>
+                <?= __('Your PHP version is') ?>: <?= phpversion(); ?> <?= __('and it\'s current time is') ?> <?= $config->timestamp ?>.<br><br>
                 <?php
                 if (!extension_loaded('snmp')) {
-                    echo "<i>You do not have the PHP SNMP extension installed. This extension is highly recommended.</i><br>";
+                    echo "<i>" . __('You do not have the PHP SNMP extension installed. This extension is highly recommended.') . "</i><br>";
                 }
                 if (!extension_loaded('mbstring')) {
-                    echo "<i>You do not have the PHP MBString extension installed. This extension is required.</i><br>";
+                    echo "<i>" . __('You do not have the PHP MBString extension installed. This extension is required.') . "</i><br>";
                 }
                 ?>
 
                 <br><br>
                 <p>
-                    Most of Open-AudIT is Licensed with GNU AGPL.<br>
-                    Written in the PHP scripting language.<br>
-                    Uses the CodeIgniter PHP Framework.<br>
-                    Various <a href="<?= url_to('appLicenses') ?>">licenses</a> are used.<br>
+                    <?= __('Most of Open-AudIT is Licensed with GNU AGPL.') ?><br>
+                    <?= __('Written in the PHP scripting language.') ?><br>
+                    <?= __('Uses the CodeIgniter PHP Framework.') ?><br>
+                    <?= __('Various') ?> <a href="<?= url_to('appLicenses') ?>"><?= __('licenses') ?></a> <?= __('are used.') ?><br>
                 </p>
                 <br>
-                Please visit the homepage at <a target="_blank" href="http://www.open-audit.org">http://www.open-audit.org</a> or the GitHub page at <a target="_blank" href="https://github.com/Opmantek/open-audit">https://github.com/Opmantek/open-audit</a>.<br>
-                Consulting, implementation and other services are available through <a target="_blank" href="https://www.firstwave.com">Firstwave</a>.<br><br>
-                We hope you find Open-AudIT as useful as we do.<br><br><br>
+                <?= __('Please visit the homepage at') ?> <a target="_blank" href="http://www.open-audit.org">http://www.open-audit.org</a> <?= __('or the GitHub page at') ?> <a target="_blank" href="https://github.com/Opmantek/open-audit">https://github.com/Opmantek/open-audit</a>.<br>
+                <?= __('Consulting, implementation and other services are available through') ?> <a target="_blank" href="https://www.firstwave.com">Firstwave</a>.<br><br>
+                <?= __('We hope you find Open-AudIT as useful as we do.') ?><br><br><br>
 
                         </div>
                     </div>

@@ -36,7 +36,7 @@ include 'shared/common_functions.php';
                                     <td><?= @$column->values ?></td>
                                     <td class="text-center"><?php if (in_array($column->name, $dictionary->attributes->create)) { ?><span class="fa fa-check text-success"></span><?php } ?></td>
                                     <?php if (is_string($dictionary->columns->{$column->name})) { ?>
-                                    <td><?= $dictionary->columns->{$column->name} ?></td>
+                                    <td><?= __($dictionary->columns->{$column->name}) ?></td>
                                     <?php } else { ?>
                                     <td><pre><?= json_encode($dictionary->columns->{$column->name}) ?></td>
                                     <?php } ?>
@@ -45,7 +45,7 @@ include 'shared/common_functions.php';
                             </tbody>
                         </table>
                     </div>
-                    <p><br><span style="color: #dc3545;">*</span>&nbsp;<?= __('Note') ?> - <?= __('This column is required by Open-AudIT to create an item of this type') ?></p>
+                    <p><br><span style="color: #dc3545;">*</span>&nbsp;<?= __('Note') ?> - <?= __('This column is required by ') ?> Open-AudIT <?= __('to create an item of this type') ?></p>
                 </div>
             </div>
             <br>
@@ -82,7 +82,7 @@ window.onload = function () {
         <?php } ?>
 
         document.getElementById('<?= $meta->collection ?>ResetForm').addEventListener('submit', function(e){
-            if (confirm("Are you sure?\n\nThis will delete the current rows in the <?= $meta->collection ?> table and insert the original rows.") == true) {
+            if (confirm("<?= __('Are you sure?') ?>\n\n<?= __('This will delete the current rows in the') ?> <?= $meta->collection ?> <?= __('table and insert the original rows.') ?>") == true) {
                 return;
             }
             e.preventDefault();

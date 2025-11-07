@@ -6,10 +6,10 @@ include 'shared/collection_functions.php';
 $title = ucwords(str_replace('_', ' ', $meta->collection));
 $menu = 'Manage';
 if (in_array($meta->collection, ['clouds','credentials','discoveries','files','scripts'])) {
-    $menu = 'Discover';
+    $menu = __('Discover');
 }
 if ($meta->collection === 'discovery_scan_options') {
-    $menu = 'Discover -> Discoveries';
+    $menu = __('Discover') . ' -> ' . __('Discoveries');
 }
 $defaults = false;
 if (in_array($meta->collection, ['agents', 'attributes', 'configuration', 'dashboards', 'discovery_scan_options', 'fields', 'groups', 'integrations', 'locations', 'orgs', 'packages', 'queries', 'roles', 'rules', 'scripts', 'summaries', 'users', 'widgets'])) {
@@ -25,7 +25,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= collection_card_header($meta->collection, $meta->icon, $user, __('About') . ' ' . $title); ?>
+                    <?= collection_card_header($meta->collection, $meta->icon, $user, __('About') . ' ' . __($title)); ?>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -39,11 +39,11 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                 <div class="col-4 text-center">
                                     <?php
                                     if ($edition === 'Enterprise') { ?>
-                                        <button class="btn btn-success"><?= __('Open-AudIT Enterprise') ?></button>
+                                        <button class="btn btn-success">Open-AudIT <?= __('Enterprise') ?></button>
                                     <?php } elseif ($edition === 'Professional') { ?>
-                                        <button class="btn btn-primary"><?= __('Open-AudIT Professional') ?></button>
+                                        <button class="btn btn-primary">Open-AudIT <?= __('Professional') ?></button>
                                     <?php } else { ?>
-                                        <button class="btn btn-warning"><?= __('Open-AudIT Community') ?></button>
+                                        <button class="btn btn-warning">Open-AudIT <?= __('Community') ?></button>
                                     <?php } ?>
                                     <br><br>
                                     <img class="img-fluid helpImage" src="<?= base_url() . 'images/' . $meta->collection ?>.png" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -56,31 +56,31 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                 <?php if ($meta->collection !== 'vulnerabilities') { ?>
                             <h2><?= __('Creating') ?></h2>
                                 <?php if ($meta->collection !== 'collectors') { ?>
-                            <p>An entry can be created using the web interface if the current user logged in has a role that contains the <?= $meta->collection ?>::create permission.<br><br>
-                                Go to menu: <?= $menu ?> -> <?= $title ?> -> <a href="<?= url_to($meta->collection . 'CreateForm') ?>">Create <?= $title ?></a>. Also can be created from the Attributes View, using the "Create" button.</p>
+                            <p><?= ('An entry can be created using the web interface if the current user logged in has a role that contains the') ?> <?= __($meta->collection) ?>::<?= __('create') ?> <?= __('permission') ?>.<br><br>
+                                <?= __('Go to menu') ?>: <?= $menu ?> -> <?= __($title) ?> -> <a href="<?= url_to($meta->collection . 'CreateForm') ?>"><?= ('Create') ?> <?= __($title) ?></a>. <?= ('Also can be created from the Attributes View, using the Create button') ?>.</p>
                                 <?php } else { ?>
-                            <p>You can turn any server into a collector by going to menu -> Admin -> Collectors -> Make this install a Collector. You will need credentials to log on to the server this install will report in to.<br></p>
+                            <p><?= ('You can turn any server into a collector by going to menu -> Admin -> Collectors -> Make this install a Collector. You will need credentials to log on to the server this install will report in to.') ?><br></p>
                                 <?php } ?>
                             <br>
                         <?php } ?>
                                 <?php if ($execute) { ?>
                             <h2><?= __('Executing') ?></h2>
-                            <p><?= $title ?> have the ability to be executed. On the <?= $title ?> collections and details pages is an icon to execute.</p>
+                            <p><?= $title ?> <?= ('have the ability to be executed. On the') ?> <?= __($title) ?> <?= __('collections and details pages is an icon to execute.') ?></p>
                             <br>
                                 <?php } ?>
                             <h2><?= __('View Details') ?></h2>
-                            <p>Go to menu: <?= $menu ?> -> <?= $title ?> -> <a href="<?= url_to($meta->collection . 'Collection') ?>">List <?= $title ?></a>.<br><br>
-                            You will see a list of <?= $meta->collection ?>. You can view by clicking on the blue view icon. You can also edit or delete if you have permissions.</p>
+                            <p><?= ('Go to menu') ?>: <?= $menu ?> -> <?= __($title) ?> -> <a href="<?= url_to($meta->collection . 'Collection') ?>"><?= __('List') ?> <?= __($title) ?></a>.<br><br>
+                            <?= __('You will see a list of') ?> <?= __($meta->collection) ?>. <?= ('You can view by clicking on the blue view icon. You can also edit or delete if you have permissions.') ?></p>
                             <br>
                             <h2><?= __('Database Schema') ?></h2>
-                            <p>The database schema can be found in the application if the user has database::read permission by going to menu: Admin -> Database -> <a href="<?= url_to('databaseCollection') ?>">List Tables</a>, then clicking on the details button for the table.</p>
+                            <p><?= __('The database schema can be found in the application if the user has database::read permission by going to menu: Admin -> Database ->') ?> <a href="<?= url_to('databaseCollection') ?>"><?= __('List Tables') ?></a>, <?= __('then clicking on the details button for the table.') ?></p>
                             <br>
                             <h2><?= __('API / Web Access') ?></h2>
-                            <p>You can access the collection using the normal Open-AudIT JSON based API. Just like any other collection. Please see <a href="<?= url_to('api') ?>">The Open-AudIT API</a> documentation for further details.</p>
+                            <p><?= __('You can access the collection using the normal Open-AudIT JSON based API. Just like any other collection. Please see') ?> <a href="<?= url_to('api') ?>">The Open-AudIT API</a> <?= __('documentation for further details.') ?></p>
                             <br>
                                 <?php if ($defaults) { ?>
                                 <h2><?= __('Default Items') ?></h2>
-                                <p>Shipped are a set of default items. These can be found by going to menu: Help → Defaults → <a href="<?= url_to($meta->collection . 'Defaults') ?>"><?= $title ?></a>.</p>
+                                <p><?= __('Shipped are a set of default items. These can be found by going to menu') ?> -> <?= __('Help') ?> -> <?= __('Defaults') ?> -> <a href="<?= url_to($meta->collection . 'Defaults') ?>"><?= __($title) ?></a>.</p>
                                 <br>
                                 <?php } ?>
                             <h2><?= __('Database Definition') ?></h2>
@@ -117,7 +117,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                             </td>
                                             <?php if (!empty($dictionary->columns->{$column->name})) { ?>
                                                 <?php if (is_string($dictionary->columns->{$column->name})) { ?>
-                                                <td><?= nl2br($dictionary->columns->{$column->name}) ?></td>
+                                                <td><?= nl2br(__($dictionary->columns->{$column->name})) ?></td>
                                                 <?php } else { ?>
                                                 <td><pre><?= json_encode($dictionary->columns->{$column->name}, JSON_PRETTY_PRINT) ?></td>
                                                 <?php } ?>
@@ -129,7 +129,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                     </tbody>
                                 </table>
                             </div>
-                            <p><br><span style="color: #dc3545;">*</span>&nbsp;<?= __('Note') ?> - <?= __('This column is required by Open-AudIT to create an item of this type') ?></p>
+                            <p><br><span style="color: #dc3545;">*</span>&nbsp;<?= __('Note') ?> - <?= __('This column is required by') ?> Open-AudIT <?= __('to create an item of this type') ?></p>
                             <?php } ?>
                         </div>
                     </div>

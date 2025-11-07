@@ -1,5 +1,4 @@
 <?php
-
 $GLOBALS["lang"][' Default, currently '] = ' التقصير، حاليا ';
 
 $GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = ' يُدعم الآن بملف للغة. لتغيير مستعملك لاستخدام هذه اللغة ';
@@ -16,13 +15,15 @@ $GLOBALS["lang"]['5 Minutes'] = '5 دقائق';
 
 $GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br/> <strong>ملاحظة</strong> - أنت تَصِلُ إلى هذا URL مِنْ خادمِ مفتوحِ المحليِ. النص المُحمّل لن يكون قادراً على التقديم عند تشغيل أي آلة أخرى إذا كنت بحاجة إلى مراجعة الآلات الأخرى، يرجى تحميل السيناريو من أي آلة نائية، وليس استخدام بروزر على الخادم المفتوح باب العضوية.';
 
+$GLOBALS["lang"]['<p></p>'] = '<p></p>';
+
 $GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">ملاحظة</strong> -لا بدّ أنّ لديكِ أوراق اعتماد (إتش إس إيه) أو (إس إس إتش) الرئيسيّة لتنفيذ المعايير على جهاز مستهدف</p>';
 
 $GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong>خط الأساس</strong> - الوثيقة الشاملة التي تتضمن تعريف خط الأساس واختبارات السياسات الفردية.<br/> <br/> <strong>السياسات</strong> - الاختبارات الفردية الواردة في خط الأساس. كل اختبار يتعلق ببند محدد ومن الأمثلة على ذلك اختبار النسخة 1-2-3 من الوثيقة SSH.<br/> <br/> <strong>التفاصيل</strong> - يمكن لخطوط الأساس أن تقارن موانئ ومستعملي وبرمجيات صافية.<br/> <br/> <strong>البرمجيات</strong> -لمقارنة البرمجيات التي نتحقق منها لأن أرقام النسخ غير موحّدة في الشكل، عندما نتلقى نتيجة مراجعة الحسابات، ننشئ قاعدة جديدة تسمى البرمجيات التي نخزنها في قاعدة البيانات إلى جانب بقية تفاصيل البرامجيات لكل طرد. ولهذا السبب، فإن خطوط الأساس التي تستخدم سياسات البرمجيات لن تعمل عند تشغيلها ضد جهاز لم يراجع حساباته بحلول 1-10 (على الأقل). سياسات البرمجيات يمكن أن تختبر ضد النسخة التي تكون "عادل" أو "أكثر من" أو "عادل أو أكثر"<br/> <br/> <strong>Netstat Ports</strong> - شركة (نايتست بورتز) تستخدم مجموعة من رقم الميناء، بروتوكول وبرنامج إذا كان الجميع حاضرين فإن السياسة تمر<br/> <br/> <strong>المستخدمون</strong> -المستعملون يعملون مثل ميناء (نيتست) If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br/> <br/> </p>';
 
 $GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p>الموقع هو عنوان مادي يمكن أن يكون له أجهزة مرتبطة به.<br/> <br/>يمكنك تعيينه إحداثيات (الطول) وإذا كانت هناك أجهزة مُعينة، سيظهر الموقع على خريطة شركة "إف بي أوديت"<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br>Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br> <br></p>'] = '<p>وتستمد الشبكة من نقاط الاكتشاف وخصائص الأجهزة.<br/> <br/>ولا يمكن تشكيل المعهد المفتوح باب العضوية إلا لقبول نتائج مراجعة الحسابات من الشبكات الواردة هنا. ليضع هذا في التشكيلة ويضع الصفات <code>blessed_subnets_use</code>.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br></p>'] = '<p>وتستمد الشبكة من نقاط الاكتشاف وخصائص الأجهزة.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>وسيعرض موجز قائمة بالبنود، مجمّعة بالقيم المتميزة للمعزوّد بها <code>table</code> و <code>column</code> سمات<br/> <br/>وعند تنفيذ موجز، ستكون النتيجة قائمة بالقيم المتميزة لذلك <code>table</code> و <code>column</code>. ستكون هناك روابط على القيم التي تسمح للمستعمل برؤية أجهزة المطابقة<br/> <br/>إذا كانت سمة <code>extra_columns</code> وتحتوي الصفحة الناتجة عن ذلك على هذه الأعمدة بالإضافة إلى أعمدة الأجهزة القياسية.<br/> <br/></p>';
 
@@ -30,13 +31,13 @@ $GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the a
 
 $GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '<p>تُعرّفُ الطلباتَ مِن قِبلك، المُستعمل والمُخزّن لـ (إفتتاح) لاستخدام الأجهزة والارتباط بها.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>وتُخزَّن المواصفات لكي تستخدم في حقول معينة.</p>';
+$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>وتُخزَّن المواصفات لكي تستخدم في حقول معينة.</p>';
 
 $GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '<p>والتمكن من تحديد أي آلات يتم تشكيلها هو جزء رئيسي من إدارة النظم ومراجعة الحسابات - وسيصبح الإبلاغ عن ذلك الآن بسيطا وآلية. بمجرد أن تحدد خط الأساس الخاص بك هو تلقائيا تشغيل ضد مجموعة من الأجهزة على جدول محدد مسبقا. وسيكون ناتج خطوط الأساس هذه المنفذة متاحاً للاستطلاع على شبكة الإنترنت، أو للاستيراد إلى نظام طرف ثالث أو حتى كتقرير مطبوع.<br/> <br/> ويمكنك خطوط الأساس من الجمع بين بيانات مراجعة الحسابات ومجموعة من الخصائص التي سبق أن حددتموها (خط الأساس) لتحديد مدى امتثال الأجهزة.<br/> <br/> على سبيل المثال، قد تخلق خط أساس من جهاز تشغيل Centos 6 الذي يعمل كأحد خواديمك في مجموعة. أنت تعرف أن هذا الخادم الخاص مصمم بالطريقة التي تريدها لكنك غير متأكد إذا كانت الخواديم الأخرى في المجموعة مصممة تماماً القاعدة تمكنك من تحديد هذا<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>وتُخزَّن المجموعات في نظام &quot; مفتوح العضوية &quot; من أجل الأجهزة الشريكة من أجل تحسين تسجيل وإدارة وتقدير تكاليف الترخيص.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>وتُخزَّن المجموعات في نظام &quot; مفتوح العضوية &quot; من أجل الأجهزة الشريكة من أجل تحسين تسجيل وإدارة وتقدير تكاليف الترخيص.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>المكونات عبارة عامة تستخدم للجداول التي تخزن الخواص للجهاز وهذه الجداول هي: الوصول إلى النقاط، والارتفاع، والبيولوجيا، والشهادة، والخزانات، والملف، والرق، والسجل، والذاكرة، والنمط، والشاشة، والشاشة، والشبكة، والصورة، والصفوف، والتجزئة، والسياسة العامة، والمتغيرات المطبوعة، والمجهزة، والراديو، والشعار، والخادم، والخدمة، والنسخ، والبرمجيات</p><p> وبالإضافة إلى ذلك، نصنف الجداول التالية أيضا على أنها ذات صلة بالجهاز: التطبيق، الملحق، المجموعة، الابتكار، الصورة.</p>';
+$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>المكونات عبارة عامة تستخدم للجداول التي تخزن الخواص للجهاز وهذه الجداول هي: الوصول إلى النقاط، والارتفاع، والبيولوجيا، والشهادة، والخزانات، والملف، والرق، والرخصة، والسجل، والذاكرة، والنمط، والشاشة، والشبكة، والشبكة، والصورة، والصفحة، والتقسيم، والسياسة العامة، والمتغيرات المطبوعة، والمجهزة، والراديو، والشعار، والخادم، والخدمة، والبرمجيات</p><p> وبالإضافة إلى ذلك، نصنف الجداول التالية أيضا على أنها ذات صلة بالجهاز: التطبيق، الملحق، المجموعة، الابتكار، الصورة.</p>';
 
 $GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>ويتم تشفير وثائق التفويض عند تخزينها في قاعدة البيانات.<br/> <br/>عندما يتم تشغيل جهاز الكشف، يتم استرجاع وثائق تفويضه واختبارها للتواصل أولا (من) <code>credential</code> الجدول). If these fail, then accreditation associated with the given Org <code>credentials.org_id</code> كما يجري اختبارها ضد الجهاز. وثائق تفويض العمل مخزنة على مستوى جهاز فردي في طاولة الخلود (الحاشية - لا كلمة "س" باسم الطاولة.<br/> <br/>SSH keys are tested before SSH username / password. وعند اختبار SSH، ستوضع أيضا علامات على وثائق التفويض بأنها تعمل بالسودو أو تكون جذورها.<br/> <br/>وتيسيراً للاستخدام، لا ينبغي أن تتضمن كلمات السر في ويندوز اقتباساً واحداً أو مزدوجاً. هذا هو الحد البعيد من أسلحة الدمار الشامل، وليس قيد مفتوح.<br/> <br/></p>';
 
@@ -69,8 +70,6 @@ $GLOBALS["lang"]['<p>In the ever-changing world of computer security where new v
 
 $GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>الاندماجات تسمح لك باختيار الأجهزة والجداول الزمنية للحديث مع النظم الخارجية<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>It is easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen over time. All the devices discovered last week, last month or any other period. New software found. What about devices that have not been seen - where are they? How useful to be able to specify these items over time.<br> <br></p>'] = '<p>ومن السهل رؤية التقارير على مر الزمن مفيدة للغاية. ليس فقط يمكنك رؤية البيانات المفتوحة، ولكن الآن ما رأيته على مر الزمن. جميع الأجهزة المكتشفة الأسبوع الماضي، الشهر الماضي أو أي فترة أخرى. البرامج الجديدة وجدت ماذا عن الأجهزة التي لم يتم رؤيتها أين هي؟ مدى فائدة القدرة على تحديد هذه البنود بمرور الوقت.<br/> <br/></p>';
-
 $GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>وترد تفاصيل توقيت الاختناق في الجزء السفلي من هذه الصفحة <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. من تلك الصفحة:<br/> <br/><em>إذا كنت على نطاق واسع لائق أو اتصال عبر الإنترنت، وأنا أوصي دائما باستخدام - T4 (Aggressive). بعض الناس يحبون (تي 5) رغم أنه عدواني جداً على ذوقي People sometimes specify - T2 (Polite) because they think it is less likely to destroy hosts or because they consider themselves to be polite in general. غالباً ما لا يدركون كم هو بطيء فحصهم قد يستغرق عشر مرات أطول من المسح الافتراضي إن حوادث تحطم الآلات ومشاكل الضمادات نادرة مع خيارات التوقيت الافتراضي - T3 (Normal) ولذا فإنني أوصي بذلك عادة لأجهزة المسح الحذر. والكشف عن النسخ المخفف أكثر فعالية بكثير من التلاعب بقيم التوقيت في الحد من هذه المشاكل.</em><footer>غوردون <i>Fyodor</i> Lyon</footer><br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '<p>ويمكن تشكيل قاعدة البيانات المفتوحة لاستخدام أساليب مختلفة لتوثيق هوية المستخدم، بالإضافة إلى إنشاء حساب للمستعمل باستخدام الأدوار والأعراف المحددة استناداً إلى عضوية المجموعة.<br/> <br/></p>';
@@ -95,7 +94,7 @@ $GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br
 
 $GLOBALS["lang"]['<p>Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned Roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>
         Get the complete Open-AudIT Enterprise experience. Creating roles allows fine grained control over what your users can do within Open-AudIT.<br> <br>
-        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>الأدوار في الاجتماعات المفتوحة إنها بند رئيسي المستعمل لديه الأورغ الأولي وكذلك قائمة بالأوغاد التي يمكنهم الوصول إليها ويجمع المستخدم بين هذا وبين قائمة بالأدوار المسندة التي تحدد الإجراءات التي يمكن أن تتخذها بشأن المواد المخصصة للأوغاد التي تتاح لهم الوصول إليها. مزيج من مستعملين "أوغس" و"أحجار" يحدد ما يمكن ولا يمكن أن يفعلوه في "إفتتاح"<br/> <br/>إحصل على تجربة شركة (أود) المفتوحة إن إنشاء الأدوار يتيح السيطرة الدقيقة على ما يمكن لمستعمليكم القيام به في إطار المبادرة المفتوحة.<br/> <br/>وتستند الطريقة الرئيسية للترخيص (ما يمكن للمستعمل أن يفعله) إلى دور المستعملين. وتُعرَّف الأدوار الافتراضية بأنها &quot; org admin &quot; والمراسل والمستعمل. ولكل دور مجموعة من التصاريح (الاختبار، القراءة، التحديث، حذف) لكل نقطة نهاية. وتتاح القدرة على تحديد أدوار إضافية وتحرير الأدوار القائمة في المؤسسة المفتوحة للاستثمار.<br/> <br/>ويمكن أيضاً استخدام الأدوار بإذن من برنامج العمل من أجل التنمية في أفريقيا (دليل إيجابي ودليل مفتوح). وللمنشآت المرخصة لدى المؤسسة القدرة على تكييف مجموعة برامج العمل الطويلة الأجل لكل دور محدد.<br/> <br/></p>';
+        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>الأدوار في الاجتماعات المفتوحة إنها بند رئيسي المستعمل لديه الأورغ الأولي وكذلك قائمة بالأوغاد التي يمكنهم الوصول إليها ويجمع المستخدم بين هذا وبين قائمة بالأدوار المسندة التي تحدد الإجراءات التي يمكن أن تتخذها بشأن المواد المخصصة للأوغاد التي تتاح لهم الوصول إليها. مزيج من مستعملين "أوغس" و"أحجار" يحدد ما يمكن ولا يمكن أن يفعلوه في "إفتتاح"<br/> <br/>إحصل على تجربة شركة (أود) المفتوحة إن إنشاء الأدوار يتيح السيطرة الدقيقة على ما يمكن لمستعمليكم القيام به في إطار المبادرة المفتوحة.<br/> <br/>وتستند الطريقة الرئيسية للترخيص (ما يمكن للمستعمل أن يفعله) إلى دور المستعملين. وتُعرَّف الأدوار الافتراضية بأنها &quot; org admin &quot; والمراسل والمستعمل. ولكل دور مجموعة من التصاريح (الاختبار، القراءة، التحديث، حذف) لكل نقطة نهاية. وتتاح القدرة على تحديد أدوار إضافية وتحرير الأدوار القائمة في المؤسسة المفتوحة للاستثمار.<br/> <br/>ويمكن أيضاً استخدام الأدوار بإذن من برنامج العمل من أجل التنمية في أفريقيا (دليل إيجابي ودليل مفتوح). وللمنشآت المرخصة لدى المؤسسة القدرة على تكييف مجموعة برامج العمل الطويلة الأجل لكل دور محدد.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p>وتنظر القواعد في السمات وتجعل الكهنغ على أساس القاعدة المناسبة.</p>';
 
@@ -140,6 +139,8 @@ $GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>
 
 $GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p>هذه النقطة النهائية تمكنك من إضافة تفاصيل البنية التحتية السحابية بعد ذلك ستصل (أوديت) إلى سحابتك مستخدماً الـ(آي بي آي) الأصليّة وتعيد خوادمك، تماماً مثل أيّ جهاز آخر في (أوديت).<br/> <br/><em>ملاحظة</em> -لإستعمال هذه الميزة <em>يجب أن يجب</em> (ب) تمكين أصناف التشكيلة من تطابق الـ (ماك) (بالنسبـة لـ Azure). وسيتم ذلك تلقائيا في المرة الأولى التي يتم فيها تنفيذ اكتشاف السحابة.<br/> <br/>وثائق تفويض لسحبك<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> أو <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>مطلوب<br/> <br/></p>';
 
+$GLOBALS["lang"]['<p>Vulnerabilities reporting based on the NIST CVE feed.<br> <br></p>'] = '<p>Vulnerabilities reporting based on the NIST CVE feed.<br/> <br/></p>';
+
 $GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>نحن في البداية وضعنا القائمة الافتراضية للنصوص مع خيارات التقصير ولا يمكن حذف هذه النصوص الافتراضية. يمكنك صنع نصوص إضافية لتستخدمها من قبلك حسب الاقتضاء السيناريو الخاص بك سيكون مستندا على واحد من النصوص الحالية ولديه خيارات العرف المطبقة. يمكن بعد ذلك تحميل النصوص من صفحة القائمة في القائمة الكشف مراجعة الحسابات بنود مراجعة الحسابات<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>عندما يستعمل (ريجكس) للتطابق يمكن العثور على صفحة مفيدة <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. بعض الاختلافات في بيرل ريجكس <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">هنا</a>.</p>';
@@ -157,6 +158,10 @@ $GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are locat
 $GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = 'خريطة جوجل API والمفتاح مطلوب لهذه المهمة.';
 
 $GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = 'مجموعة من هويات الأجهزة التي ستنفذ المعيار';
+
+$GLOBALS["lang"]['A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.'] = 'A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.';
+
+$GLOBALS["lang"]['A JSON array of values to test for this vulnerability.'] = 'A JSON array of values to test for this vulnerability.';
 
 $GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = 'A JSON document containing the Orgs assigned to this user. الهوية التي أخذت من <code>orgs.id</code>. إذا كان للمستعمل الوصول إلى الأورج، لديهم إمكانية الوصول إلى أن أورجس.';
 
@@ -190,6 +195,8 @@ $GLOBALS["lang"]['A calculated field that displays the number of times this piec
 
 $GLOBALS["lang"]['A collector is either in Collector or Stand-Alone mode.'] = 'أي جامع إمّا في المُجمّعِ أَو نظامِ الاحتياطيِ.';
 
+$GLOBALS["lang"]['A comma separated list of applicable CVEs.'] = 'A comma separated list of applicable CVEs.';
+
 $GLOBALS["lang"]['A comma separated list of values, one of which can be selected.'] = 'قائمة منفصلة بالقيم يمكن اختيار أحدها';
 
 $GLOBALS["lang"]['A command to run. When the agent is Windows based, this command is run from within the powershell agent.'] = 'أمر للهرب عندما يكون العميل (ويندوز) مُقرّراً، فإنّ هذه القيادة تُدار من داخل عميل الصدفة.';
@@ -212,6 +219,12 @@ $GLOBALS["lang"]['A short description of the log entry.'] = 'وصف قصير ل�
 
 $GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = 'خيط يطابق <code>software.name</code> عزو. يمكنك استخدام البطاقة البرية العادية لـ (سي كي إل) في المئة لتطابق شخص أو أكثر';
 
+$GLOBALS["lang"]['A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).'] = 'وقد يسمح الضعف الذي يؤثر على توافر الخدمات للمهاجمين بتعطيل الخدمات، أو بنظم التحطم، أو يتسبب في إنكار الخدمة (الخدمة الوطنية، منخفضة، عالية).';
+
+$GLOBALS["lang"]['A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).'] = 'وقد يسمح الضعف الذي يؤثر على السرية للمهاجمين بقراءة بيانات حساسة، مثل المعلومات الشخصية، أو وثائق التفويض، أو بيانات الأعمال التجارية المسجلة الملكية (الوحدة، منخفضة، عالية).';
+
+$GLOBALS["lang"]['A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).'] = 'A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system formations (None, Low, High).';
+
 $GLOBALS["lang"]['AD Group'] = 'AD Group';
 
 $GLOBALS["lang"]['ADSL, HFC, ISDN, etc.'] = 'ADSL, HFC, ISDN, etc.';
@@ -221,6 +234,8 @@ $GLOBALS["lang"]['AIX'] = 'AIX';
 $GLOBALS["lang"]['ALL IPs'] = 'جميع الشخصيات';
 
 $GLOBALS["lang"]['API / Web Access'] = 'API/Web Access';
+
+$GLOBALS["lang"]['API Documentation'] = 'وثائق API';
 
 $GLOBALS["lang"]['API Key required.'] = 'مطلوبة المفتاح';
 
@@ -262,6 +277,10 @@ $GLOBALS["lang"]['action_command'] = 'القيادة';
 
 $GLOBALS["lang"]['Action Command'] = 'القيادة';
 
+$GLOBALS["lang"]['action_date'] = 'الإجراء';
+
+$GLOBALS["lang"]['Action Date'] = 'الإجراء';
+
 $GLOBALS["lang"]['action_devices_assigned_to_location'] = 'الأجهزة المخصصة للأماكن';
 
 $GLOBALS["lang"]['Action Devices Assigned To Location'] = 'الأجهزة المخصصة للأماكن';
@@ -295,6 +314,8 @@ $GLOBALS["lang"]['actions'] = 'الإجراءات';
 $GLOBALS["lang"]['Actions'] = 'الإجراءات';
 
 $GLOBALS["lang"]['Activate'] = 'النشاط';
+
+$GLOBALS["lang"]['Activate Free License'] = 'تفعيل الترخيص المجاني';
 
 $GLOBALS["lang"]['Activate Key'] = 'تفعيل المفتاح';
 
@@ -360,6 +381,8 @@ $GLOBALS["lang"]['address'] = 'العنوان';
 
 $GLOBALS["lang"]['Address'] = 'العنوان';
 
+$GLOBALS["lang"]['Admin'] = 'Admin';
+
 $GLOBALS["lang"]['admin_status'] = 'الوضع';
 
 $GLOBALS["lang"]['Admin Status'] = 'الوضع';
@@ -409,6 +432,8 @@ $GLOBALS["lang"]['American Samoa'] = 'ساموا الأمريكية';
 $GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = 'مجموعة من <code>benchmarks.id</code>.';
 
 $GLOBALS["lang"]['An array of <code>devices.id</code>.'] = 'مجموعة من <code>devices.id</code>.';
+
+$GLOBALS["lang"]['An array of object representing external links to more information.'] = 'مجموعة من الأشياء تمثل روابط خارجية مع المزيد من المعلومات.';
 
 $GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = 'An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.';
 
@@ -463,6 +488,8 @@ $GLOBALS["lang"]['application_id'] = 'هوية التطبيق';
 $GLOBALS["lang"]['Application ID'] = 'هوية التطبيق';
 
 $GLOBALS["lang"]['Application Licenses'] = 'تراخيص التطبيق';
+
+$GLOBALS["lang"]['Application, Operating System or Hardware.'] = 'تطبيق نظام التشغيل أو نظام التشغيل';
 
 $GLOBALS["lang"]['applications'] = 'التطبيقات';
 
@@ -562,6 +589,18 @@ $GLOBALS["lang"]['attachments'] = 'الملاحق';
 
 $GLOBALS["lang"]['Attachments'] = 'الملاحق';
 
+$GLOBALS["lang"]['attack_complexity'] = 'تعقيد الهجوم';
+
+$GLOBALS["lang"]['Attack Complexity'] = 'تعقيد الهجوم';
+
+$GLOBALS["lang"]['attack_requirements'] = 'متطلبات الهجوم';
+
+$GLOBALS["lang"]['Attack Requirements'] = 'متطلبات الهجوم';
+
+$GLOBALS["lang"]['attack_vector'] = 'هجوم';
+
+$GLOBALS["lang"]['Attack Vector'] = 'هجوم';
+
 $GLOBALS["lang"]['Attribute'] = 'المساهمة';
 
 $GLOBALS["lang"]['attributes'] = 'الخصائص';
@@ -600,15 +639,29 @@ $GLOBALS["lang"]['Australia'] = 'أستراليا';
 
 $GLOBALS["lang"]['Austria'] = 'النمسا';
 
-$GLOBALS["lang"]['auth'] = 'Auth';
-
 $GLOBALS["lang"]['Auth'] = 'Auth';
+
+$GLOBALS["lang"]['auth'] = 'Auth';
 
 $GLOBALS["lang"]['Authentication Passphrase'] = 'تصاريح التوثيق';
 
+$GLOBALS["lang"]['authority_key_ident'] = 'الهيئة الرئيسية';
+
+$GLOBALS["lang"]['Authority Key Ident'] = 'الهيئة الرئيسية';
+
 $GLOBALS["lang"]['Auto'] = 'Auto';
 
+$GLOBALS["lang"]['auto_renew'] = 'Auto Renew';
+
+$GLOBALS["lang"]['Auto Renew'] = 'Auto Renew';
+
 $GLOBALS["lang"]['Auto populated by the Open-AudIT Server.'] = 'مأهولة من قِبَل خادم مفتوح';
+
+$GLOBALS["lang"]['AutoRenew'] = 'AutoRenew';
+
+$GLOBALS["lang"]['automatable'] = 'التشغيل الآلي';
+
+$GLOBALS["lang"]['Automatable'] = 'التشغيل الآلي';
 
 $GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = 'مأهولة بالسكان آلياً بناءً على نظام المُجمعات';
 
@@ -644,6 +697,14 @@ $GLOBALS["lang"]['Barbados'] = 'بربادوس';
 
 $GLOBALS["lang"]['Base DN'] = 'قاعدة DN';
 
+$GLOBALS["lang"]['base_score'] = 'القاعدة';
+
+$GLOBALS["lang"]['Base Score'] = 'القاعدة';
+
+$GLOBALS["lang"]['base_severity'] = 'الجزء السفلي';
+
+$GLOBALS["lang"]['Base Severity'] = 'الجزء السفلي';
+
 $GLOBALS["lang"]['based_on'] = 'القائمة';
 
 $GLOBALS["lang"]['Based On'] = 'القائمة';
@@ -673,10 +734,6 @@ $GLOBALS["lang"]['baselines_results'] = 'النتائج الأساسية';
 $GLOBALS["lang"]['Baselines Results'] = 'النتائج الأساسية';
 
 $GLOBALS["lang"]['Basic'] = 'أساسي';
-
-$GLOBALS["lang"]['batch'] = 'باتش';
-
-$GLOBALS["lang"]['Batch'] = 'باتش';
 
 $GLOBALS["lang"]['Belarus'] = 'بيلاروس';
 
@@ -782,6 +839,8 @@ $GLOBALS["lang"]['Bulgaria'] = 'بلغاريا';
 
 $GLOBALS["lang"]['Bulk Edit'] = 'Bulk Edit';
 
+$GLOBALS["lang"]['Bulk Editing Device Attributes'] = 'Bulk Editing Device Attributes';
+
 $GLOBALS["lang"]['Burkina Faso'] = 'بوركينا فاسو';
 
 $GLOBALS["lang"]['Burundi'] = 'بوروندي';
@@ -793,6 +852,8 @@ $GLOBALS["lang"]['Business Requirements'] = 'متطلبات الأعمال';
 $GLOBALS["lang"]['Buy'] = 'اشتري';
 
 $GLOBALS["lang"]['Buy More'] = 'اشتر المزيد';
+
+$GLOBALS["lang"]['Buy More Licenses'] = 'شراء المزيد من التراخيص';
 
 $GLOBALS["lang"]['By'] = 'من قبل';
 
@@ -809,6 +870,8 @@ $GLOBALS["lang"]['CPU'] = 'CPU';
 $GLOBALS["lang"]['CPUs'] = 'CPUs';
 
 $GLOBALS["lang"]['CSV'] = 'CSV';
+
+$GLOBALS["lang"]['CVE'] = 'CVE';
 
 $GLOBALS["lang"]['Calculated from discovery.'] = 'محسوبة من الاكتشاف';
 
@@ -848,6 +911,8 @@ $GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = 'يم�
 
 $GLOBALS["lang"]['Can be set by discovery or user.'] = 'يمكن تحديدها بواسطة الاكتشاف أو المستخدم.';
 
+$GLOBALS["lang"]['Can be set by discovery or user. Uses the ID from the locations table.'] = 'يمكن تحديدها بواسطة الاكتشاف أو المستخدم. يستخدم الهويّة من طاولة المواقع';
+
 $GLOBALS["lang"]['Can the user edit this item.'] = 'أيمكن للمستعمل أن يحرر هذا البند';
 
 $GLOBALS["lang"]['Canada'] = 'كندا';
@@ -878,6 +943,14 @@ $GLOBALS["lang"]['certificate'] = 'شهادة';
 
 $GLOBALS["lang"]['Certificate'] = 'شهادة';
 
+$GLOBALS["lang"]['certificate_file'] = 'ملف الشهادة';
+
+$GLOBALS["lang"]['Certificate File'] = 'ملف الشهادة';
+
+$GLOBALS["lang"]['certificate_name'] = 'اسم الشهادة';
+
+$GLOBALS["lang"]['Certificate Name'] = 'اسم الشهادة';
+
 $GLOBALS["lang"]['certificates'] = 'الشهادات';
 
 $GLOBALS["lang"]['Certificates'] = 'الشهادات';
@@ -895,10 +968,6 @@ $GLOBALS["lang"]['Change Log'] = 'التغيير';
 $GLOBALS["lang"]['change_type'] = 'التغيير';
 
 $GLOBALS["lang"]['Change Type'] = 'التغيير';
-
-$GLOBALS["lang"]['chart'] = 'Chart';
-
-$GLOBALS["lang"]['Chart'] = 'Chart';
 
 $GLOBALS["lang"]['check_minutes'] = 'دقائق التحقق';
 
@@ -1066,6 +1135,14 @@ $GLOBALS["lang"]['comments'] = 'التعليقات';
 
 $GLOBALS["lang"]['Comments'] = 'التعليقات';
 
+$GLOBALS["lang"]['commercial'] = 'التجارة';
+
+$GLOBALS["lang"]['Commercial'] = 'التجارة';
+
+$GLOBALS["lang"]['common_name'] = 'الاسم المشترك';
+
+$GLOBALS["lang"]['Common Name'] = 'الاسم المشترك';
+
 $GLOBALS["lang"]['Commonly referred to as the clientId.'] = 'عادة ما يُشار إليه باسم العميل';
 
 $GLOBALS["lang"]['Commonly referred to as the clientSecret.'] = 'يُشار إليه عادة باسم العميل (سكرت).';
@@ -1080,6 +1157,10 @@ $GLOBALS["lang"]['Comoros the'] = 'جزر القمر';
 
 $GLOBALS["lang"]['Compact'] = 'الاتفاق';
 
+$GLOBALS["lang"]['Company'] = 'Company';
+
+$GLOBALS["lang"]['Complexity of the attack (Low or High).'] = 'Complexity of the attack (Low or High).';
+
 $GLOBALS["lang"]['Component Table'] = 'الجدول';
 
 $GLOBALS["lang"]['Components (All Devices)'] = 'المكونات (جميع الأجهزة)';
@@ -1087,8 +1168,6 @@ $GLOBALS["lang"]['Components (All Devices)'] = 'المكونات (جميع ال�
 $GLOBALS["lang"]['Compute'] = 'Compute';
 
 $GLOBALS["lang"]['Condition'] = 'الشرط';
-
-$GLOBALS["lang"]['config'] = 'Config';
 
 $GLOBALS["lang"]['Config'] = 'Config';
 
@@ -1105,6 +1184,8 @@ $GLOBALS["lang"]['Config Manager Error Code'] = 'Config Manager Error Code';
 $GLOBALS["lang"]['configuration'] = 'الاتحاد';
 
 $GLOBALS["lang"]['Configuration'] = 'الاتحاد';
+
+$GLOBALS["lang"]['Configure'] = 'الثقة';
 
 $GLOBALS["lang"]['Congo'] = 'الكونغو';
 
@@ -1222,10 +1303,6 @@ $GLOBALS["lang"]['Create Open-AudIT Devices from '] = 'الإبداع المفت
 
 $GLOBALS["lang"]['Create Open-AudIT Devices from NMIS'] = 'الإبداع المفتوح أجهزة من نظام المعلومات الإدارية الوطني';
 
-$GLOBALS["lang"]['created_at'] = 'Created At';
-
-$GLOBALS["lang"]['Created At'] = 'Created At';
-
 $GLOBALS["lang"]['created_by'] = 'المنشأة بموجب';
 
 $GLOBALS["lang"]['Created By'] = 'المنشأة بموجب';
@@ -1235,6 +1312,10 @@ $GLOBALS["lang"]['created_date'] = 'تاريخ الإنشاء';
 $GLOBALS["lang"]['Created Date'] = 'تاريخ الإنشاء';
 
 $GLOBALS["lang"]['Creating'] = 'الإبداع';
+
+$GLOBALS["lang"]['Creating Device'] = 'Creating Device';
+
+$GLOBALS["lang"]['Creating a Query'] = 'إنشاء قرى';
 
 $GLOBALS["lang"]['creator'] = 'Creator';
 
@@ -1248,6 +1329,22 @@ $GLOBALS["lang"]['credentials'] = 'وثائق التفويض';
 
 $GLOBALS["lang"]['Credentials'] = 'وثائق التفويض';
 
+$GLOBALS["lang"]['Credentials Client ID'] = 'هوية العملاء';
+
+$GLOBALS["lang"]['Credentials Subscription ID'] = 'وثائق التفويض الهوية';
+
+$GLOBALS["lang"]['Credentials Tenant ID'] = 'وثائق التفويض';
+
+$GLOBALS["lang"]['Credentials for Amazon AWS used in Cloud Discovery'] = 'وثائق تفويض الأمازون AWS المستخدمة في الكشف عن كلود';
+
+$GLOBALS["lang"]['Credentials for Microsoft Azure used in Cloud Discovery'] = 'وثائق تفويض ميكروسوفت Azure used in Cloud Discovery';
+
+$GLOBALS["lang"]['Critical'] = 'حرجية';
+
+$GLOBALS["lang"]['criticality'] = 'الحساسية';
+
+$GLOBALS["lang"]['Criticality'] = 'الحساسية';
+
 $GLOBALS["lang"]['Croatia'] = 'كرواتيا';
 
 $GLOBALS["lang"]['Cuba'] = 'كوبا';
@@ -1260,11 +1357,15 @@ $GLOBALS["lang"]['Current Discovery Processes'] = 'عمليات الكشف ال�
 
 $GLOBALS["lang"]['Current date & time is '] = 'الوقت الحالي ';
 
+$GLOBALS["lang"]['Currently Installed'] = 'حاليا';
+
 $GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = 'الأنواع المدعومة حاليا <code>snmp</code>.. <code>snmp_v3</code>.. <code>ssh</code>.. <code>ssh_key</code> أو <code>windows</code>.';
 
 $GLOBALS["lang"]['Custom TCP Ports'] = 'موانئ TCP العرفية';
 
 $GLOBALS["lang"]['Custom UDP Ports'] = 'الجمارك الموانئ';
+
+$GLOBALS["lang"]['Cve'] = 'Cve';
 
 $GLOBALS["lang"]['Cyprus'] = 'قبرص';
 
@@ -1340,6 +1441,12 @@ $GLOBALS["lang"]['Date Received'] = 'تاريخ الاستلام';
 
 $GLOBALS["lang"]['Date Y-M-D'] = 'التاريخ Y-M-D';
 
+$GLOBALS["lang"]['Date and time when the CVE was last updated.'] = 'تاريخ ووقت آخر تحديث لوكالة الاستخبارات المركزية.';
+
+$GLOBALS["lang"]['Date and time when the CVE was published.'] = 'تاريخ ووقت نشر مركز التحقيقات';
+
+$GLOBALS["lang"]['Date when the CVE was published.'] = 'التاريخ الذي نشرت فيه لجنة التحقيق';
+
 $GLOBALS["lang"]['DateTime Now'] = 'التاريخ الآن';
 
 $GLOBALS["lang"]['DateTime Y-M-D H:M:S'] = 'التاريخ Y-M-D H:M:S';
@@ -1372,6 +1479,8 @@ $GLOBALS["lang"]['Default of 389. Normally 636 used for Active Directory LDAPS.'
 
 $GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = 'التقصير <code>3</code> من أجل برنامج العمل دون الإقليمي ودليل فعال.';
 
+$GLOBALS["lang"]['Defaults'] = 'العجز';
+
 $GLOBALS["lang"]['delay_minutes'] = 'مسارات';
 
 $GLOBALS["lang"]['Delay Minutes'] = 'مسارات';
@@ -1389,10 +1498,6 @@ $GLOBALS["lang"]['Delete NMIS Devices if not in Open-AudIT'] = 'يحذف نظا�
 $GLOBALS["lang"]['Delete from Application'] = 'تحذف من الطلب';
 
 $GLOBALS["lang"]['Delete from Cluster'] = 'تحذف من المجموعة';
-
-$GLOBALS["lang"]['deleted_at'] = 'Deleted At';
-
-$GLOBALS["lang"]['Deleted At'] = 'Deleted At';
 
 $GLOBALS["lang"]['Denmark'] = 'الدانمرك';
 
@@ -1444,9 +1549,9 @@ $GLOBALS["lang"]['Device'] = 'الجهاز';
 
 $GLOBALS["lang"]['Device Audits'] = 'مراجعة حسابات الأجهزة';
 
-$GLOBALS["lang"]['device_id'] = 'هوية الجهاز';
-
 $GLOBALS["lang"]['Device ID'] = 'هوية الجهاز';
+
+$GLOBALS["lang"]['device_id'] = 'هوية الجهاز';
 
 $GLOBALS["lang"]['device_id_a'] = 'جهاز تحديد الهوية';
 
@@ -1572,6 +1677,10 @@ $GLOBALS["lang"]['Discoveries'] = 'الكشف';
 
 $GLOBALS["lang"]['Discovery'] = 'الكشف';
 
+$GLOBALS["lang"]['Discovery Change Logs'] = 'Discovery Change Logs';
+
+$GLOBALS["lang"]['Discovery Data Retention'] = 'الاحتفاظ ببيانات الكشف';
+
 $GLOBALS["lang"]['discovery_id'] = 'الهوية السرية';
 
 $GLOBALS["lang"]['Discovery ID'] = 'الهوية السرية';
@@ -1581,6 +1690,8 @@ $GLOBALS["lang"]['Discovery Issues'] = 'قضايا الكشف';
 $GLOBALS["lang"]['discovery_log'] = 'Discovery Log';
 
 $GLOBALS["lang"]['Discovery Log'] = 'Discovery Log';
+
+$GLOBALS["lang"]['Discovery Match Options'] = 'خيارات قياس الاكتشاف';
 
 $GLOBALS["lang"]['Discovery Name'] = 'الاسم السري';
 
@@ -1601,6 +1712,10 @@ $GLOBALS["lang"]['Discovery Scan Options'] = 'خيارات الكشف';
 $GLOBALS["lang"]['disk'] = 'Disk';
 
 $GLOBALS["lang"]['Disk'] = 'Disk';
+
+$GLOBALS["lang"]['display_version'] = 'التصويب';
+
+$GLOBALS["lang"]['Display Version'] = 'التصويب';
 
 $GLOBALS["lang"]['Display in Menu'] = 'Display in Menu';
 
@@ -1728,6 +1843,24 @@ $GLOBALS["lang"]['Egypt'] = 'مصر';
 
 $GLOBALS["lang"]['Either Amazon, Google or Microsoft.'] = 'إما الأمازون أو جوجل أو ميكروسوفت';
 
+$GLOBALS["lang"]['Either none or present.
+
+<strong>None</strong> - The successful attack does not depend on the deployment and execution conditions of the vulnerable system. The attacker can expect to be able to reach the vulnerability and execute the exploit under all or most instances of the vulnerability.
+
+<strong>Present</strong> - The successful attack depends on the presence of specific deployment and execution conditions of the vulnerable system that enable the attack. These include:
+
+A race condition must be won to successfully exploit the vulnerability. The successfulness of the attack is conditioned on execution conditions that are not under full control of the attacker. The attack may need to be launched multiple times against a single target before being successful.
+
+Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).'] = 'إما لا شيء أو حاضر.
+
+<strong>لا شيء</strong> - لا يعتمد الهجوم الناجح على ظروف نشر وتنفيذ النظام الضعيف. The attacker can expect to be able to reach the vulnerability and execute the exploit under all or most instances of the vulnerability.
+
+<strong>Present</strong> - يتوقف الهجوم الناجح على وجود ظروف محددة للانتشار والتنفيذ في النظام الضعيف تسمح بالهجوم. وهي تشمل ما يلي:
+
+ولا بد من كسب حالة عرقية لاستغلال الضعف بنجاح. ويتوقف نجاح الهجوم على ظروف الإعدام التي لا تخضع للسيطرة الكاملة للمهاجم. وقد يحتاج الهجوم إلى إطلاق عدة مرات ضد هدف واحد قبل نجاحه.
+
+حقنة الشبكة The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).';
+
 $GLOBALS["lang"]['El Salvador'] = 'السلفادور';
 
 $GLOBALS["lang"]['email'] = 'Email';
@@ -1737,6 +1870,8 @@ $GLOBALS["lang"]['Email'] = 'Email';
 $GLOBALS["lang"]['email_address'] = 'عنوان البريد الإلكتروني';
 
 $GLOBALS["lang"]['Email Address'] = 'عنوان البريد الإلكتروني';
+
+$GLOBALS["lang"]['Email Configuration'] = 'Email Configuration';
 
 $GLOBALS["lang"]['Email to send test to'] = 'إرسال اختبار';
 
@@ -1809,6 +1944,8 @@ $GLOBALS["lang"]['Eritrea'] = 'إريتريا';
 $GLOBALS["lang"]['Error'] = 'خطأ';
 
 $GLOBALS["lang"]['Error Code'] = 'قانون الخطأ';
+
+$GLOBALS["lang"]['Established'] = 'الوظائف الثابتة';
 
 $GLOBALS["lang"]['Estonia'] = 'إستونيا';
 
@@ -1884,6 +2021,10 @@ $GLOBALS["lang"]['Existing Room'] = 'الغرفة القائمة';
 
 $GLOBALS["lang"]['Existing Row'] = 'Row الحالي';
 
+$GLOBALS["lang"]['expire_date'] = 'التاريخ';
+
+$GLOBALS["lang"]['Expire Date'] = 'التاريخ';
+
 $GLOBALS["lang"]['expire_minutes'] = 'المناقصات التجريبية';
 
 $GLOBALS["lang"]['Expire Minutes'] = 'المناقصات التجريبية';
@@ -1896,9 +2037,11 @@ $GLOBALS["lang"]['expiry_date'] = 'تاريخ انتهاء الخدمة';
 
 $GLOBALS["lang"]['Expiry Date'] = 'تاريخ انتهاء الخدمة';
 
-$GLOBALS["lang"]['Export CSV'] = 'Export CSV';
+$GLOBALS["lang"]['exploit_maturity'] = 'النضج';
 
-$GLOBALS["lang"]['Export JSON'] = 'Export JSON';
+$GLOBALS["lang"]['Exploit Maturity'] = 'النضج';
+
+$GLOBALS["lang"]['Export'] = 'الصادرات';
 
 $GLOBALS["lang"]['Export by Device'] = 'Export by Device';
 
@@ -1930,13 +2073,11 @@ $GLOBALS["lang"]['Extra Columns'] = 'الكولونيل الإضافي';
 
 $GLOBALS["lang"]['Extra and more verbose logging is generated for troubleshooting.'] = 'المزيد من قطع الشفرات يتم توليدها من أجل التشويش';
 
+$GLOBALS["lang"]['FAQ'] = 'FAQ';
+
 $GLOBALS["lang"]['FQDN'] = 'FQDN';
 
 $GLOBALS["lang"]['FW Revision'] = 'تنقيح';
-
-$GLOBALS["lang"]['factories'] = 'العوامل';
-
-$GLOBALS["lang"]['Factories'] = 'العوامل';
 
 $GLOBALS["lang"]['Fail'] = 'الفشل';
 
@@ -1953,10 +2094,6 @@ $GLOBALS["lang"]['Faroe Islands'] = 'جزر فارو';
 $GLOBALS["lang"]['Features'] = 'المعالم';
 
 $GLOBALS["lang"]['February'] = 'شباط/فبراير';
-
-$GLOBALS["lang"]['feeds'] = 'الرسوم';
-
-$GLOBALS["lang"]['Feeds'] = 'الرسوم';
 
 $GLOBALS["lang"]['field'] = 'الميدان';
 
@@ -1975,8 +2112,6 @@ $GLOBALS["lang"]['Fields'] = 'الحقول';
 $GLOBALS["lang"]['fields'] = 'الحقول';
 
 $GLOBALS["lang"]['Fiji the Fiji Islands'] = 'جزر فيجي';
-
-$GLOBALS["lang"]['file'] = 'File';
 
 $GLOBALS["lang"]['File'] = 'File';
 
@@ -2004,6 +2139,10 @@ $GLOBALS["lang"]['files_id'] = 'الملفات';
 
 $GLOBALS["lang"]['Files ID'] = 'الملفات';
 
+$GLOBALS["lang"]['filter'] = 'فيلم';
+
+$GLOBALS["lang"]['Filter'] = 'فيلم';
+
 $GLOBALS["lang"]['filtered'] = 'محرر';
 
 $GLOBALS["lang"]['Filtered'] = 'محرر';
@@ -2023,6 +2162,8 @@ $GLOBALS["lang"]['Firmware'] = 'Firmware';
 $GLOBALS["lang"]['firmware_revision'] = 'إعادة النظر في البرمجيات';
 
 $GLOBALS["lang"]['Firmware Revision'] = 'إعادة النظر في البرمجيات';
+
+$GLOBALS["lang"]['First Name'] = 'الاسم الأول';
 
 $GLOBALS["lang"]['first_run'] = 'الجولة الأولى';
 
@@ -2052,6 +2193,8 @@ $GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you mus
 
 $GLOBALS["lang"]['For licenses that are not perpetual, when does the license expire.'] = 'بالنسبة لرخص غير دائمة، عندما تنتهي الرخصة.';
 
+$GLOBALS["lang"]['For more detailed information, check the Open-AudIT Knowledge Base.'] = 'وللحصول على معلومات أكثر تفصيلاً، تحقق من قاعدة المعارف المفتوحة العهد.';
+
 $GLOBALS["lang"]['form_factor'] = 'Form Factor';
 
 $GLOBALS["lang"]['Form Factor'] = 'Form Factor';
@@ -2069,10 +2212,6 @@ $GLOBALS["lang"]['France, French Republic'] = 'فرنسا، الجمهورية �
 $GLOBALS["lang"]['free'] = 'مجانا';
 
 $GLOBALS["lang"]['Free'] = 'مجانا';
-
-$GLOBALS["lang"]['free_percent'] = 'مجانية';
-
-$GLOBALS["lang"]['Free Percent'] = 'مجانية';
 
 $GLOBALS["lang"]['French'] = 'الفرنسية';
 
@@ -2136,13 +2275,13 @@ $GLOBALS["lang"]['Ghana'] = 'غانا';
 
 $GLOBALS["lang"]['Gibraltar'] = 'جبل طارق';
 
+$GLOBALS["lang"]['Global Discovery Options'] = 'Global Discovery Options';
+
 $GLOBALS["lang"]['Go'] = 'إذهب';
 
 $GLOBALS["lang"]['Google Compute Fields'] = 'Google Compute Fields';
 
-$GLOBALS["lang"]['graph'] = 'غرام';
-
-$GLOBALS["lang"]['Graph'] = 'غرام';
+$GLOBALS["lang"]['Google Maps API Key'] = 'Google Maps API المفتاح';
 
 $GLOBALS["lang"]['Greater Than'] = 'أكبر من';
 
@@ -2224,15 +2363,19 @@ $GLOBALS["lang"]['Height in RU'] = 'مرتفع في الجبهة المتحدة 
 
 $GLOBALS["lang"]['Help'] = 'النجدة';
 
+$GLOBALS["lang"]['Help and Frequently Asked Questions'] = 'المساعدة والأسئلة المتكررة';
+
+$GLOBALS["lang"]['high'] = 'عالية';
+
 $GLOBALS["lang"]['High'] = 'عالية';
 
 $GLOBALS["lang"]['High Availability'] = 'التوافر المرتفع';
 
 $GLOBALS["lang"]['Holy See (Vatican City State)'] = 'الكرسي الرسولي (ولاية مدينة فياتيان)';
 
-$GLOBALS["lang"]['home'] = 'البيت';
-
 $GLOBALS["lang"]['Home'] = 'البيت';
+
+$GLOBALS["lang"]['home'] = 'البيت';
 
 $GLOBALS["lang"]['Home Area Network'] = 'الشبكة المحلية';
 
@@ -2252,6 +2395,8 @@ $GLOBALS["lang"]['hour'] = 'Hour';
 
 $GLOBALS["lang"]['Hour'] = 'Hour';
 
+$GLOBALS["lang"]['How and Why is Open-AudIT More Secure'] = 'كيف و لماذا فتحت أكثر أمناً';
+
 $GLOBALS["lang"]['How long did the command take to execute.'] = 'كم استغرق الأمر من الوقت لتنفيذه';
 
 $GLOBALS["lang"]['How long should Nmap wait for a response, per device.'] = 'كم من الوقت يجب أن تنتظر (نامب) استجابة لكل جهاز';
@@ -2270,13 +2415,23 @@ $GLOBALS["lang"]['How often should the collector ask the server for a task.'] = 
 
 $GLOBALS["lang"]['How should we select devices to be integrated (using an Attribute, Query or a Group).'] = 'How should we select devices to be integrated (using an Attribute, Query or a Group).';
 
+$GLOBALS["lang"]['How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).'] = 'How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).';
+
 $GLOBALS["lang"]['How to compare'] = 'كيفية المقارنة';
 
+$GLOBALS["lang"]['Human-readable explanation of the vulnerability.'] = 'تفسير قابل للقراءة البشرية للضعف.';
+
 $GLOBALS["lang"]['Hungary'] = 'هنغاريا';
+
+$GLOBALS["lang"]['hw_cpe'] = 'Hw Cpe';
+
+$GLOBALS["lang"]['Hw Cpe'] = 'Hw Cpe';
 
 $GLOBALS["lang"]['hyperthreading'] = 'Hyperthreading';
 
 $GLOBALS["lang"]['Hyperthreading'] = 'Hyperthreading';
+
+$GLOBALS["lang"]['I have read the EULA.'] = 'لقد قرأت الاتحاد الأوروبي';
 
 $GLOBALS["lang"]['id'] = 'الهوية';
 
@@ -2286,9 +2441,9 @@ $GLOBALS["lang"]['IF'] = 'IF';
 
 $GLOBALS["lang"]['IOS Version'] = 'IOS Version';
 
-$GLOBALS["lang"]['ip'] = 'IP';
-
 $GLOBALS["lang"]['IP'] = 'IP';
+
+$GLOBALS["lang"]['ip'] = 'IP';
 
 $GLOBALS["lang"]['IP Address'] = 'IP Address';
 
@@ -2366,17 +2521,25 @@ $GLOBALS["lang"]['Image'] = 'الصورة';
 
 $GLOBALS["lang"]['Images'] = 'الصور';
 
+$GLOBALS["lang"]['impact_availability'] = 'الأثر';
+
+$GLOBALS["lang"]['Impact Availability'] = 'الأثر';
+
+$GLOBALS["lang"]['impact_confidentiality'] = 'الأثر السري';
+
+$GLOBALS["lang"]['Impact Confidentiality'] = 'الأثر السري';
+
+$GLOBALS["lang"]['impact_integrity'] = 'النزاهة في التأثير';
+
+$GLOBALS["lang"]['Impact Integrity'] = 'النزاهة في التأثير';
+
 $GLOBALS["lang"]['implementation_notes'] = 'مذكرات التنفيذ';
 
 $GLOBALS["lang"]['Implementation Notes'] = 'مذكرات التنفيذ';
 
 $GLOBALS["lang"]['Import'] = 'الواردات';
 
-$GLOBALS["lang"]['Import CSV'] = 'Import CSV';
-
 $GLOBALS["lang"]['Import Example Data'] = 'بيانات نموذج الواردات';
-
-$GLOBALS["lang"]['Import JSON'] = 'Import JSON';
 
 $GLOBALS["lang"]['improvement_opportunities'] = 'تحسين الفرص';
 
@@ -2387,6 +2550,8 @@ $GLOBALS["lang"]['In'] = 'In';
 $GLOBALS["lang"]['Inactive'] = 'الخاملة';
 
 $GLOBALS["lang"]['Include'] = 'Include';
+
+$GLOBALS["lang"]['Incomplete'] = 'Incomplete';
 
 $GLOBALS["lang"]['Index'] = 'الفهرس';
 
@@ -2462,9 +2627,9 @@ $GLOBALS["lang"]['instance_options'] = 'خيارات الموقف';
 
 $GLOBALS["lang"]['Instance Options'] = 'خيارات الموقف';
 
-$GLOBALS["lang"]['instance_provider'] = 'مقدِّم الخدمات';
+$GLOBALS["lang"]['instance_provider'] = 'مقدِّم الخدمات';
 
-$GLOBALS["lang"]['Instance Provider'] = 'مقدِّم الخدمات';
+$GLOBALS["lang"]['Instance Provider'] = 'مقدِّم الخدمات';
 
 $GLOBALS["lang"]['instance_reservation_ident'] = 'تحفظ Ident';
 
@@ -2592,6 +2757,8 @@ $GLOBALS["lang"]['Is the NMIS server local (on this Open-AudIT server) or remote
 
 $GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = 'هل هذا الحساب نشط؟ إذا تم تحديد <code>n</code>المستعمل لا يستطيع الدخول';
 
+$GLOBALS["lang"]['Is this query restricted to licensed customers.'] = 'هل هذا السؤال مقصور على الزبائن المرخصين';
+
 $GLOBALS["lang"]['Is this task enabled (y/n).'] = 'هل هذه المهمة مكنت (y/n).';
 
 $GLOBALS["lang"]['Isle of Man'] = 'جزيرة مان';
@@ -2603,6 +2770,10 @@ $GLOBALS["lang"]['Issue'] = 'المسألة';
 $GLOBALS["lang"]['issuer'] = 'Issuer';
 
 $GLOBALS["lang"]['Issuer'] = 'Issuer';
+
+$GLOBALS["lang"]['issuer_name'] = 'اسم المصدر';
+
+$GLOBALS["lang"]['Issuer Name'] = 'اسم المصدر';
 
 $GLOBALS["lang"]['Issues'] = 'المسائل';
 
@@ -2674,6 +2845,8 @@ $GLOBALS["lang"]['last_logon'] = 'آخر لوغون';
 
 $GLOBALS["lang"]['Last Logon'] = 'آخر لوغون';
 
+$GLOBALS["lang"]['Last Name'] = 'الاسم الأخير';
+
 $GLOBALS["lang"]['last_os_update'] = 'آخر تحديث';
 
 $GLOBALS["lang"]['Last Os Update'] = 'آخر تحديث';
@@ -2697,6 +2870,10 @@ $GLOBALS["lang"]['Last Seen By'] = 'آخر شاهد من قبل';
 $GLOBALS["lang"]['last_user'] = 'آخر مستخدم';
 
 $GLOBALS["lang"]['Last User'] = 'آخر مستخدم';
+
+$GLOBALS["lang"]['lastModified'] = 'آخر تعديل';
+
+$GLOBALS["lang"]['LastModified'] = 'آخر تعديل';
 
 $GLOBALS["lang"]['latitude'] = 'خط العرض';
 
@@ -2722,6 +2899,10 @@ $GLOBALS["lang"]['ldap_dn_password'] = 'Ldap Dn Password';
 
 $GLOBALS["lang"]['Ldap Dn Password'] = 'Ldap Dn Password';
 
+$GLOBALS["lang"]['Learn About'] = 'تعلم بشأن';
+
+$GLOBALS["lang"]['Learn More'] = 'تعلم المزيد';
+
 $GLOBALS["lang"]['lease_expiry_date'] = 'Lease Expiry Date';
 
 $GLOBALS["lang"]['Lease Expiry Date'] = 'Lease Expiry Date';
@@ -2741,6 +2922,8 @@ $GLOBALS["lang"]['Less Than or Equals'] = 'أقل من أو يساوي';
 $GLOBALS["lang"]['level'] = 'الرتبة';
 
 $GLOBALS["lang"]['Level'] = 'الرتبة';
+
+$GLOBALS["lang"]['Level of privileges needed to exploit (None, Low, High).'] = 'Level of privileges needed to exploit (None, Low, High).';
 
 $GLOBALS["lang"]['Liberia'] = 'ليبريا';
 
@@ -2792,13 +2975,7 @@ $GLOBALS["lang"]['Link'] = 'Link';
 
 $GLOBALS["lang"]['Link (Advanced)'] = 'Link (Advanced)';
 
-$GLOBALS["lang"]['linked_row'] = 'Linked Row';
-
-$GLOBALS["lang"]['Linked Row'] = 'Linked Row';
-
-$GLOBALS["lang"]['linked_table'] = 'الجدول المترابط';
-
-$GLOBALS["lang"]['Linked Table'] = 'الجدول المترابط';
+$GLOBALS["lang"]['Linked Files'] = 'الملفات المترابطة';
 
 $GLOBALS["lang"]['links'] = 'الروابط';
 
@@ -2833,6 +3010,8 @@ $GLOBALS["lang"]['local_port'] = 'ميناء محلي';
 $GLOBALS["lang"]['Local Port'] = 'ميناء محلي';
 
 $GLOBALS["lang"]['Localhost'] = 'المصادر المحلية';
+
+$GLOBALS["lang"]['Localisation'] = 'المحلية';
 
 $GLOBALS["lang"]['Location'] = 'الموقع';
 
@@ -2916,11 +3095,15 @@ $GLOBALS["lang"]['logical_count'] = 'العد التنازلي';
 
 $GLOBALS["lang"]['Logical Count'] = 'العد التنازلي';
 
+$GLOBALS["lang"]['Logout'] = 'Logout';
+
 $GLOBALS["lang"]['Logs'] = 'اللوز';
 
 $GLOBALS["lang"]['longitude'] = 'الطول';
 
 $GLOBALS["lang"]['Longitude'] = 'الطول';
+
+$GLOBALS["lang"]['low'] = 'منخفض';
 
 $GLOBALS["lang"]['Low'] = 'منخفض';
 
@@ -2950,6 +3133,10 @@ $GLOBALS["lang"]['maintenance_expires'] = 'نفقات الصيانة';
 
 $GLOBALS["lang"]['Maintenance Expires'] = 'نفقات الصيانة';
 
+$GLOBALS["lang"]['Make My Default Dashboard'] = 'اجعلي لوح دفتري';
+
+$GLOBALS["lang"]['Make this install a Collector'] = 'جعل هذا تركيب جامع';
+
 $GLOBALS["lang"]['Malawi'] = 'ملاوي';
 
 $GLOBALS["lang"]['Malaysia'] = 'ماليزيا';
@@ -2960,7 +3147,17 @@ $GLOBALS["lang"]['Mali'] = 'مالي';
 
 $GLOBALS["lang"]['Malta'] = 'مالطة';
 
+$GLOBALS["lang"]['Manage'] = 'Manage';
+
+$GLOBALS["lang"]['Manage Licenses'] = 'تراخيص الحمل';
+
 $GLOBALS["lang"]['Manage in NMIS'] = 'إدارة نظام المعلومات الإدارية المتكامل';
+
+$GLOBALS["lang"]['Managed'] = 'Managed';
+
+$GLOBALS["lang"]['managed_by'] = 'Managed by';
+
+$GLOBALS["lang"]['Managed By'] = 'Managed by';
 
 $GLOBALS["lang"]['Manual Input'] = 'الناتج الدليلي';
 
@@ -3034,6 +3231,10 @@ $GLOBALS["lang"]['May'] = 'أيار/مايو';
 
 $GLOBALS["lang"]['Mayotte'] = 'Mayotte';
 
+$GLOBALS["lang"]['Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.'] = 'ويتخذ التدابير اللازمة لاحتمال التعرض للهجوم، ويقوم على أساس الحالة الراهنة لتقنيات الاستغلال، ويستغل توافر الرموز، أو الاستغلال النشط &quot; في المستقبل &quot; .';
+
+$GLOBALS["lang"]['medium'] = 'متوسطة';
+
 $GLOBALS["lang"]['Medium'] = 'متوسطة';
 
 $GLOBALS["lang"]['members'] = 'الأعضاء';
@@ -3084,10 +3285,6 @@ $GLOBALS["lang"]['microtime'] = 'العملات البالغة الصغر';
 
 $GLOBALS["lang"]['Microtime'] = 'العملات البالغة الصغر';
 
-$GLOBALS["lang"]['migrations'] = 'الهجرة';
-
-$GLOBALS["lang"]['Migrations'] = 'الهجرة';
-
 $GLOBALS["lang"]['minute'] = 'دقيقة';
 
 $GLOBALS["lang"]['Minute'] = 'دقيقة';
@@ -3109,6 +3306,8 @@ $GLOBALS["lang"]['Module'] = 'الوحدة';
 $GLOBALS["lang"]['module_index'] = 'مؤشر النموذج';
 
 $GLOBALS["lang"]['Module Index'] = 'مؤشر النموذج';
+
+$GLOBALS["lang"]['Modules'] = 'Modules';
 
 $GLOBALS["lang"]['Moldova'] = 'مولدوفا';
 
@@ -3182,10 +3381,6 @@ $GLOBALS["lang"]['name'] = 'الاسم';
 
 $GLOBALS["lang"]['Name'] = 'الاسم';
 
-$GLOBALS["lang"]['namespace'] = 'الاسم الفضائي';
-
-$GLOBALS["lang"]['Namespace'] = 'الاسم الفضائي';
-
 $GLOBALS["lang"]['Namibia'] = 'ناميبيا';
 
 $GLOBALS["lang"]['Nauru'] = 'ناورو';
@@ -3242,6 +3437,8 @@ $GLOBALS["lang"]['New Row Name'] = 'اسم جديد';
 
 $GLOBALS["lang"]['New Zealand'] = 'نيوزيلندا';
 
+$GLOBALS["lang"]['News'] = 'الأخبار';
+
 $GLOBALS["lang"]['next_hop'] = 'التالي';
 
 $GLOBALS["lang"]['Next Hop'] = 'التالي';
@@ -3261,6 +3458,8 @@ $GLOBALS["lang"]['Niue'] = 'نيوي';
 $GLOBALS["lang"]['nmap'] = 'Nmap';
 
 $GLOBALS["lang"]['Nmap'] = 'Nmap';
+
+$GLOBALS["lang"]['Nmap Port Scanning Responses'] = 'Nmap Port Scanning Responses';
 
 $GLOBALS["lang"]['nmap_tcp_ports'] = 'Nmap Tcp Ports';
 
@@ -3362,6 +3561,10 @@ $GLOBALS["lang"]['Notin'] = 'Notin';
 
 $GLOBALS["lang"]['November'] = 'تشرين الثاني/نوفمبر';
 
+$GLOBALS["lang"]['nvd_json'] = 'Nvd Json';
+
+$GLOBALS["lang"]['Nvd Json'] = 'Nvd Json';
+
 $GLOBALS["lang"]['ORDER BY'] = 'أودريه';
 
 $GLOBALS["lang"]['OS'] = 'OS';
@@ -3412,6 +3615,8 @@ $GLOBALS["lang"]['Open-AudIT Device Selection'] = 'Open-AudIT Device Selection';
 
 $GLOBALS["lang"]['Open-AudIT Enterprise'] = 'Open-AudIT Enterprise';
 
+$GLOBALS["lang"]['Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.'] = 'شركة "أوديت" المفتوحة إيجاد حل يتسم بالمرونة العالية والقابلية لمراجعة الحسابات بالنسبة للشبكات الكبيرة. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.';
+
 $GLOBALS["lang"]['Open-AudIT Field Name'] = 'الاسم الميداني المفتوح باب العضوية';
 
 $GLOBALS["lang"]['Open-AudIT Licenses'] = 'التراخيص المفتوحة';
@@ -3419,6 +3624,10 @@ $GLOBALS["lang"]['Open-AudIT Licenses'] = 'التراخيص المفتوحة';
 $GLOBALS["lang"]['Open-AudIT Options'] = 'خيارات الاستثمار المفتوح';
 
 $GLOBALS["lang"]['Open-AudIT Professional'] = 'الفئة الفنية المفتوحة';
+
+$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = 'مهني مفتوح العالم';
+
+$GLOBALS["lang"]['Open-AudIT and Nmap'] = 'Open-AudIT and Nmap';
 
 $GLOBALS["lang"]['OpenScap is Installed'] = 'الهروب مفتوح';
 
@@ -3444,6 +3653,8 @@ $GLOBALS["lang"]['optical'] = 'المعارضة';
 
 $GLOBALS["lang"]['Optical'] = 'المعارضة';
 
+$GLOBALS["lang"]['Optimized'] = 'الاستخدام الأمثل';
+
 $GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = 'الصيغة الاختيارية التي راجعتها محكمة الاستئناف. استخدمي النسبة المئوية للإشارة كبطاقة جامحة';
 
 $GLOBALS["lang"]['options'] = 'الخيارات';
@@ -3466,9 +3677,13 @@ $GLOBALS["lang"]['organisation'] = 'المنظمة';
 
 $GLOBALS["lang"]['Organisation Descendants'] = 'المنظمة';
 
+$GLOBALS["lang"]['Organisations'] = 'المنظمات';
+
 $GLOBALS["lang"]['orgs'] = 'الأورام';
 
 $GLOBALS["lang"]['Orgs'] = 'الأورام';
+
+$GLOBALS["lang"]['Orgs Name'] = 'الاسم';
 
 $GLOBALS["lang"]['orientation'] = 'التوجيه';
 
@@ -3489,6 +3704,10 @@ $GLOBALS["lang"]['Os Bit'] = 'Os Bit';
 $GLOBALS["lang"]['os_cpe'] = 'Os Cpe';
 
 $GLOBALS["lang"]['Os Cpe'] = 'Os Cpe';
+
+$GLOBALS["lang"]['os_display_version'] = 'ترجمة';
+
+$GLOBALS["lang"]['Os Display Version'] = 'ترجمة';
 
 $GLOBALS["lang"]['os_family'] = 'الأسرة';
 
@@ -3550,6 +3769,8 @@ $GLOBALS["lang"]['outputs'] = 'النواتج';
 
 $GLOBALS["lang"]['Outputs'] = 'النواتج';
 
+$GLOBALS["lang"]['Overall severity score (0–10).'] = ')٠-١٠(';
+
 $GLOBALS["lang"]['overwrite'] = 'الكتابة الكاملة';
 
 $GLOBALS["lang"]['Overwrite'] = 'الكتابة الكاملة';
@@ -3561,8 +3782,6 @@ $GLOBALS["lang"]['Owner'] = 'المالك';
 $GLOBALS["lang"]['PHP'] = 'PHP';
 
 $GLOBALS["lang"]['POD'] = 'POD';
-
-$GLOBALS["lang"]['package'] = 'التعبئة';
 
 $GLOBALS["lang"]['Package'] = 'التعبئة';
 
@@ -3622,9 +3841,9 @@ $GLOBALS["lang"]['Passed'] = 'مربوطة';
 
 $GLOBALS["lang"]['Passive Optical Local Area Network'] = 'شبكة المناطق المحلية المعارضة';
 
-$GLOBALS["lang"]['password'] = 'كلمة السر';
-
 $GLOBALS["lang"]['Password'] = 'كلمة السر';
+
+$GLOBALS["lang"]['password'] = 'كلمة السر';
 
 $GLOBALS["lang"]['password_changeable'] = 'كلمة السر قابلة للتغيير';
 
@@ -3659,6 +3878,8 @@ $GLOBALS["lang"]['path'] = 'Path';
 $GLOBALS["lang"]['Path'] = 'Path';
 
 $GLOBALS["lang"]['Performance'] = 'الأداء';
+
+$GLOBALS["lang"]['Performed'] = 'الأداء';
 
 $GLOBALS["lang"]['permission'] = 'الإذن';
 
@@ -3806,6 +4027,10 @@ $GLOBALS["lang"]['power_sockets'] = 'Sockets';
 
 $GLOBALS["lang"]['Power Sockets'] = 'Sockets';
 
+$GLOBALS["lang"]['Predictable'] = 'التنبؤ';
+
+$GLOBALS["lang"]['Preferences'] = 'الأفضليات';
+
 $GLOBALS["lang"]['Prerequisites'] = 'الشروط المسبقة';
 
 $GLOBALS["lang"]['Prerequisites and Tests'] = 'الشروط والاختبارات';
@@ -3854,6 +4079,10 @@ $GLOBALS["lang"]['Priority'] = 'الأولوية';
 
 $GLOBALS["lang"]['Privacy Passphrase'] = 'Privacy Passphrase';
 
+$GLOBALS["lang"]['privileges_required'] = 'الامتيازات المطلوبة';
+
+$GLOBALS["lang"]['Privileges Required'] = 'الامتيازات المطلوبة';
+
 $GLOBALS["lang"]['processor'] = 'عوامل التصنيع';
 
 $GLOBALS["lang"]['Processor'] = 'عوامل التصنيع';
@@ -3876,6 +4105,12 @@ $GLOBALS["lang"]['product_name'] = 'الاسم';
 
 $GLOBALS["lang"]['Product Name'] = 'الاسم';
 
+$GLOBALS["lang"]['Product Name Match from CPE: '] = 'اسم المنتج: ';
+
+$GLOBALS["lang"]['products'] = 'المنتجات';
+
+$GLOBALS["lang"]['Products'] = 'المنتجات';
+
 $GLOBALS["lang"]['profile'] = 'Profile';
 
 $GLOBALS["lang"]['Profile'] = 'Profile';
@@ -3895,6 +4130,10 @@ $GLOBALS["lang"]['Provider'] = 'Provider';
 $GLOBALS["lang"]['published'] = 'صادرة';
 
 $GLOBALS["lang"]['Published'] = 'صادرة';
+
+$GLOBALS["lang"]['published_date'] = 'التاريخ المنشور';
+
+$GLOBALS["lang"]['Published Date'] = 'التاريخ المنشور';
 
 $GLOBALS["lang"]['publisher'] = 'النشر';
 
@@ -3986,9 +4225,9 @@ $GLOBALS["lang"]['rack_id'] = 'Rack ID';
 
 $GLOBALS["lang"]['Rack ID'] = 'Rack ID';
 
-$GLOBALS["lang"]['racks'] = 'Racks';
-
 $GLOBALS["lang"]['Racks'] = 'Racks';
+
+$GLOBALS["lang"]['racks'] = 'Racks';
 
 $GLOBALS["lang"]['radio'] = 'إذاعة';
 
@@ -3999,6 +4238,10 @@ $GLOBALS["lang"]['Radio MAC'] = 'Radio MAC';
 $GLOBALS["lang"]['rationale'] = 'الأساس المنطقي';
 
 $GLOBALS["lang"]['Rationale'] = 'الأساس المنطقي';
+
+$GLOBALS["lang"]['raw'] = 'راو';
+
+$GLOBALS["lang"]['Raw'] = 'راو';
 
 $GLOBALS["lang"]['read'] = 'اقرأ';
 
@@ -4013,6 +4256,10 @@ $GLOBALS["lang"]['Redirect URI'] = 'Redirect URI';
 $GLOBALS["lang"]['redirect_uri'] = 'Redirect Uri';
 
 $GLOBALS["lang"]['Redirect Uri'] = 'Redirect Uri';
+
+$GLOBALS["lang"]['references'] = 'المراجع';
+
+$GLOBALS["lang"]['References'] = 'المراجع';
 
 $GLOBALS["lang"]['region'] = 'المنطقة';
 
@@ -4054,9 +4301,13 @@ $GLOBALS["lang"]['reportable'] = 'التقارير';
 
 $GLOBALS["lang"]['Reportable'] = 'التقارير';
 
+$GLOBALS["lang"]['Reports'] = 'التقارير';
+
 $GLOBALS["lang"]['request'] = 'الطلب';
 
 $GLOBALS["lang"]['Request'] = 'الطلب';
+
+$GLOBALS["lang"]['Request a Specific CVE'] = 'طلب محدد CVE';
 
 $GLOBALS["lang"]['requested'] = 'الطلب';
 
@@ -4091,6 +4342,8 @@ $GLOBALS["lang"]['Response'] = 'الرد';
 $GLOBALS["lang"]['responsibility'] = 'المسؤولية';
 
 $GLOBALS["lang"]['Responsibility'] = 'المسؤولية';
+
+$GLOBALS["lang"]['Restore my Licenses'] = 'أعيدوا منحني';
 
 $GLOBALS["lang"]['Restrict to Private'] = 'Restrict to Private';
 
@@ -4179,6 +4432,8 @@ $GLOBALS["lang"]['Run this Command'] = 'أدير هذه القيادة';
 $GLOBALS["lang"]['runas'] = 'Runas';
 
 $GLOBALS["lang"]['Runas'] = 'Runas';
+
+$GLOBALS["lang"]['Running Open-AudIT Apache Service Under Windows'] = 'إدارة خدمات Apache المفتوحة تحت النوافذ';
 
 $GLOBALS["lang"]['Russian Federation'] = 'الاتحاد الروسي';
 
@@ -4270,6 +4525,8 @@ $GLOBALS["lang"]['scan_options'] = 'خيارات المسح';
 
 $GLOBALS["lang"]['Scan Options'] = 'خيارات المسح';
 
+$GLOBALS["lang"]['Scan Options ID'] = 'خيارات المسح';
+
 $GLOBALS["lang"]['Scan the Nmap top number of TCP ports.'] = 'مسح أعلى عدد من موانئ TCP.';
 
 $GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = 'قوموا بمسح أكبر عدد من الموانئ';
@@ -4277,6 +4534,10 @@ $GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = 'قوموا بمس�
 $GLOBALS["lang"]['schedule'] = 'الجدول الزمني';
 
 $GLOBALS["lang"]['Schedule'] = 'الجدول الزمني';
+
+$GLOBALS["lang"]['scope'] = 'النطاق';
+
+$GLOBALS["lang"]['Scope'] = 'النطاق';
 
 $GLOBALS["lang"]['script_timeout'] = 'الوقت المحدد';
 
@@ -4307,6 +4568,8 @@ $GLOBALS["lang"]['Search'] = 'البحث';
 $GLOBALS["lang"]['Search For a Device'] = 'ابحث عن جهاز';
 
 $GLOBALS["lang"]['Search for Device'] = 'البحث عن الشيطان';
+
+$GLOBALS["lang"]['Searching Using DataTables'] = 'البحث عن استخدام البيانات';
 
 $GLOBALS["lang"]['secondary'] = 'التعليم الثانوي';
 
@@ -4386,6 +4649,10 @@ $GLOBALS["lang"]['Select a Table'] = 'اختيار الجدول';
 
 $GLOBALS["lang"]['Senegal'] = 'السنغال';
 
+$GLOBALS["lang"]['sensitivity'] = 'الوعي';
+
+$GLOBALS["lang"]['Sensitivity'] = 'الوعي';
+
 $GLOBALS["lang"]['September'] = 'أيلول/سبتمبر';
 
 $GLOBALS["lang"]['Serbia'] = 'صربيا';
@@ -4419,6 +4686,8 @@ $GLOBALS["lang"]['Server Is'] = 'الخادم';
 $GLOBALS["lang"]['server_item'] = 'البند';
 
 $GLOBALS["lang"]['Server Item'] = 'البند';
+
+$GLOBALS["lang"]['Server Status'] = 'مركز الموظفين';
 
 $GLOBALS["lang"]['Servers'] = 'خادم';
 
@@ -4486,6 +4755,8 @@ $GLOBALS["lang"]['severity_text'] = 'نص الشدة';
 
 $GLOBALS["lang"]['Severity Text'] = 'نص الشدة';
 
+$GLOBALS["lang"]['Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.'] = 'الشدة محسوبة من <code>base_score</code> ويمكن أن يكون واحدا من: لا شيء، منخفض، متوسط، مرتفع، حرج.';
+
 $GLOBALS["lang"]['Seychelles'] = 'سيشيل';
 
 $GLOBALS["lang"]['share'] = 'Share';
@@ -4515,6 +4786,8 @@ $GLOBALS["lang"]['Short'] = 'قصير';
 $GLOBALS["lang"]['Should I remove all non-current data from this device?'] = 'هل يجب أن أزيل جميع البيانات غير الجارية من هذا الجهاز؟';
 
 $GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = 'إذا استخدم هذا الملف (أو النمط) لاستبعاد الملفات من الإبلاغ. عادة، لملفات مراجعة الحسابات، هذا جاهز <code>y</code>.';
+
+$GLOBALS["lang"]['Should this vendor be used when retrieving vulnerabilities from FirstWave.'] = 'إذا استخدم هذا البائع عند استرجاع نقاط الضعف من أول واف.';
 
 $GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = 'يجب أن نضيف أجهزة من الخدمة البعيدة محلياً';
 
@@ -4708,7 +4981,7 @@ $GLOBALS["lang"]['Specific to Azure.'] = 'بالتحديد لـ(أزور)';
 
 $GLOBALS["lang"]['Specific to OKTA.'] = 'محدد لـ (أوكتا)';
 
-$GLOBALS["lang"]['Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.'] = 'يحدد قائمة مفصَّلة للأهداف (لا أماكن) التي ستستبعد من المسح. القائمة التي تمر بها تستخدم النسيج الطبيعي لـ (نامب) لذا يمكن أن تشمل الأسماء المستضافة';
+$GLOBALS["lang"]['Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.'] = 'يحدد قائمة مفصَّلة للأهداف (لا أماكن) التي ستستبعد من المسح. القائمة التي تمر بها تستخدم النسيج الطبيعي لـ (نامب) لذا يمكن أن تشمل الأسماء المستضافة';
 
 $GLOBALS["lang"]['speed'] = 'السرعة';
 
@@ -4806,6 +5079,10 @@ $GLOBALS["lang"]['sub_type'] = 'النوع الفرعي';
 
 $GLOBALS["lang"]['Sub Type'] = 'النوع الفرعي';
 
+$GLOBALS["lang"]['subject_key_ident'] = 'الموضوع الرئيسي';
+
+$GLOBALS["lang"]['Subject Key Ident'] = 'الموضوع الرئيسي';
+
 $GLOBALS["lang"]['Submit'] = 'Submit';
 
 $GLOBALS["lang"]['Submitted From'] = 'مقدمة';
@@ -4824,6 +5101,8 @@ $GLOBALS["lang"]['Success'] = 'النجاح';
 
 $GLOBALS["lang"]['Sudan'] = 'السودان';
 
+$GLOBALS["lang"]['Sudo Password'] = 'كلمة السر';
+
 $GLOBALS["lang"]['Sudo Password (optional)'] = 'كلمة سر (اختياري)';
 
 $GLOBALS["lang"]['suite'] = 'Suite';
@@ -4834,8 +5113,6 @@ $GLOBALS["lang"]['summaries'] = 'موجز';
 
 $GLOBALS["lang"]['Summaries'] = 'موجز';
 
-$GLOBALS["lang"]['summary'] = 'موجز';
-
 $GLOBALS["lang"]['Summary'] = 'موجز';
 
 $GLOBALS["lang"]['Sunday'] = 'الأحد';
@@ -4843,6 +5120,8 @@ $GLOBALS["lang"]['Sunday'] = 'الأحد';
 $GLOBALS["lang"]['supplier'] = 'مورد';
 
 $GLOBALS["lang"]['Supplier'] = 'مورد';
+
+$GLOBALS["lang"]['Support'] = 'الدعم';
 
 $GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = 'الأنواع المدعومة <code>subnet</code>.. <code>seed</code> و <code>active directory</code>.';
 
@@ -4988,6 +5267,10 @@ $GLOBALS["lang"]['The Active Directory domain to retrieve a list of subnets from
 
 $GLOBALS["lang"]['The Active Directory server to retrieve a list of subnets from.'] = 'خادم الدليل الفعّال لاسترجاع قائمة من الشباك الفرعية';
 
+$GLOBALS["lang"]['The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).'] = 'القياس الآلي يلتقط الإجابة على السؤال <strong>هل يمكن للمهاجم أن يقوم بتشغيل أحداث الاستغلال الآلي لهذا الضعف عبر أهداف متعددة؟</strong> بناء على الخطوات 1-4 من سلسلة القتل. وهذه الخطوات هي الاستطلاع، والتسليح، والتسليم، والاستغلال (غير محدد، لا، نعم).';
+
+$GLOBALS["lang"]['The CVE identifier.'] = 'جهاز تحديد الهوية';
+
 $GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = 'السحابة التي تملك هذا البند الروابط إلى <code>clouds.id</code>.';
 
 $GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = 'المجموعة كانت تدير خط الأساس الروابط إلى <code>groups.id</code>.';
@@ -5022,9 +5305,15 @@ $GLOBALS["lang"]['The IP of the internal interface.'] = 'IP من الواجهة 
 
 $GLOBALS["lang"]['The ISP or Telco providing this link.'] = 'The ISP or Telco providing this link.';
 
+$GLOBALS["lang"]['The JSON record from Mitre.'] = 'سجل (جوسون) من (ميتر)';
+
+$GLOBALS["lang"]['The JSON record from the NVD feed.'] = 'The JSON record from the NVD feed.';
+
 $GLOBALS["lang"]['The LDAP OU of this user (if LDAP is used).'] = 'The LDAP OU of this user (if LDAP is used).';
 
 $GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = 'الموقع الذي يحتوي على هذه الشبكة الروابط إلى <code>locations.id</code>.';
+
+$GLOBALS["lang"]['The NVD assigned base status.'] = 'مركز الـ "إن في دي" الخاص بالقاعدة';
 
 $GLOBALS["lang"]['The Nmap timing preset.'] = 'توقيت النغمة';
 
@@ -5134,6 +5423,8 @@ $GLOBALS["lang"]['The direct link for the script is'] = 'الرابط المبا
 
 $GLOBALS["lang"]['The email address of the reciever'] = 'عنوان البريد الإلكتروني للمحقق';
 
+$GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = 'The enterprise binary from FirstWave is required for a license. من فضلك تحميل مفتوح';
+
 $GLOBALS["lang"]['The entire associated baseline this result is from.'] = 'وخط الأساس المرتبط به كله هو هذا الناتج.';
 
 $GLOBALS["lang"]['The externally referenced location ID. Usually populated by Cloud audits.'] = 'هويّة الموقع المرجعية الخارجية عادة ما تكون مأهولة من قبل كلود';
@@ -5149,6 +5440,8 @@ $GLOBALS["lang"]['The format used for the output to be emailed.'] = 'الشكل 
 $GLOBALS["lang"]['The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.'] = 'العمود المؤهل تأهيلاً كاملاً الذي سيجمع عليه ملاحظة: عندما يكون النوع = حركة المرور، يمثل هذا السؤال الأحمر';
 
 $GLOBALS["lang"]['The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).'] = 'طاولة مؤهلة بالكامل ويمكن توفير عدة مواد، تفصلها فاصلة (لا أماكن).';
+
+$GLOBALS["lang"]['The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.'] = 'The generated SQL query to test for this vulnerability. ويمكن تحرير هذا المجال لتصحيح الاستفسار حسب الاقتضاء.';
 
 $GLOBALS["lang"]['The group of devices on which the baseline was run against.'] = 'The group of devices on which the baseline was run against.';
 
@@ -5218,6 +5511,8 @@ $GLOBALS["lang"]['The minute of the hour when this task should execute (* for ev
 
 $GLOBALS["lang"]['The month of the year when this task should execute (* for every month).'] = 'شهر السنة التي ينبغي أن تنفذ فيها هذه المهمة (* لكل شهر).';
 
+$GLOBALS["lang"]['The name given to this item.'] = 'الاسم المعطى لهذا البند.';
+
 $GLOBALS["lang"]['The name given to this item. Ideally it should be unique.'] = 'الاسم المعطى لهذا البند. من الناحية المثالية يجب أن يكون فريداً';
 
 $GLOBALS["lang"]['The name given to this user (used to login). Ideally it should be unique.'] = 'The name given to this user (used to login). من الناحية المثالية يجب أن يكون فريداً';
@@ -5242,6 +5537,8 @@ $GLOBALS["lang"]['The number of associated networks. Links to <code>networks.clo
 
 $GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = 'عدد الأجهزة المراجعة في هذه السحابة الروابط إلى <code>devices.cloud_id</code> و <code>devices.serial</code>.';
 
+$GLOBALS["lang"]['The number of critical severity vulnerabilities held by FirstWave (not in your database).'] = 'عدد أوجه الضعف الحاسمة التي تعاني منها منطقة أول وايف (ليس في قاعدة بياناتك).';
+
 $GLOBALS["lang"]['The number of devices found by this discovery.'] = 'عدد الأجهزة التي وجدها هذا الاكتشاف';
 
 $GLOBALS["lang"]['The number of devices in the associated group.'] = 'عدد الأجهزة في المجموعة المرتبطة بها.';
@@ -5256,9 +5553,17 @@ $GLOBALS["lang"]['The number of devices this benchmark will be executed upon. De
 
 $GLOBALS["lang"]['The number of devices to limit this discovery to.'] = 'عدد الأجهزة التي تحد من هذا الاكتشاف';
 
+$GLOBALS["lang"]['The number of high severity vulnerabilities held by FirstWave (not in your database).'] = 'عدد نقاط الضعف العالية الخطورة التي تحتفظ بها أول واف (ليس في قاعدة بياناتك).';
+
+$GLOBALS["lang"]['The number of low severity vulnerabilities held by FirstWave (not in your database).'] = 'عدد نقاط الضعف المنخفضة الخطورة التي تحتفظ بها أول واف (ليس في قاعدة بياناتك).';
+
+$GLOBALS["lang"]['The number of medium severity vulnerabilities held by FirstWave (not in your database).'] = 'عدد مواطن الضعف المتوسطة التي تحملها أول واف (ليس في قاعدة بياناتك).';
+
 $GLOBALS["lang"]['The number of purchased licenses.'] = 'عدد التراخيص المشتراة.';
 
 $GLOBALS["lang"]['The number of seconds to try and communicate with the target IP.'] = 'عدد الثواني لمحاولة التواصل مع الرقم المستهدف';
+
+$GLOBALS["lang"]['The number of vulnerabilities without a severity held by FirstWave (not in your database).'] = 'عدد أوجه الضعف التي لا توجد بها شدة لدى أول واف (ليس في قاعدة بياناتك).';
 
 $GLOBALS["lang"]['The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.'] = 'العمود الثانوي الاختياري. ملاحظة: عندما يكون النوع = حركة المرور، يمثل هذا السؤال الأصفر';
 
@@ -5310,6 +5615,8 @@ $GLOBALS["lang"]['The rack series.'] = 'سلسلة الرف';
 
 $GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = 'الرف هذا الجهاز موجود الروابط إلى <code>racks.id</code>.';
 
+$GLOBALS["lang"]['The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.'] = 'The recommended process of addressing and fixing identified security vulnerabilities. وينطوي ذلك عادة على تطبيق اللواصفات أو التحديثات أو التدابير الأخرى للقضاء على المخاطر التي تشكلها مواطن الضعف.';
+
 $GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = 'التأشيرات المنتظمة لدليلك Eg - <code>open-audit.lan</code>.';
 
 $GLOBALS["lang"]['The result of the command.'] = 'نتيجة القيادة';
@@ -5342,7 +5649,7 @@ $GLOBALS["lang"]['The text for the bottom of the chart in a line chart (only).']
 
 $GLOBALS["lang"]['The text that is displayed.'] = 'النص الذي تم عرضه';
 
-$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2001-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = 'The timestamp after which, this task should run. على سبيل المثال، القيام بمهمة بعد أول حزيران/يونيه 2017 في الساعة 10: <code>2017-06-01 09:59:00</code>. وينبغي أن تكون هذه القيمة صفراً (مثل، 09، وليس 9). العجز عن سداد هذه القيمة <code>2001-01-01 00:00:00</code> وهذا يعني التقصير، أن المهمة المقررة ستنفذ في وقت التنفيذ المقرر المقبل.';
+$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = 'The timestamp after which, this task should run. على سبيل المثال، القيام بمهمة بعد أول حزيران/يونيه 2017 في الساعة 10: <code>2017-06-01 09:59:00</code>. وينبغي أن تكون هذه القيمة صفراً (مثل، 09، وليس 9). العجز عن سداد هذه القيمة <code>2000-01-01 00:00:00</code> وهذا يعني التقصير، أن المهمة المقررة ستنفذ في وقت التنفيذ المقرر المقبل.';
 
 $GLOBALS["lang"]['The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.'] = 'The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.';
 
@@ -5374,6 +5681,10 @@ $GLOBALS["lang"]['The value assigned to the item.'] = 'القيمة المخصص
 
 $GLOBALS["lang"]['The value that is stored for this particular item.'] = 'القيمة المخزنة لهذا البند بالذات.';
 
+$GLOBALS["lang"]['The vendor name as per CPE entries.'] = 'اسم البائع حسب بيانات شركة CPE.';
+
+$GLOBALS["lang"]['The vendor taken from the CPE.'] = 'لقد أخذ البائع من وحدة حماية البيئة';
+
 $GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = 'The web directory on the host that Open-AudIT is installed (requires a tracking slash).';
 
 $GLOBALS["lang"]['The widget at position '] = 'النسيج في الموقع ';
@@ -5381,6 +5692,8 @@ $GLOBALS["lang"]['The widget at position '] = 'النسيج في الموقع ';
 $GLOBALS["lang"]['The width of this device.'] = 'عرض هذا الجهاز';
 
 $GLOBALS["lang"]['Then'] = 'ثم';
+
+$GLOBALS["lang"]['This CVE will be retrieved and overwrite the existing CVE if it exists.'] = 'وسيتم استرجاع هذه المركبة وكتابة المؤمنة القائمة إذا وجدت.';
 
 $GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = 'هذه الصفة مخزنة كهدف من نوع (سو جون) وهي قائمة بجميع المجموعات وتتضمن اسم المجموعة إلى جانبها <code>c</code>.. <code>r</code>.. <code>u</code> و <code>d</code> التي تمثل الخلق والقراءة والتحديث والحذف. هذه هي الإجراءات التي يمكن للمستعمل أن يقوم بها على بنود من تلك المجموعة بالذات.';
 
@@ -5407,10 +5720,6 @@ $GLOBALS["lang"]['This will auto-populate.'] = 'هذا سوف يقطن';
 $GLOBALS["lang"]['This will considerably slow the discovery scan.'] = 'هذا سوف يبطئ الاكتشاف';
 
 $GLOBALS["lang"]['Thursday'] = 'الخميس';
-
-$GLOBALS["lang"]['time'] = 'الوقت';
-
-$GLOBALS["lang"]['Time'] = 'الوقت';
 
 $GLOBALS["lang"]['time_caption'] = 'الوقت';
 
@@ -5460,6 +5769,10 @@ $GLOBALS["lang"]['Traffic Light'] = 'الضوء';
 
 $GLOBALS["lang"]['Trinidad and Tobago'] = 'ترينيداد وتوباغو';
 
+$GLOBALS["lang"]['Troubleshooting LDAP Logins'] = 'المشاكل التي تصيب لوجينز';
+
+$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"'] = 'جربي أحدث الملامح مع رخصة مئة جهاز من طراز FREE رجاءً إقرأْ href="';
+
 $GLOBALS["lang"]['Tuesday'] = 'الثلاثاء';
 
 $GLOBALS["lang"]['Tunisia'] = 'تونس';
@@ -5507,10 +5820,6 @@ $GLOBALS["lang"]['udp_ports'] = 'ميناء أودب';
 $GLOBALS["lang"]['Udp Ports'] = 'ميناء أودب';
 
 $GLOBALS["lang"]['Uganda'] = 'أوغندا';
-
-$GLOBALS["lang"]['uid'] = 'Uid';
-
-$GLOBALS["lang"]['Uid'] = 'Uid';
 
 $GLOBALS["lang"]['Ukraine'] = 'أوكرانيا';
 
@@ -5566,10 +5875,6 @@ $GLOBALS["lang"]['Update Open-AudIT Devices from '] = 'Update Open-AudIT الأ�
 
 $GLOBALS["lang"]['Update Open-AudIT Devices from NMIS'] = 'Update Open-AudIT أجهزة من نظام المعلومات الإدارية الوطني';
 
-$GLOBALS["lang"]['updated_at'] = 'Updated At';
-
-$GLOBALS["lang"]['Updated At'] = 'Updated At';
-
 $GLOBALS["lang"]['Updated each time discovery has been executed with IPs detected to be responding.'] = 'وقد تم تحديث كل مرة تم فيها تنفيذ الاكتشافات مع اكتشاف أن شركاء التنفيذ يستجيبون لها.';
 
 $GLOBALS["lang"]['Updated each time discovery has been executed with IPs that have been scanned by Nmap.'] = 'تمّ تحديث كلّ مرة تمّ إعدام الاكتشاف مع شركاء التنفيذ الذين تمّ مسحهم بواسطة (نامب).';
@@ -5583,6 +5888,8 @@ $GLOBALS["lang"]['Updated each time discovery has been executed.'] = 'تم تح�
 $GLOBALS["lang"]['Updated each time the discovery has been executed.'] = 'تحديث كل مرة يتم فيها إعدام الاكتشاف';
 
 $GLOBALS["lang"]['Updated each time the discovery has completed execution.'] = 'استكمل كل مرة استكمل فيها الاكتشاف تنفيذ الحكم';
+
+$GLOBALS["lang"]['Updating'] = 'تحديث';
 
 $GLOBALS["lang"]['Upgrade'] = 'أعلى';
 
@@ -5603,6 +5910,10 @@ $GLOBALS["lang"]['Uruguay, Eastern Republic of'] = 'أوروغواي، الجم�
 $GLOBALS["lang"]['usb'] = 'Usb';
 
 $GLOBALS["lang"]['Usb'] = 'Usb';
+
+$GLOBALS["lang"]['use'] = 'الاستخدام';
+
+$GLOBALS["lang"]['Use'] = 'الاستخدام';
 
 $GLOBALS["lang"]['use_authentication'] = 'استخدام التوثيق';
 
@@ -5634,10 +5945,6 @@ $GLOBALS["lang"]['used_count'] = 'الكونت المستخدم';
 
 $GLOBALS["lang"]['Used Count'] = 'الكونت المستخدم';
 
-$GLOBALS["lang"]['used_percent'] = 'النسبة المئوية المستعملة';
-
-$GLOBALS["lang"]['Used Percent'] = 'النسبة المئوية المستعملة';
-
 $GLOBALS["lang"]['Used by OpenLDAP only.'] = 'استخدمه برنامج "أبندب" فقط';
 
 $GLOBALS["lang"]['Used internally when discovering a single device.'] = 'استخدم داخلياً عند اكتشاف جهاز واحد';
@@ -5668,6 +5975,10 @@ $GLOBALS["lang"]['user_id'] = 'هوية المستخدم';
 
 $GLOBALS["lang"]['User ID'] = 'هوية المستخدم';
 
+$GLOBALS["lang"]['user_interaction'] = 'تفاعل المستعملين';
+
+$GLOBALS["lang"]['User Interaction'] = 'تفاعل المستعملين';
+
 $GLOBALS["lang"]['User Membership Attribute'] = 'العضوية';
 
 $GLOBALS["lang"]['user_name'] = 'اسم المستخدم';
@@ -5676,13 +5987,19 @@ $GLOBALS["lang"]['User Name'] = 'اسم المستخدم';
 
 $GLOBALS["lang"]['User Policies'] = 'سياسات المستعملين';
 
-$GLOBALS["lang"]['username'] = 'المستعمل';
-
 $GLOBALS["lang"]['Username'] = 'المستعمل';
+
+$GLOBALS["lang"]['username'] = 'المستعمل';
 
 $GLOBALS["lang"]['users'] = 'المستخدمون';
 
 $GLOBALS["lang"]['Users'] = 'المستخدمون';
+
+$GLOBALS["lang"]['Users, Roles and Orgs'] = 'المستخدمين والأدوار والأوغاد';
+
+$GLOBALS["lang"]['Using Entra for Auth'] = 'استخدام الدخول إلى (أوث)';
+
+$GLOBALS["lang"]['Using OKTA for Auth'] = 'استخدام الموافقة المسبقة عن علم';
 
 $GLOBALS["lang"]['Usually Mb/s, from Location A.'] = 'عادة Mb/s، من الموقع A.';
 
@@ -5693,6 +6010,10 @@ $GLOBALS["lang"]['Usually Mb/s, to Location A.'] = 'عادة Mb/s، إلى ال�
 $GLOBALS["lang"]['Usually Mb/s, to Location B.'] = 'عادة Mb/s، إلى الموقع B.';
 
 $GLOBALS["lang"]['Uzbekistan'] = 'أوزبكستان';
+
+$GLOBALS["lang"]['VLAN'] = 'VLAN';
+
+$GLOBALS["lang"]['VLAN ID'] = 'VLAN ID';
 
 $GLOBALS["lang"]['valid_from'] = 'Valid from';
 
@@ -5734,6 +6055,10 @@ $GLOBALS["lang"]['vendor'] = 'البائع';
 
 $GLOBALS["lang"]['Vendor'] = 'البائع';
 
+$GLOBALS["lang"]['vendors'] = 'البائعون';
+
+$GLOBALS["lang"]['Vendors'] = 'البائعون';
+
 $GLOBALS["lang"]['Venezuela'] = 'فنزويلا';
 
 $GLOBALS["lang"]['version'] = 'Version';
@@ -5743,6 +6068,10 @@ $GLOBALS["lang"]['Version'] = 'Version';
 $GLOBALS["lang"]['version_padded'] = 'الشكل';
 
 $GLOBALS["lang"]['Version Padded'] = 'الشكل';
+
+$GLOBALS["lang"]['version_raw'] = 'Version Raw';
+
+$GLOBALS["lang"]['Version Raw'] = 'Version Raw';
 
 $GLOBALS["lang"]['version_string'] = 'الشكل';
 
@@ -5772,6 +6101,14 @@ $GLOBALS["lang"]['Virtualisation'] = 'الافتراض';
 
 $GLOBALS["lang"]['Visit our YouTube channel for instructional videos.'] = 'زيارة قناة اليوتيوب للفيديو التعليمي';
 
+$GLOBALS["lang"]['vlan'] = 'Vlan';
+
+$GLOBALS["lang"]['Vlan'] = 'Vlan';
+
+$GLOBALS["lang"]['vlan_id'] = 'Vlan ID';
+
+$GLOBALS["lang"]['Vlan ID'] = 'Vlan ID';
+
 $GLOBALS["lang"]['vm'] = 'Vm';
 
 $GLOBALS["lang"]['Vm'] = 'Vm';
@@ -5791,6 +6128,26 @@ $GLOBALS["lang"]['Vm Ident'] = 'Vm Ident';
 $GLOBALS["lang"]['vm_server_name'] = 'Vm Server Name';
 
 $GLOBALS["lang"]['Vm Server Name'] = 'Vm Server Name';
+
+$GLOBALS["lang"]['vm_vendor'] = 'Vm Vendor';
+
+$GLOBALS["lang"]['Vm Vendor'] = 'Vm Vendor';
+
+$GLOBALS["lang"]['vuln_status'] = 'Vuln Status';
+
+$GLOBALS["lang"]['Vuln Status'] = 'Vuln Status';
+
+$GLOBALS["lang"]['vulnerabilities'] = 'الخصوم';
+
+$GLOBALS["lang"]['Vulnerabilities'] = 'الخصوم';
+
+$GLOBALS["lang"]['vulnerabilities_cache'] = 'الخانات';
+
+$GLOBALS["lang"]['Vulnerabilities Cache'] = 'الخانات';
+
+$GLOBALS["lang"]['vulnerability_id'] = 'هوية الضعف';
+
+$GLOBALS["lang"]['Vulnerability ID'] = 'هوية الضعف';
 
 $GLOBALS["lang"]['WHERE'] = 'أين';
 
@@ -5828,6 +6185,8 @@ $GLOBALS["lang"]['Web'] = 'Web';
 
 $GLOBALS["lang"]['Webserver'] = 'Webserver';
 
+$GLOBALS["lang"]['Website'] = 'الموقع الشبكي';
+
 $GLOBALS["lang"]['Wednesday'] = 'الأربعاء';
 
 $GLOBALS["lang"]['weight'] = 'الوزن';
@@ -5854,17 +6213,11 @@ $GLOBALS["lang"]['Welcome to FirstWave Open-AudIT'] = 'مرحبا بكم في أ
 
 $GLOBALS["lang"]['Western Sahara'] = 'الصحراء الغربية';
 
-$GLOBALS["lang"]['what'] = 'ماذا؟';
-
-$GLOBALS["lang"]['What'] = 'ماذا؟';
+$GLOBALS["lang"]['What Can I Expect if I Have no Credentials'] = 'ما يمكنني توقعه إذا لم يكن لدي وثائق تفويض';
 
 $GLOBALS["lang"]['What is the purpose of this rack.'] = 'ما هو الغرض من هذا الرف.';
 
 $GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = 'ما هو نوع هذا الموقع الأنواع المسموح بها <code>attributes</code> طاولة';
-
-$GLOBALS["lang"]['when'] = 'عندما';
-
-$GLOBALS["lang"]['When'] = 'عندما';
 
 $GLOBALS["lang"]['When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?'] = 'عندما ندمج الأجهزة من النظام الخارجي، إذا لم يكن الجهاز موجوداً في نظام مفتوح هل يجب أن نصنعه؟';
 
@@ -5890,6 +6243,10 @@ $GLOBALS["lang"]['Where on the Device Details screen you would like to see this 
 
 $GLOBALS["lang"]['Where the rack is in the row.'] = 'حيث الرف في الصف';
 
+$GLOBALS["lang"]['Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.'] = 'وسواء كان الضعف يؤثر على المكونات التي تتجاوز طاقتها باستخدام التأثير والقابلية والثقة.';
+
+$GLOBALS["lang"]['Whether user interaction is required (None, Passive, Active).'] = '(ب) ما إذا كان الأمر يتطلب تفاعلاً مع المستعملين (غيرهم، سلبي، ناشط).';
+
 $GLOBALS["lang"]['Which OS this benchmark applies to.'] = 'ما ينطبق على هذا المعيار';
 
 $GLOBALS["lang"]['Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.'] = 'ما هي الأجهزة التي ينبغي أن تُنشأ من النظام الخارجي (إن وجدت). باستخدام الجميع، لا شيء أو سمة معينة.';
@@ -5897,6 +6254,8 @@ $GLOBALS["lang"]['Which devices should Open-AudIT create from the external syste
 $GLOBALS["lang"]['Which sub-menu should we display this query in.'] = 'والذي يجب أن نعرض هذا السؤال';
 
 $GLOBALS["lang"]['Who made this rack.'] = 'الذي صنع هذا الرف';
+
+$GLOBALS["lang"]['Why Windows Server Only?'] = 'لماذا (ويندوز سيرفر) فقط؟';
 
 $GLOBALS["lang"]['Why do we exclude this policy?'] = 'لماذا نستبعد هذه السياسة؟';
 
@@ -5919,6 +6278,8 @@ $GLOBALS["lang"]['Width'] = 'Width';
 $GLOBALS["lang"]['windows'] = 'النوافذ';
 
 $GLOBALS["lang"]['Windows'] = 'النوافذ';
+
+$GLOBALS["lang"]['Windows Test Script'] = 'Script';
 
 $GLOBALS["lang"]['Wireless Local Area Network'] = 'شبكة المناطق المحلية اللاسلكية';
 
@@ -5992,7 +6353,7 @@ $GLOBALS["lang"]['active/active'] = 'نشطة/فعلية';
 
 $GLOBALS["lang"]['active/passive'] = 'النشاط/التعدي';
 
-$GLOBALS["lang"]['ad hoc'] = 'مخصص';
+$GLOBALS["lang"]['advertisement'] = 'الإعلان';
 
 $GLOBALS["lang"]['alert'] = 'إنذار';
 
@@ -6016,15 +6377,23 @@ $GLOBALS["lang"]['backup'] = 'الدعم';
 
 $GLOBALS["lang"]['banned'] = 'محظور';
 
+$GLOBALS["lang"]['blog'] = 'المدونة';
+
 $GLOBALS["lang"]['bottom'] = 'أسفل';
+
+$GLOBALS["lang"]['browser_lang'] = 'بروزر';
 
 $GLOBALS["lang"]['building'] = 'المبنى';
 
 $GLOBALS["lang"]['cloud'] = 'سحابة';
 
+$GLOBALS["lang"]['code'] = 'الرمز';
+
 $GLOBALS["lang"]['collector'] = 'جامع';
 
 $GLOBALS["lang"]['compute'] = 'الحساب';
+
+$GLOBALS["lang"]['config'] = 'config';
 
 $GLOBALS["lang"]['contains'] = 'يحتوي على';
 
@@ -6034,11 +6403,11 @@ $GLOBALS["lang"]['created'] = 'أنشئت';
 
 $GLOBALS["lang"]['critical'] = 'حاسمة';
 
+$GLOBALS["lang"]['cve'] = 'cve';
+
 $GLOBALS["lang"]['database'] = 'قاعدة البيانات';
 
 $GLOBALS["lang"]['debug'] = 'debug';
-
-$GLOBALS["lang"]['defined process'] = 'العملية المحددة';
 
 $GLOBALS["lang"]['delegated'] = 'مندوب';
 
@@ -6062,13 +6431,39 @@ $GLOBALS["lang"]['equals'] = 'متساوية';
 
 $GLOBALS["lang"]['error'] = 'الخطأ';
 
+$GLOBALS["lang"]['established'] = 'المنشأة';
+
 $GLOBALS["lang"]['excluded'] = 'مستبعدة';
 
 $GLOBALS["lang"]['expired'] = 'انتهت صلاحيتها';
 
+$GLOBALS["lang"]['extreme - Without which, the organisation would fail.
+
+very high - Functions that are essential for the organisations survival and must be restored immediately.
+
+high - Important functions that should be restored quickly but may have a slightly longer recovery time.
+
+medium - Functions that are necessary but can tolerate longer downtime.
+
+low - Non-essential functions that can be delayed without significant impact.
+
+unassigned - The default until set.'] = 'متطرفة بدونها ستفشل المنظمة
+
+عالية جداً - الوظائف الضرورية لبقاء المنظمات ويجب أن تعاد فوراً.
+
+عالية - المهام الهامة التي ينبغي استعادتها بسرعة ولكنها قد تستغرق وقتا أطول قليلا للانتعاش.
+
+متوسطة - الوظائف الضرورية ولكنها يمكن أن تتسامح مع وقت النزول الأطول.
+
+منخفضة - الوظائف غير الأساسية التي يمكن تأخيرها دون تأثير كبير.
+
+غير موقّع - التقصير حتى موقع التصوير -';
+
 $GLOBALS["lang"]['fail'] = 'فشل';
 
 $GLOBALS["lang"]['false'] = 'كاذب';
+
+$GLOBALS["lang"]['file'] = 'ملف';
 
 $GLOBALS["lang"]['firewall'] = 'الجدار الناري';
 
@@ -6098,11 +6493,15 @@ $GLOBALS["lang"]['here'] = 'هنا';
 
 $GLOBALS["lang"]['high availability'] = 'التوافر المرتفع';
 
+$GLOBALS["lang"]['howto'] = 'كيف';
+
 $GLOBALS["lang"]['ignored'] = 'تجاهل';
 
 $GLOBALS["lang"]['in'] = 'في';
 
 $GLOBALS["lang"]['inactive'] = 'الخاملة';
+
+$GLOBALS["lang"]['incomplete'] = 'ناقص';
 
 $GLOBALS["lang"]['info'] = 'المعلومات';
 
@@ -6126,7 +6525,7 @@ $GLOBALS["lang"]['load balancing'] = 'الموازنة';
 
 $GLOBALS["lang"]['location'] = 'الموقع';
 
-$GLOBALS["lang"]['managed and measurable'] = 'إدارة وقابلة للقياس';
+$GLOBALS["lang"]['managed'] = 'إدارة';
 
 $GLOBALS["lang"]['microsoft'] = 'Microsoft';
 
@@ -6134,11 +6533,11 @@ $GLOBALS["lang"]['mount point'] = 'النقطة';
 
 $GLOBALS["lang"]['network'] = 'الشبكة';
 
+$GLOBALS["lang"]['news'] = 'الأخبار';
+
 $GLOBALS["lang"]['no'] = 'لا';
 
 $GLOBALS["lang"]['node'] = 'العقد';
-
-$GLOBALS["lang"]['non-existent'] = 'غير موجود';
 
 $GLOBALS["lang"]['none'] = 'لا شيء';
 
@@ -6152,6 +6551,8 @@ $GLOBALS["lang"]['not like'] = 'ليس مثل';
 
 $GLOBALS["lang"]['notice'] = 'الإشعار';
 
+$GLOBALS["lang"]['notification'] = 'الإخطار';
+
 $GLOBALS["lang"]['okta'] = 'حسنا';
 
 $GLOBALS["lang"]['openldap'] = 'مفتوحة';
@@ -6162,6 +6563,8 @@ $GLOBALS["lang"]['optionally '] = 'اختياريا ';
 
 $GLOBALS["lang"]['other'] = 'أخرى';
 
+$GLOBALS["lang"]['package'] = 'طرد';
+
 $GLOBALS["lang"]['partition'] = 'التجزئة';
 
 $GLOBALS["lang"]['pass'] = 'المرور';
@@ -6170,9 +6573,13 @@ $GLOBALS["lang"]['pending'] = 'معلقة';
 
 $GLOBALS["lang"]['performance'] = 'الأداء';
 
+$GLOBALS["lang"]['performed'] = 'أُنجز';
+
 $GLOBALS["lang"]['pie'] = 'فطيرة';
 
 $GLOBALS["lang"]['planning'] = 'التخطيط';
+
+$GLOBALS["lang"]['predictable'] = 'يمكن التنبؤ به';
 
 $GLOBALS["lang"]['query'] = 'الاستفسار';
 
@@ -6184,7 +6591,7 @@ $GLOBALS["lang"]['rear-right'] = 'الحق الخلفي';
 
 $GLOBALS["lang"]['regex'] = 'regex';
 
-$GLOBALS["lang"]['repeatable but intuitive'] = 'قابلة للتكرار ولكنها غير ملائمة';
+$GLOBALS["lang"]['release'] = 'الإفراج';
 
 $GLOBALS["lang"]['reserved'] = 'محجوزة';
 
@@ -6205,6 +6612,36 @@ $GLOBALS["lang"]['storage'] = 'التخزين';
 $GLOBALS["lang"]['timestamp'] = 'الزمان';
 
 $GLOBALS["lang"]['top'] = 'أعلى';
+
+$GLOBALS["lang"]['top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
+
+secret - Military / Government classification. Disclosure would cause serious damage to national security.
+
+confidential - Military / Government and Private Sector classification. Data that is confidential includes trade secrets, intellectual data, application programming code, and other data that could seriously affect the organization if unauthorized disclosure occurred. Data at this level would be available only to personnel in the organization whose work needs, or is directly related to, the accessed data. Access to confidential data usually requires authorization for each access.
+
+private - Private Sector classification. Data that is private includes any information related to personnel, including human resources records, medical records, and salary information, that is used only within the organization.
+
+sensitive - Military / Government and Private Sector classification. Data that is sensitive includes organizational financial information and requires extra measures to ensure its CIA and accuracy. Disclosure might harm national security.
+
+public - Private Sector classification. Public data is data that is generally shared with the public and would not cause a negative impact on the organization. Examples of public data include how many people work in the organization and what products an organization manufactures or sells.
+
+unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
+
+unassigned - The default until set.'] = 'سرية للغاية - تصنيف عسكري/حكومي. وسيتسبب الكشف عن المعلومات في خطر خطير للغاية على الأمن الوطني.
+
+سرية - تصنيف عسكري/حكومي. وسيتسبب الكشف عن المعلومات في إلحاق ضرر جسيم بالأمن الوطني.
+
+السرية - تصنيف القطاع العسكري/الحكومة والقطاع الخاص. وتشمل البيانات السرية الأسرار التجارية، والبيانات الفكرية، ومدونة البرمجة التطبيقية، والبيانات الأخرى التي يمكن أن تؤثر تأثيرا خطيرا على المنظمة إذا حدث كشف غير مأذون به. ولا تتاح البيانات على هذا المستوى إلا للموظفين في المنظمة الذين تكون احتياجاتهم من العمل أو تتصل اتصالا مباشرا بالبيانات التي يتم الحصول عليها. ويقتضي الوصول إلى البيانات السرية عادة الحصول على إذن من كل جهة.
+
+تصنيف القطاع الخاص وتشمل البيانات الخاصة أي معلومات تتعلق بالموظفين، بما في ذلك سجلات الموارد البشرية، والسجلات الطبية، ومعلومات المرتبات، لا تستخدم إلا داخل المنظمة.
+
+حساسية - تصنيف الحكومة والقطاع الخاص. وتشمل البيانات الحساسة المعلومات المالية التنظيمية وتتطلب تدابير إضافية لضمان استخباراتها ودقتها. فالكشف قد يضر بالأمن القومي.
+
+تصنيف القطاع العام والبيانات العامة هي بيانات يتقاسمها عامة الجمهور ولا يمكن أن تحدث أثرا سلبيا على المنظمة. ومن أمثلة البيانات العامة عدد الأشخاص الذين يعملون في المنظمة وما هي المنتجات التي تصنعها أو تبيعها المنظمة.
+
+غير مصنفة - تصنيف عسكري/حكومي. أي معلومات يمكن توزيعها عموما على الجمهور دون أي تهديد للمصلحة الوطنية.
+
+غير موقّع - التقصير حتى موقع التصوير -';
 
 $GLOBALS["lang"]['traffic'] = 'حركة المرور';
 
@@ -6721,3 +7158,4 @@ $GLOBALS["lang"]['YE'] = 'YE';
 $GLOBALS["lang"]['ZM'] = 'ZM';
 
 $GLOBALS["lang"]['ZW'] = 'ZW';
+

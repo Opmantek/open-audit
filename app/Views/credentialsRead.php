@@ -117,49 +117,49 @@ window.onload = function () {
 
         <?php if (isset($resource->credentials->community)) {
             if ($resource->credentials->community !== '') { ?>
-                $("#credentials\\.community").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#credentials\\.community").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#credentials\\.community").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#credentials\\.community").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 
         <?php if (isset($resource->credentials->password)) {
             if ($resource->credentials->password !== '') { ?>
-                $("#credentials\\.password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#credentials\\.password").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#credentials\\.password").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#credentials\\.password").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 
         <?php if (isset($resource->credentials->authentication_passphrase)) {
             if ($resource->credentials->authentication_passphrase !== '') { ?>
-                $("#credentials\\.authentication_passphrase").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#credentials\\.authentication_passphrase").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#credentials\\.authentication_passphrase").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#credentials\\.authentication_passphrase").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 
         <?php if (isset($resource->credentials->privacy_passphrase)) {
             if ($resource->credentials->privacy_passphrase !== '') { ?>
-                $("#credentials\\.privacy_passphrase").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#credentials\\.privacy_passphrase").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#credentials\\.privacy_passphrase").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#credentials\\.privacy_passphrase").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 
         <?php if (isset($resource->credentials->ssh_key)) {
             if ($resource->credentials->ssh_key !== '') { ?>
-                $("#credentials\\.ssh_key").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#credentials\\.ssh_key").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#credentials\\.ssh_key").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#credentials\\.ssh_key").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 
         <?php if (isset($resource->credentials->sudo_password)) {
             if ($resource->credentials->sudo_password !== '') { ?>
-                $("#credentials\\.sudo_password").attr("placeholder", "<?= __("removed from display, but has been set") ?>");
+                $("#credentials\\.sudo_password").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>
-                $("#credentials\\.sudo_password").attr("placeholder", "<?= __("has not been set") ?>");
+                $("#credentials\\.sudo_password").attr("placeholder", "<?= __('has not been set') ?>");
             <?php }
         } ?>
 

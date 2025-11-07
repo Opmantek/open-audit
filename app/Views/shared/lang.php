@@ -1,7 +1,7 @@
 <?php
-$langFile = APPPATH . 'Views/lang/en.inc';
+$langFile = APPPATH . 'Views/lang/en.php';
 if (!empty($user->lang)) {
-    $langFile = APPPATH . 'Views/lang/' . $user->lang . '.inc';
+    $langFile = APPPATH . 'Views/lang/' . $user->lang . '.php';
 }
 include($langFile);
 if (!function_exists('__')) {
@@ -11,7 +11,7 @@ if (!function_exists('__')) {
         if (ENVIRONMENT === 'Set as \'development\' and enable .env to make work. Disabled now as we use parsing for each build.') {
             $language_learning_mode = true;
         }
-        $language_file = APPPATH . 'Views/lang/en.inc';
+        $language_file = APPPATH . 'Views/lang/en.php';
         $word = (string)$word;
         if (isset($GLOBALS['lang'][$word])) {
             // We do this because we use this output in JS and HTML
