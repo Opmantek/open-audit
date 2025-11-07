@@ -34,6 +34,8 @@ use stdClass;
  */
 class Dictionary extends BaseController
 {
+    // NOTE - Disable debug in .env
+    // Call this in the borswer, with the inspection pane already open. Copy/paste the RAW source into the correct lang file in /app/Views/lang/
     public function dictionary()
     {
 
@@ -150,6 +152,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'auth' AND COLUMN_NAME = 'type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'auth::type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -157,6 +160,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'benchmarks_log' AND COLUMN_NAME = 'severity'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'benchmarks_log::severity');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -164,6 +168,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'change_log' AND COLUMN_NAME = 'db_action'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'change_log::db_action');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -171,6 +176,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'change_log' AND COLUMN_NAME = 'change_type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'change_log::change_type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -178,6 +184,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'cloud_log' AND COLUMN_NAME = 'severity_text'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'cloud_log::severity_text');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -185,6 +192,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'clouds' AND COLUMN_NAME = 'type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'clouds::type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -192,6 +200,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'cluster' AND COLUMN_NAME = 'role'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'cluster::role');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -199,6 +208,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'clusters' AND COLUMN_NAME = 'type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'clusters::type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -206,6 +216,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'clusters' AND COLUMN_NAME = 'purpose'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'clusters::purpose');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -213,6 +224,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'clusters' AND COLUMN_NAME = 'status'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'clusters::status');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -220,6 +232,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'clusters' AND COLUMN_NAME = 'configuration'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'clusters::configuration');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -227,6 +240,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'clusters' AND COLUMN_NAME = 'scaling'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'clusters::scaling');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -234,6 +248,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'collectors' AND COLUMN_NAME = 'status'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'collectors::status');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -241,6 +256,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'collectors' AND COLUMN_NAME = 'type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'collectors::type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -248,6 +264,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'discovery_log' AND COLUMN_NAME = 'severity_text'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'discovery_log::severity_text');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -255,6 +272,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'image' AND COLUMN_NAME = 'orientation'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'image::orientation');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -262,6 +280,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'integrations' AND COLUMN_NAME = 'select_external_type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'integrations::select_external_type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -269,6 +288,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'integrations' AND COLUMN_NAME = 'select_internal_type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'integrations::select_internal_type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -276,6 +296,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'integrations_log' AND COLUMN_NAME = 'severity_text'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'integrations_log::severity_text');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -283,6 +304,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'locations' AND COLUMN_NAME = 'sub_type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'locations::sub_type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -290,6 +312,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'networks' AND COLUMN_NAME = 'type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'networks::type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -297,6 +320,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'networks' AND COLUMN_NAME = 'admin_status'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'networks::admin_status');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -304,6 +328,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'news' AND COLUMN_NAME = 'type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'news::type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -311,6 +336,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'packages' AND COLUMN_NAME = 'type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'packages::type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -318,6 +344,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'packages' AND COLUMN_NAME = 'os'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'packages::os');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -325,6 +352,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'partition' AND COLUMN_NAME = 'mount_type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'partition_mount_type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -332,6 +360,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'rack_devices' AND COLUMN_NAME = 'orientation'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'rack_devices::orientation');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -339,6 +368,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'standards_results' AND COLUMN_NAME = 'maturity_level'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'standards_results::maturity_level');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -346,6 +376,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'standards_results' AND COLUMN_NAME = 'result'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'standards_results::result');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -353,6 +384,7 @@ class Dictionary extends BaseController
 
         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `lang` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'widgets' AND COLUMN_NAME = 'type'";
         $results = $db->query($sql)->getResult();
+        log_message('info', 'widgets::type');
         foreach ($results as $result) {
             $LANG = array_merge($LANG, $this->enumTheEnum($result->lang));
         }
@@ -378,6 +410,7 @@ class Dictionary extends BaseController
         $dictionary->edited_by = 'The name of the user who last changed or added this item (read only).';
         $dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
         $dictionary->device_id = 'The id of the linked device. Links to <code>devices.id</code>';
+        $dictionary->link = 'For more detailed information, check the Open-AudIT Knowledge Base.';
         foreach ($dictionary as $key => $value) {
             $LANG[$value] = $value;
         }
@@ -405,7 +438,7 @@ class Dictionary extends BaseController
             if (!empty($dictionary->about)) {
                 $LANG[$dictionary->about] = $dictionary->about;
             }
-            if (!empty($dictionary->notes) and $file !== 'DashboardsModel.php') {
+            if (!empty($dictionary->notes)) {
                 $LANG[$dictionary->notes] = $dictionary->notes;
             }
             log_message('info', 'ModelEnd: ' . $model);
@@ -418,12 +451,13 @@ class Dictionary extends BaseController
 
         foreach ($LANG as $key => $value) {
             if (stripos($value, "'") !== false) {
+                echo "Dictionary Items in Models cannot contain a single quote, even if escaped.<br>";
                 echo 'MODELS: ' . $value;
                 exit;
             }
         }
 
-        $lines = `grep "__('" /usr/local/open-audit/app/Views/*.php`;
+        $lines = `grep -r "__('" /usr/local/open-audit/app/Views/`;
         foreach (explode("\n", $lines) as $line) {
             $explode = explode('__(', $line);
             if (!empty($explode[1])) {
@@ -448,6 +482,7 @@ class Dictionary extends BaseController
 
         foreach ($LANG as $key => $value) {
             if (stripos($value, "'") !== false) {
+                echo "Dictionary Items in Views cannot contain a single quote, even if escaped.<br>";
                 echo 'VIEWS: ' . $value;
                 exit;
             }
@@ -458,76 +493,96 @@ class Dictionary extends BaseController
         set_time_limit(3000);
         $opt = new stdClass();
         $opt->source = 'en';
-        $opt->target = 'de';
+        $opt->target = 'sv';
         $opt->format = 'html';
         $opt->url = 'http://localhost:5000/translate';
 
-        $ch = curl_init($opt->url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        foreach ($LANG as $key => $value) {
-            $post = [
-                'q' => $value,
-                'source' => $opt->source,
-                'target'   => $opt->target,
-                'format'   => $opt->format,
-            ];
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-            $response = curl_exec($ch);
-            $body = @json_decode((string)$response);
-            if (!empty($body->translatedText)) {
-                // echo '$GLOBALS["lang"]["' . $key . '"] = "' . $body->translatedText . '";' . "\n";
-                $LANG[$key] = $body->translatedText;
+        // $supported = array('ar', 'az', 'bg', 'cs', 'dq', 'de', 'el', 'eo', 'es', 'et', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'lt', 'nl', 'pb', 'pl', 'ru', 'tr', 'uk', 'zh');
+        $supported = array('zh');
+
+        foreach ($supported as $support) {
+            $ch = curl_init($opt->url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $total = count($LANG);
+            $count = 0;
+            foreach ($LANG as $key => $value) {
+                if ($value !== '') {
+                    $post = [
+                        'q' => $value,
+                        'source' => $opt->source,
+                        'target'   => $support,
+                        'format'   => $opt->format,
+                    ];
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                    $response = curl_exec($ch);
+                    $body = @json_decode((string)$response);
+                    if (!empty($body->translatedText)) {
+                        if ($key !== $body->translatedText) {
+                            $LANG[$key] = $body->translatedText;
+                        }
+                    }
+                    unset($response);
+                    unset($body);
+                    log_message('info', $count . ' / ' . $total);
+                }
             }
-            unset($response);
-            unset($body);
-        }
 
-        log_message('info', "Translating took: " . (microtime(true) - $start));
+            log_message('info', "Translating took: " . (microtime(true) - $start));
 
-        foreach ($LANG as $key => $value) {
-            $LANG[$key] = str_replace('<br />br />>/p>', '<br><br></p>', $value);
-            $LANG[$key] = str_replace('<br>>br>>/p>', '<br><br></p>', $value);
-            $LANG[$key] = str_replace('<br>>strong>', '<br><strong>', $value);
-            $LANG[$key] = str_replace('</strong>>:', '<strong>:', $value);
-            $LANG[$key] = str_replace('</strong>>', '</strong>', $value);
-            $LANG[$key] = str_replace('>>/strong>', '></strong>', $value);
-            $LANG[$key] = str_replace('>>strong>', '><strong>', $value);
-            $LANG[$key] = str_replace('>>br ', '<br ', $value);
-            $LANG[$key] = str_replace('<br />br />><strong>', '<br />br /><strong>', $value);
-            $LANG[$key] = str_replace('<br />>em>Linux</em>', '<br /><em>Linux</em>', $value);
-        }
-
-        // Weird one this
-        // Comes out as ">=================... LOTS OF = ...==========" in the DE tralsnation
-        $LANG['>='] = '>=';
-
-        // German specific
-        if ($opt->target === 'de') {
-            $LANG['Import CSV'] = 'Einfuhr CSV';
-            $LANG['Import JSON'] = 'Einfuhr JSON';
-            $LANG['<p>A location is a physical address that can have devices associated with it.<br><br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br><br></p>'] = 'Ein Standort ist eine physische Adresse, die Geräte mit ihr verbunden haben kann.<br><br>Sie können es Koordinaten (lat/long) zuordnen und wenn Geräte zugewiesen sind, erscheint der Standort auf der Open-AudIT Enterprise map.<br><br></p>';
-            $LANG['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It doesn\t matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>Agents lassen Sie PCs ohne Entdeckung testen. Installieren Sie den Agenten und es wird jeden Tag mit dem Server Check-in und Audit selbst. Es spielt keine Rolle, ob Ihre Computer Firewall sind, Audit-Daten erscheinen immer noch in Open-AudIT.</p>p> Prüfung <strong>if</strong> ein Agent sollte Aktionen durchführen, alle drei Tests müssen passieren (wenn der Test eingestellt ist). <strong>die</strong> Maßnahmen ergriffen werden.</p>';
-        }
-
-        unset($LANG['<']);
-        unset($LANG['=<']);
-        unset($LANG['==']);
-        unset($LANG['>']);
-        unset($LANG['>=']);
-        unset($LANG['!=']);
-        unset($LANG['<p><br> <br></p>']);
-
-        foreach ($countries as $key => $value) {
-            $LANG[$key] = $key;
-        }
-
-        log_message('info', "Correcting took: " . (microtime(true) - $start));
-        echo "<?php\n";
-        foreach ($LANG as $key => $value) {
-            if (empty($key)) {
-                continue;
+            foreach ($LANG as $key => $value) {
+                $LANG[$key] = str_replace('<br />br />>/p>', '<br><br></p>', $value);
+                $LANG[$key] = str_replace('<br>>br>>/p>', '<br><br></p>', $value);
+                $LANG[$key] = str_replace('<br>>strong>', '<br><strong>', $value);
+                $LANG[$key] = str_replace('</strong>>:', '<strong>:', $value);
+                $LANG[$key] = str_replace('</strong>>', '</strong>', $value);
+                $LANG[$key] = str_replace('>>/strong>', '></strong>', $value);
+                $LANG[$key] = str_replace('>>strong>', '><strong>', $value);
+                $LANG[$key] = str_replace('>>br ', '<br ', $value);
+                $LANG[$key] = str_replace('<br />br />><strong>', '<br />br /><strong>', $value);
+                $LANG[$key] = str_replace('<br />>em>Linux</em>', '<br /><em>Linux</em>', $value);
             }
-            echo '$GLOBALS["lang"][\'' . $key . '\'] = \'' . str_replace("'", "\'", $value) . '\';' . "\n\n";
+
+            // Weird one this
+            // Comes out as ">=================... LOTS OF = ...==========" in the DE tralsnation
+            $LANG['>='] = '>=';
+
+            // German specific
+            if ($opt->target === 'de') {
+                $LANG['Import CSV'] = 'Einfuhr CSV';
+                $LANG['Import JSON'] = 'Einfuhr JSON';
+                $LANG['<p>A location is a physical address that can have devices associated with it.<br><br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br><br></p>'] = 'Ein Standort ist eine physische Adresse, die Geräte mit ihr verbunden haben kann.<br><br>Sie können es Koordinaten (lat/long) zuordnen und wenn Geräte zugewiesen sind, erscheint der Standort auf der Open-AudIT Enterprise map.<br><br></p>';
+                $LANG['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It doesn\t matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>Agents lassen Sie PCs ohne Entdeckung testen. Installieren Sie den Agenten und es wird jeden Tag mit dem Server Check-in und Audit selbst. Es spielt keine Rolle, ob Ihre Computer Firewall sind, Audit-Daten erscheinen immer noch in Open-AudIT.</p>p> Prüfung <strong>if</strong> ein Agent sollte Aktionen durchführen, alle drei Tests müssen passieren (wenn der Test eingestellt ist). <strong>die</strong> Maßnahmen ergriffen werden.</p>';
+            }
+
+            unset($LANG['<']);
+            unset($LANG['=<']);
+            unset($LANG['==']);
+            unset($LANG['>']);
+            unset($LANG['>=']);
+            unset($LANG['!=']);
+            unset($LANG['<p><br> <br></p>']);
+
+            foreach ($countries as $key => $value) {
+                $LANG[$key] = $key;
+            }
+
+            log_message('info', "Correcting took: " . (microtime(true) - $start));
+            // echo "<?php\n";
+
+            $file = fopen('/usr/local/open-audit/app/Views/lang/' . $support . '.php', "w");
+            if (!$file) {
+                log_message('error', 'Could not open /usr/local/open-audit/app/Views/lang/' . $support . '.php for writing');
+                exit;
+            }
+            fwrite($file, "<?php\n");
+            foreach ($LANG as $key => $value) {
+                if (empty($key)) {
+                    continue;
+                }
+                // echo '$GLOBALS["lang"][\'' . $key . '\'] = \'' . str_replace("'", "\'", $value) . '\';' . "\n\n";
+                fwrite($file, '$GLOBALS["lang"][\'' . $key . '\'] = \'' . str_replace("'", "\'", $value) . '\';' . "\n\n");
+            }
+            fclose($file);
         }
     }
 

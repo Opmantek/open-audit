@@ -147,7 +147,8 @@ $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::cla
 $routes->post('util/subnet_size', 'Util::subnetSize');
 $routes->get('util/test_windows_client', 'Util::testWindowsClient');
 $routes->cli('util/feeds', 'Util::feeds');
-$routes->get('dictionary', 'Dictionary::dictionary');
+$routes->get('dictionary', 'Dictionary::dictionary', ['filter' => \App\Filters\Session::class, 'as' => 'Dictionary']);
+$routes->cli('dictionary', 'Dictionary::dictionary');
 
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
