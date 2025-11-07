@@ -2940,7 +2940,7 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 					echo "		</item>" >> "$xml_file"
 				done
 				;;
-			'CentOS' | 'RedHat' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' )
+			'CentOS' | 'RedHat' | 'Fedora' | 'Suse' | 'Amazon' | 'Mariner' | 'AlmaLinux' | 'Rocky' )
 				# rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" | sed -e 's/\&.*]]/]]/' >> "$xml_file"
 				for package in $(rpm -qa --queryformat="%{NAME}\t%{VERSION}\t%{VERSION}-%{RELEASE}\t%{URL}\n"); do
 					name=$(echo "$package" | awk '{print $1}')
