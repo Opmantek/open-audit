@@ -5,7 +5,7 @@
 <h1>ERROR: StartService failed. NT_STATUS_CANT_WAIT</h1>
 <br>
 
-<p>Windows may also have blocked the service from starting. On the target start the Windows Security applet and ensure the WinExeSvc executable is allowed to run (click Allow on Device and then Start Actions).</p>
+<p><?= __('Windows may also have blocked the service from starting. On the target start the Windows Security applet and ensure the WinExeSvc executable is allowed to run (click Allow on Device and then Start Actions).') ?></p>
 
 <img src="<?= $meta->baseurl ?>images/winexesvc_allow_01.png" alt="Allow WinExeSvc to run" /><br>
 
