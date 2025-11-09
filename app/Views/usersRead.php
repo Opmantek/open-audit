@@ -99,7 +99,7 @@ $lang["vi"] = "Vietnamese";
                                                 echo ">";
                                                 $display = $file;
                                                 if (!empty($lang[$file])) {
-                                                    $display = $lang[$file];
+                                                    $display = __($lang[$file]);
                                                 }
                                                 echo $display . "</option>\n";
                                             }
