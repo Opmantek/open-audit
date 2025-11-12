@@ -1072,18 +1072,20 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 $severity = intval($db->insertID());
 
-$sql = "SELECT id, name FROM widgets WHERE name IN ('Open Windows Shares', 'Windows Clients AntiVirus Status', 'Windows 11 Latest Build', 'Windows 2025 Server Latest Build', 'Devices Audited per Day', 'New Devices Discovered per Day', 'Hardware Additions per Day', 'New Software Discovered per Day')";
-$result = $db->query($sql);
+$sql = "SELECT id, name FROM widgets WHERE name IN ('Open Windows Shares', 'Windows Clients AntiVirus Status', 'Windows 11 Latest Build', 'Windows 2025 Server Latest Build', 'Devices Audited per Day', 'New Devices Discovered per Day', 'Hardware Additions by Day', 'New Software Discovered per Day')";
+$result = $db->query($sql)->getResult();
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $widgets = array();
-foreach ($result as $widget) {
-    $widget[$widget->name] = $widget_id;
+if (!empty($result)) {
+    foreach ($result as $widget) {
+        $widgets[$widget->name] = $widget->id;
+    }
 }
 
 // New Dashboard
-$sql = "INSERT INTO `dashboards` VALUES (null,'Security Dashboard',1,'org',0,'Security Information','y','{\"layout\":\"4x3\",\"widget_count\":12,\"widgets\":[{\"size\":1,\"position\":1,\"widget_id\":" . $widgets['Open Windows Shares'] . "},{\"size\":1,\"position\":2,\"widget_id\":" . $widgets['Windows Clients AntiVirus Status'] . "},{\"size\":1,\"position\":3,\"widget_id\":" . $widgets['Windows 11 Latest Build'] . "},{\"size\":1,\"position\":4,\"widget_id\":" . $widgets['Windows 2025 Server Latest Build'] . "},{\"size\":1,\"position\":5,\"widget_id\":" . $top10 . "},{\"size\":1,\"position\":6,\"widget_id\":" . $top25 . "},{\"size\":1,\"position\":7,\"widget_id\":" . $microsoft . "},{\"size\":1,\"position\":8,\"widget_id\":" . $severity . "},{\"size\":1,\"position\":9,\"widget_id\":" . $widgets['Devices Audited per Day'] . "},{\"size\":1,\"position\":10,\"widget_id\":" . $widgets['New Devices Discovered per Day'] . "},{\"size\":1,\"position\":11,\"widget_id\":" . $widgets['Hardware Additions per Day'] . "},{\"size\":1,\"position\":12,\"widget_id\":" . $widgets['New Software Discovered per Day'] . "}]}','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `dashboards` VALUES (null,'Security Dashboard',1,'org',0,'Security Information','y','{\"layout\":\"4x3\",\"widget_count\":12,\"widgets\":[{\"size\":1,\"position\":1,\"widget_id\":" . $widgets['Open Windows Shares'] . "},{\"size\":1,\"position\":2,\"widget_id\":" . $widgets['Windows Clients AntiVirus Status'] . "},{\"size\":1,\"position\":3,\"widget_id\":" . $widgets['Windows 11 Latest Build'] . "},{\"size\":1,\"position\":4,\"widget_id\":" . $widgets['Windows 2025 Server Latest Build'] . "},{\"size\":1,\"position\":5,\"widget_id\":" . $top10 . "},{\"size\":1,\"position\":6,\"widget_id\":" . $top25 . "},{\"size\":1,\"position\":7,\"widget_id\":" . $microsoft . "},{\"size\":1,\"position\":8,\"widget_id\":" . $severity . "},{\"size\":1,\"position\":9,\"widget_id\":" . $widgets['Devices Audited per Day'] . "},{\"size\":1,\"position\":10,\"widget_id\":" . $widgets['New Devices Discovered per Day'] . "},{\"size\":1,\"position\":11,\"widget_id\":" . $widgets['Hardware Additions by Day'] . "},{\"size\":1,\"position\":12,\"widget_id\":" . $widgets['New Software Discovered per Day'] . "}]}','system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
