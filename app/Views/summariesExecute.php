@@ -26,7 +26,7 @@ include 'shared/common_functions.php';
                                         $item->attributes->name = '-';
                                     }
                                     echo "<tr>
-                                        <td class=\"text-center\"><a class=\"btn btn-sm btn-primary\" href=\"" . $item->attributes->link . "\"><span class=\"fa fa-eye\" aria-hidden=\"true\"></span></a></td>\n
+                                        <td class=\"text-center\"><a class=\"btn btn-sm btn-primary\" href=\"" . $item->attributes->link . "\"><span class=\"icon-eye\" aria-hidden=\"true\"></span></a></td>\n
                                         <td>" . ucwords($item->attributes->name) . "</td>
                                         <td class=\"text-center\">" . $item->attributes->count . "</td>
                                     </tr>\n";

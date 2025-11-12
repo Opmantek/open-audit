@@ -4,19 +4,19 @@
 
 $intro = '<p>' . __('Being able to determine which machines are configured in the same way is a major part of systems administration and auditing – and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br><br>For auditing and management purposes it can be advantageous to baseline individual devices against a fixed, known good device. Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.') . '<br>
 <br>
-' . __('For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you\'re unsure if other servers in the cluster are configured exactly the same. Baselines enable you to determine this.') . '</p>
+<i>y</i>' . __('For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enable you to determine this.') . '</p>
     <br>
     <h2>' . __('How Does it Work?') . '</h2>
     <p>' . __('Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.') . '
     <br><br>
-    ' . __('For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you\'re unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.') . '
+    ' . __('For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.') . '
     <br><br>
     ' . __('You can create a baseline, run it against a group of devices and view the results, add scheduled execution, add more tables for comparison (currently only software, netstat ports and users are enabled), in place baseline editing, archiving of results and more.') . '
     <br><br>
-    ' . __('WARNING - When creating a baseline using software policies, at present Centos and RedHat package the kernel using the names \'kernel\' and \'kernel-devel\'. There can be multiple packages with this name and different versions concurrently installed. Debian based distributions use names like \'linux-image-3.13.0-24-generic\', note the version number is included in the package name. Because RedHat based OS\'s use this format and subsequently have multiple identical package names with different versions we currently exclude \'kernel\' and \'kernel-devel\' from software policies. This may be addressed in a future update.') . '
+    ' . __('WARNING - When creating a baseline using software policies, at present Centos and RedHat package the kernel using the names <i>kernel</i> and <i>kernel-devel</i>. There can be multiple packages with this name and different versions concurrently installed. Debian based distributions use names like <i>linux-image-3.13.0-24-generic</i>, note the version number is included in the package name. Because RedHat based operating systems use this format and subsequently have multiple identical package names with different versions we currently exclude <i>kernel</i> and <i>kernel-devel</i> from software policies. This may be addressed in a future update.') . '
 
     <ol>
-        <li>' . __('Identify the device(s) that are your exemplary, or \'gold image\' you want to compare similar devices against.') . '
+        <li>' . __('Identify the device(s) that are your exemplary, or <i>gold image</i> you want to compare similar devices against.') . '
             <ul>
                 <li>' . __('First focus on what the end need is: are you trying to baseline software, users, or Netstat data? What is the important thing(s) to compare and report on?') . '</li>
                 <li>' . __('Do you have a perfect example of this configuration? Perhaps a device located in a lab environment or a workstation you use to clone workstation VMs from.') . '</li>
@@ -33,7 +33,7 @@ $intro = '<p>' . __('Being able to determine which machines are configured in th
         <li>' . __('Determine how often you want to run the Baseline check against the database and create a Scheduled Report') . '
             <ul>
                 <li>' . __('Select Admin -> Tasks -> Create Task from the menu.') . '</li>
-                <li>' . __('For \'Type\' make sure to select Baseline, and for Group you should select a Group of devices, if applicable to this baseline, that best represent the devices to apply the baseline against. This will prevent erroneous entries.') . '</li>
+                <li>' . __('For <i>Type</i> make sure to select Baseline, and for Group you should select a Group of devices, if applicable to this baseline, that best represent the devices to apply the baseline against. This will prevent erroneous entries.') . '</li>
             </ul>
         </li>
     </ol>
@@ -43,7 +43,7 @@ $intro = '<p>' . __('Being able to determine which machines are configured in th
 $body = '<h2>' . __('Notes') . '</h2>
 ' . __('Baselines can compare netstat ports, users and software.') . '<br><br>
 <h5>' . __('Software') . '</h5>
-<p>' . __('To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".') . '</p>
+<p>' . __('To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being <i>equal to</i>, <i>greater than</i> or <i>equal to or greater than</i>.') . '</p>
 <br/>
 <h5>' . __('Netstat Ports') . '</h5>
 <p>' . __('Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.') . '</p>

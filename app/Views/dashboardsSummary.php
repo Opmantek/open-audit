@@ -4,14 +4,12 @@
 include 'shared/collection_functions.php';
 $instance = & get_instance();
 ?>
-        <main class="container-fluid">
-
-
+        <main class="container-fluid" id="icon">
             <div class="card">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-4 clearfix">
-                                <h6 style="padding-top:10px;"><span class="fa fa-chart-bar oa-icon"></span><?= __('Device Types') ?></h6>
+                                <h6 style="padding-top:10px;"><span class="icon-router oa-icon"></span><?= __('Device Types') ?></h6>
                         </div>
                     </div>
                 </div>
@@ -45,15 +43,11 @@ $instance = & get_instance();
             </div>
             <br>
 
-
-
-
-
             <div class="card">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-4 clearfix">
-                                <h6 style="padding-top:10px;"><span class="fa fa-chart-bar oa-icon"></span><?= __('OS Families') ?></h6>
+                                <h6 style="padding-top:10px;"><span class="icon-monitor-cloud oa-icon"></span><?= __('OS Families') ?></h6>
                         </div>
                     </div>
                 </div>
@@ -96,7 +90,7 @@ $instance = & get_instance();
                 <div class="card-header">
                     <div class="row">
                         <div class="col-4 clearfix">
-                                <h6 style="padding-top:10px;"><span class="fa fa-chart-bar oa-icon"></span><?= __('Resources') ?></h6>
+                                <h6 style="padding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h6>
                         </div>
                     </div>
                 </div>
@@ -156,7 +150,7 @@ $instance = & get_instance();
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                                <h6 style="padding-top:10px;"><span class="fa fa-sliders oa-icon"></span><?= __('Components (All Devices)') ?></h6>
+                                <h6 style="padding-top:10px;"><span class="icon-layers oa-icon"></span><?= __('Components (All Devices)') ?></h6>
                         </div>
                     </div>
                 </div>
@@ -189,3 +183,41 @@ $instance = & get_instance();
             </div>
             <?php } ?>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function() {
+
+        /* Only on the dashboardsExecute template */
+        $(document).on('click', '#make_my_dashboard_button', function (e) {
+            var data = {};
+            data["data"] = {};
+            data["data"]["id"] = <?= $user->id ?>;
+            data["data"]["type"] = 'users';
+            data["data"]["attributes"] = {};
+            data["data"]["attributes"]['dashboard_id'] = <?= $meta->id ?>;
+            data = JSON.stringify(data);
+            $.ajax({
+                type: "PATCH",
+                url: "<?= url_to('usersRead', $user->id) ?>",
+                contentType: "application/json",
+                data: {data : data},
+                success: function (data) {
+                    $("#make_my_dashboard_button").attr("disabled", "disabled");
+                    $("#liveToastSuccess-header").text("Default Dashboard Updated");
+                    $("#liveToastSuccess-body").text("Your default dashboard has been updated.");
+                    var toastElList = [].slice.call(document.querySelectorAll('.toast-success'));
+                    var toastList = toastElList.map(function(toastEl) {
+                        return new bootstrap.Toast(toastEl)
+                    });
+                    toastList.forEach(toast => toast.show());
+                },
+                error: function (data) {
+                    data = JSON.parse(data.responseText);
+                    alert(data.errors[0].code + "\n\n" + data.errors[0].title + "\n\n" + data.errors[0].detail + "\n\n" + data.errors[0].message);
+                }
+            });
+        });
+    });
+};
+</script>

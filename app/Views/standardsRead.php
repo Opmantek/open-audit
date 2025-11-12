@@ -5,11 +5,11 @@ include 'shared/read_functions.php';
 include 'shared/collection_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#results" class="nav-link" id="results-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Results') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="icon-eye text-success"></span>' . __('Details') . '</a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#results" class="nav-link" id="results-tab"><span style="margin-right:6px;" class="icon-computer text-primary" ></span>' . __('Results') . '</a></li>';
 } elseif ($style === 'icon') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#results" class="nav-link" id="results-tab"><span style="margin-right:6px;" title="' . __('Results') . '" class="fa fa-desktop text-primary"></span></a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="icon-eye text-success"></span></a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#results" class="nav-link" id="results-tab"><span style="margin-right:6px;" title="' . __('Results') . '" class="icon-computer text-primary"></span></a></li>';
 } else {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#results" class="nav-link" id="results-tab">' . __('Results') . '</a></li>';

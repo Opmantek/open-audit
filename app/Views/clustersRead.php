@@ -5,11 +5,11 @@ include 'shared/read_functions.php';
 include 'shared/common_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Devices') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="icon-eye text-success"></span>' . __('Details') . '</a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="icon-computer text-primary" ></span>' . __('Devices') . '</a></li>';
 } elseif ($style === 'icon') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="fa fa-desktop text-primary"></span></a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="icon-eye text-success"></span></a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="icon-computer text-primary"></span></a></li>';
 } else {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
@@ -54,9 +54,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
@@ -83,9 +83,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="purpose" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="purpose" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="purpose" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="purpose" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="purpose" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="purpose" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
@@ -108,9 +108,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="status" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="status" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="status" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="status" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="status" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="status" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
@@ -133,9 +133,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="scaling" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="scaling" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="scaling" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="scaling" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="scaling" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="scaling" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
@@ -162,9 +162,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="configuration" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="configuration" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="configuration" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="configuration" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="configuration" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="configuration" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
@@ -191,9 +191,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="environment" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="environment" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="environment" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="environment" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="environment" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="environment" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
@@ -239,13 +239,13 @@ if ($style === 'icontext') {
                                     <tbody>
                                         <?php foreach ($included['devices'] as $item) { ?>
                                         <tr>
-                                            <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                            <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="icon-computer" aria-hidden="true"></i></a></td>
                                             <td><?= $item->attributes->{'devices.name'} ?></td>
                                             <td><?= $item->attributes->{'devices.ip'} ?></td>
                                             <td><?= $item->attributes->{'cluster.role'} ?></td>
                                             <td><?= $item->attributes->{'devices.description'} ?></td>
                                             <?php if ($update) { ?>
-                                            <td class="text-center"><button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'cluster.id'} ?>" data-sub-resource="cluster" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="fa fa-trash"></span></button></td>
+                                            <td class="text-center"><button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger subresource_delete_link" data-device-id="<?= $item->id ?>" data-collection="devices" data-sub-resource-id="<?= $item->attributes->{'cluster.id'} ?>" data-sub-resource="cluster" data-name="<?= $item->attributes->{'devices.name'} ?> from <?= $resource->{'name'} ?>"><span class="icon-trash-2"></span></button></td>
                                             <?php } ?>
                                         </tr>
                                         <?php } ?>
@@ -285,7 +285,7 @@ if ($style === 'icontext') {
                                         <?php foreach ($included['members'] as $item) { ?>
                                             <?php $memory = round(($item->attributes->{'devices.memory_count'} / 1024 / 1024), 2) . ' GB'; ?>
                                         <tr>
-                                            <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                            <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="icon-computer" aria-hidden="true"></i></a></td>
                                             <td class="text-center"><img src="<?= $meta->baseurl ?>device_images/<?= $item->attributes->{'devices.icon'} ?>.svg" style="border-width:0px; width:24px; height:24px" title="<?= __('Icon') ?>" alt="<?= __('Icon') ?>" /></td>
                                             <td><?= $item->attributes->{'cluster.role'} ?></td>
                                             <td><?= $item->attributes->{'devices.name'} ?></td>
@@ -298,7 +298,7 @@ if ($style === 'icontext') {
                                             <td><?= $item->attributes->{'devices.os_family'} ?></td>
                                             <?php if ($update) { ?>
                                             <td class="text-center" data-orderable="false">
-                                                <button type="button" class="btn <?= $GLOBALS['button'] ?>  btn-danger delete_component_link" data-type="cluster" data-component_type="cluster" data-id="<?= $item->attributes->{'cluster.id'} ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button>
+                                                <button type="button" class="btn <?= $GLOBALS['button'] ?>  btn-danger delete_component_link" data-type="cluster" data-component_type="cluster" data-id="<?= $item->attributes->{'cluster.id'} ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="icon-trash-2"></span></button>
                                             </td>
                                             <?php } ?>
                                         </tr>
@@ -331,7 +331,7 @@ if ($style === 'icontext') {
                                             <?php $memory = round(($item->attributes->{'vm.memory_count'} / 1024), 2) . ' GB'; ?>
                                             <?php $icon = (!empty($item->attributes->{'guest.icon'})) ? '<img src="<?= $meta->baseurl ?>device_images/' . $item->attributes->{'guest.icon'} . '.svg" style="border-width:0px; width:24px; height:24px" title="' . __('Icon') . '" alt="' . __('Icon') . '" />' : ''; ?>
                                         <tr>
-                                            <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'vm.guest_device_id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                            <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'vm.guest_device_id'}) ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" title="<?= __('View') ?>"><i class="icon-computer" aria-hidden="true"></i></a></td>
                                             <td class="text-center"><?= $icon ?></td>
                                             <td><?= $item->attributes->{'vm.name'} ?></td>
                                             <td><span style="display:none;"><?= $item->attributes->{'guest.ip_padded'} ?></span><?= $item->attributes->{'guest.ip'} ?></td>

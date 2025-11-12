@@ -62,8 +62,8 @@ include 'shared/common_functions.php';
                                                     }
                                                     ?>
                                                 <tr>
-                                                    <!--<td style="text-align: center;"><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="?benchmarks_results.device_id=<?= $device->{'devices.id'} ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>-->
-                                                    <td style="text-align: center;"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsCollection') ?>?components.type=benchmarks_result&components.device_id=<?= $device->{'devices.id'} ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                    <!--<td style="text-align: center;"><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="?benchmarks_results.device_id=<?= $device->{'devices.id'} ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="icon-eye" aria-hidden="true"></span></a></td>-->
+                                                    <td style="text-align: center;"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsCollection') ?>?components.type=benchmarks_result&components.device_id=<?= $device->{'devices.id'} ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="icon-eye" aria-hidden="true"></span></a></td>
                                                     <td><?= $device->{'devices.name'} ?></td>
                                                     <td><?= ip_address_from_db($device->{'devices.ip'}) ?></td>
                                                     <td><?= $device->{'devices.os_family'} ?> <?= $device->{'devices.os_version'} ?></td>

@@ -211,7 +211,7 @@ window.onload = function () {
         $("[id^=attributes_]").change(function(){
             if ($(this).val() != '') {
                 $("#select_div").append('<input type="hidden" value="' + $(this).val() + '" id="select_' + $select + '" name="select[]" />');
-                $("#select_div").append('<a href="#select_div" style="margin-right:5px; margin-bottom:5px;" class="btn btn-primary select_delete" data-delete_index="' + $select + '" role="button">' + $(this).val() + '<span style="padding-left:10px;" class="fa-solid fa-xmark"></span></a>');
+                $("#select_div").append('<a href="#select_div" style="margin-right:5px; margin-bottom:5px;" class="btn btn-primary select_delete" data-delete_index="' + $select + '" role="button">' + $(this).val() + '<span style="padding-left:10px;" class="icon-x"></span></a>');
                 $select = $select + 1;
             }
         });

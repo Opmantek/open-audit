@@ -19,7 +19,7 @@ foreach ($ips as $ip) {
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h6 style="padding-top:10px;"><span class="fa-solid fa-arrows-spin oa-icon"></span><?= __('Welcome') ?></h6>
+                    <h6 style="padding-top:10px;"><span class="icon-life-buoy oa-icon"></span><?= __('Welcome') ?></h6>
                 </div>
                 <div class="card-body text-center">
                     <div class="row">
@@ -131,7 +131,7 @@ foreach ($ips as $ip) {
                                     <img class="img-fluid" alt="debian" src="<?= base_url() ?>logos/debian.svg" style="width:4rem;" />
                                 </div>
                                 <div class="col-1">
-                                    <span class="text-center"><a target="_blank" href="https://docs.community.firstwave.com/wiki/spaces/OA"><?= ('And so much more.') ?></a></span>
+                                    <span class="text-center"><a target="_blank" href="https://docs.community.firstwave.com/wiki/spaces/OA"><?= __('And so much more.') ?></a></span>
                                 </div>
                             </div>
                         </div>
@@ -147,10 +147,10 @@ foreach ($ips as $ip) {
                         <button type="button" id="buttonClose" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="padding-right: 50px; padding-top: 50px;"></button>
                     </div>
                     <div class="modal-body">
-                        <p><?= ('This form provides a simple way to get started discovering the devices on your network. For more (much more) detailed options, you can individually create') ?> <a href="<?= url_to('credentialsCollection') ?>"><?= ('credentials') ?></a>, <a href="<?= url_to('locationsCollection') ?>"><?= ('locations') ?></a> <?= ('and') ?> <a href="<?= url_to('discoveriesCollection') ?>"><?= ('discoveries') ?></a> <?= ('using the main menu items.') ?></p>
+                        <p><?= __('This form provides a simple way to get started discovering the devices on your network. For more (much more) detailed options, you can individually create') ?> <a href="<?= url_to('credentialsCollection') ?>"><?= __('credentials') ?></a>, <a href="<?= url_to('locationsCollection') ?>"><?= __('locations') ?></a> <?= __('and') ?> <a href="<?= url_to('discoveriesCollection') ?>"><?= __('discoveries') ?></a> <?= __('using the main menu items.') ?></p>
                         <hr>
-                        <h3><?= ('Credentials') ?></h3>
-                        <p><?= ('We need some credentials to be able to effectively talk to the devices on your network.') ?></p><br>
+                        <h3><?= __('Credentials') ?></h3>
+                        <p><?= __('We need some credentials to be able to effectively talk to the devices on your network.') ?></p><br>
                         <div class="row">
                             <div class="col">
                                 <h4>Windows</h4>
@@ -180,20 +180,20 @@ foreach ($ips as $ip) {
                         <br>
                         <div class="row">
                             <div class="col">
-                                <h2><?= ('Location') ?></h2>
-                                <p><?= ('A location name will help you to find these devices in the future.') ?></p>
+                                <h2><?= __('Location') ?></h2>
+                                <p><?= __('A location name will help you to find these devices in the future.') ?></p>
                                 <label for="location_name" class="form-label"><?= __('Location Name') ?></label>
                                 <input type="text" class="form-control" placeholder="Sydney DataCenter" aria-label="location_name" id="location_name" name="location_name">
                             </div>
                             <div class="col">
-                                <h2><?= ('Network') ?></h2>
-                                <p><?= ('Which network should we discover. This should be in the format of') ?> 1.2.3.4/24</p>
+                                <h2><?= __('Network') ?></h2>
+                                <p><?= __('Which network should we discover. This should be in the format of') ?> 1.2.3.4/24</p>
                                 <label for="subnet" class="form-label"><?= __('The Network to Discover') ?></label>
                                 <input type="text" class="form-control" value="<?= $subnet ?>" placeholder="This should be in the format of 1.2.3.4/24" aria-label="subnet" id="subnet" name="subnet" required>
                             </div>
                             <div class="col">
-                                <h2><?= ('Execute') ?></h2>
-                                <p><?= ('And finally, click Submit to execute this discovery.') ?></p>
+                                <h2><?= __('Execute') ?></h2>
+                                <p><?= __('And finally, click Submit to execute this discovery.') ?></p>
                                 <label for="submit" class="form-label"><?= __('Click Submit to Execute') ?></label><br>
                                 <button type="submit" class="btn btn-primary" id="submit" name="submit" ><?= __('Submit') ?></button>
                             </div>

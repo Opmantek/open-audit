@@ -25,7 +25,7 @@ $intro = '<p>' . __('When you are using Clouds to discover your Amazon AWS insta
 <br>
 <h2>' . __('Using') . '</h2>
 
-<p>' . __('Once you have those items, in Open-AudIT Enterprise you can go to menu -> Discover -> Clouds -> Create Clouds, select the "Amazon AWS" type and paste them in. Done.') . '</p>
+<p>' . __('Once you have those items, in Open-AudIT Enterprise you can go to menu -> Discover -> Clouds -> Create Clouds, select the <i>Amazon AWS</i> type and paste them in. Done.') . '</p>
 
 <img src="' . base_url() . 'images/faq_11.png" alt="AWS ' . __('Credentials') . '">
 ';

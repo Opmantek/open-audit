@@ -17,14 +17,14 @@ $intro = '
 
 <p>' . __('The default discovery scan option is the UltraFast set.') . '</p>
 
-<p>' . __('If a device is individually discovered using the "Discover Device" link on the device details page, we first check if this device has been discovered previously (by Discovery) and if so, use the discovery options from that scan. If it has not been previously discovered, we revert to the configuration item discovery_default_scan_option the settings.') . '</p>
+<p>' . __('If a device is individually discovered using the <i>Discover Device</i> link on the device details page, we first check if this device has been discovered previously (by Discovery) and if so, use the discovery options from that scan. If it has not been previously discovered, we revert to the configuration item discovery_default_scan_option the settings.') . '</p>
 ';
 
 $body = '
 <br>
 <h2>' . __('Filtered Ports') . '</h2>
 
-<p>' . __('Networks respond differently depending on how they\'re configured. Some routers and/or firewalls can respond "on behalf" of IPs on the other side of their interfaces to the Open-AudIT Server. It is quite common to see Nmap report a probe for SNMP (UDP port 161) to respond as open|filtered for devices that do and do not exist. This is misleading as there is no device at that IP, yet it ends up with a device entry in the database. 99.9% of the time, it is not Open-AudIT, nor even Nmap, but the network causing this issue. Now that we have the options to treat open|filtered ports as either open or closed, we can eliminate a lot of this confusion. Enterprise users even have the option to change this on a per discovery basis (more than just using the Medium (Classic) item, as above).') . '</p>
+<p>' . __('Networks respond differently depending on how they are configured. Some routers and/or firewalls can respond <i>on behalf</i> of IPs on the other side of their interfaces to the Open-AudIT Server. It is quite common to see Nmap report a probe for SNMP (UDP port 161) to respond as open|filtered for devices that do and do not exist. This is misleading as there is no device at that IP, yet it ends up with a device entry in the database. 99.9% of the time, it is not Open-AudIT, nor even Nmap, but the network causing this issue. Now that we have the options to treat open|filtered ports as either open or closed, we can eliminate a lot of this confusion. Enterprise users even have the option to change this on a per discovery basis (more than just using the Medium (Classic) item, as above).') . '</p>
 
 <br>
 <h2>' . __('Creating a Discovery Scan Options entry') . '</h2>
@@ -52,13 +52,13 @@ $body = '
         <tr>
             <td>service_version</td>
             <td>
-                <p>' . __('Use Service Version Detection. When a detected port is detected as open, if set to "y", Nmap will query the target device in an attempt to determine the version of the service running on this port.<br>This can be useful when identifying unclassified devices. This was not previously used.') . '</p>
+                <p>' . __('Use Service Version Detection. When a detected port is detected as open, if set to <i>y</i>, Nmap will query the target device in an attempt to determine the version of the service running on this port.<br>This can be useful when identifying unclassified devices. This was not previously used.') . '</p>
             </td>
         </tr>
         <tr>
             <td>open|filtered</td>
-            <td>' . __('An open|filtered port is considered open (and will trigger device detection).<br>
-                Previously, Open-AudIT considered an Nmap response of') . ' &quot;open|filtered&quot; ' . __('as a device responding on this port.<br>This has caused some customers issues where firewalls respond on behalf of a non-existing device, and hence cause false positive device detection. We now have this attribute available to set per scan.') . '</p>
+            <td>' . __('An open|filtered port is considered open (and will trigger device detection).<br>Previously, Open-AudIT considered an Nmap response of') . ' &quot;open|filtered&quot; ' . 
+            __('as a device responding on this port.<br>This has caused some customers issues where firewalls respond on behalf of a non-existing device, and hence cause false positive device detection. We now have this attribute available to set per scan.') . '</p>
             </td>
         </tr>
         <tr>

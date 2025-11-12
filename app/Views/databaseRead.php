@@ -40,7 +40,7 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                                                     <input disabled type="text" class="form-control" id="<?= $status->status ?>" value="<?php echo $status->count; ?>">
                                                     <?php if ($device_delete and $status->status != 'production') { ?>
                                                     <span class="input-group-btn">
-                                                        <button class="btn btn-danger" type="submit" id="status_button_<?= $status->status ?>"><span class="fa fa-trash" aria-hidden="true"></span></button>
+                                                        <button class="btn btn-danger" type="submit" id="status_button_<?= $status->status ?>"><span class="icon-trash-2" aria-hidden="true"></span></button>
                                                     </span>
                                                     <?php } ?>
                                                 </div>

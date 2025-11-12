@@ -2,29 +2,25 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-$intro = '<p>' . __('Rules are created and run against a device when the device is discovered or an audit result is processed. Rules can be used to set a device attribute based on other attributes.<br>
-<br>NOTE - At present we cannot delete a rule input or output that contains a /. This is because the framework is parsing the / as part of the URL and returning a 404, even before our code runs. The work-around for this is to delete the Rule itself, then recreate the inputs and outputs as required. Fortunately inputs and outputs that contain a / are rare (indeed, none exist by default).') . '</p>
+$intro = '<p>' . __('Rules are created and run against a device when the device is discovered or an audit result is processed. Rules can be used to set a device attribute based on other attributes.<br><br>NOTE - At present we cannot delete a rule input or output that contains a /. This is because the framework is parsing the / as part of the URL and returning a 404, even before our code runs. The work-around for this is to delete the Rule itself, then recreate the inputs and outputs as required. Fortunately inputs and outputs that contain a / are rare (indeed, none exist by default).') . '</p>
 
 <br>
 <h2>' . __('How Does it Work?') . '</h2>
 
-<p>' . __('Each time a device is discovered or an audit result is processed, all rules are retrieved from the database and run against the attributes of the specific device. Rules run against one device at a time - there is no facility to say "Run the rules against all devices" or "Run the rules against these devices". An individual rule will test one or more attributes of the device and if they match the rule, the result will be applied. Several attributes can be tested. Several attributes can be set. Think of this as an If This, Then That system for Open-AudIT.') . '</p>';
+<p>' . __('Each time a device is discovered or an audit result is processed, all rules are retrieved from the database and run against the attributes of the specific device. Rules run against one device at a time - there is no facility to say <i>Run the rules against all devices<i> or <i>Run the rules against these devices<i>. An individual rule will test one or more attributes of the device and if they match the rule, the result will be applied. Several attributes can be tested. Several attributes can be set. Think of this as an If This, Then That system for Open-AudIT.') . '</p>';
 
 $body = '<h2>' . __('Notes') . '</h2>
 
-<p>' . __('Licensed users are free to add or modify the rules as you see fit. If you have a device with an SNMP OID that doesn\'t match a model already in the file - now you can add it easily. No more waiting for us to provide a patch and add it to the code base for you.<br>
-<br>When you create a Rules entry, you will need to provide a name and a list of inputs and outputs. The inputs and outputs are stored as JSON arrays within the database.<br>
-<br>Inputs have a table and attribute, an operator and a value. When executing the condition, it works thus: If $table . $attribute $operator $value then apply the outputs.<br>
-<br>An example rule to match an SNMP OID and set the model is below.<br>') . '
+<p>' . __('Licensed users are free to add or modify the rules as you see fit. If you have a device with an SNMP OID that does not match a model already in the file - now you can add it easily. No more waiting for us to provide a patch and add it to the code base for you.<br><br>When you create a Rules entry, you will need to provide a name and a list of inputs and outputs. The inputs and outputs are stored as JSON arrays within the database.<br><br>Inputs have a table and attribute, an operator and a value. When executing the condition, it works thus: If $table . $attribute $operator $value then apply the outputs.<br><br>An example rule to match an SNMP OID and set the model is below.<br>') . '
 
 <pre>
-INPUTS
+' . __('INPUTS') . '
 table = devices
 attribute = snmp_oid
 operator = eq
 value = 1.3.6.1.4.1.9.1.620
  
-OUTPUTS
+' . __('OUTPUTS') . '
 table = devices
 attribute = model
 value = Cisco 1841

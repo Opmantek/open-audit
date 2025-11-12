@@ -14,15 +14,15 @@ For each section, if the key columns (see below table) contain the identical val
 <br>
 If any of the key columns do not match, it is considered a new attribute and is inserted. A <code>change_log</code> entry is created if the device had other attributes already present in the table.<br>
 <br>
-At the completion of the audit processing, any database items that have not been updated (or inserted) are considered to not be present. The <code>current</code> attribute for this item is set to \'n\' and a change_log entry is generated.<br>
+At the completion of the audit processing, any database items that have not been updated (or inserted) are considered to not be present. The <code>current</code> attribute for this item is set to <i>n</i> and a change_log entry is generated.<br>
 <br>
-So, we can determine if something is currently installed - the current column is \'y\'.<br>
+So, we can determine if something is currently installed - the current column is <i>y</i>.<br>
 <br>
-We can determine when something was initially detected - the \'first_seen\'.<br>
+We can determine when something was initially detected - the <i>first_seen</i>.<br>
 <br>
 We can determine if something was installed after the initial audit - first seen will be different in the component and device tables.<br>
 <br>
-We can determine if something is not currently installed, but previously was - current = \'n\'.<br>
+We can determine if something is not currently installed, but previously was - current = <i>n</i>.<br>
 <br>
 We can determine the last time we detected an item - last_seen.<br>
 <br>

@@ -8,7 +8,7 @@ include 'shared/collection_functions.php';
                 <div class="card-header">
                     <div class="row">
                         <div class="col-4 clearfix">
-                                <h6 style="padding-top:10px;"><span class="fa fa-chart-bar oa-icon"></span><?= __('Resources') ?></h6>
+                                <h6 style="padding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h6>
                         </div>
                     </div>
                 </div>

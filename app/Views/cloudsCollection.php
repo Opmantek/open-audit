@@ -16,11 +16,11 @@ if (intval($included['devices_not_audited']) > 0 or
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                            <h6 style="padding-top:10px;"><span class="fa fa-sliders oa-icon"></span><?= __('Advanced') ?></h6>
+                            <h6 style="padding-top:10px;"><span class="icon-sliders-horizontal oa-icon"></span><?= __('Advanced') ?></h6>
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button c_change_primary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down <?= $advanced_button_color ?>"></span></button>
+                                <button class="btn btn-outline-secondary panel-button c_change_primary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="icon-chevron-down <?= $advanced_button_color ?>"></span></button>
                             </div>
                         </div>
                     </div>
@@ -34,7 +34,7 @@ if (intval($included['devices_not_audited']) > 0 or
                                     <div class="input-group">
                                         <input disabled title="<?= __('Devices Not Audited') ?>" type="text" class="form-control" id="devices_not_audited" name="devices_not_audited" value="<?= $included['devices_not_audited'] ?>">
                                         <span class="pull-right">
-                                            <a href="<?= url_to('devicesCollection') ?>?devices.cloud_id=!=&devices.serial=" role="button" class="btn btn-danger" title="<?= __('Devices') ?>"><span style="width:1rem;" class="fa fa-desktop" aria-hidden="true"></span></a>
+                                            <a href="<?= url_to('devicesCollection') ?>?devices.cloud_id=!=&devices.serial=" role="button" class="btn btn-danger" title="<?= __('Devices') ?>"><span style="width:1rem;" class="icon-computer" aria-hidden="true"></span></a>
                                         </span>
                                     </div>
                                 </div>
@@ -47,7 +47,7 @@ if (intval($included['devices_not_audited']) > 0 or
                                     <div class="input-group">
                                         <input disabled title="<?= __('Devices Retrieved via API') ?>" type="text" class="form-control"  id="devices_retrieved_via_api" name="devices_retrieved_via_api" value="<?= $included['devices_retrieved'] ?>">
                                         <span class="pull-right">
-                                            <a href="<?= url_to('devicesCollection') ?>?devices.cloud_id=!=" role="button" class="btn btn-warning" title="<?= __('Devices') ?>"><span style="width:1rem;" class="fa fa-desktop" aria-hidden="true"></span></a>
+                                            <a href="<?= url_to('devicesCollection') ?>?devices.cloud_id=!=" role="button" class="btn btn-warning" title="<?= __('Devices') ?>"><span style="width:1rem;" class="icon-computer" aria-hidden="true"></span></a>
                                         </span>
                                     </div>
                                 </div>
@@ -60,7 +60,7 @@ if (intval($included['devices_not_audited']) > 0 or
                                     <div class="input-group">
                                         <input disabled title="<?= __('Devices Audited') ?>" type="text" class="form-control"  id="devices_audited" name="devices_audited" value="<?= $included['devices_audited'] ?>">
                                         <span class="pull-right">
-                                            <a href="<?= url_to('devicesCollection') ?>?devices.cloud_id=!=&devices.serial=!=" role="button" class="btn btn-success" title="<?= __('Devices') ?>"><span style="width:1rem;" class="fa fa-desktop" aria-hidden="true"></span></a>
+                                            <a href="<?= url_to('devicesCollection') ?>?devices.cloud_id=!=&devices.serial=!=" role="button" class="btn btn-success" title="<?= __('Devices') ?>"><span style="width:1rem;" class="icon-computer" aria-hidden="true"></span></a>
                                         </span>
                                     </div>
                                 </div>
@@ -75,7 +75,7 @@ if (intval($included['devices_not_audited']) > 0 or
                                     <div class="input-group">
                                         <input disabled title="<?= __('Devices in Stopped State') ?>" type="text" class="form-control" id="devices_stopped" name="devices_stopped" value="<?= $included['devices_stopped'] ?>">
                                         <span class="pull-right">
-                                            <a href="<?= url_to('devicesCollection') ?>?devices.cloud_id=!=&devices.instance_state=!LIKErunning" role="button" class="btn btn-warning" title="<?= __('Devices') ?>"><span style="width:1rem;" class="fa fa-desktop" aria-hidden="true"></span></a>
+                                            <a href="<?= url_to('devicesCollection') ?>?devices.cloud_id=!=&devices.instance_state=!LIKErunning" role="button" class="btn btn-warning" title="<?= __('Devices') ?>"><span style="width:1rem;" class="icon-computer" aria-hidden="true"></span></a>
                                         </span>
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@ if (intval($included['devices_not_audited']) > 0 or
                                     <div class="input-group">
                                         <input disabled title="<?= __('Devices in Running State') ?>" type="text" class="form-control" id="devices_running" name="devices_running" value="<?= $included['devices_running'] ?>">
                                         <span class="pull-right">
-                                            <a href="<?= url_to('devicesCollection') ?>?devices.cloud_id=!=&devices.instance_state=LIKErunning" role="button" class="btn btn-success" title="<?= __('Devices') ?>"><span style="width:1rem;" class="fa fa-desktop" aria-hidden="true"></span></a>
+                                            <a href="<?= url_to('devicesCollection') ?>?devices.cloud_id=!=&devices.instance_state=LIKErunning" role="button" class="btn btn-success" title="<?= __('Devices') ?>"><span style="width:1rem;" class="icon-computer" aria-hidden="true"></span></a>
                                         </span>
                                     </div>
                                 </div>
@@ -104,7 +104,7 @@ if (intval($included['devices_not_audited']) > 0 or
                                     <div class="input-group">
                                         <input disabled title="<?= __('Locations') ?>" type="text" class="form-control" id="locations" name="locations" value="<?= $included['locations'] ?>">
                                         <span class="pull-right">
-                                            <a href="<?= url_to('locationsCollection') ?>?locations.cloud_id=!=" role="button" class="btn btn-primary" title="<?= __('Locations') ?>"><span style="width:1rem;" class="fa fa-building" aria-hidden="true"></span></a>
+                                            <a href="<?= url_to('locationsCollection') ?>?locations.cloud_id=!=" role="button" class="btn btn-primary" title="<?= __('Locations') ?>"><span style="width:1rem;" class="icon-building" aria-hidden="true"></span></a>
                                         </span>
                                     </div>
                                 </div>
@@ -116,7 +116,7 @@ if (intval($included['devices_not_audited']) > 0 or
                                     <div class="input-group">
                                         <input disabled title="<?= __('Networks') ?>" type="text" class="form-control" id="networks" name="networks" value="<?= $included['networks'] ?>">
                                         <span class="pull-right">
-                                            <a href="<?= url_to('networksCollection') ?>?networks.cloud_id=!=" role="button" class="btn btn-info" title="<?= __('Networks') ?>"><span style="width:1rem;" class="fa fa-wifi" aria-hidden="true"></span></a>
+                                            <a href="<?= url_to('networksCollection') ?>?networks.cloud_id=!=" role="button" class="btn btn-info" title="<?= __('Networks') ?>"><span style="width:1rem;" class="icon-wifi" aria-hidden="true"></span></a>
                                         </span>
                                     </div>
                                 </div>

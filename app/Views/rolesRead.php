@@ -8,11 +8,11 @@ $endpoints = array('agents','applications','attributes','auth','baselines','benc
 $item_permissions = $resource->permissions;
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $permissions_button = '<li class="nav-item" role="presentation"><a href="#permissions" class="nav-link" id="permissions-tab"><span style="margin-right:6px;" class="fa fa-user-shield text-primary" ></span>' . __('Permissions') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span class="icon-eye text-oa-success"></span>' . __('Details') . '</a></li>';
+    $permissions_button = '<li class="nav-item" role="presentation"><a href="#permissions" class="nav-link" id="permissions-tab"><span class="icon-shield-user text-oa-primary" ></span>' . __('Permissions') . '</a></li>';
 } elseif ($style === 'icon') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
-    $permissions_button = '<li class="nav-item" role="presentation"><a href="#permissions" class="nav-link" id="permissions-tab"><span style="margin-right:6px;" title="' . __('Permissions') . '" class="fa fa-user-shield text-primary"></span></a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span title="' . __('Details') . '" class="icon-eye text-success"></span></a></li>';
+    $permissions_button = '<li class="nav-item" role="presentation"><a href="#permissions" class="nav-link" id="permissions-tab"><span title="' . __('Permissions') . '" class="icon-shield-user text-primary"></span></a></li>';
 } else {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $permissions_button = '<li class="nav-item" role="presentation"><a href="#permissions" class="nav-link" id="permissions-tab">' . __('Permissions') . '</a></li>';

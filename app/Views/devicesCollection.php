@@ -47,9 +47,9 @@ if (strpos($user->permissions[$meta->collection], 'd') !== false or strpos($user
 }
 
 if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') {
-    $columns_button = '<span class="fa fa-list text-primary" aria-hidden="true" title="' . __('Columns') . '"></span>&nbsp;Columns';
+    $columns_button = '<span class="icon-list text-primary" aria-hidden="true" title="' . __('Columns') . '"></span>&nbsp;Columns';
 } elseif ($user->toolbar_style === 'icon') {
-    $columns_button = '<span class="fa fa-list text-primary" aria-hidden="true" title="' . __('Columns') . '"></span>';
+    $columns_button = '<span class="icon-list text-primary" aria-hidden="true" title="' . __('Columns') . '"></span>';
 } else {
     $columns_button = __('Columns');
 }
@@ -87,11 +87,11 @@ if (!empty($meta->filter)) {
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                                <h6 style="padding-top:10px;"><span class="fa fa-sliders oa-icon"></span><?= __('Components (All Devices)') ?></h6>
+                                <h6 style="padding-top:10px;"><span class="icon-layers oa-icon"></span><?= __('Components (All Devices)') ?></h6>
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button c_change_primary" aria-label="Click to dropdown" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down text-primary"></span></button>
+                                <button class="btn btn-outline-secondary panel-button c_change_primary" aria-label="Click to dropdown" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="icon-chevron-down text-primary"></span></button>
                             </div>
                         </div>
                     </div>
@@ -137,7 +137,7 @@ if (!empty($meta->filter)) {
                                 <h6 style="padding-top:10px">
                                     Operating Systems
                                     <?php if ($show_reset) { ?>
-                                    <a href="<?= url_to('devicesCollection') ?>"><span class="float-end fa-solid fa-ban" style="padding-top:2px; padding-right:10px;"></span></a>
+                                    <a href="<?= url_to('devicesCollection') ?>"><span class="icon-ban float-end" style="padding-top:2px; padding-right:10px;"></span></a>
                                     <?php } ?>
                                 </h6>
                             </div>
@@ -155,7 +155,7 @@ if (!empty($meta->filter)) {
                                 <h6 style="padding-top:10px">
                                     Types
                                     <?php if ($show_reset) { ?>
-                                    <a href="<?= url_to('devicesCollection') ?>"><span class="float-end fa-solid fa-ban" style="padding-top:2px; padding-right:10px;"></span></a>
+                                    <a href="<?= url_to('devicesCollection') ?>"><span class="icon-ban float-end" style="padding-top:2px; padding-right:10px;"></span></a>
                                     <?php } ?>
                                 </h6>
                             </div>
@@ -189,7 +189,7 @@ if (!empty($meta->filter)) {
                                                 if ($key !== 'audit_status' and $key !== 'icon' and $key !== 'id' and $key !== 'delete' and $key !== 'update') {
                                                     echo'<hr><input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTableSearchField" placeholder="Search ' . collection_column_name(str_replace('ip__', '', $key)) . '">';
                                                 } else if ($key === 'update') {
-                                                    echo "<hr><button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"margin-left:5em; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\" title=\"Bulk Edit\" id=\"bulkEditButton\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></button>\n";
+                                                    echo "<hr><button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"margin-left:5em; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\" title=\"Bulk Edit\" id=\"bulkEditButton\"><span style=\"font-size: 1.2rem;\" class=\"icon-pencil\"></span></button>\n";
                                                     echo "<input aria-label='" . __('Select All') . "' type=\"checkbox\" name=\"select_all\" id=\"select_all\">\n";
                                                 } else {
                                                     echo '<hr style="padding-bottom:31px;">';
@@ -437,7 +437,7 @@ window.onload = function () {
                     if ($key === 'id') {
                         echo '{ data: \'attributes.id\',
                             render: function (data, type, row, meta) {
-                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/devices/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/devices/" + row.attributes.id + "\"><span title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                             }
                         },';
                         echo "\n";
@@ -477,7 +477,7 @@ window.onload = function () {
                     } else if ($key === 'delete') {
                         echo '{ data: \'attributes.id\',
                             render: function (data, type, row, meta) {
-                                return "<td class=\"text-center\"><button type=\"button\" class=\"btn btn-danger ' . $GLOBALS['button'] . ' delete_link\" data-id=\"" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"Delete\" class=\"fa fa-trash\"></span></button></td>";
+                                return "<td class=\"text-center\"><button type=\"button\" class=\"btn btn-danger ' . $GLOBALS['button'] . ' delete_link\" data-id=\"" + row.attributes.id + "\"><span title=\"Delete\" class=\"icon-trash-2\"></span></button></td>";
                             }
                         },';
                         echo "\n";
@@ -558,7 +558,6 @@ window.onload = function () {
                     return false; }
             });
         });
-
     });
 }
 </script>

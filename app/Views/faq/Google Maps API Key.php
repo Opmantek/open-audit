@@ -4,7 +4,7 @@
 
 $title = __('Google Maps API Key');
 
-$intro = '<p>' . __('Starting June 2018 Google has implemented a pay-as-you-go pricing model for the Google Maps Platform APIs. Previously, most users with moderate usage could use Google Maps, which are embedded into opCharts and Open-AudIT Professional/Enterprise, for free. Google\'s new policy is outlined here,') . ' <a href="https://developers.google.com/maps/documentation/javascript/usage-and-billing" target="_blank">https://developers.google.com/maps/documentation/javascript/usage-and-billing</a>.<br>
+$intro = '<p>' . __('Starting June 2018 Google has implemented a pay-as-you-go pricing model for the Google Maps Platform APIs. Previously, most users with moderate usage could use Google Maps, which are embedded into opCharts and Open-AudIT Professional/Enterprise, for free. Googles new policy is outlined here,') . ' <a href="https://developers.google.com/maps/documentation/javascript/usage-and-billing" target="_blank">https://developers.google.com/maps/documentation/javascript/usage-and-billing</a>.<br>
 
 <br>' . __('In order to enable Google Maps you will need to a Google API Key follow this link and log in with your Google account,') . ' <a href="https://cloud.google.com/maps-platform/#get-started">https://cloud.google.com/maps-platform/#get-started</a>.<br>
 

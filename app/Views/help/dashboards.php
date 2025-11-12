@@ -6,12 +6,12 @@ $intro = '<p>' . __('Open-AudIT ships with several pre-configured Dashboards. If
     <br>
     ' . __('Dashboards use') . ' <a href="' . url_to('widgetsHelp')  . '">' . __('Widgets') . '</a>' . __(', of which we supply over thirty as a default set. Professional users cannot alter these, but an Enterprise user has complete customisation abilities - including creating your own.') . '<br>
     <br>
-    ' . __('Dashboards provide "at a glance" important visibility for changes occurring on your network as well as providing quick links to device types, manufacturers, and operating systems and so much more.') . '<br>
+    ' . __('Dashboards provide <i>at a glance</i> important visibility for changes occurring on your network as well as providing quick links to device types, manufacturers, and operating systems and so much more.') . '<br>
     <h2>' . __('Notes') . '</h2>
-<p>' . __('A dashboard is made up of three columns and two rows of what we call \'widgets\'. A widget is very similar to a summary, only we take the summary concept a bit further. Widgets are created in a simple fashion using a couple of drop down boxes - or you can elect to use your own SQL for complete customisability.') . '<br>
+<p>' . __('A dashboard is made up of three columns and two rows of what we call <i>widgets</i>. A widget is very similar to a summary, only we take the summary concept a bit further. Widgets are created in a simple fashion using a couple of drop down boxes - or you can elect to use your own SQL for complete customisability.') . '<br>
 <br>' . __('Dashboards and Widgets allow Enterprise licensed customers to create, read, update and delete both of these collections to ensure their homepage is exactly what they need to see. Not only that, but a user is able to set a given dashboard as their own homepage. Everyone does not need to use the same homepage (dashboard), nor the same widgets on that dashboard. Professional licensed customers can choose between two predefined dashboards to set as their own homepage.') . '<br>
 <br>
-' . __('On the top right (underneath the menu bar) you\'ll see several buttons. These allow you to select another dashboard, set the current dashboard as your homepage (if it\'s not already) and edit the current dashboard (if you have permission).') . '<br><br>
+' . __('On the top right (underneath the menu bar) you will see several buttons. These allow you to select another dashboard, set the current dashboard as your homepage (if it is not already) and edit the current dashboard (if you have permission).') . '<br><br>
 <img src="' . base_url() . 'images/dashboards_02.png">
 <br>
 </p>';

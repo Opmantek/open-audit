@@ -177,9 +177,9 @@ if (empty($resource->type)) {
                                         <div class="col-4">
                                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
                                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, __('Organisation'), $orgs, $meta->collection) ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.manufacturer=" . urlencode($resource->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.manufacturer=" . urlencode($resource->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('manufacturer', $resource->manufacturer, $dictionary->columns->manufacturer, $update, '', $link, '', '', $meta->collection) ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.os_group=" . urlencode($resource->os_group) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.os_group=" . urlencode($resource->os_group) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('os_group', $resource->os_group, $dictionary->columns->os_group, $update, __('OS Group'), $link, '', '', $meta->collection) ?>
                                             <?php if ($config->product === 'enterprise') { ?>
                                             <?= read_select('criticality', $resource->criticality, $dictionary->columns->criticality, $update, __('Criticality'), $included['criticality'], $meta->collection) ?>
@@ -191,7 +191,7 @@ if (empty($resource->type)) {
                                         <div class="col-4">
                                             <?= read_field('ip', $resource->ip, $dictionary->columns->ip, $update, '', '', '', '', $meta->collection) ?>
                                             <?= read_select('status', $resource->status, $dictionary->columns->status, $update, __('Status'), $included['status'], $meta->collection) ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.model=" . urlencode($resource->model) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.model=" . urlencode($resource->model) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('model', $resource->model, $dictionary->columns->model, $update, '', $link, '', '', $meta->collection) ?>
                                             <?= read_field('os_name', $resource->os_name, $dictionary->columns->os_name, $update, '', '', '', '', $meta->collection) ?>
                                             <?php if ($config->product === 'enterprise') { ?>
@@ -223,7 +223,7 @@ if (empty($resource->type)) {
                                             <?= read_field('processor_count', $resource->processor_count, $dictionary->columns->processor_count, false, __('Processors'), '', '', '', $meta->collection) ?>
                                             <?= read_field('uptime', $resource->uptime, $dictionary->columns->uptime, false, '', '', '', '', $meta->collection) ?>
                                             <?php if (!empty($resource->vm_device_id) and !empty($resource->vm_server_name)) {
-                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesRead', $resource->vm_device_id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesRead', $resource->vm_device_id) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>";
                                                 echo read_field('VM Host', $resource->vm_server_name, $dictionary->columns->vm_server_name, '', false, $link);
                                             }
                                             ?>
@@ -268,10 +268,10 @@ if (empty($resource->type)) {
                                             <?php if (!empty($included['application'])) {
                                                 foreach ($included['application'] as $row) { ?>
                                                 <tr>
-                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('applicationsRead', $row->application_id) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('applicationsRead', $row->application_id) ?>"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                                     <td><?= $row->{'applications.name'} ?></td>
                                                     <td><?= $row->{'applications.description'} ?></td>
-                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="application" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
+                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="application" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="icon-trash-2"></span></button></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -300,12 +300,12 @@ if (empty($resource->type)) {
                                             <?php if (!empty($included['attachment'])) {
                                                 foreach ($included['attachment'] as $row) { ?>
                                                 <tr id="components_attachment_<?= $row->id ?>">
-                                                    <td class="text-center"><a href="<?= url_to('componentsRead', $row->id) ?>/attachment/download?components.type=attachment" role="button" class="btn btn-sm btn-primary"><span style="width:1rem;" title="<?= __('Download') ?>" class="fa-solid fa-download"></span></button></td>
+                                                    <td class="text-center"><a href="<?= url_to('componentsRead', $row->id) ?>/attachment/download?components.type=attachment" role="button" class="btn btn-sm btn-primary"><span style="width:1rem;" title="<?= __('Download') ?>" class="icon-download"></span></button></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->filename ?></td>
                                                     <td><?= $row->edited_by ?></td>
                                                     <td><?= $row->edited_date ?></td>
-                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="attachment" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
+                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="attachment" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="icon-trash-2"></span></button></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -356,19 +356,19 @@ if (empty($resource->type)) {
                                     <div class="row">
                                         <div class="col-4">
                                             <?= read_field('service_number', $resource->service_number, $dictionary->columns->service_number, $update, '', '', '', '', $meta->collection) ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_network=" . urlencode($resource->service_network) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_network=" . urlencode($resource->service_network) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('service_network', $resource->service_network, $dictionary->columns->service_network, $update, '', $link, '', '', $meta->collection) ?>
                                             <?= read_field('serial_imei', $resource->serial_imei, $dictionary->columns->serial_imei, $update, '', '', '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_type=" . $resource->service_type . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_type=" . $resource->service_type . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('service_type', $resource->service_type, $dictionary->columns->service_type, $update, '', $link, '', '', $meta->collection) ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_provider=" . $resource->service_provider . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_provider=" . $resource->service_provider . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('service_provider', $resource->service_provider, $dictionary->columns->service_provider, $update, '', $link, '', '', $meta->collection) ?>
                                             <?= read_field('serial_sim', $resource->serial_sim, $dictionary->columns->serial_sim, $update, '', '', '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_plan=" . $resource->service_plan . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.service_plan=" . $resource->service_plan . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('service_plan', $resource->service_plan, $dictionary->columns->service_plan, $update, '', $link, '', '', $meta->collection) ?>
                                             <?= read_field('unlock_pin', $resource->unlock_pin, $dictionary->columns->unlock_pin, $update, '', '', '', '', $meta->collection) ?>
                                         </div>
@@ -419,15 +419,15 @@ if (empty($resource->type)) {
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.instance_provider=" . urlencode($resource->instance_provider) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.instance_provider=" . urlencode($resource->instance_provider) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('instance_provider', $resource->instance_provider, '', false, '', $link) ?>
 
                                             <?= read_field('instance_ident', $resource->instance_ident) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.instance_state=" . $resource->instance_state . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.instance_state=" . $resource->instance_state . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('instance_state', $resource->instance_state, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.instance_type=" . $resource->instance_type . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.instance_type=" . $resource->instance_type . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('instance_type', $resource->instance_type, '', false, '', $link) ?>
                                         </div>
                                         <div class="col-4">
@@ -482,12 +482,12 @@ if (empty($resource->type)) {
                                             <?php if (!empty($included['cluster'])) {
                                                 foreach ($included['cluster'] as $row) { ?>
                                                 <tr>
-                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('clustersRead', $row->id) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                    <td class="text-center"><a class="btn btn-sm btn-primary" title="<?= __('View') ?>" role="button" href="<?= url_to('clustersRead', $row->id) ?>"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->purpose ?></td>
                                                     <td><?= $row->role ?></td>
                                                     <?php if ($update) { ?>
-                                                    <td class="text-center" data-orderable="false"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="cluster" data-component_type="cluster" data-id="<?= $row->{'cluster.id'} ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
+                                                    <td class="text-center" data-orderable="false"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="cluster" data-component_type="cluster" data-id="<?= $row->{'cluster.id'} ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="icon-trash-2"></span></button></td>
                                                     <?php } ?>
                                                 </tr>
                                                 <?php } ?>
@@ -519,7 +519,7 @@ if (empty($resource->type)) {
                                                     <td><?= $row->type ?></td>
                                                     <td><?= $row->description ?></td>
                                                     <?php if ($update) { ?>
-                                                    <td class="text-center" data-orderable="false"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="credential" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
+                                                    <td class="text-center" data-orderable="false"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="credential" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="icon-trash-2"></span></button></td>
                                                     <?php } ?>
                                                 </tr>
                                                 <?php } ?>
@@ -799,7 +799,7 @@ if (empty($resource->type)) {
                                                     <td><?= $row->filename ?></td>
                                                     <td><?= $row->edited_by ?></td>
                                                     <td><?= $row->edited_date ?></td>
-                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="image" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="fa fa-trash"></span></button></td>
+                                                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_component_link" data-type="components" data-component_type="image" data-id="<?= $row->id ?>"><span style="width:1rem;" title="<?= __('Delete') ?>" class="icon-trash-2"></span></button></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>
@@ -880,14 +880,14 @@ if (empty($resource->type)) {
                                             <?= read_field('country', @(string)$location->attributes->country) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.owner=" . urlencode($resource->owner) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.owner=" . urlencode($resource->owner) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('owner', $resource->owner, $dictionary->columns->owner, $update, '', $link, '', '', $meta->collection) ?>
                                             <?= read_select('org_id_2', $resource->org_id, $dictionary->columns->org_id, false, __('Organisation'), $orgs, $meta->collection) ?>
                                             <?php
                                             if (empty($included['rack_devices'][0]->{'rack_id'})) {
-                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('racksCollection') . "\"><span title=\"" . __('View Racks') . "\" class=\"fa fa-film\" aria-hidden=\"true\"></span></a>";
+                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('racksCollection') . "\"><span title=\"" . __('View Racks') . "\" class=\"icon-film\" aria-hidden=\"true\"></span></a>";
                                             } else {
-                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('racksRead', $included['rack_devices'][0]->{'rack_id'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('racksRead', $included['rack_devices'][0]->{'rack_id'}) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>";
                                             } ?>
                                             <?= read_field('rack', (string)@$included['rack_devices'][0]->{'racks.name'}, '', '', '', $link) ?>
                                             <?php
@@ -895,13 +895,13 @@ if (empty($resource->type)) {
                                                 echo read_field('position_in_rack', $included['rack_devices'][0]->{'position'}, '', '', '', '');
                                             }
                                             if (!empty($included['rack_devices'][0]->{'locations.id'})) {
-                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsRead', $included['rack_devices'][0]->{'locations.id'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                                $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsRead', $included['rack_devices'][0]->{'locations.id'}) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>";
                                                 echo read_field('rack_location', $included['rack_devices'][0]->{'locations.name'}, '', '', '', $link);
                                             }
                                             ?>
                                         </div>
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.switch_device_id=" . urlencode($resource->switch_device_id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.switch_device_id=" . urlencode($resource->switch_device_id) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('switch_device_id', $resource->switch_device_id, $dictionary->columns->switch_device_id, $update, '', $link, '', '', $meta->collection) ?>
                                             <?= read_field('switch_port', $resource->switch_port, $dictionary->columns->switch_port, $update, '', '', '', '', $meta->collection) ?>
                                             <?= read_field('patch_panel', $resource->patch_panel, $dictionary->columns->patch_panel, $update, '', $link, '', '', $meta->collection) ?>
@@ -949,17 +949,17 @@ if (empty($resource->type)) {
                                         <div class="col-4">
                                             <?= read_field('sysName', $resource->sysName) ?>
                                             <?= read_field('snmp_version', $resource->snmp_version, '', false, __('SNMP Version')) ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.snmp_oid=" . urlencode($resource->snmp_oid) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.snmp_oid=" . urlencode($resource->snmp_oid) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('snmp_oid', $resource->snmp_oid, '', false, __('SNMP OID'), $link) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.sysDescr=" . urlencode($resource->sysDescr) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.sysDescr=" . urlencode($resource->sysDescr) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('sysDescr', $resource->sysDescr, '', false, '', $link) ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.sysContact=" . urlencode($resource->sysContact) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.sysContact=" . urlencode($resource->sysContact) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('sysContact', $resource->sysContact, '', false, '', $link) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.sysLocation=" . urlencode($resource->sysLocation) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.sysLocation=" . urlencode($resource->sysLocation) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('sysLocation', $resource->sysLocation, '', false, '', $link) ?>
                                             <?= read_field('sysUptime', $resource->sysUpTime) ?>
                                         </div>
@@ -979,7 +979,7 @@ if (empty($resource->type)) {
                                                 }
                                             }
                                             $othertags = json_encode($othertags);
-                                            echo '<button type="button" class="btn btn-primary rounded-pill" style="margin-right:20px;"><strong><a style="color:white;" href="' . url_to('devicesCollection') . '?devices.tags=' . html_entity_decode($tag, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '">' . html_entity_decode($tag, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</a>&nbsp;&nbsp;&nbsp;</strong><a href="#" class="delete_tags" style="color:white;" data-tags=\'' . $othertags . '\'><span class="badge text-bg-secondary"><i class="close white-text fas fa-times"></i></span></a>';
+                                            echo '<button type="button" class="btn btn-primary rounded-pill" style="margin-right:20px;"><strong><a style="color:white;" href="' . url_to('devicesCollection') . '?devices.tags=' . html_entity_decode($tag, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '">' . html_entity_decode($tag, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</a>&nbsp;&nbsp;&nbsp;</strong><a href="#" class="delete_tags" style="color:white;" data-tags=\'' . $othertags . '\'><span class="badge text-bg-secondary"><i class="icon-x close white-text"></i></span></a>';
                                         }
                                         ?>
                                 </div>
@@ -1004,7 +1004,7 @@ if (empty($resource->type)) {
                                             <tbody>
                                             <?php foreach ($included['vulnerabilities'] as $row) { ?>
                                                 <tr>
-                                                    <td class="text-center"><span style="display:none;"><?= $row->id ?></span><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('vulnerabilitiesRead', $row->id) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                    <td class="text-center"><span style="display:none;"><?= $row->id ?></span><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('vulnerabilitiesRead', $row->id) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="icon-eye" aria-hidden="true"></span></a></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->vendor ?></td>
                                                     <td><?= $row->cve ?></td>
@@ -1082,22 +1082,22 @@ if (empty($resource->type)) {
                                         <?php } else { ?>
                                         <div class="col-4">
                                         <?php } ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.registered_user=" . urlencode($included['windows'][0]->registered_user) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.registered_user=" . urlencode($included['windows'][0]->registered_user) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('registered_user', $included['windows'][0]->registered_user, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.organisation=" . urlencode($included['windows'][0]->organisation) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.organisation=" . urlencode($included['windows'][0]->organisation) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('organisation', $included['windows'][0]->organisation, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.language=" . urlencode($included['windows'][0]->language) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.language=" . urlencode($included['windows'][0]->language) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('language', $included['windows'][0]->language, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.time_caption=" . urlencode($included['windows'][0]->time_caption) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.time_caption=" . urlencode($included['windows'][0]->time_caption) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('time_caption', $included['windows'][0]->time_caption, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.time_daylight=" . urlencode($included['windows'][0]->time_daylight) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.time_daylight=" . urlencode($included['windows'][0]->time_daylight) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('time_daylight', $included['windows'][0]->time_daylight, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.install_directory=" . urlencode($included['windows'][0]->install_directory) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.install_directory=" . urlencode($included['windows'][0]->install_directory) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('install_directory', $included['windows'][0]->install_directory, '', false, '', $link) ?>
                                         </div>
                                         <?php if ($included['windows'][0]->part_of_domain !== 'True') { ?>
@@ -1105,42 +1105,42 @@ if (empty($resource->type)) {
                                         <?php } else { ?>
                                         <div class="col-4">
                                         <?php } ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.boot_device=" . urlencode($included['windows'][0]->boot_device) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.boot_device=" . urlencode($included['windows'][0]->boot_device) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('boot_device', $included['windows'][0]->boot_device, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.user_name=" . urlencode($included['windows'][0]->user_name) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.user_name=" . urlencode($included['windows'][0]->user_name) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('user_name', $included['windows'][0]->user_name, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.service_pack=" . urlencode($included['windows'][0]->service_pack) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.service_pack=" . urlencode($included['windows'][0]->service_pack) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('service_pack', $included['windows'][0]->service_pack, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.build_number=" . urlencode($included['windows'][0]->build_number) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.build_number=" . urlencode($included['windows'][0]->build_number) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('build_number', $included['windows'][0]->build_number, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.part_of_domain=" . urlencode($included['windows'][0]->part_of_domain) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.part_of_domain=" . urlencode($included['windows'][0]->part_of_domain) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('part_of_domain', $included['windows'][0]->part_of_domain, '', false, '', $link) ?>
 
                                             <?php if ($included['windows'][0]->part_of_domain !== 'True') { ?>
-                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.workgroup=" . urlencode($included['windows'][0]->workgroup) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.workgroup=" . urlencode($included['windows'][0]->workgroup) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                                 <?= read_field('workgroup', $included['windows'][0]->workgroup, '', false, '', $link) ?>
                                             <?php } ?>
                                         </div>
                                         <?php if ($included['windows'][0]->part_of_domain === 'True') { ?>
                                         <div class="col-4">
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_role=" . urlencode($included['windows'][0]->domain_role) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_role=" . urlencode($included['windows'][0]->domain_role) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('domain_role', $included['windows'][0]->domain_role, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_short=" . urlencode($included['windows'][0]->domain_short) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_short=" . urlencode($included['windows'][0]->domain_short) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('domain_short', $included['windows'][0]->domain_short, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.active_directory_ou=" . urlencode($included['windows'][0]->active_directory_ou) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.active_directory_ou=" . urlencode($included['windows'][0]->active_directory_ou) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('active_directory_ou', $included['windows'][0]->active_directory_ou, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_controller_address=" . urlencode($included['windows'][0]->domain_controller_address) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_controller_address=" . urlencode($included['windows'][0]->domain_controller_address) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('domain_controller_address', $included['windows'][0]->domain_controller_address, '', false, '', $link) ?>
 
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_controller_name=" . urlencode($included['windows'][0]->domain_controller_name) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?windows.domain_controller_name=" . urlencode($included['windows'][0]->domain_controller_name) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('domain_controller_name', $included['windows'][0]->domain_controller_name, '', false, '', $link) ?>
                                         </div>
                                         <?php } ?>
@@ -1201,9 +1201,9 @@ if (empty($resource->type)) {
                                     <div class="row">
                                         <?php if (!empty($included['bios'])) { ?>
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?bios.manufacturer=" . urlencode($included['bios'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?bios.manufacturer=" . urlencode($included['bios'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('bios_manufacturer', $included['bios'][0]->manufacturer, '', false, __('Manufacturer'), $link) ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?bios.model=" . urlencode($included['bios'][0]->model) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?bios.model=" . urlencode($included['bios'][0]->model) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('bios_model', $included['bios'][0]->model, '', false, __('Model'), $link) ?>
                                         </div>
                                         <div class="col-4">
@@ -1403,9 +1403,9 @@ if (empty($resource->type)) {
                                     <div class="row">
                                         <?php if (!empty($included['motherboard'])) { ?>
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?motherboard.manufacturer=" . urlencode($included['motherboard'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?motherboard.manufacturer=" . urlencode($included['motherboard'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('mb_manufacturer', $included['motherboard'][0]->manufacturer, '', false, __('Manufacturer'), $link) ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?motherboard.model=" . urlencode($included['motherboard'][0]->model) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?motherboard.model=" . urlencode($included['motherboard'][0]->model) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('mb_model', $included['motherboard'][0]->model, '', false, __('Model'), $link) ?>
                                         </div>
                                         <div class="col-4">
@@ -1601,9 +1601,9 @@ if (empty($resource->type)) {
                                     <div class="row">
                                         <?php if (!empty($included['processor'])) { ?>
                                         <div class="col-4">
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?processor.manufacturer=" . urlencode($included['processor'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?processor.manufacturer=" . urlencode($included['processor'][0]->manufacturer) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('proc_manufacturer', $included['processor'][0]->manufacturer, '', false, __('Manufacturer'), $link) ?>
-                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?processor.description=" . urlencode($included['processor'][0]->description) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?processor.description=" . urlencode($included['processor'][0]->description) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                             <?= read_field('proc_description', $included['processor'][0]->description, '', false, __('Description'), $link) ?>
                                             <?= read_field('speed', number_format($included['processor'][0]->speed) . ' MHz') ?>
                                         </div>
@@ -2131,7 +2131,7 @@ if (empty($resource->type)) {
                                                     }
                                                     if (!empty($row->{'ip.device_id'})) {
                                                         #$row->{'ip.device_id'} = '<a href="' . url_to('devicesRead', intval($row->{'ip.device_id'})) . '">link</a>';
-                                                        $row->{'ip.device_id'} = "<a title=\"" . __('Device') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-devices\" href=\"" . url_to('devicesRead', intval($row->{'ip.device_id'})) . "\"><span style=\"width:1rem;\" title=\"" . __('Device') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
+                                                        $row->{'ip.device_id'} = "<a title=\"" . __('Device') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-devices\" href=\"" . url_to('devicesRead', intval($row->{'ip.device_id'})) . "\"><span style=\"width:1rem;\" title=\"" . __('Device') . "\" class=\"icon-computer\" aria-hidden=\"true\"></span></a>";
                                                     }
                                                     ?>
                                                 <tr>
@@ -2591,19 +2591,19 @@ if (empty($resource->type)) {
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-4">
-                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.type=" . urlencode($row->type) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.type=" . urlencode($row->type) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                                 <?= read_field('server_type_' . $row->id, $row->type, '', false, __('Type'), $link) ?>
-                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.name=" . urlencode($row->name) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.name=" . urlencode($row->name) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                                 <?= read_field('server_name_' . $row->id, $row->name, '', false, '', $link) ?>
                                             </div>
                                             <div class="col-4">
-                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.version=" . urlencode($row->version) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.version=" . urlencode($row->version) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                                 <?= read_field('server_version_' . $row->id, $row->version, '', false, __('Version'), $link) ?>
                                                 <?php if ($row->type === 'web') {
-                                                    $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.version_string=" . urlencode($row->version_string) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                                    $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.version_string=" . urlencode($row->version_string) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>";
                                                     echo read_field('version_string_' . $row->id, $row->version_string, '', false, __('Version String'), $link);
                                                 } elseif ($row->type === 'database') {
-                                                    $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.status=" . urlencode($row->status) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                                    $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?server.status=" . urlencode($row->status) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>";
                                                     echo read_field('server_status_' . $row->id, $row->status, '', false, __('Status'), $link);
                                                 } ?>
                                             </div>
@@ -2676,7 +2676,7 @@ if (empty($resource->type)) {
                                                                         <?php if ($row->name !== 'IIS') { ?>
                                                                         <td><?= str_replace(' ', '<br>', $server_item->certificate_name) ?></td>
                                                                         <?php } ?>
-                                                                        <td class="text-center"><a role="button" class="btn btn-sm btn-primary" title="<?= __('View') ?>" href="<?=  url_to('componentsCollection') ?>?components.type=server_item&components.device_id=<?= $resource->id ?>"><span class="fa fa-eye text-primary"></span></a></td>
+                                                                        <td class="text-center"><a role="button" class="btn btn-sm btn-primary" title="<?= __('View') ?>" href="<?=  url_to('componentsCollection') ?>?components.type=server_item&components.device_id=<?= $resource->id ?>"><span class="icon-eye text-primary"></span></a></td>
                                                                     </tr>
                                                                 <?php } elseif ($row->type === 'database') { ?>
                                                                     <tr>
@@ -2686,7 +2686,7 @@ if (empty($resource->type)) {
                                                                         <td><?= $server_item->instance ?></td>
                                                                         <td><?= $server_item->path ?></td>
                                                                         <td><?= $server_item->size ?></td>
-                                                                        <td class="text-center"><a role="button" class="btn btn-sm btn-primary" title="<?= __('View') ?>" href="<?=  url_to('componentsCollection') ?>?components.type=server_item&components.device_id=<?= $resource->id ?>"><span class="fa fa-eye text-primary"></span></a></td>
+                                                                        <td class="text-center"><a role="button" class="btn btn-sm btn-primary" title="<?= __('View') ?>" href="<?=  url_to('componentsCollection') ?>?components.type=server_item&components.device_id=<?= $resource->id ?>"><span class="icon-eye text-primary"></span></a></td>
                                                                     </tr>
                                                                 <?php } ?>
                                                             <?php } ?>
@@ -3017,16 +3017,16 @@ window.onload = function () {
             <input type="hidden" id="data[attributes][device_id]" name="data[attributes][device_id]" value="' . $meta->id . '">'; ?>
 
     <?php if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
-    $("#oa_panel_buttons").prepend('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish text-oa-success"></span>&nbsp;<?= __('Discover') ?></button></form>');
+    $("#oa_panel_buttons").prepend('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-oa-success"></span>&nbsp;<?= __('Discover') ?></button></form>');
 
     <?php } elseif (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
-    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish text-oa-success"></span></button></form>');
+    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-success"></span></button></form>');
 
     <?php } else { ?>
     $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
     <?php } ?>
 
-    $("#device_panel_tags").append('<div id="tags_control" class="btn-group" style="padding-left:20px; height:40px; display:none;" role="group"><div class="input-group"><input type="text" data-tags=\'<?= json_encode($resource->tags) ?>\' id="tags_add" class="form-control form-control-sm"><div class="float-end" style="padding-left:4px;"><button data-attribute="tags" class="btn btn-outline-success submit" title="Submit" style=""><span style="font-size: 1.2rem;" class="fa fa-check"></span></button></div></div></div>');
+    $("#device_panel_tags").append('<div id="tags_control" class="btn-group" style="padding-left:20px; height:40px; display:none;" role="group"><div class="input-group"><input type="text" data-tags=\'<?= json_encode($resource->tags) ?>\' id="tags_add" class="form-control form-control-sm"><div class="float-end" style="padding-left:4px;"><button data-attribute="tags" class="btn btn-outline-success submit" title="Submit" style=""><span style="font-size: 1.2rem;" class="icon-check"></span></button></div></div></div>');
 
     $(document).on('click', '#add_tags', function (e) {
         $("#tags_control").css('display', 'block');
@@ -3139,7 +3139,7 @@ window.onload = function () {
                     if ($column === 'id') {
                         echo '{ data: \'attributes.id\',
                             render: function (data, type, row, meta) {
-                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/components/" + row.attributes.id + "?components.type=change_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/components/" + row.attributes.id + "?components.type=change_log\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                             }
                         },';
                         echo "\n";

@@ -55,14 +55,7 @@ if (!empty($config->servers)) {
         <script {csp-script-nonce} src="<?= base_url('js/jquery.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/popper.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
-        <!--
-        <script {csp-script-nonce} defer src="<?= base_url('js/jquery.dataTables.min.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
-        -->
         <script {csp-script-nonce} defer src="<?= base_url('js/datatables.min.js') ?>"></script>
-
-        <script {csp-script-nonce} defer src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/fa-v4-shims.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/apexcharts.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/select2.full.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
@@ -74,9 +67,9 @@ if (!empty($config->servers)) {
         <link href="<?= base_url('css/dataTables.bootstrap5.min.css') ?>" rel="stylesheet">
         -->
         <link href="<?= base_url('css/datatables.min.css') ?>" rel="stylesheet">
-        <link href="<?= base_url('css/font-awesome.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/select2.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/select2-bootstrap-5-theme.min.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/lucide.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/open-audit.css') ?>" rel="stylesheet">
 
         <!-- Open-AudIT specific items -->
@@ -223,7 +216,7 @@ if (!empty($config->servers)) {
                             <?php
                             foreach ($categories as $category) {
                                 echo "
-                            <li><a class=\"dropdown-item dropdown-toggle first-level-dropdown-toggle\" href=\"#\">" . $category . "</a>\n                            <ul class=\"dropdown-menu\">\n";
+                            <li><a class=\"dropdown-item dropdown-toggle first-level-dropdown-toggle\" href=\"#\">" . __($category) . "</a>\n                            <ul class=\"dropdown-menu\">\n";
                                 foreach ($reports as $report) {
                                     if ($report->{'attributes'}->{'menu_category'} === $category) {
                                         if (!empty($report->{'attributes'}->{'commercial'}) and $report->{'attributes'}->{'commercial'} === 'y' and (empty($config->product) or $config->product === 'community')) {
@@ -526,7 +519,7 @@ if (!empty($config->servers)) {
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarHelp" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Help</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarHelp" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Help') ?></a>
                             <!-- Community -->
                             <ul class="dropdown-menu" aria-labelledby="navbarHelp">
                                 <li><a class="dropdown-item" href="<?= url_to('about') ?>"><?= __('About') ?></a></li>
@@ -581,7 +574,7 @@ if (!empty($config->modules)) {
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;">Licenses</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarLicenses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;"><?= __('Licenses') ?></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarLicenses">
                                 <li><a class="dropdown-item" href="<?= url_to('appLicenses') ?>?license=eula"><?= __('EULA') ?></a></li>
 <?php if (empty($config->product) or $config->product === 'community') { ?>
@@ -605,7 +598,7 @@ if (!empty($config->modules)) {
                         <?php if ($GLOBALS['browser_lang'] !== $user->lang) { ?>
                             <li class="nav-item">
                                 <a style="padding-top:10px;" role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" data-bs-content="<?= __(codeToCountry($GLOBALS['browser_lang'])) . __(' is now supported with a language file. To change your user to use this language, click ') . ' <a href=\'' . url_to('usersRead', $user->id) . '\'>' . __('here') . '</a>.' ?>">
-                                    <i class="fa-solid fa-earth-americas" style="color: #ffc107;"></i>
+                                    <i class="icon-earth" style="color: #ffc107;"></i>
                                 </a>
                             </li>
                         <?php } ?>
@@ -647,45 +640,32 @@ if (!empty($config->modules)) {
                     </div>
 
                     <div class="col-6 clearfix text-end" style="padding-bottom: 2px; padding-top: 10px;">
-                        <form class="float-end" method="post" action="<?= url_to('searchCreate') ?>" role="search">
+                        <form class="float-end row row-cols-lg-auto g-3 align-items-center" method="post" action="<?= url_to('searchCreate') ?>" role="search">
+                            <input type="hidden" name="data[access_token]" value="<?= $meta->access_token; ?>">
+                            <input type="hidden" name="data[attributes][tables]"  value='["devices"]'>
+                            <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","domain","dns_hostname","dns_domain","sysName"]'>
                             <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
-                            <div class="btn-group" role="group">
-                                <input type="hidden" name="data[access_token]" value="<?= $meta->access_token; ?>">
-                                <label style="padding-top:5px;" id="searchLabel"><?= __('Search') ?>&nbsp;</label>
-                                <input type="text"   name="data[attributes][value]" aria-labelledby="searchLabel" class="form-control form-control-sm" style="border: 1px solid #adb5bd" placeholder="Device Name or IP">
-                                <input type="hidden" name="data[attributes][tables]"  value='["devices"]'>
-                                <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","domain","dns_hostname","dns_domain","sysName"]'>
-                                <button class="btn btn-sm btn-outline-secondary" type="submit" title="Submit"><span class="fa fa-search" title="<?= __('Search') ?>"></span></button>
-                            </div>
-                            <?php } ?>
-                            <div class="btn-group" role="group">
-                                <div class="dropdown float-end">
-                                    <button class="btn btn-sm dropdown-toggle btn-outline-secondary dash-drop" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Dashboards
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <?php
-                                    if (!empty($dashboards)) {
-                                        foreach ($dashboards as $dashboard) {
-                                            if ($dashboard->type === 'dashboards') {
-                                                if ($config->product === 'enterprise' or $config->product === 'professional') {
-                                                    echo "                                    <li><a class=\"dropdown-item\" href=\"" . url_to('dashboardsExecute', $dashboard->id) . "\">" . $dashboard->attributes->name . "</a></li>\n";
-                                                } else {
-                                                    echo "                                    <li><a class=\"dropdown-item greyout toastEnterprise\" href=\"#\">" . $dashboard->attributes->name . "</a></li>\n";
-                                                }
-                                            }
-                                        }
-                                    } ?>
-                                    <li><a class="dropdown-item" href="<?= url_to('welcome') ?>"><?= __('Welcome Dashboard') ?></a></li>
-                                    </ul>
+                                 <div class="col-12">
+                                    <label class="visually-hidden" for="data[attributes][value]"><?= __('Search') ?></label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" style="margin-right:2px;" class="form-control" name="data[attributes][value]" placeholder="<?= __('Device Name') ?> <?= __('or') ?> IP">
+                                        <button type="submit" style="margin-left:2px;" class="btn btn-sm btn-primary rounded" title="<?= __('Search') . ' ' . __('Devices') ?>"><?= __('Search') ?></button>
+                                    </div>
                                 </div>
+                                <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute') { ?>
+                                    <div class="col-12">
+                                <?php } ?>
                                 <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute' and $meta->id != $user->dashboard_id) { ?>
-                                <button class="btn btn-sm btn-outline-secondary" id="make_my_dashboard_button" title="<?= __('Make My Default Dashboard') ?>" type="button" aria-expanded="false"><span class="fa fa-home"></span></button>
+                                        <button class="btn btn-sm btn-outline-secondary" id="make_my_dashboard_button" title="<?= __('Make My Default Dashboard') ?>" type="button" aria-expanded="false"><span class="icon-house"></span></button>
+                                <?php } ?>
+
+                                <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute' and strpos($user->permissions['devices'], 'u') !== false and $meta->id !== 7) { ?>
+                                        <a href="<?= url_to('dashboardsRead', $meta->id) ?>" class="btn btn-sm btn-outline-secondary" title="<?= __('Edit') ?>" type="button" aria-expanded="false"><span class="icon-pencil"></span></a>
                                 <?php } ?>
                                 <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute') { ?>
-                                <a href="<?= url_to('dashboardsRead', $meta->id) ?>" class="btn btn-sm btn-outline-secondary" title="<?= __('Edit') ?>" type="button" aria-expanded="false"><span class="fa fa-edit"></span></a>
+                                    </div>
                                 <?php } ?>
-                            </div>
+                            <?php } ?>
                         </form>
                     </div>
                 </div>

@@ -16,10 +16,10 @@ include 'shared/common_functions.php';
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Execute', $meta->id) ?>">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
-                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('baselinesRead', $data[0]->id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('baselinesRead', $data[0]->id) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                 <?= read_field('Baseline Name', html_entity_decode($data[0]->attributes->name), '', '', '', $link) ?>
 
-                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('baselinesRead', $data[0]->id) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                                <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('baselinesRead', $data[0]->id) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                                 <?= read_field('Baseline ID', html_entity_decode($data[0]->id), '', '', '', $link) ?>
 
                                 <?= create_select('data[attributes][group_id]', __('Group'), $included['groups']) ?>

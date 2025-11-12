@@ -29,7 +29,7 @@ include 'shared/collection_functions.php';
                                     <td><?= $item->attributes->count ?></td>
                                     <td class="text-center"><?php
                                     if (!empty($item->attributes->current_row)) {
-                                            echo "<span class=\"fa-solid fa-check text-oa-success\"></span>";
+                                            echo "<span class=\"icon-check text-oa-success\"></span>";
                                     } ?></td>
                                 </tr>
                                 <?php } ?>

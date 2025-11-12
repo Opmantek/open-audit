@@ -9,9 +9,9 @@ if (!empty($config->maps_api_key) and ($config->product === 'professional' or $c
 }
 
 if ($user->toolbar_style === 'icontext') {
-    $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default"><a href="' . url_to('rack_devicesCreateForm') . '?rack_id=' . $resource->id . '"><span style="margin-right:6px;" class="fa-solid fa-computer text-success"></span>' . __('Add Device') . '</a></button></li>';
+    $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default"><a href="' . url_to('rack_devicesCreateForm') . '?rack_id=' . $resource->id . '"><span class="icon-computer text-oa-success"></span>' . __('Add Device') . '</a></button></li>';
 } elseif ($user->toolbar_style === 'icon') {
-    $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default"><span style="margin-right:6px;" class="fa-solid fa-computer text-success"></span></button></li>';
+    $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default"><span class="icon-computer text-success"></span></button></li>';
 } else {
     $deviceButton = '<li class="nav-item" role="presentation"><button type="button" class="btn btn-default">' . __('Add Device') . '</button></li>';
 }
@@ -79,7 +79,7 @@ if ($resource->ru_start == 1) {
                 $row = $i + $j;
                 $rack->{$row}[1] = '<td class="text-center" style="vertical-align:middle;">' . $row . '</td>';
                 if ($j === 0) {
-                    $rack->{$row}[2] = '<td style="height:' . $rowheight . 'px; background: #eee" rowspan="' . $device->attributes->height . '" class="text-center"><div style="position:relative;"><span>' . $icon . $image . '<a role="button" style="position:absolute; z-index:100; top:4px; right:0px;" href="#" tabindex="0" class="btn btn-xs btn-primary" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" title="' . $type . '" data-bs-html="true" data-bs-content="' . $data_content . '"><span class="fa fa-eye" aria-hidden="true"></span></a></span></div></td>';
+                    $rack->{$row}[2] = '<td style="height:' . $rowheight . 'px; background: #eee" rowspan="' . $device->attributes->height . '" class="text-center"><div style="position:relative;"><span>' . $icon . $image . '<a role="button" style="position:absolute; z-index:100; top:4px; right:0px;" href="#" tabindex="0" class="btn btn-xs btn-primary" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" title="' . $type . '" data-bs-html="true" data-bs-content="' . $data_content . '"><span class="icon-eye" aria-hidden="true"></span></a></span></div></td>';
                 } else {
                     $rack->{$row}[2] = '';
                 }
@@ -145,7 +145,7 @@ if ($resource->ru_start == 1) {
                 $row = intval($i - $j);
                 $rack->{$row}[1] = '<td class="text-center" style="vertical-align:middle;">' . $row . '</td>';
                 if ($j == 0) {
-                    $rack->{$row}[2] = '<td style="height:' . $rowheight . 'px; background: #eee" rowspan="' . intval($device->attributes->height) . '" class="text-center"><div style="position:relative;"><span>' . $icon . $image . '<button style="position:absolute; z-index:100; top:4px; right:0px;" tabindex="0" class="btn btn-xs btn-primary" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" title="' . $type . '" data-bs-html="true" data-bs-content="' . $data_content . '"><span class="fa fa-eye" aria-hidden="true"></span></button></span></div></td>';
+                    $rack->{$row}[2] = '<td style="height:' . $rowheight . 'px; background: #eee" rowspan="' . intval($device->attributes->height) . '" class="text-center"><div style="position:relative;"><span>' . $icon . $image . '<button style="position:absolute; z-index:100; top:4px; right:0px;" tabindex="0" class="btn btn-xs btn-primary" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" title="' . $type . '" data-bs-html="true" data-bs-content="' . $data_content . '"><span class="icon-eye" aria-hidden="true"></span></button></span></div></td>';
                 } else {
                     $rack->{$row}[2] = '';
                 }
@@ -246,7 +246,7 @@ if ($resource->ru_start == 1) {
                                     <tbody>
                                         <?php foreach ($included['rack_devices'] as $item) { ?>
                                         <tr>
-                                            <td class="text-center"><a class="btn btn-sm btn-primary" href="<?= url_to('rack_devicesRead', $item->id) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                            <td class="text-center"><a class="btn btn-sm btn-primary" href="<?= url_to('rack_devicesRead', $item->id) ?>"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                             <td><?= $item->attributes->{'devices.name'} ?></td>
                                             <td><?= $item->attributes->{'devices.type'} ?></td>
                                             <td class="text-center"><?= $item->attributes->position ?></td>
@@ -254,7 +254,7 @@ if ($resource->ru_start == 1) {
                                             <?php if ($update) { ?>
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-sm btn-danger delete_link" data-collection="rack_devices" data-redirect="racks/<?= $resource->id ?>" data-id="<?= $item->{'id'} ?>" data-name="<?= $item->attributes->name ?>">
-                                                    <span class="fa fa-trash"></span>
+                                                    <span class="icon-trash-2"></span>
                                                 </button>
                                             </td>
                                             <?php } ?>

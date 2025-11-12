@@ -28,7 +28,7 @@ class SearchModel extends BaseModel
     public function create()
     {
         $instance = & get_instance();
-        $value = $instance->resp->meta->received_data->attributes->value;
+        $value = (!empty($instance->resp->meta->received_data->attributes->value)) ? $instance->resp->meta->received_data->attributes->value : '';
         if (!empty($instance->resp->meta->received_data->attributes->columns)) {
             try {
                 $columns = json_decode($instance->resp->meta->received_data->attributes->columns, false, 512, JSON_THROW_ON_ERROR);

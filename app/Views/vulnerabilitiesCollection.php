@@ -35,7 +35,7 @@ if (!empty($meta->filter)) {
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-3 clearfix">
-                                    <h6 style="padding-top: 10px; padding-bottom:8px;"><span class="fa-solid fa-bug oa-icon\"></span>&nbsp;<?= __('Vulnerabilities and Results') ?></h6>
+                                    <h6 style="padding-top: 10px; padding-bottom:8px;"><span class="icon-bug oa-icon"></span>&nbsp;<?= __('Vulnerabilities and Results') ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -253,7 +253,7 @@ window.onload = function () {
             columns: [
                 { data: 'attributes.view',
                     render: function (data, type, row, meta) {
-                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                     }
                 },
                 { data: 'attributes.count',

@@ -148,7 +148,7 @@ window.onload = function () {
                 },
                 { data: 'attributes.id', 
                     render: function (data, type, row, meta) {
-                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" target=\"_blank\" href=\"<?= base_url() ?>index.php/components/" + row.attributes.id + "?components.type=certificate\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" target=\"_blank\" href=\"<?= base_url() ?>index.php/components/" + row.attributes.id + "?components.type=certificate\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                     }
                 },
                 { data: 'attributes.common_name' },

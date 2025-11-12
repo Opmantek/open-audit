@@ -4,7 +4,7 @@
 include 'shared/collection_functions.php';
 @include 'help/' . $meta->collection . '.php';
 $title = ucwords(str_replace('_', ' ', $meta->collection));
-$menu = 'Manage';
+$menu = __('Manage');
 if (in_array($meta->collection, ['clouds','credentials','discoveries','files','scripts'])) {
     $menu = __('Discover');
 }
@@ -56,21 +56,21 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                 <?php if ($meta->collection !== 'vulnerabilities') { ?>
                             <h2><?= __('Creating') ?></h2>
                                 <?php if ($meta->collection !== 'collectors') { ?>
-                            <p><?= ('An entry can be created using the web interface if the current user logged in has a role that contains the') ?> <?= __($meta->collection) ?>::<?= __('create') ?> <?= __('permission') ?>.<br><br>
-                                <?= __('Go to menu') ?>: <?= $menu ?> -> <?= __($title) ?> -> <a href="<?= url_to($meta->collection . 'CreateForm') ?>"><?= ('Create') ?> <?= __($title) ?></a>. <?= ('Also can be created from the Attributes View, using the Create button') ?>.</p>
+                            <p><?= __('An entry can be created using the web interface if the current user logged in has a role that contains the') ?> <?= $meta->collection ?>::<?= __('create') ?> <?= __('permission') ?>.<br><br>
+                                <?= __('Go to menu') ?>: <?= $menu ?> -> <?= __($title) ?> -> <a href="<?= url_to($meta->collection . 'CreateForm') ?>"><?= __('Create') ?> <?= __($title) ?></a>. <?= __('Also can be created from the') . ' ' .  __($title) . ' ' .  __('list View, using the Create button') ?>.</p>
                                 <?php } else { ?>
-                            <p><?= ('You can turn any server into a collector by going to menu -> Admin -> Collectors -> Make this install a Collector. You will need credentials to log on to the server this install will report in to.') ?><br></p>
+                            <p><?= __('You can turn any server into a collector by going to menu -> Admin -> Collectors -> Make this install a Collector. You will need credentials to log on to the server this install will report in to.') ?><br></p>
                                 <?php } ?>
                             <br>
                         <?php } ?>
                                 <?php if ($execute) { ?>
                             <h2><?= __('Executing') ?></h2>
-                            <p><?= $title ?> <?= ('have the ability to be executed. On the') ?> <?= __($title) ?> <?= __('collections and details pages is an icon to execute.') ?></p>
+                            <p><?= $title ?> <?= __('have the ability to be executed. On the') ?> <?= $title ?> <?= __('collections and details pages is an icon to execute.') ?></p>
                             <br>
                                 <?php } ?>
                             <h2><?= __('View Details') ?></h2>
-                            <p><?= ('Go to menu') ?>: <?= $menu ?> -> <?= __($title) ?> -> <a href="<?= url_to($meta->collection . 'Collection') ?>"><?= __('List') ?> <?= __($title) ?></a>.<br><br>
-                            <?= __('You will see a list of') ?> <?= __($meta->collection) ?>. <?= ('You can view by clicking on the blue view icon. You can also edit or delete if you have permissions.') ?></p>
+                            <p><?= __('Go to menu') ?>: <?= $menu ?> -> <?= __($title) ?> -> <a href="<?= url_to($meta->collection . 'Collection') ?>"><?= __('List') ?> <?= __($title) ?></a>.<br><br>
+                            <?= __('You will see a list of') ?> <?= __($meta->collection) ?>. <?= __('You can view by clicking on the blue view icon. You can also edit or delete if you have permissions.') ?></p>
                             <br>
                             <h2><?= __('Database Schema') ?></h2>
                             <p><?= __('The database schema can be found in the application if the user has database::read permission by going to menu: Admin -> Database ->') ?> <a href="<?= url_to('databaseCollection') ?>"><?= __('List Tables') ?></a>, <?= __('then clicking on the details button for the table.') ?></p>
@@ -112,7 +112,7 @@ $edition = $instance->collections->{$meta->collection}->edition;
                                             } ?></td>
                                             <td class="text-center">
                                                 <?php if (in_array($column->name, $dictionary->attributes->create)) { ?>
-                                                    <span class="fa fa-check text-success"></span>
+                                                    <span class="icon-check text-success"></span>
                                                 <?php } ?>
                                             </td>
                                             <?php if (!empty($dictionary->columns->{$column->name})) { ?>

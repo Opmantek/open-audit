@@ -10,14 +10,12 @@ $intro = '<p>' . __('Open-AudIT uses Nmap in its Discovery function. Without Nma
 
 $body = '<h2>' . __('Linux') . '</h2>
 
-<p>' . __('The Linux Open-AudIT installer will test for and if required, install Open-AudIT\'s dependencies from your distributions repository, including setting the Nmap SetUID. This is required for SNMP (UDP 161) detection by a non-root user. This is supported on RedHat/CentOS and Debian/Ubuntu. If you need to manually install Nmap:<br>
-<br>
-For RedHat/CentOS do (NOTE - if you upgrade using yum, you will need to reapply this "chmod" setting).') . '<br>
+<p>' . __('The Linux Open-AudIT installer will test for and if required, install Open-AudITs dependencies from your distributions repository, including setting the Nmap SetUID. This is required for SNMP (UDP 161) detection by a non-root user. This is supported on RedHat/CentOS and Debian/Ubuntu. If you need to manually install Nmap:<br><br>For RedHat/CentOS do (NOTE - if you upgrade using yum, you will need to reapply this <i>chmod</i> setting).') . '<br>
 <code>sudo yum install nmap<br>
 sudo chmod u+s `which nmap`</code>
 <br>
 <br>
-' . __('For Debian/Ubuntu run (including setting dpkg to remember your override so an apt-get upgrade will not break') . ' Open-AudIT).<br>
+' . __('For Debian/Ubuntu run, including setting dpkg to remember your override so an apt-get upgrade will not break') . ' Open-AudIT.<br>
 <code>sudo apt-get install nmap<br>
 sudo chmod u+s `which nmap`<br>
 sudo dpkg-statoverride --list `which nmap`</code>
@@ -25,7 +23,7 @@ sudo dpkg-statoverride --list `which nmap`</code>
 <br>
 </p>
 <h2>' . __('Windows') . '</h2>
-<p>' . __('The Windows') . ' Open-AudIT ' . __('installer will test for the presence of Nmap in it\'s standard install locations of') . ':</p>
+<p>' . __('The Windows') . ' Open-AudIT ' . __('installer will test for the presence of Nmap in its standard install locations of') . ':</p>
 <div>
 <ul>
     <li>C:\Program Files\Nmap\nmap.exe</li>
@@ -43,4 +41,4 @@ sudo dpkg-statoverride --list `which nmap`</code>
 
 <img src="' . base_url() . 'images/faq_04.png" alt="Nmap Install" style="padding-top:20px; padding-bottom:20px;">
 
-' . __('Use the standard install options when displayed and click the "I Agree", "Next" and "Install" buttons to install Nmap.') . '</p>';
+' . __('Use the standard install options when displayed and click the <i>I Agree</i>, <i>Next</i> and <i>Install</i> buttons to install Nmap.') . '</p>';

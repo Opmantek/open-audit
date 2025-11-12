@@ -54,7 +54,7 @@ foreach ($allCollections as $collection => $value) {
                                                 echo "<td class=\"text-center\">" . $item->attributes->{$key} . "</td>\n";
                                             }
                                         } elseif ($key === 'link') {
-                                            echo "<td><a href=\"" . base_url() . 'index.php/' . $item->attributes->{$key} . "\" role=\"button\" class=\"btn btn-sm btn-primary\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></td>";
+                                            echo "<td><a href=\"" . base_url() . 'index.php/' . $item->attributes->{$key} . "\" role=\"button\" class=\"btn btn-sm btn-primary\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"icon-eye\" aria-hidden=\"true\"></span></td>";
                                         } elseif ((strripos($key, 'ip') === strlen($key) - 2)) {
                                             $padded_key = substr($key, 0, strpos($key, 'ip')) . 'ip_padded';
                                             if (!empty($item->attributes->{$padded_key})) {

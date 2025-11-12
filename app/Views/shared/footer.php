@@ -21,3 +21,11 @@
             </div>
       </div>
 </footer>
+<script {csp-script-nonce}>
+// window.onload = function () {
+//     $(document).ready(function() {
+//         // This must be placed AFTER the HTML has been set
+//         lucide.createIcons();
+//     });
+// };
+</script>

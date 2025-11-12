@@ -6,7 +6,7 @@ function aboutNotesDiv (string $collection = '', object $dictionary = null)
     if (! empty($dictionary->about)) {
         $return .= "<h4 class=\"text-center\">" . __('About') . "</h4><br>";
         $return .= __($dictionary->about);
-        $return .= __($dictionary->link) . ' <a href="' . url_to($collection . 'Help') . '"><i class="fa-solid fa-link fa-sm"></i></a><br><br>';
+        $return .= __($dictionary->link) . ' <a href="' . url_to($collection . 'Help') . '"><i class="icon-link"></i></a><br><br>';
     }
     if (! empty($dictionary->notes)) {
         $return .= "<h4 class=\"text-center\">" . __('Notes') . "</h4><br>";

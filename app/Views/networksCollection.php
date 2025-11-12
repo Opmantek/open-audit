@@ -9,11 +9,11 @@ include 'shared/collection_functions.php';
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                            <h6 style="padding-top:10px;"><span class="fa fa-sliders oa-icon"></span><?= __('Advanced') ?></h6>
+                            <h6 style="padding-top:10px;"><span class="icon-sliders-horizontal oa-icon"></span><?= __('Advanced') ?></h6>
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button c_change_primary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down text-primary"></span></button>
+                                <button class="btn btn-outline-secondary panel-button c_change_primary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="icon-chevron-down text-primary"></span></button>
                             </div>
                         </div>
                     </div>
@@ -33,7 +33,7 @@ include 'shared/collection_functions.php';
                                 <tbody>
                                     <?php foreach ($included['cidrs'] as $cidr) { ?>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('CIDR') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('networksCollection') ?>?networks.network=like/<?= $cidr->cidr ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('CIDR') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('networksCollection') ?>?networks.network=like/<?= $cidr->cidr ?>"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                         <td class="text-center"><?= $cidr->cidr ?></td>
                                         <td class="text-center"><?= $cidr->count ?></td>
                                     </tr>
@@ -54,22 +54,22 @@ include 'shared/collection_functions.php';
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Discoveries') ?>" role="button" class="btn btn-sm btn-success" href="<?= url_to('networksCollection') ?>?networks.edited_by=auto-generated%20by%20discoveries::index"><span class="fa fa-binoculars" aria-hidden="true"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Discoveries') ?>" role="button" class="btn btn-sm btn-success" href="<?= url_to('networksCollection') ?>?networks.edited_by=auto-generated%20by%20discoveries::index"><span class="icon-binoculars" aria-hidden="true"></span></a></td>
                                         <td class="text-center"><?= __('Discoveries') ?></td>
                                         <td class="text-center"><?= $included['discoveries'] ?></td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Audits') ?>" role="button" class="btn btn-sm btn-devices" href="<?= url_to('networksCollection') ?>?networks.description=Inserted%20from%20audit%20result."><span class="fa fa-desktop" aria-hidden="true"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Audits') ?>" role="button" class="btn btn-sm btn-devices" href="<?= url_to('networksCollection') ?>?networks.description=Inserted%20from%20audit%20result."><span class="icon-computer" aria-hidden="true"></span></a></td>
                                         <td class="text-center"><?= __('Device Audits') ?></td>
                                         <td class="text-center"><?= $included['devices'] ?></td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Collectors') ?>" role="button" class="btn btn-sm btn-info" href="<?= url_to('networksCollection') ?>?networks.description=LIKEcollector%20address"><span class="fa fa-cogs" aria-hidden="true"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Collectors') ?>" role="button" class="btn btn-sm btn-info" href="<?= url_to('networksCollection') ?>?networks.description=LIKEcollector%20address"><span class="icon-cogs" aria-hidden="true"></span></a></td>
                                         <td class="text-center"><?= __('Collectors') ?></td>
                                         <td class="text-center"><?= $included['collectors'] ?></td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Clouds') ?>" role="button" class="btn btn-sm btn-warning" href="<?= url_to('networksCollection') ?>?networks.options=!="><span class="fa fa-cloud" aria-hidden="true"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Clouds') ?>" role="button" class="btn btn-sm btn-warning" href="<?= url_to('networksCollection') ?>?networks.options=!="><span class="icon-cloud" aria-hidden="true"></span></a></td>
                                         <td class="text-center"><?= __('Clouds') ?></td>
                                         <td class="text-center"><?= $included['clouds'] ?></td>
                                     </tr>
@@ -92,7 +92,7 @@ include 'shared/collection_functions.php';
                                         $url_type = $type->type;
                                         $url_type = str_replace(' ', '%20', $url_type); ?>
                                     <tr>
-                                        <td class="text-center"><a title="<?= $url_type ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('networksCollection') ?>?networks.type=<?= $url_type ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                        <td class="text-center"><a title="<?= $url_type ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('networksCollection') ?>?networks.type=<?= $url_type ?>"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                         <td class="text-center"><?= $type->type ?></td>
                                         <td class="text-center"><?= $type->count ?></td>
                                     </tr>

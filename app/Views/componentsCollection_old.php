@@ -7,7 +7,7 @@ if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
     for ($i = 0; $i < count($data); $i++) {
         unset($data[$i]->attributes->first_seen);
         unset($data[$i]->attributes->last_seen);
-        $data[$i]->attributes->policy = '<a title="' . __('View Policy') . '" role="button" class="btn ' . $GLOBALS['button'] . ' btn-primary" href="' . url_to('benchmarks_policiesRead', intval($data[$i]->attributes->{'benchmarks_policies.id'})) . '"><span style="width:1rem;" title="' . __('View Policy') . '" class="fa fa-eye" aria-hidden="true"></span></a>';
+        $data[$i]->attributes->policy = '<a title="' . __('View Policy') . '" role="button" class="btn ' . $GLOBALS['button'] . ' btn-primary" href="' . url_to('benchmarks_policiesRead', intval($data[$i]->attributes->{'benchmarks_policies.id'})) . '"><span style="width:1rem;" title="' . __('View Policy') . '" class="icon-eye" aria-hidden="true"></span></a>';
         unset($data[$i]->attributes->{'benchmarks_policies.id'});
         switch ($data[$i]->attributes->result) {
             case 'pass':
@@ -58,7 +58,7 @@ if (!empty($data[0]->type) and $data[0]->type === 'benchmarks_result') {
                             <?php if (!empty($data)) { ?>
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
-                                    <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsRead', $item->id) ?>?components.type=<?= $item->type ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                    <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsRead', $item->id) ?>?components.type=<?= $item->type ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="icon-eye" aria-hidden="true"></span></a></td>
                                     <?= collection_button_read('devices', $item->attributes->device_id) ?>
                                     <td><?= $item->attributes->{'devices.name'} ?></td>
                                     <td><?= $item->attributes->{'id'} ?></td>

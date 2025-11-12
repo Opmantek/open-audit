@@ -22,7 +22,6 @@ $lang["bg"] = "Bulgarian";
 $lang["bn"] = "Bengali";
 $lang["ca"] = "Catalan";
 $lang["zh"] = "Chinese";
-$lang["zt"] = "Chinese (traditional)";
 $lang["cs"] = "Czech";
 $lang["da"] = "Danish";
 $lang["nl"] = "Dutch";
@@ -63,6 +62,7 @@ $lang["tr"] = "Turkish";
 $lang["uk"] = "Ukrainian";
 $lang["ur"] = "Urdu";
 $lang["vi"] = "Vietnamese";
+
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -90,26 +90,24 @@ $lang["vi"] = "Vietnamese";
                                     <?= read_field_header($meta->collection, 'lang', $dictionary->columns->lang, 'Language') ?>
                                     <div class="input-group">
                                         <select class="form-select" id="lang" name="lang" data-original-value="<?= $resource->lang ?>" disabled>
-                                            <?php foreach ($files as $file) {
-                                                $file = str_replace('.php', '', $file);
-                                                echo "<option value='$file'";
-                                                if ($resource->lang === $file) {
-                                                    echo 'selected';
+                                            <?php 
+                                            if (empty($lang[$resource->lang])) {
+                                                echo "<option value='" . $resource->lang . "' selected>" . $resource->lang . "</option>";
+                                            }
+                                            foreach ($lang as $key => $value) {
+                                                if ($resource->lang !== 'en') {
+                                                    echo '<option value="' . $key . '">' . __($value) . ' (' . $value . ')</option>';
+                                                } else {
+                                                    echo '<option value="' . $key . '">' . $value . '</option>';
                                                 }
-                                                echo ">";
-                                                $display = $file;
-                                                if (!empty($lang[$file])) {
-                                                    $display = __($lang[$file]);
-                                                }
-                                                echo $display . "</option>\n";
                                             }
                                             ?>
                                         </select>
                                         <?php if ($self_update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="lang" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="lang" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="lang" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="lang" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="lang" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="lang" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -127,9 +125,9 @@ $lang["vi"] = "Vietnamese";
                                         </select>
                                         <?php if ($self_update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="toolbar_style" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="toolbar_style" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="toolbar_style" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="toolbar_style" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="toolbar_style" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="toolbar_style" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -146,9 +144,9 @@ $lang["vi"] = "Vietnamese";
                                         </select>
                                         <?php if ($self_update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="list_table_format" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="list_table_format" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="list_table_format" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="list_table_format" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="list_table_format" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="list_table_format" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -168,15 +166,15 @@ $lang["vi"] = "Vietnamese";
                                                         $selected = 'selected';
                                                     }
                                                 } ?>
-                                                <option value="<?= $role->attributes->name ?>" <?= $selected ?>><?= __($role->attributes->name) ?></option>
+                                                <option value="<?= $role->attributes->name ?>" <?= $selected ?>><?= $role->attributes->name ?></option>
                                             <?php } ?>
                                         <?php } ?>
                                     </select>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="roles" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="roles" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="roles" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="roles" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="roles" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="roles" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -198,9 +196,9 @@ $lang["vi"] = "Vietnamese";
                                     </select>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="orgs" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="orgs" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="orgs" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="orgs" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="orgs" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="orgs" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>

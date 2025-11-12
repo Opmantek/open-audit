@@ -5,11 +5,11 @@ include 'shared/read_functions.php';
 include 'shared/common_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-desktop text-primary"></span>' . __('Devices') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span class="icon-eye text-oa-success"></span>' . __('Details') . '</a></li>';
+    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span class="icon-computer text-oa-primary"></span>' . __('Devices') . '</a></li>';
 } elseif ($style === 'icon') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-desktop text-primary"></span>' . __('Devices') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span class="icon-eye text-success"></span>' . __('Details') . '</a></li>';
+    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span class="icon-computer text-primary"></span>' . __('Devices') . '</a></li>';
 } else {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"></span>' . __('Details') . '</a></li>';
     $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
@@ -51,9 +51,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="float-end" style="padding-left:4px;">
-                                                    <div data-attribute="org_descendants" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="org_descendants" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="org_descendants" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="org_descendants" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="org_descendants" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="org_descendants" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -113,7 +113,7 @@ if ($style === 'icontext') {
                                             <?php
                                             foreach ($included['devices'] as $item) {
                                                 echo "<tr>\n";
-                                                echo "<td class=\"text-center\"><a title=\"" . __('Devices') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-devices\" href=\"" . url_to('devicesRead', $item->id) . "\"><span style=\"width:1rem;\" title=\"" . __('Devices') . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a></td>\n";
+                                                echo "<td class=\"text-center\"><a title=\"" . __('Devices') . "\" role=\"button\" class=\"btn " . $GLOBALS['button'] . " btn-devices\" href=\"" . url_to('devicesRead', $item->id) . "\"><span style=\"width:1rem;\" title=\"" . __('Devices') . "\" class=\"icon-computer\" aria-hidden=\"true\"></span></a></td>\n";
                                                 echo "    <td>" . $item->{'attributes'}->{'devices.name'} . "</td>\n";
                                                 echo "    <td>" . $item->{'attributes'}->{'software.name'} . "</td>\n";
                                                 echo "    <td>" . $item->{'attributes'}->{'software.version'} . "</td>\n";

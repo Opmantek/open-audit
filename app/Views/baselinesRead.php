@@ -37,24 +37,38 @@ if (!empty($included['baselines_policies']) and is_array($included['baselines_po
 
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $details_button         = '<li class="nav-item" role="presentation"><a href="#details"  class="nav-link" id="details-tab" ><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $results_button         = '<li class="nav-item" role="presentation"><a href="#results"  class="nav-link" id="results-tab" ><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Results') . '</a></li>';
-    $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" ><span style="margin-right:6px;" class="fa-solid fa-diagram-project text-success"></span>' . __('Netstat Policies') . '</a></li>';
-    $software_policy_button = '<li class="nav-item" role="presentation"><a href="#software" class="nav-link" id="software-tab"><span style="margin-right:6px;" class="fa-solid fa-box-open text-success" ></span>' . __('Software Policies') . '</a></li>';
-    $user_policy_button =     '<li class="nav-item" role="presentation"><a href="#user"     class="nav-link" id="user-tab"    ><span style="margin-right:6px;" class="fa-regular fa-user text-success"></span>' . __('User Policies') . '</a></li>';
-    $all_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCollection') . '?baselines_policies.baseline_id=' . $meta->id . '" class="nav-link"><span style="margin-right:6px;" class="fa fa-area-chart text-success"></span>' . __('All Policies') . '</a></li>';
+    $details_button         = '<li class="nav-item" role="presentation"><a href="#details"  class="nav-link" id="details-tab" ><span class="icon-eye text-oa-success"></span>' . __('Details') . '</a></li>';
 
-    $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab"><span style="margin-right:6px;" class="fa fa-plus text-success" ></span>' . __('Add Policy') . '</a></li>';
-    $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab"><span style="margin-right:6px;" class="fa fa-desktop text-success"></span>' . __('Add Policies from Device') . '</a></li>';
+    $results_button         = '<li class="nav-item" role="presentation"><a href="#results"  class="nav-link" id="results-tab" ><span class="icon-clipboard-plus text-oa-primary"></span>' . __('Results') . '</a></li>';
+
+    $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" ><span class="icon-ethernet-port text-oa-success"></span>' . __('Netstat Policies') . '</a></li>';
+
+    $software_policy_button = '<li class="nav-item" role="presentation"><a href="#software" class="nav-link" id="software-tab"><span class="icon-app-window text-oa-success" ></span>' . __('Software Policies') . '</a></li>';
+
+    $user_policy_button =     '<li class="nav-item" role="presentation"><a href="#user"     class="nav-link" id="user-tab"    ><span class="icon-user text-oa-success"></span>' . __('User Policies') . '</a></li>';
+
+    $all_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCollection') . '?baselines_policies.baseline_id=' . $meta->id . '" class="nav-link"><span class="icon-chart-area text-oa-success"></span>' . __('All Policies') . '</a></li>';
+
+    $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab"><span class="icon-plus text-oa-success" ></span>' . __('Add Policy') . '</a></li>';
+
+    $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab"><span class="icon-computer text-oa-success"></span>' . __('Add Policies from Device') . '</a></li>';
+
 } elseif ($style === 'icon') {
-    $details_button         = '<li class="nav-item" role="presentation"><a href="#details"  class="nav-link" id="details-tab" ><span title="' . __('Details') . '" style="margin-right:6px;" class="fa fa-eye text-success"></span></a></li>';
-    $results_button         = '<li class="nav-item" role="presentation"><a href="#results"  class="nav-link" id="results-tab" ><span title="' . __('Results') . '" style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span></a></li>';
-    $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" ><span title="' . __('Netstat Policies') . '" style="margin-right:6px;" class="fa-solid fa-diagram-project text-success"></span></a></li>';
-    $software_policy_button = '<li class="nav-item" role="presentation"><a href="#software" class="nav-link" id="software-tab"><span title="' . __('Software Policies') . '" style="margin-right:6px;" class="fa-solid fa-box-open text-success"></span></a></li>';
-    $user_policy_button =     '<li class="nav-item" role="presentation"><a href="#user"     class="nav-link" id="user-tab"    ><span title="' . __('User Policies') . '" style="margin-right:6px;" class="fa-regular fa-user text-success"></span></a></li>';
-    $all_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCollection') . '?baselines_policies.baseline_id=' . $meta->id . '" class="nav-link"><span style="margin-right:6px;" class="fa fa-area-chart text-success"></span></a></li>';
-    $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab"><span title="' . __('Add Policy') . '" style="margin-right:6px;" class="fa fa-plus text-success" ></span></a></li>';
-    $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab"><span title="' . __('Add Policies from Device') . '" style="margin-right:6px;" class="fa fa-desktop text-success" ></span></a></li>';
+    $details_button         = '<li class="nav-item" role="presentation"><a href="#details"  class="nav-link" id="details-tab" ><span title="' . __('Details') . '" class="icon-eye text-success"></span></a></li>';
+
+    $results_button         = '<li class="nav-item" role="presentation"><a href="#results"  class="nav-link" id="results-tab" ><span title="' . __('Results') . '" class="icon-clipboard-plus text-primary"></span></a></li>';
+
+    $netstat_policy_button  = '<li class="nav-item" role="presentation"><a href="#netstat"  class="nav-link" id="netstat-tab" ><span title="' . __('Netstat Policies') . '" class="icon-ethernet-port text-success"></span></a></li>';
+
+    $software_policy_button = '<li class="nav-item" role="presentation"><a href="#software" class="nav-link" id="software-tab"><span title="' . __('Software Policies') . '" class="icon-app-window text-success"></span></a></li>';
+
+    $user_policy_button =     '<li class="nav-item" role="presentation"><a href="#user"     class="nav-link" id="user-tab"    ><span title="' . __('User Policies') . '" class="icon-user text-success"></span></a></li>';
+
+    $all_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCollection') . '?baselines_policies.baseline_id=' . $meta->id . '" class="nav-link"><span class="icon-chart-area text-success"></span></a></li>';
+
+    $add_policy_button =      '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm') . '?baselines.id=' . $resource->id . '" class="nav-link" id="user-add-tab"><span title="' . __('Add Policy') . '" class="icon-plus text-success" ></span></a></li>';
+
+    $add_policy_from_device_button = '<li class="nav-item" role="presentation"><a href="' . url_to('baselines_policiesCreateForm')  . '?baselines.id=' . $resource->id . '&source=device" class="nav-link" id="device-add-tab"><span title="' . __('Add Policies from Device') . '" class="icon-computer text-success" ></span></a></li>';
 } else {
     $details_button         = '<li class="nav-item" role="presentation"><a href="#details"  class="nav-link" id="details-tab" >' . __('Details') . '</a></li>';
     $results_button         = '<li class="nav-item" role="presentation"><a href="#results"  class="nav-link" id="results-tab" >' . __('Results') . '</a></li>';
@@ -128,15 +142,15 @@ if ($style === 'icontext') {
                                 <tbody>
                                     <?php foreach ($included['baselines_results'] as $result) { ?>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Baselines Results') ?>" href="<?= url_to('baselines_resultsRead', $result->id) ?>" role="button" class="btn btn-primary <?= $GLOBALS['button'] ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Baselines Results') ?>" href="<?= url_to('baselines_resultsRead', $result->id) ?>" role="button" class="btn btn-primary <?= $GLOBALS['button'] ?>"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                         <td><?= $result->attributes->timestamp ?></td>
                                         <td><?= $result->attributes->result->group_name ?></td>
                                         <td class="text-center"><?= $result->attributes->result->devices ?></td>
                                         <td class="text-center"><strong class="text-success"><?= $result->attributes->result->pass ?></strong></td>
                                         <td class="text-center"><strong class="text-warning"><?= $result->attributes->result->fail ?></strong></td>
-                                        <td class="text-center"><a title="<?= __('Export by Policy') ?>" href="<?= url_to('baselines_resultsExportPolicy', $result->id) ?>" role="button" class="btn btn-primary <?= $GLOBALS['button'] ?>"><span class="fa fa-arrow-up-right-from-square" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
-                                        <td class="text-center"><a title="<?= __('Export by Device') ?>" href="<?= url_to('baselines_resultsExportDevice', $result->id) ?>" role="button" class="btn btn-primary <?= $GLOBALS['button'] ?>"><span class="fa fa-arrow-up-right-from-square" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
-                                        <td class="text-center"><button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger delete_link" data-id="<?= $result->id ?>" data-name="<?= $result->id ?>" data-collection="baselines_results"><span class="fa fa-trash" style="margin-right: 0px;"></span></button></td>
+                                        <td class="text-center"><a title="<?= __('Export by Policy') ?>" href="<?= url_to('baselines_resultsExportPolicy', $result->id) ?>" role="button" class="btn btn-primary <?= $GLOBALS['button'] ?>"><span class="icon-square-arrow-out-up-right" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Export by Device') ?>" href="<?= url_to('baselines_resultsExportDevice', $result->id) ?>" role="button" class="btn btn-primary <?= $GLOBALS['button'] ?>"><span class="icon-square-arrow-out-up-right" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger delete_link" data-id="<?= $result->id ?>" data-name="<?= $result->id ?>" data-collection="baselines_results"><span class="icon-trash-2"></span></button></td>
                                     </tr>
                                     <?php } ?>
                                 </tbody>
@@ -162,7 +176,7 @@ if ($style === 'icontext') {
                                 <tbody>
                                 <?php foreach ($netstat as $policy) { ?>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Baselines Policy Details') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('baselines_policiesRead', $policy->id) ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Baselines Policy Details') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('baselines_policiesRead', $policy->id) ?>"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                         <?php foreach ($policy->attributes->tests as $test) {
                                             if ($test->column === 'program') { ?>
                                                 <td><?= $test->value ?></td>
@@ -183,7 +197,7 @@ if ($style === 'icontext') {
                                         <?php if ($delete) { ?>
                                             <td class="text-center">
                                                 <button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger delete_link" data-redirect="baselines/<?= $resource->id ?>" data-collection="baselines_policies" data-id="<?= $policy->{'id'} ?>" data-name="<?= $policy->{'attributes'}->{'name'} ?>">
-                                                    <span class="fa fa-trash" style="margin-right: 0px;"></span>
+                                                    <span class="icon-trash-2"></span>
                                                 </button>
                                             </td>
                                         <?php } ?>
@@ -212,7 +226,7 @@ if ($style === 'icontext') {
                                 <tbody>
                                 <?php foreach ($software as $policy) { ?>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Baselines Policy Details') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('baselines_policiesRead', $policy->attributes->id) ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Baselines Policy Details') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('baselines_policiesRead', $policy->attributes->id) ?>"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                         <?php foreach ($policy->attributes->tests as $test) {
                                             if ($test->column === 'name') { ?>
                                                 <td><?= $test->{'value'} ?></td>
@@ -227,7 +241,7 @@ if ($style === 'icontext') {
                                         <?php if ($delete) { ?>
                                             <td class="text-center">
                                                 <button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger delete_link" data-redirect="baselines/<?= $resource->id ?>" data-collection="baselines_policies" data-id="<?= $policy->id ?>" data-name="<?= $policy->attributes->name ?>">
-                                                    <span class="fa fa-trash" style="margin-right: 0px;"></span>
+                                                    <span class="icon-trash-2"></span>
                                                 </button>
                                             </td>
                                         <?php } ?>
@@ -259,7 +273,7 @@ if ($style === 'icontext') {
                                 <tbody>
                                 <?php foreach ($users as $policy) { ?>
                                     <tr>
-                                        <td class="text-center"><a title="<?= __('Baselines Policy') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('baselines_policiesRead', $policy->attributes->id) ?>"><span class="fa fa-eye" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                        <td class="text-center"><a title="<?= __('Baselines Policy') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('baselines_policiesRead', $policy->attributes->id) ?>"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                         <?php foreach ($policy->attributes->tests as $test) {
                                             if ($test->column === 'name') {
                                                 echo "<td>" . $test->{'value'} . "</td>\n";
@@ -295,7 +309,7 @@ if ($style === 'icontext') {
                                         <?php if ($delete) { ?>
                                             <td class="text-center">
                                                 <button type="button" class="btn <?= $GLOBALS['button'] ?> btn-danger delete_link" data-redirect="baselines/<?= $resource->id ?>" data-collection="baselines_policies" data-id="<?= $policy->id ?>" data-name="<?= $policy->attributes->name ?>">
-                                                    <span class="fa fa-trash" style="margin-right: 0px;"></span>
+                                                    <span class="icon-trash-2"></span>
                                                 </button>
                                             </td>
                                         <?php } ?>

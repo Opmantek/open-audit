@@ -27,10 +27,10 @@ include 'shared/collection_functions.php';
                             <?php if (!empty($data)) { ?>
                                 <?php foreach ($data as $item) {
                                     if ($item->actioned === 'y') {
-                                        $item->actioned = '<span class="fa fa-check text-success"></span>';
+                                        $item->actioned = '<span class="icon-check text-success"></span>';
                                     }
                                     if ($item->actioned === 'n') {
-                                        $item->actioned = '<span class="fa fa-xmark text-danger"></span>';
+                                        $item->actioned = '<span class="icon-x text-danger"></span>';
                                     }
                                     ?>
                                 <tr>
@@ -67,9 +67,9 @@ window.onload = function () {
         $("#button_create").remove();
         $("#button_default_items").remove();
         <?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
-            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __('Get News') ?>\" href=\"<?= url_to('newsExecuteAll') ?>\"><span style=\"margin-right:6px;\" class=\"fa-solid fa-rss text-primary\"></span><?= __('Get News') ?></a>");
+            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __('Get News') ?>\" href=\"<?= url_to('newsExecuteAll') ?>\"><span class=\"icon-rss text-primary\"></span><?= __('Get News') ?></a>");
         <?php } elseif ($user->toolbar_style === 'icon') { ?>
-            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __('Get News') ?>\" href=\"<?= url_to('newsExecuteAll') ?>\"><span class=\"fa-solid fa-rss text-primary\"></span></a>");
+            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __('Get News') ?>\" href=\"<?= url_to('newsExecuteAll') ?>\"><span class=\"icon-rss text-primary\"></span></a>");
         <?php } elseif ($user->toolbar_style === 'text') { ?>
             $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"<?= __('Get News') ?>\" href=\"<?= url_to('newsExecuteAll') ?>\"><?= __('Get News') ?></a>");
         <?php } ?>

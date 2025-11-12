@@ -8,7 +8,7 @@ $operating_system = $config->server_platform;
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h6 style="padding-top:10px;"><span class="fa-solid fa-arrows-spin oa-icon"></span><?= __('About') ?></h6>
+                    <h6 style="padding-top:10px;"><span class="icon-life-buoy oa-icon"></span><?= __('About') ?></h6>
                 </div>
                 <div class="card-body text-center">
                     <div class="row">

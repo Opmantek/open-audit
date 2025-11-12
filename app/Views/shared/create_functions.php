@@ -10,11 +10,11 @@ function create_card_header(string $collection = '', string $icon = '', object $
     $collection_title = __($collection_title);
 
     if ($style === 'icontext') {
-        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('List') . "\" href=\"" . url_to($collection . 'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span>" . __('List') . "</a>";
-        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __('Help') . "</a>";
+        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('List') . "\" href=\"" . url_to($collection . 'Collection') . "\"><span class=\"icon-list text-oa-primary\"></span>" . __('List') . "</a>";
+        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($collection . 'Help') . "\"><span class=\"icon-circle-question-mark text-oa-primary\"></span>" . __('Help') . "</a>";
     } elseif ($style === 'icon') {
-        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('List') . "\" href=\"" . url_to($collection . 'Collection') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-list text-primary\"></span></a>";
-        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span></a>";
+        $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('List') . "\" href=\"" . url_to($collection . 'Collection') . "\"><span class=\"icon-list text-primary\"></span></a>";
+        $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($collection . 'Help') . "\"><span class=\"icon-circle-question-mark text-primary\"></span></a>";
     } else {
         $collection_button = "<a id=\"button_list\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('List') . "\" href=\"" . url_to($collection . 'Collection') . "\">" . __('List') . "</a>";
         $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($collection . 'Help') . "\">" . __('Help') . "</a>";

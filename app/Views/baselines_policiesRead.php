@@ -12,7 +12,7 @@ include 'shared/common_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-7">
-                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('baselinesRead', $resource->{'baseline_id'}) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>"; ?>
+                            <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('baselinesRead', $resource->{'baseline_id'}) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>
                             <?= read_field('Baseline Name', html_entity_decode($resource->{'baselines.name'}), '', '', '', $link) ?>
                             <?= read_field('name', html_entity_decode($resource->name), $dictionary->columns->name, $update) ?>
 
@@ -43,9 +43,9 @@ include 'shared/common_functions.php';
                                                     </select>
                                                     <?php if ($update) { ?>
                                                     <div class="float-end" style="padding-left:4px;">
-                                                        <div data-attribute="tests.operator" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                        <div data-attribute="tests.operator" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                        <div data-attribute="tests.operator" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                        <div data-attribute="tests.operator" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                        <div data-attribute="tests.operator" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                        <div data-attribute="tests.operator" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                     </div>
                                                     <?php } ?>
                                                 </div>
@@ -75,9 +75,9 @@ include 'shared/common_functions.php';
                                         <textarea class="form-control" rows="6" id="sql" name="notes" data-original-value="<?= $resource->notes ?>" disabled><?= $resource->notes ?></textarea>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="notes" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="notes" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="notes" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="notes" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="notes" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="notes" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -92,9 +92,9 @@ include 'shared/common_functions.php';
                                         <textarea class="form-control" rows="6" id="documentation" name="documentation" data-original-value="<?= $resource->documentation ?>" disabled><?= $resource->documentation ?></textarea>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="documentation" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="documentation" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="documentation" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="documentation" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="documentation" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="documentation" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>

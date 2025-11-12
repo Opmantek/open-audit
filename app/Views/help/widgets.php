@@ -11,14 +11,14 @@ $intro = '<p>' . __('Widgets are designed to be used on Dashboards. Enterprise u
 
 $body = '<h2>' . __('Creating Widgets') . '</h2>
 
-<p>' . __('When creating a widget, if you select the \'Advanced\' button you will have the ability to upload your own custom SQL.<br>
-<br>The SELECT section of your SQL must contain fully qualified columns and specify certain columns.<br>
-<br>Pie charts must return name or my_name, description or my_description and count.<br>
-<br>Line charts must return date or my_date, description or my_description and count.<br>
-<br>The WHERE section of your SQL <em>must</em> contain') . ' <strong>WHERE @filter</strong> ' . __('so Open-AudIT knows to restrict your query to the appropriate Orgs.<br>
-<br>SQL not containing this condition will result in the widget failing to be executed.<br>
-<br>The SQL cannot contain <strong>WHERE @filter OR</strong>. That SQL will not be executed, however <strong>WHERE @filter AND</strong> queries are allowed.<br>
-<br>An example widget SQL showing devices counted per location.') . ' .<br>
+<p>' . __('When creating a widget, if you select the <i>Advanced</i> button you will have the ability to upload your own custom SQL.') . '<br>
+<br>' . __('The SELECT section of your SQL must contain fully qualified columns and specify certain columns.') . '<br>
+<br>' . __('Pie charts must return name or my_name, description or my_description and count.') . '<br>
+<br>' . __('Line charts must return date or my_date, description or my_description and count.') . '<br>
+<br>' . __('The WHERE section of your SQL <em>must</em> contain') . ' <strong>WHERE @filter</strong> ' . __('so Open-AudIT knows to restrict your query to the appropriate Orgs.') . '<br>
+<br>' . __('SQL not containing this condition will result in the widget failing to be executed.') . '<br>
+<br>' . __('The SQL cannot contain <strong>WHERE @filter OR</strong>. That SQL will not be executed, however <strong>WHERE @filter AND</strong> queries are allowed.') . '<br>
+<br>' . __('An example widget SQL showing devices counted per location.') . ' .<br>
 
 <code>SELECT locations.name as `name`,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;locations.id AS `description`,<br>

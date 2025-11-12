@@ -3,13 +3,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
 foreach ($data as $item) {
-    $item->attributes->status = '<button class="btn btn-sm btn-success"><span class="fa-solid fa-check"></span></button>';
+    $item->attributes->status = '<button class="btn btn-sm btn-success"><span class="icon-check"></span></button>';
     if ($item->attributes->active === 'y' AND date('Y-m-d') > $item->attributes->action_date AND date('Y-m-d') < $item->attributes->expire_date and $item->attributes->auto_renew !== 'y') {
-        $item->attributes->status = '<button class="btn btn-sm btn-warning"><span class="fa-solid fa-circle-exclamation"></span></button>';
+        $item->attributes->status = '<button class="btn btn-sm btn-warning"><span class="icon-circle-alert"></span></button>';
         $item->attributes->action_date = '<span class="text-warning">' . $item->attributes->action_date . '</span>';
     }
     if ($item->attributes->active === 'y' AND date('Y-m-d') > $item->attributes->expire_date) {
-        $item->attributes->status = '<button class="btn btn-sm btn-danger"><span class="fa-solid fa-triangle-exclamation"></span></button>';
+        $item->attributes->status = '<button class="btn btn-sm btn-danger"><span class="icon-triangle-alert"></span></button>';
         $item->attributes->expire_date = '<span class="text-danger">' . $item->attributes->expire_date . '</span>';
     }
 }

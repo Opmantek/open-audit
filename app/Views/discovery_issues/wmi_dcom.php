@@ -7,9 +7,7 @@
 <br>
 <p><?= __('On the target Windows PC, run the DCOM utility and verify (or set) the below attributes. Start -> Run, Enter DCOMCNFG and press OK. This will open the DCOMCNFG window.') ?><br>
 
-<br><?= __('Browse down the tree to Console Root -> Component Services -> Computers -> My Computer<br>
-<br>Right click on "My Computer" and select properties<br>
-<br>Select the "Default Properties" tab') ?><br>
+<br><?= __('Browse down the tree to Console Root -> Component Services -> Computers -> My Computer<br><br>Right click on <i>My Computer</i> and select properties<br><br>Select the <i>Default Properties</i> tab') ?><br>
 
 <ul>
     <li><?= __('Enable Distributed COM on this computer - Option is checked') ?></li>
@@ -18,8 +16,7 @@
 
     <li><?= __('Default Impersonation Level - Set to Identify') ?></li>
 </ul>
-<br><?= __('Select the "COM Security" tab<br>
-<br>Click on Access Permissions Edit Default') ?><br>
+<br><?= __('Select the <i>COM Security</i> tab<br><br>Click on Access Permissions Edit Default') ?><br>
 <ul>
     <li><?= __('Add') ?> "Anonymous", "Everyone", "Interactive", "Network", "System" <?= __('with Local and Remote access permissions set.') ?></li>
 </ul>
@@ -28,6 +25,5 @@ Click on Launch and Activation Permissions ' Edit Default<br>
 <ul>
     <li><?= __('Add') ?> "Anonymous", "Everyone", "Interactive", "Network", "System" <?= __('with Local and Remote access permissions set.') ?></li>
 </ul>
-<br><?= __('Click on OK and close the DCOMCNFG window.<br>
-<br>The above changes will require a reboot to take effect.') ?><br>
+<br><?= __('Click on OK and close the DCOMCNFG window.<br><br>The above changes will require a reboot to take effect.') ?><br>
 <br>

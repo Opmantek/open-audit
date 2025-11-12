@@ -34,7 +34,7 @@ include 'shared/common_functions.php';
                                     <td><?= $column->max_length ?></td>
                                     <td><?= $column->primary_key ?></td>
                                     <td><?= @$column->values ?></td>
-                                    <td class="text-center"><?php if (in_array($column->name, $dictionary->attributes->create)) { ?><span class="fa fa-check text-success"></span><?php } ?></td>
+                                    <td class="text-center"><?php if (in_array($column->name, $dictionary->attributes->create)) { ?><span class="icon-check text-success"></span><?php } ?></td>
                                     <?php if (is_string($dictionary->columns->{$column->name})) { ?>
                                     <td><?= __($dictionary->columns->{$column->name}) ?></td>
                                     <?php } else { ?>
@@ -55,7 +55,7 @@ include 'shared/common_functions.php';
                         <div class="col-3 clearfix">
                             <div class="btn-group btn-group-sm" role="group" aria-label="">
                                 <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-outline-dark oa-card-button"><span class="fa fa-database" style="margin-right:10px;" aria-hidden="true"></span><?= __('SQL Creation Statements') ?></button>
+                                    <button type="button" class="btn btn-outline-dark oa-card-button"><span class="icon-database" style="margin-right:10px;" aria-hidden="true"></span><?= __('SQL Creation Statements') ?></button>
                                 </div>
                             </div>
                         </div>
@@ -74,9 +74,9 @@ include 'shared/common_functions.php';
 window.onload = function () {
     $(document).ready(function() {
         <?php if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
-        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="fa fa-rotate-right text-success"></span>&nbsp;<?= __('Reset') ?></button></form>');
+        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="icon-rotate-cw text-success"></span>&nbsp;<?= __('Reset') ?></button></form>');
         <?php } elseif (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
-        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="fa fa-rotate-right text-success"></span></button></form>');
+        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="icon-rotate-cw text-success"></span></button></form>');
         <?php } else { ?>
         $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><?= __('Reset') ?></button></form>');
         <?php } ?>

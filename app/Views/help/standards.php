@@ -2,43 +2,43 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-$intro = '<p>The Standards functionality in Open-AudIT allows you to, ahead of time, complete the questions auditors require when completing ISO 27001 certification.</p>
+$intro = '<p>' . __('The Standards functionality in Open-AudIT allows you to, ahead of time, complete the questions auditors require when completing ISO 27001 certification.') . '</p>
     <br>
-    <h2>ISO/IEC 27001 Certification</h2>
+    <h2>ISO/IEC 27001 ' . __('Certification') . '</h2>
 
-    <h3>Purpose</h3>
-    <p>ISO/IEC 27001 is an international standard for managing information security. It provides a framework for establishing, implementing, maintaining, and continually improving an Information Security Management System (ISMS).</p>
+    <h3>' . __('Purpose') . '</h3>
+    <p>ISO/IEC 27001 ' . __('is an international standard for managing information security. It provides a framework for establishing, implementing, maintaining, and continually improving an Information Security Management System (ISMS).') . '</p>
     <ul>
-        <li>Protects confidentiality, integrity, and availability of information</li>
-        <li>Helps manage and mitigate information security risks</li>
-        <li>Supports compliance with legal and regulatory requirements</li>
+        <li>' . __('Protects confidentiality, integrity, and availability of information') . '</li>
+        <li>' . __('Helps manage and mitigate information security risks') . '</li>
+        <li>' . __('Supports compliance with legal and regulatory requirements') . '</li>
     </ul>
-    <h3>Key Components</h3>
+    <h3>' . __('Key Components') . '</h3>
     <ul>
-        <li><strong>ISMS:</strong> A structured system for managing sensitive information</li>
-        <li><strong>Risk Management:</strong> Identifying and evaluating security risks</li>
-        <li><strong>Annex A Controls:</strong> 93 controls grouped into organizational, people, physical, and technological categories</li>
+        <li><strong>' . __('ISMS') . ':</strong> ' . __('A structured system for managing sensitive information') . '</li>
+        <li><strong>' . __('Risk Management') . ':</strong> ' . __('Identifying and evaluating security risks') . '</li>
+        <li><strong>' . __('Annex A Controls') . ':</strong> ' . __('93 controls grouped into organizational, people, physical, and technological categories') . '</li>
     </ul>
-    <h3>Certification Process</h3>
+    <h3>' . __('Certification Process') . '</h3>
     <ol>
-        <li><strong>Gap Analysis (optional):</strong> Review current practices against ISO 27001 requirements</li>
-        <li><strong>Implementation:</strong> Develop policies, procedures, and controls</li>
-        <li><strong>Internal Audit:</strong> Evaluate the ISMS internally</li>
-        <li><strong>Certification Audit:</strong> Conducted by an accredited body in two stages:
+        <li><strong>' . __('Gap Analysis (optional)') . ':</strong> ' . __('Review current practices against ISO 27001 requirements') . '</li>
+        <li><strong>' . __('Implementation') . ':</strong> ' . __('Develop policies, procedures, and controls') . '</li>
+        <li><strong>' . __('Internal Audit') . ':</strong> ' . __('Evaluate the ISMS internally') . '</li>
+        <li><strong>' . __('Certification Audit') . ':</strong> ' . __('Conducted by an accredited body in two stages') . ':
             <ul>
-                <li>Stage 1: Documentation review</li>
-                <li>Stage 2: Implementation and effectiveness review</li>
+                <li>' . __('Stage 1: Documentation review') . '</li>
+                <li>' . __('Stage 2: Implementation and effectiveness review') . '</li>
             </ul>
         </li>
-        <li><strong>Surveillance Audits:</strong> Annual audits to maintain certification</li>
-        <li><strong>Recertification:</strong> Required every three years</li>
+        <li><strong>' . __('Surveillance Audits:</strong> Annual audits to maintain certification') . '</li>
+        <li><strong>' . __('Recertification:</strong> Required every three years') . '</li>
     </ol>
-    <h3>Benefits</h3>
+    <h3>' . __('Benefits') . '</h3>
     <ul>
-        <li>Builds trust with clients and partners</li>
-        <li>Reduces risk of data breaches and cyber threats</li>
-        <li>Enhances regulatory compliance</li>
-        <li>Improves business continuity and resilience</li>
+        <li>' . __('Builds trust with clients and partners') . '</li>
+        <li>' . __('Reduces risk of data breaches and cyber threats') . '</li>
+        <li>' . __('Enhances regulatory compliance') . '</li>
+        <li>' . __('Improves business continuity and resilience') . '</li>
     </ul>
 
 
@@ -48,70 +48,70 @@ $intro = '<p>The Standards functionality in Open-AudIT allows you to, ahead of t
 ';
 
 $body = '<br><p>
-<h2>The ISO/IEC 27001 certification process and its key elements.</h2>
+<h2>' . __('The ISO/IEC 27001 certification process and its key elements.') . '</h2>
 <ul>
-  <li><strong>1. Initiation</strong>
+  <li><strong>1. ' . __('Initiation') . '</strong>
     <ul>
-      <li>Obtain top management support</li>
-      <li>Define project scope and objectives</li>
-      <li>Identify key stakeholders and assign roles</li>
-      <li>Establish a project plan and timeline</li>
+      <li>' . __('Obtain top management support') . '</li>
+      <li>' . __('Define project scope and objectives') . '</li>
+      <li>' . __('Identify key stakeholders and assign roles') . '</li>
+      <li>' . __('Establish a project plan and timeline') . '</li>
     </ul>
   </li>
-  <li><strong>2. Context & Leadership</strong>
+  <li><strong>2. ' . __('Context & Leadership') . '</strong>
     <ul>
-      <li>Define the context of the organization (internal/external issues)</li>
-      <li>Identify interested parties and their requirements</li>
-      <li>Define the ISMS scope</li>
-      <li>Establish an information security policy</li>
-      <li>Assign an ISMS manager or team</li>
+      <li>' . __('Define the context of the organization (internal/external issues)') . '</li>
+      <li>' . __('Identify interested parties and their requirements') . '</li>
+      <li>' . __('Define the ISMS scope') . '</li>
+      <li>' . __('Establish an information security policy') . '</li>
+      <li>' . __('Assign an ISMS manager or team') . '</li>
     </ul>
   </li>
-  <li><strong>3. Risk Assessment & Treatment</strong>
+  <li><strong>3. ' . __('Risk Assessment & Treatment') . '</strong>
     <ul>
-      <li>Identify information assets</li>
-      <li>Conduct a risk assessment</li>
-      <li>Determine risk treatment options</li>
-      <li>Select and apply appropriate controls (Annex A)</li>
-      <li>Create a Statement of Applicability (SoA)</li>
-      <li>Develop a Risk Treatment Plan</li>
+      <li>' . __('Identify information assets') . '</li>
+      <li>' . __('Conduct a risk assessment') . '</li>
+      <li>' . __('Determine risk treatment options') . '</li>
+      <li>' . __('Select and apply appropriate controls (Annex A)') . '</li>
+      <li>' . __('Create a Statement of Applicability (SoA)') . '</li>
+      <li>' . __('Develop a Risk Treatment Plan') . '</li>
     </ul>
   </li>
-  <li><strong>4. Documentation</strong>
+  <li><strong>4. ' . __('Documentation') . '</strong>
     <ul>
-      <li>Develop required ISMS documentation (policies, procedures, etc.)</li>
-      <li>Maintain records of risk assessments and treatments</li>
-      <li>Ensure documentation is controlled and accessible</li>
+      <li>' . __('Develop required ISMS documentation (policies, procedures, etc.)') . '</li>
+      <li>' . __('Maintain records of risk assessments and treatments') . '</li>
+      <li>' . __('Ensure documentation is controlled and accessible') . '</li>
     </ul>
   </li>
-  <li><strong>5. Implementation</strong>
+  <li><strong>5. ' . __('Implementation') . '</strong>
     <ul>
-      <li>Implement selected controls and procedures</li>
-      <li>Conduct awareness and training programs</li>
-      <li>Monitor and measure ISMS performance</li>
-      <li>Manage incidents and nonconformities</li>
+      <li>' . __('Implement selected controls and procedures') . '</li>
+      <li>' . __('Conduct awareness and training programs') . '</li>
+      <li>' . __('Monitor and measure ISMS performance') . '</li>
+      <li>' . __('Manage incidents and nonconformities') . '</li>
     </ul>
   </li>
-  <li><strong>6. Internal Audit & Review</strong>
+  <li><strong>6. ' . __('Internal Audit & Review') . '</strong>
     <ul>
-      <li>Plan and conduct internal audits</li>
-      <li>Address audit findings and corrective actions</li>
-      <li>Conduct management review meetings</li>
+      <li>' . __('Plan and conduct internal audits') . '</li>
+      <li>' . __('Address audit findings and corrective actions') . '</li>
+      <li>' . __('Conduct management review meetings') . '</li>
     </ul>
   </li>
-  <li><strong>7. Certification Audit</strong>
+  <li><strong>7. ' . __('Certification Audit') . '</strong>
     <ul>
-      <li>Select an accredited certification body</li>
-      <li>Undergo Stage 1 audit (documentation review)</li>
-      <li>Undergo Stage 2 audit (implementation review)</li>
-      <li>Address any nonconformities</li>
+      <li>' . __('Select an accredited certification body') . '</li>
+      <li>' . __('Undergo Stage 1 audit (documentation review)') . '</li>
+      <li>' . __('Undergo Stage 2 audit (implementation review)') . '</li>
+      <li>' . __('Address any nonconformities') . '</li>
     </ul>
   </li>
-  <li><strong>8. Post-Certification</strong>
+  <li><strong>8. ' . __('Post-Certification') . '</strong>
     <ul>
-      <li>Conduct regular surveillance audits (usually annually)</li>
-      <li>Continuously improve the ISMS</li>
-      <li>Prepare for recertification every 3 years</li>
+      <li>' . __('Conduct regular surveillance audits (usually annually)') . '</li>
+      <li>' . __('Continuously improve the ISMS') . '</li>
+      <li>' . __('Prepare for recertification every 3 years') . '</li>
     </ul>
   </li>
 </ul>

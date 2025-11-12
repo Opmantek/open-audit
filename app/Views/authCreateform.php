@@ -32,13 +32,13 @@ if (strpos(base_url(), 'https:') === false) {
                                         <label class="form-label" for="data[attributes][type]"><?= __('Type') ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][type]" id="data[attributes][type]" required>
                                             <option value="" selected><?= __('Choose') ?></option>
-                                            <option value="active directory"><?= ('Active Directory') ?></option>
+                                            <option value="active directory"><?= __('Active Directory') ?></option>
                                             <?php if ($config->product === 'enterprise') { ?>
-                                            <option value="entra"><?= ('Entra') ?></option>
-                                            <!--<option value="github"><?= ('Github') ?></option>-->
-                                            <option value="okta"><?= ('Okta') ?></option>
+                                            <option value="entra"><?= __('Entra') ?></option>
+                                            <!--<option value="github"><?= __('Github') ?></option>-->
+                                            <option value="okta"><?= __('Okta') ?></option>
                                             <?php } ?>
-                                            <option value="openldap"><?= ('OpenLDAP') ?></option>
+                                            <option value="openldap"><?= __('OpenLDAP') ?></option>
                                         </select>
                                     </div>
                                 </div>

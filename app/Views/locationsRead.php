@@ -8,17 +8,19 @@ if (!empty($config->maps_api_key) and ($config->product === 'professional' or $c
     $disabled = '';
 }
 if ($user->toolbar_style === 'icontext') {
-    $latlong = '<li class="nav-item" role="presentation"><button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-default"><span style="margin-right:6px;" class="fa-solid fa-globe text-success"></span>' . __('Get Lat/Long') . '</button></li>';
+    $latlong = '<li class="nav-item" role="presentation"><button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-default"><span class="icon-earth text-oa-success"></span>' . __('Get Lat/Long') . '</button></li>';
 
-    $geocode = '<li class="nav-item" role="presentation"><button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-default"><span style="margin-right:6px;" class="fa-solid fa-map text-success"></span>' . __('Create Geocode') . '</button></li>';
+    $geocode = '<li class="nav-item" role="presentation"><button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-default"><span class="icon-map text-oa-success"></span>' . __('Create Geocode') . '</button></li>';
 
-    $devices = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('devicesCollection') . '?devices.location_id=' . $resource->id . '"><span style="margin-right:6px;" class="fa-solid fa-desktop text-primary"></span>' . __('Devices') . '</a></li>';
+    $devices = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('devicesCollection') . '?devices.location_id=' . $resource->id . '"><span class="icon-computer text-oa-primary"></span>' . __('Devices') . '</a></li>';
+
 } elseif ($user->toolbar_style === 'icon') {
-    $latlong = '<li class="nav-item" role="presentation"><button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-default"><span class="fa-solid fa-globe text-success"></span></button></li>';
+    $latlong = '<li class="nav-item" role="presentation"><button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-default"><span class="icon-earth text-success"></span></button></li>';
 
-    $geocode = '<li class="nav-item" role="presentation"><button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-default"><span class="fa-solid fa-map text-success"></span></button></li>';
+    $geocode = '<li class="nav-item" role="presentation"><button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-default"><span class="icon-map text-success"></span></button></li>';
 
-    $devices = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('devicesCollection') . '?devices.location_id=' . $resource->id . '"><span class="fa-solid fa-desktop text-primary"></span></a></li>';
+    $devices = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('devicesCollection') . '?devices.location_id=' . $resource->id . '"><span class="icon-computer text-primary"></span></a></li>';
+
 } else {
     $latlong = '<li class="nav-item" role="presentation"><button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-default">' . __('Get Lat/Long') . '</button></li>';
 
@@ -53,8 +55,8 @@ if ($user->toolbar_style === 'icontext') {
                             foreach ($attributes as $attribute) {
                                 $link_button = '';
                                 if (in_array($attribute, ['suburb', 'district', 'region', 'area'])) {
-                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Locations in this') . ' ' . ucfirst($attribute) . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">
-                                    <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Devices in this') . ' ' . $attribute . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
+                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Locations in this') . ' ' . ucfirst($attribute) . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">
+                                    <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Devices in this') . ' ' . $attribute . "\" class=\"icon-computer\" aria-hidden=\"true\"></span></a>";
                                 }
                                 echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button, '', '', $meta->collection) . "\n";
                             } ?>
@@ -64,8 +66,8 @@ if ($user->toolbar_style === 'icontext') {
                             foreach ($attributes as $attribute) {
                                 $link_button = '';
                                 if (in_array($attribute, ['city', 'state', 'postcode', 'country'])) {
-                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Locations in this') . ' ' . ucfirst($attribute) . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">
-                                    <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Devices in this') . ' ' . ucfirst($attribute) . "\" class=\"fa fa-desktop\" aria-hidden=\"true\"></span></a>";
+                                    $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Locations in this') . ' ' . ucfirst($attribute) . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">
+                                    <a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?locations." . $attribute . "=" . urlencode($resource->{$attribute}) . "\"><span title=\"" . __('Devices in this') . ' ' . ucfirst($attribute) . "\" class=\"icon-computer\" aria-hidden=\"true\"></span></a>";
                                 }
                                 echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button, '', '', $meta->collection) . "\n";
                             } ?>

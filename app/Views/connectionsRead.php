@@ -6,13 +6,13 @@ include 'shared/common_functions.php';
 
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab" ><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $site_a         = '<li class="nav-item" role="presentation"><a href="#site_a"  class="nav-link" id="site_a-tab" ><span style="margin-right:6px;" class="fa fa-building text-success"></span>' . __('Site A') . '</a></li>';
-    $site_b         = '<li class="nav-item" role="presentation"><a href="#site_b"  class="nav-link" id="site_b-tab" ><span style="margin-right:6px;" class="fa fa-building text-success"></span>' . __('Site B') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab" ><span style="margin-right:6px;" class="icon-eye text-success"></span>' . __('Details') . '</a></li>';
+    $site_a         = '<li class="nav-item" role="presentation"><a href="#site_a"  class="nav-link" id="site_a-tab" ><span style="margin-right:6px;" class="icon-building text-success"></span>' . __('Site A') . '</a></li>';
+    $site_b         = '<li class="nav-item" role="presentation"><a href="#site_b"  class="nav-link" id="site_b-tab" ><span style="margin-right:6px;" class="icon-building text-success"></span>' . __('Site B') . '</a></li>';
 } elseif ($style === 'icon') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab" ><span title="' . __('Details') . '" style="margin-right:6px;" class="fa fa-eye text-success"></span></a></li>';
-    $site_a         = '<li class="nav-item" role="presentation"><a href="#site_a"  class="nav-link" id="site_a-tab" ><span title="' . __('Site A') . '" style="margin-right:6px;" class="fa fa-building text-success"></span></a></li>';
-    $site_b         = '<li class="nav-item" role="presentation"><a href="#site_b"  class="nav-link" id="site_b-tab" ><span title="' . __('Site B') . '" style="margin-right:6px;" class="fa fa-building text-success"></span></a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab" ><span title="' . __('Details') . '" style="margin-right:6px;" class="icon-eye text-success"></span></a></li>';
+    $site_a         = '<li class="nav-item" role="presentation"><a href="#site_a"  class="nav-link" id="site_a-tab" ><span title="' . __('Site A') . '" style="margin-right:6px;" class="icon-building text-success"></span></a></li>';
+    $site_b         = '<li class="nav-item" role="presentation"><a href="#site_b"  class="nav-link" id="site_b-tab" ><span title="' . __('Site B') . '" style="margin-right:6px;" class="icon-building text-success"></span></a></li>';
 } else {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab" >' . __('Details') . '</a></li>';
     $site_a         = '<li class="nav-item" role="presentation"><a href="#site_a"  class="nav-link" id="site_a-tab" >' . __('Site A') . '</a></li>';
@@ -84,7 +84,7 @@ if ($style === 'icontext') {
                                             if (!empty($resource->{'device_id_a'})) {
                                                 $href = url_to('devicesRead', intval($resource->{'device_id_a'}));
                                             }
-                                            $link = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"$href\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                            $link = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"$href\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>";
                                             if (!empty($resource->{$field})) {
                                                 $resource->{$field} = $resource->{$field} . ' (' . $resource->{'devices.device_name_a'} . ')';
                                             } else {
@@ -137,7 +137,7 @@ if ($style === 'icontext') {
                                             if (!empty($resource->{'device_id_b'})) {
                                                 $href = url_to('devicesRead', intval($resource->{'device_id_b'}));
                                             }
-                                            $link = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"$href\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>";
+                                            $link = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"$href\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>";
                                             if (!empty($resource->{$field})) {
                                                 $resource->{$field} = $resource->{$field} . ' (' . $resource->{'devices.device_name_b'} . ')';
                                             } else {

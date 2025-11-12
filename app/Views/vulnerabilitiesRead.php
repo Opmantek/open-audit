@@ -5,15 +5,15 @@ include 'shared/read_functions.php';
 include 'shared/common_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" class="fa fa-eye text-primary"></span>' . __('Summary') . '</a></li>';
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Devices') . '</a></li>';
-    $sql_button = '<li class="nav-item" role="presentation"><a href="#sql" class="nav-link" id="sql-tab"><span style="margin-right:6px;" class="fa fa-code text-primary" ></span>' . __('SQL') . '</a></li>';
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span class="icon-eye text-oa-primary"></span>' . __('Summary') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span class="icon-eye text-oa-success"></span>' . __('Details') . '</a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span class="icon-computer text-oa-primary" ></span>' . __('Devices') . '</a></li>';
+    $sql_button = '<li class="nav-item" role="presentation"><a href="#sql" class="nav-link" id="sql-tab"><span class="icon-code text-oa-primary" ></span>' . __('SQL') . '</a></li>';
 } elseif ($style === 'icon') {
-    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" title="' . __('Summary') . '" class="fa fa-eye text-primary"></span></a></li>';
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="fa fa-desktop text-primary"></span></a></li>';
-    $sql_button = '<li class="nav-item" role="presentation"><a href="#sql" class="nav-link" id="sql-tab"><span style="margin-right:6px;" title="' . __('SQL') . '" class="fa fa-code text-primary"></span></a></li>';
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span title="' . __('Summary') . '" class="icon-eye text-primary"></span></a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span title="' . __('Details') . '" class="icon-eye text-success"></span></a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span title="' . __('Devices') . '" class="icon-computer text-primary"></span></a></li>';
+    $sql_button = '<li class="nav-item" role="presentation"><a href="#sql" class="nav-link" id="sql-tab"><span title="' . __('SQL') . '" class="icon-code text-primary"></span></a></li>';
 } else {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab">' . __('Summary') . '</a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
@@ -53,11 +53,11 @@ if ($resource->type === 'application') {
                             <div class="row">
                                 <div class="col-5">
                                     <?= read_field('name', (!empty($resource->name)) ? $resource->name : '', $dictionary->columns->name, false, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('cve', (!empty($resource->cve)) ? $resource->cve : '', $dictionary->columns->cve, false, 'CVE', "<a role=\"button\" title=\"" . __('View') . "\" target=\"_blank\" class=\"btn btn-outline-secondary link_button\" href=\"https://www.cve.org/CVERecord?id=" . $resource->cve . "\"><span title=\"" . __('View') . "\" class=\"fa-solid fa-arrow-up-right-from-square\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
-                                    <?= read_field('vendor', (!empty($resource->vendor)) ? $resource->vendor : '', $dictionary->columns->vendor, false, 'Vendor', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.vendor=" . $resource->vendor . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
-                                    <?= read_field('published', (!empty($resource->published)) ? $resource->published : '', $dictionary->columns->published, false, '', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.published_date=" . $resource->published_date . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
-                                    <?= read_field('vuln_status', (!empty($resource->vuln_status)) ? $resource->vuln_status : '', $dictionary->columns->vuln_status, false, 'Vulnerability Status', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.vuln_status=" . $resource->vuln_status . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
-                                    <?= read_field('scope', (!empty($resource->scope)) ? $resource->scope : '', $dictionary->columns->scope, false, '', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.scope=" . $resource->scope . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                    <?= read_field('cve', (!empty($resource->cve)) ? $resource->cve : '', $dictionary->columns->cve, false, 'CVE', "<a role=\"button\" title=\"" . __('View') . "\" target=\"_blank\" class=\"btn btn-outline-secondary link_button\" href=\"https://www.cve.org/CVERecord?id=" . $resource->cve . "\"><span title=\"" . __('View') . "\" class=\"icon-square-arrow-out-up-right\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                    <?= read_field('vendor', (!empty($resource->vendor)) ? $resource->vendor : '', $dictionary->columns->vendor, false, 'Vendor', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.vendor=" . $resource->vendor . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                    <?= read_field('published', (!empty($resource->published)) ? $resource->published : '', $dictionary->columns->published, false, '', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.published_date=" . $resource->published_date . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                    <?= read_field('vuln_status', (!empty($resource->vuln_status)) ? $resource->vuln_status : '', $dictionary->columns->vuln_status, false, 'Vulnerability Status', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.vuln_status=" . $resource->vuln_status . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                    <?= read_field('scope', (!empty($resource->scope)) ? $resource->scope : '', $dictionary->columns->scope, false, '', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.scope=" . $resource->scope . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
 
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
@@ -96,35 +96,35 @@ if ($resource->type === 'application') {
                                 <div class="col-7">
                                     <div class="row">
                                         <div class="col-4">
-                                            <?= read_field('severity', $resource->base_severity, $dictionary->columns->base_severity, false, '', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.base_severity=" . $resource->base_severity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                            <?= read_field('severity', $resource->base_severity, $dictionary->columns->base_severity, false, '', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.base_severity=" . $resource->base_severity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('availability', $resource->impact_availability, $dictionary->columns->impact_availability, false, 'Impact :: Availability', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.impact_availability=" . $resource->impact_availability . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                            <?= read_field('availability', $resource->impact_availability, $dictionary->columns->impact_availability, false, 'Impact :: Availability', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.impact_availability=" . $resource->impact_availability . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('complexity', $resource->attack_complexity, $dictionary->columns->attack_complexity, false, 'Attack :: Complexity', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.attack_complexity=" . $resource->attack_complexity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <?= read_field('score', $resource->base_score, $dictionary->columns->base_score, false, 'Score', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.base_score=" . $resource->base_score . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
-                                        </div>
-                                        <div class="col-4">
-                                            <?= read_field('confidentiality', $resource->impact_confidentiality, $dictionary->columns->impact_confidentiality, false, 'Impact :: Confidentiality', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.impact_confidentiality=" . $resource->impact_confidentiality . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
-                                        </div>
-                                        <div class="col-4">
-                                            <?= read_field('requirements', $resource->attack_requirements, $dictionary->columns->attack_requirements, false, 'Attack :: Requirements', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.attack_requirements=" . $resource->attack_requirements . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                            <?= read_field('complexity', $resource->attack_complexity, $dictionary->columns->attack_complexity, false, 'Attack :: Complexity', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.attack_complexity=" . $resource->attack_complexity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-4">
-                                            <?= read_field('maturity', $resource->exploit_maturity, $dictionary->columns->exploit_maturity, false, 'Maturity', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.exploit_maturity=" . $resource->exploit_maturity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                            <?= read_field('score', $resource->base_score, $dictionary->columns->base_score, false, 'Score', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.base_score=" . $resource->base_score . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('integrity', $resource->impact_integrity, $dictionary->columns->impact_integrity, false, 'Impact :: Integrity', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.impact_integrity=" . $resource->impact_integrity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                            <?= read_field('confidentiality', $resource->impact_confidentiality, $dictionary->columns->impact_confidentiality, false, 'Impact :: Confidentiality', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.impact_confidentiality=" . $resource->impact_confidentiality . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
                                         </div>
                                         <div class="col-4">
-                                            <?= read_field('vector', $resource->attack_vector, $dictionary->columns->attack_vector, false, 'Attack :: Vector', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.attack_vector=" . $resource->attack_vector . "&count=>0\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                            <?= read_field('requirements', $resource->attack_requirements, $dictionary->columns->attack_requirements, false, 'Attack :: Requirements', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.attack_requirements=" . $resource->attack_requirements . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <?= read_field('maturity', $resource->exploit_maturity, $dictionary->columns->exploit_maturity, false, 'Maturity', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.exploit_maturity=" . $resource->exploit_maturity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_field('integrity', $resource->impact_integrity, $dictionary->columns->impact_integrity, false, 'Impact :: Integrity', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.impact_integrity=" . $resource->impact_integrity . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
+                                        </div>
+                                        <div class="col-4">
+                                            <?= read_field('vector', $resource->attack_vector, $dictionary->columns->attack_vector, false, 'Attack :: Vector', "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . base_url() . "vulnerabilities?vulnerabilities.attack_vector=" . $resource->attack_vector . "&count=>0\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>", '', '', $meta->collection) ?>
                                         </div>
                                     </div>
 
@@ -155,7 +155,7 @@ if ($resource->type === 'application') {
                                                 </div>
                                                 <div class="col-2">
                                                     <div class="float-end">
-                                                    <a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#header_row_software_12" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="&lt;code&gt;vulnerabilities.software&lt;/code&gt;&lt;br&gt;Software names from your current database that match this query."><i class="fa-regular fa-circle-question fa-sm" style="color:#74C0FC;"></i></a>
+                                                    <a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#header_row_software_12" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="&lt;code&gt;vulnerabilities.software&lt;/code&gt;&lt;br&gt;Software names from your current database that match this query."><i class="icon-circle-question-mark" style="color:#74C0FC;"></i></a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -209,7 +209,7 @@ if ($resource->type === 'application') {
                                     <?php if (!empty($included['devices'])) { ?>
                                     <?php foreach ($included['devices'] as $item) { ?>
                                     <tr>
-                                        <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                        <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="icon-computer" aria-hidden="true"></i></a></td>
                                         <td><?= $item->attributes->{'devices.name'} ?></td>
                                         <td><?= $item->attributes->{'orgs.name'} ?></td>
                                         <?php foreach ($columns as $column) {
@@ -235,9 +235,9 @@ if ($resource->type === 'application') {
                                                 <textarea class="form-control" rows="14" id="sql" name="sql" data-original-value="<?= $resource->sql ?>" disabled><?= html_entity_decode($resource->sql) ?></textarea>
                                                 <?php if ($update) { ?>
                                                 <div class="float-end" style="padding-left:4px;">
-                                                    <div data-attribute="sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="sql" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="sql" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="sql" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="sql" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>

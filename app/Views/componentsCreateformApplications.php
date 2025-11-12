@@ -19,7 +19,7 @@ if (empty($included['applications'])) {
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= create_card_header('applications', 'fa fa-th-list', $user); ?>
+                    <?= create_card_header('applications', 'icon-app-window', $user); ?>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -51,7 +51,7 @@ if (empty($included['applications'])) {
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="hostname" name="hostname" />
                                             <div class="pull-right" style="padding-left:4px;">
-                                                <button type="button" class="btn btn-secondary" id="search" name="search"><?= __('Search for Device') ?></button>
+                                                <button type="button" class="btn btn-secondary" id="search" name="search"><?= __('Search For a Device') ?></button>
                                             </div>
                                         </div>
                                     </div>

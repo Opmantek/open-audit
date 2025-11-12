@@ -23,7 +23,7 @@ if (!empty($data[0]) and $included[0]->attributes->type === 'collector') {
                     <div class="row">
                         <div class="col-4 clearfix">
                                 <h6 style="padding-top:10px;">
-                                    <span class="fa fa fa-cogs oa-icon"></span>
+                                    <span class="icon-settings oa-icon"></span>
                                     <?= __('Collector') ?>
                                 </h6>
                         </div>

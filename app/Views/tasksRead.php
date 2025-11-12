@@ -44,9 +44,9 @@ include 'shared/common_functions.php';
                                             </select>
                                             <?php if ($update) { ?>
                                             <div class="pull-right" style="padding-left:4px;">
-                                                <div data-attribute="format" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                <div data-attribute="format" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                <div data-attribute="format" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                <div data-attribute="format" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                <div data-attribute="format" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                <div data-attribute="format" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                             </div>
                                             <?php } ?>
                                         </div>
@@ -67,9 +67,9 @@ include 'shared/common_functions.php';
                                             </select>
                                             <?php if ($update) { ?>
                                             <div class="pull-right" style="padding-left:4px;">
-                                                <div data-attribute="group_id" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                <div data-attribute="group_id" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                <div data-attribute="group_id" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                <div data-attribute="group_id" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                <div data-attribute="group_id" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                <div data-attribute="group_id" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                             </div>
                                             <?php } ?>
                                         </div>
@@ -91,9 +91,9 @@ include 'shared/common_functions.php';
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="pull-right" style="padding-left:4px;">
-                                            <div data-attribute="minute[]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="minute[]" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="minute[]" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="minute[]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="minute[]" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="minute[]" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -117,9 +117,9 @@ include 'shared/common_functions.php';
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="pull-right" style="padding-left:4px;">
-                                            <div data-attribute="hour[]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="hour[]" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="hour[]" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="hour[]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="hour[]" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="hour[]" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -143,9 +143,9 @@ include 'shared/common_functions.php';
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="pull-right" style="padding-left:4px;">
-                                            <div data-attribute="day_of_month[]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="day_of_month[]" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="day_of_month[]" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="day_of_month[]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="day_of_month[]" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="day_of_month[]" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -178,9 +178,9 @@ include 'shared/common_functions.php';
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="pull-right" style="padding-left:4px;">
-                                            <div data-attribute="month[]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="month[]" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="month[]" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="month[]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="month[]" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="month[]" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -204,9 +204,9 @@ include 'shared/common_functions.php';
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="pull-right" style="padding-left:4px;">
-                                            <div data-attribute="day_of_week[]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="day_of_week[]" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="day_of_week[]" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="day_of_week[]" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="day_of_week[]" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="day_of_week[]" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>

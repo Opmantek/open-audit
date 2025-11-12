@@ -8,11 +8,11 @@ $environments = array('Development', 'Disaster Recovery', 'Evaluation', 'Pre-Pro
 $statuses = array('allocated', 'delegated', 'planning', 'reserved', 'unallocated', 'unknown', 'unmanaged');
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Devices') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="icon-eye text-success"></span>' . __('Details') . '</a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="icon-computer text-primary" ></span>' . __('Devices') . '</a></li>';
 } elseif ($style === 'icon') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="fa fa-desktop text-primary"></span></a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="icon-eye text-success"></span></a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="icon-computer text-primary"></span></a></li>';
 } else {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
@@ -60,9 +60,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="float-end" style="padding-left:4px;">
-                                                    <div data-attribute="environment" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="environment" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="environment" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="environment" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="environment" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="environment" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -84,9 +84,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="float-end" style="padding-left:4px;">
-                                                    <div data-attribute="type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -108,19 +108,19 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="float-end" style="padding-left:4px;">
-                                                    <div data-attribute="admin_status" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                                    <div data-attribute="admin_status" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                                    <div data-attribute="admin_status" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                                    <div data-attribute="admin_status" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                    <div data-attribute="admin_status" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                    <div data-attribute="admin_status" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
                                             <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="admin_status" data-dictionary="<?= $dictionary->columns->admin_status ?>"><span><br></span></div>
                                         </div>
                                     </div>
-                                    <?php $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.security_zone=" . urlencode($resource->security_zone) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">"; ?>
+                                    <?php $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.security_zone=" . urlencode($resource->security_zone) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">"; ?>
                                     <?= read_field('security_zone', $resource->security_zone, $dictionary->columns->security_zone, $update, '', $link_button, '', '', $meta->collection) ?>
 
-                                    <?php $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.network_domain=" . urlencode($resource->network_domain) . "\"><span title=\"" . __('View') . "\" class=\"fa fa-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">"; ?>
+                                    <?php $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.network_domain=" . urlencode($resource->network_domain) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">"; ?>
                                     <?= read_field('network_domain', $resource->network_domain, $dictionary->columns->network_domain, $update, '', $link_button, '', '', $meta->collection) ?>
                                 </div>
                                 <div class="col-4">
@@ -166,7 +166,7 @@ if ($style === 'icontext') {
                                     <tbody>
                                         <?php foreach ($included['devices'] as $item) { ?>
                                         <tr>
-                                            <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                            <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="icon-computer" aria-hidden="true"></i></a></td>
                                             <td class="text-center"><img src="<?= base_url() ?>device_images/<?= $item->attributes->icon ?>.svg" style="width:40px" alt="<?= $item->attributes->icon ?>"></td>
                                             <td><?= $item->attributes->{'type'} ?></td>
                                             <td><?= $item->attributes->{'name'} ?></td>
@@ -211,21 +211,22 @@ window.onload = function () {
             <input type="hidden" id="data[attributes][name]" name="data[attributes][name]" value="' . $resource->network . '">\
             <input type="hidden" id="data[attributes][type]" name="data[attributes][type]" value="subnet">\
             <input type="hidden" id="data[attributes][subnet]" name="data[attributes][subnet]" value="' . $resource->network . '">';
+
         if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
-        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="discoveriesCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish text-oa-success"></span>&nbsp;<?= __('Discover') ?></button></form>');
+        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="discoveriesCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-oa-success"></span><?= __('Discover') ?></button></form>');
 
         <?php } elseif (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
-        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="fa-solid fa-satellite-dish text-oa-success"></span></button></form>');
+        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-oa-success"></span></button></form>');
 
         <?php } else { ?>
         $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
         <?php } ?>
     <?php } else {
         if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
-        $(".page-title-middle").append('<a role="button" id="discoveriesButton" class="btn btn-light mb-2" title="<?= __('Discover') ?>" href="<?= url_to('discoveriesExecute', $included['discovery']) ?>"><span style="margin-right:6px;" class="fa-solid fa-satellite-dish text-oa-success"></span><?= __('Discover') ?></a>');
+        $(".page-title-middle").append('<a role="button" id="discoveriesButton" class="btn btn-light mb-2" title="<?= __('Discover') ?>" href="<?= url_to('discoveriesExecute', $included['discovery']) ?>"><span class="icon-satellite-dish text-oa-success"></span><?= __('Discover') ?></a>');
 
         <?php } elseif (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
-        $(".page-title-middle").append('<a role="button" id="discoveriesButton" class="btn btn-light mb-2" title="<?= __('Discover') ?>" href="<?= url_to('discoveriesExecute', $included['discovery']) ?>"><span class="fa-solid fa-satellite-dish text-oa-success"></span></a>');
+        $(".page-title-middle").append('<a role="button" id="discoveriesButton" class="btn btn-light mb-2" title="<?= __('Discover') ?>" href="<?= url_to('discoveriesExecute', $included['discovery']) ?>"><span class="icon-satellite-dish text-success"></span></a>');
 
         <?php } else { ?>
         $(".page-title-middle").append('<a role="button" id="discoveriesButton" class="btn btn-light mb-2" title="<?= __('Discover') ?>" href="<?= url_to('discoveriesExecute', $included['discovery']) ?>"><?= __('Discover') ?></a>');

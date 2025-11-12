@@ -2,25 +2,21 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-$intro = '<p>' . _('The Integrations endpoint allows you to define an integration which you can then use to import and export Open-AudIT data to an external system. At present the single supported Integration type is "nmis".<br>
-    <br>
-    To integrate with an external system, all that is required is a new file to implement the required functions that an integration needs. There are no external dependencies or prerequisites. New integrations are planned for future releases.<br>
-    <br>
-    For the purpose or brevity, you can substitute any external system where I refer to NMIS below (when implemented).') . '</p>';
+$intro = '<p>' . _('The Integrations endpoint allows you to define an integration which you can then use to import and export Open-AudIT data to an external system. At present the single supported Integration type is <i>nmis</i>.<br><br>To integrate with an external system, all that is required is a new file to implement the required functions that an integration needs. There are no external dependencies or prerequisites. New integrations are planned for future releases.<br><br>For the purpose or brevity, you can substitute any external system where I refer to NMIS below (when implemented).') . '</p>';
 
 $body = '<br>
-<h2>' . __('It \'Just Works\' with NMIS') . '</h2>
+<h2>' . __('It <i>Just Works</i> with NMIS') . '</h2>
 
-<p>' . __('Our goal with the initial integrations release was specifically for NMIS to Open-AudIT integration to "just work". If you are using the programs on Linux, you can literally click a single button to execute the integration. Nothing more is required. Having said that, the integration itself is extremely configurable - so if something isn\'t to your preference, it can easily be changed.') . '<br>
+<p>' . __('Our goal with the initial integrations release was specifically for NMIS to Open-AudIT integration to <i>just work</i>. If you are using the programs on Linux, you can literally click a single button to execute the integration. Nothing more is required. Having said that, the integration itself is extremely configurable - so if something is not to your preference, it can easily be changed.') . '<br>
     <br>
-    ' . __('If you are using Open-AudIT on Windows or if your NMIS server isn\'t on your Open-AudIT Server (in the case of some Linux installs), you will need to supply access credentials and a URL to the remote NMIS - but that\'s all! Yes - Integrations between NMIS and Open-AudIT even work with Windows based Open-AudIT now!') . '</p>
+    ' . __('If you are using Open-AudIT on Windows or if your NMIS server is not on your Open-AudIT Server (in the case of some Linux installs), you will need to supply access credentials and a URL to the remote NMIS - but that is all! Yes - Integrations between NMIS and Open-AudIT even work with Windows based Open-AudIT now!') . '</p>
 <br>
 
 <h2>' . __('Creating an Integration') . '</h2>
 
-<p>' . __('As usual, go to menu → Manage → Integrations → Create Integration. As above, if you\'re running on Linux and you have NMIS on the same server, you don\'t need to do anything other than click \'Submit\'. I cannot make it easier than that.') . '<br>
+<p>' . __('As usual, go to menu → Manage → Integrations → Create Integration. As above, if you are running on Linux and you have NMIS on the same server, you do not need to do anything other than click <i>Submit</i>. I cannot make it easier than that.') . '<br>
 
-<br>' . __('If you\'re on Windows or your NMIS server is remote, you will need to supply the URL, username and password to access that server.') . '<br>
+<br>' . __('If you are on Windows or your NMIS server is remote, you will need to supply the URL, username and password to access that server.') . '<br>
 
 <br>' . __('Above are the only required items.') . '<br>
 
@@ -32,12 +28,12 @@ $body = '<br>
 
 <br>' . __('If you wish to run a Discovery on an externally provided device, select the option and when the Integration is created, so s the Discovery.') . '<br>
 
-<br>' . __('What about fields that I want from NMIS that aren\'t in Open-AudIT? We\'ve got you covered. Any fields in the external system (NMIS) that don\'t exist in Open-AudIT will be automatically created as Open-AudIT Custom fields.') . '</p>
+<br>' . __('What about fields that I want from NMIS that are not in Open-AudIT? We have got you covered. Any fields in the external system (NMIS) that do not exist in Open-AudIT will be automatically created as Open-AudIT Custom fields.') . '</p>
 
 <br>
 <h2>Our Default Integration</h2>
 
-<p>' . __('By default we integrate all devices with their nmis_manage attribute set to \'y\'. With 4.2.0 we also ship a Rule that says "If we discover a device and it has a valid SNMP OID, mark that device as managed by NMIS". Obviously you can disable this if it\'s not what you want.') . '<br>
+<p>' . __('By default we integrate all devices with their nmis_manage attribute set to <i>y</i>. With 4.2.0 we also ship a Rule that says <i>If we discover a device and it has a valid SNMP OID, mark that device as managed by NMIS</i>. Obviously you can disable this if it is not what you want.') . '<br>
 
 <br>' . __('To select devices to be integrated, we use nmis_manage = y, but you might like (for example) type = router. You can also use a Group or Query if you prefer something more complex.') . '<br>
 
@@ -74,9 +70,9 @@ $body = '<br>
 <br><code>capitalize</code>: ' . __('Set the external text to capitalized version of the internal data.') . '<br>
 <br><code>lower</code>: ' . __('Set the external text to lowercase.') . '<br>
 <br><code>upper</code>: ' . __('Set the external text to uppercase.') . '<br>
-<br><code>datetime_now</code>: ' . __('The current date and time in the format "Y-m-d H:i:s".') . '<br>
+<br><code>datetime_now</code>: ' . __('The current date and time in the format: Y-m-d H:i:s.') . '<br>
 <br><code>datetime_Y-m-d H:i:s</code>: ' . __('The internal value, reformatted in this format.') . '<br>
-<br><code>date_now</code>: ' . __('The current date in "Y-m-d" format.') . '<br>
+<br><code>date_now</code>: ' . __('The current date in Y-m-d format.') . '<br>
 <br><code>date_Y-m-d</code>: ' . __('The internal value, reformatted in this format.') . '<br>
 <br><code>date_m-d-Y</code>: ' . __('The internal value, reformatted in this format.') . '<br>
 <br><code>date_d-m-Y</code>: ' . __('The internal value, reformatted in this format.') . '<br>

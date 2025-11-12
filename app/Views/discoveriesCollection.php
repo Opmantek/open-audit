@@ -20,11 +20,11 @@ if (count($included['issues']) > 0) {
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                            <h6 style="padding-top:10px;"><span class="fa fa-sliders oa-icon"></span><?= __('Advanced') ?></h6>
+                            <h6 style="padding-top:10px;"><span class="icon-sliders-horizontal oa-icon"></span><?= __('Advanced') ?></h6>
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button c_change_primary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down <?= $advanced_button_color ?>"></span></button>
+                                <button class="btn btn-outline-secondary panel-button c_change_primary" type="button" data-bs-toggle="collapse" data-bs-target="#advanced" aria-expanded="false" aria-controls="advanced"><span class="icon-chevron-down <?= $advanced_button_color ?>"></span></button>
                             </div>
                         </div>
                     </div>
@@ -39,7 +39,7 @@ if (count($included['issues']) > 0) {
                                         <input disabled title="<?= __('Queue Limit') ?>" type="text" class="form-control"  id="queue_limit" name="queue_limit" value="<?= $config->queue_limit ?>">
                                         <span class="pull-right">
                                             <?php if (strpos($user->permissions['configuration'], 'u') !== false) { ?>
-                                            <a href="<?= url_to('configurationCollection') ?>/queue_limit" role="button" class="btn btn-default" title="<?= __('Discovery Queue Limit') ?>"><span style="width:1rem;" class="fa fa-cog" aria-hidden="true"></span></a>
+                                            <a href="<?= url_to('configurationCollection') ?>/queue_limit" role="button" class="btn btn-default" title="<?= __('Discovery Queue Limit') ?>"><span style="width:1rem;" class="icon-cog" aria-hidden="true"></span></a>
                                             <?php } ?>
                                             <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The maximum number of parrallel discovery threads.">?</button>
                                         </span>
@@ -53,7 +53,7 @@ if (count($included['issues']) > 0) {
                                         <input disabled title="<?= __('Current Discovery Processes') ?>" type="text" class="form-control"  id="queue_count" name="queue_count" value="<?= $config->queue_count ?>">
                                         <span class="pull-right">
                                             <?php if (strpos($user->permissions['configuration'], 'u') !== false and intval($config->queue_count) > 0) { ?>
-                                            <a id="delete_queue_count" href="#" role="button" class="btn btn-default" title="<?= __('Discovery Queue Count') ?>"><span style="width:1rem;" class="fa fa-trash" aria-hidden="true"></span></a>
+                                            <a id="delete_queue_count" href="#" role="button" class="btn btn-default" title="<?= __('Discovery Queue Count') ?>"><span style="width:1rem;" class="icon-trash-2" aria-hidden="true"></span></a>
                                             <?php } ?>
                                             <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The number of running discovery threads.">?</button>
                                         </span>
@@ -102,7 +102,7 @@ if (count($included['issues']) > 0) {
                                         <input disabled title="<?= __('Queued Items') ?>" type="text" class="form-control"  id="queue_items" name="queue_items" value="<?= $included['queue_items'] ?>">
                                         <span class="pull-right">
                                             <?php if (strpos($user->permissions['configuration'], 'u') !== false and $included['queue_items'] > 0) { ?>
-                                            <a id="delete_queue" href="#" role="button" class="btn btn-default" title="<?= __('All Queued Items') ?>"><span style="width:1rem;" class="fa fa-trash" aria-hidden="true"></span></a>
+                                            <a id="delete_queue" href="#" role="button" class="btn btn-default" title="<?= __('All Queued Items') ?>"><span style="width:1rem;" class="icon-trash-2" aria-hidden="true"></span></a>
                                             <?php } ?>
                                             <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="The number of discovery queue items waiting to be processed.">?</button>
                                         </span>
@@ -124,11 +124,11 @@ if (count($included['issues']) > 0) {
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                            <h6 style="padding-top:10px;"><span class="fa-solid fa-triangle-exclamation oa-icon"></span><?= __('Discovery Issues') . ' (<span style="color: #cc9a06;;">' . count($included['issues']) . '</span>)' ?></h6>
+                            <h6 style="padding-top:10px;"><span class="icon-triabgle-alert oa-icon"></span><?= __('Discovery Issues') . ' (<span style="color:#cc9a06;">' . count($included['issues']) . '</span>)' ?></h6>
                         </div>
                         <div class="col-3 clearfix pull-right">
                             <div class="btn-group btn-group-sm float-end mb-2" role="group">
-                                <button class="btn btn-outline-secondary panel-button c_change_warning" type="button" data-bs-toggle="collapse" data-bs-target="#issues" aria-expanded="false" aria-controls="advanced"><span class="fa fa-angle-down <?= $issues_button_colour ?>"></span></button>
+                                <button class="btn btn-outline-secondary panel-button c_change_warning" type="button" data-bs-toggle="collapse" data-bs-target="#issues" aria-expanded="false" aria-controls="advanced"><span class="icon-chevron-down <?= $issues_button_colour ?>"></span></button>
                             </div>
                         </div>
                     </div>
@@ -162,9 +162,9 @@ if (count($included['issues']) > 0) {
                                     <?php foreach ($included['issues'] as $issue) { ?>
                                         <?php if (!empty($issue->{'devices.id'})) { ?>
                                         <tr>
-                                            <td class="text-center col-md-1"><a title="<?= __('Discovery') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('discoveriesRead', $issue->discovery_id) ?>"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                            <td class="text-center col-md-1"><a title="<?= __('Discovery') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('discoveriesRead', $issue->discovery_id) ?>"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                             <td class="col-md-1"><?= $issue->discovery_name ?></td>
-                                            <td class="text-center col-md-1"><a title="<?= __('Devices') ?>"role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $issue->{'devices.id'}) ?>"><span class="fa fa-desktop" aria-hidden="true"></span></a></td>
+                                            <td class="text-center col-md-1"><a title="<?= __('Devices') ?>"role="button" class="btn btn-sm btn-devices" href="<?= url_to('devicesRead', $issue->{'devices.id'}) ?>"><span class="icon-computer" aria-hidden="true"></span></a></td>
                                             <td class="col-md-1"><span style="display:none;"><?= $issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} ?><br>
                                             <?php if ($issue->{'devices.type'} === 'unknown') { ?>
                                                 <span class="text-danger"><em><?= $issue->{'devices.type'} ?></em></span>

@@ -16,7 +16,7 @@ $intro = '<p>' . __('Open-AudIT can be configured to use LDAP servers (Microsoft
 <br>
 ' . __('If the user account does not actually exist within Open-AudIT and <code>use_authorisation</code> is set, the user will be created. If it does exist, details such as email, full name, etc will be populated.') . '<br>
 <br>
-' . __('If the user either doesn\'t have valid credentials or is not in at least one Open-AudIT Role and Group (when using <code>use_authorisation</code>), Open-AudIT will fallback to using local Open-AudIT user details and attempt authentication and authorization there. Failing that, the user will be denied access.') . '<br>
+' . __('If the user either does not have valid credentials or is not in at least one Open-AudIT Role and Group (when using <code>use_authorisation</code>), Open-AudIT will fallback to using local Open-AudIT user details and attempt authentication and authorization there. Failing that, the user will be denied access.') . '<br>
 <br>
 ' . __('The user in Active Directory / OpenLDAP must be a direct member of the required Open-AudIT groups for Roles and Orgs. A member of a group that is a member another group that is a member of the Open-AudIT group will not work.') . '<br>
 <br>
@@ -26,10 +26,10 @@ $intro = '<p>' . __('Open-AudIT can be configured to use LDAP servers (Microsoft
 </p>
 <h2>' . __('Troubleshooting') . '</h2>
 <p>
-' . __('We have more detailed instructions on') . ' <a href="' . url_to('helpFAQ') . '?name=Troubleshooting LDAP Logins">' . __('Troubleshooting LDAP Logins') . '</a>.' . __(' If something doesn\'t work as expected, your first thing to do is check the logs.') . '<br><br></p>
+' . __('We have more detailed instructions on') . ' <a href="' . url_to('helpFAQ') . '?name=Troubleshooting LDAP Logins">' . __('Troubleshooting LDAP Logins') . '</a>.' . __(' If something does not work as expected, your first thing to do is check the logs.') . '<br><br></p>
 <h2>' . __('Authenticate only') . '</h2>
 <p>
-' . __('You may wish to have Active Directory or OpenLDAP authenticate your users, but not provide authorization. To do this, make sure "Use for Authentication" is set to Y and "Use for Roles" is set to N. The credentials will be validated by LDAP, but you will need to have the user already created and assigned Roles in Open-AudIT. This also <i>automatically</i> applies to') . ' <a href="' . url_to('helpFAQ') . '?name=Using Azure AD for Auth">' . __('Azure Active Directory') . '</a> ' . __('and') . ' <a href="' . url_to('helpFAQ') . '?name=Using OKTA for Auth">OKTA</a> ' . __('methods') . '.<br><br>
+' . __('You may wish to have Active Directory or OpenLDAP authenticate your users, but not provide authorization. To do this, make sure <i>Use for Authentication</i> is set to Y and <i>Use for Roles</i> is set to N. The credentials will be validated by LDAP, but you will need to have the user already created and assigned Roles in Open-AudIT. This also <i>automatically</i> applies to') . ' <a href="' . url_to('helpFAQ') . '?name=Using Azure AD for Auth">' . __('Azure Active Directory') . '</a> ' . __('and') . ' <a href="' . url_to('helpFAQ') . '?name=Using OKTA for Auth">OKTA</a> ' . __('methods') . '.<br><br>
 </p>
 <h2>' . __('Examples') . '</h2>
 <p>' . __('If the user logging on to Open-AudIT does not have the access to search OpenLDAP, you can use another account which does have this access. Use the dn_account and dn_password to configure this.') . '

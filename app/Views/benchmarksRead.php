@@ -5,15 +5,15 @@ include 'shared/read_functions.php';
 include 'shared/common_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa-regular fa-rectangle-list text-success"></span>' . __('Details') . '</a></li>';
-    $policies_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span style="margin-right:6px;" class="fa fa-eye text-primary"></span>' . __('Policies') . '</a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-wifi text-primary"></span>' . __('Devices') . '</a></li>';
-    $logs_button = '<li class="nav-item" role="presentation"><a href="#logs" class="nav-link" id="logs-tab"><span style="margin-right:6px;" class="fa fa-bars text-primary"></span>' . __('Logs') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span class="icon-list text-oa-success"></span>' . __('Details') . '</a></li>';
+    $policies_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span class="icon-eye text-oa-primary"></span>' . __('Policies') . '</a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span class="icon-wifi text-oa-primary"></span>' . __('Devices') . '</a></li>';
+    $logs_button = '<li class="nav-item" role="presentation"><a href="#logs" class="nav-link" id="logs-tab"><span style="margin-right:6px;" class="icon-logs text-oa-primary"></span>' . __('Logs') . '</a></li>';
 } elseif ($style === 'icon') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Summary') . '" class="fa-regular fa-rectangle-list text-success"></span></a></li>';
-    $policies_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-primary"></span></a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="fa-solid fa-wifi text-primary"></span></a></li>';
-    $logs_button = '<li class="nav-item" role="presentation"><a href="#logs" class="nav-link" id="logs-tab"><span style="margin-right:6px;" class="fa fa-bars text-primary"></span></a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span title="' . __('Summary') . '" class="icon-list text-success"></span></a></li>';
+    $policies_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span title="' . __('Details') . '" class="icon-eye text-primary"></span></a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span title="' . __('Devices') . '" class="icon-wifi text-primary"></span></a></li>';
+    $logs_button = '<li class="nav-item" role="presentation"><a href="#logs" class="nav-link" id="logs-tab"><span title="' . __('Logs') . '" class="icon-logs text-primary"></span></a></li>';
 } else {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $policies_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab">' . __('Policies') . '</a></li>';
@@ -477,7 +477,7 @@ if (!empty($hour) and !empty($days)) {
                                                     }
                                                     ?>
                                             <tr>
-                                                <td class="text-center"><span style="display:none;"><?= $policy->{'benchmarks_policies.id'} ?></span><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('benchmarks_policiesRead', intval($policy->{'benchmarks_policies.id'})) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                <td class="text-center"><span style="display:none;"><?= $policy->{'benchmarks_policies.id'} ?></span><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('benchmarks_policiesRead', intval($policy->{'benchmarks_policies.id'})) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="icon-eye" aria-hidden="true"></span></a></td>
                                                 <td><?= $policy->name ?></td>
                                                 <!--<td style="text-align: center;"><button type="button" class="btn <?= $severity_class ?>"><?= $policy->severity ?></button></td>-->
                                                 <td style="text-align: center;"><span class="<?= $text_class ?>"><?= $policy->severity ?></span></td>
@@ -547,7 +547,7 @@ if (!empty($hour) and !empty($days)) {
                                     foreach ($included['devices'] as $device) {
                                         $credentials = '';
                                         if ($device->credentials === 'y') {
-                                            $credentials = '<span class="fa-solid fa-check text-success"></span>';
+                                            $credentials = '<span class="icon-check text-success"></span>';
                                         }
                                         $device_in_benchmark = false;
                                         if (is_array($devices_in_benchmark) and in_array($device->id, $devices_in_benchmark)) {
@@ -558,13 +558,13 @@ if (!empty($hour) and !empty($days)) {
                                         }
                                         if ($device_in_benchmark) { ?>
                                             <tr>
-                                                <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" href="<?= url_to('devicesRead', $device->id) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
-                                                <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsCollection') ?>?components.type=benchmarks_result&components.device_id=<?= $device->id ?>&benchmarks_result.benchmark_id=<?= $resource->id ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                                <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" href="<?= url_to('devicesRead', $device->id) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="icon-computer" aria-hidden="true"></span></a></td>
+                                                <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('componentsCollection') ?>?components.type=benchmarks_result&components.device_id=<?= $device->id ?>&benchmarks_result.benchmark_id=<?= $resource->id ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="icon-eye" aria-hidden="true"></span></a></td>
                                                 <td><strong><?= $device->name ?></strong></td>
                                                 <td><?= $device->ip ?></td>
                                                 <td><?= $device->os_family ?> <?= $device->os_version ?></td>
                                                 <td style="text-align: center;"><?php if (!empty($device->{'software.name'})) {
-                                                    echo '<span class="fa-solid fa-check text-success"></span>';
+                                                    echo '<span class="icon-check text-success"></span>';
                                                                                 } ?></td>
                                                 <td style="text-align: center;"><?= $credentials ?></td>
                                                 <td><?= $device->{'orgs.name'} ?>
@@ -657,16 +657,16 @@ if (!empty($hour) and !empty($days)) {
                 $credentials = '';
                 $disabled = '';
                 if ($device->credentials === 'y') {
-                    $credentials = '<span class="fa-solid fa-check text-success"></span>';
+                    $credentials = '<span class="icon-check text-success"></span>';
                 } else {
-                    $credentials = '<span class="fa-solid fa-xmark text-danger"></span>';
+                    $credentials = '<span class="icon-x text-danger"></span>';
                     $disabled = 'disabled';
                 }
                 if (is_array($devices_in_benchmark) and !in_array($device->id, $devices_in_benchmark)) { ?>
                     <tr>
                         <td><strong><?= $device->name ?></strong><br><?= $device->ip ?></td>
                         <td style="text-align: center;"><?php if (!empty($device->{'software.name'})) {
-                            echo '<span class="fa-solid fa-check text-success"></span>';
+                            echo '<span class="icon-check text-success"></span>';
                                                         } ?></td>
                         <td style="text-align: center;"><?= $credentials ?></td>
                         <td><?= $device->{'orgs.name'} ?>
@@ -695,7 +695,7 @@ window.onload = function () {
 
         var options = {
             series: [<?= $fail ?>, <?= $other ?>, <?= $pass ?>],
-            labels: ["<?= ('Fail') ?>", "<?= __('Other') ?>", "<?= __('Pass') ?>"],
+            labels: ["<?= __('Fail') ?>", "<?= __('Other') ?>", "<?= __('Pass') ?>"],
             colors: ["#e25563", "#ffcb2f", "#4ab563"],
             chart: {
                 height: 300,

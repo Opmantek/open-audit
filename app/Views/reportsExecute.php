@@ -36,7 +36,7 @@ include 'shared/common_functions.php';
                                         if (strpos($user->permissions[$meta->collection], 'u') !== false) {
                                             if (!empty($data[0]->id)) {
                                                     echo "\n                                        <th data-orderable=\"false\" class=\"text-center\">\n";
-                                                    echo "                                            <button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"--bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\"><span style=\"font-size: 1.2rem;\" class=\"fa fa-pencil\"></span></button>\n";
+                                                    echo "                                            <button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"--bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\"><span style=\"font-size: 1.2rem;\" class=\"icon-pencil\"></span></button>\n";
                                                     echo "                                            <input aria-label='" . __('Select All') . "' type=\"checkbox\" name=\"select_all\" id=\"select_all\"/>\n";
                                                     echo "                                        </th>";
                                             }

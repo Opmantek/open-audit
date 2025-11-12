@@ -11,7 +11,7 @@ if (stripos($meta->query_string, 'type=cluster') !== false) {
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= create_card_header('clusters', 'fa fa-th-list', $user); ?>
+                    <?= create_card_header('clusters', 'icon-boxes', $user); ?>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -43,7 +43,7 @@ if (stripos($meta->query_string, 'type=cluster') !== false) {
                                         <div class="input-group">
                                             <input class="form-control" type="text" id="hostname" name="hostname" />
                                             <div class="pull-right" style="padding-left:4px;">
-                                                <button type="button" class="btn btn-secondary" id="search" name="search"><?= __('Search for Device') ?></button>
+                                                <button type="button" class="btn btn-secondary" id="search" name="search"><?= __('Search For a Device') ?></button>
                                             </div>
                                         </div>
                                     </div>
@@ -65,7 +65,7 @@ if (stripos($meta->query_string, 'type=cluster') !== false) {
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="data[attributes][role]" class="form-label"><?= __('Role') ?> <span style="color: #dc3545;">*</span></label><br>
                                         <select class="form-select" name="data[attributes][role]" id="data[attributes][role]">
-                                        <option value="" selected><?= __('') ?></option>
+                                        <option value="" selected>&nbsp;</option>
                                         <option value="head"><?= __('Head') ?></option>
                                         <option value="node"><?= __('Node') ?></option>
                                         <option value="storage"><?= __('Storage') ?></option>

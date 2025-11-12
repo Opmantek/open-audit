@@ -34,7 +34,7 @@ include 'shared/common_functions.php';
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                            <h6 style="padding-top:10px;"><span class="fa fa-desktop oa-icon"></span><?= __('Devices') ?></h6>
+                            <h6 style="padding-top:10px;"><span class="icon-computer oa-icon"></span><?= __('Devices') ?></h6>
                         </div>
                         <div class="col-3 clearfix">
                             <div class="btn-group btn-group-sm float-end" role="group" id="device_panel">
@@ -64,7 +64,7 @@ include 'shared/common_functions.php';
                                 foreach ($included['devices'] as $item) {
                                     if ($item->attributes->{'server_item.current'} === 'y') { ?>
                                 <tr>
-                                    <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="fa fa-desktop" aria-hidden="true"></i></a></td>
+                                    <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="icon-computer" aria-hidden="true"></i></a></td>
                                     <td><?= $item->attributes->{'devices.name'} ?></td>
                                     <td><?= $item->attributes->{'server_item.parent_name'} ?></td>
                                     <td><?= $item->attributes->{'server_item.name'} ?></td>

@@ -32,7 +32,7 @@ include 'shared/collection_functions.php';
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
                                     <?= collection_button_read($meta->collection, $item->id) ?>
-                                    <th class="text-center"><a title="<?= __('Download') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('scriptsDownload', $item->id) ?>"><span class="fa fa-download" aria-hidden="true"></span></a></td>
+                                    <th class="text-center"><a title="<?= __('Download') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('scriptsDownload', $item->id) ?>"><span class="icon-download" aria-hidden="true"></span></a></td>
                                     <?php foreach ($meta->data_order as $key) {
                                         if ($key === 'id' or $key === 'orgs.id') {
                                             continue;

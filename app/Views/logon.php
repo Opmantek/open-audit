@@ -20,18 +20,16 @@ include('shared/lang.php');
         <script {csp-script-nonce} src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
         <script {csp-script-nonce} src="<?= base_url('js/jquery.dataTables.min.js') ?>"></script>
         <script {csp-script-nonce} src="<?= base_url('js/dataTables.bootstrap5.min.js') ?>"></script>
-        <script {csp-script-nonce} src="<?= base_url('js/fontawesome-all.min.js') ?>"></script>
-        <script {csp-script-nonce} src="<?= base_url('js/fa-v4-shims.js') ?>"></script>
         <script {csp-script-nonce} src="<?= base_url('js/select2.full.min.js') ?>"></script>
         <script {csp-script-nonce} src="<?= base_url('js/open-audit.js') . '?v=' . time() ?>"></script>
 
         <!-- CSS -->
-        <link href="<?= base_url('css/inter.css') ?>"                     rel="stylesheet">
-        <link href="<?= base_url('css/bootstrap.css') ?>"                 rel="stylesheet">
+        <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/bootstrap.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/dataTables.bootstrap5.min.css') ?>" rel="stylesheet">
-        <link href="<?= base_url('css/font-awesome.css') ?>"              rel="stylesheet">
         <link href="<?= base_url('css/select2.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/select2-bootstrap-5-theme.min.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/lucide.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/open-audit.css') . '?v=' . time() ?>" rel="stylesheet">
 
         <script {csp-script-nonce}>
@@ -172,15 +170,15 @@ include('shared/lang.php');
                                                 foreach ($methods as $method) {
                                                     switch ($method) {
                                                         case 'entra':
-                                                            $logo = 'fa-brands fa-microsoft';
+                                                            $logo = 'icon-grid-2x2';
                                                             break;
 
                                                         case 'github':
-                                                            $logo = 'fa-brands fa-github';
+                                                            $logo = 'icon-github';
                                                             break;
 
                                                         case 'okta':
-                                                            $logo = 'fa-solid fa-o';
+                                                            $logo = 'icon-id-card';
                                                             break;
 
                                                         default:

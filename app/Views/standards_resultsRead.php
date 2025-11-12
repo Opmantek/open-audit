@@ -39,7 +39,7 @@ include 'shared/read_functions.php';
                                         <div class="col-6 clearfix">
                                             <dlv class="float-end">
                                                 <div class="page-title-right" style="padding-right:20px;">
-                                                    <button id="link_add" class="btn btn-sm btn-success"><span class="fa fa-add"></span></button>
+                                                    <button id="link_add" class="btn btn-sm btn-success"><span class="icon-plus"></span></button>
                                                 </div>
                                             </dlv>
                                         </div>
@@ -52,7 +52,7 @@ include 'shared/read_functions.php';
                                             <tr>
                                                 <td><img src="<?= @$link->icon ?>"></td>
                                                 <td><a href="<?= @$link->link ?>" target="_blank" title="<?= @$link->link ?>"><?= @$link->name ?></a></td>
-                                                <td><button class="btn btn-sm btn-danger link_delete" data-name="<?= str_replace('"', '\"', @$link->name) ?>"><span class="fa fa-trash"></span></button></td>
+                                                <td><button class="btn btn-sm btn-danger link_delete" data-name="<?= str_replace('"', '\"', @$link->name) ?>"><span class="icon-trash-2"></span></button></td>
                                             </tr>
                                         <?php } } ?>
                                         </tbody>
@@ -75,9 +75,9 @@ include 'shared/read_functions.php';
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="applied" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="applied" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="applied" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="applied" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="applied" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="applied" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -100,9 +100,9 @@ include 'shared/read_functions.php';
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="result" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="result" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="result" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="result" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="result" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="result" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -125,9 +125,9 @@ include 'shared/read_functions.php';
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="maturity_level" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="maturity_level" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="maturity_level" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="maturity_level" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="maturity_level" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="maturity_level" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -146,9 +146,9 @@ include 'shared/read_functions.php';
                                         <textarea class="form-control" rows="6" id="<?= $column ?>" name="<?= $column ?>" data-original-value="<?= $resource->$column ?>" disabled><?= html_entity_decode($resource->$column) ?></textarea>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="<?= $column ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="<?= $column ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="<?= $column ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="<?= $column ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="<?= $column ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="<?= $column ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>

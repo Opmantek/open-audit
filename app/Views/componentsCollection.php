@@ -124,21 +124,21 @@ window.onload = function () {
                     if ($column === 'id') {
                         echo '{ data: \'attributes.id\',
                             render: function (data, type, row, meta) {
-                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/components/" + row.attributes.id + "?components.type=' . $collection . '\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/components/" + row.attributes.id + "?components.type=' . $collection . '\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                             }
                         },';
                         echo "\n";
                     } else if ($column === 'device_id') {
                         echo '{ data: \'attributes.device_id\',
                             render: function (data, type, row, meta) {
-                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/devices/" + row.attributes.device_id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/devices/" + row.attributes.device_id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                             }
                         },';
                         echo "\n";
                     } else if ($column === 'benchmark_id') {
                         echo '{ data: \'attributes.benchmark_id\',
                             render: function (data, type, row, meta) {
-                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/benchmarks/" + row.attributes.benchmark_id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/benchmarks/" + row.attributes.benchmark_id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                             }
                         },';
                         echo "\n";

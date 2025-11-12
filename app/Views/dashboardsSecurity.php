@@ -4,9 +4,9 @@
 include 'shared/collection_functions.php';
 $help_button = "";
 if ($user->toolbar_style === 'icontext') {
-    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($meta->collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"fa fa-question text-primary\"></span>" . __('Help') . "</a>";
+    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($meta->collection . 'Help') . "\"><span style=\"margin-right:6px;\" class=\"circle-question-mark text-oa-primary\"></span>" . __('Help') . "</a>";
 } elseif ($user->toolbar_style === 'icon') {
-    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($meta->collection . 'Help') . "\"><span class=\"fa fa-question text-primary\"></span></a>";
+    $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($meta->collection . 'Help') . "\"><span class=\"circle-question-mark text-primary\"></span></a>";
 } else {
     $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($meta->collection . 'Help') . "\">" . __('Help') . "</a>";
 }
@@ -20,7 +20,7 @@ $colour = '';
                 <div class="card-header">
                     <div class="row">
                         <div class="col-6 clearfix">
-                            <h6 style="padding-top:10px;"><span class="fa fa-chart-bar oa-icon"></span><?= __('Security Status') ?></h6>
+                            <h6 style="padding-top:10px;"><span class="icon-chart-bar-increasing oa-icon"></span><?= __('Security Status') ?></h6>
                         </div>
                         <div class="col-6 clearfix">
                             <div class="btn-group btn-group-sm float-end" role="group" id="oa_panel_buttons">
@@ -45,7 +45,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-solid fa-shield-virus" style="font-size:5em; padding-top:30px;"></span>
+                                    <span class="icon-shield" style="font-size:5em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>ANTIVIRUS</h5>
@@ -71,7 +71,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-solid fa-shield-halved" style="font-size:5em; padding-top:30px;"></span>
+                                    <span class="icon-shield-half" style="font-size:5em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>FIREWALL</h5>
@@ -95,7 +95,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-brands fa-windows" style="font-size:5em; padding-top:30px;"></span>
+                                    <span class="icon-grid-2x2" style="font-size:5em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>LATEST BUILD WINDOWS 10</h5>
@@ -118,7 +118,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-brands fa-windows" style="font-size:5em; padding-top:30px;"></span>
+                                    <span class="icon-grid-2x2" style="font-size:5em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>LATEST BUILD WINDOWS 11</h5>
@@ -146,7 +146,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-solid fa-shield-virus" style="font-size:5em; padding-top:30px;"></span>
+                                    <span class="icon-shield-ban" style="font-size:5em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>ANTIVIRUS</h5>
@@ -171,7 +171,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-solid fa-shield-halved" style="font-size:5em; padding-top:30px;"></span>
+                                    <span class="icon-shield-half" style="font-size:5em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>FIREWALL</h5>
@@ -194,7 +194,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-brands fa-windows" style="font-size:5em; padding-top:30px;"></span>
+                                    <span class="icon-grid-2x2" style="font-size:5em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>LATEST BUILD SERVER 2019</h5>
@@ -217,7 +217,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-brands fa-windows" style="font-size:5em; padding-top:30px;"></span>
+                                    <span class="icon-grid-2x2" style="font-size:5em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>LATEST BUILD SERVER 2022</h5>
@@ -246,7 +246,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-solid fa-box-open" style="font-size:4em; padding-top:30px;"></span>
+                                    <span class="icon-app-window" style="font-size:4em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>SOFTWARE</h5>
@@ -270,7 +270,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-solid fa-download" style="font-size:4em; padding-top:30px;"></span>
+                                    <span class="icon-monitor-down" style="font-size:4em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>OS UPDATES</h5>
@@ -294,7 +294,7 @@ $colour = '';
                         <div class="col-md-3 h-100" style="padding-left:20px; padding-right:20px;">
                             <div class="row h-100">
                                 <div class="col-4 text-center <?= $colour ?> h-100">
-                                    <span class="fa-solid fa-computer" style="font-size:4em; padding-top:30px;"></span>
+                                    <span class="icon-router" style="font-size:4em; padding-top:30px;"></span>
                                 </div>
                                 <div class="col-8 border-top border-end border-bottom h-100" style="padding-top:14px;">
                                     <h5>DEVICES NOT SEEN</h5>

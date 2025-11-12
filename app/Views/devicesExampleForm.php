@@ -6,7 +6,7 @@ include 'shared/create_functions.php';
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= create_card_header('devices', 'fa fa-desktop', $user); ?>
+                    <?= create_card_header('devices', 'icon-computer', $user); ?>
                 </div>
                 <div class="card-body text-center">
                     <div class="row">
@@ -25,11 +25,23 @@ include 'shared/create_functions.php';
             </div>
         </main>
 
+<style>
+    #spinner {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+</style>
+
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function(){
         $('#submit').click(function() {
-            document.getElementById('statusmsg').innerHTML = '<br>Please wait while we import the devices.<br><br><i class=\'fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom\'></i>';
+            document.getElementById('statusmsg').innerHTML = '<br>Please wait while we import the devices.<br><br><span id=\'spinner\' class=\'icon-loader\'></i>';
+
         });
     });
 }

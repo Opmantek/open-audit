@@ -6,23 +6,37 @@ include 'shared/common_functions.php';
 include 'shared/collection_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" class="fa-regular fa-rectangle-list text-primary"></span>' . __('Summary') . '</a></li>';
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $scan_op_button = '<li class="nav-item" role="presentation"><a href="#scan"    class="nav-link" id="scan_options-tab"><span style="margin-right:6px;" class="fa-solid fa-wifi text-success"></span>' . __('Scan Options') . '</a></li>';
-    $match_o_button = '<li class="nav-item" role="presentation"><a href="#match"   class="nav-link" id="match_options-tab"><span style="margin-right:6px;" class="fa-solid fa-laptop-code text-success"></span>' . __('Match Options') . '</a></li>';
-    $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"><span style="margin-right:6px;" class="fa fa-bars text-primary" ></span>' . __('Logs')    . '</a></li>';
-    $all_ips_button = '<li class="nav-item" role="presentation"><a href="#all_ips" class="nav-link" id="all_ips-tab"><span style="margin-right:6px;" class="fa-solid fa-network-wired text-primary"></span>' . __('ALL IPs') . '</a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary" ></span>' . __('Devices') . '</a></li>';
-    $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link" id="issues-tab" ><span style="margin-right:6px;" class="fa-solid fa-triangle-exclamation text-warning"></span>' . __('Issues')  . '</a></li>';
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span class="icon-book-check text-oa-primary"></span>' . __('Summary') . '</a></li>';
+
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span class="icon-eye text-oa-success"></span>' . __('Details') . '</a></li>';
+
+    $scan_op_button = '<li class="nav-item" role="presentation"><a href="#scan"    class="nav-link" id="scan_options-tab"><span class="icon-wifi text-oa-success"></span>' . __('Scan Options') . '</a></li>';
+
+    $match_o_button = '<li class="nav-item" role="presentation"><a href="#match"   class="nav-link" id="match_options-tab"><span class="icon-square-sigma text-oa-success"></span>' . __('Match Options') . '</a></li>';
+
+    $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"><span class="icon-logs text-oa-primary" ></span>' . __('Logs')    . '</a></li>';
+
+    $all_ips_button = '<li class="nav-item" role="presentation"><a href="#all_ips" class="nav-link" id="all_ips-tab"><span class="icon-map-pinned text-oa-primary"></span>' . __('ALL IPs') . '</a></li>';
+
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span class="icon-computer text-oa-primary" ></span>' . __('Devices') . '</a></li>';
+
+    $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link" id="issues-tab" ><span class="icon-triangle-alert text-oa-warning"></span>' . __('Issues')  . '</a></li>';
 } elseif ($style === 'icon') {
-    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" title="' . __('Summary') . '" class="fa-regular fa-rectangle-list text-primary"></span></a></li>';
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
-    $scan_op_button = '<li class="nav-item" role="presentation"><a href="#scan"    class="nav-link" id="scan_options-tab"><span style="margin-right:6px;" title="' . __('Scan Options') . '" class="fa-solid fa-wifi text-success"></span></a></li>';
-    $match_o_button = '<li class="nav-item" role="presentation"><a href="#match"   class="nav-link" id="match_options-tab"><span style="margin-right:6px;" title="' . __('Match Options') . '" class="fa-solid fa-laptop-code text-success"></span></a></li>';
-    $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"   ><span style="margin-right:6px;" title="' . __('Logs') .    '" class="fa fa-bars text-primary"></span></a></li>';
-    $all_ips_button = '<li class="nav-item" role="presentation"><a href="#all_ips" class="nav-link" id="all_ips-tab"><span style="margin-right:6px;" title="' . __('All IPs') . '" class="fa-solid fa-network-wired text-primary"></span></a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="fa fa-desktop text-primary"></span></a></li>';
-    $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link" id="issues-tab" ><span style="margin-right:6px;" title="' . __('Issues') .  '" class="fa-solid fa-triangle-exclamation text-warning"></span></a></li>';
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span title="' . __('Summary') . '" class="icon-book-check text-primary"></span></a></li>';
+
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span title="' . __('Details') . '" class="icon-eye text-success"></span></a></li>';
+
+    $scan_op_button = '<li class="nav-item" role="presentation"><a href="#scan"    class="nav-link" id="scan_options-tab"><span title="' . __('Scan Options') . '" class="icon-wifi text-success"></span></a></li>';
+
+    $match_o_button = '<li class="nav-item" role="presentation"><a href="#match"   class="nav-link" id="match_options-tab"><span title="' . __('Match Options') . '" class="icon-square-sigma text-success"></span></a></li>';
+
+    $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"><span title="' . __('Logs') . '" class="icon-logs text-primary"></span></a></li>';
+
+    $all_ips_button = '<li class="nav-item" role="presentation"><a href="#all_ips" class="nav-link" id="all_ips-tab"><span title="' . __('All IPs') . '" class="icon-map-pinned text-primary"></span></a></li>';
+
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span title="' . __('Devices') . '" class="icon-computer text-primary"></span></a></li>';
+
+    $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link" id="issues-tab" ><span style="margin-right:6px;" title="' . __('Issues') .  '" class="icon-triangle-alert text-warning"></span></a></li>';
 } else {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab">' . __('Summary') . '</a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
@@ -37,9 +51,9 @@ if ($style === 'icontext') {
 
 
 if ($style === 'icontext') {
-    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-comments text-primary\"></span>" . __('Support') . "</a>";
+    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"icon-messages-square text-oa-primary\"></span>" . __('Support') . "</a>";
 } elseif ($style === 'icon') {
-    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\"><span class=\"fa-solid fa-person-circle-exclamation text-primary\"></span></a>";
+    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\"><span class=\"icon-messages-square text-primary\"></span></a>";
 } else {
     $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\">" . __('Support') . "</a>";
 }
@@ -119,7 +133,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                             <div class="card-header">
                                                 <div class="row">
                                                     <div class="col-4 clearfix">
-                                                        <h6 style="padding-top:10px;"><span class="fa fa-chart-bar oa-icon"></span><?= __('Devices') ?></h6>
+                                                        <h6 style="padding-top:10px;"><span class="icon-router oa-icon"></span><?= __('Devices') ?></h6>
                                                     </div>
                                                 </div>
                                             </div>
@@ -159,7 +173,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         <div class="card-header">
                                             <div class="row">
                                                 <div class="col-4 clearfix">
-                                                    <h6 style="padding-top:10px;"><span class="fa fa-chart-bar oa-icon"></span><?= __('Resources') ?></h6>
+                                                    <h6 style="padding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -296,9 +310,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 </select>
                                                 <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="scan_options.timing" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                    <div data-attribute="scan_options.timing" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                    <div data-attribute="scan_options.timing" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                    <div data-attribute="scan_options.timing" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                                    <div data-attribute="scan_options.timing" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                                    <div data-attribute="scan_options.timing" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -322,9 +336,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 </select>
                                                 <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                    <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                    <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                    <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                                    <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                                    <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -348,9 +362,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 </select>
                                                 <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                    <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                    <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                    <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                                    <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                                    <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -406,9 +420,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 </select>
                                                 <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -432,9 +446,9 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 </select>
                                                 <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -593,7 +607,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                     $link = url_to('devicesRead', $issue->{'devices.id'});
                                                 } ?>
                                                 <tr>
-                                                    <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= $link ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="fa fa-desktop" aria-hidden="true"></span></a></td>
+                                                    <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= $link ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="icon-computer" aria-hidden="true"></span></a></td>
                                                     <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""></td>
                                                     <td><span style="display:none;"><?= @$issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
                                                     <td><?= $issue->{'devices.name'} ?></td>
@@ -737,7 +751,7 @@ window.onload = function () {
             columns: [
                 { data: 'attributes.view', 
                     render: function (data, type, row, meta) {
-                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                     }
                 },
                 { data: 'attributes.id' },
@@ -933,7 +947,7 @@ window.onload = function () {
                 { data: 'attributes.view', 
                     render: function (data, type, row, meta) {
                         if (row.attributes.device_id > 0) {
-                            return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/devices/" + row.attributes.device_id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                            return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/devices/" + row.attributes.device_id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                         } else {
                             return "";
                         }
@@ -1118,7 +1132,7 @@ window.onload = function () {
             columns: [
                 { data: 'attributes.view', 
                     render: function (data, type, row, meta) {
-                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/devices/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"fa fa-eye\" aria-hidden=\"true\"></span></a>";
+                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/devices/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                     }
                 },
                 { data: 'attributes.icon',

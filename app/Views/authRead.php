@@ -38,9 +38,9 @@ $fields->all = array('client_ident', 'client_secret', 'redirect_uri', 'issuer', 
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="use_authentication" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="use_authentication" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="use_authentication" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="use_authentication" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="use_authentication" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="use_authentication" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -57,9 +57,9 @@ $fields->all = array('client_ident', 'client_secret', 'redirect_uri', 'issuer', 
                                         </select>
                                         
                                         <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="use_authorisation" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='fa fa-pencil'></span></div>
-                                            <div data-attribute="use_authorisation" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-check'></span></div>
-                                            <div data-attribute="use_authorisation" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='fa fa-remove'></span></div>
+                                            <div data-attribute="use_authorisation" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="use_authorisation" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="use_authorisation" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                     </div>
                                     <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="use_authorisation" data-dictionary="<?= $dictionary->columns->use_authorisation ?>"><span><br></span></div>

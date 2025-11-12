@@ -190,7 +190,7 @@ $example .= __('You should use a header line containing the names of the columns
             <div class="col-3 clearfix">
                 <div class="btn-group btn-group-sm" role="group" aria-label="">
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-outline-dark oa-card-button"><span class="fa fa-database" style="margin-right:10px;" aria-hidden="true"></span>Columns</button>
+                        <button type="button" class="btn btn-outline-dark oa-card-button"><span class="icon-database" style="margin-right:10px;" aria-hidden="true"></span>Columns</button>
                     </div>
                 </div>
             </div>

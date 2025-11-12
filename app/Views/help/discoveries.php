@@ -23,13 +23,17 @@ $body = '<br>
 <br>
 <h2>' . __('Subnet Discoveries') . '</h2>
 
-<p>' . __('When a subnet discovery is executed it first runs, if selected, an Nmap ping scan on the range or IP addresses. Any device responding will be port scanned. If an Nmap ping scan is not requested, each IP is individually port scanned. Which ports? That is determined by the') . ' <a href="' . url_to('discovery_scan_optionsHelp') . '">' . __('Discovery Scan Options') . '</a> ' . __('chosen. From there if a port for WMI, SSH or SNMP is detected responding the device is further queried using ') . ' <a href="' . url_to('credentialsHelp') . '">' . __('Credentials') . '</a>.</p>
+<p>' . __('When a subnet discovery is executed it first runs, if selected, an Nmap ping scan on the range or IP addresses. Any device responding will be port scanned. If an Nmap ping scan is not requested, each IP is individually port scanned. Which ports? That is determined by the') . ' <a href="' . url_to('discovery_scan_optionsHelp') . '">' . 
+__('Discovery Scan Options') . '</a> ' . 
+__('chosen. From there if a port for WMI, SSH or SNMP is detected responding the device is further queried using ') . ' <a href="' . url_to('credentialsHelp') . '">' . __('Credentials') . '</a>.</p>
 
-<p>' . __('Once you click the execute button, Open-AudIT will spawn a process to initiate the discovery and return the user to the discovery details page. The newly spawned process takes the configured discovery options and executes Nmap commands to determine the initial list of IP addresses to be scanned (or queries Active Directory if that type is used). Each IP to be scanned is placed into a queue. Once the initial process has completed (and there are IPs to be scanned in the queue) a number of processes will be spawned to further scan each IP in parallel. This number of processes is configurable in the configuration, edit the attribute "queue_limit". By default this is set to 20.') . '</p>
-    <p>For each spawned process, the below occurs.</p>
+<p>' . __('Once you click the execute button, Open-AudIT will spawn a process to initiate the discovery and return the user to the discovery details page. The newly spawned process takes the configured discovery options and executes Nmap commands to determine the initial list of IP addresses to be scanned (or queries Active Directory if that type is used). Each IP to be scanned is placed into a queue. Once the initial process has completed (and there are IPs to be scanned in the queue) a number of processes will be spawned to further scan each IP in parallel. This number of processes is configurable in the configuration, edit the attribute <i>queue_limit</i>. By default this is set to 20.') . '</p>
 
-<p>' . __('Each IP is scanned with the discovery configured options (see Discovery Scan Options and Discovery - Community vs Professional vs Enterprise on the wiki). In general, Nmap will test for ports 22 (ssh), 135 (wmi), 62078 (iPhone) and UDP 161 (snmp). If 22, 135 or 161 respond the credential list is retrieved and each credential tested in turn. The first working credentials are used for further queries directly from the device. Note - if a device has previously been discovered and has working credentials, those credentials are tested first. Only if those fail are the other credentials then attempted.</p>
-    <p>The order of information retrieval is snmp, ssh, wmi.') . '</p>
+<p>' . __('For each spawned process, the below occurs.') . '</p>
+
+<p>' . __('Each IP is scanned with the discovery configured options (see Discovery Scan Options and Discovery - Community vs Professional vs Enterprise on the wiki). In general, Nmap will test for ports 22 (ssh), 135 (wmi), 62078 (iPhone) and UDP 161 (snmp). If 22, 135 or 161 respond the credential list is retrieved and each credential tested in turn. The first working credentials are used for further queries directly from the device. Note - if a device has previously been discovered and has working credentials, those credentials are tested first. Only if those fail are the other credentials then attempted.') . '</p>
+
+<p>' . __('The order of information retrieval is snmp, ssh, wmi.') . '</p>
 
 <br>
 <h4>SNMP</h4>
@@ -54,16 +58,16 @@ $body = '<br>
 <br>
 <h2>' . __('Seed Discoveries') . '</h2>
 
-<p>' . __('A seed discovery is another type of discovery, where you provide the IP of a single "seed" device. This device is audited, and any IPs it knows are then added to the list of IP\'s to be audited. Then, those devices are audited and any IPs they know are also added to the list of IPs for auditing. This process then continues within the parameters configured by the user.') . '</p>
+<p>' . __('A seed discovery is another type of discovery, where you provide the IP of a single <i>seed</i> device. This device is audited, and any IPs it knows are then added to the list of IPs to be audited. Then, those devices are audited and any IPs they know are also added to the list of IPs for auditing. This process then continues within the parameters configured by the user.') . '</p>
 
 <br>
 
-<p>' . __('Device Seed Discoveries are a good option if you know that your network consists of a range of subnet\'s, but you\'re unsure what they are. Seed the discovery with a local router and watch your network unfold before your eyes.') . '</p>
+<p>' . __('Device Seed Discoveries are a good option if you know that your network consists of a range of subnets, but you are unsure what they are. Seed the discovery with a local router and watch your network unfold before your eyes.') . '</p>
 
 <br>
 <h4>' . __('Parameters') . '</h4>
 
-<p>' . __('You can limit the Device Seed Discovery to fall within a strict set of parameters, including: "Restrict to Subnet" and "Restrict to Private"') . '</p>
+<p>' . __('You can limit the Device Seed Discovery to fall within a strict set of parameters, including: <i>Restrict to Subnet</i> and <i>Restrict to Private</i>') . '</p>
 
 <p>' . __('These parameters enable you to audit only what is useful and relevant to you, saving processing time and allowing you to discover your network in an orderly manner.') . '</p>
 
@@ -74,11 +78,7 @@ $body = '<br>
 <br>
 <h4>' . __('Summary') . '</h4>
 
-<p>' . __('The Device Seed Discovery type is the newest highly-effective method for network crawling, giving you the ability to target your network as narrowly or as broadly as you need. It\'s fast, it works and it\'s great.') . '</p>
-
-<p>' . __('If you have an Open-AudIT Enterprise license, as well as Open-AudIT 4.1.0 or newer, you can try a Device Seed Discovery today.') . '</p>
-
-<p>' . __('If you don\'t have an Enterprise license, or need to update your software, you can learn more about doing both here.') . '</p>
+<p>' . __('The Device Seed Discovery type is the newest highly-effective method for network crawling, giving you the ability to target your network as narrowly or as broadly as you need. It is fast, it works and it is great.') . '</p>
 
 <br>
 <h4>' . __('Technical Details') . '</h4>
@@ -103,11 +103,11 @@ ipRouteEntry (1.3.6.1.2.1.4.21.1.1)<br>
 <br>
 <h2>' . __('How Long Does it Take') . '</h2>
 
-<p>' . __('We are often asked this question and the answer most definitely is "it depends". It depends on the number of IPs to be scanned, the network connection speed, the speed of the devices being scanned, the type of devices being scanned, the number of different credentials being tested and the speed of the Open-AudIT server. We do not have a calculator that would allow us to input those variables and return a value. It is simply too complex. Generally I limit my discoveries to 256 IP addresses - ie, a /24 subnet. We have had customers scan /16 subnets (65k addresses) and it does work - but it can take a long time. You are much better off scanning in /24 blocks. If you simply do not know what your address ranges are, then this is a good case for a Seed discovery.') . '</p>
+<p>' . __('We are often asked this question and the answer most definitely is <i>it depends</i>. It depends on the number of IPs to be scanned, the network connection speed, the speed of the devices being scanned, the type of devices being scanned, the number of different credentials being tested and the speed of the Open-AudIT server. We do not have a calculator that would allow us to input those variables and return a value. It is simply too complex. Generally I limit my discoveries to 256 IP addresses - ie, a /24 subnet. We have had customers scan /16 subnets (65k addresses) and it does work - but it can take a long time. You are much better off scanning in /24 blocks. If you simply do not know what your address ranges are, then this is a good case for a Seed discovery.') . '</p>
 
 <br>
 <h2>' . __('Notes') . '</h2>
-<p>' . __('When auditing a Linux device via SSH, some Linux distributions do not allow sudo commands to be passed without a TTY (which we are doing). To completely audit one of these linux distributions it is best to supply the root user credentials. If no root is supplied and sudo without a TTY is not possible, the audit script will be run but will not contain the amount of data as would otherwise. Subsequent audits using root (or run locally using sudo) will therefore provide extra details about the system and generate several "changes".') . '</p>
+<p>' . __('When auditing a Linux device via SSH, some Linux distributions do not allow sudo commands to be passed without a TTY (which we are doing). To completely audit one of these linux distributions it is best to supply the root user credentials. If no root is supplied and sudo without a TTY is not possible, the audit script will be run but will not contain the amount of data as would otherwise. Subsequent audits using root (or run locally using sudo) will therefore provide extra details about the system and generate several <i>changes</i>.') . '</p>
 
 <p>' . __('You will need the ports for WMI on the Windows firewall opened on each target Windows computer. For Windows Core servers, ensure you allow the firewall connections as per') . ' - <a href="http://blogs.technet.com/b/brad_rutkowski/archive/2007/10/22/unable-to-remotely-manage-a-server-core-machine-mmc-wmi-device-manager.aspx" target="_blank">http://blogs.technet.com/b/brad_rutkowski/archive/2007/10/22/unable-to-remotely-manage-a-server-core-machine-mmc-wmi-device-manager.aspx</a>.</p>
 

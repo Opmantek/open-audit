@@ -17,9 +17,9 @@ $intro = '<p><h2>' . __('Using LDAPS') . '</h2>
 
 <br>' . __('Comment out the below line (about line 49 or so). Just place a hash # at the start of the line.') . '<br>
 
-<code>putenv(\'LDAPTLS_REQCERT=never\');</code><br>
+<code>putenv("LDAPTLS_REQCERT=never");</code><br>
 
-<br>' . __('Once commented out, your certificate will be validated, but may also fail this validation if you\'re using self-signed certificates and haven\'t configured your server correctly.') . '<br>
+<br>' . __('Once commented out, your certificate will be validated, but may also fail this validation if you are using self-signed certificates and have not configured your server correctly.') . '<br>
 
 <br>' . __('More information about debugging this can be found on a helpful Stack Overflow thread') . ' - <a href="https://stackoverflow.com/questions/25424622/authenticating-a-self-signed-certificate-for-ldaps-connection">https://stackoverflow.com/questions/25424622/authenticating-a-self-signed-certificate-for-ldaps-connection</a>.<br>
 
@@ -28,7 +28,7 @@ $intro = '<p><h2>' . __('Using LDAPS') . '</h2>
 
 <h2>' . __('First') . '</h2>
 
-<p>' . __('Let\'s set the logging to debug. Copy the file:') . '<br>
+<p>' . __('Lets set the logging to debug. Copy the file:') . '<br>
 
 <strong>' . __('Linux') . '</strong><br>
 
@@ -63,13 +63,13 @@ $intro = '<p><h2>' . __('Using LDAPS') . '</h2>
 	<tbody>
 		<tr>
 			<td>No Roles retrieved from database</td>
-			<td>' . __('Something has gone seriously wrong. Open-AudIT cannot read the \'roles\' table.') . '</td>
+			<td>' . __('Something has gone seriously wrong. Open-AudIT cannot read the <i>roles</i> table.') . '</td>
 			<td>error</td>
 		</tr>
 
 		<tr>
 			<td>No Orgs retrieved from database.</td>
-			<td>' . __('Something has gone seriously wrong. Open-AudIT cannot read the \'orgs\' table.') . '</td>
+			<td>' . __('Something has gone seriously wrong. Open-AudIT cannot read the <i>orgs</i> table.') . '</td>
 			<td>error</td>
 		</tr>
 
@@ -81,7 +81,7 @@ $intro = '<p><h2>' . __('Using LDAPS') . '</h2>
 
 		<tr>
 			<td>An invalid LDAP server type was supplied $ldap-&gt;type skipping.</td>
-			<td>' . __('The LDAP server type is invalid. It should be either \'active directory\' or \'openldap\'.') . '</td>
+			<td>' . __('The LDAP server type is invalid. It should be either <i>active directory</i> or <i>openldap</i>.') . '</td>
 			<td>error</td>
 		</tr>
 
@@ -91,7 +91,7 @@ $intro = '<p><h2>' . __('Using LDAPS') . '</h2>
 		</tr>
 		<tr>
 			<td>LDAP connect failed for LDAP server at $ip. Check your host, port and secure settings. Attempted to use $ldap_connect_string</td>
-			<td>' . __('The LDAP server could not be connected to. At all. Check it\'s pingable from the Open-AudIT server. Check the correct port is open to the Open-AudIT server. An nmap from the Open-AudIT server will show this. Substitute your LDAP servers IP for $ip. Try:<code>nmap -vv $ip</code>') . '</td>
+			<td>' . __('The LDAP server could not be connected to. At all. Check it is pingable from the Open-AudIT server. Check the correct port is open to the Open-AudIT server. An nmap from the Open-AudIT server will show this. Substitute your LDAP servers IP for $ip. Try:<code>nmap -vv $ip</code>') . '</td>
 			<td>notice</td>
 			</tr>
 		<tr>
@@ -106,7 +106,7 @@ $intro = '<p><h2>' . __('Using LDAPS') . '</h2>
 			</tr>
 		<tr>
 			<td>Could not bind to LDAP server at $ldap-&gt;host, skipping.</td>
-			<td>' . __('Some other error has occurred when attempting to bind to the LDAP server. It is contactable (ie, the \'connect\' above has worked), but for some other reason, binding has not occurred. Check the logs on the LDAP server.') . '</td>
+			<td>' . __('Some other error has occurred when attempting to bind to the LDAP server. It is contactable (ie, the <i>connect</i> above has worked), but for some other reason, binding has not occurred. Check the logs on the LDAP server.') . '</td>
 			<td>info</td>
 			</tr>
 		<tr>
@@ -126,7 +126,7 @@ $intro = '<p><h2>' . __('Using LDAPS') . '</h2>
 			</tr>
 		<tr>
     		<td>User $username in LDAP $ldap-&gt;name but not in Open-AudIT and not using LDAP for roles. Trying next LDAP Server.</td>
-			<td>' . __('The user that was specified exists in LDAP, but Open-AudIT is not configured to consume the LDAP groups for roles and that user does not exist within Open-AudIT. Either select "Use LDAP for Roles" on the Open-AudIT LDAP Server screen or create this user within Open-AudIT and assign roles and orgs.') . '</td>
+			<td>' . __('The user that was specified exists in LDAP, but Open-AudIT is not configured to consume the LDAP groups for roles and that user does not exist within Open-AudIT. Either select <i>Use LDAP for Roles</i> on the Open-AudIT LDAP Server screen or create this user within Open-AudIT and assign roles and orgs.') . '</td>
 			<td>info</td>
 			</tr>
 		<tr>
@@ -146,7 +146,7 @@ $intro = '<p><h2>' . __('Using LDAPS') . '</h2>
 			</tr>
 		<tr>
 			<td>LDAP search failed for user $username at $ldap-&gt;host</td>
-			<td>' . __('LDAP was searched for this user and their account was not found. Check the LDAP server logs. The user credentials have worked, but the user wasn\'t found. Also check you have specified the correct Base DN attribute when you created the LDAP Server in Open-AudIT.') . '</td>
+			<td>' . __('LDAP was searched for this user and their account was not found. Check the LDAP server logs. The user credentials have worked, but the user was not found. Also check you have specified the correct Base DN attribute when you created the LDAP Server in Open-AudIT.') . '</td>
 			<td>info</td>
 			</tr>
 		<tr>

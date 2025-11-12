@@ -16,7 +16,7 @@ $body = '<h2>' . __('Modifying an Existing Script') . '</h2>
 <br>
 <h2>' . __('Debugging a Script') . '</h2>
 
-<p>' . __('So a script isn\'t working on a recalcitrant device. Grrr. The scripts for Windows, Linux, and MacOS all accept the debugging argument. This can be set in the script itself, or provided on the command line. Run the script using that option set to 5 and you should see in which section of the script the failure occurs. For example') . ' -</p>
+<p>' . __('So a script is not working on a recalcitrant device. Grrr. The scripts for Windows, Linux, and MacOS all accept the debugging argument. This can be set in the script itself, or provided on the command line. Run the script using that option set to 5 and you should see in which section of the script the failure occurs. For example') . ' -</p>
 
 <pre>./audit_linux.sh debugging=5 submit_online=n create_file=y</pre>
 

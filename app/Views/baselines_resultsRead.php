@@ -34,26 +34,36 @@ $style = @$user->toolbar_style;
 $single_policy_button = '';
 $single_device_button = '';
 if ($style === 'icontext') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Results') . '</a></li>';
-    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Results') . '</a></li>';
-    $notin_button = '<li class="nav-item" role="presentation"><a href="#notin" class="nav-link" id="notin-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Items not in Baseline') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span class="icon-eye text-oa-success"></span>' . __('Details') . '</a></li>';
+
+    $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span class="icon-clipboard-plus text-oa-primary"></span>' . __('Policy Results') . '</a></li>';
+
+    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span class="icon-computer text-oa-primary"></span>' . __('Device Results') . '</a></li>';
+
+    $notin_button = '<li class="nav-item" role="presentation"><a href="#notin" class="nav-link" id="notin-tab"><span class="icon-megaphone-off text-oa-primary"></span>' . __('Items not in Baseline') . '</a></li>';
+
     if ($extra === 'policy') {
-        $single_policy_button = '<li class="nav-item" role="presentation"><a href="#policy" class="nav-link" id="policy-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Result') . '</a></li>';
+        $single_policy_button = '<li class="nav-item" role="presentation"><a href="#policy" class="nav-link" id="policy-tab"><span class="icon-clipboard-plus text-oa-primary"></span>' . __('Policy Result') . '</a></li>';
     }
+
     if ($extra === 'device') {
-        $single_device_button = '<li class="nav-item" role="presentation"><a href="#device" class="nav-link" id="device-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Result') . '</a></li>';
+        $single_device_button = '<li class="nav-item" role="presentation"><a href="#device" class="nav-link" id="device-tab"><span class="icon-computer text-oa-primary"></span>' . __('Device Result') . '</a></li>';
     }
 } elseif ($style === 'icon') {
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Results') . '</a></li>';
-    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Results') . '</a></li>';
-    $notin_button = '<li class="nav-item" role="presentation"><a href="#notin" class="nav-link" id="notin-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Items not in Baseline') . '</a></li>';
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span class="icon-eye text-success"></span>' . __('Details') . '</a></li>';
+
+    $policy_button = '<li class="nav-item" role="presentation"><a href="#policies" class="nav-link" id="policies-tab"><span class="icon-clipboard-plus text-primary"></span>' . __('Policy Results') . '</a></li>';
+
+    $device_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span class="icon-computer text-primary"></span>' . __('Device Results') . '</a></li>';
+
+    $notin_button = '<li class="nav-item" role="presentation"><a href="#notin" class="nav-link" id="notin-tab"><span class="icon-megaphone-off text-primary"></span>' . __('Items not in Baseline') . '</a></li>';
+
     if ($extra === 'policy') {
-        $single_policy_button = '<li class="nav-item" role="presentation"><a href="#policy" class="nav-link" id="policy-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Policy Result') . '</a></li>';
+        $single_policy_button = '<li class="nav-item" role="presentation"><a href="#policy" class="nav-link" id="policy-tab"><span class="icon-clipboard-plus text-primary"></span>' . __('Policy Result') . '</a></li>';
     }
+
     if ($extra === 'device') {
-        $single_device_button = '<li class="nav-item" role="presentation"><a href="#device" class="nav-link" id="device-tab"><span style="margin-right:6px;" class="fa-solid fa-square-poll-horizontal text-primary"></span>' . __('Device Result') . '</a></li>';
+        $single_device_button = '<li class="nav-item" role="presentation"><a href="#device" class="nav-link" id="device-tab"><span class="icon-computer text-primary"></span>' . __('Device Result') . '</a></li>';
     }
 } else {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"></span>' . __('Details') . '</a></li>';
@@ -130,7 +140,7 @@ if ($style === 'icontext') {
                                 <?php if (!empty($resource->result->policy)) { ?>
                                     <?php foreach ($resource->result->policy as $row) { ?>
                                     <tr>
-                                        <td class="text-center"><a href="<?= url_to('baselines_resultsRead', $meta->id) ?>?policy_id=<?= $row->id ?>#policy" role="button" class="btn btn-primary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                        <td class="text-center"><a href="<?= url_to('baselines_resultsRead', $meta->id) ?>?policy_id=<?= $row->id ?>#policy" role="button" class="btn btn-primary btn-sm"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                         <td><?= $row->table ?></td>
                                         <td><?= html_entity_decode($row->name) ?></td>
                                         <td class="text-center"><a href="#" role="button" class="btn btn-success btn-sm"><strong><?= $row->pass ?></strong></a></td>
@@ -161,7 +171,7 @@ if ($style === 'icontext') {
                                 <?php if (!empty($resource->result->device_list)) { ?>
                                     <?php foreach ($resource->result->device_list as $row) { ?>
                                     <tr>
-                                        <td class="text-center"><a href="<?= url_to('baselines_resultsRead', $meta->id) ?>?device_id=<?= $row->id ?>#device" role="button" class="btn btn-primary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                        <td class="text-center"><a href="<?= url_to('baselines_resultsRead', $meta->id) ?>?device_id=<?= $row->id ?>#device" role="button" class="btn btn-primary btn-sm"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                         <td><?= $row->name ?></td>
                                         <td class="text-center"><a href="#" role="button" class="btn btn-success btn-sm"><strong><?= $row->pass ?></strong></a></td>
                                         <td class="text-center"><a href="#" role="button" class="btn btn-danger  btn-sm"><strong><?= $row->fail ?></strong></a></td>
@@ -212,7 +222,7 @@ if ($style === 'icontext') {
                                     <?php foreach ($resource->result->notin as $key => $value) { ?>
                                         <?php foreach ($value as $row) { ?>
                                         <tr>
-                                            <td class="text-center"><a href="<?= url_to('devicesRead', $row->{'devices.id'}) ?>" role="button" class="btn btn-primary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                            <td class="text-center"><a href="<?= url_to('devicesRead', $row->{'devices.id'}) ?>" role="button" class="btn btn-primary btn-sm"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                             <td><?= $row->{'devices.name'} ?></td>
                                             <td><?= $key ?></td>
                                             <?php if ($key === 'software') {
@@ -270,7 +280,7 @@ if ($style === 'icontext') {
                                 <tbody>
                                 <?php foreach ($policy->result as $row) { ?>
                                     <tr>
-                                        <td class="text-center"><a href="<?= url_to('baselines_resultsRead', $meta->id) ?>?device_id=<?= $row->id ?>" role="button" class="btn btn-primary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                        <td class="text-center"><a href="<?= url_to('baselines_resultsRead', $meta->id) ?>?device_id=<?= $row->id ?>" role="button" class="btn btn-primary btn-sm"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                         <td><?= $row->name ?></td>
                                         <td><?= @$row->test1 ?></td>
                                         <td><?= @$row->test2 ?></td>
@@ -280,14 +290,14 @@ if ($style === 'icontext') {
                                         <td class="text-center">
                                             <span style="display:none"><?= $row->status ?></span>
                                             <?php if ($row->status === 'fail') { ?>
-                                                <button class="btn btn-sm btn-danger"><span style="width:1rem;" class="fa fa-xmark" aria-hidden="true"></span></button>
+                                                <button class="btn btn-sm btn-danger"><span style="width:1rem;" class="icon-x" aria-hidden="true"></span></button>
                                             <?php } else { ?>
-                                                <button class="btn btn-sm btn-success"><span style="width:1rem;" class="fa fa-check" aria-hidden="true"></span></button>
+                                                <button class="btn btn-sm btn-success"><span style="width:1rem;" class="icon-check" aria-hidden="true"></span></button>
                                             <?php } ?>
                                         </td>
                                         <td class="text-center">
                                         <?php if ($policy->table === 'software' and !empty($row->test1) and $row->status === 'fail') { ?>
-                                            <a href="<?= url_to('baselines_policiesRead', $policy->id) ?>" role="button" class="btn btn-sm btn-warning"><span style="width:1rem;" class="fa-regular fa-pen-to-square" aria-hidden="true"></span></a>
+                                            <a href="<?= url_to('baselines_policiesRead', $policy->id) ?>" role="button" class="btn btn-sm btn-warning"><span style="width:1rem;" class="icon-pencil" aria-hidden="true"></span></a>
                                         <?php } ?>
                                         </td>
                                     </tr>
@@ -321,7 +331,7 @@ if ($style === 'icontext') {
                                     foreach ($key->result as $row) {
                                         if ($row->id === $extra_id) { ?>
                                         <tr>
-                                            <td class="text-center"><a href="<?= url_to('baselines_policiesRead', $key->id) ?>" role="button" class="btn btn-primary btn-sm"><span class="fa fa-eye" aria-hidden="true"></span></a></td>
+                                            <td class="text-center"><a href="<?= url_to('baselines_policiesRead', $key->id) ?>" role="button" class="btn btn-primary btn-sm"><span class="icon-eye" aria-hidden="true"></span></a></td>
                                             <td><?= $key->table ?></td>
                                             <td><?= html_entity_decode($key->name) ?></td>
                                             <td><?= $row->test1 ?></td>
@@ -330,14 +340,14 @@ if ($style === 'icontext') {
                                             <td class="text-center">
                                                 <span style="display:none"><?= $row->status ?></span>
                                             <?php if ($row->status === 'fail') { ?>
-                                                <button class="btn btn-sm btn-danger"><span style="width:1rem;" class="fa fa-xmark" aria-hidden="true"></span></button>
+                                                <button class="btn btn-sm btn-danger"><span style="width:1rem;" class="icon-x" aria-hidden="true"></span></button>
                                             <?php } else { ?>
-                                                <button class="btn btn-sm btn-success"><span style="width:1rem;" class="fa fa-check" aria-hidden="true"></span></button>
+                                                <button class="btn btn-sm btn-success"><span style="width:1rem;" class="icon-check" aria-hidden="true"></span></button>
                                             <?php } ?>
                                             </td>
                                             <td class="text-center">
                                             <?php if (!empty($row->test1) and $row->status === 'fail') { ?>
-                                                <a href="<?= url_to('baselines_policiesRead', $key->id) ?>" role="button" class="btn btn-sm btn-warning"><span class="fa-regular fa-pen-to-square" aria-hidden="true"></span></a>
+                                                <a href="<?= url_to('baselines_policiesRead', $key->id) ?>" role="button" class="btn btn-sm btn-warning"><span class="icon-pencil" aria-hidden="true"></span></a>
                                             <?php } ?>
                                             </td>
                                         </tr>
@@ -361,11 +371,11 @@ window.onload = function () {
         $("#button_create").remove();
         $("#button_export_json").remove();
         <?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
-            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_export_policy\" class=\"btn btn-light mb-2\" title=\"<?= __('Export by Policy') ?>\" href=\"<?= url_to('baselines_resultsExportPolicy', $resource->id) ?>\"><span style=\"margin-right:6px;\" class=\"fa fa-arrow-up-right-from-square\"></span><?= __('Export by Policy') ?></a>");
-            $(".page-title-right").append("<a role=\"button\" id=\"button_export_device\" class=\"btn btn-light mb-2\" title=\"<?= __('Export by Device') ?>\" href=\"<?= url_to('baselines_resultsExportDevice', $resource->id) ?>\"><span style=\"margin-right:6px;\" class=\"fa fa-arrow-up-right-from-square\"></span><?= __('Export by Device') ?></a>");
+            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_export_policy\" class=\"btn btn-light mb-2\" title=\"<?= __('Export by Policy') ?>\" href=\"<?= url_to('baselines_resultsExportPolicy', $resource->id) ?>\"><span class=\"icon-square-arrow-out-up-right text-oa-primary\"></span><?= __('Export by Policy') ?></a>");
+            $(".page-title-right").append("<a role=\"button\" id=\"button_export_device\" class=\"btn btn-light mb-2\" title=\"<?= __('Export by Device') ?>\" href=\"<?= url_to('baselines_resultsExportDevice', $resource->id) ?>\"><span class=\"icon-square-arrow-out-up-right text-oa-primary\"></span><?= __('Export by Device') ?></a>");
         <?php } elseif ($user->toolbar_style === 'icon') { ?>
-            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_export_policy\" class=\"btn btn-light mb-2\" title=\"<?= __('Export by Policy') ?>\" href=\"<?= url_to('baselines_resultsExportPolicy', $resource->id) ?>\"><span style=\"margin-right:6px;\" class=\"fa fa-arrow-up-right-from-square\"></span></a>");
-            $(".page-title-right").append("<a role=\"button\" id=\"button_export_device\" class=\"btn btn-light mb-2\" title=\"<?= __('Export by Device') ?>\" href=\"<?= url_to('baselines_resultsExportDevice', $resource->id) ?>\"><span style=\"margin-right:6px;\" class=\"fa fa-arrow-up-right-from-square\"></span></a>");
+            $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_export_policy\" class=\"btn btn-light mb-2\" title=\"<?= __('Export by Policy') ?>\" href=\"<?= url_to('baselines_resultsExportPolicy', $resource->id) ?>\"><span class=\"icon-square-arrow-out-up-right\"></span></a>");
+            $(".page-title-right").append("<a role=\"button\" id=\"button_export_device\" class=\"btn btn-light mb-2\" title=\"<?= __('Export by Device') ?>\" href=\"<?= url_to('baselines_resultsExportDevice', $resource->id) ?>\"><span class=\"icon-square-arrow-out-up-right\"></span></a>");
         <?php } elseif ($user->toolbar_style === 'text') { ?>
             $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_export_policy\" class=\"btn btn-light mb-2\" title=\"<?= __('Export by Policy') ?>\" href=\"<?= url_to('baselines_resultsExportPolicy', $resource->id) ?>\"><?= __('Export by Policy') ?></a>");
             $(".page-title-right").append("<a role=\"button\" id=\"button_export_device\" class=\"btn btn-light mb-2\" title=\"<?= __('Export by Device') ?>\" href=\"<?= url_to('baselines_resultsExportDevice', $resource->id) ?>\"><?= __('Export by Device') ?></a>");

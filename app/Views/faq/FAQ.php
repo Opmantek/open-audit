@@ -5,7 +5,7 @@
 $title = __('Help and Frequently Asked Questions');
 $files = array_diff(scandir(APPPATH . 'Views/faq'), array('.', '..'));
 
-$intro = '<p>Don\'t forget there is a mountain of documentation on the wiki, <a href="https://docs.community.firstwave.com/wiki/spaces/OA/overview" target="_blank">here</a>.<br><br>';
+$intro = '<p>' . __('Do not forget there is a mountain of documentation on the wiki') . ', <a href="https://docs.community.firstwave.com/wiki/spaces/OA/overview" target="_blank">' . __('here') . '</a>.<br><br>';
 foreach ($files as $file) {
     if ($file !== 'FAQ.php') {
         $intro .= '<a href="' . url_to('helpFAQ') . '?name=' . str_replace('.php', '', $file) . '">' . str_replace('.php', '', $file) . '</a><br>';
@@ -16,9 +16,15 @@ $intro .= '
 <br>
 <h2>' . __('Opening a Support Ticket?') . '</h2>
 
-<p>' . __('If you are a supported customer and open a support ticket with FirstWave, please attach these files.') . '<br>
-<br><strong>' . __('Install Support') . '</strong>: ' . __('It is available at Menu -> Help ->') . ' <a href="' . url_to('supportCollection') . '">' . __('Support') . '</a>. ' . __('This is to be used as the first point of call when troubleshooting Open-AudIT issues. You can click the Export button on the top right to retrieve this as a JSON file (to be added to the support ticket / email.') . '<br>
-<br><strong>' . __('Discovery Support') . '</strong>: ' . __('When investigating a Discovery, support will request the Exported Discovery Logs. To retrieve these, go to menu -> Discoveries ->') . ' <a href="' . url_to('discoveriesCollection') . '">' . __('List Discoveries') . '</a>. ' . __('View the discovery in question, then click the Support button in the top right toolbar. This will provide the discovery settings, config items, the discovery device list as well as the logs for this particular discovery.') . '<br><br></p>
+<p>' . __('If you are a supported customer and open a support ticket with FirstWave, please attach these files.') . 
+'<br><br><strong>' . __('Install Support') . '</strong>: ' . 
+__('It is available at Menu -> Help ->') . ' <a href="' . url_to('supportCollection') . '">' . 
+__('Support') . '</a>. ' . 
+__('This is to be used as the first point of call when troubleshooting Open-AudIT issues. You can click the Export button on the top right to retrieve this as a JSON file (to be added to the support ticket / email.') . '<br><br><strong>' . 
+__('Discovery Support') . '</strong>: ' . 
+__('When investigating a Discovery, support will request the Exported Discovery Logs. To retrieve these, go to menu -> Discoveries ->') . ' <a href="' . url_to('discoveriesCollection') . '">' . 
+__('List Discoveries') . '</a>. ' . 
+__('View the discovery in question, then click the Support button in the top right toolbar. This will provide the discovery settings, config items, the discovery device list as well as the logs for this particular discovery.') . '<br><br></p>
 
 <br>
 <h2>' . __('My AntiVirus is prompting me to deny/allow things') . '</h2>

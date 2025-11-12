@@ -29,7 +29,7 @@ include 'shared/common_functions.php';
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="add_inputs" class="form-label"><?= __('If') ?></label>
                                     <?php if ($update) { ?>
-                                    <button type="button" id="add_inputs" name="add_inputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                    <button type="button" id="add_inputs" name="add_inputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="icon-plus" aria-hidden="true"></i></button>
                                     <?php } ?>
                                     <div id="inputs" class="input-group">
                                         <?php
@@ -52,10 +52,10 @@ include 'shared/common_functions.php';
                                                 <?php if ($update) { ?>
                                                 <div class="col-2 text-center">
                                                     <button type="button" data-delete="#inputs_<?= $input_count ?>" data-name="<?= $input->{'table'} ?>.<?= $input->{'attribute'} ?>" class="inputDelete btn btn-sm btn-danger" title="<?= __('Delete') ?>">
-                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        <i class="icon-trash-2" aria-hidden="true"></i>
                                                     </button>
                                                     <button style="display:none;" type="button" id="inputs_cancel_<?= $input_count ?>" data-row="<?= $input_count ?>" class="cancel_input btn btn-sm btn-danger" title="<?= __('Cancel') ?>">
-                                                        <i class="fa fa-remove" aria-hidden="true"></i>
+                                                        <i class="icon-x" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
                                                 <?php } ?>
@@ -84,10 +84,10 @@ include 'shared/common_functions.php';
                                                 <?php if ($update) { ?>
                                                 <div class="col-2 text-center">
                                                     <button type="button" data-action="edit" id="inputs_edit_<?= $input_count ?>" data-row="<?= $input_count ?>" class="edit_input btn btn-sm btn-default" title="<?= __('Edit') ?>">
-                                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                                        <i class="icon-pencil" aria-hidden="true"></i>
                                                     </button>
                                                     <button style="display:none;" type="button" id="inputs_submit_<?= $input_count ?>" data-row="<?= $input_count ?>" class="submit_input btn btn-sm btn-success" title="<?= __('Submit') ?>">
-                                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                                        <i class="icon-check" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
                                                 <?php } ?>
@@ -109,7 +109,7 @@ include 'shared/common_functions.php';
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="add_outputs" class="form-label"><?= __('Then') ?></label>
                                     <?php if ($update) { ?>
-                                    <button type="button" id="add_outputs" name="add_outputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                    <button type="button" id="add_outputs" name="add_outputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="icon-plus" aria-hidden="true"></i></button>
                                     <?php } ?>
                                     <div id="outputs" class="input-group">
                                         <?php
@@ -133,10 +133,10 @@ include 'shared/common_functions.php';
                                                 <?php if ($update) { ?>
                                                 <div class="col-2 text-center" id="delete_outputs_<?= $output_count ?>">
                                                     <button type="button" data-delete="#outputs_<?= $output_count ?>" data-name="<?= $output->{'table'} ?>.<?= $output->{'attribute'} ?>" class="outputDelete btn btn-sm btn-danger" title="<?= __('Delete') ?>">
-                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        <i class="icon-trash-2" aria-hidden="true"></i>
                                                     </button>
                                                     <button style="display:none;" type="button" id="outputs_cancel_<?= $output_count ?>" data-row="<?= $output_count ?>" class="cancel_output btn btn-sm btn-danger" title="<?= __('Cancel') ?>">
-                                                        <i class="fa fa-remove" aria-hidden="true"></i>
+                                                        <i class="icon-x" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
                                                 <?php } ?>
@@ -156,10 +156,10 @@ include 'shared/common_functions.php';
                                                 <?php if ($update) { ?>
                                                 <div class="col-2 text-center" id="edit_outputs_<?= $output_count ?>">
                                                     <button type="button" data-action="edit" id="outputs_edit_<?= $output_count ?>" data-row="<?= $output_count ?>" class="edit_output btn btn-sm btn-default" title="<?= __('Edit') ?>">
-                                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                                        <i class="icon-pencil" aria-hidden="true"></i>
                                                     </button>
                                                     <button style="display:none;" type="button" id="outputs_submit_<?= $output_count ?>" data-row="<?= $output_count ?>" class="submit_output btn btn-sm btn-success" title="<?= __('Submit') ?>">
-                                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                                        <i class="icon-check" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
                                                 <?php } ?>
@@ -493,10 +493,10 @@ window.onload = function () {
                                                 </div>\
                                                 <div class=\"col-2 text-center\">\
                                                     <button type=\"button\" data-delete=\"#inputs_" + input_count + "\" data-row=\"" + input_count + "\" class=\"del_input btn btn-sm btn-danger\" title=\"<?= __('Delete') ?>\">\
-                                                        <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\
+                                                        <i class=\"icon-trash-2\" aria-hidden=\"true\"></i>\
                                                     </button>\
                                                     <button style=\"display:none;\" type=\"button\" id=\"inputs_cancel_" + input_count + "\" data-row=\"" + input_count + "\" class=\"cancel_input btn btn-sm btn-danger\" title=\"<?= __('Cancel') ?>\">\
-                                                        <i class=\"fa fa-remove\" aria-hidden=\"true\"></i>\
+                                                        <i class=\"icon-x\" aria-hidden=\"true\"></i>\
                                                     </button>\
                                                 </div>\
                                             </div>\
@@ -523,10 +523,10 @@ window.onload = function () {
                                                 </div>\
                                                 <div class=\"col-2 text-center\">\
                                                     <button style=\"display:none;\" type=\"button\" data-action=\"edit\" id=\"inputs_edit_" +  input_count + "\" data-row=\"" + input_count + "\" class=\"edit_input btn btn-sm\" title=\"<?= __('Edit') ?>\">\
-                                                        <i class=\"fa fa-edit\" aria-hidden=\"true\"></i>\
+                                                        <i class=\"icon-pencil\" aria-hidden=\"true\"></i>\
                                                     </button>\
                                                     <button type=\"button\" id=\"inputs_submit_" + input_count + "\" data-row=\"" + input_count + "\" class=\"submit_input btn btn-sm btn-success\" title=\"<?= __('Submit') ?>\">\
-                                                        <i class=\"fa fa-check\" aria-hidden=\"true\"></i>\
+                                                        <i class=\"icon-check\" aria-hidden=\"true\"></i>\
                                                     </button>\
                                                 </div>\
                                             </div>\
@@ -558,10 +558,10 @@ window.onload = function () {
                                                 </div>\
                                                 <div class=\"col-2 text-center\">\
                                                     <button type=\"button\" data-delete=\"#outputs_" + output_count + "\" data-row=\"" + output_count + "\" class=\"del_output btn btn-sm btn-danger\" title=\"<?= __('Delete') ?>\">\
-                                                        <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\
+                                                        <i class=\"icon-trash-2\" aria-hidden=\"true\"></i>\
                                                     </button>\
                                                     <button style=\"display:none;\" type=\"button\" id=\"outputs_cancel_" + output_count + "\" data-row=\"" + output_count + "\" class=\"cancel_output btn btn-sm btn-danger\" title=\"<?= __('Cancel') ?>\">\
-                                                        <i class=\"fa fa-remove\" aria-hidden=\"true\"></i>\
+                                                        <i class=\"icon-x\" aria-hidden=\"true\"></i>\
                                                     </button>\
                                                 </div>\
                                             </div>\
@@ -579,10 +579,10 @@ window.onload = function () {
                                                 </div>\
                                                 <div class=\"col-2 text-center\">\
                                                     <button style=\"display:none;\" type=\"button\" data-action=\"edit\" id=\"outputs_edit_" +  output_count + "\" data-row=\"" + output_count + "\" class=\"edit_output btn btn-sm\" title=\"<?= __('Edit') ?>\">\
-                                                        <i class=\"fa fa-edit\" aria-hidden=\"true\"></i>\
+                                                        <i class=\"icon-pencil\" aria-hidden=\"true\"></i>\
                                                     </button>\
                                                     <button type=\"button\" id=\"outputs_submit_" + output_count + "\" data-row=\"" + output_count + "\" class=\"submit_output btn btn-sm btn-success\" title=\"<?= __('Submit') ?>\">\
-                                                        <i class=\"fa fa-check\" aria-hidden=\"true\"></i>\
+                                                        <i class=\"icon-check\" aria-hidden=\"true\"></i>\
                                                     </button>\
                                                 </div>\
                                             </div>\

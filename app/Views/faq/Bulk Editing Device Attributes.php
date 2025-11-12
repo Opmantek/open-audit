@@ -20,8 +20,9 @@ $body = '<p><br><br>' . __('This will show you the Bulk Edit form. Any attribute
 <p>
 <br>' . __('Click the icon to the right of the field you wish to edit. Change the field and click the green icon to submit.') . '<br>
 <br>' . __('You can also see at the bottom of the page a table showing the devices the changes will be applied to.') . '<br>
-<br>' . __('That\'s it! You have just edited the attributes of as many devices as you need to.') . '<br>
+<br>' . __('Thats it! You have just edited the attributes of as many devices as you need to.') . '<br>
 <br>' . __('There is absolutely no need to manually edit each individual device.') . '<br>
-<br><strong>' . __('NOTE') . '</strong>: ' . __('Bulk edit selections won\'t stay selected after clicking next page.') . '<br>
-<br>' . __('If this occurs then the issue you\'re seeing is related to the table control being used on the webpage. It only stores in memory the state of the check boxes for the current page being viewed. If you make selections, then page forward/back those selections will be lost. You can, however, accomplish what you want by expanding the number of devices shown on each page. In the top-left corner is a drop-down labeled “records per page”; use this to expand the number of entries displayed until you see all you want to select for Bulk Edit.') . '</p>
+<br><strong>' . __('NOTE') . '</strong>: ' . 
+__('Bulk edit selections wont stay selected after clicking next page.') . '<br>
+<br>' . __('If this occurs then the issue you are seeing is related to the table control being used on the webpage. It only stores in memory the state of the check boxes for the current page being viewed. If you make selections, then page forward/back those selections will be lost. You can, however, accomplish what you want by expanding the number of devices shown on each page. In the top-left corner is a drop-down labeled “records per page”; use this to expand the number of entries displayed until you see all you want to select for Bulk Edit.') . '</p>
 <img src="' . base_url() . 'images/faq_07.png" alt="' . __('Select All Devices') . '" style="width:20%;">';

@@ -8,7 +8,7 @@ include 'shared/create_functions.php';
                 <div class="card-header">
                     <div class="row">
                         <div class="col-4 clearfix">
-                            <h6 style="padding-top:10px;"><span class="fa fa-leanpub oa-icon"></span><?= __('Open-AudIT Licenses') ?></h6>
+                            <h6 style="padding-top:10px;"><span class="icon-book-key oa-icon"></span><?= __('Open-AudIT Licenses') ?></h6>
                         </div>
                     </div>
                 </div>
@@ -34,7 +34,7 @@ include 'shared/create_functions.php';
                                     echo '<div class="row"><div class="col-11">';
                                     echo $license->product . ' ' . __('is licensed to') . ' ' . $license->company . ' ' . __('for') . ' ' . $license->conditions . '.<br>';
                                     echo __('This license expires on') . ' ' . date('Y-m-d h:i:s', $license->expires) . ' - ' . $valid . '</div>';
-                                    echo '<div class="col-1"><button class="btn btn-sm btn-danger remove_license" data-name="license_string" data-id="' . $meta->license_string . '"><span class="fa fa-trash"></span></button></div></div>';
+                                    echo '<div class="col-1"><button class="btn btn-sm btn-danger remove_license" data-name="license_string" data-id="' . $meta->license_string . '"><span class="icon-trash-2"></span></button></div></div>';
                                     echo '<br><br><hr><br></div>';
                                 } else {
                                     echo '<div id="license_string"><span class="text-danger">' . __('No License for Professional or Enterprise') . '</span><br><br><hr><br></div>';
@@ -50,7 +50,7 @@ include 'shared/create_functions.php';
                                     echo '<div class="row"><div class="col-11">';
                                     echo $license_collector->product . ' ' . __('is licensed to') . ' ' . $license_collector->company . ' ' . __('for') . ' ' . $license_collector->conditions . '.<br>';
                                     echo __('This license expires on') . ' ' . date('Y-m-d h:i:s', $license_collector->expires) . ' - ' . $valid . '</div>';
-                                    echo '<div class="col-1"><button class="btn btn-sm btn-danger remove_license" data-name="license_collector" data-id="' . $meta->license_string_collector . '"><span class="fa fa-trash"></span></button></div></div>';
+                                    echo '<div class="col-1"><button class="btn btn-sm btn-danger remove_license" data-name="license_collector" data-id="' . $meta->license_string_collector . '"><span class="icon-trash-2"></span></button></div></div>';
                                     echo '<br><br><hr><br></div>';
                                 } ?>
                             </div>

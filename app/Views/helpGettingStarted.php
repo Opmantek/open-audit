@@ -6,7 +6,7 @@ include 'shared/collection_functions.php';
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h6 style="padding-top:10px;"><span class="fa-solid fa-arrows-spin oa-icon"></span><?= __('Getting Started') ?></h6>
+                    <h6 style="padding-top:10px;"><span class="icon-life-buoy oa-icon"></span><?= __('Getting Started') ?></h6>
                 </div>
                 <div class="card-body text-center">
                     <div class="row">
@@ -33,7 +33,7 @@ include 'shared/collection_functions.php';
             <br>
             <div class="card">
                 <div class="card-header">
-                    <h6 style="padding-top:10px;"><span class="fa fa-binoculars oa-icon"></span><?= __('Discover') ?></h6>
+                    <h6 style="padding-top:10px;"><span class="icon-binoculars oa-icon"></span><?= __('Discover') ?></h6>
                 </div>
                 <div class="card-body text-center">
                     <div class="row">
@@ -45,7 +45,7 @@ include 'shared/collection_functions.php';
                                 <?= __('Open-AudIT uses credentials to access your devices. These are encrypted and stored, just as you would expect.') ?> <a href="<?= url_to('credentialsHelp') ?>"><?= __('More Information') ?></a>.<br>
                                 <br>
                                 <h4><small><?= __('Create a Discovery') ?></small></h4>
-                                <?= __('Discoveries are at the very heart of what Open-AudIT does. How else would you know "What\'s On Your Network?"') ?> <a href="<?= url_to('discoveriesHelp') ?>"><?= __('More Information') ?></a>.<br>
+                                <?= __('Discoveries are at the very heart of what Open-AudIT does. How else would you know <i>Whats On Your Network?</i>') ?> <a href="<?= url_to('discoveriesHelp') ?>"><?= __('More Information') ?></a>.<br>
                                 <br>
                                 <h4><small><?= __('Run Your Discovery') ?></small></h4>
                                 <?= __('Easily run a discovery upon a network in a single click, without entering the details of that network each and every time.') ?> <a href="<?= url_to('discoveriesHelp') ?>"><?= __('More Information') ?></a>.<br>
@@ -58,7 +58,7 @@ include 'shared/collection_functions.php';
             <br>
             <div class="card">
                 <div class="card-header">
-                    <h6 style="padding-top:10px;"><span class="fa fa-bar-chart oa-icon"></span><?= __('Report on your devices, networks and more') ?></h6>
+                    <h6 style="padding-top:10px;"><span class="icon-chart-bar-increasing oa-icon"></span><?= __('Report on your devices, networks and more') ?></h6>
                 </div>
                 <div class="card-body text-center">
                     <div class="row">

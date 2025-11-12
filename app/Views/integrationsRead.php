@@ -5,17 +5,27 @@ include 'shared/read_functions.php';
 include 'shared/common_functions.php';
 $style = @$user->toolbar_style;
 if ($style === 'icontext') {
-    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" class="fa-regular fa-rectangle-list text-primary"></span>' . __('Summary') . '</a></li>';
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="fa fa-eye text-success"></span>' . __('Details') . '</a></li>';
-    $fields_button =  '<li class="nav-item" role="presentation"><a href="#fields" class="nav-link" id="fields-tab" ><span style="margin-right:6px;" class="fa fa-comments-o text-success"></span>' . __('Fields') .  '</a></li>';
-    $logs_button =    '<li class="nav-item" role="presentation"><a href="#logs" class="nav-link" id="logs-tab"   ><span style="margin-right:6px;" class="fa fa-bars text-primary"></span>' . __('Logs') .    '</a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="fa fa-desktop text-primary"></span>' . __('Devices') . '</a></li>';
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span class="icon-book-check text-oa-primary"></span>' . __('Summary') . '</a></li>';
+
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span class="icon-eye text-oa-success"></span>' . __('Details') . '</a></li>';
+
+    $fields_button =  '<li class="nav-item" role="presentation"><a href="#fields" class="nav-link" id="fields-tab" ><span class="icon-messages-square text-oa-success"></span>' . __('Fields') .  '</a></li>';
+
+    $logs_button =    '<li class="nav-item" role="presentation"><a href="#logs" class="nav-link" id="logs-tab"><span class="icon-logs text-oa-primary"></span>' . __('Logs') .    '</a></li>';
+
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span class="icon-computer text-oa-primary"></span>' . __('Devices') . '</a></li>';
+
 } elseif ($style === 'icon') {
-    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span style="margin-right:6px;" title="' . __('Summary') . '" class="fa-regular fa-rectangle-list text-primary"></span></a></li>';
-    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="fa fa-eye text-success"></span></a></li>';
-    $fields_button =  '<li class="nav-item" role="presentation"><a href="#fields"  class="nav-link" id="fields-tab" ><span style="margin-right:6px;" title="' . __('Fields') .  '" class="fa fa-comments-o text-success"></span></a></li>';
-    $logs_button =    '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"   ><span style="margin-right:6px;" title="' . __('Logs') .    '" class="fa fa-bars text-primary"></span></a></li>';
-    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="fa fa-desktop text-primary"></span></a></li>';
+    $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span title="' . __('Summary') . '" class="icon-book-check text-primary"></span></a></li>';
+
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span title="' . __('Details') . '" class="icon-eye text-success"></span></a></li>';
+
+    $fields_button =  '<li class="nav-item" role="presentation"><a href="#fields"  class="nav-link" id="fields-tab" ><span title="' . __('Fields') .  '" class="icon-messages-square text-success"></span></a></li>';
+
+    $logs_button =    '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"   ><span title="' . __('Logs') .    '" class="icon-logs text-primary"></span></a></li>';
+
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span title="' . __('Devices') . '" class="icon-computer text-primary"></span></a></li>';
+
 } else {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab">' . __('Summary') . '</a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
@@ -32,9 +42,9 @@ if (!empty($resource->attributes->password)) {
     $placeholder = __('has not been set');
 }
 if ($style === 'icontext') {
-    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('integrationsDownload', $meta->id) . "?format=json_data\"><span style=\"margin-right:6px;\" class=\"fa-regular fa-comments text-primary\"></span>" . __('Support') . "</a>";
+    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('integrationsDownload', $meta->id) . "?format=json_data\"><span class=\"icon-messages-square text-oa-primary\"></span>" . __('Support') . "</a>";
 } elseif ($style === 'icon') {
-    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('integrationsDownload', $meta->id) . "?format=json_data\"><span class=\"fa-solid fa-person-circle-exclamation text-primary\"></span></a>";
+    $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('integrationsDownload', $meta->id) . "?format=json_data\"><span class=\"icon-messages-square text-primary\"></span></a>";
 } else {
     $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('integrationsDownload', $meta->id) . "?format=json_data\">" . __('Support') . "</a>";
 }
@@ -156,9 +166,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -178,9 +188,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                                    <div data-attribute="select_internal_attribute" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -209,9 +219,9 @@ if ($style === 'icontext') {
                                                 </select>
                                                 <?php if ($update) { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="select_external_type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                                    <div data-attribute="select_external_type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                                    <div data-attribute="select_external_type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                                    <div data-attribute="select_external_type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                                    <div data-attribute="select_external_type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                                    <div data-attribute="select_external_type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -258,7 +268,7 @@ if ($style === 'icontext') {
                                                 <?= $field->matching_attribute  ?>
                                             <?php } ?>
                                             </td>
-                                            <td class="text-center"><button type="button" class="field_delete_link btn <?= $GLOBALS['button'] ?> btn-danger" data-internal_field_name="<?= $field->internal_field_name ?>" data-external_field_name="<?= $field->external_field_name ?>" data-external_field_type="<?= $field->external_field_type ?>" data-default_value="<?= $field->default_value ?>" data-priority="<?= $field->priority ?>" data-matching_attribute="<?= $field->matching_attribute ?>" ><i class="fa fa-trash" aria-hidden="true">&nbsp;</i></button></td>
+                                            <td class="text-center"><button type="button" class="field_delete_link btn <?= $GLOBALS['button'] ?> btn-danger" data-internal_field_name="<?= $field->internal_field_name ?>" data-external_field_name="<?= $field->external_field_name ?>" data-external_field_type="<?= $field->external_field_type ?>" data-default_value="<?= $field->default_value ?>" data-priority="<?= $field->priority ?>" data-matching_attribute="<?= $field->matching_attribute ?>" ><i class="icon-trash-2" aria-hidden="true">&nbsp;</i></button></td>
                                         </tr>
                                         <?php } ?>
                                     </tbody>
@@ -325,7 +335,7 @@ if ($style === 'icontext') {
                                     <?php if (!empty($included['devices'])) { ?>
                                         <?php foreach ($included['devices'] as $result) { ?>
                                         <tr>
-                                            <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('devicesRead', $result->attributes->id) ?>"><span class="fa fa-desktop" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
+                                            <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('devicesRead', $result->attributes->id) ?>"><span class="icon-computer" aria-hidden="true" style="margin-right: 0px;"></span></a></td>
                                             <td><?= $result->attributes->ip ?><br><?= $result->attributes->type ?></td>
                                             <td><?= $result->attributes->name ?><br><?= $result->attributes->fqdn ?></td>
                                         </tr>

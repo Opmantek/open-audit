@@ -278,10 +278,10 @@ class ConnectionsModel extends BaseModel
         $dictionary->columns->product_name = 'The name provided by the provider.';
         $dictionary->columns->service_identifier = 'The ID provided by the provider.';
         $dictionary->columns->circuit_status = 'Your description of the status of this connection (provisioned, retired, etc).';
-        $dictionary->columns->speed_down_a = 'Usually Mb/s, to Location A.';
-        $dictionary->columns->speed_up_a = 'Usually Mb/s, from Location A.';
-        $dictionary->columns->speed_down_b = 'Usually Mb/s, to Location B.';
-        $dictionary->columns->speed_up_b = 'Usually Mb/s, from Location B.';
+        $dictionary->columns->speed_down_a = 'Usually Mbs, to Location A.';
+        $dictionary->columns->speed_up_a = 'Usually Mbs, from Location A.';
+        $dictionary->columns->speed_down_b = 'Usually Mbs, to Location B.';
+        $dictionary->columns->speed_up_b = 'Usually Mbs, from Location B.';
         $dictionary->columns->location_id_a = 'The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.';
         $dictionary->columns->device_id_a = 'The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.';
         $dictionary->columns->line_number_a = 'The line number assigned by the provider to the line at this end of the connection.';

@@ -7,8 +7,7 @@ $title = __('Localisation');
 $intro = '<p>' . __('Open-AudIT can show in one of several languages. How you can improve this?') . '</p>';
 
 $body = '
-<p>' . __('Open-AudIT was written by an English speaking Australian. Everything in the application uses English wording. However Open-AudIT has always supported multiple languages for display. These translations are not always correct, because the developers do not natively speak the language of every translation offered.<br>
-<br>What can you do if something is not correct in the translation?') . '</p>
+<p>' . __('Open-AudIT was written by an English speaking Australian. Everything in the application uses English wording. However Open-AudIT has always supported multiple languages for display. These translations are not always correct, because the developers do not natively speak the language of every translation offered.<br><br>What can you do if something is not correct in the translation?') . '</p>
 
 <h2>' . __('Option #1 - Change the data') . '</h2>
 
@@ -28,8 +27,8 @@ $body = '
 
 <p>
     ' . __('Example text from') . ' de.php.<br><br>
-    <code>$GLOBALS["lang"]["A Google Maps API Key is required for this function."] = "<span style=\'color: blue;\'>Google Maps API Für diese Funktion ist der Schlüssel erforderlich.</span>";</code><br><br>
-    You should only change the second sentence of text, the <span style="color: blue;">blue</span> text. The first is the array index and should be left as-is. The index is used in the templates to lookup the translated text.<br><br>
+    <code>' . __('A Google Maps API Key is required for this function.') . '</code><br><br>
+    ' . __('You should only change the second sentence of text, the') . ' <span style="color: blue;">' . __('blue') . '</span> ' . __('text. The first is the array index and should be left as-is. The index is used in the templates to lookup the translated text.') . '<br><br>
 </p>
 
 <h2>' . __('But I do not want to have to change the language file every time I update!') . '</h2>

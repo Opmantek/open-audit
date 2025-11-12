@@ -7,7 +7,8 @@
 <br>
 <p><?= __('To audit a machine, you must have credentials and administrator level access.') ?><br>
 <ul class="list-group list-group-flush">
-    <li class="list-group-item"><?= __('To audit a remote machine that is not in a domain, you must use the Administrator account (not "an" admin account, "the" Administrator account) on the target PC. #1 and #2') ?></li>
+
+    <li class="list-group-item"><?= __('To audit a remote machine that is not in a domain, you must use the Administrator account (not <i>an</i> admin account, <i>the</i> Administrator account) on the target PC. #1 and #2') ?></li>
 
     <li class="list-group-item"><?= __('To audit a remote machine on an Active Directory domain, your supplied user (or if none provided, the user running the script) must be a member of the target machines Administrators group (or subgroup).') ?></li>
 
@@ -17,7 +18,8 @@
 
     <li class="list-group-item"><?= __('The account password must NOT contain " (double quotes). This is because cscript (and wscript) cannot parse argument values containing double quotes. They are simply stripped. No (before you ask) escaping will not work. This is a cscript limitation and nothing to do with Open-AudIT.') ?></li>
 </ul>
-<strong>#1 NOTE</strong> - <?= __('To enable a remote machine (Vista or above) to be audited that is not on a domain, by an account in the Administrators group, other than the actual Administrator account see the below section on UAC.') ?><br>
-<strong>#2 NOTE</strong> - <?= __('You can audit a remote machine without the using the actual Administrator account by creating a registry key. Create the below key on every machine to be audited and make sure the user credentials used is a member of the Administrators group.') ?><br>
+<strong><?= __('NOTE') ?></strong> - <?= __('To enable a remote machine (Vista or above) to be audited that is not on a domain, by an account in the Administrators group, other than the actual Administrator account see the below section on UAC.') ?><br>
+
+<strong><?= __('NOTE') ?></strong> - <?= __('You can audit a remote machine without the using the actual Administrator account by creating a registry key. Create the below key on every machine to be audited and make sure the user credentials used is a member of the Administrators group.') ?><br>
 <code>\HKEY_USERS\.DEFAULT\Software\Microsoft\Windows Script\Settings</code>
 </p>

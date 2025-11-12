@@ -218,15 +218,15 @@ window.onload = function () {
         function populate_device_table(devices) {
             $("#devicesTable").append('<fieldset>');
             for (const device of devices) {
-                installed = '<span class="fa-solid fa-xmark text-danger"><\/span>';
+                installed = '<span class="icon-x text-danger"><\/span>';
                 if (device.attributes['software.name'] != '') {
-                    installed = '<span class="fa-solid fa-check text-success"><\/span>';
+                    installed = '<span class="icon-check text-success"><\/span>';
                 }
                 disabled = '<td><\/td>';
-                credentials = '<span class="fa-solid fa-xmark text-danger"><\/span>';
+                credentials = '<span class="icon-x text-danger"><\/span>';
                 if (device.attributes['c1.type'].includes('ssh') || device.attributes['c2.type'].includes('ssh') || device.attributes['c3.type'].includes('ssh')) {
                     disabled = '<td style="text-align: center;"><input aria-label="<?= __('Select') ?>" type="checkbox" id="data[attributes][devices][' + device.id + ']" value="' + device.id + '" name="data[attributes][devices][' + device.id + ']" checked><\/td>';
-                    credentials = '<span class="fa-solid fa-check text-success"><\/span>';
+                    credentials = '<span class="icon-check text-success"><\/span>';
                 }
                 if (device.attributes['devices.os_family'].indexOf('Windows') !== -1) {
                     installed = 'N/A';
@@ -234,7 +234,7 @@ window.onload = function () {
                     disabled = '<td style="text-align: center;"><input aria-label="<?= __('Select') ?>" type="checkbox" id="data[attributes][devices][' + device.id + ']" value="' + device.id + '" name="data[attributes][devices][' + device.id + ']" checked><\/td>';
                 }
                 $("#devicesTable").append('<tr>\
-                <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" href="<?= $meta->baseurl ?>index.php/devices/' + device.id + '"><span style="width:1rem;" title="<?= __('View') ?>" class="fa fa-desktop" aria-hidden="true"><\/span><\/a><\/td>\
+                <td class="text-center"><a title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-devices" href="<?= $meta->baseurl ?>index.php/devices/' + device.id + '"><span style="width:1rem;" title="<?= __('View') ?>" class="icon-computer" aria-hidden="true"><\/span><\/a><\/td>\
                 <td><strong>' + device.attributes['devices.name'] + '<\/strong><\/td>\
                 <td>' + device.attributes['devices.ip'] + '<\/td>\
                 <td>' + device.attributes['devices.os_family'] + ' ' + device.attributes['devices.os_version'] + '<\/td>\

@@ -440,7 +440,7 @@ window.onload = function () {
             row = row + "><?= __('No') ?><\/option>";
             row = row + "<\/select></td>";
 
-            row = row + "                                        <td class=\"text-center\"><button type=\"button\" data-row=\"#fields_" + field_count + "\" class=\"del_input btn btn-sm btn-danger\" title=\"<?= __('Delete') ?>\" data-warn=\"y\"><i class=\"fa fa-trash\" aria-hidden=\"true\">&nbsp;<\/i><\/button><\/td>";
+            row = row + "                                        <td class=\"text-center\"><button type=\"button\" data-row=\"#fields_" + field_count + "\" class=\"del_input btn btn-sm btn-danger\" title=\"<?= __('Delete') ?>\" data-warn=\"y\"><i class=\"icon-trash-2\" aria-hidden=\"true\">&nbsp;<\/i><\/button><\/td>";
 
             row = row + "</tr>";
 
@@ -470,7 +470,7 @@ window.onload = function () {
                                             <td><select class=\"form-select\" name=\"data[attributes][fields][" + field_count + "][priority]\" id=\"data[attributes][fields][" + field_count + "][priority]\"><option value=\"internal\" selected><?= __('Internal') ?><\/option><option value=\"external\"><?= __('External') ?><\/option><\/select>\
                                             <td><input type=\"text\" class=\"form-control\" id=\"data[attributes][fields][" + field_count + "][default_value]\" name=\"data[attributes][fields][" + field_count + "][default_value]\" value=\"\"><\/td>\
                                             <td><select class=\"form-select\" name=\"data[attributes][fields][" + field_count + "][matching_attribute]\" id=\"data[attributes][fields][" + field_count + "][matching_attribute]\"><option value=\"y\"><?= __('Yes') ?><\/option><option value=\"n\" selected><?= __('No') ?><\/option><\/select></td>\
-                                            <td class=\"text-center\"><button type=\"button\" data-row=\"#fields_" + field_count + "\" class=\"del_input btn btn-sm btn-danger\" title=\"<?= __('Delete') ?>\" data-warn=\"n\"><i class=\"fa fa-trash\" aria-hidden=\"true\">&nbsp;<\/i><\/button><\/td>\
+                                            <td class=\"text-center\"><button type=\"button\" data-row=\"#fields_" + field_count + "\" class=\"del_input btn btn-sm btn-danger\" title=\"<?= __('Delete') ?>\" data-warn=\"n\"><i class=\"icon-trash-2\" aria-hidden=\"true\">&nbsp;<\/i><\/button><\/td>\
                                         <\/tr>";
             $('#fields > tbody:last-child').append(row);
             field_count = field_count + 1;

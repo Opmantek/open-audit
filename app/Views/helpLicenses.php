@@ -7,7 +7,7 @@ $class = '';
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h6 style="padding-top:10px;"><span class="fa-solid fa-arrows-spin oa-icon"></span><?= __('Application Licenses') ?></h6>
+                    <h6 style="padding-top:10px;"><span class="icon-life-buoy oa-icon"></span><?= __('Application Licenses') ?></h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -81,7 +81,7 @@ Open-AudIT when downloaded from FirstWave may include the following libraries an
         </tr>
         <tr>
             <td>HighCharts</td>
-            <td><?= ('Proprietary. If you want to modify HighCharts you may require a') ?> <a target="_blank" href="https://shop.highcharts.com"><?= __('license') ?></a>, <?= __('you do not require a HighCharts license to use Firstwave products. License') ?> <a href="https://shop.highcharts.com/license" target="_blank"><?= __('details') ?></a>.</td>
+            <td><?= __('Proprietary. If you want to modify HighCharts you may require a') ?> <a target="_blank" href="https://shop.highcharts.com"><?= __('license') ?></a>, <?= __('you do not require a HighCharts license to use Firstwave products. License') ?> <a href="https://shop.highcharts.com/license" target="_blank"><?= __('details') ?></a>.</td>
         </tr>
     </tbody>
 </table>

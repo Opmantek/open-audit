@@ -14,6 +14,6 @@ $intro = '<p>' . __('With the introduction of the Clouds feature, you can supply
 
 $body = '<h2>' . __('Device Matching Rules') . '</h2>
 <br>
-<p>' . __('To use this feature you must enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed. For more on Open-AudIT\'s matching rules see HERE: Matching Devices') . '</p>
+<p>' . __('To use this feature you must enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed. For more on Open-AudITs matching rules see HERE: Matching Devices') . '</p>
 <br>
 ';

@@ -35,9 +35,9 @@ include 'shared/common_functions.php';
                                         </select>
                                         <?php if ($update and $config->product === 'enterprise') { ?>
                                         <div class="pull-right" style="padding-left:4px;">
-                                            <div data-attribute="timing" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                            <div data-attribute="timing" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                            <div data-attribute="timing" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                            <div data-attribute="timing" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                            <div data-attribute="timing" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                            <div data-attribute="timing" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -56,9 +56,9 @@ include 'shared/common_functions.php';
                                         </select>
                                         <?php if ($update and $config->product === 'enterprise') { ?>
                                         <div class="pull-right" style="padding-left:4px;">
-                                            <div data-attribute="nmap_tcp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                            <div data-attribute="nmap_tcp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                            <div data-attribute="nmap_tcp_ports" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                            <div data-attribute="nmap_tcp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                            <div data-attribute="nmap_tcp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                            <div data-attribute="nmap_tcp_ports" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -77,9 +77,9 @@ include 'shared/common_functions.php';
                                         </select>
                                         <?php if ($update and $config->product === 'enterprise') { ?>
                                         <div class="pull-right" style="padding-left:4px;">
-                                            <div data-attribute="nmap_udp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="fa fa-pencil"></span></div>
-                                            <div data-attribute="nmap_udp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-check"></span></div>
-                                            <div data-attribute="nmap_udp_ports" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="fa fa-remove"></span></div>
+                                            <div data-attribute="nmap_udp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                            <div data-attribute="nmap_udp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                            <div data-attribute="nmap_udp_ports" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                         </div>
                                         <?php } ?>
                                     </div>

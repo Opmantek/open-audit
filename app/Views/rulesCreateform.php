@@ -26,7 +26,7 @@ include 'shared/common_functions.php';
                                         <div class="card">
                                             <div class="card-header">
                                                 <?= __('If') ?>
-                                                <button type="button" id="add_inputs" name="add_inputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                <button type="button" id="add_inputs" name="add_inputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="icon-plus" aria-hidden="true"></i></button>
                                             </div>
                                             <div class="card-body">
                                                 <div class="row">
@@ -62,7 +62,7 @@ include 'shared/common_functions.php';
                                                                 </div>
                                                                 <div class="col-1 pull-right">
                                                                     <button type="button" data-row="#inputs_1" class="del_input btn btn-sm btn-danger" title="<?= __('Delete') ?>">
-                                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                        <i class="icon-trash-2" aria-hidden="true"></i>
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -81,7 +81,7 @@ include 'shared/common_functions.php';
                                         <div class="card">
                                             <div class="card-header">
                                                 <?= __('Then') ?>
-                                                <button type="button" id="add_outputs" name="add_outputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                <button type="button" id="add_outputs" name="add_outputs" class="btn btn-sm btn-success float-end" title="<?= __('Add') ?>"><i class="icon-plus" aria-hidden="true"></i></button>
                                             </div>
                                             <div class="card-body">
                                                 <div class="row">
@@ -109,7 +109,7 @@ include 'shared/common_functions.php';
                                                                 </div>
                                                                 <div class="col-1 pull-right">
                                                                     <button type="button" data-row="#outputs_1" class="del_output btn btn-sm btn-danger" title="<?= __('Delete') ?>">
-                                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                        <i class="icon-trash-2" aria-hidden="true"></i>
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -226,7 +226,7 @@ window.onload = function () {
                                                                     </div>\
                                                                     <div class=\"col-1 pull-right\">\
                                                                         <button type=\"button\" data-row=\"#inputs_" + input_count + "\" class=\"del_input btn btn-sm btn-danger\" title=\"<?= __('Delete') ?>\">\
-                                                                            <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\
+                                                                            <i class=\"icon-trash-2\" aria-hidden=\"true\"></i>\
                                                                         </button>\
                                                                     </div>\
                                                                 </div>\
@@ -267,7 +267,7 @@ window.onload = function () {
                                                                     </div>\
                                                                     <div class=\"col-1 pull-right\">\
                                                                         <button type=\"button\" data-row=\"#outputs_" + output_count + "\" class=\"del_output btn btn-sm btn-danger\" title=\"<?= __('Delete') ?>\">\
-                                                                            <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\
+                                                                            <i class=\"icon-trash-2\" aria-hidden=\"true\"></i>\
                                                                         </button>\
                                                                     </div>\
                                                                 </div>\
