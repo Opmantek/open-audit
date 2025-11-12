@@ -152,7 +152,10 @@ $rulesModel = new \App\Models\RulesModel();
 $rulesModel->execute(null, @intval($device->system->discovery_id), 'update', intval($device->system->id));
 
 // Test for vulnerabilities
-$vulnerabilitiesModel->executeAll(intval($device->system->id));
+if (empty($device->system->domain) or $device->system->domain !== 'open-audit.local') {
+    // exclude the example devices
+    $vulnerabilitiesModel->executeAll(intval($device->system->id));
+}
 
 // Because Rules may set the last_seen_by, update it here.
 $sql = "UPDATE devices SET last_seen_by = ? WHERE id = ?";
