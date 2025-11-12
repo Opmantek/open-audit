@@ -9,6 +9,7 @@ namespace App\Controllers;
 
 use CodeIgniter\Controller;
 use stdClass;
+use \RecursiveIteratorIterator;
 
 /**
  * PHP version 7.4
@@ -39,7 +40,7 @@ class Dictionary extends BaseController
     public function dictionary()
     {
 
-        echo "<pre>\n";
+        #echo "<pre>\n";
         $start = microtime(true);
         log_message('info', "START: " . $start);
         $LANG = array();
@@ -67,6 +68,7 @@ class Dictionary extends BaseController
         $LANG['Auth'] = 'Authorization';
         $LANG['Authentication Passphrase'] = 'Authentication Passphrase';
         $LANG['Cancel'] = 'Cancel';
+        $LANG['Change'] = 'Change';
         $LANG['Close'] = 'Close';
         $LANG['Components (All Devices)'] = 'Components (All Devices)';
         $LANG['Context Engine ID'] = 'Context Engine ID';
@@ -87,6 +89,7 @@ class Dictionary extends BaseController
         $LANG['Fields'] = 'Fields';
         $LANG['Help'] = 'Help';
         $LANG['Home'] = 'Home';
+        $LANG['Hardware'] = 'Hardware';
         $LANG['Import'] = 'Import';
         $LANG['IP'] = 'IP';
         $LANG['List'] = 'List';
@@ -506,28 +509,46 @@ class Dictionary extends BaseController
             }
         }
 
-        $lines = `grep -r "__('" /usr/local/open-audit/app/Views/`;
-        foreach (explode("\n", $lines) as $line) {
-            $explode = explode('__(', $line);
-            if (!empty($explode[1])) {
-                $explode2 = explode("'", $explode[1]);
-                $line = $explode2[1];
-                if (strpos($line, "'") !== false) {
-                    echo $line . "\n\n";
+        // $lines = `grep -r "__('" /usr/local/open-audit/app/Views/`;
+        // foreach (explode("\n", $lines) as $line) {
+        //     $explode = explode('__(', $line);
+        //     if (!empty($explode[1])) {
+        //         $explode2 = explode("'", $explode[1]);
+        //         if (empty($explode2[1])) {
+        //             log_message('error', 'Bad line: ' . json_encode($explode));
+        //             exit;
+        //         }
+        //         $line = $explode2[1];
+        //         if (strpos($line, "'") !== false) {
+        //             echo $line . "\n\n";
+        //         }
+        //         $line = str_replace("\n", "", $line);
+        //         $line = str_replace('\\', '\\\\', $line);
+        //         $line = str_replace('"', '\"', $line);
+        //         $line = str_replace("'", "\'", $line);
+        //         $LANG[$line] = $line;
+        //     }
+        // }
+
+        $directory = '/usr/local/open-audit/app/Views';
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($iterator as $item) {
+            $path = $item->getPathname();
+            if ($item->isFile()) {
+                $content = file_get_contents($path);
+                preg_match_all("/__\('([^']*)'/", $content, $matches);
+                $strings = $matches[1];
+                foreach ($strings as $string) {
+                    $string = str_replace("\n", "", $string);
+                    $string = str_replace('\\', '\\\\', $string);
+                    $string = str_replace('"', '\"', $string);
+                    $string = str_replace("'", "\'", $string);
+                    $LANG[$string] = $string;
                 }
-                $line = str_replace("\n", "", $line);
-                $line = str_replace('\\', '\\\\', $line);
-                $line = str_replace('"', '\"', $line);
-                $line = str_replace("'", "\'", $line);
-                $LANG[$line] = $line;
             }
         }
 
         asort($LANG);
-
-        // foreach ($LANG as $key => $value) {
-        //     echo '$GLOBALS[\'lang\'][\'' . $key . '\'] = \'' . $value . '\'' . ";\n";
-        // }
 
         foreach ($LANG as $key => $value) {
             if (stripos($value, "'") !== false) {
@@ -537,19 +558,18 @@ class Dictionary extends BaseController
             }
         }
 
-        log_message('info', "Parsing took: " . (microtime(true) - $start));
+        log_message('info', "Parsing files took: " . (microtime(true) - $start));
 
-        set_time_limit(3000);
+        // set_time_limit(3000);
         $opt = new stdClass();
         $opt->source = 'en';
         $opt->target = 'sv';
         $opt->format = 'html';
         $opt->url = 'http://localhost:5000/translate';
-
-        // $supported = array('ar', 'az', 'bg', 'cs', 'dq', 'de', 'el', 'eo', 'es', 'et', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'lt', 'nl', 'pb', 'pl', 'ru', 'tr', 'uk', 'zh');
-        $supported = array('zh');
+        $supported = array('ar', 'az', 'bg', 'cs', 'dq', 'de', 'el', 'eo', 'es', 'et', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'lt', 'nl', 'pb', 'pl', 'ru', 'tr', 'uk', 'zh');
 
         foreach ($supported as $support) {
+            $start = microtime(true);
             $ch = curl_init($opt->url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $total = count($LANG);
@@ -572,11 +592,15 @@ class Dictionary extends BaseController
                     }
                     unset($response);
                     unset($body);
-                    log_message('info', $count . ' / ' . $total);
+                    $count++;
+                    log_message('info', $support . ' :: ' . $count . ' / ' . $total);
                 }
             }
 
-            log_message('info', "Translating took: " . (microtime(true) - $start));
+            $seconds = intval((microtime(true) - $start));
+            $minutes = floor($seconds / 60);
+            $remainingSeconds = $seconds % 60;
+            log_message('info', "Translating $support took: $minutes minutes and $remainingSeconds seconds");
 
             foreach ($LANG as $key => $value) {
                 $LANG[$key] = str_replace('<br />br />>/p>', '<br><br></p>', $value);
@@ -596,7 +620,7 @@ class Dictionary extends BaseController
             $LANG['>='] = '>=';
 
             // German specific
-            if ($opt->target === 'de') {
+            if ($support === 'de') {
                 $LANG['Import CSV'] = 'Einfuhr CSV';
                 $LANG['Import JSON'] = 'Einfuhr JSON';
                 $LANG['<p>A location is a physical address that can have devices associated with it.<br><br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br><br></p>'] = 'Ein Standort ist eine physische Adresse, die Geräte mit ihr verbunden haben kann.<br><br>Sie können es Koordinaten (lat/long) zuordnen und wenn Geräte zugewiesen sind, erscheint der Standort auf der Open-AudIT Enterprise map.<br><br></p>';
@@ -614,9 +638,6 @@ class Dictionary extends BaseController
             foreach ($countries as $key => $value) {
                 $LANG[$key] = $key;
             }
-
-            log_message('info', "Correcting took: " . (microtime(true) - $start));
-            // echo "<?php\n";
 
             $file = fopen('/usr/local/open-audit/app/Views/lang/' . $support . '.php', "w");
             if (!$file) {
