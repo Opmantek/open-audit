@@ -1,9 +1,9 @@
 <?php
-$langFile = APPPATH . 'Views/lang/en.php';
+#$langFile = APPPATH . 'Views/lang/en.php';
 if (!empty($user->lang) and file_exists(APPPATH . 'Views/lang/' . $user->lang . '.php')) {
     $langFile = APPPATH . 'Views/lang/' . $user->lang . '.php';
+    include($langFile);
 }
-include($langFile);
 
 if (!function_exists('__')) {
     function __($word)
