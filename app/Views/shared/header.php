@@ -63,9 +63,6 @@ if (!empty($config->servers)) {
         <!-- CSS -->
         <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/bootstrap.css') ?>" rel="stylesheet">
-        <!--
-        <link href="<?= base_url('css/dataTables.bootstrap5.min.css') ?>" rel="stylesheet">
-        -->
         <link href="<?= base_url('css/datatables.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/select2.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/select2-bootstrap-5-theme.min.css') ?>" rel="stylesheet">
