@@ -19,6 +19,9 @@ $instance = & get_instance();
                     $i = 0;
                     foreach ($included['devices'] as $os) {
                         $i++;
+                        if ($os->attributes->type === '') {
+                            $os->attributes->icon = 'unknown';
+                        }
                         if ($os->attributes->type === 'computer') {
                             $os->attributes->icon = 'computer';
                         }
