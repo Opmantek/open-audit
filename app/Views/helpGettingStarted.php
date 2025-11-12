@@ -14,7 +14,7 @@ include 'shared/collection_functions.php';
                             <br>
                             <p><strong><i><?= __('Get familiar with the Open-AudIT platform and explore some of its features.') ?></i></strong><br>
                                 <br>
-                                <?= __('Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell "What\'s On Your Network?", how it is configured and if there have been any changes. Open-AudIT delivers a sleek, flexible and easy to use platform for device discovery, IT auditing and inventory management automation straight out of the box.') ?><br>
+                                <?= __('Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell <i>What is On Your Network?</i>, how it is configured and if there have been any changes. Open-AudIT delivers a sleek, flexible and easy to use platform for device discovery, IT auditing and inventory management automation straight out of the box.') ?><br>
                                 <br>
                                 <?= __('Interactive dashboards provide instant visibility into the status of network inventory allowing IT teams to spot newly discovered devices and unusual device behaviour at a glance.') ?><br>
                                 <br>

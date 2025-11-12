@@ -23,7 +23,7 @@ $operating_system = $config->server_platform;
                 <?= __('Your Host is') ?>: <?= php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br>
                 <?= __('Your database platform is') ?>: <?= $db->getPlatform() . " (" . __('version') . " " . $db->getVersion() . ")"; ?>.<br>
                 <?= __('Your web server is') ?>: <?= getenv("SERVER_SOFTWARE") ?> .<br>
-                <?= __('Your PHP version is') ?>: <?= phpversion(); ?> <?= __('and it\'s current time is') ?> <?= $config->timestamp ?>.<br><br>
+                <?= __('Your PHP version is') ?>: <?= phpversion(); ?> <?= __('and its current time is') ?> <?= $config->timestamp ?>.<br><br>
                 <?php
                 if (!extension_loaded('snmp')) {
                     echo "<i>" . __('You do not have the PHP SNMP extension installed. This extension is highly recommended.') . "</i><br>";

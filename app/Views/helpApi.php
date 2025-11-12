@@ -293,7 +293,7 @@ format=xml</code></p>
 
 <br>
 <h2><?= __('Limit') ?></h2>
-<p><?= __('When requesting JSON, by default no limit is set. When requesting screen display, the limit is set to 1000 by default. This can be changed in the configuration. See the \'page_size\' item') ?> <a href="<?= url_to('configurationCollection') ?>?configuration.name=page_size"><?= __('here') ?></a>.<br>
+<p><?= __('When requesting JSON, by default no limit is set. When requesting screen display, the limit is set to 1000 by default. This can be changed in the configuration. See the <i>page_size</i> item') ?> <a href="<?= url_to('configurationCollection') ?>?configuration.name=page_size"><?= __('here') ?></a>.<br>
 <code>limit={int}</code></p>
 
 <br>
