@@ -1,1847 +1,2385 @@
 <?php
-$GLOBALS["lang"][' Default, currently '] = ' Standaard, momenteel ';
+$GLOBALS["lang"][' Default, currently '] = ' Bendrijoje Tartajapan. kgm ';
 
-$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = ' wordt nu ondersteund met een taalbestand. Om uw gebruiker te wijzigen om deze taal te gebruiken, klikt u ';
+$GLOBALS["lang"][' If something does not work as expected, your first thing to do is check the logs.'] = ' Venturio ne funkcias kiel atendite, Bendrieoje.';
 
-$GLOBALS["lang"][' seconds'] = ' seconden';
+$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = ' Bendrijos teisės aktai. Por рановивани vian uzanton por uzi tiun lingvon, klaki, Bendrijoje ';
 
-$GLOBALS["lang"]['10 Minutes'] = '10 minuten';
+$GLOBALS["lang"][' seconds'] = ' Bendrijoje';
 
-$GLOBALS["lang"]['15 Minutes'] = '15 minuten';
+$GLOBALS["lang"][', but will not need to remember a separate set of logon credentials.'] = '(1)';
 
-$GLOBALS["lang"]['30 Minutes'] = '30 minuten';
+$GLOBALS["lang"][', of which we supply over thirty as a default set. Professional users cannot alter these, but an Enterprise user has complete customisation abilities - including creating your own.'] = 'De kiu ni makas pli ol tridek kiel dea... Profesiaj uzantoj ne povas рений tiujn, sed Enterprise uzanto haves kompletajn specialadapterajn kapablojn - inkluzive de krado de via propa.';
 
-$GLOBALS["lang"]['5 Minutes'] = '5 minuten';
+$GLOBALS["lang"][', you <i>must</i> be using https on your Open-AudIT server to use Entra for Auth. Please configure Apache to use <strong>https</strong> before configuring Entra for auth.'] = '• <i>Bendrijoje</i> Uzi https://off.gov/index.php Bonvolu agordi a remomendaro Bendrijoje <strong>Htps</strong> "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" """ """ "" """" "" """ """" "" "" """ "" """ "" """ "" "" "" """ "" """ "" "" "" "" "" "" "" """ "" "" "" "" "" """" """ "" "" ""';
 
-$GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br/> <strong>NOOT</strong> - U opent deze URL vanaf de lokale Open-AudIT-server. Het gedownloade script zal niet in staat zijn om te verzenden wanneer uitgevoerd op een andere machine. Als u andere machines moet controleren, kunt u het script downloaden vanaf elke externe machine, niet via een browser op de Open-AudIT server zelf.';
+$GLOBALS["lang"]['. To enable this, edit the configuration item for '] = 'Por obbligo arba redakki arba konfiguracion objectko por ';
+
+$GLOBALS["lang"]['10 Minutes'] = '10';
+
+$GLOBALS["lang"]['15 Minutes'] = '15. ·';
+
+$GLOBALS["lang"]['30 Minutes'] = '24';
+
+$GLOBALS["lang"]['5 Minutes'] = '5';
+
+$GLOBALS["lang"]['93 controls grouped into organizational, people, physical, and technological categories'] = '93 Kontroloj grupigitaj en organisajn, Bendrieoje';
+
+$GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br/><strong>Bendrijoje</strong> Vi Aliris URL de la loka ОТКРОТО. L \'apresetta manikripto ne povas Bendrijoje Se vi bezonas revizii alpijn ma apretinejn, bonvolu el apretuti la manikripton de iu malpreksima ma divonaino, ne uzante retumonion sur la open- event- eventur - servilo mem.';
 
 $GLOBALS["lang"]['<p></p>'] = '<p></p>';
 
-$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">NOOT</strong> - U moet werken aan SSH of SSH Key referenties om benchmarks uit te voeren op een doel apparaat.</p>';
+$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">Bendrijoje</strong> Bendrijoje</p>';
 
-$GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong>Baseline</strong> - Het overkoepelende document dat de basisdefinitie en de individuele beleidstests bevat.<br/> <br/> <strong>Beleid</strong> - De individuele tests in een basislijn. Elke test is voor een bepaald item. Een voorbeeld is het testen van SSH versie 1.2.3.<br/> <br/> <strong>Gegevens</strong> - Baselines kunnen netstat poorten, gebruikers en software vergelijken.<br/> <br/> <strong>Software</strong> - Om software te vergelijken controleren we de naam en versie. Omdat versienummers niet allemaal gestandaardiseerd zijn in formaat, wanneer we een auditresultaat ontvangen, maken we een nieuw attribuut genaamd software_padded dat we in de database opslaan samen met de rest van de softwaredetails voor elk pakket. Daarom zullen basislijnen die softwarebeleid gebruiken, niet werken wanneer ze worden uitgevoerd tegen een apparaat dat niet is gecontroleerd door 1.10 (ten minste). Software beleid kan testen tegen de versie "gelijk aan," "groter dan" of "gelijk aan of groter dan".<br/> <br/> <strong>Netstat-poorten</strong> - Netstat Ports gebruikt een combinatie van poortnummer, protocol en programma. Als iedereen aanwezig is, gaat het beleid over.<br/> <br/> <strong>Gebruikers</strong> - Gebruikers werken vergelijkbaar met Netstat Ports. Als een gebruiker bestaat met een bijpassende naam, status en wachtwoord details (changeable, expires, required) dan gaat het beleid voorbij.<br/> <br/> </p>';
+$GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong>(1)</strong> (OL L 20 van 2015.177, blz. 42).<br/> <br/> <strong>Bendrijoje</strong> Indinfutuaj commersij enhavitaj ene de Bazlino. Mina zondoiu testo estetas por specia objectto. Ekzemplo estus testata pri SS-versie 1.2.3.<br/> <br/> <strong>Bendrijoje</strong> Bazlinioj povas kompari need hasnojn, uzantojn kaj softvaron.<br/> <br/> <strong>Bendrijoje</strong> Por kompari softvaron ni controllas tendomon kaj versūne. Identificeercar versico nombroj nestas Tial, bazlinioj uzantaj softvarpolitikojn ne funkcias dum kuro kontra epäilty aparato kiu ne estis reviviita neestas 1.10 (almena kaptlus). Softvarpolitkoj povas testi kontrouna la verserio estanta "egalaj al," "pli gra ol" kaptus al egala al difetto pli granda ol ".<br/> <br/> <strong>-</strong> Netstat Bendrijoje <br/> <br/> <strong>"L \'Unione"</strong> Uzantoj sim simpiaj al Netstat Se uzanto eksistas kun egala nomo, stato kaj pasvorton detaloj (publikaan Progressiveblaj, eksvalidas, postulis) tiam la politik pasas.<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p>Een locatie is een fysiek adres dat apparaten kan hebben die ermee geassocieerd zijn.<br/> <br/>U kunt deze coördinaten toewijzen (lat/lang) en als er apparaten zijn toegewezen, zal de locatie verschijnen op de Open-AudIT Enterprise kaart.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p>Loko estas fizika adreso kiu povas havi aparatojn asocitajn kun liukoinen.<br/> <br/>Vi povas asigni εin koriatoj (lat / long) kaj se eksistas aparatoj asignitaj, la loko aperos sur la opent - rev.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br></p>'] = '<p>Een netwerk is afgeleid van ontdekkingsitems en apparaatattributen.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br></p>'] = '<p>Indonesië risolto de eltrova.o kontrolbouj kaj aparato aroducas.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>Een samenvatting toont een lijst van items, gegroepeerd door de verschillende waarden van het attribuut gespecificeerd door de <code>table</code> en <code>column</code> attributen.<br/> <br/>Wanneer een samenvatting wordt uitgevoerd, zal het resultaat een lijst zijn van verschillende waarden voor dat <code>table</code> en <code>column</code>. Er zullen links zijn op de waarden waarmee de gebruiker de bijbehorende apparaten kan zien.<br/> <br/>Als het kenmerk van <code>extra_columns</code> wordt bevolkt, de resulterende pagina zal deze kolommen naast de standaard apparaat kolommen bevatten.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>Bendrijos teisės aktai <code>table</code> Bendrijoje <code>column</code> Bendrijoje<br/> <br/>Kiam resuro estas efekkivigita, rezulto estos lista de apartaj valoroj portio. <code>table</code> Bendrijoje <code>column</code>"Ekistas ligiloj sur la Valoroj kiuj permes as al la uzanto vidi la egalajn aparatojn."<br/> <br/>Bendrijoje <code>extra_columns</code> -<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>Agenten laten je pc\'s controleren zonder een ontdekking. Installeer de agent en het zal check-in met de server elke dag en audit zelf. Het maakt niet uit of uw computers firewalled zijn, auditgegevens zullen nog steeds verschijnen in Open-AudIT.</p><p>Bij testen <strong>als</strong> een agent moet acties uitvoeren, alle drie de tests moeten slagen (als de test is ingesteld). <strong>Daarna</strong> de maatregelen worden genomen.</p>';
+$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>Agentoj lasas vin un transfugedi Komputilojn sen malkovro. "Instali la tavia" Ne gravas se viaj komputiloj estas pare- feu, Bendrijoje</p><p>Bendrijoje <strong>Bendrijoje</strong> Bendrijoje: <strong>Bendrijoje</strong> Hoofd agoj estas prenitaj.</p>';
 
-$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '<p>Toepassingen worden gedefinieerd door u, de gebruiker en opgeslagen voor Open-AudIT om te gebruiken en te associëren met apparaten.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '<p>Alikoj estas difinitaj tariffa de vi, la uzanto kaj stokita por Open- opharm por uzi kaj asocii kun aparatoj.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>Attributen worden opgeslagen voor Open-AudIT voor bepaalde velden.</p>';
+$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>Atributoj estas stokitaj por Bendrijoje</p>';
 
-$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '<p>In staat zijn om te bepalen welke machines zijn geconfigureerd hetzelfde is een groot deel van de systemen administratie en auditing en nu rapportage over dat zal eenvoudig en geautomatiseerd worden gemaakt. Zodra u uw basislijn definieert zal het automatisch draaien tegen een set van apparaten op een vooraf bepaald schema. De output van deze uitgevoerde basislijnen zal beschikbaar zijn voor web viewing, importeren in een systeem van derden of zelfs als een gedrukt rapport.<br/> <br/> Uitgangen stellen u in staat om auditgegevens te combineren met een reeks attributen die u eerder hebt gedefinieerd (uw baseline) om de naleving van apparaten te bepalen.<br/> <br/> Bijvoorbeeld - u kunt een basislijn maken van een apparaat met Centos 6 dat fungeert als een van uw apache servers in een cluster. Je weet dat deze specifieke server is geconfigureerd zoals je het wilt, maar je weet niet zeker of andere servers in het cluster precies hetzelfde zijn geconfigureerd. Baselines stelt u in staat om dit te bepalen.<br/> <br/> </p>';
+$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '<p>Bendrijoje: "Supply" La produktado de tiuj efekkivigitaj bazlinioj estas hasbla por interretspektado, rev.<br/> <br/> Bazlinioj rajtigas vin kombini reviziodatenojn kun aro de atencijj kiuj vi ů<br/> <br/> Egzemp Şvi eble kreos bazlinion de aparato prizorgata Centojn 6 kiu funkcia kiel uu el viaj apa reomendarserviloj en nexe<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>Clusters worden opgeslagen in Open-AudIT om apparaten te associëren om de licentiekosten beter op te nemen, te beheren en te schatten.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>AudIT por asocii aparatojn al pli bona reklama, administrateur kaj taksi licenciadkostojn.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>Componenten zijn een algemene term voor de tabellen die de attributen voor een apparaat opslaan. Deze tabellen zijn: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, moederbord, netstat, netwerk, nmap, optisch, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user_group, variable, video, vm, windows.</p><p> Daarnaast classeren we de volgende tabellen ook als apparaat gerelateerd: toepassing, bijlage, cluster, credential, afbeelding.</p>';
+$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>Kompuntoj estas komuninnomo uzita por la bulloj kiuj stokas la aperiojn por aparato. Tiuj tabloj sano: alirputo, arp, Bioj, aestilo, cli _ restato, dispquete, dns, dosiero, ip, licenco, tagalolo, memoro, modulo, ekrano, papintalio, retato, reto, Nmap, optika, proteeselo programma</p><p> Krome ni klazifikas la sekvajn tabelojn ankai kiel aparaton ligitán: apliki Flido, aligita...</p>';
 
-$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>Geheimen worden versleuteld wanneer ze in de database worden opgeslagen.<br/> <br/>Wanneer een Discovery wordt uitgevoerd, een apparaat heeft zijn referenties opgehaald en getest voor de verbinding eerst (van de <code>credential</code> tabel). Als deze falen, dan referenties geassocieerd met de gegeven Org <code>credentials.org_id</code> wordt ook getest tegen het apparaat. Werkgegevens worden opgeslagen op een individueel apparaatniveau in de credential tabel (noot - geen "s" in de tabelnaam).<br/> <br/>SSH sleutels worden getest voor SSH gebruikersnaam / wachtwoord. Bij het testen van SSH worden referenties ook gemarkeerd als werken met sudo of root zijn.<br/> <br/>Voor gebruiksgemak mogen Windows-wachtwoorden geen enkele of dubbele offerte bevatten. Dit is een WMI-beperking op afstand, geen Open-AudIT-beperking.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>Bendrijoje <br/> <br/>șižanginė pastaba. <code>credential</code> Bendrijoje Se tiuj malsukcesas, tiam akredita new... <code>credentials.org_id</code> Én ankaestas nieuwe kontra.<br/> <br/>SH- aprettosiloj estas estetaj Bendrijoje. Dum testado de SSH...<br/> <br/>Por membrieco neuzo, Fenestroj ne devus enhavi ununuran épäilty duoblan citaon. Tio estas malpreksima WMI- limigo, Bendrijoje.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Credentials are used to access devices.<br> <br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br> <br></p>'] = '<p>Geheimen worden gebruikt om toegang te krijgen tot apparaten.<br/> <br/>Het instellen van referenties moet een van de eerste dingen zijn die je doet na het installeren van Open-AudIT.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Credentials are used to access devices.<br> <br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br> <br></p>'] = '<p>"" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""<br/> <br/>Konfiguraj akredita.oj devus esti unu el uuaj a kioj kiujn vi faras secretado residulado Bendrijoje<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br> <br></p>'] = '<p>Definieer uw racks en wijs apparaten in hun posities. Je hebt je apparaten al in Open-AudIT en je kent je locaties. Open-AudIT breidt dit uit zodat u een rek kunt maken en apparaten kunt toewijzen. Open-AudIT zal zelfs zorgen voor een visualisatie van het rek en de apparaten binnen. Als je een beeld van een apparaat geeft, zal die foto gebruikt worden in de visualisatie. U kunt kijken naar het rek op het scherm en zien dezelfde items die je zou zien als je stond voor het.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br> <br></p>'] = '<p>Difini viajn rakojn kaj asagi aparatojn en iliajn poziciojn. Vijam haves viajn aparatojn en rėm -alkstanti alksna. "Verkenner" Er is de motivering van het bestaande maximum. Vi povas rigardi la rakon sur la ekrano kaj vidi la samajn erojn vidus se vi staris anta. Bendrijoje<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br> <br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br> <br>Expand on the stored fields easily with your own custom attributes.<br> <br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br> <br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br> <br></p>'] = '<p>Apparaten op uw netwerk moeten worden beheerd. Maar hoe hou je je gegevens bij? Een spreadsheet - defintley niet. Dat zal in uren of dagen verouderd zijn. Waarom handmatig proberen bij te houden. Gebruik Open-AudIT om automatisch uw netwerken te scannen en uw apparaten op te nemen - fabrikant, model, serieel en meer dan 100 andere attributen. Volledige lijsten van software, diensten, schijven, open poorten, gebruikers, enz. Automatisch zien of een attribuut is toegevoegd, verwijderd of gewijzigd.<br/> <br/>Zodra Open-AudIT is opgezet, kunt u achterover leunen en ontspannen. Hebben wijziging rapporten gemaild naar u op een schema, bijvoorbeeld - welke nieuwe apparaten hebben we ontdekt deze week? Welke nieuwe software is deze week geïnstalleerd? Waren er vorige maand hardware veranderingen?<br/> <br/>Breid de opgeslagen velden eenvoudig uit met uw eigen aangepaste attributen.<br/> <br/>Voeg zelfs apparaten toe die niet verbonden zijn met uw netwerk of apparaten die uw Open-AudIT-server niet kan bereiken.<br/> <br/>Computers, schakelaars, routers, printers of elk ander apparaat op uw netwerk - Open-AudIT kan ze allemaal controleren.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br> <br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br> <br>Expand on the stored fields easily with your own custom attributes.<br> <br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br> <br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br> <br></p>'] = '<p>Ar tikrai? - OL L 347, 2013 12 20, blz. 671. Kaal vi režisieri. Uzu ® Aud IT τ Spectectomate skani viajn retojn kaj Bendrijoje arba<br/> <br/>Ar Povas sidi mamanta? "Kio nova" ("N") Te Sientes?<br/> <br/>Aplikita sur la stokitaj kapoj kun prepra kutimo atteria 971.<br/> <br/>Aldoni paratojn kiuj ne estasligitaj al kaudu reto man reto reto retutude reducer tiu aparatoj aparatoj aparatoj aparatoj eparatoj eparatoj retuj ne povas atesi.<br/> <br/>Komputililoj ŞMatchtiloj Şalkuristoj Şprintiloj a epäillyn ajna alias aparato sur via reto - ŞŞňpovas revizii ilin † iuj.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>'] = '<p>Ontdekkingen vormen het hart van wat Open-AudIT doet.<br/> <br/>Hoe weet je anders wat er op mijn netwerk staat?<br/> <br/>Ontdekkingen zijn voorbereide gegevens die u in staat stellen om een ontdekking uit te voeren op een netwerk in een enkele klik, zonder de details van dat netwerk elke keer.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>'] = '<p>(1)<br/> <br/>Ar yra kokių nors priežasčių, dėl kurių reikėtų imtis veiksmų?<br/> <br/>(1)<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '<p>Ontdekking Opties zijn een globale instelling veranderd in de <a href="../configuration?configuration.name=discovery_default_scan_option">configuratie</a>. Als je een Open-AudIT Enterprise licentie hebt, zijn deze instelbaar per ontdekking en bovendien futher aanpasbaar zoals vereist. Ontdekking Opties zijn als volgt (inclusief een indicitave tijd om een individueel IP te scannen):<br/><br/><strong>UltraFast</strong>: <i>1 seconde</i>. Scan alleen de poorten die Open-AudIT moet gebruiken om met het apparaat te praten en een IOS-apparaat te detecteren (WMI, SSH, SNMP, Apple Sync). Een <code>open|filtered</code> De haven wordt als open beschouwd. A <code>filtered</code> haven wordt niet als open beschouwd. Apparaat moet reageren op een Nmap ping. Gebruik agressieve timing.<br/><br><strong>SuperFast</strong>: <i>5 seconden</i>. Scan de top 10 TCP en UDP poorten, evenals poort 62078 (Apple IOS detectie). Een <code>open|filtered</code> De haven wordt als open beschouwd. A <code>filtered</code> haven wordt niet als open beschouwd. Apparaat moet reageren op een Nmap ping. Gebruik agressieve timing.<br><br/><strong>Snel</strong>: <i>40 seconden</i>. Scan de top 100 TCP en UDP poorten, evenals poort 62078 (Apple IOS detectie). Een <code>open|filtered</code> De haven wordt als open beschouwd. A <code>filtered</code> haven wordt niet als open beschouwd. Apparaat moet reageren op een Nmap ping. Gebruik agressieve timing.<br/><br/><strong>Middel (Klassiek)</strong>: <i>90 seconden</i>. Zo dicht bij een traditionele Open-AudIT scan als we kunnen maken. Scan de top 1000 TCP poorten, evenals 62078 (Apple IOS detectie) en UDP 161 (SNMP). Een <code>open|filtered</code> De haven wordt als open beschouwd. A <code>filtered</code> poort wordt beschouwd als open (en zal apparaatdetectie activeren). Apparaten worden gescand ongeacht een reactie op een Nmap ping. Gebruik agressieve timing.<br/><br/><strong>Middel</strong>: <i>100 seconden</i>. Scan de top 1000 TCP en de top 100 UDP poorten, evenals poort 62078 (Apple IOS detectie). Een <code>open|filtered</code> De haven wordt als open beschouwd. A <code>filtered</code> haven wordt niet als open beschouwd. Apparaat moet reageren op een Nmap ping. Gebruik agressieve timing.<br/><br/><strong>Langzaam</strong>: <i>4 minuten</i>. Scan de top 1000 TCP en de top 100 UDP poorten, evenals poort 62078 (Apple IOS detectie). Versiedetectie ingeschakeld. Een <code>open|filtered</code> De haven wordt als open beschouwd. A <code>filtered</code> poort wordt beschouwd als open (en zal apparaatdetectie activeren). Apparaat moet reageren op een Nmap ping. Gebruik normale timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minuten</i>. Niet aanbevolen. Scan de top 1000 TCP en UDP poorten, evenals poort 62078 (Apple IOS detectie). Apparaten worden gescand ongeacht een reactie op een Nmap ping. Versiedetectie ingeschakeld. Een <code>open|filtered</code> De haven wordt als open beschouwd. A <code>filtered</code> poort wordt beschouwd als open (en zal apparaatdetectie activeren). Gebruik beleefde timing.<br/><br/><strong>Aangepast</strong>: <i>Onbekende tijd</i>. Wanneer andere opties dan zoals ingesteld door een standaard ontdekkingsvoorinstelling worden gewijzigd.<br/><br/></br></br></p>';
+$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '<p>Découverte Opcioj estas tutmonda scenaro <a href="../configuration?configuration.name=discovery_default_scan_option">(Indonesië)</a>"Se vi havas ®" ® Licenza di impresa su tiaj estas aroblaj per eltrova.o kaj kroon kunfandas kiel postulat. Découverte Opcioj estas kiel sekvas (inkluzive de pulvtempo por skani ininfuan IP):<br/><br/><strong>®</strong>:: <i>1</i>Bendrijoje Skaalo nur la hasnoj kiuj ŞaudIT murtaa uzi por paroli al la aparato kaj detekti IOS aparaton (WMI, SSH, SNMP, tavia Sync). Bendrijoje <code>open|filtered</code> Bendrijoje: Bendrijoje <code>filtered</code> Bendrijoje. Devas de dispositivo dispatching al Nmap Bendrieoje.<br/><br/><strong>Bendrijoje</strong>:: <i>Bendrijoje</i>"Ska la supraj 10 TCP kaj UDP- hasnoj, mimo kiel hasno 62078 (Omena IOS- detekto). Bendrijoje <code>open|filtered</code> Bendrijoje: Bendrijoje <code>filtered</code> Bendrijoje. Devas de dispositivo dispatching al Nmap Bendrieoje.<br/><br/><strong>Bendrijoje</strong>:: <i>40</i>"Ska la supraj 100 TCP kaj UDP- hasnoj, mimo kiel hasno 62078 (Apple IOS- detekto). Bendrijoje <code>open|filtered</code> Bendrijoje: Bendrijoje <code>filtered</code> Bendrijoje. Devas de dispositivo dispatching al Nmap Bendrieoje.<br/><br/><strong>"" Leader + "programma</strong>:: <i>90</i>"Kiel preksima al tradicia open" - "Indonesië" - "sanado kiam ni povas fari liukoinen." "Apple IOS- detekto") kaj UDP 161 (SNMP). Bendrijoje <code>open|filtered</code> Bendrijoje: Bendrijoje <code>filtered</code> hasno estas konsiderita malferma (kaj ellas aparatosdetekton). Aparatoj estas skanitaj nekonsiderante responso al Nmap- rev. a new agresmeni tempigon.<br/><br/><strong>Bendrijoje</strong>:: <i>100</i>"Ska la supraj 1000 TCP kaj supraj 100 UDP- hasnoj, mimo kiel hasno 62078." Bendrijoje <code>open|filtered</code> Bendrijoje: Bendrijoje <code>filtered</code> Bendrijoje. Devas de dispositivo dispatching al Nmap Bendrieoje.<br/><br/><strong>Bendrijoje</strong>:: <i>·</i>"Ska la supraj 1000 TCP kaj supraj 100 UDP- hasnoj, mimo kiel hasno 62078." Versija- Minėtieligis. Bendrijoje <code>open|filtered</code> Bendrijoje: Bendrijoje <code>filtered</code> hasno estas konsiderita malferma (kaj ellas aparatosdetekton). Devas de dispositivo dispatching al Nmap Bendrieoje.<br/><br/><strong>Bendrijoje</strong>:: <i>20</i>- Ska la supraj 1000 TCP kaj UDP- hasnoj, mimo kiel hasno 62078 (Omena IOS- detekto). Aparatoj estas danitaj nekonsiderante responso al Nmap- enter. Versija- Minėtieligis. Bendrijoje <code>open|filtered</code> Bendrijoje: Bendrijoje <code>filtered</code> hasno estas konsiderita malferma (kaj ellas aparatosdetekton). Bendrijoje<br/><br/><strong>Bendrijoje</strong>:: <i>-</i>"Supply"<br/><br/></p>';
 
-$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code> only. If requested using the web interface, they return the standard column attribute list.<br> <br></p>'] = '<p>Groepen worden gebruikt als eenvoudige lijsten van apparaten die voldoen aan de vereiste voorwaarden. Op verzoek van JSON wordt een lijst van <code>devices.id</code> Alleen. Indien gevraagd via de webinterface, geven ze de standaard kolom attribuutlijst terug.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code> only. If requested using the web interface, they return the standard column attribute list.<br> <br></p>'] = '<p>Grupoj estas utiligitaj ů simpraj listaj de aparatos kiuj egalas la postulatajn kontircajn. - <code>devices.id</code> Bendrijoje Se postuladite uzante la interretinterfacon, ili resendas la orman kolumnon attante as listan.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you are using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br> <br><strong>Helpful Documentation</strong><br> <br>
         <a href="/index.php/auth/help">General Auth Help</a><br> <br>
         <a href="/index.php/faq?name=Using Entra for Auth">Using Entra for Auth</a><br> <br>
         <a href="/index.php/faq?name=Using OKTA for Auth">Using OKTA for Auth</a><br> <br>
         <a href="/index.php/faq?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br> <br>
-        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>'] = '<p>Als de gebruiker die zich aanmeldt bij Open-AudIT geen toegang heeft om LDAP te zoeken (en u gebruikt OpenLDAP), kunt u een ander account gebruiken dat deze toegang heeft. Gebruik de <code>ldap_dn_account</code> en <code>ldap_dn_password</code> om dit in te stellen.<br/> <br/><strong>Hulpzame documentatie</strong><br/> <br/><a href="/index.php/auth/help">Algemene Auth-hulp</a><br/> <br/><a href="/index.php/faq?name=Using Entra for Auth">Entra gebruiken voor Auth</a><br/> <br/><a href="/index.php/faq?name=Using OKTA for Auth">Gebruik van OKTA voor Auth</a><br/> <br/><a href="/index.php/faq?name=Troubleshooting LDAP Logins">Problemen oplossen LDAP-aanmeldingen</a><br/> <br/><a href="/index.php/faq?name=Users, Roles and Orgs">Gebruikers, rollen en orgs</a><br/> <br/></p>';
+        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>'] = '<p>Se la uzanto registradanta al Bendrieoje, Bendrieoje <code>ldap_dn_account</code> Bendrijoje <code>ldap_dn_password</code> La déclaration de Por Agordi.<br/> <br/><strong>(OL L 347 van 2013 12 20, blz. 671)</strong><br/> <br/><a href="/index.php/auth/help"></a><br/> <br/><a href="/index.php/faq?name=Using Entra for Auth">-</a><br/> <br/><a href="/index.php/faq?name=Using OKTA for Auth">Bendrijoje</a><br/> <br/><a href="/index.php/faq?name=Troubleshooting LDAP Logins">Ongelma ® LDAP sisslogimiini</a><br/> <br/><a href="/index.php/faq?name=Users, Roles and Orgs">Uzantoj Bendrijoje</a><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br> <br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a <code>device</code>, valid <i>types</i> are: <code>class</code>, <code>environment</code>, <code>status</code> and <code>type</code>. If the <i>resource</i> is <code>locations</code> or <code>org</code> the only valid <i>type</i> is <code>type</code>. If the <i>resource</i> is a <code>query</code> the only valid <i>type</i> is <code>menu_category</code>.</p>'] = '<p>Als u een apparaattype toevoegt, moet u het bijbehorende pictogram handmatig kopiëren naar de map:<br/><em>Linux</em>:/usr/local/open-audit/public/device_images<br/><em>Vensters</em>: c:\xampp\htdocs\open-audit\device_images<br/> <br/>Als u een locatietype toevoegt, moet u het bijbehorende pictogram handmatig kopiëren naar de map:<br/><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br/><em>Vensters</em>: c:\xampp\htdocs\open-audit\images\map_iconen</p><p>Wanneer de <i>bron</i> is a <code>device</code>, geldig <i>type</i> zijn: <code>class</code>, <code>environment</code>, <code>status</code> en <code>type</code>. Indien de <i>bron</i> is <code>locations</code> of <code>org</code> de enige geldige <i>type</i> is <code>type</code>. Indien de <i>bron</i> is a <code>query</code> de enige geldige <i>type</i> is <code>menu_category</code>.</p>';
+$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br> <br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a <code>device</code>, valid <i>types</i> are: <code>class</code>, <code>environment</code>, <code>status</code> and <code>type</code>. If the <i>resource</i> is <code>locations</code> or <code>org</code> the only valid <i>type</i> is <code>type</code>. If the <i>resource</i> is a <code>query</code> the only valid <i>type</i> is <code>menu_category</code>.</p>'] = '<p>Europiniai jūrų liežuviai<br/><em>Bendrijoje</em>/ usr / loka / malferma- opharm / publika / devicen _ immagini<br/><em>-</em>c: \'\ xamp\' htdocs \'open-edit\ dispositivo _ immagini<br/> <br/>Europiniai jūrų liežuviai ikonon al la adresaro:<br/><em>Bendrijoje</em>/ usr / loka / malferma- opharm / publika / opharm / mazpa _ ikoonid<br/><em>-</em>c: "\ xamp" htdocs \'← SmithKline SmithKline (angl. "\ xamp" htdocs ")</p><p>Bendrijoje <i>Bendrijoje</i> Bendrijoje <code>device</code>Bendrijoje <i>®</i> Bendrijoje: <code>class</code>Bendrijoje <code>environment</code>Bendrijoje <code>status</code> Bendrijoje <code>type</code>Bendrijoje <i>Bendrijoje</i> Bendrijoje <code>locations</code> Bendrijoje <code>org</code> Bendrijoje <i>Bendrijoje</i> Bendrijoje <code>type</code>Bendrijoje <i>Bendrijoje</i> Bendrijoje <code>query</code> Bendrijoje <i>Bendrijoje</i> Bendrijoje <code>menu_category</code>Bendrijoje</p>';
 
-$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>'] = '<p>Als u van plan bent om uw cloud machines volledig te controleren, vergeet dan niet dat u deze referenties ook moet opslaan in Open-AudIT.</p><p>Zorg ervoor dat u de juiste poorten toestaat als u Microsoft Azure (22 voor SSH, enz.) gebruikt. Controleer uw virtuele machine -> Netwerkregels.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>'] = '<p>Se vi intendas tute revizii viajn nubajn ma apretinajn, ne forgesu kee vi ankainabezonos tiujn akredita.ojn aditajn en open-eng.</p><p>Certigu ke vi permes la εustann hasnojn se vias Microsoft Azure (22 por SSH, ktp). Kontau vian virtualan ma apretinon - Retaj reguloj.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br> <br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br> <br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br> <br></p>'] = '<p>Als u een lijsttype selecteert, wordt het veld "waarden" ingeschakeld. U zou hier een komma gescheiden lijst van selecteerbare waarden moeten plaatsen. Deze worden weergegeven in een dropdown box wanneer het veld wordt bewerkt.<br/> <br/>Zoals de meeste andere attributen, Velden kunnen bulk bewerkt worden. Gebruik de functie Bulk Bewerken zoals u normaal zou doen en u zult zien dat de velden beschikbaar zijn voor invoer.<br/> <br/>Bekijk het scherm met de details van het apparaat, open de sectie met het veld en (als u voldoende toegang hebt) kunt u op de veldwaarde klikken om het te bewerken.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br> <br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br> <br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br> <br></p>'] = '<p>Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip: Indonesië meti kodonapartigita Lista de fajnaj valoroj clari huulet. Tiuj elmontros en got- kesto kiam la kampo estas redaktita.<br/> <br/>Šio straipsnio 1 ir 2 dalyse nurodyti  Uzu režisierė - funkcion kiam vi režisierė faris kaj vidos ke la kampoj estas hasblaj por eniga.<br/> <br/>Vidante la aparaton detalekrano, malfermi la sekcion enhavantan la kampon kaj (Şvi havas sufibraan alyron) Şpovas klaki sur la kampvalo por redakki...<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '<p>In de steeds veranderende wereld van computerbeveiliging waar elke dag nieuwe kwetsbaarheden worden ontdekt en gepatcht, moet handhaving van de naleving van de beveiliging een continu proces zijn. Het moet ook een manier omvatten om het beleid aan te passen, alsook periodieke evaluatie en risicobewaking. Het OpenSCAP-ecosysteem biedt tools en aanpasbaar beleid voor een snelle, kosteneffectieve en flexibele implementatie van deze processen.</p>';
+$GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '<p>En la iam- ajna- varia mondo de komputionskuleco Kie novaj vundeblecoj estas malkovritaj kaj pecetigitaj... ů OpenSCAP ekositemo disposigas iljn kaj adattaitajn politikoijn por rafa, kostfika kaj freksebla efektivigo de tiaj proceszoj.</p>';
 
-$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>Integraties stellen u in staat om apparaatselectie en schema\'s voor Open-AudIT in te stellen om met externe systemen te praten.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>Integrij permes al vi instali aparatustiektadon kaj horoarojn por Bendrijoje<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>Nmap timing details zijn te vinden onderaan deze gekoppelde pagina <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. Van die pagina:<br/> <br/><em>Als u op een fatsoenlijke breedband- of ethernetverbinding zit, zou ik u aanraden altijd -T4 (Agressief) te gebruiken. Sommige mensen houden van -T5 (Insane) maar het is te agressief voor mijn smaak. Mensen specificeren soms -T2 (Polite) omdat ze denken dat het minder waarschijnlijk is om hosts te crashen of omdat ze zichzelf beleefd vinden in het algemeen. Ze beseffen vaak niet hoe traag -T2 echt is. Hun scan kan tien keer langer duren dan een standaard scan. Machine crashes en bandbreedte problemen zijn zeldzaam met de standaard timing opties -T3 (Normaal) en dus ik normaal raden dat voor voorzichtige scanners. Het weglaten van versiedetectie is veel effectiever dan het spelen met timings om deze problemen te verminderen.</em><footer>Gordon <i>Fjodor</i> Lyon</footer><br/> <br/></p>';
+$GLOBALS["lang"]['<p>Microsoft Windows desktop systems have network limitations that may impact the performance of Open-AudIT. The TCP/IP stack limits the number of simultaneous incomplete outbound TCP connection attempts. After the limit is reached, subsequent connection attempts are put in a queue and will be resolved at a fixed rate (10 per second). If too many enter the queue, they may be dropped. And finally, Apache will be restarted by the OS. For this reason, installing Open-AudIT on a Windows desktop operating system is not supported.<br><br>There is nothing wrong with the Open-AudIT code, nor can we do anything to address this issue on Windows client machines.'] = '<p>"La TCP" / "Ip-A"). kiam la limo estas atinita, postaj konektomedij estas metitaj enendovicon kaj estos solvitaj Bendriejoje Kajfinfinfinine, Indonesisch Fares de la Os. Tial, instali Open- sur new - tabloé opracium ne estas apogita.<br/><br/>Bendrijoje</p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '<p>Open-AudIT kan worden geconfigureerd om verschillende methoden te gebruiken om een gebruiker te authenticeren en daarnaast een gebruikersaccount aan te maken met behulp van toegewezen rollen en orgs op basis van groepslidmaatschap.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>Nmap Tempigas detalojn estastrovitaj sur la fondo de tiuligita pacomamento <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org / libro / uomo- rev. Bendrijoje</a>-<br/> <br/><em>Se vi estas sur deka gradidabendo a difetto tero ligo, mi remomendus ciiam uzi T4 (Agres). Kelkaj Bendrijoje - T5 ("T5") kvankam liquiciulici estos tro concordisema por mia gusto. ® ® ® ® ® ® ® ® LT ® ne ekkomprenas eksporte kiom malladrapa - T2 vere estas. Ilia sanado povas preni dek fojojn pli downe ol deva guidlta canado. Šis sprendimas  Uzanta verserio detekto estumes multe pli efika ol ludado kun temppigvaloroj "Reduktado de tiauj"</em><footer>C \'e\' "" "" "" "" "" "" "" "" "" "" <i>Bendrijoje</i> Bendrijoje</footer><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>'] = '<p>Open Aud IT kan details over een bestand of directory van bestanden ophalen en deze bestanden controleren op wijzigingen zoals in andere attributen in de Open-AudIT database.<br/> <br/>Deze functie werkt uit het veld voor Linux Open-AudIT servers, maar moet een wijziging in de service-accountnaam onder een Windows Open-AudIT server.<br/> <br/>Ondersteunde clients zijn Windows en Linux.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '<p>Bendrijoje Aud IT povas esti formita por uzi malsamajn metodojn por a skeptigi uzanton krome, krei uzanton uzantan rolojn kajn bazitajn sur grupmembranreco.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>'] = '<p>Open Aud IT kan details over een bestand ophalen, de native package manager vragen of ze bekend zijn en deze bestanden controleren op wijzigingen zoals in de Open-AudIT database.<br/> <br/>Ondersteunde clients zijn alleen Linux.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>'] = '<p>Bendrijoje <br/> <br/>Tiu trajto labas el la kesto por Linukso rež.<br/> <br/>Subtenitaj kliventoj estas Fenestroj kaj nieuws.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br> <br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br> <br></p>'] = '<p>Open Aud IT kan informatie opslaan in aangepaste velden die met elk apparaat worden geassocieerd.<br/> <br/>Zodra een Extra veld is aangemaakt kan het worden gebruikt in queries en groepen net als elk ander attribuut in de database.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>'] = '<p>Ava- Aud Tämä asetus sur kaikilta osiltaan pelvoittava, Μseta sovelletaan Sellaenaan kaikissa jäsenvaltioissa.<br/> <br/>Sutenitaj klientoj estas Bendrijoje<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Open-AudIT wordt geleverd met veel queries ingebouwd. Als u een specifieke query nodig hebt en geen van de voorverpakte queries voldoet aan uw behoeften, is het heel eenvoudig om een nieuwe aan te maken en deze in Open-AudIT te laden om te draaien.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br> <br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br> <br></p>'] = '<p>I povas stoki soatojn en specialadapteritaj kamopj estas rilataj al <br/> <br/>Kiam Täiendav väli estis kreita εi povas esti uzita en demandej kaj grupoj eksporte kiel iu alias atiguto en la datummazo.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Open-AudIT wordt geleverd met vele samenvattingen ingebouwd. Als u een specifieke samenvatting nodig hebt en geen van de voorverpakte samenvattingen voldoet aan uw behoeften, is het heel eenvoudig om een nieuwe aan te maken en deze in Open-AudIT te laden om te draaien.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>® ® ® IT venas kun indennitàj richiestaoj enconruitaj. Se vi postulas specian atendon kaj niu el la anta ...<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>'] = '<p>Open-AudIT wordt ondersteund door FirstWave met een geweldig niveau van ondersteuning. Als je liever een actieve gemeenschap van support gevers, dat is ook. Waar anders kun je direct met de ontwikkelaars praten en binnen 24 uur een reactie krijgen? Probeer dat gewoon met andere producten! Geweldige steun. Volledige stop. Je hebt steun nodig, wij bieden steun. Geen als of maar. Geweldige steun. Punt.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>® ® IT venas kun Benefit resumoj enconruitaj. Se vi postulas specian revolin kaj niu el la anna supplitaj resumoj konvenas viajn bezonojn, estas tre ke krei novan kaj родододили en open- Bendrijoje.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '<p>Open-AudIT biedt multi-tenancy uit de doos!<br/> <br/>Orgs (organisaties) in Open-AudIT zijn een belangrijk item. Een gebruiker heeft een primaire Org en een lijst van Orgs die ze kunnen openen. Een gebruiker combineert dit met een lijst van toegewezen "Roles" die bepalen welke acties ze kunnen nemen op items toegewezen aan de Orgs waar ze toegang toe hebben. De combinatie van gebruikers "orgs" en "roles" bepaalt wat ze wel en niet binnen Open-AudIT kunnen doen.<br/> <br/>De meeste items in Open-AudIT worden toegewezen aan een Org. Apparaten, Locaties, Netwerken, enz.<br/> <br/>Orgs kunnen kind Orgs krijgen. Denk aan een organisatieschema (boom) structuur. Als een gebruiker toegang heeft tot een specifieke Org, hebben ze ook toegang tot die Orgs afstammelingen. Voor meer informatie, zie dit <a href="/index.php/faq?name=Users, Roles and Orgs">Veelgestelde vragen</a>.</p>';
+$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>'] = '<p>"Aud Esta apogita rev." Se vi a Şaktivan komunimon de subteno, huulet ankait. Kie vi povas paroli reklama al la programmeristoj kaj ričevi responson ene de 24 horoj? Alfaj produktoj! "Frapanta" Vi bezonas subtenon rev. Neniu sur Katlustav<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '<p>Open-AudIT biedt multi-tenancy uit de doos!<br/> <br/>Orgs (organisaties) in Open-AudIT zijn een belangrijk item. Een gebruiker heeft een primaire Org en een lijst van Orgs die ze kunnen openen. Een gebruiker combineert dit met een lijst van toegewezen "Roles" die bepalen welke acties ze kunnen nemen op items toegewezen aan de Orgs waar ze toegang toe hebben. De combinatie van gebruikers "orgs" en "roles" bepaalt wat ze wel en niet binnen Open-AudIT kunnen doen.<br/> <br/>De meeste items in Open-AudIT worden toegewezen aan een Org. Apparaten, Locaties, Netwerken, enz.<br/> <br/>Orgs kunnen kind Orgs krijgen. Denk aan een organisatieschema (boom) structuur. Als een gebruiker toegang heeft tot een specifieke Org, hebben ze ook toegang tot die Orgs afstammelingen.</p>';
+$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '<p>"" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""<br/> <br/>Orgs (organizaj) Bendrijoje Uzantoj Org mimo kiel lister de Orgas kiun ili povas aliri. Uzanto Kombinastion kun lista de asignitaj "Roles" kiuj difinas kion entrij ili povas preni erojn asignitaj al la Orgs kiujn ili havas al. Bendrijoje<br/> <br/>La plej indennitonàj en Open- neurasignitaj al Org. Dispositivos, Lokoj, Retoj, ktp.<br/> <br/>Orgoj povas havi Infanon orgs. (arbo) strukturo. Se uzanto havas alron al specia režisierius, ili anka. L \'objectif est d\' améliorer la qualité de l \'eau. Por pli da informatoj, Bendrijoje <a href="/index.php/faq?name=Users, Roles and Orgs">Bendrijoje</a>Bendrijoje</p>';
 
-$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br></p>'] = '<p>Bekijk snel de status van apparaten op uw netwerk.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '<p>"" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""<br/> <br/>Orgs (organizaj) Bendrijoje Uzantoj Org mimo kiel lister de Orgas kiun ili povas aliri. Uzanto Kombinastion kun lista de asignitaj "Roles" kiuj difinas kion entrij ili povas preni erojn asignitaj al la Orgs kiujn ili havas al. Bendrijoje<br/> <br/>La plej indennitonàj en Open- neurasignitaj al Org. Dispositivos, Lokoj, Retoj, ktp.<br/> <br/>Orgoj povas havi Infanon orgs. (arbo) strukturo. Se uzanto havas alron al specia režisierius, ili anka. L \'objectif est d\' améliorer la qualité de l \'eau.</p>';
+
+$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br></p>'] = '<p>-<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned Roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>
         Get the complete Open-AudIT Enterprise experience. Creating roles allows fine grained control over what your users can do within Open-AudIT.<br> <br>
-        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>Rol in Open Aud IT is een belangrijk item. Een gebruiker heeft een primaire Org en een lijst van Orgs die ze kunnen openen. Een gebruiker combineert dit met een lijst van toegewezen rollen die bepalen welke acties ze kunnen nemen op items toegewezen aan de Orgs waar ze toegang toe hebben. De combinatie van gebruikers "orgs" en "roles" bepaalt wat ze wel en niet binnen Open-AudIT kunnen doen.<br/> <br/>Ontvang de volledige Open-AudIT Enterprise ervaring. Het creëren van rollen maakt fijnkorrelige controle over wat uw gebruikers kunnen doen binnen Open-AudIT.<br/> <br/>De primaire methode voor de toelating (wat een gebruiker kan doen) is gebaseerd op de gebruikersrollen. Standaardrollen worden gedefinieerd als admin, org_admin, reporter en gebruiker. Elke rol heeft een set permissies (Create, Read, Update, Delete) voor elk eindpunt. De mogelijkheid om extra rollen te definiëren en bestaande rollen te bewerken is ingeschakeld in Open-AudIT Enterprise.<br/> <br/>Rollen kunnen ook worden gebruikt met LDAP (Active Directory en OpenLDAP) vergunning. Enterprise gelicentieerde installaties hebben de mogelijkheid om de LDAP-groep voor elke gedefinieerde rol aan te passen.<br/> <br/></p>';
+        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>Roloj en Şaud.i estas esenca objectko. Uzantoj Org mimo kiel lister de Orgas kiun ili povas aliri. Uzanto Kombinasment kun lista de asignitaj roloj kiuj difinas kiuj ili povas preni erojn asignitaj al la orgs kiujn ili hava alron al. Bendrijoje<br/> <br/>"Kraunasi"<br/> <br/>Šis reglamentas  Defa.ltaj roloj estas difinitaj kiel admin, org _ ů, raportisto kaj uzanto. imitatu rolo havas aron de permesoj (Crear, Leeri, Româman, Elimuinar) por.<br/> <br/>Roloj anka Yrities estilisazione della licenza, Bentrijoje<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p>Regels onderzoeken eigenschappen en maken cahnges op basis van de juiste regel.</p>';
+$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p>Bendrijoje:</p>';
 
-$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br> <br></p>'] = '<p>Met scanopties kunt u eenvoudig een set opties toepassen op een ontdekking.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br> <br></p>'] = '<p>Skaaj opcioj permes al vi ňapliki aron de opcioj al eltrova.o.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br> <br>
-        </p>'] = '<p>Eenvoudige, intuïtieve, nauwkeurige geografische kaart van Google Maps. Open-AudIT hefboominstrumenten Google Maps om live, interactieve geografische kaart van apparaatlocaties te bieden. Automatische conversie van straatadressen naar geocodes en lengte/breedtegraad.<br/> <br/></p>';
+        </p>'] = '<p>® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ®<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>'] = '<p>Softwarepakketten worden gebruikt om te bepalen of antivirus, back-up, firewall, goedgekeurde of verboden software is geïnstalleerd.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>'] = '<p>Softvarpakadoj kutimas determini ... U kontra... vírus...<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '<p>Enkele voorbeelden van geldige Subnet-attributen zijn: 192.168.1.1 (een enkel IP-adres), 192.168.1.0/24 (een subnet), 192.168.1-3.1-20 (een reeks IP-adressen).<br/> <br/><em>NOOT</em> - Alleen een subnet (zoals de voorbeelden - 192.168.1.0/24) kan automatisch een geldig netwerk voor Open-AudIT creëren. <br/> <br/>Als u een Active Directory type gebruikt, zorg ervoor dat u de juiste referenties om te praten met uw Domain Controller al in <a href="../credentials">referenties</a>.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '<p>Kelkaj eczemoj de Valij Subnet atperioj estas: 192.168.1.1.1 (unuopa.o IP- adreso), 192.168.11- 3.11- 20 (intervalo de IP- adresoj).<br/> <br/><em>Bendrijoje</em> Nur subreto (la ekzemoj - 192.1681,0 / 24) povos skuptomate krei Bendrijoje <br/> <br/>"Activan Adresarspexon," certigu ke vi havas kontrolajn akredita. ojn por paroli al <a href="../credentials">Bendrijoje</a>Bendrijoje<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Standards are stored in Open-AudIT.<br /><br /><br /><br /></p>'] = '<p>Standaarden worden opgeslagen in Open-AudIT.<br/><br/><br/><br/></p>';
+$GLOBALS["lang"]['<p>Standards are stored in Open-AudIT.<br /><br /><br /><br /></p>'] = '<p>Normoj estas stokitaj en rev.<br/><br/><br/><br/></p>';
 
-$GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '<p>Ondersteunde clients zijn alleen Linux.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '<p>Sutenitaj klientoj estas Bendrijoje<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '<p>Taken hebben een schema dat het Unix Cron schema weerspiegelt. De attributen voor minuut, uur, dag_of_maand, maand, dag_of_week handelen allemaal volgens de cron definities. U kunt meerdere van deze selecteren met behulp van komma gescheiden waarden (geen spaties). U kunt elke waarde selecteren met behulp van *.<br/> <br/>De <code>type</code> van de taak kan een van: basislijnen, verzamelaars, ontdekkingen, vragen, rapporten of samenvattingen.<br/> <br/>Als u een Baseline of Discovery wilt plannen, moet u deze maken voordat u de taken aanmaakt. U moet de ID gebruiken van het type item in <code>sub_resource_id</code>. Als u bijvoorbeeld een Discovery wilt plannen, gebruik dan dat specifieke Discoveries ID in <code>sub_resource_id</code>.<br/> <br/>De waarde voor <code>uuid</code> is specifiek voor elke Open-AudIT server. Uw unieke waarde vindt u in de configuratie.<br/> <br/>De <code>options</code> attribuut is een JSON-document dat alle extra attributen bevat die nodig zijn om de taak uit te voeren. De extra attributen voor rapporten, vragen en samenvattingen zijn: <code>email_address</code> en <code>format</code>. Het extra attribuut voor Bselines is <code>group_id</code>.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '<p>Taskoj havas horaron kiu spegulas la unix Bendrieoje La atentioj por, horo, režisierė Funkcias kiel Indonesia kno difinoj. Vi povas selekti multoblojn de tiiuj uzantaj komm seetiajn valorojn (neniuj spacoj). Vio povas elekti, skaitykite toniau <br/> <br/>· <code>type</code> La Tapo povas esti unu el: bazlinioj, kolektantoj, eltrova.oj, requestoj, raportoj a resumoj.<br/> <br/>Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 dalies a punktas Vi bruts uzi la ID de la tipo de objectko en <code>sub_resource_id</code>"Verkenner" <code>sub_resource_id</code>Bendrijoje<br/> <br/>· <code>uuid</code> (OL L 20 van 2015.177, blz. 42).<br/> <br/>· <code>options</code> Atritto estas JSON dokumento enhavanta jujn ejn ekstrajn atdostojn postulatajn por prizorgi la tason șipareigojimų neprisiimta. Développement de l \'économique et de l\' économique de l\'économique et de l\' économique et de l\'économique et de l\'économique de l\'économique et de l\'économique et de l\'économique et de l\'économique et de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique et de l\'économique et de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l\'économique de l <code>email_address</code> Bendrijoje <code>format</code>(1) <code>group_id</code>Bendrijoje<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The <code>type</code> of the location will assign its icon.<br> <br></p>'] = '<p>De <code>type</code> van de locatie zal zijn pictogram toewijzen.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>The <code>type</code> of the location will assign its icon.<br> <br></p>'] = '<p>· <code>type</code> Engliko asigna<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '<p>Het Attributen eindpunt stelt u in staat om aangepaste waarden toe te voegen aan verschillende attributen in Open-AudIT, op het moment dat deze functie werkt op de Klasse, Omgeving, Status en Type attributen op Apparaten, het Type attribuut voor zowel Locaties en Orgs als de Menu Categorie voor Queries. Als u een item van een van de prachttypen (zeg een Lkocation bekijken) ziet u dat het attribuut Type moet worden geselecteerd uit een drop-down box. Hier worden die waarden opgeslagen. Dus, als u een nieuw Type wilt toevoegen om gekozen te worden voor een Locatie, voeg het toe met behulp van de Attributen functie.</p>';
+$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '<p>La Atretoj phpfinpunkto perfesas al aldoni adattatajn valorojn al malsamaj atinattoj en open- nagrinėjimas, en la momento tiu trajto labas pri la klaso, reductur, Stato kaj Tipo as ainary as a al kaj lokoj kaj kaj olgs kakielrio režisūros). Se vi rigardas eron de unu el prviospectoj (dirvido Lockly) vi rimarkos ke la Tipo atentia residues esti selektita el fal- falinta queto. Tio estas kie tiau Valoroj estas stokitaj rev. Tial, se vi griatus aldoni novan Tipon por esti elektronita por Loko, aldoni εin uzante la Atribuj trajto..</p>';
 
-$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br> <br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br> <br></p>'] = '<p>De Collectors functie stelt u in staat om gemakkelijk te beheren veel "collector" computers die netwerkontdekking uitvoeren. Alle Verzamelaars worden centraal gecontroleerd vanuit de Server. De enige benodigde netwerkpoorten tussen de Verzamelaar en de Server zijn 80 en/of 443.<br/> <br/>Het maakt het beheer van verschillende netwerken snel, eenvoudig en eenvoudig. Open-AudIT Enterprise licentienemers krijgen een enkele verzamelaar licentie opgenomen en hebben de mogelijkheid om meer te kopen als vereist..<br/> <br/></p>';
+$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br> <br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br> <br></p>'] = '<p>La kolektantoj igas vin řadministri urtajn "kolktilon" kiuj elfaras sendostacian eltrova. imitaiuj kommunktantoj estas centro kontrolitaj de la Servilo. Exploitaj postulataj rethavenoj Bendrijoje<br/> <br/>"Explorer" Inkludis kaj havas la opcion por arcaeti pli kie postulat.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>'] = '<p>Het SELECT gedeelte van uw SQL <em>moet</em> bevat volledig gekwalificeerde kolommen. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br/> <br/>Het WHERE gedeelte van uw SQL <em>moet</em> bevatten <code>WHERE @filter</code> Open-AudIT weet dus om uw zoekopdracht te beperken tot de juiste Orgs. SQL die deze voorwaarde niet bevat zal resulteren in het niet aanmaken van de query, tenzij je de Admin rol hebt.<br/> <br/>Een voorbeeldvraag SQL die attributen toont op apparaten met een <code>os_group</code> attribuut van "Linux" <br/><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br/> <br/></p>';
+$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>'] = '<p>La SELECT sekcio de via SQL _ opharm <em>Bendrijoje</em> Enhavas terv kvalifikitajn kolonojn rev. IE - Sipareigojimų neprisiimta. <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>Bendrijoje<br/> <br/>SQLtavia <em>Bendrijoje</em> Bendrijoje <code>WHERE @filter</code> Aud Escias limigi vian atendon al la konvenaj Orgs. SQL ne enhavanta tiun Kontrircaon rezultigos la atendon malsukcesantan esti kreita, se vi havas la Admin rolon.<br/> <br/>Ekzemplo kisely SQL SmithKline Montranta atregattojn sur aparatoj kiuj havas <code>os_group</code> Bendrijoje <br/><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br> <br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br> <br></p>'] = '<p>Het SELECT gedeelte van uw SQL <em>moet</em> alleen bevatten <code>DISTINCT(devices.id)</code>.<br/> <br/>Het WHERE gedeelte van uw SQL <em>moet</em> bevatten <code>WHERE @filter</code> Open-AudIT weet dus om uw zoekopdracht te beperken tot de juiste Orgs. SQL die deze voorwaarde niet bevat zal resulteren in het niet aanmaken van de groep.<br/> <br/>Een voorbeeld voor SQL om alle apparaten te selecteren die het Debian OS draaien - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br/> <br/></p>';
+$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br> <br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br> <br></p>'] = '<p>La SELECT sekcio de via SQL _ opharm <em>Bendrijoje</em> Bendrijoje <code>DISTINCT(devices.id)</code>Bendrijoje<br/> <br/>SQLtavia <em>Bendrijoje</em> Bendrijoje <code>WHERE @filter</code> Aud Escias limigi vian atendon al la konvenaj Orgs. SQL ne enhavanta tiun kontircaon rezultigos la gron malsukcesantan esti kreita.<br/> <br/>Ekzemplo por SQL selekki ciiujn aparatojn kurantajn la Debian Os... <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>'] = '<p>Met het licentie-eindpunt kunt u het aantal licenties op uw apparaten volgen.<br/> <br/>Om een item aan te maken om uw licenties te volgen u <em>moet</em> het verstrekken van een naam, een organisatie, het aantal verkregen licenties en de naam van de software. Op het veld <code>match_string</code> u moet de naam van de software die u wilt bijhouden, kunt u het percentage teken (%) gebruiken als een wildcard in de match_string.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>'] = '<p>Licencia finpunkto perfesas al vi printi la nombron da licencijtrovitaj sur viaj aparatoj.<br/> <br/>Pour l \'ansemble de l\' Unione <em>Bendrijoje</em> Por dispinigiς nomon limitie la nombro da licencidoj akiris kaj la nomon de la softvaro "Sur la kampo" <code>match_string</code> Vi breases providonzi la nomon de la programmaro kiun vi volas printi, vi povas uzi la procentán signon (%) kiel sava fuan karton en la mat gaendo.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br> <br></p>'] = '<p>Het netwerk moet in het formaat 192.168.1.0/24 zijn.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br> <br></p>'] = '<p>Reto devus esti en la forma 192.168.1.0 / 24.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>'] = '<p>De primaire en facultatieve secundaire posten moeten volledig gekwalificeerd zijn - d.w.z. apparaten. type of software. Naam.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>'] = '<p>(OL L 20 van 2015.177, blz. 42). Bendrijoje<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>There is no need to do anything if you are running Open-AudIT on a Linux server.<br>
 <br>
 Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.<br>
 <br>
-See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '<p>Het is niet nodig om iets te doen als je Open-AudIT op een Linux server gebruikt.<br/><br/>Windows clients zijn gewoon prima en vereisen geen speciale acties, echter ... om deze functie in te schakelen moet het audit script lokaal worden uitgevoerd op het doel Windows-systeem. Het kan niet op afstand worden uitgevoerd zoals we doen met WMI-aanroepen bij het uitvoeren van het audit script op een Windows-machine, terwijl het richten van een tweede Windows-machine. Om dit te doen moeten we het audit script kopiëren naar het doel Windows machine en vervolgens uitvoeren. Helaas is de service account waar Apache onder draait de Local System account. Dit account heeft geen toegang tot externe (netwerkgebaseerde) bronnen. Om rond deze kwestie te werken moet de dienst onder een andere rekening worden uitgevoerd. Het is het makkelijkst om het lokale Administrator-account te gebruiken, maar u kunt elk account dat u wilt proberen zolang het de vereiste privileges heeft. Het Local System-account heeft evenveel lokale toegang als het lokale Administrator-account.<br/><br/>Zie onze pagina over inschakelen <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Open-AudIT Apache-service draaien onder Windows</a></p>';
+See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '<p>Essistas neniu bezono Farenda.o io ajn se vi prizorgas rev.<br/><br/>Fenestroj estas justaj kaj postulas neniujn specialajn predjn, aliflanke... rajtigi tiun trajton la reviziomanuskripto provises et prizorgita loke sur la cel Windows- sistemon. Porcology agoni murs kopii la reviziomanuskripton al la celio residu- ma agotadono kaj tiam prizorgi εin. (1) Tiu raporto haves neniun alron al malpreksimaj (reto bazita) resursoj. Por labori... irka epäilty tu temo la nexes brunces esti prizorgita sublison. Estas plej neuzi la lokan Administrateur konton, sed vi povas providation ajnan raporton vi kiel lage kiel εi havas la postulatajn ragejn. La Loka Sistemo- konto havas tien multe da loka aliro kiel la loka Administramento - ko.<br/><br/> - <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Kurontanai</a></p>';
 
-$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>'] = '<p>Dit zijn de apparaten die in een rek leven.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>'] = '<p>Tiuj estas la paratoj kiuj vivas ene Şrako.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p>Dit eindpunt stelt u in staat om uw cloud infrastructuur details toe te voegen. Open-AudIT zal dan contact opnemen met uw clouds met behulp van hun eigen API en uw servers retourneren, net als elk ander apparaat in Open-AudIT.<br/> <br/><em>NOOT</em> - Om deze functie te gebruiken, we <em>moet</em> de configuratie-items match_mac (voor AWS) en match_hostname (voor Azure) inschakelen. Dit zal automatisch gebeuren de eerste keer dat een cloud ontdekking wordt uitgevoerd.<br/> <br/>Identiteiten voor uw cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> of <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) zijn vereist.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p> L "ambiente requirement l" ambiente.<br/> <br/><em>Bendrijoje</em> - <em>Bendrijoje</em> eligi la pretroldon erojn opharm previstoo _ ů (por AWS) kaj ů previstoo _ tavia (Por Azure). Tio estas farita a limitatate la unuan fojon nubotrova.o estas efektivigita.<br/> <br/>Saluto [esprimas al vi] - [iu persono, kiu persono new] Bendrijoje<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure Azure Azure Azure Azure Azure Azure Azure</a> Bendrijoje <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">Bendrijoje</a>Este Bendrieoje. (Este postulataj.)<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Vulnerabilities reporting based on the NIST CVE feed.<br> <br></p>'] = '<p>Kwetsbaarheden rapportage gebaseerd op de NIST CVE-feed.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Vulnerabilities reporting based on the NIST CVE feed.<br> <br></p>'] = '<p>Vulnerabilidades setlisbazita sur la NIST CVE- sendo.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>We hebben in eerste instantie de standaardlijst van scripts ingesteld met de standaardopties. Deze standaardscripts kunnen niet worden verwijderd. U kunt extra scripts maken voor gebruik door u zoals vereist. Uw script zal worden gebaseerd op een van de bestaande scripts en hebben aangepaste opties toegepast. De scripts kunnen vervolgens worden gedownload van de lijstpagina bij menu -> Ontdekken -> Auditscripts -> Lijstcontrolescripts<br/> <br/></p>';
+$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>Autres Tiuj deha.ltaj kezmâves ne povas esti forigitaj. Šis sprendimas  La maniskriptoj tiam povas esti el apretutitaj de la listpa pila Valikko - titulada Malkovro - titulado residulado residulación residu- confar Listo de retutitaj<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>Bij het gebruik van Regex voor matching, kan een nuttige pagina worden gevonden op de <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Enkele verschillen met Perl Regex zijn te vinden <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">Hier.</a>.</p>';
+$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>Dum uzado, Bendrijoje Reex por egalado, utila pa graduano povas esti trovareta sur la <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP Bendrijoje</a>(OL L 20 van 2015.177, blz. 42). <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">Bendrijoje</a>Bendrijoje</p>';
 
-$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>'] = '<p>Widgets kunnen eenvoudig worden gemaakt om te laten zien wat specifiek is voor uw omgeving op uw dashboards.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>'] = '<p>Vidinad povas edusesti kreita por montri jio ajn estas specia por new medio sur new armatuurlauad.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>'] = '<p>Met Open-AudIT Professional en Enterprise kunt u automatiseren en plannen ontdekkingen, rapportage generatie, of basischecks uitvoeren wanneer u wilt, en zo vaak als je nodig hebt. Plan uw ontdekkingen om nachtelijk uit te voeren en rapporten worden gegenereerd en elke ochtend gemaild naar sleutelpersoneel. Complexe of eenvoudige schema\'s, apparaat ontdekking en rapportage generatie is slechts een klik verwijderd.<br/> <br/>Maak individuele ontdekkingsschema\'s voor elk subnet of AD controller, voeg in rapporten toe die moeten worden gemaakt voor doelpubliek. Ontwikkel eenvoudige of complexe schema\'s om de behoeften van het bedrijf te ondersteunen, back-ups of impact op operaties te vermijden, of gewoon om de load en snelheid-audit voltooiing te verspreiden.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>'] = '<p>Kun Open AudIT Profesia kaj ů vi povas skeptictomatigi kaj plani eltrova.ojn, rapori suvutcion, epäillyn bazliniajn www.ekojn por kiam vi deziras, kaj tien te kiel vi bezonas. "Verkenner"<br/> <br/>Krei ininstituajn eltrova behoefte. Evoluigi easyjn kaptlus kompleksajn horarojn por apogi sobeozonoнjn, esiti rezerva.ojn a défectueux efikon al opéracioj, semplicemente por disvastigi la Ş.рееееееееееееееееееее kaj Rapide- supren revizyple.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>'] = '<p>U kunt een script maken met alle opties voor een van de bestaande audit scripts - niet alleen Windows. AIX, ESX, Linux, OSX en Windows zijn allemaal gedekt.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>'] = '<p>Vi povas krei maniskripton kun AIX, ESX, Linukso, OSX kaj Fenestroj estas...<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>'] = '<p>U kunt het percentage % als wildcard gebruiken in de match_string.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>'] = '<p>Vi povas uzi la% -sign kiel sova quallyan karton en la Româretraciono.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br> <br></p>'] = '<p>Uw rekken helpen verfijnen precies waar uw apparaten zijn gevestigd.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br> <br></p>'] = '<p>Viaj rakoj autas rafini precize kie viajjj situazione.<br/> <br/></p>';
 
-$GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = 'Een Google Maps API Sleutel is vereist voor deze functie.';
+$GLOBALS["lang"]['<strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<strong>Bendrijoje</strong> Vi Aliris URL de la loka ОТКРОТО. L \'apresetta manikripto ne povas Bendrijoje Se vi bezonas revizii alpijn ma apretinejn, bonvolu el apretuti la manikripton de iu malpreksima ma divonaino, ne uzante retumonion sur la open- event- eventur - servilo mem.';
 
-$GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = 'Een JSON-array van apparaat-ID\'s die deze benchmark zal laten uitvoeren.';
+$GLOBALS["lang"]['A CVE item that does not contain a filter to determine the affected item(s).'] = 'CVE- objekto kiu ne enhavas filterilon por determini la trafitan objekton (j).';
 
-$GLOBALS["lang"]['A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.'] = 'Een JSON reeks objecten die overeenkomen met de softwarenaam van de CVE, verrijkt met de softwarenaam opgehaald door Open-AudIT.';
+$GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = 'API Bendrijoje ';
 
-$GLOBALS["lang"]['A JSON array of values to test for this vulnerability.'] = 'Een JSON reeks van waarden om te testen op deze kwetsbaarheid.';
+$GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = 'JSON ARO DE Bendrijoje';
 
-$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = 'Een JSON-document met de aan deze gebruiker toegewezen Orgs. ID\'s van <code>orgs.id</code>. Als een gebruiker toegang heeft tot een Org, hebben ze toegang tot die Orgs afstammelingen.';
+$GLOBALS["lang"]['A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.'] = 'JSON aro de obietktoj egalante la softvarnomon prenitan de la CVE, Bendrijoje';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = 'Een JSON-document met de vereiste attributen afhankelijk van <code>scripts.type</code>.';
+$GLOBALS["lang"]['A JSON array of values to test for this vulnerability.'] = 'JSON ARO DE Valoroj ů porērīru vundbleco';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes overriding the chosen discovery_scan_options.'] = 'Een JSON-document dat de vereiste attributen bevat die de gekozen discovery_scan_options overkoepelen.';
+$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = 'JSON-dokumento enhavanta Orgs asignita al tu uzanto. (OL L 20 van 2015.177, blz. 42) <code>orgs.id</code>Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes overriding the default device match options.'] = 'Een JSON-document met de vereiste attributen die de standaard device-matchopties bepalen.';
+$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = 'JSON - news request enhavanta la postulatajn atregultojn riippuuuuuuuuuu <code>scripts.type</code>Bendrijoje';
 
-$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = 'Een JSON-document met de aan deze gebruiker toegewezen rollen. Rolnamen van <code>roles.name</code>.';
+$GLOBALS["lang"]['A JSON document containing the required attributes overriding the chosen discovery_scan_options.'] = 'JON- dokumento enhavanta la postulatajn ategortojn superregante la ektronitaj n malkovrojn.';
 
-$GLOBALS["lang"]['A JSON object containing an array of attributes to change if the match occurs.'] = 'Een JSON-object dat een reeks attributen bevat om te wijzigen als de overeenkomst plaatsvindt.';
+$GLOBALS["lang"]['A JSON document containing the required attributes overriding the default device match options.'] = 'JSON-® ® ® Bendrijoje';
 
-$GLOBALS["lang"]['A JSON object containing an array of attributes to match.'] = 'Een JSON-object met een reeks attributen die moeten overeenkomen.';
+$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = 'JSON dokumento enhavanta la rolojn asignitajn entiu uzanto. Thomas <code>roles.name</code>Bendrijoje';
 
-$GLOBALS["lang"]['A JSON object containing collection specific options.'] = 'Een JSON object met verzameling specifieke opties.';
+$GLOBALS["lang"]['A JSON object containing an array of attributes to change if the match occurs.'] = 'JSON - objekto enhavanta aron indicatortoj por šan';
 
-$GLOBALS["lang"]['A JSON object populated via a Cloud discovery.'] = 'Een JSON object bevolkt via een Cloud ontdekking.';
+$GLOBALS["lang"]['A JSON object containing an array of attributes to match.'] = 'JSON- objekto enhavanta aron indicatortoj por egali.';
 
-$GLOBALS["lang"]['A JSON representation containing the details of the queue item to be executed.'] = 'Een JSON-representatie met de details van het uit te voeren wachtrij-item.';
+$GLOBALS["lang"]['A JSON object containing collection specific options.'] = 'JSON- objekto enhavanta kolekton speciajn opciojn.';
 
-$GLOBALS["lang"]['A JSON representation of the fields for this integration.'] = 'Een JSON vertegenwoordiging van de gebieden voor deze integratie.';
+$GLOBALS["lang"]['A JSON object populated via a Cloud discovery.'] = 'JSON';
 
-$GLOBALS["lang"]['A JSON representation of the individual tests and their results on all devices this baseline has been run against.'] = 'Een JSON-representatie van de individuele tests en hun resultaten op alle apparaten waarmee deze basislijn is vergeleken.';
+$GLOBALS["lang"]['A JSON representation containing the details of the queue item to be executed.'] = 'JSON- reprezentado enhavanta ® detalojn® atendospeco por esti efekkivigita.';
 
-$GLOBALS["lang"]['A JSON representation of the tests that make up this policy.'] = 'Een JSON vertegenwoordiging van de tests die dit beleid vormen.';
+$GLOBALS["lang"]['A JSON representation of the fields for this integration.'] = 'JSON- reprezentado de la kampraj por tu integri.o.';
 
-$GLOBALS["lang"]['A URL to a file to download.'] = 'Een URL naar een te downloaden bestand.';
+$GLOBALS["lang"]['A JSON representation of the individual tests and their results on all devices this baseline has been run against.'] = 'Reprezentado de la institutaj commersij kaj iliaj rezultoj sur...';
 
-$GLOBALS["lang"]['A calculated field that displays the number of times this piece of software was found on the computers in the selected Org (and its descendants if configured).'] = 'Een berekend veld dat het aantal keer toont dat dit stuk software werd gevonden op de computers in de geselecteerde Org (en zijn nakomelingen indien geconfigureerd).';
+$GLOBALS["lang"]['A JSON representation of the tests that make up this policy.'] = 'JSON- reprezentado de la regulj kiuj konsistigas tiun politikon.';
 
-$GLOBALS["lang"]['A collector is either in Collector or Stand-Alone mode.'] = 'Een verzamelaar is ofwel in Collector of Stand-Alone modus.';
+$GLOBALS["lang"]['A LAN can be connected to a WAN using a router.'] = 'Thomas Povas estiligita al van uzanta italon.';
 
-$GLOBALS["lang"]['A comma separated list of applicable CVEs.'] = 'Een komma gescheiden lijst van toepasselijke CVE\'s.';
+$GLOBALS["lang"]['A Metropolitan area network (MAN) is a large computer network that usually spans a city or a large campus.'] = 'Metropolivena Româ() estas grana kombintilreto kiu kutime enhavas granan kampuson.';
 
-$GLOBALS["lang"]['A comma separated list of values, one of which can be selected.'] = 'Een komma gescheiden lijst van waarden, waarvan een kan worden geselecteerd.';
+$GLOBALS["lang"]['A Seed discovery uses an initial IP to retrieve the IPs of any other devices it knows about, adds those IPs to the list and scans those - again asking for any IPs those additional devices knows about. Rinse and repeat. It is intelligent enough to know if it has already scanned a given IP in its execution and discards any already scanned (or even on the list to be scanned).'] = 'A) ';
 
-$GLOBALS["lang"]['A command to run. When the agent is Windows based, this command is run from within the powershell agent.'] = 'Een commando om uit te voeren. Wanneer de agent gebaseerd is op Windows, wordt dit commando uitgevoerd vanuit de powershell agent.';
+$GLOBALS["lang"]['A Subnet discovery will scan the IPs provided.'] = 'Bendrijoje - eltrova.o skaans la Ipojn disponigitaj.';
 
-$GLOBALS["lang"]['A list of custom TCP ports to scan (22 is SSH, 135 is WMI, 62078 is iPhone sync).'] = 'Een lijst van aangepaste TCP-poorten om te scannen (22 is SSH, 135 is WMI, 62078 is iPhone sync).';
+$GLOBALS["lang"]['A URL provided to the agent which will then download the file and store it on the local disk.'] = 'URL _ BAR _ URL _ BAR _ al _ BAR _ la agento kiu tiam el apretutas la dosieron kaj stokas εin en la loka diso _ BAR _';
 
-$GLOBALS["lang"]['A list of custom UDP ports to scan (161 is SNMP).'] = 'Een lijst van aangepaste UDP-poorten om te scannen (161 is SNMP).';
+$GLOBALS["lang"]['A URL to a file to download.'] = 'URL dosiero el apretuti.';
 
-$GLOBALS["lang"]['A lower number means it will be applied before other rules.'] = 'Een lager aantal betekent dat het zal worden toegepast vóór andere regels.';
+$GLOBALS["lang"]['A backbone network is part of a computer network infrastructure that provides a path for the exchange of information between different LANs or sub-networks. A backbone can tie together diverse networks within the same building, across different buildings, or over a wide area.<br><br>For example, a large company might implement a backbone network to connect departments that are located around the world. The equipment that ties together the departmental networks constitutes the network backbone. When designing a network backbone, network performance and network congestion are critical factors to take into account. Normally, the backbone network capacity is greater than that of the individual networks connected to it.<br><br>Another example of a backbone network is the Internet backbone, which is the set of wide area networks (WANs) and core routers that tie together all networks connected to the Internet.'] = 'Malanta Spino povas ligi kone Bendrijoje,<br/><br/>(RO 2012 7183). Dum dizajnado de sentacia Spino, retekeco kaj sentacia obstrukci.o estas kritikaj faktoroj enkalkuli. SVARBIAUSIAI SVARBIAUSIAI<br/><br/>Alia eszemplo de Spinoreto estas la Interreta Spino, kiu estas la aro de lar.aj istoj (Wanoj) kaj kenvoj kiuj ligas kune .iujn retojn ligitaj al la Interreto.';
 
-$GLOBALS["lang"]['A lower number means it will be applied before other rules. The default weight is 100.'] = 'Een lager aantal betekent dat het zal worden toegepast vóór andere regels. Het standaardgewicht is 100.';
+$GLOBALS["lang"]['A calculated field that displays the number of times this piece of software was found on the computers in the selected Org (and its descendants if configured).'] = 'Kalkulis kampon kiu elmontras la nombron da Tempoj tu peco de softvaro etis Trovita sur la komputiloj en la elektita Orga (kaj εiaj posteuloj se aran.ite).';
 
-$GLOBALS["lang"]['A password (stored as a hash) that enables logon when using application authentication.'] = 'Een wachtwoord (opgeslagen als een hash) waarmee inloggen bij het gebruik van applicatie-authenticatie mogelijk is.';
+$GLOBALS["lang"]['A campus area network (CAN) is made up of an interconnection of LANs within a limited geographical area. The networking equipment (switches, routers) and transmission media (optical fiber, copper plant, Cat5 cabling, etc.) are almost entirely owned by the campus tenant / owner (an enterprise, university, government, etc.).<br><br>For example, a university campus network is likely to link a variety of campus buildings to connect academic colleges or departments, the library, and student residence halls.'] = '(KAN)<br/><br/>Egzemt Oostenrijk kampureto verajne interligas gamon da kampuskinstrument.oj por ligi akademiajn altlernegojn, la bibliotecon, kaj colleeajn lo.ejhalojn.';
 
-$GLOBALS["lang"]['A routing domain or address space where the IP addresses and MAC addresses are unique.'] = 'Een routeringsdomein of adresruimte waar de IP-adressen en MAC-adressen uniek zijn.';
+$GLOBALS["lang"]['A closed port is accessible (it receives and responds to Nmap probe packets), but there is no application listening on it. They can be helpful in showing that a host is up on an IP address (host discovery, or ping scanning), and as part of OS detection. Because closed ports are reachable, it may be worth scanning later in case some open up. Administrators may want to consider blocking such ports with a firewall. Then they would appear in the filtered state, discussed next.'] = 'Fermita hasno estas alirebla (εi rizvas kaj reagas al Nmap zoonde- pa ... Ili povas esti ademaj en montrado ke gastiganto estas supren sur IP- adreso (gasa eltrova.o, kaptlus pingsanado), kaj kiel parto de OS- detekto. Alternativar fermotaj hasnoj estas atingeblaj, .i povas esti valoro sanado poste en kazo iu malferma supren. Administratrannoj povas deziri pripensi bloki tiajn hasnojn kun fajromuro. Tiam ili aperus en la insinsura dropcommon, reform plei preksim.';
 
-$GLOBALS["lang"]['A security zone is a administrative domain or policy domain within the Network Domain.'] = 'Een veiligheidszone is een administratief domein of beleidsdomein binnen het netwerkdomein.';
+$GLOBALS["lang"]['A collector is either in Collector or Stand-Alone mode.'] = 'Kolektanto estas a cahtlus en kolektanto a kahtlustus stand- re.imo.';
 
-$GLOBALS["lang"]['A short description of the log entry.'] = 'Een korte beschrijving van het logboek.';
+$GLOBALS["lang"]['A comma separated list of applicable CVEs.'] = '"Komo Listn de uzeblaj CMEoj."';
 
-$GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = 'Een tekenreeks die overeenkomt met de <code>software.name</code> kenmerk. U kunt de standaard SQL wildcard van procent (%) gebruiken om één of meer tekens te vergelijken.';
+$GLOBALS["lang"]['A comma separated list of values, one of which can be selected.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).'] = 'Een kwetsbaarheid die van invloed is op de beschikbaarheid kan aanvallers toestaan diensten te verstoren, crash systemen, of ontkenning van de dienst (DoS) (Geen, Laag, Hoog).';
+$GLOBALS["lang"]['A command to run. When the agent is Windows based, this command is run from within the powershell agent.'] = 'Bendrieoje Kiam la agento estas Fenestroj bazita, tu komando estas prizorgita de ene de la powershell agento.';
 
-$GLOBALS["lang"]['A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).'] = 'Een kwetsbaarheid die van invloed is op de vertrouwelijkheid kan aanvallers in staat stellen om gevoelige gegevens te lezen, zoals persoonlijke informatie, referenties, of eigen zakelijke gegevens (Geen, Laag, Hoog).';
+$GLOBALS["lang"]['A dashboard is made up of three columns and two rows of what we call <i>widgets</i>. A widget is very similar to a summary, only we take the summary concept a bit further. Widgets are created in a simple fashion using a couple of drop down boxes - or you can elect to use your own SQL for complete customisability.'] = 'Da triboard konsistas el tri kolumnoj kaj du vioj ňkion ni nomas <i>· D)</i>Bendrijoje Ao estas tre simpa al revo, nur ni prenas la resegan icon iomete plu. Vidinad estas kreita en simplia modo uzanta paran da guto malsupren kestoj - katlus vi povas elektrischeti uzi vian propran SQL por kompleta kutimo.';
 
-$GLOBALS["lang"]['A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).'] = 'Een kwetsbaarheid die de integriteit beïnvloedt kan aanvallers toelaten om gegevens te wijzigen, kwaadaardige code te injecteren, of systeemconfiguraties te wijzigen (Geen, laag, hoog).';
+$GLOBALS["lang"]['A filtered port is considered open (and will trigger device detection).'] = 'Interita hasno estas konsiderita malferma (kaj ellasos aparatodekton).';
 
-$GLOBALS["lang"]['AD Group'] = 'AD-groep';
+$GLOBALS["lang"]['A global area network (GAN) is a network used for supporting mobile across an arbitrary number of wireless LANs, satellite coverage areas, etc. The key challenge in mobile communications is handing off user communications from one local coverage area to the next. In IEEE Project 802, this involves a succession of terrestrial wireless LANs.'] = 'Tutmonda isto (GAN) estas reto uzita por apogado de po aprettelefono trans arbitrage nombro da serrataj Lanoj, satelitaj priraportadareoj, ktp. Don as uzantkomunkadojn de unu loka priraportadareo εis la venonta. "IEEE"';
 
-$GLOBALS["lang"]['ADSL, HFC, ISDN, etc.'] = 'ADSL, HFK, ISDN, enz.';
+$GLOBALS["lang"]['A home area network (HAN) is a residential LAN used for communication between digital devices typically deployed in the home, usually a small number of personal computers and accessories, such as printers and mobile computing devices. An important function is the sharing of Internet access, often a broadband service through a cable TV or digital subscriber line (DSL) provider.'] = 'Hejmarreto (tavia) estos lo diplomateoma LAN uzita por kommunikado inter ciferecaj apoto tipintegrijitaj en la hejmo, kutime malmulto de personaj komputiloj kaj akcesora.oj, kiel ekzemple printililoj kaj movaj kombinapajtoj. Grava funkcio estas la discoteca de retaliro, Bendrieoje.';
 
-$GLOBALS["lang"]['AIX'] = 'AIX';
+$GLOBALS["lang"]['A list of custom TCP ports to scan (22 is SSH, 135 is WMI, 62078 is iPhone sync).'] = 'Listo de Kulimo TCP- hasnoj por skani (22 estas SSH, 135 estas WMI, 62078 estas iPhono-utilacetur).';
 
-$GLOBALS["lang"]['ALL IPs'] = 'ALLE IP\'s';
+$GLOBALS["lang"]['A list of custom UDP ports to scan (161 is SNMP).'] = 'Listo de Kulimo UDP- hasnoj por skani (161 estas SNMP).';
 
-$GLOBALS["lang"]['API / Web Access'] = 'API / Webtoegang';
+$GLOBALS["lang"]['A local area network (LAN) is a network that connects computers and devices in a limited geographical area such as a home, school, office building, or closely positioned group of buildings. Each computer or device on the network is a node. Wired LANs are most likely based on Ethernet technology. Newer standards such as ITU-T G.hn also provide a way to create a wired LAN using existing wiring, such as coaxial cables, telephone lines, and power lines.<br><br>The defining characteristics of a LAN, in contrast to a wide area network (WAN), include higher data transfer rates, limited geographic range, and lack of reliance on leased lines to provide connectivity. Current Ethernet or other IEEE 802.3LAN technologies operate at data transfer rates up to 100 Gbit/s, standardized by IEEE in 2010. Currently, 400 Gbit/s Ethernet is being developed.'] = 'Loka izoreto (LAN) estos reto kiu ligas komputijn kajn aparato en limigita geografia iso kiel ekzemple hejmo, lernejo, oficeejkonstrua. Imitu komputilo kaptlus aparato sur la reto nodo. Traadiga Lanoj estas plej ver kindjnaj surbaze de Ethernet - teknologio. Pli novaj ormoj kiel ekzemple Uit- T G.hn ankai dispoonigas manieron krei datigitan LAN uzantan ekzisztán drenadon, kiel ekimer koaksiaj kablojj, teferonlinioj, kaj regulklinjoj.<br/><br/>La difinaj karkteriza.oj de LAN, consite al lar rupturaa isoreto (WAN), inkludas plijn altan dann transigtarifojn, limitan geographhian plotati residue, kaj mankon de deposico sur lizitaj linioj por disponigi ekkonteblecon. Bendrijoje Ce datentansigtarifoj εis 100 Gbit / s, normigita tariffe de IEEE en 2010. "Hurtigruten"';
 
-$GLOBALS["lang"]['API Documentation'] = 'API-documentatie';
+$GLOBALS["lang"]['A location is a physical address that can have devices associated with it. You can assign it coordinates and if there are devices assigned, the location will appear on the Map when you have an Open-AudIT Enterprise license.'] = 'Loko estas fizika adreso kiu povas havi aparatojn asocitajn kun liukoinen. Vi povas asignitaj, la loko aperos sur la Map kiam vi havas Bendrijoje';
 
-$GLOBALS["lang"]['API Key required.'] = 'API Key vereist.';
+$GLOBALS["lang"]['A location name will help you to find these devices in the future.'] = '"Supply"';
 
-$GLOBALS["lang"]['API Result'] = 'API-resultaat';
+$GLOBALS["lang"]['A lower number means it will be applied before other rules.'] = 'Pli maltalta nombro signfas ke εi estos aplikita atl.';
 
-$GLOBALS["lang"]['About'] = 'Info';
+$GLOBALS["lang"]['A lower number means it will be applied before other rules. The default weight is 100.'] = 'Pli maltalta nombro signfas ke εi estos aplikita Bendrijoje.';
 
-$GLOBALS["lang"]['Accept'] = 'Accepteren';
+$GLOBALS["lang"]['A new user logged in to Open-AudIT and was authenticated and authorized by the LDAP sever. That user was then created in Open-AudIT and logged in. Success.'] = '"Nova uzanto" Fare de la LDAP sever. Tiu uzanto tiam estis kreita en open- Bendrieoje Bendrijoje';
 
-$GLOBALS["lang"]['access_point'] = 'Toegangspunt';
+$GLOBALS["lang"]['A package is a piece of installed softare. A package has a type - antivirus, approved, backup, banned, cloud, firewall, ignored, license or other.'] = 'Pakao estas peco de secresetta moolo. Bendrijoje';
 
-$GLOBALS["lang"]['Access Point'] = 'Toegangspunt';
+$GLOBALS["lang"]['A password (stored as a hash) that enables logon when using application authentication.'] = 'pasvorton (venkita kiel hash) kiu rajtigas tunnuksen dum uzado de apliki specaluctentigo Bendrijoje.';
 
-$GLOBALS["lang"]['access_token'] = 'Toegang tot Token';
+$GLOBALS["lang"]['A person has an account in the Open-AudIT application. Their user account has a list of associated Roles and Organizations. The roles the user has determines WHAT they can do. The Organizations a user has determines WHICH items they can act upon.<br><br>When a user requests to perform an operation (create, read, update, delete) on a collection item, the roles are consulted to see if they are allowed to perform that action, then the orgs are consulted to determine if the collection item belongs to an org the user has permission to act on.'] = 'Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 dalies a punktas Thessroloj kiujn la uzanto determinwa ili povas fari. Ventsporicoj uzanto determinica mikä erojn ili povas agi sur.<br/><br/>Kiam uzanto petas elfari operacion (krei, legi, liukoisdatigi, forigi) sur kolekttobektoj, la roloj estas konsultitaj por vidi claru ili estas permesitaj elftari tiun agon, tiam la orgkonsultitaj determini ';
 
-$GLOBALS["lang"]['Access Token'] = 'Toegang tot Token';
+$GLOBALS["lang"]['A personal area network (PAN) is a computer network used for communication among computer and different information technological devices close to one person. Some examples of devices that are used in a PAN are personal computers, printers, fax machines, telephones, PDAs, scanners, and even video game consoles. A PAN may include wired and wireless devices. The reach of a PAN typically extends to 10 meters. A wired PAN is usually constructed with USB and FireWire connections while technologies such as Bluetooth and infrared communication typically form a wireless PAN.'] = 'Persona isto (PAN) estas kompytila uzita por kommunikado inter komputio kaj malsamaj soatojteknologiaj apotoj preksimaj al unu persono. Kelkaj eczemoj de aparatoj kiuj estas uzitaj en PAN estetas personaj komputiloj, printiloj, faksoma activitanoj, Telefonoj, PDAoj, skalanoj, kaj e proporción videoludkonzoloj. PAN povas Şkudi Dratigijn kaj serratajn aparatojn. (RO 2012 7183). Metita PAN estas kutime koronuita kun USB kaj FireWire ligoj dum teknologioj kiel ekzemt rev new dans.';
 
-$GLOBALS["lang"]['ack_by'] = 'Ack op';
+$GLOBALS["lang"]['A query is essentially a SQL statement. This statement is run against the database with the automatic addition of the limit, filtered to apply to only those requested items and only those items the user has permission to view. A Query can be created using menu -> Manage -> Queries -> Create Queries. Queries contain an org_id and are hence restricted to the appropriate users. A user must have the org_admin or reporter role(s) to create, update or delete a query. All users can execute a query. A query has a name attribute used for the menu item as well as a menu category attribute. This tells the Open-Audit GUI which submenu to place the query in. There is also menu display which should be set to <i>y</i> to enable the query in the GUI (<i>n</i> to prevent the query from appearing at all). The query would still run if called using its <code>id</code>, regardless of menu displays value.'] = 'C \'est là que se trunve le SQL - deklaro verzoek. ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® -® ® ® --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------. Päringud enhavas org _ id kaj estas itas liagitaj ů konvenaj uzantoj. Uzanto hansanda.o la org _ sc (j) krei, Liquidalisdatigi epäilty forigi kisely. Mina sinoiuj uzanoj povas efektivigi päring. Aquery haves nomon attribuzione utiligitan por la menuobjektoj mimo kiel menuokoategoriato..................................................................................... Tio racntas la Open- GUI kiu submenu por meti la atendon en Eksporstas ankai menuo ekrano kiu devus esti metita al <i>Bendrijoje</i> Por epligi la atendon en la GUI () ()<i>Bendrijoje</i> Por malhelfi la atendon estarado entute. Expedicête da guidre Bendrijoje <code>id</code>" ...';
 
-$GLOBALS["lang"]['Ack By'] = 'Ack op';
+$GLOBALS["lang"]['A rack is a collection of devices which are assigned a position and height within the rack. A device can optionally have a picture associated with it. A rack is placed in a row. We have created a very granular system for positioning of racks, which is as follows. At the top level (as always) is the Organisation (Org). An Org can have multiple locations (as has always been the case). With the addition of the Racks feature, a location can now contain one or more Buildings. A building can contain one or more Floors. A floor can contain one or more Rooms. A room can contain one or more Rows. This sounds like a lot of work, but defaults are created for you. Create a new Location and the sub-components will be automatically created for you. If you need more items (buildings, rooms, etc) you can add them as you like. A rack can also be part of a <i>pod</i> of racks. The pod attribute works as a tag, rather than a strict hierarchical inheritance model as per buildings, floors, etc.<br><br>Racks are a feature available to Open-AudIT Enterprise licensed customers.'] = 'Arako estas kolektto de aparatoj kiuj rizvas pozestakaj alitecon ene establishment. Aparato povas la defaultvole havi bildon asociitan kun εi. rako estas metita en vicon. Ni kreis tre grajnecan sistemon por poziciigado de rakoj, kiu estas kiel sekvas. Sur la sopra nivelo (kiel org povas havi multoblajn lokojn (kiel Klaram estis la kaz). Kun la aldono de la racks trajto, loko opharm povas enhavi unu scettico multilaj Konstrua. C \'è Konstrua ů Planko povas enhavi unu epäilty multilaj .ambrojn. Mina sentoambro povas enhavi unu epäilty multilaj rregojn. Tio sonas kiel multe da labo, sed deva transeltoi estas kreitaj por vi. Krei novan Lokon kaj la sub- komponanoj estos a skeptomate kreitaj por vi. Şvi bezonas pli da eroj (konstrua... oj... ambroj, ktp) Şpovas aldoni... Arako ankahtihtis povas esti parto <i>Bendrijoje</i> "Supply"<br/><br/>Programma "Leader +"';
 
-$GLOBALS["lang"]['ack_date'] = 'Ack-datum';
+$GLOBALS["lang"]['A routing domain or address space where the IP addresses and MAC addresses are unique.'] = '® domajno a epäillyn apresspace Kie la IP- adresoj kaj MAC- adresoj estas unikaj.';
 
-$GLOBALS["lang"]['Ack Date'] = 'Ack-datum';
+$GLOBALS["lang"]['A sample cron file for Linux is below. This should be placed in'] = '"Sperta Krodosiero por Linukso estas malsupre." Bendrijoje';
 
-$GLOBALS["lang"]['ack_time'] = 'Ack tijd';
+$GLOBALS["lang"]['A security zone is a administrative domain or policy domain within the Network Domain.'] = 'Sekureco- zono estas amministrazione domajno epäillyn strategjodamajno ene de la Retographenia.';
 
-$GLOBALS["lang"]['Ack Time'] = 'Ack tijd';
+$GLOBALS["lang"]['A seed discovery is another type of discovery, where you provide the IP of a single <i>seed</i> device. This device is audited, and any IPs it knows are then added to the list of IPs to be audited. Then, those devices are audited and any IPs they know are also added to the list of IPs for auditing. This process then continues within the parameters configured by the user.'] = 'Bendrijoje <i>Bendrijoje</i> Bendrijoje Tiu aparato estas reviziita, kaj ajna IP s εi scias tas estas aldonita al la lista de IP s por esti reviziita. Tiam, tiaj aparatoj estas revizitaj kaj ajnaj ili scias anka130 estas aldonitaj al la lista de Ipoj por revizio. Tiu proceszo tiam dauras ene režisieriaus roj formitaj tariffa režisieriaus uzanto.';
 
-$GLOBALS["lang"]['action'] = 'Actie';
+$GLOBALS["lang"]['A short description of the log entry.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['Action'] = 'Actie';
+$GLOBALS["lang"]['A storage area network (SAN) is a dedicated network that provides access to consolidated, block level data storage. SANs are primarily used to make storage devices, such as disk arrays, tape libraries, and optical jukeboxes, accessible to servers so that the devices appear like locally attached devices to the operating system. A SAN typically has its own network of storage devices that are generally not accessible through the local area network by other devices. The cost and complexity of SANs dropped in the early 2000s to levels allowing wider adoption across both enterprise and small to medium-sized business environments.'] = 'Stoka isoreto (SAN) estas officicia reto kiu disposigas alrin al fericita, blok - nivelaj datentokado. • • • •';
 
-$GLOBALS["lang"]['action_audit'] = 'Action Audit';
+$GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = 'Bendrijoje <code>software.name</code> Bendrijoje Vi povas uzi la norman SQL - sovaεan karton de procentoj (%) por egali unu ů Bendrijoje';
 
-$GLOBALS["lang"]['Action Audit'] = 'Action Audit';
+$GLOBALS["lang"]['A structured system for managing sensitive information'] = 'strukturita sistemo por amministrazione entre sendiemaj entre';
 
-$GLOBALS["lang"]['action_command'] = 'Actiecommando';
+$GLOBALS["lang"]['A timestamp.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Action Command'] = 'Actiecommando';
+$GLOBALS["lang"]['A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users <i>orgs</i> and <i>roles</i> define what they can and cannot do within Open-AudIT.'] = 'Uzantoj Org mimo kiel lister de Orgas kiun ili povas aliri. Uzanto Kombinastion kun lista de asignitaj roloj difinas kiujn fajn ili povas akcepti erojn asignitaj al la orgs kiujn ili havas aliro al. al. Bendrijoje <i>Bendrijoje</i> Bendrijoje <i>Bendrijoje</i> Difinas kion ili povas kaj ne povas fari ene de Româί ί';
 
-$GLOBALS["lang"]['action_date'] = 'Actiedatum';
+$GLOBALS["lang"]['A user will have a list of associated organizations (orgs). Each org the user has will allow them to act upon items within that org as per their role(s).<br><br>All orgs except the default org have a parent. Think of an Org Chart. If a user has permission on an Org, they also have permission on any descendants of that Org.<br><br>Users are also allowed permission on a child org to see the items from parent orgs for certain collections. Those are: dashboards, discovery_scan_options, fields, files, groups, queries, reports, roles, rules, scripts, summaries, widgets.<br><br>Do not forget you have granular control over what users can see and do using Roles in Enterprise.'] = 'uzanto havos listan de rilataj organisoj (orgoj). og la uzanto perfesos al ili agi sur eroj ene de tiu org kiel per ilia rolo (j).<br/><br/> Bendrijoje: Se uzanto haves perveston haves perveston sur juj posteuloj rev.<br/><br/>- Tiuj estas: armatuurlauad, Bendrijoje,<br/><br/>Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 dalies a punktas';
 
-$GLOBALS["lang"]['Action Date'] = 'Actiedatum';
+$GLOBALS["lang"]['A user will have a list of associated organizations (orgs). Each org the user has will allow them to act upon items within that org as per their role(s).<br><br>All orgs except the default org have a parent. Think of an Org Chart. If a user has permission on an Org, they also have permission on any descendants of that Org.<br><br>We have also allow a user with permission on a child org to see the items from parent orgs for certain collections. Those are: dashboards, discovery_scan_options, fields, files, groups, queries, roles, rules, scripts, summaries, widgets.<br><br>Do not forget you have granular control over what users can see and do using'] = 'uzanto havos listan de rilataj organisoj (orgoj). og la uzanto perfesos al ili agi sur eroj ene de tiu org kiel per ilia rolo (j).<br/><br/> Bendrijoje: Se uzanto haves perveston haves perveston sur juj posteuloj rev.<br/><br/>Thomas mixankai permes uzanton kun permes sur infano org por vidi la erojn de geatroj orgoj por certaj kolektoj. Tiuj estas: armatuurlauad, Bendrijoje,<br/><br/>Derogation de l \'économique de l\' économique de l \'économique de l\' économique';
 
-$GLOBALS["lang"]['action_devices_assigned_to_location'] = 'Aan locatie toegewezen actie-apparaten';
+$GLOBALS["lang"]['A virtual private network (VPN) is an overlay network in which some of the links between nodes are carried by open connections or virtual circuits in some larger network (e.g., the Internet) instead of by physical wires. The data link layer protocols of the virtual network are said to be tunneled through the larger network when this is the case. One common application is secure communications through the public Internet, but a VPN need not have explicit security features, such as authentication or content encryption. VPNs, for example, can be used to separate the traffic of different user communities over an underlying network with strong security features.<br><br>VPN may have best-effort performance, or may have a defined service level agreement (SLA) between the VPN customer and the VPN service provider. Generally, a VPN has a topology more complex than point-to-point.'] = 'Virtica privata reto (VPN) estas superlay reto en kiu kelkaj el ligi laloj inter nodoj estas portitaj per malfermaj ligoj a skepticaj cirkvitoj en iu pli granda reto (ekz., la Interreto) anstata guide de per fizikaj dratoj. ® datenligtavolo protokolas de la virtual retoa la guiddire estas Sellita tra la pli gra reto kiam tio estas la kazo. Unu ofta apliki suyas estas sekura kommunikado tra la publika interreto, sed VPN ne bezonas eksplicitaj n sekurectrajtojn, kiel ekimer konfirma previsto. VPN ® ekimplementarum povas esti uzita por apartigi la trafikon de malsamaj uzantkomuniumoj Bendrijoje.<br/><br/>VPN ® povas havi plej bonan efikecon, epäilty povas havi difinitan serva nivelinterkonsenton (SLA) ŞBendrijoje VPN haves topologion pli kompleksan ol punkto- Bendrijoje.';
 
-$GLOBALS["lang"]['Action Devices Assigned To Location'] = 'Aan locatie toegewezen actie-apparaten';
+$GLOBALS["lang"]['A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).'] = 'Vundebleco infunta hasblecon povas perfesi al atakantoj disseppi Bendrijoje, kra divostaisemojn, epäilty kazi neo- de- re- (DOS) (Ninguno, Bajo, Alto).';
 
-$GLOBALS["lang"]['action_devices_assigned_to_org'] = 'Aan org toegewezen actie-apparaten';
+$GLOBALS["lang"]['A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).'] = 'vundebleco influenzanta konfidencon povas permesi al atakantoj legi sendiemajn datenojn, kiel ekzemempersonaj soatoj, akreditaoj, epäilty contanariotajn comercdatenojn (Ninguno, Bajo, Alto).';
 
-$GLOBALS["lang"]['Action Devices Assigned To Org'] = 'Aan org toegewezen actie-apparaten';
+$GLOBALS["lang"]['A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).'] = 'La plupart de l \'Europe de l\' Est sont des pays de l \'Europe Centrale et orientale.';
 
-$GLOBALS["lang"]['action_download'] = 'Actiedownload';
+$GLOBALS["lang"]['A vulnerability can be editied and more specific package names provided where the enrichment data is insufficient or the generated SQL is not quite correct.'] = 'Vundebleco povas esti redaktita kaj pli specifiaj Bendrijoje';
 
-$GLOBALS["lang"]['Action Download'] = 'Actiedownload';
+$GLOBALS["lang"]['A vulnerability item in Open-AudIT can be thought of as essentially a query against your database to determine your potential exposure to a given CVE report. A vulnerability is made up of the CVE report, along with enrichment data from FirstWave. These two items are combined to produce a suitable query that is automatically downloaded from FirstWave.'] = 'Nula oggettikto en open - Bendrieoje, Vundebleco konsistas el la CVE- raporto, kune kun ri previstoigdatienoj Bendrieoje. Tiuj du eroj estas Kombintaj Şprodotto';
 
-$GLOBALS["lang"]['action_uninstall'] = 'Actie verwijderen';
+$GLOBALS["lang"]['A wide area network (WAN) is a computer network that covers a large geographic area such as a city, country, or spans even intercontinental distances. A WAN uses a communications channel that combines many types of media such as telephone lines, cables, and air waves. A WAN often makes use of transmission facilities provided by common carriers, such as telephone companies. WAN technologies generally function at the lower three layers of the OSI reference model: the physical layer, the data link layer, and the network layer.'] = 'Lar Rupturaa izoreto (WAN) estas komputila kiu kovras granaio ison kiel ekzemple granurbo, Bendrieoje WAN utiligas kombinadkanalon kiu kombinas multajn specojn de amaskompensunikilaro kie ekzimple telefonlinioj, kabloj, kaj aarindojn. WA ofte faras uzon de transmisiipaya.oj disporigitaj Bendrijoje - kompanioj, kiel ekze telefontleaj commeryaoj. Le Commerce de gestion de l \'eau, Bendrieoje ';
 
-$GLOBALS["lang"]['Action Uninstall'] = 'Actie verwijderen';
+$GLOBALS["lang"]['AD Group'] = 'PVD Bendrijoje';
 
-$GLOBALS["lang"]['actioned'] = 'Actief';
+$GLOBALS["lang"]['ADSL, HFC, ISDN, etc.'] = 'ADSL Bendrijoje';
 
-$GLOBALS["lang"]['Actioned'] = 'Actief';
+$GLOBALS["lang"]['AIX'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['actioned_by'] = 'Gereed door';
+$GLOBALS["lang"]['ALL IPs'] = 'Alternatyvi';
 
-$GLOBALS["lang"]['Actioned By'] = 'Gereed door';
+$GLOBALS["lang"]['API / Web Access'] = 'API / Prieinamumas';
 
-$GLOBALS["lang"]['actioned_date'] = 'Geactieerde datum';
+$GLOBALS["lang"]['API Documentation'] = 'API Bendrijoje';
 
-$GLOBALS["lang"]['Actioned Date'] = 'Geactieerde datum';
+$GLOBALS["lang"]['API Key required.'] = 'API - "Lolilotavia postulis"';
 
-$GLOBALS["lang"]['actions'] = 'Acties';
+$GLOBALS["lang"]['API Result'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Actions'] = 'Acties';
+$GLOBALS["lang"]['About'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Activate'] = 'Activeer';
+$GLOBALS["lang"]['Above are the only required items.'] = 'Supreestas eduraj postulataj eroj.';
 
-$GLOBALS["lang"]['Activate Free License'] = 'Vrije licentie activeren';
+$GLOBALS["lang"]['Accept'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Activate Key'] = 'Sleutel activeren';
+$GLOBALS["lang"]['Access Model'] = '"Alirmodello,"';
 
-$GLOBALS["lang"]['Activate a free Enterprise license'] = 'Activeer een gratis Enterprise-licentie';
+$GLOBALS["lang"]['access_point'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Active'] = 'Actief';
+$GLOBALS["lang"]['Access Point'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Active / Active'] = 'Actief / actief';
+$GLOBALS["lang"]['access_token'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Active / Passive'] = 'Actief / passief';
+$GLOBALS["lang"]['Access Token'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Active Directory'] = 'Actieve map';
+$GLOBALS["lang"]['Access to the admin$ share and RPC uses the SMB2 protocol.'] = 'Un projet de loi sur la protection de l\'environnement.';
 
-$GLOBALS["lang"]['Active Directory Domain'] = 'Actief Mapdomein';
+$GLOBALS["lang"]['ack_by'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['active_directory_ou'] = 'Actieve map Ou';
+$GLOBALS["lang"]['Ack By'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Active Directory Ou'] = 'Actieve map Ou';
+$GLOBALS["lang"]['ack_date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Active Directory Server'] = 'Actieve directoryserver';
+$GLOBALS["lang"]['Ack Date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ad_domain'] = 'Ad-domein';
+$GLOBALS["lang"]['ack_time'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ad Domain'] = 'Ad-domein';
+$GLOBALS["lang"]['Ack Time'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ad_group'] = 'Ad-groep';
+$GLOBALS["lang"]['action'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ad Group'] = 'Ad-groep';
+$GLOBALS["lang"]['Action'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ad_server'] = 'Ad-server';
+$GLOBALS["lang"]['action_audit'] = '-';
 
-$GLOBALS["lang"]['Ad Server'] = 'Ad-server';
+$GLOBALS["lang"]['Action Audit'] = '-';
 
-$GLOBALS["lang"]['Add'] = 'Voeg toe';
+$GLOBALS["lang"]['action_command'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Add Credentials'] = 'Geheimen toevoegen';
+$GLOBALS["lang"]['Action Command'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Add Device'] = 'Apparaat toevoegen';
+$GLOBALS["lang"]['action_date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Add Device to Application'] = 'Apparaat toevoegen aan toepassing';
+$GLOBALS["lang"]['Action Date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Add Device to Cluster'] = 'Apparaat toevoegen aan cluster';
+$GLOBALS["lang"]['action_devices_assigned_to_location'] = 'Ago cucito märatud';
 
-$GLOBALS["lang"]['Add Exception'] = 'Uitzondering toevoegen';
+$GLOBALS["lang"]['Action Devices Assigned To Location'] = 'Ago cucito märatud';
 
-$GLOBALS["lang"]['Add Field'] = 'Veld toevoegen';
+$GLOBALS["lang"]['action_devices_assigned_to_org'] = 'Ago cucito märatud instrucorg';
 
-$GLOBALS["lang"]['Add If'] = 'Toevoegen als';
+$GLOBALS["lang"]['Action Devices Assigned To Org'] = 'Ago cucito märatud instrucorg';
 
-$GLOBALS["lang"]['Add Policies from Device'] = 'Beleid van apparaat toevoegen';
+$GLOBALS["lang"]['action_download'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Add Policy'] = 'Beleid toevoegen';
+$GLOBALS["lang"]['Action Download'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Add Then'] = 'Toevoegen';
+$GLOBALS["lang"]['action_uninstall'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Add image'] = 'Afbeelding toevoegen';
+$GLOBALS["lang"]['Action Uninstall'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['additional_items'] = 'Aanvullende items';
+$GLOBALS["lang"]['actioned'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Additional Items'] = 'Aanvullende items';
+$GLOBALS["lang"]['Actioned'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['address'] = 'Adres';
+$GLOBALS["lang"]['actioned_by'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Address'] = 'Adres';
+$GLOBALS["lang"]['Actioned By'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Admin'] = 'Beheerder';
+$GLOBALS["lang"]['actioned_date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['admin_status'] = 'Beheersstatus';
+$GLOBALS["lang"]['Actioned Date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Admin Status'] = 'Beheersstatus';
+$GLOBALS["lang"]['actions'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['advanced'] = 'Geavanceerd';
+$GLOBALS["lang"]['Actions'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Advanced'] = 'Geavanceerd';
+$GLOBALS["lang"]['Activate'] = '(1)';
 
-$GLOBALS["lang"]['Afghanistan'] = 'Afghanistan';
+$GLOBALS["lang"]['Activate Free License'] = '"Attivare Licencia Gratis"';
 
-$GLOBALS["lang"]['agents'] = 'Middelen';
+$GLOBALS["lang"]['Activate Key'] = '- ';
 
-$GLOBALS["lang"]['Agents'] = 'Middelen';
+$GLOBALS["lang"]['Activate a free Enterprise license'] = '(1)';
 
-$GLOBALS["lang"]['Aggressive'] = 'Agressief';
+$GLOBALS["lang"]['Active'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Aland Islands'] = 'Alandeilanden';
+$GLOBALS["lang"]['Active / Active'] = '"Aktiva" / "Aktiva"';
 
-$GLOBALS["lang"]['Albania'] = 'Albanië';
+$GLOBALS["lang"]['Active / Passive'] = '"Aktiva"';
 
-$GLOBALS["lang"]['alert_style'] = 'Waarschuwingsstijl';
+$GLOBALS["lang"]['Active Directory'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Alert Style'] = 'Waarschuwingsstijl';
+$GLOBALS["lang"]['Active Directory Domain'] = 'Aktiva Adresaro';
 
-$GLOBALS["lang"]['Algeria'] = 'Algerije';
+$GLOBALS["lang"]['active_directory_ou'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['algorithm'] = 'Algoritme';
+$GLOBALS["lang"]['Active Directory Ou'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Algorithm'] = 'Algoritme';
+$GLOBALS["lang"]['Active Directory Server'] = 'Aktiva Bendrijoje';
 
-$GLOBALS["lang"]['alias'] = 'Alias';
+$GLOBALS["lang"]['Active Directory and OpenLDAP'] = 'Aktiva Adresaro kaj OpenLDAP, Bendrijoje';
 
-$GLOBALS["lang"]['Alias'] = 'Alias';
+$GLOBALS["lang"]['ad_domain'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['All'] = 'Alles';
+$GLOBALS["lang"]['Ad Domain'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['All IPs'] = 'Alle IP\'s';
+$GLOBALS["lang"]['ad_group'] = '-';
 
-$GLOBALS["lang"]['All Policies'] = 'Alle beleidsmaatregelen';
+$GLOBALS["lang"]['Ad Group'] = '-';
 
-$GLOBALS["lang"]['All Queued Items'] = 'Alle in de wachtrij geplaatste items';
+$GLOBALS["lang"]['ad_server'] = '"AdServio"';
 
-$GLOBALS["lang"]['Amazon AWS Fields'] = 'Amazon AWS Velden';
+$GLOBALS["lang"]['Ad Server'] = '"AdServio"';
 
-$GLOBALS["lang"]['American Samoa'] = 'Amerikaans-Samoa';
+$GLOBALS["lang"]['Add'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = 'Een reeks van <code>benchmarks.id</code>.';
+$GLOBALS["lang"]['Add Credentials'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = 'Een reeks van <code>devices.id</code>.';
+$GLOBALS["lang"]['Add Device'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['An array of object representing external links to more information.'] = 'Een reeks objecten die externe links naar meer informatie weergeven.';
+$GLOBALS["lang"]['Add Device to Application'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = 'Een versleuteld JSON-document met de vereiste attributen, afhankelijk van de <code>credentials.type</code>.';
+$GLOBALS["lang"]['Add Device to Cluster'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['An indication of the level of service required by this site.'] = 'Een indicatie van het niveau van de dienstverlening vereist door deze site.';
+$GLOBALS["lang"]['Add Exception'] = 'Aldonu esepti, arba';
 
-$GLOBALS["lang"]['An internal field that indicates if the discovery has completed.'] = 'Een intern veld dat aangeeft of de ontdekking voltooid is.';
+$GLOBALS["lang"]['Add Field'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['An optional GeoCode'] = 'Een optionele GeoCode';
+$GLOBALS["lang"]['Add If'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['An optional password to use sudo.'] = 'Een optioneel wachtwoord om sudo te gebruiken.';
+$GLOBALS["lang"]['Add Policies from Device'] = 'Aldonu Politikojn de Appareil, Bendrieoje';
 
-$GLOBALS["lang"]['Andorra'] = 'Andorra';
+$GLOBALS["lang"]['Add Policy'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Angola'] = 'Angola';
+$GLOBALS["lang"]['Add Then'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Anguilla'] = 'Anguilla';
+$GLOBALS["lang"]['Add Your Credentials'] = '(lt)';
 
-$GLOBALS["lang"]['Antarctica'] = 'Antarctica';
+$GLOBALS["lang"]['Add image'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['AntiVirus'] = 'Antivirus';
+$GLOBALS["lang"]['additional_items'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Antigua and Barbuda'] = 'Antigua en Barbuda';
+$GLOBALS["lang"]['Additional Items'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Antivirus'] = 'Antivirus';
+$GLOBALS["lang"]['address'] = 'Ütaka';
 
-$GLOBALS["lang"]['Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = 'Alle TCP poorten (coma gescheiden, geen spaties) die u van deze ontdekking wilt uitsluiten. Alleen beschikbaar bij gebruik van Nmap 7+.';
+$GLOBALS["lang"]['Address'] = 'Ütaka';
 
-$GLOBALS["lang"]['Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = 'Alle UDP-poorten (coma gescheiden, geen spaties) die u van deze ontdekking wilt uitsluiten. Alleen beschikbaar bij gebruik van Nmap 7+.';
+$GLOBALS["lang"]['Address any nonconformities'] = 'Direkki jnani nekonformatsioonid (rev.';
 
-$GLOBALS["lang"]['Any additional documentation you need.'] = 'Alle aanvullende documentatie die u nodig heeft.';
+$GLOBALS["lang"]['Address audit findings and corrective actions'] = 'Direktaj new rezultoj kaj korektaj';
 
-$GLOBALS["lang"]['Any additional notes you care to make.'] = 'Alle extra aantekeningen die je wilt maken.';
+$GLOBALS["lang"]['Admin'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.'] = 'Alle apparaten worden toegewezen aan deze org wanneer ze hun auditscript uitvoeren (indien ingesteld). Links naar <code>orgs.id</code>.';
+$GLOBALS["lang"]['admin_status'] = '-';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.'] = 'Alle ontdekte apparaten zullen worden toegewezen aan deze locatie indien ingesteld. Links naar <code>locations.id</code>.';
+$GLOBALS["lang"]['Admin Status'] = '-';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.'] = 'Elke ontdekte apparaten zullen worden toegewezen aan deze locatie wanneer ze hun audit script (indien ingesteld) uitvoeren. Links naar <code>locations.id</code>.';
+$GLOBALS["lang"]['advanced'] = '(arba)';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.'] = 'Alle ontdekte apparaten worden toegewezen aan deze org indien ingesteld. Indien niet ingesteld, worden zij toegewezen aan de <code>org_id</code> van deze ontdekking. Links naar <code>orgs.id</code>.';
+$GLOBALS["lang"]['Advanced'] = '(arba)';
 
-$GLOBALS["lang"]['Any required filter. NOTE: When type = traffic, this represents the font-awesome icon.'] = 'Elk gewenst filter. OPMERKING: Wanneer type = verkeer, dit vertegenwoordigt het font-awesome pictogram.';
+$GLOBALS["lang"]['Afghanistan'] = 'Paa';
 
-$GLOBALS["lang"]['Any specific TCP ports you wish tested (comma seperated, no spaces).'] = 'Alle specifieke TCP-poorten die u wilt getest (coma gescheiden, geen spaties).';
+$GLOBALS["lang"]['After an Integration has been created, when you view the details of an Integration you will notice a field named Debug. This is set to no by default. Changing it to yes provides extra logging when an Integration is executed. Debug should not be left as yes. This is because the debug output will contain everything retrieved from external systems - including items such as WMI and SNMP credentials. The debug option should be used only when an issue has occurred and you wish to dig deeper in to see if you can determine why.'] = '(lt) (*) Tio estas La debug opcio devus esti uzita nur kiam temoazis kaj vi deziras fosi pli profunds en vidi Romârer atll';
 
-$GLOBALS["lang"]['Any specific UDP ports you wish tested (comma seperated, no spaces).'] = 'Alle specifieke UDP-poorten die u wilt getest (coma gescheiden, geen spaties).';
+$GLOBALS["lang"]['After completing the above, uninstall the agent.'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['Application'] = 'Toepassing';
+$GLOBALS["lang"]['Agent? Discovery? Credentials?'] = 'Ar yra kokių nors priežasčių, dėl kurių reikėtų imtis veiksmų?';
 
-$GLOBALS["lang"]['application_id'] = 'Programma-ID';
+$GLOBALS["lang"]['agents'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Application ID'] = 'Programma-ID';
+$GLOBALS["lang"]['Agents'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Application Licenses'] = 'Toepassingslicenties';
+$GLOBALS["lang"]['Agents entries can be created that specify a duration, a network and an operating system. If all tests match, the server then asks the agent to perform actions. If any test is not set, it is excluded from the <i>all must match</i> requirement.<br><br>You can create multiple agents and have the server check one or all agent entries. You might (for example) specify one agent that says <i>If the agent IP is in this subnet, set the location_id of the device</i>.<br><br>Another example might be not running an audit at all, rather download a script and run it. If the agent is installed with admin rights, you can now manage your machines without opening <strong>any</strong> ports from it to the world.</p><p>Enabling advanced agents means an agent can be instructed to download any file and execute any command. <strong>WARNING</strong>: This comes with security risks. This configuration will <strong>only</strong> function when running Open-AudIT using HTTPS and a valid (Certificate Authority provided) certificate for '] = 'Agentoj kontrolbouj povas esti kreitaj to o prezigas Tempoda transferon, Bendrijoje. Se iu testo ne estas metita, εi estas ekskludita estamp <i>Alternatyvūs</i> Bendrijoje<br/><br/>Vio povas krei florajn agentojn kaj havi la servilon kontroli unu vi eble (ezemen) prezigas unu agenton kiu diras <i>Se la agento IP estas en tu subreto, metis la loko _ id</i>Bendrijoje<br/><br/>Alia eczempo eble ne prizorgas residu entute, mieluummin el sortutas manikripton kaj prisorgas εin. L \'amministrazione dell\' informazione e receiver comunicazione <strong>(lt)</strong> Dan een pas de problemème. ·<p>Rajigo progresintaj respectionej editi regulukciita el apretuti ajnan dosieron kaj efetivigi ajnan kommundon. <strong>→ eventoj:</strong>:: Venas kun sekureco rissoj. Bendrijoje <strong>Bendrijoje</strong> funkcio dum prizorgado de Open- AudIT uzanta HTTPS kaj vala (sertifiteseerimisasus disponigigis) aestilon por </p>';
 
-$GLOBALS["lang"]['Application, Operating System or Hardware.'] = 'Toepassing, besturingssysteem of hardware.';
+$GLOBALS["lang"]['Aggressive'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['applications'] = 'Aanvragen';
+$GLOBALS["lang"]['Aland Islands'] = '(1)';
 
-$GLOBALS["lang"]['Applications'] = 'Aanvragen';
+$GLOBALS["lang"]['Albania'] = '-';
 
-$GLOBALS["lang"]['applied'] = 'Toegepast';
+$GLOBALS["lang"]['Albanian'] = '(1)';
 
-$GLOBALS["lang"]['Applied'] = 'Toegepast';
+$GLOBALS["lang"]['alert_style'] = 'Valutazione Bendrijoje';
 
-$GLOBALS["lang"]['Approved'] = 'Goedgekeurd';
+$GLOBALS["lang"]['Alert Style'] = 'Valutazione Bendrijoje';
 
-$GLOBALS["lang"]['April'] = 'april';
+$GLOBALS["lang"]['Algeria'] = '-';
 
-$GLOBALS["lang"]['architecture'] = 'Bouwkunde';
+$GLOBALS["lang"]['algorithm'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Architecture'] = 'Bouwkunde';
+$GLOBALS["lang"]['Algorithm'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Are you sure you want to delete this input item?'] = 'Weet u zeker dat u dit invoeritem wilt verwijderen?';
+$GLOBALS["lang"]['alias'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Are you sure you want to delete this output item?'] = 'Weet u zeker dat u dit item wilt verwijderen?';
+$GLOBALS["lang"]['Alias'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Are you sure? This will remove all queue entries and prevent the remaining IPs from being discovered.'] = 'Weet je het zeker? Dit zal alle wachtrij-items verwijderen en voorkomen dat de resterende IP\'s worden ontdekt.';
+$GLOBALS["lang"]['All'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Are you sure? This will reset the queue processing count and could cause load on the server.'] = 'Weet je het zeker? Dit zal het aantal wachtrijverwerkingen resetten en kan belasting op de server veroorzaken.';
+$GLOBALS["lang"]['All IPs'] = 'Alternatyvi';
 
-$GLOBALS["lang"]['area'] = 'Gebied';
+$GLOBALS["lang"]['All Policies'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Area'] = 'Gebied';
+$GLOBALS["lang"]['All Queued Items'] = 'и и и мур ннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннн ';
 
-$GLOBALS["lang"]['Argentina'] = 'Argentinië';
+$GLOBALS["lang"]['All collections URLs use the format'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['Armenia'] = 'Armenië';
+$GLOBALS["lang"]['All device sub-tables contain a couple of important columns.'] = ' Dan een pas de problemème. ·';
 
-$GLOBALS["lang"]['arp'] = 'Arp';
+$GLOBALS["lang"]['All devices with a type like computer.'] = '"Mezclaj aparatoj kun tipo new komputucio."';
 
-$GLOBALS["lang"]['Arp'] = 'Arp';
+$GLOBALS["lang"]['All devices with a type of computer or router.'] = 'Mina sontoiuja paratoj kun speco substance komputio epäilty ieneranto.';
 
-$GLOBALS["lang"]['Aruba'] = 'Aruba';
+$GLOBALS["lang"]['All devices without a type of switch and printer.'] = ' imitazione paratoj sen speco de galtilo kaj printilo.';
 
-$GLOBALS["lang"]['As per the attributes for device environments. Production, Training, et al.'] = 'Volgens de eigenschappen voor apparaatomgevingen. Productie, opleiding, et al.';
+$GLOBALS["lang"]['All devices without a type of switch and printer. Essentially the same as the above query.'] = ' imitazione paratoj sen speco de galtilo kaj printilo. -';
 
-$GLOBALS["lang"]['As you have Collectors registered, please choose where to execute this discovery.'] = 'Zoals je hebt Verzamelaars geregistreerd, kies dan waar deze ontdekking uit te voeren.';
+$GLOBALS["lang"]['All regular discovery options are also available for use in Device Seed Discoveries.'] = ' Imitujregulaij malkovroelektoj anka. estas hasblaj por uzo en Découvertes de semerce de periftérique.';
 
-$GLOBALS["lang"]['Ask me later'] = 'Vraag het me later.';
+$GLOBALS["lang"]['All tasks can be created the same in Windows and Linux. Tasks use the CRON method for scheduling execution.'] = ' Imitare i povas esti kreitaj la sama en Fenestroj kaj linukso. Taskoj uzas la cron- metodon por planado de ekzekuto.';
 
-$GLOBALS["lang"]['Ask the Community for help or contribute answers for others.'] = 'Vraag de Gemeenschap om hulp of geef anderen een antwoord.';
+$GLOBALS["lang"]['Along with this request for information, we send back to FirstWave datapoints that will give us some much needed information on feature use and your installation.'] = 'Kune kun tii peto por informatoj, ni sentas reen al new';
 
-$GLOBALS["lang"]['aspect_ratio'] = 'Verhouding';
+$GLOBALS["lang"]['Also can be created from the'] = '(lt)';
 
-$GLOBALS["lang"]['Aspect Ratio'] = 'Verhouding';
+$GLOBALS["lang"]['Alternatives'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Asset ID'] = 'Activa-ID';
+$GLOBALS["lang"]['Amazon AWS Fields'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['asset_ident'] = 'Identiteit vermogen';
+$GLOBALS["lang"]['American Samoa'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Asset Ident'] = 'Identiteit vermogen';
+$GLOBALS["lang"]['An Active Directory discovery will query Active Directory for a list of networks and scan the associated IPs just like a regular Subnet discovery.'] = 'Aktiva Adresartrova';
 
-$GLOBALS["lang"]['asset_number'] = 'Aantal activa';
+$GLOBALS["lang"]['An Org (organization) is the owner of most items in collections within Open-AudIT. With the exception of global items like <i>configuration</i>, most items are assigned to (owned by) an Org. A user has access to those items in a collection, that below to an Org the user has permission on.'] = 'Org (organizado) estas la preseanto de la plei utilej eroj en koletoj ene de Româopharm Kun la esepto respectutmondaj eroj kiel <i>(Indonesië)</i>La plej issuesaj eroj estas asignitaj al (podataj per) Uzanto havas al tiaj eroy en koleto, kiu malsupre al org la uzanto havas perceson sur.';
 
-$GLOBALS["lang"]['Asset Number'] = 'Aantal activa';
+$GLOBALS["lang"]['An application is actively accepting TCP connections, UDP datagrams or SCTP associations on this port. Finding these is often the primary goal of port scanning. Security-minded people know that each open port is an avenue for attack. Attackers and pen-testers want to exploit the open ports, while administrators try to close or protect them with firewalls without thwarting legitimate users. Open ports are also interesting for non-security scans because they show services available for use on the network.'] = 'Aplico akceptas TCP- ligojn, UDP- datembranmojn avis SCTP - unui Fluidojn sur tu hasno. Trevante tiujn wijzigttas la primara celosa de hasnoscanado. Sekureco- inklinaj hooj scias ke -Malferma hasno estas avenuo por atako. Atakoj kaj skribiloj volas ekspluati lamalfermajn hasnojn, dum adminnoj provas fermo a skepticus proteksi ilin kun fajromuroj sen malsukcesigado de legigmaj uzantoj. Malfermaj hanoj';
 
-$GLOBALS["lang"]['asset_tag'] = 'Waarde-tag';
+$GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = 'Bendrijoje <code>benchmarks.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['Asset Tag'] = 'Waarde-tag';
+$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = 'Bendrijoje <code>devices.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['Assign Device to Application'] = 'Apparaat toewijzen aan toepassing';
+$GLOBALS["lang"]['An array of object representing external links to more information.'] = 'Aro volgende objectkto reprezentanta eksterajn ligilojn al pli da informatoj.';
 
-$GLOBALS["lang"]['Assign Device to Cluster'] = 'Apparaat toewijzen aan Cluster';
+$GLOBALS["lang"]['An educated guess to the identity and type of device'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['Assign Device to Location'] = 'Apparaat toewijzen aan locatie';
+$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = 'JSON Bendrijoje <code>credentials.type</code>Bendrijoje';
 
-$GLOBALS["lang"]['Assign Device to Organisation'] = 'Apparaat toewijzen aan organisatie';
+$GLOBALS["lang"]['An enterprise private network is a network that a single organization builds to interconnect its office locations (e.g., production sites, head offices, remote offices, shops) so they can share computer resources.'] = 'Entreprena privata reto ces reto kiu ununura bioo comstruas por interligi siajn entricejlokojn (ekz., produktadejoj,... efsidjoj, malpeksimaj ';
 
-$GLOBALS["lang"]['Assign Devices to Location'] = 'Apparaten naar locatie toewijzen';
+$GLOBALS["lang"]['An entry can be created using the web interface if the current user logged in has a role that contains the'] = 'Eniro povas esti kreita uzante la interretinterfacon se la nuna uzanto requiredis en havason rol kiu enhavas';
 
-$GLOBALS["lang"]['Assign Devices to Organisation'] = 'Apparaten aan organisatie toewijzen';
+$GLOBALS["lang"]['An example JSON POST body is below. This should be attached to the &quot;data&quot; form item.'] = 'Egzemp, la korpo de JSON estas malsupre new. Tio devus esti alkorcaita al la "daten" formobjekto.';
 
-$GLOBALS["lang"]['Assign an Operator'] = 'Een exploitant toewijzen';
+$GLOBALS["lang"]['An example widget SQL showing devices counted per location.'] = 'Egzemplo vidin SQL Montranta afaratojn nombritaj eskloko.';
 
-$GLOBALS["lang"]['Assigned To'] = 'Aan';
+$GLOBALS["lang"]['An existing Open-AudIT user was authenticated and authorized by the LDAP server. Success.'] = '"Ekzisztanta" Fare de la LDAP- servilo. Bendrijoje';
 
-$GLOBALS["lang"]['At present we can use netstat_ports, software and users.'] = 'Momenteel kunnen we netstat_ports, software en gebruikers gebruiken.';
+$GLOBALS["lang"]['An indication of the level of service required by this site.'] = 'Indiko de la nivelo de řetunita postulita Bentrijoje.';
 
-$GLOBALS["lang"]['attached_device_id'] = 'Bijgevoegd apparaat-ID';
+$GLOBALS["lang"]['An internal field that indicates if the discovery has completed.'] = '(OL L 20 van 2015.177, blz. 42).';
 
-$GLOBALS["lang"]['Attached Device ID'] = 'Bijgevoegd apparaat-ID';
+$GLOBALS["lang"]['An open|filtered port is considered open (and will trigger device detection).<br>Previously, Open-AudIT considered an Nmap response of'] = 'Malfermita estas konsiderita malferma (kaj ellasos aparatodetekton).<br/>Bendrijoje';
 
-$GLOBALS["lang"]['attached_to'] = 'Verbonden aan';
+$GLOBALS["lang"]['An optional GeoCode'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Attached To'] = 'Verbonden aan';
+$GLOBALS["lang"]['An optional password to use sudo.'] = 'Šio straipsnio 1 dalyje nurodyti ';
 
-$GLOBALS["lang"]['attachment'] = 'Bijlage';
+$GLOBALS["lang"]['Analyzed'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Attachment'] = 'Bijlage';
+$GLOBALS["lang"]['And finally, click Submit to execute this discovery.'] = 'Finfinine Bendrijoje';
 
-$GLOBALS["lang"]['attachments'] = 'Bijlagen';
+$GLOBALS["lang"]['And if Something Goes Wrong?'] = 'Ar yra kokių nors problemų?';
 
-$GLOBALS["lang"]['Attachments'] = 'Bijlagen';
+$GLOBALS["lang"]['And lastly click <i>Submit</i> to create your Open-AudIT Auth method for Entra.'] = '- <i>Bendrijoje</i> - Metodon por Entra.';
 
-$GLOBALS["lang"]['attack_complexity'] = 'Aanvallen Complexiteit';
+$GLOBALS["lang"]['And lastly, not so much a security issue - more peace of mind. The data structures are open and documented. You can view them'] = '(1) - "arba" arba ". Bendrijoje';
 
-$GLOBALS["lang"]['Attack Complexity'] = 'Aanvallen Complexiteit';
+$GLOBALS["lang"]['And provide a name - we humbly recommend Open-AudIT &#128512;, but you can name it anything you like. Make sure the option for <i>Integrate any other application you do not find in the gallery (Non-gallery)</i> is selected. And then click <i>Create<i>.'] = 'Ni humile remomendas <i>Integrii ajnan Şaplika... su vi ne Trovas en la galerio (no- galerii)</i> Bendrijoje. Bendrijoje <i>Bendrijoje<i>Bendrijoje</i></i>';
 
-$GLOBALS["lang"]['attack_requirements'] = 'Aanvalsvereisten';
+$GLOBALS["lang"]['And so much more.'] = '-';
 
-$GLOBALS["lang"]['Attack Requirements'] = 'Aanvalsvereisten';
+$GLOBALS["lang"]['Andorra'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['attack_vector'] = 'Vector aanvallen';
+$GLOBALS["lang"]['Angola'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Attack Vector'] = 'Vector aanvallen';
+$GLOBALS["lang"]['Anguilla'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Attribute'] = 'Attribuut';
+$GLOBALS["lang"]['Annex A Controls'] = 'Aeksa.o';
 
-$GLOBALS["lang"]['attributes'] = 'Attributen';
+$GLOBALS["lang"]['Antarctica'] = '(*)';
 
-$GLOBALS["lang"]['Attributes'] = 'Attributen';
+$GLOBALS["lang"]['AntiVirus'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Audit'] = 'Controle';
+$GLOBALS["lang"]['AntiVirus Packages'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Audit AIX'] = 'Audit AIX';
+$GLOBALS["lang"]['Antigua and Barbuda'] = '-';
 
-$GLOBALS["lang"]['Audit ESXi'] = 'Audit ESXi';
+$GLOBALS["lang"]['Antivirus'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Audit Linux'] = 'Audit Linux';
+$GLOBALS["lang"]['Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = ' Vi deziras essludi nextiu eltrova. Nur habbla dum uzado de Nmap 7 +.';
 
-$GLOBALS["lang"]['audit_log'] = 'Auditlog';
+$GLOBALS["lang"]['Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = ' imitazione UDP- hasnoj (komma seperite, neniuj spacoj) vi deziras eskludi eskludi eskludu eltrova. Nur habbla dum uzado de Nmap 7 +.';
 
-$GLOBALS["lang"]['Audit Log'] = 'Auditlog';
+$GLOBALS["lang"]['Any additional documentation you need.'] = 'Imitatu ® dokumento, kiun vi bezonas.';
 
-$GLOBALS["lang"]['Audit My PC'] = 'Controleer mijn PC';
+$GLOBALS["lang"]['Any additional notes you care to make.'] = ' Dan een pas de problemème. ·';
 
-$GLOBALS["lang"]['Audit OSX'] = 'Audit OSX';
+$GLOBALS["lang"]['Any attributes followed by a * indicate that CVSS data less than v4 was used to complete this field. By default, we attempt to use v4 fields, however if they are not populated we will fallback to the previous version(s) for attributes.'] = ' Imituj ategottoj sekvitaj per deve.lte, ni nectuzi v4 kapampjn, aliflanke se ili ne estas lo ...';
 
-$GLOBALS["lang"]['Audit Result Input'] = 'Invoer auditresultaat';
+$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set).'] = 'Alternativaiuj paratoj estes asignitaj al tu Org kiam ili prizorgas sian reviziomanuskripton (Şaro).';
 
-$GLOBALS["lang"]['Audit Status'] = 'Controlestatus';
+$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.'] = 'Alternativaiuj paratoj estes asignitaj al tu Org kiam ili prizorgas sian reviziomanuskripton (Şaro). Bendrijoje <code>orgs.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['Audit Windows'] = 'Controlevensters';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.'] = ' ® s \'agit d\'un Å. europa.eu.int Bendrijoje <code>locations.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['Audit the Device'] = 'Controleer het apparaat';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set).'] = ' aparato estos asignitaj al tu loko kiam ili prizorgas sian revisziomanuskripton (Şaro).';
 
-$GLOBALS["lang"]['Audits'] = 'Controles';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.'] = ' aparato estos asignitaj al tu loko kiam ili prizorgas sian revisziomanuskripton (Şaro). Bendrijoje <code>locations.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['August'] = 'Augustus';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.'] = ' Zootechninių priedų kategorija. <code>org_id</code> Thomas. Bendrijoje <code>orgs.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['Australia'] = 'Australië';
+$GLOBALS["lang"]['Any files found in this manner are stored in the <i>executable</i> table as per any other device component.'] = 'Azonosító a los dosierojtrovitaj en tu manieros stokitaj en la <i>Ekzekuebla</i> Dar žinomas kaip aparato komponanto';
 
-$GLOBALS["lang"]['Austria'] = 'Oostenrijk';
+$GLOBALS["lang"]['Any required filter. NOTE: When type = traffic, this represents the font-awesome icon.'] = 'Ką? Kiam tipo = trafiko, tio reprezentas la tiparonas - fortan ikon.';
 
-$GLOBALS["lang"]['Auth'] = 'Auth';
+$GLOBALS["lang"]['Any specific TCP ports you wish tested (comma seperated, no spaces).'] = ' (komma seperite, neniuj spacoj).';
 
-$GLOBALS["lang"]['auth'] = 'Auth';
+$GLOBALS["lang"]['Any specific UDP ports you wish tested (comma seperated, no spaces).'] = ' imitaiuj spetifaj UDP- hasnoj vi deziras prestantan (komma seperita, neniuj spacoj).';
 
-$GLOBALS["lang"]['Authentication Passphrase'] = 'Authenticatie wachtwoordzin';
+$GLOBALS["lang"]['Any user uploaded images are placed here.'] = 'Mezcla uzanto al Bendrijoje';
 
-$GLOBALS["lang"]['authority_key_ident'] = 'Identificatiecode autoriteit';
+$GLOBALS["lang"]['Application'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Authority Key Ident'] = 'Identificatiecode autoriteit';
+$GLOBALS["lang"]['Application Definitions'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Auto'] = 'Auto';
+$GLOBALS["lang"]['application_id'] = 'Numero d\'identificazione ("Numero")';
 
-$GLOBALS["lang"]['auto_renew'] = 'Automatisch vernieuwen';
+$GLOBALS["lang"]['Application ID'] = 'Numero d\'identificazione ("Numero")';
 
-$GLOBALS["lang"]['Auto Renew'] = 'Automatisch vernieuwen';
+$GLOBALS["lang"]['Application Licenses'] = '(1)';
 
-$GLOBALS["lang"]['Auto populated by the Open-AudIT Server.'] = 'Automatisch bevolkt door de Open-AudIT Server.';
+$GLOBALS["lang"]['Application, Operating System or Hardware.'] = 'Apliki, Funkciigante sistema.';
 
-$GLOBALS["lang"]['AutoRenew'] = 'Automatisch vernieuwen';
+$GLOBALS["lang"]['applications'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['automatable'] = 'Automatisch';
+$GLOBALS["lang"]['Applications'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Automatable'] = 'Automatisch';
+$GLOBALS["lang"]['Applications are an Enterprise only feature.'] = 'Aplicoj estas Bendrijoje';
 
-$GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = 'Automatisch bevolkt op basis van de Verzamelaars OS.';
+$GLOBALS["lang"]['Applications are being introduced in Open-AudIT 2.2 with a view to expand on the concept as further development is made.'] = 'Aplicoj estas lanvisionitaj en Open- Bendrieoje _ BAR _ režisieriaus _ BAR _ 2,2 kun vido disetendi pilai en la koncepto kiam plia evolovo estas farita. _ BAR _';
 
-$GLOBALS["lang"]['availability'] = 'Beschikbaarheid';
+$GLOBALS["lang"]['applied'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Availability'] = 'Beschikbaarheid';
+$GLOBALS["lang"]['Applied'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Azerbaijan'] = 'Azerbeidzjan';
+$GLOBALS["lang"]['Approved'] = '-';
 
-$GLOBALS["lang"]['BTU Max'] = 'BTU Max';
+$GLOBALS["lang"]['Approved Packages'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['BTU Total'] = 'BTU Totaal';
+$GLOBALS["lang"]['April'] = '"J \'ai une"';
 
-$GLOBALS["lang"]['Backup'] = 'Reservekopie';
+$GLOBALS["lang"]['Arabic'] = '-';
 
-$GLOBALS["lang"]['Bahamas the'] = 'Bahama\'s';
+$GLOBALS["lang"]['architecture'] = '-';
 
-$GLOBALS["lang"]['Bahrain'] = 'Bahrein';
+$GLOBALS["lang"]['Architecture'] = '-';
 
-$GLOBALS["lang"]['Bangladesh'] = 'Bangladesh';
+$GLOBALS["lang"]['Are you sure you want to delete this input item?'] = 'Ar yra kokių nors problemų?';
 
-$GLOBALS["lang"]['bank'] = 'Bank';
+$GLOBALS["lang"]['Are you sure you want to delete this output item?'] = 'Ar tikrai?';
 
-$GLOBALS["lang"]['Bank'] = 'Bank';
+$GLOBALS["lang"]['Are you sure?'] = '-';
 
-$GLOBALS["lang"]['Banned'] = 'Verboden';
+$GLOBALS["lang"]['Are you sure? This will remove all queue entries and prevent the remaining IPs from being discovered.'] = '-';
 
-$GLOBALS["lang"]['bar_code'] = 'Barcode';
+$GLOBALS["lang"]['Are you sure? This will reset the queue processing count and could cause load on the server.'] = '- Tio rekomencos la atendoprentigokulkulon kaj povis kaizi родельно в';
 
-$GLOBALS["lang"]['Bar Code'] = 'Barcode';
+$GLOBALS["lang"]['area'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Barbados'] = 'Barbados';
+$GLOBALS["lang"]['Area'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Base DN'] = 'Basis-DN';
+$GLOBALS["lang"]['Argentina'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['base_score'] = 'Basisscore';
+$GLOBALS["lang"]['Armenia'] = 'Ar tikrai?';
 
-$GLOBALS["lang"]['Base Score'] = 'Basisscore';
+$GLOBALS["lang"]['arp'] = '-';
 
-$GLOBALS["lang"]['base_severity'] = 'Basisafscheiding';
+$GLOBALS["lang"]['Arp'] = '-';
 
-$GLOBALS["lang"]['Base Severity'] = 'Basisafscheiding';
+$GLOBALS["lang"]['Aruba'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['based_on'] = 'Gebaseerd op';
+$GLOBALS["lang"]['As a reminder of how authorisations works in Open-AudIT, see'] = 'Kielilo de kieli avoboj funkcias en nexe';
 
-$GLOBALS["lang"]['Based On'] = 'Gebaseerd op';
+$GLOBALS["lang"]['As a result, we <strong>must</strong> have the admin$ share available to the discovery credentials user. Please check the target Windows machine provides <i>write</i> access for the discovery credentials user.<br>'] = 'Kylis Rezulto, Rev. <strong>Bendrijoje</strong> Havas la parton de la admin hasbla al latrova.o akredita uoj uzanto rev. "Bonvolu kontroli" - marajeino provizas <i>SKRBI (®)</i> Bendrijoje:<br/>';
 
-$GLOBALS["lang"]['baseline'] = 'Baseline';
+$GLOBALS["lang"]['As mentioned above, the developers do not speak all the translation languages offered. This means we cannot review with acuracy, the translated text. We do try for a cursory review. If you see something that is not translated correctly, you can change it yourself. Edit the appropriate language file (as below) and find the text to be changed. Maybe it does not exist and you need to add it. Just change the text, save the file and refresh your we page. No need to restart any services/daemons for it to take effect. You might need to force refresh your browser.'] = 'Kiel menciite supre, Româprogrammistoj ne parolas ciujn traduklingvojn ofertitajn. Tio signfas ke ni ne povas revizii kun acuracy, new tradukita teksto. Titulas: Haji. Se Vidas ioni kiu ne estas tradukita εuste, vi povas раваннои otедение mem. ka la konvena lingvodosiero (kiel malsupre) kajtrovas la tekstton etiikoan. Eble εi ne ekistas kaj vi murs aldoni Neniu bezono reklomenci jojn servojn / daemon por εi por ekovalidi. Vi eble bezonos Bendrijoje';
 
-$GLOBALS["lang"]['Baseline'] = 'Baseline';
+$GLOBALS["lang"]['As per the OpenSCAP benchmarks - <i>Do not attempt to implement any of the settings in this benchmark without first testing them in a non-operational environment. The creators of this benchmark assume no responsibility whatsoever for its use by other parties, and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.</i><br><br>Seriously, do not blindly start <i>fixing</i> issues revealed after running a benchmark without first thoroughly testing in a non-production, identical environment.'] = '- <i>Véliésente efetivigi jojn ajn da la valoroj en tu kompnormo sen uua testado de ili en ne- funkcia medio. La kreinoj de aliasj partioj, kaj faras neniujn garantiojn, esprimitajn a Kaptlus implitsiitaj, koncerne εian kvaliton, fidindecon, alias karritsaon.</i><br/><br/>Bendrijoje <i>Bendrijoje</i> Temoj Ridelis Neeproduktado, identa Medio.';
 
-$GLOBALS["lang"]['baseline_id'] = 'Basis ID';
+$GLOBALS["lang"]['As per the attributes for device environments. Production, Training, et al.'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Baseline ID'] = 'Basis ID';
+$GLOBALS["lang"]['As the audit script uses bash, you can use the wildcard of * when you are defining directories and exclusions.'] = 'Identificcar la reviziomanuskripto uzas lardon, vi povas uzi la sava Progressiivenen karton de. kiam vi divinas adresarojn kaj eksludojn.';
 
-$GLOBALS["lang"]['baselines'] = 'Baseline';
+$GLOBALS["lang"]['As usual, go to menu → Manage → Integrations → Create Integration. As above, if you are running on Linux and you have NMIS on the same server, you do not need to do anything other than click <i>Submit</i>. I cannot make it easier than that.'] = 'Kiel kutime, iru al menuo → Manaεo → Integri Sevi kuras sur Linukson kaj vi havas NMIS sur la sama servilo, vi ne bezonas fari ioni ajn krom klako. <i>Bendrijoje</i>® ® ® ® ® L \'objectif est de faire en sorte que l\' utilizazione de l \'eau ® puisse être diplomerée comme une source d\'ënergie.';
 
-$GLOBALS["lang"]['Baselines'] = 'Baseline';
+$GLOBALS["lang"]['As we run Discoveries and collect device results we populate the list of networks. The Blessed Subnets feature uses this list of networks to only accept data from devices on those networks.'] = 'Azonosító Eltrova La Beauto Subnets trajto utilogas tiun Lister de retoj por nur aksepti datenojn de afaratoj sur tiaj retoj.';
 
-$GLOBALS["lang"]['baselines_policies'] = 'Basisbeleid';
+$GLOBALS["lang"]['As you have Collectors registered, please choose where to execute this discovery.'] = 'Kiel vi havas kolektantojn registeritaj, bonvolu elektrokie efektivigi tiun eltrova.';
 
-$GLOBALS["lang"]['Baselines Policies'] = 'Basisbeleid';
+$GLOBALS["lang"]['Ask me later'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Baselines Policy'] = 'Basisbeleid';
+$GLOBALS["lang"]['Ask the Community for help or contribute answers for others.'] = '"I"';
 
-$GLOBALS["lang"]['Baselines Policy Details'] = 'Basislijn Beleidsgegevens';
+$GLOBALS["lang"]['aspect_ratio'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['baselines_results'] = 'Resultaten';
+$GLOBALS["lang"]['Aspect Ratio'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Baselines Results'] = 'Resultaten';
+$GLOBALS["lang"]['Asset ID'] = '-';
 
-$GLOBALS["lang"]['Basic'] = 'Basis';
+$GLOBALS["lang"]['asset_ident'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Belarus'] = 'Belarus';
+$GLOBALS["lang"]['Asset Ident'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Belgium'] = 'België';
+$GLOBALS["lang"]['asset_number'] = 'Número de režisierė';
 
-$GLOBALS["lang"]['Belize'] = 'Belize';
+$GLOBALS["lang"]['Asset Number'] = 'Número de režisierė';
 
-$GLOBALS["lang"]['Benchmark'] = 'benchmark';
+$GLOBALS["lang"]['asset_tag'] = 'C \'è Hiljaa ®';
 
-$GLOBALS["lang"]['benchmark_id'] = 'Benchmark ID';
+$GLOBALS["lang"]['Asset Tag'] = 'C \'è Hiljaa ®';
 
-$GLOBALS["lang"]['Benchmark ID'] = 'Benchmark ID';
+$GLOBALS["lang"]['Assign Device to Application'] = '-';
 
-$GLOBALS["lang"]['benchmarks'] = 'Benchmark';
+$GLOBALS["lang"]['Assign Device to Cluster'] = '-';
 
-$GLOBALS["lang"]['Benchmarks'] = 'Benchmark';
+$GLOBALS["lang"]['Assign Device to Location'] = '-';
 
-$GLOBALS["lang"]['benchmarks_exceptions'] = 'Uitzonderingen op benchmarks';
+$GLOBALS["lang"]['Assign Device to Organisation'] = '-';
 
-$GLOBALS["lang"]['Benchmarks Exceptions'] = 'Uitzonderingen op benchmarks';
+$GLOBALS["lang"]['Assign Devices to Location'] = 'Aparatoj';
 
-$GLOBALS["lang"]['benchmarks_log'] = 'Benchmarklog';
+$GLOBALS["lang"]['Assign Devices to Organisation'] = 'Assignaj aparatoj egyorgano';
 
-$GLOBALS["lang"]['Benchmarks Log'] = 'Benchmarklog';
+$GLOBALS["lang"]['Assign an ISMS manager or team'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['benchmarks_policies'] = 'Benchmarksbeleid';
+$GLOBALS["lang"]['Assign an Operator'] = 'Supa maldekstra butono [..] estas por [juria roja] por [Sendi].';
 
-$GLOBALS["lang"]['Benchmarks Policies'] = 'Benchmarksbeleid';
+$GLOBALS["lang"]['Assign any audited devices to this Org. Leave blank to leave device in currently assigned Org (or to set default).'] = 'Asigu jujn ajn revizitaján aparato al tu Org. Forlasa.o por forlasi aparaton en nuntempe asignita Org (kahtlus por meti defa.lton).';
 
-$GLOBALS["lang"]['benchmarks_result'] = 'Resultaat benchmarks';
+$GLOBALS["lang"]['Assign the Device to a Location'] = 'Sous-secteur';
 
-$GLOBALS["lang"]['Benchmarks Result'] = 'Resultaat benchmarks';
+$GLOBALS["lang"]['Assign the device to an Org'] = '-';
 
-$GLOBALS["lang"]['Benin'] = 'Benin';
+$GLOBALS["lang"]['Assigned To'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Bermuda'] = 'Bermuda';
+$GLOBALS["lang"]['Assigning Discovered Devices'] = 'Agordante Malkovritajn';
 
-$GLOBALS["lang"]['best_practises'] = 'Beste oefeningen';
+$GLOBALS["lang"]['At present we can use netstat_ports, software and users.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['Best Practises'] = 'Beste oefeningen';
+$GLOBALS["lang"]['attached_device_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Bhutan'] = 'Bhutan';
+$GLOBALS["lang"]['Attached Device ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['bios'] = 'Bios';
+$GLOBALS["lang"]['attached_to'] = 'Alcrovolvita®.';
 
-$GLOBALS["lang"]['Bios'] = 'Bios';
+$GLOBALS["lang"]['Attached To'] = 'Alcrovolvita®.';
 
-$GLOBALS["lang"]['body'] = 'Lichaam';
+$GLOBALS["lang"]['attachment'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Body'] = 'Lichaam';
+$GLOBALS["lang"]['Attachment'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Bolivia'] = 'Bolivia';
+$GLOBALS["lang"]['attachments'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Boolean'] = 'Booleaans';
+$GLOBALS["lang"]['Attachments'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Boolean 1/0'] = 'Booleaans 1/0';
+$GLOBALS["lang"]['attack_complexity'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Boolean y/n'] = 'Boolean y/n';
+$GLOBALS["lang"]['Attack Complexity'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['boot_device'] = 'Opstartapparaat';
+$GLOBALS["lang"]['attack_requirements'] = '-';
 
-$GLOBALS["lang"]['Boot Device'] = 'Opstartapparaat';
+$GLOBALS["lang"]['Attack Requirements'] = '-';
 
-$GLOBALS["lang"]['bootable'] = 'Opstartbaar';
+$GLOBALS["lang"]['attack_vector'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Bootable'] = 'Opstartbaar';
+$GLOBALS["lang"]['Attack Vector'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Bosnia and Herzegovina'] = 'Bosnië en Herzegovina';
+$GLOBALS["lang"]['Attempt to ping the device if we are not auditing localhost.'] = '® ® ® ® ® aparaton se ne revizias lokanhost.';
 
-$GLOBALS["lang"]['Botswana'] = 'Botswana';
+$GLOBALS["lang"]['Attribute'] = '"Hozzájárulás"';
 
-$GLOBALS["lang"]['Bouvet Island (Bouvetoya)'] = 'Bouvet Island (Bouvetoya)';
+$GLOBALS["lang"]['attributes'] = '"Hozzájárulás"';
 
-$GLOBALS["lang"]['Brazil'] = 'Brazilië';
+$GLOBALS["lang"]['Attributes'] = '"Hozzájárulás"';
 
-$GLOBALS["lang"]['Brazilian Portuguese'] = 'Braziliaans Portugees';
+$GLOBALS["lang"]['Attributes are stored for Open-AudIT to use for particular fields, at present all fields are based on the devices, locations, orgs and queries tables. The attributes you can edit are associated with the following columns: Class, Environment, Status & Type.'] = 'Atributoy estas stokitaj por Bendrieoje - Indonesië Klaso (Klaso) "Estado" "Tipo"';
 
-$GLOBALS["lang"]['British Indian Ocean Territory (Chagos Archipelago)'] = 'Brits gebied in de Indische Oceaan (Chagos Archipel)';
+$GLOBALS["lang"]['Audit'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['British Virgin Islands'] = 'Britse Maagdeneilanden';
+$GLOBALS["lang"]['Audit AIX'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Brunei Darussalam'] = 'Brunei Darussalam';
+$GLOBALS["lang"]['Audit DNS'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['btu_max'] = 'Btu Max';
+$GLOBALS["lang"]['Audit ESXi'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Btu Max'] = 'Btu Max';
+$GLOBALS["lang"]['Audit Linux'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['btu_total'] = 'Btu Totaal';
+$GLOBALS["lang"]['audit_log'] = 'Ütaka';
 
-$GLOBALS["lang"]['Btu Total'] = 'Btu Totaal';
+$GLOBALS["lang"]['Audit Log'] = 'Ütaka';
 
-$GLOBALS["lang"]['build_number'] = 'Bouwnummer';
+$GLOBALS["lang"]['Audit Mount Point'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Build Number'] = 'Bouwnummer';
+$GLOBALS["lang"]['Audit My PC'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['build_number_full'] = 'Bouwnummer vol';
+$GLOBALS["lang"]['Audit Netstat'] = '-';
 
-$GLOBALS["lang"]['Build Number Full'] = 'Bouwnummer vol';
+$GLOBALS["lang"]['Audit OSX'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Building'] = 'Gebouw';
+$GLOBALS["lang"]['Audit Result Input'] = '"Comprobación"';
 
-$GLOBALS["lang"]['Bulgaria'] = 'Bulgarije';
+$GLOBALS["lang"]['Audit Software'] = 'Kahtlustius';
 
-$GLOBALS["lang"]['Bulk Edit'] = 'Bewerken in bulk';
+$GLOBALS["lang"]['Audit Status'] = 'Szobroktavia';
 
-$GLOBALS["lang"]['Bulk Editing Device Attributes'] = 'Apparaatattributen bewerken in bulk';
+$GLOBALS["lang"]['Audit Win32 Product'] = 'Realisatie';
 
-$GLOBALS["lang"]['Burkina Faso'] = 'Burkina Faso';
+$GLOBALS["lang"]['Audit Windows'] = '-';
 
-$GLOBALS["lang"]['Burundi'] = 'Burundi';
+$GLOBALS["lang"]['Audit the Device'] = 'Aεdi la Appareil, Bendrijoje';
 
-$GLOBALS["lang"]['business_requirements'] = 'Bedrijfsvereisten';
+$GLOBALS["lang"]['Audits'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Business Requirements'] = 'Bedrijfsvereisten';
+$GLOBALS["lang"]['August'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Buy'] = 'Kopen';
+$GLOBALS["lang"]['Australia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Buy More'] = 'Koop meer';
+$GLOBALS["lang"]['Austria'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Buy More Licenses'] = 'Koop meer licenties';
+$GLOBALS["lang"]['Auth'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['By'] = 'Door';
+$GLOBALS["lang"]['auth'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['CIDR'] = 'CIDR';
+$GLOBALS["lang"]['Auth Methods'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['CIDR Mask'] = 'CIDR Masker';
+$GLOBALS["lang"]['Authenticate only'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['cli_config'] = 'CLI Configureren';
+$GLOBALS["lang"]['Authentication Passphrase'] = 'Parolifraas (Parolifraas Σ Kaptlustatuse)';
 
-$GLOBALS["lang"]['CLI Config'] = 'CLI Configureren';
+$GLOBALS["lang"]['Authentication Protocol'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['CPU'] = 'CPU';
+$GLOBALS["lang"]['authority_key_ident'] = '-';
 
-$GLOBALS["lang"]['CPUs'] = 'CPU\'s';
+$GLOBALS["lang"]['Authority Key Ident'] = '-';
 
-$GLOBALS["lang"]['CSV'] = 'CSV';
+$GLOBALS["lang"]['Auto'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['CVE'] = 'CVE';
+$GLOBALS["lang"]['auto_renew'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Calculated from discovery.'] = 'Berekend door ontdekking.';
+$GLOBALS["lang"]['Auto Renew'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Calculated total number of valid IP addresses for this network.'] = 'Berekend totaal aantal geldige IP-adressen voor dit netwerk.';
+$GLOBALS["lang"]['Auto populated by the Open-AudIT Server.'] = 'Kaphlustus lo bendita tariffe de la open- Bendrieoje.';
 
-$GLOBALS["lang"]['Calculated upon completion, the time taken to execute this item.'] = 'Berekend na voltooiing, de tijd die nodig is om dit item uit te voeren.';
+$GLOBALS["lang"]['AutoRenew'] = 'Kahtlustuttorekronstri Bendrijoje';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = 'Berekend wanneer integratie wordt uitgevoerd en bevat een JSON weergave van de apparaten in deze integratie. Elke links naar <code>devices.id</code>.';
+$GLOBALS["lang"]['automatable'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = 'Berekend wanneer integratie wordt uitgevoerd en bevat een JSON weergave van de locaties in deze integratie. Elke links naar <code>locations.id</code>.';
+$GLOBALS["lang"]['Automatable'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected from Open-AudIT.'] = 'Berekend wanneer integratie wordt uitgevoerd en bevat het aantal apparaten geselecteerd uit Open-AudIT.';
+$GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = 'Epäilty...';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected the external system.'] = 'Berekend wanneer integratie wordt uitgevoerd en bevat het aantal apparaten geselecteerd het externe systeem.';
+$GLOBALS["lang"]['availability'] = '·';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices to be updated in the external system.'] = 'Berekend wanneer integratie wordt uitgevoerd en bevat het aantal apparaten dat in het externe systeem moet worden bijgewerkt.';
+$GLOBALS["lang"]['Availability'] = '·';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices updated in Open-AudIT.'] = 'Berekend wanneer integratie wordt uitgevoerd en bevat het aantal apparaten bijgewerkt in Open-AudIT.';
+$GLOBALS["lang"]['Available Benchmarks'] = '-';
 
-$GLOBALS["lang"]['Cambodia'] = 'Cambodja';
+$GLOBALS["lang"]['Awaiting Analysis'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Cameroon'] = 'Kameroen';
+$GLOBALS["lang"]['Azerbaijan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Campus Area Network'] = 'Netwerk campusgebied';
+$GLOBALS["lang"]['Azerbaijani'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code> or blank.'] = 'Kan <code>active</code>, <code>passive</code> of leeg.';
+$GLOBALS["lang"]['Azure Active Directory'] = 'Azure Aktiva Bendrijoje';
 
-$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.'] = 'Kan <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> of leeg.';
+$GLOBALS["lang"]['BTU Max'] = 'RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT RT';
 
-$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.'] = 'Kan <code>auto</code>, <code>fixed</code>, <code>other</code> of leeg.';
+$GLOBALS["lang"]['BTU Total'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.'] = 'Kan <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> of leeg.';
+$GLOBALS["lang"]['Backbone network'] = '-';
 
-$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.'] = 'Kan <code>line</code>, <code>pie</code> of <code>traffic</code>.';
+$GLOBALS["lang"]['Backup'] = '-';
 
-$GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = 'Kan <code>user</code> of <code>collector</code>.';
+$GLOBALS["lang"]['Bahamas the'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Can be set by discovery or user.'] = 'Kan ingesteld worden door ontdekking of gebruiker.';
+$GLOBALS["lang"]['Bahrain'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Can be set by discovery or user. Uses the ID from the locations table.'] = 'Kan ingesteld worden door ontdekking of gebruiker. Gebruikt de ID van de locatietabel.';
+$GLOBALS["lang"]['Bangladesh'] = 'Bunglade bloggero Bendrijoje';
 
-$GLOBALS["lang"]['Can the user edit this item.'] = 'Kan de gebruiker dit item bewerken.';
+$GLOBALS["lang"]['bank'] = '(rem)';
 
-$GLOBALS["lang"]['Canada'] = 'Canada';
+$GLOBALS["lang"]['Bank'] = '(rem)';
 
-$GLOBALS["lang"]['Cancel'] = 'Annuleren';
+$GLOBALS["lang"]['Banned'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['capabilities'] = 'Mogelijkheden';
+$GLOBALS["lang"]['Banned Packages'] = 'Paquetes restribidos, Bendrijoje';
 
-$GLOBALS["lang"]['Capabilities'] = 'Mogelijkheden';
+$GLOBALS["lang"]['bar_code'] = 'Códigogagen';
 
-$GLOBALS["lang"]['Capacity'] = 'Capaciteit';
+$GLOBALS["lang"]['Bar Code'] = 'Códigogagen';
 
-$GLOBALS["lang"]['Cape Verde'] = 'Kaapverdië';
+$GLOBALS["lang"]['Barbados'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Capitalise'] = 'Kapitalisatie';
+$GLOBALS["lang"]['Base DN'] = 'DN';
 
-$GLOBALS["lang"]['caption'] = 'Titel';
+$GLOBALS["lang"]['base_score'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Caption'] = 'Titel';
+$GLOBALS["lang"]['Base Score'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Cayman Islands'] = 'Kaaimaneilanden';
+$GLOBALS["lang"]['base_severity'] = '"Sévérité"';
 
-$GLOBALS["lang"]['Cellular Details'] = 'Cellulaire details';
+$GLOBALS["lang"]['Base Severity'] = '"Sévérité"';
 
-$GLOBALS["lang"]['Central African Republic'] = 'Centraal-Afrikaanse Republiek';
+$GLOBALS["lang"]['based_on'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['certificate'] = 'Certificaat';
+$GLOBALS["lang"]['Based On'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Certificate'] = 'Certificaat';
+$GLOBALS["lang"]['baseline'] = '(1)';
 
-$GLOBALS["lang"]['certificate_file'] = 'Certificaatbestand';
+$GLOBALS["lang"]['Baseline'] = '(1)';
 
-$GLOBALS["lang"]['Certificate File'] = 'Certificaatbestand';
+$GLOBALS["lang"]['baseline_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['certificate_name'] = 'Naam certificaat';
+$GLOBALS["lang"]['Baseline ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Certificate Name'] = 'Naam certificaat';
+$GLOBALS["lang"]['baselines'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['certificates'] = 'Certificaten';
+$GLOBALS["lang"]['Baselines'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Certificates'] = 'Certificaten';
+$GLOBALS["lang"]['baselines_policies'] = 'Bazlinioi Politkoi, Bendrijoje';
 
-$GLOBALS["lang"]['Chad'] = 'Tsjaad';
+$GLOBALS["lang"]['Baselines Policies'] = 'Bazlinioi Politkoi, Bendrijoje';
 
-$GLOBALS["lang"]['change_id'] = 'ID wijzigen';
+$GLOBALS["lang"]['Baselines Policy'] = 'Bazoj Politik, arba';
 
-$GLOBALS["lang"]['Change ID'] = 'ID wijzigen';
+$GLOBALS["lang"]['Baselines Policy Details'] = 'Bazlinio- Politija- Detaloj';
 
-$GLOBALS["lang"]['change_log'] = 'Logboek wijzigen';
+$GLOBALS["lang"]['baselines_results'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Change Log'] = 'Logboek wijzigen';
+$GLOBALS["lang"]['Baselines Results'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['change_type'] = 'Type wijzigen';
+$GLOBALS["lang"]['Baselines can compare netstat ports, users and software.'] = 'Bazlinioj povas kompari need hasnojn, uzantojn kaj softvaron.';
 
-$GLOBALS["lang"]['Change Type'] = 'Type wijzigen';
+$GLOBALS["lang"]['Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.'] = 'Bazlinioj rajtigas vin kombini reviziodatenojn kun aro de atencijj kiuj vi ů';
 
-$GLOBALS["lang"]['check_minutes'] = 'Minuten controleren';
+$GLOBALS["lang"]['Baselines for Device Comparison'] = 'Bazlinioi Bendrijoje';
 
-$GLOBALS["lang"]['Check Minutes'] = 'Minuten controleren';
+$GLOBALS["lang"]['Basic'] = '® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ®';
 
-$GLOBALS["lang"]['Check for SSH on these ports'] = 'Controleren op SSH op deze poorten';
+$GLOBALS["lang"]['Basque'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Check this port for any SSH service.'] = 'Controleer deze poort voor elke SSH service.';
+$GLOBALS["lang"]['Because we try to be as transparent as possible, here is your actual data that we send.'] = 'Identificcar ni edusesti tien travideblaj kiel eblaj - Tie estas viaj faktaj datenoj kiujn ni sentas.';
 
-$GLOBALS["lang"]['Chile'] = 'Chili';
+$GLOBALS["lang"]['Being able to determine which machines are configured in the same way is a major part of systems administration and auditing – and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br><br>For auditing and management purposes it can be advantageous to baseline individual devices against a fixed, known good device. Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.'] = '® ® openmi kiuj ma apreinoj estas formitaj la epäillyn la samanieron estas grava parto de Româamministrativiio kaj revizio. "Supply" La produktado de tiuj efekkivigitaj bazlinioj estas hasbla por interretspektado, rev.<br/><br/>Por reviziado kaj administrateceloj εi pova esti pava al bazlino begalalduaj aparato kontrakonfiksa, konata bona aparato. Bazlinioj rajtigas vin kombini reviziodatenojn kun aro de atencijj kiuj vi ů';
 
-$GLOBALS["lang"]['China'] = 'China';
+$GLOBALS["lang"]['Belarus'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Choose'] = 'Kies';
+$GLOBALS["lang"]['Belgium'] = ' ';
 
-$GLOBALS["lang"]['Choose (select OS first)'] = 'Kies (selecteer OS eerst)';
+$GLOBALS["lang"]['Belize'] = ' ';
 
-$GLOBALS["lang"]['Choose a Device'] = 'Een apparaat kiezen';
+$GLOBALS["lang"]['Below is an example of the required csv format.'] = 'Malsupre estas eczempo de la postulata csv new.';
 
-$GLOBALS["lang"]['Choose a Table'] = 'Kies een tabel';
+$GLOBALS["lang"]['Below these lines are where the variables are injected into the script. Following on from our earlier example, the Linux audit script is populated with our directory like so'] = '"Slaugytojai" Sekante de nia pli frua eksemplo, ů Linukso- revizia manikripto estas lo innovdorita kun nia adresaro kiel';
 
-$GLOBALS["lang"]['Christmas Island'] = 'Christmas Island';
+$GLOBALS["lang"]['Below you can see an example Org Chart. If a user has permission on the <i>Finance A</i> Org, they also have permission on the descendant Orgs of Dept A, B & C. This is regardless of the collection requested.<br><br>If the collection requested allows ascendants, then the user will also have access to Company #1 and Default Org items. This is for (as above) queries, groups, et al.<br><br>Note - A user may have access to a query from Default Org, but that is the query itself not the result. The result will only show devices that the user has access to - IE devices from Finance A and Dept A, B & C.'] = 'Malsupre vi povas vidi ekzemplon Organigramma. Bendrijoje <i>Bendrijoje</i> C \'è l\' est qui? Haves perfeson sur la posteulo. "A" C Bendrijoje<br/><br/>Se la kolkto petis permes aspintojn, tiam la uzanto anka epäilty havos alyron al soro 1 kaj Oletus org erojn. Tio estas por (kiel supree) quacestoj, grupoj atl.<br/><br/>Bendrijoje: _ BAR _ uzanto povas havi alron al demando de alapértelmezett _ BAR _ Org rėm seditio estas la atendo mem ne la rezulto. La rezulto nur montras aparato kiujn la uzanto havas aliro al - IE aparatoj de tavia Bendrijoje';
 
-$GLOBALS["lang"]['cidr'] = 'Cidr';
+$GLOBALS["lang"]['Benchmark'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Cidr'] = 'Cidr';
+$GLOBALS["lang"]['benchmark_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['circuit_count'] = 'Aantal circuits';
+$GLOBALS["lang"]['Benchmark ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Circuit Count'] = 'Aantal circuits';
+$GLOBALS["lang"]['Benchmark Tasks are created automatically when a benchmark is created.'] = 'Vőrdlusalus Estas kreita un kiam kompnormo limité estas kreita.';
 
-$GLOBALS["lang"]['circuit_status'] = 'Circuitstatus';
+$GLOBALS["lang"]['Benchmark execution and processing can take a lengthy amount of time, hence the preference to schedule them and not run them ad-hoc.'] = 'Bendrijos teisės aktai, susiję su žemės ūkio produktų perdirbimu ir perdirbimu';
 
-$GLOBALS["lang"]['Circuit Status'] = 'Circuitstatus';
+$GLOBALS["lang"]['benchmarks'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['city'] = 'Stad';
+$GLOBALS["lang"]['Benchmarks'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['City'] = 'Stad';
+$GLOBALS["lang"]['benchmarks_exceptions'] = 'Vördlusaluse Eseptij';
 
-$GLOBALS["lang"]['class'] = 'Klasse';
+$GLOBALS["lang"]['Benchmarks Exceptions'] = 'Vördlusaluse Eseptij';
 
-$GLOBALS["lang"]['Class'] = 'Klasse';
+$GLOBALS["lang"]['benchmarks_log'] = '"Vördlus e"';
 
-$GLOBALS["lang"]['class_text'] = 'Klassetekst';
+$GLOBALS["lang"]['Benchmarks Log'] = '"Vördlus e"';
 
-$GLOBALS["lang"]['Class Text'] = 'Klassetekst';
+$GLOBALS["lang"]['benchmarks_policies'] = 'Kriteerid Politkoj';
 
-$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = 'Klik op de knop Verwijderen om de voorbeeldapparaten uit Open-AudIT te verwijderen.<br/>Dit zal de onderstaande apparaten uit de database verwijderen. ';
+$GLOBALS["lang"]['Benchmarks Policies'] = 'Kriteerid Politkoj';
 
-$GLOBALS["lang"]['Click the Import button below to populate Open-AudIT with example device data.'] = 'Klik op de knop Importeren om Open-AudIT te vullen met voorbeeldapparaatgegevens.';
+$GLOBALS["lang"]['benchmarks_result'] = '-';
 
-$GLOBALS["lang"]['Client ID'] = 'Client-ID';
+$GLOBALS["lang"]['Benchmarks Result'] = '-';
 
-$GLOBALS["lang"]['client_ident'] = 'Client Ident';
+$GLOBALS["lang"]['Benchmarks are created by providing an operating system and Version, combined with a specific guide and a list of machines to execute it upon. After creation, benchmarks are executed against the list of machines on a schedule.'] = 'Vrlusalosed estas kreita disporigante opéracion kaj versione, Kombinita kun specia gvidisto kaj lista esta apretinj porvigi εin sur. ® ® kreco, komparnormoj estas efetivititaj kontrola.la lista de ma apreinoj en horaro.';
 
-$GLOBALS["lang"]['Client Ident'] = 'Client Ident';
+$GLOBALS["lang"]['Benchmarks for Best Practise Configuration'] = 'Vördlusalused Bendrijoje';
 
-$GLOBALS["lang"]['client_secret'] = 'Client Secret';
+$GLOBALS["lang"]['Benchmarks provide security recommendations for your computers, utilising the OpenSCAP tools and policies.</p><p><i>From the OpenSCAP homepage:</i>  In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.'] = 'Vrdlusaloused disposigas secuperekomendojn por viaj komputiloj equiutilante la OpenSCAP- ilojn kaj politikojn.<p><i>Hejmpaεo:</i> Šio straipsnio 1 ir 2 dalyse nurodyti  ® OpenSCAP ekositemo disposigas iljn kattaitajn politikojn por rafa, kostika kaj freksebla efektivigo de tiaj proceszoj.</p>';
 
-$GLOBALS["lang"]['Client Secret'] = 'Client Secret';
+$GLOBALS["lang"]['Benefits'] = '†';
 
-$GLOBALS["lang"]['client_site_name'] = 'Naam van client-site';
+$GLOBALS["lang"]['Bengali'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Client Site Name'] = 'Naam van client-site';
+$GLOBALS["lang"]['Benin'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Close'] = 'Sluiten';
+$GLOBALS["lang"]['Bermuda'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Cloud'] = 'Wolk';
+$GLOBALS["lang"]['best_practises'] = 'Plej bona-harjoitukset (Plej bona-harjoitukset)';
 
-$GLOBALS["lang"]['Cloud Details'] = 'Clouddetails';
+$GLOBALS["lang"]['Best Practises'] = 'Plej bona-harjoitukset (Plej bona-harjoitukset)';
 
-$GLOBALS["lang"]['Cloud Discovery'] = 'Cloud Discovery';
+$GLOBALS["lang"]['Bhutan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['cloud_id'] = 'Cloud-ID';
+$GLOBALS["lang"]['bios'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Cloud ID'] = 'Cloud-ID';
+$GLOBALS["lang"]['Bios'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['cloud_log'] = 'Cloudlog';
+$GLOBALS["lang"]['body'] = 'Traduzione:';
 
-$GLOBALS["lang"]['Cloud Log'] = 'Cloudlog';
+$GLOBALS["lang"]['Body'] = 'Traduzione:';
 
-$GLOBALS["lang"]['cloud_name'] = 'Wolknaam';
+$GLOBALS["lang"]['Bolivia'] = ' ';
 
-$GLOBALS["lang"]['Cloud Name'] = 'Wolknaam';
+$GLOBALS["lang"]['Boolean'] = ' ';
 
-$GLOBALS["lang"]['Cloud Network'] = 'Cloud Network';
+$GLOBALS["lang"]['Boolean 1/0'] = '1 / 1';
 
-$GLOBALS["lang"]['clouds'] = 'Wolken';
+$GLOBALS["lang"]['Boolean y/n'] = ' ';
 
-$GLOBALS["lang"]['Clouds'] = 'Wolken';
+$GLOBALS["lang"]['boot_device'] = '→ eventoj:';
 
-$GLOBALS["lang"]['cluster'] = 'Cluster';
+$GLOBALS["lang"]['Boot Device'] = '→ eventoj:';
 
-$GLOBALS["lang"]['Cluster'] = 'Cluster';
+$GLOBALS["lang"]['bootable'] = '→ eventoj:';
 
-$GLOBALS["lang"]['cluster_id'] = 'Cluster-ID';
+$GLOBALS["lang"]['Bootable'] = '→ eventoj:';
 
-$GLOBALS["lang"]['Cluster ID'] = 'Cluster-ID';
+$GLOBALS["lang"]['Bosnia and Herzegovina'] = 'Bossio kaj \'us';
 
-$GLOBALS["lang"]['cluster_name'] = 'Clusternaam';
+$GLOBALS["lang"]['Both forms of'] = 'L \'Ambasciata permoj Româ@@';
 
-$GLOBALS["lang"]['Cluster Name'] = 'Clusternaam';
+$GLOBALS["lang"]['Botswana'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['cluster_type'] = 'Clustertype';
+$GLOBALS["lang"]['Bouvet Island (Bouvetoya)'] = '(1)';
 
-$GLOBALS["lang"]['Cluster Type'] = 'Clustertype';
+$GLOBALS["lang"]['Brazil'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['clusters'] = 'Clusters';
+$GLOBALS["lang"]['Brazilian Portuguese'] = '-';
 
-$GLOBALS["lang"]['Clusters'] = 'Clusters';
+$GLOBALS["lang"]['Breaking it Down'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Cocos (Keeling) Islands'] = 'Cocoseilanden';
+$GLOBALS["lang"]['British Indian Ocean Territory (Chagos Archipelago)'] = 'Brita Hinda Oceana Territorio (Chagos Arkipelago)';
 
-$GLOBALS["lang"]['Collector'] = 'Verzamelaar';
+$GLOBALS["lang"]['British Virgin Islands'] = '"Virdulinsurloj," "Indonesië"';
 
-$GLOBALS["lang"]['Collector (UUID)'] = 'Verzamelaar (UUID)';
+$GLOBALS["lang"]['Browse down the tree to Console Root -> Component Services -> Computers -> My Computer<br><br>Right click on <i>My Computer</i> and select properties<br><br>Select the <i>Default Properties</i> tab'] = '"Navega la liukoinen la arbo al Bendrijoje"<br/><br/>Rekte Bendrijoje <i>"Miaů komputio"</i> Traduzione:<br/><br/>Bendrijoje <i>Bendrijoje</i> Bendrijoje';
 
-$GLOBALS["lang"]['Collector Name'] = 'Naam verzamelaar';
+$GLOBALS["lang"]['Brunei Darussalam'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['collector_uuid'] = 'Verzamelaar Uuid';
+$GLOBALS["lang"]['btu_max'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Collector Uuid'] = 'Verzamelaar Uuid';
+$GLOBALS["lang"]['Btu Max'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['collectors'] = 'Verzamelaars';
+$GLOBALS["lang"]['btu_total'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Collectors'] = 'Verzamelaars';
+$GLOBALS["lang"]['Btu Total'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Colombia'] = 'Colombia';
+$GLOBALS["lang"]['build_number'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['color'] = 'Kleur';
+$GLOBALS["lang"]['Build Number'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Color'] = 'Kleur';
+$GLOBALS["lang"]['build_number_full'] = '-';
 
-$GLOBALS["lang"]['column'] = 'Kolom';
+$GLOBALS["lang"]['Build Number Full'] = '-';
 
-$GLOBALS["lang"]['Column'] = 'Kolom';
+$GLOBALS["lang"]['Building'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Columns'] = 'Kolommen';
+$GLOBALS["lang"]['Builds trust with clients and partners'] = 'Konstruas fidon Româklientoj kaj partenaire';
 
-$GLOBALS["lang"]['command'] = 'Commando';
+$GLOBALS["lang"]['Bulgaria'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Command'] = 'Commando';
+$GLOBALS["lang"]['Bulgarian'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['command_options'] = 'Opdrachtopties';
+$GLOBALS["lang"]['Bulk Edit'] = '-';
 
-$GLOBALS["lang"]['Command Options'] = 'Opdrachtopties';
+$GLOBALS["lang"]['Bulk Edit Form'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['command_output'] = 'Commandouitvoer';
+$GLOBALS["lang"]['Bulk Editing Device Attributes'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Command Output'] = 'Commandouitvoer';
+$GLOBALS["lang"]['Bulk edit selections wont stay selected after clicking next page.'] = 'Kuk redaktas selektadojn gajnitan restas ektitaj republike klakado de venta pacomamento.';
 
-$GLOBALS["lang"]['command_status'] = 'Commandostatus';
+$GLOBALS["lang"]['Burkina Faso'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Command Status'] = 'Commandostatus';
+$GLOBALS["lang"]['Burundi'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['command_time_to_execute'] = 'Opdrachttijd om uit te voeren';
+$GLOBALS["lang"]['business_requirements'] = '-';
 
-$GLOBALS["lang"]['Command Time To Execute'] = 'Opdrachttijd om uit te voeren';
+$GLOBALS["lang"]['Business Requirements'] = '-';
 
-$GLOBALS["lang"]['comment'] = 'Opmerking';
+$GLOBALS["lang"]['But I Only Have Windows Client Machines Available!'] = 'Sed nur have fenestrojn klientoj disponeblaj!';
 
-$GLOBALS["lang"]['Comment'] = 'Opmerking';
+$GLOBALS["lang"]['But I do not want to have to change the language file every time I update!'] = '- Sed mi ne volas ршанной Şlingvan dosieron, Bendrieoje ';
 
-$GLOBALS["lang"]['comments'] = 'Opmerkingen';
+$GLOBALS["lang"]['Buy'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Comments'] = 'Opmerkingen';
+$GLOBALS["lang"]['Buy More'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['commercial'] = 'Handel';
+$GLOBALS["lang"]['Buy More Licenses'] = 'Ačetu edule pli da polysiloj';
 
-$GLOBALS["lang"]['Commercial'] = 'Handel';
+$GLOBALS["lang"]['By'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['common_name'] = 'Triviale naam';
+$GLOBALS["lang"]['By default we integrate all devices with their nmis_manage attribute set to <i>y</i>. With 4.2.0 we also ship a Rule that says <i>If we discover a device and it has a valid SNMP OID, mark that device as managed by NMIS</i>. Obviously you can disable this if it is not what you want.'] = 'l \'utilazione di režisierė <i>Bendrijoje</i>Niu regulan kiu diras <i>(OL L 20 van 2015.177, blz. 42).</i>Šio straipsnio 1 ir 2 dalyse nurodyti ';
 
-$GLOBALS["lang"]['Common Name'] = 'Triviale naam';
+$GLOBALS["lang"]['By default, we skip certificate validation because customers tend to use self-signed certificates. To enable certificate validation, edit the file below'] = '"Por ebligi aestilon validelado, redakki la dosiron"';
 
-$GLOBALS["lang"]['Commonly referred to as the clientId.'] = 'Meestal aangeduid als de clientId.';
+$GLOBALS["lang"]['CIDR'] = 'GCS';
 
-$GLOBALS["lang"]['Commonly referred to as the clientSecret.'] = 'Meestal aangeduid als de clientSecret.';
+$GLOBALS["lang"]['CIDR Mask'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Community'] = 'Gemeenschap';
+$GLOBALS["lang"]['cli_config'] = '-';
 
-$GLOBALS["lang"]['Community Questions'] = 'Communautaire vraagstukken';
+$GLOBALS["lang"]['CLI Config'] = '-';
 
-$GLOBALS["lang"]['Community String'] = 'Community String';
+$GLOBALS["lang"]['CPU'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Comoros the'] = 'Comoren';
+$GLOBALS["lang"]['CPUs'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Compact'] = 'Compact';
+$GLOBALS["lang"]['CSV'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Company'] = 'Onderneming';
+$GLOBALS["lang"]['CVE'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Complexity of the attack (Low or High).'] = 'Complexiteit van de aanval (laag of hoog).';
+$GLOBALS["lang"]['CVEs with a status of received, awaiting analysis, undergoing analysis, rejected. These CVEs (mostly) do not contain sufficient information to enable us to generate a correct SQL query.'] = 'CVEoj kun stato de rizvita, attente analizon, spertante analizon, malasprobis. Tiuj CVEoj (plejparte) ne enhafas sufi ';
 
-$GLOBALS["lang"]['Component Table'] = 'Componenttabel';
+$GLOBALS["lang"]['Calculated from discovery.'] = '(1)';
 
-$GLOBALS["lang"]['Components (All Devices)'] = 'Componenten (alle apparaten)';
+$GLOBALS["lang"]['Calculated total number of valid IP addresses for this network.'] = 'Kalkulistavia nombron da Validaj IP- adresoj por tu reto.';
 
-$GLOBALS["lang"]['Compute'] = 'Berekenen';
+$GLOBALS["lang"]['Calculated upon completion, the time taken to execute this item.'] = 'Exectivigi tiun objektton.';
 
-$GLOBALS["lang"]['Condition'] = 'Voorwaarde';
+$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = 'Kalkuli kiam Integrayγo estas prizorgita kaj enhavas JSON- reprezentadon de la aparatoj en tu integri revust. Bendrijoje <code>devices.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['Config'] = 'Configureren';
+$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = 'Kalkulis kiam Intrageni rupturao estas prizorgita kaj enhavas JSON reprezentadon Şlokoj en tiu integri beato. Bendrijoje <code>locations.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['Config Default, currently '] = 'Configureren Standaard, momenteel ';
+$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected from Open-AudIT.'] = 'Kalkuli kiam Integrayeningo estas prizorgita kaj enhavas la nombron da aparatoj selektitaj de Open-.';
 
-$GLOBALS["lang"]['config_file'] = 'Configuratiebestand';
+$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected the external system.'] = '-';
 
-$GLOBALS["lang"]['Config File'] = 'Configuratiebestand';
+$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices to be updated in the external system.'] = 'Kalkuli kiam integriγo estas prizorgita kaj enhavas la nombron da aparatoj por esti εisdatigitita en la ekspora sistemo.,,,,,,,,,,';
 
-$GLOBALS["lang"]['config_manager_error_code'] = 'Foutcode configuratiebeheer';
+$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices updated in Open-AudIT.'] = 'Kalkuli kiam integrieningo estas prizorgita kaj enhavas la nombron da aparatoj εisdatagitaj en open-.';
 
-$GLOBALS["lang"]['Config Manager Error Code'] = 'Foutcode configuratiebeheer';
+$GLOBALS["lang"]['Call up a command prompt by clicking Start and searching for <code>command</code>'] = 'Voki kommundo quistilon arba <code>command</code>';
 
-$GLOBALS["lang"]['configuration'] = 'Instellingen';
+$GLOBALS["lang"]['Cambodia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Configuration'] = 'Instellingen';
+$GLOBALS["lang"]['Cameroon'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Configure'] = 'Instellen';
+$GLOBALS["lang"]['Campus Area Network'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Congo'] = 'Congo';
+$GLOBALS["lang"]['Campus area network'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Congo the'] = 'Congo';
+$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code> or blank.'] = 'Bendrijoje <code>active</code>Bendrijoje <code>passive</code> -';
 
-$GLOBALS["lang"]['Connected To'] = 'Verbonden met';
+$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.'] = 'Bendrijoje <code>application</code>Bendrijoje <code>compute</code>Bendrijoje <code>database</code>Bendrijoje <code>storage</code>Bendrijoje <code>virtualisation</code>Bendrijoje <code>web</code>Bendrijoje <code>other</code> -';
 
-$GLOBALS["lang"]['connection'] = 'Verbinding';
+$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.'] = 'Bendrijoje <code>auto</code>Bendrijoje <code>fixed</code>Bendrijoje <code>other</code> -';
 
-$GLOBALS["lang"]['Connection'] = 'Verbinding';
+$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.'] = 'Bendrijoje <code>high availability</code>Bendrijoje <code>load balancing</code>Bendrijoje <code>performance</code>Bendrijoje <code>storage</code>Bendrijoje <code>other</code> -';
 
-$GLOBALS["lang"]['Connection Options'] = 'Verbindingsopties';
+$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.'] = 'Bendrijoje <code>line</code>Bendrijoje <code>pie</code> Bendrijoje <code>traffic</code>Bendrijoje';
 
-$GLOBALS["lang"]['connection_status'] = 'Verbindingsstatus';
+$GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = 'Bendrijoje <code>user</code> Bendrijoje <code>collector</code>Bendrijoje';
 
-$GLOBALS["lang"]['Connection Status'] = 'Verbindingsstatus';
+$GLOBALS["lang"]['Can be set by discovery or user.'] = 'Povas esti metita esteltrova ·...';
 
-$GLOBALS["lang"]['connections'] = 'Verbindingen';
+$GLOBALS["lang"]['Can be set by discovery or user. Uses the ID from the locations table.'] = 'Povas esti metita esteltrova ·... "Uzu" asmens tapatybės kortelės Nr.:';
 
-$GLOBALS["lang"]['Connections'] = 'Verbindingen';
+$GLOBALS["lang"]['Can the user edit this item.'] = 'Redakki tiun obsktton.';
 
-$GLOBALS["lang"]['Consider filtered Ports Open'] = 'Gefilterd overwegen Havens openen';
+$GLOBALS["lang"]['Canada'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Consider open|filtered Ports Open'] = 'Beschouw open gefilterd Havens openen';
+$GLOBALS["lang"]['Cancel'] = 'Elnyomás Nom de la ville (facultatif, sans doute pas besoin de traduction)';
 
-$GLOBALS["lang"]['contact'] = 'Contactpersoon';
+$GLOBALS["lang"]['capabilities'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Contact'] = 'Contactpersoon';
+$GLOBALS["lang"]['Capabilities'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['contact_name'] = 'Contactnaam';
+$GLOBALS["lang"]['Capacity'] = '(*)';
 
-$GLOBALS["lang"]['Contact Name'] = 'Contactnaam';
+$GLOBALS["lang"]['Cape Verde'] = 'șižanga';
 
-$GLOBALS["lang"]['contained_in'] = 'Ingesloten';
+$GLOBALS["lang"]['Capitalise'] = ' ';
 
-$GLOBALS["lang"]['Contained In'] = 'Ingesloten';
+$GLOBALS["lang"]['caption'] = 'C \'e\' piu \'mes vrai.';
 
-$GLOBALS["lang"]['Contains a JSON object details the associated widgets and their positions.'] = 'Bevat een JSON object details van de bijbehorende widgets en hun posities.';
+$GLOBALS["lang"]['Caption'] = 'C \'e\' piu \'mes vrai.';
 
-$GLOBALS["lang"]['Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.'] = 'Bevat de velden die bepalen of we ssh, snmp en wmi discovery opties moeten gebruiken. Een JSON object.';
+$GLOBALS["lang"]['Catalan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Context Engine ID'] = 'Context Engine ID';
+$GLOBALS["lang"]['Cayman Islands'] = '-';
 
-$GLOBALS["lang"]['Context Name'] = 'Contextnaam';
+$GLOBALS["lang"]['Cellular Details'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['contractual_obligations'] = 'Contractuele verplichtingen';
+$GLOBALS["lang"]['Central African Republic'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Contractual Obligations'] = 'Contractuele verplichtingen';
+$GLOBALS["lang"]['certificate'] = '(1)';
 
-$GLOBALS["lang"]['Cook Islands'] = 'Cookeilanden';
+$GLOBALS["lang"]['Certificate'] = '(1)';
 
-$GLOBALS["lang"]['Copy and paste an audit result'] = 'Een auditresultaat kopiëren en plakken';
+$GLOBALS["lang"]['certificate_file'] = 'Atestilo - Indonesië';
 
-$GLOBALS["lang"]['Copy and paste the below to the forums, another instance of Open-AudIT or anywhere else you need to provide this item.'] = 'Kopieer en plak de onderstaande naar de forums, een andere instantie van Open-AudIT of ergens anders die je nodig hebt om dit item te leveren.';
+$GLOBALS["lang"]['Certificate File'] = 'Atestilo - Indonesië';
 
-$GLOBALS["lang"]['core_count'] = 'Aantal kernen';
+$GLOBALS["lang"]['certificate_name'] = '(1)';
 
-$GLOBALS["lang"]['Core Count'] = 'Aantal kernen';
+$GLOBALS["lang"]['Certificate Name'] = '(1)';
 
-$GLOBALS["lang"]['Cores'] = 'Kernen';
+$GLOBALS["lang"]['certificates'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['cost_center'] = 'Kostencentrum';
+$GLOBALS["lang"]['Certificates'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Cost Center'] = 'Kostencentrum';
+$GLOBALS["lang"]['Certification'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['cost_code'] = 'Kostencode';
+$GLOBALS["lang"]['Certification Audit'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Cost Code'] = 'Kostencode';
+$GLOBALS["lang"]['Certification Process'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Costa Rica'] = 'Costa Rica';
+$GLOBALS["lang"]['Chad'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Cote d Ivoire'] = 'Ivoorkust';
+$GLOBALS["lang"]['Change'] = 'C \'e\' eis-';
 
-$GLOBALS["lang"]['count'] = 'Aantal';
+$GLOBALS["lang"]['change_id'] = '®';
 
-$GLOBALS["lang"]['Count'] = 'Aantal';
+$GLOBALS["lang"]['Change ID'] = '®';
 
-$GLOBALS["lang"]['country'] = 'Land';
+$GLOBALS["lang"]['change_log'] = '-';
 
-$GLOBALS["lang"]['Country'] = 'Land';
+$GLOBALS["lang"]['Change Log'] = '-';
 
-$GLOBALS["lang"]['country_code'] = 'Landcode';
+$GLOBALS["lang"]['Change Logs'] = '-';
 
-$GLOBALS["lang"]['Country Code'] = 'Landcode';
+$GLOBALS["lang"]['change_type'] = ' Bendrijoje';
 
-$GLOBALS["lang"]['cpu_count'] = 'Aantal Cpu\'s';
+$GLOBALS["lang"]['Change Type'] = ' Bendrijoje';
 
-$GLOBALS["lang"]['Cpu Count'] = 'Aantal Cpu\'s';
+$GLOBALS["lang"]['check_minutes'] = '-';
 
-$GLOBALS["lang"]['Create'] = 'Aanmaken';
+$GLOBALS["lang"]['Check Minutes'] = '-';
 
-$GLOBALS["lang"]['Create Example Devices'] = 'Voorbeeldapparaten aanmaken';
+$GLOBALS["lang"]['Check for SSH on these ports'] = 'SSH sur tiuj hasnoi RomâKontau';
 
-$GLOBALS["lang"]['create_external_count'] = 'Extern aantal aanmaken';
+$GLOBALS["lang"]['Check this port for any SSH service.'] = 'Kontrou tiun rev.';
 
-$GLOBALS["lang"]['Create External Count'] = 'Extern aantal aanmaken';
+$GLOBALS["lang"]['Chile'] = '-';
 
-$GLOBALS["lang"]['create_external_from_internal'] = 'Externe vanuit intern aanmaken';
+$GLOBALS["lang"]['China'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Create External From Internal'] = 'Externe vanuit intern aanmaken';
+$GLOBALS["lang"]['Chinese'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Create Geocode'] = 'Geocode aanmaken';
+$GLOBALS["lang"]['Chinese (traditional)'] = '(arba)';
 
-$GLOBALS["lang"]['create_internal_count'] = 'Intern aantal aanmaken';
+$GLOBALS["lang"]['Choose'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Create Internal Count'] = 'Intern aantal aanmaken';
+$GLOBALS["lang"]['Choose (select OS first)'] = '(Valige OS uue)';
 
-$GLOBALS["lang"]['create_internal_from_external'] = 'Intern maken vanaf extern';
+$GLOBALS["lang"]['Choose a Device'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Create Internal From External'] = 'Intern maken vanaf extern';
+$GLOBALS["lang"]['Choose a Table'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Create NMIS Devices from Open-AudIT'] = 'NMIS-apparaten van Open-AudIT aanmaken';
+$GLOBALS["lang"]['Choose the type of the task from the first drop down. This will configure the additional fields required depending on the type of task.'] = 'Elekti la specon de la tasco de la uua Româguto malsupren. Tio konformigos requisajn adpene de la speco de taco.';
 
-$GLOBALS["lang"]['Create Open-AudIT Devices from '] = 'Open-audIT aanmaken Apparaten van ';
+$GLOBALS["lang"]['Christmas Island'] = '· Bendrijoje';
 
-$GLOBALS["lang"]['Create Open-AudIT Devices from NMIS'] = 'Open-audIT aanmaken Apparaten van NMIS';
+$GLOBALS["lang"]['cidr'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['created_by'] = 'Aangemaakt door';
+$GLOBALS["lang"]['Cidr'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Created By'] = 'Aangemaakt door';
+$GLOBALS["lang"]['circuit_count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['created_date'] = 'Aangemaakte datum';
+$GLOBALS["lang"]['Circuit Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Created Date'] = 'Aangemaakte datum';
+$GLOBALS["lang"]['circuit_status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Creating'] = 'Aanmaken';
+$GLOBALS["lang"]['Circuit Status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Creating Device'] = 'Apparaat aanmaken';
+$GLOBALS["lang"]['city'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Creating a Query'] = 'Een zoekopdracht aanmaken';
+$GLOBALS["lang"]['City'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['creator'] = 'Maker';
+$GLOBALS["lang"]['class'] = '-';
 
-$GLOBALS["lang"]['Creator'] = 'Maker';
+$GLOBALS["lang"]['Class'] = '-';
 
-$GLOBALS["lang"]['credential'] = 'Credentieel';
+$GLOBALS["lang"]['class_text'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Credential'] = 'Credentieel';
+$GLOBALS["lang"]['Class Text'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['credentials'] = 'Identiteit';
+$GLOBALS["lang"]['Click <i>New client secret</i>.'] = 'Klakou <i>Bendrijoje</i>Bendrijoje';
 
-$GLOBALS["lang"]['Credentials'] = 'Identiteit';
+$GLOBALS["lang"]['Click Submit to Execute'] = 'Klakou Soumettre Bendrijoje';
 
-$GLOBALS["lang"]['Credentials Client ID'] = 'Identiteitskaart van de cliënt';
+$GLOBALS["lang"]['Click on <i>Properties</i> under the <i>Manage</i> header in the central menu column. Copy the <i>User Access URL</i>. Once copied, paste it into yout text editor. You will need to copy one section of this field.<br><br>Our example field looks like this<br><code>https://launcher.myapps.microsoft.com/api/signin/5d97003c-g24b-346e-9932-77db6470b939?tenantId=cf406343-1a96-4f7c-0cc6-46e86dddabf3</code>.<br><br>The section we need is <code>cf406343-1a96-4f7c-0cc6-46e86dddabf3</code> (the tenant ID). This is used in Open-AudIT as the <i>Tenant</i> field, so paste it in there.'] = '- <i>Bendrijoje</i> Bendrijoje <i>-</i> Kap en la centra režisierė okolono. Bendrijoje <i>Bendrijoje</i>"Pâtes εi en vit tekredaktilon." L\'obiettivo de cette étudy est d\'améliorer la qualité de l\'eau et de l\'eau. <br/><br/>Bendrijoje<br/><code>https://launcher.myapps.microsoft.com/api/signin/5d97003c-g24b-346e-9932-77db6470b939?tenantId=cf406343-1a96-4f7c-0cc6-46e86dddabf3</code>Bendrijoje<br/><br/>Niet vertaald <code>cf406343-1a96-4f7c-0cc6-46e86dddabf3</code> (Identificazione de La Kliento). Tio estas utiligita en rev <i>10</i> (lt)';
 
-$GLOBALS["lang"]['Credentials Subscription ID'] = 'Abonnement op de geloofsbrieven ID';
+$GLOBALS["lang"]['Click on App Registrations to create a new Application, then click New Application Registration. Give it a name (I used Open-AudIT), select Web app / API as the type and provide any URL (the URL is not important) and now click Create.'] = '"Klaku sur Bendrijoje" Donu al εi nomon (mi utiligis Open- Credit), selektas aplicación Româ/ API kiel la tipon kaj disponigas ajnan URL (skaitykite URL ne estas grava) kaj opharm klakas Krei.';
 
-$GLOBALS["lang"]['Credentials Tenant ID'] = 'Identiteitskaart van de houder';
+$GLOBALS["lang"]['Click on OK and close the DCOMCNFG window.<br><br>The above changes will require a reboot to take effect.'] = 'Klaku sur OK kaj fermo arba DCOMCNFG- fenestoni.<br/><br/> Imitazijon- supraj Bendrijoje arba Bendrijoje';
 
-$GLOBALS["lang"]['Credentials for Amazon AWS used in Cloud Discovery'] = 'Geheimen voor Amazon AWS gebruikt in Cloud Discovery';
+$GLOBALS["lang"]['Click on the application you just created. The Application ID displayed is the Client ID.<br><br>To create the client secret, click Settings, then Keys. Provide a key name and select an appropriate expiry date, then click Save.<br><br>The value will be populated for you - this is the Client Secret.'] = 'Klaku sur la aprika ŞBendrijoje<br/><br/>Por krei estiton sekreta, klak Beállítások, tiam. "Selekti"<br/><br/>Bendrijoje';
 
-$GLOBALS["lang"]['Credentials for Microsoft Azure used in Cloud Discovery'] = 'Identiteiten voor Microsoft Azure gebruikt in Cloud Discovery';
+$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = 'Klaku la Poista butono por forigi la eczwerksijn de Şėjaus<br/>Tio foreigos la sub aparatoj rev. ';
 
-$GLOBALS["lang"]['Critical'] = 'Kritiek';
+$GLOBALS["lang"]['Click the Edit button for <i>Basic SAML Configuration</i>.'] = 'Zootechninių priedų kategorija. <i>(1)</i>Bendrijoje';
 
-$GLOBALS["lang"]['criticality'] = 'Kritiek';
+$GLOBALS["lang"]['Click the Import button below to populate Open-AudIT with example device data.'] = 'Klaku la Importanin malsupre al peupler Bendrijoje';
 
-$GLOBALS["lang"]['Criticality'] = 'Kritiek';
+$GLOBALS["lang"]['Click the icon to the right of the field you wish to edit. Change the field and click the green icon to submit.'] = 'Klaku la ikon dekstren de la kampo vi deziras Bendrijoje. ';
 
-$GLOBALS["lang"]['Croatia'] = 'Kroatië';
+$GLOBALS["lang"]['Client ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Cuba'] = 'Cuba';
+$GLOBALS["lang"]['Client ID and Secret'] = '(OL L 347 van 2013 12 20, blz. 671).';
 
-$GLOBALS["lang"]['current'] = 'Lopend';
+$GLOBALS["lang"]['client_ident'] = 'Azososítás du opharm';
 
-$GLOBALS["lang"]['Current'] = 'Lopend';
+$GLOBALS["lang"]['Client Ident'] = 'Azososítás du opharm';
 
-$GLOBALS["lang"]['Current Discovery Processes'] = 'Huidige zoekprocessen';
+$GLOBALS["lang"]['client_secret'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Current date & time is '] = 'Huidige datum & tijd is ';
+$GLOBALS["lang"]['Client Secret'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Currently Installed'] = 'Momenteel geïnstalleerd';
+$GLOBALS["lang"]['client_site_name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = 'Momenteel ondersteunde types zijn <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> of <code>windows</code>.';
+$GLOBALS["lang"]['Client Site Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Custom TCP Ports'] = 'Aangepaste TCP-poorten';
+$GLOBALS["lang"]['Close'] = '-';
 
-$GLOBALS["lang"]['Custom UDP Ports'] = 'Aangepaste UDP Havens';
+$GLOBALS["lang"]['Closed'] = '- Labas!';
 
-$GLOBALS["lang"]['Cve'] = 'Cve';
+$GLOBALS["lang"]['Cloud'] = '®';
 
-$GLOBALS["lang"]['Cyprus'] = 'Cyprus';
+$GLOBALS["lang"]['Cloud Details'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Czech'] = 'Tsjechisch';
+$GLOBALS["lang"]['Cloud Discovery'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Czech Republic'] = 'Tsjechië';
+$GLOBALS["lang"]['Cloud Discovery and Auditing'] = '(1)';
 
-$GLOBALS["lang"]['DHCP'] = 'DHCP';
+$GLOBALS["lang"]['cloud_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['DN Account (optional)'] = 'DN-rekening (facultatief)';
+$GLOBALS["lang"]['Cloud ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['DN Password (optional)'] = 'DN-wachtwoord (facultatief)';
+$GLOBALS["lang"]['cloud_log'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['DNS FQDN'] = 'DNS FQDN';
+$GLOBALS["lang"]['Cloud Log'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['DNS Hostname'] = 'DNS-hostnaam';
+$GLOBALS["lang"]['cloud_name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['dashboard_id'] = 'Dashboard-ID';
+$GLOBALS["lang"]['Cloud Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dashboard ID'] = 'Dashboard-ID';
+$GLOBALS["lang"]['Cloud Network'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['dashboards'] = 'Dashboards';
+$GLOBALS["lang"]['clouds'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dashboards'] = 'Dashboards';
+$GLOBALS["lang"]['Clouds'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Database'] = 'Database';
+$GLOBALS["lang"]['Clouds are a feature available to Open-AudIT Enterprise licensed customers.'] = 'Nuboj estas trajto habbla al Bendrijoje';
 
-$GLOBALS["lang"]['db_action'] = 'Databaseactie';
+$GLOBALS["lang"]['cluster'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Database Action'] = 'Databaseactie';
+$GLOBALS["lang"]['Cluster'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['db_column'] = 'Databankkolom';
+$GLOBALS["lang"]['cluster_id'] = 'Kaflustumatussa unnistegilo';
 
-$GLOBALS["lang"]['Database Column'] = 'Databankkolom';
+$GLOBALS["lang"]['Cluster ID'] = 'Kaflustumatussa unnistegilo';
 
-$GLOBALS["lang"]['Database Definition'] = 'Databasedefinitie';
+$GLOBALS["lang"]['cluster_name'] = '-';
 
-$GLOBALS["lang"]['db_row'] = 'Databaserij';
+$GLOBALS["lang"]['Cluster Name'] = '-';
 
-$GLOBALS["lang"]['Database Row'] = 'Databaserij';
+$GLOBALS["lang"]['cluster_type'] = 'T - K';
 
-$GLOBALS["lang"]['Database Schema'] = 'Databaseschema';
+$GLOBALS["lang"]['Cluster Type'] = 'T - K';
 
-$GLOBALS["lang"]['db_table'] = 'Databasetabel';
+$GLOBALS["lang"]['clusters'] = '-';
 
-$GLOBALS["lang"]['Database Table'] = 'Databasetabel';
+$GLOBALS["lang"]['Clusters'] = '-';
 
-$GLOBALS["lang"]['dataset_title'] = 'Titel gegevensverzameling';
+$GLOBALS["lang"]['Clusters and Reporting'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dataset Title'] = 'Titel gegevensverzameling';
+$GLOBALS["lang"]['Cocos (Keeling) Islands'] = 'Kookos';
 
-$GLOBALS["lang"]['date'] = 'Datum';
+$GLOBALS["lang"]['Collection'] = '(1)';
 
-$GLOBALS["lang"]['Date'] = 'Datum';
+$GLOBALS["lang"]['Collections'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Date D-M-Y'] = 'Datum D-M-Y';
+$GLOBALS["lang"]['Collector'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Date M-D-Y'] = 'Datum M-D-Y';
+$GLOBALS["lang"]['Collector (UUID)'] = '(1)';
 
-$GLOBALS["lang"]['Date Now'] = 'Nu datum';
+$GLOBALS["lang"]['Collector / Server is an Enterprise only feature. Enterprise customers receive one Collector license for free. Additional Collector licenses can be purchased as required.'] = 'Servilio estas nurēmēcībārstībā. "Entrepriskiltoj risovas unu koletantlicencon por librera." Kromaj kolekttantricoj povas esti a';
 
-$GLOBALS["lang"]['date_of_manufacture'] = 'Vervaardigingsdatum';
+$GLOBALS["lang"]['Collector / Server is designed so that you can have a remote or <i>collector</i>  instance of Open-AudIT running on a remote machine. That collector instance might be in another security zone, subnet, cloud hosting instance or at a customer site.  The remote collector is then doing all the discovering and auditing of devices locally avoiding networking and firewalling complexity.  The Collector once it has registered is completely controlled by the <i>server</i>.  This means you only need an HTTP or HTTPS connection from that Collector to the Server.'] = 'Servilio estas dizajnita tien che vi povas haji malprossiman katlustus <i>Bendrijoje</i> Ekzemplo de Open- Româkuranta sur malpreksima ma apretino. Tiu koletantkazo eble estos en rėmtul ekureczono, subreto, nubo bastiganta kanon épäilty en kleintolokoko. "Reviszion de aparatoj loke evitante interkonektadon kaj fajromurantan complekecon." "Kraktantobizambia εi agua" <i>Servilo servilio servilio</i>"Tio signfas ke vi nur bezonas HTTP epäilty HTTPS- ligon de tiu kolektanto al la Servilo."';
 
-$GLOBALS["lang"]['Date Of Manufacture'] = 'Vervaardigingsdatum';
+$GLOBALS["lang"]['Collector Dashboard'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['date_paid'] = 'Betaalde datum';
+$GLOBALS["lang"]['Collector Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Date Paid'] = 'Betaalde datum';
+$GLOBALS["lang"]['collector_uuid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['date_received'] = 'Ontvangen datum';
+$GLOBALS["lang"]['Collector Uuid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Date Received'] = 'Ontvangen datum';
+$GLOBALS["lang"]['Collector tasks are automatically setup when the collector feature is enabled. Collector tasks should not be created directly by users. Collector tasks can have their frequency edited after creation. If the Open-AudIT Server has Collectors reporting to it, an additional drop down is provided. You can select this to specify which Collector the task should run on. Only Discovery tasks are supported for Collectors.'] = 'Bendrijoje Tapoj est un sceptomate aran.o kiam la perktantrajto estas permesita. Bendrijoje Tapoj ne devus esti kreitaj rekte Bendrijoje. Kolektaj tapoj povas haji sian frekvencon redaktitán new kreado. Se la open- alla opent - alla opent - alla residu- alla residue - alla residue hava kolektantojn raportajn al εi, kroma goto malsupren estas disponigita. L \'objectif est d\' améliorer la qualité de l \'eau et de l\'eau. 2017 m. sausio mėn.';
 
-$GLOBALS["lang"]['Date Y-M-D'] = 'Datum Y-M-D';
+$GLOBALS["lang"]['Collectors'] = '-';
 
-$GLOBALS["lang"]['Date and time when the CVE was last updated.'] = 'Datum en tijd waarop de CVE voor het laatst werd bijgewerkt.';
+$GLOBALS["lang"]['Collectors can operate in one of two modes: Collector and StandAlone. When in Collector mode, the instance of Open-AudIT is managed by the main server. When in Stand Alone mode, the instance is managed locally and forwards any found devices to the main server.'] = 'Kolektantoj povas funkciigi en unu el du re Kiam en kolektantre.imo, ľkazo de Open- Româadministrata... efservilo. (OL L 20, 2015.1 27, p. 42).';
 
-$GLOBALS["lang"]['Date and time when the CVE was published.'] = 'Datum en tijdstip waarop de CVE werd gepubliceerd.';
+$GLOBALS["lang"]['Collectors for Remote Discovery'] = 'Kolektantoj por kaugavastamini';
 
-$GLOBALS["lang"]['Date when the CVE was published.'] = 'Datum waarop de CVE werd gepubliceerd.';
+$GLOBALS["lang"]['Colombia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['DateTime Now'] = 'Datum Nu';
+$GLOBALS["lang"]['color'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['DateTime Y-M-D H:M:S'] = 'Datumtijd Y M D H:M:S';
+$GLOBALS["lang"]['Color'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['day_of_month'] = 'Maanddag';
+$GLOBALS["lang"]['Column'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Day Of Month'] = 'Maanddag';
+$GLOBALS["lang"]['Columns'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['day_of_week'] = 'Dag van de week';
+$GLOBALS["lang"]['command'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Day Of Week'] = 'Dag van de week';
+$GLOBALS["lang"]['Command'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Day of Month'] = 'Maanddag';
+$GLOBALS["lang"]['command_options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['dbus_identifier'] = 'Dbus Identifier';
+$GLOBALS["lang"]['Command Options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dbus Identifier'] = 'Dbus Identifier';
+$GLOBALS["lang"]['command_output'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Debug'] = 'Debuggen';
+$GLOBALS["lang"]['Command Output'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['December'] = 'December';
+$GLOBALS["lang"]['command_status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Default'] = 'Standaard';
+$GLOBALS["lang"]['Command Status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Default Items'] = 'Standaard items';
+$GLOBALS["lang"]['command_time_to_execute'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Default Value'] = 'Standaardwaarde';
+$GLOBALS["lang"]['Command Time To Execute'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Default of 389. Normally 636 used for Active Directory LDAPS.'] = 'Standaard van 389. Normaal gesproken 636 gebruikt voor Active Directory LDAPS.';
+$GLOBALS["lang"]['comment'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = 'Standaard van <code>3</code> voor LDAP en Active Directory.';
+$GLOBALS["lang"]['Comment'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Defaults'] = 'Standaardinstellingen';
+$GLOBALS["lang"]['Comment out the below line (about line 49 or so). Just place a hash # at the start of the line.'] = 'Komento de la sublino (preksimume linio 49). Nur metiräsarv E la omenco Româlinio.';
 
-$GLOBALS["lang"]['delay_minutes'] = 'Vertragingsminuten';
+$GLOBALS["lang"]['comments'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Delay Minutes'] = 'Vertragingsminuten';
+$GLOBALS["lang"]['Comments'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Delete'] = 'Verwijderen';
+$GLOBALS["lang"]['commercial'] = '-';
 
-$GLOBALS["lang"]['Delete Example Devices'] = 'Voorbeeldapparaten verwijderen';
+$GLOBALS["lang"]['Commercial'] = '-';
 
-$GLOBALS["lang"]['delete_external_from_internal'] = 'Externe verwijderen uit intern';
+$GLOBALS["lang"]['Commercial Support'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Delete External From Internal'] = 'Externe verwijderen uit intern';
+$GLOBALS["lang"]['common_name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Delete NMIS Devices if not in Open-AudIT'] = 'NMIS verwijderen Apparaten indien niet in Open-AudIT';
+$GLOBALS["lang"]['Common Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Delete from Application'] = 'Verwijderen uit toepassing';
+$GLOBALS["lang"]['Commonly referred to as the clientId.'] = 'Bendrijoje.';
 
-$GLOBALS["lang"]['Delete from Cluster'] = 'Verwijderen uit Cluster';
+$GLOBALS["lang"]['Commonly referred to as the clientSecret.'] = 'Bendrijoje.';
 
-$GLOBALS["lang"]['Denmark'] = 'Denemarken';
+$GLOBALS["lang"]['Community'] = '-';
 
-$GLOBALS["lang"]['Derived by audit or manually set by user.'] = 'Afgeleid door audit of handmatig ingesteld door de gebruiker.';
+$GLOBALS["lang"]['Community Questions'] = '-';
 
-$GLOBALS["lang"]['Derived by audit.'] = 'Afgeleid door audit.';
+$GLOBALS["lang"]['Community String'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Derived from <code>rack_devices.device_id</code>.'] = 'Afgeleid uit <code>rack_devices.device_id</code>.';
+$GLOBALS["lang"]['Comoros the'] = '(1)';
 
-$GLOBALS["lang"]['Derived from <code>rack_devices.rack_id</code>.'] = 'Afgeleid uit <code>rack_devices.rack_id</code>.';
+$GLOBALS["lang"]['Compact'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Derived from Collector discovery.'] = 'Afgeleid van Collector ontdekking.';
+$GLOBALS["lang"]['Company'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Derived from OS Name.'] = 'Afgeleid van OS Naam.';
+$GLOBALS["lang"]['Complete these steps.'] = '"Kompletaj tiaj taviapretoj."';
 
-$GLOBALS["lang"]['Derived from cloud discovery.'] = 'Afgeleid van cloud ontdekking.';
+$GLOBALS["lang"]['Complexity of the attack (Low or High).'] = 'Komplekseco de la atako (Indonesië kaptlus Alta). ·';
 
-$GLOBALS["lang"]['Derived from device audits.'] = 'Afgeleid van apparaataudits.';
+$GLOBALS["lang"]['Component Table'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Derived from device type and OS.'] = 'Afgeleid van apparaattype en OS.';
+$GLOBALS["lang"]['Components (All Devices)'] = 'Programma "Leader +"';
 
-$GLOBALS["lang"]['Derived from discovery.'] = 'Afgeleid van ontdekking.';
+$GLOBALS["lang"]['Compute'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Derived from hostname, sysName, dns Hostname and IP in that order.'] = 'Afgeleid van hostnaam, sysName, dns Hostnaam en IP in die volgorde.';
+$GLOBALS["lang"]['Condition'] = '-';
 
-$GLOBALS["lang"]['Derived from the integer severity.'] = 'Afgeleid van de integer ernst.';
+$GLOBALS["lang"]['Conduct a risk assessment'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['description'] = 'Omschrijving';
+$GLOBALS["lang"]['Conduct awareness and training programs'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Description'] = 'Omschrijving';
+$GLOBALS["lang"]['Conduct management review meetings'] = 'Konduto- administrado revizias reformium';
 
-$GLOBALS["lang"]['destination'] = 'Bestemming';
+$GLOBALS["lang"]['Conduct regular surveillance audits (usually annually)'] = 'Farugijn vatreviziojn';
 
-$GLOBALS["lang"]['Destination'] = 'Bestemming';
+$GLOBALS["lang"]['Conducted by an accredited body in two stages'] = 'Gvidite settariffe entrigestima korpo en du standioj';
 
-$GLOBALS["lang"]['detail'] = 'Detail';
+$GLOBALS["lang"]['Config'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Detail'] = 'Detail';
+$GLOBALS["lang"]['Config Default, currently '] = '(1) ';
 
-$GLOBALS["lang"]['Details'] = 'Gegevens';
+$GLOBALS["lang"]['config_file'] = 'C \'è la première fois que l\' su s \'en occupe.';
 
-$GLOBALS["lang"]['details'] = 'Gegevens';
+$GLOBALS["lang"]['Config File'] = 'C \'è la première fois que l\' su s \'en occupe.';
 
-$GLOBALS["lang"]['Details of who is usually contactable at this site.'] = 'Details van wie meestal bereikbaar is op deze site.';
+$GLOBALS["lang"]['config_manager_error_code'] = '-';
 
-$GLOBALS["lang"]['device'] = 'Apparaat';
+$GLOBALS["lang"]['Config Manager Error Code'] = '-';
 
-$GLOBALS["lang"]['Device'] = 'Apparaat';
+$GLOBALS["lang"]['Configurable Role Based Access Control (RBAC)'] = 'Konnorebla ŞBazita Aliro - Kontrolo (RBAC) - Şetura';
 
-$GLOBALS["lang"]['Device Audits'] = 'Apparaataudits';
+$GLOBALS["lang"]['configuration'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Device ID'] = 'Apparaat-ID';
+$GLOBALS["lang"]['Configuration'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['device_id'] = 'Apparaat-ID';
+$GLOBALS["lang"]['Configuration Change Detection and Reporting'] = '"Rilevamento"';
 
-$GLOBALS["lang"]['device_id_a'] = 'Apparaat-ID A';
+$GLOBALS["lang"]['Configure'] = '(OL L 20 van 2015.1 27, blz. 42)';
 
-$GLOBALS["lang"]['Device ID A'] = 'Apparaat-ID A';
+$GLOBALS["lang"]['Configure the agent server-side to perform audits on a schedule'] = 'Akkeli la agento- servilosidon por elfari revizija en horaro';
 
-$GLOBALS["lang"]['device_id_b'] = 'Apparaat-ID B';
+$GLOBALS["lang"]['Congo'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Device ID B'] = 'Apparaat-ID B';
+$GLOBALS["lang"]['Congo the'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Device Name'] = 'Apparaatnaam';
+$GLOBALS["lang"]['Connected To'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Device Result'] = 'Apparaatresultaat';
+$GLOBALS["lang"]['connection'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Device Results'] = 'Apparaatresultaten';
+$GLOBALS["lang"]['Connection'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Device Seed'] = 'Apparaatzaad';
+$GLOBALS["lang"]['Connection Options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Device Seed IP'] = 'Apparaatzaad-IP';
+$GLOBALS["lang"]['connection_status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Device Status'] = 'Apparaatstatus';
+$GLOBALS["lang"]['Connection Status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Device Types'] = 'Apparaattypen';
+$GLOBALS["lang"]['connections'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Device is in the Subnet'] = 'Apparaat bevindt zich in het Subnet';
+$GLOBALS["lang"]['Connections'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices'] = 'Apparaten';
+$GLOBALS["lang"]['Consider filtered Ports Open'] = 'Konsideruagen arba';
 
-$GLOBALS["lang"]['devices_assigned_to_location'] = 'Aan locatie toegewezen apparaten';
+$GLOBALS["lang"]['Consider open|filtered Ports Open'] = 'Konsideru arba';
 
-$GLOBALS["lang"]['Devices Assigned To Location'] = 'Aan locatie toegewezen apparaten';
+$GLOBALS["lang"]['Consulting, implementation and other services are available through'] = 'Konsulo news efektivigo kajelij';
 
-$GLOBALS["lang"]['devices_assigned_to_org'] = 'Aan org toegewezen apparaten';
+$GLOBALS["lang"]['contact'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices Assigned To Org'] = 'Aan org toegewezen apparaten';
+$GLOBALS["lang"]['Contact'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices Audited'] = 'Geauditeerde apparaten';
+$GLOBALS["lang"]['contact_name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices Created in '] = 'Apparaten aangemaakt in ';
+$GLOBALS["lang"]['Contact Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices Created in Open-AudIT'] = 'Apparaten aangemaakt in Open-AudIT';
+$GLOBALS["lang"]['contained_in'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['devices_default_display_columns'] = 'Apparaten Standaard weergegeven kolommen';
+$GLOBALS["lang"]['Contained In'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices Default Display Columns'] = 'Apparaten Standaard weergegeven kolommen';
+$GLOBALS["lang"]['Contains a JSON object details the associated widgets and their positions.'] = 'Enhavas JSON - objekton dedaligas la rilatajn bar.ojn kaj iliajn poziciojn.';
 
-$GLOBALS["lang"]['Devices Found Last 7 Days'] = 'Apparaten gevonden laatste 7 dagen';
+$GLOBALS["lang"]['Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.'] = 'Enhavas la kampjn kiuj determinas se ni devus uzi ssh, snmp kaj wmi- eltrova. Bendrijoje';
 
-$GLOBALS["lang"]['Devices Found Today'] = 'Vandaag gevonden apparaten';
+$GLOBALS["lang"]['Context & Leadership'] = '"Gvidado"';
 
-$GLOBALS["lang"]['Devices Found Yesterday'] = 'Apparaten gevonden gisteren';
+$GLOBALS["lang"]['Context Engine ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices Not Audited'] = 'Hulpmiddelen niet gecontroleerd';
+$GLOBALS["lang"]['Context Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices Not Seen 30 Days'] = 'Apparaten die 30 dagen niet zijn gezien';
+$GLOBALS["lang"]['Continuously improve the ISMS'] = 'D \'autres plibonigi ® ISMS';
 
-$GLOBALS["lang"]['Devices Not Seen 7 Days'] = 'Apparaten 7 dagen niet gezien';
+$GLOBALS["lang"]['contractual_obligations'] = '(1)';
 
-$GLOBALS["lang"]['Devices Not Seen 90 Days'] = 'Apparaten die 90 dagen niet zijn gezien';
+$GLOBALS["lang"]['Contractual Obligations'] = '(1)';
 
-$GLOBALS["lang"]['Devices Retrieved via API'] = 'Apparaten opgehaald via API';
+$GLOBALS["lang"]['Cook Islands'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices Selected from '] = 'Apparaten geselecteerd uit ';
+$GLOBALS["lang"]['Copy and paste an audit result'] = 'Kopio kaj';
 
-$GLOBALS["lang"]['Devices Selected from Open-AudIT'] = 'Apparaten geselecteerd uit Open-AudIT';
+$GLOBALS["lang"]['Copy and paste the below to the forums, another instance of Open-AudIT or anywhere else you need to provide this item.'] = 'Kopio kaj pasto la malsupre al la forumej, Muu hulgas kazo de open- Bendrijoje';
 
-$GLOBALS["lang"]['Devices Updated in '] = 'Apparaten bijgewerkt in ';
+$GLOBALS["lang"]['Copy the <i>Application ID</i> field and paste it into the Open-AudIT <i>Client ID</i> field for the new Auth Method.'] = 'Bendrijoje <i>Numero d\'identificazione ("Numero")</i> Bendrijoje <i>Bendrijoje</i> "Kampo por la nova."';
 
-$GLOBALS["lang"]['Devices Updated in Open-AudIT'] = 'Apparaten bijgewerkt in Open-AudIT';
+$GLOBALS["lang"]['Copy the <i>Client ID</i> and paste it into the Open-AudIT <i>Client ID</i> field.<br>If there is no secret, click <i>Generate new secret</i>, then copy the value and paste it into the Open-AudIT <i>Client Secret</i> field.'] = 'Bendrijoje <i>Bendrijoje</i> Bendrijoje <i>Bendrijoje</i> Bendrijoje<br/>Bendrijos teisės aktai <i>(1)</i>Tiam kopii la valoron kaj rev <i>Bendrijoje</i> Bendrijoje';
 
-$GLOBALS["lang"]['Devices are being benchmarked.'] = 'De apparaten worden gebenchmarkt.';
+$GLOBALS["lang"]['Copy the value and paste it into the Open-AudIT form for the <i>Client Secret</i> field.'] = 'Kopio la valoro kaj pasto εi en la open- Bendrijoje <i>Bendrijoje</i> Bendrijoje';
 
-$GLOBALS["lang"]['Devices are not being benchmarked.'] = 'De apparaten worden niet gebenchmarkt.';
+$GLOBALS["lang"]['core_count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices could be benchmarked.'] = 'De apparaten kunnen worden gebenchmarkt.';
+$GLOBALS["lang"]['Core Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices in Running State'] = 'Apparaten in draaiende staat';
+$GLOBALS["lang"]['Cores'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices in Stopped State'] = 'Apparaten in gestopte staat';
+$GLOBALS["lang"]['cost_center'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devices in this'] = 'Apparaten in deze';
+$GLOBALS["lang"]['Cost Center'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Devired from type or OS.'] = 'Onttroond van type of besturingssysteem.';
+$GLOBALS["lang"]['cost_code'] = '(arba)';
 
-$GLOBALS["lang"]['dhcp_enabled'] = 'Dhcp ingeschakeld';
+$GLOBALS["lang"]['Cost Code'] = '(arba)';
 
-$GLOBALS["lang"]['Dhcp Enabled'] = 'Dhcp ingeschakeld';
+$GLOBALS["lang"]['Costa Rica'] = 'C \'e\' piu \'mes vrai.';
 
-$GLOBALS["lang"]['dhcp_lease_expires'] = 'Dhcp Lease Verloopt';
+$GLOBALS["lang"]['Cote d Ivoire'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dhcp Lease Expires'] = 'Dhcp Lease Verloopt';
+$GLOBALS["lang"]['count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['dhcp_lease_obtained'] = 'Dhcp Lease verkregen';
+$GLOBALS["lang"]['Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dhcp Lease Obtained'] = 'Dhcp Lease verkregen';
+$GLOBALS["lang"]['country'] = '•';
 
-$GLOBALS["lang"]['dhcp_server'] = 'Dhcp-server';
+$GLOBALS["lang"]['Country'] = '•';
 
-$GLOBALS["lang"]['Dhcp Server'] = 'Dhcp-server';
+$GLOBALS["lang"]['country_code'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Did the command complete successfully and return expected data.'] = 'Heeft het commando succesvol voltooid en verwachte gegevens teruggegeven.';
+$GLOBALS["lang"]['Country Code'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['direction'] = 'Richting';
+$GLOBALS["lang"]['cpu_count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Direction'] = 'Richting';
+$GLOBALS["lang"]['Cpu Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['directory'] = 'Map';
+$GLOBALS["lang"]['Create'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Directory'] = 'Map';
+$GLOBALS["lang"]['Create Example Devices'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['disabled'] = 'Uitgeschakeld';
+$GLOBALS["lang"]['create_external_count'] = '-';
 
-$GLOBALS["lang"]['Disabled'] = 'Uitgeschakeld';
+$GLOBALS["lang"]['Create External Count'] = '-';
 
-$GLOBALS["lang"]['discard'] = 'Weggooien';
+$GLOBALS["lang"]['create_external_from_internal'] = '(1)';
 
-$GLOBALS["lang"]['Discard'] = 'Weggooien';
+$GLOBALS["lang"]['Create External From Internal'] = '(1)';
 
-$GLOBALS["lang"]['Discover'] = 'Ontdekken';
+$GLOBALS["lang"]['Create File'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['discoveries'] = 'Ontdekkingen';
+$GLOBALS["lang"]['Create Geocode'] = '-';
 
-$GLOBALS["lang"]['Discoveries'] = 'Ontdekkingen';
+$GLOBALS["lang"]['create_internal_count'] = '-';
 
-$GLOBALS["lang"]['Discovery'] = 'Ontdekking';
+$GLOBALS["lang"]['Create Internal Count'] = '-';
 
-$GLOBALS["lang"]['Discovery Change Logs'] = 'Ontdekking Logs wijzigen';
+$GLOBALS["lang"]['create_internal_from_external'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Discovery Data Retention'] = 'Ontdekkingsdatabewaring';
+$GLOBALS["lang"]['Create Internal From External'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['discovery_id'] = 'Ontdekkings-ID';
+$GLOBALS["lang"]['Create NMIS Devices from Open-AudIT'] = '(1)';
 
-$GLOBALS["lang"]['Discovery ID'] = 'Ontdekkings-ID';
+$GLOBALS["lang"]['Create Open-AudIT Devices from '] = 'Aparatoj) ';
 
-$GLOBALS["lang"]['Discovery Issues'] = 'Ontdekkingsproblemen';
+$GLOBALS["lang"]['Create Open-AudIT Devices from NMIS'] = 'Aparatoj de NMIS';
 
-$GLOBALS["lang"]['discovery_log'] = 'Ontdekkingslog';
+$GLOBALS["lang"]['Create a Baseline for the example device'] = 'Krei Bazlinion por režisierė';
 
-$GLOBALS["lang"]['Discovery Log'] = 'Ontdekkingslog';
+$GLOBALS["lang"]['Create a Discovery'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Discovery Match Options'] = 'Discovery-matchopties';
+$GLOBALS["lang"]['Create a Statement of Applicability (SoA)'] = 'Deklaron de aplikbleco (Indonesië)';
 
-$GLOBALS["lang"]['Discovery Name'] = 'Ontdekkingsnaam';
+$GLOBALS["lang"]['created_by'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Discovery Options'] = 'Ontdekkingsopties';
+$GLOBALS["lang"]['Created By'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Discovery Queue Count'] = 'Aantal ontdekte wachtrijen';
+$GLOBALS["lang"]['created_date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Discovery Queue Limit'] = 'Ontdekkingslimiet';
+$GLOBALS["lang"]['Created Date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['discovery_run'] = 'Ontdekking uitvoeren';
+$GLOBALS["lang"]['Creating'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Discovery Run'] = 'Ontdekking uitvoeren';
+$GLOBALS["lang"]['Creating Credentials'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['discovery_scan_options'] = 'Ontdekkingsscanopties';
+$GLOBALS["lang"]['Creating Device'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Discovery Scan Options'] = 'Ontdekkingsscanopties';
+$GLOBALS["lang"]['Creating Widgets'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['disk'] = 'Schijf';
+$GLOBALS["lang"]['Creating a Discovery Scan Options entry'] = '"Skanaj Elektroj Kreante"';
 
-$GLOBALS["lang"]['Disk'] = 'Schijf';
+$GLOBALS["lang"]['Creating a Query'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['display_version'] = 'Versie tonen';
+$GLOBALS["lang"]['Creating a SQL Statement for Groups'] = 'Kreante SQL- gewijzigd';
 
-$GLOBALS["lang"]['Display Version'] = 'Versie tonen';
+$GLOBALS["lang"]['Creating a SQL Statement for Queries'] = 'Kreante SQL-util';
 
-$GLOBALS["lang"]['Display in Menu'] = 'Weergave in het menu';
+$GLOBALS["lang"]['Creating an Integration'] = '-';
 
-$GLOBALS["lang"]['district'] = 'District';
+$GLOBALS["lang"]['creator'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['District'] = 'District';
+$GLOBALS["lang"]['Creator'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Djibouti'] = 'Djibouti';
+$GLOBALS["lang"]['credential'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['dns'] = 'Dns';
+$GLOBALS["lang"]['Credential'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dns'] = 'Dns';
+$GLOBALS["lang"]['Credentials'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['dns_domain'] = 'Dns-domein';
+$GLOBALS["lang"]['Credentials Client ID'] = '"Carte d \'identità"';
 
-$GLOBALS["lang"]['Dns Domain'] = 'Dns-domein';
+$GLOBALS["lang"]['Credentials Subscription ID'] = '5. 1 skyrių).';
 
-$GLOBALS["lang"]['dns_domain_reg_enabled'] = 'Dns Domain Reg ingeschakeld';
+$GLOBALS["lang"]['Credentials Tenant ID'] = 'Identificeer Kavimo informacija';
 
-$GLOBALS["lang"]['Dns Domain Reg Enabled'] = 'Dns Domain Reg ingeschakeld';
+$GLOBALS["lang"]['Credentials are stored in the <i>credentials</i> database table. The actual credential information is encrypted in storage. When a Discovery is run, a device has its specific credentials retrieved from the database, decrypted and tested. If these fail the list of credentials is also retrieved, decrypted and then tested against the device starting with credentials known to have worked previously. Device specific credentials are stored at an individual device level in the <i>credential</i> table (note - no <i>s</i> in the table name). SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.'] = 'Bendrijos teisės aktai <i>Bendrijoje</i> "Supply" Kiam Discovery estas prizorgita, afarato haves siajn speciajn akredita.ojn prenitainn de la datumazo, de prospettivacirifrita kaj new. Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip: Questo caso, la Commissione ha adottato una direttiva che modifica la direttiva 77 / 388 / CEE. <i>→ eventoj:</i> (Tab): <i>Bendrijoje</i> Bendrijoje. SH- aprettosiloj estas estetaj Bendrijoje. Dum testado de SSH...';
+
+$GLOBALS["lang"]['Credentials can have one of a few different types - snmp v.1 / v.2, snmp v.3, ssh, ssh key, windows are all implemented. CAVEAT - ssh keys are not implemented for Windows Open-AudIT servers as yet.'] = 'CNN Bendrijoje';
+
+$GLOBALS["lang"]['Credentials for Amazon AWS used in Cloud Discovery'] = '"AWS"';
+
+$GLOBALS["lang"]['Credentials for Microsoft Azure used in Cloud Discovery'] = 'Crédencialessage Azure uzis entavia';
+
+$GLOBALS["lang"]['Critical'] = '-';
+
+$GLOBALS["lang"]['criticality'] = '-';
+
+$GLOBALS["lang"]['Criticality'] = '-';
+
+$GLOBALS["lang"]['Croatia'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Cuba'] = '·';
+
+$GLOBALS["lang"]['current'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Current'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Current Discovery Processes'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Current date & time is '] = 'Nuna dato kajambia ';
+
+$GLOBALS["lang"]['Currently Installed'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = 'Bendrijoje <code>snmp</code>Bendrijoje <code>snmp_v3</code>Bendrijoje <code>ssh</code>Bendrijoje <code>ssh_key</code> Bendrijoje <code>windows</code>Bendrijoje';
+
+$GLOBALS["lang"]['Custom Fields'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Custom TCP Ports'] = 'Kutimo TCP';
+
+$GLOBALS["lang"]['Custom TCP Ports. Any specific ports we would liuke scanned in addition to the Top TCP Ports. Comma seperated, no spaces.'] = '"Alternativainuj spetifaj hasnoj kiujn ni liuke sanis aldone"). -';
+
+$GLOBALS["lang"]['Custom UDP Ports'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Custom UDP Ports. Any specific ports we would liuke scanned in addition to the Top UDP Ports. Comma seperated, no spaces.'] = 'UDP Havenoj. imitaiuj spetifaj hasnoj kiujn ni liuke sanis aldarn  -';
+
+$GLOBALS["lang"]['Customisable Scanning Options per Discovery'] = 'Kutimeblaj saneeriv (ů)';
+
+$GLOBALS["lang"]['Cve'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Cyprus'] = '-';
+
+$GLOBALS["lang"]['Czech'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Czech Republic'] = 'Alternativae Bendrijoje';
+
+$GLOBALS["lang"]['DHCP'] = 'DHCP의 특징';
+
+$GLOBALS["lang"]['DN Account (optional)'] = 'DN-Bendrijoje';
+
+$GLOBALS["lang"]['DN Password (optional)'] = 'DN Bendrijoje';
+
+$GLOBALS["lang"]['DNS FQDN'] = 'DNS ®';
+
+$GLOBALS["lang"]['DNS Hostname'] = 'DNSBendrijoje';
+
+$GLOBALS["lang"]['Danish'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['dashboard_id'] = 'ID- șipareigojimų neprisiimta.';
+
+$GLOBALS["lang"]['Dashboard ID'] = 'ID- șipareigojimų neprisiimta.';
+
+$GLOBALS["lang"]['Dashboard Widgets'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['dashboards'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Dashboards'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Dashboards and Widgets allow Enterprise licensed customers to create, read, update and delete both of these collections to ensure their homepage is exactly what they need to see. Not only that, but a user is able to set a given dashboard as their own homepage. Everyone does not need to use the same homepage (dashboard), nor the same widgets on that dashboard. Professional licensed customers can choose between two predefined dashboards to set as their own homepage.'] = '(OL L 20 van 2015.177, blz. 42). Supportuio, sed uzanto povas meti annaa. fiksitan armaturiaud residusia propra hejmpaεo. "Profesiaj avospitaj klientoj povas elektrischeti need du predifinitaj armatuurlau por komenci." ® kiel sia propra hejmpaεo.';
+
+$GLOBALS["lang"]['Dashboards provide <i>at a glance</i> important visibility for changes occurring on your network as well as providing quick links to device types, manufacturers, and operating systems and so much more.'] = '"Nincs" <i>Bendrijoje</i> Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 dalies a punktas';
+
+$GLOBALS["lang"]['Dashboards use'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Data'] = '®';
+
+$GLOBALS["lang"]['Data Export - CSV, XML, JSON'] = 'CSV Bendrijoje';
+
+$GLOBALS["lang"]['Data Retention'] = '"Säilitaamiini"';
+
+$GLOBALS["lang"]['Database'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['db_action'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Database Action'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['db_column'] = '"Dataumbazo," "Database"';
+
+$GLOBALS["lang"]['Database Column'] = '"Dataumbazo," "Database"';
+
+$GLOBALS["lang"]['Database Definition'] = 'Datuma Difino';
+
+$GLOBALS["lang"]['db_row'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Database Row'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Database Schema'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Database Server Discovery'] = 'Découverte RomâDatumilo ("Découverte")';
+
+$GLOBALS["lang"]['db_table'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Database Table'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Database Tables'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['dataset_title'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Dataset Title'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['date'] = '-';
+
+$GLOBALS["lang"]['Date'] = '-';
+
+$GLOBALS["lang"]['Date D-M-Y'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Date M-D-Y'] = 'K.';
+
+$GLOBALS["lang"]['Date Now'] = '®';
+
+$GLOBALS["lang"]['date_of_manufacture'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Date Of Manufacture'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['date_paid'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Date Paid'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['date_received'] = '-';
+
+$GLOBALS["lang"]['Date Received'] = '-';
+
+$GLOBALS["lang"]['Date Y-M-D'] = '"Y-M-D"';
+
+$GLOBALS["lang"]['Date and time when the CVE was last updated.'] = '"Tempo" kiam la CVE Bendrijoje';
+
+$GLOBALS["lang"]['Date and time when the CVE was published.'] = 'Dato kaj tempo kiam ';
+
+$GLOBALS["lang"]['Date when the CVE was published.'] = 'Dato kiam la CVE estis';
+
+$GLOBALS["lang"]['DateTime Now'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['DateTime Y-M-D H:M:S'] = 'Bendrijoje H: M: S:';
+
+$GLOBALS["lang"]['day_of_month'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Day Of Month'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['day_of_week'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Day Of Week'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Day of Month'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['dbus_identifier'] = 'Identificator Bendrijoje';
+
+$GLOBALS["lang"]['Dbus Identifier'] = 'Identificator Bendrijoje';
+
+$GLOBALS["lang"]['Debug'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Debugging'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Debugging a Script'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['December'] = '(1)';
+
+$GLOBALS["lang"]['Decommission'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Default'] = '- Labas.';
+
+$GLOBALS["lang"]['Default Authentication Level - Set to Connect'] = '- Labas.';
+
+$GLOBALS["lang"]['Default Impersonation Level - Set to Identify'] = '"Nivelo - Nivelo Aparta al"';
+
+$GLOBALS["lang"]['Default Items'] = '- Labas.';
+
+$GLOBALS["lang"]['Default Orgs Groups'] = 'Grupos, Orgs Deva...';
+
+$GLOBALS["lang"]['Default Roles Groups'] = '- Labas.';
+
+$GLOBALS["lang"]['Default Value'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Default of 389. Normally 636 used for Active Directory LDAPS.'] = '389.com · opharm 636 uzis ů Aktiva Adresaro LDAPS.';
+
+$GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = 'Bendrijoje <code>3</code> Por LDAP kaj aktiva adresaro resource.';
+
+$GLOBALS["lang"]['Defaults'] = '- Labas.';
+
+$GLOBALS["lang"]['Deferred'] = 'Anta skeptite Bendrijoje';
+
+$GLOBALS["lang"]['Define project scope and objectives'] = 'Difini Bendrijoje';
+
+$GLOBALS["lang"]['Define the ISMS scope'] = 'SVARBIAUSIAI';
+
+$GLOBALS["lang"]['Define the context of the organization (internal/external issues)'] = 'Difini la Kuntekston de la organiso (internaj / eksteraj temoj), Bendrieoje';
+
+$GLOBALS["lang"]['delay_minutes'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Delay Minutes'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Delete'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Delete Example Devices'] = 'Egzemp, Bendrijoje';
+
+$GLOBALS["lang"]['delete_external_from_internal'] = 'Oriti Eksteren (liet.';
+
+$GLOBALS["lang"]['Delete External From Internal'] = 'Oriti Eksteren (liet.';
+
+$GLOBALS["lang"]['Delete NMIS Devices if not in Open-AudIT'] = 'NMIS ® Forigi Aplikas se ne en OpenAudit';
+
+$GLOBALS["lang"]['Delete a {collection} entry.'] = '-';
+
+$GLOBALS["lang"]['Delete from Application'] = '(1)';
+
+$GLOBALS["lang"]['Delete from Cluster'] = '-';
+
+$GLOBALS["lang"]['Denmark'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Derived by audit or manually set by user.'] = 'Derilado por revizio apäilty mane metita receiver de uzanto.';
+
+$GLOBALS["lang"]['Derived by audit.'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Derived from <code>rack_devices.device_id</code>.'] = 'Bendrijoje <code>rack_devices.device_id</code>Bendrijoje';
+
+$GLOBALS["lang"]['Derived from <code>rack_devices.rack_id</code>.'] = 'Bendrijoje <code>rack_devices.rack_id</code>Bendrijoje';
+
+$GLOBALS["lang"]['Derived from Collector discovery.'] = 'Išvestinė finansinė priemonė "kolektanta eltrova.o."';
+
+$GLOBALS["lang"]['Derived from OS Name.'] = '-';
+
+$GLOBALS["lang"]['Derived from cloud discovery.'] = 'Mortigita estafnaba malkovro.';
+
+$GLOBALS["lang"]['Derived from device audits.'] = 'Mortigita estarataj revizioj.';
+
+$GLOBALS["lang"]['Derived from device type and OS.'] = 'Delicita de aparato tajpas kaj nieuw.';
+
+$GLOBALS["lang"]['Derived from discovery.'] = '-';
+
+$GLOBALS["lang"]['Derived from hostname, sysName, dns Hostname and IP in that order.'] = 'Tuletatud de requirability, sisName, dns requirement';
+
+$GLOBALS["lang"]['Derived from the integer severity.'] = 'Išvestinės finansinės priemonės ir ilgalaikiai atsiskaitymo sandoriai';
+
+$GLOBALS["lang"]['description'] = '(1)';
+
+$GLOBALS["lang"]['Description'] = '(1)';
+
+$GLOBALS["lang"]['destination'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Destination'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['detail'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Detail'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Details'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Details of who is usually contactable at this site.'] = 'Detaloj de kiuj estas rėžti kontakteblaj en tu retejo.';
+
+$GLOBALS["lang"]['Determine how often you want to run the Baseline check against the database and create a Scheduled Report'] = 'Déterminez le kom overse vi volas prizorgi la Bazliniokontron kontra. Dataumbazo kaj krei graafikujärgne aruanne';
+
+$GLOBALS["lang"]['Determine risk treatment options'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Develop a Risk Treatment Plan'] = '"Dvolvi Bendrijoje"';
+
+$GLOBALS["lang"]['Develop policies, procedures, and controls'] = 'Evoluaj politkoj Româproceduroj Şkaj kontroloj';
+
+$GLOBALS["lang"]['Develop required ISMS documentation (policies, procedures, etc.)'] = 'Evoluigis ISMS (Policoj)';
+
+$GLOBALS["lang"]['device'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Device'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Device Audits'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Device Component Names'] = 'Composinte de dispositivo nomoj';
+
+$GLOBALS["lang"]['Device ID'] = '→ eventoj:';
+
+$GLOBALS["lang"]['device_id'] = '→ eventoj:';
+
+$GLOBALS["lang"]['device_id_a'] = '→ eventoj:';
+
+$GLOBALS["lang"]['Device ID A'] = '→ eventoj:';
+
+$GLOBALS["lang"]['device_id_b'] = 'D-ro B "Bendrijoje"';
+
+$GLOBALS["lang"]['Device ID B'] = 'D-ro B "Bendrijoje"';
+
+$GLOBALS["lang"]['Device Matching Rules'] = '"Sobivus"';
+
+$GLOBALS["lang"]['Device Name'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Device Result'] = 'Résultatado del Dispositivo ("arba," arba ", arba")';
+
+$GLOBALS["lang"]['Device Results'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Device Seed'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Device Seed Discoveries are a good option if you know that your network consists of a range of subnets, but you are unsure what they are. Seed the discovery with a local router and watch your network unfold before your eyes.'] = 'Bendrieoje Eltrova Se vi Trovis rev malkovron kun loka j rigardu vian reton anna epäilty viaj okuloj.';
+
+$GLOBALS["lang"]['Device Seed IP'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Device Status'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Device Types'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Device and Software and Hardware Auditing'] = 'Seade kaj softvaro kaj riistvara opharm';
+
+$GLOBALS["lang"]['Device is in the Subnet'] = 'Prodotti chimiques en la řeřeński';
+
+$GLOBALS["lang"]['Devices'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['devices_assigned_to_location'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Devices Assigned To Location'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['devices_assigned_to_org'] = '-';
+
+$GLOBALS["lang"]['Devices Assigned To Org'] = '-';
+
+$GLOBALS["lang"]['Devices Audited'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Devices Collection'] = '(arba)';
+
+$GLOBALS["lang"]['Devices Created in '] = 'Aparatoj Bendrijoje ';
+
+$GLOBALS["lang"]['Devices Created in Open-AudIT'] = 'Aplikas en _ režisierė';
+
+$GLOBALS["lang"]['devices_default_display_columns'] = '(1)';
+
+$GLOBALS["lang"]['Devices Default Display Columns'] = '(1)';
+
+$GLOBALS["lang"]['Devices Found Last 7 Days'] = '7 tagojn';
+
+$GLOBALS["lang"]['Devices Found Today'] = 'Informazioni sulla';
+
+$GLOBALS["lang"]['Devices Found Yesterday'] = 'Aparatoj Bendrijoje';
+
+$GLOBALS["lang"]['Devices Missing Information'] = 'Informazioni sull \'utente, Bendrijoje';
+
+$GLOBALS["lang"]['Devices Not Audited'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Devices Not Seen 30 Days'] = '30';
+
+$GLOBALS["lang"]['Devices Not Seen 7 Days'] = 'Iš viso';
+
+$GLOBALS["lang"]['Devices Not Seen 90 Days'] = '90';
+
+$GLOBALS["lang"]['Devices Older Than X'] = 'Raudona spalva:';
+
+$GLOBALS["lang"]['Devices Retrieved via API'] = 'API Aparatoj Prenitajů por';
+
+$GLOBALS["lang"]['Devices Selected from '] = 'Bendrijoje ';
+
+$GLOBALS["lang"]['Devices Selected from Open-AudIT'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Devices Updated in '] = 'Bendrijoje ';
+
+$GLOBALS["lang"]['Devices Updated in Open-AudIT'] = 'Aplikitaj en rem';
+
+$GLOBALS["lang"]['Devices are being benchmarked.'] = 'Bendrijoje.';
+
+$GLOBALS["lang"]['Devices are not being benchmarked.'] = 'Aparatoj estestas komparnormoj.';
+
+$GLOBALS["lang"]['Devices could be benchmarked.'] = 'Devus esti komparnormo';
+
+$GLOBALS["lang"]['Devices from Open-AudIT'] = 'Aparatoj de Open- Bendrijoje';
+
+$GLOBALS["lang"]['Devices in Running State'] = '-';
+
+$GLOBALS["lang"]['Devices in Stopped State'] = ' A';
+
+$GLOBALS["lang"]['Devices in this'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Devices will not be matched if their status is set to <i>deleted</i>. Any other status will allow a match to occur.'] = 'Aparatoj ne estos egalitaj se ili statuo reasy <i>Bendrijoje</i>. imitare ® stato perfesos Bendrijoje.';
+
+$GLOBALS["lang"]['Devices with Expired Warranties'] = 'Aparatoj estiliswedenia';
+
+$GLOBALS["lang"]['Devired from type or OS.'] = 'Aplikita de tipo sur katlus ontvangers.';
+
+$GLOBALS["lang"]['dhcp_enabled'] = 'Dhcp';
+
+$GLOBALS["lang"]['Dhcp Enabled'] = 'Dhcp';
+
+$GLOBALS["lang"]['dhcp_lease_expires'] = 'Dhcp Bendrijoje';
+
+$GLOBALS["lang"]['Dhcp Lease Expires'] = 'Dhcp Bendrijoje';
+
+$GLOBALS["lang"]['dhcp_lease_obtained'] = 'Dhcp - "Dhcp"';
+
+$GLOBALS["lang"]['Dhcp Lease Obtained'] = 'Dhcp - "Dhcp"';
+
+$GLOBALS["lang"]['dhcp_server'] = 'Milieu';
+
+$GLOBALS["lang"]['Dhcp Server'] = 'Milieu';
+
+$GLOBALS["lang"]['Did the command complete successfully and return expected data.'] = 'Kompletigis sukcese kaj resendis atendatajn datennojn.';
+
+$GLOBALS["lang"]['direction'] = '"Condivi" kartu su "Real Madrid"';
+
+$GLOBALS["lang"]['Direction'] = '"Condivi" kartu su "Real Madrid"';
+
+$GLOBALS["lang"]['directory'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Directory'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['disabled'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Disabled'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['discard'] = '·';
+
+$GLOBALS["lang"]['Discard'] = '·';
+
+$GLOBALS["lang"]['Discover'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Discoveries'] = '(1)';
+
+$GLOBALS["lang"]['Discoveries are at the very heart of what Open-AudIT does. How else would you know <i>Whats On Your Network?</i>'] = 'Programma "Leader +" <i>Ar tikrai?</i>';
+
+$GLOBALS["lang"]['Discoveries are entries that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.'] = '(1)';
+
+$GLOBALS["lang"]['Discovery'] = 'Découverte Bendrijoje';
+
+$GLOBALS["lang"]['Discovery Change Logs'] = 'Bendrijos teisės aktai';
+
+$GLOBALS["lang"]['Discovery Data Retention'] = 'Retención de datos de fubrimiento';
+
+$GLOBALS["lang"]['discovery_id'] = 'Személyazonosító, Bendrieoje Száma:';
+
+$GLOBALS["lang"]['Discovery ID'] = 'Személyazonosító, Bendrieoje Száma:';
+
+$GLOBALS["lang"]['Discovery Issues'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['discovery_log'] = '-';
+
+$GLOBALS["lang"]['Discovery Log'] = '-';
+
+$GLOBALS["lang"]['Discovery Match Options'] = 'Eisen inzake Découverte';
+
+$GLOBALS["lang"]['Discovery Name'] = '-';
+
+$GLOBALS["lang"]['Discovery Options'] = 'Découverte Opcioj';
+
+$GLOBALS["lang"]['Discovery Queue Count'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Discovery Queue Limit'] = 'Líte de cola de descubrimiento, Bendrijoje';
+
+$GLOBALS["lang"]['discovery_run'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Discovery Run'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['discovery_scan_options'] = 'Opcioj di scansione';
+
+$GLOBALS["lang"]['Discovery Scan Options'] = 'Opcioj di scansione';
+
+$GLOBALS["lang"]['Discovery Scan Options are just another item collection. Enterprise users can create, read, update and delete entries as required. Professional users can read all entries, but not create new entries, update existing entries or delete entries. Community users have no GUI that allows access to this collection.'] = '"Opcioj estas nur alias objektokolekto. Entreprimuzantoj povas krei, legi, εisdatigi kaj forigi kontrolboujn kiel șipareigojimų neprisiimta. La plupart des États membres de l \'Union européenne (UE) ont adottaé des mesures à réduire les émission de gaz à Effect de serre. Komunumaj uzantoj havas neniun GUI kiu permes aliro al tu koletto.';
+
+$GLOBALS["lang"]['Discovery Scan Types'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Discovery Support'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Discovery has stopped working'] = 'Découverte Bendrijoje';
+
+$GLOBALS["lang"]['disk'] = '-';
+
+$GLOBALS["lang"]['Disk'] = '-';
+
+$GLOBALS["lang"]['display_version'] = 'Informazioni rev.';
+
+$GLOBALS["lang"]['Display Version'] = 'Informazioni rev.';
+
+$GLOBALS["lang"]['Display in Menu'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Displays a standard web form for submission to POST /{collection}.'] = '® ® ® ® ® ® ® Bendrijoje.';
+
+$GLOBALS["lang"]['Displays a standard web form for submission to POST /{collection}/import.'] = 'Apartigas orman interretformuaron por subnetado al POST / ← Bendrijoje.';
+
+$GLOBALS["lang"]['district'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['District'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Djibouti'] = 'Ibuibotuxin';
+
+$GLOBALS["lang"]['dns'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Dns'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['dns_domain'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Dns Domain'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['dns_domain_reg_enabled'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Dns Domain Reg Enabled'] = 'Bendrijoje';
 
 $GLOBALS["lang"]['dns_fqdn'] = 'Dns Fqdn';
 
-$GLOBALS["lang"]['Dns Fqdn'] = 'Dns Fqdn';
+$GLOBALS["lang"]['Dns Fqdn'] = 'Dns Fqdn(';
 
-$GLOBALS["lang"]['dns_host_name'] = 'Dns-hostnaam';
+$GLOBALS["lang"]['dns_host_name'] = 'Dns Bendrijoje';
 
-$GLOBALS["lang"]['Dns Host Name'] = 'Dns-hostnaam';
+$GLOBALS["lang"]['Dns Host Name'] = 'Dns Bendrijoje';
 
-$GLOBALS["lang"]['dns_hostname'] = 'Dns-hostnaam';
+$GLOBALS["lang"]['dns_hostname'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dns Hostname'] = 'Dns-hostnaam';
+$GLOBALS["lang"]['Dns Hostname'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['dns_server'] = 'Dns-server';
+$GLOBALS["lang"]['dns_server'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dns Server'] = 'Dns-server';
+$GLOBALS["lang"]['Dns Server'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Do not scan these TCP ports.'] = 'Scan deze TCP-poorten niet.';
+$GLOBALS["lang"]['Do not forget there is a mountain of documentation on the wiki'] = 'Ondersteuning forgesu ke ekzitas Monto de dokumentaro sur la Vikio';
 
-$GLOBALS["lang"]['Do not scan these UDP ports.'] = 'Scan deze UDP-poorten niet.';
+$GLOBALS["lang"]['Do not scan these TCP ports.'] = 'Skaan Tiujn TCP- hasnojn.';
 
-$GLOBALS["lang"]['Do not show me again'] = 'Laat me niet meer zien';
+$GLOBALS["lang"]['Do not scan these UDP ports.'] = 'Skaan Tiujn UDP- hasnojn.';
 
-$GLOBALS["lang"]['Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.'] = 'Wilt u veilig transport (LDAPS) of regelmatig ongecodeerde LDAP gebruiken.';
+$GLOBALS["lang"]['Do not show me again'] = '® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ';
 
-$GLOBALS["lang"]['Do you wish to see the standard sidebar on the left.'] = 'Wilt u de standaard zijbalk links zien?';
+$GLOBALS["lang"]['Do you have a perfect example of this configuration? Perhaps a device located in a lab environment or a workstation you use to clone workstation VMs from.'] = 'Ar reikia imtis veiksmų? Eble aparato sitanta en laboratoriomedio next komputio vi uzas por klonabsoration VM de.';
 
-$GLOBALS["lang"]['documentation'] = 'Documentatie';
+$GLOBALS["lang"]['Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.'] = ' imitau vi volas uzi sekurantransporton (LDAPS) ungolamentato ne verlaifitan LDAP.';
 
-$GLOBALS["lang"]['Documentation'] = 'Documentatie';
+$GLOBALS["lang"]['Do you wish to see the standard sidebar on the left.'] = 'Sientou vi volas vidi rev.';
 
-$GLOBALS["lang"]['Does the license apply to child Orgs.'] = 'Is de licentie van toepassing op kind Orgs.';
+$GLOBALS["lang"]['documentation'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['domain'] = 'Domein';
+$GLOBALS["lang"]['Documentation'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Domain'] = 'Domein';
+$GLOBALS["lang"]['Documentation about a particular collection.'] = 'Dukementado pri gewijzigd';
 
-$GLOBALS["lang"]['domain_controller_address'] = 'Domeincontroller adres';
+$GLOBALS["lang"]['Does Not Equal'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Domain Controller Address'] = 'Domeincontroller adres';
+$GLOBALS["lang"]['Does the license apply to child Orgs.'] = '"Valida"';
 
-$GLOBALS["lang"]['domain_controller_name'] = 'Domeincontroller Naam';
+$GLOBALS["lang"]['domain'] = '-';
 
-$GLOBALS["lang"]['Domain Controller Name'] = 'Domeincontroller Naam';
+$GLOBALS["lang"]['Domain'] = '-';
 
-$GLOBALS["lang"]['domain_role'] = 'Domeinrol';
+$GLOBALS["lang"]['domain_controller_address'] = '-';
 
-$GLOBALS["lang"]['Domain Role'] = 'Domeinrol';
+$GLOBALS["lang"]['Domain Controller Address'] = '-';
 
-$GLOBALS["lang"]['domain_short'] = 'Domeinkort';
+$GLOBALS["lang"]['domain_controller_name'] = '"Supply"';
 
-$GLOBALS["lang"]['Domain Short'] = 'Domeinkort';
+$GLOBALS["lang"]['Domain Controller Name'] = '"Supply"';
 
-$GLOBALS["lang"]['Dominica'] = 'Dominica';
+$GLOBALS["lang"]['domain_role'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dominican Republic'] = 'Dominicaanse Republiek';
+$GLOBALS["lang"]['Domain Role'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.'] = 'Ik weet wat ik doe. Geen filter en de mogelijkheid om aangepaste tabellen aan te sluiten.';
+$GLOBALS["lang"]['domain_short'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Download'] = 'Downloaden';
+$GLOBALS["lang"]['Domain Short'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Download a file from URL'] = 'Een bestand downloaden van URL';
+$GLOBALS["lang"]['Dominica'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['driver'] = 'Stuurprogramma';
+$GLOBALS["lang"]['Dominican Republic'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Driver'] = 'Stuurprogramma';
+$GLOBALS["lang"]['Don\\'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['duplex'] = 'Duplex';
+$GLOBALS["lang"]['Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.'] = 'Ne tenu mian manon, mi scias kion mi faras. Neniu inferilo kaj kapabllo ali Nestetta setulumo bulloj.';
 
-$GLOBALS["lang"]['Duplex'] = 'Duplex';
+$GLOBALS["lang"]['Download'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['duration'] = 'Duur';
+$GLOBALS["lang"]['Download a File'] = '-';
 
-$GLOBALS["lang"]['Duration'] = 'Duur';
+$GLOBALS["lang"]['Download a file from URL'] = 'Dosh apretu dosieron';
 
-$GLOBALS["lang"]['ESXi'] = 'ESXi';
+$GLOBALS["lang"]['Download the test_windows_client.vbs script directly'] = 'Vbs manikripton reklama';
 
-$GLOBALS["lang"]['EULA'] = 'EULA';
+$GLOBALS["lang"]['Download your updated version from'] = 'Thomas apretu finan εisdatigitan universiteon';
 
-$GLOBALS["lang"]['Ecuador'] = 'Ecuador';
+$GLOBALS["lang"]['driver'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Edit'] = 'Bewerken';
+$GLOBALS["lang"]['Driver'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['edit_log'] = 'Log';
+$GLOBALS["lang"]['duplex'] = '-';
 
-$GLOBALS["lang"]['Edit Log'] = 'Log';
+$GLOBALS["lang"]['Duplex'] = '-';
 
-$GLOBALS["lang"]['editable'] = 'Bewerkbaar';
+$GLOBALS["lang"]['Duplicate Devices / Missing Devices'] = '(1)';
 
-$GLOBALS["lang"]['Editable'] = 'Bewerkbaar';
+$GLOBALS["lang"]['duration'] = 'Aš...';
 
-$GLOBALS["lang"]['edited_by'] = 'Uitgegeven door';
+$GLOBALS["lang"]['Duration'] = 'Aš...';
 
-$GLOBALS["lang"]['Edited By'] = 'Uitgegeven door';
+$GLOBALS["lang"]['Dutch'] = ' ';
 
-$GLOBALS["lang"]['edited_date'] = 'Datum bewerkt';
+$GLOBALS["lang"]['ESXi'] = 'ESXI';
 
-$GLOBALS["lang"]['Edited Date'] = 'Datum bewerkt';
+$GLOBALS["lang"]['EULA'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['edition'] = 'Editie';
+$GLOBALS["lang"]['Each IP is scanned with the discovery configured options (see Discovery Scan Options and Discovery - Community vs Professional vs Enterprise on the wiki). In general, Nmap will test for ports 22 (ssh), 135 (wmi), 62078 (iPhone) and UDP 161 (snmp). If 22, 135 or 161 respond the credential list is retrieved and each credential tested in turn. The first working credentials are used for further queries directly from the device. Note - if a device has previously been discovered and has working credentials, those credentials are tested first. Only if those fail are the other credentials then attempted.'] = ' imitatu IP estas skanita kun la eltrova.o formita opcioj (vidu atitinkamu "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar ", ar" ar "ar" ar ", ar" ar "ar" ar "ar" ar "ar" ar "ar" ar "ar" ar" ar "ar" ar "ar" ar "ar" ar "ar" ar" ar "ar" ar" ar "ar" ar" ar" ar "ar" ar" ar "ar" ar" ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"ar"';
 
-$GLOBALS["lang"]['Edition'] = 'Editie';
+$GLOBALS["lang"]['Each time a device is discovered or an audit result is processed, all rules are retrieved from the database and run against the attributes of the specific device. Rules run against one device at a time - there is no facility to say <i>Run the rules against all devices<i> or <i>Run the rules against these devices<i>. An individual rule will test one or more attributes of the device and if they match the rule, the result will be applied. Several attributes can be tested. Several attributes can be set. Think of this as an If This, Then That system for Open-AudIT.'] = 'Mezcla de este aparato esta malkovrita a reviziorezulto estas prilaborita, Regeloj Kuris kontra epäilty unu aparato en tempo ... <i>(1)<i> Bendrijoje <i>Bendrijoje<i>"Pluraj atregultoj povas." Pluraj atregultoj povas esti mititaj. Pensu privio kiel Setio, tiam tiu sistemo por režisiery.</i></i></i></i>';
 
-$GLOBALS["lang"]['Egypt'] = 'Egypte';
+$GLOBALS["lang"]['Easily run a discovery upon a network in a single click, without entering the details of that network each and every time.'] = '"Kergesi prisorgas"';
 
-$GLOBALS["lang"]['Either Amazon, Google or Microsoft.'] = 'Amazon, Google of Microsoft.';
+$GLOBALS["lang"]['Ecuador'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Edit'] = 'Éditeur rev.';
+
+$GLOBALS["lang"]['edit_log'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Edit Log'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['editable'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Editable'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['edited_by'] = 'Anta skeptite Bendrijoje';
+
+$GLOBALS["lang"]['Edited By'] = 'Anta skeptite Bendrijoje';
+
+$GLOBALS["lang"]['edited_date'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Edited Date'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['edition'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Edition'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Egypt'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Either Amazon, Google or Microsoft.'] = '"Google"';
 
 $GLOBALS["lang"]['Either none or present.
 
@@ -1851,4589 +2389,6227 @@ $GLOBALS["lang"]['Either none or present.
 
 A race condition must be won to successfully exploit the vulnerability. The successfulness of the attack is conditioned on execution conditions that are not under full control of the attacker. The attack may need to be launched multiple times against a single target before being successful.
 
-Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).'] = 'Niet of niet aanwezig.
+Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).'] = 'Neniu kaptlustab
 
-<strong>Geen</strong> - De succesvolle aanval hangt niet af van de inzet en uitvoering van het kwetsbare systeem. De aanvaller kan verwachten in staat te zijn om de kwetsbaarheid te bereiken en de exploitatie uit te voeren onder alle of de meeste gevallen van de kwetsbaarheid.
+<strong>Bendrijoje</strong> La sukcesa atako ne depositas de la regionjo kaj ekzekutkondrircaoj de la vunderbla sistemo.
 
-<strong>Aanwezig</strong> - De succesvolle aanval hangt af van de aanwezigheid van specifieke inzet- en uitvoeringsomstandigheden van het kwetsbare systeem dat de aanval mogelijk maakt. Deze omvatten:
+<strong>Bendrijoje</strong> La sukcesa atako conpendeas de la Visionesto de specia sorrejo kaj ekzekutkondi curvaoj Româvundebla sistemo kiu rajtigas la atakon. TiujBendrijoje:
 
-Een race voorwaarde moet worden gewonnen om de kwetsbaarheid succesvol te benutten. Het succes van de aanval is afhankelijk van executievoorwaarden die niet volledig onder controle zijn van de aanvaller. De aanval moet meerdere keren worden gelanceerd tegen een enkel doel voordat succesvol.
+Vetkurkondio tuhoa esti gajnita por sukcese ekspluati  Šio straipsnio 1 dalies a ir b punktuose nurodyti reikalavimai netaikomi, jei: (OL L 20, 2015.1 27, p. 42).
 
-Netwerkinjectie. De aanvaller moet zichzelf injecteren in het logische netwerkpad tussen het doelwit en de door het slachtoffer gevraagde hulpbron (bv. kwetsbaarheden die een aanvaller op het pad vereisen).';
+Pitäkäää kiinni (Bendrijoje)';
 
-$GLOBALS["lang"]['El Salvador'] = 'El Salvador';
+$GLOBALS["lang"]['El Salvador'] = '-';
 
-$GLOBALS["lang"]['email'] = 'E-mail';
+$GLOBALS["lang"]['email'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Email'] = 'E-mail';
+$GLOBALS["lang"]['Email'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['email_address'] = 'E-mailadres';
+$GLOBALS["lang"]['email_address'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Email Address'] = 'E-mailadres';
+$GLOBALS["lang"]['Email Address'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Email Configuration'] = 'E-mailconfiguratie';
+$GLOBALS["lang"]['Email Configuration'] = '-';
 
-$GLOBALS["lang"]['Email to send test to'] = 'E-mail om test naar te sturen';
+$GLOBALS["lang"]['Email to send test to'] = 'Le présent EOOD est obligatoire dans tous ses élements et respecturing applicationbili dans tout État membre.';
 
-$GLOBALS["lang"]['Enable'] = 'Inschakelen';
+$GLOBALS["lang"]['Enable'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['enabled'] = 'Ingeschakeld';
+$GLOBALS["lang"]['Enable Distributed COM on this computer - Option is checked'] = 'Distributido lubabine COM (2005) 0211 komputio - Elekto estas kontrolita';
 
-$GLOBALS["lang"]['Enabled'] = 'Ingeschakeld';
+$GLOBALS["lang"]['enabled'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['encryption'] = 'Versleuteling';
+$GLOBALS["lang"]['Enabled'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Encryption'] = 'Versleuteling';
+$GLOBALS["lang"]['Enabling the Feature Under Windows'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['encryption_method'] = 'Versleutelingsmethode';
+$GLOBALS["lang"]['encryption'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Encryption Method'] = 'Versleutelingsmethode';
+$GLOBALS["lang"]['Encryption'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['encryption_status'] = 'Versleutelingsstatus';
+$GLOBALS["lang"]['encryption_method'] = '-';
 
-$GLOBALS["lang"]['Encryption Status'] = 'Versleutelingsstatus';
+$GLOBALS["lang"]['Encryption Method'] = '-';
 
-$GLOBALS["lang"]['end_date'] = 'Einddatum';
+$GLOBALS["lang"]['encryption_status'] = '-';
 
-$GLOBALS["lang"]['End Date'] = 'Einddatum';
+$GLOBALS["lang"]['Encryption Status'] = '-';
 
-$GLOBALS["lang"]['End OF Life Product ID'] = 'Product-ID einde levensduur';
+$GLOBALS["lang"]['end_date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['end_of_life'] = 'Einde van het leven';
+$GLOBALS["lang"]['End Date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['End Of Life'] = 'Einde van het leven';
+$GLOBALS["lang"]['End OF Life Product ID'] = 'Fino al prodotto';
 
-$GLOBALS["lang"]['end_of_production'] = 'Einde van de productie';
+$GLOBALS["lang"]['end_of_life'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['End Of Production'] = 'Einde van de productie';
+$GLOBALS["lang"]['End Of Life'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['end_of_service'] = 'Einde van de dienst';
+$GLOBALS["lang"]['end_of_production'] = '-';
 
-$GLOBALS["lang"]['End Of Service'] = 'Einde van de dienst';
+$GLOBALS["lang"]['End Of Production'] = '-';
 
-$GLOBALS["lang"]['end_of_service_life'] = 'Einde van de levensduur';
+$GLOBALS["lang"]['end_of_service'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['End Of Service Life'] = 'Einde van de levensduur';
+$GLOBALS["lang"]['End Of Service'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['English'] = 'Engels';
+$GLOBALS["lang"]['end_of_service_life'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['enterprise'] = 'Onderneming';
+$GLOBALS["lang"]['End Of Service Life'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Enterprise'] = 'Onderneming';
+$GLOBALS["lang"]['Endpoint'] = '-';
 
-$GLOBALS["lang"]['Enterprise Private Network'] = 'Privé-netwerk van ondernemingen';
+$GLOBALS["lang"]['English'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Entitlement Type'] = 'Soort recht';
+$GLOBALS["lang"]['Enhances regulatory compliance'] = 'Plibonigas Osservatorio';
 
-$GLOBALS["lang"]['environment'] = 'Milieu';
+$GLOBALS["lang"]['Enrichment is complete. The CVE has full metadata and is considered stable.'] = 'Bendrijoje: "CVE plenajn metadatenojn kaj estas konsiderita stabilazasa."';
 
-$GLOBALS["lang"]['Environment'] = 'Milieu';
+$GLOBALS["lang"]['Ensure documentation is controlled and accessible'] = 'Certigi dokumentadon (dokumentų rinkinys)';
 
-$GLOBALS["lang"]['Equal To'] = 'Gelijk aan';
+$GLOBALS["lang"]['enterprise'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Equal To or Greater Than'] = 'Gelijk aan of groter dan';
+$GLOBALS["lang"]['Enterprise'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Equal To or Less Than'] = 'Gelijk aan of minder dan';
+$GLOBALS["lang"]['Enterprise Private Network'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Equals'] = 'Gelijken';
+$GLOBALS["lang"]['Enterprise private network'] = '-';
 
-$GLOBALS["lang"]['Equatorial Guinea'] = 'Equatoriaal-Guinea';
+$GLOBALS["lang"]['Entitlement Type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Eritrea'] = 'Eritrea';
+$GLOBALS["lang"]['Entra'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Error'] = 'Fout';
+$GLOBALS["lang"]['environment'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Error Code'] = 'Foutcode';
+$GLOBALS["lang"]['Environment'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Established'] = 'Opgericht';
+$GLOBALS["lang"]['Equal To'] = '(* *)';
 
-$GLOBALS["lang"]['Estonia'] = 'Estland';
+$GLOBALS["lang"]['Equal To or Greater Than'] = 'Egala Bendrijoje';
 
-$GLOBALS["lang"]['Ethernet MAC'] = 'Ethernet';
+$GLOBALS["lang"]['Equal To or Less Than'] = 'Egala a kahtlus malpli ol';
 
-$GLOBALS["lang"]['ethernet_mac'] = 'Ethernet Mac';
+$GLOBALS["lang"]['Equals'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ethernet Mac'] = 'Ethernet Mac';
+$GLOBALS["lang"]['Equatorial Guinea'] = 'Ekvatora (Ekvatora)';
 
-$GLOBALS["lang"]['Ethiopia'] = 'Ethiopië';
+$GLOBALS["lang"]['Eritrea'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Every'] = 'Elke';
+$GLOBALS["lang"]['Error'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Every Day'] = 'Elke dag';
+$GLOBALS["lang"]['Error Code'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Exceptions'] = 'Uitzonderingen';
+$GLOBALS["lang"]['Esperanto'] = '(1)';
 
-$GLOBALS["lang"]['exclude'] = 'Exclusief';
+$GLOBALS["lang"]['Establish a project plan and timeline'] = 'Létrehozás projektoplanon kaj templinion, Bendrijoje';
 
-$GLOBALS["lang"]['Exclude'] = 'Exclusief';
+$GLOBALS["lang"]['Establish an information security policy'] = '"Létrehozás"';
 
-$GLOBALS["lang"]['exclude_ip'] = 'IP uitsluiten';
+$GLOBALS["lang"]['Established'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Exclude IP'] = 'IP uitsluiten';
+$GLOBALS["lang"]['Estonia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Exclude IP Addresses'] = 'IP-adressen uitsluiten';
+$GLOBALS["lang"]['Estonian'] = '(1)';
 
-$GLOBALS["lang"]['Exclude TCP Ports'] = 'TCP-poorten uitsluiten';
+$GLOBALS["lang"]['Ethernet MAC'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['exclude_tcp_ports'] = 'Tcp-poorten uitsluiten';
+$GLOBALS["lang"]['ethernet_mac'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Exclude Tcp Ports'] = 'Tcp-poorten uitsluiten';
+$GLOBALS["lang"]['Ethernet Mac'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Exclude UDP Ports'] = 'UDP-poorten uitsluiten';
+$GLOBALS["lang"]['Ethiopia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['exclude_udp_ports'] = 'Udp-poorten uitsluiten';
+$GLOBALS["lang"]['Evaluate the ISMS internally'] = 'ISMS) arba';
 
-$GLOBALS["lang"]['Exclude Udp Ports'] = 'Udp-poorten uitsluiten';
+$GLOBALS["lang"]['Every'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Exclude these IP addresses from being Nmap scanned.'] = 'Deze IP-adressen uitsluiten van Nmap gescand.';
+$GLOBALS["lang"]['Every Day'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Excluded'] = 'Uitgesloten';
+$GLOBALS["lang"]['Example'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['exclusion_reasons'] = 'Uitsluitingsgronden';
+$GLOBALS["lang"]['Example Devices'] = 'Ekzemplo: Bendrijoje';
 
-$GLOBALS["lang"]['Exclusion Reasons'] = 'Uitsluitingsgronden';
+$GLOBALS["lang"]['Example Org Chart with Access'] = '"Ekzemplo Orgel"';
 
-$GLOBALS["lang"]['executable'] = 'Uitvoerbaar';
+$GLOBALS["lang"]['Example text from'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Executable'] = 'Uitvoerbaar';
+$GLOBALS["lang"]['Examples'] = 'Egzemoj Româekzemoj';
 
-$GLOBALS["lang"]['executable_id'] = 'Uitvoerbaar ID';
+$GLOBALS["lang"]['Exceptions'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Executable ID'] = 'Uitvoerbaar ID';
+$GLOBALS["lang"]['exclude'] = 'Ekskluzo Bendrijoje';
 
-$GLOBALS["lang"]['executables'] = 'Uitvoerbare bestanden';
+$GLOBALS["lang"]['Exclude'] = 'Ekskluzo Bendrijoje';
 
-$GLOBALS["lang"]['Executables'] = 'Uitvoerbare bestanden';
+$GLOBALS["lang"]['exclude_ip'] = '"Välja"';
 
-$GLOBALS["lang"]['Execute'] = 'Uitvoeren';
+$GLOBALS["lang"]['Exclude IP'] = '"Välja"';
 
-$GLOBALS["lang"]['Executing'] = 'Uitvoeren';
+$GLOBALS["lang"]['Exclude IP Addresses'] = 'Adresoj IP Bendrijoje';
 
-$GLOBALS["lang"]['exemption_reason'] = 'Vrijstelling Reden';
+$GLOBALS["lang"]['Exclude IP Addresses (individual IP - 192.168.1.20, ranges - 192.168.1.30-40 or subnets - 192.168.1.100/30) listed from being scanned. Comma seperated, no spaces.'] = 'Välja arvatud IP-eis- 192.168.1.200, intervalloj - 192.168.1.30- 40, epäilty subetoj - 192.168.1.100 / 30). -';
 
-$GLOBALS["lang"]['Exemption Reason'] = 'Vrijstelling Reden';
+$GLOBALS["lang"]['Exclude TCP Ports'] = 'TCP Bendrijoje';
 
-$GLOBALS["lang"]['Existing Building'] = 'Bestaande bouw';
+$GLOBALS["lang"]['exclude_tcp_ports'] = 'Nincs magyar ® Tcp';
 
-$GLOBALS["lang"]['Existing Floor'] = 'Bestaande vloer';
+$GLOBALS["lang"]['Exclude Tcp Ports'] = 'Nincs magyar ® Tcp';
 
-$GLOBALS["lang"]['Existing Room'] = 'Bestaande ruimte';
+$GLOBALS["lang"]['Exclude UDP Ports'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Existing Row'] = 'Bestaande rij';
+$GLOBALS["lang"]['exclude_udp_ports'] = '-';
 
-$GLOBALS["lang"]['expire_date'] = 'Datum verlopen';
+$GLOBALS["lang"]['Exclude Udp Ports'] = '-';
 
-$GLOBALS["lang"]['Expire Date'] = 'Datum verlopen';
+$GLOBALS["lang"]['Exclude any ports listed from being scanned. Comma seperated, no spaces.'] = 'Eksklodante jojn anjn hasnojn listigitaj ensiti skanitaj. -';
 
-$GLOBALS["lang"]['expire_minutes'] = 'Verlopen minuten';
+$GLOBALS["lang"]['Exclude these IP addresses from being Nmap scanned.'] = 'Išskyrus serą tiauj IP - adresoj edusesti Nmap skanita.';
 
-$GLOBALS["lang"]['Expire Minutes'] = 'Verlopen minuten';
+$GLOBALS["lang"]['Excluded'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['expires'] = 'Verloopt';
+$GLOBALS["lang"]['exclusion_reasons'] = 'C \'e\' piu \'mes vrai.';
 
-$GLOBALS["lang"]['Expires'] = 'Verloopt';
+$GLOBALS["lang"]['Exclusion Reasons'] = 'C \'e\' piu \'mes vrai.';
 
-$GLOBALS["lang"]['expiry_date'] = 'Einddatum';
+$GLOBALS["lang"]['executable'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Expiry Date'] = 'Einddatum';
+$GLOBALS["lang"]['Executable'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['exploit_maturity'] = 'Gebruiksduur';
+$GLOBALS["lang"]['executable_id'] = '®';
 
-$GLOBALS["lang"]['Exploit Maturity'] = 'Gebruiksduur';
+$GLOBALS["lang"]['Executable ID'] = '®';
 
-$GLOBALS["lang"]['Export'] = 'Uitvoer';
+$GLOBALS["lang"]['executables'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Export by Device'] = 'Exporteren op apparaat';
+$GLOBALS["lang"]['Executables'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Export by Policy'] = 'Uitvoer volgens beleid';
+$GLOBALS["lang"]['Execute'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Export data to'] = 'Gegevens exporteren naar';
+$GLOBALS["lang"]['Executing'] = '-';
 
-$GLOBALS["lang"]['expose'] = 'Expose';
+$GLOBALS["lang"]['exemption_reason'] = '•';
 
-$GLOBALS["lang"]['Expose'] = 'Expose';
+$GLOBALS["lang"]['Exemption Reason'] = '•';
 
-$GLOBALS["lang"]['External'] = 'Extern';
+$GLOBALS["lang"]['Existing Building'] = 'Ekskluzivanta Konstrua.o - "';
 
-$GLOBALS["lang"]['External Field Name'] = 'Externe veldnaam';
+$GLOBALS["lang"]['Existing Floor'] = 'Ekzisztanta';
 
-$GLOBALS["lang"]['External Field Type'] = 'Extern veldtype';
+$GLOBALS["lang"]['Existing Room'] = 'Ar tikrai?';
 
-$GLOBALS["lang"]['external_ident'] = 'Externe identificatie';
+$GLOBALS["lang"]['Existing Row'] = 'Ekskluzivaambia';
 
-$GLOBALS["lang"]['External Ident'] = 'Externe identificatie';
+$GLOBALS["lang"]['expire_date'] = '"" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""';
 
-$GLOBALS["lang"]['external_link'] = 'Externe koppeling';
+$GLOBALS["lang"]['Expire Date'] = '"" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""';
 
-$GLOBALS["lang"]['External Link'] = 'Externe koppeling';
+$GLOBALS["lang"]['expire_minutes'] = 'Aegumisprolid';
 
-$GLOBALS["lang"]['extra_columns'] = 'Extra kolommen';
+$GLOBALS["lang"]['Expire Minutes'] = 'Aegumisprolid';
 
-$GLOBALS["lang"]['Extra Columns'] = 'Extra kolommen';
+$GLOBALS["lang"]['expires'] = '→ eventoj:';
 
-$GLOBALS["lang"]['Extra and more verbose logging is generated for troubleshooting.'] = 'Extra en meer verbose logging wordt gegenereerd voor probleemoplossing.';
+$GLOBALS["lang"]['Expires'] = '→ eventoj:';
 
-$GLOBALS["lang"]['FAQ'] = 'Veelgestelde vragen';
+$GLOBALS["lang"]['expiry_date'] = 'Eksplua dato, arba';
 
-$GLOBALS["lang"]['FQDN'] = 'FQDN';
+$GLOBALS["lang"]['Expiry Date'] = 'Eksplua dato, arba';
 
-$GLOBALS["lang"]['FW Revision'] = 'Herziening van FW';
+$GLOBALS["lang"]['exploit_maturity'] = 'Käytä Bendrijoje';
 
-$GLOBALS["lang"]['Fail'] = 'Fout';
+$GLOBALS["lang"]['Exploit Maturity'] = 'Käytä Bendrijoje';
 
-$GLOBALS["lang"]['Failed'] = 'Mislukt';
+$GLOBALS["lang"]['Export'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Failed Severity'] = 'Afstand mislukt';
+$GLOBALS["lang"]['Export by Device'] = '"Appareil Eksporto," Bendrieoje';
 
-$GLOBALS["lang"]['Falkland Islands (Malvinas)'] = 'Falklandeilanden (Malvinas)';
+$GLOBALS["lang"]['Export by Policy'] = 'Eksporto managolitik';
 
-$GLOBALS["lang"]['Family'] = 'Familie';
+$GLOBALS["lang"]['Export data to'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Faroe Islands'] = 'Faeröer';
+$GLOBALS["lang"]['Exporting a Device'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Features'] = 'Kenmerken';
+$GLOBALS["lang"]['expose'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['February'] = 'Februari';
+$GLOBALS["lang"]['Expose'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['field'] = 'Veld';
+$GLOBALS["lang"]['External'] = '-';
 
-$GLOBALS["lang"]['Field'] = 'Veld';
+$GLOBALS["lang"]['External Field Name'] = 'Ekstera nieuw';
 
-$GLOBALS["lang"]['field_id'] = 'Veld-ID';
+$GLOBALS["lang"]['External Field Type'] = '(1)';
 
-$GLOBALS["lang"]['Field ID'] = 'Veld-ID';
+$GLOBALS["lang"]['External Field Types'] = '-';
 
-$GLOBALS["lang"]['Field Name'] = 'Veldnaam';
+$GLOBALS["lang"]['external_ident'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Field Type'] = 'Veldtype';
+$GLOBALS["lang"]['External Ident'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Fields'] = 'Velden';
+$GLOBALS["lang"]['external_link'] = '-';
 
-$GLOBALS["lang"]['fields'] = 'Velden';
+$GLOBALS["lang"]['External Link'] = '-';
 
-$GLOBALS["lang"]['Fiji the Fiji Islands'] = 'Fiji de Fiji-eilanden';
+$GLOBALS["lang"]['extra_columns'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['File'] = 'Bestand';
+$GLOBALS["lang"]['Extra Columns'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['File Import'] = 'Bestand Importeren';
+$GLOBALS["lang"]['Extra and Time based Reporting'] = 'Ekstero kaj režisierius';
 
-$GLOBALS["lang"]['File Input'] = 'Bestandsinvoer';
+$GLOBALS["lang"]['Extra and more verbose logging is generated for troubleshooting.'] = 'Ekstra kaj pli multvorta arbotorekado estas Bendrijoje.';
 
-$GLOBALS["lang"]['file_name'] = 'Bestandnaam';
+$GLOBALS["lang"]['FAQ'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['File Name'] = 'Bestandnaam';
+$GLOBALS["lang"]['FQDN'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['file_size'] = 'Bestandsgrootte';
+$GLOBALS["lang"]['FW Revision'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['File Size'] = 'Bestandsgrootte';
+$GLOBALS["lang"]['Fail'] = '®';
 
-$GLOBALS["lang"]['filename'] = 'Bestandsnaam';
+$GLOBALS["lang"]['Failed'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Filename'] = 'Bestandsnaam';
+$GLOBALS["lang"]['Failed Severity'] = '-';
 
-$GLOBALS["lang"]['files'] = 'Bestanden';
+$GLOBALS["lang"]['Falkland Islands (Malvinas)'] = 'Falklandinsurloj';
 
-$GLOBALS["lang"]['Files'] = 'Bestanden';
+$GLOBALS["lang"]['Family'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['files_id'] = 'Bestanden-ID';
+$GLOBALS["lang"]['Faroe Islands'] = '-';
 
-$GLOBALS["lang"]['Files ID'] = 'Bestanden-ID';
+$GLOBALS["lang"]['Features'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['filter'] = 'Filter';
+$GLOBALS["lang"]['February'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Filter'] = 'Filter';
+$GLOBALS["lang"]['field'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['filtered'] = 'Gefilterd';
+$GLOBALS["lang"]['Field'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Filtered'] = 'Gefilterd';
+$GLOBALS["lang"]['field_id'] = 'Numéro d\'identificazione';
 
-$GLOBALS["lang"]['Finland'] = 'Finland';
+$GLOBALS["lang"]['Field ID'] = 'Numéro d\'identificazione';
 
-$GLOBALS["lang"]['Firewall'] = 'Firewall';
+$GLOBALS["lang"]['Field Name'] = '(1)';
 
-$GLOBALS["lang"]['firewall_rule'] = 'Firewall-regel';
+$GLOBALS["lang"]['Field Type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Firewall Rule'] = 'Firewall-regel';
+$GLOBALS["lang"]['Fields'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['firmware'] = 'Firmware';
+$GLOBALS["lang"]['fields'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Firmware'] = 'Firmware';
+$GLOBALS["lang"]['Fields attributes are'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['firmware_revision'] = 'Firmware Revisie';
+$GLOBALS["lang"]['Fiji the Fiji Islands'] = 'Fi Fliidoj, Fi pilaioj';
 
-$GLOBALS["lang"]['Firmware Revision'] = 'Firmware Revisie';
+$GLOBALS["lang"]['File'] = 'Ütaka';
 
-$GLOBALS["lang"]['First Name'] = 'Voornaam';
+$GLOBALS["lang"]['File Auditing'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['first_run'] = 'Eerste uitvoeren';
+$GLOBALS["lang"]['File Import'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['First Run'] = 'Eerste uitvoeren';
+$GLOBALS["lang"]['File Input'] = '(1)';
 
-$GLOBALS["lang"]['first_seen'] = 'Eerste keer gezien';
+$GLOBALS["lang"]['file_name'] = 'Ütaka';
 
-$GLOBALS["lang"]['First Seen'] = 'Eerste keer gezien';
+$GLOBALS["lang"]['File Name'] = 'Ütaka';
 
-$GLOBALS["lang"]['FirstWave'] = 'Eerste golf';
+$GLOBALS["lang"]['File Share Discovery'] = 'Partger.';
 
-$GLOBALS["lang"]['Fix'] = 'Repareren';
+$GLOBALS["lang"]['file_size'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Fixed'] = 'Vast';
+$GLOBALS["lang"]['File Size'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Floor'] = 'Verdieping';
+$GLOBALS["lang"]['filename'] = 'Ütaka';
 
-$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = 'Volg een van onderstaande links en ontdek hoe u Open-AudIT kunt gebruiken om erachter te komen <b>Wat is er op je netwerk?</b>';
+$GLOBALS["lang"]['Filename'] = 'Ütaka';
 
-$GLOBALS["lang"]['For a seed discovery, should I only discover IPs in the private IP address space.'] = 'Voor een zaad ontdekking, moet ik alleen IP\'s ontdekken in de privé IP adresruimte.';
+$GLOBALS["lang"]['files'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['For a seed discovery, should I only discover IPs on the chosen subnet.'] = 'Voor een zaad ontdekking, moet ik alleen IP\'s ontdekken op het gekozen subnet.';
+$GLOBALS["lang"]['Files'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['For a seed discovery, should I ping the subnet before running the discovery.'] = 'Voor een zaad ontdekking, moet ik ping het subnet voordat de ontdekking.';
+$GLOBALS["lang"]['files_id'] = 'Numéro d\'identificazione di Doseroj, Bendrijoje';
 
-$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.'] = 'Voor geavanceerde invoer van een ruwe SQL query. Volgens Queries, moet u <code>WHERE @filter AND<code> in your SQL.</code></code>';
+$GLOBALS["lang"]['Files ID'] = 'Numéro d\'identificazione di Doseroj, Bendrijoje';
 
-$GLOBALS["lang"]['For licenses that are not perpetual, when does the license expire.'] = 'Voor licenties die niet eeuwigdurend zijn, wanneer vervalt de licentie.';
+$GLOBALS["lang"]['filter'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['form_factor'] = 'Vormfactor';
+$GLOBALS["lang"]['Filter'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Form Factor'] = 'Vormfactor';
+$GLOBALS["lang"]['filtered'] = '(1)';
 
-$GLOBALS["lang"]['format'] = 'Formaat';
+$GLOBALS["lang"]['Filtered'] = '(1)';
 
-$GLOBALS["lang"]['Format'] = 'Formaat';
+$GLOBALS["lang"]['Filtered Ports'] = '"Plylongigita"';
 
-$GLOBALS["lang"]['fqdn'] = 'Fqdn';
+$GLOBALS["lang"]['Finland'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Fqdn'] = 'Fqdn';
+$GLOBALS["lang"]['Finnish'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['France, French Republic'] = 'Frankrijk, Frankrijk';
+$GLOBALS["lang"]['Firewall'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['free'] = 'Vrij';
+$GLOBALS["lang"]['Firewall Packages'] = '-';
 
-$GLOBALS["lang"]['Free'] = 'Vrij';
+$GLOBALS["lang"]['firewall_rule'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['French'] = 'Frans';
+$GLOBALS["lang"]['Firewall Rule'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['French Guiana'] = 'Frans Guyana';
+$GLOBALS["lang"]['firmware'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['French Polynesia'] = 'Frans Polynesië';
+$GLOBALS["lang"]['Firmware'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['French Southern Territories'] = 'Franse Zuidelijke Gebieden';
+$GLOBALS["lang"]['firmware_revision'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Frequently Asked Questions'] = 'Veelgestelde vragen';
+$GLOBALS["lang"]['Firmware Revision'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Friday'] = 'Vrijdag';
+$GLOBALS["lang"]['First'] = '·';
 
-$GLOBALS["lang"]['From 100 Devices'] = 'Vanaf 100 apparaten';
+$GLOBALS["lang"]['First Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['From 500 Devices'] = 'Vanaf 500 apparaten';
+$GLOBALS["lang"]['first_run'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['full_name'] = 'Volledige naam';
+$GLOBALS["lang"]['First Run'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Full Name'] = 'Volledige naam';
+$GLOBALS["lang"]['first_seen'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['function'] = 'Functie';
+$GLOBALS["lang"]['First Seen'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Function'] = 'Functie';
+$GLOBALS["lang"]['First focus on what the end need is: are you trying to baseline software, users, or Netstat data? What is the important thing(s) to compare and report on?'] = 'Bendrijoje Foso sur pion la finbezono estas: Uzlinijan softvaron, uzantojn, katlus Netstat- datenojn? Ar tai kompari kaj raporti?';
 
-$GLOBALS["lang"]['GROUP BY'] = 'GROEP PER';
+$GLOBALS["lang"]['FirstWave'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Gabon'] = 'Gabon';
+$GLOBALS["lang"]['Fix'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Gambia the'] = 'Gambia';
+$GLOBALS["lang"]['Fixed'] = '-';
 
-$GLOBALS["lang"]['gateway'] = 'Poort';
+$GLOBALS["lang"]['Fixing the Issue'] = '-';
 
-$GLOBALS["lang"]['Gateway'] = 'Poort';
+$GLOBALS["lang"]['Floor'] = '1993';
 
-$GLOBALS["lang"]['gateways'] = 'Gateways';
+$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = 'Sekku jojn da laligiloj malsupre kaj malkovri kiel uzi ů ŞŞţBendrijoje <b>Ar tikrai?</b>';
 
-$GLOBALS["lang"]['Gateways'] = 'Gateways';
+$GLOBALS["lang"]['For'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Generated By'] = 'Gegenereerd door';
+$GLOBALS["lang"]['For <i>Type</i> make sure to select Baseline, and for Group you should select a Group of devices, if applicable to this baseline, that best represent the devices to apply the baseline against. This will prevent erroneous entries.'] = 'Bendrijoje <i>Bendrijoje</i> Certigu selekki bazlinion, kaj por grupo vi devus selekti grong de aparatoj, se uzeble al tu bazlino, kiu plej os reprezentas la aparatojn por uzi la bazlinion kontrauna. Tio malhelpos Şkontrolujn.';
 
-$GLOBALS["lang"]['geo'] = 'Geo';
+$GLOBALS["lang"]['For Debian/Ubuntu run, including setting dpkg to remember your override so an apt-get upgrade will not break'] = 'Por Debian / Ubuntu kuro, inkluzive de metado de dpkg por memorivian ohitustiel ap- Ricevi γisdatigo ne krevos';
 
-$GLOBALS["lang"]['Geo'] = 'Geo';
+$GLOBALS["lang"]['For SNMP Open-AudIT can use v1, v2 and v3 credentials. The device is queried regardless of it being a router, switch (regular network devices) or a computer (Linux and Windows often run SNMP for monitoring tools).'] = 'Å 1⁄2 aliÅ 3, v2 kaj v3 akredita. Alarato estas orgullosomandita nekonsiderante εi estante itro, тaltilo (regulaj sendostaciaj paratoj) kahtlus komputio (Lin)';
 
-$GLOBALS["lang"]['Georgia'] = 'Georgië';
+$GLOBALS["lang"]['For a primer on cron, see this Wikipedia page'] = 'Por enkonduko sur kno, vidu rėmzig tiun paεon';
 
-$GLOBALS["lang"]['German'] = 'Duits';
+$GLOBALS["lang"]['For a seed discovery, should I only discover IPs in the private IP address space.'] = '"Por Austria"';
 
-$GLOBALS["lang"]['Germany'] = 'Duitsland';
+$GLOBALS["lang"]['For a seed discovery, should I only discover IPs on the chosen subnet.'] = '"Por Austria"';
 
-$GLOBALS["lang"]['Get Lat/Long'] = 'Lat/Lang halen';
+$GLOBALS["lang"]['For a seed discovery, should I ping the subnet before running the discovery.'] = '"Por Austria"';
 
-$GLOBALS["lang"]['Get Started'] = 'Starten';
+$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.'] = 'Por progresilta eniro de kruda SQL - opharm Bendrijoje <code>WHERE @filter AND<code> in your SQL.</code></code>';
 
-$GLOBALS["lang"]['Get a Free License'] = 'Koop een gratis licentie';
+$GLOBALS["lang"]['For each spawned process, the below occurs.'] = 'Por... generita procezo, ar malsupre okazas.';
 
-$GLOBALS["lang"]['Getting Started'] = 'Starten';
+$GLOBALS["lang"]['For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enable you to determine this.'] = 'Egzemp, vi eble kreos bazlinion de aparato kuranta, redhat 9kiu funkcias kiel unu el viaj apa reomendarserviloj en hasto. L \'Unione Bendrijoje';
 
-$GLOBALS["lang"]['Ghana'] = 'Ghana';
+$GLOBALS["lang"]['For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.'] = 'Egzemp, vi eble kreos bazlinion de aparato kuranta, redhat 9kiu funkcias kiel unu el viaj apa reomendarserviloj en hasto. L \'Unione Bendrijoje';
 
-$GLOBALS["lang"]['Gibraltar'] = 'Gibraltar';
+$GLOBALS["lang"]['For further details information, see the wiki.'] = 'Por Pliajenej informatoj';
 
-$GLOBALS["lang"]['Global Discovery Options'] = 'Globale zoekopties';
+$GLOBALS["lang"]['For licenses that are not perpetual, when does the license expire.'] = 'Por licencoj kiuj ne estas ternaj, kiam la licenco eksminiti.';
 
-$GLOBALS["lang"]['Go'] = 'Ga';
+$GLOBALS["lang"]['For more detailed information, check the Open-AudIT Knowledge Base.'] = 'Post pla detalajeneformaj ar kontrauambia ar postal';
 
-$GLOBALS["lang"]['Google Compute Fields'] = 'Google Bereken velden';
+$GLOBALS["lang"]['For more information please see the following guide which includes a video. Use'] = 'Por pli da informatoj bonvolu vidi la sekvan gvidiston kiu inkludas vidbendon. Bendrijoje';
 
-$GLOBALS["lang"]['Google Maps API Key'] = 'Google Maps API Sleutel';
+$GLOBALS["lang"]['For more information, see'] = 'Por pli da informatoj, Bendrijoje';
 
-$GLOBALS["lang"]['Greater Than'] = 'Groter dan';
+$GLOBALS["lang"]['form_factor'] = '(1)';
 
-$GLOBALS["lang"]['Greater Than or Equals'] = 'Groter dan of gelijk aan';
+$GLOBALS["lang"]['Form Factor'] = '(1)';
 
-$GLOBALS["lang"]['Greece'] = 'Griekenland';
+$GLOBALS["lang"]['format'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Green Query'] = 'Groene zoekopdracht';
+$GLOBALS["lang"]['Format'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Greenland'] = 'Groenland';
+$GLOBALS["lang"]['Forth'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Grenada'] = 'Grenada';
+$GLOBALS["lang"]['fqdn'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Group'] = 'Groep';
+$GLOBALS["lang"]['Fqdn'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['group_by'] = 'Groeperen op';
+$GLOBALS["lang"]['France, French Republic'] = 'Francio, arba';
 
-$GLOBALS["lang"]['Group By'] = 'Groeperen op';
+$GLOBALS["lang"]['free'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['group_id'] = 'Groeps-ID';
+$GLOBALS["lang"]['Free'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Group ID'] = 'Groeps-ID';
+$GLOBALS["lang"]['French'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['groups'] = 'Groepen';
+$GLOBALS["lang"]['French Guiana'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Groups'] = 'Groepen';
+$GLOBALS["lang"]['French Polynesia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Guadeloupe'] = 'Guadeloupe';
+$GLOBALS["lang"]['French Southern Territories'] = 'Territorios de Franca';
 
-$GLOBALS["lang"]['Guam'] = 'Guam';
+$GLOBALS["lang"]['Frequently Asked Questions'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Guatemala'] = 'Guatemala';
+$GLOBALS["lang"]['Friday'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Guernsey'] = 'Guernsey';
+$GLOBALS["lang"]['From 100 Devices'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['guest_device_id'] = 'Gastapparaat-ID';
+$GLOBALS["lang"]['From 500 Devices'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Guest Device ID'] = 'Gastapparaat-ID';
+$GLOBALS["lang"]['From that page'] = '-';
 
-$GLOBALS["lang"]['guid'] = 'Guid';
+$GLOBALS["lang"]['full_name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Guid'] = 'Guid';
+$GLOBALS["lang"]['Full Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Guinea'] = 'Guinee';
+$GLOBALS["lang"]['Full cloud auditing with all the details from a regular Open-AudIT audit AND details such as the machine type and size.'] = 'Plena nubo revizianta kun † iuj detaloj déréglemente rėkstanti (-a) - (a)';
 
-$GLOBALS["lang"]['Guinea-Bissau'] = 'Guinee-Bissau';
+$GLOBALS["lang"]['function'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Guyana'] = 'Guyana';
+$GLOBALS["lang"]['Function'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['HP-UX'] = 'HP-UX';
+$GLOBALS["lang"]['GROUP BY'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['HW Revision'] = 'HW-herziening';
+$GLOBALS["lang"]['Gabon'] = 'Gabóno Gabóno (G)';
 
-$GLOBALS["lang"]['Haiti'] = 'Haïti';
+$GLOBALS["lang"]['Galician'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['hard_drive_index'] = 'Harde schijfindex';
+$GLOBALS["lang"]['Gambia the'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Hard Drive Index'] = 'Harde schijfindex';
+$GLOBALS["lang"]['Gap Analysis (optional)'] = '"Lünkade"';
 
-$GLOBALS["lang"]['hardware_revision'] = 'Hardware herziening';
+$GLOBALS["lang"]['gateway'] = '®';
 
-$GLOBALS["lang"]['Hardware Revision'] = 'Hardware herziening';
+$GLOBALS["lang"]['Gateway'] = '®';
 
-$GLOBALS["lang"]['Has this policy been applied in this organization.'] = 'Is dit beleid in deze organisatie toegepast?';
+$GLOBALS["lang"]['gateways'] = '®';
 
-$GLOBALS["lang"]['hash'] = 'Hash';
+$GLOBALS["lang"]['Gateways'] = '®';
 
-$GLOBALS["lang"]['Hash'] = 'Hash';
+$GLOBALS["lang"]['Generated By'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Head'] = 'Hoofd';
+$GLOBALS["lang"]['geo'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Heard Island and McDonald Islands'] = 'Heard Island en McDonald Islands';
+$GLOBALS["lang"]['Geo'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['height'] = 'Hoogte';
+$GLOBALS["lang"]['Geographical Maps'] = 'Géografiaj';
 
-$GLOBALS["lang"]['Height'] = 'Hoogte';
+$GLOBALS["lang"]['Georgia'] = '"Kartvelio Kartvelio" ("Kartvelio")';
 
-$GLOBALS["lang"]['Height in RU'] = 'Hoogte in spoorwegonderneming';
+$GLOBALS["lang"]['German'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Help'] = 'Hulp';
+$GLOBALS["lang"]['Germany'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Help and Frequently Asked Questions'] = 'Hulp en veelgestelde vragen';
+$GLOBALS["lang"]['Get Lat/Long'] = '(1)';
 
-$GLOBALS["lang"]['high'] = 'Hoog';
+$GLOBALS["lang"]['Get News'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['High'] = 'Hoog';
+$GLOBALS["lang"]['Get Started'] = '(1)';
 
-$GLOBALS["lang"]['High Availability'] = 'Hoge beschikbaarheid';
+$GLOBALS["lang"]['Get a Free License'] = '-';
 
-$GLOBALS["lang"]['Holy See (Vatican City State)'] = 'Heilige Stoel (Vaticaanstad)';
+$GLOBALS["lang"]['Get familiar with the Open-AudIT platform and explore some of its features.'] = '- plaformo kaj esplori jujn el εiaj ekoj.';
 
-$GLOBALS["lang"]['Home'] = 'Begin';
+$GLOBALS["lang"]['Getting Started'] = '(1)';
 
-$GLOBALS["lang"]['home'] = 'Begin';
+$GLOBALS["lang"]['Ghana'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Home Area Network'] = 'Home Area Network';
+$GLOBALS["lang"]['Gibraltar'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Honduras'] = 'Honduras';
+$GLOBALS["lang"]['Github'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Hong Kong'] = 'Hongkong';
+$GLOBALS["lang"]['Global Discovery Options'] = 'Tutmonda Découverte Opcioj';
 
-$GLOBALS["lang"]['host'] = 'Host';
+$GLOBALS["lang"]['Global area network'] = '(1)';
 
-$GLOBALS["lang"]['Host'] = 'Host';
+$GLOBALS["lang"]['Go'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['hostname'] = 'Hostnaam';
+$GLOBALS["lang"]['Go back to your Open-AudIT server and create a discovery with the target Windows computers IP Address as the subnet (this will save having to discover the entire subnet again). Run the discovery, taking note of any issues. For any issues found, take appropriate actions.'] = 'Iru reen al via Open- skaitykite servilio kaj krei eltrova... su kun la celo Windows komputiloj IP Aadress kiel la subreto (tio diverraparos devi malkovri la tutan subreton denove). Thomas Malkovro, Noti pri juj aferoj. Imitaar juj aferoj ů, prenu ta.gajn Şjn.';
 
-$GLOBALS["lang"]['Hostname'] = 'Hostnaam';
+$GLOBALS["lang"]['Go the target Windows PC (or use RDP) and log on as the user used by your discovery credential set.'] = 'Iru al la celo PC';
 
-$GLOBALS["lang"]['hour'] = 'Uur';
+$GLOBALS["lang"]['Go to menu'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Hour'] = 'Uur';
+$GLOBALS["lang"]['Go to the <i>Applications</i> -> <i>App registrations</i> menu item on the far left. Search for Open-AudIT. Click the Open-AudIT entry in the list (assuming you named the app Open-AudIT).'] = 'Bendrijoje <i>Bendrijoje</i> ■ <i>Bendrijoje</i> reg een malpreksima maldekstro. Serčis por. Klaku la Open- opharm - eniron en la lista (supozante ke vi nomis la app open- opharm).';
 
-$GLOBALS["lang"]['How and Why is Open-AudIT More Secure'] = 'Hoe en waarom is Open-AudIT veiliger';
+$GLOBALS["lang"]['Go to the <i>Certificates and secrets</i> menu item under <i>Manage</i> in the center menu.'] = 'Bendrijoje <i>Bendrijoje</i> Bendrijoje <i>-</i> Bendrijoje.';
 
-$GLOBALS["lang"]['How long did the command take to execute.'] = 'Hoe lang duurde het bevel om uit te voeren.';
+$GLOBALS["lang"]['Go to the <i>Single sign-on</i> menu item and click SAML for <i>Select a single sign-on method</i>.'] = 'Bendrijoje <i>Bendrijoje</i> Bendrijoje M <i>Elektroti ununuran rev.</i>Bendrijoje';
 
-$GLOBALS["lang"]['How long should Nmap wait for a response, per device.'] = 'Hoe lang moet Nmap wachten op een reactie, per apparaat.';
+$GLOBALS["lang"]['Google Compute Fields'] = '"Computes"';
 
-$GLOBALS["lang"]['How many circuit feed to this rack.'] = 'Hoeveel circuits naar dit rek.';
+$GLOBALS["lang"]['Google JSON Credentials'] = '-';
 
-$GLOBALS["lang"]['How many policies results in a fail.'] = 'Hoeveel beleidsmaatregelen resulteren in een mislukking.';
+$GLOBALS["lang"]['Google Maps API Key'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['How many policies results in a pass.'] = 'Hoeveel beleidsmaatregelen resulteren in een pas.';
+$GLOBALS["lang"]['Great, then you can help! Send FirstWave the text shown in the GUI and what should be shown. We will include that in the language file so going forward, the translation is improved and you do not need to worry about updating it for every release!'] = 'Csont, vi povas neblogai! Unieke sémi Ondo la teksto montrita en la GUI kaj kio dev esti montrita. Ni Inkludocation en la lingvodosiero tien iranta consapevole, la traduko estas plibonigita kaj vi ne bezonas maltvirankvili pri εisdatigado de εi por.';
 
-$GLOBALS["lang"]['How many power sockets in this rack.'] = 'Hoeveel stopcontacten in dit rek.';
+$GLOBALS["lang"]['Greater Than'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['How many rack units in height is this rack.'] = 'Hoeveel rack units in hoogte is dit rek.';
+$GLOBALS["lang"]['Greater Than or Equals'] = 'Pli gra ol a kahtlustus Şgalaj';
 
-$GLOBALS["lang"]['How often should the collector ask the server for a task.'] = 'Hoe vaak moet de verzamelaar de server om een taak vragen.';
+$GLOBALS["lang"]['Greece'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['How should we select devices to be integrated (using an Attribute, Query or a Group).'] = 'Hoe moeten we apparaten selecteren om te worden geïntegreerd (met behulp van een Attribuut, Query of een Groep).';
+$GLOBALS["lang"]['Greek'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).'] = 'Hoe de kwetsbaarheid wordt benut (bijvoorbeeld, Netwerk, Aangrenzend, Lokaal, Fysiek).';
+$GLOBALS["lang"]['Green Query'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['How to compare'] = 'Hoe te vergelijken';
+$GLOBALS["lang"]['Greenland'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Human-readable explanation of the vulnerability.'] = 'Menselijk leesbare verklaring van de kwetsbaarheid.';
+$GLOBALS["lang"]['Grenada'] = '(facultatif, sans dotte pas besoin de traduction)';
 
-$GLOBALS["lang"]['Hungary'] = 'Hongarije';
+$GLOBALS["lang"]['Group'] = '-';
 
-$GLOBALS["lang"]['hw_cpe'] = 'Hw Cpe';
+$GLOBALS["lang"]['group_by'] = '-';
 
-$GLOBALS["lang"]['Hw Cpe'] = 'Hw Cpe';
+$GLOBALS["lang"]['Group By'] = '-';
 
-$GLOBALS["lang"]['hyperthreading'] = 'Hyperthreading';
+$GLOBALS["lang"]['group_id'] = '-';
 
-$GLOBALS["lang"]['Hyperthreading'] = 'Hyperthreading';
+$GLOBALS["lang"]['Group ID'] = '-';
 
-$GLOBALS["lang"]['I have read the EULA.'] = 'Ik heb de EULA gelezen.';
+$GLOBALS["lang"]['groups'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['id'] = 'ID';
+$GLOBALS["lang"]['Groups'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <i>devices.id</i> only. If requested using the web interface, they return the standard column attribute list. Groups can be used for Integrations, Baselines and other items.'] = 'Grupoj estas utiligitaj ů simpraj listaj de aparatos kiuj egalas la postulatajn kontircajn. - <i>Paratoj.id</i> Bendrijoje Se postuladite uzante la interretinterfacon, ili resendas la orman kolumnon attante as listan. Grupoj povas esti uzitaj por Integriεoj, Bazlinioj kajelij eroj.';
+
+$GLOBALS["lang"]['Guadeloupe'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Guam'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Guatemala'] = 'Gvatinio Gvatinio Gvatinio';
+
+$GLOBALS["lang"]['Guernsey'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['guest_device_id'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Guest Device ID'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['guid'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Guid'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Guinea'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Guinea-Bissau'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Guyana'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['HP-UX'] = 'HP- UX';
+
+$GLOBALS["lang"]['HW Revision'] = '(-)';
+
+$GLOBALS["lang"]['Haiti'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['hard_drive_index'] = 'MalmölaBendrijoje';
+
+$GLOBALS["lang"]['Hard Drive Index'] = 'MalmölaBendrijoje';
+
+$GLOBALS["lang"]['Hardware'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['hardware_revision'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Hardware Revision'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Has this policy been applied in this organization.'] = 'Tiu politik etis aplikita en tu organico.';
+
+$GLOBALS["lang"]['hash'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Hash'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Have the agent always run the latest audit script (if you upgrade Open-AudIT and manually copy the scripts to the targets, then set cron - you will need to update these scripts for each upgrade).'] = '"Vive" ';
+
+$GLOBALS["lang"]['Have your user open a command prompt (using <i>Run as Administrator</i>). Paste the below into the prompt to download the Agent.'] = 'uzanto malfermas kommundan interstance (uzante) <i>Bendrijoje</i>(1) (1) (1) (1) (2) (1) (2) (2) (1) (2) (2) (1) (2) (2) (1) (2) (2) (2) (2) (2) (2) (2) (2) (1) (2) (2) (2) (1) (2) (2) (1) (1) (2) (2) (2) (2) (1) (2) (2) (2) (2) (2) (2) (2) (2) (2) (2) (2) (2) (2) (2) (2) (2) (1) (1) (1) (1) (1) (1) (2) (2) (2) (1) (2) (2) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1)))';
+
+$GLOBALS["lang"]['Head'] = ' ®';
+
+$GLOBALS["lang"]['Heard Island and McDonald Islands'] = '(1)';
+
+$GLOBALS["lang"]['Hebrew'] = 'HebrajNaam';
+
+$GLOBALS["lang"]['height'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Height'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Height in RU'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Help'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Help and Frequently Asked Questions'] = '-';
+
+$GLOBALS["lang"]['Helps manage and mitigate information security risks'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Hide Audit Window'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['high'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['High'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['High Availability'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Hindi'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Holy See (Vatican City State)'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Home'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['home'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Home Area Network'] = 'Kotilaueverkko';
+
+$GLOBALS["lang"]['Home area network'] = 'C \'è la première fois que l\' su s \'en occupe.';
+
+$GLOBALS["lang"]['Honduras'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Hong Kong'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['host'] = '(1) arba';
+
+$GLOBALS["lang"]['Host'] = '(1) arba';
+
+$GLOBALS["lang"]['hostname'] = '(arba)';
+
+$GLOBALS["lang"]['Hostname'] = '(arba)';
+
+$GLOBALS["lang"]['hour'] = ' ®';
+
+$GLOBALS["lang"]['Hour'] = ' ®';
+
+$GLOBALS["lang"]['How Does It Work?'] = 'Näetkö funkkiatavia?';
+
+$GLOBALS["lang"]['How Does it Work?'] = 'Näetkö funkkiatavia?';
+
+$GLOBALS["lang"]['How Long Does it Take'] = '-';
+
+$GLOBALS["lang"]['How and Why is'] = 'Les kaj kial estas';
+
+$GLOBALS["lang"]['How and Why is Open-AudIT More Secure'] = 'Kylis kaj kial estas new aperto';
+
+$GLOBALS["lang"]['How do they work?'] = 'Ar tikrai?';
+
+$GLOBALS["lang"]['How does a Device Seed Discovery find known IPs?'] = 'Kylis Seade Seemne avastamise Bendrijoje?';
+
+$GLOBALS["lang"]['How long did the command take to execute.'] = '-';
+
+$GLOBALS["lang"]['How long should Nmap wait for a response, per device.'] = '-';
+
+$GLOBALS["lang"]['How many circuit feed to this rack.'] = '-';
+
+$GLOBALS["lang"]['How many policies results in a fail.'] = 'Kiom da politkoj rezultas rem.';
+
+$GLOBALS["lang"]['How many policies results in a pass.'] = 'Kiom da politkoj rezultigas enirtranslisilon.';
+
+$GLOBALS["lang"]['How many power sockets in this rack.'] = 'Aš...';
+
+$GLOBALS["lang"]['How many rack units in height is this rack.'] = '-';
+
+$GLOBALS["lang"]['How often should the collector ask the server for a task.'] = '-';
+
+$GLOBALS["lang"]['How should we select devices to be integrated (using an Attribute, Query or a Group).'] = 'Kiel ni elektrisches aparatojnplee por esti integritaj (uzante Atributon, Bendrijoje).';
+
+$GLOBALS["lang"]['How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).'] = 'Kiel la vundebleco estas eksluatita (eksz., Reto, Amministrazione, Lokulo, Fizika).';
+
+$GLOBALS["lang"]['How to compare'] = '-';
+
+$GLOBALS["lang"]['Human-readable explanation of the vulnerability.'] = 'Homa- legebla klarigo de la vundebleco.';
+
+$GLOBALS["lang"]['Hungarian'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Hungary'] = 'Vengrija';
+
+$GLOBALS["lang"]['hw_cpe'] = 'Hw Cpetavia';
+
+$GLOBALS["lang"]['Hw Cpe'] = 'Hw Cpetavia';
+
+$GLOBALS["lang"]['hyperthreading'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Hyperthreading'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['I have read the EULA.'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['I hope this post has alleviated any concerns you have about Open-AudIT and Security. If you have any questions at all, please do not hesitate to reach out to us here at FirstWave. We are always happy to discuss your concerns and needs. And maybe if your question is not something I have addressed here, I can add it here for future users'] = 'Mi esperas, ke se vi havas demandojn entute, bonvolu ne hezitu atimi ni.i Bendrijoje. Per demando ne estas io, kion mi traktis Tie, mi povas aldoni εin - Tie por estontaj uzantoj.';
+
+$GLOBALS["lang"]['id'] = 'Bendrijoje';
 
 $GLOBALS["lang"]['ID'] = 'ID';
 
-$GLOBALS["lang"]['IF'] = 'ALS';
+$GLOBALS["lang"]['IF'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['IOS Version'] = 'IOS-versie';
+$GLOBALS["lang"]['IMPORTANT'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['IP'] = 'IP';
+$GLOBALS["lang"]['INPUTS'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ip'] = 'IP';
+$GLOBALS["lang"]['IOS Version'] = 'Versio de IOS';
 
-$GLOBALS["lang"]['IP Address'] = 'IP-adres';
+$GLOBALS["lang"]['IP'] = 'IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP IP TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL TL';
 
-$GLOBALS["lang"]['IP Addresses'] = 'IP-adressen';
+$GLOBALS["lang"]['ip'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['IP Last Seen'] = 'IP laatst bekeken';
+$GLOBALS["lang"]['IP Address'] = '"Het"';
 
-$GLOBALS["lang"]['IP Set By'] = 'IP ingesteld op';
+$GLOBALS["lang"]['IP Addresses'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ISO 27001 only.'] = 'Alleen ISO 27001.';
+$GLOBALS["lang"]['IP Last Seen'] = 'IP-kanaal';
 
-$GLOBALS["lang"]['Iceland'] = 'IJsland';
+$GLOBALS["lang"]['IP Set By'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['icon'] = 'Pictogram';
+$GLOBALS["lang"]['ISMS'] = 'ISMS 소개';
 
-$GLOBALS["lang"]['Icon'] = 'Pictogram';
+$GLOBALS["lang"]['ISO 27001 only.'] = 'ISO 27001 ISO ISO';
 
-$GLOBALS["lang"]['Icon and Text'] = 'Pictogram en tekst';
+$GLOBALS["lang"]['Iceland'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Icon only, text only or icon and text.'] = 'Pictogram alleen, tekst alleen of pictogram en tekst.';
+$GLOBALS["lang"]['icon'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['id_internal'] = 'Id intern';
+$GLOBALS["lang"]['Icon'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Id Internal'] = 'Id intern';
+$GLOBALS["lang"]['Icon and Text'] = '-';
 
-$GLOBALS["lang"]['id_number'] = 'Id-nummer';
+$GLOBALS["lang"]['Icon only, text only or icon and text.'] = 'Ikono nur, teksto nur kaptluseikono kaj teksto.';
 
-$GLOBALS["lang"]['Id Number'] = 'Id-nummer';
+$GLOBALS["lang"]['id_internal'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['identification'] = 'Identificatie';
+$GLOBALS["lang"]['Id Internal'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Identification'] = 'Identificatie';
+$GLOBALS["lang"]['id_number'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['If'] = 'Als';
+$GLOBALS["lang"]['Id Number'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['If a port responds with filtered, should we consider it available.'] = 'Als een poort reageert met gefilterd, moeten we het beschikbaar achten.';
+$GLOBALS["lang"]['identification'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['If a port responds with open|filtered, should we consider it available.'] = 'Als een poort reageert met een open';
+$GLOBALS["lang"]['Identification'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['If a remote device does not exist in the Open-AudIT selected devices, should we delete it from the external system.'] = 'Als er geen apparaat op afstand bestaat in de geselecteerde apparaten van Open-AudIT, moeten we het uit het externe systeem verwijderen.';
+$GLOBALS["lang"]['Identify information assets'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['If an Open-AudIT device has been changed, should we update the external system.'] = 'Als een Open-AudIT apparaat is gewijzigd, moeten we het externe systeem bijwerken.';
+$GLOBALS["lang"]['Identify interested parties and their requirements'] = 'Idegu Şlatajn partijn kaj iliajn postulojn';
 
-$GLOBALS["lang"]['If an Open-AudIT device is not on the external system, should we create it.'] = 'Als een Open-AudIT-apparaat niet op het externe systeem staat, moeten we het aanmaken.';
+$GLOBALS["lang"]['Identify key stakeholders and assign roles'] = '(OL L 20 van 2015.177, blz. 42).';
 
-$GLOBALS["lang"]['If an agent reports its primary IP is in this subnet, perform the actions.'] = 'Als een agent rapporteert dat zijn primaire IP in dit subnet zit, voer dan de acties uit.';
+$GLOBALS["lang"]['Identify the device(s) that are your exemplary, or <i>gold image</i> you want to compare similar devices against.'] = 'Idegu la aparaton (j) kiuj estas Bendrijoje <i>Bendrijoje</i> Bendrijoje';
 
-$GLOBALS["lang"]['If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.'] = 'Als een van deze (coma gescheiden, geen spaties) poorten worden gedetecteerd, neem dan aan dat SSH erop draait en gebruik ze voor controle. U hoeft deze poort niet toe te voegen aan de Aangepaste TCP poorten - deze wordt automatisch toegevoegd.';
+$GLOBALS["lang"]['Identifying and evaluating security risks'] = 'Identigado kaj analizado Şsekurecriskai';
 
-$GLOBALS["lang"]['If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.'] = 'Indien ingesteld, bevat een JSON array van specifieke device kolommen die deze gebruiker heeft gekozen om te zien, anders dan de configuratie standaard.';
+$GLOBALS["lang"]['If'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['If the agent OS family (case insensitive) contains this string, perform the actions.'] = 'Als de agent OS familie (hoofdletter ongevoelig) deze tekenreeks bevat, voer dan de acties uit.';
+$GLOBALS["lang"]['If a device is individually discovered using the <i>Discover Device</i> link on the device details page, we first check if this device has been discovered previously (by Discovery) and if so, use the discovery options from that scan. If it has not been previously discovered, we revert to the configuration item discovery_default_scan_option the settings.'] = 'Se aparato estas injalue malkovrita uzante la <i>Dispositivo</i> Indaparato detalpa Fluoido, ni une kontrolas se tu aparato estis malkovrita anta Bendrijoje Se εi ne estis anta.e malkovrita, ni revenas al konfiguracio objecttotrova.o _ deva...';
 
-$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>'] = 'Indien aan de volgende voorwaarden is voldaan:<br/><ul><li>a Role heeft een toegewezen ad_group</li><li>een Org heeft een toegewezen ad_groep</li><li>een LDAP Server heeft use_roles ingesteld op y</li><li>een gebruiker bestaat in LDAP (of het nu Active Directory of OpenLDAP is) en bevindt zich in de toegewezen ad_groups</li></ul>Die gebruiker kan inloggen op Open-AudIT zonder dat er een account in Open-AudIT moet worden aangemaakt. Open-AudIT zal de LDAP in kwestie opvragen en als de gebruiker in de vereiste groepen zit maar niet in Open-AudIT, worden de gebruikersattributen (naam, volledige naam, e-mail, rollen, orgs, etc) binnen Open-AudIT automatisch ingevuld en worden ze ingelogd.<br/> <br/>';
+$GLOBALS["lang"]['If a new Org is created, an LDAP group name is automatically derived from the name. For example, if a new Org is created and is named Test, the corresponding LDAP group will be named open-audit_orgs_test.'] = 'Bendrijoje Org estas kreita, LDAP grupnomo estas a limitate devinita de la nomo. Egzemp, Bendrijoje Org estas kreita kaj estas nomita Testo, la ekvivalenta LDAP- grupo estos nomita malferma- audit _ orgs _ testo.';
 
-$GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.'] = 'Als de gebruiker die zich aanmeldt bij Open-AudIT geen toegang heeft om LDAP te zoeken, kunt u een ander account gebruiken dat deze toegang heeft.';
+$GLOBALS["lang"]['If a port responds with filtered, should we consider it available.'] = 'se ei reagoi Româfilterta, ni konsideru ';
 
-$GLOBALS["lang"]['If this many or more minutes have passed since the device contacted the server, perform the actions.'] = 'Als dit vele of meer minuten zijn verstreken sinds het apparaat contact heeft opgenomen met de server, voer dan de acties uit.';
+$GLOBALS["lang"]['If a port responds with open|filtered, should we consider it available.'] = 'L \'utility de l\'eau dans la production de l\'eau potable et de l\'eau potable doit être immagée.';
 
-$GLOBALS["lang"]['If you choose a Collector, it will be scheduled to execute on the next 5 minute boundary.'] = 'Als u kiest voor een Verzamelaar, zal het worden gepland om uit te voeren op de volgende 5 minuten grens.';
+$GLOBALS["lang"]['If a remote device does not exist in the Open-AudIT selected devices, should we delete it from the external system.'] = '® malpreksima aparato ne ekzistas en la open- Bendrijoje';
 
-$GLOBALS["lang"]['ifadminstatus'] = 'Ifadminstatus';
+$GLOBALS["lang"]['If an Open-AudIT device has been changed, should we update the external system.'] = 'Se rev. ';
 
-$GLOBALS["lang"]['Ifadminstatus'] = 'Ifadminstatus';
+$GLOBALS["lang"]['If an Open-AudIT device is not on the external system, should we create it.'] = 'Aparato ne estas sur la ekstera sistemo, ni devus krei εin.';
 
-$GLOBALS["lang"]['iflastchange'] = 'Iflastchange';
+$GLOBALS["lang"]['If an agent reports its primary IP is in this subnet, perform the actions.'] = 'Se agento raportas sian primaran IP estas en tu subreto, elfaras la agojn.';
 
-$GLOBALS["lang"]['Iflastchange'] = 'Iflastchange';
+$GLOBALS["lang"]['If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.'] = 'Se iu el tiiuj (komma seeteraj, neniuj spacoj) hasnoj estas detektitititaj, supozas SSH replacement sur ilin kaj uzas ilin por reviziado. Neniu bezono aldoni tiun hasnon al la specific TCP - hasnoj - εi estos aldonita a limitate.';
 
-$GLOBALS["lang"]['Ignored'] = 'Negeren';
+$GLOBALS["lang"]['If no operator is specified, the default is =. Properties should be fully qualified - ie, devices.hostname (not just hostname).'] = 'Thomas funkcioniu estas prezigita, la deva... Trajtoj devus esti plène kvalifikitaj - insegnare, aparatoj. Petefenyimi (tavia) ';
 
-$GLOBALS["lang"]['image'] = 'Afbeelding';
+$GLOBALS["lang"]['If no value is present, supply this value. EG: for system.nmis_group / configuraion.group we use'] = ' "Estas" ... EG: "Estas." Bendrijoje';
 
-$GLOBALS["lang"]['Image'] = 'Afbeelding';
+$GLOBALS["lang"]['If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.'] = 'Thomas, tenas JSON aron de speciaj aparatokolonoj tu uzanto elektrisches vidi, krom la konfiguraciodeva.';
 
-$GLOBALS["lang"]['Images'] = 'Afbeeldingen';
+$GLOBALS["lang"]['If the OS Family (as reported by the device) contains this item, pass.</li>'] = 'Se la Os Famille (Indonaparato Şaparato) enhavas tiun objectton, enirfloversilon.';
 
-$GLOBALS["lang"]['impact_availability'] = 'Beschikbaarheid van effecten';
+$GLOBALS["lang"]['If the Open-AudIT Server has Collectors reporting to it, an additional drop down is provided. You can select this to specify which Collector the task should run on. Only Discovery tasks are supported for Collectors.'] = 'Se la open- alla opent - alla opent - alla residu- alla residue - alla residue hava kolektantojn raportajn al εi, kroma goto malsupren estas disponigita. L \'objectif est d\' améliorer la qualité de l \'eau et de l\'eau. 2017 m. sausio mėn.';
 
-$GLOBALS["lang"]['Impact Availability'] = 'Beschikbaarheid van effecten';
+$GLOBALS["lang"]['If the agent OS family (case insensitive) contains this string, perform the actions.'] = 'Bendrijoje Os familio (kazo imuna) enhavas tiun kordon, elfaras la agojn.';
 
-$GLOBALS["lang"]['impact_confidentiality'] = 'Impactgeheim';
+$GLOBALS["lang"]['If the binary is not found in either of these locations, a warning message will be displayed in the installer.'] = 'Se la binara ne estas trovita en a. relevtiauj lokoj, protectionanta mesa Liquidato estos elmontrita en la equililo.';
 
-$GLOBALS["lang"]['Impact Confidentiality'] = 'Impactgeheim';
+$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>'] = 'Bendrijoje:<br/><ul><li>Rolo haves asignitaan _ Indonesië</li><li>(RO 2012 7183).</li><li>"Servilo havas"</li><li>Uzanto eksistas en LDAP (estu... i Aktiva Adresaro a epäillyt OpenLDAP) kaj estas en la asignita _ grupoj.</li></ul>Tiu uzanto povas ensaluti al open- nizen sen raporto en open- epent (nomo, plona nomo, retpo registrato, roloj, orgoj, ktp.) ene de Open-branduolių ir (arba)<br/> <br/>';
 
-$GLOBALS["lang"]['impact_integrity'] = 'Impact-integriteit';
+$GLOBALS["lang"]['If the local field is true (bool) or y (string) or Y (string) or 1 (integer) then set the external data to 1.'] = 'Se la lokapo estas vera (bool) kaptlus y (apretnuro) kaptlus Y (apretturo) katlus 1 (taisarv) tiam metis la eksterajn datenojn al 1.';
 
-$GLOBALS["lang"]['Impact Integrity'] = 'Impact-integriteit';
+$GLOBALS["lang"]['If the local field is true (bool) or y (string) or Y (string) or 1 (integer) then set the external data to y.'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['implementation_notes'] = 'Uitvoeringsnota\'s';
+$GLOBALS["lang"]['If the primary IP (as reported by the device) is in this subnet, pass.</li>'] = '® primara IP (Indonesië aparato)';
 
-$GLOBALS["lang"]['Implementation Notes'] = 'Uitvoeringsnota\'s';
+$GLOBALS["lang"]['If the user account does not actually exist within Open-AudIT and <code>use_authorisation</code> is set, the user will be created. If it does exist, details such as email, full name, etc will be populated.'] = 'Se la uzantkonto ne ekzistas ene de opharm <code>use_authorisation</code> "uzanto estos kreita." Se liukoinen ekistas, detaloj kiel ekzemt repo divonato, plona nomo, ktp.';
 
-$GLOBALS["lang"]['Import'] = 'Importeren';
+$GLOBALS["lang"]['If the user either does not have valid credentials or is not in at least one Open-AudIT Role and Group (when using <code>use_authorisation</code>), Open-AudIT will fallback to using local Open-AudIT user details and attempt authentication and authorization there. Failing that, the user will be denied access.'] = 'Se la uzanto a défaut ne havas valajn akredita.ojn a défaut ne estas en almenaveunu residu criteria (kiam uzite Fares de residue). <code>use_authorisation</code>(EB) Nr. 1235 / 2008 Malsukcesante (Malsukcesantė), Ventuzanto estos neita aliro.';
 
-$GLOBALS["lang"]['Import Example Data'] = 'Voorbeeldgegevens importeren';
+$GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.'] = 'Se la uzanto registradanta al Bendrijoje';
 
-$GLOBALS["lang"]['improvement_opportunities'] = 'Verbetering Kansen';
+$GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search OpenLDAP, you can use another account which does have this access. Use the dn_account and dn_password to configure this.'] = 'Se la uzanto registradanta al Bendrieoje OpenLDAP, vi povas uzi alfanien raporton kiu havas tiun aliron. "klasse 2"';
 
-$GLOBALS["lang"]['Improvement Opportunities'] = 'Verbetering Kansen';
+$GLOBALS["lang"]['If the value is not set, the current timestamp will be used.'] = 'Se la valoro ne estas metita, la nuna tempostap estas need.';
 
-$GLOBALS["lang"]['In'] = 'In';
+$GLOBALS["lang"]['If the value is set, that timestamp value will be used.'] = 'Se la valoro estas metita, tu templampvaloro estas Bendrijoje.';
 
-$GLOBALS["lang"]['Inactive'] = 'Inactief';
+$GLOBALS["lang"]['If this change does not work for you, all is not lost. We have added a configuration item (set to n by default, so it will use not this new option out of the box) called discovery_use_org_id_match. If you change it to y then the OrgID assigned to the device by the discovery will be used in the relevant match rules.'] = 'Se tiu ů антоние ne funkcias por vi, ... Ni aldonis konfiguracion objectto (Al n defa.lte, tien ke.i ne uzos tiun novan opcion el kesto) nomita Bendrijoje Se vi îавани нели ний al y tiam la OrgID asignita al el aparato per la eltrova.o estos uzita en la medifaj mat.orguloji.o.';
 
-$GLOBALS["lang"]['Include'] = 'Includeren';
+$GLOBALS["lang"]['If this many minutes (or more) have passed since the server last saw the device, pass.</li>'] = 'Se tio utretaj mutoj (a... pli) pasis ekde la servilo la aparaton, Bendrijoje.';
 
-$GLOBALS["lang"]['Incomplete'] = 'Onvoltooid';
+$GLOBALS["lang"]['If this many or more minutes have passed since the device contacted the server, perform the actions.'] = 'La mise need d \'un pli da minutoj pasis soutenu residuar la aparato kontakttis la servilon, elfaras la agojn.';
 
-$GLOBALS["lang"]['Index'] = 'Index';
+$GLOBALS["lang"]['If this occurs then the issue you are seeing is related to the table control being used on the webpage. It only stores in memory the state of the check boxes for the current page being viewed. If you make selections, then page forward/back those selections will be lost. You can, however, accomplish what you want by expanding the number of devices shown on each page. In the top-left corner is a drop-down labeled “records per page”; use this to expand the number of entries displayed until you see all you want to select for Bulk Edit.'] = 'Se tio okazas tiam la ki temoun vidas estas rilatatita al la tablokontrolo estanta uzita sur la retpa tavia. Se vi faras selektadojn, tiam paεo anta... Vi povas tendaliflanke Româplenumi pion vi volas per lotagado de la nombro da aparatoj montritaj sur... iu pa gradulo. En la pint- maldekstra angulo estas guto- malsupren etikedis "diskojn per pa';
 
-$GLOBALS["lang"]['India'] = 'India';
+$GLOBALS["lang"]['If we detect the san management software, should we run an auto-discover before the query.'] = 'Dédetektas la san administrésoftvaron, ni devus kuri a septo- eltrova.';
 
-$GLOBALS["lang"]['Indonesia'] = 'Indonesië';
+$GLOBALS["lang"]['If you add a Location Type, add those icons to'] = 'Loksespecton volgende aldonu tiujn ikonojn';
 
-$GLOBALS["lang"]['Info'] = 'Informatie';
+$GLOBALS["lang"]['If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory'] = 'Se vi aldonas paratosecon, por elmontri la rilatan ikon vi de mane kopii la .svg formatis dosieron al la adresaro';
 
-$GLOBALS["lang"]['Informational'] = 'Voorlichting';
+$GLOBALS["lang"]['If you are a supported FirstWave customer,a couple of items will make helping your easier. Open a support ticket with FirstWave and attach the logfile. Also include the output from the Support button on the upper right of the'] = 'African estas apogita unua kliento, kelkaj eroj heltos al Româpli fasila. Malfermu rev galton kun FirstWave kaj alko previstoas la tagdosieron. Bendrijoje';
 
-$GLOBALS["lang"]['initial_size'] = 'Oorspronkelijke grootte';
+$GLOBALS["lang"]['If you are a supported customer and open a support ticket with FirstWave, please attach these files.'] = 'Se vi estas apogita kliento kaj malfermas helpbiliton kun FirstWave, bonvolu alkro previtoi tiujn dosierojn.';
 
-$GLOBALS["lang"]['Initial Size'] = 'Oorspronkelijke grootte';
+$GLOBALS["lang"]['If you are having issues with Google Maps API keys or your company does not have access to create Google Maps API keys, please contact the FirstWave support team.'] = 'Se vi havas issusojn kun režisiery API рlosiloj režisiery ffirmao halvas alron krei režisierė, bonvolu kontakki la FirstWave subtenserion.';
 
-$GLOBALS["lang"]['inode'] = 'Inode';
+$GLOBALS["lang"]['If you are on Windows or your NMIS server is remote, you will need to supply the URL, username and password to access that server.'] = 'SE';
 
-$GLOBALS["lang"]['Inode'] = 'Inode';
+$GLOBALS["lang"]['If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.'] = 'Se vi estas sur deka gradidabendo a difetto tero ligo, mi remomendus ciiam uzi T4 (Agres). Kelkaj Bendrijoje - T5 ("T5") kvankam liquiciulici estos tro concordisema por mia gusto. ® ® ® ® ® ® ® ® LT ® ne ekkomprenas eksporte kiom malladrapa - T2 vere estas. Ilia sanado povas preni dek fojojn pli downe ol deva guidlta canado. Šis sprendimas  Uzanta verserio detekto estumes multe pli efika ol ludado kun temppigvaloroj "Reduktado de tiauj"';
 
-$GLOBALS["lang"]['Input Type'] = 'Invoertype';
+$GLOBALS["lang"]['If you are running a RedHat or Centos system and you have upgraded Nmap, please reset the SUID on the binary by'] = 'Se vi prizorgas RedHat kaptlus Cento- sistemon kaj vi εisdatigis Nmap, bonvolu remomencigi la SUID sur new binara per';
 
-$GLOBALS["lang"]['inputs'] = 'Invoer';
+$GLOBALS["lang"]['If you are running an Open-AudIT server on Linux, this does not affect you.'] = 'Se vi prizorgas rev.';
 
-$GLOBALS["lang"]['Inputs'] = 'Invoer';
+$GLOBALS["lang"]['If you are using Open-AudIT on Windows or if your NMIS server is not on your Open-AudIT Server (in the case of some Linux installs), you will need to supply access credentials and a URL to the remote NMIS - but that is all! Yes - Integrations between NMIS and Open-AudIT even work with Windows based Open-AudIT now!'] = 'Se vi uzas resive.oj), vi bezonos maksa alirkreditaojn kaj URL al la malpreksima NMIS - sedtio estas. "klasse"';
 
-$GLOBALS["lang"]['Insane'] = 'Krankzinnig';
+$GLOBALS["lang"]['If you choose a Collector, it will be scheduled to execute on the next 5 minute boundary.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['Insert example data and discover all that Open-AudIT can tell you.'] = 'Voeg voorbeeldgegevens in en ontdek alles wat Open-AudIT je kan vertellen.';
+$GLOBALS["lang"]['If you do normally set devices_assigned_to_org and the configuration item is enabled, then the OrgID will be used to further refine the match.'] = 'Se vinormale metis aparatojn _ aited _ rev _ org kaj la konfiguraciobjektoj estas ebligitaj, tiam la OrgID estos utiligita por plue rafini la mat planononon.';
 
-$GLOBALS["lang"]['Insert your Purchased license Key'] = 'Plaats uw Aangekochte licentie Sleutel';
+$GLOBALS["lang"]['If you do not normally set devices_assigned_to_org, then it will have no effect. We only check using the OrgID if it has been set in discovery (or manually in an audit script) and enabled in the configuration.'] = 'Thomas Halos neniun eikon. "Epäilty mane en revisziomanuskripto") kaj ebligi en la konfiguracio.';
 
-$GLOBALS["lang"]['install'] = 'Installeren';
+$GLOBALS["lang"]['If you enable the configuration item, use discovery to assign an Org and then subsequently change the OrgID of a device after discovery then you will likely have a new device created the next time the discovery runs. In this instance, you should probably just unset devices_assigned_to_org before running subsequent discoveries. This is because (in this instance) you have told Open-AudIT <i>these devices from this discovery belong to Org X<i>, but then changed the Org of the device. You have changed the stored devices information. In this case - there is no no longer a device belonging to Org X, so we create a new one.'] = 'Se vi rajtigas la konfiguracion, uzu eltrova... Org kaj tiam poste шанннний la OrgID de aparato post eltrova.o tiam vi ver apretajne havos novan aparaton kreis la venontan fojon la eltrova.o kuris. Entiu kazo, vi devus ver diverraajne nur nezelektitaj aparatoj... prizorgado de postaj eltrova... Tio estas clar (tu kazo) vi rakontis al recepten <i>Tiuja paratoj erductiau eltrova.o apartenas eduorg X<i>Sed tiam Aparatojn Bendrijoje En tia kaz, ekistas jam ne aparato apartenanta al org x, tiel ke ni kreas novan.</i></i>';
 
-$GLOBALS["lang"]['Install'] = 'Installeren';
+$GLOBALS["lang"]['If you have Anti-Virus software running, allowing the services of Opmantek (omkd), Apache (apache2.2) and MySQL (mysql) to auto start and run is essential. These services are used by Open-AudIT. You should only need to do this once. If your Anti-Virus program keeps prompting you about Open-AudIT, please post to the forums or send an email to support with the name and version of your Anti-Virus software.'] = 'Se vi havas Bentrijoje, Tiujtavij estas uzitaj tariffa režisiery - režisiery a un problemème. Se Bendrijoje, arba';
 
-$GLOBALS["lang"]['install_date'] = 'Datum installeren';
+$GLOBALS["lang"]['If you have working credentials, you can expect the full amount of information possible.<br><br>Obviously, the best way to use Open-AudIT is to have working credentials for the devices being discovered (be they WMI, SSH, or SNMP credentials).<br><br>We also have a page on auditing without credentials.'] = 'Se vi Bendrieoje, vi povas atendi la pennan kvanton de informaoj ebla.<br/><br/>Evidente Şla plei bona maniero uzi ů - Româmurtaa havi labakredita.ojn por la aparatoj estantaj malkovrita (estu ili WMI ů SSH tulplus SNM- akredita.oj)<br/><br/>(RO 2012 7183).';
 
-$GLOBALS["lang"]['Install Date'] = 'Datum installeren';
+$GLOBALS["lang"]['If you include the \"id\" field <strong>and</strong> set it with a number, that item will be updated rather than created.'] = 'Id. <strong>Bendrijoje</strong> Thomas, tu objekto estos εisdatigita mieluummin ol kreita.';
 
-$GLOBALS["lang"]['install_directory'] = 'Map installeren';
+$GLOBALS["lang"]['If you need to configure Active Directory access, you can usually use the example of <code>cn=Users,dc=your,dc=domain,dc=com</code> for your <code>base_dn</code>. There is no need to set <code>user_dn</code>.'] = 'Se vi waures preprdi Aktivan Adresaralir, vi povas kutime uzi la ekzemplon <code>cn=Users,dc=your,dc=domain,dc=com</code> Bendrijoje <code>base_dn</code>- <code>user_dn</code>Bendrijoje';
 
-$GLOBALS["lang"]['Install Directory'] = 'Map installeren';
+$GLOBALS["lang"]['If you need to configure OpenLDAP access for your users and a given users access DN is normally <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> then you should set <code>base_dn</code> to <code>dc=your,dc=domain,dc=com</code> and <code>user_dn</code> to <code>uid=@username@@domain,cn=People</code>. The special words <code>@username</code> and <code>@domain</code> will be replaced by the login details provided by your user on the login page.'] = 'Se vi woles beforrdi OpenLDAP- alron por viaj uzantoj kaj anta skeptita uzantoj aliras DN estetas new <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> Tiam vi devus <code>base_dn</code> - <code>dc=your,dc=domain,dc=com</code> Bendrijoje <code>user_dn</code> - <code>uid=@username@@domain,cn=People</code>- <code>@username</code> Bendrijoje <code>@domain</code> uzanto sur la ensalutpa Fleido Bendrijoje Fare de Venture Estas anstata defligita.';
 
-$GLOBALS["lang"]['Install OpenScap if required'] = 'OpenScap installeren indien nodig';
+$GLOBALS["lang"]['If you run discovery upon a subnet that the Server (or Collector) is directly installed on, you can expect the following for responding devices'] = 'Se vi kuras malkovron sur subreto kiun la Servilo (katlusega kolktano) estas rekte secretta, vi povas atendi la sekvantan por responseado de aparatoj.';
 
-$GLOBALS["lang"]['install_source'] = 'Bron installeren';
+$GLOBALS["lang"]['If you run discovery upon a subnet that your Server (or Collector) is not directly installed on, you can expect the following for responding devices'] = 'Se vi kuras malkovron sur subreto kiun via Servilo (kahtlusega kolektano) ne estas rekte instalia, vi povas atendi la sekvantan por responsaj aparatoj.';
 
-$GLOBALS["lang"]['Install Source'] = 'Bron installeren';
+$GLOBALS["lang"]['If you select a List type, an additional field will appear called Values. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.'] = 'Ventspils (Italija) Indonesië meti kodonapartigita Lista de fajnaj valoroj clari huulet. Tiuj elmontros en got- kesto kiam la kampo estas redaktita.';
 
-$GLOBALS["lang"]['installed_by'] = 'Geïnstalleerd op';
+$GLOBALS["lang"]['If you set the values for'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['Installed By'] = 'Geïnstalleerd op';
+$GLOBALS["lang"]['If you want to force your Agents to use a particular configuration, you can supply the ID of the agents entry to use, as below (replace $id with the number of the Agents entry). When this Agent is installed, it will check-in with the sevrer and <strong>only</strong> check that one individual Agent entrys attributes (tests and actions). This may be useful if you are an MSP - create an Agents entry for a particular customer and have their devices all use this entry, which assigns them to an Org and Location.'] = 'Se vi volas devigi viajn agentojn uzi specialan konfiguracion, vi povas regulzi la agentoj eniro por uzi, kiel malsupre (anstata spectigi id kun la nombro da la Agentoj eniro). Kiam tiu nieuws, εi kontraus kun la severranto kaj <strong>Bendrijoje</strong> La plupart desmedicat de l \'Europe de l\' Est sont des pays de l \'Estremal Tio povas esti utila se vi ces MSP - krei organic Bendrijoje - eniro por new kliento kaj havas iliajn aparatojn.';
 
-$GLOBALS["lang"]['installed_on'] = 'Geïnstalleerd op';
+$GLOBALS["lang"]['If you wish to dig in and customize the Integration, click the Advanced button (and try not to be overwhelmed!).'] = 'Se vi deziras fosi en kaj personesigi la Integriγo, klaki la Altnivelan butonononon (Kaj tunisti superfortita).';
 
-$GLOBALS["lang"]['Installed On'] = 'Geïnstalleerd op';
+$GLOBALS["lang"]['If you wish to run a Discovery on an externally provided device, select the option and when the Integration is created, so s the Discovery.'] = 'Se vi deziras kuri Discovery sur ekstere disponigita aparato, selektas la opcion kaj kiam la Integrii rupturao estas kreita, nexes la Discovery.';
 
-$GLOBALS["lang"]['Installing on Linux'] = 'Installeren op Linux';
+$GLOBALS["lang"]['If you would like to use the script outside of Discovery we have created another endpoint called <i>scripts</i>. See the documentation'] = 'Se vi раtus uzi la manikripton ekstere de Discovery, reis alfinpunkton nomitan <i>-</i>(1)';
 
-$GLOBALS["lang"]['Installing on MacOS'] = 'Installeren op MacOS';
+$GLOBALS["lang"]['If your user does not have <i>Run as Administrator</i> rights, they can still download the agent (first command above) and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled.'] = 'Se Bendrijoje <i>Bendrijoje</i> Ili dalucre povas el apretuti la agenton (unua kommundo supre) kaj prizorgi εin por alsendi revizion kiel malsupre. Het is een unufoja revizio sen la agento estanta instalia a squept planita.';
 
-$GLOBALS["lang"]['Installing on Windows'] = 'Installeren op Windows';
+$GLOBALS["lang"]['ifadminstatus'] = '"Szaudminstatus" (Szaudminstatus)';
 
-$GLOBALS["lang"]['instance'] = 'Instantie';
+$GLOBALS["lang"]['Ifadminstatus'] = '"Szaudminstatus" (Szaudminstatus)';
 
-$GLOBALS["lang"]['Instance'] = 'Instantie';
+$GLOBALS["lang"]['iflastchange'] = '-';
 
-$GLOBALS["lang"]['instance_ident'] = 'Instance Ident';
+$GLOBALS["lang"]['Iflastchange'] = '-';
 
-$GLOBALS["lang"]['Instance Ident'] = 'Instance Ident';
+$GLOBALS["lang"]['Ignore Invalid SSL'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['instance_options'] = 'Instance Opties';
+$GLOBALS["lang"]['Ignored'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Instance Options'] = 'Instance Opties';
+$GLOBALS["lang"]['image'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['instance_provider'] = 'Instance Provider';
+$GLOBALS["lang"]['Image'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Instance Provider'] = 'Instance Provider';
+$GLOBALS["lang"]['Images'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['instance_reservation_ident'] = 'Instance Reservering Identiteit';
+$GLOBALS["lang"]['impact_availability'] = 'Efiko de la Affairage';
 
-$GLOBALS["lang"]['Instance Reservation Ident'] = 'Instance Reservering Identiteit';
+$GLOBALS["lang"]['Impact Availability'] = 'Efiko de la Affairage';
 
-$GLOBALS["lang"]['instance_state'] = 'Instantie';
+$GLOBALS["lang"]['impact_confidentiality'] = '-';
 
-$GLOBALS["lang"]['Instance State'] = 'Instantie';
+$GLOBALS["lang"]['Impact Confidentiality'] = '-';
 
-$GLOBALS["lang"]['instance_tags'] = 'Instance-tags';
+$GLOBALS["lang"]['impact_integrity'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Instance Tags'] = 'Instance-tags';
+$GLOBALS["lang"]['Impact Integrity'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['instance_type'] = 'Type instantie';
+$GLOBALS["lang"]['Implement selected controls and procedures'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Instance Type'] = 'Type instantie';
+$GLOBALS["lang"]['Implementation'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Integer'] = 'Integer';
+$GLOBALS["lang"]['implementation_notes'] = '-';
 
-$GLOBALS["lang"]['Integration'] = 'Integratie';
+$GLOBALS["lang"]['Implementation Notes'] = '-';
 
-$GLOBALS["lang"]['integrations'] = 'Integraties';
+$GLOBALS["lang"]['Import'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Integrations'] = 'Integraties';
+$GLOBALS["lang"]['Import Example Data'] = '(1)';
 
-$GLOBALS["lang"]['integrations_id'] = 'Integratie ID';
+$GLOBALS["lang"]['Import multiple {collection} using a CSV.'] = 'importa multobla {komiksi režisierė} uzanta CSV.';
 
-$GLOBALS["lang"]['Integrations ID'] = 'Integratie ID';
+$GLOBALS["lang"]['improvement_opportunities'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['integrations_log'] = 'Logboek integraties';
+$GLOBALS["lang"]['Improvement Opportunities'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Integrations Log'] = 'Logboek integraties';
+$GLOBALS["lang"]['Improves business continuity and resilience'] = 'Plibonigas komomercan kontextcon kaj rezisttecon';
 
-$GLOBALS["lang"]['interface'] = 'Interface';
+$GLOBALS["lang"]['In'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Interface'] = 'Interface';
+$GLOBALS["lang"]['In a second tab or window go to your OKTA console and click <i>Create App Integration</i>.'] = 'En duko a kaptlustatav fenestro iras al via OKTA - kondolo kaj klako <i>Bendrijoje:</i>Bendrijoje';
 
-$GLOBALS["lang"]['interface_id'] = 'Interface-ID';
+$GLOBALS["lang"]['In a second tab or window sign-on to your'] = 'En dua klako a kaptlustus fenestrosigno Bendrijoje';
 
-$GLOBALS["lang"]['Interface ID'] = 'Interface-ID';
+$GLOBALS["lang"]['In my personal opinion, the best way to find and audit every single item on your network is a Seed Discovery for each subnet, restricted to that subnet (using credentials). Seed Discoveries use switch, router and computer MAC Address tables to not miss a single device. If it is connected to the network and uses TCP/IP, a switch/router/computer has to know it is there - thats just how TCP/IP works. Combine that with custom TCP and/or UDP ports and you should then be able to determine the device type as well. But thats just my personal preference'] = 'En mia persona consiglio, la plei bona manero trovato kaj revizii Seemmed Discoversies uzas ð анльна, italon kaj komputil MAC direttocción tablojn por ne maltrafi ununuran aparaton. Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 datums a punkte nurodytas kriterijus Sedtio estas nur';
 
-$GLOBALS["lang"]['interface_type'] = 'Interfacetype';
+$GLOBALS["lang"]['In order for Open-AudIT to be able to apply user permissions on items, we mandate the user of <code>WHERE @filter</code>. If you do not use this format, the queryCreateForm will throw a warning. Only users with the Admin role are permitted to create queries that lack this attribute and even then, only after the configuration item for <i>advanced_queries</i> has been enabled.'] = 'Por ® Aud IT povi apliki uzantpermesojn sur eroy, ni postulas la uzanton de <code>WHERE @filter</code>Bendrijoje Se vi ne uzas tiun forman, la 07: 50 Nur uzantoj kun la Di bestuur estas licaj krei desteojn kiuj mankas tu a kaj e lluvia tiam nur post la konfiguracioobjekto <i>Noord-Korea. kgm</i> Becslések szerint ebligita Bendrijoje.';
 
-$GLOBALS["lang"]['Interface Type'] = 'Interfacetype';
+$GLOBALS["lang"]['In order to enable Google Maps you will need to a Google API Key follow this link and log in with your Google account,'] = 'Bendrijos teisės aktai ';
 
-$GLOBALS["lang"]['Internal'] = 'Intern';
+$GLOBALS["lang"]['In order to use the Azure Rest API, you will need to create an Azure Active Directory Application that is used for authentication.'] = 'Philippines. kgm Azure Bendrijoje:';
 
-$GLOBALS["lang"]['Internal Field Name'] = 'Interne veldnaam';
+$GLOBALS["lang"]['In order to use this functionality, it must be enabled in the configuration - click'] = 'Por uzi tiun funkciecon, εi bruts ebligita en la konfiguracio - klako';
 
-$GLOBALS["lang"]['Internal ID'] = 'Interne ID';
+$GLOBALS["lang"]['In the (comma seperated) list'] = '(komma)';
 
-$GLOBALS["lang"]['Internal JSON array of valid access tokens for this user.'] = 'Interne JSON reeks geldige toegangstekens voor deze gebruiker.';
+$GLOBALS["lang"]['In the case of <code>in</code> and <code>notin</code>, you should enclose the values in round brackets and separate them using a comma (just a comma, not a comma, then space).<br><br>With these operators you can filter quite comprehensively.<br><br>When you add data and filter on multiple columns, those columns are combined using <strong>AND</strong>. You cannot filter using an <strong>OR</strong> condition. With the inclusion of <code>notin</code>, you should be able to get most searches working. And for those that do really require unsupported and complex selections, you can always write an actual query.'] = 'Bendrijoje <code>in</code> Bendrijoje <code>notin</code>Vi devus fermo la valorojn en rondaj kampoj kaj apartigi ili uzante komon (nur komo, ne komo, tiam space).<br/><br/>Venttiau funkcigistoj vi povas filti tre amplekse.<br/><br/>Kiam vi aldonas datojn kaj esistilon sur multoblaj kolonoj, tiaj kolonoj estas Kombintaj uzante <strong>Bendrijoje</strong>(1) <strong>Bendrijoje</strong> C \'è Kandičotavia <code>notin</code>L \'objectif est de faire en sorte que l\'ense de la people soit en mesure d \'attecindre ses objectifs. Kaj por tiauj kiuj vere postulas nepruvitajn kaj kompleksajn selektadojn, vi chiam povas skribi faktan atendon.';
 
-$GLOBALS["lang"]['Introduction'] = 'Inleiding';
+$GLOBALS["lang"]['In the case where we store several fields (usually in JSON format) inside a BIGTEXT MySQL field (eg: credentials.credentials - the credentials column in the credentials table), you should use the format'] = 'En la kazo kie ni stokas multimajn kampjn (kutime en JSON Formaat) ene de BIGTexT MySQL kampo (eks. akredita.oj). Bendrijoje';
 
-$GLOBALS["lang"]['invoice'] = 'Factuur';
+$GLOBALS["lang"]['In the command prompt shell, navigate to the download directory (likely <code>cd Downloads</code>).'] = 'Bendrijos teisės aktai <code>cd Downloads</code>·';
 
-$GLOBALS["lang"]['Invoice'] = 'Factuur';
+$GLOBALS["lang"]['Inactive'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['invoice_id'] = 'Factuur-ID';
+$GLOBALS["lang"]['Include'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Invoice ID'] = 'Factuur-ID';
+$GLOBALS["lang"]['Incomplete'] = '(1)';
 
-$GLOBALS["lang"]['invoice_item'] = 'Factuuritem';
+$GLOBALS["lang"]['Index'] = '-';
 
-$GLOBALS["lang"]['Invoice Item'] = 'Factuuritem';
+$GLOBALS["lang"]['India'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ios_version'] = 'Ios-versie';
+$GLOBALS["lang"]['Indonesia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ios Version'] = 'Ios-versie';
+$GLOBALS["lang"]['Indonesian'] = '[Nincs magyar režisierė]';
 
-$GLOBALS["lang"]['ip_address_external_a'] = 'Ip-adres extern A';
+$GLOBALS["lang"]['Info'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ip Address External A'] = 'Ip-adres extern A';
+$GLOBALS["lang"]['Information only.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ip_address_external_b'] = 'Ip-adres extern B';
+$GLOBALS["lang"]['Informational'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ip Address External B'] = 'Ip-adres extern B';
+$GLOBALS["lang"]['initial_size'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ip_address_internal_a'] = 'Ip-adres intern A';
+$GLOBALS["lang"]['Initial Size'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ip Address Internal A'] = 'Ip-adres intern A';
+$GLOBALS["lang"]['Initial login credentials are'] = 'Komencajuskosalutajusakredita';
 
-$GLOBALS["lang"]['ip_address_internal_b'] = 'Ip-adres intern B';
+$GLOBALS["lang"]['Initiation'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ip Address Internal B'] = 'Ip-adres intern B';
+$GLOBALS["lang"]['inode'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ip_all_count'] = 'Ip alle getallen';
+$GLOBALS["lang"]['Inode'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ip All Count'] = 'Ip alle getallen';
+$GLOBALS["lang"]['Input'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ip_audited_count'] = 'Ip Gecontroleerd aantal';
+$GLOBALS["lang"]['Input Type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ip Audited Count'] = 'Ip Gecontroleerd aantal';
+$GLOBALS["lang"]['inputs'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ip_discovered_count'] = 'Ip ontdekt aantal';
+$GLOBALS["lang"]['Inputs'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ip Discovered Count'] = 'Ip ontdekt aantal';
+$GLOBALS["lang"]['Insane'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ip_enabled'] = 'Ip ingeschakeld';
+$GLOBALS["lang"]['Insert a new {collection} entry.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ip Enabled'] = 'Ip ingeschakeld';
+$GLOBALS["lang"]['Insert example data and discover all that Open-AudIT can tell you.'] = 'Addenaj eczoemoj datennoj kaj malkovras rev.';
 
-$GLOBALS["lang"]['ip_responding_count'] = 'Ip Reageren Aantal';
+$GLOBALS["lang"]['Insert your Purchased license Key'] = 'Enmetu vian Aclaretita';
 
-$GLOBALS["lang"]['Ip Responding Count'] = 'Ip Reageren Aantal';
+$GLOBALS["lang"]['install'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ip_scanned_count'] = 'Ip Gescand aantal';
+$GLOBALS["lang"]['Install'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ip Scanned Count'] = 'Ip Gescand aantal';
+$GLOBALS["lang"]['install_date'] = '-';
 
-$GLOBALS["lang"]['Iran'] = 'Iran';
+$GLOBALS["lang"]['Install Date'] = '-';
 
-$GLOBALS["lang"]['Iraq'] = 'Irak';
+$GLOBALS["lang"]['install_directory'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ireland'] = 'Ierland';
+$GLOBALS["lang"]['Install Directory'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Is FRU'] = 'Is FRU';
+$GLOBALS["lang"]['Install OpenScap if required'] = 'Instali (Instali®® ® natasterites)';
 
-$GLOBALS["lang"]['is_fru'] = 'Is Fru';
+$GLOBALS["lang"]['install_source'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Is Fru'] = 'Is Fru';
+$GLOBALS["lang"]['Install Source'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Is the NMIS server local (on this Open-AudIT server) or remote?'] = 'Is de NMIS-server lokaal (op deze Open-AudIT-server) of op afstand?';
+$GLOBALS["lang"]['Install Support'] = '"Instali Vent Subteno"';
 
-$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = 'Is dit account actief? Indien ingesteld op <code>n</code>, de gebruiker kan niet inloggen.';
+$GLOBALS["lang"]['installed_by'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Is this query restricted to licensed customers.'] = 'Is deze vraag beperkt tot gelicentieerde klanten.';
+$GLOBALS["lang"]['Installed By'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Is this task enabled (y/n).'] = 'Is deze taak ingeschakeld (j/n).';
+$GLOBALS["lang"]['installed_on'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Isle of Man'] = 'Eiland Man';
+$GLOBALS["lang"]['Installed On'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Israel'] = 'Israël';
+$GLOBALS["lang"]['Installing'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Issue'] = 'Onderwerp';
+$GLOBALS["lang"]['Installing on Linux'] = '-';
 
-$GLOBALS["lang"]['issuer'] = 'Uitgever';
+$GLOBALS["lang"]['Installing on MacOS'] = 'Instali en MacOS';
 
-$GLOBALS["lang"]['Issuer'] = 'Uitgever';
+$GLOBALS["lang"]['Installing on Windows'] = '-';
 
-$GLOBALS["lang"]['issuer_name'] = 'Naam uitgever';
+$GLOBALS["lang"]['instance'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Issuer Name'] = 'Naam uitgever';
+$GLOBALS["lang"]['Instance'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Issues'] = 'Problemen';
+$GLOBALS["lang"]['instance_ident'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Italy'] = 'Italië';
+$GLOBALS["lang"]['Instance Ident'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Items not in Baseline'] = 'Posten buiten de uitgangswaarde';
+$GLOBALS["lang"]['instance_options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['JSON'] = 'JSON';
+$GLOBALS["lang"]['Instance Options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['JSON to Import'] = 'JSON om te importeren';
+$GLOBALS["lang"]['instance_provider'] = 'Todistaja de rem';
 
-$GLOBALS["lang"]['Jamaica'] = 'Jamaica';
+$GLOBALS["lang"]['Instance Provider'] = 'Todistaja de rem';
 
-$GLOBALS["lang"]['January'] = 'Januari';
+$GLOBALS["lang"]['instance_reservation_ident'] = 'Cour de cassation Bendrijoje';
 
-$GLOBALS["lang"]['Japan'] = 'Japan';
+$GLOBALS["lang"]['Instance Reservation Ident'] = 'Cour de cassation Bendrijoje';
 
-$GLOBALS["lang"]['Jersey'] = 'Jersey';
+$GLOBALS["lang"]['instance_state'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Jordan'] = 'Jordanië';
+$GLOBALS["lang"]['Instance State'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['July'] = 'Juli';
+$GLOBALS["lang"]['instance_tags'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['June'] = 'Juni';
+$GLOBALS["lang"]['Instance Tags'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Kazakhstan'] = 'Kazachstan';
+$GLOBALS["lang"]['instance_type'] = '-';
 
-$GLOBALS["lang"]['Kenya'] = 'Kenia';
+$GLOBALS["lang"]['Instance Type'] = '-';
 
-$GLOBALS["lang"]['kernel_version'] = 'Kernelversie';
+$GLOBALS["lang"]['Integer'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Kernel Version'] = 'Kernelversie';
+$GLOBALS["lang"]['Integration'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Key'] = 'Sleutel';
+$GLOBALS["lang"]['integrations'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Key Password (optional)'] = 'Sleutelwachtwoord (facultatief)';
+$GLOBALS["lang"]['Integrations'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['keys'] = 'Sleutels';
+$GLOBALS["lang"]['integrations_id'] = 'Integrii Agentlojn, arba';
 
-$GLOBALS["lang"]['Keys'] = 'Sleutels';
+$GLOBALS["lang"]['Integrations ID'] = 'Integrii Agentlojn, arba';
 
-$GLOBALS["lang"]['Kiribati'] = 'Kiribati';
+$GLOBALS["lang"]['integrations_log'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['Korea'] = 'Korea';
+$GLOBALS["lang"]['Integrations Log'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['Kuwait'] = 'Koeweit';
+$GLOBALS["lang"]['Integrations can be scheduled as desired. This is left to the user.'] = 'Integri.o povas esti planita kiel dezirite. Tio estas lasita new uzanto.';
 
-$GLOBALS["lang"]['Kyrgyz Republic'] = 'Kirgizische Republiek';
+$GLOBALS["lang"]['Integrations can be scheduled as per Discoveries, Queries, et al.'] = 'Integrij povas esti planitaj kiel per Eltrova.oj, Bendrijoje.';
 
-$GLOBALS["lang"]['lang'] = 'Lang';
+$GLOBALS["lang"]['Interactive Dashboards'] = '-';
 
-$GLOBALS["lang"]['Lang'] = 'Lang';
+$GLOBALS["lang"]['Interactive dashboards provide instant visibility into the status of network inventory allowing IT teams to spot newly discovered devices and unusual device behaviour at a glance.'] = 'Interagaj da sorttabuloj disposigas tujan videblecon en la statuson de sendostacia stokregistryo percesanta al IT- teamoj ekvidi lastatempe malkovritajn aparatojn kaj nekutiman aparaton Mūsų.';
 
-$GLOBALS["lang"]['language'] = 'Taal';
+$GLOBALS["lang"]['interface'] = '-';
 
-$GLOBALS["lang"]['Language'] = 'Taal';
+$GLOBALS["lang"]['Interface'] = '-';
 
-$GLOBALS["lang"]['Lao'] = 'Lao';
+$GLOBALS["lang"]['interface_id'] = '-';
 
-$GLOBALS["lang"]['last_changed'] = 'Laatste wijziging';
+$GLOBALS["lang"]['Interface ID'] = '-';
 
-$GLOBALS["lang"]['Last Changed'] = 'Laatste wijziging';
+$GLOBALS["lang"]['interface_type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['last_finished'] = 'Laatst voltooid';
+$GLOBALS["lang"]['Interface Type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Last Finished'] = 'Laatst voltooid';
+$GLOBALS["lang"]['Internal'] = '-';
 
-$GLOBALS["lang"]['last_logon'] = 'Laatste logon';
+$GLOBALS["lang"]['Internal Audit'] = '-';
 
-$GLOBALS["lang"]['Last Logon'] = 'Laatste logon';
+$GLOBALS["lang"]['Internal Audit & Review'] = '-';
 
-$GLOBALS["lang"]['Last Name'] = 'Achternaam';
+$GLOBALS["lang"]['Internal Field Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['last_os_update'] = 'Laatste Os-update';
+$GLOBALS["lang"]['Internal ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Last Os Update'] = 'Laatste Os-update';
+$GLOBALS["lang"]['Internal JSON array of valid access tokens for this user.'] = '- ';
 
-$GLOBALS["lang"]['last_result'] = 'Laatste resultaat';
+$GLOBALS["lang"]['Introduction'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Last Result'] = 'Laatste resultaat';
+$GLOBALS["lang"]['invoice'] = '·';
 
-$GLOBALS["lang"]['last_run'] = 'Laatste uitvoer';
+$GLOBALS["lang"]['Invoice'] = '·';
 
-$GLOBALS["lang"]['Last Run'] = 'Laatste uitvoer';
+$GLOBALS["lang"]['invoice_id'] = 'Személyazonosító, Bendrieoje: "Inkluzivas"';
 
-$GLOBALS["lang"]['last_seen'] = 'Laatst gezien';
+$GLOBALS["lang"]['Invoice ID'] = 'Személyazonosító, Bendrieoje: "Inkluzivas"';
 
-$GLOBALS["lang"]['Last Seen'] = 'Laatst gezien';
+$GLOBALS["lang"]['invoice_item'] = '→ eventoj:';
 
-$GLOBALS["lang"]['last_seen_by'] = 'Laatst gezien Door';
+$GLOBALS["lang"]['Invoice Item'] = '→ eventoj:';
 
-$GLOBALS["lang"]['Last Seen By'] = 'Laatst gezien Door';
+$GLOBALS["lang"]['ios_version'] = '-';
 
-$GLOBALS["lang"]['last_user'] = 'Laatste gebruiker';
+$GLOBALS["lang"]['Ios Version'] = '-';
 
-$GLOBALS["lang"]['Last User'] = 'Laatste gebruiker';
+$GLOBALS["lang"]['ip_address_external_a'] = '(1)';
 
-$GLOBALS["lang"]['lastModified'] = 'LastModified';
+$GLOBALS["lang"]['Ip Address External A'] = '(1)';
 
-$GLOBALS["lang"]['LastModified'] = 'LastModified';
+$GLOBALS["lang"]['ip_address_external_b'] = 'Ip Adreso';
 
-$GLOBALS["lang"]['latitude'] = 'Breedtegraad';
+$GLOBALS["lang"]['Ip Address External B'] = 'Ip Adreso';
 
-$GLOBALS["lang"]['Latitude'] = 'Breedtegraad';
+$GLOBALS["lang"]['ip_address_internal_a'] = 'Direzione Generale dell \'Ambiente, Bendrijoje';
 
-$GLOBALS["lang"]['Latvia'] = 'Letland';
+$GLOBALS["lang"]['Ip Address Internal A'] = 'Direzione Generale dell \'Ambiente, Bendrijoje';
 
-$GLOBALS["lang"]['Layout'] = 'Indeling';
+$GLOBALS["lang"]['ip_address_internal_b'] = 'Nemzetközi Şszervezetek B';
 
-$GLOBALS["lang"]['ldap'] = 'Ldap';
+$GLOBALS["lang"]['Ip Address Internal B'] = 'Nemzetközi Şszervezetek B';
 
-$GLOBALS["lang"]['Ldap'] = 'Ldap';
+$GLOBALS["lang"]['ip_all_count'] = 'Ip Kaikki liefje.';
 
-$GLOBALS["lang"]['ldap_base_dn'] = 'Ldap Base Dn';
+$GLOBALS["lang"]['Ip All Count'] = 'Ip Kaikki liefje.';
 
-$GLOBALS["lang"]['Ldap Base Dn'] = 'Ldap Base Dn';
+$GLOBALS["lang"]['ip_audited_count'] = 'Ip Cuenta';
 
-$GLOBALS["lang"]['ldap_dn_account'] = 'Ldap Dn-account';
+$GLOBALS["lang"]['Ip Audited Count'] = 'Ip Cuenta';
 
-$GLOBALS["lang"]['Ldap Dn Account'] = 'Ldap Dn-account';
+$GLOBALS["lang"]['ip_discovered_count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ldap_dn_password'] = 'Ldap Dn Wachtwoord';
+$GLOBALS["lang"]['Ip Discovered Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ldap Dn Password'] = 'Ldap Dn Wachtwoord';
+$GLOBALS["lang"]['ip_enabled'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Learn About'] = 'Leren over';
+$GLOBALS["lang"]['Ip Enabled'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Learn More'] = 'Meer informatie';
+$GLOBALS["lang"]['ip_responding_count'] = 'Ip válaszreakció new';
 
-$GLOBALS["lang"]['lease_expiry_date'] = 'Datum van het verstrijken van het huurcontract';
+$GLOBALS["lang"]['Ip Responding Count'] = 'Ip válaszreakció new';
 
-$GLOBALS["lang"]['Lease Expiry Date'] = 'Datum van het verstrijken van het huurcontract';
+$GLOBALS["lang"]['ip_scanned_count'] = 'Ip Bendrijoje';
 
-$GLOBALS["lang"]['Lebanon'] = 'Libanon';
+$GLOBALS["lang"]['Ip Scanned Count'] = 'Ip Bendrijoje';
 
-$GLOBALS["lang"]['legal_requirements'] = 'Wettelijke vereisten';
+$GLOBALS["lang"]['Iran'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Legal Requirements'] = 'Wettelijke vereisten';
+$GLOBALS["lang"]['Iraq'] = ' Bendrijoje';
 
-$GLOBALS["lang"]['Lesotho'] = 'Lesotho';
+$GLOBALS["lang"]['Ireland'] = '"Iers"';
 
-$GLOBALS["lang"]['Less Than'] = 'Minder dan';
+$GLOBALS["lang"]['Irish'] = '®';
 
-$GLOBALS["lang"]['Less Than or Equals'] = 'Minder dan of gelijk aan';
+$GLOBALS["lang"]['Is FRU'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['level'] = 'Niveau';
+$GLOBALS["lang"]['is_fru'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Level'] = 'Niveau';
+$GLOBALS["lang"]['Is Fru'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Level of privileges needed to exploit (None, Low, High).'] = 'Niveau van privileges die nodig zijn om te exploiteren (Geen, Laag, Hoog).';
+$GLOBALS["lang"]['Is the NMIS server local (on this Open-AudIT server) or remote?'] = 'Ar yra kokių nors priežasčių, dėl kurių reikėtų imtis veiksmų?';
 
-$GLOBALS["lang"]['Liberia'] = 'Liberia';
+$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = 'Te Sientes Aktiva? Bendrijoje <code>n</code>Reglamento (EB) Nr. 1235 / 2008 I priedas iš dalies keičiamas taip:';
 
-$GLOBALS["lang"]['Libyan Arab Jamahiriya'] = 'Libië';
+$GLOBALS["lang"]['Is this query restricted to licensed customers.'] = 'Tio estas limigita restricaporitaj klientoj.';
 
-$GLOBALS["lang"]['License'] = 'Licentie';
+$GLOBALS["lang"]['Is this task enabled (y/n).'] = '(je / ei)';
 
-$GLOBALS["lang"]['License Key'] = 'Licentiesleutel';
+$GLOBALS["lang"]['Isle of Man'] = '-';
 
-$GLOBALS["lang"]['License Required'] = 'Vergunning vereist';
+$GLOBALS["lang"]['Israel'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['licenses'] = 'Vergunningen';
+$GLOBALS["lang"]['Issue'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Licenses'] = 'Vergunningen';
+$GLOBALS["lang"]['issuer'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Liechtenstein'] = 'Liechtenstein';
+$GLOBALS["lang"]['Issuer'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Like'] = 'Zoals';
+$GLOBALS["lang"]['issuer_name'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['limit'] = 'Maximumhoeveelheid';
+$GLOBALS["lang"]['Issuer Name'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['Limit'] = 'Maximumhoeveelheid';
+$GLOBALS["lang"]['Issues'] = 'Questo è il · SmithKline';
 
-$GLOBALS["lang"]['Limit the query to the first X items.'] = 'Beperk de zoekopdracht tot de eerste X-items.';
+$GLOBALS["lang"]['It <i>Just Works</i> with NMIS'] = ' C \'e\' piu \'mes vrai. <i>"Nincs"</i> Bendrijoje';
 
-$GLOBALS["lang"]['Limited to 100 rows.'] = 'Beperkt tot 100 rijen.';
+$GLOBALS["lang"]['It is available at Menu -> Help ->'] = ' C \'e\' l \'ultima øman. Etats...';
 
-$GLOBALS["lang"]['line_amount'] = 'Regelbedrag';
+$GLOBALS["lang"]['It is important to note that when Open-AudIT determines a match any properties set to <i>y</i> must match exactly (and not be blank) in order for Open-AudIT to determine that the discovered device matches a device already in the database. If none of the properties marked <i>y</i> match, then a new device entry will be created, which could result in duplicate device entries. In situations where properties are duplicated, for example a dbus_id is copied during a VM clone, then an existing device may incorrectly get overwritten/updated rather then a new entry being created resulting in missing devices.'] = '(1) AudiIT determinan el punto de vista mate ajnaj trajtoj atperitaj news <i>Bendrijoje</i> Tuhoa egali precize (kaj isti brilaj) por Bendrijoje (1) <i>Bendrijoje</i> "Supply" ';
 
-$GLOBALS["lang"]['Line Amount'] = 'Regelbedrag';
+$GLOBALS["lang"]['It is not uncommon to have an overlapping address space in a given Organisation. Not ideal, but not uncommon.'] = 'Estas nekutime havi embrikitan aprescoton en anta.fiksita organiso. Bendrijoje';
 
-$GLOBALS["lang"]['Line Graph'] = 'Regelgrafiek';
+$GLOBALS["lang"]['It is very common for second tier motherboard manufacturers to not set this, to set it to all <i>0</i>s or even all <i>F</i>s.'] = ' <i>0 0 0 0</i>Bendrijoje <i>Bendrijoje</i>Bendrijoje';
 
-$GLOBALS["lang"]['line_number_a'] = 'Regel nummer A';
+$GLOBALS["lang"]['Italian'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Line Number A'] = 'Regel nummer A';
+$GLOBALS["lang"]['Italy'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['line_number_b'] = 'Regel nummer B';
+$GLOBALS["lang"]['Items not in Baseline'] = ' Bendrijoje';
 
-$GLOBALS["lang"]['Line Number B'] = 'Regel nummer B';
+$GLOBALS["lang"]['JSON'] = '®';
 
-$GLOBALS["lang"]['line_text'] = 'Regeltekst';
+$GLOBALS["lang"]['JSON to Import'] = '→ eventoj:';
 
-$GLOBALS["lang"]['Line Text'] = 'Regeltekst';
+$GLOBALS["lang"]['Jamaica'] = '(1)';
 
-$GLOBALS["lang"]['link'] = 'Verband';
+$GLOBALS["lang"]['January'] = 'Januaro Januaro, Januaro';
 
-$GLOBALS["lang"]['Link'] = 'Verband';
+$GLOBALS["lang"]['Japan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Link (Advanced)'] = 'Link (Geavanceerd)';
+$GLOBALS["lang"]['Japanese'] = '-';
 
-$GLOBALS["lang"]['Linked Files'] = 'Gekoppelde bestanden';
+$GLOBALS["lang"]['Jersey'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['links'] = 'Links';
+$GLOBALS["lang"]['Jordan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Links'] = 'Links';
+$GLOBALS["lang"]['July'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.'] = 'Koppelt deze ontdekking aan de bijbehorende cloud (indien nodig). Links naar <code>clouds.id</code>.';
+$GLOBALS["lang"]['June'] = '"" Leader + "programma';
 
-$GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = 'Links naar <code>discovery_scan_options.id</code>.';
+$GLOBALS["lang"]['Kazakhstan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Links to <code>standards.id</code>'] = 'Links naar <code>standards.id</code>';
+$GLOBALS["lang"]['Kenya'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Links to <standards_policies.id</code>'] = 'Links naar <standards_policies.id< code=""></standards_policies.id<>';
+$GLOBALS["lang"]['kernel_version'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Linux'] = 'Linux';
+$GLOBALS["lang"]['Kernel Version'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['List'] = 'Lijst';
+$GLOBALS["lang"]['Key'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['list_table_format'] = 'Lijsttabelformaat';
+$GLOBALS["lang"]['Key Components'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['List Table Format'] = 'Lijsttabelformaat';
+$GLOBALS["lang"]['Key Password (optional)'] = ' ';
 
-$GLOBALS["lang"]['Lithuania'] = 'Litouwen';
+$GLOBALS["lang"]['keys'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Load Balancing'] = 'Laden balanceren';
+$GLOBALS["lang"]['Keys'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Local'] = 'Lokaal';
+$GLOBALS["lang"]['Kiribati'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Local Area Network'] = 'Lokaal netwerk';
+$GLOBALS["lang"]['Korea'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['local_port'] = 'Lokale poort';
+$GLOBALS["lang"]['Korean'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Local Port'] = 'Lokale poort';
+$GLOBALS["lang"]['Kuwait'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Localhost'] = 'Lokalehost';
+$GLOBALS["lang"]['Kyrgyz'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Localisation'] = 'Lokalisatie';
+$GLOBALS["lang"]['Kyrgyz Republic'] = '"Kirgizoj Respublico" (Indonesië)';
 
-$GLOBALS["lang"]['Location'] = 'Locatie';
+$GLOBALS["lang"]['LDAP Group'] = 'LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPI LDAPFI) (LDAPiù gruppò) (LDAPi gruppò) (LDAPi gruppò) (LDAPi gruppò) (LDAPi gruppò) (LDAPi gruppò) (LDAPi gruppò) (LDAPi gruppò) (LDAPi gruppò) (LDAPi gruppò) (LDAPi LDAPi LDAPi LDAPI)';
 
-$GLOBALS["lang"]['Location A'] = 'Locatie A';
+$GLOBALS["lang"]['LDAP was searched for this user and their account was found.'] = 'LDAP estis ser planadoita por tu uzanto kaj ilia raporto estis trovita.';
 
-$GLOBALS["lang"]['Location B'] = 'Locatie B';
+$GLOBALS["lang"]['LDAP was searched for this user and their account was not found. Check the LDAP server logs. The user credentials have worked, but the user was not found. Also check you have specified the correct Base DN attribute when you created the LDAP Server in Open-AudIT.'] = 'LDAP etis ser planadoita por tu uzanto kaj ilia raporto ne etis trovita. Kontrou ® LDAP- servilregistrojn. Himalainis elnias... oj la la la laboris, sed la uzanto ne estis trovita. Bendrijoje';
 
-$GLOBALS["lang"]['location_id'] = 'Locatie-ID';
+$GLOBALS["lang"]['lang'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Location ID'] = 'Locatie-ID';
+$GLOBALS["lang"]['Lang'] = '®';
 
-$GLOBALS["lang"]['location_id_a'] = 'Locatie-ID A';
+$GLOBALS["lang"]['language'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Location ID A'] = 'Locatie-ID A';
+$GLOBALS["lang"]['Language'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['location_id_b'] = 'Locatie-ID B';
+$GLOBALS["lang"]['Lao'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Location ID B'] = 'Locatie-ID B';
+$GLOBALS["lang"]['last_changed'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['location_latitude'] = 'Locatie Breedtegraad';
+$GLOBALS["lang"]['Last Changed'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Location Latitude'] = 'Locatie Breedtegraad';
+$GLOBALS["lang"]['last_finished'] = '®';
 
-$GLOBALS["lang"]['location_level'] = 'Locatieniveau';
+$GLOBALS["lang"]['Last Finished'] = '®';
 
-$GLOBALS["lang"]['Location Level'] = 'Locatieniveau';
+$GLOBALS["lang"]['last_logon'] = '(1)';
 
-$GLOBALS["lang"]['location_longitude'] = 'Locatielengte';
+$GLOBALS["lang"]['Last Logon'] = '(1)';
 
-$GLOBALS["lang"]['Location Longitude'] = 'Locatielengte';
+$GLOBALS["lang"]['Last Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['location_rack'] = 'Locatierek';
+$GLOBALS["lang"]['last_os_update'] = 'Ultima Realizacióntavia';
 
-$GLOBALS["lang"]['Location Rack'] = 'Locatierek';
+$GLOBALS["lang"]['Last Os Update'] = 'Ultima Realizacióntavia';
 
-$GLOBALS["lang"]['location_rack_position'] = 'Locatie Rack-positie';
+$GLOBALS["lang"]['last_result'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Location Rack Position'] = 'Locatie Rack-positie';
+$GLOBALS["lang"]['Last Result'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['location_rack_size'] = 'Locatie Rack-grootte';
+$GLOBALS["lang"]['last_run'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Location Rack Size'] = 'Locatie Rack-grootte';
+$GLOBALS["lang"]['Last Run'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['location_room'] = 'Locatieruimte';
+$GLOBALS["lang"]['last_seen'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Location Room'] = 'Locatieruimte';
+$GLOBALS["lang"]['Last Seen'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['location_suite'] = 'Locatie Suite';
+$GLOBALS["lang"]['last_seen_by'] = 'Condivii su tavia';
 
-$GLOBALS["lang"]['Location Suite'] = 'Locatie Suite';
+$GLOBALS["lang"]['Last Seen By'] = 'Condivii su tavia';
 
-$GLOBALS["lang"]['locations'] = 'Locaties';
+$GLOBALS["lang"]['last_user'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Locations'] = 'Locaties';
+$GLOBALS["lang"]['Last User'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Locations in this'] = 'Locaties in deze';
+$GLOBALS["lang"]['Last up is WMI. For Windows as in Linux, a user with Administrator level access is preferred (see Target Client Configuration on the wiki).'] = 'Bendrijoje. Por Fenestroj kiel en Linukso, uzanto kun amministrazionento nivelaliro estas likeito (vidu opharm opharm sur la Vikio).';
 
-$GLOBALS["lang"]['log'] = 'Log';
+$GLOBALS["lang"]['lastModified'] = '-';
 
-$GLOBALS["lang"]['Log'] = 'Log';
+$GLOBALS["lang"]['LastModified'] = '-';
 
-$GLOBALS["lang"]['log_format'] = 'Logformaat';
+$GLOBALS["lang"]['latitude'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Log Format'] = 'Logformaat';
+$GLOBALS["lang"]['Latitude'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['log_path'] = 'Logpad';
+$GLOBALS["lang"]['Latvia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Log Path'] = 'Logpad';
+$GLOBALS["lang"]['Latvian'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['log_rotation'] = 'Logrotatie';
+$GLOBALS["lang"]['Layout'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Log Rotation'] = 'Logrotatie';
+$GLOBALS["lang"]['ldap'] = '· Bendrijoje';
 
-$GLOBALS["lang"]['log_status'] = 'Logstatus';
+$GLOBALS["lang"]['Ldap'] = '· Bendrijoje';
 
-$GLOBALS["lang"]['Log Status'] = 'Logstatus';
+$GLOBALS["lang"]['ldap_base_dn'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Logical Cores '] = 'Logische kernen ';
+$GLOBALS["lang"]['Ldap Base Dn'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['logical_count'] = 'Logisch aantal';
+$GLOBALS["lang"]['ldap_dn_account'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Logical Count'] = 'Logisch aantal';
+$GLOBALS["lang"]['Ldap Dn Account'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Logout'] = 'Afmelden';
+$GLOBALS["lang"]['ldap_dn_password'] = 'Ldap';
 
-$GLOBALS["lang"]['Logs'] = 'Logs';
+$GLOBALS["lang"]['Ldap Dn Password'] = 'Ldap';
 
-$GLOBALS["lang"]['longitude'] = 'Lengtegraad';
+$GLOBALS["lang"]['Learn About'] = '®';
 
-$GLOBALS["lang"]['Longitude'] = 'Lengtegraad';
+$GLOBALS["lang"]['Learn More'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['low'] = 'Laag';
+$GLOBALS["lang"]['lease_expiry_date'] = '-';
 
-$GLOBALS["lang"]['Low'] = 'Laag';
+$GLOBALS["lang"]['Lease Expiry Date'] = '-';
 
-$GLOBALS["lang"]['Lower Case'] = 'Kleine letters';
+$GLOBALS["lang"]['Lebanon'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Luxembourg'] = 'Luxemburg';
+$GLOBALS["lang"]['legal_requirements'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['MAC Address'] = 'MAC adres';
+$GLOBALS["lang"]['Legal Requirements'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['MAC Manufacturer'] = 'MAC Fabrikant';
+$GLOBALS["lang"]['Lesotho'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['mac'] = 'Mac';
+$GLOBALS["lang"]['Less Than'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Mac'] = 'Mac';
+$GLOBALS["lang"]['Less Than or Equals'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['Mac Address'] = 'Mac-adres';
+$GLOBALS["lang"]['Lets set the logging to debug. Copy the file:'] = 'Lasu nimeti la arbotrunkon Bendrijoje. Bendrijoje:';
 
-$GLOBALS["lang"]['MacOS'] = 'MacOS';
+$GLOBALS["lang"]['level'] = ' ';
 
-$GLOBALS["lang"]['Macao'] = 'Macau';
+$GLOBALS["lang"]['Level'] = ' ';
 
-$GLOBALS["lang"]['Macedonia'] = 'Macedonië';
+$GLOBALS["lang"]['Level of privileges needed to exploit (None, Low, High).'] = 'Nivelo de adattaacionj necessaj por ekspluati (puudub, madala, krge).';
 
-$GLOBALS["lang"]['Madagascar'] = 'Madagaskar';
+$GLOBALS["lang"]['Liberia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['maintenance_expires'] = 'Onderhoud verloopt';
+$GLOBALS["lang"]['Libraries (ie, code that another program might include). These are typically items like Wordpress extensions, drupal extensions, node.js libraries, Android / iPhone / Windows libraries, python libraries, etc.'] = 'Bibliotekoj (nt kodo ke alias Programmo povas inkludi). Tiuj-ester eroj kiel';
 
-$GLOBALS["lang"]['Maintenance Expires'] = 'Onderhoud verloopt';
+$GLOBALS["lang"]['Libyan Arab Jamahiriya'] = '- Árabe Bendrijoje';
 
-$GLOBALS["lang"]['Make My Default Dashboard'] = 'Mijn standaard dashboard maken';
+$GLOBALS["lang"]['License'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Make this install a Collector'] = 'Maak van deze installatie een verzamelaar';
+$GLOBALS["lang"]['License Key'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Malawi'] = 'Malawi';
+$GLOBALS["lang"]['License Required'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Malaysia'] = 'Maleisië';
+$GLOBALS["lang"]['Licensed users are free to add or modify the rules as you see fit. If you have a device with an SNMP OID that does not match a model already in the file - now you can add it easily. No more waiting for us to provide a patch and add it to the code base for you.<br><br>When you create a Rules entry, you will need to provide a name and a list of inputs and outputs. The inputs and outputs are stored as JSON arrays within the database.<br><br>Inputs have a table and attribute, an operator and a value. When executing the condition, it works thus: If $table . $attribute $operator $value then apply the outputs.<br><br>An example rule to match an SNMP OID and set the model is below.<br>'] = 'Licencitaj uzantoj estas next režisiery vi haves aparaton kun SNMP OID kiu ne egalas modelon jam en la dosiero režisierė da atendado al ni disponigi peceton kaj aldoni εin al la kodbaz por vi.<br/><br/><br/><br/>Entrée habas tablon kaj režisierė, funkciigiston kaj režisierė.<br/><br/>Egzemarregio egali SNMP OID kaj metis la modelon estas malsupre new.<br/>';
 
-$GLOBALS["lang"]['Maldives'] = 'Maldiven';
+$GLOBALS["lang"]['Licenses'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Mali'] = 'Mali';
+$GLOBALS["lang"]['Liechtenstein'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Malta'] = 'Malta';
+$GLOBALS["lang"]['Like'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Manage'] = 'Beheer';
+$GLOBALS["lang"]['Like most other attributes, Additional Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Additional Fields are available for input.'] = 'Indendornitàj alfaj atemerj, ylimäräistä Uzu la Bulk Edit- funkcion kiam vi normale faris kaj vidos la aggiuntive residuestas hasblaj por eniga.';
 
-$GLOBALS["lang"]['Manage Licenses'] = 'Licentiebeheer';
+$GLOBALS["lang"]['Like versus Equals'] = '"" Leader + "programma';
 
-$GLOBALS["lang"]['Manage in NMIS'] = 'Beheer in NMIS';
+$GLOBALS["lang"]['limit'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Managed'] = 'Beheerd';
+$GLOBALS["lang"]['Limit'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['managed_by'] = 'Beheerd door';
+$GLOBALS["lang"]['Limit the query to the first X items.'] = 'Limigi la atendon al Ventunaj Xaj';
 
-$GLOBALS["lang"]['Managed By'] = 'Beheerd door';
+$GLOBALS["lang"]['Limited to 100 rows.'] = '(1)';
 
-$GLOBALS["lang"]['Manual Input'] = 'Handmatige invoer';
+$GLOBALS["lang"]['line_amount'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Manually set by user, defaults to Production.'] = 'Handmatig ingesteld door gebruiker, standaard op Productie.';
+$GLOBALS["lang"]['Line Amount'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Manually set by user.'] = 'Handmatig ingesteld door gebruiker.';
+$GLOBALS["lang"]['Line Graph'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['manufacture_date'] = 'Vervaardigingsdatum';
+$GLOBALS["lang"]['line_number_a'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Manufacture Date'] = 'Vervaardigingsdatum';
+$GLOBALS["lang"]['Line Number A'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['manufacturer'] = 'Fabrikant';
+$GLOBALS["lang"]['line_number_b'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Manufacturer'] = 'Fabrikant';
+$GLOBALS["lang"]['Line Number B'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['manufacturer_code'] = 'Fabrikantcode';
+$GLOBALS["lang"]['line_text'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Manufacturer Code'] = 'Fabrikantcode';
+$GLOBALS["lang"]['Line Text'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Map'] = 'Kaart';
+$GLOBALS["lang"]['Line charts must return date or my_date, description or my_description and count.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['maps'] = 'Kaarten';
+$GLOBALS["lang"]['link'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Maps'] = 'Kaarten';
+$GLOBALS["lang"]['Link'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['March'] = 'Maart';
+$GLOBALS["lang"]['Link (Advanced)'] = 'L [șipareigojimų neprisiimta]';
 
-$GLOBALS["lang"]['Marshall Islands'] = 'Marshalleilanden';
+$GLOBALS["lang"]['Linked Files'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Martinique'] = 'Martinique';
+$GLOBALS["lang"]['links'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['mask'] = 'Masker';
+$GLOBALS["lang"]['Links'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Mask'] = 'Masker';
+$GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.'] = 'Ligiloj tu eltrova.o al la rilata nubo (Şnécessaire). Bendrijoje <code>clouds.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['Match'] = 'Match';
+$GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = 'Bendrijoje <code>discovery_scan_options.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['match_options'] = 'Matchopties';
+$GLOBALS["lang"]['Links to <code>standards.id</code>'] = 'Bendrijoje <code>standards.id</code>';
 
-$GLOBALS["lang"]['Match Options'] = 'Matchopties';
+$GLOBALS["lang"]['Links to <standards_policies.id</code>'] = 'Bendrijoje <standards_policies.id< code=""></standards_policies.id<>';
 
-$GLOBALS["lang"]['match_string'] = 'Match tekenreeks';
+$GLOBALS["lang"]['Linux'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Match String'] = 'Match tekenreeks';
+$GLOBALS["lang"]['Linux Packages'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Matching Attribute'] = 'Matching Attribuut';
+$GLOBALS["lang"]['List'] = '(1)';
 
-$GLOBALS["lang"]['maturity_level'] = 'Looptijd';
+$GLOBALS["lang"]['List All NMAP Ports, Protocols and Programs for Each Device'] = 'Bendrijoje "Protokoj kaj" ';
 
-$GLOBALS["lang"]['Maturity Level'] = 'Looptijd';
+$GLOBALS["lang"]['List Devices'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['maturity_score'] = 'Looptijdscore';
+$GLOBALS["lang"]['List Discoveries'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Maturity Score'] = 'Looptijdscore';
+$GLOBALS["lang"]['list_table_format'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Mauritania'] = 'Mauritanië';
+$GLOBALS["lang"]['List Table Format'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Mauritius'] = 'Mauritius';
+$GLOBALS["lang"]['List Tables'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['max_file_size'] = 'Maximale bestandsgrootte';
+$GLOBALS["lang"]['Lithuania'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Max File Size'] = 'Maximale bestandsgrootte';
+$GLOBALS["lang"]['Lithuanian'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Max Length'] = 'Maximale lengte';
+$GLOBALS["lang"]['Load Balancing'] = '-';
 
-$GLOBALS["lang"]['max_size'] = 'Max. grootte';
+$GLOBALS["lang"]['Local'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Max Size'] = 'Max. grootte';
+$GLOBALS["lang"]['Local Area Network'] = 'Loka pirkonnavrk (tavia)';
 
-$GLOBALS["lang"]['May'] = 'Mei';
+$GLOBALS["lang"]['local_port'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Mayotte'] = 'Mayotte';
+$GLOBALS["lang"]['Local Port'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.'] = 'Meten van de waarschijnlijkheid van de kwetsbaarheid wordt aangevallen, en is gebaseerd op de huidige staat van exploitatie technieken, exploit code beschikbaarheid, of actieve, in-the-wild exploitatie.';
+$GLOBALS["lang"]['Local area network'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['medium'] = 'Middel';
+$GLOBALS["lang"]['Localhost'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Medium'] = 'Middel';
+$GLOBALS["lang"]['Localisation'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['members'] = 'Leden';
+$GLOBALS["lang"]['Location'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Members'] = 'Leden';
+$GLOBALS["lang"]['Location A'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['memory'] = 'Geheugen';
+$GLOBALS["lang"]['Location B'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Memory'] = 'Geheugen';
+$GLOBALS["lang"]['location_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['memory_count'] = 'Geheugenaantal';
+$GLOBALS["lang"]['Location ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Memory Count'] = 'Geheugenaantal';
+$GLOBALS["lang"]['location_id_a'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['memory_slot_count'] = 'Aantal geheugenslots';
+$GLOBALS["lang"]['Location ID A'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Memory Slot Count'] = 'Aantal geheugenslots';
+$GLOBALS["lang"]['location_id_b'] = 'B.';
 
-$GLOBALS["lang"]['menu_category'] = 'Menu Categorie';
+$GLOBALS["lang"]['Location ID B'] = 'B.';
 
-$GLOBALS["lang"]['Menu Category'] = 'Menu Categorie';
+$GLOBALS["lang"]['location_latitude'] = 'Situo de latitudo';
 
-$GLOBALS["lang"]['menu_display'] = 'Menuweergave';
+$GLOBALS["lang"]['Location Latitude'] = 'Situo de latitudo';
 
-$GLOBALS["lang"]['Menu Display'] = 'Menuweergave';
+$GLOBALS["lang"]['location_level'] = '(1)';
 
-$GLOBALS["lang"]['message'] = 'Bericht';
+$GLOBALS["lang"]['Location Level'] = '(1)';
 
-$GLOBALS["lang"]['Message'] = 'Bericht';
+$GLOBALS["lang"]['location_longitude'] = '"Situo Longitudo"';
 
-$GLOBALS["lang"]['meta_last_changed'] = 'Meta laatst gewijzigd';
+$GLOBALS["lang"]['Location Longitude'] = '"Situo Longitudo"';
 
-$GLOBALS["lang"]['Meta Last Changed'] = 'Meta laatst gewijzigd';
+$GLOBALS["lang"]['Location Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['metric'] = 'Metrisch';
+$GLOBALS["lang"]['location_rack'] = 'SituoBendrijoje';
 
-$GLOBALS["lang"]['Metric'] = 'Metrisch';
+$GLOBALS["lang"]['Location Rack'] = 'SituoBendrijoje';
 
-$GLOBALS["lang"]['Metropolitan Area Network'] = 'Metropolitan Area Network';
+$GLOBALS["lang"]['location_rack_position'] = 'SituoBendrijoje';
 
-$GLOBALS["lang"]['Mexico'] = 'Mexico';
+$GLOBALS["lang"]['Location Rack Position'] = 'SituoBendrijoje';
 
-$GLOBALS["lang"]['Micronesia'] = 'Micronesia';
+$GLOBALS["lang"]['location_rack_size'] = 'SituoBendrijoje';
 
-$GLOBALS["lang"]['Microsoft Azure Fields'] = 'Microsoft Azure-velden';
+$GLOBALS["lang"]['Location Rack Size'] = 'SituoBendrijoje';
 
-$GLOBALS["lang"]['microtime'] = 'Microtime';
+$GLOBALS["lang"]['location_room'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Microtime'] = 'Microtime';
+$GLOBALS["lang"]['Location Room'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['minute'] = 'Minuut';
+$GLOBALS["lang"]['location_suite'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Minute'] = 'Minuut';
+$GLOBALS["lang"]['Location Suite'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Minutes Since last Audit are Greater than'] = 'Minuten Sinds de laatste audit zijn groter dan';
+$GLOBALS["lang"]['Locations'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['model'] = 'Model';
+$GLOBALS["lang"]['Locations in this'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['Model'] = 'Model';
+$GLOBALS["lang"]['log'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['model_family'] = 'Modelfamilie';
+$GLOBALS["lang"]['Log'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Model Family'] = 'Modelfamilie';
+$GLOBALS["lang"]['log_format'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['module'] = 'Module';
+$GLOBALS["lang"]['Log Format'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Module'] = 'Module';
+$GLOBALS["lang"]['Log Line'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['module_index'] = 'Moduleindex';
+$GLOBALS["lang"]['log_path'] = '-';
 
-$GLOBALS["lang"]['Module Index'] = 'Moduleindex';
+$GLOBALS["lang"]['Log Path'] = '-';
 
-$GLOBALS["lang"]['Modules'] = 'Modules';
+$GLOBALS["lang"]['log_rotation'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Moldova'] = 'Moldavië';
+$GLOBALS["lang"]['Log Rotation'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Monaco'] = 'Monaco';
+$GLOBALS["lang"]['log_status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Monday'] = 'Maandag';
+$GLOBALS["lang"]['Log Status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Mongolia'] = 'Mongolië';
+$GLOBALS["lang"]['Logging in'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['monitor'] = 'Monitor';
+$GLOBALS["lang"]['Logical Cores '] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['Monitor'] = 'Monitor';
+$GLOBALS["lang"]['logical_count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Montenegro'] = 'Montenegro';
+$GLOBALS["lang"]['Logical Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['month'] = 'Maand';
+$GLOBALS["lang"]['Logout'] = '(1)';
 
-$GLOBALS["lang"]['Month'] = 'Maand';
+$GLOBALS["lang"]['Logs'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Montserrat'] = 'Montserrat';
+$GLOBALS["lang"]['longitude'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Morocco'] = 'Marokko';
+$GLOBALS["lang"]['Longitude'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['motherboard'] = 'Moederbord';
+$GLOBALS["lang"]['low'] = '(1)';
 
-$GLOBALS["lang"]['Motherboard'] = 'Moederbord';
+$GLOBALS["lang"]['Low'] = '(1)';
 
-$GLOBALS["lang"]['mount_point'] = 'Aankoppelpunt';
+$GLOBALS["lang"]['Lower Case'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Mount Point'] = 'Aankoppelpunt';
+$GLOBALS["lang"]['Lowercase Hostname'] = '-';
 
-$GLOBALS["lang"]['mount_type'] = 'Aankoppeltype';
+$GLOBALS["lang"]['Luxembourg'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Mount Type'] = 'Aankoppeltype';
+$GLOBALS["lang"]['MAC Address'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Mozambique'] = 'Mozambique';
+$GLOBALS["lang"]['MAC Manufacturer'] = 'MAC';
 
-$GLOBALS["lang"]['Must Respond to Ping'] = 'Moet reageren op ping';
+$GLOBALS["lang"]['mac'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Myanmar'] = 'Myanmar';
+$GLOBALS["lang"]['Mac'] = 'C \'è il ®';
 
-$GLOBALS["lang"]['N+1'] = 'N+1';
+$GLOBALS["lang"]['Mac Address'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['N+M'] = 'N+M';
+$GLOBALS["lang"]['MacOS'] = 'LUXOS';
 
-$GLOBALS["lang"]['N-to-1'] = 'N-tot-1';
+$GLOBALS["lang"]['MacOS Packages'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['N-to-N'] = 'N-naar-N';
+$GLOBALS["lang"]['Macao'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['NMIS Business Service'] = 'NMIS Business Service';
+$GLOBALS["lang"]['Macedonia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['NMIS Customer'] = 'NMIS-klant';
+$GLOBALS["lang"]['Madagascar'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['NMIS Device Options'] = 'NMIS-apparaatopties';
+$GLOBALS["lang"]['Maintain records of risk assessments and treatments'] = 'Alternativaefaj artikoloj pri risotaksoj kaj terapioj';
 
-$GLOBALS["lang"]['NMIS Device Selection'] = 'NMIS-apparaatselectie';
+$GLOBALS["lang"]['maintenance_expires'] = 'Prizorgado edulo elpezoj';
 
-$GLOBALS["lang"]['NMIS Field Name'] = 'NMIS-veldnaam';
+$GLOBALS["lang"]['Maintenance Expires'] = 'Prizorgado edulo elpezoj';
 
-$GLOBALS["lang"]['NMIS Field Type'] = 'NMIS-veldtype';
+$GLOBALS["lang"]['Make My Default Dashboard'] = '-';
 
-$GLOBALS["lang"]['NMIS Group'] = 'NMIS-Groep';
+$GLOBALS["lang"]['Make this install a Collector'] = '-';
 
-$GLOBALS["lang"]['NMIS Poller'] = 'NMIS Poller';
+$GLOBALS["lang"]['Malawi'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['NMIS Role'] = 'NMIS Rol';
+$GLOBALS["lang"]['Malay'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.'] = 'OPMERKING - U kunt voorkomen dat platte tekst referenties worden weergegeven onder door het instellen van de configuratie-item voor <code>decrypt_credentials</code> tot <code>n</code>.';
+$GLOBALS["lang"]['Malaysia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['name'] = 'Naam';
+$GLOBALS["lang"]['Maldives'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Name'] = 'Naam';
+$GLOBALS["lang"]['Mali'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Namibia'] = 'Namibië';
+$GLOBALS["lang"]['Malta'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Nauru'] = 'Nauru';
+$GLOBALS["lang"]['Manage'] = '-';
 
-$GLOBALS["lang"]['Nepal'] = 'Nepal';
+$GLOBALS["lang"]['Manage Licenses'] = '(1)';
 
-$GLOBALS["lang"]['net_index'] = 'Netto-index';
+$GLOBALS["lang"]['Manage in NMIS'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Net Index'] = 'Netto-index';
+$GLOBALS["lang"]['Manage incidents and nonconformities'] = 'Danijajärkjärgulised okaza...';
 
-$GLOBALS["lang"]['Netherlands Antilles'] = 'Nederlandse Antillen';
+$GLOBALS["lang"]['Managed'] = 'Felelős';
 
-$GLOBALS["lang"]['Netherlands the'] = 'Nederland';
+$GLOBALS["lang"]['managed_by'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['netmask'] = 'Netmasker';
+$GLOBALS["lang"]['Managed By'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Netmask'] = 'Netmasker';
+$GLOBALS["lang"]['Manual Input'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['netstat'] = 'Netstat';
+$GLOBALS["lang"]['Manually set by user, defaults to Production.'] = '(OL L 347 van 2013 12 20, blz. 671).';
 
-$GLOBALS["lang"]['Netstat'] = 'Netstat';
+$GLOBALS["lang"]['Manually set by user.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['Netstat Policies'] = 'Netwerkbeleid';
+$GLOBALS["lang"]['manufacture_date'] = '-';
 
-$GLOBALS["lang"]['Network'] = 'Netwerk';
+$GLOBALS["lang"]['Manufacture Date'] = '-';
 
-$GLOBALS["lang"]['network_address'] = 'Netwerkadres';
+$GLOBALS["lang"]['manufacturer'] = '(* *)';
 
-$GLOBALS["lang"]['Network Address'] = 'Netwerkadres';
+$GLOBALS["lang"]['Manufacturer'] = '(* *)';
 
-$GLOBALS["lang"]['network_domain'] = 'Netwerkdomein';
+$GLOBALS["lang"]['manufacturer_code'] = 'Código Bendrijoje';
 
-$GLOBALS["lang"]['Network Domain'] = 'Netwerkdomein';
+$GLOBALS["lang"]['Manufacturer Code'] = 'Código Bendrijoje';
 
-$GLOBALS["lang"]['Network Types'] = 'Netwerktypes';
+$GLOBALS["lang"]['Map'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['networks'] = 'Netwerken';
+$GLOBALS["lang"]['maps'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Networks'] = 'Netwerken';
+$GLOBALS["lang"]['Maps'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Networks Generated By'] = 'Netwerken gegenereerd door';
+$GLOBALS["lang"]['March'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Networks using a CIDR Mask of'] = 'Netwerken met een CIDR-masker van';
+$GLOBALS["lang"]['Marshall Islands'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['New Building Name'] = 'Naam nieuw gebouw';
+$GLOBALS["lang"]['Martinique'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['New Caledonia'] = 'Nieuw-Caledonië';
+$GLOBALS["lang"]['mask'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['New Floor Name'] = 'Nieuwe vloernaam';
+$GLOBALS["lang"]['Mask'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['New Room Name'] = 'Naam nieuwe ruimte';
+$GLOBALS["lang"]['Match'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['New Row Name'] = 'Nieuwe rijnaam';
+$GLOBALS["lang"]['match_options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['New Zealand'] = 'Nieuw-Zeeland';
+$GLOBALS["lang"]['Match Options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['News'] = 'Nieuws';
+$GLOBALS["lang"]['Match Order'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['next_hop'] = 'Volgende Hop';
+$GLOBALS["lang"]['Match Process'] = '-';
 
-$GLOBALS["lang"]['Next Hop'] = 'Volgende Hop';
+$GLOBALS["lang"]['match_string'] = '-';
 
-$GLOBALS["lang"]['next_run'] = 'Volgende uitvoeren';
+$GLOBALS["lang"]['Match String'] = '-';
 
-$GLOBALS["lang"]['Next Run'] = 'Volgende uitvoeren';
+$GLOBALS["lang"]['Matching Attribute'] = 'Atributo- satunnaisuus';
 
-$GLOBALS["lang"]['Nicaragua'] = 'Nicaragua';
+$GLOBALS["lang"]['Matching Devices - Including OrgID'] = 'Desticitivos de ambarejamiento - Inkluzive de OrgID';
 
-$GLOBALS["lang"]['Niger'] = 'Niger';
+$GLOBALS["lang"]['Matching Linux Devices'] = 'Compositivos de Combinando';
 
-$GLOBALS["lang"]['Nigeria'] = 'Nigeria';
+$GLOBALS["lang"]['Matching is conducted in the following order'] = 'Combinando estas farita en la sekva ordo';
 
-$GLOBALS["lang"]['Niue'] = 'Niue';
+$GLOBALS["lang"]['maturity_level'] = '(1)';
 
-$GLOBALS["lang"]['nmap'] = 'Kaart';
+$GLOBALS["lang"]['Maturity Level'] = '(1)';
 
-$GLOBALS["lang"]['Nmap'] = 'Kaart';
+$GLOBALS["lang"]['maturity_score'] = '"Küpsusetavia"';
 
-$GLOBALS["lang"]['Nmap Port Scanning Responses'] = 'Nmap Port Scanning Reacties';
+$GLOBALS["lang"]['Maturity Score'] = '"Küpsusetavia"';
 
-$GLOBALS["lang"]['nmap_tcp_ports'] = 'Nmap Tcp-poorten';
+$GLOBALS["lang"]['Mauritania'] = '-';
 
-$GLOBALS["lang"]['Nmap Tcp Ports'] = 'Nmap Tcp-poorten';
+$GLOBALS["lang"]['Mauritius'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['nmap_udp_ports'] = 'Nmap Upp Ports';
+$GLOBALS["lang"]['max_file_size'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Nmap Udp Ports'] = 'Nmap Upp Ports';
+$GLOBALS["lang"]['Max File Size'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['nmis_business_service'] = 'Nmis Business Service';
+$GLOBALS["lang"]['Max Length'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Nmis Business Service'] = 'Nmis Business Service';
+$GLOBALS["lang"]['max_size'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['nmis_customer'] = 'Nmis-klant';
+$GLOBALS["lang"]['Max Size'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Nmis Customer'] = 'Nmis-klant';
+$GLOBALS["lang"]['May'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['nmis_group'] = 'Nmis Group';
+$GLOBALS["lang"]['Mayotte'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Nmis Group'] = 'Nmis Group';
+$GLOBALS["lang"]['Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.'] = 'Mezras la ver sorterenecon de la vundebleco estanta atakita, kaj estas bazita sur la nuna stato de ekspluati teknijn, ekspluati kodobebllecon, kaptlustav aktivan ", en - la sovan" ekspluaton.';
 
-$GLOBALS["lang"]['nmis_manage'] = 'Nmis beheren';
+$GLOBALS["lang"]['medium'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Nmis Manage'] = 'Nmis beheren';
+$GLOBALS["lang"]['Medium'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['nmis_name'] = 'Nmis naam';
+$GLOBALS["lang"]['members'] = '-';
 
-$GLOBALS["lang"]['Nmis Name'] = 'Nmis naam';
+$GLOBALS["lang"]['Members'] = '-';
 
-$GLOBALS["lang"]['nmis_notes'] = 'Nmis Notes';
+$GLOBALS["lang"]['memory'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Nmis Notes'] = 'Nmis Notes';
+$GLOBALS["lang"]['Memory'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['nmis_poller'] = 'Nmis Poller';
+$GLOBALS["lang"]['memory_count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Nmis Poller'] = 'Nmis Poller';
+$GLOBALS["lang"]['Memory Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['nmis_poller_uuid'] = 'Nmis Poller Uuid';
+$GLOBALS["lang"]['memory_slot_count'] = 'MEMORO RANURA';
 
-$GLOBALS["lang"]['Nmis Poller Uuid'] = 'Nmis Poller Uuid';
+$GLOBALS["lang"]['Memory Slot Count'] = 'MEMORO RANURA';
 
-$GLOBALS["lang"]['nmis_role'] = 'Noot';
+$GLOBALS["lang"]['menu_category'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Nmis Role'] = 'Noot';
+$GLOBALS["lang"]['Menu Category'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['No'] = 'Nee';
+$GLOBALS["lang"]['menu_display'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['No Devices Returned'] = 'Geen apparaten geretourneerd';
+$GLOBALS["lang"]['Menu Display'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['No Google Maps API Key present, you will not be able to display the map.'] = 'Geen Google Maps API Sleutel aanwezig, zult u niet in staat zijn om de kaart weer te geven.';
+$GLOBALS["lang"]['message'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['No License for Professional or Enterprise'] = 'Geen licentie voor Professional of Enterprise';
+$GLOBALS["lang"]['Message'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['No Results'] = 'Geen resultaten';
+$GLOBALS["lang"]['meta_last_changed'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['No data in License Key'] = 'Geen gegevens in licentiesleutel';
+$GLOBALS["lang"]['Meta Last Changed'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['No database upgrade required at this time.'] = 'Geen database upgrade vereist op dit moment.';
+$GLOBALS["lang"]['metric'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Node'] = 'Knooppunt';
+$GLOBALS["lang"]['Metric'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['None'] = 'Geen';
+$GLOBALS["lang"]['Metropolitan Area Network'] = 'Suurlinnapiirkonna, Bendrieoje';
 
-$GLOBALS["lang"]['Norfolk Island'] = 'Norfolk';
+$GLOBALS["lang"]['Metropolitan area network'] = 'Metropolivena,';
 
-$GLOBALS["lang"]['Normal'] = 'Normaal';
+$GLOBALS["lang"]['Mexico'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Northern Mariana Islands'] = 'Noordelijke Marianen';
+$GLOBALS["lang"]['Micronesia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Norway'] = 'Noorwegen';
+$GLOBALS["lang"]['Microsoft Azure Fields'] = '-';
 
-$GLOBALS["lang"]['Not Applicable'] = 'Niet van toepassing';
+$GLOBALS["lang"]['microtime'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Not Checked'] = 'Niet gecontroleerd';
+$GLOBALS["lang"]['Microtime'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Not Equals'] = 'Niet gelijk';
+$GLOBALS["lang"]['minute'] = '-';
 
-$GLOBALS["lang"]['Not In'] = 'Niet in';
+$GLOBALS["lang"]['Minute'] = '-';
 
-$GLOBALS["lang"]['Not Like'] = 'Niet zoals';
+$GLOBALS["lang"]['Minutes'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Not Set'] = 'Niet ingesteld';
+$GLOBALS["lang"]['Minutes Since last Audit are Greater than'] = 'Minitoj ista revizio estas pli vaskal';
 
-$GLOBALS["lang"]['Not normally used. If set, this requires the device to have an open port (as per Scan Options) to be considered responding. A MAC address, arp response or ping response is not considered sufficient to be considered responding. Useful if a router or firewall between the Open-AudIT server and target IP is responding to port scans on the IPs behalf.'] = 'Normaal gesproken niet gebruikt. Indien ingesteld, moet het apparaat een open poort hebben (zoals bij Scanopties) om te worden beschouwd als reagerend. Een MAC-adres, arprespons of pingrespons wordt niet voldoende geacht om te worden beschouwd als respons. Nuttig als een router of firewall tussen de Open-AudIT server en target IP namens de IP\'s reageert op poortscans.';
+$GLOBALS["lang"]['model'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Note'] = 'Opmerking';
+$GLOBALS["lang"]['Model'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Note - Selecting a parent will automatically provide access to its children (although it wont be shown here).'] = 'Opmerking - Een ouder selecteren geeft automatisch toegang tot zijn kinderen (hoewel het hier niet getoond wordt).';
+$GLOBALS["lang"]['model_family'] = '(lt)';
 
-$GLOBALS["lang"]['Notes'] = 'Opmerkingen';
+$GLOBALS["lang"]['Model Family'] = '(lt)';
 
-$GLOBALS["lang"]['notes'] = 'Opmerkingen';
+$GLOBALS["lang"]['Modified'] = '-';
 
-$GLOBALS["lang"]['Notice'] = 'Kennisgeving';
+$GLOBALS["lang"]['Modifying an Existing Script'] = '(1)';
 
-$GLOBALS["lang"]['notin'] = 'Notin';
+$GLOBALS["lang"]['module'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Notin'] = 'Notin';
+$GLOBALS["lang"]['Module'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['November'] = 'November';
+$GLOBALS["lang"]['module_index'] = 'Módulo Bendrijoje';
 
-$GLOBALS["lang"]['nvd_json'] = 'Nvd Json';
+$GLOBALS["lang"]['Module Index'] = 'Módulo Bendrijoje';
 
-$GLOBALS["lang"]['Nvd Json'] = 'Nvd Json';
+$GLOBALS["lang"]['Modules'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ORDER BY'] = 'BESCHIKKING VAN';
+$GLOBALS["lang"]['Moldova'] = ' ';
 
-$GLOBALS["lang"]['OS'] = 'OS';
+$GLOBALS["lang"]['Monaco'] = '®';
 
-$GLOBALS["lang"]['OS Families'] = 'OS Families';
+$GLOBALS["lang"]['Monday'] = 'Lunde, arba';
 
-$GLOBALS["lang"]['OS Family'] = 'OS Family';
+$GLOBALS["lang"]['Mongolia'] = '(1)';
 
-$GLOBALS["lang"]['OS Group'] = 'OS-groep';
+$GLOBALS["lang"]['monitor'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['oae_manage'] = 'Oae-beheer';
+$GLOBALS["lang"]['Monitor'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Oae Manage'] = 'Oae-beheer';
+$GLOBALS["lang"]['Monitor and measure ISMS performance'] = 'Ekrano kajambiciato, Bendrieoje';
 
-$GLOBALS["lang"]['object_ident'] = 'Objectident';
+$GLOBALS["lang"]['Montenegro'] = '(1)';
 
-$GLOBALS["lang"]['Object Ident'] = 'Objectident';
+$GLOBALS["lang"]['month'] = '®';
 
-$GLOBALS["lang"]['October'] = 'oktober';
+$GLOBALS["lang"]['Month'] = '®';
 
-$GLOBALS["lang"]['Oman'] = 'Oman';
+$GLOBALS["lang"]['Montserrat'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['omk_uuid'] = 'Omk Uuid';
+$GLOBALS["lang"]['More Information'] = 'Informazioni su Pliaj, arba';
 
-$GLOBALS["lang"]['Omk Uuid'] = 'Omk Uuid';
+$GLOBALS["lang"]['More Secure'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['On'] = 'Aan';
+$GLOBALS["lang"]['More elaborate SQL can used to group attributes within a range. Below shows the SQL for devices not seen in a pie chart grouped by last seen date ranges.'] = 'Pli komplekssa SQL povas esti uzita por grupigi aperiojn ene detavia Malsupre montre la SQL por aparatoj nevivividite en piirakka kaavo grupigita per latte viditaj datointervaloj.';
 
-$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.'] = 'Een van de <code>3x2</code>, <code>4x2</code>, <code>4x3</code> of <code>4x4</code>.';
+$GLOBALS["lang"]['More information about debugging this can be found on a helpful Stack Overflow thread'] = 'Pli da soaoj pri malkonstruado de tio povas esti trovaretaj sur rev rev ar v';
 
-$GLOBALS["lang"]['One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.'] = 'Een van Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.';
+$GLOBALS["lang"]['Morocco'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['One of Development, Disaster Recovery, Evaluation, Pre-Production, Production, Testing, Training, User Acceptance Testing'] = 'Een van de ontwikkeling, rampenherstel, evaluatie, pre-productie, productie, testen, training, gebruikersacceptatie testen';
+$GLOBALS["lang"]['Most likely the Windows firewall (or a third party firewall) is denying the connection attempt.<br><br>Please log on to the target Windows machine and check the firewall settings.'] = 'Plej ver seppne la Fenestroj<br/><br/>Bonvolu ensaluti rev.';
 
-$GLOBALS["lang"]['One of allocated, delegated, planning, reserved, unallocated, unknown, unmanaged. Defaults to allocated.'] = 'Een van toegewezen, gedelegeerde, planning, gereserveerd, niet toegewezen, onbekend, onbeheerd. Standaardinstellingen die toegewezen worden.';
+$GLOBALS["lang"]['Most of Open-AudIT is Licensed with GNU AGPL.'] = 'Licencita kun GNU AGPL.';
 
-$GLOBALS["lang"]['One of either <code>active directory</code> or <code>openldap</code>.'] = 'Eén van beide <code>active directory</code> of <code>openldap</code>.';
+$GLOBALS["lang"]['motherboard'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['One of: antivirus, backup, firewall, approved, banned, ignored or other.'] = 'Een van: antivirus, back-up, firewall, goedgekeurd, verboden, genegeerd of andere.';
+$GLOBALS["lang"]['Motherboard'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Online Documentation'] = 'Online documentatie';
+$GLOBALS["lang"]['mount_point'] = '(1)';
 
-$GLOBALS["lang"]['Open-AudIT'] = 'Open-AudIT';
+$GLOBALS["lang"]['Mount Point'] = '(1)';
 
-$GLOBALS["lang"]['Open-AudIT Community'] = 'Open Audit-gemeenschap';
+$GLOBALS["lang"]['mount_type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Open-AudIT Device Selection'] = 'Apparaatselectie openen';
+$GLOBALS["lang"]['Mount Type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Open-AudIT Enterprise'] = 'Open-AudIT Enterprise';
+$GLOBALS["lang"]['Mozambique'] = ' Bendrijoje';
 
-$GLOBALS["lang"]['Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.'] = 'Open Audit Enterprise. Op grote schaal flexibele oplossing voor ontdekking en audit voor grote netwerken. Alle functies van Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configureerbare Role Based Access Control inclusief Active Directory en LDAP.';
+$GLOBALS["lang"]['Must Respond To Ping. If set, Nmap will fist attempt to send and listen for an ICMP response. If the device does not respond, no further scanning will occur.<br>Previously a device did not have to respond to a ping for Open-AudIT to continue scanning.'] = 'Ni tuhoa reaktion new. Se aro Bendrieoje).<br/>Bendrijoje';
 
-$GLOBALS["lang"]['Open-AudIT Field Name'] = 'Open-AudIT veldnaam';
+$GLOBALS["lang"]['Must Respond to Ping'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Open-AudIT Licenses'] = 'Open-AudIT-licenties';
+$GLOBALS["lang"]['My AntiVirus is prompting me to deny/allow things'] = 'Mia Antivirusinis ekigas (Mia Antivirus ekigas)';
 
-$GLOBALS["lang"]['Open-AudIT Options'] = 'Open-AudIT-opties';
+$GLOBALS["lang"]['My time is off in Open-AudIT'] = 'Bendrijoje Tempo estas ko _ režisierius';
 
-$GLOBALS["lang"]['Open-AudIT Professional'] = 'Open-AudIT Professional';
+$GLOBALS["lang"]['Myanmar'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = 'Open Audit Professional. De wereld\\';
+$GLOBALS["lang"]['N+1'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Open-AudIT and Nmap'] = 'Open-AudIT en Nup';
+$GLOBALS["lang"]['N+M'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['OpenScap is Installed'] = 'OpenScap is geïnstalleerd';
+$GLOBALS["lang"]['N-to-1'] = '1';
 
-$GLOBALS["lang"]['openldap_user_dn'] = 'Openldap-gebruiker-dn';
+$GLOBALS["lang"]['N-to-N'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Openldap User Dn'] = 'Openldap-gebruiker-dn';
+$GLOBALS["lang"]['NMIS Business Service'] = 'NMISBendrijoje';
 
-$GLOBALS["lang"]['openldap_user_membership_attribute'] = 'Openldap gebruikerslidmaatschap-attribuut';
+$GLOBALS["lang"]['NMIS Customer'] = 'NMIS Bendrijoje';
 
-$GLOBALS["lang"]['Openldap User Membership Attribute'] = 'Openldap gebruikerslidmaatschap-attribuut';
+$GLOBALS["lang"]['NMIS Device Options'] = 'NMIS) arba';
 
-$GLOBALS["lang"]['open|filtered'] = 'Open gefilterd';
+$GLOBALS["lang"]['NMIS Device Selection'] = '-';
 
-$GLOBALS["lang"]['Open|filtered'] = 'Open gefilterd';
+$GLOBALS["lang"]['NMIS Field Name'] = 'NMIBendrijoje';
 
-$GLOBALS["lang"]['Operating System'] = 'Besturingssysteem';
+$GLOBALS["lang"]['NMIS Field Type'] = 'NMIS';
 
-$GLOBALS["lang"]['Operating System Family Contains'] = 'Familie van het besturingssysteem bevat';
+$GLOBALS["lang"]['NMIS Group'] = 'NMIS - ensweb';
 
-$GLOBALS["lang"]['Operating Systems'] = 'Bedrijfssystemen';
+$GLOBALS["lang"]['NMIS Poller'] = '"NMIS"';
 
-$GLOBALS["lang"]['optical'] = 'Optisch';
+$GLOBALS["lang"]['NMIS Role'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Optical'] = 'Optisch';
+$GLOBALS["lang"]['NOTE'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Optimized'] = 'Geoptimaliseerd';
+$GLOBALS["lang"]['NOTE #2'] = '2';
 
-$GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = 'Optionele versie zoals gecontroleerd door Open-AudIT. Gebruik het percentage teken % als een wildcard.';
+$GLOBALS["lang"]['NOTE - For more info on DateTime formats, see'] = '"Por pli da informatoj pri Datenttempo formaj," Vidas';
 
-$GLOBALS["lang"]['options'] = 'Opties';
+$GLOBALS["lang"]['NOTE - If you request a downloaded CSV, XML or JSON format (either a single credential, or the complete collection) the actual credential details will be sent. Not the encrypted string, the actual username, password, community string, etc. Any sensitive details are not displayed in the web GUI, but are made available via other formats. To prevent this export a configuration item is available called decrypt_credentials.'] = 'Se vi petas el fleutitan CSV Bendrieoje Ne la Por malhelfi tiun eksporton konfiguracioobjekto estas hasbla nomita Malkript _ \'oj.';
 
-$GLOBALS["lang"]['Options'] = 'Opties';
+$GLOBALS["lang"]['NOTE - The curly brackets in the data filed should be used as-is (not replaced as per other examples above).'] = 'NEE - La kurbaj kampoj en la datenoi arkivaj devus esti utiligitaj kiel - estas (alfaj eksemoj supre ne anstata audiite kiel).';
 
-$GLOBALS["lang"]['Or select from the below fields.'] = 'Of selecteer uit de onderstaande velden.';
+$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.'] = 'NEE - Şpovas malhelfi simplijn teksttojn akredita <code>decrypt_credentials</code> - <code>n</code>Bendrijoje';
 
-$GLOBALS["lang"]['org_descendants'] = 'Org-afstammelingen';
+$GLOBALS["lang"]['name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Org Descendants'] = 'Org-afstammelingen';
+$GLOBALS["lang"]['Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['org_id'] = 'Org ID';
+$GLOBALS["lang"]['Name: The name you are giving to this field. Ideally it should be unique.'] = 'Thomas, kien vi donas al tu kap. Engelse event';
 
-$GLOBALS["lang"]['Org ID'] = 'Org ID';
+$GLOBALS["lang"]['Namibia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Organisation'] = 'Organisatie';
+$GLOBALS["lang"]['Nauru'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['organisation'] = 'Organisatie';
+$GLOBALS["lang"]['Nepal'] = ' N';
 
-$GLOBALS["lang"]['Organisation Descendants'] = 'Organisatie Afstammelingen';
+$GLOBALS["lang"]['net_index'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Organisations'] = 'Organisaties';
+$GLOBALS["lang"]['Net Index'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['orgs'] = 'Orgen';
+$GLOBALS["lang"]['Netherlands Antilles'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Orgs'] = 'Orgen';
+$GLOBALS["lang"]['Netherlands the'] = ' ';
 
-$GLOBALS["lang"]['Orgs Name'] = 'Orgs-naam';
+$GLOBALS["lang"]['netmask'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['orientation'] = 'Oriëntatie';
+$GLOBALS["lang"]['Netmask'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Orientation'] = 'Oriëntatie';
+$GLOBALS["lang"]['netstat'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['os'] = 'Os';
+$GLOBALS["lang"]['Netstat'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Os'] = 'Os';
+$GLOBALS["lang"]['Netstat Policies'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['os_arch'] = 'Os Arch';
+$GLOBALS["lang"]['Netstat Ports'] = '-';
 
-$GLOBALS["lang"]['Os Arch'] = 'Os Arch';
+$GLOBALS["lang"]['Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.'] = 'Netstat Bendrijoje ';
 
-$GLOBALS["lang"]['os_bit'] = 'Os bit';
+$GLOBALS["lang"]['Network'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Os Bit'] = 'Os bit';
+$GLOBALS["lang"]['network_address'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['os_cpe'] = 'Os Cpe';
+$GLOBALS["lang"]['Network Address'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Os Cpe'] = 'Os Cpe';
+$GLOBALS["lang"]['Network Discovery'] = '-';
 
-$GLOBALS["lang"]['os_display_version'] = 'Versie tonen';
+$GLOBALS["lang"]['network_domain'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Os Display Version'] = 'Versie tonen';
+$GLOBALS["lang"]['Network Domain'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['os_family'] = 'Os familie';
+$GLOBALS["lang"]['Network Types'] = '-';
 
-$GLOBALS["lang"]['Os Family'] = 'Os familie';
+$GLOBALS["lang"]['Network type is set to Local Area Network by default, but can be changed by the user as they see fit. The types supported are below (with thanks to Wikipedia).<br><br>A network can be characterized by its physical capacity or its organizational purpose. Use of the network, including user authorization and access rights, differ accordingly.'] = 'Retoseco estas metita al educturer La tipoj apogitaj estas malsupre (kun dank \'al Vikipedio).<br/><br/>(OL L 20 van 2015.177, blz. 42). Uzo de la reto, inkluzive de uzantrajtigo kaj alirajtoj, malsamas sekve.';
 
-$GLOBALS["lang"]['os_group'] = 'Os Group';
+$GLOBALS["lang"]['networks'] = '·';
 
-$GLOBALS["lang"]['Os Group'] = 'Os Group';
+$GLOBALS["lang"]['Networks'] = '·';
 
-$GLOBALS["lang"]['os_installation_date'] = 'Os installatiedatum';
+$GLOBALS["lang"]['Networks Generated By'] = 'Retoj Bendrijoje';
 
-$GLOBALS["lang"]['Os Installation Date'] = 'Os installatiedatum';
+$GLOBALS["lang"]['Networks are updated with every discovery. Items such as IPs Available and IPs Used, along with Gateways, DHCP and DNS Servers are added as found.'] = '(OL L 20 van 2015.177, blz. 42). ';
 
-$GLOBALS["lang"]['os_licence_expiry'] = 'O Licentie verstreken';
+$GLOBALS["lang"]['Networks respond differently depending on how they are configured. Some routers and/or firewalls can respond <i>on behalf</i> of IPs on the other side of their interfaces to the Open-AudIT Server. It is quite common to see Nmap report a probe for SNMP (UDP port 161) to respond as open|filtered for devices that do and do not exist. This is misleading as there is no device at that IP, yet it ends up with a device entry in the database. 99.9% of the time, it is not Open-AudIT, nor even Nmap, but the network causing this issue. Now that we have the options to treat open|filtered ports as either open or closed, we can eliminate a lot of this confusion. Enterprise users even have the option to change this on a per discovery basis (more than just using the Medium (Classic) item, as above).'] = 'Retoj rispitaas alimeniere riippuu de kiel ili estas formitaj. Bendrijoje <i>Bendrijoje</i> IP sur la alias Costato de iliaj interfacoj al la open- Bendrijoje Estos tre vidi Nmap- raporton enketo por SNMP (UDP- ÖsterreiBendrijoje) responsi kiel malfermite por aparatoj kiuj faras kaj ne ekzitas. Tio estas migvida kiam ekzistas neniu aparato ankora -epäilty εi finito lidas supren kun aparatoeniro en la datumazo. 99,9% de la Tempo, εi ne estas Bendrieoje, nek e eritt Nmap, sed la reto kalazanta tiun temon. Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip: Empresa uzantoj y ordenación habas la opcion por дусnition sur per eltrova.o batso (pli ol... ů uzante la medium (Klasika) objectkton, new supre).';
 
-$GLOBALS["lang"]['Os Licence Expiry'] = 'O Licentie verstreken';
+$GLOBALS["lang"]['Networks using a CIDR Mask of'] = 'Retoj Şuzantaj CIDR Maskon rėžimas';
 
-$GLOBALS["lang"]['os_license'] = 'Os-licentie';
+$GLOBALS["lang"]['New Building Name'] = '"Konstrua" ...';
 
-$GLOBALS["lang"]['Os License'] = 'Os-licentie';
+$GLOBALS["lang"]['New Caledonia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['os_license_code'] = 'Os Licentiecode';
+$GLOBALS["lang"]['New Floor Name'] = '"Danam & Daehwa"';
 
-$GLOBALS["lang"]['Os License Code'] = 'Os Licentiecode';
+$GLOBALS["lang"]['New Room Name'] = '-';
 
-$GLOBALS["lang"]['os_license_mode'] = 'Os-licentiemodus';
+$GLOBALS["lang"]['New Row Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Os License Mode'] = 'Os-licentiemodus';
+$GLOBALS["lang"]['New Zealand'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['os_license_type'] = 'Os-licentietype';
+$GLOBALS["lang"]['News'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Os License Type'] = 'Os-licentietype';
+$GLOBALS["lang"]['News checks-in each time you login for updated queries & packages, configuration recommendations, release announcements, blog posts and more.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['os_name'] = 'Os naam';
+$GLOBALS["lang"]['News is our way of keeping you up-to-date with the latest fixes, announcements, query updates, software versions and more.<br><br>You do not need to keep on top of the wiki or check for new releases, we can send these to you!'] = 'Bendrijoje<br/><br/>"Vicio une réserve" ';
 
-$GLOBALS["lang"]['Os Name'] = 'Os naam';
+$GLOBALS["lang"]['next_hop'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['os_version'] = 'O-versie';
+$GLOBALS["lang"]['Next Hop'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Os Version'] = 'O-versie';
+$GLOBALS["lang"]['next_run'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Other'] = 'Andere';
+$GLOBALS["lang"]['Next Run'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Others'] = 'Overige';
+$GLOBALS["lang"]['Next click <i>Create your own application</i>.'] = 'Bendrijoje <i>(lt)</i>Bendrijoje';
 
-$GLOBALS["lang"]['Our timeout for a SSH response'] = 'Onze timeout voor een SSH reactie';
+$GLOBALS["lang"]['Next, click OK, then right click the Apache 2.4 service and click Restart. Done!'] = '"Venonta" "Klaki OK" "Eglutiam dekstra klaskas la apaplapaneo" 2.4opharm "" Klak "Redémarrer" "';
 
-$GLOBALS["lang"]['Our timeout for a WMI response'] = 'Onze timeout voor een WMI reactie';
+$GLOBALS["lang"]['Next, right click the Apache2.4 service and select Properties, then click the Log On tab.'] = 'Venonta, deksstra klakas la apa prevista2,4 ';
 
-$GLOBALS["lang"]['Our timeout for an SNMP response'] = 'Onze timeout voor een SNMP response';
+$GLOBALS["lang"]['Nicaragua'] = ' ';
 
-$GLOBALS["lang"]['Our timeout for an audit script response'] = 'Onze timeout voor een auditscript response';
+$GLOBALS["lang"]['Niger'] = 'Nom de NierioCity (facultatif, sans doute pas besoin d \'unetraduction)';
 
-$GLOBALS["lang"]['output'] = 'Uitvoer';
+$GLOBALS["lang"]['Nigeria'] = 'Nom de NierioCity (facultatif, sans doute pas besoin d \'unetraduction)';
 
-$GLOBALS["lang"]['Output'] = 'Uitvoer';
+$GLOBALS["lang"]['Niue'] = '"Danam & Daehwa"';
 
-$GLOBALS["lang"]['outputs'] = 'Uitvoer';
+$GLOBALS["lang"]['nmap'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Outputs'] = 'Uitvoer';
+$GLOBALS["lang"]['Nmap'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Overall severity score (0–10).'] = 'Algemene ernstscore (0';
+$GLOBALS["lang"]['Nmap Port Scanning Responses'] = 'Respuestas de execoración Bendrijoje';
 
-$GLOBALS["lang"]['overwrite'] = 'Overschrijven';
+$GLOBALS["lang"]['nmap_tcp_ports'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Overwrite'] = 'Overschrijven';
+$GLOBALS["lang"]['Nmap Tcp Ports'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['owner'] = 'Eigenaar';
+$GLOBALS["lang"]['nmap_udp_ports'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Owner'] = 'Eigenaar';
+$GLOBALS["lang"]['Nmap Udp Ports'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['PHP'] = 'PHP';
+$GLOBALS["lang"]['Nmap cannot determine whether the port is open because packet filtering prevents its probes from reaching the port. The filtering could be from a dedicated firewall device, router rules, or host-based firewall software. These ports frustrate attackers because they provide so little information. Sometimes they respond with ICMP error messages such as type 3 code 13 (destination unreachable: communication administratively prohibited), but filters that simply drop probes without responding are far more common. This forces Nmap to retry several times just in case the probe was dropped due to network congestion rather than filtering. This slows down the scan dramatically.'] = 'Nmap ® povas Bendrijoje Tiuj hasnoj remoj remoj event), sed intersuliloj kiuj semplicemente fenigas enketojn sen repone ppperones. Tiuj fortoj Nmap por reeniri florajn fojojn Tio Bremsas la sanadon Ş.';
 
-$GLOBALS["lang"]['POD'] = 'POD';
+$GLOBALS["lang"]['Nmap places ports in this state when it is unable to determine whether a port is open or filtered. This occurs for scan types in which open ports give no response. The lack of response could also mean that a packet filter dropped the probe or any response it elicited. So Nmap does not know for sure whether the port is open or being filtered. The UDP, IP protocol, FIN, NULL, and Xmas scans classify ports this way.'] = 'Nmap lokas hasnojn en tu gritato kiam estas nekapablla determinmi Estas malferma su epäilty suodatin. Tio okazas por sanaj tipoj en kiuj malfermaj hasnoj donas neniun reazion. Thessmanko de responso ankai povis signer ke pakafilllo faligis la enketon a.jnan responson εi ellogis. Nmap ne scias por certa U la hasno estas malferma a rispettiva esti inferita. "UDP" (UDP) - "protokolo" ("protokolo") FIN "(" NULL "(" NULL ") -" Xmas- "Skanadoj klasifikas" ("hasnojn tiun manieron").';
 
-$GLOBALS["lang"]['Package'] = 'Verpakking';
+$GLOBALS["lang"]['Nmap timing details are found on the bottom of this linked page'] = 'Nmap Tempigas detalojn estastrovitaj sur la fondo de tiuligita pacomamento';
 
-$GLOBALS["lang"]['packages'] = 'Verpakkingen';
+$GLOBALS["lang"]['nmis_business_service'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Packages'] = 'Verpakkingen';
+$GLOBALS["lang"]['Nmis Business Service'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['pagefile'] = 'Paginabestand';
+$GLOBALS["lang"]['nmis_customer'] = '-';
 
-$GLOBALS["lang"]['Pagefile'] = 'Paginabestand';
+$GLOBALS["lang"]['Nmis Customer'] = '-';
 
-$GLOBALS["lang"]['Pakistan'] = 'Pakistan';
+$GLOBALS["lang"]['nmis_group'] = '"Nmis- ryhmä"';
 
-$GLOBALS["lang"]['Palau'] = 'Palau';
+$GLOBALS["lang"]['Nmis Group'] = '"Nmis- ryhmä"';
 
-$GLOBALS["lang"]['Palestinian Territory'] = 'Palestijnse gebieden';
+$GLOBALS["lang"]['nmis_manage'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Panama'] = 'Panama';
+$GLOBALS["lang"]['Nmis Manage'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Papua New Guinea'] = 'Papoea-Nieuw-Guinea';
+$GLOBALS["lang"]['nmis_name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Paraguay'] = 'Paraguay';
+$GLOBALS["lang"]['Nmis Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Paranoid'] = 'Paranoïde';
+$GLOBALS["lang"]['nmis_notes'] = 'NmmQ';
 
-$GLOBALS["lang"]['Parent'] = 'Ouder';
+$GLOBALS["lang"]['Nmis Notes'] = 'NmmQ';
 
-$GLOBALS["lang"]['parent_id'] = 'Ouder-ID';
+$GLOBALS["lang"]['nmis_poller'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Parent ID'] = 'Ouder-ID';
+$GLOBALS["lang"]['Nmis Poller'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['parent_name'] = 'Achternaam';
+$GLOBALS["lang"]['nmis_poller_uuid'] = 'Nmis Poller Bendrijoje';
 
-$GLOBALS["lang"]['Parent Name'] = 'Achternaam';
+$GLOBALS["lang"]['Nmis Poller Uuid'] = 'Nmis Poller Bendrijoje';
 
-$GLOBALS["lang"]['part_number'] = 'Deelnummer';
+$GLOBALS["lang"]['nmis_role'] = 'Nmis Bendrijoje';
 
-$GLOBALS["lang"]['Part Number'] = 'Deelnummer';
+$GLOBALS["lang"]['Nmis Role'] = 'Nmis Bendrijoje';
 
-$GLOBALS["lang"]['part_of_domain'] = 'Deel van domein';
+$GLOBALS["lang"]['No'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Part Of Domain'] = 'Deel van domein';
+$GLOBALS["lang"]['No Devices Returned'] = 'Neniu cerchio';
 
-$GLOBALS["lang"]['Partition'] = 'Partitie';
+$GLOBALS["lang"]['No Google Maps API Key present, you will not be able to display the map.'] = 'API Bendrijoje Vi ne povas montri la mapon.';
 
-$GLOBALS["lang"]['partition_count'] = 'Aantal partities';
+$GLOBALS["lang"]['No License for Professional or Enterprise'] = 'Neniu perfexsilo por';
 
-$GLOBALS["lang"]['Partition Count'] = 'Aantal partities';
+$GLOBALS["lang"]['No Results'] = ' ';
 
-$GLOBALS["lang"]['partition_disk_index'] = 'Partitieschijfindex';
+$GLOBALS["lang"]['No data in License Key'] = 'Neniuj datenoj Şclave delicencia';
 
-$GLOBALS["lang"]['Partition Disk Index'] = 'Partitieschijfindex';
+$GLOBALS["lang"]['No database upgrade required at this time.'] = 'Neniu εisdatigo Bendrijoje';
 
-$GLOBALS["lang"]['Pass'] = 'Passeer';
+$GLOBALS["lang"]['No devices are in the database.'] = 'Neniuja paratoj estas en la datummazo.';
 
-$GLOBALS["lang"]['Passed'] = 'geslaagd';
+$GLOBALS["lang"]['Node'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Passive Optical Local Area Network'] = 'Passief optisch lokaal netwerk';
+$GLOBALS["lang"]['None'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Password'] = 'Wachtwoord';
+$GLOBALS["lang"]['Norfolk Island'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['password'] = 'Wachtwoord';
+$GLOBALS["lang"]['Normal'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['password_changeable'] = 'Wachtwoord kan worden gewijzigd';
+$GLOBALS["lang"]['Northern Mariana Islands'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Password Changeable'] = 'Wachtwoord kan worden gewijzigd';
+$GLOBALS["lang"]['Norway'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['password_disabled'] = 'Wachtwoord uitgeschakeld';
+$GLOBALS["lang"]['Norwegian'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Password Disabled'] = 'Wachtwoord uitgeschakeld';
+$GLOBALS["lang"]['Not Applicable'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['password_expires'] = 'Wachtwoord verloopt';
+$GLOBALS["lang"]['Not Checked'] = '®';
 
-$GLOBALS["lang"]['Password Expires'] = 'Wachtwoord verloopt';
+$GLOBALS["lang"]['Not Equals'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['password_last_changed'] = 'Wachtwoord laatst gewijzigd';
+$GLOBALS["lang"]['Not In'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Password Last Changed'] = 'Wachtwoord laatst gewijzigd';
+$GLOBALS["lang"]['Not Like'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['password_required'] = 'Wachtwoord vereist';
+$GLOBALS["lang"]['Not Set'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Password Required'] = 'Wachtwoord vereist';
+$GLOBALS["lang"]['Not every computer will be able to successfully complete a benchmark. We have seen in some fail in testing for reasons beyond our control. The logs should help point you in the right direction for these items.'] = 'Ne Ni vidis en kelkaj malsukcesas en testado pro kialoj preter nia kontrolo. Thessaloj devus helti montri vin en la deksstra direkto por tiuj eroj.';
 
-$GLOBALS["lang"]['patch_panel'] = 'Paneel Patchen';
+$GLOBALS["lang"]['Not in the (comma seperated) list'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Patch Panel'] = 'Paneel Patchen';
+$GLOBALS["lang"]['Not normally used. If set, this requires the device to have an open port (as per Scan Options) to be considered responding. A MAC address, arp response or ping response is not considered sufficient to be considered responding. Useful if a router or firewall between the Open-AudIT server and target IP is responding to port scans on the IPs behalf.'] = 'Bendrijoje Se aro, tio postulas la afarato havi malferman hasnon (rev. MAC- adreso, arpresponto pingrespono ne estas konsidritaj sufičaj esti konsidritaj rerespontantaj. Utila se iteranto skepticus fajromuro inter la open- Bendrijoje - servilo kaj celo IP new al hanskanado sur la IP - rev.';
 
-$GLOBALS["lang"]['patch_panel_port'] = 'Paneelpoort patchen';
+$GLOBALS["lang"]['Note'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Patch Panel Port'] = 'Paneelpoort patchen';
+$GLOBALS["lang"]['Note - Selecting a parent will automatically provide access to its children (although it wont be shown here).'] = '"Elektki gepton a skeptigos al ferro al siaj infanoj" ("kvankam εi ne estos montrita.i").';
 
-$GLOBALS["lang"]['path'] = 'Pad';
+$GLOBALS["lang"]['Note, you may need to make the script executable with'] = '(OL L 20 van 2015.177, blz. 42).';
 
-$GLOBALS["lang"]['Path'] = 'Pad';
+$GLOBALS["lang"]['Notes'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Performance'] = 'Prestaties';
+$GLOBALS["lang"]['notes'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Performed'] = 'Uitgevoerd';
+$GLOBALS["lang"]['Notice'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['permission'] = 'Toestemming';
+$GLOBALS["lang"]['notin'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Permission'] = 'Toestemming';
+$GLOBALS["lang"]['Notin'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['permissions'] = 'Rechten';
+$GLOBALS["lang"]['November'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Permissions'] = 'Rechten';
+$GLOBALS["lang"]['Now for the Subscription ID, click All Services, Subscriptions and copy it.'] = '"Tellimused kaj kopii εin."';
 
-$GLOBALS["lang"]['Personal Area Network'] = 'Persoonlijk netwerk';
+$GLOBALS["lang"]['Now we need to provide the Azure Active Directory application access to your subscription.<br><br>Click on Resource Groups and then the resource group you would like your Azure Active Directory Application to have access to.<br><br>Click Add. The role should be Contributor and then search for the app (Open-AudIT). Then click Save.<br><br>Now the application has access to the subscription, so we can make API calls. The API calls will be requested on behalf of the application, not your user.'] = 'Šio sprendimo priedo b punkte nurodytiems produktams taikomos toliau nurodytos sąlygos.<br/><br/>Klaku sur Resource Bendrijoje<br/><br/>"La rolo devus esti Kontriavanto kaj tiam ser previtoi la app" ("" "") Klaki "<br/><br/>® la aplico havas aliro al la abono, ňni povas fari API vokojn. API vokoj estos postuladitaj nome svarstytina.';
 
-$GLOBALS["lang"]['Peru'] = 'Peru';
+$GLOBALS["lang"]['nvd_json'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Philippines'] = 'Filipijnen';
+$GLOBALS["lang"]['Nvd Json'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['phone'] = 'Telefoon';
+$GLOBALS["lang"]['ORDER BY'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Phone'] = 'Telefoon';
+$GLOBALS["lang"]['OS'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Physical CPUs'] = 'Fysische CPU\'s';
+$GLOBALS["lang"]['OS Families'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['physical_count'] = 'Lichamelijk aantal';
+$GLOBALS["lang"]['OS Family'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Physical Count'] = 'Lichamelijk aantal';
+$GLOBALS["lang"]['OS Group'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['physical_depth'] = 'Fysische diepte';
+$GLOBALS["lang"]['OUTPUTS'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Physical Depth'] = 'Fysische diepte';
+$GLOBALS["lang"]['oae_manage'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['physical_height'] = 'Fysische hoogte';
+$GLOBALS["lang"]['Oae Manage'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Physical Height'] = 'Fysische hoogte';
+$GLOBALS["lang"]['object_ident'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['physical_width'] = 'Fysische breedte';
+$GLOBALS["lang"]['Object Ident'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Physical Width'] = 'Fysische breedte';
+$GLOBALS["lang"]['Obtain top management support'] = 'Obtenga la direttiva';
 
-$GLOBALS["lang"]['picture'] = 'Afbeelding';
+$GLOBALS["lang"]['October'] = 'Oktobro Oktobro Oktobro Oktobro';
 
-$GLOBALS["lang"]['Picture'] = 'Afbeelding';
+$GLOBALS["lang"]['Offset'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['pid'] = 'Pid';
+$GLOBALS["lang"]['Okta'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Pid'] = 'Pid';
+$GLOBALS["lang"]['Oman'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Pie Chart'] = 'Pie Chart';
+$GLOBALS["lang"]['omk_uuid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ping'] = 'Ping';
+$GLOBALS["lang"]['Omk Uuid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ping'] = 'Ping';
+$GLOBALS["lang"]['On'] = 'Informazioni rev.';
 
-$GLOBALS["lang"]['Pitcairn Islands'] = 'Pitcairneilanden';
+$GLOBALS["lang"]['On Windows, Open-AudIT uses WMI as it is primary method of auditing. Windows has a notorious reputation where remote WMI is concerned. It tends to either <i>just work</i> or some mystery item on the target requires changing. If you are experiencing difficulty auditing remote Windows PCs, we have created a script called test_windows_client.vbs. You can run this script <strong>locally</strong> on the machine in question, after signing on as the user that is used by Open-AudIT to perform the audit. The script makes <strong>no changes</strong> to the target devices. It checks most (not all) of the items below and generates PASS, FAIL and INFO tags for various properties. NOTE - If your target system is being audited correctly, you should not change any settings. Some of the below do not exist on Windows PCs that are able to be audited and some do exist. Only change settings if your discoveries on particular PCs are not working as intended.'] = 'Sur Fenestroj, reviziado, - (arba) Fenestroj haves konatan reputazione kie malpreksima WMI estas maltrankvila Bendrijoje. "Kaldun Kaplustama" ("arba" arba "arba") <i>"Nincs"</i> Bendrijoje Se vi spertas malcomedicon reviziantan malpreksimajn Fenestrojn, ni kreis manikripton nomitan testwins _ Bendrijoje. Bendrijoje <strong>Bendrijoje</strong> En la ma apretino preockazioneita, tavia subskribado kiel la uzanto kiu estas utiligita Fare de open- Bendrieoje. (EB) Nr. 1235 / 2008 <strong>Bendrijoje</strong> 2005 m. sausio 1 d. Tarybos Reglamentas (EB) Nr. 139 / 2005 dėl koncentracijų tarp  Kelkaj el la malsupre ne ekistas sur Fenestroj kiuj povas revizitaj kaj kelkaj ekistas. Sur specialaj komputiloj ne funkcias Bendrijoje';
 
-$GLOBALS["lang"]['placement'] = 'Plaatsing';
+$GLOBALS["lang"]['On the Tasks List page, click the <i>Add New</i> button to configure a task.'] = 'Sur la üleseurgosrerkämmende, klaka la <i>Bendrijoje</i> Bendrijoje:';
 
-$GLOBALS["lang"]['Placement'] = 'Plaatsing';
+$GLOBALS["lang"]['On the field <i>Match String</i> you should provide the name of the software that you want to track. You can use the percent sign (%) as a wildcard in where required.'] = '"Sur la kampo" <i>-</i> Vi bruts providoni la nomon de la programmaro, kiun vi volas printi. Vi povas uzi la procentan signon (%) kiel kova quallyan karton en kie noodzakelijk.';
 
-$GLOBALS["lang"]['Please have an Open-AudIT administrator logon and upgrade the database.'] = 'Laat een Open-AudIT administrator inloggen en upgrade van de database.';
+$GLOBALS["lang"]['On the next page you will be able to select Access Keys and see your key or create a new key.'] = 'Sur la sekva resivo vi povos elekti alirajn ';
 
-$GLOBALS["lang"]['Please note that the select box will override the text input box.'] = 'Houd er rekening mee dat het selectievakje het tekstinvoervak zal overschrijven.';
+$GLOBALS["lang"]['On the target Windows PC, run the DCOM utility and verify (or set) the below attributes. Start -> Run, Enter DCOMCNFG and press OK. This will open the DCOMCNFG window.'] = 'Sur la celo Bendrijoje, prisorgas la DCOM- serva Konecu - titulado, Entriz DCOMCNFFG kaj gazetaro Bien. Tio malfermos, DCOMCNFG- fenestoni.';
 
-$GLOBALS["lang"]['Please set using'] = 'Instellen met';
+$GLOBALS["lang"]['On the top right (underneath the menu bar) you will see several buttons. These allow you to select another dashboard, set the current dashboard as your homepage (if it is not already) and edit the current dashboard (if you have permission).'] = 'Sur la sopra dekstra (sub la menuolinkejo) vidos multilajn butonojn residu. Tiuj permes al viselekti alphin da aprettabulon, metis la nunan armatuurlaud kiel șipareigojimų neprisiimta.';
 
-$GLOBALS["lang"]['pod'] = 'Pod';
+$GLOBALS["lang"]['On-Premise, Not Cloud'] = 'Ankerias, Thomas';
 
-$GLOBALS["lang"]['Pod'] = 'Pod';
+$GLOBALS["lang"]['Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.'] = 'Kiam Täiendav väli estis kreita εi povas esti uzita en demandej kaj grupoj eksporte kiel iu alias atiguto en la datummazo.';
 
-$GLOBALS["lang"]['Poland'] = 'Polen';
+$GLOBALS["lang"]['Once commented out, your certificate will be validated, but may also fail this validation if you are using self-signed certificates and have not configured your server correctly.'] = 'Bendrijos teisės aktai, susiję su žemės ūkio produktų perdirbimu ir perdirbimu';
 
-$GLOBALS["lang"]['Policies'] = 'Beleid';
+$GLOBALS["lang"]['Once the script has run on a target, should the script delete itself.'] = '(1)';
 
-$GLOBALS["lang"]['Policies have exceptions.'] = 'Beleid heeft uitzonderingen.';
+$GLOBALS["lang"]['Once those initial queries (snmp, ssh, wmi) are complete, if the device is a supported by the audit scripts (Windows, Linux, OSX, AIX, HP-UX, Solaris and ESXi), the correct audit script will be copied to the target and executed. The audit script will self delete upon completion. The result will be stored on the target machine as an XML file. The Open-AudIT server will then retrieve the result file for processing and delete the result file on the target. The location the audit script is copied to on the target device (at least for SSH audits) is configurable by editing the discovery_linux_script_directory config item. By default it is set to /tmp/. This may need changing if /tmp has noexec set. The result file is then processed and the device details updated within Open-AudIT.'] = 'РАНАН tiaj omencaj esigeoj (snmp, ssh, wmi) estas kompletaj, se la aparato estas apogita per la reviziomanuskriptoj (Windows, Linukso, OsX, HP- UX, Solaris kaj ESXi), la εusta reviziomanusckita estos koopi La revizio manikripto mem foreigos sur kompletigos. Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip: ® ® ® ® ® ® ® ® - Servilo tiam prenos la rezultan dosieron por pretigo kaj forigi la rezultan dosieron sur la celo. La loko kiun la reviziomanuskripto estas kopita al sur la celaparato (almena support por SSH- revizioj) estas formita redactante la eltrova.o _ reviziomanuskripto estas kopita al sur la celaparato (almena support por SS- revizioj) estas formita redactante la eltrova.o _ reva.o _ revitul revisiziomanuskripto estan tun. L \'ution de l\' energie nucléaire dans le secteur de l \'énergie et de l\' energie, y communis l \'énergie et l\' energie Tio povas bezoni tlan rezulta dosiero tiam estas prilboreita kaj la aparato detaloj εisdagitaj ene ľ@@';
 
-$GLOBALS["lang"]['policy'] = 'Beleid';
+$GLOBALS["lang"]['Once you click the execute button, Open-AudIT will spawn a process to initiate the discovery and return the user to the discovery details page. The newly spawned process takes the configured discovery options and executes Nmap commands to determine the initial list of IP addresses to be scanned (or queries Active Directory if that type is used). Each IP to be scanned is placed into a queue. Once the initial process has completed (and there are IPs to be scanned in the queue) a number of processes will be spawned to further scan each IP in parallel. This number of processes is configurable in the configuration, edit the attribute <i>queue_limit</i>. By default this is set to 20.'] = 'șižanginė pastaba. Nmap komandojn por determini la omencan Listan de IP- adresoj por esti skinitaj (kahtlusega demandoj Active Directory se tu tipo estetas uzita). Imitu IP esti danita estas metita en atendovicon. kiam la omenca proceszo kompletigis (kaj eksportas Ipoj por etisti skanita en la atendovico) kelkaj proceszoj estos generolaj al plu skana... Tiu nombro da proceszoj estas konfumbla en la konfiguracio, redakki la svarstytina. <i>Järjekorra</i>. deca.lte to estas metita opharm 20.';
 
-$GLOBALS["lang"]['Policy'] = 'Beleid';
+$GLOBALS["lang"]['Once you have chosen your devices to edit, click the pencil button on the top right of the table.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['policy_id'] = 'Beleids-ID';
+$GLOBALS["lang"]['Once you have done this, Open-AudIT will attempt to verify your user logon details against the configured Auth Method. If the user has valid credentials and <code>use_authorisation</code> is set, Open-AudIT will ask for the list of groups that the user belongs to. If the user is in the corresponding groups for Open-AudIT Roles and Orgs, those Roles and Orgs will be applied to that user.'] = '• • • • • • (RO 2012 7183). <code>use_authorisation</code> Estas meetita, Rem. Se la uzanto estas en la ekvialentaj gruopoj por open- repl.';
 
-$GLOBALS["lang"]['Policy ID'] = 'Beleids-ID';
+$GLOBALS["lang"]['Once you have generated a Baseline Definition you can schedule it to be run against a specified group of devices.'] = '"Bazlinio- Difon vi povas plani liukoinen por esti prizorgita kontra epäilty perozigita grupo de aparatoj."';
 
-$GLOBALS["lang"]['Policy Result'] = 'Beleidsresultaat';
+$GLOBALS["lang"]['Once you have those items, in Open-AudIT Enterprise you can go to menu -> Discover -> Clouds -> Create Clouds, select the <i>Amazon AWS</i> type and paste them in. Done.'] = 'Produkt chimiques en open- Bendrieoje <i>Bendrijoje</i> Tadžpu kaj preterpasis rev.';
 
-$GLOBALS["lang"]['Policy Results'] = 'Beleidsresultaten';
+$GLOBALS["lang"]['Once you have those items, in Open-AudIT Enterprise you can go to menu -> Discover -> Clouds -> Create Clouds, select the <i>Microsoft Azure</i> type and paste them in. Done.'] = 'Produkt chimiques en open- Bendrieoje <i>Bendrijoje Azuro alkaloidai</i> Tadžpu kaj preterpasis rev.';
 
-$GLOBALS["lang"]['Polite'] = 'Beleefd';
+$GLOBALS["lang"]['Once you have your cloud credentials, it is merely a matter of creating a new cloud and running the discovery - or scheduling first/future discoveries. Make sure you also have the credentials required to log on to your cloud machines, and it is all done for you just like a regular discovery. Credentials for your cloud'] = '® ® ® ® ® ® ® ® viaÏviajn nubajn akredita.ojn, clucipei estas ® requesto pri krado de nova nubo kaj prikorrado de la eltrovao - katlus planante ujn / futurijn eltrovaojn. (OL L 400, 2006 12 30, blz. 86).';
 
-$GLOBALS["lang"]['Populated by audit.'] = 'Gepopuleerd door audit.';
+$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.'] = 'Bendrijoje <code>3x2</code>Bendrijoje <code>4x2</code>Bendrijoje <code>4x3</code> Bendrijoje <code>4x4</code>Bendrijoje';
 
-$GLOBALS["lang"]['Populated by discovery and audit.'] = 'Gepopuleerd door ontdekking en audit.';
+$GLOBALS["lang"]['One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.'] = '(RO 2012 7183). 2015 / 11 / 02';
 
-$GLOBALS["lang"]['Populated dynamically.'] = 'Gepopuleerd dynamisch.';
+$GLOBALS["lang"]['One of Development, Disaster Recovery, Evaluation, Pre-Production, Production, Testing, Training, User Acceptance Testing'] = 'Unu el Evoluo recuperación de Desastres Pruebas de Aceptación';
 
-$GLOBALS["lang"]['Populated from DNS.'] = 'Gepopuleerd van DNS.';
+$GLOBALS["lang"]['One of allocated, delegated, planning, reserved, unallocated, unknown, unmanaged. Defaults to allocated.'] = 'Unu el asignita, unita, planado, rezervita, neallokita, nekonata, neadminis. ·';
 
-$GLOBALS["lang"]['Populated from SNMP discovery.'] = 'Gepopuleerd van SNMP ontdekking.';
+$GLOBALS["lang"]['One of either <code>active directory</code> or <code>openldap</code>.'] = 'Bendrijoje <code>active directory</code> Bendrijoje <code>openldap</code>Bendrijoje';
 
-$GLOBALS["lang"]['Populated from device audits.'] = 'Gepopuleerd van apparaat audits.';
+$GLOBALS["lang"]['One of: antivirus, backup, firewall, approved, banned, ignored or other.'] = 'Unu el: Kontra katlustusviririus, sekurmuro, aprobita, malperita, uniterebrat kafust.';
 
-$GLOBALS["lang"]['Populated from hostname.'] = 'Gepopuleerd van hostnaam.';
+$GLOBALS["lang"]['One other item to be careful of - make sure you use the hostname (or fqdn) of your LDAP Server that matches what is in the certificate (not just the LDAP Servers IP address) when creating the LDAP entry in Open-AudIT.'] = 'Uniu également objectto por esti singarda de - certigu ke vi uzas la mastro nomon (kahtlus fqdn) de via LDAP Servilo kiu egalas estas en la aestilo (ne...';
 
-$GLOBALS["lang"]['Populated from machine-id on Linux.'] = 'Gepopuleerd van machine-id op Linux.';
+$GLOBALS["lang"]['Online Documentation'] = '-';
 
-$GLOBALS["lang"]['Populated from the IP for the default route or the IP detected in discovery.'] = 'Gepopuleerd vanaf het IP voor de standaard route of het IP gedetecteerd in ontdekking.';
+$GLOBALS["lang"]['Open'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Populated from the hostname command.'] = 'Gepopuleerd van het commando hostnaam.';
+$GLOBALS["lang"]['Open Data'] = '-';
 
-$GLOBALS["lang"]['Populated with additional data from the external system, in a JSON representation.'] = 'Gepopuleerd met extra gegevens van het externe systeem, in een JSON-representatie.';
+$GLOBALS["lang"]['Open Source'] = '-';
 
-$GLOBALS["lang"]['port'] = 'Haven';
+$GLOBALS["lang"]['Open-AudIT'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Port'] = 'Haven';
+$GLOBALS["lang"]['Open-AudIT Community source code is available on GitHub. You are encouraged to inspect any code you have concerns about, and because it is open source - you are also encouraged to ask us about any issues you have or report any findings. We are always more than happy to accept code contributions, vulnerability reports, or even simple questions. We are here to help.<br><br>The audit scripts themselves (Windows, Linux, MacOS, et al) are deliberately written in readable native shell script (VBScript for Windows, Bash for *nix). You can see exactly what commands are run. You can remove any commands you feel you do not need. You can ask a third party to inspect the code for you and (if you want to) report any findings.<br><br>Open-AudIT Enterprise performs the add-on commercial functions for Open-AudIT Community. It is included as a single compiled file with no external dependencies. Where Enterprise itself performs the function(s), if you are concerned with any issues Firstwave is happy to work through them with you - just ask! Try that with another commercial software vendor!'] = '® Komunuma fondkodo estas hasbla sur GitHub. Vi estas instigita por inspekti ajnan kodon kiun vi havas zorgojn pri, kaj clearficari estas malferma fonto - vi anka. (OL L 20, 2015.1 27, p. 42). Bendrijoje Ni estas - rev.<br/><br/>La reviziomanuskriptoj mem (Windows, Linukso, MacOS, SmithKline) estas konscie skribitaj en legebla indi... ena рelmanökripto (VBScript por Fenestroj, Bash por nix). Thomas. Vio povas forigi jujn ordonojn, kiujn vi sentas, ke vi ne bezonas. Vi povas esigei al tria parto inspekti la kodon por vi kaj (se vi volas) raporti jojn ajn rezultojn.<br/><br/>"Milieu" Le Conseil européen de Lisbonne adottié le rapport de la condition sur la mise en \'uvre de la stratégie de Lisbonne. English felivistea lapi kun vi - nur esigei! Prostitutie kun alias Komerca Bendrijoje! -';
 
-$GLOBALS["lang"]['port_name'] = 'Poortnaam';
+$GLOBALS["lang"]['Open-AudIT Device Selection'] = 'Selezione dei disposititivi Şd \'Avaa';
 
-$GLOBALS["lang"]['Port Name'] = 'Poortnaam';
+$GLOBALS["lang"]['Open-AudIT Enterprise has the ability to choose from a pre-defined list of discovery scan options and also to customise individual options per discovery.'] = 'Auditvereisten havas la kapablon elektroti de anta.-difinita lista de eltrova.o skani opciojn kaj anka.adapteri infituajn opciojn per eltrova.';
 
-$GLOBALS["lang"]['port_number'] = 'Poortnummer';
+$GLOBALS["lang"]['Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.'] = '"Entrepristouverte d \'rer" Alth- Skala flessebla eltrova personalizadoiuj ecoj de Profesia pluso: Bazlinioj, B Româde archivoivoivoivo, Österreiżenżenżeskie, Gestión de cubiertas, Österreiżeńskie Indluzive de Aktiva Adresaro kaj LDAP.';
 
-$GLOBALS["lang"]['Port Number'] = 'Poortnummer';
+$GLOBALS["lang"]['Open-AudIT Field Name'] = 'Ouvrir- Ş- Kamponomo';
 
-$GLOBALS["lang"]['ports_in_order'] = 'Havens in volgorde';
+$GLOBALS["lang"]['Open-AudIT Licenses'] = '(1)';
 
-$GLOBALS["lang"]['Ports In Order'] = 'Havens in volgorde';
+$GLOBALS["lang"]['Open-AudIT Options'] = '"Opcioj"';
 
-$GLOBALS["lang"]['ports_stop_after'] = 'Havens stoppen na';
+$GLOBALS["lang"]['Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats.'] = '® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® (LT) ® (LT)';
 
-$GLOBALS["lang"]['Ports Stop After'] = 'Havens stoppen na';
+$GLOBALS["lang"]['Open-AudIT Professional has the ability to choose from a pre-defined list of discovery scan options, per discovery.'] = 'Audit Profesia haves la kapablon elektroti de anta.-difinita lista de malkovro- sanada opcioj, eltrova tavia.';
 
-$GLOBALS["lang"]['Portugal, Portuguese Republic'] = 'Portugal, Portugese Republiek';
+$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = '-';
 
-$GLOBALS["lang"]['position'] = 'Positie';
+$GLOBALS["lang"]['Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate and authorize a user and in addition, to create a user account in Open-AudIT using assigned roles and orgs based on LDAP group membership. It can also use'] = 'Open- Aud IT povas esti formita por uzi LDAP- servilojn (Microsoft Active Directory kaj / vaste OpenLDAP)';
 
-$GLOBALS["lang"]['Position'] = 'Positie';
+$GLOBALS["lang"]['Open-AudIT can be run on your server in your data center. It does not need access to the internet at all. Even the installation on Linux where we use the distribution package manager for our prerequisites can be negated by you using an in-house and security team-approved package repository.<br><br>Open-AudIT does not store any of your data in the cloud. Even licensing information can be provided without having to access the internet from the Open-AudIT server.<br><br>Sure, it is easier to allow it to access the internet to download packages (including security fixes) for your distribution, but that is up to you and your security policies. Open-AudIT does not need the internet.'] = 'Ava- Aud.i povas esti prizorgita sur linapáca servilon en via datumcentro. African bezonas alron al interreto. -<br/><br/>(lt) 2005 m. sausio 1 d. Eruga licenciadinformoj povas et distonigitaj sen devi aliri la interreton de la Open- opharm - servilo.<br/><br/>Certe estestas pli subjectesi al εi aliri la Interreton por el apretuti paka.ojn (inkluzive de sekureco Fixas) por via Distributionio esto estas εis vi kaj via sekureco politikoj. -';
 
-$GLOBALS["lang"]['postcode'] = 'Postcode';
+$GLOBALS["lang"]['Open-AudIT can download, parse and use NIST CVE Vulnerability reports.'] = 'Uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi uzi';
 
-$GLOBALS["lang"]['Postcode'] = 'Postcode';
+$GLOBALS["lang"]['Open-AudIT can show in one of several languages. How you can improve this?'] = '(RO 2012 7183). Kiel vi povas plibonigi?';
 
-$GLOBALS["lang"]['power_circuit'] = 'Stroomkring';
+$GLOBALS["lang"]['Open-AudIT can store information in additional fields that are associated with each device.'] = '- Viršus';
 
-$GLOBALS["lang"]['Power Circuit'] = 'Stroomkring';
+$GLOBALS["lang"]['Open-AudIT can use Microsoft Entra (previously known as Microsoft Azure Active Directory) as an authentication method. This means your user in Open-AudIT can click the Logon using Entra button on the logon page and use their Entra credentials to logon. That user will need to already exist within Open-AudIT (and be assigned'] = '(anta... konata kiel Microsoft Azure Aktiva Adresaro) guidikmetodo. Tiotavia signfas vian uzanton en Open- Bendrijoje Tiu uzanto murtaa režisierė';
 
-$GLOBALS["lang"]['power_sockets'] = 'Power Sockets';
+$GLOBALS["lang"]['Open-AudIT can use OKTA as an authentication method. This means your user in Open-AudIT can click the Logon using OKTA button on the logon page and use their OKTA credentials to logon. That user will need to already exist within Open-AudIT (and be assigned Roles and Orgs), but will not need to remember a separate set of logon credentials.'] = '® IT povas utiligi OKTA kiel a sketikmetodon. Tiotavia signfas vian uzanton en Open- Bendrieoje Ojn al African, Tiu uzanto devosēkzisti ene de Open- Bendrieoje (kaj et asti asignita Roloj kaj Orgs), sed ne drobues memori aparman aron de phoologiaj akredita.';
 
-$GLOBALS["lang"]['Power Sockets'] = 'Power Sockets';
+$GLOBALS["lang"]['Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.'] = '® ® ® IT venas kun indennitàj richiestaoj enconruitaj. Se vi postulas specian atendon kaj niu el la anta ...';
 
-$GLOBALS["lang"]['Predictable'] = 'Voorspelbaar';
+$GLOBALS["lang"]['Open-AudIT has a JSON Restful API to be used both in the web interface and via JSON requests.'] = '"Supply"';
 
-$GLOBALS["lang"]['Preferences'] = 'Voorkeuren';
+$GLOBALS["lang"]['Open-AudIT has a granular permissions system to determine what a user within Open-AudIT can do, and the items he can do it to. Open-AudIT can be entirely self-contained, or use Active Directory or OpenLDAP for authentication and/or authorization.<br><br>It is entirely up to the administrator of Open-AudIT how they would like the Role Based Access Control to work.'] = 'AVA- Aud Tio haves grajnecan perfeson systemon determini kion uzanto ene de open- opharm fari, kaj la eroj li povas fari εin. ® ® ® povas esti ® mem- konsterita, katlus uzi Aktivan Adresaron kaptlus OpenLDAP por konfirma kaj / a.<br/><br/>';
 
-$GLOBALS["lang"]['Prerequisites'] = 'Vereisten';
+$GLOBALS["lang"]['Open-AudIT has a powerful change detection engine. Any device attributes that are added, removed or changed will be detected and stored. These changes can be reported upon and the relevant data confirmed as to what was expected from your company change and release process.<br><br>When a device is audited, attributes are divided into sections which correspond to tables in the database.<br><br>Each device (computer, router, printer, et al) has an entry in the <code>devices</code> table. Each entry in the devices table has an <code>id</code> column. This value is unique - it is an auto-incrementing id.<br><br>When the audit result is processed, each item in each section has its audit result compared to what is in the database.<br><br>For each section, if the key columns (see below table) contain the identical values, it is considered already installed and has its <code>last_seen</code> attribute updated. No change_log entry is created.<br><br>If any of the key columns do not match, it is considered a new attribute and is inserted. A <code>change_log</code> entry is created if the device had other attributes already present in the table.<br><br>At the completion of the audit processing, any database items that have not been updated (or inserted) are considered to not be present. The <code>current</code> attribute for this item is set to <i>n</i> and a change_log entry is generated.<br><br>So, we can determine if something is currently installed - the current column is <i>y</i>.<br><br>We can determine when something was initially detected - the <i>first_seen</i>.<br><br>We can determine if something was installed after the initial audit - first seen will be different in the component and device tables.<br><br>We can determine if something is not currently installed, but previously was - current = <i>n</i>.<br><br>We can determine the last time we detected an item - last_seen.<br><br>At any given point, we can determine what was on a system - by using the audit_log table and selecting the relevant components based on first_seen and last_seen.<br><br>Each section and its matching key columns are below.<br><br>NOTE - There are some exceptions as detailed below.<br><br>*1 - For network cards, if the computer is a VMware Esx machine it also uses the net_index and connection columns.<br><br>*2 - For partitions, f the computer is an AIX machine, we use the partition name.'] = 'Ava- Aud.i haves major шаном un detektomotororon.<br/><br/>Kiam aparato estas revizija, atregutoj estas distitaj en sekciojn kiuj egalrilatas al tabloj en la datummazo.<br/><br/> (+) Europos maisto saugos tarnyba nustatė, kad trūksta tam tikros informacijos apie liekanų tyrimus. <code>devices</code> "Mezcla en la tablo man aparatoj havas" <code>id</code> "Tiu Valoro estestas unika" - "εi estas a septo- inklina id."<br/><br/>Kiam ® reviziorezulto estas prilboreita sekcio haves sian reviziorezulton komparte kun kio estas en la datummazo.<br/><br/>Bendrijoje <code>last_seen</code> Actif à εisdatigita. _ Bendrijoje:<br/><br/>Estette de la esencaj kolonoj ne egalas, εi estas konsiderita nova atigita a kaj estas enigita. Bendrijoje <code>change_log</code> Eniro estas kreita se la aparato havis alpijn atrofhojn jam nunaj en la tabelo.<br/><br/>Alternatyvi nuoroda <code>current</code> Atritto por titu obektto estas ainacita new <i>Bendrijoje</i> Ranso estas generita.<br/><br/>Tiel, Bendrijoje <i>Bendrijoje</i>Bendrijoje<br/><br/>Thomas povas determini kiam io etis comence detektita - Thomas <i>®</i>Bendrijoje<br/><br/>Bendrijoje <br/><br/>Bendrieoje Roveru io ne estas nuntempe secresetta, sed anta requesterestis... <i>Bendrijoje</i>Bendrijoje<br/><br/>Šio straipsnio 1 ir 2 dalys taikomos mutatis mutandis.<br/><br/>Iu anta.fiksita punkto, Österreipovas determinmi ki estis sur sistemo. utiligante la revizoran tablon kaj selektante la medifajn kompontojn bazitaj sur uua _ visto kaj ultimo _ vidn.<br/><br/> Imitu sekcio kaj... Jaj egalaj esencaj kolonoj estas malsupre.<br/><br/>Eksistas kelkaj esceptoj kiel detalaj malsupre Bendrijoje.<br/><br/>Bendrijoje 1 - Por sendostaciaj kartoj, se la komputio estas VMware Esx- marajeino εi ankareazas la tt _ opharm new kajligogolonojn.<br/><br/>2 ';
 
-$GLOBALS["lang"]['Prerequisites and Tests'] = 'Vereisten en tests';
+$GLOBALS["lang"]['Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell \"What\\'] = '® ® ® IT estas ® Bendrieoje arba per IT kaj rilataj aktiva.oj detaloj konfiguracio. Ouvrir - Österreidiri "Kio"';
 
-$GLOBALS["lang"]['present'] = 'Aanwezig';
+$GLOBALS["lang"]['Open-AudIT makes it easy to edit the attributes of multiple devices at once.'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['Present'] = 'Aanwezig';
+$GLOBALS["lang"]['Open-AudIT needs specific directory permissions to be able to create files, upload results, etc. Please set as below.'] = '"Bezonas speciajn adresarpermesojn povi krei dosierojn."';
 
-$GLOBALS["lang"]['previous_value'] = 'Vorige waarde';
+$GLOBALS["lang"]['Open-AudIT provides many built-in queries and makes it simple to create your own.'] = 'Open- Aud IT dispoonigas utilejn enformitaj n demandojn kaj igas liukoinen simplia krei vian propan.';
 
-$GLOBALS["lang"]['Previous Value'] = 'Vorige waarde';
+$GLOBALS["lang"]['Open-AudIT ships with inbuilt roles for admin, org_admin and user.<br><br>Generally, a user who is an administrator of the Open-AudIT application itself should have admin and possible org_admin roles.<br><br>A user can have multiple roles. The permission will be applied at the most permissive level - IE, if a user has the roles of user and org_admin, they will be able to create locations because org_admin grants this permission, even though the user role does not.<br><br>The admin role allows access to collections such as configuration, database, groups, ldap servers, logs, queries and roles. Global items that affect the entire application.<br><br>The org_admin role usually allows create, read, update and delete actions for any collection that contains the org_id column. Virtually all data except some of the collections mentioned above will contain an <code>org_id</code> column.<br><br>The user role generally allows read only access to all items with an org_id column.'] = 'Open- Aud IT- sortipoj kun enertuitaj roloj por admin, org _ ů Româkaj uzanto.<br/><br/>Enerale, uzanto kiu estas amministrazione de la Open- Şaplika.<br/><br/>Uzanto povas havi multimajn rolojn. La permeso estos sur varamirita sur la plej perssisiva nivelo - IE, se uzanto havas la rolojn de uzanto kaj org<br/><br/>Šio priedo 2 dalyje nurodyta: Tutmondaj eroj kiuj befolyásolja Româtutan aplikon.<br/><br/>(Žr. II priedo 5 kodų sąrašą.) <code>org_id</code> Bendrijoje<br/><br/>Enerale percesas legi nur alron rev...';
 
-$GLOBALS["lang"]['primary'] = 'Primair';
+$GLOBALS["lang"]['Open-AudIT ships with inbuilt roles for admin, org_admin and user.<br><br>Generally, a user who is an administrator of the Open-AudIT application itself should have admin and possible org_admin roles.<br><br>A user can have multiple roles. The permission will be applied at the most permissive level - IE, if a user has the roles of user and org_admin, they will be able to create locations because org_admin grants this permission, even though the user role does not.<br><br>The admin role allows access to collections such as configuration, database, groups, ldap servers, logs, queries and roles. Global items that affect the entire application.<br><br>The org_admin role usually allows create, read, update and delete actions for any collection that contains the org_id column. Virtually all data except some of the collections mentioned above will contain an org_id column.<br><br>The user role generally allows read only access to all items with an org_id column.'] = 'Open- Aud IT- sortipoj kun enertuitaj roloj por admin, org _ ů Româkaj uzanto.<br/><br/>Enerale, uzanto kiu estas amministrazione de la Open- Şaplika.<br/><br/>Uzanto povas havi multimajn rolojn. La permeso estos sur varamirita sur la plej perssisiva nivelo - IE, se uzanto havas la rolojn de uzanto kaj org<br/><br/>Šio priedo 2 dalyje nurodyta: Tutmondaj eroj kiuj befolyásolja Româtutan aplikon.<br/><br/>(Žr. II priedo 5 kodų sąrašą.) <br/><br/>Enerale percesas legi nur alron rev...';
 
-$GLOBALS["lang"]['Primary'] = 'Primair';
+$GLOBALS["lang"]['Open-AudIT ships with several pre-configured Dashboards. If you are a Professional user, you can select between two of these and set it as your default page when you logon. If you are an Enterprise user, you can not only select between the five preconfigured Dashboards, but you also have the ability to create your own.'] = 'Ouvrir Ş- aprestitupoj kun multilaj anta.- konfiguritaj Armatuurlau. Se vi estas Profesia uzanto, vi povas elektroti inter du el tiauj kaj meti εin kiel rev. L \'entreprimuzanto, vi ne povas nur selekti respectur kvin anta.konfiguritaj Româde bord, sed vi anka... havas la kapablon krei vian propran.';
 
-$GLOBALS["lang"]['Primary Key'] = 'Primaire sleutel';
+$GLOBALS["lang"]['Open-AudIT should be installed on 64bit Windows <strong>Server</strong> systems only. Windows 10 and Windows 11 are <strong>not</strong> supported.'] = '(+) Europos maisto saugos tarnyba nustatė, kad trūksta tam tikros informacijos apie liekanų tyrimus. <strong>Bendrijoje</strong> Ką? (OL L 20 van 2015.177, blz. 42). <strong>Bendrijoje</strong> Bendrijoje';
 
-$GLOBALS["lang"]['print_queue'] = 'Afdrukwachtrij';
+$GLOBALS["lang"]['Open-AudIT uses Nmap in its Discovery function. Nmap probes devices for open ports. Devices ideally should respond with open for working ports. Devices often do not respond with this. The varying responses are detailed below.'] = 'Apri- ← Uzas Nmap en Žia Diskopy - funkcio. Nmap Şaparatoj por malfermaj hasnoj. (OL L 20, 2015.1 27, blz. 42). Alto tipo. Detalaj malsupre.';
 
-$GLOBALS["lang"]['Print Queue'] = 'Afdrukwachtrij';
+$GLOBALS["lang"]['Open-AudIT uses Nmap in its Discovery function. Without Nmap, Open-AudIT will not function correctly. Every Open-AudIT install assumes Nmap is installed and will also test for it on the Discovery web pages. More information about Open-AudIT and Nmap is available here'] = '"Apri- opharm Uzas Nmap en Žia Diskopyris- funkcio. Nmap estas secretta kaj ankai tetos por εi sur la Discovery retpa fapoj. Pli da informatooj pri Open- Şkaj Nmap nämävblaj clari huulet';
 
-$GLOBALS["lang"]['printer_color'] = 'Printerkleur';
+$GLOBALS["lang"]['Open-AudIT uses Nmap in its Discovery function. Without Nmap, Open-AudIT will not function correctly. Every Open-AudIT install assumes Nmap is installed and will test for it on the Discovery web pages.'] = '"Apri- SmithKline Uzas Nmap en Žia Diskopy" - funkcio. Nmap estas secresetta kaj tetos por εi sur la Discovery retpaγoj.';
 
-$GLOBALS["lang"]['Printer Color'] = 'Printerkleur';
+$GLOBALS["lang"]['Open-AudIT uses credentials to access your devices. These are encrypted and stored, just as you would expect.'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['printer_duplex'] = 'Printerduplex';
+$GLOBALS["lang"]['Open-AudIT was written by an English speaking Australian. Everything in the application uses English wording. However Open-AudIT has always supported multiple languages for display. These translations are not always correct, because the developers do not natively speak the language of every translation offered.<br><br>What can you do if something is not correct in the translation?'] = 'Avatutaud Evalus skribita ® de angulingva aorgestraliano. Mezcla en la apliko uzas anglan vortigon Bendrijoje. Avaa Audit Apogis multoblojn lingvojn por ekrano. Tiuj tradukoj ne estas cleasam εustaj, † ar la programmeristoj ne indiilene paroles la lingvon de Čiu traduko ofertis.<br/><br/>Kion vi povas fari se io ne estas εusta en la traduko?';
 
-$GLOBALS["lang"]['Printer Duplex'] = 'Printerduplex';
+$GLOBALS["lang"]['OpenLDAP'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['printer_port_name'] = 'Naam printerpoort';
+$GLOBALS["lang"]['OpenScap is Installed'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Printer Port Name'] = 'Naam printerpoort';
+$GLOBALS["lang"]['Opening a Support Ticket?'] = 'Ar tikrai?';
 
-$GLOBALS["lang"]['printer_shared'] = 'Printer gedeeld';
+$GLOBALS["lang"]['openldap_user_dn'] = '-';
 
-$GLOBALS["lang"]['Printer Shared'] = 'Printer gedeeld';
+$GLOBALS["lang"]['Openldap User Dn'] = '-';
 
-$GLOBALS["lang"]['printer_shared_name'] = 'Gedeelde printernaam';
+$GLOBALS["lang"]['openldap_user_membership_attribute'] = 'Uzanto Membrco';
 
-$GLOBALS["lang"]['Printer Shared Name'] = 'Gedeelde printernaam';
+$GLOBALS["lang"]['Openldap User Membership Attribute'] = 'Uzanto Membrco';
 
-$GLOBALS["lang"]['priority'] = 'Prioriteit';
+$GLOBALS["lang"]['open|filtered'] = '"Malfermita"';
 
-$GLOBALS["lang"]['Priority'] = 'Prioriteit';
+$GLOBALS["lang"]['Open|filtered'] = '"Malfermita"';
 
-$GLOBALS["lang"]['Privacy Passphrase'] = 'Privacy-wachtwoordzin';
+$GLOBALS["lang"]['Operating System'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['privileges_required'] = 'Vereiste voorrechten';
+$GLOBALS["lang"]['Operating System Family Contains'] = 'Funkciiga Sistemo - "arba"';
 
-$GLOBALS["lang"]['Privileges Required'] = 'Vereiste voorrechten';
+$GLOBALS["lang"]['Operating Systems'] = 'Funkciigaj Sistemoj';
 
-$GLOBALS["lang"]['processor'] = 'Verwerker';
+$GLOBALS["lang"]['Operators'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Processor'] = 'Verwerker';
+$GLOBALS["lang"]['optical'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['processor_count'] = 'Aantal verwerkers';
+$GLOBALS["lang"]['Optical'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Processor Count'] = 'Aantal verwerkers';
+$GLOBALS["lang"]['Optimized'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['processor_slot_count'] = 'Aantal processors';
+$GLOBALS["lang"]['Option #1 - Change the data'] = '1 ';
 
-$GLOBALS["lang"]['Processor Slot Count'] = 'Aantal processors';
+$GLOBALS["lang"]['Option #2 - Change the translation file'] = 'Numéro d\'opcio 2 - ';
 
-$GLOBALS["lang"]['processor_type'] = 'Type processor';
+$GLOBALS["lang"]['Optional Agent Based Auditing'] = 'Auditoría de Opcia';
 
-$GLOBALS["lang"]['Processor Type'] = 'Type processor';
+$GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = '"Opcia verserio kiel revizite"). Oni uzas news realan modon (AS-finajxon).';
 
-$GLOBALS["lang"]['Processors'] = 'Verwerkers';
+$GLOBALS["lang"]['options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['product_name'] = 'Productnaam';
+$GLOBALS["lang"]['Options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Product Name'] = 'Productnaam';
+$GLOBALS["lang"]['Options, options, options'] = 'Eleektoj nieuws opcioj';
 
-$GLOBALS["lang"]['Product Name Match from CPE: '] = 'Productnaam Match van CPE: ';
+$GLOBALS["lang"]['Or'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['products'] = 'Producten';
+$GLOBALS["lang"]['Or select from the below fields.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['Products'] = 'Producten';
+$GLOBALS["lang"]['org_descendants'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['profile'] = 'Profiel';
+$GLOBALS["lang"]['Org Descendants'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Profile'] = 'Profiel';
+$GLOBALS["lang"]['org_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['program'] = 'Programma';
+$GLOBALS["lang"]['Org ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Program'] = 'Programma';
+$GLOBALS["lang"]['Organisation'] = '-';
 
-$GLOBALS["lang"]['protocol'] = 'Protocol';
+$GLOBALS["lang"]['organisation'] = '-';
 
-$GLOBALS["lang"]['Protocol'] = 'Protocol';
+$GLOBALS["lang"]['Organisation Descendants'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['provider'] = 'Aanbieder';
+$GLOBALS["lang"]['Organisations'] = 'Szervezetek';
 
-$GLOBALS["lang"]['Provider'] = 'Aanbieder';
+$GLOBALS["lang"]['Organisations can extend and enhance the level of detail that is stored against every discovered device using custom fields and the open core allows for easy integration into CMDB, event management and ticketing systems.'] = 'Šio straipsnio 1 dalyje nurodyta:';
 
-$GLOBALS["lang"]['published'] = 'Gepubliceerd';
+$GLOBALS["lang"]['orgs'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Published'] = 'Gepubliceerd';
+$GLOBALS["lang"]['Orgs'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['published_date'] = 'Gepubliceerde datum';
+$GLOBALS["lang"]['Orgs Name'] = 'Orgs nomoopharm (Indonesië)';
 
-$GLOBALS["lang"]['Published Date'] = 'Gepubliceerde datum';
+$GLOBALS["lang"]['Orgs in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users <i>orgs</i> and <i>roles</i> define what they can and cannot do within Open-AudIT.<br><br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc, etc.<br><br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, most of the time (not always) they also have access to that Orgs descendants.'] = 'Orgs en open- estas esenca objectko. Uzantoj Org mimo kiel lister de Orgas kiun ili povas aliri. Uzanto Kombinastion kun lista de asignitaj roloj difinas kiujn fajn ili povas akcepti erojn asignitaj al la orgs kiujn ili havas aliro al. al. Bendrijoje <i>Bendrijoje</i> Bendrijoje <i>Bendrijoje</i> Difinas kion ili povas kaj ne povas fari ene de Româί ί<br/><br/>La plej indennitonàj en Open- neurasignitaj al Org. Dispositivos, Lokoj, Retoj, ktp.<br/><br/>Orgoj povas havi Infanon orgs. (arbo) strukturo. Se uzanto havas al specia Org, la plei granda parto de la tempo (rev....) ili ankai havas limitu Orgs posteuloj.';
 
-$GLOBALS["lang"]['publisher'] = 'Uitgever';
+$GLOBALS["lang"]['orientation'] = '®';
 
-$GLOBALS["lang"]['Publisher'] = 'Uitgever';
+$GLOBALS["lang"]['Orientation'] = '®';
 
-$GLOBALS["lang"]['Puerto Rico'] = 'Puerto Rico';
+$GLOBALS["lang"]['os'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Purchase'] = 'Aankoop';
+$GLOBALS["lang"]['Os'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['purchase_amount'] = 'Aankoopbedrag';
+$GLOBALS["lang"]['os_arch'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Purchase Amount'] = 'Aankoopbedrag';
+$GLOBALS["lang"]['Os Arch'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['purchase_cost_center'] = 'Aankoopkostencentrum';
+$GLOBALS["lang"]['os_bit'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Purchase Cost Center'] = 'Aankoopkostencentrum';
+$GLOBALS["lang"]['Os Bit'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['purchase_count'] = 'Aantal aankopen';
+$GLOBALS["lang"]['os_cpe'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Purchase Count'] = 'Aantal aankopen';
+$GLOBALS["lang"]['Os Cpe'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['purchase_date'] = 'Aankoopdatum';
+$GLOBALS["lang"]['os_display_version'] = 'Os Kuvaversioon ("arba")';
 
-$GLOBALS["lang"]['Purchase Date'] = 'Aankoopdatum';
+$GLOBALS["lang"]['Os Display Version'] = 'Os Kuvaversioon ("arba")';
 
-$GLOBALS["lang"]['purchase_invoice'] = 'Aankoopfactuur';
+$GLOBALS["lang"]['os_family'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Purchase Invoice'] = 'Aankoopfactuur';
+$GLOBALS["lang"]['Os Family'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['purchase_order'] = 'Aankooporder';
+$GLOBALS["lang"]['os_group'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Purchase Order'] = 'Aankooporder';
+$GLOBALS["lang"]['Os Group'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['purchase_order_number'] = 'Koopordernummer';
+$GLOBALS["lang"]['os_installation_date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Purchase Order Number'] = 'Koopordernummer';
+$GLOBALS["lang"]['Os Installation Date'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['purchase_service_contract_number'] = 'Nummer aankoopdienstcontract';
+$GLOBALS["lang"]['os_licence_expiry'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Purchase Service Contract Number'] = 'Nummer aankoopdienstcontract';
+$GLOBALS["lang"]['Os Licence Expiry'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['purchase_vendor'] = 'Verkoper kopen';
+$GLOBALS["lang"]['os_license'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Purchase Vendor'] = 'Verkoper kopen';
+$GLOBALS["lang"]['Os License'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['purpose'] = 'Betreft';
+$GLOBALS["lang"]['os_license_code'] = 'Código® licenza Bendrijoje';
 
-$GLOBALS["lang"]['Purpose'] = 'Betreft';
+$GLOBALS["lang"]['Os License Code'] = 'Código® licenza Bendrijoje';
 
-$GLOBALS["lang"]['Qatar'] = 'Qatar';
+$GLOBALS["lang"]['os_license_mode'] = '-';
 
-$GLOBALS["lang"]['queries'] = 'Vragen';
+$GLOBALS["lang"]['Os License Mode'] = '-';
 
-$GLOBALS["lang"]['Queries'] = 'Vragen';
+$GLOBALS["lang"]['os_license_type'] = '-';
 
-$GLOBALS["lang"]['Query'] = 'Opvragen';
+$GLOBALS["lang"]['Os License Type'] = '-';
 
-$GLOBALS["lang"]['queue'] = 'Wachtrij';
+$GLOBALS["lang"]['os_name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Queue'] = 'Wachtrij';
+$GLOBALS["lang"]['Os Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Queue Limit'] = 'Wachtrijlimiet';
+$GLOBALS["lang"]['os_version'] = '-';
 
-$GLOBALS["lang"]['Queued Device Audits'] = 'Audits van het apparaat in de wachtrij';
+$GLOBALS["lang"]['Os Version'] = '-';
 
-$GLOBALS["lang"]['Queued IP Scans'] = 'IP-scans in wachtrij';
+$GLOBALS["lang"]['Other'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Queued Items'] = 'Items in de wachtrij';
+$GLOBALS["lang"]['Other than that restriction, you are free to select attributes as required. It is a good idea to use the menu'] = 'Krom tu risonkko, vi estas libera selekti atropojn kiel postulat. Estas bona ideo uzi ontvanger';
 
-$GLOBALS["lang"]['RU Start'] = 'RU Start';
+$GLOBALS["lang"]['Others'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['RX Bitrate'] = 'RX-bitrate';
+$GLOBALS["lang"]['Our default Integration also enables a discovery on any externally supplied devices. So we ship a default discovery for the Default Integration out of the box. These use the default matching rules, but also enable matching on IP address.'] = 'Bendrijoje Tien next ekspedis de l \'éfautltan eltrova Tiuj uzas la dea... lltajn egalajn regulojn, sed ankaebligas egalan IP-adreson.';
 
-$GLOBALS["lang"]['RX Freq'] = 'RX Freq';
+$GLOBALS["lang"]['Our examples will use the <i>type</i> column.'] = 'Bendrijoje <i>Bendrijoje</i> Bendrijoje';
 
-$GLOBALS["lang"]['RX Level'] = 'RX-niveau';
+$GLOBALS["lang"]['Our framework uploads files here for processing, then deletes them. Think submitted audit results, etc.'] = 'Nia kadro al sorutas dosierojn - Tiam forigas Bendrijoje. C \'e\' l \'ultima øman.';
 
-$GLOBALS["lang"]['RX Power'] = 'RX-vermogen';
+$GLOBALS["lang"]['Our goal with the initial integrations release was specifically for NMIS to Open-AudIT integration to <i>just work</i>. If you are using the programs on Linux, you can literally click a single button to execute the integration. Nothing more is required. Having said that, the integration itself is extremely configurable - so if something is not to your preference, it can easily be changed.'] = 'Nia celo kun la omencaj integri / 1993 / oj estis spéciforte por NMIS al <i>"Nincs"</i>(OL L 20 van 2015.177, blz. 42). Nenio pli estas bezonata. Diris ke, arba';
 
-$GLOBALS["lang"]['RX Profile'] = 'RX-profiel';
+$GLOBALS["lang"]['Our new feature called Vulnerabilities gives you the ability to quickly determine if any devices are affected by any CVE (Common Vulnerability Exposure) - but how?<br><br>FirstWave constantly consumes the output from the Nist NVD feed. We take this and apply a few restrictions, then extract the affected programs and build a SQL query for reporting. Your Open-AudIT instance reaches out to FirstWave and requests any new vulnerabilities on a regular basis. When it receives a new vulnerability record, it is run against the database and the result stored. Each time a device is processed, all matching vulnerabilities are again executed and the result stored. This means when viewing a vulnerability list, we do not need to calculate all affected devices - we already have the result. When you view an individual vulnerability record, we do indeed recalculate the result for this singular vulnerability.<br><br>So, you are always up to date!<br><br>In addition to this, we also calculate the result of all vulnerabilities for all devices daily (usually at a quiet time, say 2am).<br><br>In your instance of Open-AudIT, we allow you to select which vendors you care about. i.e. there is no use retrieving vulnerability records from a vendor whose software you do not use or have installed. By default, our vendor list is Adobe, Apple, Cisco, Google, Microsoft, Mozilla, and Redhat.<br><br>This all sounds very simple, but behind the scenes a <b>lot</b> is going on. For instance, the CVE record contains a list of affected software - but those software names do not match what we receive when we audit a computer. A good example is Apache. Typically, a CVE record will say the affected software is http_server. In reality, this appears as apache2 (Ubuntu), httpd (Redhat), Apache HTTP Server (Windows) - and others. So, we have to first determine what is the actual name of the program we receive when we ask a computer, and there may be multiple names. After that we must parse the CVE record and create a matching SQL statement. Allowing for multiple program names as above, and multiple versions, version ranges, and even multiple different pieces of software (an example is Thunderbird and Firefox in a single CVE). And your instance of Open-AudIT must take this and apply Orgs filtering as well. And that is just a single CVE. What about determining which CVEs you have and do not have? What about adding a vendor to the list later? So many things to consider!<br><br>As well as the usual reporting, we also have a few new widgets available for Dashboards, based on Vulnerabilities data.'] = '(RO 2012 7183). Haavus donas al vi la kapablon faste determinmi... uija paratoj estas trafitaj Fare de iu CVE (Komuna haavatavuse kokkupude) - sed kiel?<br/><br/>® ® ® ® ® konstante konsumas ® produkta ® prenasion kaj aplikas kelkajn restriktojn, tiam eltiras la trafitajn programmajn kaj konsturas SQL-resistentie ® por raportado. (1) 2005 m. sausio 1 d. Šio straipsnio 1 dalyje nurodyta: "Emaj vundeblecoj noveeri besoin efektivititaj kaj la rezulto stokita." (RO 2012 7183). 2015 / 11 / 02 Kiam vi rigardas indiguan vondeblecon, ni efektive rekalkulis la rezulton por tu eksterordinara vondebleco.<br/><br/>"Supply"<br/><br/>Aldone al tio, ni ankarealkalculas la rezulton de ... iuj vondeblecoj po ...<br/><br/>En kautta kazo de open-, ni permes al vi selekti jiu vendistoj vi sorgas. "Vundekleedikojn de vendisto kies softvaro vi ne uzas a skeptis." Deta.lte next vendristo arba "Adobe" arba "Apple"<br/><br/>Bendrijoje <b>Bendrijoje</b> Bendrijoje La CVE rekordo enhavas listan de trafita softvaro... Sed tiaj softvarnomoj ne egalas kion ni rizvas kiam ni revizias kompution.com - modifictur Fakasht ® tio prezentipriasrer - kajilishij Ni tuhoaa unue determini ko estas la fakta nomo de la programmo kiun ni risovas kiam ni demandas komption, kaj povas eksisti multoblaj nomoj. T tio ni murtaa alazi la CVE- reklodon kaj krei egalan SQL - deklaron. Permesado por multoblaj softvaro (eksemplo estas Thunderbird kaj Firefox en ununura CVE). Kazo de open- editi preniition kaj apliki neediti filtradon ankadon. Kaj Tio estas nur ununura CVE. Kion vi volgende kaj ne havas? Kion aldoni vendiston al Bendrieoje? Multaj aferoj.<br/><br/>Mismo kiel la kutima raportado, Indonesië. haves kelkajn novajn vidinad havblajn por ŞBendrijoje, surbaze de Vulnerability datinoj.';
 
-$GLOBALS["lang"]['Rack'] = 'Rek';
+$GLOBALS["lang"]['Our timeout for a SSH response'] = '(1)';
 
-$GLOBALS["lang"]['rack_devices'] = 'Rekapparaten';
+$GLOBALS["lang"]['Our timeout for a WMI response'] = 'WMI- risposi';
 
-$GLOBALS["lang"]['Rack Devices'] = 'Rekapparaten';
+$GLOBALS["lang"]['Our timeout for an SNMP response'] = 'SNMS-Bendrijoje';
 
-$GLOBALS["lang"]['rack_id'] = 'Rack-ID';
+$GLOBALS["lang"]['Our timeout for an audit script response'] = '-';
 
-$GLOBALS["lang"]['Rack ID'] = 'Rack-ID';
+$GLOBALS["lang"]['output'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Racks'] = 'Rekken';
+$GLOBALS["lang"]['Output'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['racks'] = 'Rekken';
+$GLOBALS["lang"]['outputs'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['radio'] = 'Radio';
+$GLOBALS["lang"]['Outputs'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Radio'] = 'Radio';
+$GLOBALS["lang"]['Overall severity score (0–10).'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Radio MAC'] = 'Radio MAC';
+$GLOBALS["lang"]['overwrite'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['rationale'] = 'Rationeel';
+$GLOBALS["lang"]['Overwrite'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Rationale'] = 'Rationeel';
+$GLOBALS["lang"]['owner'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['raw'] = 'ruw';
+$GLOBALS["lang"]['Owner'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Raw'] = 'ruw';
+$GLOBALS["lang"]['PAExec is a freely-redistributable re-implementation of SysInternal/Microsofts popular PsExec program.  PAExec aims to be a drop in replacement for PsExec, so the command-line usage is identical, with additional options also supported.  This work was originally inspired by Talha Tariqs RemCom.'] = 'PAExec estas relistancebla re- efektivigo de Sys Interna / Microsopts popa PsExec- ohjelma. PAExec Planas esti falo en anstata guiderra.o "PsExec," "Bendrijoje" Tiu Labo est Originaire inspirica Româde Talha Tariqs RemCom.';
 
-$GLOBALS["lang"]['read'] = 'Gelezen';
+$GLOBALS["lang"]['PHP'] = 'PHP PROFPHP PROFPHP PROFPHP PROFPHP PROFPHP PROFPHP PROFPHP PROFPHP HUPHP HUPHP HUPHP HUPHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP PHP';
 
-$GLOBALS["lang"]['Read'] = 'Gelezen';
+$GLOBALS["lang"]['POD'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Read our online documentation on the Open-AudIT Wiki.'] = 'Lees onze online documentatie op de Open-AudIT Wiki.';
+$GLOBALS["lang"]['POSTing data'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Red Query'] = 'Rode zoekopdracht';
+$GLOBALS["lang"]['Package'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Redirect URI'] = 'Redirect URI';
+$GLOBALS["lang"]['packages'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['redirect_uri'] = 'Uri omleiden';
+$GLOBALS["lang"]['Packages'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Redirect Uri'] = 'Uri omleiden';
+$GLOBALS["lang"]['Packages are used to report on things such as <i>banned software</i>, AntiVirus on servers, etc.<br><br>Open-AudIT provides widgets that build upon also supplied repots to detemine the status of antivirus, firewall and other software.'] = 'Bendrijoje <i>-</i>(OL L 20 van 2015.177, blz. 42).<br/><br/>Bendrijoje Aud IT diszponigas Bendrijoje';
 
-$GLOBALS["lang"]['references'] = 'Referenties';
+$GLOBALS["lang"]['pagefile'] = '- Labas!';
 
-$GLOBALS["lang"]['References'] = 'Referenties';
+$GLOBALS["lang"]['Pagefile'] = '- Labas!';
 
-$GLOBALS["lang"]['region'] = 'Gebieden';
+$GLOBALS["lang"]['Pakistan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Region'] = 'Gebieden';
+$GLOBALS["lang"]['Palau'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['registered_user'] = 'Geregistreerde gebruiker';
+$GLOBALS["lang"]['Palestinian Territory'] = '(1)';
 
-$GLOBALS["lang"]['Registered User'] = 'Geregistreerde gebruiker';
+$GLOBALS["lang"]['Panama'] = '-';
 
-$GLOBALS["lang"]['rel'] = 'Rel';
+$GLOBALS["lang"]['Papua New Guinea'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Rel'] = 'Rel';
+$GLOBALS["lang"]['Paraguay'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Release'] = 'Loslaten';
+$GLOBALS["lang"]['Parameters'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['remediation'] = 'Remediatie';
+$GLOBALS["lang"]['Paranoid'] = '(* *)';
 
-$GLOBALS["lang"]['Remediation'] = 'Remediatie';
+$GLOBALS["lang"]['Parent'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Remote'] = 'Op afstand';
+$GLOBALS["lang"]['parent_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['remote_address'] = 'Adres op afstand';
+$GLOBALS["lang"]['Parent ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Remote Address'] = 'Adres op afstand';
+$GLOBALS["lang"]['parent_name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['remote_port'] = 'Haven op afstand';
+$GLOBALS["lang"]['Parent Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Remote Port'] = 'Haven op afstand';
+$GLOBALS["lang"]['part_number'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Remove'] = 'Verwijderen';
+$GLOBALS["lang"]['Part Number'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Remove Exception'] = 'Uitzondering verwijderen';
+$GLOBALS["lang"]['part_of_domain'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Report'] = 'Verslag';
+$GLOBALS["lang"]['Part Of Domain'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Report on your devices, networks and more'] = 'Rapporteer op uw apparaten, netwerken en meer';
+$GLOBALS["lang"]['Partition'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['reportable'] = 'Te rapporteren';
+$GLOBALS["lang"]['partition_count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Reportable'] = 'Te rapporteren';
+$GLOBALS["lang"]['Partition Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Reports'] = 'Verslagen';
+$GLOBALS["lang"]['partition_disk_index'] = '-';
 
-$GLOBALS["lang"]['request'] = 'Verzoek';
+$GLOBALS["lang"]['Partition Disk Index'] = '-';
 
-$GLOBALS["lang"]['Request'] = 'Verzoek';
+$GLOBALS["lang"]['Pass'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Request a Specific CVE'] = 'Verzoek om een specifiek CVE';
+$GLOBALS["lang"]['Passed'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['requested'] = 'Verzoek';
+$GLOBALS["lang"]['Passive Optical Local Area Network'] = 'Optika kohtvrk';
 
-$GLOBALS["lang"]['Requested'] = 'Verzoek';
+$GLOBALS["lang"]['Password'] = ' ';
 
-$GLOBALS["lang"]['require_port'] = 'Poort nodig';
+$GLOBALS["lang"]['password'] = ' ';
 
-$GLOBALS["lang"]['Require Port'] = 'Poort nodig';
+$GLOBALS["lang"]['password_changeable'] = ' ';
 
-$GLOBALS["lang"]['Require an Open Port'] = 'Een open poort nodig';
+$GLOBALS["lang"]['Password Changeable'] = ' ';
 
-$GLOBALS["lang"]['Required'] = 'Vereist';
+$GLOBALS["lang"]['password_disabled'] = '9';
 
-$GLOBALS["lang"]['Reset'] = 'Reset';
+$GLOBALS["lang"]['Password Disabled'] = '9';
 
-$GLOBALS["lang"]['Reset All Data'] = 'Alle gegevens herstellen';
+$GLOBALS["lang"]['password_expires'] = 'Pasvorto (Pasvorto 2005)';
 
-$GLOBALS["lang"]['Reset to Default'] = 'Terugzetten naar standaard';
+$GLOBALS["lang"]['Password Expires'] = 'Pasvorto (Pasvorto 2005)';
 
-$GLOBALS["lang"]['resource'] = 'Hulpbron';
+$GLOBALS["lang"]['password_last_changed'] = '"Pasvorto Indonesia"';
 
-$GLOBALS["lang"]['Resource'] = 'Hulpbron';
+$GLOBALS["lang"]['Password Last Changed'] = '"Pasvorto Indonesia"';
 
-$GLOBALS["lang"]['Resource Name'] = 'Bronnaam';
+$GLOBALS["lang"]['password_required'] = '"Pasvorto"';
 
-$GLOBALS["lang"]['Resources'] = 'Middelen';
+$GLOBALS["lang"]['Password Required'] = '"Pasvorto"';
 
-$GLOBALS["lang"]['response'] = 'Respons';
+$GLOBALS["lang"]['patch_panel'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Response'] = 'Respons';
+$GLOBALS["lang"]['Patch Panel'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['responsibility'] = 'Verantwoordelijkheid';
+$GLOBALS["lang"]['patch_panel_port'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Responsibility'] = 'Verantwoordelijkheid';
+$GLOBALS["lang"]['Patch Panel Port'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Restore my Licenses'] = 'Mijn licenties herstellen';
+$GLOBALS["lang"]['path'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Restrict to Private'] = 'Beperken tot privé';
+$GLOBALS["lang"]['Path'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Restrict to Subnet'] = 'Beperken tot Subnet';
+$GLOBALS["lang"]['Performance'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['result'] = 'Resultaat';
+$GLOBALS["lang"]['Performed'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Result'] = 'Resultaat';
+$GLOBALS["lang"]['Permission'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Results'] = 'Resultaten';
+$GLOBALS["lang"]['Permission Required'] = '-';
 
-$GLOBALS["lang"]['retrieved'] = 'Opgehaald';
+$GLOBALS["lang"]['permissions'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Retrieved'] = 'Opgehaald';
+$GLOBALS["lang"]['Permissions'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['retrieved_ident'] = 'Opgehaald identificatienummer';
+$GLOBALS["lang"]['Persian'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Retrieved Ident'] = 'Opgehaald identificatienummer';
+$GLOBALS["lang"]['Personal Area Network'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['retrieved_name'] = 'Naam opgehaald';
+$GLOBALS["lang"]['Personal area network'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Retrieved Name'] = 'Naam opgehaald';
+$GLOBALS["lang"]['Peru'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Retrieved from the device - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostsvc/hostsummary, HP-UX:machinfo, Solaris:smbios, AIX:uname.'] = 'Opgehaald van het apparaat - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostsvc/hostsummary, HP-UX:machinfo, Solaris:smbies, AIX:uname.';
+$GLOBALS["lang"]['Philippines'] = '-';
 
-$GLOBALS["lang"]['Reunion'] = 'Reünie';
+$GLOBALS["lang"]['phone'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['revision'] = 'Herziening';
+$GLOBALS["lang"]['Phone'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Revision'] = 'Herziening';
+$GLOBALS["lang"]['Physical CPUs'] = 'Fizieka CPU';
 
-$GLOBALS["lang"]['risk_assesment_result'] = 'Risicobeoordelingsresultaat';
+$GLOBALS["lang"]['physical_count'] = '-';
 
-$GLOBALS["lang"]['Risk Assesment Result'] = 'Risicobeoordelingsresultaat';
+$GLOBALS["lang"]['Physical Count'] = '-';
 
-$GLOBALS["lang"]['role'] = 'Rol';
+$GLOBALS["lang"]['physical_depth'] = 'Fizeka suvavus,';
 
-$GLOBALS["lang"]['Role'] = 'Rol';
+$GLOBALS["lang"]['Physical Depth'] = 'Fizeka suvavus,';
 
-$GLOBALS["lang"]['roles'] = 'Rol';
+$GLOBALS["lang"]['physical_height'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Roles'] = 'Rol';
+$GLOBALS["lang"]['Physical Height'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Romania'] = 'Roemenië';
+$GLOBALS["lang"]['physical_width'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Room'] = 'Kamer';
+$GLOBALS["lang"]['Physical Width'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['route'] = 'Route';
+$GLOBALS["lang"]['picture'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Route'] = 'Route';
+$GLOBALS["lang"]['Picture'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Row'] = 'Rij';
+$GLOBALS["lang"]['pid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Row Count'] = 'Aantal rijen';
+$GLOBALS["lang"]['Pid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['row_position'] = 'Rijpositie';
+$GLOBALS["lang"]['Pie Chart'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Row Position'] = 'Rijpositie';
+$GLOBALS["lang"]['Pie charts must return name or my_name, description or my_description and count.'] = '(1)';
 
-$GLOBALS["lang"]['Rows'] = 'Rijen';
+$GLOBALS["lang"]['ping'] = '®';
 
-$GLOBALS["lang"]['ru_height'] = 'Ru Hoogte';
+$GLOBALS["lang"]['Ping'] = '®';
 
-$GLOBALS["lang"]['Ru Height'] = 'Ru Hoogte';
+$GLOBALS["lang"]['Ping Target'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ru_start'] = 'Ru Start';
+$GLOBALS["lang"]['Pitcairn Islands'] = 'Pitcairn Coverloj';
 
-$GLOBALS["lang"]['Ru Start'] = 'Ru Start';
+$GLOBALS["lang"]['placement'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['rule_group'] = 'Regelgroep';
+$GLOBALS["lang"]['Placement'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Rule Group'] = 'Regelgroep';
+$GLOBALS["lang"]['Plan and conduct internal audits'] = '-';
 
-$GLOBALS["lang"]['rules'] = 'Regels';
+$GLOBALS["lang"]['Please have an Open-AudIT administrator logon and upgrade the database.'] = 'Bonvolu rev.';
 
-$GLOBALS["lang"]['Rules'] = 'Regels';
+$GLOBALS["lang"]['Please log in and change these ASAP.'] = 'Bonvolu ensaluti kaj kian stabilzzasici tiaujn au gręe.';
 
-$GLOBALS["lang"]['Run Discovery'] = 'Ontdekking uitvoeren';
+$GLOBALS["lang"]['Please log on to the Open-AudIT Server (either Windows or Linux) and run <code>nslookup IP_ADDRESS_OF_TARGET</code> in the command prompt or shell. It must be able to resolve the IP to a name.'] = '"Bonvolu ensaluti al la open- Bendrijoje" <code>nslookup IP_ADDRESS_OF_TARGET</code> ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ®';
 
-$GLOBALS["lang"]['Run Discovery on Devices'] = 'Ontdekking uitvoeren op apparaten';
+$GLOBALS["lang"]['Please note that the select box will override the text input box.'] = 'Bonvolu noti ke la fajna skatolo superregula la tekstan enirkeston.';
 
-$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = 'Doe een ontdekking en kom erachter <b>Wat is er op je netwerk?</b>';
+$GLOBALS["lang"]['Please see the FAQ'] = '"Bonvolu vidi la"';
 
-$GLOBALS["lang"]['Run this Command'] = 'Dit commando uitvoeren';
+$GLOBALS["lang"]['Please send all three files to your support contact at Opmantek and describe your issue.'] = '® ';
 
-$GLOBALS["lang"]['runas'] = 'Runas';
+$GLOBALS["lang"]['Please set using'] = 'Bonvolu režisierdi uzante';
 
-$GLOBALS["lang"]['Runas'] = 'Runas';
+$GLOBALS["lang"]['Please visit the homepage at'] = 'Bonvolu viziti nefejmpaεon clare';
 
-$GLOBALS["lang"]['Running Open-AudIT Apache Service Under Windows'] = 'Open-AudIT Apache-service draaien onder Windows';
+$GLOBALS["lang"]['pod'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Russian Federation'] = 'Russische Federatie';
+$GLOBALS["lang"]['Pod'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Rwanda'] = 'Rwanda';
+$GLOBALS["lang"]['Poland'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['rx_bitrate'] = 'Rx-bitrate';
+$GLOBALS["lang"]['Policies'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Rx Bitrate'] = 'Rx-bitrate';
+$GLOBALS["lang"]['Policies have exceptions.'] = 'Politikoj hava eseptojn.';
 
-$GLOBALS["lang"]['rx_freq'] = 'Rx Freq';
+$GLOBALS["lang"]['policy'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Rx Freq'] = 'Rx Freq';
+$GLOBALS["lang"]['Policy'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['rx_level'] = 'Rx-niveau';
+$GLOBALS["lang"]['policy_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Rx Level'] = 'Rx-niveau';
+$GLOBALS["lang"]['Policy ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['rx_power'] = 'Rx vermogen';
+$GLOBALS["lang"]['Policy Result'] = 'Politiek';
 
-$GLOBALS["lang"]['Rx Power'] = 'Rx vermogen';
+$GLOBALS["lang"]['Policy Results'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['rx_profile'] = 'Rx-profiel';
+$GLOBALS["lang"]['Polish'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Rx Profile'] = 'Rx-profiel';
+$GLOBALS["lang"]['Polite'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['SELECT'] = 'SELECTIE';
+$GLOBALS["lang"]['Populate the with values provided below:'] = 'Populato la kun valoroj provdonzitaj malsupre:';
 
-$GLOBALS["lang"]['SID'] = 'SID';
+$GLOBALS["lang"]['Populated by audit.'] = 'Je suis distita revizio.';
 
-$GLOBALS["lang"]['SM Version'] = 'SM-versie';
+$GLOBALS["lang"]['Populated by discovery and audit.'] = '[Nikolaj Roerich] püüdis mista ja métestada [[inimese]]] eksistenssi.';
+
+$GLOBALS["lang"]['Populated dynamically.'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Populated from DNS.'] = '.i estas distita de DNS.';
+
+$GLOBALS["lang"]['Populated from SNMP discovery.'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Populated from device audits.'] = '-';
+
+$GLOBALS["lang"]['Populated from hostname.'] = '-';
+
+$GLOBALS["lang"]['Populated from machine-id on Linux.'] = 'Je suis farita estilima apretin - produktita sur linukso.';
+
+$GLOBALS["lang"]['Populated from the IP for the default route or the IP detected in discovery.'] = '® de la IP por la deha guidlta itinero a. la IP detektita en eltrova.o.';
+
+$GLOBALS["lang"]['Populated from the hostname command.'] = 'Suosikki ® Bendrijoje - nomkomando.';
+
+$GLOBALS["lang"]['Populated with additional data from the external system, in a JSON representation.'] = 'Šio straipsnio 1 ir 2 dalys taikomos mutatis mutandis.';
+
+$GLOBALS["lang"]['port'] = 'Najė';
+
+$GLOBALS["lang"]['Port'] = 'Najė';
+
+$GLOBALS["lang"]['port_name'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Port Name'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['port_number'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Port Number'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['ports_in_order'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Ports In Order'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['ports_stop_after'] = 'Portasin Şpisähdyspaika, Bendrijoje';
+
+$GLOBALS["lang"]['Ports Stop After'] = 'Portasin Şpisähdyspaika, Bendrijoje';
+
+$GLOBALS["lang"]['Portugal, Portuguese Republic'] = '-';
+
+$GLOBALS["lang"]['Portuguese'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Portuguese (Brazil)'] = '(1)';
+
+$GLOBALS["lang"]['position'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Position'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Post-Certification'] = '-';
+
+$GLOBALS["lang"]['postcode'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Postcode'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['power_circuit'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Power Circuit'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['power_sockets'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Power Sockets'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Predictable'] = 'Labas...';
+
+$GLOBALS["lang"]['Preferences'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Prepare for recertification every 3 years'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Prerequisites'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Prerequisites and Tests'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['present'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Present'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['previous_value'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Previous Value'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['primary'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Primary'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Primary Key'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['print_queue'] = '-';
+
+$GLOBALS["lang"]['Print Queue'] = '-';
+
+$GLOBALS["lang"]['printer_color'] = '-';
+
+$GLOBALS["lang"]['Printer Color'] = '-';
+
+$GLOBALS["lang"]['printer_duplex'] = ' Imp';
+
+$GLOBALS["lang"]['Printer Duplex'] = ' Imp';
+
+$GLOBALS["lang"]['printer_port_name'] = '-';
+
+$GLOBALS["lang"]['Printer Port Name'] = '-';
+
+$GLOBALS["lang"]['printer_shared'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Printer Shared'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['printer_shared_name'] = '-';
+
+$GLOBALS["lang"]['Printer Shared Name'] = '-';
+
+$GLOBALS["lang"]['priority'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Priority'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Privacy Passphrase'] = '-';
+
+$GLOBALS["lang"]['Privacy Protocol'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['privileges_required'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Privileges Required'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['processor'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Processor'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['processor_count'] = '-';
+
+$GLOBALS["lang"]['Processor Count'] = '-';
+
+$GLOBALS["lang"]['processor_slot_count'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Processor Slot Count'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['processor_type'] = '- Labas.';
+
+$GLOBALS["lang"]['Processor Type'] = '- Labas.';
+
+$GLOBALS["lang"]['Processors'] = '®';
+
+$GLOBALS["lang"]['product_name'] = '-';
+
+$GLOBALS["lang"]['Product Name'] = '-';
+
+$GLOBALS["lang"]['Product Name Match from CPE: '] = 'Bendrijoje: ';
+
+$GLOBALS["lang"]['products'] = '- Labas.';
+
+$GLOBALS["lang"]['Products'] = '- Labas.';
+
+$GLOBALS["lang"]['Professional'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['profile'] = '-';
+
+$GLOBALS["lang"]['Profile'] = '-';
+
+$GLOBALS["lang"]['program'] = ' ®';
+
+$GLOBALS["lang"]['Program'] = ' ®';
+
+$GLOBALS["lang"]['Properties'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Proprietary. If you want to modify HighCharts you may require a'] = '(1) Altajn Katajn vi povas postuli';
+
+$GLOBALS["lang"]['Protects confidentiality, integrity, and availability of information'] = 'Protekas konfidencon, arba';
+
+$GLOBALS["lang"]['protocol'] = '-';
+
+$GLOBALS["lang"]['Protocol'] = '-';
+
+$GLOBALS["lang"]['Provide a description and select and expires duration.'] = 'Dispinigi prospribon kaj selekti kaj eksvalidi DARBO TVARKA';
+
+$GLOBALS["lang"]['Provide a name - we humbly recommand Open-AudIT &#128512;, but you can name it anything you like.<br>From the Open-AudIT form, copy the value for the <i>Redirect URI</i> field and paste it into the <i>Sign-in redirect URIs</i> field in OKTA.<br>The Sign-out redirect URIs is optional, but if you want you can use open-audit/index.php/logout with your Open-AudIT servers http address, as per the screenshot.<br>Normally your Open-AudIT URL will look something like'] = 'Ni humile remkomando Ouvrir<br/>Programma "Leader +" <i>Bendrijoje</i> C "è la raison fill laquelle la committe décité d\' compocio une attenzione partipière à l "amélioration de la qualité de l\'eau." <i>(OL L 20 van 2015.177, blz. 42).</i> Bendrijoje:<br/>(lt) (lt) php / Româkun residu - gewijzigd - adreso, kiel per la ekranpafo.<br/>Normaali OpenAudit URL';
+
+$GLOBALS["lang"]['Provided you have the correct credentials, Device Seed Discovery works as follows'] = '(OL L 20 van 2015.177, blz. 42).';
+
+$GLOBALS["lang"]['provider'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Provider'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['published'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Published'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['published_date'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Published Date'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['publisher'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Publisher'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Puerto Rico'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Purchase'] = 'Ačetas';
+
+$GLOBALS["lang"]['purchase_amount'] = '-';
+
+$GLOBALS["lang"]['Purchase Amount'] = '-';
+
+$GLOBALS["lang"]['purchase_cost_center'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Purchase Cost Center'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['purchase_count'] = 'Ačetas';
+
+$GLOBALS["lang"]['Purchase Count'] = 'Ačetas';
+
+$GLOBALS["lang"]['purchase_date'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Purchase Date'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['purchase_invoice'] = '"Ačeto envo gręsia"';
+
+$GLOBALS["lang"]['Purchase Invoice'] = '"Ačeto envo gręsia"';
+
+$GLOBALS["lang"]['purchase_order'] = 'Ačeti odontoiatria, Bendrijoje';
+
+$GLOBALS["lang"]['Purchase Order'] = 'Ačeti odontoiatria, Bendrijoje';
+
+$GLOBALS["lang"]['purchase_order_number'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Purchase Order Number'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['purchase_service_contract_number'] = 'Ačeta-';
+
+$GLOBALS["lang"]['Purchase Service Contract Number'] = 'Ačeta-';
+
+$GLOBALS["lang"]['purchase_vendor'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Purchase Vendor'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['purpose'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Purpose'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Qatar'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['queries'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Queries'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Queries are an important part of Open-AudIT. They are what enables you to get meaningful information from all the device data you have discovered. Along with summaries and groups, they provide a powerful mechanism to extract crucial information.'] = 'Päringud estas grava parto de Open- Ş. Ili estas kio rajtigas vin rizvi senchavajn formatojn de claruj aparatoj kiujn vi malkovris. Kune kun ressumuj kaj grupoj, ili disposigas regulcan mekanismon eltiri decidajn soatojn.';
+
+$GLOBALS["lang"]['Queries for Groups should select only the'] = 'Päringud por grupoj devus selekti nur';
+
+$GLOBALS["lang"]['Query'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Query this Active Directory attribute first to determine the users work unit.'] = 'Aktiva Adresaro unue rev.';
+
+$GLOBALS["lang"]['Query this Active Directory attribute second to determine the users work unit.'] = 'Aktiva Adresaro atracias sekundon restrici la uzantojn worbuon.';
+
+$GLOBALS["lang"]['queue'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Queue'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Queue Limit'] = '(OL L 20 van 2015.1 27, blz. 42)';
+
+$GLOBALS["lang"]['Queued Device Audits'] = 'Indonesië de dispositivi en esera';
+
+$GLOBALS["lang"]['Queued IP Scans'] = 'Eskaneos IP vertus,';
+
+$GLOBALS["lang"]['Queued Items'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['RBAC for Active Directory and openLDAP'] = 'RBAC Bendrijoje';
+
+$GLOBALS["lang"]['RU Start'] = '-';
+
+$GLOBALS["lang"]['RX Bitrate'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['RX Freq'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['RX Level'] = 'RX Nivelo';
+
+$GLOBALS["lang"]['RX Power'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['RX Profile'] = 'Rev.';
+
+$GLOBALS["lang"]['Rack'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rack_devices'] = '(1)';
+
+$GLOBALS["lang"]['Rack Devices'] = '(1)';
+
+$GLOBALS["lang"]['rack_id'] = 'Numero d\'identificazione ("Numero")';
+
+$GLOBALS["lang"]['Rack ID'] = 'Numero d\'identificazione ("Numero")';
+
+$GLOBALS["lang"]['Rack Management and Reporting'] = '-';
+
+$GLOBALS["lang"]['Racks'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['racks'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['radio'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Radio'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Radio MAC'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rationale'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rationale'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['raw'] = 'Työkalut (®)';
+
+$GLOBALS["lang"]['Raw'] = 'Työkalut (®)';
+
+$GLOBALS["lang"]['read'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Read'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Read our online documentation on the Open-AudIT Wiki.'] = '® ® ® retan retan dokumentadon pri la Open- Bendrijoje - Vikido.';
+
+$GLOBALS["lang"]['Read through the log file at'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Received'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Recently we have been asked the question - do you consider Open-AudIT more secure than other similar programs? As with most things, the answer is <i>it depends</i>.<br><br>Open-AudIT can be operated in such a way as to be extremely secure. But as usual with computer-based security, the more secure you wish to make something, the more inconvenient it becomes to use. The old phrase <i>the most secure computer is one that is turned off and in the cupboard<i> comes to mind.<br><br>Below we will outline some options that can be used with Open-AudIT that will increase security. Like most items within Open-AudIT, these are options and not mandatory. How far you take security is up to you.'] = 'Licencipe niestis esigeitaj la demando -... u vi konsidras next AudIT pli sekura olelij simpiaj Kiel kun la pléj utilizj aferoj, Şresponsabilité estas <i>Bendrijoje</i>Bendrijoje<br/><br/>Ava- Aud Povas esti funkcigita la epäilty tia maniero kiel por esti ekstreme sekura. Sed kiel kutime kun kompution- bazita sekureco, Şpli sekura vi deziras fari ioni, Şpli malkonvena εi iεas uzi. Bendrijoje <i>"Hübner"<i> Bendrijoje<br/><br/>Malsupre Bendrijoje, Kylis la pluj utilej eroj ene de ů Kiom vi prenas sekurecon estas εis vi.</i></i>';
+
+$GLOBALS["lang"]['Recertification:</strong> Required every three years'] = 'Ar yra kokių nors priežasčių, dėl kurių reikėtų imtis veiksmų?';
+
+$GLOBALS["lang"]['Red Query'] = '-';
+
+$GLOBALS["lang"]['Redirect URI'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['redirect_uri'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Redirect Uri'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Reduces risk of data breaches and cyber threats'] = 'Redokki riskeon redumoj romopj kaj ciberminacoj';
+
+$GLOBALS["lang"]['references'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['References'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['region'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Region'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['registered_user'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Registered User'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rejected'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rel'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rel'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Release'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['remediation'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Remediation'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Remote'] = '-';
+
+$GLOBALS["lang"]['remote_address'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Remote Address'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['remote_port'] = 'Oriu la hasnon, arba';
+
+$GLOBALS["lang"]['Remote Port'] = 'Oriu la hasnon, arba';
+
+$GLOBALS["lang"]['Remove'] = '-';
+
+$GLOBALS["lang"]['Remove Exception'] = 'Origu esepti (tavia)';
+
+$GLOBALS["lang"]['Repeat until you have a completely discovered and audited Windows PC.'] = 'Ripetu εis vi havas tute malkovritan kaj reviziitan PC Bendrijoje.';
+
+$GLOBALS["lang"]['Report'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Report on your devices, networks and more'] = 'Raporto pri viaj aparatoj, retoj kaj pli, Bendrijoje';
+
+$GLOBALS["lang"]['reportable'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Reportable'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Reports'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['request'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Request'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Request Method'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Request Vulnerability'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Request a Specific CVE'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['requested'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Requested'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['require_port'] = 'Mi petas la wasénon, Bendrijoje';
+
+$GLOBALS["lang"]['Require Port'] = 'Mi petas la wasénon, Bendrijoje';
+
+$GLOBALS["lang"]['Require an Open Port'] = 'Bendrijos teisės aktai';
+
+$GLOBALS["lang"]['Required'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Required AWS user permissions'] = '2005 12 19';
+
+$GLOBALS["lang"]['Required Fields'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Reset'] = '"Heashestami" ("Heashestami")';
+
+$GLOBALS["lang"]['Reset All Data'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Reset to Default'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['resource'] = '-';
+
+$GLOBALS["lang"]['Resource'] = '-';
+
+$GLOBALS["lang"]['Resource Name'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Resources'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['response'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Response'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['responsibility'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Responsibility'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Restore my Licenses'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Restrict to Private'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Restrict to Subnet'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['result'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Result'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Resulting Function'] = '-';
+
+$GLOBALS["lang"]['Results'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Retrieve a list of devices in the'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Retrieve a list of devices with OS Name like Windows 2008'] = 'Nouda lista de aparatoj kun Os Nimiiel Fenestroj 2008';
+
+$GLOBALS["lang"]['Retrieve all details about the device with id 88.'] = 'lakóhelye: uj detaloj pri la aparatito kun id 88.';
+
+$GLOBALS["lang"]['Retrieve all devices running Windows.'] = '(RO 2012 7183).';
+
+$GLOBALS["lang"]['Retrieve all devices with the standard columns'] = 'Alternativaiuja paratoj kun laj kolonoi';
+
+$GLOBALS["lang"]['Retrieve the first 10 devices running Windows ordered by hostname'] = 'Récupérer la uuaj 10 abarato prizorgantaj Fenestrojn ordonitaj rev';
+
+$GLOBALS["lang"]['Retrieve the properties id, ip, hostname, domain, type from all devices'] = 'Récupérer la trajtoj id, ip, Bendrieoje';
+
+$GLOBALS["lang"]['retrieved'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Retrieved'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['retrieved_ident'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Retrieved Ident'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['retrieved_name'] = '-';
+
+$GLOBALS["lang"]['Retrieved Name'] = '-';
+
+$GLOBALS["lang"]['Retrieved from the device - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostsvc/hostsummary, HP-UX:machinfo, Solaris:smbios, AIX:uname.'] = '- "Linukso": "Indonesië MacOS": "sistema" _ BAR _ "_ BAR _" _ BAR _ "_ BAR _" _ BAR _ "_ BAR _" _ BAR _ _';
+
+$GLOBALS["lang"]['Retrieving a List of Credentials'] = 'Recherche Bendrijoje';
+
+$GLOBALS["lang"]['Retrieving or Creating'] = 'Rekuperaator, Bendrijoje';
+
+$GLOBALS["lang"]['Return a collection of devices with the default set of columns (devices.id, devices.icon, devices.type, devices.name, devices.ip, devices.dns_fqdn, devices.identification, devices.description, devices.manufacturer, devices.os_family, devices.status)'] = '"Dapa deulta aro de kolonoj" ("laistteet.id," "aparatoj.icon," "aparatoj"). aparatoj.name, aparatoj.ip, aparatoj.dns _ fqdn, aparatoj. tunnistus, aparatoj.priskribo, aparatoj.maker, aparatoj.os _ familio, aparatoj.status';
+
+$GLOBALS["lang"]['Return a list of all Modules installed on Routers'] = 'Bendrijoje ';
+
+$GLOBALS["lang"]['Return an individual device\\'] = '-';
+
+$GLOBALS["lang"]['Returns a list of {collection}.'] = 'Kolection.';
+
+$GLOBALS["lang"]['Returns a {collection} details.'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Reunion'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Review current practices against ISO 27001 requirements'] = 'Revizio aktualaj prattikoj kontra revadavus ISO 27001 postulej ů';
+
+$GLOBALS["lang"]['revision'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Revision'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['risk_assesment_result'] = 'Risultato della ·';
+
+$GLOBALS["lang"]['Risk Assesment Result'] = 'Risultato della ·';
+
+$GLOBALS["lang"]['Risk Assessment & Treatment'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Risk Management'] = '-';
+
+$GLOBALS["lang"]['Role'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['roles'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Roles'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Roles can only be created and edited if you have an Open-AudIT Enterprise license. For most users, the default set of Roles should be all that is required.'] = 'Roloj povas nur esti kreitaj kaj redaktitaj se vi havas licenza Bendrijoje. (RO 2012 7183).';
+
+$GLOBALS["lang"]['Romania'] = '®';
+
+$GLOBALS["lang"]['Romanian'] = 'Ö ·';
+
+$GLOBALS["lang"]['Room'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['route'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Route'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Row'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Row Count'] = '-';
+
+$GLOBALS["lang"]['row_position'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Row Position'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rows'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['ru_height'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Ru Height'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['ru_start'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Ru Start'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rule_group'] = 'Bendrijos teisės aktai';
+
+$GLOBALS["lang"]['Rule Group'] = 'Bendrijos teisės aktai';
+
+$GLOBALS["lang"]['rules'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rules'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rules are created and run against a device when the device is discovered or an audit result is processed. Rules can be used to set a device attribute based on other attributes.<br><br>NOTE - At present we cannot delete a rule input or output that contains a /. This is because the framework is parsing the / as part of the URL and returning a 404, even before our code runs. The work-around for this is to delete the Rule itself, then recreate the inputs and outputs as required. Fortunately inputs and outputs that contain a / are rare (indeed, none exist by default).'] = 'Regoroj estas kreitaj kaj kuris kontra epäilty aparato kiam la aparato estas malkovrita epäilty reviziorezulto estas prilaborita. Regoroj povas esti uzitaj por atdistributi aparatdistribution bazitan blij atinattoj.<br/><br/>"Tio estas La est" - preksimume portio murs forigi la Regelon mem, tiam rekrei la eniga. Ojn kaj prodotto.ojn kiel rev.';
+
+$GLOBALS["lang"]['Run Discovery'] = 'Découverte rev';
+
+$GLOBALS["lang"]['Run Discovery on Devices'] = 'Käivita Bendrijoje';
+
+$GLOBALS["lang"]['Run Your Discovery'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Run a Command'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = '- <b>Ar tikrai?</b>';
+
+$GLOBALS["lang"]['Run the script by typing <code>cscript test_windows_client.vbs</code> in the console.'] = '- <code>cscript test_windows_client.vbs</code> Bendrijoje';
+
+$GLOBALS["lang"]['Run this Command'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['runas'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Runas'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Running'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Running Open-AudIT Apache Service Under Windows'] = 'Kurontanai';
+
+$GLOBALS["lang"]['Russian'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Russian Federation'] = '-';
+
+$GLOBALS["lang"]['Rwanda'] = '(1)';
+
+$GLOBALS["lang"]['rx_bitrate'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rx Bitrate'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rx_freq'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rx Freq'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rx_level'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rx Level'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rx_power'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rx Power'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rx_profile'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Rx Profile'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['SAN Audit'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['SAN Auto-Discover'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['SELECT'] = '·';
+
+$GLOBALS["lang"]['SID'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['SM Version'] = 'Bendrijoje';
 
 $GLOBALS["lang"]['SNMP (v1 / v2)'] = 'SNMP (v1 / v2)';
 
-$GLOBALS["lang"]['SNMP Details'] = 'SNMP Gegevens';
+$GLOBALS["lang"]['SNMP Details'] = 'SNMP';
 
-$GLOBALS["lang"]['SNMP OID'] = 'SNMP OID';
+$GLOBALS["lang"]['SNMP OID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['SNMP Version'] = 'SNMP-versie';
+$GLOBALS["lang"]['SNMP Version'] = 'NMP- universitai';
 
-$GLOBALS["lang"]['SNMP v3'] = 'SNMP v3';
+$GLOBALS["lang"]['SNMP v3'] = 'SNMP';
 
-$GLOBALS["lang"]['SQL'] = 'SQL';
+$GLOBALS["lang"]['SQL'] = 'SQL의 SQL';
 
-$GLOBALS["lang"]['SQL (Advanced)'] = 'SQL (Geavanceerd)';
+$GLOBALS["lang"]['SQL (Advanced)'] = 'SQL (täiustatud)';
 
-$GLOBALS["lang"]['SQL Creation Statements'] = 'SQL Creation Statements';
+$GLOBALS["lang"]['SQL Creation Statements'] = '-';
 
-$GLOBALS["lang"]['SSH'] = 'SSH';
+$GLOBALS["lang"]['SQL not containing this condition will result in the widget failing to be executed.'] = 'SQL Şenhavanta tiun Kontrircaon rezultigos la dracominon malsukcesantan esti efekkigita.';
 
-$GLOBALS["lang"]['SSH Key'] = 'SSH Sleutel';
+$GLOBALS["lang"]['SSH'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['SW Revision'] = 'SW-herziening';
+$GLOBALS["lang"]['SSH Key'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Saint Barthelemy'] = 'Saint Barthelemy';
+$GLOBALS["lang"]['SW Revision'] = 'SW-revizija';
 
-$GLOBALS["lang"]['Saint Helena'] = 'Sint-Helena';
+$GLOBALS["lang"]['Saint Barthelemy'] = 'arba';
 
-$GLOBALS["lang"]['Saint Kitts and Nevis'] = 'Saint Kitts en Nevis';
+$GLOBALS["lang"]['Saint Helena'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Saint Lucia'] = 'Saint Lucia';
+$GLOBALS["lang"]['Saint Kitts and Nevis'] = '-';
 
-$GLOBALS["lang"]['Saint Martin'] = 'Saint Martin';
+$GLOBALS["lang"]['Saint Lucia'] = '-';
 
-$GLOBALS["lang"]['Saint Pierre and Miquelon'] = 'Saint-Pierre en Miquelon';
+$GLOBALS["lang"]['Saint Martin'] = '-';
 
-$GLOBALS["lang"]['Saint Vincent and the Grenadines'] = 'Saint Vincent en de Grenadines';
+$GLOBALS["lang"]['Saint Pierre and Miquelon'] = '(1)';
 
-$GLOBALS["lang"]['Samoa'] = 'Samoa';
+$GLOBALS["lang"]['Saint Vincent and the Grenadines'] = '(1)';
 
-$GLOBALS["lang"]['san'] = 'San';
+$GLOBALS["lang"]['Samoa'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['San'] = 'San';
+$GLOBALS["lang"]['san'] = '-';
 
-$GLOBALS["lang"]['San Marino'] = 'San Marino';
+$GLOBALS["lang"]['San'] = '-';
 
-$GLOBALS["lang"]['Sao Tome and Principe'] = 'Sao Tomé en Principe';
+$GLOBALS["lang"]['San Marino'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Saturday'] = 'Zaterdag';
+$GLOBALS["lang"]['Sao Tome and Principe'] = '(1)';
 
-$GLOBALS["lang"]['Saudi Arabia'] = 'Saudi-Arabië';
+$GLOBALS["lang"]['Saturday'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Save as Default'] = 'Opslaan als standaard';
+$GLOBALS["lang"]['Saudi Arabia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['scaling'] = 'Schalen';
+$GLOBALS["lang"]['Save and run the file. Make sure you run the file as an Administrator in order to install it (right click, Run as Administrator).'] = 'Savi Kaj Prizorgi, Certigu che vi prisorgas la dosieron kiel administrateur por instali Liquidin (deksstra klako, kiel administrateur).';
 
-$GLOBALS["lang"]['Scaling'] = 'Schalen';
+$GLOBALS["lang"]['Save as Default'] = '-';
 
-$GLOBALS["lang"]['scan_options'] = 'Scanopties';
+$GLOBALS["lang"]['Save the downloaded file.'] = 'Evitu eretuitan dosieron.';
 
-$GLOBALS["lang"]['Scan Options'] = 'Scanopties';
+$GLOBALS["lang"]['scaling'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Scan Options ID'] = 'Scanopties ID';
+$GLOBALS["lang"]['Scaling'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Scan the Nmap top number of TCP ports.'] = 'Scan het Nmap bovenste aantal TCP poorten.';
+$GLOBALS["lang"]['scan_options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = 'Scan het Nmap bovenste aantal UDP-poorten.';
+$GLOBALS["lang"]['Scan Options'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['schedule'] = 'Schema';
+$GLOBALS["lang"]['Scan Options ID'] = '"Személyazonosító, Bendrieoje"';
 
-$GLOBALS["lang"]['Schedule'] = 'Schema';
+$GLOBALS["lang"]['Scan for this port(s) and if detected open, use this port for SSH communication. This is added to the list of Custom TCP Ports above (if not already included), so there is no need to include it in that list as well. Comma seperated, no spaces.'] = 'Skaalo por tu hasno (j) kaj se detektita malferma, uzas tiun hasenon por SS- komunikado. Tio estas aldonita al lista de Cutom TCP ® supre (® Inkludis), Bendrijoje. -';
 
-$GLOBALS["lang"]['scope'] = 'Toepassingsgebied';
+$GLOBALS["lang"]['Scan the Nmap top number of TCP ports.'] = '"Nmap pinnombro" TCP-hasnoj.';
 
-$GLOBALS["lang"]['Scope'] = 'Toepassingsgebied';
+$GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = '"Nmap pinnombro" UDP- hasnoj.';
 
-$GLOBALS["lang"]['script_timeout'] = 'Script Timeout';
+$GLOBALS["lang"]['schedule'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Script Timeout'] = 'Script Timeout';
+$GLOBALS["lang"]['Schedule'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['scripts'] = 'Scripts';
+$GLOBALS["lang"]['Scheduled device discovery and reporting make Open-AudIT Professional an efficient solution for busy IT professionals looking to reduce overheads and increase insights.'] = '-';
 
-$GLOBALS["lang"]['Scripts'] = 'Scripts';
+$GLOBALS["lang"]['Scheduling - discovery, reporting &amp; more'] = '-';
 
-$GLOBALS["lang"]['scsi'] = 'Scsi';
+$GLOBALS["lang"]['scope'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Scsi'] = 'Scsi';
+$GLOBALS["lang"]['Scope'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['scsi_bus'] = 'Scsi Bus';
+$GLOBALS["lang"]['Scope is known as Authorization Scope, representing whether a vulnerability affects resources beyond the original security authority of the vulnerable component.<br><br>The only two valid values for this attribute are'] = '"Vundebleco influenzas resursojn preter la Origina sekurrecadministrastacio de la vandebla kompunto."<br/><br/>Expediuraj du validaj valoroj por tu a estas';
 
-$GLOBALS["lang"]['Scsi Bus'] = 'Scsi Bus';
+$GLOBALS["lang"]['script_timeout'] = 'Premio Antalutsiiturer';
 
-$GLOBALS["lang"]['scsi_logical_unit'] = 'Scsi logische eenheid';
+$GLOBALS["lang"]['Script Timeout'] = 'Premio Antalutsiiturer';
 
-$GLOBALS["lang"]['Scsi Logical Unit'] = 'Scsi logische eenheid';
+$GLOBALS["lang"]['scripts'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['scsi_port'] = 'Scsi-poort';
+$GLOBALS["lang"]['Scripts'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Scsi Port'] = 'Scsi-poort';
+$GLOBALS["lang"]['scsi'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Search'] = 'Zoeken';
+$GLOBALS["lang"]['Scsi'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Search For a Device'] = 'Zoeken naar een apparaat';
+$GLOBALS["lang"]['scsi_bus'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Search for Device'] = 'Apparaat zoeken';
+$GLOBALS["lang"]['Scsi Bus'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Searching Using DataTables'] = 'Zoeken met behulp van gegevenstabellen';
+$GLOBALS["lang"]['scsi_logical_unit'] = '-';
 
-$GLOBALS["lang"]['secondary'] = 'Secundair';
+$GLOBALS["lang"]['Scsi Logical Unit'] = '-';
 
-$GLOBALS["lang"]['Secondary'] = 'Secundair';
+$GLOBALS["lang"]['scsi_port'] = 'Najė';
 
-$GLOBALS["lang"]['Secondary Text'] = 'Secundaire tekst';
+$GLOBALS["lang"]['Scsi Port'] = 'Najė';
 
-$GLOBALS["lang"]['section'] = 'Sectie';
+$GLOBALS["lang"]['Search'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Section'] = 'Sectie';
+$GLOBALS["lang"]['Search For a Device'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['secure'] = 'Veilig';
+$GLOBALS["lang"]['Searching Using DataTables'] = 'Serrugante Uzante etmenetrende, Indonesië';
 
-$GLOBALS["lang"]['Secure'] = 'Veilig';
+$GLOBALS["lang"]['Second'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Security Name'] = 'Beveiligingsnaam';
+$GLOBALS["lang"]['secondary'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Security Status'] = 'Beveiligingsstatus';
+$GLOBALS["lang"]['Secondary'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['security_zone'] = 'Veiligheidszone';
+$GLOBALS["lang"]['Secondary Text'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Security Zone'] = 'Veiligheidszone';
+$GLOBALS["lang"]['Secret Key'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['seed_ip'] = 'IP zaad';
+$GLOBALS["lang"]['section'] = '-';
 
-$GLOBALS["lang"]['Seed IP'] = 'IP zaad';
+$GLOBALS["lang"]['Section'] = '-';
 
-$GLOBALS["lang"]['seed_ping'] = 'Zaadping';
+$GLOBALS["lang"]['secure'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Seed Ping'] = 'Zaadping';
+$GLOBALS["lang"]['Secure'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['seed_restrict_to_private'] = 'Zaad beperken tot privé';
+$GLOBALS["lang"]['Security Content Automation Protocol'] = 'Provincio de automatización esticontenido de seguridad';
 
-$GLOBALS["lang"]['Seed Restrict To Private'] = 'Zaad beperken tot privé';
+$GLOBALS["lang"]['Security Level'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['seed_restrict_to_subnet'] = 'Seed Restrikt to Subnet';
+$GLOBALS["lang"]['Security Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Seed Restrict To Subnet'] = 'Seed Restrikt to Subnet';
+$GLOBALS["lang"]['Security Status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Select'] = 'Selecteren';
+$GLOBALS["lang"]['security_zone'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Select All'] = 'Alles selecteren';
+$GLOBALS["lang"]['Security Zone'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['select_external_attribute'] = 'Selecteer extern attribuut';
+$GLOBALS["lang"]['See above. NOTE - This could also be caused by a self-signed certificate on the LDAP server. We are working to allow for this in a future release.'] = '"Epäilty povus esti kazita de mem- subskribita aestilo sur la LDAP- servilo." Ni labas por pralaidumo en esta libigigo.';
 
-$GLOBALS["lang"]['Select External Attribute'] = 'Selecteer extern attribuut';
+$GLOBALS["lang"]['See our page on enabling'] = ' -';
 
-$GLOBALS["lang"]['select_external_count'] = 'Externe telling selecteren';
+$GLOBALS["lang"]['Seed Discoveries'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Select External Count'] = 'Externe telling selecteren';
+$GLOBALS["lang"]['seed_ip'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['select_external_type'] = 'Extern selecteren Type';
+$GLOBALS["lang"]['Seed IP'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Select External Type'] = 'Extern selecteren Type';
+$GLOBALS["lang"]['seed_ping'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['select_external_value'] = 'Extern selecteren Waarde';
+$GLOBALS["lang"]['Seed Ping'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Select External Value'] = 'Extern selecteren Waarde';
+$GLOBALS["lang"]['seed_restrict_to_private'] = 'Seeme Restrikko';
 
-$GLOBALS["lang"]['select_internal_attribute'] = 'Interne attribuut selecteren';
+$GLOBALS["lang"]['Seed Restrict To Private'] = 'Seeme Restrikko';
 
-$GLOBALS["lang"]['Select Internal Attribute'] = 'Interne attribuut selecteren';
+$GLOBALS["lang"]['seed_restrict_to_subnet'] = 'Sesita Restrikko';
 
-$GLOBALS["lang"]['select_internal_count'] = 'Interne telling selecteren';
+$GLOBALS["lang"]['Seed Restrict To Subnet'] = 'Sesita Restrikko';
 
-$GLOBALS["lang"]['Select Internal Count'] = 'Interne telling selecteren';
+$GLOBALS["lang"]['Select'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['select_internal_type'] = 'Intern selecteren Type';
+$GLOBALS["lang"]['Select Admin -> Tasks -> Create Task from the menu.'] = 'Título Taskoj - titulado. (1)';
 
-$GLOBALS["lang"]['Select Internal Type'] = 'Intern selecteren Type';
+$GLOBALS["lang"]['Select All'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['select_internal_value'] = 'Intern selecteren Waarde';
+$GLOBALS["lang"]['Select All Devices'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Select Internal Value'] = 'Intern selecteren Waarde';
+$GLOBALS["lang"]['select_external_attribute'] = 'Elekti Eksteran';
 
-$GLOBALS["lang"]['Select a Table'] = 'Selecteer een tabel';
+$GLOBALS["lang"]['Select External Attribute'] = 'Elekti Eksteran';
 
-$GLOBALS["lang"]['Senegal'] = 'Senegal';
+$GLOBALS["lang"]['select_external_count'] = 'Elekti Eksteran';
 
-$GLOBALS["lang"]['sensitivity'] = 'Gevoeligheid';
+$GLOBALS["lang"]['Select External Count'] = 'Elekti Eksteran';
 
-$GLOBALS["lang"]['Sensitivity'] = 'Gevoeligheid';
+$GLOBALS["lang"]['select_external_type'] = 'Elekti Eksteran, rev.';
 
-$GLOBALS["lang"]['September'] = 'September';
+$GLOBALS["lang"]['Select External Type'] = 'Elekti Eksteran, rev.';
 
-$GLOBALS["lang"]['Serbia'] = 'Servië';
+$GLOBALS["lang"]['select_external_value'] = 'Elekti Eksteran Valora, Indonesië';
 
-$GLOBALS["lang"]['serial'] = 'Serieel';
+$GLOBALS["lang"]['Select External Value'] = 'Elekti Eksteran Valora, Indonesië';
 
-$GLOBALS["lang"]['Serial'] = 'Serieel';
+$GLOBALS["lang"]['select_internal_attribute'] = '-';
 
-$GLOBALS["lang"]['serial_imei'] = 'Serie Imei';
+$GLOBALS["lang"]['Select Internal Attribute'] = '-';
 
-$GLOBALS["lang"]['Serial Imei'] = 'Serie Imei';
+$GLOBALS["lang"]['select_internal_count'] = '-';
 
-$GLOBALS["lang"]['serial_sim'] = 'Seriële Sim';
+$GLOBALS["lang"]['Select Internal Count'] = '-';
 
-$GLOBALS["lang"]['Serial Sim'] = 'Seriële Sim';
+$GLOBALS["lang"]['select_internal_type'] = '-';
 
-$GLOBALS["lang"]['series'] = 'Serie';
+$GLOBALS["lang"]['Select Internal Type'] = '-';
 
-$GLOBALS["lang"]['Series'] = 'Serie';
+$GLOBALS["lang"]['select_internal_value'] = '(1)';
 
-$GLOBALS["lang"]['server'] = 'Server';
+$GLOBALS["lang"]['Select Internal Value'] = '(1)';
 
-$GLOBALS["lang"]['Server'] = 'Server';
+$GLOBALS["lang"]['Select Menu -> Manage -> Baselines -> List Baselines.'] = 'Elektu menüun - confier Mana graduano - opharm Bazlinioj';
 
-$GLOBALS["lang"]['server_id'] = 'Server-ID';
+$GLOBALS["lang"]['Select a Table'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Server ID'] = 'Server-ID';
+$GLOBALS["lang"]['Select an accredited certification body'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Server Is'] = 'Server is';
+$GLOBALS["lang"]['Select and apply appropriate controls (Annex A)'] = 'Elektrotti kaj apliki konvenajn kontrolojn';
 
-$GLOBALS["lang"]['server_item'] = 'Server-item';
+$GLOBALS["lang"]['Select the <i>COM Security</i> tab<br><br>Click on Access Permissions Edit Default'] = 'Bendrijoje <i>Bendrijoje</i> Bendrijoje<br/><br/>Klaku sur Aliro Lubaduse Deva Deva...';
 
-$GLOBALS["lang"]['Server Item'] = 'Server-item';
+$GLOBALS["lang"]['Select the <i>Sign On</i> tab and copy the value for <i>Issuer</i> (just the URL itself). Paste this into the Open-AudIT <i>Issuer</i> field.'] = 'Bendrijoje <i>Bendrijoje</i> Alklaku kaj kopii la Valon por <i>Bendrijoje</i> (arba URL) En la malferma- <i>Bendrijoje</i> Bendrijoje';
 
-$GLOBALS["lang"]['Server Status'] = 'Serverstatus';
+$GLOBALS["lang"]['Select the <i>This Account</i> checkbox and provide the account name and password.'] = 'Bendrijoje <i>Bendrijoje</i> Kontrou skatolo kaj sopeezas newkonto nomo kaj pasvorton.';
 
-$GLOBALS["lang"]['Servers'] = 'Servers';
+$GLOBALS["lang"]['Select the Start menu and type <i>services<.i>. Click the Services icon.'] = 'Bendrijoje <i>"Srl" "" Leader + "programma"</i>';
 
-$GLOBALS["lang"]['service'] = 'Dienst';
+$GLOBALS["lang"]['Select the type of Auth Menthod to create and input the relevant details.'] = 'Elekti la specon de Auth Menthod krei kaj enigi la signfajn detalojn.';
 
-$GLOBALS["lang"]['Service'] = 'Dienst';
+$GLOBALS["lang"]['Self Delete'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['service_identifier'] = 'Dienstidentificatie';
+$GLOBALS["lang"]['Senegal'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Service Identifier'] = 'Dienstidentificatie';
+$GLOBALS["lang"]['sensitivity'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['service_level_a'] = 'Serviceniveau A';
+$GLOBALS["lang"]['Sensitivity'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Service Level A'] = 'Serviceniveau A';
+$GLOBALS["lang"]['September'] = '(1)';
 
-$GLOBALS["lang"]['service_level_b'] = 'Serviceniveau B';
+$GLOBALS["lang"]['Serbia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Service Level B'] = 'Serviceniveau B';
+$GLOBALS["lang"]['serial'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['service_network'] = 'Servicenetwerk';
+$GLOBALS["lang"]['Serial'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Service Network'] = 'Servicenetwerk';
+$GLOBALS["lang"]['serial_imei'] = '(-)';
 
-$GLOBALS["lang"]['service_number'] = 'Dienstnummer';
+$GLOBALS["lang"]['Serial Imei'] = '(-)';
 
-$GLOBALS["lang"]['Service Number'] = 'Dienstnummer';
+$GLOBALS["lang"]['serial_sim'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['service_pack'] = 'Service Pack';
+$GLOBALS["lang"]['Serial Sim'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Service Pack'] = 'Service Pack';
+$GLOBALS["lang"]['series'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['service_plan'] = 'Serviceplan';
+$GLOBALS["lang"]['Series'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Service Plan'] = 'Serviceplan';
+$GLOBALS["lang"]['server'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['service_provider'] = 'Dienstaanbieder';
+$GLOBALS["lang"]['Server'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Service Provider'] = 'Dienstaanbieder';
+$GLOBALS["lang"]['server_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['service_tag'] = 'Service-tag';
+$GLOBALS["lang"]['Server ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Service Tag'] = 'Service-tag';
+$GLOBALS["lang"]['Server Is'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['service_type'] = 'Diensttype';
+$GLOBALS["lang"]['server_item'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Service Type'] = 'Diensttype';
+$GLOBALS["lang"]['Server Item'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['service_version'] = 'Serviceversie';
+$GLOBALS["lang"]['Server Status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Service Version'] = 'Serviceversie';
+$GLOBALS["lang"]['Servers'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Set'] = 'Instellen';
+$GLOBALS["lang"]['Servers Only'] = 'Informazioni rev.';
 
-$GLOBALS["lang"]['set_by'] = 'Geselecteerd op';
+$GLOBALS["lang"]['service'] = ' ';
 
-$GLOBALS["lang"]['Set By'] = 'Geselecteerd op';
+$GLOBALS["lang"]['Service'] = ' ';
 
-$GLOBALS["lang"]['Set the size (normal or compact) of the tables on the List screens.'] = 'Stel de grootte (normaal of compact) in van de tabellen op de Lijstschermen.';
+$GLOBALS["lang"]['service_identifier'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['severity'] = 'Severity';
+$GLOBALS["lang"]['Service Identifier'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Severity'] = 'Severity';
+$GLOBALS["lang"]['service_level_a'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['severity_text'] = 'Severity-tekst';
+$GLOBALS["lang"]['Service Level A'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Severity Text'] = 'Severity-tekst';
+$GLOBALS["lang"]['service_level_b'] = 'Bendrijoje B "';
 
-$GLOBALS["lang"]['Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.'] = 'De ernst wordt berekend uit de <code>base_score</code> En kan een van: Geen, Laag, Medium, Hoog, Kritisch.';
+$GLOBALS["lang"]['Service Level B'] = 'Bendrijoje B "';
 
-$GLOBALS["lang"]['Seychelles'] = 'Seychellen';
+$GLOBALS["lang"]['service_network'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['share'] = 'Delen';
+$GLOBALS["lang"]['Service Network'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Share'] = 'Delen';
+$GLOBALS["lang"]['service_number'] = 'Szerponombro';
 
-$GLOBALS["lang"]['Share Name'] = 'Naam delen';
+$GLOBALS["lang"]['Service Number'] = 'Szerponombro';
 
-$GLOBALS["lang"]['shared'] = 'Delen';
+$GLOBALS["lang"]['service_pack'] = '-';
 
-$GLOBALS["lang"]['Shared'] = 'Delen';
+$GLOBALS["lang"]['Service Pack'] = '-';
 
-$GLOBALS["lang"]['shared_name'] = 'Gedeelde naam';
+$GLOBALS["lang"]['service_plan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Shared Name'] = 'Gedeelde naam';
+$GLOBALS["lang"]['Service Plan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['shell'] = 'Shell';
+$GLOBALS["lang"]['service_provider'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Shell'] = 'Shell';
+$GLOBALS["lang"]['Service Provider'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ship Date'] = 'Vaartuigdatum';
+$GLOBALS["lang"]['service_tag'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['short'] = 'Kort';
+$GLOBALS["lang"]['Service Tag'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Short'] = 'Kort';
+$GLOBALS["lang"]['service_type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should I remove all non-current data from this device?'] = 'Moet ik alle niet-huidige gegevens van dit apparaat verwijderen?';
+$GLOBALS["lang"]['Service Type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = 'Moet dit bestand (of patroon) worden gebruikt om te voorkomen dat bestanden worden gerapporteerd. Normaal gesproken, om bestanden te controleren, is dit ingesteld op <code>y</code>.';
+$GLOBALS["lang"]['Service Under Windows'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should this vendor be used when retrieving vulnerabilities from FirstWave.'] = 'Moet deze verkoper worden gebruikt bij het ophalen van kwetsbaarheden van FirstWave.';
+$GLOBALS["lang"]['service_version'] = 'Versio de la Affairs';
 
-$GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = 'Moeten we apparaten van de remote service toevoegen, lokaal.';
+$GLOBALS["lang"]['Service Version'] = 'Versio de la Affairs';
 
-$GLOBALS["lang"]['Should we apply this license to the selected Org as well as the Orgs children?'] = 'Moeten we deze licentie toepassen op de geselecteerde Org en de Orgs kinderen?';
+$GLOBALS["lang"]['Set'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?'] = 'Moeten we een gefilterde poort als een open poort beschouwen - en daarom dit IP als een apparaat gebruiken?';
+$GLOBALS["lang"]['set_by'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we consider an open|filtered port to be an open port - and therefore flag this IP as having a device attached?'] = 'Moeten we een open gefilterde poort beschouwen als een open poort - en daarom dit IP als een apparaat hebben?';
+$GLOBALS["lang"]['Set By'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we expose this group in the web interface.'] = 'Moeten we deze groep ontmaskeren in de webinterface.';
+$GLOBALS["lang"]['Set by the Discovery function - do not normally set this manually.'] = 'Metita per la Discover -funkcio - rer';
 
-$GLOBALS["lang"]['Should we expose this query in the list of reports under the Report menu in the web interface.'] = 'Moeten we deze query blootleggen in de lijst van rapporten onder het Rapport menu in de webinterface.';
+$GLOBALS["lang"]['Set by the audit_domain or discover_domain scripts. Do not set.'] = 'Metite tariffa reviszoro épäilty malkovri _ residu manikriptoj. Bendrijoje';
 
-$GLOBALS["lang"]['Should we expose this query in the list of reports under the Reports menu in the web interface.'] = 'Moeten we deze query blootleggen in de lijst van rapporten onder het Rapporten menu in de webinterface.';
+$GLOBALS["lang"]['Set the external text to capitalized version of the internal data.'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['Should we install Open-Scap on the target machine.'] = 'Moeten we Open-Scap installeren op de doelmachine.';
+$GLOBALS["lang"]['Set the external text to lowercase.'] = '® ekstera teksto al miinusklo.';
 
-$GLOBALS["lang"]['Should we match a device based mac address even if its a known likely duplicate from VMware.'] = 'Moeten we overeenkomen met een apparaat gebaseerd mac adres, zelfs als het een bekende mogelijke duplicatie van VMware.';
+$GLOBALS["lang"]['Set the external text to uppercase.'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['Should we match a device based on its DNS fqdn.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op zijn DNS fqdn.';
+$GLOBALS["lang"]['Set the size (normal or compact) of the tables on the List screens.'] = 'Aro la grandeko (Indonesië epäiltyä kompakta) de la tabeloj sur la lis- ekranoj.';
 
-$GLOBALS["lang"]['Should we match a device based on its DNS hostname.'] = 'Moeten we overeenkomen met een apparaat op basis van zijn DNS hostnaam.';
+$GLOBALS["lang"]['Set this if you wish to insert systems from AD that may not be contactable, but have been seen by AD since that date.'] = 'Se vi deziras enigi sistemojn de AD kiu ne povas esti kontaktebla, AD ekde tiu dato redused estis vidita.';
 
-$GLOBALS["lang"]['Should we match a device based on its UUID.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op de UUID.';
+$GLOBALS["lang"]['Setting up Discovery on a subnet is almost identical to running a regular Discovery via the web interface. The only additional items are the scheduled hour and day(s) and a name for the Scheduled Task itself. You can take advantage of this to schedule multiple discoveries using different sets of credentials.<br><br>As per the Subnet Discovery, the Active Directory Discovery is also simply the same fields as a regular Active Directory Discovery with the addition of a day, hour(s) and name.<br><br>If the Open-AudIT Server has Collectors reporting to it, an additional drop down is provided. You can select this to specify which Collector the task should run on. Only Discovery tasks are supported for Collectors. Specify the same items as a regular Discovery, but provide the alternate Collector to run this task.'] = 'Condivii su Google Discovery sur subreto estas preskalucir identa al prizorgado dérégmentation Discovery per la interretinterfaco. Thermaj kromaj eroj estas la planita horo kaj tago (j) kaj nomo por la Planita Tasko nem. De povas ekspluatition por plani multoblajn eltrova<br/><br/>[dėl Pyongyang]<br/><br/>Se la open- alla opent - alla opent - alla residu- alla residue - alla residue hava kolektantojn raportajn al εi, kroma goto malsupren estas disponigita. L \'objectif est d\' améliorer la qualité de l \'eau et de l\'eau. 2017 m. sausio mėn. Spectu la samajn erojn keileregator Discovery, sed distonigas la changan kolektanton por prizorgi tiun rev.';
 
-$GLOBALS["lang"]['Should we match a device based on its dbus id.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op zijn Dbus ID.';
+$GLOBALS["lang"]['severity'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we match a device based on its fqdn.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op zijn fqdn.';
+$GLOBALS["lang"]['Severity'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we match a device based on its hostname and UUID.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op zijn hostnaam en UUID.';
+$GLOBALS["lang"]['severity_text'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['Should we match a device based on its hostname and dbus id.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op zijn hostnaam en dbus id.';
+$GLOBALS["lang"]['Severity Text'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['Should we match a device based on its hostname and serial.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op zijn hostnaam en serieel.';
+$GLOBALS["lang"]['Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.'] = 'Bendrijoje <code>base_score</code> Kaj povas esti unu el: Neniu, maltalta, Bendrijoje, Alta, Kritika.';
 
-$GLOBALS["lang"]['Should we match a device based on its ip if we have an existing device with no data.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op de ip als we een bestaand apparaat zonder gegevens.';
+$GLOBALS["lang"]['Seychelles'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we match a device based on its ip.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op zijn ip.';
+$GLOBALS["lang"]['share'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we match a device based on its mac address.'] = 'Moeten we een apparaat vergelijken gebaseerd op zijn Mac adres.';
+$GLOBALS["lang"]['Share'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we match a device based on its serial and type.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op zijn serie en type.';
+$GLOBALS["lang"]['Share Name'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we match a device based on its serial number.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op zijn serienummer.';
+$GLOBALS["lang"]['shared'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName and serial.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op de SNMP sysNaam en seriële.';
+$GLOBALS["lang"]['Shared'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op de SNMP sysName.';
+$GLOBALS["lang"]['shared_name'] = '(1)';
 
-$GLOBALS["lang"]['Should we match a device based only on its hostname.'] = 'Moeten we overeenkomen met een apparaat gebaseerd op zijn hostnaam.';
+$GLOBALS["lang"]['Shared Name'] = '(1)';
 
-$GLOBALS["lang"]['Should we ping the IP before attempting to scan it? If it does not respond to the ping, skip this device.'] = 'Moeten we het IP pingen voordat we het proberen te scannen? Als het niet reageert op de ping, sla dit apparaat over.';
+$GLOBALS["lang"]['shell'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we populate the external system from our local devices.'] = 'Moeten we het externe systeem bevolken vanaf onze lokale apparaten.';
+$GLOBALS["lang"]['Shell'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we run an audit and submit it (y/n).'] = 'Moeten we een audit uitvoeren en indienen (j/n).';
+$GLOBALS["lang"]['Ship Date'] = '-';
 
-$GLOBALS["lang"]['Should we test for SNMP using UDP port 161.'] = 'Moeten we testen op SNMP met behulp van UDP poort 161.';
+$GLOBALS["lang"]['Shipped are a set of default items. These can be found by going to menu'] = 'Evatud estas aro. Tiuj povas esti trovaretaj irante rev';
 
-$GLOBALS["lang"]['Should we test for SSH using TCP port 22.'] = 'Moeten we testen op SSH met behulp van TCP poort 22.';
+$GLOBALS["lang"]['short'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we test for WMI using TCP port 135.'] = 'Moeten we testen op WMI met behulp van TCP poort 135.';
+$GLOBALS["lang"]['Short'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Should we uninstall the agent (y/n).'] = 'Moeten we de agent verwijderen (y/n).';
+$GLOBALS["lang"]['Should I remove all non-current data from this device?'] = 'Ar tikrai?';
 
-$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.'] = 'Moeten we deze methode gebruiken om gebruikersgegevens te authenticeren. Instellen op <code>y</code> of <code>n</code>.';
+$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = 'Dosiero (un... Padrono) kumas eksludi dosierojn de esti raportita. Normale, por a guidi dosierojn, to estas atinacita al <code>y</code>Bendrijoje';
 
-$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.'] = 'Moeten we deze methode gebruiken om een gebruikersrol te bevolken. Het veld <code>use_auth</code> moet ingesteld worden op <code>y</code> Om dit te gebruiken. Instellen op <code>y</code> of <code>n</code>.';
+$GLOBALS["lang"]['Should this vendor be used when retrieving vulnerabilities from FirstWave.'] = 'Ventiu vendito estu uzita dum prenado de vundeblecoj de FirstWave.';
 
-$GLOBALS["lang"]['Show All'] = 'Alles tonen';
+$GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = 'Aldonu aparatojn de la malpreksima Bendrijoje';
 
-$GLOBALS["lang"]['sid'] = 'Sid';
+$GLOBALS["lang"]['Should we apply this license to the selected Org as well as the Orgs children?'] = '[Nincs magyar režisierė] "Vous avez mimo kiel" "infanoj" "Orgs"?';
 
-$GLOBALS["lang"]['Sid'] = 'Sid';
+$GLOBALS["lang"]['Should we audit a SAN if the management software is detected.'] = 'Se la administrateur Bendrijoje';
 
-$GLOBALS["lang"]['sidebar'] = 'Zijbalk';
+$GLOBALS["lang"]['Should we audit mount points.'] = '"Mezcla" revizija "" Punktojn " .';
 
-$GLOBALS["lang"]['Sidebar'] = 'Zijbalk';
+$GLOBALS["lang"]['Should we audit netstat ports (yes, no, servers only).'] = 'Se ni reviziu retstat hasnojn (Ş, neniuj, serviloj nur).';
 
-$GLOBALS["lang"]['Sierra Leone'] = 'Sierra Leone';
+$GLOBALS["lang"]['Should we audit the installed software.'] = '"Redonu" ("Redonu")';
 
-$GLOBALS["lang"]['Singapore'] = 'Singapore';
+$GLOBALS["lang"]['Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?'] = 'Ar tikrai?';
 
-$GLOBALS["lang"]['Site A'] = 'Site A';
+$GLOBALS["lang"]['Should we consider an open|filtered port to be an open port - and therefore flag this IP as having a device attached?'] = 'Ar tikrai?';
 
-$GLOBALS["lang"]['Site B'] = 'Site B';
+$GLOBALS["lang"]['Should we convert the hostname to lowercase.'] = 'Ni konvertis režisierė - režisierė.';
 
-$GLOBALS["lang"]['site_hours_a'] = 'Site Uren A';
+$GLOBALS["lang"]['Should we create a file based on the audit result.'] = 'Design kreu dostin bazitan sur revizio rezulto.';
 
-$GLOBALS["lang"]['Site Hours A'] = 'Site Uren A';
+$GLOBALS["lang"]['Should we expose this group in the web interface.'] = 'Retinterfaco.';
 
-$GLOBALS["lang"]['site_hours_b'] = 'Site Uren B';
+$GLOBALS["lang"]['Should we expose this query in the list of reports under the Report menu in the web interface.'] = 'Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 dalies a punktas';
 
-$GLOBALS["lang"]['Site Hours B'] = 'Site Uren B';
+$GLOBALS["lang"]['Should we expose this query in the list of reports under the Reports menu in the web interface.'] = '® Ni eksonis tiun atendon en la lista de raportoj subla reports menuo en la interretinterfaco.';
 
-$GLOBALS["lang"]['size'] = 'Grootte';
+$GLOBALS["lang"]['Should we hide the audit script window when executing.'] = 'Thomas Agnu la scetticatorian fanstronikiam oni ekzekutas.';
 
-$GLOBALS["lang"]['Size'] = 'Grootte';
+$GLOBALS["lang"]['Should we ignore an invalid or self signed SSL certificate and submit the result anyway.'] = 'Se ni netherdogtus malvalidan epäilty mem subskribis SSL aestilon kaj subnetas rezulton ciiuokaze.';
 
-$GLOBALS["lang"]['slaves'] = 'Slaven';
+$GLOBALS["lang"]['Should we install Open-Scap on the target machine.'] = 'Ni instali retro.';
 
-$GLOBALS["lang"]['Slaves'] = 'Slaven';
+$GLOBALS["lang"]['Should we match a device based mac address even if its a known likely duplicate from VMware.'] = 'Thomas egalnas aparaton bazitán makan adreson e. se εia konata rivelacna doplikato de VMware.';
 
-$GLOBALS["lang"]['Slovakia (Slovak Republic)'] = 'Slowakije (Slowakije)';
+$GLOBALS["lang"]['Should we match a device based on its DNS fqdn.'] = 'Agraraton bazitan sur εia DNS fqdn.';
 
-$GLOBALS["lang"]['Slovenia'] = 'Slovenië';
+$GLOBALS["lang"]['Should we match a device based on its DNS hostname.'] = 'Dévni devus egalin bazitan sur εia DNS Bendrijoje.';
 
-$GLOBALS["lang"]['Smart Status'] = 'Slimme status';
+$GLOBALS["lang"]['Should we match a device based on its UUID.'] = '® GRILOSU APARATON bazitan sur εia UUUID.';
 
-$GLOBALS["lang"]['smversion'] = 'Smversion';
+$GLOBALS["lang"]['Should we match a device based on its dbus id.'] = '® povas egali aparaton bazitan sur εia dbus id.';
 
-$GLOBALS["lang"]['Smversion'] = 'Smversion';
+$GLOBALS["lang"]['Should we match a device based on its fqdn.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['Sneaky'] = 'Stiekem';
+$GLOBALS["lang"]['Should we match a device based on its hostname and UUID.'] = '"Egypte povas egali aparaton bazitan sur εia mastro nomo kaj UUID."';
 
-$GLOBALS["lang"]['snmp_enterprise_id'] = 'Snmp Enterprise ID';
+$GLOBALS["lang"]['Should we match a device based on its hostname and dbus id.'] = 'Eguni egalus aparaton bazitan sur εia mastro nomo kaj dbus id.';
 
-$GLOBALS["lang"]['Snmp Enterprise ID'] = 'Snmp Enterprise ID';
+$GLOBALS["lang"]['Should we match a device based on its hostname and serial.'] = 'Agrarni devus egalin bazitan sur εia mastro nomo kaj seria.';
 
-$GLOBALS["lang"]['snmp_enterprise_name'] = 'Snmp Enterprise naam';
+$GLOBALS["lang"]['Should we match a device based on its ip if we have an existing device with no data.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['Snmp Enterprise Name'] = 'Snmp Enterprise naam';
+$GLOBALS["lang"]['Should we match a device based on its ip.'] = '® grilosu aparaton bazitan sur εia ip.';
 
-$GLOBALS["lang"]['snmp_oid'] = 'Snmp Oid';
+$GLOBALS["lang"]['Should we match a device based on its mac address.'] = '® GRILOSU APARATON bazitan sur εia maka adreso.';
 
-$GLOBALS["lang"]['Snmp Oid'] = 'Snmp Oid';
+$GLOBALS["lang"]['Should we match a device based on its serial and type.'] = 'Agrarni devus egalin bazitan sur εia seria kaj tipo.';
 
-$GLOBALS["lang"]['snmp_timeout'] = 'Tijdslimiet';
+$GLOBALS["lang"]['Should we match a device based on its serial number.'] = '® povas egali aparaton bazitan sur εia seria nombro.';
 
-$GLOBALS["lang"]['Snmp Timeout'] = 'Tijdslimiet';
+$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName and serial.'] = '® povas egali aparaton bazitán nur sur εia SNMP- simpara kaj seria.';
 
-$GLOBALS["lang"]['snmp_version'] = 'Snmpversie';
+$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName.'] = '® povas egali aparaton bazitán nur sur εia SNMP- simmono.';
 
-$GLOBALS["lang"]['Snmp Version'] = 'Snmpversie';
+$GLOBALS["lang"]['Should we match a device based only on its hostname.'] = '® povas egali aparaton bazitán nur sur εia mastro nomo.';
 
-$GLOBALS["lang"]['socket'] = 'Socket';
+$GLOBALS["lang"]['Should we ping the IP before attempting to scan it? If it does not respond to the ping, skip this device.'] = '"Te Sientes," "Pas de réaction en ce qui riguarda le ping, le transsaltu tiunn afarato."';
 
-$GLOBALS["lang"]['Socket'] = 'Socket';
+$GLOBALS["lang"]['Should we populate the external system from our local devices.'] = 'Aprėptis distonas la eksteran sistemon de niaj lokaj aparatoj.';
 
-$GLOBALS["lang"]['software'] = 'Software';
+$GLOBALS["lang"]['Should we retrieve all DNS names'] = '-';
 
-$GLOBALS["lang"]['Software'] = 'Software';
+$GLOBALS["lang"]['Should we run an audit and submit it (y/n).'] = 'Se ni prenus Şkaj subnetu εin (jah / ei).';
 
-$GLOBALS["lang"]['Software Found Last 7 Days'] = 'Software gevonden laatste 7 dagen';
+$GLOBALS["lang"]['Should we test for SNMP using UDP port 161.'] = 'SNMP) -';
 
-$GLOBALS["lang"]['Software Found Today'] = 'Software gevonden vandaag';
+$GLOBALS["lang"]['Should we test for SSH using TCP port 22.'] = '® testu por SSH uzanta';
 
-$GLOBALS["lang"]['Software Found Yesterday'] = 'Software gevonden gisteren';
+$GLOBALS["lang"]['Should we test for WMI using TCP port 135.'] = 'WMI uzanta';
 
-$GLOBALS["lang"]['software_key'] = 'Softwaresleutel';
+$GLOBALS["lang"]['Should we uninstall the agent (y/n).'] = 'S. esplicitalosu la agenton (jah / ei).';
 
-$GLOBALS["lang"]['Software Key'] = 'Softwaresleutel';
+$GLOBALS["lang"]['Should we use the system or user level proxy to submit the audit result.'] = 'Se ni uzu resistemon epäilty uzantnivelan anstata new...';
 
-$GLOBALS["lang"]['software_name'] = 'Softwarenaam';
+$GLOBALS["lang"]['Should we use the win32_product WMI class (not recommended by Microsoft) when retrieving installed software.'] = 'Se ni uzus la venkon32 _ prodotto WMI klaso (ne romomendite tariffe de Mikrosofto) dum prenado de secresetta softvaro.';
 
-$GLOBALS["lang"]['Software Name'] = 'Softwarenaam';
+$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.'] = 'Šio straipsnio 1 dalyje nurodyti  Bendrijoje <code>y</code> Bendrijoje <code>n</code>Bendrijoje';
 
-$GLOBALS["lang"]['Software Policies'] = 'Softwarebeleid';
+$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.'] = 'Thomas. Bendrijoje <code>use_auth</code> Bendrijoje <code>y</code> Bendrijoje <code>y</code> Bendrijoje <code>n</code>Bendrijoje';
 
-$GLOBALS["lang"]['software_revision'] = 'Software-revisie';
+$GLOBALS["lang"]['Should we use this value to match external and internal devices. Our default Integration uses IP and UUID here. If either of these match between external and internal device, we consider them to be the same device.'] = '(OL L 20 van 2015.177, blz. 42). Nia deha skeptidlta, Bendrijoje ';
 
-$GLOBALS["lang"]['Software Revision'] = 'Software-revisie';
+$GLOBALS["lang"]['Show All'] = '-';
 
-$GLOBALS["lang"]['software_version'] = 'Softwareversie';
+$GLOBALS["lang"]['sid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Software Version'] = 'Softwareversie';
+$GLOBALS["lang"]['Sid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Solaris'] = 'Solaris';
+$GLOBALS["lang"]['sidebar'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Solomon Islands'] = 'Salomonseilanden';
+$GLOBALS["lang"]['Sidebar'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Somalia, Somali Republic'] = 'Somalië, Somalische Republiek';
+$GLOBALS["lang"]['Sierra Leone'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['sound'] = 'Geluid';
+$GLOBALS["lang"]['Singapore'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Sound'] = 'Geluid';
+$GLOBALS["lang"]['Site A'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['source'] = 'Bron';
+$GLOBALS["lang"]['Site B'] = '·';
 
-$GLOBALS["lang"]['Source'] = 'Bron';
+$GLOBALS["lang"]['site_hours_a'] = 'A';
 
-$GLOBALS["lang"]['South Africa'] = 'Zuid-Afrika';
+$GLOBALS["lang"]['Site Hours A'] = 'A';
 
-$GLOBALS["lang"]['South Georgia and the South Sandwich Islands'] = 'Zuid-Georgië en de Zuidelijke Sandwicheilanden';
+$GLOBALS["lang"]['site_hours_b'] = 'B';
 
-$GLOBALS["lang"]['Spain'] = 'Spanje';
+$GLOBALS["lang"]['Site Hours B'] = 'B';
 
-$GLOBALS["lang"]['Spanish'] = 'Spaans';
+$GLOBALS["lang"]['size'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Specific to Azure.'] = 'Specifiek voor Azure.';
+$GLOBALS["lang"]['Size'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Specific to OKTA.'] = 'Specifiek voor OKTA.';
+$GLOBALS["lang"]['slaves'] = '(Indonesië)';
 
-$GLOBALS["lang"]['Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.'] = 'Specificeert een door komma\'s gescheiden lijst van doelwitten (geen spaties) die van de scan moeten worden uitgesloten. De lijst waarin u doorgeeft gebruikt een normale Nmap syntax, zodat het hostnamen, CIDR netblocks, octet ranges, enz. kan bevatten.';
+$GLOBALS["lang"]['Slaves'] = '(Indonesië)';
 
-$GLOBALS["lang"]['speed'] = 'Snelheid';
+$GLOBALS["lang"]['Slovak'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Speed'] = 'Snelheid';
+$GLOBALS["lang"]['Slovakia (Slovak Republic)'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['speed_down_a'] = 'Snelheid omlaag A';
+$GLOBALS["lang"]['Slovenia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Speed Down A'] = 'Snelheid omlaag A';
+$GLOBALS["lang"]['Slovenian'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['speed_down_b'] = 'Snelheid omlaag B';
+$GLOBALS["lang"]['Smart Status'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Speed Down B'] = 'Snelheid omlaag B';
+$GLOBALS["lang"]['smversion'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['speed_up_a'] = 'Snelheid A';
+$GLOBALS["lang"]['Smversion'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Speed Up A'] = 'Snelheid A';
+$GLOBALS["lang"]['Sneaky'] = '-';
 
-$GLOBALS["lang"]['speed_up_b'] = 'Snelheid B';
+$GLOBALS["lang"]['snmp_enterprise_id'] = 'Numero d\'identificazione ("Numero")';
 
-$GLOBALS["lang"]['Speed Up B'] = 'Snelheid B';
+$GLOBALS["lang"]['Snmp Enterprise ID'] = 'Numero d\'identificazione ("Numero")';
 
-$GLOBALS["lang"]['sql'] = 'Sql';
+$GLOBALS["lang"]['snmp_enterprise_name'] = '® entreprise';
 
-$GLOBALS["lang"]['Sql'] = 'Sql';
+$GLOBALS["lang"]['Snmp Enterprise Name'] = '® entreprise';
 
-$GLOBALS["lang"]['Sri Lanka'] = 'Sri Lanka';
+$GLOBALS["lang"]['snmp_oid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ssh_ports'] = 'Ssh-poorten';
+$GLOBALS["lang"]['Snmp Oid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ssh Ports'] = 'Ssh-poorten';
+$GLOBALS["lang"]['snmp_timeout'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ssh_timeout'] = 'Ssh Timeout';
+$GLOBALS["lang"]['Snmp Timeout'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ssh Timeout'] = 'Ssh Timeout';
+$GLOBALS["lang"]['snmp_version'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Stand-Alone'] = 'Stand-alone';
+$GLOBALS["lang"]['Snmp Version'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Standard'] = 'Standaard';
+$GLOBALS["lang"]['So a script is not working on a recalcitrant device. Grrr. The scripts for Windows, Linux, and MacOS all accept the debugging argument. This can be set in the script itself, or provided on the command line. Run the script using that option set to 5 and you should see in which section of the script the failure occurs. For example'] = 'Bendrijos teisės aktai La kézměves por Fenestroj, Linukso, kaj ŞOS ciiuj akceptas la malkonstruanargomentoon. Tio povas esti metita en la kezm, epäilty disponigita sur la komandlino. (1, 2, 3)';
 
-$GLOBALS["lang"]['standard_id'] = 'Standaard ID';
+$GLOBALS["lang"]['So apart from a regular word, what other options are there - I am glad you asked! As per the standard Open-AudIT API, we have several operators for filtering. Operators that can precede the value are'] = 'Krommegul vorto, kion alfaj opcioj estas corbatas - mi εojus ke vi! ® Norma API Bendrijoje - ®, ni havas multilajn funkcigistojn por filtrado. Bendrijoje';
 
-$GLOBALS["lang"]['Standard ID'] = 'Standaard ID';
+$GLOBALS["lang"]['So you have an issue providing Open-AudIT credentials to discover your devices. I have an answer - dont then! Sure, I mean, discovery is the best thing since sliced bread. You do not need to know ahead of time <i>Whats On Your Network</i>. But how can you extract data from devices without providing credentials?<br><br>In the case of computers, an easy option is to copy the appropriate audit script to the target machines and set it to execute on a schedule. More details on the wiki. The machines will send their data to Open-AudIT on that schedule, almost as if you were running discovery. The device simply runs the audit script on a schedule (again, you can read the audit script) as the user you tell it to and sends the output to the server. No credentials are involved at all.<br><br>And now we have Agents for Windows. The advantages of an actual installed Agent are'] = 'Šio straipsnio 1 dalies a ir b punktuose nurodyti reikalavimai netaikomi: ojn por malkovri viajn afaratojn. Mi havas responson - Indonesië! Mi pensas, ke malkovro estas la pléj bona a.o ekde tran. - <i>Kio estas sobre</i>"Kylis vi povas eltiri datumojn de aparatoj sen providoni akredita" ...<br/><br/>Koncerne komputilojn eplifiuti opcio dedes kopii la konvenan reviziomanuskripton al la celma onderhandelingen kaj meti εin por efetivigi horaron. Pli da detaloj sur VerordVikio. La ma apreinoj sentos siajn datumojn al Open- event en tu horaro, preska La aparato semplicemente prisorgas la reviziomanuskripton en horaro (deno, vi povas legi la reviziomanuskripton) kiel la uzanto vi rakontas εin al kaj sentas produkta. Neniuj akredita.oj estas impliciete entute.<br/><br/>(RO 2012 7183). -';
 
-$GLOBALS["lang"]['standards'] = 'Normen';
+$GLOBALS["lang"]['socket'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Standards'] = 'Normen';
+$GLOBALS["lang"]['Socket'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['standards_policies'] = 'Standaardbeleid';
+$GLOBALS["lang"]['software'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Standards Policies'] = 'Standaardbeleid';
+$GLOBALS["lang"]['Software'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['standards_results'] = 'Resultaten van normen';
+$GLOBALS["lang"]['Software Found Last 7 Days'] = '7';
 
-$GLOBALS["lang"]['Standards Results'] = 'Resultaten van normen';
+$GLOBALS["lang"]['Software Found Today'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['start_date'] = 'Begindatum';
+$GLOBALS["lang"]['Software Found Yesterday'] = '-';
 
-$GLOBALS["lang"]['Start Date'] = 'Begindatum';
+$GLOBALS["lang"]['software_key'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['start_mode'] = 'Beginmodus';
+$GLOBALS["lang"]['Software Key'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Start Mode'] = 'Beginmodus';
+$GLOBALS["lang"]['Software License Reporting'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['started_date'] = 'Begindatum';
+$GLOBALS["lang"]['software_name'] = '(1)';
 
-$GLOBALS["lang"]['Started Date'] = 'Begindatum';
+$GLOBALS["lang"]['Software Name'] = '(1)';
 
-$GLOBALS["lang"]['state'] = 'Staat';
+$GLOBALS["lang"]['Software Policies'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['State'] = 'Staat';
+$GLOBALS["lang"]['software_revision'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Stats'] = 'Statistieken';
+$GLOBALS["lang"]['Software Revision'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['status'] = 'Status';
+$GLOBALS["lang"]['software_version'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Status'] = 'Status';
+$GLOBALS["lang"]['Software Version'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Storage'] = 'Opslag';
+$GLOBALS["lang"]['Solaris'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['storage_count'] = 'Aantal opslagruimtes';
+$GLOBALS["lang"]['Solomon Islands'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Storage Count'] = 'Aantal opslagruimtes';
+$GLOBALS["lang"]['Somalia, Somali Republic'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Storage-Area Network'] = 'Storage-Area Network';
+$GLOBALS["lang"]['Some collections can be executed - queries, etc - see below.'] = 'Kelkaj kolektoj povas esti efetivititaj - esigeoj, ktp - Vidas malsupre.';
 
-$GLOBALS["lang"]['string'] = 'Tekenreeks';
+$GLOBALS["lang"]['Some examples are at the bottom of this page. All endpoints also have a minimum list of required fields. These are below.'] = 'Kelkaj ekzemoj estas Régie la fondo de tiu pa rem. Imituj finpunktoj anka.';
 
-$GLOBALS["lang"]['String'] = 'Tekenreeks';
+$GLOBALS["lang"]['Some of our templates support the new move to dataTables, using server side processing. This massivley improves load times.'] = 'Kelkaj el niaj раblancoj apogas la novan movon al datandroloj, uzante servilflankdongon. Tiu Masyvley plbonigas роде...';
 
-$GLOBALS["lang"]['sub_resource_id'] = 'Subbron-ID';
+$GLOBALS["lang"]['Some other error has occurred when attempting to bind to the LDAP server. It is contactable (ie, the <i>connect</i> above has worked), but for some other reason, binding has not occurred. Check the logs on the LDAP server.'] = 'Iu alias oldro okazis dum provado ligi al la LDAP - servilo. i estas kontaktebla (rev., rev.) <i>Bendrijoje</i> Supru, sed. Kontrou Româtagalojn sur la LDAP servilio.';
 
-$GLOBALS["lang"]['Sub Resource ID'] = 'Subbron-ID';
+$GLOBALS["lang"]['Something has gone seriously wrong. Open-AudIT cannot read the <i>orgs</i> table.'] = '® fu apretado es serio. Ventspilio legija <i>Bendrijoje</i> Bendrijoje';
 
-$GLOBALS["lang"]['sub_type'] = 'Subtype';
+$GLOBALS["lang"]['Something has gone seriously wrong. Open-AudIT cannot read the <i>roles</i> table.'] = '® fu apretado es serio. Ventspilio legija <i>Bendrijoje</i> Bendrijoje';
 
-$GLOBALS["lang"]['Sub Type'] = 'Subtype';
+$GLOBALS["lang"]['Sometimes agentless discovery just does not fit your use-case. Maybe your PCs have tight firewalls. Maybe they are not on the network when your discoveries are scheduled. Maybe they are used by remote workers. Whatever the case, this is where an agent can help. Install it on the target machine and it will <i>check-in</i> with your Open-AudIT server on a schedule and accept tasks. The most common task the server requests is for the agent to audit itself and send the result.'] = 'Foje sensle... nexeltrova... ne konvenas luun uzon. Komputio habas striktajn fejromurojn rev. Eble ili ne estas en la reto kiam viaj malkovroj estas planitaj. Ili estas uzataj estalismalreksimaj labaristoj. Nurenajn estas, naar estas kie agenteo povas helsi. Instali εin sur neccelma apretino kaj <i>-</i> ® ® ® ® ® ® ® - ® - Servilo en horaro kaj akceptas takojn. Šio straipsnio 1 ir 2 dalyse nurodyti ';
 
-$GLOBALS["lang"]['subject_key_ident'] = 'Onderwerp Sleutel Identiteit';
+$GLOBALS["lang"]['Sort'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Subject Key Ident'] = 'Onderwerp Sleutel Identiteit';
+$GLOBALS["lang"]['sound'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Submit'] = 'Verzenden';
+$GLOBALS["lang"]['Sound'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Submitted From'] = 'Ingediend van';
+$GLOBALS["lang"]['source'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['subnet'] = 'Subnet';
+$GLOBALS["lang"]['Source'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Subnet'] = 'Subnet';
+$GLOBALS["lang"]['South Africa'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Subscription ID'] = 'Abonnement ID';
+$GLOBALS["lang"]['South Georgia and the South Sandwich Islands'] = 'Suda Kartelio kaj';
 
-$GLOBALS["lang"]['suburb'] = 'Voorstad';
+$GLOBALS["lang"]['Spain'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Suburb'] = 'Voorstad';
+$GLOBALS["lang"]['Spanish'] = '-';
 
-$GLOBALS["lang"]['Success'] = 'Succes';
+$GLOBALS["lang"]['Specific to Azure.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Sudan'] = 'Soedan';
+$GLOBALS["lang"]['Specific to OKTA.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Sudo Password'] = 'Sudo-wachtwoord';
+$GLOBALS["lang"]['Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.'] = 'Specifa komma-sepita lista de celoj (neniuj spacoj) Şekskludita de la sanado. La lista vi pasas en uzo normala Nmap- sintakso, tien ke εi povas inkludi mastromojn, CIDR- retblokojn, oktetintervalojn, ktp.';
 
-$GLOBALS["lang"]['Sudo Password (optional)'] = 'Sudo-wachtwoord (facultatief)';
+$GLOBALS["lang"]['speed'] = 'Rapida Rapida Rapida Bendrijoje';
 
-$GLOBALS["lang"]['suite'] = 'Suite';
+$GLOBALS["lang"]['Speed'] = 'Rapida Rapida Rapida Bendrijoje';
 
-$GLOBALS["lang"]['Suite'] = 'Suite';
+$GLOBALS["lang"]['speed_down_a'] = 'A.';
 
-$GLOBALS["lang"]['summaries'] = 'Samenvattingen';
+$GLOBALS["lang"]['Speed Down A'] = 'A.';
 
-$GLOBALS["lang"]['Summaries'] = 'Samenvattingen';
+$GLOBALS["lang"]['speed_down_b'] = '-';
 
-$GLOBALS["lang"]['Summary'] = 'Samenvatting';
+$GLOBALS["lang"]['Speed Down B'] = '-';
 
-$GLOBALS["lang"]['Sunday'] = 'Zondag';
+$GLOBALS["lang"]['speed_up_a'] = 'Rapido supren tenderavistia';
 
-$GLOBALS["lang"]['supplier'] = 'Fabrikant';
+$GLOBALS["lang"]['Speed Up A'] = 'Rapido supren tenderavistia';
 
-$GLOBALS["lang"]['Supplier'] = 'Fabrikant';
+$GLOBALS["lang"]['speed_up_b'] = 'Rapideco (Rapideco)';
 
-$GLOBALS["lang"]['Support'] = 'Steun';
+$GLOBALS["lang"]['Speed Up B'] = 'Rapideco (Rapideco)';
 
-$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = 'Ondersteunde types zijn <code>subnet</code>, <code>seed</code> en <code>active directory</code>.';
+$GLOBALS["lang"]['sql'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Suriname'] = 'Suriname';
+$GLOBALS["lang"]['Sql'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Svalbard & Jan Mayen Islands'] = 'Svalbard & Jan Mayeneilanden';
+$GLOBALS["lang"]['Sri Lanka'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Swaziland'] = 'Swaziland';
+$GLOBALS["lang"]['ssh_ports'] = '-';
 
-$GLOBALS["lang"]['Sweden'] = 'Zweden';
+$GLOBALS["lang"]['Ssh Ports'] = '-';
 
-$GLOBALS["lang"]['switch_device_id'] = 'Switch Apparaat-ID';
+$GLOBALS["lang"]['ssh_timeout'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Switch Device ID'] = 'Switch Apparaat-ID';
+$GLOBALS["lang"]['Ssh Timeout'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['switch_port'] = 'Switch poort';
+$GLOBALS["lang"]['Stage 1: Documentation review'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Switch Port'] = 'Switch poort';
+$GLOBALS["lang"]['Stage 2: Implementation and effectiveness review'] = '2: Efektivigo kaj ekecrevizio';
 
-$GLOBALS["lang"]['Switzerland, Swiss Confederation'] = 'Zwitserland, Zwitserse Bondsstaat';
+$GLOBALS["lang"]['Stand-Alone'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Syrian Arab Republic'] = 'Syrië';
+$GLOBALS["lang"]['Standard'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['sysContact'] = 'SysContact';
+$GLOBALS["lang"]['standard_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['SysContact'] = 'SysContact';
+$GLOBALS["lang"]['Standard ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['sysDescr'] = 'SysDescr';
+$GLOBALS["lang"]['standards'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['SysDescr'] = 'SysDescr';
+$GLOBALS["lang"]['Standards'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['sysLocation'] = 'SysLocatie';
+$GLOBALS["lang"]['standards_policies'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['SysLocation'] = 'SysLocatie';
+$GLOBALS["lang"]['Standards Policies'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['sysName'] = 'SysName';
+$GLOBALS["lang"]['standards_results'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['SysName'] = 'SysName';
+$GLOBALS["lang"]['Standards Results'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['start_date'] = 'Nom de la ville de Komencu Daton (facultatif, sans doute pas besoin d \'une traduction)';
+
+$GLOBALS["lang"]['Start Date'] = 'Nom de la ville de Komencu Daton (facultatif, sans doute pas besoin d \'une traduction)';
+
+$GLOBALS["lang"]['start_mode'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Start Mode'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Start a web browser and go to'] = 'Komencu retunonion kaj reduiru al';
+
+$GLOBALS["lang"]['started_date'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Started Date'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Starting June 2018 Google has implemented a pay-as-you-go pricing model for the Google Maps Platform APIs. Previously, most users with moderate usage could use Google Maps, which are embedded into opCharts and Open-AudIT Professional/Enterprise, for free. Googles new policy is outlined here,'] = '"Komencun lietto 2018" "Google" tiektivigis salajro- kiel- yo- oldma preziga modelo por la "Google" Bendrieoje. (OL L 400, 2006 12 30, p. 86).';
+
+$GLOBALS["lang"]['Starts With'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['state'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['State'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Stats'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['status'] = '·';
+
+$GLOBALS["lang"]['Status'] = '·';
+
+$GLOBALS["lang"]['Storage'] = 'Almacenamiento, arba';
+
+$GLOBALS["lang"]['storage_count'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Storage Count'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Storage area network'] = '"Retorno de almacinamiento"';
+
+$GLOBALS["lang"]['Storage-Area Network'] = 'Reto de la zona de almacenamiento - reto de la zona';
+
+$GLOBALS["lang"]['string'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['String'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['sub_resource_id'] = 'Numero d\'identificazione (gebruik)';
+
+$GLOBALS["lang"]['Sub Resource ID'] = 'Numero d\'identificazione (gebruik)';
+
+$GLOBALS["lang"]['sub_type'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Sub Type'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['subject_key_ident'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Subject Key Ident'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Submit'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Submit Online'] = 'Esitage release ligne';
+
+$GLOBALS["lang"]['Submitted From'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Subnet'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Subnet Discoveries'] = 'Alamv\ rgu tendestius';
+
+$GLOBALS["lang"]['Subscription ID'] = 'Sous- kribo- tunus (Indonesië)';
+
+$GLOBALS["lang"]['suburb'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Suburb'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Success'] = '(1)';
+
+$GLOBALS["lang"]['Sudan'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Sudo Password'] = '-';
+
+$GLOBALS["lang"]['Sudo Password (optional)'] = '(1)';
+
+$GLOBALS["lang"]['suite'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Suite'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['summaries'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Summaries'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Summaries are a single query against the database with a <i>group by</i> command. Using this simple method we can easily create a summary for virtually any attribute.<br><br>We no longer require a separate report for each <i>type</i> of a device. We now simply have a summary that groups by <i>devices.type</i> and shows the result. You can then click on a given type from the list and see the matching devices. In this case, one Summary replaces (potentially) 78 reports (there are 78 device types).<br><br>A summary is different to a query in that a summary is designed to group items by a given attribute then provide a <i>click through</i> link to the actual devices. A query is simply a list of items with no further links. As above - this of a Summary as a combined <i>report + subreport</i>, whereas a query is simply a single Report.<br><br>Summaries have a different collection template to the other resources within Open-AudIT. This template shows the Summary as you would expect and also shows buttons with counts of other resources. This page is designed to be the HomePage of Open-AudIT.'] = 'Résumés estas ununura atendo. <i>-</i> C Româ Uzante tiun simplan metodon ni povas reend por practike ajna atantito.<br/><br/>Thomas maximus <i>Bendrijoje</i> (RO 2012 7183). <i>Bendrijoje</i> Kaj montre rezulton. Vi tiam povas klaki sur anta.fiksita tipo de la lista kaj vidi la egalajn aparatojn. Entiu kazo, unu rebo anstata vervangt Bendrijoje (eble) 78 raportojn (ezistas 78 aparatospecij).<br/><br/>Rezumo estas malsama al esigeo en tio ke regio estas dizajnita por grupigi erojn per antazarfiksita appero a tiam dispinigas atripezione. <i>-</i> - Ne. Sekva Kielin supre - tio de Resumo kiel Kombinita, Bendrieoje <i>Bendrijoje:</i>Dum atendo estas senillas ununura Raporto.<br/><br/>Résúmenes haves malsaman kolkto apretablon al aliasj resursoj ene de Româopharm. Tiu ðаblono montras la Resumon kiel vi atendus kaj ankai montras butonojn kun kalkuloj de aliasj resursoj. Tiu pa fusiono estas dizajnita por esti la Page d \'accueil de residue';
+
+$GLOBALS["lang"]['Summaries are designed to group items by a particular matching column and then to provide a link to individual devices. In the previous versions of Open-AudIT, this would have been two different items - a report and subreport. We have now bundled these into what we call a Summary.'] = 'Résúmenes estas dizajnitaj por grupigi erojn per speciala egala kolono kaj tiam por disponigi ligon al begalesduaj aparatoj. En la anta Ni apáca fascianis tiujn en kion respreso.';
+
+$GLOBALS["lang"]['Summaries provide drilldown reporting capabilities. Simple, intuitive, powerful.'] = 'Résúmenes disposigas Borillan raporkakabojn. "Simpla"';
+
+$GLOBALS["lang"]['Summaries take the same arguments as Queries.'] = 'Kokkuvéte prenas la samajn argomentaojn ů Päringud.';
+
+$GLOBALS["lang"]['Summary'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Sunday'] = '®';
+
+$GLOBALS["lang"]['supplier'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Supplier'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Support'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = 'Subtenataj estas <code>subnet</code>Bendrijoje <code>seed</code> Bendrijoje <code>active directory</code>Bendrijoje';
+
+$GLOBALS["lang"]['Supports compliance with legal and regulatory requirements'] = 'Sous-ténoj konforme kun la reform';
+
+$GLOBALS["lang"]['Suriname'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Surveillance Audits:</strong> Annual audits to maintain certification'] = '"Imitujaraj revizioj por konservi astadon"';
+
+$GLOBALS["lang"]['Svalbard & Jan Mayen Islands'] = 'Svalbardo,';
+
+$GLOBALS["lang"]['Swaziland'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Sweden'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Swedish'] = '-';
+
+$GLOBALS["lang"]['switch_device_id'] = ' Bendrijoje';
+
+$GLOBALS["lang"]['Switch Device ID'] = ' Bendrijoje';
+
+$GLOBALS["lang"]['switch_port'] = ' C\'est curvrai. Bendrijoje';
+
+$GLOBALS["lang"]['Switch Port'] = ' C\'est curvrai. Bendrijoje';
+
+$GLOBALS["lang"]['Switzerland, Swiss Confederation'] = '"Svislando" ("Svisa Konfederacio")';
+
+$GLOBALS["lang"]['Symptom'] = '®';
+
+$GLOBALS["lang"]['Syrian Arab Republic'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['sysContact'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['SysContact'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['sysDescr'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['SysDescr'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['sysLocation'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['SysLocation'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['sysName'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['SysName'] = 'Bendrijoje';
 
 $GLOBALS["lang"]['sysObjectID'] = 'SysObjectID';
 
-$GLOBALS["lang"]['SysObjectID'] = 'SysObjectID';
+$GLOBALS["lang"]['SysObjectID'] = 'SysObjectID (ID)';
 
-$GLOBALS["lang"]['sysUpTime'] = 'SysUpTime';
+$GLOBALS["lang"]['sysUpTime'] = '-';
 
-$GLOBALS["lang"]['SysUpTime'] = 'SysUpTime';
+$GLOBALS["lang"]['SysUpTime'] = '-';
 
-$GLOBALS["lang"]['system_component'] = 'Systeemcomponent';
+$GLOBALS["lang"]['system_component'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['System Component'] = 'Systeemcomponent';
+$GLOBALS["lang"]['System Component'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['System-Area Network'] = 'System-Area Network';
+$GLOBALS["lang"]['System-Area Network'] = 'Sympho-alue Reto (rem.';
 
-$GLOBALS["lang"]['TX Bitrate'] = 'TX-bitrate';
+$GLOBALS["lang"]['TX Bitrate'] = 'TXBendrijoje';
 
-$GLOBALS["lang"]['TX Freq'] = 'TX Freq';
+$GLOBALS["lang"]['TX Freq'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['TX Level'] = 'TX-niveau';
+$GLOBALS["lang"]['TX Level'] = 'TX-nivelo';
 
-$GLOBALS["lang"]['TX Power'] = 'TX-vermogen';
+$GLOBALS["lang"]['TX Power'] = 'TX-PERCCO';
 
-$GLOBALS["lang"]['TX Profile'] = 'TX-profiel';
+$GLOBALS["lang"]['TX Profile'] = 'TX';
 
-$GLOBALS["lang"]['table'] = 'Tabel';
+$GLOBALS["lang"]['Table'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Table'] = 'Tabel';
+$GLOBALS["lang"]['tag'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['tag'] = 'Tag';
+$GLOBALS["lang"]['Tag'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Tag'] = 'Tag';
+$GLOBALS["lang"]['tag_1'] = '1';
 
-$GLOBALS["lang"]['tag_1'] = 'Label 1';
+$GLOBALS["lang"]['Tag 1'] = '1';
 
-$GLOBALS["lang"]['Tag 1'] = 'Label 1';
+$GLOBALS["lang"]['tag_2'] = '2';
 
-$GLOBALS["lang"]['tag_2'] = 'Tag 2';
+$GLOBALS["lang"]['Tag 2'] = '2';
 
-$GLOBALS["lang"]['Tag 2'] = 'Tag 2';
+$GLOBALS["lang"]['tag_3'] = '3';
 
-$GLOBALS["lang"]['tag_3'] = 'Label 3';
+$GLOBALS["lang"]['Tag 3'] = '3';
 
-$GLOBALS["lang"]['Tag 3'] = 'Label 3';
+$GLOBALS["lang"]['Tagalog'] = 'Afrikaanse toxicologie';
 
-$GLOBALS["lang"]['tags'] = 'Tags';
+$GLOBALS["lang"]['tags'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Tags'] = 'Tags';
+$GLOBALS["lang"]['Tags'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Tags :: '] = 'Tags: ';
+$GLOBALS["lang"]['Tags :: '] = 'African Jenaj paεoj ligas al.: ';
 
-$GLOBALS["lang"]['Taiwan'] = 'Taiwan';
+$GLOBALS["lang"]['Taiwan'] = '-';
 
-$GLOBALS["lang"]['Tajikistan'] = 'Tadzjikistan';
+$GLOBALS["lang"]['Tajikistan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Tanzania'] = 'Tanzania';
+$GLOBALS["lang"]['Take note of all output and action each item as appropriate.'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['task'] = 'Taak';
+$GLOBALS["lang"]['Tanzania'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Task'] = 'Taak';
+$GLOBALS["lang"]['Target Computer'] = '-';
 
-$GLOBALS["lang"]['tasks'] = 'Taken';
+$GLOBALS["lang"]['task'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Tasks'] = 'Taken';
+$GLOBALS["lang"]['Task'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['tcp_ports'] = 'Tcp-poorten';
+$GLOBALS["lang"]['tasks'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Tcp Ports'] = 'Tcp-poorten';
+$GLOBALS["lang"]['Tasks'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['tenant'] = 'Huurder';
+$GLOBALS["lang"]['Tasks can be one of several distinct types: Baseline, Discovery, Report, Query, Summary or Collector.'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Tenant'] = 'Huurder';
+$GLOBALS["lang"]['tcp_ports'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['ternary'] = 'Ternair';
+$GLOBALS["lang"]['Tcp Ports'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Ternary'] = 'Ternair';
+$GLOBALS["lang"]['Technical Details'] = 'Teknikaj';
 
-$GLOBALS["lang"]['Test 1'] = 'Test 1';
+$GLOBALS["lang"]['tenant'] = '10';
 
-$GLOBALS["lang"]['Test 2'] = 'Test 2';
+$GLOBALS["lang"]['Tenant'] = '10';
 
-$GLOBALS["lang"]['Test 3'] = 'Test 3';
+$GLOBALS["lang"]['Tenant ID'] = '→ eventoj:';
 
-$GLOBALS["lang"]['test_minutes'] = 'Testminuten';
+$GLOBALS["lang"]['Tennant ID'] = '→ eventoj:';
 
-$GLOBALS["lang"]['Test Minutes'] = 'Testminuten';
+$GLOBALS["lang"]['ternary'] = '®';
 
-$GLOBALS["lang"]['test_os'] = 'Test Os';
+$GLOBALS["lang"]['Ternary'] = '®';
 
-$GLOBALS["lang"]['Test Os'] = 'Test Os';
+$GLOBALS["lang"]['Test 1'] = '1';
 
-$GLOBALS["lang"]['test_subnet'] = 'Testsubnet';
+$GLOBALS["lang"]['Test 2'] = '2';
 
-$GLOBALS["lang"]['Test Subnet'] = 'Testsubnet';
+$GLOBALS["lang"]['Test 3'] = '3';
 
-$GLOBALS["lang"]['tests'] = 'Tests';
+$GLOBALS["lang"]['Test Email'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Tests'] = 'Tests';
+$GLOBALS["lang"]['test_minutes'] = '-';
 
-$GLOBALS["lang"]['Text'] = 'Tekst';
+$GLOBALS["lang"]['Test Minutes'] = '-';
 
-$GLOBALS["lang"]['Thailand'] = 'Thailand';
+$GLOBALS["lang"]['test_os'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The Active Directory domain to retrieve a list of subnets from.'] = 'Het Active Directory domein om een lijst van subnets op te halen.';
+$GLOBALS["lang"]['Test Os'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The Active Directory server to retrieve a list of subnets from.'] = 'De Active Directory server om een lijst van subnets op te halen.';
+$GLOBALS["lang"]['test_subnet'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).'] = 'De Automatable metriek vangt het antwoord op de vraag <strong>Kan een aanvaller exploitatie gebeurtenissen automatiseren voor deze kwetsbaarheid over meerdere doelen?</strong> gebaseerd op stappen 1-4 van de kill chain. Deze stappen zijn verkenning, bewapening, levering en exploitatie (niet bepaald, Nee, Ja).';
+$GLOBALS["lang"]['Test Subnet'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The CVE identifier.'] = 'De CVE-identificatiecode.';
+$GLOBALS["lang"]['tests'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = 'De Cloud die dit item bezit. Links naar <code>clouds.id</code>.';
+$GLOBALS["lang"]['Tests'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = 'De groep gebruikte de basislijn. Links naar <code>groups.id</code>.';
+$GLOBALS["lang"]['Text'] = 'Teksto Teksto Teksto Teksto Teksto';
 
-$GLOBALS["lang"]['The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.'] = 'De ID van de apparatentabel (de apparaten.name wordt weergegeven) van de NTU aan dit einde van de verbinding. Links naar <code>devices.id</code>.';
+$GLOBALS["lang"]['Thai'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The ID from the imported benchmark policy.'] = 'De ID van het geïmporteerde benchmarkbeleid.';
+$GLOBALS["lang"]['Thailand'] = '-';
 
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.'] = 'Het ID van de locatietabel (de locatie.name wordt weergegeven) van dit einde van de verbinding. Links naar <code>locations.id</code>. De A locatie is meestal de <code>FROM</code> locatie.';
+$GLOBALS["lang"]['Thank you for starting your journey with the best discovery and inventory tool around.'] = '(OL L 20 van 2015.1 27, blz. 42)';
 
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.'] = 'Het ID van de locatietabel (de locatie.name wordt weergegeven) van dit einde van de verbinding. Links naar <code>locations.id</code>. De B-locatie is meestal de <code>TO</code> locatie.';
+$GLOBALS["lang"]['Thanks to'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The ID of the associated device (if any). Links to <code>devices.id</code>.'] = 'De identificatie van het bijbehorende apparaat (indien aanwezig). Links naar <code>devices.id</code>.';
+$GLOBALS["lang"]['Thats it! You have just edited the attributes of as many devices as you need to.'] = 'Helaba! Bendrijoje ';
 
-$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = 'Het ID van de bijbehorende ontdekking. Verbonden aan <code>discoveries.id</code>';
+$GLOBALS["lang"]['The <i>Roles</i> endpoint allows you to manage the set of permissions(Create, Read, Update, Delete) that are granted to the users and are applied to each endpoint.'] = '· <i>Bendrijoje</i> ® ® ® ® med ® perfezas al vi amministrazione la aron de permesoj (Loo, loe, uuenda, Bendrieoje) kiuj estas konceditaj al la uzantoj estas aplikitaj al claru finpunkto.';
 
-$GLOBALS["lang"]['The ID of the item of the associated type.'] = 'De ID van het item van het bijbehorende type.';
+$GLOBALS["lang"]['The API uses a cookie. You can request a cookie by sending a POST to the URL below, containing the username and password attributes and values:'] = 'Įtraukimo į sąrašą priežastys:';
 
-$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = 'Het ID van deze orgs ouder org. Verbonden aan <code>orgs.id</code>';
+$GLOBALS["lang"]['The Active Directory domain to retrieve a list of subnets from.'] = '"Aktiva Adresardomajno por preni listan de subretoj de.';
 
-$GLOBALS["lang"]['The ID provided by the provider.'] = 'Het door de aanbieder verstrekte ID.';
+$GLOBALS["lang"]['The Active Directory server to retrieve a list of subnets from.'] = '"Aktiva Adresaro- servilio por preni listan de subretoj de.';
 
-$GLOBALS["lang"]['The ID retrieved from a Cloud discovery.'] = 'Het ID kwam van een Cloud ontdekking.';
+$GLOBALS["lang"]['The Applications endpoint allows you to define an application which you can then associate to a device (or devices).'] = 'Aplicoj fpunkto permes al vi difini petkribon kiun vi tiam povas asocii al aparato (a.a.)';
 
-$GLOBALS["lang"]['The IP address of this collector used to communicate with the server.'] = 'Het IP-adres van deze verzamelaar gebruikt om te communiceren met de server.';
+$GLOBALS["lang"]['The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.'] = 'La Atretoj phpfinpunkto perfesas al aldoni adattatajn valorojn al malsamaj atinattoj en open- nagrinėjimas, en la momento tiu trajto labas pri la klaso, reductur, Stato kaj Tipo as ainary as a al kaj lokoj kaj kaj olgs kakielrio režisūros). Se vi rigardas eron de unu el prviospectoj (dirvido Lockly) vi rimarkos ke la Tipo atentia residues esti selektita el fal- falinta queto. Tio estas kie tiau Valoroj estas stokitaj rev. Tial, se vi griatus aldoni novan Tipon por esti elektronita por Loko, aldoni εin uzante la Atribuj trajto..';
 
-$GLOBALS["lang"]['The IP of the device to start a seed discovery with.'] = 'De IP van het apparaat om een zaad ontdekking met te beginnen.';
+$GLOBALS["lang"]['The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).'] = '"A66AT Ometabla metrako kaptas" <strong>Bendrijoje Te siientes mal por tu vundebleco režisierius multoblaj celoj?</strong> Surbaze de рtupoj 1104 el la mortig opharm. Tiuj Üeserttigo Româmaksa Şo kaj ekspluato (Ne Dinhed, Bendrieoje).';
 
-$GLOBALS["lang"]['The IP of the external interface.'] = 'Het IP van de externe interface.';
+$GLOBALS["lang"]['The CVE has been marked as invalid or withdrawn in the CVE List. It remains in the NVD but is excluded from default search results.'] = 'CVE etis esin kiel malvalida epäilty malparolema en la CVE-lista.';
 
-$GLOBALS["lang"]['The IP of the internal interface.'] = 'Het IP van de interne interface.';
+$GLOBALS["lang"]['The CVE has been published to the CVE List and included in the NVD dataset. Initial ingestion only.'] = 'CVE estis publigigita opharm CVE-listo kaj Inkludita en la NVD datenserio. Komenca konsupado).';
 
-$GLOBALS["lang"]['The ISP or Telco providing this link.'] = 'De ISP of Telco leveren deze link.';
+$GLOBALS["lang"]['The CVE has been updated after initial analysis. NVD enrichment data may have been revised.'] = '"CVE etis γisdatigita revisientaj."';
 
-$GLOBALS["lang"]['The JSON record from Mitre.'] = 'Het JSON record van Mitre.';
+$GLOBALS["lang"]['The CVE identifier.'] = 'CVE-identiglo.';
 
-$GLOBALS["lang"]['The JSON record from the NVD feed.'] = 'Het JSON-record van de NVD-feed.';
+$GLOBALS["lang"]['The CVE is actively being enriched with CVSS scores, CWE classifications, reference tags, and CPE applicability.'] = 'CVE aktive estas ri.igita kun CVSS- Dudekopo Bendrijoje';
 
-$GLOBALS["lang"]['The LDAP OU of this user (if LDAP is used).'] = 'De LDAP OU van deze gebruiker (als LDAP wordt gebruikt).';
+$GLOBALS["lang"]['The CVE is not currently prioritized for enrichment due to resource constraints or other reasons.'] = 'La CVE ne estas nuntempe preitatita pro rivisionigo Romârimedlimoj epäilty aliasj kialoj.';
 
-$GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = 'De Locatie die dit netwerk bevat. Links naar <code>locations.id</code>.';
+$GLOBALS["lang"]['The CVE is queued for enrichment by NVD analysts. No detailed metadata yet.'] = 'La CVE estas copéditita por ri.igo Fare de NVD (liet.';
 
-$GLOBALS["lang"]['The NVD assigned base status.'] = 'De NVD toegewezen basisstatus.';
+$GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = '® nubo kiu preseas tiun obektton. Bendrijoje <code>clouds.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The Nmap timing preset.'] = 'De Nmap timing vooraf ingesteld.';
+$GLOBALS["lang"]['The Device Seed Discovery type is the newest highly-effective method for network crawling, giving you the ability to target your network as narrowly or as broadly as you need. It is fast, it works and it is great.'] = 'La Device Seed Discovery- speco estas la plej nova tre efika metodo por reto rappanta, donante al vi la kapablon celi vian retoniel mallarεe epäillytiel larεe kiel vi bezonas.';
 
-$GLOBALS["lang"]['The OS this package should be reported against. Blank for all. Use the percent sign % as a wildcard. Will be tested against os_group, os_family and os_name in that order.'] = 'Het besturingssysteem waartegen dit pakket moet worden gerapporteerd. Blank voor iedereen. Gebruik het percentage teken % als een wildcard. Wordt getest tegen os_group, os_family en os_name in die volgorde.';
+$GLOBALS["lang"]['The Discovery Scan Options we ship are detailed in the table below. As above, Enterprise users can create more of these or edit the shipped items.'] = '"Skandalo Opcioj Österreikiujn ni haves" Kylis supre (Kylis supre), (Kylis)';
 
-$GLOBALS["lang"]['The Open-AudIT API'] = 'De Open-AudIT API';
+$GLOBALS["lang"]['The Elevated User query'] = 'Kőrgendatud';
 
-$GLOBALS["lang"]['The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.'] = 'De Open-AudIT id van de gekoppelde cloud. Links naar <code>clouds.id</code>.';
+$GLOBALS["lang"]['The Executables feature scans the disk of a device as part of the audit and checks that every executable file is known to the package manager. Because it uses the package manager, the feature applies to Linux target devices only, and further than that, only rpm or deb based distributions. Anything Redhat or Debian based should work.'] = 'La Exécutables haves la disquete de aparato kiel parto de la revizio kaj... ultori soazioni Româ, rivolgersi: Kio ajn Redhat a. Debian bazigis devus labroi.';
 
-$GLOBALS["lang"]['The Open-AudIT server code was exeucted within this file.'] = 'De Open Aud IT-servercode werd gebruikt in dit bestand.';
+$GLOBALS["lang"]['The FROM'] = '·';
 
-$GLOBALS["lang"]['The Open-AudIT server code was exeucted within this function.'] = 'De Open Aud IT-servercode werd gebruikt binnen deze functie.';
+$GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = '"Grupo Kulimis prizorgi," "Bazlinion." Bendrijoje <code>groups.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The Organisation that owns this item. Links to <code>orgs.id</code>.'] = 'De organisatie die eigenaar is van dit item. Links naar <code>orgs.id</code>.';
+$GLOBALS["lang"]['The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.'] = '"I PRIEDAS Bendrijos teisės aktai Bendrijoje <code>devices.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The Process Identifier of the running associated discovery.'] = 'De procesidentificatie van de lopende bijbehorende ontdekking.';
+$GLOBALS["lang"]['The ID from the imported benchmark policy.'] = '® ID de la Precisioneta komparromo polik. (Indonesië)';
 
-$GLOBALS["lang"]['The RU positon of the top of this device.'] = 'De RU positon van de bovenkant van dit apparaat.';
+$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.'] = '(ook bekend als: a) a) b) c) d) e) f) f) f) f) f) f) f) f) g) g) g) g) g) g) l) g) l) l l l l l l l l l l l l "Entrepros elmontrita de tu fino de la ligo." Bendrijoje <code>locations.id</code>- <code>FROM</code> ·';
 
-$GLOBALS["lang"]['The SNMP community string.'] = 'De SNMP community string.';
+$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.'] = '(ook bekend als: a) a) b) c) d) e) f) f) f) f) f) f) f) f) g) g) g) g) g) g) l) g) l) l l l l l l l l l l l l "Entrepros elmontrita de tu fino de la ligo." Bendrijoje <code>locations.id</code>"La B- loko estetas" <code>TO</code> ·';
 
-$GLOBALS["lang"]['The SNMP v3 Authentication Passphrase.'] = 'De SNMP v3 Authentication Passphrase.';
+$GLOBALS["lang"]['The ID of the associated device (if any). Links to <code>devices.id</code>.'] = '® Identificata aparato (se entute). Bendrijoje <code>devices.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The SNMP v3 Authentication Protocol.'] = 'Het SNMP v3 Authenticatie Protocol.';
+$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = '(EB) Nr. 1235 / 2005 <code>discoveries.id</code>';
 
-$GLOBALS["lang"]['The SNMP v3 Privacy Passphrase.'] = 'De SNMP v3 Privacy Wachtwoordzin.';
+$GLOBALS["lang"]['The ID of the item of the associated type.'] = '® ID de la objectko de la rilata tipo.';
 
-$GLOBALS["lang"]['The SNMP v3 Privacy Protocol.'] = 'Het SNMP v3 Privacy Protocol.';
+$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = '(OR. nl) <code>orgs.id</code>';
 
-$GLOBALS["lang"]['The SNMP v3 Security Level.'] = 'Het SNMP v3 beveiligingsniveau.';
+$GLOBALS["lang"]['The ID provided by the provider.'] = '(EB) Nr. 1235 / 2008';
 
-$GLOBALS["lang"]['The SNMP v3 Security Name.'] = 'De SNMP v3 Beveiligingsnaam.';
+$GLOBALS["lang"]['The ID retrieved from a Cloud discovery.'] = '® ID prenita de Nubo-trova ®';
 
-$GLOBALS["lang"]['The SNMPv3 context Engine ID (optional).'] = 'De SNMPv3 context Engine ID (facultatief).';
+$GLOBALS["lang"]['The IP address of this collector used to communicate with the server.'] = 'IP- adreso de tru kolektanto kutimi komuni kun la servilo.';
 
-$GLOBALS["lang"]['The SNMPv3 context Name (optional).'] = 'De SNMPv3 contextnaam (facultatief).';
+$GLOBALS["lang"]['The IP of the device to start a seed discovery with.'] = '(lt):';
 
-$GLOBALS["lang"]['The URL of the external system.'] = 'De URL van het externe systeem.';
+$GLOBALS["lang"]['The IP of the external interface.'] = '"IP de la extera Bendrijoje"';
 
-$GLOBALS["lang"]['The URL of your Open-AudIT Server that this Collector will report to (no trailing slash).'] = 'De URL van uw Open-AudIT Server waaraan deze Verzamelaar zal rapporteren (geen trailing slash).';
+$GLOBALS["lang"]['The IP of the internal interface.'] = '"Op termijn"';
 
-$GLOBALS["lang"]['The URL the audit scripts should submit their result to.'] = 'De URL waar de auditscripts hun resultaat moeten indienen.';
+$GLOBALS["lang"]['The ISO/IEC 27001 certification process and its key elements.'] = 'ISO / IEC 27001';
 
-$GLOBALS["lang"]['The actual full name of this user.'] = 'De werkelijke volledige naam van deze gebruiker.';
+$GLOBALS["lang"]['The ISP or Telco providing this link.'] = 'SVARBIAUSIAI';
 
-$GLOBALS["lang"]['The associated baseline. Links to <code>baselines.id</code>.'] = 'De geassocieerde uitgangswaarde. Links naar <code>baselines.id</code>.';
+$GLOBALS["lang"]['The JSON record from Mitre.'] = 'La JSON rekordo de Mitro.';
 
-$GLOBALS["lang"]['The associated discovery (if required). Links to <code>discoveries.id</code>.'] = 'De bijbehorende ontdekking (indien vereist). Links naar <code>discoveries.id</code>.';
+$GLOBALS["lang"]['The JSON record from the NVD feed.'] = '"JSON rekordo de la NVD-sendo." cc)';
 
-$GLOBALS["lang"]['The attribute to test (from the <code>devices</code> table).'] = 'Het te testen kenmerk (van <code>devices</code> tabel).';
+$GLOBALS["lang"]['The LDAP OU of this user (if LDAP is used).'] = '"LDAP OU neuciu uzanto (se LDAP estas uzita)."';
 
-$GLOBALS["lang"]['The attribute to test (must match an external field name from below).'] = 'Het te testen attribuut (moet overeenkomen met een externe veldnaam van hieronder).';
+$GLOBALS["lang"]['The LDAP server could not be connected to. At all. Check it is pingable from the Open-AudIT server. Check the correct port is open to the Open-AudIT server. An nmap from the Open-AudIT server will show this. Substitute your LDAP servers IP for $ip. Try:<code>nmap -vv $ip</code>'] = '® LDAP- servilo ne povus esttiligita al. Kontau εin estas utila de la open- opharm - servilo. Kontau la εustan hasnon estas malferma al la open. Nmap de la Open - "Servilo Montros." LDAP- servilojn IP Bendrieoje:<code>nmap -vv $ip</code>';
 
-$GLOBALS["lang"]['The audit script upon which to base your customisations.'] = 'Het auditscript waarop je je maatwerk baseert.';
+$GLOBALS["lang"]['The LDAP server type is invalid. It should be either <i>active directory</i> or <i>openldap</i>.'] = '"LDAP- servilspeco estas malvalida." Minä devus nieuws <i>Bendrijoje</i> Bendrijoje <i>șižanginė pastaba.</i>Bendrijoje';
 
-$GLOBALS["lang"]['The base path from which to search for Users.'] = 'Het basispad om gebruikers te zoeken.';
+$GLOBALS["lang"]['The LDAP server was connected to and the user credentials accepted for bind.'] = '® LDAP- servilio estis ligita al kaj la uzantkredita.oj akceptitaj por ligo.';
 
-$GLOBALS["lang"]['The benchmark type.'] = 'Het benchmarktype.';
+$GLOBALS["lang"]['The Linux Open-AudIT installer will test for and if required, install Open-AudITs dependencies from your distributions repository, including setting the Nmap SetUID. This is required for SNMP (UDP 161) detection by a non-root user. This is supported on RedHat/CentOS and Debian/Ubuntu. If you need to manually install Nmap:<br><br>For RedHat/CentOS do (NOTE - if you upgrade using yum, you will need to reapply this <i>chmod</i> setting).'] = '® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ®, ® ®, ®, ®, ®, ®, ®, ®, ®, ®, ®, ®, ®, ®. Tio estas postulata por SNMP (UDP 161) detekto de ne-radika uzanto. Tio estas apogita sur opharm Hat / Centros kaj nexe / request. L \'informazione sull\' utilizazione dell \'"eauest dispontable sur le site web de la Commissione.<br/><br/>cc) <i>Bendrijoje</i> Bendrijoje';
 
-$GLOBALS["lang"]['The building the rack is located in.'] = 'Het gebouw waar het rek zich bevindt.';
+$GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = 'Situu kiu enhavas tiun need. Bendrijoje <code>locations.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The calculated number of devices to be created externally.'] = 'Het berekende aantal apparaten dat extern moet worden aangemaakt.';
+$GLOBALS["lang"]['The NVD assigned base status.'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['The calculated number of devices to be created in Open-AudIT.'] = 'Het berekende aantal apparaten dat in Open-AudIT moet worden aangemaakt.';
+$GLOBALS["lang"]['The National Institute of Standards and Technology is the federal technology agency. They advance official technology, measurement science and standards.'] = 'La Riikl Standardiinstituut (Indonesië Instituto de Normoj) kaj Tekniko estas la föderacia teknologistanco. Ili avancas oficialan teknologion, mezursciencon kaj normojn.';
 
-$GLOBALS["lang"]['The collectors internal IP used when it runs a discovery.'] = 'De verzamelaars interne IP gebruikt bij het uitvoeren van een ontdekking.';
+$GLOBALS["lang"]['The Network to Discover'] = 'La Reto por malkovri';
 
-$GLOBALS["lang"]['The column name from the foreign table. Should be one of: class, environment, status, type or menu_category.'] = 'De kolomnaam uit de buitenlandse tabel. Moet een van: klasse, omgeving, status, type of menu_categorie zijn.';
+$GLOBALS["lang"]['The Nmap timing preset.'] = '"Nmap Tempigas" ("Tempus adistatud").';
 
-$GLOBALS["lang"]['The command executed upon the target device or Open-AudIT server code executed during discovery.'] = 'Het commando uitgevoerd op het doel apparaat of Open-AudIT server code uitgevoerd tijdens ontdekking.';
+$GLOBALS["lang"]['The OS this package should be reported against. Blank for all. Use the percent sign % as a wildcard. Will be tested against os_group, os_family and os_name in that order.'] = 'Milieu Advies over de bestaande maximumgehalten aan residuen Bendrijoje Oni uzas la rean modon (AS- finajxon). Estos Bendrijoje - Kontrastide os _ gruppo, os _ familo kaj ostnomo en tu pesekvo.';
 
-$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.'] = 'De configuratie van uw cluster kan zijn: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> of leeg.';
+$GLOBALS["lang"]['The Open-AudIT API'] = '"APIBendijoje"';
 
-$GLOBALS["lang"]['The credentials password. If the credentials are an SSH Key, this is the password used to unlock the key and is optional.'] = 'Het ID wachtwoord. Als de referenties zijn een SSH Key, dit is het wachtwoord gebruikt om de sleutel te ontgrendelen en is optioneel.';
+$GLOBALS["lang"]['The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.'] = 'Bendrijoje: Bendrijoje <code>clouds.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The credentials username.'] = 'De gebruikersnaam van de referenties.';
+$GLOBALS["lang"]['The Open-AudIT server code was exeucted within this file.'] = 'Aš... Aud imitai tiu servilo kodo est forigita ene modiero.';
 
-$GLOBALS["lang"]['The current status of the Cloud Discovery.'] = 'De huidige status van de Cloud Discovery.';
+$GLOBALS["lang"]['The Open-AudIT server code was exeucted within this function.'] = 'Aš... Aud imitai tiu servilo kodo est forigita ene engustiu funkcio.';
 
-$GLOBALS["lang"]['The current status of the discovery.'] = 'De huidige status van de ontdekking.';
+$GLOBALS["lang"]['The OpenSCAP ecosystem provides multiple tools to assist administrators and auditors with assessment, measurement, and enforcement of security baselines including a wide variety of hardening guides and configuration baselines developed by the open source community, ensuring that you can choose a security policy which best suits the needs of your organization, regardless of its size.'] = '® OpenSCAP ekositemo disposigas multoblajn ilojn por; revizorojn kaj revizorojn kun takso, mezurado, kaj devigo de sekurecbazlinioj inkluzive de harda gamo de hardantajvidistoj konfiguracioblazlinioj epoliuigita';
 
-$GLOBALS["lang"]['The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.'] = 'Het dashboard dat standaard voor deze gebruiker wordt getoond. Links naar <code>dashboards.id</code>.';
+$GLOBALS["lang"]['The OpenSCAP project is a collection of open source tools for implementing and enforcing this standard, and has been awarded the SCAP 1.2 certification by NIST in 2014.'] = 'La OpenSCAP projekto estas kolektto de malfermfontaj iloj por efektivigado kaj devigado de tiu normo, kaj estis alju bendita la SCAP 1.2 astado Fare de NIST en 2014.';
 
-$GLOBALS["lang"]['The database version and web version are inconsistent.'] = 'De database versie en web versie zijn inconsistent.';
+$GLOBALS["lang"]['The Organisation that owns this item. Links to <code>orgs.id</code>.'] = 'Venturio kiu poses tiun objectkton. Bendrijoje <code>orgs.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The date of license expiration.'] = 'De datum van het verstrijken van de vergunning.';
+$GLOBALS["lang"]['The Process Identifier of the running associated discovery.'] = '"Procedzo Identificador de la kuranta rilata eltrova."';
 
-$GLOBALS["lang"]['The date the software is discontinued by the manufacturer. Usually replaced by a newer version. Maintenance may still be available.'] = 'De datum waarop de software door de fabrikant wordt stopgezet. Meestal vervangen door een nieuwere versie. Onderhoud kan nog steeds beschikbaar zijn.';
+$GLOBALS["lang"]['The RU positon of the top of this device.'] = 'RU- pozito de la pinto de tiu aparato.';
 
-$GLOBALS["lang"]['The date the software no longer receives updates and is effectively discontinued altogether. Maintenance is discontinued.'] = 'De datum waarop de software geen updates meer ontvangt en effectief volledig wordt stopgezet. Het onderhoud wordt gestaakt.';
+$GLOBALS["lang"]['The Racks feature is used to manage and visualize your rack use with an Organisation, Location, Building, Floor, Room and Row.'] = 'La Racks- trajto kuimas administri kaj bildigi vian rako- uzon kun organiso, Loko, Konstrua.';
 
-$GLOBALS["lang"]['The date this item was changed or added (read only). NOTE - This is the timestamp from the server.'] = 'De datum waarop dit item is gewijzigd of toegevoegd (alleen lezen). OPMERKING - Dit is het tijdstempel van de server.';
+$GLOBALS["lang"]['The SCAP is a specification for expressing and manipulating security data in standardized ways. SCAP uses several individual specifications in concert to automate continuous monitoring, vulnerability management, and security policy compliance evaluation reporting'] = 'SCAP estas specio por espridado kaj manipuliulado de sekurrecdatenoj la epäilty ormitaj manieroj. SCAP uzas multimajn indifuajn Specifojn en Concerto por skeptictomatgi kontinuan adon, vundbleco-approachgradon, kaj sekurrecpolitikobatacon raportantan raportadon';
 
-$GLOBALS["lang"]['The date/time when this result was created.'] = 'De datum/tijd waarop dit resultaat werd aangemaakt.';
+$GLOBALS["lang"]['The SELECT'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The day of the month when this task should execute (* for every day).'] = 'De dag van de maand waarop deze taak moet worden uitgevoerd (* voor elke dag).';
+$GLOBALS["lang"]['The SELECT section of the query should use full dot notation and also request the field with its full dot name. IE - SELECT devices.id AS `devices.id`. Each field should be selected in this fashion to enable GUI side attribute filtering.'] = '"Select" - sekcio de la atendo devus uzi plenan dotnotacion kaj anka. Puttnomo. IE - "Deens aparatoj" Id \'imiiu kampo devus esti selektita en tu modo por epligi GUI - Filtro di atriczione new fiancheggiato.';
 
-$GLOBALS["lang"]['The day of the week when this task should execute (* for every day).'] = 'De dag van de week waarop deze taak moet worden uitgevoerd (* voor elke dag).';
+$GLOBALS["lang"]['The SELECT section of your SQL must contain fully qualified columns and specify certain columns.'] = 'SELECT sekcio de via SQL tuhoa enhavi aereo kvalifikaj n kolonojn kaj prezigi certajn kolonajn.';
 
-$GLOBALS["lang"]['The default language assigned to any user created by this method.'] = 'De standaardtaal toegewezen aan elke gebruiker die met deze methode is gemaakt.';
+$GLOBALS["lang"]['The SNMP community string.'] = '"SNMP comuniumkordo." -';
 
-$GLOBALS["lang"]['The device must respond to an Nmap ping before it is considered online.'] = 'Het apparaat moet reageren op een Nmap ping voordat het wordt beschouwd als online.';
+$GLOBALS["lang"]['The SNMP v3 Authentication Passphrase.'] = '"SNMP v3 Autentise"';
 
-$GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>.'] = 'Het apparaat binnen Open-AudIT. Links naar <code>devices.id</code>.';
+$GLOBALS["lang"]['The SNMP v3 Authentication Protocol.'] = '"Provincio Autenticación."';
 
-$GLOBALS["lang"]['The direct link for the script is'] = 'De directe link voor het script is';
+$GLOBALS["lang"]['The SNMP v3 Privacy Passphrase.'] = '"Zwitser"';
 
-$GLOBALS["lang"]['The email address of the reciever'] = 'Het e-mailadres van de reciever';
+$GLOBALS["lang"]['The SNMP v3 Privacy Protocol.'] = '® SNMP v3';
 
-$GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = 'De enterprise binary van FirstWave is vereist voor een licentie. Download Open-AudIT van';
+$GLOBALS["lang"]['The SNMP v3 Security Level.'] = 'SNMP v3Q';
 
-$GLOBALS["lang"]['The entire associated baseline this result is from.'] = 'De gehele geassocieerde baseline is dit resultaat van.';
+$GLOBALS["lang"]['The SNMP v3 Security Name.'] = '"SNMP"';
 
-$GLOBALS["lang"]['The externally referenced location ID. Usually populated by Cloud audits.'] = 'Het extern referentielocatie-ID. Meestal bevolkt door Cloud audits.';
+$GLOBALS["lang"]['The SNMPv3 context Engine ID (optional).'] = 'Bendrijoje Identificacióntavia';
 
-$GLOBALS["lang"]['The first time that Open-AudIT retrieved details of this device.'] = 'De eerste keer dat Open-AudIT details van dit apparaat ophaalde.';
+$GLOBALS["lang"]['The SNMPv3 context Name (optional).'] = '® SNMPv3 Kuntekstonomo (valikuliini).';
 
-$GLOBALS["lang"]['The floor the rack is located on.'] = 'De vloer waarop het rek zich bevindt.';
+$GLOBALS["lang"]['The SQL cannot contain <strong>WHERE @filter OR</strong>. That SQL will not be executed, however <strong>WHERE @filter AND</strong> queries are allowed.'] = 'Thomas SQL <strong>Bendrijoje</strong>"Ke SQL" <strong>Saluto [esprimas al vi] - [iu persono, kiu persono new] Bendrijoje</strong> • de arbeidsvoorwaarden van de begunstigden.';
 
-$GLOBALS["lang"]['The foreign table to reference. Should be one of: devices, locations, orgs or queries.'] = 'De buitenlandse tabel ter referentie. Moet een van: apparaten, locaties, orgs of vragen.';
+$GLOBALS["lang"]['The SQL queries used in Open-AudIT require the use of the backtick - ` character and NOT the standard single quote for fields. On most US Windows keyboards the backtick key is located in the top-left of the keyboard along with the tilde ~. On a US Mac keyboard the backtick key is located next to the SHIFT key. The standard single quote is still used to enclose values as the examples below illustrate.'] = 'La SQL- opharm (1) La plej ej usonaj Fenestroj clavaroj la backed calosilo situzioni en la pint- maldekstro de la klavaro kone la tilde. Bendrijoje Macklavaro la backtick calosilo situazione Româplej preksme al la Shift seplošvilo opharm. -';
 
-$GLOBALS["lang"]['The format used for the output to be emailed.'] = 'Het formaat dat gebruikt wordt voor de uitvoer die gemaild moet worden.';
+$GLOBALS["lang"]['The SQL query is essentially broken into three parts.'] = 'La SQL - rev.';
 
-$GLOBALS["lang"]['The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.'] = 'De volledig gekwalificeerde kolom waarop te groeperen door. OPMERKING: Wanneer type = verkeer, dit vertegenwoordigt de rode query id.';
+$GLOBALS["lang"]['The Standards functionality in Open-AudIT allows you to, ahead of time, complete the questions auditors require when completing ISO 27001 certification.'] = 'La Normoj- funkcieco en Open- Bendrieoje _ BAR _ Bendrieoje _ BAR _';
 
-$GLOBALS["lang"]['The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).'] = 'De volledig gekwalificeerde tabel.kolom. Meerdere kunnen worden verstrekt, gescheiden door een komma (geen spaties).';
+$GLOBALS["lang"]['The URL of the external system.'] = 'URL europa.eu.int ekstera sistema.';
 
-$GLOBALS["lang"]['The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.'] = 'De gegenereerde SQL query om deze kwetsbaarheid te testen. Dit veld kan worden bewerkt om de query te corrigeren zoals vereist.';
+$GLOBALS["lang"]['The URL of your Open-AudIT Server that this Collector will report to (no trailing slash).'] = 'URL de via Open- opharm Servilo kiun TIU kokonto raportos al (neiu malanta transfertran círregio).';
 
-$GLOBALS["lang"]['The group of devices on which the baseline was run against.'] = 'De groep apparaten waarop de uitgangswaarde werd vergeleken.';
+$GLOBALS["lang"]['The URL the audit scripts should submit their result to.'] = '"Url" - "kezm," "devus," "sian," "uzulton," ""';
 
-$GLOBALS["lang"]['The group that provides a list of devices for the integration. Links to <code>groups.id</code>.'] = 'De groep die een lijst geeft van apparaten voor de integratie. Links naar <code>groups.id</code>.';
+$GLOBALS["lang"]['The User endpoint allows you to manage user accounts within Open-AudIT.'] = 'La Uzanta finpunkto percesas al vi rightr uzantkontojn ene de řenzienzienziem.';
 
-$GLOBALS["lang"]['The hour of the day when this task should execute (* for every hour).'] = 'Het uur van de dag waarop deze taak uitgevoerd moet worden.';
+$GLOBALS["lang"]['The WHERE'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The id of the linked device. Links to <code>devices.id</code>'] = 'Het ID van het gekoppelde apparaat. Links naar <code>devices.id</code>';
+$GLOBALS["lang"]['The WHERE section of your SQL <em>must</em> contain'] = 'SQLtavia <em>Bendrijoje</em> Bendrijoje';
 
-$GLOBALS["lang"]['The identifier column (integer) in the database (read only).'] = 'De identificatiekolom (integer) in de database (alleen lezen).';
+$GLOBALS["lang"]['The Windows'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The importance of this baseline (not used yet).'] = 'Het belang van deze baseline (nog niet gebruikt).';
+$GLOBALS["lang"]['The Windows log may say the following'] = 'Afrikaanse Fenestroj povas diri la sekvantan';
 
-$GLOBALS["lang"]['The integer of severity.'] = 'Het geheel van ernst.';
+$GLOBALS["lang"]['The account must have a password; WMI does not allow blank passwords.'] = 'La raporto handa.o Bendrijoje.';
 
-$GLOBALS["lang"]['The ip address of the Auth method.'] = 'Het IP adres van de Auth methode.';
+$GLOBALS["lang"]['The account password must NOT contain \" (double quotes). This is because cscript (and wscript) cannot parse argument values containing double quotes. They are simply stripped. No (before you ask) escaping will not work. This is a cscript limitation and nothing to do with Open-AudIT.'] = '"Duoblajn citaa.ojn." Tio estas režisierius Neniu eskapi ne funkcias. Tio estas tipa limigo kaj nio Farenda.o kun režisierius';
 
-$GLOBALS["lang"]['The language to translate the web interface into for the user.'] = 'De taal om de webinterface te vertalen naar de gebruiker.';
+$GLOBALS["lang"]['The actual full name of this user.'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['The last date and time this item was executed (read only).'] = 'De laatste datum en tijd dat dit item werd uitgevoerd (alleen lezen).';
+$GLOBALS["lang"]['The address of the Open-AudIT server submit page.'] = '- servilio subletas pa fusion.';
 
-$GLOBALS["lang"]['The last time that Open-AudIT retrieved details of this device.'] = 'De laatste keer dat Open-AudIT details van dit apparaat ophaalde.';
+$GLOBALS["lang"]['The administrator supplied credentials that were successfully used to bind to LDAP.'] = '·';
 
-$GLOBALS["lang"]['The last time this benchmarks was executed.'] = 'De laatste keer dat deze benchmarks werden uitgevoerd.';
+$GLOBALS["lang"]['The administrator supplied credentials to bind to the LDAP server, but they have not been accepted by the LDAP sevrer. Double check the credentials work on the LDAP server, and then check (or reset them) in the Open-AudIT LDAP Server entry.'] = 'La Administrationnto maksais akredita.ojn por ligi al la LDAP- servilo, sed ili ne estis akceptitaj Fare de la LDAP erger. Duobla LDAP- servilo, kaj tiam Beko (kahtane rekomencas ili) en la Open- ů LDAP ů - eniro.';
 
-$GLOBALS["lang"]['The last time this integration was run.'] = 'De laatste keer dat deze integratie werd uitgevoerd.';
+$GLOBALS["lang"]['The agent and server are also intelligent enough to self-update the agent if a newer version is installed on the server (say after upgrading Open-AudIT).'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip: isdatigi la agenton se pli nova verserio estas secretas sur la servilo (Indonesië...';
 
-$GLOBALS["lang"]['The line number assigned by the provider to the line at this end of the connection.'] = 'Het regelnummer dat door de provider aan de lijn aan dit einde van de verbinding wordt toegekend.';
+$GLOBALS["lang"]['The agent should download a fresh copy of the audit script, run it and submit the result to the server.'] = '(1, 2, 3, 4, 5, 6, 7, 8)';
 
-$GLOBALS["lang"]['The location the rack is located in. Links to <code>locations.id</code>.'] = 'De locatie waar het rek zich bevindt. Links naar <code>locations.id</code>.';
+$GLOBALS["lang"]['The application creates temporary audit scrtips here, copies them to the target machines, then deletes them.'] = 'Thomas apliko kreas peesorajn revizorojn Kopias ilin al la celma divertaiinoy, tiam forigas ilin.';
 
-$GLOBALS["lang"]['The locations address.'] = 'Het adres van de locatie.';
+$GLOBALS["lang"]['The associated baseline. Links to <code>baselines.id</code>.'] = '- <code>baselines.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The locations area.'] = 'De locatie.';
+$GLOBALS["lang"]['The associated discovery (if required). Links to <code>discoveries.id</code>.'] = 'Rīlata malkovro (tarpellinen vajalikud). Bendrijoje <code>discoveries.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The locations city.'] = 'De locaties stad.';
+$GLOBALS["lang"]['The attribute to test (from the <code>devices</code> table).'] = 'De la <code>devices</code> Bendrijoje';
 
-$GLOBALS["lang"]['The locations country.'] = 'Het land van de locaties.';
+$GLOBALS["lang"]['The attribute to test (must match an external field name from below).'] = 'A al testo (devas egali eksteran kampan nomon de malsupre).';
 
-$GLOBALS["lang"]['The locations district.'] = 'De locatie district.';
+$GLOBALS["lang"]['The attributes for discovery scan options are as below.'] = '(1)';
 
-$GLOBALS["lang"]['The locations latitude.'] = 'De locaties breedtegraad.';
+$GLOBALS["lang"]['The audit script upon which to base your customisations.'] = 'La revizio manikripto sur kiu bazigi viajn Bendrijoje';
 
-$GLOBALS["lang"]['The locations level.'] = 'Het niveau van de locaties.';
+$GLOBALS["lang"]['The audit script will use the files[ ] array and retrieve the file details.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['The locations longitude.'] = 'De lengtegraden.';
+$GLOBALS["lang"]['The audit scripts all accept a debugging argument. You can run the script utilizing that and see in more detail what the issue is. And if you cannot figure it out - that is what we are here for! Open a support case and we will get things running in no time.'] = '"Iuj Akceptasen malkonstranentionargomentoon" Vi povas prizorgi la manikripton utiligantation kaj vidi en pli da detalo kio la temo estas. Kaj se vi ne povas supozi εin, to estas kion ni estetas malfermu subtenon, kaj ni havos a.ojn kurantajn en neniu tempo.';
 
-$GLOBALS["lang"]['The locations phone.'] = 'De locatie telefoon.';
+$GLOBALS["lang"]['The base path from which to search for Users.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['The locations postcode.'] = 'De postcode van de locaties.';
+$GLOBALS["lang"]['The below steps are not the fault of or unique to Open-AudIT and would affect <strong>any</strong> discovery application using remote WMI and/or Windows.'] = 'Sous рtupoj ne estas la faiglto de aignalunika al OpenAudit kaj reform <strong>(lt)</strong> Découverte apliko uzanta malpreksiman WMI kaj / a.';
 
-$GLOBALS["lang"]['The locations region.'] = 'De locatie regio.';
+$GLOBALS["lang"]['The benchmark type.'] = '-';
 
-$GLOBALS["lang"]['The locations room.'] = 'De locatieruimte.';
+$GLOBALS["lang"]['The building the rack is located in.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The locations state.'] = 'De locatie staat.';
+$GLOBALS["lang"]['The calculated number of devices to be created externally.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['The locations suburb.'] = 'De locaties buitenwijk.';
+$GLOBALS["lang"]['The calculated number of devices to be created in Open-AudIT.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['The locations suite.'] = 'De locaties suite.';
+$GLOBALS["lang"]['The client ID is the ID of an Azure Active Directory application. The client secret is the key that you give that application.'] = 'Šio asmens tapatybės kortelės numeris: la ID de Azure Aktiva Adresaro. Délivento sekreto estas la calosilo kiun vi donas al tu aplika.';
 
-$GLOBALS["lang"]['The maximum physical weight (in KGs) this rack can hold.'] = 'Het maximale fysieke gewicht (in KGs) dat dit rek kan houden.';
+$GLOBALS["lang"]['The collector is essentially a full install of Open-AudIT in <i>collector</i> mode. The collector is designed to run discovery upon the network it is situated in. It is not restricted to only that network, but ideally it would essentially be one collector per subnet where required. The collector is driven on a schedule by the server and runs discovery upon the network as specified.<br>When in Stand Alone mode the Collector acts as an independant server, simply forwarding all devices found to the main server.<br><br>Once installed and setup, control of the Collector is performed on the Server (not in Stand Alone mode).<br><br>The only required network ports between the collector and server are 80 or 443 (TCP connection established from the Collector to the Server). The Open-AudIT database is not (and cannot be) shared between these installs.<br><br>By default the collector (not in Stand Alone mode) will request from the server any discovery tasks every 5 minutes (you can configure this on the server for new Collectors using the configuration item collector_check_minutes) therefor any discovery tasks for the collector should be scheduled for 0, 5, 10, 15, etc minutes.'] = 'La kolektanto estas esence pena exouttaoo de open - modificatie <i>Bendrijoje</i> Bendrijoje: sur la reton kiun εi estasitlanta en. sdi ne estas limigita al nur tu reto, sed idéale εi esence estus unu kolektanto per subreto kie nesse. "Kolectanto estas movita en horaro opharm de la servilo kaj prizorgas eltrova"<br/>Kiam en la Sola protesto la kolektano funkcias kiel endelica servilio, seplicemente plusendi <br/><br/>"Controller"<br/><br/>La nuraj postulataj sendostaciaj hasnoj inter la kolektano kaj servilo estas 80 kaptlus 443 (TC- ligo esta lita de la kolektanto εis la Servilo). (kaj β povas esti) distita režisierė<br/><br/>deca... lte la kolektanto (nm';
 
-$GLOBALS["lang"]['The maximum total BTUs this rack is rated for.'] = 'De maximale totale BTU\'s waarvoor dit rek is beoordeeld.';
+$GLOBALS["lang"]['The collector is essentially a full install of Open-AudIT in <i>collector</i> mode. This mode would reduce visible functionality in an effort to simplify and focus the application. It is designed to collect information about local networks and devices, where firewall and/or network traversal is an issue from the server.'] = 'La kolektanto estas esence pena exouttaoo de open - modificatie <i>Bendrijoje</i> Bendrijoje Tiu réfrakcionavimo redoektus videblancan funkciecon por simpligi kaj enfokusigi Şapliki fason. ';
 
-$GLOBALS["lang"]['The minute of the hour when this task should execute (* for every minute).'] = 'De minuut van het uur waarop deze taak moet worden uitgevoerd (* voor elke minuut).';
+$GLOBALS["lang"]['The collectors internal IP used when it runs a discovery.'] = 'La mia vita new IP uzis kiam εi prizorgas eltrova.';
 
-$GLOBALS["lang"]['The month of the year when this task should execute (* for every month).'] = 'De maand waarin deze taak moet worden uitgevoerd (* voor elke maand).';
+$GLOBALS["lang"]['The column name from the foreign table. Should be one of: class, environment, status, type or menu_category.'] = '"" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" Devus esti unu el:klaso, middel, statuo, tipo epäillyn valikko _ relex.';
 
-$GLOBALS["lang"]['The name given to this item.'] = 'De naam die aan dit item is gegeven.';
+$GLOBALS["lang"]['The command executed upon the target device or Open-AudIT server code executed during discovery.'] = '"Communido efektivigis sur la celaparato caplus"';
 
-$GLOBALS["lang"]['The name given to this item. Ideally it should be unique.'] = 'De naam die aan dit item is gegeven. Idealiter zou het uniek moeten zijn.';
+$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.'] = 'La agordo de via isto povas esti: <code>active/active</code>Bendrijoje <code>active/passive</code>Bendrijoje <code>N+1</code>Bendrijoje <code>N+M</code>Bendrijoje <code>N-to-1</code>Bendrijoje <code>N-to-N</code>Bendrijoje <code>other</code> -';
 
-$GLOBALS["lang"]['The name given to this user (used to login). Ideally it should be unique.'] = 'De naam die aan deze gebruiker is gegeven (gebruikt om in te loggen). Idealiter zou het uniek moeten zijn.';
+$GLOBALS["lang"]['The credentials password. If the credentials are an SSH Key, this is the password used to unlock the key and is optional.'] = '\'SSH\'... losilo... naar estas la pasvorton...';
 
-$GLOBALS["lang"]['The name of the associated cloud (if required).'] = 'De naam van de bijbehorende cloud (indien vereist).';
+$GLOBALS["lang"]['The credentials supplied by the user have failed.'] = '-';
 
-$GLOBALS["lang"]['The name of the software package, as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = 'De naam van het softwarepakket, zoals gecontroleerd door Open-AudIT. Gebruik het percentage teken % als een wildcard.';
+$GLOBALS["lang"]['The credentials username.'] = 'Afrikaans.';
 
-$GLOBALS["lang"]['The name of the user who last changed or added this item (read only).'] = 'De naam van de gebruiker die dit item voor het laatst heeft gewijzigd of toegevoegd (alleen lezen).';
+$GLOBALS["lang"]['The current date and time in the format: Y-m-d H:i:s.'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['The name provided by the provider.'] = 'De door de aanbieder opgegeven naam.';
+$GLOBALS["lang"]['The current date in Y-m-d format.'] = '(1)';
 
-$GLOBALS["lang"]['The network in the format 192.168.1.0/24.'] = 'Het netwerk in het formaat 192.168.1.0/24.';
+$GLOBALS["lang"]['The current status of the Cloud Discovery.'] = '-';
 
-$GLOBALS["lang"]['The network subnet to execute the discovery on.'] = 'Het netwerk subnet om de ontdekking uit te voeren.';
+$GLOBALS["lang"]['The current status of the discovery.'] = '-';
 
-$GLOBALS["lang"]['The number of RUs this device occupies.'] = 'Het aantal spoorwegondernemingen dat dit apparaat bezet.';
+$GLOBALS["lang"]['The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.'] = 'Het sleutelwoord tussen haakjes niet vertalen (bijv. ServerAdmin) <code>dashboards.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The number of associated locations. Links to <code>locations.cloud_id</code>.'] = 'Het aantal bijbehorende locaties. Links naar <code>locations.cloud_id</code>.';
+$GLOBALS["lang"]['The data stored in the database is not showing in the application translated. We leave the data as it is. However, there is nothing to stop you, the user, changing the name (for example) of an item in the database to your language.'] = '® dacenoj stokitaj en la datumbazo ne montre en la aplikiboro tradukita. "Supply" "Eco-Lighthouse" Rigi vin, la uzanton, Kian. Kante la nomon (ekzelm) de objectkto en la datummazo al via lingvo.';
 
-$GLOBALS["lang"]['The number of associated networks. Links to <code>networks.cloud_id</code>.'] = 'Het aantal aangesloten netwerken. Links naar <code>networks.cloud_id</code>.';
+$GLOBALS["lang"]['The data you input will be used in a <code>LIKE</code> clause, not (as per the API) an <code>equals</code> clause. Another example - if you input <code>comput</code>, it would still return all computers. And because we are using a <code>LIKE</code> clause, it is case-insensitive.'] = 'Datamoj, kiujn vi enigas, estos uzataj en <code>LIKE</code> (Indonesië) <code>equals</code> Bendrijos teisės aktai <code>comput</code>- <code>LIKE</code> Esti estas kazo-incentema.';
 
-$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = 'Het aantal gecontroleerde apparaten in deze cloud. Links naar <code>devices.cloud_id</code> en <code>devices.serial</code>.';
+$GLOBALS["lang"]['The database schema can be found in the application if the user has database::read permission by going to menu: Admin -> Database ->'] = 'Ethietokannatkemo povas esti trovareta en la apliki Legu permeson irante al menuo: da - título datummaz - tavia';
 
-$GLOBALS["lang"]['The number of critical severity vulnerabilities held by FirstWave (not in your database).'] = 'Het aantal kritieke ernst kwetsbaarheden in handen van FirstWave (niet in uw database).';
+$GLOBALS["lang"]['The database version and web version are inconsistent.'] = 'Dataumbazo versio kaj retversio estas malkonsekvencaj';
 
-$GLOBALS["lang"]['The number of devices found by this discovery.'] = 'Het aantal apparaten gevonden door deze ontdekking.';
+$GLOBALS["lang"]['The date of license expiration.'] = 'Standaard de perfexilo eksendi pilas.';
 
-$GLOBALS["lang"]['The number of devices in the associated group.'] = 'Het aantal apparaten in de geassocieerde groep.';
+$GLOBALS["lang"]['The date the software is discontinued by the manufacturer. Usually replaced by a newer version. Maintenance may still be available.'] = 'Thomas la Programmaro estas nuligigita de la fabrikanto. Kutime anstalucicite newpli nova versolo. Prizorgo povas esti disponebla.';
 
-$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Het aantal apparaten in deze cloud met een staat van draaien. Links naar <code>devices.cloud_id</code> en <code>devices.instance_state</code>.';
+$GLOBALS["lang"]['The date the software no longer receives updates and is effectively discontinued altogether. Maintenance is discontinued.'] = '"Supply" Prizorgo Bendrijoje.';
 
-$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Het aantal apparaten in deze cloud met een staat van stilstand. Links naar <code>devices.cloud_id</code> en <code>devices.instance_state</code>.';
+$GLOBALS["lang"]['The date this item was changed or added (read only). NOTE - This is the timestamp from the server.'] = 'Šio straipsnio 1 dalyje nurodyta: Tio estas la Tempostap režisierius.';
 
-$GLOBALS["lang"]['The number of devices in this cloud. Links to <code>devices.cloud_id</code>.'] = 'Het aantal apparaten in deze cloud. Links naar <code>devices.cloud_id</code>.';
+$GLOBALS["lang"]['The date/time when this result was created.'] = 'Thomas / temo kiam tu rezulto estis kreita.';
 
-$GLOBALS["lang"]['The number of devices this benchmark will be executed upon. Derived from <code>benchmarks.devices</code>.'] = 'Het aantal apparaten waarop deze benchmark zal worden uitgevoerd. Afgeleid uit <code>benchmarks.devices</code>.';
+$GLOBALS["lang"]['The day of the month when this task should execute (* for every day).'] = 'Environtago de la Monato kiam tu tapo devus efektivigi (* por...iu tago).';
 
-$GLOBALS["lang"]['The number of devices to limit this discovery to.'] = 'Het aantal apparaten om deze ontdekking te beperken.';
+$GLOBALS["lang"]['The day of the week when this task should execute (* for every day).'] = 'La tago de la semajno kiam tu tapo devus efektivigi (* por...iu tago).';
 
-$GLOBALS["lang"]['The number of high severity vulnerabilities held by FirstWave (not in your database).'] = 'Het aantal ernstige kwetsbaarheden van FirstWave (niet in uw database).';
+$GLOBALS["lang"]['The debug level (will output to command prompt window). Lower means less output with 0 being no output.'] = '(volas kommundi prostan fanestroni). Pliatra maltati signfastavia malplitavia prodotto materiali';
 
-$GLOBALS["lang"]['The number of low severity vulnerabilities held by FirstWave (not in your database).'] = 'Het aantal zwakke plekken van FirstWave (niet in uw database).';
+$GLOBALS["lang"]['The default discovery scan option is the UltraFast set.'] = '"Sceptista eltrova."';
 
-$GLOBALS["lang"]['The number of medium severity vulnerabilities held by FirstWave (not in your database).'] = 'Het aantal zwakheden van FirstWave (niet in uw database).';
+$GLOBALS["lang"]['The default language assigned to any user created by this method.'] = 'La deha skeptista lingvo alisigita al iu uzanto kreita setlitiu metodo.';
 
-$GLOBALS["lang"]['The number of purchased licenses.'] = 'Het aantal gekochte licenties.';
+$GLOBALS["lang"]['The device must respond to an Nmap ping before it is considered online.'] = 'Hepaparato murtaa reaktioni RomâNmap turanta. ol εi estas konsiderita rete.';
 
-$GLOBALS["lang"]['The number of seconds to try and communicate with the target IP.'] = 'Het aantal seconden om te proberen te communiceren met het doel IP.';
+$GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>.'] = 'Reglamento (EB) Nr. 1333 / 2008 II priedas iš dalies keičiamas taip: Bendrijoje <code>devices.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The number of vulnerabilities without a severity held by FirstWave (not in your database).'] = 'Het aantal kwetsbaarheden zonder een strengheid van FirstWave (niet in uw database).';
+$GLOBALS["lang"]['The direct link for the script is'] = 'Standaard rek';
 
-$GLOBALS["lang"]['The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.'] = 'De optionele tweede kolom. OPMERKING: Wanneer type = verkeer, dit staat voor de gele query id.';
+$GLOBALS["lang"]['The email address of the reciever'] = 'Explorepo explosta adreso recever';
 
-$GLOBALS["lang"]['The optional third column. NOTE: When type = traffic, this represents the green query id.'] = 'De optionele derde kolom. OPMERKING: Wanneer type = verkeer, dit de groene query id.';
+$GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = 'Entrepreno binara de First "Wave estas postulata por licenco." "Bonvolu el apretuti"';
 
-$GLOBALS["lang"]['The orientation of this device.'] = 'De oriëntatie van dit apparaat.';
+$GLOBALS["lang"]['The entire associated baseline this result is from.'] = '® ® ® ® bazlino tiu rezulto estetas.';
 
-$GLOBALS["lang"]['The password for the dn_account attribute.'] = 'Het wachtwoord voor het dn_account-attribuut.';
+$GLOBALS["lang"]['The exploited vulnerability can affect resources beyond the security authority of the vulnerable component. This usually means a privilege or trust boundary is crossed (for example, escaping from a container to the host OS).'] = 'Vundebla povas infui resursojn preter la sekurrecadministrastacio escbla kompunto. Tio kutime signfas eis Waarde';
 
-$GLOBALS["lang"]['The password used to access the external system.'] = 'Het wachtwoord gebruikt om toegang te krijgen tot het externe systeem.';
+$GLOBALS["lang"]['The exploited vulnerability only impacts resources within the same security authority as the vulnerable component. In other words, the attacker’s actions stay within the original trust boundary.'] = 'Supplutita vundebleco nur trafas ressojn ene de la sama sekurrecadministracio kiel la vandebla kompunto. Esimeriksi J vortoj, la agoj de la atakanto restas ene de la Origine fidolim.';
 
-$GLOBALS["lang"]['The path to the file or directory.'] = 'Het pad naar het bestand of de map.';
+$GLOBALS["lang"]['The externally referenced location ID. Usually populated by Cloud audits.'] = '5.';
 
-$GLOBALS["lang"]['The path to the file or directory. Directories should end with a trailing slash.'] = 'Het pad naar het bestand of de map. Mappen moeten eindigen met een achterwaartse slash.';
+$GLOBALS["lang"]['The fields associated with an Integration are stored in the database as a JSON array of objects. Each field has the following attributes'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The physical depth (in CMs) of the rack.'] = 'De fysieke diepte (in CMs) van het rek.';
+$GLOBALS["lang"]['The first time that Open-AudIT retrieved details of this device.'] = 'Environunua fojo ke open- redprenis detalojn de tiu aparato.';
 
-$GLOBALS["lang"]['The physical height (in CMs) of the rack.'] = 'De fysieke hoogte (in CMs) van het rek.';
+$GLOBALS["lang"]['The floor the rack is located on.'] = '-';
 
-$GLOBALS["lang"]['The physical weight (in KGs) of the rack at present.'] = 'Het fysieke gewicht (in KGs) van het rek momenteel.';
+$GLOBALS["lang"]['The foreign table to reference. Should be one of: devices, locations, orgs or queries.'] = '(1) Estu unu el: aparatoj, lokoj, orkoj a requiredeoj.';
 
-$GLOBALS["lang"]['The physical weight (in KGs) of the rack when empty.'] = 'Het fysieke gewicht (in KGs) van het rek wanneer leeg.';
+$GLOBALS["lang"]['The format of your data should be in the form'] = 'Dynamics formatazione della viaj datumoj brunces esti en la formo';
 
-$GLOBALS["lang"]['The physical width (in CMs) of the rack.'] = 'De fysieke breedte (in CMs) van het rek.';
+$GLOBALS["lang"]['The format used for the output to be emailed.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['The pod (if any) that this rack is part of.'] = 'De capsule (indien aanwezig) waar dit rek deel van uitmaakt.';
+$GLOBALS["lang"]['The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.'] = 'Bendrijoje: Kolino sur kiu ňgrupo. Regidaan Kisely ID.';
 
-$GLOBALS["lang"]['The power circuit this rack attaches to.'] = 'Het stroomcircuit waar dit rek aan vastzit.';
+$GLOBALS["lang"]['The fully qualified name returned by the external system. EG: for NMIS we use configuration.roleType.'] = 'Thesswette kvalifikita nomo resendita per la ekstera sistemo. EG: ŞNMIS ni uzas konfiguracion. Bendrijoje';
 
-$GLOBALS["lang"]['The primary database table upon which to base this widget.'] = 'De primaire databasetabel waarop dit widget kan worden gebaseerd.';
+$GLOBALS["lang"]['The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).'] = 'Bendrijoje. Multoblaj povas esti disponigitaj, Şkomo (neniuj spacoj).';
 
-$GLOBALS["lang"]['The process identifier of this queue item.'] = 'De procesidentificatie van dit wachtrij-item.';
+$GLOBALS["lang"]['The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.'] = '® generita SQL- modifictul por testi pri tiu vundebleco. Tiu kap povas esti redaktita por koreki la atendon new postulat.';
 
-$GLOBALS["lang"]['The process that was used last to retrieve details about the device'] = 'Het proces dat het laatst werd gebruikt om details over het apparaat op te halen';
+$GLOBALS["lang"]['The group of devices on which the baseline was run against.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['The query that provides a list of devices for the integration. Links to <code>queries.id</code>.'] = 'De query die een lijst geeft van apparaten voor de integratie. Links naar <code>queries.id</code>.';
+$GLOBALS["lang"]['The group that provides a list of devices for the integration. Links to <code>groups.id</code>.'] = '- Lisn de aparatoj por la Intectivii <code>groups.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The rack asset number.'] = 'Het aanwinstnummer.';
+$GLOBALS["lang"]['The hour of the day when this task should execute (* for every hour).'] = 'La Horo de la tago kiam tu tapo murtaa efektivigi (* por...iu horo).';
 
-$GLOBALS["lang"]['The rack asset tag.'] = 'Het rek activa label.';
+$GLOBALS["lang"]['The id of the linked device. Links to <code>devices.id</code>'] = '(RO 2012 7183). Bendrijoje <code>devices.id</code>';
 
-$GLOBALS["lang"]['The rack bar code.'] = 'De rack bar code.';
+$GLOBALS["lang"]['The identifier column (integer) in the database (read only).'] = 'Identitulo (enter) en la datummazo (legita nur).';
 
-$GLOBALS["lang"]['The rack model.'] = 'Het rekmodel.';
+$GLOBALS["lang"]['The importance of this baseline (not used yet).'] = 'La tombeco de tu bazlino (ne uzis ankora kaptus).';
 
-$GLOBALS["lang"]['The rack serial.'] = 'Het rek serieel.';
+$GLOBALS["lang"]['The integer of severity.'] = '-';
 
-$GLOBALS["lang"]['The rack series.'] = 'De rack serie.';
+$GLOBALS["lang"]['The internal value, reformatted in this format.'] = '"Supply"';
 
-$GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = 'Het rek waar dit apparaat in zit. Links naar <code>racks.id</code>.';
+$GLOBALS["lang"]['The ip address of the Auth method.'] = 'Autorius - Metodo.';
 
-$GLOBALS["lang"]['The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.'] = 'Het aanbevolen proces van het aanpakken en vaststellen van geïdentificeerde beveiligingskwetsbaarheden. Dit betekent meestal het toepassen van patches, updates, of andere maatregelen om het risico van de kwetsbaarheden te elimineren.';
+$GLOBALS["lang"]['The language to translate the web interface into for the user.'] = 'Retinterfacon en la uzanto.';
 
-$GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = 'De reguliere domeinnotatie van uw directory. Eg - <code>open-audit.lan</code>.';
+$GLOBALS["lang"]['The last date and time this item was executed (read only).'] = 'Šio straipsnio 1 ir 2 dalys taikomos mutatis mutandis.';
 
-$GLOBALS["lang"]['The result of the command.'] = 'Het resultaat van het bevel.';
+$GLOBALS["lang"]['The last time that Open-AudIT retrieved details of this device.'] = '"Liquan fojon kiu" ("Liquan fojon kiu").';
 
-$GLOBALS["lang"]['The room the rack is located in.'] = 'De kamer waar het rek zich bevindt.';
+$GLOBALS["lang"]['The last time this benchmarks was executed.'] = '"Liasan fojon tii kompranormo etis ekzekutita."';
 
-$GLOBALS["lang"]['The row the rack is located in.'] = 'De rij waarin het rek zich bevindt.';
+$GLOBALS["lang"]['The last time this integration was run.'] = '(1)';
 
-$GLOBALS["lang"]['The secret key used in conjunction with your AWS EC2 API key.'] = 'De geheime sleutel gebruikt in combinatie met uw AWS EC2 API sleutel.';
+$GLOBALS["lang"]['The license endpoint allows you to track the number of licenses found on your devices.'] = 'Licencia finpunkto perfesas al vi printi la nombron da licencijtrovitaj sur viaj aparatoj.';
 
-$GLOBALS["lang"]['The software end-of-life date.'] = 'De einddatum van de software.';
+$GLOBALS["lang"]['The line number assigned by the provider to the line at this end of the connection.'] = 'Lionombro asignita tariffe de la produezanto al la linio - tu fino de la ligo.';
 
-$GLOBALS["lang"]['The software end-of-service-life date.'] = 'De software einde van de levensduur.';
+$GLOBALS["lang"]['The location the rack is located in. Links to <code>locations.id</code>.'] = 'Loko kiun la rako situazione fr. <code>locations.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['The specific database column from the specified database table.'] = 'De specifieke kolom van de database uit de gespecificeerde databasetabel.';
+$GLOBALS["lang"]['The locations address.'] = '(1)';
 
-$GLOBALS["lang"]['The specific database table.'] = 'De specifieke databasetabel.';
+$GLOBALS["lang"]['The locations area.'] = '-';
 
-$GLOBALS["lang"]['The standard Nmap timing options. We usually use -T4 (Aggressive) as this is recommended for a decent broadband or ethernet connection.'] = 'De standaard Nmap timing opties. Meestal gebruiken we -T4 (Agressieve) omdat dit wordt aanbevolen voor een fatsoenlijke breedband- of ethernetverbinding.';
+$GLOBALS["lang"]['The locations city.'] = 'L \'urbo nieuws.';
 
-$GLOBALS["lang"]['The status of this integration'] = 'De status van deze integratie';
+$GLOBALS["lang"]['The locations country.'] = '•';
 
-$GLOBALS["lang"]['The status of this queued item.'] = 'De status van dit item in de wachtrij.';
+$GLOBALS["lang"]['The locations district.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The target IP this log entry referers to (if any).'] = 'Het doel IP dit log item referers naar (indien aanwezig).';
+$GLOBALS["lang"]['The locations latitude.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The template for the link to be generated per result line.'] = 'De template voor de link die per resultaatregel moet worden gegenereerd.';
+$GLOBALS["lang"]['The locations level.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The text for the bottom of the chart in a line chart (only).'] = 'De tekst voor de onderkant van de grafiek in een lijndiagram (alleen).';
+$GLOBALS["lang"]['The locations longitude.'] = '"Lokoj wasudo" ("Indonesië")';
 
-$GLOBALS["lang"]['The text that is displayed.'] = 'De tekst die wordt weergegeven.';
+$GLOBALS["lang"]['The locations phone.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = 'Het tijdstempel waarna deze taak moet worden uitgevoerd. Bijvoorbeeld, start een taak na 1 juni 2017 om 10 uur, zet deze op <code>2017-06-01 09:59:00</code>. Deze waarde moet nul zijn (d.w.z. 09, niet 9). Deze waarde is standaard <code>2000-01-01 00:00:00</code> wat betekent dat standaard, een geplande taak zal draaien op de volgende geplande uitvoeringstijd.';
+$GLOBALS["lang"]['The locations postcode.'] = '(OL L 20 van 2015.177, blz. 42).';
 
-$GLOBALS["lang"]['The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.'] = 'De top 10, 100 of 1000 (of geen) TCP-poorten worden vaak gebruikt volgens Nmap.';
+$GLOBALS["lang"]['The locations region.'] = '(1)';
 
-$GLOBALS["lang"]['The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.'] = 'De top 10, 100 of 1000 (of geen) UDP-poorten worden vaak gebruikt volgens Nmap.';
+$GLOBALS["lang"]['The locations room.'] = '"Gouvernabro"';
 
-$GLOBALS["lang"]['The total BTU output by this rack.'] = 'De totale BTU output van dit rek.';
+$GLOBALS["lang"]['The locations state.'] = '-';
 
-$GLOBALS["lang"]['The type of device.'] = 'Het type apparaat.';
+$GLOBALS["lang"]['The locations suburb.'] = '"Supply"';
 
-$GLOBALS["lang"]['The type of organisation.'] = 'Het type organisatie.';
+$GLOBALS["lang"]['The locations suite.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['The type of rack (compute, power, network, etc).'] = 'Het type rack (compute, power, network, etc).';
+$GLOBALS["lang"]['The logic for device matching is contained in the devices_helper.php file, which on a Linux install can be found here'] = 'Reglamento (EB) Nr. 1333 / 2008 II priedas iš dalies keičiamas taip: php dosiero, kiu sur Linukso- inspala.';
 
-$GLOBALS["lang"]['The type of task to run. One of: baseline, benchmark, cloud discovery, discovery, integration, report, query.'] = 'Het soort taak dat uitgevoerd moet worden. Een van: baseline, benchmark, cloud ontdekking, ontdekking, integratie, rapport, query.';
+$GLOBALS["lang"]['The machine-default permission settings do not grant Local Activation permission for the COM Server application with'] = 'La ma apretin- deva guidstaj permesokontekstoj ne donas';
 
-$GLOBALS["lang"]['The type of the integration (usually named after the external system).'] = 'Het type integratie (meestal genoemd naar het externe systeem).';
+$GLOBALS["lang"]['The maximum physical weight (in KGs) this rack can hold.'] = '(KG) Tu rako povas teni.';
 
-$GLOBALS["lang"]['The unique identifier of this server.'] = 'De unieke identificatie van deze server.';
+$GLOBALS["lang"]['The maximum total BTUs this rack is rated for.'] = 'Indonesië magimuma Totaala Btus tu rako estas taksita atl.';
 
-$GLOBALS["lang"]['The user account this collector uses. Links to <code>users.id</code>.'] = 'Het gebruikersaccount dat deze collector gebruikt. Links naar <code>users.id</code>.';
+$GLOBALS["lang"]['The minimum required attributes for attributes are'] = '® minimumas postulis pagal regulojnänder por atregulojestas';
 
-$GLOBALS["lang"]['The username used to access the external system.'] = 'De gebruikersnaam die wordt gebruikt om toegang te krijgen tot het externe systeem.';
+$GLOBALS["lang"]['The minute of the hour when this task should execute (* for every minute).'] = 'La minuto de la horo kiam tu tau devus efektivigi (* por citriyu).';
 
-$GLOBALS["lang"]['The users email address.'] = 'Het gebruikers e-mailadres.';
+$GLOBALS["lang"]['The month of the year when this task should execute (* for every month).'] = '(* por...)';
 
-$GLOBALS["lang"]['The usual hours of operation at this site.'] = 'De gebruikelijke werkuren op deze site.';
+$GLOBALS["lang"]['The name given to this item.'] = '(lt) (lt)';
 
-$GLOBALS["lang"]['The value assigned to the item.'] = 'De waarde die aan het item is toegekend.';
+$GLOBALS["lang"]['The name given to this item. Ideally it should be unique.'] = '(lt) (lt) Engels evenement';
 
-$GLOBALS["lang"]['The value that is stored for this particular item.'] = 'De waarde die wordt opgeslagen voor dit specifieke item.';
+$GLOBALS["lang"]['The name given to this user (used to login). Ideally it should be unique.'] = 'Navomo donita al tu uzanto (uzita por ensaluti). Engelse event';
 
-$GLOBALS["lang"]['The vendor name as per CPE entries.'] = 'De verkoopnaam volgens CPE-vermeldingen.';
+$GLOBALS["lang"]['The name of the associated cloud (if required).'] = 'Ventnomo de la rilata nubo (k).';
 
-$GLOBALS["lang"]['The vendor taken from the CPE.'] = 'De verkoper van de CPE.';
+$GLOBALS["lang"]['The name of the software package, as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = '- Oni uzas news realan modon (AS- finajxon).';
 
-$GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = 'De web directory op de host die Open-AudIT is geïnstalleerd (vereist een trailing slash).';
+$GLOBALS["lang"]['The name of the user who last changed or added this item (read only).'] = '"Indono de la uzanto kiu"';
 
-$GLOBALS["lang"]['The widget at position '] = 'Het widget op positie ';
+$GLOBALS["lang"]['The name provided by the provider.'] = '"Provizita" "provizanto."';
 
-$GLOBALS["lang"]['The width of this device.'] = 'De breedte van dit apparaat.';
+$GLOBALS["lang"]['The network in the format 192.168.1.0/24.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['Then'] = 'Daarna';
+$GLOBALS["lang"]['The network subnet to execute the discovery on.'] = 'Sendostacia subreto por efektivigi la eltrova.';
 
-$GLOBALS["lang"]['This CVE will be retrieved and overwrite the existing CVE if it exists.'] = 'Deze CVE zal worden opgehaald en de bestaande CVE overschrijven als het bestaat.';
+$GLOBALS["lang"]['The new Agent runs a PowerShell version of the old audit script in preparation for the depreciation of VBScript (yes, it is coming).'] = '"Reviziomanuskripto en preparo por la malpreco de VBScript" ';
 
-$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = 'Dit attribuut wordt opgeslagen als een JSON-object. Het is de lijst van alle collecties en bevat de verzamelnaam samen met <code>c</code>, <code>r</code>, <code>u</code> en,of <code>d</code> die het maken, lezen, bijwerken en verwijderen vertegenwoordigen. Dit zijn de acties die een gebruiker kan uitvoeren op items uit die specifieke collectie.';
+$GLOBALS["lang"]['The number of RUs this device occupies.'] = 'Ruoj tu aparato okupas.';
 
-$GLOBALS["lang"]['This can be either a varchar (a text field), a list (a list of values that can be selected) or a date.'] = 'Dit kan ofwel een varchar (een tekstveld), een lijst (een lijst van waarden die kunnen worden geselecteerd) of een datum zijn.';
+$GLOBALS["lang"]['The number of associated locations. Links to <code>locations.cloud_id</code>.'] = 'Thomas Nombro de rilataj Bendrijoje <code>locations.cloud_id</code>Bendrijoje';
 
-$GLOBALS["lang"]['This collectors universally unique identifier.'] = 'Deze verzamelaars universeel unieke identificatiecode.';
+$GLOBALS["lang"]['The number of associated networks. Links to <code>networks.cloud_id</code>.'] = 'Ventnombro de rilataj retoj. Bendrijoje <code>networks.cloud_id</code>Bendrijoje';
 
-$GLOBALS["lang"]['This description is auto-populated and should ideally be left as-is.'] = 'Deze beschrijving is auto-bevolkt en moet idealiter worden gelaten als-is.';
+$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = 'Reviziitaj aparato en .i tu nubo. Bendrijoje <code>devices.cloud_id</code> Bendrijoje <code>devices.serial</code>Bendrijoje';
 
-$GLOBALS["lang"]['This feature requires a Professional or an Enterprise license.'] = 'Deze functie vereist een Professional of een Enterprise licentie.';
+$GLOBALS["lang"]['The number of critical severity vulnerabilities held by FirstWave (not in your database).'] = 'La nombro da kritikaj companiacoj tenitaj tariffa de FirstWave (n en via datummazo).';
 
-$GLOBALS["lang"]['This is generally the primary column, unless otherwise configured. NOTE: When type = traffic, this represents the secondary text.'] = 'Dit is meestal de primaire kolom, tenzij anders geconfigureerd. OPMERKING: Wanneer het type = verkeer, dit vertegenwoordigt de secundaire tekst.';
+$GLOBALS["lang"]['The number of devices found by this discovery.'] = 'Indonombro da aparatoj trovitaj republiku eltrova.o.';
 
-$GLOBALS["lang"]['This item must match the value of the attribute selected or contains the ID of the query to be used.'] = 'Dit item moet overeenkomen met de waarde van het geselecteerde attribuut of bevat de ID van de te gebruiken query.';
+$GLOBALS["lang"]['The number of devices in the associated group.'] = 'Thessnombro da aparatoj en la rilata grupo.';
 
-$GLOBALS["lang"]['This item must match the value of the attribute selected.'] = 'Dit item moet overeenkomen met de waarde van het geselecteerde kenmerk.';
+$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = '(OL L 20 van 2015.177, blz. 42). Bendrijoje <code>devices.cloud_id</code> Bendrijoje <code>devices.instance_state</code>Bendrijoje';
 
-$GLOBALS["lang"]['This license expires on'] = 'Deze licentie vervalt op';
+$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Thessnombro da aparatoj en tu nubo kun stato de stopo. Bendrijoje <code>devices.cloud_id</code> Bendrijoje <code>devices.instance_state</code>Bendrijoje';
 
-$GLOBALS["lang"]['This should be set to either 1 or the height of the rack.'] = 'Dit moet worden ingesteld op 1 of de hoogte van het rek.';
+$GLOBALS["lang"]['The number of devices in this cloud. Links to <code>devices.cloud_id</code>.'] = 'Innombro stronaparatoj en .i tu nubo. Bendrijoje <code>devices.cloud_id</code>Bendrijoje';
 
-$GLOBALS["lang"]['This will auto-populate.'] = 'Dit zal automatisch populair worden.';
+$GLOBALS["lang"]['The number of devices this benchmark will be executed upon. Derived from <code>benchmarks.devices</code>.'] = '(OL L 20 van 2015.177, blz. 42). Bendrijoje <code>benchmarks.devices</code>Bendrijoje';
 
-$GLOBALS["lang"]['This will considerably slow the discovery scan.'] = 'Dit zal de ontdekkingsscan aanzienlijk vertragen.';
+$GLOBALS["lang"]['The number of devices to limit this discovery to.'] = 'Indomibro da aparatoj por limigi tiun eltrova.';
 
-$GLOBALS["lang"]['Thursday'] = 'donderdag';
+$GLOBALS["lang"]['The number of high severity vulnerabilities held by FirstWave (not in your database).'] = 'La nombro daalta Fairco vundeblecoj tenitaj tariffa de FirstWave (datummazo opharm).';
 
-$GLOBALS["lang"]['time_caption'] = 'Tijdtitel';
+$GLOBALS["lang"]['The number of low severity vulnerabilities held by FirstWave (not in your database).'] = 'Datumbaz).';
 
-$GLOBALS["lang"]['Time Caption'] = 'Tijdtitel';
+$GLOBALS["lang"]['The number of medium severity vulnerabilities held by FirstWave (not in your database).'] = '(1)';
 
-$GLOBALS["lang"]['time_daylight'] = 'Tijd daglicht';
+$GLOBALS["lang"]['The number of purchased licenses.'] = 'Dérognombro de a bordoetetaj licencoj.';
 
-$GLOBALS["lang"]['Time Daylight'] = 'Tijd daglicht';
+$GLOBALS["lang"]['The number of seconds to try and communicate with the target IP.'] = 'Indonbro da sekundoj por providation kaj komuni kun la celo IP.';
 
-$GLOBALS["lang"]['Time to Execute'] = 'Tijd om uit te voeren';
+$GLOBALS["lang"]['The number of vulnerabilities without a severity held by FirstWave (not in your database).'] = 'La nombro da vondeblecoj sen companyasco tenita Fare de FirstWave (datumbaz Bendrijoje).';
 
-$GLOBALS["lang"]['timeout'] = 'Tijdslimiet';
+$GLOBALS["lang"]['The offset is the count of devices you wish to return data from.'] = 'La ofseto estas la Kalkulo de aparatoj kiujn vi deziras resendi datennojn de.';
 
-$GLOBALS["lang"]['Timeout'] = 'Tijdslimiet';
+$GLOBALS["lang"]['The only required permission / policy name (in our testing) is'] = 'Suppora postulata perfeso / politiknomo (nia testado) estas';
 
-$GLOBALS["lang"]['Timeout Per Target (Seconds)'] = 'Tijdslimiet per doelstelling (seconden)';
+$GLOBALS["lang"]['The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.'] = '® ® ® ® arba ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® = trafiko, tio reprezentas la flavan kisely id.';
 
-$GLOBALS["lang"]['Timesatamp'] = 'Timesatamp';
+$GLOBALS["lang"]['The optional third column. NOTE: When type = traffic, this represents the green query id.'] = '"Verkenner"';
 
-$GLOBALS["lang"]['Timestamp'] = 'Tijdstempel';
+$GLOBALS["lang"]['The order of information retrieval is snmp, ssh, wmi.'] = 'Venus de informaj preasal estas snmp, ssh, wmi.';
 
-$GLOBALS["lang"]['timing'] = 'Tijdschema';
+$GLOBALS["lang"]['The orientation of this device.'] = '-';
 
-$GLOBALS["lang"]['Timing'] = 'Tijdschema';
+$GLOBALS["lang"]['The password (if not using the user running the script).'] = 'La pasvorton (Österreiuzante la uzanton prizorganin la manikripton).';
 
-$GLOBALS["lang"]['Timor-Leste'] = 'Oost-Timor';
+$GLOBALS["lang"]['The password for the dn_account attribute.'] = 'La pasvorton por la dn režisierė.';
 
-$GLOBALS["lang"]['Title'] = 'Titel';
+$GLOBALS["lang"]['The password used to access the external system.'] = '® pasvorton uzata por aliri la eksteran sistema.';
 
-$GLOBALS["lang"]['Togo'] = 'Togo';
+$GLOBALS["lang"]['The path to the file or directory.'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['Tokelau'] = 'Tokelau';
+$GLOBALS["lang"]['The path to the file or directory. Directories should end with a trailing slash.'] = '(RO 2012 7183). Direktoroj murtaa finitai kun migrovojo.';
 
-$GLOBALS["lang"]['Tonga'] = 'Tonga';
+$GLOBALS["lang"]['The physical depth (in CMs) of the rack.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['toolbar_style'] = 'Werkbalkstijl';
+$GLOBALS["lang"]['The physical height (in CMs) of the rack.'] = '(NL)';
 
-$GLOBALS["lang"]['Toolbar Style'] = 'Werkbalkstijl';
+$GLOBALS["lang"]['The physical weight (in KGs) of the rack at present.'] = 'La fizika pezo (en KGoj) de la rako nuntempe.';
 
-$GLOBALS["lang"]['Top Nmap TCP Ports'] = 'Top-Nmap TCP-poorten';
+$GLOBALS["lang"]['The physical weight (in KGs) of the rack when empty.'] = 'KGJ.';
 
-$GLOBALS["lang"]['Top Nmap UDP Ports'] = 'Top-Nmap UDP-poorten';
+$GLOBALS["lang"]['The physical width (in CMs) of the rack.'] = '(fr / mm)';
 
-$GLOBALS["lang"]['Traditional Chinese'] = 'Traditioneel Chinees';
+$GLOBALS["lang"]['The pod (if any) that this rack is part of.'] = 'La balgo (se entute) ke tu rako estas parto de.';
 
-$GLOBALS["lang"]['Traffic Light'] = 'Verkeerslicht';
+$GLOBALS["lang"]['The power circuit this rack attaches to.'] = '® ® ® Čarkvito tiu Čekalko remomendaras.';
 
-$GLOBALS["lang"]['Trinidad and Tobago'] = 'Trinidad en Tobago';
+$GLOBALS["lang"]['The primary database table upon which to base this widget.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['Troubleshooting LDAP Logins'] = 'Problemen oplossen LDAP-aanmeldingen';
+$GLOBALS["lang"]['The primary method for authorization (what a user can do) is now based on the users Roles. Roles are defined as admin, org_admin, reporter, and user by default. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. Standard roles as shipped should cover 99.9 percent of use-cases. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.'] = 'La primara metodo por aproso (ko uzanto povas fari) Şestas bazita sur la uzantroj. Roloj estas difinitaj kiel admin, org _ admin, raportto, kaj uzanto déca. imitaiu rolo havas aron de permesoj (Crear, Leeri, Actualisar, Elimuinar) por. Normaj roloj kiel ekspedite devus kovri 99,9 procentojn eduzoj. Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 dalies a punktas';
 
-$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"'] = 'Probeer alle nieuwste functies met een GRATIS 100 apparaat licentie van Open-Audit Enterprise. Lees de <a href=\"';
+$GLOBALS["lang"]['The process identifier of this queue item.'] = 'Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 dalies a punktas';
 
-$GLOBALS["lang"]['Tuesday'] = 'Dinsdag';
+$GLOBALS["lang"]['The process that was used last to retrieve details about the device'] = 'Aprėpties atveju:';
 
-$GLOBALS["lang"]['Tunisia'] = 'Tunesië';
+$GLOBALS["lang"]['The purpose of this licensing page is to list the products and licenses included in Firstwave Commercial products including products based upon open source works.Open-AudIT is licensed from Firstwave under AGPLv3 or later with Enterprise and Professional functionality licensed under commercial terms.Open-AudIT when downloaded from FirstWave may include the following libraries and projects, which are supplied unmodified and licensed as indicated:'] = 'La celo de tiu licencadpa grado breacs listigi la produktojn kaj licencojn Inkluditaj en Firstwave Bendrieoje arba trečiojoje šalyje; "Profesia funkcieco licenciita supokomercaj esprimej." (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13, 14, 15, 15, 16, 16, 16, 16, 16, 17, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,';
 
-$GLOBALS["lang"]['Turkey'] = 'Turkije';
+$GLOBALS["lang"]['The query that provides a list of devices for the integration. Links to <code>queries.id</code>.'] = '"Figielj de aparatoj por la integri / 1993 / o Ligiloj al" <code>queries.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['Turkmenistan'] = 'Turks';
+$GLOBALS["lang"]['The rack asset number.'] = '- aktiva nombro.';
 
-$GLOBALS["lang"]['Turks and Caicos Islands'] = 'Turks- en Caicoseilanden';
+$GLOBALS["lang"]['The rack asset tag.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Tuvalu'] = 'Tuvalu';
+$GLOBALS["lang"]['The rack bar code.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['tx_bitrate'] = 'Tx-bitrate';
+$GLOBALS["lang"]['The rack model.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Tx Bitrate'] = 'Tx-bitrate';
+$GLOBALS["lang"]['The rack serial.'] = '-';
 
-$GLOBALS["lang"]['tx_freq'] = 'Tx Freq';
+$GLOBALS["lang"]['The rack series.'] = '-';
 
-$GLOBALS["lang"]['Tx Freq'] = 'Tx Freq';
+$GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = 'Tiu aparato sitas en ligiloj <code>racks.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['tx_level'] = 'Tx-niveau';
+$GLOBALS["lang"]['The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.'] = 'Indonesië remomendita proceszo de traktado kaj fiksado identigis sekurrecvulsilojn. Tio editor impica apliki pecetojn ';
 
-$GLOBALS["lang"]['Tx Level'] = 'Tx-niveau';
+$GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = 'Bendrijoje Laregul domajna notacio de ŞEsimeriksi Ş. <code>open-audit.lan</code>Bendrijoje';
 
-$GLOBALS["lang"]['tx_power'] = 'Tx-vermogen';
+$GLOBALS["lang"]['The requested properties should be in a comma-separated list. Properties should be fully qualified - ie, system.hostname (not just hostname).'] = '(RO 2012 7183). Trajtoj devus esti plene kvalifikitaj - opharm, sistemo.';
 
-$GLOBALS["lang"]['Tx Power'] = 'Tx-vermogen';
+$GLOBALS["lang"]['The result of the command.'] = '-';
 
-$GLOBALS["lang"]['tx_profile'] = 'Tx-profiel';
+$GLOBALS["lang"]['The room the rack is located in.'] = '-';
 
-$GLOBALS["lang"]['Tx Profile'] = 'Tx-profiel';
+$GLOBALS["lang"]['The row the rack is located in.'] = '-';
 
-$GLOBALS["lang"]['type'] = 'Type';
+$GLOBALS["lang"]['The search for group on the LDAP server failed. Check the LDAP server logs. Have you created these groups (for roles and orgs) on the LDAP server and assigned LDAP users to them?'] = 'La ser oriëntalilada por grupo sur la LDAP - servilio malsukcesis. Kontrou ® LDAP- servilregistrojn. imitazione reis tiujn grupojn (por roloj kaj orkoj) sur la LDAP- servilo kaj asignis LDAP- uzantojn al ili?';
 
-$GLOBALS["lang"]['Type'] = 'Type';
+$GLOBALS["lang"]['The secret key used in conjunction with your AWS EC2 API key.'] = 'AWS EC2 API Galosilo® La sekreta calosilo uzita lige kun.';
 
-$GLOBALS["lang"]['URL'] = 'URL';
+$GLOBALS["lang"]['The software end-of-life date.'] = '-';
 
-$GLOBALS["lang"]['uuid'] = 'UUID';
+$GLOBALS["lang"]['The software end-of-service-life date.'] = '(1)';
 
-$GLOBALS["lang"]['UUID'] = 'UUID';
+$GLOBALS["lang"]['The specific database column from the specified database table.'] = '® specifa datenarkolano de la prezigita base de donnécomo.';
 
-$GLOBALS["lang"]['udp_ports'] = 'Udp-poorten';
+$GLOBALS["lang"]['The specific database table.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Udp Ports'] = 'Udp-poorten';
+$GLOBALS["lang"]['The standard Nmap timing options. Previously set at T4 (aggressive).'] = '(lt) Anta.e meetita T4';
 
-$GLOBALS["lang"]['Uganda'] = 'Oeganda';
+$GLOBALS["lang"]['The standard Nmap timing options. We usually use -T4 (Aggressive) as this is recommended for a decent broadband or ethernet connection.'] = '"Nmap" tempigastavia opciojn Ş. "Ni kutime uzas - T4 (Agres) kiam to estas komendita por deka larεbendo a limitalt teroligo.';
 
-$GLOBALS["lang"]['Ukraine'] = 'Oekraïne';
+$GLOBALS["lang"]['The status of this integration'] = '(1)';
 
-$GLOBALS["lang"]['uninstall'] = 'Verwijderen';
+$GLOBALS["lang"]['The status of this queued item.'] = '"" Leader + "programma';
 
-$GLOBALS["lang"]['Uninstall'] = 'Verwijderen';
+$GLOBALS["lang"]['The steps below outline the process.'] = 'La apparenza атитов';
 
-$GLOBALS["lang"]['Uninstall the Agent'] = 'Verwijder de agent';
+$GLOBALS["lang"]['The target IP this log entry referers to (if any).'] = 'La celo IP kiun tu tagalalo enmetas al (se entute).';
 
-$GLOBALS["lang"]['United Arab Emirates'] = 'Verenigde Arabische Emiraten';
+$GLOBALS["lang"]['The target computer to audit. \".\" means localhost.'] = 'Hepatito celkomputio al revizio.';
 
-$GLOBALS["lang"]['United Kingdom'] = 'Verenigd Koninkrijk';
+$GLOBALS["lang"]['The template for the link to be generated per result line.'] = 'La griabelono por la ligo por esti generita per rezulta lino.';
 
-$GLOBALS["lang"]['United States Minor Outlying Islands'] = 'Verenigde Staten Kleine afgelegen eilanden';
+$GLOBALS["lang"]['The text for the bottom of the chart in a line chart (only).'] = 'Thessteksto por la Fundo de la diotra en lindusagramo (nur).';
 
-$GLOBALS["lang"]['United States Virgin Islands'] = 'Amerikaanse Maagdeneilanden';
+$GLOBALS["lang"]['The text that is displayed.'] = 'Thomas texto kiu estetas montrita.';
 
-$GLOBALS["lang"]['United States of America'] = 'Verenigde Staten';
+$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = '® Tempostap newskiu, tu tapo devus kuri. Egzemt, prizorgas taspon new la unua junio 2017 10.00 <code>2017-06-01 09:59:00</code>(mi, 09, ne 9). Tiu <code>2000-01-01 00:00:00</code> "Ciu de dea.lte," "aštuonženklis" arba "Vinca"';
 
-$GLOBALS["lang"]['Unknown'] = 'Onbekend';
+$GLOBALS["lang"]['The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.'] = '10, 100 a. 1000 a)';
 
-$GLOBALS["lang"]['unlock_pin'] = 'Pin ontgrendelen';
+$GLOBALS["lang"]['The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.'] = '10, 100 a. 1000 a)';
 
-$GLOBALS["lang"]['Unlock Pin'] = 'Pin ontgrendelen';
+$GLOBALS["lang"]['The total BTU output by this rack.'] = 'BTE - prodotto.';
 
-$GLOBALS["lang"]['Unscheduled'] = 'Ongepland';
+$GLOBALS["lang"]['The type of device.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Unused as at 5.2.0.'] = 'Niet gebruikt op 5.2.0.';
+$GLOBALS["lang"]['The type of organisation.'] = '-';
 
-$GLOBALS["lang"]['Unused.'] = 'Ongebruikt.';
+$GLOBALS["lang"]['The type of rack (compute, power, network, etc).'] = 'La speco de rako (kompato, regico, reto, ktp).';
 
-$GLOBALS["lang"]['Update'] = 'Bijwerken';
+$GLOBALS["lang"]['The type of task to run. One of: baseline, benchmark, cloud discovery, discovery, integration, report, query.'] = 'La speco de tako por kuri _ respecture.o';
 
-$GLOBALS["lang"]['update_external_count'] = 'Extern aantal bijwerken';
+$GLOBALS["lang"]['The type of the integration (usually named after the external system).'] = '-';
 
-$GLOBALS["lang"]['Update External Count'] = 'Extern aantal bijwerken';
+$GLOBALS["lang"]['The unfiltered state means that a port is accessible, but Nmap is unable to determine whether it is open or closed. Only the ACK scan, which is used to map firewall rulesets, classifies ports into this state. Scanning unfiltered ports with other scan types such as Window scan, SYN scan, or FIN scan, may help resolve whether the port is open.'] = 'Thomas neperorita gritato signfas ke hasno estas alirebla, sed Nmap estas nekapablla determinmi - Estas malferma katlus fermota. Nur la ACK- sanado, kiu kutimas mapi fajromurajn reguletojn, klazifikas hasnojn en tiun quirestaton. Scanante nefilitajn hasnojn kun alfaj malabundaj tipoj kiel ekzemt Fenestra sanado, SYN- sanado, katlus FIN- sanado, povas helsi solvi U la Havenno estas malferma.';
 
-$GLOBALS["lang"]['update_external_from_internal'] = 'Externe update vanuit intern';
+$GLOBALS["lang"]['The unique identifier of this server.'] = 'Ventspunka identifiilo equittu servilio.';
 
-$GLOBALS["lang"]['Update External From Internal'] = 'Externe update vanuit intern';
+$GLOBALS["lang"]['The user account this collector uses. Links to <code>users.id</code>.'] = 'La uzanto rev. Bendrijoje <code>users.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['update_internal_count'] = 'Intern aantal bijwerken';
+$GLOBALS["lang"]['The user in Active Directory / OpenLDAP must be a direct member of the required Open-AudIT groups for Roles and Orgs. A member of a group that is a member another group that is a member of the Open-AudIT group will not work.'] = 'La uzanto en Aktiva Adresaro / OpenLDAP murros et rekta membro de la postulataj rev. Membro de grupo kiu estas membro teiste nimedega grupo kiu estas membro de la open- mes ne funkcias.';
 
-$GLOBALS["lang"]['Update Internal Count'] = 'Intern aantal bijwerken';
+$GLOBALS["lang"]['The user is in LDAP and their credentials are valid, but is not in any of the Open-AudIT LDAP groups for Orgs.'] = 'Reglamento (EB) Nr. 1235 / 2008 I priedas iš dalies keičiamas taip: oj estas validaj, sed ne estas en iuj da la open- SmithKline LDAP- grupoj por Orgs.';
 
-$GLOBALS["lang"]['update_internal_from_external'] = 'Intern bijwerken vanuit extern';
+$GLOBALS["lang"]['The user is in LDAP and their credentials are valid, but is not in any of the Open-AudIT LDAP groups for Roles.'] = 'Reglamento (EB) Nr. 1235 / 2008 I priedas iš dalies keičiamas taip: [dėl Pyongyang]';
 
-$GLOBALS["lang"]['Update Internal From External'] = 'Intern bijwerken vanuit extern';
+$GLOBALS["lang"]['The user is in LDAP and their credentials are valid, but is not in any of the required Open-AudIT LDAP groups.'] = 'Reglamento (EB) Nr. 1235 / 2008 I priedas iš dalies keičiamas taip: [dėl Pyongyang]';
 
-$GLOBALS["lang"]['Update NMIS Devices from Open-AudIT'] = 'NMIS-apparaten van Open-AudIT bijwerken';
+$GLOBALS["lang"]['The user is in the LDAP group that matches this Org.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['Update Open-AudIT Devices from '] = 'Open-AudIT bijwerken Apparaten van ';
+$GLOBALS["lang"]['The user is in the LDAP group that matches this Role.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['Update Open-AudIT Devices from NMIS'] = 'Open-AudIT bijwerken Apparaten van NMIS';
+$GLOBALS["lang"]['The user is not in the LDAP group that matches this Org.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed with IPs detected to be responding.'] = 'Bijgewerkt elke keer dat ontdekking is uitgevoerd met IPs gedetecteerd om te reageren.';
+$GLOBALS["lang"]['The user is not in the LDAP group that matches this Role.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed with IPs that have been scanned by Nmap.'] = 'Bijgewerkt elke keer dat ontdekking is uitgevoerd met IP\'s die zijn gescand door Nmap.';
+$GLOBALS["lang"]['The user that was specified exists in LDAP, but Open-AudIT is not configured to consume the LDAP groups for roles and that user does not exist within Open-AudIT. Either select <i>Use LDAP for Roles</i> on the Open-AudIT LDAP Server screen or create this user within Open-AudIT and assign roles and orgs.'] = 'La uzanto kiu estis prezigita eksistas en LDAP, sed rėmziţtur neestasman formita por konsumi la LDAP- grupojn por roloj kaj tu uzanto ne ezistas ene de řēmzistan <i>"LTD"</i> Sur la Open Audit LDAP Servilkrano epäilty krei tien uzanton ene de Open- AudIT kaj alissignas rolojn kaj orgs.';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to audit.'] = 'Bijgewerkt elke keer dat ontdekking is uitgevoerd met apparaten die we konden controleren.';
+$GLOBALS["lang"]['The username (if not using the user running the script).'] = 'La uzantinomo (Indzante la uzanton prizorgantan la kézmřves).';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to query.'] = 'Bijgewerkt elke keer dat ontdekking is uitgevoerd met apparaten die we konden vragen.';
+$GLOBALS["lang"]['The username used to access the external system.'] = 'Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed.'] = 'Bijgewerkt elke keer dat ontdekking is uitgevoerd.';
+$GLOBALS["lang"]['The users details were not retrieved from LDAP. Check the LDAP server logs.'] = '(RO 2012 7183). Kontrou ® LDAP- servilregistrojn.';
 
-$GLOBALS["lang"]['Updated each time the discovery has been executed.'] = 'Bijgewerkt elke keer als de ontdekking is uitgevoerd.';
+$GLOBALS["lang"]['The users details were retrieved from LDAP.'] = '(OL L 20 van 2015.177, blz. 42).';
 
-$GLOBALS["lang"]['Updated each time the discovery has completed execution.'] = 'Bijgewerkt elke keer dat de ontdekking is voltooid uitvoering.';
+$GLOBALS["lang"]['The users email address.'] = 'Repo Explota adreso.';
 
-$GLOBALS["lang"]['Updating'] = 'Bijwerken';
+$GLOBALS["lang"]['The usual hours of operation at this site.'] = 'Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 dalies a punktas';
 
-$GLOBALS["lang"]['Upgrade'] = 'Upgrade';
+$GLOBALS["lang"]['The value assigned to the item.'] = '-';
 
-$GLOBALS["lang"]['Upload an audit result file'] = 'Een audit resultaatbestand uploaden';
+$GLOBALS["lang"]['The value that is stored for this particular item.'] = '® Valoro kiu estas stokita por tu speciala objectko.';
 
-$GLOBALS["lang"]['Upper Case'] = 'Hoofdletter';
+$GLOBALS["lang"]['The vendor name as per CPE entries.'] = '® vendistnomo kiel arba CPE kontribooj.';
 
-$GLOBALS["lang"]['uptime'] = 'Uptime';
+$GLOBALS["lang"]['The vendor taken from the CPE.'] = '"Vendisto,"';
 
-$GLOBALS["lang"]['Uptime'] = 'Uptime';
+$GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = 'La reto adresaro sur la gastiganto kiu open- reasestas secrete (postulas migrovojon).';
 
-$GLOBALS["lang"]['url'] = 'Url';
+$GLOBALS["lang"]['The widget at position '] = '- ';
 
-$GLOBALS["lang"]['Url'] = 'Url';
+$GLOBALS["lang"]['The width of this device.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Uruguay, Eastern Republic of'] = 'Uruguay, Republiek ten oosten van';
+$GLOBALS["lang"]['Their OrgIDs and their descendants'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['usb'] = 'Usb';
+$GLOBALS["lang"]['Their OrgIDs only'] = '(lt)';
 
-$GLOBALS["lang"]['Usb'] = 'Usb';
+$GLOBALS["lang"]['Their OrgIDs, ascendants and descendants'] = 'Ilaj Orgidoj, aspintoj kaj posteuloj, Bendrijoje';
 
-$GLOBALS["lang"]['use'] = 'Gebruik';
+$GLOBALS["lang"]['Then'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Use'] = 'Gebruik';
+$GLOBALS["lang"]['Then create a new Auth method in Open-AudIT by going to menu -> Admin -> Auth Methods -> Create Auth. Provide a name and set the <i>type</i> to Entra.'] = 'Título Auth Metodoj - título Krei Auth. Prénu Portugukaj metis <i>Bendrijoje</i> Bendrijoje';
 
-$GLOBALS["lang"]['use_authentication'] = 'Aanmeldingscontrole gebruiken';
+$GLOBALS["lang"]['Then you can use Open-AudIT (unsupported) to receive audit data directly from the clients. Discovery <strong>will fail</strong>, but if youre not using Discovery (the main feature Open-AudIT was designed around), you can still get device data. You would need to run the audit scripts directly on the clients using cron, or use the Windows Agent feature (Enterprise only).'] = 'Tiam vi povas uzi režiziodatenojn reklama de la klientoj. Bendrijoje <strong>Bendrijoje</strong>, sed se vi ne uzas residu, a uzi la Windows Agent trajton (Entreprizo nur).';
 
-$GLOBALS["lang"]['Use Authentication'] = 'Aanmeldingscontrole gebruiken';
+$GLOBALS["lang"]['There is a button to export to JSON. This will display only the device table of attributes. To export the device with all associated component tables, view the device details, then add'] = 'Eksporstas butono por eksporti Tio Montros nur educaparato tablon de atentioj. Por eksporti ';
 
-$GLOBALS["lang"]['use_authorisation'] = 'Gebruiksvergunning';
+$GLOBALS["lang"]['There is absolutely no need to manually edit each individual device.'] = 'Eksporstas absoliuto neniu bezono redakki ciiun ininfuan aparaton.';
 
-$GLOBALS["lang"]['Use Authorisation'] = 'Gebruiksvergunning';
+$GLOBALS["lang"]['There is no need to do anything if you are running Open-AudIT on a Linux server.<br><br>Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.'] = 'Essistas neniu bezono Farenda.o io ajn se vi prizorgas rev.<br/><br/>Fenestroj estas justaj kaj postulas neniujn specialajn predjn, aliflanke... rajtigi tiun trajton la reviziomanuskripto provises et prizorgita loke sur la cel Windows- sistemon. Porcology agoni murs kopii la reviziomanuskripton al la celio residu- ma agotadono kaj tiam prizorgi εin. (1) Tiu raporto haves neniun alron al malpreksimaj (reto bazita) resursoj. Por labori... irka epäilty tu temo la nexes brunces esti prizorgita sublison. Estas plej neuzi la lokan Administrateur konton, sed vi povas providation ajnan raporton vi kiel lage kiel εi havas la postulatajn ragejn. La Loka Sistemo- konto havas tien multe da loka aliro kiel la loka Administramento - ko.';
 
-$GLOBALS["lang"]['Use SNMP'] = 'SNMP gebruiken';
+$GLOBALS["lang"]['These are only examples. You may need to adjust these attributes to suit your particular LDAP.'] = 'Tiuj estas nur ekzemoj. LDAP est un śliqueducation et de atitinkamu';
 
-$GLOBALS["lang"]['Use SSH'] = 'Gebruik SSH';
+$GLOBALS["lang"]['These parameters enable you to audit only what is useful and relevant to you, saving processing time and allowing you to discover your network in an orderly manner.'] = 'Tiuj insegnamento eligas al vi revizii nur kio estas utila kaj inspecfa al vi, retigtemon kaj permezante al vi malkovri vin reton en bonorda maniero.';
 
-$GLOBALS["lang"]['Use Secure (LDAPS)'] = 'Veilig gebruiken (LDAPS)';
+$GLOBALS["lang"]['Thing'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Use Service Version Detection'] = 'Detectie van de Serviceversie gebruiken';
+$GLOBALS["lang"]['Think of mail.domain1.com and mail.domain2.com - same hostname.'] = 'Sam mastronosomo.';
 
-$GLOBALS["lang"]['Use WMI'] = 'WMI gebruiken';
+$GLOBALS["lang"]['Third'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Use for Authentication'] = 'Gebruik voor aanmeldingscontrole';
+$GLOBALS["lang"]['This CVE will be retrieved and overwrite the existing CVE if it exists.'] = 'Tiu CVE estos prenita kaj écraze la ekistanta CVE se liukoinen ekistas.';
 
-$GLOBALS["lang"]['Use for Roles'] = 'Gebruik voor rollen';
+$GLOBALS["lang"]['This Org has no AD group specified. Check the roles details within Open-AudIT.'] = 'Tiu Org havas neniun ® gruppon presicigitani. Kontrou la rolojn detalojn ene de respectur';
 
-$GLOBALS["lang"]['used'] = 'Gebruikt';
+$GLOBALS["lang"]['This Org has no AD group specified. Check the roles details within Open-AudIT. <span class=\"confluence-link\">Have you created these groups (for orgs) on the LDAP server and assigned LDAP users to them?'] = 'Tiu Org havas neniun ® gruppon presicigitani. Kontrou la rolojn detalojn ene de respectur <span class=\'\"confluence-link\"\'>Per orgoj sur la LDAP- servilo kaj asignis LDAP- uzantojn al ili?</span>';
 
-$GLOBALS["lang"]['Used'] = 'Gebruikt';
+$GLOBALS["lang"]['This Role has no AD group specified. Check the roles details within Open-AudIT.'] = 'Tiu rolo havas neniun Româgruppon presisisigitaani. Kontrou la rolojn detalojn ene de respectur';
 
-$GLOBALS["lang"]['used_count'] = 'Aantal gebruikte exemplaren';
+$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = 'Tiu nestas stokita kiel json- objekto rev. <code>c</code>Bendrijoje <code>r</code>Bendrijoje <code>u</code> Bendrijoje <code>d</code> Kiuj reprezentas krei, need, εisdatigi kaj forigi. Tiuj estas la agoj uzanto povas rezulti sur eroj de tu speciala kolekto.';
 
-$GLOBALS["lang"]['Used Count'] = 'Aantal gebruikte exemplaren';
+$GLOBALS["lang"]['This can be either a varchar (a text field), a list (a list of values that can be selected) or a date.'] = 'Tio povas esti a perspective varchar (tekampo), lista (listo de valoroj kiuj povas et selektitaj) katluse dato.';
 
-$GLOBALS["lang"]['Used by OpenLDAP only.'] = 'Alleen door OpenLDAP gebruikt.';
+$GLOBALS["lang"]['This code relys on the great work done by the'] = 'Tiu kodo adpendenteas de la gra laboro farita per la';
 
-$GLOBALS["lang"]['Used internally when discovering a single device.'] = 'Intern gebruikt bij het ontdekken van een enkel apparaat.';
+$GLOBALS["lang"]['This collectors universally unique identifier.'] = 'Tiuj kuluttajantoj universzale unika identilo.';
 
-$GLOBALS["lang"]['Used internally when discovering a single device. Links to <code>devices.id</code>.'] = 'Intern gebruikt bij het ontdekken van een enkel apparaat. Links naar <code>devices.id</code>.';
+$GLOBALS["lang"]['This column is required by'] = 'Tiu kolono estas postulita Bendrijoje';
 
-$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.'] = 'Gebruikt wanneer LDAP-servers zijn geconfigureerd om een gebruikersdetails te vullen - dit omvat de Orgs waartoe ze toegang hebben. Als een gebruiker in deze LDAP-groep zit, worden ze deze org toegewezen.';
+$GLOBALS["lang"]['This column is required by '] = 'Tiu kolono estas postulita Bendrijoje ';
 
-$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.'] = 'Gebruikt wanneer LDAP-servers zijn geconfigureerd om een gebruikersdetails te vullen - dit omvat de Roles die ze worden toegewezen. Als een gebruiker in deze LDAP-groep zit, krijgen ze deze rol toegewezen.';
+$GLOBALS["lang"]['This description is auto-populated and should ideally be left as-is.'] = 'Tiu priskribo estas a studetto lo innovadorita kaj devus idéale esti laseta kiel- estas.';
 
-$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = 'Gebruikt bij het zoeken naar OpenLDAP om een gebruikers uid aan een groepsleden te koppelen. Standaard van <code>memberUid</code>. Alleen door OpenLDAP gebruikt.';
+$GLOBALS["lang"]['This endpoint enables you to add the connections that are part of your network infrastructure, it allows you to customize a variety of attributes, specify where this connection is located and the organization that it belongs.'] = 'Tiu finpunkto rajtigas vin aldoni la ligantoj kiuj estas parto de via retrastrukturo, εi permes al vi adattai gamon da atigantoj, prezigi kie tu ligo s kaj la organiso ke εi apartenas.';
 
-$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications.'] = 'Gebruikt met integraties en FirstWave monitoring toepassingen.';
+$GLOBALS["lang"]['This error indicates that SMB1 has been disabled or removed from the target machine. This is normal for modern version of Windows and you will only see this message when the SMB2 connection attempt has failed. If the SMB2 connection fails, we attempt SMB1 to enable discovery on old versions of Windows. If the target Windows machine <i>is</i> running an old version of Windows, it is likely your credentials have failed. In that case, see'] = '(1) SBB1 estes handikapita epäilty forigita de la celma apretino. Tio estas residu du ligprovo malsukcesis. Se la require2-ligo malsukcesas, niprovas SBB1 Bendrijoje <i>Bendrijoje</i> Sed vi havas malnovan versie de Vindozo. Bendrijoje';
 
-$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications. Set to y if working SNMP detected by discovery.'] = 'Gebruikt met integraties en FirstWave monitoring toepassingen. Stel in op y als het werken van SNMP gedetecteerd door ontdekking.';
+$GLOBALS["lang"]['This error indicates that not enough virtual memory or paging file quota is available to complete the specified operation. You should try again later.'] = '(1, 2, 2, 3, 4, 5, 6, 7, 8)';
 
-$GLOBALS["lang"]['user'] = 'Gebruiker';
+$GLOBALS["lang"]['This error indicates the credentials used either are incorrect, do not exist or do not have sufficient privileges to log on remotely to the target Windows machine. You should verify the credentials and check the below.'] = 'șižanginė pastaba.';
 
-$GLOBALS["lang"]['User'] = 'Gebruiker';
+$GLOBALS["lang"]['This example creates a list of all Modules marked as'] = 'Tiu ekzemplo kreas';
 
-$GLOBALS["lang"]['User DN'] = 'Gebruiker-DN';
+$GLOBALS["lang"]['This example creates a list of devices and the open Ports, Protocols, and Programs found by the NMAP scan.'] = 'Tiu ekzemplo kreas Listn de aparatoj kaj la malfermaj Havenoj, Protokolaj, kaj Progmoj Trotaj la NMAP- skreado.';
 
-$GLOBALS["lang"]['user_group'] = 'Gebruikersgroep';
+$GLOBALS["lang"]['This example creates a list of devices where the Function or Description fields are blank OR the Purchase Date is the default.'] = 'Tiu ekzemplo kreas Listn de aparatoj kie la Funkcio a Kaptlus Preskribo krip j estas brilaj VôI la Avisioneta.dato estas la deva septo.';
 
-$GLOBALS["lang"]['User Group'] = 'Gebruikersgroep';
+$GLOBALS["lang"]['This example query retrieves a list of devices OVER 3 years old. The query uses today'] = 'Tiu ekzemplo kisely prenas listan de aparatoj sur 3 jerga a ritmoaj. -';
 
-$GLOBALS["lang"]['user_id'] = 'Gebruikers-ID';
+$GLOBALS["lang"]['This example uses'] = 'Tiu ekzemplo uzas, Bendrijoje';
 
-$GLOBALS["lang"]['User ID'] = 'Gebruikers-ID';
+$GLOBALS["lang"]['This feature requires a Professional or an Enterprise license.'] = 'Tiu trajto postulas';
 
-$GLOBALS["lang"]['user_interaction'] = 'Gebruikersinteractie';
+$GLOBALS["lang"]['This feature, because it has the ability to affect target devices more than usual must be manually enabled. To enable this feature, change the configuration item feature_executables to <i>yes</i>.'] = 'Tiunel Trajto, Indonesië Por ebligi tiun trajton, рашива... <i>Bendrijoje</i>Bendrijoje';
 
-$GLOBALS["lang"]['User Interaction'] = 'Gebruikersinteractie';
+$GLOBALS["lang"]['This file tells Linux to poll the application to determine if there are any scheduled tasks that should be run.'] = 'Tiu dosiero rakontas al Linukso sondi la pettsribon por determini Eksporstas juj planitaj takoj kiuj devus esti prizorgitaj.';
 
-$GLOBALS["lang"]['User Membership Attribute'] = 'Attribuut gebruikerslidmaatschap';
+$GLOBALS["lang"]['This form provides a simple way to get started discovering the devices on your network. For more (much more) detailed options, you can individually create'] = 'Tiu Româdispinigas simplan manieron por domenci malkovri la aparatojn sur via reto. Por pli da (multe pli) detalaj opcioj, vi povas injalue krei';
 
-$GLOBALS["lang"]['user_name'] = 'Gebruikersnaam';
+$GLOBALS["lang"]['This is also the way that PAExec works.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['User Name'] = 'Gebruikersnaam';
+$GLOBALS["lang"]['This is an optional configuration option, enabled by setting discovery_use_org_id_match in the global configuration.'] = 'Tio estas respecturacio, ebigita metate etaburacio';
 
-$GLOBALS["lang"]['User Policies'] = 'Gebruikersbeleid';
+$GLOBALS["lang"]['This is generally the primary column, unless otherwise configured. NOTE: When type = traffic, this represents the secondary text.'] = 'Tio estas εenerale la primara kolono, se alie formis. Reglamento (EB) Nr. 396 / 2005 II, III ir V priedai iš dalies keičiami taip:';
 
-$GLOBALS["lang"]['Username'] = 'Gebruikersnaam';
+$GLOBALS["lang"]['This is likely due to MySQL time being off. MySQL typically uses the host devices time. You can check this by'] = 'Tio ver apretajne рuldi MySQL pointe utilogas la mastro aparaton tempo. Bendrijoje';
 
-$GLOBALS["lang"]['username'] = 'Gebruikersnaam';
+$GLOBALS["lang"]['This is settable by users and so even though it should be globally unique, there is certainly no guarantee of this.'] = 'Tio estas metita Româde uzantoj kaj tien e previsto se εi devus esti tutmonde unika, ekistas certe niu garantio detio.';
 
-$GLOBALS["lang"]['users'] = 'Gebruikers';
+$GLOBALS["lang"]['This is the directory where we store any attachments to devices.'] = 'Tio estas la adresaro kie ni stokas jojn aldonojn al aparatoj.';
 
-$GLOBALS["lang"]['Users'] = 'Gebruikers';
+$GLOBALS["lang"]['This is to be used as the first point of call when troubleshooting Open-AudIT issues. You can click the Export button on the top right to retrieve this as a JSON file (to be added to the support ticket / email.'] = 'Tio estas uzota kiel la unua punkto de voko kiam vragenas reen Vi povas klaki la Eksportbuton sur la sopra rajto prenition kiel json- dosiero (por esti aldonita al la helpbileto / repo chetto).';
 
-$GLOBALS["lang"]['Users, Roles and Orgs'] = 'Gebruikers, rollen en orgs';
+$GLOBALS["lang"]['This issue is under investigation.'] = 'Tiu temo režisierius.';
 
-$GLOBALS["lang"]['Using Entra for Auth'] = 'Entra gebruiken voor Auth';
+$GLOBALS["lang"]['This item must match the value of the attribute selected or contains the ID of the query to be used.'] = 'Tiu objekto murtaa egali la valoron de la atantia a selektita epäilty enhavas la ID de la atendo por esti uzita.';
 
-$GLOBALS["lang"]['Using OKTA for Auth'] = 'Gebruik van OKTA voor Auth';
+$GLOBALS["lang"]['This item must match the value of the attribute selected.'] = 'Tiu objekto murtaa egali egaluvati';
 
-$GLOBALS["lang"]['Usually Mb/s, from Location A.'] = 'Meestal Mb/s, vanaf locatie A.';
+$GLOBALS["lang"]['This license expires on'] = 'Alternativai (Alternativai)';
 
-$GLOBALS["lang"]['Usually Mb/s, from Location B.'] = 'Meestal Mb/s, vanaf locatie B.';
+$GLOBALS["lang"]['This security permission can be modified using the Component Services administrative tool.'] = 'Tiu sekurecpermeso povas esti modifita uzante la Component residue';
 
-$GLOBALS["lang"]['Usually Mb/s, to Location A.'] = 'Meestal Mb/s, naar locatie A.';
+$GLOBALS["lang"]['This should be commented out after troubleshooting as debug mode will generate a lot of logs on the disk for no benefit.'] = 'Tio devus esti comentita ® pertubado kiam debugre fusionimo gentys multajn tagalojn en la disco por neniu utio.';
 
-$GLOBALS["lang"]['Usually Mb/s, to Location B.'] = 'Meestal Mb/s, naar locatie B.';
+$GLOBALS["lang"]['This should be globally unique, but I have seen instances where it is not.'] = 'Tio devus esti tutmonde unika, sed mi vidis kazojn kie εi ne estas.';
 
-$GLOBALS["lang"]['Uzbekistan'] = 'Oezbekistan';
+$GLOBALS["lang"]['This should be set to either 1 or the height of the rack.'] = 'Tio devus esti';
 
-$GLOBALS["lang"]['VLAN'] = 'VLAN';
+$GLOBALS["lang"]['This should be the fully qualified field name in the database. Currently columns from the system, fields and credentials tables are supported. EG: system.nmis_role.'] = 'Tio devus esti la tute kvalifikita kampa nomo en la datummazo. (RO 2012 7183). Oj estas apogitaj rev. EG: sistemo.nmis _ ruolo.';
 
-$GLOBALS["lang"]['VLAN ID'] = 'VLAN ID';
+$GLOBALS["lang"]['This state is used when Nmap is unable to determine whether a port is closed or filtered. It is only used for the IP ID idle scan.'] = 'Nmap estas nekadabla determinmi Ei estas fermota a kahtlusfilita. ® ® ® nur uzita por la IP ID joutokäynti- danado.';
 
-$GLOBALS["lang"]['valid_from'] = 'Geldig van';
+$GLOBALS["lang"]['This will auto-populate.'] = 'Ką?';
 
-$GLOBALS["lang"]['Valid From'] = 'Geldig van';
+$GLOBALS["lang"]['This will considerably slow the discovery scan.'] = 'Tio konsidrinde malapidigos eskovron.';
 
-$GLOBALS["lang"]['valid_from_raw'] = 'Geldig van ruw';
+$GLOBALS["lang"]['This will delete the current rows in the'] = 'Tio foreigos estonnajn viojn en la';
 
-$GLOBALS["lang"]['Valid From Raw'] = 'Geldig van ruw';
+$GLOBALS["lang"]['This will permanently DELETE this license.'] = ' imitazione di te - gebruik.';
 
-$GLOBALS["lang"]['valid_to'] = 'Geldig naar';
+$GLOBALS["lang"]['This will show you the Bulk Edit form. Any attributes you set on this form will be applied to all selected devices. You can set multiple attributes at once.'] = 'Tio montros al vi la opharm';
 
-$GLOBALS["lang"]['Valid To'] = 'Geldig naar';
+$GLOBALS["lang"]['Thursday'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['valid_to_raw'] = 'Geldig voor ruw';
+$GLOBALS["lang"]['time_caption'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Valid To Raw'] = 'Geldig voor ruw';
+$GLOBALS["lang"]['Time Caption'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Valid Values'] = 'Geldige waarden';
+$GLOBALS["lang"]['time_daylight'] = '-';
 
-$GLOBALS["lang"]['value'] = 'Waarde';
+$GLOBALS["lang"]['Time Daylight'] = '-';
 
-$GLOBALS["lang"]['Value'] = 'Waarde';
+$GLOBALS["lang"]['Time to Execute'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['values'] = 'Waarden';
+$GLOBALS["lang"]['timeout'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Values'] = 'Waarden';
+$GLOBALS["lang"]['Timeout'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Vanuatu'] = 'Vanuatu';
+$GLOBALS["lang"]['Timeout Per Target (Seconds)'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['VarChar'] = 'VarChar';
+$GLOBALS["lang"]['Timeout per Target. Wait for X seconds for a target response.'] = '"X sekundojn por celo."';
 
-$GLOBALS["lang"]['Varchar'] = 'Varchar';
+$GLOBALS["lang"]['Timesatamp'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['variable'] = 'Variabele';
+$GLOBALS["lang"]['Timestamp'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Variable'] = 'Variabele';
+$GLOBALS["lang"]['timing'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['vendor'] = 'Verkoper';
+$GLOBALS["lang"]['Timing'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Vendor'] = 'Verkoper';
+$GLOBALS["lang"]['Timor-Leste'] = '®';
 
-$GLOBALS["lang"]['vendors'] = 'Verkopers';
+$GLOBALS["lang"]['Title'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Vendors'] = 'Verkopers';
+$GLOBALS["lang"]['To a new file named .env (in the same directory). Now edit that new file and uncomment (remove the #) the line below (line 17)'] = '® nova dosiero nomita .env (ţr. adresaro). "Redaktu tiin novan dosieron kaj nerespekton" ("ecomedda la numero") la linion malsupre ("Linio 17")';
 
-$GLOBALS["lang"]['Venezuela'] = 'Venezuela';
+$GLOBALS["lang"]['To actually execute the query, append a /execute, thus /open-audit/index.php/queries/{$id}/execute.'] = 'Por fakte efetivigi la richiesta, apendigas / ececute, tien / malfermi- Bendrijoje.';
 
-$GLOBALS["lang"]['version'] = 'Versie';
+$GLOBALS["lang"]['To audit a machine, you must have credentials and administrator level access.'] = 'por revizii ma apretinon, vi henda.o akredita.ojn kajů ';
 
-$GLOBALS["lang"]['Version'] = 'Versie';
+$GLOBALS["lang"]['To audit a remote machine on an Active Directory domain, your supplied user (or if none provided, the user running the script) must be a member of the target machines Administrators group (or subgroup).'] = 'Por revizii malpreksiman ma dévolainon sur Aktiva Adresardomajno, ů providozita uzanto (epäilty se niu provézis, la uzanto prizorganta la manikripton) brunes esti membro de la celma expresutainoj- mini amstratorento - grupo (htka subluspogru).';
 
-$GLOBALS["lang"]['version_padded'] = 'Versie gewatteerde';
+$GLOBALS["lang"]['To audit a remote machine that is not in a domain, you must use the Administrator account (not <i>an</i> admin account, <i>the</i> Administrator account) on the target PC. #1 and #2'] = 'Revizii maltraksiman ma apretinon kiu ne estas en domajno, vi Româuzi la Administrateur- konton (ne en domajno, vi brunces uzi la Administratorn konton). <i>Bendrijoje</i> "Amministrator" <i>·</i> Amministerazioneopharm repondreecasů pri la celo Pctavia';
 
-$GLOBALS["lang"]['Version Padded'] = 'Versie gewatteerde';
+$GLOBALS["lang"]['To audit localhost, any supplied credentials are disregarded and the connection is made using the details of the user running the script.'] = 'Por revizii lokanhost ';
 
-$GLOBALS["lang"]['version_raw'] = 'Raw versie';
+$GLOBALS["lang"]['To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being <i>equal to</i>, <i>greater than</i> or <i>equal to or greater than</i>.'] = 'Por kompari softvaron ni controllas tendomon kaj versūne. Identificeercar versico nombroj nestas Tial, bazlinioj uzantaj softvarpolitikojn ne funkcias dum kuro kontra epäilty aparato kiu ne estis reviviita neestas 1.10 (almena kaptlus). Softvarpolitkoj povas epäilty la versigo <i>-</i>Bendrijoje <i>Bendrijoje</i> Bendrijoje <i>Egala edupli</i>Bendrijoje';
 
-$GLOBALS["lang"]['Version Raw'] = 'Raw versie';
+$GLOBALS["lang"]['To create a new entry click the Create button in the upper right hand corner.'] = 'Por krei novan eniron klakas la Krean buton en la sopra dekstra angulo. Bendrijoje';
 
-$GLOBALS["lang"]['version_string'] = 'Versietekenreeks';
+$GLOBALS["lang"]['To create a resource, you should POST the required data.'] = 'Por krei cerchio, vi devus fari prefevajn datumojn.';
 
-$GLOBALS["lang"]['Version String'] = 'Versietekenreeks';
+$GLOBALS["lang"]['To enable a remote machine (Vista or above) to be audited that is not on a domain, by an account in the Administrators group, other than the actual Administrator account see the below section on UAC.'] = 'Por ebligi maltraksiman ma divonainon (Vista a svečias supre) esti reviziiatio ne estas en domajno, raporto en la Administrationntoj grupo new, krom la fakta Administrationtovidas la subsekkion sur UAC.';
 
-$GLOBALS["lang"]['video'] = 'Video';
+$GLOBALS["lang"]['To enable this, create a new Auth item by going to menu -> Admin -> Auth -> Create Auth Method.'] = 'Por eligation, krei novan Auth- objekton per irado al menuo - tavia - configzanzanza Auth - titulado Krei Auth Métodon.';
 
-$GLOBALS["lang"]['Video'] = 'Video';
+$GLOBALS["lang"]['To execute the Windows powershell script, open a command prompt as Administrator and use the following command'] = 'Por efektivigi la Fenestrojn, malfermi komand quistilon new amministrazionento kaj uzi la sekvan kommundon';
 
-$GLOBALS["lang"]['Vietnam'] = 'Vietnam';
+$GLOBALS["lang"]['To execute the audit script, open a terminal and use the following command'] = 'Por efektivigi la reviziomanuskripton, malfermi Bendrijoje';
 
-$GLOBALS["lang"]['View'] = 'Beeld';
+$GLOBALS["lang"]['To filter by a property value, use the property name. Operators that should precede the value are'] = 'Dimvaloro, Indonesië domnomon Voorwaarden';
 
-$GLOBALS["lang"]['View All'] = 'Alles tonen';
+$GLOBALS["lang"]['To install Nmap on Windows, visit the Nmap page at'] = 'Por instali Nmap sur Fenestroj, Viti la Nmap- pacif';
 
-$GLOBALS["lang"]['View Details'] = 'Details bekijken';
+$GLOBALS["lang"]['To make the change, just follow the steps below.'] = 'Por fori Şшенуn нений, nur sekku la pa apretojn malsupre.';
 
-$GLOBALS["lang"]['View Device'] = 'Beeldapparaat';
+$GLOBALS["lang"]['To retrieve the Tenant ID. Open the Azure portal click on Azure Active Directory, Properties and the Tenant ID is displayed as your Directory ID - do not blame me for the name mismatch, that is how Microsoft roll.'] = 'Azonosítsa kiri ŞDekant. Malfermu la Azure- Portalklakon sur Azure Aktiva Adresaro, Trajtoj kaj la Tenant ID estas elmontrita kiel RomâAdresaro ID - Ne kulpigas min por la nomo misagordo, kiu estas kiel Bendrieoje';
 
-$GLOBALS["lang"]['View Discovery'] = 'Bekijken Ontdekking';
+$GLOBALS["lang"]['To retrieve your key, log in to the AWS Console and select your username, then My Security Credentials.'] = 'Por preni vian grilosilon, logi enenalis AWS Bendrijoje, tiam Mi Seguridad Credenciales.';
 
-$GLOBALS["lang"]['View Policy'] = 'Beleid bekijken';
+$GLOBALS["lang"]['To return a specific component item.'] = '"Reiri al"';
 
-$GLOBALS["lang"]['Virtual Private Network'] = 'Virtueel privénetwerk';
+$GLOBALS["lang"]['To return all items for a compnent type for a specific device.'] = 'Por resendi... iujn erojn por compenspeco por specia aparato.';
 
-$GLOBALS["lang"]['Virtualisation'] = 'Virtualisatie';
+$GLOBALS["lang"]['To return all items for a component type. If you wanted all software you would use'] = ' ... t. vi deziras "Roperiujn"';
 
-$GLOBALS["lang"]['Visit our YouTube channel for instructional videos.'] = 'Bezoek ons YouTube kanaal voor instructievideo\'s.';
+$GLOBALS["lang"]['To reverse sort, insert a minus, thus'] = 'Por inversigi specon, énigi minon, tyl, Bendrijoje';
 
-$GLOBALS["lang"]['vlan'] = 'Vlan';
+$GLOBALS["lang"]['To run the test script on the target Windows PC'] = 'Por prizorgi testartikripton sur la celo tavia PC';
 
-$GLOBALS["lang"]['Vlan'] = 'Vlan';
+$GLOBALS["lang"]['To select devices to be integrated, we use nmis_manage = y, but you might like (for example) type = router. You can also use a Group or Query if you prefer something more complex.'] = 'Por selekki aparatojn por esti integrita, ni uzas nmis _ relex = y, sed vi eble choratas (ekzemp) tipon = toeeraton. C \'e\' piu \'mes vrai. Kysely se vi Bendrijoje';
 
-$GLOBALS["lang"]['vlan_id'] = 'Vlan ID';
+$GLOBALS["lang"]['To sort by a database column, use'] = 'Por ordigi ů datenarkolano, uzo';
 
-$GLOBALS["lang"]['Vlan ID'] = 'Vlan ID';
+$GLOBALS["lang"]['To use this Enterprise feature, you first need to create your user in Open-AudIT as per usual. Assigning a password is not necessary. You do have to assign Roles and Orgs. The username in Open-AudIT should match the Entra <i>preferred username</i> attribute. There is no need for a Full Name or Email - these will be populated from Entra. If you do not know your users <i>preferred username</i>, fear not. You can create the new Auth Method in Open-AudIT and the Enterprise Application in Entra and when a user attempts to sign-on to Open-AudIT without a pre-existing user, check the logs and you will see their <i>preferred username</i> logged for your convienence.'] = 'Por uzi tiun Enterprise trajton, vi unue murtaa krei vian uzanton en Open- ů kutima. "Necesas Pasvorton" La uzantinomo en Open- neugali la Entra <i>Préfiereasa Bendrijoje</i> "Enwise" "L \'Unione" <i>Préfiereasa Bendrijoje</i>"Entra kaj kiam uzanto dimostras subskribi al Bendrijoje" <i>Préfiereasa Bendrijoje</i> Kaj vi venis volgende.';
 
-$GLOBALS["lang"]['vm'] = 'Vm';
+$GLOBALS["lang"]['To use this Enterprise feature, you first need to create your user in Open-AudIT as per usual. Assigning a password is not necessary. You do have to assign Roles and Orgs. The username in Open-AudIT should match the OKTA <i>name</i> attribute. There is no need for a Full Name or Email - these will be populated from OKTA. If you do not know your users <i>name<i>, fear not. You can create the new Auth Menthod in Open-AudIT and the Application in OKTA and when a user attempts to sign-on to Open-AudIT without a pre-existing user, check the logs and you will see their <i>name<i> logged for your convienence.<br></p><p>Then create a new Auth method in Open-AudIT by going to menu -> Admin -> Auth Methods -> Create Auth. Provide a name and set the <i>type</i> to Okta.'] = 'Por uzi tiun Enterprise trajton, vi unue murtaa krei vian uzanton en Open- ů kutima. "Necesas Pasvorton" La uzantinomo en Open- neugali la OKTA <i>Bendrijoje</i> "Verkenner" <i>Bendrijoje<i>Bendrijoje Vio povas krei la novan Authod en Open- Bendrijoje <i>Bendrijoje<i> Kaj vi venis volgende.<br/><p>Título Auth Metodoj - título Krei Auth. Prénu Portugukaj metis <i>Bendrijoje</i> Bendrijoje</p></i></i></i></i>';
 
-$GLOBALS["lang"]['Vm'] = 'Vm';
+$GLOBALS["lang"]['To use this feature you must enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed. For more on Open-AudITs matching rules see HERE: Matching Devices'] = 'Por Bendrijoje Tio estas farita a limitatate la unuan fojon nubotrova.o estas efektivigita. Por pli sur Open- SmithKline - egalaj reguloj vidas clari seotud: Bendrijoje';
 
-$GLOBALS["lang"]['vm_device_id'] = 'Vm-apparaat-ID';
+$GLOBALS["lang"]['To view the details of a query, the standard URL structure of /open-audit/index.php/queries/{$id} should be used.'] = 'Por rigardi la detalojn de question, la norma URL- structuururo de / open- audit / index.php / opharm Bendrijoje';
 
-$GLOBALS["lang"]['Vm Device ID'] = 'Vm-apparaat-ID';
+$GLOBALS["lang"]['Togo'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['vm_group'] = 'Vm-groep';
+$GLOBALS["lang"]['Tokelau'] = '(1)';
 
-$GLOBALS["lang"]['Vm Group'] = 'Vm-groep';
+$GLOBALS["lang"]['Tonga'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['vm_ident'] = 'Vm Identiteit';
+$GLOBALS["lang"]['toolbar_style'] = 'Effillo de barra de herramientas';
 
-$GLOBALS["lang"]['Vm Ident'] = 'Vm Identiteit';
+$GLOBALS["lang"]['Toolbar Style'] = 'Effillo de barra de herramientas';
 
-$GLOBALS["lang"]['vm_server_name'] = 'Vm-servernaam';
+$GLOBALS["lang"]['Top Nmap TCP Ports'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Vm Server Name'] = 'Vm-servernaam';
+$GLOBALS["lang"]['Top Nmap TCP Ports. The top 10, 100, 1000 ports to scan as per Nmaps &quot;top ports&quot; options.'] = '"Naph" TCP Havenoj Bendrieoje 10, 100, 1000 hasnoj por skani kiel par Naps "pintaj hasnoj- opcioj.';
 
-$GLOBALS["lang"]['vm_vendor'] = 'Vm leverancier';
+$GLOBALS["lang"]['Top Nmap UDP Ports'] = 'Ülemine Nmapin';
 
-$GLOBALS["lang"]['Vm Vendor'] = 'Vm leverancier';
+$GLOBALS["lang"]['Top Nmap UDP Ports. The top 10, 100, 1000 ports to scan as per Nmaps &quot;top ports&quot; options.'] = '"Naph UDP Havenoj."';
 
-$GLOBALS["lang"]['vuln_status'] = 'Vuln Status';
+$GLOBALS["lang"]['Traditional Chinese'] = '-';
 
-$GLOBALS["lang"]['Vuln Status'] = 'Vuln Status';
+$GLOBALS["lang"]['Traffic Light'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['vulnerabilities'] = 'Kwetsbaarheden';
+$GLOBALS["lang"]['Trinidad and Tobago'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Vulnerabilities'] = 'Kwetsbaarheden';
+$GLOBALS["lang"]['Troubleshooting'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['vulnerabilities_cache'] = 'Kwetsbaarheden cache';
+$GLOBALS["lang"]['Troubleshooting LDAP Logins'] = 'Ongelma ® LDAP sisslogimiini';
 
-$GLOBALS["lang"]['Vulnerabilities Cache'] = 'Kwetsbaarheden cache';
+$GLOBALS["lang"]['Try Open-AudIT Enterprise, on us without a time limit. All the features of Enterprise. Limited to 20 devices.'] = 'Malferma.o - o next sur sen';
 
-$GLOBALS["lang"]['vulnerability_id'] = 'Kwetsbaarheid ID';
+$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"'] = 'l \'heure actuelle, le taux de croissance de l\' emploi est passé de';
 
-$GLOBALS["lang"]['Vulnerability ID'] = 'Kwetsbaarheid ID';
+$GLOBALS["lang"]['Try logging in using an LDAP user. We are assuming this will fail (otherwise, why are you still reading this?). Next, comment out the line from ther file above.'] = 'Provu registradi en uzado Bendrijoje "Supozas ke tio malsukcesas."';
 
-$GLOBALS["lang"]['WHERE'] = 'WAAR';
+$GLOBALS["lang"]['Tuesday'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['wall_port'] = 'Muurpoort';
+$GLOBALS["lang"]['Tunisia'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Wall Port'] = 'Muurpoort';
+$GLOBALS["lang"]['Turkey'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Wallis and Futuna'] = 'Wallis en Futuna';
+$GLOBALS["lang"]['Turkish'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Want to know more?'] = 'Wil je meer weten?';
+$GLOBALS["lang"]['Turkmenistan'] = '-';
 
-$GLOBALS["lang"]['Warning'] = 'Waarschuwing';
+$GLOBALS["lang"]['Turks and Caicos Islands'] = '"Catherine Commerloj" ("Cathering")';
 
-$GLOBALS["lang"]['warranty'] = 'Garantie';
+$GLOBALS["lang"]['Tuvalu'] = 'Tuvalo Tuvalo';
 
-$GLOBALS["lang"]['Warranty'] = 'Garantie';
+$GLOBALS["lang"]['tx_bitrate'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['warranty_duration'] = 'Garantieduur';
+$GLOBALS["lang"]['Tx Bitrate'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Warranty Duration'] = 'Garantieduur';
+$GLOBALS["lang"]['tx_freq'] = 'Tx';
 
-$GLOBALS["lang"]['warranty_expires'] = 'Garantie Verloopt';
+$GLOBALS["lang"]['Tx Freq'] = 'Tx';
 
-$GLOBALS["lang"]['Warranty Expires'] = 'Garantie Verloopt';
+$GLOBALS["lang"]['tx_level'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['warranty_status'] = 'Garantiestatus';
+$GLOBALS["lang"]['Tx Level'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Warranty Status'] = 'Garantiestatus';
+$GLOBALS["lang"]['tx_power'] = 'Txrer';
 
-$GLOBALS["lang"]['warranty_type'] = 'Garantietype';
+$GLOBALS["lang"]['Tx Power'] = 'Txrer';
 
-$GLOBALS["lang"]['Warranty Type'] = 'Garantietype';
+$GLOBALS["lang"]['tx_profile'] = 'Tx';
 
-$GLOBALS["lang"]['Web'] = 'Web';
+$GLOBALS["lang"]['Tx Profile'] = 'Tx';
 
-$GLOBALS["lang"]['Webserver'] = 'Webserver';
+$GLOBALS["lang"]['type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Website'] = 'website';
+$GLOBALS["lang"]['Type'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Wednesday'] = 'Woensdag';
+$GLOBALS["lang"]['Type: This can be either a varchar (a text field) or a List (a list of values that can be selected).'] = '(1) (2) (2) (3) (4) (5) (5) (5) (5) (5) (5) (6) (6) (6) (6) (6) (7) (7) (7) (7) (7) (7) (7) (8) (8) (8) (8) (8) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9)))) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9) (9)';
 
-$GLOBALS["lang"]['weight'] = 'Gewicht';
+$GLOBALS["lang"]['Types of Networks'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Weight'] = 'Gewicht';
+$GLOBALS["lang"]['URL'] = 'URL-i-URL-osoitas';
 
-$GLOBALS["lang"]['weight_current'] = 'Gewicht Huidig';
+$GLOBALS["lang"]['uuid'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Weight Current'] = 'Gewicht Huidig';
+$GLOBALS["lang"]['UUID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['weight_empty'] = 'Gewicht leeg';
+$GLOBALS["lang"]['udp_ports'] = '-';
 
-$GLOBALS["lang"]['Weight Empty'] = 'Gewicht leeg';
+$GLOBALS["lang"]['Udp Ports'] = '-';
 
-$GLOBALS["lang"]['weight_max'] = 'Gewicht Max';
+$GLOBALS["lang"]['Uganda'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Weight Max'] = 'Gewicht Max';
+$GLOBALS["lang"]['Ukraine'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Welcome'] = 'Welkom';
+$GLOBALS["lang"]['Ukrainian'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Welcome Dashboard'] = 'Welkom Dashboard';
+$GLOBALS["lang"]['Undergo Stage 1 audit (documentation review)'] = '• • •';
 
-$GLOBALS["lang"]['Welcome to FirstWave Open-AudIT'] = 'Welkom bij FirstWave Open-AudIT';
+$GLOBALS["lang"]['Undergo Stage 2 audit (implementation review)'] = '(vok. efetiviga revizio)';
 
-$GLOBALS["lang"]['Western Sahara'] = 'Westelijke Sahara';
+$GLOBALS["lang"]['Undergoing Analysis'] = '-';
 
-$GLOBALS["lang"]['What Can I Expect if I Have no Credentials'] = 'Wat kan ik verwachten als ik geen geloofsbrieven heb?';
+$GLOBALS["lang"]['Unfiltered'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['What is the purpose of this rack.'] = 'Wat is het doel van dit rek.';
+$GLOBALS["lang"]['uninstall'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = 'Wat is het type van deze locatie. Toelaatbare typen aangehouden in <code>attributes</code> tafel.';
+$GLOBALS["lang"]['Uninstall'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?'] = 'Bij het integreren van apparaten van het externe systeem, als het apparaat niet bestaat in Open-AudIT, moeten we het dan maken?';
+$GLOBALS["lang"]['Uninstall the Agent'] = 'Désperemar Bendrijoje';
 
-$GLOBALS["lang"]['When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?'] = 'Bij het integreren van apparaten van het externe systeem, als het apparaat is bijgewerkt in het externe systeem moeten we het updaten in Open-AudIT?';
+$GLOBALS["lang"]['United Arab Emirates'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['When retrieve an external device, should we run discovery upon it?'] = 'Als we een extern apparaat ophalen, moeten we het dan ontdekken?';
+$GLOBALS["lang"]['United Kingdom'] = 'Unuiεinte Bendrijoje';
 
-$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.'] = 'Wanneer deze benchmark wordt uitgevoerd. Afgeleid uit de geassocieerde landen <code>tasks.type</code> en <code>tasks.sub_resource_id</code>.';
+$GLOBALS["lang"]['United States Minor Outlying Islands'] = '(1)';
 
-$GLOBALS["lang"]['When this log was created.'] = 'Toen dit logboek werd aangemaakt.';
+$GLOBALS["lang"]['United States Virgin Islands'] = '(avy)';
 
-$GLOBALS["lang"]['When this queue item started processing.'] = 'Toen dit wachtrij-item begon te verwerken.';
+$GLOBALS["lang"]['United States of America'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.'] = 'Wanneer we deze basislijn uitvoeren, moeten we controleren op items op apparaten die niet in een beleid voor deze basislijn.';
+$GLOBALS["lang"]['Unknown'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.'] = 'Als we een open poort ontvangen, moeten we dan proberen te testen op de versie van de dienst die er momenteel op draait? Dit helpt bij het bevestigen van de werkelijke lopende diensten.';
+$GLOBALS["lang"]['unlock_pin'] = '-';
 
-$GLOBALS["lang"]['where'] = 'waarbij';
+$GLOBALS["lang"]['Unlock Pin'] = '-';
 
-$GLOBALS["lang"]['Where'] = 'waarbij';
+$GLOBALS["lang"]['Unscheduled'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Where on the Device Details screen you would like to see this field appear.'] = 'Waar op het scherm Device Details wilt u dit veld zien verschijnen.';
+$GLOBALS["lang"]['Unused as at 5.2.0.'] = ' K';
 
-$GLOBALS["lang"]['Where the rack is in the row.'] = 'Waar het rek op de rij staat.';
+$GLOBALS["lang"]['Unused.'] = '·';
 
-$GLOBALS["lang"]['Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.'] = 'Of de kwetsbaarheid invloed heeft op componenten buiten zijn eigen gebruik van Impact, Beschikbaarheid en Vertrouwelijkheid.';
+$GLOBALS["lang"]['Update'] = 'C \'è la première fois qu\' il s \'angit de';
 
-$GLOBALS["lang"]['Whether user interaction is required (None, Passive, Active).'] = 'Of gebruikersinteractie vereist is (Geen, Passief, Actief).';
+$GLOBALS["lang"]['update_external_count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Which OS this benchmark applies to.'] = 'Op welke OS deze benchmark van toepassing is.';
+$GLOBALS["lang"]['Update External Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.'] = 'Welke apparaten moeten Open-AudIT maken vanuit het externe systeem (indien aanwezig). Allen gebruiken, Geen of een bepaalde eigenschap.';
+$GLOBALS["lang"]['update_external_from_internal'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Which sub-menu should we display this query in.'] = 'In welk submenu moeten we deze vraag tonen.';
+$GLOBALS["lang"]['Update External From Internal'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Who made this rack.'] = 'Wie heeft dit rek gemaakt?';
+$GLOBALS["lang"]['update_internal_count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Why Windows Server Only?'] = 'Waarom alleen Windows Server?';
+$GLOBALS["lang"]['Update Internal Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Why do we exclude this policy?'] = 'Waarom sluiten we dit beleid uit?';
+$GLOBALS["lang"]['update_internal_from_external'] = '-';
 
-$GLOBALS["lang"]['Wide Area Network'] = 'Breed Area Network';
+$GLOBALS["lang"]['Update Internal From External'] = '-';
 
-$GLOBALS["lang"]['Widget'] = 'Widget';
+$GLOBALS["lang"]['Update NMIS Devices from Open-AudIT'] = '-';
 
-$GLOBALS["lang"]['Widget # '] = 'Widget # ';
+$GLOBALS["lang"]['Update Open-AudIT Devices from '] = ' Bendrijoje ';
 
-$GLOBALS["lang"]['Widget Type'] = 'Widgettype';
+$GLOBALS["lang"]['Update Open-AudIT Devices from NMIS'] = 'NMIS';
 
-$GLOBALS["lang"]['widgets'] = 'Eigenschappen';
+$GLOBALS["lang"]['Update Vulnerabilities'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Widgets'] = 'Eigenschappen';
+$GLOBALS["lang"]['Update an attribute of a {collection} entry.'] = 'Isdatigu attrizione tuzeniro.';
 
-$GLOBALS["lang"]['width'] = 'Breedte';
+$GLOBALS["lang"]['Update attributes'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Width'] = 'Breedte';
+$GLOBALS["lang"]['Updated each time discovery has been executed with IPs detected to be responding.'] = 'Bendrieoje Iun fojon eltrova, Indonesië';
 
-$GLOBALS["lang"]['windows'] = 'Vensters';
+$GLOBALS["lang"]['Updated each time discovery has been executed with IPs that have been scanned by Nmap.'] = 'C \'e\' il';
 
-$GLOBALS["lang"]['Windows'] = 'Vensters';
+$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to audit.'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['Windows Test Script'] = 'Windows Test Script';
+$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to query.'] = 'Bendrijoje:';
 
-$GLOBALS["lang"]['Wireless Local Area Network'] = 'Draadloos lokaal netwerk';
+$GLOBALS["lang"]['Updated each time discovery has been executed.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['wmi_fails'] = 'Wmi mislukt';
+$GLOBALS["lang"]['Updated each time the discovery has been executed.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Wmi Fails'] = 'Wmi mislukt';
+$GLOBALS["lang"]['Updated each time the discovery has completed execution.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['wmi_timeout'] = 'Wmi Timeout';
+$GLOBALS["lang"]['Updating'] = ' ESAMINARE';
 
-$GLOBALS["lang"]['Wmi Timeout'] = 'Wmi Timeout';
+$GLOBALS["lang"]['Upgrade'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['workgroup'] = 'Werkgroep';
+$GLOBALS["lang"]['Upload an audit result file'] = 'Dosiero';
 
-$GLOBALS["lang"]['Workgroup'] = 'Werkgroep';
+$GLOBALS["lang"]['Upper Case'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Working Credentials'] = 'Werkredenen';
+$GLOBALS["lang"]['uptime'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['XML'] = 'XML';
+$GLOBALS["lang"]['Uptime'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Yellow Query'] = 'Gele zoekopdracht';
+$GLOBALS["lang"]['Urdu'] = '®';
 
-$GLOBALS["lang"]['Yemen'] = 'Jemen';
+$GLOBALS["lang"]['url'] = '-';
 
-$GLOBALS["lang"]['Yes'] = 'Ja.';
+$GLOBALS["lang"]['Url'] = '-';
 
-$GLOBALS["lang"]['You may want to copy and paste this URL in an email to your staff.'] = 'U kunt deze URL kopiëren en plakken in een e-mail naar uw medewerkers.';
+$GLOBALS["lang"]['Uruguay, Eastern Republic of'] = 'Urugvajo, Bendrijoje';
 
-$GLOBALS["lang"]['You must delete your existing license before adding a new license.'] = 'U moet uw bestaande licentie verwijderen voordat u een nieuwe licentie toevoegt.';
+$GLOBALS["lang"]['usb'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['YouTube Tutorials'] = 'YouTube Tutorials';
+$GLOBALS["lang"]['Usb'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Your AWS EC2 API key.'] = 'Uw AWS EC2 API sleutel.';
+$GLOBALS["lang"]['use'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Your Google Compute credentials as JSON.'] = 'Uw Google Bereken referenties als JSON.';
+$GLOBALS["lang"]['Use'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Your Licenses'] = 'Uw licenties';
+$GLOBALS["lang"]['use_authentication'] = '(EB) Nr. 1235 / 2008';
 
-$GLOBALS["lang"]['Your Microsoft Azure Client ID.'] = 'Uw Microsoft Azure Client ID.';
+$GLOBALS["lang"]['Use Authentication'] = '(EB) Nr. 1235 / 2008';
 
-$GLOBALS["lang"]['Your Microsoft Azure Client Secret.'] = 'Je Microsoft Azure Client Secret.';
+$GLOBALS["lang"]['use_authorisation'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Your Microsoft Azure Subscription ID.'] = 'Uw Microsoft Azure Abonnement ID.';
+$GLOBALS["lang"]['Use Authorisation'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Your Microsoft Azure Tennant ID.'] = 'Je Microsoft Azure Tennant ID.';
+$GLOBALS["lang"]['Use Proxy'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Your SQL to select attributes that will populate this query.'] = 'Uw SQL om attributen te selecteren die deze query zullen vullen.';
+$GLOBALS["lang"]['Use SNMP'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['Your SQL to select devices that will populate this group.'] = 'Uw SQL om apparaten te selecteren die deze groep zullen bevolken.';
+$GLOBALS["lang"]['Use SSH'] = '•';
 
-$GLOBALS["lang"]['Your SSH key.'] = 'Je SSH sleutel.';
+$GLOBALS["lang"]['Use Secure (LDAPS)'] = '(LDAPS)';
 
-$GLOBALS["lang"]['Your access credentials, as per that clouds native API.'] = 'Uw toegangsgegevens, zoals dat clouds inheemse API.';
+$GLOBALS["lang"]['Use Service Version Detection'] = '® Universiooni tuvastaamiini ';
 
-$GLOBALS["lang"]['Your description of the status of this connection (provisioned, retired, etc).'] = 'Uw beschrijving van de status van deze verbinding (verzorgd, gepensioneerd, etc).';
+$GLOBALS["lang"]['Use Service Version Detection. When a detected port is detected as open, if set to <i>y</i>, Nmap will query the target device in an attempt to determine the version of the service running on this port.<br>This can be useful when identifying unclassified devices. This was not previously used.'] = 'Uzu Universión de la Universico Kiam detektita hasno estas detektita kiel malferma, se metite need <i>Bendrijoje</i>Nmap la request celaparato en promo determinmi la versione de la Româkuranta sur tiun hasnon.<br/>Tio povas esti utila kiam identigami nesekretajn aparatojn. Tio ne estis reging... uzata.';
 
-$GLOBALS["lang"]['Your description of this item.'] = 'Uw beschrijving van dit item.';
+$GLOBALS["lang"]['Use WMI'] = '•';
 
-$GLOBALS["lang"]['Your generic name for this piece of software'] = 'Uw algemene naam voor dit stuk software';
+$GLOBALS["lang"]['Use a <i>Sign-in method</i> of OIDC - OpenID Connect and an <i>Application Type</i> of Web Application. Click <i>Next</i>.'] = 'Bendrijoje <i>Metodoisi sisselogimi</i> Bendrijoje <i>-</i> Helyszín Şd \'ementégek. Klakou <i>Bendrijoje</i>Bendrijoje';
 
-$GLOBALS["lang"]['Your generic version for this piece of software'] = 'Uw generieke versie voor dit stuk software';
+$GLOBALS["lang"]['Use for Authentication'] = 'Indonesië';
 
-$GLOBALS["lang"]['Zambia'] = 'Zambia';
+$GLOBALS["lang"]['Use for Roles'] = '(lt)';
 
-$GLOBALS["lang"]['Zimbabwe'] = 'Zimbabwe';
+$GLOBALS["lang"]['Use the standard install options when displayed and click the <i>I Agree</i>, <i>Next</i> and <i>Install</i> buttons to install Nmap.'] = 'Uzu la normajn equidjn opciojn kiam montrite kaj klakas <i>Bendrijoje</i>Bendrijoje <i>Bendrijoje</i> Bendrijoje <i>Bendrijoje</i> Butonoj por Bendrijoje';
 
-$GLOBALS["lang"]['active'] = 'actief';
+$GLOBALS["lang"]['used'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['active directory'] = 'actieve map';
+$GLOBALS["lang"]['Used'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['active/active'] = 'actief/actief';
+$GLOBALS["lang"]['used_count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['active/passive'] = 'actief/passief';
+$GLOBALS["lang"]['Used Count'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['advertisement'] = 'reclame';
+$GLOBALS["lang"]['Used by OpenLDAP only.'] = 'Umita tariffa "OpenLDAP nur."';
 
-$GLOBALS["lang"]['alert'] = 'alarm';
+$GLOBALS["lang"]['Used internally when discovering a single device.'] = 'Uzita interna dum malkovado neuunura aparatito.';
 
-$GLOBALS["lang"]['all'] = 'alle';
+$GLOBALS["lang"]['Used internally when discovering a single device. Links to <code>devices.id</code>.'] = 'Uzita interna dum malkovado neuunura aparatito. Bendrijoje <code>devices.id</code>Bendrijoje';
 
-$GLOBALS["lang"]['allocated'] = 'toegewezen';
+$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.'] = 'Uzita kiam LDAP - serviloj estis formitaj por popolariigi uzantdetalojn - naar inkludas la Orgsas "" "kiuj ili havas" "" ". LDAP- grupo, ili rivas tiun org.';
 
-$GLOBALS["lang"]['amazon'] = 'amazon';
+$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.'] = 'Uzita kiam LDAP - serviloj estis formitaj por popolarigi zantdetalojn -tio inkludas la rolojn kiujn ili rizvas. Se uzanto estas en tiu LDAP- grupo, ili rivas tiun Rolon.';
 
-$GLOBALS["lang"]['antivirus'] = 'antivirus';
+$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = 'Umita dum ser new approdo OpenLDAP Bendrieoje Bendrieoje - <code>memberUid</code>Ubita tariffa de OpenLDAP nur.';
 
-$GLOBALS["lang"]['application'] = 'toepassing';
+$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications.'] = '-';
 
-$GLOBALS["lang"]['approved'] = 'goedgekeurd';
+$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications. Set to y if working SNMP detected by discovery.'] = 'Uzite kun Integri Metite al y se laboranta SNMP detektita per eltrova.o.';
 
-$GLOBALS["lang"]['attribute'] = 'eigenschap';
+$GLOBALS["lang"]['user'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['auto'] = 'auto';
+$GLOBALS["lang"]['User'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['backup'] = 'back-up';
+$GLOBALS["lang"]['User DN'] = 'DN';
 
-$GLOBALS["lang"]['banned'] = 'verboden';
+$GLOBALS["lang"]['user_group'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['blog'] = 'blog';
+$GLOBALS["lang"]['User Group'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['bottom'] = 'onder';
+$GLOBALS["lang"]['user_id'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['browser_lang'] = 'browser_lang';
+$GLOBALS["lang"]['User ID'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['building'] = 'gebouw';
+$GLOBALS["lang"]['user_interaction'] = '-';
 
-$GLOBALS["lang"]['cloud'] = 'cloud';
+$GLOBALS["lang"]['User Interaction'] = '-';
 
-$GLOBALS["lang"]['code'] = 'code';
+$GLOBALS["lang"]['User Membership Attribute'] = 'Paa';
 
-$GLOBALS["lang"]['collector'] = 'verzamelaar';
+$GLOBALS["lang"]['user_name'] = '® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ®';
 
-$GLOBALS["lang"]['compute'] = 'berekenen';
+$GLOBALS["lang"]['User Name'] = '® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ®';
 
-$GLOBALS["lang"]['config'] = 'config';
+$GLOBALS["lang"]['User Policies'] = '®';
 
-$GLOBALS["lang"]['contains'] = 'bevat';
+$GLOBALS["lang"]['Username'] = '® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ®';
 
-$GLOBALS["lang"]['create'] = 'aanmaken';
+$GLOBALS["lang"]['username'] = '® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ® ®';
 
-$GLOBALS["lang"]['created'] = 'aangemaakt';
+$GLOBALS["lang"]['users'] = '"L \'Unione"';
 
-$GLOBALS["lang"]['critical'] = 'kritiek';
+$GLOBALS["lang"]['Users'] = '"L \'Unione"';
 
-$GLOBALS["lang"]['cve'] = 'cve';
+$GLOBALS["lang"]['Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.'] = 'Uzantoj sim simpiaj al Netstat Se uzanto eksistas kun egala nomo, stato kaj pasvorton detaloj (publikan Progressiveblaj, eksvalidas, postulis) tiam la politik pasas.';
 
-$GLOBALS["lang"]['database'] = 'database';
+$GLOBALS["lang"]['Users, Roles and Orgs'] = 'Uzantoj Bendrijoje';
 
-$GLOBALS["lang"]['debug'] = 'debuggen';
+$GLOBALS["lang"]['Uses the CodeIgniter PHP Framework.'] = 'Uzu Indonesion Igniter PHP raamistik.';
 
-$GLOBALS["lang"]['delegated'] = 'gedelegeerd';
+$GLOBALS["lang"]['Using'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['delete'] = 'verwijderen';
+$GLOBALS["lang"]['Using Entra for Auth'] = '-';
 
-$GLOBALS["lang"]['deleted'] = 'geschrapt';
+$GLOBALS["lang"]['Using LDAPS'] = '•';
 
-$GLOBALS["lang"]['denied'] = 'geweigerd';
+$GLOBALS["lang"]['Using OKTA for Auth'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['devices'] = 'apparaten';
+$GLOBALS["lang"]['Using the format option is useful when using a web browser but you wish to see the result in JSON format. Adding format=json achieves this. Normally a web browser will set its accept header to HTML, so in that case, we return the rendered page. Using an API to retrieve JSON you should set the accept header to'] = 'Uzante la formatelektron estas utila dum uzado de retumililo sed vi deziras vidi la rezulton en JSON formaat. L \'obiettivo è améliorer la qualité de l\' informazione. Normale tT - legilo metos sian akceptantan pli kapon al HTML, tieel en tu kazo, ni rendas la igitan paεon. Oezante API por preni JSON vi devus meti la akceptantan kapon';
 
-$GLOBALS["lang"]['digitalocean'] = 'digitaaloceaan';
+$GLOBALS["lang"]['Usually Mbs, from Location A.'] = 'sMb / s, Indonesië Loko A.';
 
-$GLOBALS["lang"]['does not equal'] = 'is niet gelijk';
+$GLOBALS["lang"]['Usually Mbs, from Location B.'] = 'sMb / s, Austria Loko B.';
 
-$GLOBALS["lang"]['emergency'] = 'nood';
+$GLOBALS["lang"]['Usually Mbs, to Location A.'] = 'sMb / s, lokigi A.';
 
-$GLOBALS["lang"]['entra'] = 'entra';
+$GLOBALS["lang"]['Usually Mbs, to Location B.'] = 'alMb / s';
 
-$GLOBALS["lang"]['equals'] = 'gelijk aan';
+$GLOBALS["lang"]['Usually should be set to 3.'] = '3.';
 
-$GLOBALS["lang"]['error'] = 'fout';
+$GLOBALS["lang"]['Uzbekistan'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['established'] = 'vastgesteld';
+$GLOBALS["lang"]['VLAN'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['excluded'] = 'uitgesloten';
+$GLOBALS["lang"]['VLAN ID'] = 'Asmens tapatybės kortelės Nr.:';
 
-$GLOBALS["lang"]['expired'] = 'verlopen';
+$GLOBALS["lang"]['valid_from'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Valid From'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['valid_from_raw'] = '"Anta skeptite"';
+
+$GLOBALS["lang"]['Valid From Raw'] = '"Anta skeptite"';
+
+$GLOBALS["lang"]['valid_to'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Valid To'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['valid_to_raw'] = '(lt)';
+
+$GLOBALS["lang"]['Valid To Raw'] = '(lt)';
+
+$GLOBALS["lang"]['Valid Values'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['value'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Value'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Value Types'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['values'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Values'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Values: In the case of a <i>list</i> field, this should be a comma separated list of valid values.'] = '- Nee. <i>(1)</i> Kampo, tio devus esti komm apartigita lista de Validaj valoroj.';
+
+$GLOBALS["lang"]['Vanuatu'] = ' -';
+
+$GLOBALS["lang"]['VarChar'] = '·';
+
+$GLOBALS["lang"]['Varchar'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['variable'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Variable'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Various'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['vendor'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Vendor'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Vendor Report'] = '®';
+
+$GLOBALS["lang"]['vendors'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Vendors'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Venezuela'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Version'] = 'Versio versi (Versio versi)';
+
+$GLOBALS["lang"]['version_padded'] = 'Versio pehusctu (Versio pehusctu)';
+
+$GLOBALS["lang"]['Version Padded'] = 'Versio pehusctu (Versio pehusctu)';
+
+$GLOBALS["lang"]['version_raw'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Version Raw'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['version_string'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Version String'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['video'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Video'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Vietnam'] = 'Vjetnama respubliko';
+
+$GLOBALS["lang"]['Vietnamese'] = 'Vjetnama vjetnamanos, Bendrijoje';
+
+$GLOBALS["lang"]['View'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['View All'] = '-';
+
+$GLOBALS["lang"]['View Details'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['View Device'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['View Discovery'] = 'Découverte Découverte tavia';
+
+$GLOBALS["lang"]['View Policy'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['View Racks'] = '-';
+
+$GLOBALS["lang"]['View the'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['View the discovery in question, then click the Support button in the top right toolbar. This will provide the discovery settings, config items, the discovery device list as well as the logs for this particular discovery.'] = 'Bendrijoje Tio disponigos la malkovro prieš rdojn, konfig erojn, la malkovro- aparato- liston sama kieli la tagalojn por tu speciala eltrova.';
+
+$GLOBALS["lang"]['View the release notes on the'] = '"L \'Unione"';
+
+$GLOBALS["lang"]['Virtual Private Network'] = 'Privata';
+
+$GLOBALS["lang"]['Virtual private network'] = 'Bendrijos teisės aktai';
+
+$GLOBALS["lang"]['Virtualisation'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Visit our YouTube channel for instructional videos.'] = 'Vizitu nian Yourr- kanalon por reguluaj videndoj.';
+
+$GLOBALS["lang"]['vlan'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Vlan'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['vlan_id'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Vlan ID'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['vm'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Vm'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['vm_device_id'] = 'Vm Jūrininkai';
+
+$GLOBALS["lang"]['Vm Device ID'] = 'Vm Jūrininkai';
+
+$GLOBALS["lang"]['vm_group'] = 'Vm Şgrupp';
+
+$GLOBALS["lang"]['Vm Group'] = 'Vm Şgrupp';
+
+$GLOBALS["lang"]['vm_ident'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Vm Ident'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['vm_server_name'] = '"Vm"';
+
+$GLOBALS["lang"]['Vm Server Name'] = '"Vm"';
+
+$GLOBALS["lang"]['vm_vendor'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Vm Vendor'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['vuln_status'] = 'Vulnstatuso (Indonesië)';
+
+$GLOBALS["lang"]['Vuln Status'] = 'Vulnstatuso (Indonesië)';
+
+$GLOBALS["lang"]['vulnerabilities'] = 'Vulnerco';
+
+$GLOBALS["lang"]['Vulnerabilities'] = 'Vulnerco';
+
+$GLOBALS["lang"]['vulnerabilities_cache'] = 'Vulnerabidati';
+
+$GLOBALS["lang"]['Vulnerabilities Cache'] = 'Vulnerabidati';
+
+$GLOBALS["lang"]['Vulnerabilities and Results'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Vulnerabilities initially published before 1st January, 2025 (by default). We see no sense in returning vulnerabilities from years prior. This can be changed in the configuration.'] = 'Vulnerabilidades komence publigis antaitis 1 tammakauro 2025 (defa.lte). "Vidas neniun sencon en resendado de vundblecoj de jaroj prio." Tio povas esti шенимita en la konfiguracio.';
+
+$GLOBALS["lang"]['vulnerability_id'] = 'Személyazonosító szám';
+
+$GLOBALS["lang"]['Vulnerability ID'] = 'Személyazonosító szám';
+
+$GLOBALS["lang"]['Vulnerability Status'] = '-';
+
+$GLOBALS["lang"]['WARNING - When creating a baseline using software policies, at present Centos and RedHat package the kernel using the names <i>kernel</i> and <i>kernel-devel</i>. There can be multiple packages with this name and different versions concurrently installed. Debian based distributions use names like <i>linux-image-3.13.0-24-generic</i>, note the version number is included in the package name. Because RedHat based operating systems use this format and subsequently have multiple identical package names with different versions we currently exclude <i>kernel</i> and <i>kernel-devel</i> from software policies. This may be addressed in a future update.'] = 'HOIATUS - "Dum kredo" ("Dum krado"); <i>Bendrijoje</i> Bendrijoje <i>Bendrijoje</i>Povas ekisti multoblaj paka Debiano bazigis Distributionojn utiligas nomojn kiel <i>Lin.-kuva- 3,3,0- 24-genen</i>Imitaar RedHat bazigis <i>Bendrijoje</i> Bendrijoje <i>Bendrijoje</i> (OL L 20 van 2015.177, blz. 42).';
+
+$GLOBALS["lang"]['WHERE'] = '→ eventoj:';
+
+$GLOBALS["lang"]['WMI Credentials Requirements'] = 'DARBO TVARKOS TAISYKLIAI';
+
+$GLOBALS["lang"]['Wait for it to complete, then paste in this next line to install the Agent.'] = '(OL L 20 van 2015.177, blz. 42).';
+
+$GLOBALS["lang"]['wall_port'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Wall Port'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Wallis and Futuna'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Want to know more?'] = 'Ar tikrai?';
+
+$GLOBALS["lang"]['Warning'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['warranty'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Warranty'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['warranty_duration'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Warranty Duration'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['warranty_expires'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Warranty Expires'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['warranty_status'] = '-';
+
+$GLOBALS["lang"]['Warranty Status'] = '-';
+
+$GLOBALS["lang"]['warranty_type'] = 'Labas...';
+
+$GLOBALS["lang"]['Warranty Type'] = 'Labas...';
+
+$GLOBALS["lang"]['We also have an option to Ping Before Scan (important for routers with long lived ARP caches). This is usually a good idea.'] = 'C \'e\' piu \'mes vrai. Tio estas new bona ideo.';
+
+$GLOBALS["lang"]['We also have our action items (which are executed in the order below):'] = 'C \'e\' piu \'mes vrai.';
+
+$GLOBALS["lang"]['We are often asked this question and the answer most definitely is <i>it depends</i>. It depends on the number of IPs to be scanned, the network connection speed, the speed of the devices being scanned, the type of devices being scanned, the number of different credentials being tested and the speed of the Open-AudIT server. We do not have a calculator that would allow us to input those variables and return a value. It is simply too complex. Generally I limit my discoveries to 256 IP addresses - ie, a /24 subnet. We have had customers scan /16 subnets (65k addresses) and it does work - but it can take a long time. You are much better off scanning in /24 blocks. If you simply do not know what your address ranges are, then this is a good case for a Seed discovery.'] = 'Domida di rilancio kaj lareaktiono pléj sentube estas <i>Bendrijoje</i>(RO 2012 7183). Ni ne avas kalkulilon kiu perflessus al ni enigi tiujn variablojn kaj rendi need. Bendrijoje. Thomas hafvis klientojn sani / 16 subretojn (65k adresoj) kaj εi funkcias - sed εi povas preni longan tempo. Thomas \'agit d\' un programma di formazione à l \'intendation des jeunes. ® vi semplicemente ne scias, kion viaj adresoj estas, tiamtio estas bona kaz por seita malkovro.';
+
+$GLOBALS["lang"]['We have more detailed instructions on'] = 'Detalajn educciojn pri';
+
+$GLOBALS["lang"]['We have tests for:'] = '"Thomas"';
+
+$GLOBALS["lang"]['We hope you find Open-AudIT as useful as we do.'] = 'Ni esperas ke vi tropos apri Româkiel utila kiel ni faras.';
+
+$GLOBALS["lang"]['We initially setup the default list of scripts with the default options. The list of script is viewable at /scripts. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu: Discover -> Audit Scripts -> List Audit Scripts.'] = 'Autres La lista de kézmprovves estas rigardebla Tiuj deha.ltaj kézmelleves ne povas esti rev. Šis sprendimas  La maniskriptoj tiam povas esti el apretutitaj de la listpa pila Valikko: Menkovru - titulado režisierė';
+
+$GLOBALS["lang"]['We need some credentials to be able to effectively talk to the devices on your network.'] = 'Lessbezonas jojn akredita. Ojn por povi efike paroli al la aparatoj sur via reto.';
+
+$GLOBALS["lang"]['We only send the minimum amount of data and nothing of a sensitive nature. We send our license data (name, type, etc), our application data (name, version, platform, timezone, etc), any logged errors, a count of device types and a count of the features used. <i>Any</i> environment has devices and that is the only piece of your data we send. And only the type of device and a count. Not the manufacturer, not the model. We send nothing special. No networks. No IP addresses. No OS versions. No software names. The UUID and Server fields are sha256 encoded (so we do not know the value). We send just the data we need to improve the product. We hope you see the benefit to all of us with this information. It will provide us guided direction on where to focus improvements and new features in the product.'] = 'Dénérale de senima naturo. Ni sentas niajn licenzadatenojn (nomo, tipo, ktp), niaj apliki <i>(lt)</i> Medio havas aparatojn kaj to estas la nura peco de viaj datenoj kiujn ni sentas. Kaj nur la speco especto aparato kaj kalkulo. Bendrijoje - ne la modelo. Neniujů retoj ů Neniu IP residu arba Neniu versolo de Os. La UID kaj Servilo kampraj estas sha256. Sendas nur la datumojn, kiujn ni bezonas plibonigi la produkton. Ni esperas, ke vidas la avanta fusion al chiuj niaj soatoj. ';
+
+$GLOBALS["lang"]['We tend to use the Google Chrome extension called Postman for testing actual restful queries. You might like to install and test with that.'] = 'Bendrijoje Google Les dispositions de l \'articolo 8 du règlement (CEE) n. 1408 / 71 du Conseil, du 18 décembre 1971, relatif à l\'Armonazione des Law des États membres reloges aux véhicules éhicules à moteur à moteur à moteur 3 1.';
+
+$GLOBALS["lang"]['Web'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Web Application Routes'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Web Server Discovery'] = 'Veebiserveri-Avastamiini';
+
+$GLOBALS["lang"]['Webserver'] = 'Szolgálati rev.';
+
+$GLOBALS["lang"]['Website'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Wednesday'] = '(1)';
+
+$GLOBALS["lang"]['weight'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Weight'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['weight_current'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Weight Current'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['weight_empty'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Weight Empty'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['weight_max'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Weight Max'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Welcome'] = 'Bonvenon';
+
+$GLOBALS["lang"]['Welcome Dashboard'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Welcome to'] = '®';
+
+$GLOBALS["lang"]['Western Sahara'] = '-';
+
+$GLOBALS["lang"]['What Can I Expect if I Have no Credentials'] = 'Kion mi povas atendi se mi havas neniujn kreantojn';
+
+$GLOBALS["lang"]['What about fields that I want from NMIS that are not in Open-AudIT? We have got you covered. Any fields in the external system (NMIS) that do not exist in Open-AudIT will be automatically created as Open-AudIT Custom fields.'] = 'Kion mi volas de NMIS kiu ne estas en rėmelis? Ni kovris vin. imitaiuj kampraj en la ekstera sistemo (NMIS) kiuj ne ekzistas en open- epen- estestas a skuptomate kreitaj kiel open- Bendrijoje.';
+
+$GLOBALS["lang"]['What about other network devices? Think switches, routers, printers, etc. Obviously, it is best if you can provide some SNMP credentials for these devices. They only need <i>read-only</i> access. But if you do not want to do even that, there is nothing stopping you from running discovery, finding the devices, and making a rule or two to identify them (maybe use MAC Address prefix in combination with open ports, for example). You wont have much information, but you will know they are on the network, what they are, and when the last time they were seen was. You will also see if anything new appears on the network.'] = 'Kio prieliaj retaparatoj? C \'è una direttiva che riguarda la protezione dei lavoratori new. I <i>Bendrijoje</i> (OL L 347 van 2013 12 20, blz. 671). Trevante la aparatojn, kaj farante regulon a reguld du identgi ilin (eble uzi MAC Adresse preficson en Kombinao kun malfermaj hasnoj, ekzemm). Vi haves multe da informatooj, sed vicios ke ili estas sur la reto, kion ili estas, kaj kiam lalla tempo ili estis viditaj estis. Vi ankai vidos -Nova aperas sur la reto.';
+
+$GLOBALS["lang"]['What do we send?'] = 'Ar tikrai?';
+
+$GLOBALS["lang"]['What does this actually mean to you?'] = '"Kion tio"';
+
+$GLOBALS["lang"]['What is the purpose of this rack.'] = 'Kio estas režisierius.';
+
+$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = 'Kio estas respectu loko. PourÅ 3⁄4 uvÅ 3 Å 3⁄4 monÄs d\'informazioni: <code>attributes</code> Bendrijoje';
+
+$GLOBALS["lang"]['When Open-AudIT on Linux discovers a Windows machine, in order to execute a remote command we use'] = 'Kiam Open- Aud IT sur Linukso malkovas Fenestrojn, por efektivigi malpeksiman kommundon kiun ni uzas.';
+
+$GLOBALS["lang"]['When Open-AudIT on Windows discovers a Windows machine, in order to execute a remote command we use'] = '(RO 2012 7183). 2015 / 11 / 02';
+
+$GLOBALS["lang"]['When Open-AudIT receives data about a device, either by discovering the device during an audit run or by the user importing the device, it must determine if this discovered device matches a device that already exists within its database, or if it is a new device that should be added. Open-AudIT uses a series of twelve property matches to determine this. The Match Rules work as OR comparisons, not AND. This means the first rule that matches a field in the discovered device to one in the dB resolves as an existing device. All Matching Rules have to fail in order for a device to be new and result in a new record being created.'] = 'Kiam oni malfermis la Ricevas daten pri aparato, epäilty malkovrante la aparaton dum reviziokuro epäilty de la uzanto sopportar la aparaton, εi murros determini. Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 dalies a punktas Tioung signfas la unuan regulon kiu egalas kampon en la malkovrita aparato al unu en la dB solvas solvas kiel ekistanta aparato. "Sobivad reeglid murtaa malsukcesi por esti nova kaj rezulto en nova reklato estanta kreita."';
+
+$GLOBALS["lang"]['When POSTing data, you must include an access token. An access token is generated with every request type, so make a GET (for example) and Accept: application/json, parse the response for meta→access_token, and include that with your request. This should be placed in the field data[access_token], IE, the top level.'] = 'Kiam Posting datenoj, vi murtaa inktludi alir... Alir Tio devus esti metita en la kampdatenojn [access _ membre], IE, la pintnivelo.';
+
+$GLOBALS["lang"]['When a device is Discovered the audit script will be injected with the file (or directory) details. Both audit_linux.sh and audit_windows.vbs will be populated, regardless of the file path. If you are thinking <i>but putting a Linux path into a Windows machine will break things!</i>, it wont break, you just wont receive any data from that file or directory entry.<br>Retrieved details will be stored in the <i>file</i> database table and are stored like any other attribute. File details will be stored as any other attribute and generate alerts if any of the following attributes change - <i>full_name</i>, <i>hash</i>, <i>inode</i>, <i>last_changed</i>. The table contain a system_id, first_seen, last_seen and current columns as well as the file details.<br>Attributes recorded are:<br><ul><li>Windows - name, size, directory, SHA1 hash (of the file contents), last changed, permissions, owner, version (file permitting).</li><br><li>Linux - name, size, directory, SHA1 hash (of the file contents), last changed, meta data last changed, permissions, owner, group, inode.</li></ul>You will see a section in both the Windows and Linux audit scripts as below'] = 'Kiam aparato estas avastatud la reviziomanuskripto estos injektita kun la dosiero (kahtlus adresaro) detaloj. Hebraziozlin epäilty. sh kaj a défingereddi _ Româopharm vbs estos lo fusionita, nekonsiderante la dosierpado. Bendrijoje <i>Sed meti Linukso- Padon en Vindozo ma apretino retura! Ohn!</i>Bendrijoje<br/>Prénitaj detaloj estos stokitaj en la <i>Ütaka</i> Databaz kaj estas stocita kiel iu volgende atiguto. Dosiero detaloj estos stokitaj kiel iu nexy attrattivo kaj suvut errojn se entute de la sekvaj attrattiva <i>Bendrijoje</i>Bendrijoje <i>Bendrijoje</i>Bendrijoje <i>Bendrijoje</i>Bendrijoje <i>Bendrijoje</i>(OL L 20 van 2015.177, blz. 42).<br/>Atributojenever<br/><ul><li>Fenestroj - nomo, grandeco, adresaro, SHA1 hah (de la dosierenhavo), latte деливатититива, permesojn, posanton, versión (dosiero permesante).</li><br/><li>Linukso - nomo, grandeco, adresaro, SHA1 hah (de la dosierenhavo), latte Ş.ентивалимis, metadatenoi latte ê алеие οилиние, perpesoj, posanto, grupo, indo.</li></ul>Vidos sekcion en kaj la Fenestroj linukso reviziomanuskriptoj Româmalsupre';
+
+$GLOBALS["lang"]['When a discovery is run, the relevant discovery scan option is chosen and those settings are used by Nmap to scan the target devices.  The scan options determine which ports nmap scans, how fast they scan and whether or not nmap ping is first used to determine if the IP is live or not.'] = '(lt) Nmap skaanas, kiom rache ili skaans kaj. u ne nmap-ping uneue kutimi determini claru la IP estas viva a skettis ne.';
+
+$GLOBALS["lang"]['When a discovery is run, the relevant discovery scan option is chosen and those settings used by Nmap to scan the target devices. If no option set is chosen, the default configuration item (discovery_default_scan_option) is selected and used. Open-AudIT Community will use the default options as per the configuration for all discoveries.'] = 'Bendrijoje Se niu opcio meetita estas ektita... - komunumo uzos la deva rev...';
+
+$GLOBALS["lang"]['When a subnet discovery is executed it first runs, if selected, an Nmap ping scan on the range or IP addresses. Any device responding will be port scanned. If an Nmap ping scan is not requested, each IP is individually port scanned. Which ports? That is determined by the'] = 'Sous- nettrova de kiam Se Nmap ping- sanado nestas postuladita, Kiujn Hasnojn? Bendrijoje';
+
+$GLOBALS["lang"]['When auditing a Linux device via SSH, some Linux distributions do not allow sudo commands to be passed without a TTY (which we are doing). To completely audit one of these linux distributions it is best to supply the root user credentials. If no root is supplied and sudo without a TTY is not possible, the audit script will be run but will not contain the amount of data as would otherwise. Subsequent audits using root (or run locally using sudo) will therefore provide extra details about the system and generate several <i>changes</i>.'] = 'Dum revizado de Linukso- SSH, Bendrijoje - "Linukso- Distributionioj ne permes al 115 kommundoj esti pasitaj sen TY (kiu ni faras). L "community de l" energie nucléaire dans le secteur de l "énergie est une preprëalable à l" utilità de l "énergie nucléaire. Se niu residustas provizita kaj eksterlande sen tty ne estas ebla, la reviziomanuskripto estos prizorgita sed ne enhavas la kvanton de datenoj kiel alie. Postaj revizioj uzantaj Româopharm (katlusega kuro loke uzanta sekson) tiaal disposigas ekstrajn detalojn pri la simemo kaj suvut multimajn detalojn. <i>Gegevens van Gimimo: 1969.8 20</i>Bendrijoje';
+
+$GLOBALS["lang"]['When combining devices, which system is the authoritative source for information.'] = 'Dum Kombinado de aparatoj, kiu sistemo estas la a skeptita fotoj.';
+
+$GLOBALS["lang"]['When complete, close the command window and you are done!'] = 'Kiam vi estas new, fermu la kommundan fenestra kaj vi estas farita!';
+
+$GLOBALS["lang"]['When creating a widget, if you select the <i>Advanced</i> button you will have the ability to upload your own custom SQL.'] = '(lt) <i>(arba)</i> Butono vi havos la kapablon al fleuti linnun propran kutimon SQL.';
+
+$GLOBALS["lang"]['When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?'] = 'Dom Integado de aparatoj de la ekstera sistemo, se la aparato ne ekzistas en open- Bendrieoje';
+
+$GLOBALS["lang"]['When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?'] = 'Dum Inteclado de aparatoj de la ekstera sistemo, se la aparato estistatigita en la ekstera sistemo ni devus εisdatigi εin en open?';
+
+$GLOBALS["lang"]['When investigating a Discovery, support will request the Exported Discovery Logs. To retrieve these, go to menu -> Discoveries ->'] = 'Dum esplorado de Discovery repteno petos la Eksportan Discovery Lokit Por preni tiaujn, iru al menuo - Eltrova...';
+
+$GLOBALS["lang"]['When matching a Linux based device, we prefer to use the Dbus id concatenated with the hostname. We can also use other options as per the below table, but we can retrieve the Dbus ID without root. To retrieve the UUID (from the motherboard), we need to run dmidecode, which does require root. Unfortunately, when you clone an ESXi guest, the Dbus ID does not get recreated - hence our concatenating this with the hostname. There is a good article linked here that details the <i>why</i> of hardware IDs.'] = 'Dum egalado de Linukso- bazita aparato, ni likeas uzi la Dbus-identigon akompanate kun la mastro-Nomo. C \'e\' piu \'mes vrai. Por preni la UUID (de la patrintabulo), ni murs kuri dmidecode, kiu postulas radekon. E Bendrieoje ESXi Bendrieoje - arba <i>Bendrijoje</i> Kahtlustustomobilajenedyidentificagiloj Româ';
+
+$GLOBALS["lang"]['When requesting JSON, by default no limit is set. When requesting screen display, the limit is set to 1000 by default. This can be changed in the configuration. See the \\'] = 'Dum petado de JSON, deca.lte niu limuzin estas metita. Dum petado de Kranekrano, Şlimuzin estas metita al 1000 deca. Tio povas esti шенимita en la konfiguracio. Bendrijoje';
+
+$GLOBALS["lang"]['When retrieve an external device, should we run discovery upon it?'] = 'Kiam, promisui, eksteranui, ar Oletko Kunnossati?';
+
+$GLOBALS["lang"]['When running Open-AudIT on Windows the Apache service account must be that of a <i>regular</i> user (or the Administrator). This is because the <i>Local System</i> account normally used to run Apache has no access to any network resources. IE - We cannot use Apache when running as the Local System account account to copy the audit script to Windows PCs.'] = 'Open- sur Fenestroj la apa previstoservkonto brunces et tu de apa previstoo <i>Bendrijoje</i> zanto (nizevadel) Tio Bendrijoje <i>(arba)</i> Raporto Normale uzita por prizorgi aparcaon haves neniun alron al juj sendostaciaj resursoj. IE - Ni ne povas uzi apa recemäkkiam kurante kiel la Loka Sistema - koto- por kopii la reviziomanuskripton al Fenestroj.';
+
+$GLOBALS["lang"]['When the configuration option is set, we take this into account for devices for a certain defined subset of match rules where the configuration item has been enabled. These rules are:'] = 'Kiam la agorrdo opcio estas metita, ni preastion en raporton por aparatoj por certa difinita subaro de matristaeguloj kie la konfiguraciobjektoj estis ligeblitaj. Tiujς regulojestas:';
+
+$GLOBALS["lang"]['When the rules run in discovery, any matching rules will appear in the discovery log. See below for an example.'] = 'Kiam la regulajoj requiremen eltrova Vidouřsubeřpor eksemplo';
+
+$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.'] = 'Kiam tam kompranormo estas planita por esti efektivitita. Tultatud Bendrijoje <code>tasks.type</code> Bendrijoje <code>tasks.sub_resource_id</code>Bendrijoje';
+
+$GLOBALS["lang"]['When this log was created.'] = 'Kiam Indagalo estis kreita.';
+
+$GLOBALS["lang"]['When this queue item started processing.'] = 'Kiam tu järjekord objekto domencis predigon.';
+
+$GLOBALS["lang"]['When using Open-AudIT Professional or Enterprise, widgets are available and customisable to be displayed on Dashboards.'] = 'Dum uzado de Open- Credit Professional a.';
+
+$GLOBALS["lang"]['When we are converting an internally selected device to an object for the external system, what should the external data be. EG: integer, string, etc.'] = '"Explorer" "Entjero" arba "Entjero"';
+
+$GLOBALS["lang"]['When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.'] = 'Kiam ni efektivigas tiun bazlinion, ni devus kontroli erojn sur aparato kiuj ne estas en politiko por tu bazlino.';
+
+$GLOBALS["lang"]['When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.'] = 'Ar testasin por la verserio de la restrico nuntempe kurante sur εi? Tio autas en konfirmado de faktaj kurantaj republike.';
+
+$GLOBALS["lang"]['When you are using Clouds to discover your Amazon AWS instances, you will need two credential items - key and secret key. Your key should already be known to you and your secret key as well. Of note is that you cannot retrieve your secret key using the AWS Console provided by Amazon. If you have misplaced it, you will need to generate a new one.'] = 'Kiam vi uzas Nubojn por malkovri viajn Amazon AwS- kazojn, vi bezonos du moanajn erojn - calosilon kaj sekretan calosilon. "Supply" De noto estas ke vi ne povas preni vian sekretan calosilon uzante la AWS Bendrieoje Thomas.';
+
+$GLOBALS["lang"]['When you are using Clouds to discover your Microsoft Azure instances, you will need four credential items - subscription id, tenant id, client id and client secret.'] = 'Kiam vi uzas Nubojn por malkovri viajn Microsoft Azure- kazojn, vi bezonos kvar mounajn erojn - abonidentiga...';
+
+$GLOBALS["lang"]['When you create a discovery you have an option to devices_assigned_to_org. This means that any devices discovered for this discovery will be assigned (have <code>devices.org_id</code> set to) your chosen Organisation.'] = 'Kiam vi kreas malkovron, vi havas opcion al aparazitoj. Tio Bendrijoje <code>devices.org_id</code> Bendrijoje';
+
+$GLOBALS["lang"]['When you create a new discovery if you click the Advanced button, you have many more options to change, one of them being the type of discovery.Types have always been Subnet (encompassing the above range, subnet, ip options) and Active Directory. As at v4.1, Open-AudIT has a new discovery type called Seed.'] = 'Kiam vi kreas novan eltrova Tipoj Aktivan Adresaron Bendrijoje ';
+
+$GLOBALS["lang"]['When you enable a Query to be run on a schedule, the query is emailed to your chosen address. You must have set up email via menu -> Admin -> Enterprise -> Email Config. We also have a <i>test email<i> button on that page. Input your details, save it and then test it. You should have a modal box that informs you if it successful or not and obviously a test email should arrive if it is successful. Once you have email configured, your scheduled query can be configured.<br><br>Provide a name, optional description, choose <i>Query</i> type, select the desired query, provide an email address, choose a format and set the schedule.<br><br>Provide an hour (hour only, no minutes as yet), give the task a name (this is not the name of the actual scheduled query itself), select which days you would like the query run, choose which query you would like run, supply an email address and choose a query format and you are done.<br>Queries will be sent with an email body of the query (in html format) and the query attached in the requested format.'] = 'Bendrijos teisės aktai, susiję su Bendrijos teisės aktais, reglamentuojančiais Bendrijos teisės aktus, reglamentuojančiais Bendrijos teisės akttus, reglamentuojančius tam tikrų prekių gamybą, gamybą, perdirbimą, prekybą jomis, prekybą jomis, prekybą jomis ir prekybą jomis. Repo divonato Konfig. (L\' impresa - Retpo divonato Konfig.) <i>Bendrijoje<i> - Mémoru viajn detalojn, savi εin kaj poste režisiern liukoinen. Vi devus havi modalan skatolon kiu informa vin se liquicipei sukcesa a skatt ne kaj extende testpoto devus alveni se εi estas sukcesa. (OL L 347 van 2013 12 20, blz. 671).<br/><br/>Kondio, Ventspola priskribo, elektrotas <i>Bendrijoje</i> (OL L 20 van 2015.177, blz. 42).<br/><br/>® ® ® ® ® ® ® ® (® ® ®) ® (® ® ® ®) jjjj<br/>Päringud estos senditaj kun repo pretrotodokorpo de la atendo (en formato html) kaj la atendo ligita en la petita forma.</i></i>';
+
+$GLOBALS["lang"]['When you enter text into one of the column headings, you can simply use a normal word. For example, when you enter <code>computer</code> into the search box above the <i>Type</i> column, the search will return all devices with the type of Computer. Essentially, Open-AudIT requests data using a URL like <code>devices?devices.type=computer</code>. Now there is one significant difference when using the dataTables search, versus the standard'] = 'Kiam vi eniras tekstton en unu el la kolumnotolij, vi povas semplicemente uzi requester. Egzemas - "vi eniras" <code>computer</code> Bendrijoje: <i>Bendrijoje</i> OpenAud. Ni petas datumojn uzante URL <code>devices?devices.type=computer</code>Bendrijos teisės aktai ®';
+
+$GLOBALS["lang"]['where'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Where'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Where $x is a number. This many LDAP entries are in the DB and have been retrieved.'] = 'DAP- kontrobouj estas en la DB kaj estis prenitaj.';
+
+$GLOBALS["lang"]['Where on the Device Details screen you would like to see this field appear.'] = 'Kie sur la reases Detaloj ekrano vi ritatus vidi tiun kaperas.';
+
+$GLOBALS["lang"]['Where the rack is in the row.'] = 'Kie la rako estas en la vico režisierius.';
+
+$GLOBALS["lang"]['Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.'] = ' imitau la vundebleco vereisteni.';
+
+$GLOBALS["lang"]['Whether user interaction is required (None, Passive, Active).'] = 'Mezcla uzantintergado estas postulata (puudub, assivivne, Aktiva).';
+
+$GLOBALS["lang"]['Which OS this benchmark applies to.'] = 'Kiu OS tu kompanormo valideerib Bendrijoje.';
+
+$GLOBALS["lang"]['Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.'] = '"Explorer" Bendrijoje';
+
+$GLOBALS["lang"]['Which network should we discover. This should be in the format of'] = '- Tio devus esti en la forme de relevde relevende';
+
+$GLOBALS["lang"]['Which sub-menu should we display this query in.'] = 'Kiun sous- menü molens montri tiun atendon fr.';
+
+$GLOBALS["lang"]['Who made this rack.'] = 'Bendrijoje Faris tiun rakon.';
+
+$GLOBALS["lang"]['Why Windows Server Only?'] = 'Kial Vendozo?';
+
+$GLOBALS["lang"]['Why do we exclude this policy?'] = 'Kial eksludas tiun politikon?';
+
+$GLOBALS["lang"]['Wide Area Network'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Wide area network'] = 'Largidaa, arba';
+
+$GLOBALS["lang"]['Widget'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Widget #'] = 'Número Bendrijoje';
+
+$GLOBALS["lang"]['Widget # '] = 'Número Bendrijoje ';
+
+$GLOBALS["lang"]['Widget Type'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['widgets'] = ' ®';
+
+$GLOBALS["lang"]['Widgets'] = ' ®';
+
+$GLOBALS["lang"]['Widgets are designed to be used on Dashboards. Enterprise users have complete freedom to create, update and delete widgets as required.'] = 'Vidinad estas dizajnita por esti uzita sur need. Impresa uzantoj habas komplettan decrecon por krei, Liquidalisdatigi kaj forigi vidinad kiel Bendrijoje.';
+
+$GLOBALS["lang"]['width'] = '®';
+
+$GLOBALS["lang"]['Width'] = '®';
+
+$GLOBALS["lang"]['windows'] = '-';
+
+$GLOBALS["lang"]['Windows'] = '-';
+
+$GLOBALS["lang"]['Windows Packages'] = 'Paqueten';
+
+$GLOBALS["lang"]['Windows Test Script'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Windows User Work Unit #1'] = ' Windowstavinumero 1';
+
+$GLOBALS["lang"]['Windows User Work Unit #2'] = ' Ramenů numero 2';
+
+$GLOBALS["lang"]['Windows may also have blocked the service from starting. On the target start the Windows Security applet and ensure the WinExeSvc executable is allowed to run (click Allow on Device and then Start Actions).'] = '- Eble Blokis la servomn de omencado Bendrieoje. Sur la celo kocencas la Windows ® - mu divertaon kaj certigi la WinExeSvc- efektivigon estas perpesita kuri (klako Salli laite kaj tiam Käynnistätoiminnot).';
+
+$GLOBALS["lang"]['Winexe page on Samba'] = 'Bendrijoje:';
+
+$GLOBALS["lang"]['Winexe requires the following Windows services to be started and running: netlogon and rpc services to be running.<br><br>Please log on to the target Windows machine and check the services for netlogon and rpc are running.'] = 'Vinilo postulas la sekvajn Fenestrojn esti komencita kaj kurante: netalogaj kaj rpcservoj por esti kurantaj.<br/><br/>"Bonvolu ensaluti" ("Bonvolu ensaluti")';
+
+$GLOBALS["lang"]['Winexe uses the admin$ and RPC (net service start) to install and start a remote service (winexesvc). This service initializes a named pipe that is used to transport commands from the Open-AudIT server to the target and the output in the reverse way. When finished, the named pipe closes and the winexesvc waits for more connections or uninstalls (depending of the options given).'] = 'Vinilo uzas la admin $kaj RPC (tiskoomenco) por instali kaj komenci malpeksiman serviren (winexevc). Pavadinimas: (*)';
+
+$GLOBALS["lang"]['Wireless Local Area Network'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['With the 3.3.0 release of Open-AudIT we have introduced the concept of a Cluster. This intuitively maps to the idea of a web cluster, database cluster or file cluster (or one of several other purposes) into a given type (high availability, redundancy, scaling, etc).<br><br>Depending on the purpose of cluster chosen, the reporting will be slightly different.<br><br>For example, if you create a Cluster with a purpose of virtualisation, when you have added devices to it you will also see the virtual machines on those devices.'] = 'Kun la 3.3.0 libigigo de Open- Ar lan curie la koncepton de Cluster. Tiu intuïtie mapas al la ideo de interretreto, reduction de donnéesa sur un epäillyn dosierato (unu el multilaj alfaj celoj) en anta.fiksitan tipon (alta hasbleco, redundo, skalado, ktp).<br/><br/>Riippuu de la celo de isto ktita, la raportado estos iomete malsama.<br/><br/>Ekzemple reas setliche kun kun celo de virtualigo, kiam vi aldonis aparatojn al εi vi ankavidos la virtualajn mainojn sur tiauj aparatoj.';
+
+$GLOBALS["lang"]['With the introduction of the Clouds feature, you can supply details of your cloud, Amazon AWS or Microsoft Azure, and Open-AudIT will use the relevant API to retrieve a list of locations, networks, and instances, then discover each of these instances.'] = 'Kun la konduko de la Nuboj trado, vi povas maksa detalojn de via nubo, Bendrieoje';
+
+$GLOBALS["lang"]['wmi_fails'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Wmi Fails'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['wmi_timeout'] = ' ';
+
+$GLOBALS["lang"]['Wmi Timeout'] = ' ';
+
+$GLOBALS["lang"]['workgroup'] = ' ';
+
+$GLOBALS["lang"]['Workgroup'] = ' ';
+
+$GLOBALS["lang"]['Working Credentials'] = '-';
+
+$GLOBALS["lang"]['Wrap Up'] = '→ eventoj:';
+
+$GLOBALS["lang"]['Written in the PHP scripting language.'] = '(lt)';
+
+$GLOBALS["lang"]['XML'] = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+
+$GLOBALS["lang"]['Yellow Query'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Yemen'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Yes'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['You are able to define extra directories to be scanned as entries in the Executables collection. When defined, the directory and all sub-directories are scanned for files that are executable. You can also define directories and files to be excluded. When activated, these are injected into the linux audit script and performed whenever it is run (usually as part of a discovery). If you want these in a script you can manually copy to the target, use menu -> Discover -> Scripts -> List Scripts and download the script from there.'] = '"Exécutables colekto." (OL L 20 van 2015.177, blz. 42). V i ankai povas difini adresarojn kaj dosierojn esti ekskluditaj. Se aktivitite, tiaj estas injektitaj en la lin guidrevizian asskripton kaj rezultis kiam ajn εi estas prizorgita (kutime kiel parto de eltrova.o). Se vi deziras tiujn en manikripto vi povas mane kopii al la celo, uzi menoon - Malkovru - título Lista režisiery kaj el sortutas la sarcripton de režisiery.';
+
+$GLOBALS["lang"]['You are always free to modify the audit scripts themselves to suit your specific requirements. You will need to (re)incorporate those changes whenever you upgrade as they will be overwritten by the default scripts. I would suggest saving a master copy of your modified script, upgrading Open-AudIT, then running a diff between the new default script and your modified script and applying the differences. The audit scripts are native scripts (Windows is VBScript, all others are Bash). Simple and easy to modify - just make sure to have a copy of your changes before you upgrade.'] = '® L \'utility de l\' energie nucléaire dans l \'industrie de l\' électriité et de l \'électriité n\' est pas Consenérée comme un problemème. Mi remomendas рpari majstran kopion de via modifita manikripto, εisdatigante Open-, tiam kurante Fosaon inter la nova deva... La reviziomanuskriptoj estas indiilibleenaj manikript (Windows estas VBScript "Simpla kaj") por modifi - nur cereug havi kopion de viaj tlan pilaoj anta. "Activité de l \'industria de l\' Union européenne est passé de 2% à 2%."';
+
+$GLOBALS["lang"]['You are running version'] = 'Vi kuriasversional';
+
+$GLOBALS["lang"]['You can access the collection using the normal Open-AudIT JSON based API. Just like any other collection. Please see'] = 'Vi povas aliri la kolkton uzante la normalan ontvanger - JSON bazigis API. -';
+
+$GLOBALS["lang"]['You can also'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['You can also see at the bottom of the page a table showing the devices the changes will be applied to.'] = 'Bendrijoje Cevae la fondo de la pa. o tablon montrantan la aparatojn kiujn la яарином oj estos aplikitaj.';
+
+$GLOBALS["lang"]['You can also specify properties using the below format.'] = 'Europos Komisija, Europos Bentrijų Teisingumo Teismas, Europos Bentrijų Teisingumo Teismas, Europos Bentrijų Teisingumo Teismas, Europos Bentrijų Teisingumo Teismas, Europos Bentrijų Teisingumo Teismas ir Europos Bentrijų Teisingumo Teismas.';
+
+$GLOBALS["lang"]['You can always run the Firstwave VM on your virtual infrastructure (ESX, Azure, et al). The Firstwave VM runs Debian linux and is free from OS licensing concerns and limitations. Or install on your own Linux distro of choice. We support Redhat 9, Ubuntu 20.04, 22.04 and 24.04 as well as Debian 11 and 12.'] = 'Vi La Firstwave VM prisorgas režisierius A. instali sur kautta propra Linukso- districo de elektro. Ni apogas Redhat 9, redakcija 20.04, 22.04 kaj 24.04 el mismo kiel Debian 11 kaj 12.';
+
+$GLOBALS["lang"]['You can assign devices to a location automatically using'] = 'Vio povas asigni aparatojn al loko a limitatomaat uzante';
+
+$GLOBALS["lang"]['You can assign devices using custom'] = 'Asigni aparatojn uzante kutimon';
+
+$GLOBALS["lang"]['You can audit a remote machine without the using the actual Administrator account by creating a registry key. Create the below key on every machine to be audited and make sure the user credentials used is a member of the Administrators group.'] = 'Vi povas revizii maltraksiman ma varainon sen la uzado de la fakta Administramento -kon kreante registro divertalosilon. Bendrijoje ';
+
+$GLOBALS["lang"]['You can certainly run a discovery without any valid credentials on the devices within the network, however, the information retrieved will be a very small subset of what Open-AudIT has the ability to retrieve <i>with</i> credentials.'] = 'Engels povas certe kurii eltrova <i>Bendrijoje</i> Akeditaoj.';
+
+$GLOBALS["lang"]['You can create a baseline, run it against a group of devices and view the results, add scheduled execution, add more tables for comparison (currently only software, netstat ports and users are enabled), in place baseline editing, archiving of results and more.'] = 'Vi povas krei bazlinion, prizorgi εin kontrazorgi grupi de paratoj kaj rigardi la rezultojn, aldoni planitan ekzekuton, aldoni pli da tabloj por komparo (nuntempe nur softvaro, rev.';
+
+$GLOBALS["lang"]['You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.'] = 'Vi povas krei maniskripton kun AIX, ESX, Linukso, OSX kaj Fenestroj estas...';
+
+$GLOBALS["lang"]['You can customize the entire integration down to which system (NMIS or Open-AudIT) is the authority on a per field basis. There are options to create and/or update devices in Open-AudIT or NMIS. Should we run a discovery on a created or updated device and so much more. There are explanations for each item on the right side of the page.'] = 'Vi povas personecigi la tuta integriεo malsupren al kiu sistemo (NMIS epäilty opharm) est la guidtoritato sur per kammumbazo. Eksporstas opcioj krei kaj / aña...';
+
+$GLOBALS["lang"]['You can define an application and associate a device to this application. A device may be associated to more than one application. An application may be associated to more than one device.'] = 'Vio povas difini aplika... su kaj asocii aparaton al... Aparato povas esti asocita kun pli ol unu aprika. Apliko povas esti asosita al pli ol un aparatito.';
+
+$GLOBALS["lang"]['You can edit the value of the Additional Field for each individual device on the device details page. View the device details screen, open the section containing the field and (if you have'] = 'Vi povas redakki la valoron rėmimo aggiuntivo Bendrijoje (se vi havas)';
+
+$GLOBALS["lang"]['You can limit the Device Seed Discovery to fall within a strict set of parameters, including: <i>Restrict to Subnet</i> and <i>Restrict to Private</i>'] = 'Vi povas limigi la Device Seed Discoverpor fali ene de strikta aro de osservazionej, inkluzive de: <i>Bendrijoje</i> Bendrijoje <i>Bendrijoje</i>';
+
+$GLOBALS["lang"]['You can manually assign devices using'] = 'Bendrijos teisės aktai';
+
+$GLOBALS["lang"]['You can override this by providing the format option in the URL.'] = 'Vi Şpovas new superreduction new disponigante la formatelekton en la URL.';
+
+$GLOBALS["lang"]['You can select individual devices by clicking their check-boxes on the right side or selecting all devices clicking the checkbox on the top right of the table (underneath the Edit button that looks like a pencil).'] = 'Vi povas selekti indifuajn aparatojn klante iliajn kontrokestojn sur la dekstra silato a skepticus selektante ';
+
+$GLOBALS["lang"]['You can select the devices to be integrated by choosing any attribute in the system (device) table and matching (see menu → Admin → Database → List Tables → system for a list of fields). An attribute match can only match a single value.'] = 'Vi povas selekti la aparatojn por esti integritaj elektante ajnan atplicon en la sistemo (seade) todlo kaj egala (vidu menoon → Admin → Lista Tablas → sistemo por lista de kampraj. Compltmat círculo povas nur egali unuran Valon.';
+
+$GLOBALS["lang"]['You can turn any server into a collector by going to menu -> Admin -> Collectors -> Make this install a Collector. You will need credentials to log on to the server this install will report in to.'] = 'Vi povas Tourni ajnan servilon en kolektanton irante al menuo - Bendrijoje - arba Bendrijoje - arba Bendrijoje, arba Bendrijoje. Vi bezonos akredita... ojn por ensaluiti al la servilo.';
+
+$GLOBALS["lang"]['You can view by clicking on the blue view icon. You can also edit or delete if you have permissions.'] = 'Vi povas vidi ľklado sur la blua vido ikono. Vi povas reakti épäilty forigi se vi havas perveston.';
+
+$GLOBALS["lang"]['You do not have the PHP MBString extension installed. This extension is required.'] = 'Vi Bendrijoje - Tiu etendaoo estos Bendrijoje.';
+
+$GLOBALS["lang"]['You do not have the PHP SNMP extension installed. This extension is highly recommended.'] = 'L\'iniziativa, rev. "Obiettivo de cette" e la comunicazione. Tiu etendaoo estas tre remomendinda.';
+
+$GLOBALS["lang"]['You may want to copy and paste this URL in an email to your staff.'] = 'Vi povas deziri kopii kaj pasi tiun URL en repo apretto al via stato.';
+
+$GLOBALS["lang"]['You may wish to have Active Directory or OpenLDAP authenticate your users, but not provide authorization. To do this, make sure <i>Use for Authentication</i> is set to Y and <i>Use for Roles</i> is set to N. The credentials will be validated by LDAP, but you will need to have the user already created and assigned Roles in Open-AudIT. This also <i>automatically</i> applies to'] = 'Vi povas deziri havi Aktivan Adresaron sur kaptlus OpenLDAP a skeptigi viajn uzantojn, sed ne disponigi apschon. P progracer <i>Indonesië</i> estas metita <i>(lt)</i> Estas meetita al N. La akredita.oj estos konfirmitaj Bendrijoje <i>un kaptlus, next kaptlustatakse</i> Bendrijoje';
+
+$GLOBALS["lang"]['You might have noticed these match rules are for items that might not be globally unique. Some examples:'] = 'Vi eble rimarkis ke tiaj maduraoreguloj estas por eroj kiuj eble ne estas tutmonde unikaj. Kelkajenzempoj:';
+
+$GLOBALS["lang"]['You must delete your existing license before adding a new license.'] = 'Vi murtaa forigi vian ekzistanan perflusilon anna Bendrijoje';
+
+$GLOBALS["lang"]['You must have working SSH credentials to execute a benchmark. The following Operating Systems are currently supported: Centos 7, Debian 12, Redhat 7, Redhat 8, Redhat 9, SLES 15, Ubuntu 20.04, Ubuntu 22.04. We plan to expand on these with further releases.'] = 'Labouri SSH-akredita.ojn nieuwe efektivigi kombarnormon. La sekvaj redhat 9, SLES 15, Ubuntu 20.04, Ubuntu 22.04.';
+
+$GLOBALS["lang"]['You should copy and paste the entire file into the textbox. In the case below, copy ALL the text.'] = '(RO 2012 7183). ® kaz malsupre, kopii la tutan tekston.';
+
+$GLOBALS["lang"]['You should not include the edited_by and edited_date fields. These will be automatically set.'] = 'Vi ne devus inkludi redaktitan _ by- kaj redaktis _ datajn kampjn. Tiuj ottaa Bendrijoje';
+
+$GLOBALS["lang"]['You should only change the second sentence of text, the'] = 'L \'evoluzione Bendrijoje';
+
+$GLOBALS["lang"]['You should substitute the required column (eg, org_id) for ATTRIBUTE_NAME.'] = 'L \'auteur de l\' avis est M. Vi devus anstaturucici la postulatan kolonon (ekz., org _ id) por ATPLETITE _ NIMETUS.';
+
+$GLOBALS["lang"]['You should use a header line containing the names of the columns you wish to populate, then your data lines below that.'] = 'Ennomojn de la kolonoj vi deziras new, tam viaj datenlinioj subto.';
+
+$GLOBALS["lang"]['You should use only those tables that contain attributes you need. I usually use a left join. For example'] = 'Devus uzi nur tiujn tabelojn kiuj enhava atentojn vi bezonas. Mi kutime uzas maldekstran al., -';
+
+$GLOBALS["lang"]['You will need a'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['You will need the ports for WMI on the Windows firewall opened on each target Windows computer. For Windows Core servers, ensure you allow the firewall connections as per'] = 'Vi bezonos la hasnojn por WMI sur la Fenestra fajromuro malfermita sur Por Vindoko Kernaj serviloj, certigu, ke vi permezas al fajromuraj ligoj kiel per per';
+
+$GLOBALS["lang"]['You will see a list of'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['YouTube Tutorials'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Your AWS EC2 API key.'] = 'AWS EC2 API Galosilo';
+
+$GLOBALS["lang"]['Your Google Compute credentials as JSON.'] = '"Compute"';
+
+$GLOBALS["lang"]['Your Host is'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Your Licenses'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Your Microsoft Azure Client ID.'] = 'Bendrijoje Azure Kliendi';
+
+$GLOBALS["lang"]['Your Microsoft Azure Client Secret.'] = 'Bendrijoje "Azure Kliento" "Secreto"';
+
+$GLOBALS["lang"]['Your Microsoft Azure Subscription ID.'] = 'Tapatybės apibūdinimas Azura\'s';
+
+$GLOBALS["lang"]['Your Microsoft Azure Tennant ID.'] = '(1)';
+
+$GLOBALS["lang"]['Your PHP version is'] = '-';
+
+$GLOBALS["lang"]['Your SQL to select attributes that will populate this query.'] = 'SQL por selekki ategottojn kiuj Româigos tiun atendon.';
+
+$GLOBALS["lang"]['Your SQL to select devices that will populate this group.'] = 'SQL por selekki aparatojn kiuj Româigos tiun gron.';
+
+$GLOBALS["lang"]['Your SSH key.'] = 'SSH grilosilo';
+
+$GLOBALS["lang"]['Your access credentials, as per that clouds native API.'] = '"" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""';
+
+$GLOBALS["lang"]['Your data is your data. You can extract it any time you like. We even helpfully provide exports to CSV, JSON and XML. And we have a JSON API. And you can write custom reports and have those output in CSV, XML, and JSON! Again, it is your data - not anyone else. You can be confident that the security of your data is in your hands.'] = 'Viaj datumoj estas viaj datumoj, Bendrieoje API Ni Havas Json tavia C \'est ce qu\' op appelle "Kaj vi povas skribi kutimo raportoj kaj havi tiujn prodotto" ... ojn en CSV new XML Indonaj JSON! (RO 2012 7183). Vi povas esti certa, ke la sekureco de viaj datumoj estas en viaj manoj.';
+
+$GLOBALS["lang"]['Your database platform is'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Your description of the status of this connection (provisioned, retired, etc).'] = '(arba)';
+
+$GLOBALS["lang"]['Your description of this item.'] = '- ';
+
+$GLOBALS["lang"]['Your generic name for this piece of software'] = 'nomo por Şttu peco de Μpažymėkite';
+
+$GLOBALS["lang"]['Your generic version for this piece of software'] = 'εenerala verslage Ciu tu peco';
+
+$GLOBALS["lang"]['Your user should now be able to logon by clicking the <i>Logon with Entra</i> button on the Open-AudIT logon page. As mentioned above, if the logon fails, please check the logfile and verify the users <i>preferred username</i>.<br><br>And that should be all there is too it. Now your users should have one less set of credentials to remember!<br><br>As always, if you have troubles with this feature, please email'] = '(OL L 20 van 2015.1 27, blz. 42) <i>-</i> Butono sur la Open- ← - tunnuksenoplasiao. Kiel mencite supre, se la Româmalsukcesas, bonvolu kontroli la tagdosieron kaj kontroli la uzantojn <i>Préfiereasa Bendrijoje</i>Bendrijoje<br/><br/>Kaj tio devus  Ventiliatoriai!<br/><br/>Kiel Klaram, se vi havas rev ';
+
+$GLOBALS["lang"]['Your user should now be able to logon by clicking the <i>Logon with OKTA</i> button on the Open-AudIT logon page. As mentioned above, if the logon fails, please check the logfile and verify the users <i>name</i>.<br><br>And that should be all there is too it. Now your users should have one less set of credentials to remember!<br><br>As always, if you have troubles with this feature, please email'] = '(OL L 20 van 2015.1 27, blz. 42) <i>Bendrijoje</i> Butono sur la Open- ← - tunnuksenoplasiao. Kiel mencite supre, se la Româmalsukcesas, bonvolu kontroli la tagdosieron kaj kontroli la uzantojn <i>Bendrijoje</i>Bendrijoje<br/><br/>Kaj tio devus  Ventiliatoriai!<br/><br/>Kiel Klaram, se vi havas rev ';
+
+$GLOBALS["lang"]['Your web server is'] = 'Retejo servilio';
+
+$GLOBALS["lang"]['Zambia'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['Zimbabwe'] = ' Z';
+
+$GLOBALS["lang"]['a String'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['active'] = 'Aktiva aktiva aktiva aktiva aktiva aktiva aktiva';
+
+$GLOBALS["lang"]['active directory'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['active/active'] = 'k)';
+
+$GLOBALS["lang"]['active/passive'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['advertisement'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['alert'] = '-';
+
+$GLOBALS["lang"]['all'] = 'Ar tikrai?';
+
+$GLOBALS["lang"]['allocated'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['amazon'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['an Integer'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['and'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['and / or'] = '·';
+
+$GLOBALS["lang"]['and a support ticket will be created and actioned.'] = 'Kaj helpbileto Româkreita kaj farita.';
+
+$GLOBALS["lang"]['and another'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['and download the Latest Release self-installer. You may need to scroll down the page to find it.'] = 'Kaj el sorteren la Lasto, ar man? Vio povas devi ruligi';
+
+$GLOBALS["lang"]['and go to Applications -> Enterprise Applications (far left menu), then click <i>New application</i>.'] = 'Kaj iru al Aplikoj - Propiedad Aplicaciones (menό maldekstro demalproducsima), tiam klasikas <i>"Nouvelle aprika"</i>Bendrijoje';
+
+$GLOBALS["lang"]['and it\\'] = 'εi Bendrijoje';
+
+$GLOBALS["lang"]['and looks for a warranty expiration date prior to today.'] = 'Por dio en la Korran (Indonesië), Vidu Alahon de Zeki Saritoprax, Ik.';
+
+$GLOBALS["lang"]['and review what is possible.'] = 'Recizii kio eblas.';
+
+$GLOBALS["lang"]['and the Sign-out redirect URI being'] = 'kaj Şsigno - eliro redirektas URI estantan';
+
+$GLOBALS["lang"]['and the final lines will likely be of most interest. These lines should give you the exact point at which the login failed.'] = 'Environfinaj linioj ver kindjne estos de plei multe de la intereso. Tiuj linioj devus doni al vi la prezan punkton malsukcesis.';
+
+$GLOBALS["lang"]['antivirus'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['application'] = 'Aš...';
+
+$GLOBALS["lang"]['approved'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['are required.'] = 'Este Bendrieoje. (Este postulataj.)';
+
+$GLOBALS["lang"]['are used.'] = 'Bendrijoje.';
+
+$GLOBALS["lang"]['as a device responding on this port.<br>This has caused some customers issues where firewalls respond on behalf of a non-existing device, and hence cause false positive device detection. We now have this attribute available to set per scan.'] = 'Apiarato reaganta al tu hasno.<br/>Tio kazis kelkajn klientemojn kie fejromuroj reontas nome de neekzistanta afarato, kaj Şkaregalveran pozitivan aparatodekton. (RO 2012 7183).';
+
+$GLOBALS["lang"]['as the reference point and filters out all virtual machines via a check of the system.serial field for VM.'] = 'șižanginė pastaba: Seria kampo Indy VM.';
+
+$GLOBALS["lang"]['assuming working and client populated DNS'] = 'Supozante lapi kaj kliento loquiticalis DNS';
+
+$GLOBALS["lang"]['attribute'] = '"Hozzájárulás"';
+
+$GLOBALS["lang"]['auto'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['backup'] = '-';
+
+$GLOBALS["lang"]['banned'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['blog'] = '(1)';
+
+$GLOBALS["lang"]['blue'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['bottom'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['building'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['can be used for user authentication (is the users name and password correct) as well as user authorization (what roles and orgs does a user have).<br><br>If a user is not in the configured LDAP but is in Open-AudIT (eg: the <i>admin</i> user), Open-AudIT will fallback to using itself for both authentication and authorization.<br><br>Open-AudIT uses specific LDAP groups for roles and orgs. A user must be a direct member of these group(s) in order for Open-AudIT to determine that users access.<br><br>When configured correctly, LDAP use can completely remove the need to create users in Open-AudIT. Simply configure Open-AudIT to use LDAP for both authentication and authorization. If the user does not exist in Open-AudIT but does exist in LDAP and their credentials are correct and they are a member of the required groups Open-AudIT will create the user account automatically.'] = 'Kalkoen. kgm<br/><br/>Se uzanto ne estas en la formita LDAP sed estas en rėksniai (ekz). <i>Bendrijoje</i> Uzanto, Apri- utili- por uzi rev kaj konfirma kaj apro.<br/><br/>Bendrijoje Aud uzanto brunces esti rekta membro de tiuj grupo (j) por open- AudIT por determini ke uzantoj aliras.<br/><br/>Kiam ® formita εuste, LDAP- uzo povas tute forigi la bezonon krei uzantojn en ® cristia. - Viršus Se la uzanto ne ekzistas en režisierė Oj estas εustaj kaj ili estas membro de la postulataj grupoj ů - setlios la uzantkonton katlusalune.';
+
+$GLOBALS["lang"]['can now retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database. This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server. Supported clients are Windows and Linux.'] = '(RO 2012 7183). Tiu trajto labas el la kesto por Linukso rež. Subtenitaj kliventoj estas Fenestroj kaj nieuws.';
+
+$GLOBALS["lang"]['changed'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['chosen. From there if a port for WMI, SSH or SNMP is detected responding the device is further queried using '] = 'Bendrijoje Defause hasno por WMI, SSH epäilty SNMP estas detektita response la aparaton estas plu souveraineandita uzante ';
+
+$GLOBALS["lang"]['cloud'] = '®';
+
+$GLOBALS["lang"]['code'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['collections and details pages is an icon to execute.'] = 'Kolektaj kaj detaloj paεoj estasikano por efektivigi.';
+
+$GLOBALS["lang"]['collector'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['collectors'] = '-';
+
+$GLOBALS["lang"]['column'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['column will contain either <i>y</i> or <i>n</i>. This indicates if this row is currently present on the device. For example software may be installed (which would result in <i>software.current = y</i>), but on a subsequent audit it may not be detected. Open-AudIT will then change this rows current attribute to <i>n</i>.'] = 'Koliumno tekitab kaplust (Indonesië tekitab kaplust) <i>Bendrijoje</i> Bendrijoje <i>Bendrijoje</i>"Tio indikas se tu tu vico clarestas nuntempe sur la aparato." Ekszárp, softvaro povas republikta (kiu rezultivus en) <i>(1)</i>Sed sur posta revizio εi ne povas esti detektita. OpenAudit tiam news pilaos tiun viojn aktualan attribuzione <i>Bendrijoje</i>Bendrijoje';
+
+$GLOBALS["lang"]['column. The'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['compute'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['config'] = 'Öntöttvas';
+
+$GLOBALS["lang"]['console'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['contains'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['create'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['created'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['credentials'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['critical'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['cve'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['database'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['debug'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['delegated'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['delete'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['deleted'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['denied'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['details'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['devices'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['digitalocean'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['discoveries'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['documentation for further details.'] = 'Dokumentaro opharm lijtaviadetaloj';
+
+$GLOBALS["lang"]['does <strong>not</strong> provide vulnerability reports for the following'] = 'Bendrijoje <strong>Bendrijoje</strong> Provizas Everblecojn raportojn por la sekvanta';
+
+$GLOBALS["lang"]['does not equal'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['emergency'] = 'urliblea';
+
+$GLOBALS["lang"]['entra'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['equals'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['error'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['established'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['excluded'] = 'eksluditaj ň@@';
+
+$GLOBALS["lang"]['expired'] = 'eksvalidi pilais eksvalidi';
 
 $GLOBALS["lang"]['extreme - Without which, the organisation would fail.
 
@@ -6445,171 +8621,273 @@ medium - Functions that are necessary but can tolerate longer downtime.
 
 low - Non-essential functions that can be delayed without significant impact.
 
-unassigned - The default until set.'] = 'extreem - Zonder dat zou de organisatie falen.
+unassigned - The default until set.'] = '-
 
-zeer hoog - functies die essentieel zijn voor het voortbestaan van de organisaties en onmiddellijk moeten worden hersteld.
+Trej alta - funkcioj kiuj estas esencaj por la organisoj supervivo kaj brunces et reestigitaj tuj.
 
-hoog - Belangrijke functies die snel moeten worden hersteld, maar kunnen een iets langere hersteltijd hebben.
+Gravaj funkcioj kiuj devus esti reestigitaj rache sed povas havi iomete pli longan noralgtemon.
 
-medium - Functies die nodig zijn maar langer uitval kunnen verdragen.
+Funkcioj kiuj estas uporaj sed povas toleri pli Ş.
 
-laag - Niet-essentiële functies die kunnen worden vertraagd zonder significante impact.
+(OL L 20 van 2015.177, blz. 42).
 
-niet toegewezen - De standaard totdat ingesteld.';
+Lto εis aro.';
 
-$GLOBALS["lang"]['fail'] = 'falen';
+$GLOBALS["lang"]['fail'] = '-';
 
-$GLOBALS["lang"]['false'] = 'onwaar';
+$GLOBALS["lang"]['false'] = '-';
 
-$GLOBALS["lang"]['file'] = 'bestand';
+$GLOBALS["lang"]['file'] = 'Ütaka';
 
-$GLOBALS["lang"]['firewall'] = 'firewall';
+$GLOBALS["lang"]['firewall'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['fixed'] = 'vast';
+$GLOBALS["lang"]['first'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['floor'] = 'vloer';
+$GLOBALS["lang"]['fixed'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['front'] = 'voor';
+$GLOBALS["lang"]['floor'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['front-left'] = 'linksvoor';
+$GLOBALS["lang"]['for'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['front-right'] = 'rechtsvoor';
+$GLOBALS["lang"]['for authentication'] = 'Porapie';
 
-$GLOBALS["lang"]['github'] = 'github';
+$GLOBALS["lang"]['for this information.'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['google'] = 'google';
+$GLOBALS["lang"]['from Audit Script Result'] = 'Resultaatado del Bendrijoje';
 
-$GLOBALS["lang"]['greater or equals'] = 'meer of gelijk aan';
+$GLOBALS["lang"]['from NMIS'] = 'NMI';
 
-$GLOBALS["lang"]['greater than'] = 'groter dan';
+$GLOBALS["lang"]['from address LocalHost (Using LRPC) running in the application container'] = 'de adres Host (LRCC kasutamiini) kuranta en la aplicujo';
 
-$GLOBALS["lang"]['group'] = 'groep';
+$GLOBALS["lang"]['front'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['head'] = 'kop';
+$GLOBALS["lang"]['front-left'] = '(+) Europos maisto saugos tarnyba nustatė, kad trūksta tam tikros informacijos apie liekanų tyrimus.';
 
-$GLOBALS["lang"]['here'] = 'Hier.';
+$GLOBALS["lang"]['front-right'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['high availability'] = 'hoge beschikbaarheid';
+$GLOBALS["lang"]['github'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['howto'] = 'howto';
+$GLOBALS["lang"]['google'] = '- Google, Google, Google, Google, Google, Google, Google, Google, Google, Google, Google, Google, Google, Google.';
 
-$GLOBALS["lang"]['ignored'] = 'genegeerd';
+$GLOBALS["lang"]['greater or equals'] = 'Pli nieuw-ijverig. kgm';
 
-$GLOBALS["lang"]['in'] = 'in';
+$GLOBALS["lang"]['greater than'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['inactive'] = 'inactief';
+$GLOBALS["lang"]['group'] = '-';
 
-$GLOBALS["lang"]['incomplete'] = 'onvolledig';
+$GLOBALS["lang"]['has not been set'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['info'] = 'info';
+$GLOBALS["lang"]['have a working reverse DNS resolvable IP to the target Windows PC.'] = 'Habas worlon inversa DNS- risolvebla IP Româcelo PC Bendrijoje.';
 
-$GLOBALS["lang"]['int, text, bool (y/n), etc'] = 'int, text, bool (y/n), enz.';
+$GLOBALS["lang"]['have the ability to be executed. On the'] = 'Havas establon esti efektivitita. Bendrijoje';
 
-$GLOBALS["lang"]['is licensed to'] = 'heeft een vergunning';
+$GLOBALS["lang"]['head'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['left'] = 'links';
+$GLOBALS["lang"]['here'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['less or equals'] = 'min of gelijk aan';
+$GLOBALS["lang"]['high availability'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['less than'] = 'minder dan';
+$GLOBALS["lang"]['howto'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['license'] = 'licentie';
+$GLOBALS["lang"]['if you clone a Linux virtual machine, unless you manually regenerate this (and in my experience, people do not) it will remain the same.'] = 'Se vi klonas Linukso virtuala ma apretino, se vi mane regresation (kaj en mia sperto, hooj ne) εi retos la sama.';
 
-$GLOBALS["lang"]['like'] = 'zoals';
+$GLOBALS["lang"]['ignored'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['line'] = 'regel';
+$GLOBALS["lang"]['import the example device data'] = 'Bendrijos teisės aktai';
 
-$GLOBALS["lang"]['load balancing'] = 'belastingsbalancering';
+$GLOBALS["lang"]['in'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['location'] = 'locatie';
+$GLOBALS["lang"]['in Enterprise.'] = '(1)';
 
-$GLOBALS["lang"]['managed'] = 'beheerd';
+$GLOBALS["lang"]['in Inputs can have the following values.'] = 'inputoj povas havi la sekvajn Valojn.';
 
-$GLOBALS["lang"]['microsoft'] = 'microsoft';
+$GLOBALS["lang"]['in Outputs can have the following values.'] = '"Vinagre"';
 
-$GLOBALS["lang"]['mount point'] = 'koppelpunt';
+$GLOBALS["lang"]['inactive'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['network'] = 'netwerk';
+$GLOBALS["lang"]['incomplete'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['news'] = 'nieuws';
+$GLOBALS["lang"]['info'] = 'Tájékoztatás (arba)';
 
-$GLOBALS["lang"]['no'] = 'nee';
+$GLOBALS["lang"]['installer will test for the presence of Nmap in its standard install locations of'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['node'] = 'knooppunt';
+$GLOBALS["lang"]['int, text, bool (y/n), etc'] = 'Int, teksto, come (jah / ei), ktp';
 
-$GLOBALS["lang"]['none'] = 'geen';
+$GLOBALS["lang"]['is U.S. standard maintained by National Institute of Standards and Technology'] = '"L "Institut National des Normes" ("Institut National des normes") ("Instituto de Normoj"), "Institut" ("Institut National des normes") ("Instituto") ("Instituto de Normoj"), "Institut" ("Instituto") ("Instituto") ("Instituto") ("Instituto de Normes") ("Instituto de Normoj") ("Instituto") ("Instituto") ("Instituto") ("Instituto de Normoj" ("Instituto de Instituto") ("Instituto") ("Instituto") ("Instituto") ("Instituto de Normoj ") ("Instituto") ("Instituto de Normoj") (") (") ") "';
 
-$GLOBALS["lang"]['normal'] = 'normaal';
+$GLOBALS["lang"]['is an international standard for managing information security. It provides a framework for establishing, implementing, maintaining, and continually improving an Information Security Management System (ISMS).'] = 'estas Internationalciareco ';
 
-$GLOBALS["lang"]['not applicable'] = 'niet noodzakelijk';
+$GLOBALS["lang"]['is based upon'] = 'estas Bendrijoje';
 
-$GLOBALS["lang"]['not in'] = 'niet in';
+$GLOBALS["lang"]['is licensed to'] = 'estas licenciata';
 
-$GLOBALS["lang"]['not like'] = 'niet zoals';
+$GLOBALS["lang"]['is next on the list and Open-AudIT can use password and key authentication. Open-AudIT can also use a sudo enabled user as opposed to the root use directly (although it can also use root). For best results, the root user or a sudo enabled user should be used (see Auditing Linux without root and Target Client Configuration on the wiki). Windows devices can also run ssh, however if Open-AudIT detects this it will stop the SSH queries and instead use WMI (assuming working WMI credentials).'] = 'Englista kajů uzi pasvorton kaj esencan konfirman. Por plej bonaj rezultoj, la radika uzantos plonlicdo rajtigis uzanton devus esti uzitaj (vidu rėksno sen radiko kaj režisiery tictetuletul režis.eu). Bendrijoje';
 
-$GLOBALS["lang"]['notice'] = 'kennisgeving';
+$GLOBALS["lang"]['is the link to the'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['notification'] = 'kennisgeving';
+$GLOBALS["lang"]['item to view the specific tables and their columns. This will enable you to find exactly what you need, rather than trawling through the MySQL console of the schema creation script.'] = 'Viddu Româspeciajn tablojn kaj iliajn kolonojn. Tio ravitigos vin trovi presize kion vi bezonas, mieluummin ol travitri tra la MySQL konzolo de la skemokrea manikripto.';
 
-$GLOBALS["lang"]['okta'] = 'okta';
+$GLOBALS["lang"]['key required to retrieve lat/long and display map. See'] = '"Vallosilotavia postulati por prenitavia lat / longanţkajňekranmapon"';
 
-$GLOBALS["lang"]['openldap'] = 'openldap';
+$GLOBALS["lang"]['left'] = '-';
 
-$GLOBALS["lang"]['optimized'] = 'geoptimaliseerd';
+$GLOBALS["lang"]['less or equals'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['optionally '] = 'facultatief ';
+$GLOBALS["lang"]['less than'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['other'] = 'Andere';
+$GLOBALS["lang"]['license'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['package'] = 'pakket';
+$GLOBALS["lang"]['licenses'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['partition'] = 'partitie';
+$GLOBALS["lang"]['like'] = '-';
 
-$GLOBALS["lang"]['pass'] = 'pass';
+$GLOBALS["lang"]['line'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['pending'] = 'in behandeling';
+$GLOBALS["lang"]['list'] = '(1)';
 
-$GLOBALS["lang"]['performance'] = 'prestaties';
+$GLOBALS["lang"]['list View, using the Create button'] = '(RO 2012 7183).';
 
-$GLOBALS["lang"]['performed'] = 'uitgevoerd';
+$GLOBALS["lang"]['load balancing'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['pie'] = 'taart';
+$GLOBALS["lang"]['location'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['planning'] = 'planning';
+$GLOBALS["lang"]['locations'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['predictable'] = 'voorspelbaar';
+$GLOBALS["lang"]['managed'] = 'L\'amministrazione, rev.';
 
-$GLOBALS["lang"]['query'] = 'query';
+$GLOBALS["lang"]['methods'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['rear'] = 'achter';
+$GLOBALS["lang"]['microsoft'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['rear-left'] = 'linksachter';
+$GLOBALS["lang"]['mount point'] = '-';
 
-$GLOBALS["lang"]['rear-right'] = 'rechtsachter';
+$GLOBALS["lang"]['must'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['regex'] = 'regex';
+$GLOBALS["lang"]['network'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['release'] = 'release';
+$GLOBALS["lang"]['news'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['reserved'] = 'gereserveerd';
+$GLOBALS["lang"]['no'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['right'] = 'rechts';
+$GLOBALS["lang"]['node'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['room'] = 'kamer';
+$GLOBALS["lang"]['none'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['row'] = 'rij';
+$GLOBALS["lang"]['normal'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['stand-alone'] = 'standalone';
+$GLOBALS["lang"]['not applicable'] = '(1)';
 
-$GLOBALS["lang"]['standard'] = 'standaard';
+$GLOBALS["lang"]['not in'] = '# # # # # # # # #';
 
-$GLOBALS["lang"]['starts with'] = 'begint met';
+$GLOBALS["lang"]['not like'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['storage'] = 'opslag';
+$GLOBALS["lang"]['notice'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['timestamp'] = 'tijdstempel';
+$GLOBALS["lang"]['notification'] = '-';
 
-$GLOBALS["lang"]['top'] = 'boven';
+$GLOBALS["lang"]['okta'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['on devices where'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['openldap'] = 'șižanginė pastaba.';
+
+$GLOBALS["lang"]['optimized'] = '-';
+
+$GLOBALS["lang"]['optionally '] = 'Bendrijoje ';
+
+$GLOBALS["lang"]['or'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['or the GitHub page at'] = '"GitHub-pacienteo"';
+
+$GLOBALS["lang"]['other'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['package'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['page. Export your LDAP server from menu -> Admin -> LDAP Servers -> Details to JSON and save and include this data as well.'] = 'Eni. Eksportu vian LDAP- servion de menuo - confar Admin - título LDAP- Serviloj - título Detaloj al JSON kaj savo kaj inkludas tiujn datinojn anka.';
+
+$GLOBALS["lang"]['partition'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['pass'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['pending'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['performance'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['performed'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['permission'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['permissions required per endpoint'] = 'finpunkto rėm Permesoj postulitai';
+
+$GLOBALS["lang"]['pie'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['planning'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['predictable'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['query'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rear'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rear-left'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['rear-right'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['regex'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['release'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['removed from display, but has been set'] = 'Kilmės vietos nuoroda (angl. oricite)';
+
+$GLOBALS["lang"]['reserved'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['right'] = '-';
+
+$GLOBALS["lang"]['rights) you can click on the field value to edit it.'] = '(OL L 20 van 2015.177, blz. 42).';
+
+$GLOBALS["lang"]['role'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['room'] = '-';
+
+$GLOBALS["lang"]['row'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['service failed to start due to the following error'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['so Open-AudIT knows to restrict your query to the appropriate Orgs.'] = 'Tiel Open- Österreiscias limigi vian atendon Româkunvaj Orgs.';
+
+$GLOBALS["lang"]['stand-alone'] = '→ eventoj:';
+
+$GLOBALS["lang"]['standard'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['starts with'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['storage'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['subnet'] = '®';
+
+$GLOBALS["lang"]['table'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['table and insert the original rows.'] = 'Tablo kaj enmeta\'s hebben viojn nodig.';
+
+$GLOBALS["lang"]['team'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['text. The first is the array index and should be left as-is. The index is used in the templates to lookup the translated text.'] = '2005 m. sausio 1 d. Développement en la îалеblinoj por levi la traducitan tekstton.';
+
+$GLOBALS["lang"]['then clicking on the details button for the table.'] = 'sobre sur;pri;jesupérieur supra; рúdorso supérieur';
+
+$GLOBALS["lang"]['then clicking on the details button for the table. Device details are stored in the'] = 'bedrag in eenheden (real) Destitivo detaloj estas stokitaj en la';
+
+$GLOBALS["lang"]['timestamp'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['to'] = '-';
+
+$GLOBALS["lang"]['to create an item of this type'] = 'Bendrijoje ';
+
+$GLOBALS["lang"]['to the URL, you will get the full database entry, including all component tables, of a given device.'] = 'Al la URL, vi rievos la plenan relevative, inkluzive de... iuj kompontoj tabloj, de anta.fiksita aparato.';
+
+$GLOBALS["lang"]['to the user'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['top'] = 'Plej';
 
 $GLOBALS["lang"]['top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
 
@@ -6625,47 +8903,69 @@ public - Private Sector classification. Public data is data that is generally sh
 
 unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
 
-unassigned - The default until set.'] = 'top secret - Militair / Regering classificatie. Openbaarmaking zou een uitzonderlijk groot gevaar voor de nationale veiligheid opleveren.
+unassigned - The default until set.'] = ' Imitaefa reto - Armea / registara klasimiko ar Divulgazione kaaus escete gradan danεeron al nacia sekureco.
 
-geheim - Militaire / Regering classificatie. Openbaarmaking zou ernstige schade toebrengen aan de nationale veiligheid.
+(EB) Nr. Divulgazione kaytos gradan dikton en nacia sekureco.
 
-vertrouwelijk - classificatie militaire / overheid en particuliere sector. Gegevens die vertrouwelijk zijn omvatten bedrijfsgeheimen, intellectuele gegevens, applicatie programmeringscode, en andere gegevens die de organisatie ernstig kunnen beïnvloeden als ongeoorloofde openbaarmaking heeft plaatsgevonden. Gegevens op dit niveau zouden alleen beschikbaar zijn voor personeel in de organisatie waarvan de werkbehoeften, of rechtstreeks verband houden met, de geraadpleegde gegevens. Toegang tot vertrouwelijke gegevens vereist gewoonlijk een vergunning voor elke toegang.
+® ® ® ® ® ® ® ® ® ® ® ® ® ® aoprogramman kodon, kajelijn datennojn kiuj povis a povelanzi la organison se nealuctorizita rive okloazis. Datenoj sur tu nivelo estus hasblaj nur al personaro en la organiso kies labezonoj, a. estas rekte rilattaj al, estaaliiraj datenoj. Aliro al konfidencaj datennoj kutime postulas apuron por
 
-particuliere - classificatie particuliere sector. Gegevens die privé zijn omvat alle informatie met betrekking tot personeel, met inbegrip van personeelsdossiers, medische dossiers en salarisinformatie, die alleen binnen de organisatie wordt gebruikt.
+"" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""
 
-gevoelig - classificatie militaire / overheid en particuliere sector. Gegevens die gevoelig zijn omvat organisatorische financiële informatie en vereist extra maatregelen om de CIA en nauwkeurigheid te waarborgen. Openbaarmaking kan de nationale veiligheid schaden.
+"Sentema" - "enshop" / "English" Reglamento (ES) Nr. 1308 / 2013 64 straipsnio 1 dalies a punktas Divulgazione povas damaεi la nacian sekurecon.
 
-publiek - classificatie van de particuliere sector. Publieke gegevens zijn gegevens die over het algemeen met het publiek worden gedeeld en geen negatieve gevolgen voor de organisatie zouden hebben. Voorbeelden van openbare gegevens zijn onder meer hoeveel mensen in de organisatie werken en welke producten een organisatie produceert of verkoopt.
+(OL L 20 van 2015.177, blz. 42). Ekzembroj de publikaj datennoj inkludas kiom indennità j mixas en la organiso kajion produktoj organiso produktas avendas.
 
-Niet geclassificeerd - Militaire / Regeringsclassificatie. Alle informatie die over het algemeen onder het publiek kan worden verspreid zonder enig gevaar voor nationaal belang.
+Neklastikita - tavia / modifivati Mezclaiujenej formaojenej povas εenerale esti Distributionitaj al publico sen iu minaco al nacia intereso
 
-niet toegewezen - De standaard totdat ingesteld.';
+Lto εis aro.';
 
-$GLOBALS["lang"]['traffic'] = 'verkeer';
+$GLOBALS["lang"]['traffic'] = '-';
 
-$GLOBALS["lang"]['true'] = 'waar';
+$GLOBALS["lang"]['true'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['unallocated'] = 'niet toegewezen';
+$GLOBALS["lang"]['true or false (in JSON context)'] = '(JSON Kunteksto)';
 
-$GLOBALS["lang"]['unauthorised'] = 'onbevoegd';
+$GLOBALS["lang"]['unallocated'] = ' ';
 
-$GLOBALS["lang"]['unknown'] = 'onbekend';
+$GLOBALS["lang"]['unauthorised'] = 'Ei kaplusta (gebruik)';
 
-$GLOBALS["lang"]['unmanaged'] = 'onbeheerd';
+$GLOBALS["lang"]['unchanged'] = 'Traduzione:';
 
-$GLOBALS["lang"]['unused'] = 'ongebruikte';
+$GLOBALS["lang"]['unknown'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['update'] = 'bijwerken';
+$GLOBALS["lang"]['unmanaged'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['valid'] = 'geldig';
+$GLOBALS["lang"]['unused'] = '®';
 
-$GLOBALS["lang"]['virtualisation'] = 'virtualisatie';
+$GLOBALS["lang"]['update'] = 'Bendrijoje';
 
-$GLOBALS["lang"]['warning'] = 'waarschuwing';
+$GLOBALS["lang"]['uses the data collected from your devices and matches the software installed with the value provided, it counts the matches calculates how many licenses have been used and how many are left. It allows the use of wildcards on the <i>match string</i> field which matches the software.name attribute.'] = 'Indonesij koletitaj de viaj aparatoj kalkuli kiam multaj fungi siloj etis utiligitaj kaj kiam utilej estas forlasitaj. Permesas la uzon de sova stabilkartoj sur la, Bendrieoje <i>Bendrijoje</i> "Kampo kiu konguas kun la Antraštir" Bendrijoje:';
 
-$GLOBALS["lang"]['web'] = 'web';
+$GLOBALS["lang"]['using the main menu items.'] = 'Bendrijoje ';
 
-$GLOBALS["lang"]['yes'] = 'ja';
+$GLOBALS["lang"]['valid'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['version'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['virtualisation'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['warning'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['web'] = 'Tinklai';
+
+$GLOBALS["lang"]['with Local and Remote access permissions set.'] = 'Lokaj kaj atl.';
+
+$GLOBALS["lang"]['with devices::update permission.'] = 'C \'e\' piu _ BAR _ volgende _ BAR _ Isdatermeso _ BAR _';
+
+$GLOBALS["lang"]['with the Sign-On Redirect URI being'] = '(1)';
+
+$GLOBALS["lang"]['with the intention of providing simple and intuitive access in a manner familiar to developers. In addition to this API, the web interface will use the same request format and supply some additional actions (eg: HTML forms for creating items).'] = 'Kun la intentco de disponigado de simplia kaj intuicia aliro en maniero konata al programmastoj. Aldone al tiu API, la interretinterfaco uzos la saman peti formaton kaj supézos kalkajn kromajn Şjn (ekz. HTML-formuleroj por krado de eroj).';
+
+$GLOBALS["lang"]['yes'] = 'Bendrijoje';
+
+$GLOBALS["lang"]['you do not require a HighCharts license to use Firstwave products. License'] = 'Vi Şne postulas HighCharts-licenson uzi ů opharm produktojn. Bendrijoje';
+
+$GLOBALS["lang"]['you will assign any found devices to that Org or Location.'] = 'Asignaciones jojn ajn trovitajn afaratojn al tu Org a kahtlus loko.';
 
 $GLOBALS["lang"]['AF'] = 'AF';
 

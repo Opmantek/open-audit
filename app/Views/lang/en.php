@@ -6011,13 +6011,13 @@ $GLOBALS["lang"]['Using Entra for Auth'] = 'Using Entra for Auth';
 
 $GLOBALS["lang"]['Using OKTA for Auth'] = 'Using OKTA for Auth';
 
-$GLOBALS["lang"]['Usually Mb/s, from Location A.'] = 'Usually Mb/s, from Location A.';
+$GLOBALS["lang"]['Usually Mbs, from Location A.'] = 'Usually Mbs, from Location A.';
 
-$GLOBALS["lang"]['Usually Mb/s, from Location B.'] = 'Usually Mb/s, from Location B.';
+$GLOBALS["lang"]['Usually Mbs, from Location B.'] = 'Usually Mbs, from Location B.';
 
-$GLOBALS["lang"]['Usually Mb/s, to Location A.'] = 'Usually Mb/s, to Location A.';
+$GLOBALS["lang"]['Usually Mbs, to Location A.'] = 'Usually Mbs, to Location A.';
 
-$GLOBALS["lang"]['Usually Mb/s, to Location B.'] = 'Usually Mb/s, to Location B.';
+$GLOBALS["lang"]['Usually Mbs, to Location B.'] = 'Usually Mbs, to Location B.';
 
 $GLOBALS["lang"]['Uzbekistan'] = 'Uzbekistan';
 

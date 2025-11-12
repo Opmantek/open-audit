@@ -5999,13 +5999,13 @@ $GLOBALS["lang"]['Using Entra for Auth'] = 'Brug Entra til Auth';
 
 $GLOBALS["lang"]['Using OKTA for Auth'] = 'Brug OKTA til Auth';
 
-$GLOBALS["lang"]['Usually Mb/s, from Location A.'] = 'Normalt Mb / s, fra Placering A.';
+$GLOBALS["lang"]['Usually Mbs, from Location A.'] = 'Normalt Mb / s, fra Placering A.';
 
-$GLOBALS["lang"]['Usually Mb/s, from Location B.'] = 'Normalt Mb / s, fra Placering B.';
+$GLOBALS["lang"]['Usually Mbs, from Location B.'] = 'Normalt Mb / s, fra Placering B.';
 
-$GLOBALS["lang"]['Usually Mb/s, to Location A.'] = 'Normalt Mb / s, til placering A.';
+$GLOBALS["lang"]['Usually Mbs, to Location A.'] = 'Normalt Mb / s, til placering A.';
 
-$GLOBALS["lang"]['Usually Mb/s, to Location B.'] = 'Normalt Mb / s, til placering B.';
+$GLOBALS["lang"]['Usually Mbs, to Location B.'] = 'Normalt Mb / s, til placering B.';
 
 $GLOBALS["lang"]['Uzbekistan'] = 'Usbekistan';
 

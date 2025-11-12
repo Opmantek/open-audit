@@ -1,1847 +1,2385 @@
 <?php
-$GLOBALS["lang"][' Default, currently '] = ' Προκαθορισμένο, επί του παρόντος ';
+$GLOBALS["lang"][' Default, currently '] = ' . ';
 
-$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = ' υποστηρίζεται τώρα με ένα αρχείο γλώσσας. Για να αλλάξετε το χρήστη σας για να χρησιμοποιήσετε αυτή τη γλώσσα, κάντε κλικ ';
+$GLOBALS["lang"][' If something does not work as expected, your first thing to do is check the logs.'] = ' .';
 
-$GLOBALS["lang"][' seconds'] = ' δευτερόλεπτα';
+$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = ' Имено. ';
 
-$GLOBALS["lang"]['10 Minutes'] = '10 λεπτά';
+$GLOBALS["lang"][' seconds'] = ' .';
 
-$GLOBALS["lang"]['15 Minutes'] = '15 λεπτά';
+$GLOBALS["lang"][', but will not need to remember a separate set of logon credentials.'] = '.';
 
-$GLOBALS["lang"]['30 Minutes'] = '30 λεπτά';
+$GLOBALS["lang"][', of which we supply over thirty as a default set. Professional users cannot alter these, but an Enterprise user has complete customisation abilities - including creating your own.'] = '.';
 
-$GLOBALS["lang"]['5 Minutes'] = '5 λεπτά';
+$GLOBALS["lang"][', you <i>must</i> be using https on your Open-AudIT server to use Entra for Auth. Please configure Apache to use <strong>https</strong> before configuring Entra for auth.'] = '. <i>.</i> - Да. <strong>ΠΙΛΟΑ</strong> .';
 
-$GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br/> <strong>ΣΗΜΕΙΩΣΗ</strong> - Έχετε πρόσβαση σε αυτό το URL από τον τοπικό εξυπηρετητή Open-AudIT. Το μεταφορτωμένο σενάριο δεν θα είναι σε θέση να υποβληθεί όταν εκτελείται σε άλλο μηχάνημα. Εάν χρειαστεί να ελέγξετε άλλα μηχανήματα, παρακαλούμε κατεβάστε το σενάριο από οποιοδήποτε απομακρυσμένο μηχάνημα, μη χρησιμοποιώντας ένα πρόγραμμα περιήγησης στον ίδιο τον εξυπηρετητή Open-AudIT.';
+$GLOBALS["lang"]['. To enable this, edit the configuration item for '] = '- Да. ';
+
+$GLOBALS["lang"]['10 Minutes'] = '10.';
+
+$GLOBALS["lang"]['15 Minutes'] = '15';
+
+$GLOBALS["lang"]['30 Minutes'] = '30 ° C.';
+
+$GLOBALS["lang"]['5 Minutes'] = '5.';
+
+$GLOBALS["lang"]['93 controls grouped into organizational, people, physical, and technological categories'] = ' 93 год.';
+
+$GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br/><strong>- Да.</strong> - Не, не...';
 
 $GLOBALS["lang"]['<p></p>'] = '<p></p>';
 
-$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">ΣΗΜΕΙΩΣΗ</strong> - Πρέπει να έχετε τα βασικά διαπιστευτήρια SSH ή SSH για να εκτελέσετε σημεία αναφοράς σε μια συσκευή-στόχο.</p>';
+$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">- Да.</strong> - Ναι.</p>';
 
-$GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong>Έναρξη</strong> - Το γενικό έγγραφο που περιέχει τον βασικό ορισμό και τις επιμέρους δοκιμές πολιτικής.<br/> <br/> <strong>Πολιτικές</strong> - Τις ατομικές δοκιμές που περιέχονται στην αρχική γραμμή. Κάθε δοκιμή αφορά ένα συγκεκριμένο στοιχείο. Ένα παράδειγμα θα ήταν η δοκιμή για την έκδοση της SSH 1.2.3.<br/> <br/> <strong>Λεπτομέρειες</strong> - Οι βασικές γραμμές μπορούν να συγκρίνουν θύρες netstat, χρήστες και λογισμικό.<br/> <br/> <strong>Λογισμικό</strong> - Για να συγκρίνουμε το λογισμικό ελέγχουμε το όνομα και την έκδοση. Επειδή οι αριθμοί έκδοσης δεν είναι όλοι τυποποιημένοι σε μορφή, όταν λαμβάνουμε ένα αποτέλεσμα ελέγχου δημιουργούμε ένα νέο χαρακτηριστικό που ονομάζεται software_padded το οποίο αποθηκεύουμε στη βάση δεδομένων μαζί με τις υπόλοιπες λεπτομέρειες λογισμικού για κάθε πακέτο. Για το λόγο αυτό, οι γραμμές βάσης που χρησιμοποιούν πολιτικές λογισμικού δεν θα λειτουργήσουν όταν τρέξουν ενάντια σε μια συσκευή που δεν έχει ελεγχθεί από 1.10 (τουλάχιστον). Οι πολιτικές λογισμικού μπορούν να δοκιμαστούν κατά της έκδοσης είναι " ίση με", " μεγαλύτερη από" ή " ίση με ή μεγαλύτερη από".<br/> <br/> <strong>Λιμένες Netstat</strong> - Οι θύρες Netstat χρησιμοποιούν έναν συνδυασμό αριθμού θύρας, πρωτοκόλλου και προγράμματος. Αν είναι όλοι παρόντες, η πολιτική περνά.<br/> <br/> <strong>Χρήστες</strong> - Οι χρήστες εργάζονται παρόμοια με το Netstat Ports. Εάν ένας χρήστης υπάρχει με ένα ταιριαστό όνομα, κατάσταση και λεπτομέρειες κωδικού πρόσβασης (αλλάξιμο, λήγει, απαιτείται) τότε η πολιτική περνά.<br/> <br/> </p>';
+$GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong>.</strong> - Ναι.<br/> <br/> <strong>- Да.</strong> - Ναι.<br/> <br/> <strong>- Да.</strong> .<br/> <br/> <strong>Не, не.</strong> Не, не, не.<br/> <br/> <strong>Πόρτου Netstat</strong> Имено.<br/> <br/> <strong>- Да.</strong> . Μπιρ Ιστιφάντ... çi uygoun ad<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p>Μια τοποθεσία είναι μια φυσική διεύθυνση που μπορεί να έχει συσκευές που συνδέονται με αυτό.<br/> <br/>Μπορείτε να του ορίσετε συντεταγμένες (lat/long) και αν υπάρχουν συσκευές που έχουν ανατεθεί, η τοποθεσία θα εμφανιστεί στο χάρτη Open-AudIT Enterprise.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p>.<br/> <br/>- Да.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br></p>'] = '<p>Ένα δίκτυο προέρχεται από καταχωρήσεις ανακάλυψης και χαρακτηριστικά συσκευής.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br></p>'] = '<p>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>Μια περίληψη θα εμφανίσει μια λίστα των αντικειμένων, ομαδοποιημένη από τις διακριτές τιμές του χαρακτηριστικού που καθορίζεται από την <code>table</code> και <code>column</code> Χαρακτηριστικά.<br/> <br/>Όταν εκτελείται μια περίληψη, το αποτέλεσμα θα είναι μια λίστα διακριτών τιμών για αυτό <code>table</code> και <code>column</code>. Θα υπάρχουν σύνδεσμοι στις τιμές που επιτρέπουν στο χρήστη να δει τις συσκευές που ταιριάζουν.<br/> <br/>Εάν το χαρακτηριστικό του <code>extra_columns</code> είναι κατοικημένη, η σελίδα που προκύπτει θα περιέχει αυτές τις στήλες εκτός από τις τυποποιημένες στήλες συσκευών.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>- Да. <code>table</code> Κεϊντιγιάτ <code>column</code> - Да.<br/> <br/>. <code>table</code> Κεϊντιγιάτ <code>column</code>- Да.<br/> <br/>. <code>extra_columns</code> - Да.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>Οι πράκτορες σε αφήνουν να ελέγχεις τους υπολογιστές χωρίς καμία ανακάλυψη. Εγκαταστήστε τον πράκτορα και θα κάνει check-in με τον server κάθε μέρα και θα ελέγχει ο ίδιος. Δεν έχει σημασία αν οι υπολογιστές σας είναι firewalled, τα δεδομένα ελέγχου θα εξακολουθούν να εμφανίζονται στο Open-AudIT.</p><p>Κατά τη δοκιμή <strong>εάν</strong> ένας παράγοντας πρέπει να εκτελέσει ενέργειες, και οι τρεις δοκιμές πρέπει να περάσουν (εάν η δοκιμή έχει οριστεί). <strong>Τότε...</strong> τα μέτρα λαμβάνονται.</p>';
+$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>Имено.</p><p>. <strong>.</strong> да го направим, да го направим. <strong>.</strong> - Да.</p>';
 
-$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '<p>Οι εφαρμογές ορίζονται από εσάς, τον χρήστη και αποθηκεύονται για το Open-AudIT για χρήση και σύνδεση με συσκευές.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '<p>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>Τα χαρακτηριστικά αποθηκεύονται για το Open-AudIT για χρήση σε συγκεκριμένα πεδία.</p>';
+$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>- Да.</p>';
 
-$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '<p>Το να είναι σε θέση να καθορίσει ποιες μηχανές διαμορφώνονται το ίδιο είναι ένα σημαντικό μέρος της διαχείρισης συστημάτων και του ώντιτινγκ – και τώρα η υποβολή εκθέσεων σχετικά με αυτό θα γίνει απλή και αυτοματοποιημένη. Μόλις ορίσετε τη γραμμή βάσης σας θα τρέξει αυτόματα ενάντια σε ένα σύνολο συσκευών σε ένα προκαθορισμένο χρονοδιάγραμμα. Η έξοδος αυτών των εκτελεσμένων βασικών γραμμών θα είναι διαθέσιμη για προβολή ιστού, εισαγωγή σε ένα σύστημα τρίτων ή ακόμη και ως έντυπη αναφορά.<br/> <br/> Βασικές γραμμές σας επιτρέπουν να συνδυάσετε τα δεδομένα ελέγχου με ένα σύνολο χαρακτηριστικών που έχετε ορίσει προηγουμένως (την αρχική σας γραμμή) για να καθορίσετε τη συμμόρφωση των συσκευών.<br/> <br/> Για παράδειγμα - μπορεί να δημιουργήσετε μια βασική γραμμή από μια συσκευή που τρέχει Centos 6 η οποία λειτουργεί ως ένας από τους διακομιστές apache σας σε μια συστάδα. Ξέρετε ότι αυτός ο συγκεκριμένος εξυπηρετητής έχει ρυθμιστεί ακριβώς όπως τον θέλετε αλλά δεν είστε σίγουροι αν άλλοι servers στη συστάδα έχουν ρυθμιστεί ακριβώς το ίδιο. Οι γραμμές βάσης σας επιτρέπουν να προσδιορίσετε αυτό.<br/> <br/> </p>';
+$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '<p>Имено.<br/> <br/> .<br/> <br/> Σεντ.<br/> <br/> </p>';
 
-$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>Οι συστάδες αποθηκεύονται στο Open-AudIT για να συνδέσουν συσκευές για την καλύτερη καταγραφή, διαχείριση και εκτίμηση του κόστους αδειοδότησης.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>- \'νω.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>Τα συστατικά είναι ένας γενικός όρος που χρησιμοποιείται για τους πίνακες που αποθηκεύουν τα χαρακτηριστικά για μια συσκευή. Οι πίνακες αυτοί είναι: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, net, nmap, optical, pagefile, partition, policy, print_queue, processer, radio, route, scsi, server, server_item, service, share, software, software_key, work, usb, user_group, variable, video, vm, windows.</p><p> Επιπλέον, κατηγοριοποιούμε τους παρακάτω πίνακες επίσης ως συσκευή που σχετίζεται: εφαρμογή, συνημμένο, συστάδα, πιστοποίηση, εικόνα.</p>';
+$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>Имено.</p><p> Имено.</p>';
 
-$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>Οι πληροφορίες κρυπτογραφούνται όταν αποθηκεύονται στη βάση δεδομένων.<br/> <br/>Όταν ένα Discovery εκτελείται, μια συσκευή έχει τα διαπιστευτήριά της ανακτηθεί και ελεγχθεί για σύνδεση πρώτα (από το <code>credential</code> τραπέζι). Αν αυτά αποτύχουν, τότε διαπιστευτήρια που σχετίζονται με το δοσμένο Οργ <code>credentials.org_id</code> δοκιμάζεται επίσης κατά της συσκευής. Τα διαπιστευτήρια εργασίας αποθηκεύονται σε ατομικό επίπεδο συσκευής στον πίνακα πιστοποίησης (σημείωση - no "s" στο όνομα του πίνακα).<br/> <br/>Τα πλήκτρα SSH ελέγχονται πριν από το όνομα χρήστη SSH / κωδικό πρόσβασης. Κατά τον έλεγχο της SSH, τα διαπιστευτήρια θα σημειώνονται επίσης ως εργασία με sudo ή είναι ρίζα.<br/> <br/>Για ευκολία χρήσης, οι κωδικοί πρόσβασης των Windows δεν θα πρέπει να περιέχουν ένα ενιαίο ή διπλό απόσπασμα. Αυτός είναι ένας απομακρυσμένος περιορισμός WMI, όχι ένας περιορισμός Open-AudIT.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>- Не, не.<br/> <br/>. <code>credential</code> Bu aradan qaldţrmaq, sonra verilmiş Org il... baghlşt... min <code>credentials.org_id</code> Имено.<br/> <br/>SH istifad... \'νω. Имено.<br/> <br/>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Credentials are used to access devices.<br> <br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br> <br></p>'] = '<p>Η εντολή χρησιμοποιείται για πρόσβαση σε συσκευές.<br/> <br/>Con διαπιστευτηρίων θα πρέπει να είναι ένα από τα πρώτα πράγματα που κάνετε μετά την εγκατάσταση Open-AudIT.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Credentials are used to access devices.<br> <br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br> <br></p>'] = '<p>Не, не.<br/> <br/>- Не, не.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br> <br></p>'] = '<p>Καθορίστε τα ράφια σας και εκχωρήστε συσκευές στις θέσεις τους. Έχετε ήδη τις συσκευές σας στο Open-AudIT και ξέρετε τις τοποθεσίες σας. Open-AudIT επεκτείνει αυτό για να σας επιτρέψει να δημιουργήσετε ένα ράφι και να εκχωρήσετε συσκευές σε αυτό. Το Open-AudIT θα παρέχει ακόμη και μια απεικόνιση της σχάρας και των συσκευών που περιέχονται μέσα. Εάν παρέχετε μια εικόνα συσκευής, η εικόνα αυτή θα χρησιμοποιηθεί στην απεικόνιση. Μπορείτε να κοιτάξετε το ράφι στην οθόνη και να δείτε τα ίδια αντικείμενα που θα δείτε αν στέκεστε μπροστά του.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br> <br></p>'] = '<p>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br> <br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br> <br>Expand on the stored fields easily with your own custom attributes.<br> <br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br> <br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br> <br></p>'] = '<p>Οι συσκευές στο δίκτυό σας πρέπει να διαχειριστούν. Αλλά πώς κρατάς τα αρχεία σου ενημερωμένα; Ένα υπολογιστικό φύλλο - deventley όχι. Αυτό θα είναι ξεπερασμένο σε ώρες, αν όχι μέρες. Γιατί με το χέρι προσπαθεί να συμβαδίσει. Χρησιμοποιήστε το Open-AudIT για να σαρώσετε αυτόματα τα δίκτυά σας και να καταγράψετε τις συσκευές σας - κατασκευαστής, μοντέλο, σειριακό και περισσότερα από 100 άλλα χαρακτηριστικά. Πλήρεις λίστες λογισμικού, υπηρεσιών, δίσκων, ανοικτών θυρών, χρηστών κ.λπ. Αυτόματα δείτε αν ένα χαρακτηριστικό έχει προστεθεί, αφαιρεθεί ή αλλάξει.<br/> <br/>Μόλις το Open-AudIT είναι στημένο, μπορείτε να καθίσετε πίσω και να χαλαρώσετε. Έχετε αλλάξει αναφορές σας έστειλε με email σε ένα πρόγραμμα, για παράδειγμα - τι νέες συσκευές ανακαλύψαμε αυτή την εβδομάδα; Ποιο νέο λογισμικό εγκαταστάθηκε αυτή την εβδομάδα; Υπήρξαν αλλαγές υλικού τον περασμένο μήνα;<br/> <br/>Επέκταση στα αποθηκευμένα πεδία εύκολα με τα δικά σας προσαρμοσμένα χαρακτηριστικά.<br/> <br/>Ακόμη και να προσθέσετε συσκευές που δεν είναι συνδεδεμένες στο δίκτυό σας ή σε αυτές τις συσκευές ο εξυπηρετητής Open-AudIT δεν μπορεί να φτάσει.<br/> <br/>Υπολογιστές, διακόπτες, δρομολογητές, εκτυπωτές ή οποιαδήποτε άλλη συσκευή στο δίκτυό σας - Open-AudIT μπορεί να τους ελέγξει όλους.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br> <br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br> <br>Expand on the stored fields easily with your own custom attributes.<br> <br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br> <br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br> <br></p>'] = '<p>Имено.<br/> <br/>.<br/> <br/>.<br/> <br/>.<br/> <br/>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>'] = '<p>Οι ανακαλύψεις βρίσκονται στην καρδιά αυτού που κάνει το Open-AudIT.<br/> <br/>Πώς αλλιώς θα ξέρετε "Τι είναι στο δίκτυό μου?"<br/> <br/>Ανακαλύψεις είναι έτοιμα στοιχεία που σας επιτρέπουν να εκτελέσετε μια ανακάλυψη σε ένα δίκτυο με ένα μόνο κλικ, χωρίς να εισάγετε τις λεπτομέρειες του εν λόγω δικτύου κάθε φορά.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>'] = '<p>- Да.<br/> <br/>Боже мой!<br/> <br/>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '<p>Ανακάλυψη Οι επιλογές είναι μια παγκόσμια ρύθμιση αλλάξει στο <a href="../configuration?configuration.name=discovery_default_scan_option">διαμόρφωση</a>. Εάν έχετε μια άδεια Open-AudIT Enterprise αυτά είναι ορατά ανά ανακάλυψη και επιπλέον futher προσαρμόσιμο όπως απαιτείται. Ανακάλυψη Οι επιλογές είναι οι ακόλουθες (συμπεριλαμβανομένου του ενδεικτικού χρόνου σάρωσης μιας μεμονωμένης IP):<br/><br/><strong>Εξαιρετικά Γρήγορο</strong>: <i>1 δευτερόλεπτο</i>. Σαρώστε μόνο τις θύρες που χρειάζεται το Open-AudIT για να μιλήσετε στη συσκευή και να ανιχνεύσετε μια συσκευή IOS (WMI, SSH, SNMP, Apple Sync). Α <code>open|filtered</code> Το λιμάνι θεωρείται ανοικτό. Α <code>filtered</code> το λιμάνι δεν θεωρείται ανοικτό. Η συσκευή πρέπει να ανταποκρίνεται σε ένα πινγκ Nmap. Χρησιμοποίησε επιθετικό συγχρονισμό.<br/><br><strong>Superfast</strong>: <i>5 δευτερόλεπτα</i>. Σάρωση των 10 κορυφαίων θυρών TCP και UDP, καθώς και θύρα 62078 (ανίχνευση Apple IOS). Α <code>open|filtered</code> Το λιμάνι θεωρείται ανοικτό. Α <code>filtered</code> το λιμάνι δεν θεωρείται ανοικτό. Η συσκευή πρέπει να ανταποκρίνεται σε ένα πινγκ Nmap. Χρησιμοποίησε επιθετικό συγχρονισμό.<br><br/><strong>Γρήγορα.</strong>: <i>40 δευτερόλεπτα.</i>. Σαρώστε τις κορυφαίες 100 θύρες TCP και UDP, καθώς και τη θύρα 62078 (ανίχνευση Apple IOS). Α <code>open|filtered</code> Το λιμάνι θεωρείται ανοικτό. Α <code>filtered</code> το λιμάνι δεν θεωρείται ανοικτό. Η συσκευή πρέπει να ανταποκρίνεται σε ένα πινγκ Nmap. Χρησιμοποίησε επιθετικό συγχρονισμό.<br/><br/><strong>Μεσαίο (κλασικό)</strong>: <i>90 δευτερόλεπτα</i>. Όσο πιο κοντά σε μια παραδοσιακή σάρωση Open-AudIT όσο μπορούμε να το κάνουμε. Σαρώστε τις κορυφαίες 1000 θύρες TCP, καθώς και 62078 (ανίχνευση Apple IOS) και UDP 161 (SNMP). Α <code>open|filtered</code> Το λιμάνι θεωρείται ανοικτό. Α <code>filtered</code> Η θύρα θεωρείται ανοικτή (και θα ενεργοποιήσει την ανίχνευση της συσκευής). Οι συσκευές σαρώνονται ανεξάρτητα από την απόκριση σε ένα πινγκ Nmap. Χρησιμοποίησε επιθετικό συγχρονισμό.<br/><br/><strong>Μεσαίο</strong>: <i>100 δευτερόλεπτα</i>. Σαρώστε τις κορυφαίες 1000 TCP και τις κορυφαίες 100 θύρες UDP, καθώς και τη θύρα 62078 (ανίχνευση Apple IOS). Α <code>open|filtered</code> Το λιμάνι θεωρείται ανοικτό. Α <code>filtered</code> το λιμάνι δεν θεωρείται ανοικτό. Η συσκευή πρέπει να ανταποκρίνεται σε ένα πινγκ Nmap. Χρησιμοποίησε επιθετικό συγχρονισμό.<br/><br/><strong>Αργά</strong>: <i>4 λεπτά</i>. Σαρώστε τις κορυφαίες 1000 TCP και τις κορυφαίες 100 θύρες UDP, καθώς και τη θύρα 62078 (ανίχνευση Apple IOS). Ενεργοποίηση ανίχνευσης έκδοσης. Α <code>open|filtered</code> Το λιμάνι θεωρείται ανοικτό. Α <code>filtered</code> Η θύρα θεωρείται ανοικτή (και θα ενεργοποιήσει την ανίχνευση της συσκευής). Η συσκευή πρέπει να ανταποκρίνεται σε ένα πινγκ Nmap. Χρησιμοποίησε κανονικό συγχρονισμό.<br/><br/><strong>Εξαιρετικά αργή</strong>: <i>20 λεπτά</i>. Δεν συνιστάται. Σαρώστε τις κορυφαίες 1000 θύρες TCP και UDP, καθώς και τη θύρα 62078 (ανίχνευση Apple IOS). Οι συσκευές σαρώνονται ανεξάρτητα από την απόκριση σε ένα πινγκ Nmap. Ενεργοποίηση ανίχνευσης έκδοσης. Α <code>open|filtered</code> Το λιμάνι θεωρείται ανοικτό. Α <code>filtered</code> Η θύρα θεωρείται ανοικτή (και θα ενεργοποιήσει την ανίχνευση της συσκευής). Χρησιμοποίησε ευγενικό συγχρονισμό.<br/><br/><strong>Προσαρμοσμένο</strong>: <i>Άγνωστος χρόνος</i>. Όταν οι επιλογές εκτός από αυτές που ορίζονται από ένα πρότυπο προκαθορισμένο ανακάλυψης τροποποιούνται.<br/><br/></br></br></p>';
+$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '<p>. <a href="../configuration?configuration.name=discovery_default_scan_option">- Да.</a>. Не, не.<br/><br/><strong>Άξταρ@</strong>: <i>- Да.</i>. Scan yalnīz Offen- Audit vsi il... danşmaq v... bir IOS al... tini (WMI, SSH, SNMP, Apple Sync) algahilamaq üçün lodenīm olan portlarzania tarayşr. Άξταρ@ <code>open|filtered</code> . <code>filtered</code> гонката е по-голяма от тази, която е по-голяма от тази, която е по-добра от тази, която е била.<br/><br/><strong>Πουλς</strong>: <i>5.</i>Връв10 TCP v... UDP portu, v... λιμάνι 62078 (Apple IOS aşkar). Άξταρ@ <code>open|filtered</code> . <code>filtered</code> гонката е по-голяма от тази, която е по-голяма от тази, която е по-добра от тази, която е била.<br/><br/><strong>- Да.</strong>: <i>40 ° C.</i>. Top 100 TCP v... UDP limanlar Άξταρ@ <code>open|filtered</code> . <code>filtered</code> гонката е по-голяма от тази, която е по-голяма от тази, която е по-добра от тази, която е била.<br/><br/><strong>- Ναι.</strong>: <i>90 °C</i> Αξτάρα. <code>open|filtered</code> . <code>filtered</code> Имено.<br/><br/><strong>- Да.</strong>: <i>100 na druhou.</i>. Üst 1000 TCP v... üst 100 UDP portu, v... port 62078 (Apple IOS aşkar). Άξταρ@ <code>open|filtered</code> . <code>filtered</code> гонката е по-голяма от тази, която е по-голяма от тази, която е по-добра от тази, която е била.<br/><br/><strong>.</strong>: <i>ΑΝΑΝΓΚ</i>. Üst 1000 TCP v... üst 100 UDP portu, v... port 62078 (Apple IOS aşkar). АкстаръК. <code>open|filtered</code> . <code>filtered</code> Имено.<br/><br><strong>България.</strong>: <i>20</i> -... <code>open|filtered</code> . <code>filtered</code> Имено.<br><br/><strong>- Не, не.</strong>: <i>.</i>...<br/><br/></br></br></p>';
 
-$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code> only. If requested using the web interface, they return the standard column attribute list.<br> <br></p>'] = '<p>Οι ομάδες χρησιμοποιούνται ως απλές λίστες συσκευών που ταιριάζουν στις απαιτούμενες συνθήκες. Εάν ζητηθεί χρησιμοποιώντας JSON επιστρέφουν μια λίστα με <code>devices.id</code> Μόνο. Εάν ζητηθεί χρησιμοποιώντας τη διασύνδεση ιστού, επιστρέφουν την τυπική λίστα χαρακτηριστικών στήλης.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code> only. If requested using the web interface, they return the standard column attribute list.<br> <br></p>'] = '<p>JSON istifad.. etm.k. diyiniz zaman, onlar bir siyahşsīgeri (στα Αγγλικά). <code>devices.id</code> .<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you are using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br> <br><strong>Helpful Documentation</strong><br> <br>
         <a href="/index.php/auth/help">General Auth Help</a><br> <br>
         <a href="/index.php/faq?name=Using Entra for Auth">Using Entra for Auth</a><br> <br>
         <a href="/index.php/faq?name=Using OKTA for Auth">Using OKTA for Auth</a><br> <br>
         <a href="/index.php/faq?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br> <br>
-        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>'] = '<p>Εάν ο χρήστης συνδεθεί στο Open-AudIT δεν έχει πρόσβαση στην αναζήτηση LDAP (και χρησιμοποιείτε το OpenLDAP), μπορείτε να χρησιμοποιήσετε έναν άλλο λογαριασμό που έχει αυτή την πρόσβαση. Χρήση του <code>ldap_dn_account</code> και <code>ldap_dn_password</code> για να ρυθμίσετε αυτό.<br/> <br/><strong>Βοηθητική Τεκμηρίωση</strong><br/> <br/><a href="/index.php/auth/help">Γενική βοήθεια Ωθ</a><br/> <br/><a href="/index.php/faq?name=Using Entra for Auth">Χρήση Entra για Auth</a><br/> <br/><a href="/index.php/faq?name=Using OKTA for Auth">Χρήση OKTA για Auth</a><br/> <br/><a href="/index.php/faq?name=Troubleshooting LDAP Logins">Αντιμετώπιση προβλημάτων σύνδεσης LDAP</a><br/> <br/><a href="/index.php/faq?name=Users, Roles and Orgs">Χρήστες, Ρόλοι και Οργανισμοί</a><br/> <br/></p>';
+        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>'] = '<p> - Ναι. <code>ldap_dn_account</code> Κεϊντιγιάτ <code>ldap_dn_password</code> .<br/> <br/><strong>.</strong><br/> <br/><a href="/index.php/auth/help">- Ναι.</a><br/> <br/><a href="/index.php/faq?name=Using Entra for Auth">.</a><br/> <br/><a href="/index.php/faq?name=Using OKTA for Auth">- Не, не.</a><br/> <br/><a href="/index.php/faq?name=Troubleshooting LDAP Logins">Не, не.</a><br/> <br/><a href="/index.php/faq?name=Users, Roles and Orgs">Имено.</a><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br> <br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a <code>device</code>, valid <i>types</i> are: <code>class</code>, <code>environment</code>, <code>status</code> and <code>type</code>. If the <i>resource</i> is <code>locations</code> or <code>org</code> the only valid <i>type</i> is <code>type</code>. If the <i>resource</i> is a <code>query</code> the only valid <i>type</i> is <code>menu_category</code>.</p>'] = '<p>Αν προσθέσετε έναν τύπο συσκευής, για να εμφανίσετε το σχετικό εικονίδιο θα πρέπει να αντιγράψετε χειροκίνητα το σχηματοποιημένο αρχείο .svg στον κατάλογο:<br/><em>Linux</em>:/usr/local/open-audit/public/device_images<br/><em>Παράθυρα</em>: γ:\xampp\htdocs\ open-audit\ device_images<br/> <br/>Αν προσθέσετε έναν τύπο τοποθεσίας, για να εμφανίσετε το σχετικό εικονίδιο θα πρέπει να αντιγράψετε χειροκίνητα το εικονίδιο 32x32px στον κατάλογο:<br/><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br/><em>Παράθυρα</em>: γ:\xampp\htdocs\ open-audit\images\map_icons</p><p>Όταν το <i>πόρος</i> λέ <code>device</code>, έγκυρο <i>τύποι</i> είναι: <code>class</code>, <code>environment</code>, <code>status</code> και <code>type</code>. Εάν η <i>πόρος</i> λέ <code>locations</code> ή <code>org</code> η μόνη έγκυρη <i>τύπος</i> λέ <code>type</code>. Εάν η <i>πόρος</i> λέ <code>query</code> η μόνη έγκυρη <i>τύπος</i> λέ <code>menu_category</code>.</p>';
+$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br> <br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a <code>device</code>, valid <i>types</i> are: <code>class</code>, <code>environment</code>, <code>status</code> and <code>type</code>. If the <i>resource</i> is <code>locations</code> or <code>org</code> the only valid <i>type</i> is <code>type</code>. If the <i>resource</i> is a <code>query</code> the only valid <i>type</i> is <code>menu_category</code>.</p>'] = '<p>.<br/><em>- Не, не.</em> : / usr / τοπικό / open-одит / δημόσιο / συσκευή _ Bilder<br/><em>- Не, не.</em>: γ: / xamp / htdocs / open- Audit / Bezpečnost _ obrázky<br/> <br/>.<br/><em>- Не, не.</em> : / usr / lokal / offen Audit / veřejnost / obrázky / χάρτης _ BAR _<br/><em>- Не, не.</em> : / xamp / htdocs / отворен одит / bilder / χάρτης _ εικονίδια</p><p>- Да. <i>Не, не, не.</i> - Да. <code>device</code>. <i>- Не, не.</i> - Да. <code>class</code>. <code>environment</code>. <code>status</code> Κεϊντιγιάτ <code>type</code>- Да. <i>Не, не, не.</i> - Да. <code>locations</code> . <code>org</code> . <i>- Да.</i> - Да. <code>type</code>- Да. <i>Не, не, не.</i> - Да. <code>query</code> . <i>- Да.</i> - Да. <code>menu_category</code>.</p>';
 
-$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>'] = '<p>Εάν σκοπεύετε να ελέγξετε πλήρως τις μηχανές cloud σας, μην ξεχνάτε ότι θα χρειαστείτε επίσης τα διαπιστευτήρια που αποθηκεύονται στο Open-AudIT.</p><p>Βεβαιωθείτε ότι επιτρέπετε τις σωστές θύρες εάν χρησιμοποιείτε το Microsoft Azure (22 για SSH, κλπ). Ελέγξτε Virtual Machine σας -> Κανόνες δικτύωσης.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>'] = '<p>.</p><p>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br> <br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br> <br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br> <br></p>'] = '<p>Εάν επιλέξετε έναν τύπο λίστας, το πεδίο "τιμών" θα ενεργοποιηθεί. Εδώ θα πρέπει να βάλετε μια χωρισμένη λίστα με τις επιλεγμένες τιμές. Αυτά θα εμφανίζονται σε ένα αναπτυσσόμενο πλαίσιο κάθε φορά που το πεδίο έχει επεξεργαστεί.<br/> <br/>Όπως και τα περισσότερα άλλα χαρακτηριστικά, τα πεδία μπορούν να επεξεργαστούν χύμα. Χρησιμοποιήστε τη λειτουργία Bulk Edit όπως θα κανονικά και θα δείτε τα πεδία είναι διαθέσιμα για είσοδο.<br/> <br/>Δείτε την οθόνη λεπτομερειών της συσκευής, ανοίξτε το τμήμα που περιέχει το πεδίο και (αν έχετε επαρκή πρόσβαση) μπορείτε να κάνετε κλικ στην τιμή πεδίου για να το επεξεργαστείτε.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br> <br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br> <br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br> <br></p>'] = '<p> да го направим, да го направим.<br/> <br/>.<br/> <br/>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '<p>Στον συνεχώς μεταβαλλόμενο κόσμο της ασφάλειας των υπολογιστών όπου ανακαλύπτονται και επιδιορθώνονται νέα τρωτά σημεία κάθε μέρα, η επιβολή της συμμόρφωσης με την ασφάλεια πρέπει να είναι μια συνεχής διαδικασία. Πρέπει επίσης να περιλαμβάνει έναν τρόπο προσαρμογής των πολιτικών, καθώς και περιοδική αξιολόγηση και παρακολούθηση των κινδύνων. Το οικοσύστημα OpenSCAP παρέχει εργαλεία και προσαρμόσιμες πολιτικές για μια γρήγορη, οικονομικά αποδοτική και ευέλικτη εφαρμογή αυτών των διαδικασιών.</p>';
+$GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '<p>Имено.</p>';
 
-$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>Ενσωματώσεις σας επιτρέπουν να ρυθμίσετε την επιλογή συσκευών και τα προγράμματα για το Open-AudIT για να μιλήσετε με εξωτερικά συστήματα.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>Λεπτομέρειες συγχρονισμού Nmap βρίσκονται στο κάτω μέρος αυτής της συνδεδεμένης σελίδας <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html Διεύθυνση:</a>. Από εκείνη τη σελίδα:<br/> <br/><em>Αν είστε σε μια αξιοπρεπή ευρυζωνική ή ethernet σύνδεση, θα ήθελα να συστήσω πάντα τη χρήση -T4 (Επιθετικό). Μερικοί άνθρωποι αγαπούν -T5 (τρελό) αν και είναι πολύ επιθετικό για το γούστο μου. Οι άνθρωποι μερικές φορές καθορίζουν -T2 (Polite) επειδή νομίζουν ότι είναι λιγότερο πιθανό να συντριβούν οικοδεσπότες ή επειδή θεωρούν ότι είναι ευγενικοί γενικά. Συχνά δεν συνειδητοποιούν πόσο αργό είναι πραγματικά το -T2. Η σάρωση τους μπορεί να διαρκέσει δέκα φορές περισσότερο από μια προεπιλεγμένη σάρωση. Συντριβές μηχανών και τα προβλήματα εύρους ζώνης είναι σπάνια με τις προεπιλεγμένες επιλογές συγχρονισμού -T3 (Κανονική) και έτσι συνήθως συνιστώ ότι για τους προσεκτικοί σαρωτές. Η παράλειψη ανίχνευσης έκδοσης είναι πολύ πιο αποτελεσματική από το παιχνίδι με τις τιμές χρονισμού στη μείωση αυτών των προβλημάτων.</em><footer>Γκόρντον. <i>Φιόντορ.</i> Λυών</footer><br/> <br/></p>';
+$GLOBALS["lang"]['<p>Microsoft Windows desktop systems have network limitations that may impact the performance of Open-AudIT. The TCP/IP stack limits the number of simultaneous incomplete outbound TCP connection attempts. After the limit is reached, subsequent connection attempts are put in a queue and will be resolved at a fixed rate (10 per second). If too many enter the queue, they may be dropped. And finally, Apache will be restarted by the OS. For this reason, installing Open-AudIT on a Windows desktop operating system is not supported.<br><br>There is nothing wrong with the Open-AudIT code, nor can we do anything to address this issue on Windows client machines.'] = '<p> "Майкросо<br/><br/>.</p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '<p>Το Open-AudIT μπορεί να ρυθμιστεί ώστε να χρησιμοποιεί διαφορετικές μεθόδους για την ταυτοποίηση ενός χρήστη και επιπλέον, για τη δημιουργία ενός λογαριασμού χρήστη χρησιμοποιώντας εκχωρημένους ρόλους και οργανισμούς με βάση την ιδιότητα μέλους της ομάδας.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>- Да. <a href="https://nmap.org/book/man-performance.html" target="_blank">http: / / nmap.org / βιβλίο / man-pertu.html</a>- Да.<br/> <br/><em>Имено. инсанлар кими дейир - T2 (Полит) онлар овлини qarşīlamaq daha az yaxş Имено.</em><footer>- Не, не. <i>Όνομα</i> ΣΑΛΑ</footer><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>'] = '<p>Ανοιχτή Οδό Η IT μπορεί να ανακτήσει λεπτομέρειες σχετικά με ένα αρχείο ή κατάλογο αρχείων και να παρακολουθεί αυτά τα αρχεία για αλλαγές σύμφωνα με άλλα χαρακτηριστικά στη βάση δεδομένων Open-AudIT.<br/> <br/>Αυτή η λειτουργία λειτουργεί έξω από το πλαίσιο για τους εξυπηρετητές Linux Open-AudIT, αλλά χρειάζεται μια αλλαγή στο όνομα λογαριασμού υπηρεσίας κάτω από έναν εξυπηρετητή Open-AudIT Windows.<br/> <br/>Υποστηριγμένοι πελάτες είναι τα Windows και το Linux.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '<p>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>'] = '<p>Ανοιχτή Οδό Η IT μπορεί να ανακτήσει λεπτομέρειες για ένα αρχείο, να ρωτήσει τον τοπικό διαχειριστή πακέτων αν είναι γνωστοί σε αυτό και να παρακολουθεί αυτά τα αρχεία για αλλαγές σύμφωνα με άλλες ιδιότητες στη βάση δεδομένων Open-AudIT.<br/> <br/>Οι υποστηριζόμενοι πελάτες είναι μόνο Linux.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>'] = '<p>Не, не.<br/> <br/>Имено.<br/> <br/>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br> <br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br> <br></p>'] = '<p>Ανοιχτή Οδό IT μπορεί να αποθηκεύσει πληροφορίες σε προσαρμοσμένα πεδία που συνδέονται με κάθε συσκευή.<br/> <br/>Μόλις δημιουργηθεί ένα πρόσθετο πεδίο μπορεί να χρησιμοποιηθεί σε ερωτήματα και ομάδες όπως κάθε άλλο χαρακτηριστικό στη βάση δεδομένων.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>'] = '<p>Не, не.<br/> <br/>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Το Open-AudIT έρχεται με πολλά ερωτήματα ενσωματωμένα. Εάν χρειάζεστε ένα συγκεκριμένο ερώτημα και κανένα από τα προσυσκευασμένα ερωτήματα δεν ταιριάζει στις ανάγκες σας, είναι αρκετά εύκολο να δημιουργήσετε ένα νέο και να το φορτώσετε σε Open-AudIT για τρέξιμο.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br> <br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br> <br></p>'] = '<p>.<br/> <br/>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Το Open-AudIT έρχεται με πολλές περιλήψεις ενσωματωμένες. Αν χρειάζεστε μια συγκεκριμένη περίληψη και καμία από τις προσυσκευασμένες περιλήψεις δεν ταιριάζει στις ανάγκες σας, είναι αρκετά εύκολο να δημιουργήσετε μια νέα και να την φορτώσετε σε Open-AudIT για τρέξιμο.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p> да го направим, но не е така.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>'] = '<p>Το Open-AudIT υποστηρίζεται από το FirstWave με ένα εκπληκτικό επίπεδο υποστήριξης. Αν προτιμάτε μια ενεργό κοινότητα των δωρητών υποστήριξης, υπάρχει και αυτό. Πού αλλού μπορείτε να μιλήσετε απευθείας στους προγραμματιστές και να πάρετε μια απάντηση μέσα σε 24 ώρες; Δοκιμάστε το με άλλα προϊόντα! Καταπληκτική υποστήριξη. Πλήρης στάση. Χρειάζεσαι υποστήριξη, παρέχουμε υποστήριξη. Όχι αν ή αλλά. Μεγάλη υποστήριξη. Τέλος.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '<p>Το Open-AudIT παρέχει πολλαπλή διάρκεια έξω από το κουτί!<br/> <br/>Οργανισμοί (οργανισμοί) στο Open-AudIT είναι ένα βασικό στοιχείο. Ένας χρήστης έχει έναν πρωταρχικό Οργανισμό καθώς και μια λίστα των Οργών που μπορούν να έχουν πρόσβαση. Ένας χρήστης το συνδυάζει αυτό με μια λίστα των εκχωρημένων "Roles" που καθορίζουν ποιες ενέργειες μπορούν να αναλάβουν σε αντικείμενα που έχουν ανατεθεί στους οργανισμούς που έχουν πρόσβαση. Ο συνδυασμός ενός χρήστη "orgs" και "roles" καθορίζουν τι μπορούν και τι δεν μπορούν να κάνουν μέσα στο Open-AudIT.<br/> <br/>Τα περισσότερα αντικείμενα στο Open-AudIT ανατίθενται σε έναν Οργ. Συσκευές, Τοποθεσίες, Δίκτυα, κλπ.<br/> <br/>Τα όργκ μπορούν να κάνουν παιδιά. Σκεφτείτε μια οργανωτική δομή (δέντρο). Εάν ένας χρήστης έχει πρόσβαση σε συγκεκριμένο Οργ, έχουν επίσης πρόσβαση σε αυτούς τους Οργούς απογόνους. Για περισσότερες πληροφορίες, δείτε το <a href="/index.php/faq?name=Users, Roles and Orgs">Συχνές ερωτήσεις</a>.</p>';
+$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>'] = '<p>Имено. Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '<p>Το Open-AudIT παρέχει πολλαπλή διάρκεια έξω από το κουτί!<br/> <br/>Οργανισμοί (οργανισμοί) στο Open-AudIT είναι ένα βασικό στοιχείο. Ένας χρήστης έχει έναν πρωταρχικό Οργανισμό καθώς και μια λίστα των Οργών που μπορούν να έχουν πρόσβαση. Ένας χρήστης το συνδυάζει αυτό με μια λίστα των εκχωρημένων "Roles" που καθορίζουν ποιες ενέργειες μπορούν να αναλάβουν σε αντικείμενα που έχουν ανατεθεί στους οργανισμούς που έχουν πρόσβαση. Ο συνδυασμός ενός χρήστη "orgs" και "roles" καθορίζουν τι μπορούν και τι δεν μπορούν να κάνουν μέσα στο Open-AudIT.<br/> <br/>Τα περισσότερα αντικείμενα στο Open-AudIT ανατίθενται σε έναν Οργ. Συσκευές, Τοποθεσίες, Δίκτυα, κλπ.<br/> <br/>Τα όργκ μπορούν να κάνουν παιδιά. Σκεφτείτε μια οργανωτική δομή (δέντρο). Εάν ένας χρήστης έχει πρόσβαση σε συγκεκριμένο Οργ, έχουν επίσης πρόσβαση σε αυτούς τους Οργούς απογόνους.</p>';
+$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '<p>Не, не.<br/> <br/>Имено.<br/> <br/>(Pop-Audit).<br/> <br/>Имено. <a href="/index.php/faq?name=Users, Roles and Orgs">E-Poçon</a>.</p>';
 
-$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br></p>'] = '<p>Δείτε γρήγορα την κατάσταση των συσκευών στο δίκτυό σας.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '<p>Не, не.<br/> <br/>Имено.<br/> <br/>(Pop-Audit).<br/> <br/>Имено.</p>';
+
+$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br></p>'] = '<p>.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned Roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>
         Get the complete Open-AudIT Enterprise experience. Creating roles allows fine grained control over what your users can do within Open-AudIT.<br> <br>
-        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>Ρόλοι στο Open-Aud Είναι ένα βασικό στοιχείο. Ένας χρήστης έχει έναν πρωταρχικό Οργανισμό καθώς και μια λίστα των Οργών που μπορούν να έχουν πρόσβαση. Ένας χρήστης το συνδυάζει αυτό με μια λίστα με καθορισμένους Ρόλους που καθορίζουν ποιες ενέργειες μπορούν να αναλάβουν σε αντικείμενα που έχουν ανατεθεί στους Οργούς στους οποίους έχουν πρόσβαση. Ο συνδυασμός ενός χρήστη "orgs" και "roles" καθορίζουν τι μπορούν και τι δεν μπορούν να κάνουν μέσα στο Open-AudIT.<br/> <br/>Πάρτε την πλήρη εμπειρία Open-AudIT Enterprise. Η δημιουργία rolesόλων επιτρέπει τον λεπτοκομμένο έλεγχο του τι μπορούν να κάνουν οι χρήστες σας μέσα στο Open-AudIT.<br/> <br/>Η πρωταρχική μέθοδος για την αδειοδότηση (τι μπορεί να κάνει ένας χρήστης) βασίζεται στους ρόλους των χρηστών. Οι προκαθορισμένοι ρόλοι ορίζονται ως admin, org_admin, reporter και user. Κάθε ρόλος έχει ένα σύνολο αδειών (Δημιουργία, ανάγνωση, ενημέρωση, διαγραφή) για κάθε τελικό σημείο. Η δυνατότητα καθορισμού πρόσθετων rolesόλων και επεξεργασίας υφιστάμενων rolesόλων είναι ενεργοποιημένη στο Open-AudIT Enterprise.<br/> <br/>Οι ρόλοι μπορούν επίσης να χρησιμοποιηθούν με την άδεια LDAP (Active Directory και OpenLDAP). Οι εγκαταστάσεις με άδεια εκμετάλλευσης επιχειρήσεων έχουν τη δυνατότητα να προσαρμόζουν τον όμιλο LDAP για κάθε καθορισμένο ρόλο.<br/> <br/></p>';
+        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>Имено.<br/> <br/>.<br/> <br/>Имено. Имено.<br/> <br/>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p>Οι κανόνες εξετάζουν τα χαρακτηριστικά και κάνουν cahnges με βάση τον κατάλληλο κανόνα.</p>';
+$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p>.</p>';
 
-$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br> <br></p>'] = '<p>Επιλογές σάρωσης σας επιτρέπουν να εφαρμόσετε εύκολα ένα σύνολο επιλογών σε μια ανακάλυψη.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br> <br></p>'] = '<p>.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br> <br>
-        </p>'] = '<p>Απλή, διαισθητική, ακριβής γεωγραφική χαρτογράφηση που παρέχεται από το Google Maps. Μετοχικοί τίτλοι Χάρτες Google για την παροχή ζωντανής, διαδραστικής γεωγραφικής χαρτογράφησης των θέσεων συσκευών. Αυτοματοποιημένη μετατροπή διευθύνσεων οδών σε γεωκωδικούς και γεωγραφικό μήκος / γεωγραφικό πλάτος.<br/> <br/></p>';
+        </p>'] = '<p>Χάρτες Google t гор!. Google Mapy canlş, interaktiv cografi xidm.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>'] = '<p>Πακέτα λογισμικού χρησιμοποιούνται για να καθορίσουν αν είναι εγκατεστημένο λογισμικό antivirus, backup, firewall, εγκεκριμένο ή απαγορευμένο.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>'] = '<p>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '<p>Μερικά παραδείγματα έγκυρων ιδιοτήτων του Subnet είναι: 192.168.1.1 (μια ενιαία διεύθυνση IP), 192.168.1.0/24 (ένα υποδίκτυο), 192.168.1-3.1-20 (μια σειρά διευθύνσεων IP).<br/> <br/><em>ΣΗΜΕΙΩΣΗ</em> - Μόνο ένα υποδίκτυο (σύμφωνα με τα παραδείγματα - 192.168.1.0/24) θα είναι σε θέση να δημιουργήσει αυτόματα ένα έγκυρο δίκτυο για το Open-AudIT. <br/> <br/>Εάν χρησιμοποιείτε έναν ενεργό τύπο καταλόγου, βεβαιωθείτε ότι έχετε τα κατάλληλα διαπιστευτήρια για να μιλήσετε με τον ελεγκτή τομέα σας ήδη σε <a href="../credentials">διαπιστευτήρια</a>.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '<p>Имено.<br/> <br/><em>- Да.</em> Имено. <br/> <br/>. <a href="../credentials">- Да.</a>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Standards are stored in Open-AudIT.<br /><br /><br /><br /></p>'] = '<p>Τα πρότυπα αποθηκεύονται στο Open-AudIT.<br/><br/><br/><br/></p>';
+$GLOBALS["lang"]['<p>Standards are stored in Open-AudIT.<br /><br /><br /><br /></p>'] = '<p>- Не, не.<br/><br/><br/><br/></p>';
 
-$GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '<p>Οι υποστηριζόμενοι πελάτες είναι μόνο Linux.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '<p>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '<p>Οι εργασίες έχουν ένα πρόγραμμα που αντικατοπτρίζει το πρόγραμμα Unix Cron. Τα χαρακτηριστικά για το λεπτό, ώρα, ημέρα_του_μήνα, μήνα, ημέρα_της_εβδομάδας όλα λειτουργούν σύμφωνα με τους ορισμούς cron. Μπορείτε να επιλέξετε πολλαπλάσια αυτών χρησιμοποιώντας χωρισμένες τιμές κόμμα (χωρίς κενά). Μπορείτε να επιλέξετε κάθε τιμή χρησιμοποιώντας *.<br/> <br/>Η <code>type</code> του έργου μπορεί να είναι ένα από τα εξής: γραμμές βάσης, συλλέκτες, ανακαλύψεις, ερωτήματα, εκθέσεις ή περιλήψεις.<br/> <br/>Αν επιθυμείτε να προγραμματίσετε μια γραμμή βάσης ή Discovery, θα πρέπει να δημιουργήσετε αυτά πριν από τη δημιουργία των εργασιών. Πρέπει να χρησιμοποιήσετε το ID του τύπου του αντικειμένου στο <code>sub_resource_id</code>. Για παράδειγμα, αν επιθυμείτε να προγραμματίσετε ένα Discovery, χρησιμοποιήστε το συγκεκριμένο Discoveries ID στο <code>sub_resource_id</code>.<br/> <br/>Η τιμή για <code>uuid</code> είναι συγκεκριμένος σε κάθε εξυπηρετητή Open-AudIT. Η μοναδική σας αξία μπορεί να βρεθεί στις ρυθμίσεις.<br/> <br/>Η <code>options</code> χαρακτηριστικό είναι ένα έγγραφο JSON που περιέχει τυχόν επιπλέον χαρακτηριστικά που απαιτούνται για την εκτέλεση της εργασίας. Τα επιπλέον χαρακτηριστικά για εκθέσεις, ερωτήματα και περιλήψεις είναι: <code>email_address</code> και <code>format</code>. Το επιπλέον χαρακτηριστικό για Bselines είναι <code>group_id</code>.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '<p>Имено.<br/> <br/>Άξταρ@ <code>type</code> Имено.<br/> <br/>. <code>sub_resource_id</code>... <code>sub_resource_id</code>.<br/> <br/>- Да. <code>uuid</code> .<br/> <br/>Άξταρ@ <code>options</code> Имено. <code>email_address</code> Κεϊντιγιάτ <code>format</code>. ( <code>group_id</code>.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The <code>type</code> of the location will assign its icon.<br> <br></p>'] = '<p>Η <code>type</code> του τόπου θα εκχωρήσει το εικονίδιο του.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>The <code>type</code> of the location will assign its icon.<br> <br></p>'] = '<p>Άξταρ@ <code>type</code> .<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '<p>Το τελικό σημείο Χαρακτηριστικά σας επιτρέπει να προσθέσετε προσαρμοσμένες τιμές σε διαφορετικές ιδιότητες στο Open-AudIT, αυτή τη στιγμή αυτό το χαρακτηριστικό λειτουργεί για τις ιδιότητες Κλάσης, Περιβάλλοντος, Κατάστασης και Τύπου στις Συσκευές, το χαρακτηριστικό τύπου τόσο για τις Τοποθεσίες όσο και για τους Οργούς, καθώς και την Κατηγορία Μενού για Ερωτήσεις. Εάν δείτε ένα στοιχείο ενός από τους τύπους prvious (δείτε ένα Lkocatation) θα παρατηρήσετε ότι το χαρακτηριστικό τύπου πρέπει να επιλεγεί από ένα πλαίσιο drop-down. Εδώ αποθηκεύονται αυτές οι τιμές. Ως εκ τούτου, αν θέλετε να προσθέσετε ένα νέο τύπο που θα επιλεγεί για μια τοποθεσία, προσθέστε το χρησιμοποιώντας τη λειτουργία Χαρακτηριστικά.</p>';
+$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '<p>Българактеристики крайна точка Open-Audit müxt... H.R.y.r.v., Orgs üçün Tip xüsusiyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyi, h.mçi üçün Menkulator Kateqoriyasī. Ημερομηνία γέννησης: - Да.</p>';
 
-$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br> <br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br> <br></p>'] = '<p>Η λειτουργία Collectors σας δίνει τη δυνατότητα να διαχειριστείτε εύκολα πολλούς " Collector" υπολογιστές που εκτελούν ανακάλυψη δικτύου. Όλοι οι Συλλέκτες ελέγχονται κεντρικά από τον Διακομιστή. Οι μόνες απαιτούμενες θύρες δικτύου μεταξύ του Συλλέκτη και του Διακομιστή είναι 80 ή/και 443.<br/> <br/>Κάνει τη διαχείριση ανόμοιων δικτύων γρήγορη, εύκολη και απλή. Οι δικαιοδόχοι του Open-AudIT Enterprise παίρνουν μία μόνο άδεια συλλέκτη και έχουν τη δυνατότητα να αγοράσουν περισσότερα, όπως απαιτείται..<br/> <br/></p>';
+$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br> <br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br> <br></p>'] = '<p>Kompüter v... Server arasīnda yalnīz lodenīm olan aşportlar<br/> <br/>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>'] = '<p>Το τμήμα SELECT του SQL σας <em>πρέπει</em> περιέχουν πλήρως εξειδικευμένες στήλες. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br/> <br/>Το τμήμα WHO του SQL σας <em>πρέπει</em> περιέχει <code>WHERE @filter</code> Έτσι Open-AudIT ξέρει να περιορίσει το ερώτημά σας στα κατάλληλα Orgs. Το SQL που δεν περιέχει αυτή την κατάσταση θα έχει ως αποτέλεσμα το ερώτημα να αποτύχει να δημιουργηθεί, εκτός αν έχετε το ρόλο διαχειριστή.<br/> <br/>Ένα παράδειγμα ερώτημα SQL που εμφανίζει ιδιότητες σε συσκευές που έχουν <code>os_group</code> χαρακτηριστικό του "Linux" - <br/><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br/> <br/></p>';
+$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>'] = '<p>. <em>.</em> <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br/> <br/>. <em>.</em> - Да. <code>WHERE @filter</code> Имено.<br/> <br/>. <code>os_group</code> гонитба. <br/><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br> <br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br> <br></p>'] = '<p>Το τμήμα SELECT του SQL σας <em>πρέπει</em> μόνο περιέχει <code>DISTINCT(devices.id)</code>.<br/> <br/>Το τμήμα WHO του SQL σας <em>πρέπει</em> περιέχει <code>WHERE @filter</code> Έτσι Open-AudIT ξέρει να περιορίσει το ερώτημά σας στα κατάλληλα Orgs. Το SQL που δεν περιέχει αυτή την κατάσταση θα έχει ως αποτέλεσμα την αποτυχία δημιουργίας της ομάδας.<br/> <br/>Ένα παράδειγμα για το SQL για να επιλέξετε όλες τις συσκευές που εκτελούν το Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br/> <br/></p>';
+$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br> <br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br> <br></p>'] = '<p>. <em>.</em> . <code>DISTINCT(devices.id)</code>.<br/> <br/>. <em>.</em> - Да. <code>WHERE @filter</code> .<br/> <br/>. <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>'] = '<p>Το τελικό σημείο της άδειας σας επιτρέπει να παρακολουθείτε τον αριθμό των αδειών που βρέθηκαν στις συσκευές σας.<br/> <br/>Για να δημιουργήσετε μια καταχώρηση για να παρακολουθείτε τις άδειες σας <em>πρέπει</em> να παρέχει ένα όνομα, έναν οργανισμό, τον αριθμό των αδειών που έχουν αποκτηθεί και το όνομα του λογισμικού. Στο γήπεδο <code>match_string</code> πρέπει να παρέχει το όνομα του λογισμικού που θέλετε να παρακολουθείτε, μπορείτε να χρησιμοποιήσετε το ποσοστό σημάδι (%) ως μπαλαντέρ στο match_string.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>'] = '<p>- Да.<br/> <br/>. <em>.</em> . <code>match_string</code> - Да.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br> <br></p>'] = '<p>Το δίκτυο θα πρέπει να έχει τη μορφή 192.168.1.0/24.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br> <br></p>'] = '<p>APOL <br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>'] = '<p>Τα κύρια και προαιρετικά δευτερεύοντα αντικείμενα πρέπει να είναι πλήρως εξειδικευμένα - δηλαδή συσκευές. τύπος ή λογισμικό. Όνομα.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>'] = '<p>- Да.<br/> <br/></p>';
 
 $GLOBALS["lang"]['<p>There is no need to do anything if you are running Open-AudIT on a Linux server.<br>
 <br>
 Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.<br>
 <br>
-See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '<p>Δεν χρειάζεται να κάνετε τίποτα αν τρέχετε Open-AudIT σε έναν εξυπηρετητή Linux.<br/><br/>Οι πελάτες των Windows είναι μια χαρά και δεν απαιτούν ειδικές ενέργειες, ωστόσο... για να ενεργοποιήσετε αυτό το χαρακτηριστικό το σενάριο ελέγχου πρέπει να εκτελείται τοπικά στο σύστημα των Windows στόχο. Δεν μπορεί να εκτελεστεί εξ αποστάσεως όπως κάνουμε με τις κλήσεις WMI κατά την εκτέλεση του σεναρίου ελέγχου σε ένα μηχάνημα Windows, ενώ στοχεύει και μια δεύτερη μηχανή Windows. Για να το κάνουμε αυτό πρέπει να αντιγράψουμε το σενάριο ελέγχου στη μηχανή στόχο Windows και στη συνέχεια να το εκτελέσουμε. Δυστυχώς ο λογαριασμός υπηρεσιών που λειτουργεί ο Απάτσι είναι ο λογαριασμός του τοπικού συστήματος. Αυτός ο λογαριασμός δεν έχει πρόσβαση σε απομακρυσμένους (με βάση το δίκτυο) πόρους. Για να εργαστούμε γύρω από αυτό το ζήτημα, η υπηρεσία πρέπει να λειτουργεί σε άλλο λογαριασμό. Είναι πιο εύκολο να χρησιμοποιήσετε απλά τον τοπικό λογαριασμό διαχειριστή, αλλά μπορείτε να δοκιμάσετε οποιοδήποτε λογαριασμό σας αρέσει όσο έχει τα απαιτούμενα προνόμια. Ο λογαριασμός του τοπικού συστήματος έχει τόσο τοπική πρόσβαση όσο και ο τοπικός λογαριασμός διαχειριστή.<br/><br/>Δείτε τη σελίδα μας για την ενεργοποίηση <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Εκτέλεση υπηρεσίας Apache Open-Audit υπό Windows</a></p>';
+See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '<p>.<br/><br/>Имено. Bu hesab uzaq (въК основа на мрежа) rekursuna daxil deyil. Имено.<br/><br/> да го направим, да го направим. <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">. Απάτσι големогаве К.</a></p>';
 
-$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>'] = '<p>Αυτές είναι οι συσκευές που ζουν μέσα σε ένα ράφι.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>'] = '<p>- Не, не.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p>Αυτό το τελικό σημείο σας δίνει τη δυνατότητα να προσθέσετε τα στοιχεία υποδομής cloud σας. Το Open-AudIT στη συνέχεια θα προσεγγίσει τα σύννεφα σας χρησιμοποιώντας το εγγενές API τους και θα επιστρέψει τους διακομιστές σας, όπως κάθε άλλη συσκευή στο Open-AudIT.<br/> <br/><em>ΣΗΜΕΙΩΣΗ</em> - Για να χρησιμοποιήσουμε αυτό το χαρακτηριστικό, εμείς <em>πρέπει</em> ενεργοποιήστε τα στοιχεία ρυθμίσεων match_mac (για AWS) και match_hostname (για Azure). Αυτό θα γίνει αυτόματα την πρώτη φορά που θα εκτελεστεί μια ανακάλυψη σύννεφου.<br/> <br/>Έντυπο για το σύννεφο σας (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Αζούρ</a> ή <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) αpiαιτούνται.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p>Не, не.<br/> <br/><em>- Да.</em> . <em>.</em> ...<br/> <br/>.<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery"> Αζούλεν</a> . <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">Даксил ол Бол.</a>- Да.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Vulnerabilities reporting based on the NIST CVE feed.<br> <br></p>'] = '<p>Αναφορά ευπαθών στοιχείων με βάση τη ροή CVE NIST.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Vulnerabilities reporting based on the NIST CVE feed.<br> <br></p>'] = '<p>NIST CVE Φούτερ гонитба.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>Αρχικά ρυθμίσαμε την προκαθορισμένη λίστα των σεναρίων με τις προεπιλεγμένες επιλογές. Αυτά τα προεπιλεγμένα σενάρια δεν μπορούν να διαγραφούν. Μπορείτε να δημιουργήσετε πρόσθετα σενάρια για χρήση από εσάς όπως απαιτείται. Το σενάριό σας θα βασίζεται σε ένα από τα υπάρχοντα σενάρια και θα έχει προσαρμοσμένες επιλογές. Τα σενάρια μπορούν στη συνέχεια να μεταφορτωθούν από τη σελίδα λίστα στο μενού -> Ανακαλύψτε -> Σενάρια ελέγχου -> Λίστα σεναρίων ελέγχου<br/> <br/></p>';
+$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>Όταν χρησιμοποιείτε Regex για ταίριασμα, μια χρήσιμη σελίδα μπορεί να βρεθεί στο <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> Ιστοσελίδα PHP</a>. Ορισμένες διαφορές για Perl Regex μπορεί να βρεθεί <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">Εδώ.</a>.</p>';
+$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p> Εγώ προς Τακ. <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> Σάκος PHP</a>. <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">- Да.</a>.</p>';
 
-$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>'] = '<p>Widgets μπορεί εύκολα να δημιουργηθεί για να δείξει ό, τι είναι συγκεκριμένο για το περιβάλλον σας στα ταμπλό σας.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>'] = '<p>- Да.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>'] = '<p>Με Open-AudIT Επαγγελματικά και Enterprise μπορείτε να αυτοματοποιήσετε και να προγραμματίσετε ανακαλύψεις, την παραγωγή αναφοράς, ή τους ελέγχους βάσης για να εκτελέσετε όταν θέλετε, και όσο συχνά χρειάζεστε. Προγραμματίστε τις ανακαλύψεις σας για να εκτελέσετε νυχτερινά και τις αναφορές που πρέπει να δημιουργούνται και να αποστέλλονται με email στο βασικό προσωπικό κάθε πρωί. Σύνθετα ή απλά προγράμματα, η ανακάλυψη συσκευών και η παραγωγή αναφοράς είναι απλά ένα κλικ μακριά.<br/> <br/>Δημιουργήστε μεμονωμένα προγράμματα ανακάλυψης για κάθε υποδίκτυο ή χειριστήριο AD, προσθέστε τις αναφορές που θα δημιουργηθούν για στοχευμένο κοινό. Ανάπτυξη απλών ή πολύπλοκων χρονοδιαγραμμάτων για την υποστήριξη των αναγκών της εταιρείας, την αποφυγή αντιγράφων ασφαλείας ή επιπτώσεων στις λειτουργίες, ή απλά για την εξάπλωση του φορτίου και την επιτάχυνση της ολοκλήρωσης του ελέγχου.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>'] = '<p>.<br/> <br/>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>'] = '<p>Μπορείτε να δημιουργήσετε ένα σενάριο με όλες τις επιλογές για οποιοδήποτε από τα υπάρχοντα σενάρια ελέγχου - όχι μόνο τα Windows. Τα AIX, ESX, Linux, OSX και Windows καλύπτονται όλα.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>'] = '<p> Να Ντρουχού Στράνου.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>'] = '<p>Μπορείτε να χρησιμοποιήσετε το ποσοστό % σημάδι ως μπαλαντέρ στο match_string.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>'] = '<p>Имено.<br/> <br/></p>';
 
-$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br> <br></p>'] = '<p>Τα ράφια σας βοηθούν να βελτιώσετε ακριβώς πού βρίσκονται οι συσκευές σας.<br/> <br/></p>';
+$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br> <br></p>'] = '<p>Не, не.<br/> <br/></p>';
 
-$GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = 'Χάρτες Google API Το κλειδί απαιτείται για αυτή τη λειτουργία.';
+$GLOBALS["lang"]['<strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<strong>- Да.</strong> - Не, не...';
 
-$GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = 'Μια σειρά από ταυτότητες συσκευών JSON που θα εκτελέσουν αυτό το σημείο αναφοράς.';
+$GLOBALS["lang"]['A CVE item that does not contain a filter to determine the affected item(s).'] = 'Стижад... олунан мадид...."';
 
-$GLOBALS["lang"]['A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.'] = 'Μια σειρά αντικειμένων JSON που ταιριάζουν με το όνομα λογισμικού που λαμβάνεται από το CVE, εμπλουτισμένο με το όνομα λογισμικού που ανακτήθηκε από το Open-AudIT.';
+$GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['A JSON array of values to test for this vulnerability.'] = 'Μια σειρά τιμών JSON για να ελεγχθεί για αυτή την ευπάθεια.';
+$GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = '.';
 
-$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = 'Ένα έγγραφο JSON που περιέχει τους Οργάδες που έχουν ανατεθεί σε αυτόν τον χρήστη. Στοιχεία ταυτότητας που λαμβάνονται από <code>orgs.id</code>. Αν ένας χρήστης έχει πρόσβαση σε έναν Οργ, έχει πρόσβαση στους απογόνους των Οργών.';
+$GLOBALS["lang"]['A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.'] = 'CVE- dan alganan proqram adgam il... uyğun olaraq, Offen- Audit t... r... finden... n alganan proqram adgah uyğunlaşdşrīlmşdşr.';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = 'Ένα έγγραφο JSON που περιέχει τα απαιτούμενα χαρακτηριστικά ανάλογα με <code>scripts.type</code>.';
+$GLOBALS["lang"]['A JSON array of values to test for this vulnerability.'] = 'Bu boşluğu test üçün qiym... r JSON sīra.';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes overriding the chosen discovery_scan_options.'] = 'Ένα έγγραφο JSON που περιέχει τα απαιτούμενα χαρακτηριστικά υπερισχύει της επιλεγμένης ανακάλυψης_scan_options.';
+$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = 'Bu istifad... çi üçün Orgs daxil olan bir JSON s... rgisi. <code>orgs.id</code>...';
 
-$GLOBALS["lang"]['A JSON document containing the required attributes overriding the default device match options.'] = 'Ένα έγγραφο JSON που περιέχει τα απαιτούμενα χαρακτηριστικά που υπερισχύουν των προεπιλεγμένων επιλογών ταιριάσματος της συσκευής.';
+$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = 'ΖΕΙΤΣΡΙΦΤΕΝ <code>scripts.type</code>.';
 
-$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = 'Ένα έγγραφο JSON που περιέχει τους ρόλους που έχουν ανατεθεί σε αυτόν τον χρήστη. Όνομα ρόλου που λαμβάνεται από <code>roles.name</code>.';
+$GLOBALS["lang"]['A JSON document containing the required attributes overriding the chosen discovery_scan_options.'] = 'Seçilmişm... lumat _ scannen _ Optionen üz... rind... lodenem olan xüsusiyyyyy... tl... ri olan JSON nümayişi.';
 
-$GLOBALS["lang"]['A JSON object containing an array of attributes to change if the match occurs.'] = 'Ένα αντικείμενο JSON που περιέχει μια σειρά ιδιοτήτων για να αλλάξει αν συμβεί το ταίριασμα.';
+$GLOBALS["lang"]['A JSON document containing the required attributes overriding the default device match options.'] = 'Това е най-важното не';
 
-$GLOBALS["lang"]['A JSON object containing an array of attributes to match.'] = 'Ένα αντικείμενο JSON που περιέχει μια σειρά από χαρακτηριστικά που ταιριάζουν.';
+$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = 'Bu istifad по дяволите, verilmişrollar daxil olan bir JSON s.rgisius. Не, не. <code>roles.name</code>.';
 
-$GLOBALS["lang"]['A JSON object containing collection specific options.'] = 'Ένα αντικείμενο JSON που περιέχει συγκεκριμένες επιλογές συλλογής.';
+$GLOBALS["lang"]['A JSON object containing an array of attributes to change if the match occurs.'] = 'Mac meydana çţxţrsa, bir sţra xüsusiyyyyyyyyyyyah...';
 
-$GLOBALS["lang"]['A JSON object populated via a Cloud discovery.'] = 'Ένα αντικείμενο JSON κατοικήθηκε μέσω μιας ανακάλυψης Cloud.';
+$GLOBALS["lang"]['A JSON object containing an array of attributes to match.'] = 'Bir sīra xüsusiyrr (στα Αγγλικά).';
 
-$GLOBALS["lang"]['A JSON representation containing the details of the queue item to be executed.'] = 'Μια αναπαράσταση JSON που περιέχει τις λεπτομέρειες του αντικειμένου της ουράς προς εκτέλεση.';
+$GLOBALS["lang"]['A JSON object containing collection specific options.'] = 'Kolleksiya xüsusi έκδοσηlarşolan JSON Obkt (στα Αγγλικά).';
 
-$GLOBALS["lang"]['A JSON representation of the fields for this integration.'] = 'Μια εκπροσώπηση JSON των τομέων αυτής της ολοκλήρωσης.';
+$GLOBALS["lang"]['A JSON object populated via a Cloud discovery.'] = 'Bir JSON Objektiki Cloud Keçmiş.';
 
-$GLOBALS["lang"]['A JSON representation of the individual tests and their results on all devices this baseline has been run against.'] = 'Μια αναπαράσταση JSON των μεμονωμένων δοκιμών και τα αποτελέσματά τους σε όλες τις συσκευές αυτή η βάση έχει τρέξει ενάντια.';
+$GLOBALS["lang"]['A JSON representation containing the details of the queue item to be executed.'] = 'Qşrmīzīm гошсулун мулматлария олан бир JSON nümaeişedilib.';
 
-$GLOBALS["lang"]['A JSON representation of the tests that make up this policy.'] = 'Μια αναπαράσταση JSON των δοκιμών που αποτελούν αυτή την πολιτική.';
+$GLOBALS["lang"]['A JSON representation of the fields for this integration.'] = 'Bu intecrasiya üçün sah...';
 
-$GLOBALS["lang"]['A URL to a file to download.'] = 'Ένα URL σε ένα αρχείο για λήψη.';
+$GLOBALS["lang"]['A JSON representation of the individual tests and their results on all devices this baseline has been run against.'] = 'Ένα JSON müxt...';
 
-$GLOBALS["lang"]['A calculated field that displays the number of times this piece of software was found on the computers in the selected Org (and its descendants if configured).'] = 'Ένα υπολογισμένο πεδίο που εμφανίζει τον αριθμό των φορές αυτό το κομμάτι λογισμικού βρέθηκε στους υπολογιστές του επιλεγμένου Οργ (και των απογόνων του αν έχει ρυθμιστεί).';
+$GLOBALS["lang"]['A JSON representation of the tests that make up this policy.'] = 'Добър вечер, г-жо.';
 
-$GLOBALS["lang"]['A collector is either in Collector or Stand-Alone mode.'] = 'Ένας συλλέκτης είναι είτε σε λειτουργία Colector ή Stand-Alone.';
+$GLOBALS["lang"]['A LAN can be connected to a WAN using a router.'] = '.';
 
-$GLOBALS["lang"]['A comma separated list of applicable CVEs.'] = 'Διαχωρισμένος κατάλογος των εφαρμοστέων ΚΕΕ.';
+$GLOBALS["lang"]['A Metropolitan area network (MAN) is a large computer network that usually spans a city or a large campus.'] = 'Ein Metropolitan sah... si (MAN) bir ş... h... r. v... ya böyük bir kampaniya yayşlmşböyük kombüter ş... h... radir.';
 
-$GLOBALS["lang"]['A comma separated list of values, one of which can be selected.'] = 'Μια διαχωρισμένη λίστα τιμών, μία από τις οποίες μπορεί να επιλεγεί.';
+$GLOBALS["lang"]['A Seed discovery uses an initial IP to retrieve the IPs of any other devices it knows about, adds those IPs to the list and scans those - again asking for any IPs those additional devices knows about. Rinse and repeat. It is intelligent enough to know if it has already scanned a given IP in its execution and discards any already scanned (or even on the list to be scanned).'] = 'Имено. Ναι.';
 
-$GLOBALS["lang"]['A command to run. When the agent is Windows based, this command is run from within the powershell agent.'] = 'Μια εντολή για να τρέξει. Όταν ο πράκτορας βασίζεται στα Windows, αυτή η εντολή εκτελείται μέσα από τον παράγοντα powershell.';
+$GLOBALS["lang"]['A Subnet discovery will scan the IPs provided.'] = 'Имено.';
 
-$GLOBALS["lang"]['A list of custom TCP ports to scan (22 is SSH, 135 is WMI, 62078 is iPhone sync).'] = 'Μια λίστα προσαρμοσμένων θυρών TCP για σάρωση (22 είναι SSH, 135 είναι WMI, 62078 είναι συγχρονισμός iPhone).';
+$GLOBALS["lang"]['A URL provided to the agent which will then download the file and store it on the local disk.'] = 'Daha sonra faylşnşyükl (στα Αγγλικά).';
 
-$GLOBALS["lang"]['A list of custom UDP ports to scan (161 is SNMP).'] = 'Μια λίστα με προσαρμοσμένες θύρες UDP για σάρωση (161 είναι SNMP).';
+$GLOBALS["lang"]['A URL to a file to download.'] = 'URL адрес на Yükl...';
 
-$GLOBALS["lang"]['A lower number means it will be applied before other rules.'] = 'Ένας μικρότερος αριθμός σημαίνει ότι θα εφαρμοστεί πριν από άλλους κανόνες.';
+$GLOBALS["lang"]['A backbone network is part of a computer network infrastructure that provides a path for the exchange of information between different LANs or sub-networks. A backbone can tie together diverse networks within the same building, across different buildings, or over a wide area.<br><br>For example, a large company might implement a backbone network to connect departments that are located around the world. The equipment that ties together the departmental networks constitutes the network backbone. When designing a network backbone, network performance and network congestion are critical factors to take into account. Normally, the backbone network capacity is greater than that of the individual networks connected to it.<br><br>Another example of a backbone network is the Internet backbone, which is the set of wide area networks (WANs) and core routers that tie together all networks connected to the Internet.'] = 'Имено.<br/><br/>Имено.<br/><br/>.';
 
-$GLOBALS["lang"]['A lower number means it will be applied before other rules. The default weight is 100.'] = 'Ένας μικρότερος αριθμός σημαίνει ότι θα εφαρμοστεί πριν από άλλους κανόνες. Το προκαθορισμένο βάρος είναι 100.';
+$GLOBALS["lang"]['A calculated field that displays the number of times this piece of software was found on the computers in the selected Org (and its descendants if configured).'] = 'Bu proqram nömr... sinin nömr... sini göst... rdiyi hesablanmşsah... si seçilmiş (στα Αγγλικά). Οργ (ve onun qonaqlaror)';
 
-$GLOBALS["lang"]['A password (stored as a hash) that enables logon when using application authentication.'] = 'Ένας κωδικός πρόσβασης (αποθηκευμένος ως hash) που επιτρέπει το logon όταν χρησιμοποιεί την ταυτοποίηση της εφαρμογής.';
+$GLOBALS["lang"]['A campus area network (CAN) is made up of an interconnection of LANs within a limited geographical area. The networking equipment (switches, routers) and transmission media (optical fiber, copper plant, Cat5 cabling, etc.) are almost entirely owned by the campus tenant / owner (an enterprise, university, government, etc.).<br><br>For example, a university campus network is likely to link a variety of campus buildings to connect academic colleges or departments, the library, and student residence halls.'] = 'Bir kampaniya sah... si (CAN) müxt... lif cografi sah... sind... - Ναι.<br/><br/>Az... rbaycan Respublikas';
 
-$GLOBALS["lang"]['A routing domain or address space where the IP addresses and MAC addresses are unique.'] = 'Ένας χώρος δρομολόγησης ή διεύθυνσης όπου οι διευθύνσεις IP και οι διευθύνσεις MAC είναι μοναδικές.';
+$GLOBALS["lang"]['A closed port is accessible (it receives and responds to Nmap probe packets), but there is no application listening on it. They can be helpful in showing that a host is up on an IP address (host discovery, or ping scanning), and as part of OS detection. Because closed ports are reachable, it may be worth scanning later in case some open up. Administrators may want to consider blocking such ports with a firewall. Then they would appear in the filtered state, discussed next.'] = 'Daxili bir port erişilebilirdir (Nmap provincepackets almaq v Имено.';
 
-$GLOBALS["lang"]['A security zone is a administrative domain or policy domain within the Network Domain.'] = 'Μια ζώνη ασφαλείας είναι ένας διοικητικός τομέας ή τομέας πολιτικής εντός του τομέα δικτύου.';
+$GLOBALS["lang"]['A collector is either in Collector or Stand-Alone mode.'] = '.';
 
-$GLOBALS["lang"]['A short description of the log entry.'] = 'Μια σύντομη περιγραφή της καταχώρησης του ημερολογίου.';
+$GLOBALS["lang"]['A comma separated list of applicable CVEs.'] = 'Xüsusi Βιογραφικά στοιχεία ayrő siyahīsī.';
 
-$GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = 'Μια χορδή που ταιριάζει με την <code>software.name</code> χαρακτηριστικό γνώρισμα. Μπορείτε να χρησιμοποιήσετε το πρότυπο SQL wildcard του ποσοστού (%) για να ταιριάζει με έναν ή περισσότερους χαρακτήρες.';
+$GLOBALS["lang"]['A comma separated list of values, one of which can be selected.'] = '.';
 
-$GLOBALS["lang"]['A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).'] = 'Μια ευπάθεια που επηρεάζει τη διαθεσιμότητα μπορεί να επιτρέψει στους επιτιθέμενους να διαταράξουν τις υπηρεσίες, τα συστήματα συντριβής ή να προκαλέσουν άρνηση υπηρεσίας (DoS) (Κανένα, Χαμηλό, Υψηλό).';
+$GLOBALS["lang"]['A command to run. When the agent is Windows based, this command is run from within the powershell agent.'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).'] = 'Μια ευπάθεια που επηρεάζει το απόρρητο μπορεί να επιτρέψει στους επιτιθέμενους να διαβάσουν ευαίσθητα δεδομένα, όπως προσωπικές πληροφορίες, διαπιστευτήρια, ή ιδιόκτητα επιχειρηματικά δεδομένα (Κανένα, Χαμηλό, Υψηλό).';
+$GLOBALS["lang"]['A dashboard is made up of three columns and two rows of what we call <i>widgets</i>. A widget is very similar to a summary, only we take the summary concept a bit further. Widgets are created in a simple fashion using a couple of drop down boxes - or you can elect to use your own SQL for complete customisability.'] = '. <i>- Да.</i>. Имено.';
 
-$GLOBALS["lang"]['A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).'] = 'Μια ευπάθεια που επηρεάζει την ακεραιότητα μπορεί να επιτρέψει στους επιτιθέμενους να τροποποιήσουν τα δεδομένα, να εγχύσουν κακόβουλο κώδικα, ή να τροποποιήσουν τις ρυθμίσεις του συστήματος (Κανένα, Χαμηλό, Υψηλό).';
+$GLOBALS["lang"]['A filtered port is considered open (and will trigger device detection).'] = 'Не, не.';
 
-$GLOBALS["lang"]['AD Group'] = 'Ομάδα AD';
+$GLOBALS["lang"]['A global area network (GAN) is a network used for supporting mobile across an arbitrary number of wireless LANs, satellite coverage areas, etc. The key challenge in mobile communications is handing off user communications from one local coverage area to the next. In IEEE Project 802, this involves a succession of terrestrial wireless LANs.'] = 'Проект 802-дии, бО, автоматик LANlarţn ugourlu olmasīnő edir.';
 
-$GLOBALS["lang"]['ADSL, HFC, ISDN, etc.'] = 'ADSL, HFC, ISDN, κ.λπ.';
+$GLOBALS["lang"]['A home area network (HAN) is a residential LAN used for communication between digital devices typically deployed in the home, usually a small number of personal computers and accessories, such as printers and mobile computing devices. An important function is the sharing of Internet access, often a broadband service through a cable TV or digital subscriber line (DSL) provider.'] = 'Bir ev sah... si... olunan bir yaşayşLAN, tez- tez v... mobil avadadīq cihazlarşkimi, xüsusi kombüter v... akseuarlarşn kiçik bir sayşr. - Да.';
 
-$GLOBALS["lang"]['AIX'] = 'AIX';
+$GLOBALS["lang"]['A list of custom TCP ports to scan (22 is SSH, 135 is WMI, 62078 is iPhone sync).'] = 'SSH üçün xüsusi TCP portlarşnţn siyahşsţ( 22 SSH, 135 WMI, 62078 iPhone növüdür.';
 
-$GLOBALS["lang"]['ALL IPs'] = 'ΟΛΕΣ οι IPs';
+$GLOBALS["lang"]['A list of custom UDP ports to scan (161 is SNMP).'] = 'Σ';
 
-$GLOBALS["lang"]['API / Web Access'] = 'API / Πρόσβαση στο διαδίκτυο';
+$GLOBALS["lang"]['A local area network (LAN) is a network that connects computers and devices in a limited geographical area such as a home, school, office building, or closely positioned group of buildings. Each computer or device on the network is a node. Wired LANs are most likely based on Ethernet technology. Newer standards such as ITU-T G.hn also provide a way to create a wired LAN using existing wiring, such as coaxial cables, telephone lines, and power lines.<br><br>The defining characteristics of a LAN, in contrast to a wide area network (WAN), include higher data transfer rates, limited geographic range, and lack of reliance on leased lines to provide connectivity. Current Ethernet or other IEEE 802.3LAN technologies operate at data transfer rates up to 100 Gbit/s, standardized by IEEE in 2010. Currently, 400 Gbit/s Ethernet is being developed.'] = 'A yerli sah... si (LAN) ev, uşaq, ofis binaső, v... ya.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['API Documentation'] = 'Τεκμηρίωση API';
+$GLOBALS["lang"]['A location is a physical address that can have devices associated with it. You can assign it coordinates and if there are devices assigned, the location will appear on the Map when you have an Open-AudIT Enterprise license.'] = 'Имено.';
 
-$GLOBALS["lang"]['API Key required.'] = 'Απαιτείται κλειδί API.';
+$GLOBALS["lang"]['A location name will help you to find these devices in the future.'] = '- Да.';
 
-$GLOBALS["lang"]['API Result'] = 'Αποτέλεσμα API';
+$GLOBALS["lang"]['A lower number means it will be applied before other rules.'] = 'Не, не.';
 
-$GLOBALS["lang"]['About'] = 'Σχετικά';
+$GLOBALS["lang"]['A lower number means it will be applied before other rules. The default weight is 100.'] = 'Имено. 100 %';
 
-$GLOBALS["lang"]['Accept'] = 'Αποδοχή';
+$GLOBALS["lang"]['A new user logged in to Open-AudIT and was authenticated and authorized by the LDAP sever. That user was then created in Open-AudIT and logged in. Success.'] = 'Ανοιχτή ακρόαση.';
 
-$GLOBALS["lang"]['access_point'] = 'Σημείο πρόσβασης';
+$GLOBALS["lang"]['A package is a piece of installed softare. A package has a type - antivirus, approved, backup, banned, cloud, firewall, ignored, license or other.'] = 'Имено.';
 
-$GLOBALS["lang"]['Access Point'] = 'Σημείο πρόσβασης';
+$GLOBALS["lang"]['A password (stored as a hash) that enables logon when using application authentication.'] = '.';
 
-$GLOBALS["lang"]['access_token'] = 'Ένδειξη πρόσβασης';
+$GLOBALS["lang"]['A person has an account in the Open-AudIT application. Their user account has a list of associated Roles and Organizations. The roles the user has determines WHAT they can do. The Organizations a user has determines WHICH items they can act upon.<br><br>When a user requests to perform an operation (create, read, update, delete) on a collection item, the roles are consulted to see if they are allowed to perform that action, then the orgs are consulted to determine if the collection item belongs to an org the user has permission to act on.'] = 'Имено.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['Access Token'] = 'Ένδειξη πρόσβασης';
+$GLOBALS["lang"]['A personal area network (PAN) is a computer network used for communication among computer and different information technological devices close to one person. Some examples of devices that are used in a PAN are personal computers, printers, fax machines, telephones, PDAs, scanners, and even video game consoles. A PAN may include wired and wireless devices. The reach of a PAN typically extends to 10 meters. A wired PAN is usually constructed with USB and FireWire connections while technologies such as Bluetooth and infrared communication typically form a wireless PAN.'] = 'Müxt голи К ин';
 
-$GLOBALS["lang"]['ack_by'] = 'Από τον';
+$GLOBALS["lang"]['A query is essentially a SQL statement. This statement is run against the database with the automatic addition of the limit, filtered to apply to only those requested items and only those items the user has permission to view. A Query can be created using menu -> Manage -> Queries -> Create Queries. Queries contain an org_id and are hence restricted to the appropriate users. A user must have the org_admin or reporter role(s) to create, update or delete a query. All users can execute a query. A query has a name attribute used for the menu item as well as a menu category attribute. This tells the Open-Audit GUI which submenu to place the query in. There is also menu display which should be set to <i>y</i> to enable the query in the GUI (<i>n</i> to prevent the query from appearing at all). The query would still run if called using its <code>id</code>, regardless of menu displays value.'] = 'Имено. Γιάντα Σάξα... <i> y</i> .<i> n</i> Имено. <code>id</code>.';
 
-$GLOBALS["lang"]['Ack By'] = 'Από τον';
+$GLOBALS["lang"]['A rack is a collection of devices which are assigned a position and height within the rack. A device can optionally have a picture associated with it. A rack is placed in a row. We have created a very granular system for positioning of racks, which is as follows. At the top level (as always) is the Organisation (Org). An Org can have multiple locations (as has always been the case). With the addition of the Racks feature, a location can now contain one or more Buildings. A building can contain one or more Floors. A floor can contain one or more Rooms. A room can contain one or more Rows. This sounds like a lot of work, but defaults are created for you. Create a new Location and the sub-components will be automatically created for you. If you need more items (buildings, rooms, etc) you can add them as you like. A rack can also be part of a <i>pod</i> of racks. The pod attribute works as a tag, rather than a strict hierarchical inheritance model as per buildings, floors, etc.<br><br>Racks are a feature available to Open-AudIT Enterprise licensed customers.'] = 'Имено. Üst s поviyyyytd (στα Αγγλικά). Имено. <i>Капсула.</i> .<br/><br/>Raflar Open- Audit Enterprise lisenziyalar mövcudur. (στα Αγγλικά).';
 
-$GLOBALS["lang"]['ack_date'] = 'Ημερομηνία Ack';
+$GLOBALS["lang"]['A routing domain or address space where the IP addresses and MAC addresses are unique.'] = 'IP nünvanlar MAC adresl... rinin unikaal olduğu yrl... şdirici domen ad';
 
-$GLOBALS["lang"]['Ack Date'] = 'Ημερομηνία Ack';
+$GLOBALS["lang"]['A sample cron file for Linux is below. This should be placed in'] = '.';
 
-$GLOBALS["lang"]['ack_time'] = 'Ώρα Ack';
+$GLOBALS["lang"]['A security zone is a administrative domain or policy domain within the Network Domain.'] = 'Bir t... hlük... sizlik zonaső A';
 
-$GLOBALS["lang"]['Ack Time'] = 'Ώρα Ack';
+$GLOBALS["lang"]['A seed discovery is another type of discovery, where you provide the IP of a single <i>seed</i> device. This device is audited, and any IPs it knows are then added to the list of IPs to be audited. Then, those devices are audited and any IPs they know are also added to the list of IPs for auditing. This process then continues within the parameters configured by the user.'] = '- Да. <i>- Да.</i> Имено.';
 
-$GLOBALS["lang"]['action'] = 'Δράση';
+$GLOBALS["lang"]['A short description of the log entry.'] = '.';
 
-$GLOBALS["lang"]['Action'] = 'Δράση';
+$GLOBALS["lang"]['A storage area network (SAN) is a dedicated network that provides access to consolidated, block level data storage. SANs are primarily used to make storage devices, such as disk arrays, tape libraries, and optical jukeboxes, accessible to servers so that the devices appear like locally attached devices to the operating system. A SAN typically has its own network of storage devices that are generally not accessible through the local area network by other devices. The cost and complexity of SANs dropped in the early 2000s to levels allowing wider adoption across both enterprise and small to medium-sized business environments.'] = 'Yadda saxla готварски год.';
 
-$GLOBALS["lang"]['action_audit'] = 'Έλεγχος δράσης';
+$GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = '. <code>software.name</code> .';
 
-$GLOBALS["lang"]['Action Audit'] = 'Έλεγχος δράσης';
+$GLOBALS["lang"]['A structured system for managing sensitive information'] = 'Не, не.';
 
-$GLOBALS["lang"]['action_command'] = 'Εντολή ενέργειας';
+$GLOBALS["lang"]['A timestamp.'] = '- Не, не.';
 
-$GLOBALS["lang"]['Action Command'] = 'Εντολή ενέργειας';
+$GLOBALS["lang"]['A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users <i>orgs</i> and <i>roles</i> define what they can and cannot do within Open-AudIT.'] = 'Имено. <i>.</i> Κεϊντιγιάτ <i>.</i> .';
 
-$GLOBALS["lang"]['action_date'] = 'Ημερομηνία δράσης';
+$GLOBALS["lang"]['A user will have a list of associated organizations (orgs). Each org the user has will allow them to act upon items within that org as per their role(s).<br><br>All orgs except the default org have a parent. Think of an Org Chart. If a user has permission on an Org, they also have permission on any descendants of that Org.<br><br>Users are also allowed permission on a child org to see the items from parent orgs for certain collections. Those are: dashboards, discovery_scan_options, fields, files, groups, queries, reports, roles, rules, scripts, summaries, widgets.<br><br>Do not forget you have granular control over what users can see and do using Roles in Enterprise.'] = 'Имено.<br/><br/> гонката, която е по-голяма отова, което се случва.<br/><br/>"""""""" """ """""""" " """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""<br/><br/>.';
 
-$GLOBALS["lang"]['Action Date'] = 'Ημερομηνία δράσης';
+$GLOBALS["lang"]['A user will have a list of associated organizations (orgs). Each org the user has will allow them to act upon items within that org as per their role(s).<br><br>All orgs except the default org have a parent. Think of an Org Chart. If a user has permission on an Org, they also have permission on any descendants of that Org.<br><br>We have also allow a user with permission on a child org to see the items from parent orgs for certain collections. Those are: dashboards, discovery_scan_options, fields, files, groups, queries, roles, rules, scripts, summaries, widgets.<br><br>Do not forget you have granular control over what users can see and do using'] = 'Имено.<br/><br/> гонката, която е по-голяма отова, което се случва.<br/><br/>Въпреки това, това може да се случи, ако не е въ<br/><br/>.';
 
-$GLOBALS["lang"]['action_devices_assigned_to_location'] = 'Διατάξεις δράσης για την τοποθεσία';
+$GLOBALS["lang"]['A virtual private network (VPN) is an overlay network in which some of the links between nodes are carried by open connections or virtual circuits in some larger network (e.g., the Internet) instead of by physical wires. The data link layer protocols of the virtual network are said to be tunneled through the larger network when this is the case. One common application is secure communications through the public Internet, but a VPN need not have explicit security features, such as authentication or content encryption. VPNs, for example, can be used to separate the traffic of different user communities over an underlying network with strong security features.<br><br>VPN may have best-effort performance, or may have a defined service level agreement (SLA) between the VPN customer and the VPN service provider. Generally, a VPN has a topology more complex than point-to-point.'] = 'Bir virtual xüsusi şготварски (VPN) nömr год. виртуална връзка междедвете страни. Имено.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['Action Devices Assigned To Location'] = 'Διατάξεις δράσης για την τοποθεσία';
+$GLOBALS["lang"]['A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).'] = '.';
 
-$GLOBALS["lang"]['action_devices_assigned_to_org'] = 'Συσκευές δράσης που έχουν ανατεθεί στον Οργανισμό';
+$GLOBALS["lang"]['A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).'] = '.';
 
-$GLOBALS["lang"]['Action Devices Assigned To Org'] = 'Συσκευές δράσης που έχουν ανατεθεί στον Οργανισμό';
+$GLOBALS["lang"]['A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).'] = 'Bütün hüquqlarzania qorunur (στα Αγγλικά).';
 
-$GLOBALS["lang"]['action_download'] = 'Λήψη ενέργειας';
+$GLOBALS["lang"]['A vulnerability can be editied and more specific package names provided where the enrichment data is insufficient or the generated SQL is not quite correct.'] = 'Bir çatīşmazlişd... st... kl... dirilmişv... daha xüsusi paketi adlarşnīd... st... kl... y...';
 
-$GLOBALS["lang"]['Action Download'] = 'Λήψη ενέργειας';
+$GLOBALS["lang"]['A vulnerability item in Open-AudIT can be thought of as essentially a query against your database to determine your potential exposure to a given CVE report. A vulnerability is made up of the CVE report, along with enrichment data from FirstWave. These two items are combined to produce a suitable query that is automatically downloaded from FirstWave.'] = ' - Όχι.';
 
-$GLOBALS["lang"]['action_uninstall'] = 'Απεγκατάσταση ενέργειας';
+$GLOBALS["lang"]['A wide area network (WAN) is a computer network that covers a large geographic area such as a city, country, or spans even intercontinental distances. A WAN uses a communications channel that combines many types of media such as telephone lines, cables, and air waves. A WAN often makes use of transmission facilities provided by common carriers, such as telephone companies. WAN technologies generally function at the lower three layers of the OSI reference model: the physical layer, the data link layer, and the network layer.'] = 'Genişsah... αμαρτία ş... h... ri (WAN) bir ş... h... r, ölk... ölk..., ölk..., v... ya s... naye s... viyry... ri kimi böyük coigrafi sah... sind... bir kombüter ş... h... Bir WAN telefon xüsusiyyyyyyyyyyyyyyyyy... tl... ri, kabell... ri birl... şdir... n bir kommpüter kanal istifad... edir. Имено.';
 
-$GLOBALS["lang"]['Action Uninstall'] = 'Απεγκατάσταση ενέργειας';
+$GLOBALS["lang"]['AD Group'] = 'Група AD (στα Αγγλικά).';
 
-$GLOBALS["lang"]['actioned'] = 'Ενεργήθηκε';
+$GLOBALS["lang"]['ADSL, HFC, ISDN, etc.'] = 'ADSL, HFC, ISDN, s.';
 
-$GLOBALS["lang"]['Actioned'] = 'Ενεργήθηκε';
+$GLOBALS["lang"]['AIX'] = 'Калерея.';
 
-$GLOBALS["lang"]['actioned_by'] = 'Ενεργοποιήθηκε από';
+$GLOBALS["lang"]['ALL IPs'] = '.';
 
-$GLOBALS["lang"]['Actioned By'] = 'Ενεργοποιήθηκε από';
+$GLOBALS["lang"]['API / Web Access'] = 'ДостъК API / διαδίκτυο';
 
-$GLOBALS["lang"]['actioned_date'] = 'Ημερομηνία ενέργειας';
+$GLOBALS["lang"]['API Documentation'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Actioned Date'] = 'Ημερομηνία ενέργειας';
+$GLOBALS["lang"]['API Key required.'] = '- Да.';
 
-$GLOBALS["lang"]['actions'] = 'Δράσεις';
+$GLOBALS["lang"]['API Result'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Actions'] = 'Δράσεις';
+$GLOBALS["lang"]['About'] = '- Да.';
 
-$GLOBALS["lang"]['Activate'] = 'Ενεργοποίηση';
+$GLOBALS["lang"]['Above are the only required items.'] = '.';
 
-$GLOBALS["lang"]['Activate Free License'] = 'Ενεργοποίηση δωρεάν άδειας';
+$GLOBALS["lang"]['Accept'] = '- Да.';
 
-$GLOBALS["lang"]['Activate Key'] = 'Ενεργοποίηση κλειδιού';
+$GLOBALS["lang"]['Access Model'] = '.';
 
-$GLOBALS["lang"]['Activate a free Enterprise license'] = 'Ενεργοποίηση δωρεάν άδειας Enterprise';
+$GLOBALS["lang"]['access_point'] = '- Да.';
 
-$GLOBALS["lang"]['Active'] = 'Ενεργό';
+$GLOBALS["lang"]['Access Point'] = '- Да.';
 
-$GLOBALS["lang"]['Active / Active'] = 'Ενεργό / ενεργό';
+$GLOBALS["lang"]['access_token'] = 'Достъ К дотокен Достъ.';
 
-$GLOBALS["lang"]['Active / Passive'] = 'Ενεργό / παθητικό';
+$GLOBALS["lang"]['Access Token'] = 'Достъ К дотокен Достъ.';
 
-$GLOBALS["lang"]['Active Directory'] = 'Ενεργός κατάλογος';
+$GLOBALS["lang"]['Access to the admin$ share and RPC uses the SMB2 protocol.'] = 'Διαχειριστής $payşv... RPC girişSMB2 protokol istifad... Έντιρε.';
 
-$GLOBALS["lang"]['Active Directory Domain'] = 'Ενεργός τομέας καταλόγου';
+$GLOBALS["lang"]['ack_by'] = 'Ακκ';
 
-$GLOBALS["lang"]['active_directory_ou'] = 'Ενεργός κατάλογος Ou';
+$GLOBALS["lang"]['Ack By'] = 'Ακκ';
 
-$GLOBALS["lang"]['Active Directory Ou'] = 'Ενεργός κατάλογος Ou';
+$GLOBALS["lang"]['ack_date'] = 'Ack Ταρίξι';
 
-$GLOBALS["lang"]['Active Directory Server'] = 'Ενεργός εξυπηρετητής καταλόγου';
+$GLOBALS["lang"]['Ack Date'] = 'Ack Ταρίξι';
 
-$GLOBALS["lang"]['ad_domain'] = 'Τομέας διαφημίσεων';
+$GLOBALS["lang"]['ack_time'] = 'Ακκ Βάξτ';
 
-$GLOBALS["lang"]['Ad Domain'] = 'Τομέας διαφημίσεων';
+$GLOBALS["lang"]['Ack Time'] = 'Ακκ Βάξτ';
 
-$GLOBALS["lang"]['ad_group'] = 'Ομάδα ad';
+$GLOBALS["lang"]['action'] = 'Не, не.';
 
-$GLOBALS["lang"]['Ad Group'] = 'Ομάδα ad';
+$GLOBALS["lang"]['Action'] = 'Не, не.';
 
-$GLOBALS["lang"]['ad_server'] = 'Διακομιστής διαφημίσεων';
+$GLOBALS["lang"]['action_audit'] = 'Не, не.';
 
-$GLOBALS["lang"]['Ad Server'] = 'Διακομιστής διαφημίσεων';
+$GLOBALS["lang"]['Action Audit'] = 'Не, не.';
 
-$GLOBALS["lang"]['Add'] = 'Προσθήκη';
+$GLOBALS["lang"]['action_command'] = '- Не, не.';
 
-$GLOBALS["lang"]['Add Credentials'] = 'Προσθήκη πληροφοριών';
+$GLOBALS["lang"]['Action Command'] = '- Не, не.';
 
-$GLOBALS["lang"]['Add Device'] = 'Προσθήκη συσκευής';
+$GLOBALS["lang"]['action_date'] = 'Не, не.';
 
-$GLOBALS["lang"]['Add Device to Application'] = 'Προσθήκη συσκευής στην εφαρμογή';
+$GLOBALS["lang"]['Action Date'] = 'Не, не.';
 
-$GLOBALS["lang"]['Add Device to Cluster'] = 'Προσθήκη συσκευής στη συστάδα';
+$GLOBALS["lang"]['action_devices_assigned_to_location'] = 'Имено.';
 
-$GLOBALS["lang"]['Add Exception'] = 'Προσθήκη εξαίρεσης';
+$GLOBALS["lang"]['Action Devices Assigned To Location'] = 'Имено.';
 
-$GLOBALS["lang"]['Add Field'] = 'Προσθήκη πεδίου';
+$GLOBALS["lang"]['action_devices_assigned_to_org'] = 'Не, не.';
 
-$GLOBALS["lang"]['Add If'] = 'Προσθήκη αν';
+$GLOBALS["lang"]['Action Devices Assigned To Org'] = 'Не, не.';
 
-$GLOBALS["lang"]['Add Policies from Device'] = 'Προσθήκη πολιτικών από τη συσκευή';
+$GLOBALS["lang"]['action_download'] = '.';
 
-$GLOBALS["lang"]['Add Policy'] = 'Προσθήκη πολιτικής';
+$GLOBALS["lang"]['Action Download'] = '.';
 
-$GLOBALS["lang"]['Add Then'] = 'Προσθήκη στη συνέχεια';
+$GLOBALS["lang"]['action_uninstall'] = 'Не не. italyprovince. kg';
 
-$GLOBALS["lang"]['Add image'] = 'Προσθήκη εικόνας';
+$GLOBALS["lang"]['Action Uninstall'] = 'Не не. italyprovince. kg';
 
-$GLOBALS["lang"]['additional_items'] = 'Πρόσθετα αντικείμενα';
+$GLOBALS["lang"]['actioned'] = '.';
 
-$GLOBALS["lang"]['Additional Items'] = 'Πρόσθετα αντικείμενα';
+$GLOBALS["lang"]['Actioned'] = '.';
 
-$GLOBALS["lang"]['address'] = 'Διεύθυνση';
+$GLOBALS["lang"]['actioned_by'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Address'] = 'Διεύθυνση';
+$GLOBALS["lang"]['Actioned By'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Admin'] = 'Διαχειριστής';
+$GLOBALS["lang"]['actioned_date'] = '- Да.';
 
-$GLOBALS["lang"]['admin_status'] = 'Κατάσταση διαχειριστή';
+$GLOBALS["lang"]['Actioned Date'] = '- Да.';
 
-$GLOBALS["lang"]['Admin Status'] = 'Κατάσταση διαχειριστή';
+$GLOBALS["lang"]['actions'] = '- Не, не.';
 
-$GLOBALS["lang"]['advanced'] = 'Προχωρημένα';
+$GLOBALS["lang"]['Actions'] = '- Не, не.';
 
-$GLOBALS["lang"]['Advanced'] = 'Προχωρημένα';
+$GLOBALS["lang"]['Activate'] = '- Да.';
 
-$GLOBALS["lang"]['Afghanistan'] = 'Αφγανιστάν';
+$GLOBALS["lang"]['Activate Free License'] = '- Да.';
 
-$GLOBALS["lang"]['agents'] = 'Πράκτορες';
+$GLOBALS["lang"]['Activate Key'] = '.';
 
-$GLOBALS["lang"]['Agents'] = 'Πράκτορες';
+$GLOBALS["lang"]['Activate a free Enterprise license'] = '.';
 
-$GLOBALS["lang"]['Aggressive'] = 'Επιθετική';
+$GLOBALS["lang"]['Active'] = '- Да.';
 
-$GLOBALS["lang"]['Aland Islands'] = 'Νήσοι Άλαντ';
+$GLOBALS["lang"]['Active / Active'] = '.';
 
-$GLOBALS["lang"]['Albania'] = 'Αλβανία';
+$GLOBALS["lang"]['Active / Passive'] = '.';
 
-$GLOBALS["lang"]['alert_style'] = 'Στυλ ειδοποίησης';
+$GLOBALS["lang"]['Active Directory'] = '- Да.';
 
-$GLOBALS["lang"]['Alert Style'] = 'Στυλ ειδοποίησης';
+$GLOBALS["lang"]['Active Directory Domain'] = 'Имено.';
 
-$GLOBALS["lang"]['Algeria'] = 'Αλγερία';
+$GLOBALS["lang"]['active_directory_ou'] = '- Да.';
 
-$GLOBALS["lang"]['algorithm'] = 'Αλγόριθμος';
+$GLOBALS["lang"]['Active Directory Ou'] = '- Да.';
 
-$GLOBALS["lang"]['Algorithm'] = 'Αλγόριθμος';
+$GLOBALS["lang"]['Active Directory Server'] = '.';
 
-$GLOBALS["lang"]['alias'] = 'Ψευδώνυμο';
+$GLOBALS["lang"]['Active Directory and OpenLDAP'] = '- Да.';
 
-$GLOBALS["lang"]['Alias'] = 'Ψευδώνυμο';
+$GLOBALS["lang"]['ad_domain'] = 'Адсояд.';
 
-$GLOBALS["lang"]['All'] = 'Όλα';
+$GLOBALS["lang"]['Ad Domain'] = 'Адсояд.';
 
-$GLOBALS["lang"]['All IPs'] = 'Όλες οι IPs';
+$GLOBALS["lang"]['ad_group'] = '.';
 
-$GLOBALS["lang"]['All Policies'] = 'Όλες οι πολιτικές';
+$GLOBALS["lang"]['Ad Group'] = '.';
 
-$GLOBALS["lang"]['All Queued Items'] = 'Όλα τα αντικείμενα σε αναμονή';
+$GLOBALS["lang"]['ad_server'] = 'Адсояд.';
 
-$GLOBALS["lang"]['Amazon AWS Fields'] = 'Αμαζόνιο AWS Πεδία';
+$GLOBALS["lang"]['Ad Server'] = 'Адсояд.';
 
-$GLOBALS["lang"]['American Samoa'] = 'Αμερικανική Σαμόα';
+$GLOBALS["lang"]['Add'] = '.';
 
-$GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = 'Μια σειρά από <code>benchmarks.id</code>.';
+$GLOBALS["lang"]['Add Credentials'] = '- Да.';
 
-$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = 'Μια σειρά από <code>devices.id</code>.';
+$GLOBALS["lang"]['Add Device'] = '.';
 
-$GLOBALS["lang"]['An array of object representing external links to more information.'] = 'Μια σειρά αντικειμένων που αναπαριστούν εξωτερικούς συνδέσμους σε περισσότερες πληροφορίες.';
+$GLOBALS["lang"]['Add Device to Application'] = '.';
 
-$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = 'Ένα κρυπτογραφημένο έγγραφο JSON που περιέχει τα απαιτούμενα χαρακτηριστικά ανάλογα με το <code>credentials.type</code>.';
+$GLOBALS["lang"]['Add Device to Cluster'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['An indication of the level of service required by this site.'] = 'Μια ένδειξη του επιπέδου υπηρεσίας που απαιτείται από αυτόν τον ιστότοπο.';
+$GLOBALS["lang"]['Add Exception'] = '- Да.';
 
-$GLOBALS["lang"]['An internal field that indicates if the discovery has completed.'] = 'Ένα εσωτερικό πεδίο που δείχνει αν η ανακάλυψη έχει ολοκληρωθεί.';
+$GLOBALS["lang"]['Add Field'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['An optional GeoCode'] = 'Ένα προαιρετικό GeoCode';
+$GLOBALS["lang"]['Add If'] = '.';
 
-$GLOBALS["lang"]['An optional password to use sudo.'] = 'Ένας προαιρετικός κωδικός πρόσβασης για χρήση sudo.';
+$GLOBALS["lang"]['Add Policies from Device'] = '- Да.';
 
-$GLOBALS["lang"]['Andorra'] = 'Ανδόρα';
+$GLOBALS["lang"]['Add Policy'] = '- Да.';
 
-$GLOBALS["lang"]['Angola'] = 'Αγκόλα';
+$GLOBALS["lang"]['Add Then'] = '.';
 
-$GLOBALS["lang"]['Anguilla'] = 'Ανγκουίλα';
+$GLOBALS["lang"]['Add Your Credentials'] = '.';
 
-$GLOBALS["lang"]['Antarctica'] = 'Ανταρκτική';
+$GLOBALS["lang"]['Add image'] = '- Да.';
 
-$GLOBALS["lang"]['AntiVirus'] = 'Αντιιοί';
+$GLOBALS["lang"]['additional_items'] = '.';
 
-$GLOBALS["lang"]['Antigua and Barbuda'] = 'Αντίγκουα και Μπαρμπούντα';
+$GLOBALS["lang"]['Additional Items'] = '.';
 
-$GLOBALS["lang"]['Antivirus'] = 'Αντιιοί';
+$GLOBALS["lang"]['address'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = 'Οποιαδήποτε θύρα TCP (κόμμα διαχωρίζεται, δεν υπάρχουν κενά) επιθυμείτε να αποκλείσετε από αυτή την ανακάλυψη. Διατίθεται μόνο όταν χρησιμοποιείται το Nmap 7+.';
+$GLOBALS["lang"]['Address'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = 'Οποιεσδήποτε θύρες UDP (κόμμα χωρισμένα, χωρίς κενά) επιθυμείτε να αποκλείσετε από αυτή την ανακάλυψη. Διατίθεται μόνο όταν χρησιμοποιείται το Nmap 7+.';
+$GLOBALS["lang"]['Address any nonconformities'] = '.';
 
-$GLOBALS["lang"]['Any additional documentation you need.'] = 'Οποιαδήποτε επιπλέον τεκμηρίωση χρειάζεστε.';
+$GLOBALS["lang"]['Address audit findings and corrective actions'] = 'Имено.';
 
-$GLOBALS["lang"]['Any additional notes you care to make.'] = 'Οποιαδήποτε επιπλέον σημειώσεις θέλεις να κάνεις.';
+$GLOBALS["lang"]['Admin'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.'] = 'Οποιεσδήποτε συσκευές θα ανατεθούν σε αυτόν τον Οργανισμό όταν εκτελέσουν το σενάριο ελέγχου τους (αν είναι καθορισμένο). Συνδέσεις <code>orgs.id</code>.';
+$GLOBALS["lang"]['admin_status'] = '- Да.';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.'] = 'Οποιαδήποτε ανακαλυφθείσα συσκευή θα ανατεθεί σε αυτή την τοποθεσία, αν οριστεί. Συνδέσεις <code>locations.id</code>.';
+$GLOBALS["lang"]['Admin Status'] = '- Да.';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.'] = 'Οποιεσδήποτε συσκευές που ανακαλύφθηκαν θα ανατεθούν σε αυτήν την Τοποθεσία όταν εκτελέσουν το σενάριο ελέγχου τους (αν είναι σετ). Συνδέσεις <code>locations.id</code>.';
+$GLOBALS["lang"]['advanced'] = 'Не, не.';
 
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.'] = 'Οποιαδήποτε ανακαλυφθεί συσκευή θα ανατεθεί σε αυτόν τον Οργ αν οριστεί. Εάν δεν έχουν οριστεί, έχουν ανατεθεί στην <code>org_id</code> αυτής της ανακάλυψης. Συνδέσεις <code>orgs.id</code>.';
+$GLOBALS["lang"]['Advanced'] = 'Не, не.';
 
-$GLOBALS["lang"]['Any required filter. NOTE: When type = traffic, this represents the font-awesome icon.'] = 'Κάθε απαιτούμενο φίλτρο. ΣΗΜΕΙΩΣΗ: Όταν ο τύπος = κυκλοφορία, αυτό αντιπροσωπεύει το εικονίδιο γραμματοσειράς-απίστευτο.';
+$GLOBALS["lang"]['Afghanistan'] = '- Да.';
 
-$GLOBALS["lang"]['Any specific TCP ports you wish tested (comma seperated, no spaces).'] = 'Οποιεσδήποτε συγκεκριμένες θύρες TCP επιθυμείτε δοκιμασμένες (κόμμα χωριστά, χωρίς κενά).';
+$GLOBALS["lang"]['After an Integration has been created, when you view the details of an Integration you will notice a field named Debug. This is set to no by default. Changing it to yes provides extra logging when an Integration is executed. Debug should not be left as yes. This is because the debug output will contain everything retrieved from external systems - including items such as WMI and SNMP credentials. The debug option should be used only when an issue has occurred and you wish to dig deeper in to see if you can determine why.'] = 'Имено.';
 
-$GLOBALS["lang"]['Any specific UDP ports you wish tested (comma seperated, no spaces).'] = 'Οποιεσδήποτε συγκεκριμένες θύρες UDP επιθυμείτε δοκιμαστεί (κόμμα χωρισμένο, χωρίς κενά).';
+$GLOBALS["lang"]['After completing the above, uninstall the agent.'] = 'Не, не.';
 
-$GLOBALS["lang"]['Application'] = 'Εφαρμογή';
+$GLOBALS["lang"]['Agent? Discovery? Credentials?'] = '- Да.';
 
-$GLOBALS["lang"]['application_id'] = 'ID εφαρμογής';
+$GLOBALS["lang"]['agents'] = '- Да.';
 
-$GLOBALS["lang"]['Application ID'] = 'ID εφαρμογής';
+$GLOBALS["lang"]['Agents'] = '- Да.';
 
-$GLOBALS["lang"]['Application Licenses'] = 'Άδειες εφαρμογής';
+$GLOBALS["lang"]['Agents entries can be created that specify a duration, a network and an operating system. If all tests match, the server then asks the agent to perform actions. If any test is not set, it is excluded from the <i>all must match</i> requirement.<br><br>You can create multiple agents and have the server check one or all agent entries. You might (for example) specify one agent that says <i>If the agent IP is in this subnet, set the location_id of the device</i>.<br><br>Another example might be not running an audit at all, rather download a script and run it. If the agent is installed with admin rights, you can now manage your machines without opening <strong>any</strong> ports from it to the world.</p><p>Enabling advanced agents means an agent can be instructed to download any file and execute any command. <strong>WARNING</strong>: This comes with security risks. This configuration will <strong>only</strong> function when running Open-AudIT using HTTPS and a valid (Certificate Authority provided) certificate for '] = 'Имено. <i>.</i> - Да.<br/><br/>Имено. <i>.</i>.<br/><br/> да го направим, да го направим. <strong>.</strong> - Да.<p>. <strong>- Да.</strong>. <strong>.</strong> Имено. </p>';
 
-$GLOBALS["lang"]['Application, Operating System or Hardware.'] = 'Εφαρμογή, Λειτουργικό Σύστημα ή Υλικό.';
+$GLOBALS["lang"]['Aggressive'] = 'Не, не.';
 
-$GLOBALS["lang"]['applications'] = 'Αιτήσεις';
+$GLOBALS["lang"]['Aland Islands'] = '.';
 
-$GLOBALS["lang"]['Applications'] = 'Αιτήσεις';
+$GLOBALS["lang"]['Albania'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['applied'] = 'Εφαρμόζεται';
+$GLOBALS["lang"]['Albanian'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Applied'] = 'Εφαρμόζεται';
+$GLOBALS["lang"]['alert_style'] = 'Адсояд.';
 
-$GLOBALS["lang"]['Approved'] = 'Εγκεκριμένο';
+$GLOBALS["lang"]['Alert Style'] = 'Адсояд.';
 
-$GLOBALS["lang"]['April'] = 'Απρίλιος';
+$GLOBALS["lang"]['Algeria'] = '- Да.';
 
-$GLOBALS["lang"]['architecture'] = 'Αρχιτεκτονική';
+$GLOBALS["lang"]['algorithm'] = ' Алгистана Алги.';
 
-$GLOBALS["lang"]['Architecture'] = 'Αρχιτεκτονική';
+$GLOBALS["lang"]['Algorithm'] = ' Алгистана Алги.';
 
-$GLOBALS["lang"]['Are you sure you want to delete this input item?'] = 'Επιθυμείτε σίγουρα τη διαγραφή αυτού του αντικειμένου εισόδου;';
+$GLOBALS["lang"]['alias'] = 'ΣΑΛΑ';
 
-$GLOBALS["lang"]['Are you sure you want to delete this output item?'] = 'Επιθυμείτε σίγουρα τη διαγραφή αυτού του αντικειμένου εξόδου;';
+$GLOBALS["lang"]['Alias'] = 'ΣΑΛΑ';
 
-$GLOBALS["lang"]['Are you sure? This will remove all queue entries and prevent the remaining IPs from being discovered.'] = 'Είσαι σίγουρος; Αυτό θα αφαιρέσει όλες τις καταχωρήσεις στην ουρά και θα αποτρέψει την ανακάλυψη των υπόλοιπων IP.';
+$GLOBALS["lang"]['All'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Are you sure? This will reset the queue processing count and could cause load on the server.'] = 'Είσαι σίγουρος; Αυτό θα επαναφέρει τον αριθμό επεξεργασίας ουράς και θα μπορούσε να προκαλέσει φορτίο στον εξυπηρετητή.';
+$GLOBALS["lang"]['All IPs'] = '.';
 
-$GLOBALS["lang"]['area'] = 'Περιοχή';
+$GLOBALS["lang"]['All Policies'] = '.';
 
-$GLOBALS["lang"]['Area'] = 'Περιοχή';
+$GLOBALS["lang"]['All Queued Items'] = 'Тра';
 
-$GLOBALS["lang"]['Argentina'] = 'Αργεντινή';
+$GLOBALS["lang"]['All collections URLs use the format'] = '.';
 
-$GLOBALS["lang"]['Armenia'] = 'Αρμενία';
+$GLOBALS["lang"]['All device sub-tables contain a couple of important columns.'] = '.';
 
-$GLOBALS["lang"]['arp'] = 'Αρπ';
+$GLOBALS["lang"]['All devices with a type like computer.'] = '.';
 
-$GLOBALS["lang"]['Arp'] = 'Αρπ';
+$GLOBALS["lang"]['All devices with a type of computer or router.'] = '.';
 
-$GLOBALS["lang"]['Aruba'] = 'Αρούμπα';
+$GLOBALS["lang"]['All devices without a type of switch and printer.'] = '.';
 
-$GLOBALS["lang"]['As per the attributes for device environments. Production, Training, et al.'] = 'Σύμφωνα με τα χαρακτηριστικά για περιβάλλοντα συσκευών. Παραγωγή, Κατάρτιση, κ.ά.';
+$GLOBALS["lang"]['All devices without a type of switch and printer. Essentially the same as the above query.'] = '- Да.';
 
-$GLOBALS["lang"]['As you have Collectors registered, please choose where to execute this discovery.'] = 'Καθώς έχετε τους συλλέκτες εγγεγραμμένους, παρακαλώ επιλέξτε πού θα εκτελέσετε αυτή την ανακάλυψη.';
+$GLOBALS["lang"]['All regular discovery options are also available for use in Device Seed Discoveries.'] = '.';
 
-$GLOBALS["lang"]['Ask me later'] = 'Ρώτα με αργότερα.';
+$GLOBALS["lang"]['All tasks can be created the same in Windows and Linux. Tasks use the CRON method for scheduling execution.'] = 'Имено.';
 
-$GLOBALS["lang"]['Ask the Community for help or contribute answers for others.'] = 'Ζητήστε βοήθεια από την Κοινότητα ή απαντήστε στους άλλους.';
+$GLOBALS["lang"]['Along with this request for information, we send back to FirstWave datapoints that will give us some much needed information on feature use and your installation.'] = '.';
 
-$GLOBALS["lang"]['aspect_ratio'] = 'Αναλογία διαστάσεων';
+$GLOBALS["lang"]['Also can be created from the'] = '.';
 
-$GLOBALS["lang"]['Aspect Ratio'] = 'Αναλογία διαστάσεων';
+$GLOBALS["lang"]['Alternatives'] = '- Не, не.';
 
-$GLOBALS["lang"]['Asset ID'] = 'Στοιχεία ενεργητικού';
+$GLOBALS["lang"]['Amazon AWS Fields'] = 'AWS год.';
 
-$GLOBALS["lang"]['asset_ident'] = 'Στοιχεία ενεργητικού';
+$GLOBALS["lang"]['American Samoa'] = 'Не, не.';
 
-$GLOBALS["lang"]['Asset Ident'] = 'Στοιχεία ενεργητικού';
+$GLOBALS["lang"]['An Active Directory discovery will query Active Directory for a list of networks and scan the associated IPs just like a regular Subnet discovery.'] = '- Да.';
 
-$GLOBALS["lang"]['asset_number'] = 'Αριθμός ενεργητικού';
+$GLOBALS["lang"]['An Org (organization) is the owner of most items in collections within Open-AudIT. With the exception of global items like <i>configuration</i>, most items are assigned to (owned by) an Org. A user has access to those items in a collection, that below to an Org the user has permission on.'] = 'Оря (организия) (στα Αγγλικά). Open-Audit - da kolleksiyalarda ......... <i>- Да.</i>.';
 
-$GLOBALS["lang"]['Asset Number'] = 'Αριθμός ενεργητικού';
+$GLOBALS["lang"]['An application is actively accepting TCP connections, UDP datagrams or SCTP associations on this port. Finding these is often the primary goal of port scanning. Security-minded people know that each open port is an avenue for attack. Attackers and pen-testers want to exploit the open ports, while administrators try to close or protect them with firewalls without thwarting legitimate users. Open ports are also interesting for non-security scans because they show services available for use on the network.'] = 'UDP datagramlar Имено.';
 
-$GLOBALS["lang"]['asset_tag'] = 'Ετικέτα περιουσιακού στοιχείου';
+$GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = '. <code>benchmarks.id</code>.';
 
-$GLOBALS["lang"]['Asset Tag'] = 'Ετικέτα περιουσιακού στοιχείου';
+$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = '. <code>devices.id</code>.';
 
-$GLOBALS["lang"]['Assign Device to Application'] = 'Ορισμός συσκευής σε εφαρμογή';
+$GLOBALS["lang"]['An array of object representing external links to more information.'] = '.';
 
-$GLOBALS["lang"]['Assign Device to Cluster'] = 'Ορισμός συσκευής στη συστάδα';
+$GLOBALS["lang"]['An educated guess to the identity and type of device'] = '- Да.';
 
-$GLOBALS["lang"]['Assign Device to Location'] = 'Ορισμός συσκευής στην τοποθεσία';
+$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = '. JSON nümayişi <code>credentials.type</code>.';
 
-$GLOBALS["lang"]['Assign Device to Organisation'] = 'Ορισμός συσκευής για την οργάνωση';
+$GLOBALS["lang"]['An enterprise private network is a network that a single organization builds to interconnect its office locations (e.g., production sites, head offices, remote offices, shops) so they can share computer resources.'] = '.';
 
-$GLOBALS["lang"]['Assign Devices to Location'] = 'Ορισμός συσκευών στην τοποθεσία';
+$GLOBALS["lang"]['An entry can be created using the web interface if the current user logged in has a role that contains the'] = '- Да.';
 
-$GLOBALS["lang"]['Assign Devices to Organisation'] = 'Ορισμός συσκευών στην οργάνωση';
+$GLOBALS["lang"]['An example JSON POST body is below. This should be attached to the &quot;data&quot; form item.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Assign an Operator'] = 'Ορισμός φορέα εκμετάλλευσης';
+$GLOBALS["lang"]['An example widget SQL showing devices counted per location.'] = '.';
 
-$GLOBALS["lang"]['Assigned To'] = 'Ανατέθηκε σε';
+$GLOBALS["lang"]['An existing Open-AudIT user was authenticated and authorized by the LDAP server. Success.'] = '- Да.';
 
-$GLOBALS["lang"]['At present we can use netstat_ports, software and users.'] = 'Προς το παρόν μπορούμε να χρησιμοποιήσουμε netstat_ports, λογισμικό και χρήστες.';
+$GLOBALS["lang"]['An indication of the level of service required by this site.'] = '- Ναι.';
 
-$GLOBALS["lang"]['attached_device_id'] = 'Προσαρτημένο αναγνωριστικό συσκευής';
+$GLOBALS["lang"]['An internal field that indicates if the discovery has completed.'] = '.';
 
-$GLOBALS["lang"]['Attached Device ID'] = 'Προσαρτημένο αναγνωριστικό συσκευής';
+$GLOBALS["lang"]['An open|filtered port is considered open (and will trigger device detection).<br>Previously, Open-AudIT considered an Nmap response of'] = '- Да.<br/>- Да.';
 
-$GLOBALS["lang"]['attached_to'] = 'Προσαρτημένο στο';
+$GLOBALS["lang"]['An optional GeoCode'] = 'Γεωκώδικας Xüsusi';
 
-$GLOBALS["lang"]['Attached To'] = 'Προσαρτημένο στο';
+$GLOBALS["lang"]['An optional password to use sudo.'] = '.';
 
-$GLOBALS["lang"]['attachment'] = 'Συνημμένο';
+$GLOBALS["lang"]['Analyzed'] = '.';
 
-$GLOBALS["lang"]['Attachment'] = 'Συνημμένο';
+$GLOBALS["lang"]['And finally, click Submit to execute this discovery.'] = '.';
 
-$GLOBALS["lang"]['attachments'] = 'Συνημμένα';
+$GLOBALS["lang"]['And if Something Goes Wrong?'] = '.';
 
-$GLOBALS["lang"]['Attachments'] = 'Συνημμένα';
+$GLOBALS["lang"]['And lastly click <i>Submit</i> to create your Open-AudIT Auth method for Entra.'] = '. <i>Даксил ол Бол.</i> .';
 
-$GLOBALS["lang"]['attack_complexity'] = 'Πολυπλοκότητα επίθεσης';
+$GLOBALS["lang"]['And lastly, not so much a security issue - more peace of mind. The data structures are open and documented. You can view them'] = 'Имено. Не, не.';
 
-$GLOBALS["lang"]['Attack Complexity'] = 'Πολυπλοκότητα επίθεσης';
+$GLOBALS["lang"]['And provide a name - we humbly recommend Open-AudIT &#128512;, but you can name it anything you like. Make sure the option for <i>Integrate any other application you do not find in the gallery (Non-gallery)</i> is selected. And then click <i>Create<i>.'] = '- Да. <i>.</i> . <i>Κεϊντιγιάτ<i>.</i></i>';
 
-$GLOBALS["lang"]['attack_requirements'] = 'Απαιτήσεις επίθεσης';
+$GLOBALS["lang"]['And so much more.'] = '.';
 
-$GLOBALS["lang"]['Attack Requirements'] = 'Απαιτήσεις επίθεσης';
+$GLOBALS["lang"]['Andorra'] = '- Да.';
 
-$GLOBALS["lang"]['attack_vector'] = 'Διάνυσμα Επίθεσης';
+$GLOBALS["lang"]['Angola'] = '.';
 
-$GLOBALS["lang"]['Attack Vector'] = 'Διάνυσμα Επίθεσης';
+$GLOBALS["lang"]['Anguilla'] = '.';
 
-$GLOBALS["lang"]['Attribute'] = 'Χαρακτηριστικά';
+$GLOBALS["lang"]['Annex A Controls'] = '- Да.';
 
-$GLOBALS["lang"]['attributes'] = 'Χαρακτηριστικά';
+$GLOBALS["lang"]['Antarctica'] = 'Не, не.';
 
-$GLOBALS["lang"]['Attributes'] = 'Χαρακτηριστικά';
+$GLOBALS["lang"]['AntiVirus'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Audit'] = 'Έλεγχος';
+$GLOBALS["lang"]['AntiVirus Packages'] = 'Αντίβιους Πάκετλ...';
 
-$GLOBALS["lang"]['Audit AIX'] = 'Έλεγχος AIX';
+$GLOBALS["lang"]['Antigua and Barbuda'] = '.';
 
-$GLOBALS["lang"]['Audit ESXi'] = 'Έλεγχος ESXi';
+$GLOBALS["lang"]['Antivirus'] = 'Πουλς';
 
-$GLOBALS["lang"]['Audit Linux'] = 'Linux ελέγχου';
+$GLOBALS["lang"]['Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = '. 7';
 
-$GLOBALS["lang"]['audit_log'] = 'Καταγραφή ελέγχου';
+$GLOBALS["lang"]['Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = ' гонката, която се е превърнала в не 7';
 
-$GLOBALS["lang"]['Audit Log'] = 'Καταγραφή ελέγχου';
+$GLOBALS["lang"]['Any additional documentation you need.'] = '.';
 
-$GLOBALS["lang"]['Audit My PC'] = 'Έλεγχος Ο υπολογιστής μου';
+$GLOBALS["lang"]['Any additional notes you care to make.'] = '.';
 
-$GLOBALS["lang"]['Audit OSX'] = 'Έλεγχος OSX';
+$GLOBALS["lang"]['Any attributes followed by a * indicate that CVSS data less than v4 was used to complete this field. By default, we attempt to use v4 fields, however if they are not populated we will fallback to the previous version(s) for attributes.'] = '- Да.';
 
-$GLOBALS["lang"]['Audit Result Input'] = 'Εισαγωγή αποτελέσματος ελέγχου';
+$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set).'] = '.';
 
-$GLOBALS["lang"]['Audit Status'] = 'Κατάσταση ελέγχου';
+$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.'] = 'Имено. <code>orgs.id</code>.';
 
-$GLOBALS["lang"]['Audit Windows'] = 'Έλεγχος παραθύρων';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.'] = '- Не, не. <code>locations.id</code>.';
 
-$GLOBALS["lang"]['Audit the Device'] = 'Έλεγχος της συσκευής';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set).'] = '- Да.';
 
-$GLOBALS["lang"]['Audits'] = 'Έλεγχοι';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.'] = ' да го направим, да го направим. <code>locations.id</code>.';
 
-$GLOBALS["lang"]['August'] = 'Αύγουστος';
+$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.'] = ' да го направим, да го направим. <code>org_id</code> . <code>orgs.id</code>.';
 
-$GLOBALS["lang"]['Australia'] = 'Αυστραλία';
+$GLOBALS["lang"]['Any files found in this manner are stored in the <i>executable</i> table as per any other device component.'] = '- Не, не. <i>- Да.</i> - Да.';
 
-$GLOBALS["lang"]['Austria'] = 'Αυστρία';
+$GLOBALS["lang"]['Any required filter. NOTE: When type = traffic, this represents the font-awesome icon.'] = 'Това е, което се е случило.';
 
-$GLOBALS["lang"]['Auth'] = 'Οθόνη';
+$GLOBALS["lang"]['Any specific TCP ports you wish tested (comma seperated, no spaces).'] = '.';
 
-$GLOBALS["lang"]['auth'] = 'Οθόνη';
+$GLOBALS["lang"]['Any specific UDP ports you wish tested (comma seperated, no spaces).'] = '.';
 
-$GLOBALS["lang"]['Authentication Passphrase'] = 'Φράση πρόσβασης ταυτοποίησης';
+$GLOBALS["lang"]['Any user uploaded images are placed here.'] = '.';
 
-$GLOBALS["lang"]['authority_key_ident'] = 'Αναγνωριστικό κλειδιού αρχής';
+$GLOBALS["lang"]['Application'] = '- Да.';
 
-$GLOBALS["lang"]['Authority Key Ident'] = 'Αναγνωριστικό κλειδιού αρχής';
+$GLOBALS["lang"]['Application Definitions'] = '.';
 
-$GLOBALS["lang"]['Auto'] = 'Αυτόματη';
+$GLOBALS["lang"]['application_id'] = '.';
 
-$GLOBALS["lang"]['auto_renew'] = 'Αυτόματη ανανέωση';
+$GLOBALS["lang"]['Application ID'] = '.';
 
-$GLOBALS["lang"]['Auto Renew'] = 'Αυτόματη ανανέωση';
+$GLOBALS["lang"]['Application Licenses'] = '.';
 
-$GLOBALS["lang"]['Auto populated by the Open-AudIT Server.'] = 'Αυτόματο κατοικείται από το Open-AudIT Server.';
+$GLOBALS["lang"]['Application, Operating System or Hardware.'] = '- Да.';
 
-$GLOBALS["lang"]['AutoRenew'] = 'Αυτόματη ανανέωση';
+$GLOBALS["lang"]['applications'] = '- Да.';
 
-$GLOBALS["lang"]['automatable'] = 'Αυτόματο';
+$GLOBALS["lang"]['Applications'] = '- Да.';
 
-$GLOBALS["lang"]['Automatable'] = 'Αυτόματο';
+$GLOBALS["lang"]['Applications are an Enterprise only feature.'] = '- Да.';
 
-$GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = 'Αυτόματα κατοικημένα με βάση το Collectors OS.';
+$GLOBALS["lang"]['Applications are being introduced in Open-AudIT 2.2 with a view to expand on the concept as further development is made.'] = 'Имено.';
 
-$GLOBALS["lang"]['availability'] = 'Διαθεσιμότητα';
+$GLOBALS["lang"]['applied'] = '- Да.';
 
-$GLOBALS["lang"]['Availability'] = 'Διαθεσιμότητα';
+$GLOBALS["lang"]['Applied'] = '- Да.';
 
-$GLOBALS["lang"]['Azerbaijan'] = 'Αζερμπαϊτζάν';
+$GLOBALS["lang"]['Approved'] = '.';
+
+$GLOBALS["lang"]['Approved Packages'] = '.';
+
+$GLOBALS["lang"]['April'] = '.';
+
+$GLOBALS["lang"]['Arabic'] = '- Да.';
+
+$GLOBALS["lang"]['architecture'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Architecture'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Are you sure you want to delete this input item?'] = '.';
+
+$GLOBALS["lang"]['Are you sure you want to delete this output item?'] = '.';
+
+$GLOBALS["lang"]['Are you sure?'] = '.';
+
+$GLOBALS["lang"]['Are you sure? This will remove all queue entries and prevent the remaining IPs from being discovered.'] = '. Bu, bütün sşra girişl... ri aradan qaldşracaq v... IPs qarşsnşalşr.';
+
+$GLOBALS["lang"]['Are you sure? This will reset the queue processing count and could cause load on the server.'] = '.';
+
+$GLOBALS["lang"]['area'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Area'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Argentina'] = '- Да.';
+
+$GLOBALS["lang"]['Armenia'] = '.';
+
+$GLOBALS["lang"]['arp'] = 'Άξταρ';
+
+$GLOBALS["lang"]['Arp'] = 'Άξταρ';
+
+$GLOBALS["lang"]['Aruba'] = 'Не, не.';
+
+$GLOBALS["lang"]['As a reminder of how authorisations works in Open-AudIT, see'] = 'Боже мой!';
+
+$GLOBALS["lang"]['As a result, we <strong>must</strong> have the admin$ share available to the discovery credentials user. Please check the target Windows machine provides <i>write</i> access for the discovery credentials user.<br>'] = '. <strong>.</strong> Имено. <i>Не, не, не.</i> Имено.<br/>';
+
+$GLOBALS["lang"]['As mentioned above, the developers do not speak all the translation languages offered. This means we cannot review with acuracy, the translated text. We do try for a cursory review. If you see something that is not translated correctly, you can change it yourself. Edit the appropriate language file (as below) and find the text to be changed. Maybe it does not exist and you need to add it. Just change the text, save the file and refresh your we page. No need to restart any services/daemons for it to take effect. You might need to force refresh your browser.'] = 'Имено.';
+
+$GLOBALS["lang"]['As per the OpenSCAP benchmarks - <i>Do not attempt to implement any of the settings in this benchmark without first testing them in a non-operational environment. The creators of this benchmark assume no responsibility whatsoever for its use by other parties, and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.</i><br><br>Seriously, do not blindly start <i>fixing</i> issues revealed after running a benchmark without first thoroughly testing in a non-production, identical environment.'] = '- Да. <i>Имено.</i><br/><br/>. <i>- Да.</i> .';
+
+$GLOBALS["lang"]['As per the attributes for device environments. Production, Training, et al.'] = '.';
+
+$GLOBALS["lang"]['As the audit script uses bash, you can use the wildcard of * when you are defining directories and exclusions.'] = '- Да.';
+
+$GLOBALS["lang"]['As usual, go to menu → Manage → Integrations → Create Integration. As above, if you are running on Linux and you have NMIS on the same server, you do not need to do anything other than click <i>Submit</i>. I cannot make it easier than that.'] = '. <i>Даксил ол Бол.</i>.';
+
+$GLOBALS["lang"]['As we run Discoveries and collect device results we populate the list of networks. The Blessed Subnets feature uses this list of networks to only accept data from devices on those networks.'] = 'Ευτυχισμένα Subnets xüsusiyäti bu ş@';
+
+$GLOBALS["lang"]['As you have Collectors registered, please choose where to execute this discovery.'] = 'Не, не.';
+
+$GLOBALS["lang"]['Ask me later'] = '.';
+
+$GLOBALS["lang"]['Ask the Community for help or contribute answers for others.'] = '.';
+
+$GLOBALS["lang"]['aspect_ratio'] = '.';
+
+$GLOBALS["lang"]['Aspect Ratio'] = '.';
+
+$GLOBALS["lang"]['Asset ID'] = '- Да.';
+
+$GLOBALS["lang"]['asset_ident'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Asset Ident'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['asset_number'] = '.';
+
+$GLOBALS["lang"]['Asset Number'] = '.';
+
+$GLOBALS["lang"]['asset_tag'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Asset Tag'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Assign Device to Application'] = '.';
+
+$GLOBALS["lang"]['Assign Device to Cluster'] = '.';
+
+$GLOBALS["lang"]['Assign Device to Location'] = '.';
+
+$GLOBALS["lang"]['Assign Device to Organisation'] = '.';
+
+$GLOBALS["lang"]['Assign Devices to Location'] = '.';
+
+$GLOBALS["lang"]['Assign Devices to Organisation'] = 'Имено.';
+
+$GLOBALS["lang"]['Assign an ISMS manager or team'] = '.';
+
+$GLOBALS["lang"]['Assign an Operator'] = '- Да.';
+
+$GLOBALS["lang"]['Assign any audited devices to this Org. Leave blank to leave device in currently assigned Org (or to set default).'] = '.';
+
+$GLOBALS["lang"]['Assign the Device to a Location'] = '- Да.';
+
+$GLOBALS["lang"]['Assign the device to an Org'] = '- Да.';
+
+$GLOBALS["lang"]['Assigned To'] = 'Άξταρ@';
+
+$GLOBALS["lang"]['Assigning Discovered Devices'] = '.';
+
+$GLOBALS["lang"]['At present we can use netstat_ports, software and users.'] = '.';
+
+$GLOBALS["lang"]['attached_device_id'] = '.';
+
+$GLOBALS["lang"]['Attached Device ID'] = '.';
+
+$GLOBALS["lang"]['attached_to'] = '- Не, не.';
+
+$GLOBALS["lang"]['Attached To'] = '- Не, не.';
+
+$GLOBALS["lang"]['attachment'] = '- Не, не.';
+
+$GLOBALS["lang"]['Attachment'] = '- Не, не.';
+
+$GLOBALS["lang"]['attachments'] = '- Не, не.';
+
+$GLOBALS["lang"]['Attachments'] = '- Не, не.';
+
+$GLOBALS["lang"]['attack_complexity'] = '.';
+
+$GLOBALS["lang"]['Attack Complexity'] = '.';
+
+$GLOBALS["lang"]['attack_requirements'] = '.';
+
+$GLOBALS["lang"]['Attack Requirements'] = '.';
+
+$GLOBALS["lang"]['attack_vector'] = '- Да.';
+
+$GLOBALS["lang"]['Attack Vector'] = '- Да.';
+
+$GLOBALS["lang"]['Attempt to ping the device if we are not auditing localhost.'] = '.';
+
+$GLOBALS["lang"]['Attribute'] = '.';
+
+$GLOBALS["lang"]['attributes'] = '- Да.';
+
+$GLOBALS["lang"]['Attributes'] = '- Да.';
+
+$GLOBALS["lang"]['Attributes are stored for Open-AudIT to use for particular fields, at present all fields are based on the devices, locations, orgs and queries tables. The attributes you can edit are associated with the following columns: Class, Environment, Status & Type.'] = 'Имено.';
+
+$GLOBALS["lang"]['Audit'] = '.';
+
+$GLOBALS["lang"]['Audit AIX'] = '.';
+
+$GLOBALS["lang"]['Audit DNS'] = '.';
+
+$GLOBALS["lang"]['Audit ESXi'] = '.';
+
+$GLOBALS["lang"]['Audit Linux'] = '.';
+
+$GLOBALS["lang"]['audit_log'] = '- Да.';
+
+$GLOBALS["lang"]['Audit Log'] = '- Да.';
+
+$GLOBALS["lang"]['Audit Mount Point'] = '.';
+
+$GLOBALS["lang"]['Audit My PC'] = '.';
+
+$GLOBALS["lang"]['Audit Netstat'] = 'Άξταρ';
+
+$GLOBALS["lang"]['Audit OSX'] = '.';
+
+$GLOBALS["lang"]['Audit Result Input'] = 'Не, не.';
+
+$GLOBALS["lang"]['Audit Software'] = 'Не, не.';
+
+$GLOBALS["lang"]['Audit Status'] = '.';
+
+$GLOBALS["lang"]['Audit Win32 Product'] = 'Имено.';
+
+$GLOBALS["lang"]['Audit Windows'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Audit the Device'] = '.';
+
+$GLOBALS["lang"]['Audits'] = '.';
+
+$GLOBALS["lang"]['August'] = '.';
+
+$GLOBALS["lang"]['Australia'] = '- Да.';
+
+$GLOBALS["lang"]['Austria'] = '- Да.';
+
+$GLOBALS["lang"]['Auth'] = 'ΣΑΛΑ';
+
+$GLOBALS["lang"]['auth'] = 'ΣΑΛΑ';
+
+$GLOBALS["lang"]['Auth Methods'] = 'Не, не.';
+
+$GLOBALS["lang"]['Authenticate only'] = '.';
+
+$GLOBALS["lang"]['Authentication Passphrase'] = '.';
+
+$GLOBALS["lang"]['Authentication Protocol'] = '.';
+
+$GLOBALS["lang"]['authority_key_ident'] = '- Да.';
+
+$GLOBALS["lang"]['Authority Key Ident'] = '- Да.';
+
+$GLOBALS["lang"]['Auto'] = 'Автомобил Автомобил.';
+
+$GLOBALS["lang"]['auto_renew'] = 'Автомобил К ени Бени.';
+
+$GLOBALS["lang"]['Auto Renew'] = 'Автомобил К ени Бени.';
+
+$GLOBALS["lang"]['Auto populated by the Open-AudIT Server.'] = '- Не, не.';
+
+$GLOBALS["lang"]['AutoRenew'] = 'Αυτόματο Erneuerungen';
+
+$GLOBALS["lang"]['automatable'] = '.';
+
+$GLOBALS["lang"]['Automatable'] = '.';
+
+$GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = '.';
+
+$GLOBALS["lang"]['availability'] = '.';
+
+$GLOBALS["lang"]['Availability'] = '.';
+
+$GLOBALS["lang"]['Available Benchmarks'] = '.';
+
+$GLOBALS["lang"]['Awaiting Analysis'] = '.';
+
+$GLOBALS["lang"]['Azerbaijan'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Azerbaijani'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Azure Active Directory'] = '.';
 
 $GLOBALS["lang"]['BTU Max'] = 'Μέγιστη BTU';
 
-$GLOBALS["lang"]['BTU Total'] = 'BTU Σύνολο';
+$GLOBALS["lang"]['BTU Total'] = 'Не, не.';
 
-$GLOBALS["lang"]['Backup'] = 'Δημιουργία αντιγράφων ασφαλείας';
+$GLOBALS["lang"]['Backbone network'] = '.';
 
-$GLOBALS["lang"]['Bahamas the'] = 'Μπαχάμες';
+$GLOBALS["lang"]['Backup'] = '- Да.';
 
-$GLOBALS["lang"]['Bahrain'] = 'Μπαχρέιν';
+$GLOBALS["lang"]['Bahamas the'] = '.';
 
-$GLOBALS["lang"]['Bangladesh'] = 'Μπανγκλαντές';
+$GLOBALS["lang"]['Bahrain'] = '- Да.';
 
-$GLOBALS["lang"]['bank'] = 'Τράπεζα';
+$GLOBALS["lang"]['Bangladesh'] = '- Да.';
 
-$GLOBALS["lang"]['Bank'] = 'Τράπεζα';
+$GLOBALS["lang"]['bank'] = 'Не, не.';
 
-$GLOBALS["lang"]['Banned'] = 'Απαγόρευση';
+$GLOBALS["lang"]['Bank'] = 'Не, не.';
 
-$GLOBALS["lang"]['bar_code'] = 'Κωδικός γραμμής';
+$GLOBALS["lang"]['Banned'] = '.';
 
-$GLOBALS["lang"]['Bar Code'] = 'Κωδικός γραμμής';
+$GLOBALS["lang"]['Banned Packages'] = '.';
 
-$GLOBALS["lang"]['Barbados'] = 'Μπαρμπάντος';
+$GLOBALS["lang"]['bar_code'] = '.';
 
-$GLOBALS["lang"]['Base DN'] = 'Βάση DN';
+$GLOBALS["lang"]['Bar Code'] = '.';
 
-$GLOBALS["lang"]['base_score'] = 'Βαθμολογία βάσης';
+$GLOBALS["lang"]['Barbados'] = '- Да.';
 
-$GLOBALS["lang"]['Base Score'] = 'Βαθμολογία βάσης';
+$GLOBALS["lang"]['Base DN'] = 'DN';
 
-$GLOBALS["lang"]['base_severity'] = 'Βασική σοβαρότητα';
+$GLOBALS["lang"]['base_score'] = '- Да.';
 
-$GLOBALS["lang"]['Base Severity'] = 'Βασική σοβαρότητα';
+$GLOBALS["lang"]['Base Score'] = '- Да.';
 
-$GLOBALS["lang"]['based_on'] = 'Βασισμένο σε';
+$GLOBALS["lang"]['base_severity'] = '.';
 
-$GLOBALS["lang"]['Based On'] = 'Βασισμένο σε';
+$GLOBALS["lang"]['Base Severity'] = '.';
 
-$GLOBALS["lang"]['baseline'] = 'Έναρξη';
+$GLOBALS["lang"]['based_on'] = '- Не, не.';
 
-$GLOBALS["lang"]['Baseline'] = 'Έναρξη';
+$GLOBALS["lang"]['Based On'] = '- Не, не.';
 
-$GLOBALS["lang"]['baseline_id'] = 'Αναγνωριστικό γραμμής';
+$GLOBALS["lang"]['baseline'] = '.';
 
-$GLOBALS["lang"]['Baseline ID'] = 'Αναγνωριστικό γραμμής';
+$GLOBALS["lang"]['Baseline'] = '.';
 
-$GLOBALS["lang"]['baselines'] = 'Βασικές γραμμές';
+$GLOBALS["lang"]['baseline_id'] = '.';
 
-$GLOBALS["lang"]['Baselines'] = 'Βασικές γραμμές';
+$GLOBALS["lang"]['Baseline ID'] = '.';
 
-$GLOBALS["lang"]['baselines_policies'] = 'Πολιτικές βασικών γραμμών';
+$GLOBALS["lang"]['baselines'] = '.';
 
-$GLOBALS["lang"]['Baselines Policies'] = 'Πολιτικές βασικών γραμμών';
+$GLOBALS["lang"]['Baselines'] = '.';
 
-$GLOBALS["lang"]['Baselines Policy'] = 'Πολιτική βασικών γραμμών';
+$GLOBALS["lang"]['baselines_policies'] = '.';
 
-$GLOBALS["lang"]['Baselines Policy Details'] = 'Λεπτομέρειες πολιτικής βασικών γραμμών';
+$GLOBALS["lang"]['Baselines Policies'] = '.';
 
-$GLOBALS["lang"]['baselines_results'] = 'Αποτελέσματα βασικών γραμμών';
+$GLOBALS["lang"]['Baselines Policy'] = '.';
 
-$GLOBALS["lang"]['Baselines Results'] = 'Αποτελέσματα βασικών γραμμών';
+$GLOBALS["lang"]['Baselines Policy Details'] = '- Да.';
 
-$GLOBALS["lang"]['Basic'] = 'Βασικό';
+$GLOBALS["lang"]['baselines_results'] = 'Не, не.';
 
-$GLOBALS["lang"]['Belarus'] = 'Λευκορωσία';
+$GLOBALS["lang"]['Baselines Results'] = 'Не, не.';
 
-$GLOBALS["lang"]['Belgium'] = 'Βέλγιο';
+$GLOBALS["lang"]['Baselines can compare netstat ports, users and software.'] = '.';
 
-$GLOBALS["lang"]['Belize'] = 'Μπελίζε';
+$GLOBALS["lang"]['Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.'] = '.';
 
-$GLOBALS["lang"]['Benchmark'] = 'Σημείωμα';
+$GLOBALS["lang"]['Baselines for Device Comparison'] = 'Не, не.';
 
-$GLOBALS["lang"]['benchmark_id'] = 'Αναγνωριστικός κωδικός αναφοράς';
+$GLOBALS["lang"]['Basic'] = '- Да.';
 
-$GLOBALS["lang"]['Benchmark ID'] = 'Αναγνωριστικός κωδικός αναφοράς';
+$GLOBALS["lang"]['Basque'] = 'Калерея.';
 
-$GLOBALS["lang"]['benchmarks'] = 'Σημεία αναφοράς';
+$GLOBALS["lang"]['Because we try to be as transparent as possible, here is your actual data that we send.'] = '.';
 
-$GLOBALS["lang"]['Benchmarks'] = 'Σημεία αναφοράς';
+$GLOBALS["lang"]['Being able to determine which machines are configured in the same way is a major part of systems administration and auditing – and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br><br>For auditing and management purposes it can be advantageous to baseline individual devices against a fixed, known good device. Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.'] = 'Имено.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['benchmarks_exceptions'] = 'Εξαιρέσεις';
+$GLOBALS["lang"]['Belarus'] = 'Не, не.';
 
-$GLOBALS["lang"]['Benchmarks Exceptions'] = 'Εξαιρέσεις';
+$GLOBALS["lang"]['Belgium'] = '- Не, не.';
 
-$GLOBALS["lang"]['benchmarks_log'] = 'Καταγραφή σημάτων';
+$GLOBALS["lang"]['Belize'] = '- Да.';
 
-$GLOBALS["lang"]['Benchmarks Log'] = 'Καταγραφή σημάτων';
+$GLOBALS["lang"]['Below is an example of the required csv format.'] = '.';
 
-$GLOBALS["lang"]['benchmarks_policies'] = 'Πολιτικές αναφοράς';
+$GLOBALS["lang"]['Below these lines are where the variables are injected into the script. Following on from our earlier example, the Linux audit script is populated with our directory like so'] = '.';
 
-$GLOBALS["lang"]['Benchmarks Policies'] = 'Πολιτικές αναφοράς';
+$GLOBALS["lang"]['Below you can see an example Org Chart. If a user has permission on the <i>Finance A</i> Org, they also have permission on the descendant Orgs of Dept A, B & C. This is regardless of the collection requested.<br><br>If the collection requested allows ascendants, then the user will also have access to Company #1 and Default Org items. This is for (as above) queries, groups, et al.<br><br>Note - A user may have access to a query from Default Org, but that is the query itself not the result. The result will only show devices that the user has access to - IE devices from Finance A and Dept A, B & C.'] = '- Да. <i>.</i> Или гонитба, която не на себе си.<br/><br/> Заявено събиране Баране.<br/><br/> Όχι, όχι, όχι.';
 
-$GLOBALS["lang"]['benchmarks_result'] = 'Αποτέλεσμα benchmarks';
+$GLOBALS["lang"]['Benchmark'] = '.';
 
-$GLOBALS["lang"]['Benchmarks Result'] = 'Αποτέλεσμα benchmarks';
+$GLOBALS["lang"]['benchmark_id'] = '.';
 
-$GLOBALS["lang"]['Benin'] = 'Μπενίν';
+$GLOBALS["lang"]['Benchmark ID'] = '.';
 
-$GLOBALS["lang"]['Bermuda'] = 'Βερμούδες';
+$GLOBALS["lang"]['Benchmark Tasks are created automatically when a benchmark is created.'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['best_practises'] = 'Οι καλύτερες πρακτικές';
+$GLOBALS["lang"]['Benchmark execution and processing can take a lengthy amount of time, hence the preference to schedule them and not run them ad-hoc.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Best Practises'] = 'Οι καλύτερες πρακτικές';
+$GLOBALS["lang"]['benchmarks'] = '.';
 
-$GLOBALS["lang"]['Bhutan'] = 'Μπουτάν';
+$GLOBALS["lang"]['Benchmarks'] = '.';
 
-$GLOBALS["lang"]['bios'] = 'Βιολογικά';
+$GLOBALS["lang"]['benchmarks_exceptions'] = '.';
 
-$GLOBALS["lang"]['Bios'] = 'Βιολογικά';
+$GLOBALS["lang"]['Benchmarks Exceptions'] = '.';
 
-$GLOBALS["lang"]['body'] = 'Σώμα';
+$GLOBALS["lang"]['benchmarks_log'] = 'Εταλανλάρη';
 
-$GLOBALS["lang"]['Body'] = 'Σώμα';
+$GLOBALS["lang"]['Benchmarks Log'] = 'Εταλανλάρη';
 
-$GLOBALS["lang"]['Bolivia'] = 'Βολιβία';
+$GLOBALS["lang"]['benchmarks_policies'] = '.';
 
-$GLOBALS["lang"]['Boolean'] = 'Δυαδικό';
+$GLOBALS["lang"]['Benchmarks Policies'] = '.';
 
-$GLOBALS["lang"]['Boolean 1/0'] = 'Δυαδικό 1/0';
+$GLOBALS["lang"]['benchmarks_result'] = '- Да.';
 
-$GLOBALS["lang"]['Boolean y/n'] = 'Δυαδικό y/n';
+$GLOBALS["lang"]['Benchmarks Result'] = '- Да.';
 
-$GLOBALS["lang"]['boot_device'] = 'Συσκευή εκκίνησης';
+$GLOBALS["lang"]['Benchmarks are created by providing an operating system and Version, combined with a specific guide and a list of machines to execute it upon. After creation, benchmarks are executed against the list of machines on a schedule.'] = 'Имено.';
 
-$GLOBALS["lang"]['Boot Device'] = 'Συσκευή εκκίνησης';
+$GLOBALS["lang"]['Benchmarks for Best Practise Configuration'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['bootable'] = 'Εκκίνηση';
+$GLOBALS["lang"]['Benchmarks provide security recommendations for your computers, utilising the OpenSCAP tools and policies.</p><p><i>From the OpenSCAP homepage:</i>  In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.'] = '.<p><i>Άνοιγμα SCAP анадан:</i> Имено.</p>';
 
-$GLOBALS["lang"]['Bootable'] = 'Εκκίνηση';
+$GLOBALS["lang"]['Benefits'] = '- Да.';
 
-$GLOBALS["lang"]['Bosnia and Herzegovina'] = 'Βοσνία-Ερζεγοβίνη';
+$GLOBALS["lang"]['Bengali'] = '- Да.';
 
-$GLOBALS["lang"]['Botswana'] = 'Μποτσουάνα';
+$GLOBALS["lang"]['Benin'] = '- Да.';
 
-$GLOBALS["lang"]['Bouvet Island (Bouvetoya)'] = 'Νήσος Μπουβέ (Bouvetoya)';
+$GLOBALS["lang"]['Bermuda'] = '- Да.';
 
-$GLOBALS["lang"]['Brazil'] = 'Βραζιλία';
+$GLOBALS["lang"]['best_practises'] = 'Nejlepší Pracktis (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Brazilian Portuguese'] = 'Πορτογαλικά Βραζιλίας';
+$GLOBALS["lang"]['Best Practises'] = 'Nejlepší Pracktis (στα Αγγλικά).';
 
-$GLOBALS["lang"]['British Indian Ocean Territory (Chagos Archipelago)'] = 'Βρετανικό έδαφος Ινδικού Ωκεανού (Αρχιπέλαγος Τσάγκος)';
+$GLOBALS["lang"]['Bhutan'] = '- Не, не.';
 
-$GLOBALS["lang"]['British Virgin Islands'] = 'Βρετανικές Παρθένοι Νήσοι';
+$GLOBALS["lang"]['bios'] = ' Био.';
 
-$GLOBALS["lang"]['Brunei Darussalam'] = 'Μπρουνέι Νταρουσαλάμ';
+$GLOBALS["lang"]['Bios'] = ' Био.';
+
+$GLOBALS["lang"]['body'] = 'Не, не.';
+
+$GLOBALS["lang"]['Body'] = 'Не, не.';
+
+$GLOBALS["lang"]['Bolivia'] = '.';
+
+$GLOBALS["lang"]['Boolean'] = 'ΠΙΛΟΑ';
+
+$GLOBALS["lang"]['Boolean 1/0'] = 'Полян 1 / 0';
+
+$GLOBALS["lang"]['Boolean y/n'] = 'Калерея.';
+
+$GLOBALS["lang"]['boot_device'] = '.';
+
+$GLOBALS["lang"]['Boot Device'] = '.';
+
+$GLOBALS["lang"]['bootable'] = ' Саксия Саксия.';
+
+$GLOBALS["lang"]['Bootable'] = ' Саксия Саксия.';
+
+$GLOBALS["lang"]['Bosnia and Herzegovina'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Both forms of'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Botswana'] = '- Да.';
+
+$GLOBALS["lang"]['Bouvet Island (Bouvetoya)'] = '- Ναι.';
+
+$GLOBALS["lang"]['Brazil'] = '- Да.';
+
+$GLOBALS["lang"]['Brazilian Portuguese'] = '- Да.';
+
+$GLOBALS["lang"]['Breaking it Down'] = '- Да.';
+
+$GLOBALS["lang"]['British Indian Ocean Territory (Chagos Archipelago)'] = 'Не, не.';
+
+$GLOBALS["lang"]['British Virgin Islands'] = '.';
+
+$GLOBALS["lang"]['Browse down the tree to Console Root -> Component Services -> Computers -> My Computer<br><br>Right click on <i>My Computer</i> and select properties<br><br>Select the <i>Default Properties</i> tab'] = '.<br/><br/>. <i>- Да.</i> .<br/><br/>Не, не, не. <i>.</i> подпрозре К.';
+
+$GLOBALS["lang"]['Brunei Darussalam'] = '.';
 
 $GLOBALS["lang"]['btu_max'] = 'Μεγ. Btu';
 
 $GLOBALS["lang"]['Btu Max'] = 'Μεγ. Btu';
 
-$GLOBALS["lang"]['btu_total'] = 'Σύνολο';
+$GLOBALS["lang"]['btu_total'] = 'Не, не.';
 
-$GLOBALS["lang"]['Btu Total'] = 'Σύνολο';
+$GLOBALS["lang"]['Btu Total'] = 'Не, не.';
 
-$GLOBALS["lang"]['build_number'] = 'Αριθμός κατασκευής';
+$GLOBALS["lang"]['build_number'] = '- Да.';
 
-$GLOBALS["lang"]['Build Number'] = 'Αριθμός κατασκευής';
+$GLOBALS["lang"]['Build Number'] = '- Да.';
 
-$GLOBALS["lang"]['build_number_full'] = 'Πλήρης κατασκευή αριθμού';
+$GLOBALS["lang"]['build_number_full'] = '.';
 
-$GLOBALS["lang"]['Build Number Full'] = 'Πλήρης κατασκευή αριθμού';
+$GLOBALS["lang"]['Build Number Full'] = '.';
 
-$GLOBALS["lang"]['Building'] = 'Κτίριο';
+$GLOBALS["lang"]['Building'] = '- Да.';
 
-$GLOBALS["lang"]['Bulgaria'] = 'Βουλγαρία';
+$GLOBALS["lang"]['Builds trust with clients and partners'] = '.';
 
-$GLOBALS["lang"]['Bulk Edit'] = 'Μαζική επεξεργασία';
+$GLOBALS["lang"]['Bulgaria'] = '- Да.';
 
-$GLOBALS["lang"]['Bulk Editing Device Attributes'] = 'Χαρακτηριστικά συσκευής μαζικής επεξεργασίας';
+$GLOBALS["lang"]['Bulgarian'] = '- Да.';
 
-$GLOBALS["lang"]['Burkina Faso'] = 'Μπουρκίνα Φάσο';
+$GLOBALS["lang"]['Bulk Edit'] = ' Наливно количество Наливо.';
 
-$GLOBALS["lang"]['Burundi'] = 'Μπουρούντι';
+$GLOBALS["lang"]['Bulk Edit Form'] = 'Μαζική Редактиране на ';
 
-$GLOBALS["lang"]['business_requirements'] = 'Επιχειρηματικές απαιτήσεις';
+$GLOBALS["lang"]['Bulk Editing Device Attributes'] = 'Avtomatlaşdşrmacolor (στα Αγγλικά) Атрибути на устройството,';
 
-$GLOBALS["lang"]['Business Requirements'] = 'Επιχειρηματικές απαιτήσεις';
+$GLOBALS["lang"]['Bulk edit selections wont stay selected after clicking next page.'] = '- Да.';
 
-$GLOBALS["lang"]['Buy'] = 'Αγορά';
+$GLOBALS["lang"]['Burkina Faso'] = '.';
 
-$GLOBALS["lang"]['Buy More'] = 'Αγορά περισσότερων';
+$GLOBALS["lang"]['Burundi'] = '- Да.';
 
-$GLOBALS["lang"]['Buy More Licenses'] = 'Αγοράστε περισσότερες άδειες';
+$GLOBALS["lang"]['business_requirements'] = '.';
 
-$GLOBALS["lang"]['By'] = 'Από';
+$GLOBALS["lang"]['Business Requirements'] = '.';
 
-$GLOBALS["lang"]['CIDR'] = 'CIDR';
+$GLOBALS["lang"]['But I Only Have Windows Client Machines Available!'] = '.';
 
-$GLOBALS["lang"]['CIDR Mask'] = 'CIDR Μάσκα';
+$GLOBALS["lang"]['But I do not want to have to change the language file every time I update!'] = '.';
 
-$GLOBALS["lang"]['cli_config'] = 'CLI Conf';
+$GLOBALS["lang"]['Buy'] = '- Да.';
 
-$GLOBALS["lang"]['CLI Config'] = 'CLI Conf';
+$GLOBALS["lang"]['Buy More'] = '.';
 
-$GLOBALS["lang"]['CPU'] = 'ΚΜΕ';
+$GLOBALS["lang"]['Buy More Licenses'] = '.';
 
-$GLOBALS["lang"]['CPUs'] = 'ΚΜΕ';
+$GLOBALS["lang"]['By'] = '.';
 
-$GLOBALS["lang"]['CSV'] = 'CSV';
+$GLOBALS["lang"]['By default we integrate all devices with their nmis_manage attribute set to <i>y</i>. With 4.2.0 we also ship a Rule that says <i>If we discover a device and it has a valid SNMP OID, mark that device as managed by NMIS</i>. Obviously you can disable this if it is not what you want.'] = '. <i> y</i> Εγώ προς Τακ. <i>.</i>Не, не.';
 
-$GLOBALS["lang"]['CVE'] = 'ΚΒΑ';
+$GLOBALS["lang"]['By default, we skip certificate validation because customers tend to use self-signed certificates. To enable certificate validation, edit the file below'] = 'Имено.';
 
-$GLOBALS["lang"]['Calculated from discovery.'] = 'Υπολογίζεται από την ανακάλυψη.';
+$GLOBALS["lang"]['CIDR'] = ' В';
 
-$GLOBALS["lang"]['Calculated total number of valid IP addresses for this network.'] = 'Υπολογισμένος συνολικός αριθμός έγκυρων διευθύνσεων IP για αυτό το δίκτυο.';
+$GLOBALS["lang"]['CIDR Mask'] = ' Γ Μπακέζ';
 
-$GLOBALS["lang"]['Calculated upon completion, the time taken to execute this item.'] = 'Υπολογίζεται μετά την ολοκλήρωση, ο χρόνος που απαιτείται για την εκτέλεση αυτού του αντικειμένου.';
+$GLOBALS["lang"]['cli_config'] = 'Oxunub Qeydiyat Ημερομηνία γέννησης:';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = 'Υπολογίζεται όταν εκτελείται η ενσωμάτωση και περιέχει μια αναπαράσταση JSON των συσκευών σε αυτή την ενσωμάτωση. Κάθε σύνδεση με <code>devices.id</code>.';
+$GLOBALS["lang"]['CLI Config'] = 'Oxunub Qeydiyat Ημερομηνία γέννησης:';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = 'Υπολογίζεται όταν εκτελείται η ενσωμάτωση και περιέχει μια αναπαράσταση JSON των τοποθεσιών σε αυτή την ενσωμάτωση. Κάθε σύνδεση με <code>locations.id</code>.';
+$GLOBALS["lang"]['CPU'] = ' ΚΜΕ';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected from Open-AudIT.'] = 'Υπολογίζεται όταν εκτελείται η ενσωμάτωση και περιέχει τον αριθμό των συσκευών που επιλέχθηκαν από το Open-AudIT.';
+$GLOBALS["lang"]['CPUs'] = ' ΚΜΕ';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected the external system.'] = 'Υπολογίζεται όταν εκτελείται η ολοκλήρωση και περιέχει τον αριθμό συσκευών που επιλέχθηκαν το εξωτερικό σύστημα.';
+$GLOBALS["lang"]['CSV'] = 'E-Poçon';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices to be updated in the external system.'] = 'Υπολογίζεται όταν εκτελείται η ολοκλήρωση και περιέχει τον αριθμό των συσκευών που πρέπει να ενημερώνονται στο εξωτερικό σύστημα.';
+$GLOBALS["lang"]['CVE'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices updated in Open-AudIT.'] = 'Υπολογίζεται όταν εκτελείται ενσωμάτωση και περιέχει τον αριθμό των συσκευών που ενημερώνονται στο Open-AudIT.';
+$GLOBALS["lang"]['CVEs with a status of received, awaiting analysis, undergoing analysis, rejected. These CVEs (mostly) do not contain sufficient information to enable us to generate a correct SQL query.'] = 'Alanan bir statela CVEs, analiz altīnda, analiz altīnda, redakt...';
 
-$GLOBALS["lang"]['Cambodia'] = 'Καμπότζη';
+$GLOBALS["lang"]['Calculated from discovery.'] = '.';
 
-$GLOBALS["lang"]['Cameroon'] = 'Καμερούν';
+$GLOBALS["lang"]['Calculated total number of valid IP addresses for this network.'] = '.';
 
-$GLOBALS["lang"]['Campus Area Network'] = 'Δίκτυο περιοχής Campus';
+$GLOBALS["lang"]['Calculated upon completion, the time taken to execute this item.'] = '.';
 
-$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code> or blank.'] = 'Μπορεί να είναι <code>active</code>, <code>passive</code> ή κενό.';
+$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = '. <code>devices.id</code>.';
 
-$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.'] = 'Μπορεί να είναι <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> ή κενό.';
+$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = '. <code>locations.id</code>.';
 
-$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.'] = 'Μπορεί να είναι <code>auto</code>, <code>fixed</code>, <code>other</code> ή κενό.';
+$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected from Open-AudIT.'] = '.';
 
-$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.'] = 'Μπορεί να είναι <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> ή κενό.';
+$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected the external system.'] = '.';
 
-$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.'] = 'Μπορεί να είναι <code>line</code>, <code>pie</code> ή <code>traffic</code>.';
+$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices to be updated in the external system.'] = '.';
 
-$GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = 'Μπορεί να είναι <code>user</code> ή <code>collector</code>.';
+$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices updated in Open-AudIT.'] = '- Да.';
 
-$GLOBALS["lang"]['Can be set by discovery or user.'] = 'Μπορεί να οριστεί από την ανακάλυψη ή το χρήστη.';
+$GLOBALS["lang"]['Call up a command prompt by clicking Start and searching for <code>command</code>'] = '. <code>command</code>';
 
-$GLOBALS["lang"]['Can be set by discovery or user. Uses the ID from the locations table.'] = 'Μπορεί να οριστεί από την ανακάλυψη ή το χρήστη. Χρησιμοποιεί την ταυτότητα από τον πίνακα θέσεων.';
+$GLOBALS["lang"]['Cambodia'] = '.';
 
-$GLOBALS["lang"]['Can the user edit this item.'] = 'Μπορεί ο χρήστης να επεξεργαστεί αυτό το αντικείμενο.';
+$GLOBALS["lang"]['Cameroon'] = '.';
 
-$GLOBALS["lang"]['Canada'] = 'Καναδάς';
+$GLOBALS["lang"]['Campus Area Network'] = 'Калерея.';
 
-$GLOBALS["lang"]['Cancel'] = 'Ακύρωση';
+$GLOBALS["lang"]['Campus area network'] = '.';
 
-$GLOBALS["lang"]['capabilities'] = 'Δυνατότητες';
+$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code> or blank.'] = '- Да. <code>active</code>. <code>passive</code> .';
 
-$GLOBALS["lang"]['Capabilities'] = 'Δυνατότητες';
+$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.'] = '- Да. <code>application</code>. <code>compute</code>. <code>database</code>. <code>storage</code>. <code>virtualisation</code>. <code>web</code>. <code>other</code> .';
 
-$GLOBALS["lang"]['Capacity'] = 'Χωρητικότητα';
+$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.'] = '- Да. <code>auto</code>. <code>fixed</code>. <code>other</code> .';
 
-$GLOBALS["lang"]['Cape Verde'] = 'Πράσινο Ακρωτήριο';
+$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.'] = '- Да. <code>high availability</code>. <code>load balancing</code>. <code>performance</code>. <code>storage</code>. <code>other</code> .';
 
-$GLOBALS["lang"]['Capitalise'] = 'Κεφαλαιοποίηση';
+$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.'] = '- Да. <code>line</code>. <code>pie</code> . <code>traffic</code>.';
 
-$GLOBALS["lang"]['caption'] = 'Τίτλος';
+$GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = '- Да. <code>user</code> . <code>collector</code>.';
 
-$GLOBALS["lang"]['Caption'] = 'Τίτλος';
+$GLOBALS["lang"]['Can be set by discovery or user.'] = '.';
 
-$GLOBALS["lang"]['Cayman Islands'] = 'Νήσοι Κέιμαν';
+$GLOBALS["lang"]['Can be set by discovery or user. Uses the ID from the locations table.'] = 'Имено.';
 
-$GLOBALS["lang"]['Cellular Details'] = 'Λεπτομέρειες κελιού';
+$GLOBALS["lang"]['Can the user edit this item.'] = '- Да.';
 
-$GLOBALS["lang"]['Central African Republic'] = 'Κεντροαφρικανική Δημοκρατία';
+$GLOBALS["lang"]['Canada'] = '- Да.';
 
-$GLOBALS["lang"]['certificate'] = 'Πιστοποιητικό';
+$GLOBALS["lang"]['Cancel'] = '- Не, не.';
 
-$GLOBALS["lang"]['Certificate'] = 'Πιστοποιητικό';
+$GLOBALS["lang"]['capabilities'] = '- Да.';
 
-$GLOBALS["lang"]['certificate_file'] = 'Αρχείο πιστοποιητικού';
+$GLOBALS["lang"]['Capabilities'] = '- Да.';
 
-$GLOBALS["lang"]['Certificate File'] = 'Αρχείο πιστοποιητικού';
+$GLOBALS["lang"]['Capacity'] = '- Да.';
 
-$GLOBALS["lang"]['certificate_name'] = 'Όνομα πιστοποιητικού';
+$GLOBALS["lang"]['Cape Verde'] = '.';
 
-$GLOBALS["lang"]['Certificate Name'] = 'Όνομα πιστοποιητικού';
+$GLOBALS["lang"]['Capitalise'] = '.';
 
-$GLOBALS["lang"]['certificates'] = 'Πιστοποιητικά';
+$GLOBALS["lang"]['caption'] = 'Калерея.';
 
-$GLOBALS["lang"]['Certificates'] = 'Πιστοποιητικά';
+$GLOBALS["lang"]['Caption'] = 'Калерея.';
 
-$GLOBALS["lang"]['Chad'] = 'Τσαντ';
+$GLOBALS["lang"]['Catalan'] = 'Κατεκορίγια';
 
-$GLOBALS["lang"]['change_id'] = 'Τροποποίηση ID';
+$GLOBALS["lang"]['Cayman Islands'] = '- Да.';
 
-$GLOBALS["lang"]['Change ID'] = 'Τροποποίηση ID';
+$GLOBALS["lang"]['Cellular Details'] = '.';
 
-$GLOBALS["lang"]['change_log'] = 'Τροποποίηση καταγραφής';
+$GLOBALS["lang"]['Central African Republic'] = '.';
 
-$GLOBALS["lang"]['Change Log'] = 'Τροποποίηση καταγραφής';
+$GLOBALS["lang"]['certificate'] = '.';
 
-$GLOBALS["lang"]['change_type'] = 'Τροποποίηση τύπου';
+$GLOBALS["lang"]['Certificate'] = '.';
 
-$GLOBALS["lang"]['Change Type'] = 'Τροποποίηση τύπου';
+$GLOBALS["lang"]['certificate_file'] = '.';
 
-$GLOBALS["lang"]['check_minutes'] = 'Έλεγχος λεπτών';
+$GLOBALS["lang"]['Certificate File'] = '.';
 
-$GLOBALS["lang"]['Check Minutes'] = 'Έλεγχος λεπτών';
+$GLOBALS["lang"]['certificate_name'] = '.';
 
-$GLOBALS["lang"]['Check for SSH on these ports'] = 'Ελέγξτε για SSH σε αυτές τις θύρες';
+$GLOBALS["lang"]['Certificate Name'] = '.';
 
-$GLOBALS["lang"]['Check this port for any SSH service.'] = 'Ελέγξτε αυτή τη θύρα για οποιαδήποτε υπηρεσία SSH.';
+$GLOBALS["lang"]['certificates'] = '- Да.';
 
-$GLOBALS["lang"]['Chile'] = 'Χιλή';
+$GLOBALS["lang"]['Certificates'] = '- Да.';
 
-$GLOBALS["lang"]['China'] = 'Κίνα';
+$GLOBALS["lang"]['Certification'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Choose'] = 'Επιλογή';
+$GLOBALS["lang"]['Certification Audit'] = '.';
 
-$GLOBALS["lang"]['Choose (select OS first)'] = 'Επιλέξτε (επιλέξτε το OS πρώτα)';
+$GLOBALS["lang"]['Certification Process'] = '.';
 
-$GLOBALS["lang"]['Choose a Device'] = 'Επιλέξτε μια συσκευή';
+$GLOBALS["lang"]['Chad'] = '- Да.';
 
-$GLOBALS["lang"]['Choose a Table'] = 'Επιλογή πίνακα';
+$GLOBALS["lang"]['Change'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Christmas Island'] = 'Νήσος των Χριστουγέννων';
+$GLOBALS["lang"]['change_id'] = '.';
 
-$GLOBALS["lang"]['cidr'] = 'Σιδρ';
+$GLOBALS["lang"]['Change ID'] = '.';
 
-$GLOBALS["lang"]['Cidr'] = 'Σιδρ';
+$GLOBALS["lang"]['change_log'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['circuit_count'] = 'Αριθμός κυκλωμάτων';
+$GLOBALS["lang"]['Change Log'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Circuit Count'] = 'Αριθμός κυκλωμάτων';
+$GLOBALS["lang"]['Change Logs'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['circuit_status'] = 'Κατάσταση κυκλώματος';
+$GLOBALS["lang"]['change_type'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Circuit Status'] = 'Κατάσταση κυκλώματος';
+$GLOBALS["lang"]['Change Type'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['city'] = 'Πόλη';
+$GLOBALS["lang"]['check_minutes'] = '.';
 
-$GLOBALS["lang"]['City'] = 'Πόλη';
+$GLOBALS["lang"]['Check Minutes'] = '.';
 
-$GLOBALS["lang"]['class'] = 'Κλάση';
+$GLOBALS["lang"]['Check for SSH on these ports'] = '.';
 
-$GLOBALS["lang"]['Class'] = 'Κλάση';
+$GLOBALS["lang"]['Check this port for any SSH service.'] = '.';
 
-$GLOBALS["lang"]['class_text'] = 'Κείμενο κλάσης';
+$GLOBALS["lang"]['Chile'] = '- Да.';
 
-$GLOBALS["lang"]['Class Text'] = 'Κείμενο κλάσης';
+$GLOBALS["lang"]['China'] = '- Да.';
 
-$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = 'Κάντε κλικ στο κουμπί Διαγραφή για να αφαιρέσετε τις συσκευές του παραδείγματος από το Open-AudIT.<br/>Αυτό θα αφαιρέσει τις παρακάτω συσκευές από τη βάση δεδομένων. ';
+$GLOBALS["lang"]['Chinese'] = '- Да.';
 
-$GLOBALS["lang"]['Click the Import button below to populate Open-AudIT with example device data.'] = 'Κάντε κλικ στο παρακάτω κουμπί Εισαγωγή για να γεμίσετε Open-AudIT με τα δεδομένα της συσκευής παράδειγμα.';
+$GLOBALS["lang"]['Chinese (traditional)'] = '- Ναι.';
 
-$GLOBALS["lang"]['Client ID'] = 'Ταυτότητα πελάτη';
+$GLOBALS["lang"]['Choose'] = '- Да.';
 
-$GLOBALS["lang"]['client_ident'] = 'Ταυτότητα πελάτη';
+$GLOBALS["lang"]['Choose (select OS first)'] = '- Ναι.';
 
-$GLOBALS["lang"]['Client Ident'] = 'Ταυτότητα πελάτη';
+$GLOBALS["lang"]['Choose a Device'] = '.';
 
-$GLOBALS["lang"]['client_secret'] = 'Μυστικό πελάτη';
+$GLOBALS["lang"]['Choose a Table'] = '.';
 
-$GLOBALS["lang"]['Client Secret'] = 'Μυστικό πελάτη';
+$GLOBALS["lang"]['Choose the type of the task from the first drop down. This will configure the additional fields required depending on the type of task.'] = '.';
 
-$GLOBALS["lang"]['client_site_name'] = 'Όνομα ιστοσελίδας πελάτη';
+$GLOBALS["lang"]['Christmas Island'] = '.';
 
-$GLOBALS["lang"]['Client Site Name'] = 'Όνομα ιστοσελίδας πελάτη';
+$GLOBALS["lang"]['cidr'] = '- Да.';
 
-$GLOBALS["lang"]['Close'] = 'Κλείσιμο';
+$GLOBALS["lang"]['Cidr'] = '- Да.';
 
-$GLOBALS["lang"]['Cloud'] = 'Σύννεφο';
+$GLOBALS["lang"]['circuit_count'] = '.';
 
-$GLOBALS["lang"]['Cloud Details'] = 'Λεπτομέρειες Cloud';
+$GLOBALS["lang"]['Circuit Count'] = '.';
 
-$GLOBALS["lang"]['Cloud Discovery'] = 'Ανακάλυψη Cloud';
+$GLOBALS["lang"]['circuit_status'] = '.';
 
-$GLOBALS["lang"]['cloud_id'] = 'ID Cloud';
+$GLOBALS["lang"]['Circuit Status'] = '.';
 
-$GLOBALS["lang"]['Cloud ID'] = 'ID Cloud';
+$GLOBALS["lang"]['city'] = '- Да.';
 
-$GLOBALS["lang"]['cloud_log'] = 'Καταγραφή Cloud';
+$GLOBALS["lang"]['City'] = '- Да.';
 
-$GLOBALS["lang"]['Cloud Log'] = 'Καταγραφή Cloud';
+$GLOBALS["lang"]['class'] = '- Не, не.';
 
-$GLOBALS["lang"]['cloud_name'] = 'Όνομα Cloud';
+$GLOBALS["lang"]['Class'] = '- Не, не.';
 
-$GLOBALS["lang"]['Cloud Name'] = 'Όνομα Cloud';
+$GLOBALS["lang"]['class_text'] = '- Не, не.';
 
-$GLOBALS["lang"]['Cloud Network'] = 'Δίκτυο Cloud';
+$GLOBALS["lang"]['Class Text'] = '- Не, не.';
 
-$GLOBALS["lang"]['clouds'] = 'Σύννεφα';
+$GLOBALS["lang"]['Click <i>New client secret</i>.'] = 'Άξταρ <i>.</i>.';
 
-$GLOBALS["lang"]['Clouds'] = 'Σύννεφα';
+$GLOBALS["lang"]['Click Submit to Execute'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['cluster'] = 'Σμήνος';
+$GLOBALS["lang"]['Click on <i>Properties</i> under the <i>Manage</i> header in the central menu column. Copy the <i>User Access URL</i>. Once copied, paste it into yout text editor. You will need to copy one section of this field.<br><br>Our example field looks like this<br><code>https://launcher.myapps.microsoft.com/api/signin/5d97003c-g24b-346e-9932-77db6470b939?tenantId=cf406343-1a96-4f7c-0cc6-46e86dddabf3</code>.<br><br>The section we need is <code>cf406343-1a96-4f7c-0cc6-46e86dddabf3</code> (the tenant ID). This is used in Open-AudIT as the <i>Tenant</i> field, so paste it in there.'] = '- Да. <i>- Да.</i> Не, не. <i>Κεϊντιγιάτ</i> - Да. <i>.</i>...<br/><br/>- Да.<br/><code>https://launcher.myapps.microsoft.com/api/signin/5d97003c-g24b-346e-9932-77db6470b939?tenantId=cf406343-1a96-4f7c-0cc6-46e86dddabf3</code>.<br/><br/>. <code>cf406343-1a96-4f7c-0cc6-46e86dddabf3</code> (...) <i>Не, не, не.</i> .';
 
-$GLOBALS["lang"]['Cluster'] = 'Σμήνος';
+$GLOBALS["lang"]['Click on App Registrations to create a new Application, then click New Application Registration. Give it a name (I used Open-AudIT), select Web app / API as the type and provide any URL (the URL is not important) and now click Create.'] = 'Yeni proqram yaratmaq üçün App Registrierungen basīn, sonra yeni Anmeldung okoyun. (στα Αγγλικά). Имено.';
 
-$GLOBALS["lang"]['cluster_id'] = 'Ταυτότητα συστάδας';
+$GLOBALS["lang"]['Click on OK and close the DCOMCNFG window.<br><br>The above changes will require a reboot to take effect.'] = 'Не, не, не.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['Cluster ID'] = 'Ταυτότητα συστάδας';
+$GLOBALS["lang"]['Click on the application you just created. The Application ID displayed is the Client ID.<br><br>To create the client secret, click Settings, then Keys. Provide a key name and select an appropriate expiry date, then click Save.<br><br>The value will be populated for you - this is the Client Secret.'] = '.<br/><br/> да го направим, да го направим.<br/><br/>- Не, не.';
 
-$GLOBALS["lang"]['cluster_name'] = 'Όνομα συστάδας';
+$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = '.<br/>. ';
 
-$GLOBALS["lang"]['Cluster Name'] = 'Όνομα συστάδας';
+$GLOBALS["lang"]['Click the Edit button for <i>Basic SAML Configuration</i>.'] = '. <i>Ζακλαντνί SAML</i>.';
 
-$GLOBALS["lang"]['cluster_type'] = 'Τύπος συστάδας';
+$GLOBALS["lang"]['Click the Import button below to populate Open-AudIT with example device data.'] = '.';
 
-$GLOBALS["lang"]['Cluster Type'] = 'Τύπος συστάδας';
+$GLOBALS["lang"]['Click the icon to the right of the field you wish to edit. Change the field and click the green icon to submit.'] = '- Да.';
 
-$GLOBALS["lang"]['clusters'] = 'Σμήνη';
+$GLOBALS["lang"]['Client ID'] = '.';
 
-$GLOBALS["lang"]['Clusters'] = 'Σμήνη';
+$GLOBALS["lang"]['Client ID and Secret'] = '.';
 
-$GLOBALS["lang"]['Cocos (Keeling) Islands'] = 'Νήσοι Κόκος (Keeling)';
+$GLOBALS["lang"]['client_ident'] = '.';
 
-$GLOBALS["lang"]['Collector'] = 'Συλλέκτης';
+$GLOBALS["lang"]['Client Ident'] = '.';
 
-$GLOBALS["lang"]['Collector (UUID)'] = 'Συλλέκτης (UUID)';
+$GLOBALS["lang"]['client_secret'] = '.';
 
-$GLOBALS["lang"]['Collector Name'] = 'Όνομα συλλέκτη';
+$GLOBALS["lang"]['Client Secret'] = '.';
 
-$GLOBALS["lang"]['collector_uuid'] = 'Συλλέκτης Uuid';
+$GLOBALS["lang"]['client_site_name'] = '- Да.';
 
-$GLOBALS["lang"]['Collector Uuid'] = 'Συλλέκτης Uuid';
+$GLOBALS["lang"]['Client Site Name'] = '- Да.';
 
-$GLOBALS["lang"]['collectors'] = 'Συλλέκτες';
+$GLOBALS["lang"]['Close'] = '- Не, не.';
 
-$GLOBALS["lang"]['Collectors'] = 'Συλλέκτες';
+$GLOBALS["lang"]['Closed'] = '- Да.';
 
-$GLOBALS["lang"]['Colombia'] = 'Κολομβία';
+$GLOBALS["lang"]['Cloud'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['color'] = 'Χρώμα';
+$GLOBALS["lang"]['Cloud Details'] = '- Да.';
 
-$GLOBALS["lang"]['Color'] = 'Χρώμα';
+$GLOBALS["lang"]['Cloud Discovery'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['column'] = 'Στήλη';
+$GLOBALS["lang"]['Cloud Discovery and Auditing'] = '- Да.';
 
-$GLOBALS["lang"]['Column'] = 'Στήλη';
+$GLOBALS["lang"]['cloud_id'] = '.';
 
-$GLOBALS["lang"]['Columns'] = 'Στήλες';
+$GLOBALS["lang"]['Cloud ID'] = '.';
 
-$GLOBALS["lang"]['command'] = 'Εντολή';
+$GLOBALS["lang"]['cloud_log'] = '.';
 
-$GLOBALS["lang"]['Command'] = 'Εντολή';
+$GLOBALS["lang"]['Cloud Log'] = '.';
 
-$GLOBALS["lang"]['command_options'] = 'Επιλογές εντολής';
+$GLOBALS["lang"]['cloud_name'] = '.';
 
-$GLOBALS["lang"]['Command Options'] = 'Επιλογές εντολής';
+$GLOBALS["lang"]['Cloud Name'] = '.';
 
-$GLOBALS["lang"]['command_output'] = 'Έξοδος εντολής';
+$GLOBALS["lang"]['Cloud Network'] = '.';
 
-$GLOBALS["lang"]['Command Output'] = 'Έξοδος εντολής';
+$GLOBALS["lang"]['clouds'] = '- Да.';
 
-$GLOBALS["lang"]['command_status'] = 'Κατάσταση εντολής';
+$GLOBALS["lang"]['Clouds'] = '- Да.';
 
-$GLOBALS["lang"]['Command Status'] = 'Κατάσταση εντολής';
+$GLOBALS["lang"]['Clouds are a feature available to Open-AudIT Enterprise licensed customers.'] = '- Да.';
 
-$GLOBALS["lang"]['command_time_to_execute'] = 'Ώρα εντολής για εκτέλεση';
+$GLOBALS["lang"]['cluster'] = '.';
 
-$GLOBALS["lang"]['Command Time To Execute'] = 'Ώρα εντολής για εκτέλεση';
+$GLOBALS["lang"]['Cluster'] = '.';
 
-$GLOBALS["lang"]['comment'] = 'Σχόλιο';
+$GLOBALS["lang"]['cluster_id'] = '.';
 
-$GLOBALS["lang"]['Comment'] = 'Σχόλιο';
+$GLOBALS["lang"]['Cluster ID'] = '.';
 
-$GLOBALS["lang"]['comments'] = 'Σχόλια';
+$GLOBALS["lang"]['cluster_name'] = '.';
 
-$GLOBALS["lang"]['Comments'] = 'Σχόλια';
+$GLOBALS["lang"]['Cluster Name'] = '.';
 
-$GLOBALS["lang"]['commercial'] = 'Εμπορικά';
+$GLOBALS["lang"]['cluster_type'] = '.';
 
-$GLOBALS["lang"]['Commercial'] = 'Εμπορικά';
+$GLOBALS["lang"]['Cluster Type'] = '.';
 
-$GLOBALS["lang"]['common_name'] = 'Κοινή ονομασία';
+$GLOBALS["lang"]['clusters'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Common Name'] = 'Κοινή ονομασία';
+$GLOBALS["lang"]['Clusters'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Commonly referred to as the clientId.'] = 'Κοινώς αναφερόμενος ως πελάτηςId.';
+$GLOBALS["lang"]['Clusters and Reporting'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Commonly referred to as the clientSecret.'] = 'Κοινώς αναφέρεται ως ο πελάτης Secret.';
+$GLOBALS["lang"]['Cocos (Keeling) Islands'] = '(Кийлиня)';
 
-$GLOBALS["lang"]['Community'] = 'Κοινότητα';
+$GLOBALS["lang"]['Collection'] = '.';
 
-$GLOBALS["lang"]['Community Questions'] = 'Κοινοτικές ερωτήσεις';
+$GLOBALS["lang"]['Collections'] = 'Не, не.';
 
-$GLOBALS["lang"]['Community String'] = 'Κοινοτική συμβολοσειρά';
+$GLOBALS["lang"]['Collector'] = '.';
 
-$GLOBALS["lang"]['Comoros the'] = 'Κομόρες';
+$GLOBALS["lang"]['Collector (UUID)'] = '(UID)';
 
-$GLOBALS["lang"]['Compact'] = 'Συμπαγές';
+$GLOBALS["lang"]['Collector / Server is an Enterprise only feature. Enterprise customers receive one Collector license for free. Additional Collector licenses can be purchased as required.'] = 'Имено.';
 
-$GLOBALS["lang"]['Company'] = 'Εταιρεία';
+$GLOBALS["lang"]['Collector / Server is designed so that you can have a remote or <i>collector</i>  instance of Open-AudIT running on a remote machine. That collector instance might be in another security zone, subnet, cloud hosting instance or at a customer site.  The remote collector is then doing all the discovering and auditing of devices locally avoiding networking and firewalling complexity.  The Collector once it has registered is completely controlled by the <i>server</i>.  This means you only need an HTTP or HTTPS connection from that Collector to the Server.'] = '. <i>.</i> Имено. <i>.</i>...';
 
-$GLOBALS["lang"]['Complexity of the attack (Low or High).'] = 'Πολυπλοκότητα της επίθεσης (Κάτω ή Ψηλά).';
+$GLOBALS["lang"]['Collector Dashboard'] = '.';
 
-$GLOBALS["lang"]['Component Table'] = 'Πίνακας συστατικών';
+$GLOBALS["lang"]['Collector Name'] = '.';
 
-$GLOBALS["lang"]['Components (All Devices)'] = 'Εξαρτήματα (όλες οι συσκευές)';
+$GLOBALS["lang"]['collector_uuid'] = '.';
 
-$GLOBALS["lang"]['Compute'] = 'Υπολογισμός';
+$GLOBALS["lang"]['Collector Uuid'] = '.';
 
-$GLOBALS["lang"]['Condition'] = 'Κατάσταση';
+$GLOBALS["lang"]['Collector tasks are automatically setup when the collector feature is enabled. Collector tasks should not be created directly by users. Collector tasks can have their frequency edited after creation. If the Open-AudIT Server has Collectors reporting to it, an additional drop down is provided. You can select this to specify which Collector the task should run on. Only Discovery tasks are supported for Collectors.'] = ' Ein te Имено.';
 
-$GLOBALS["lang"]['Config'] = 'Conf';
+$GLOBALS["lang"]['Collectors'] = '.';
 
-$GLOBALS["lang"]['Config Default, currently '] = 'Προκαθορισμένο ρύθμισης, αυτή τη στιγμή ';
+$GLOBALS["lang"]['Collectors can operate in one of two modes: Collector and StandAlone. When in Collector mode, the instance of Open-AudIT is managed by the main server. When in Stand Alone mode, the instance is managed locally and forwards any found devices to the main server.'] = 'Имено.';
 
-$GLOBALS["lang"]['config_file'] = 'Αρχείο ρύθμισης';
+$GLOBALS["lang"]['Collectors for Remote Discovery'] = '.';
 
-$GLOBALS["lang"]['Config File'] = 'Αρχείο ρύθμισης';
+$GLOBALS["lang"]['Colombia'] = '- Да.';
 
-$GLOBALS["lang"]['config_manager_error_code'] = 'Κωδικός σφάλματος διαχειριστή ρυθμίσεων';
+$GLOBALS["lang"]['color'] = ' Όνομα';
 
-$GLOBALS["lang"]['Config Manager Error Code'] = 'Κωδικός σφάλματος διαχειριστή ρυθμίσεων';
+$GLOBALS["lang"]['Color'] = ' Όνομα';
 
-$GLOBALS["lang"]['configuration'] = 'Configuration';
+$GLOBALS["lang"]['Column'] = 'Ümumi';
 
-$GLOBALS["lang"]['Configuration'] = 'Configuration';
+$GLOBALS["lang"]['Columns'] = 'Калерея.';
 
-$GLOBALS["lang"]['Configure'] = 'Configure';
+$GLOBALS["lang"]['command'] = '- Не, не.';
 
-$GLOBALS["lang"]['Congo'] = 'Κονγκό';
+$GLOBALS["lang"]['Command'] = '- Не, не.';
 
-$GLOBALS["lang"]['Congo the'] = 'Κονγκό';
+$GLOBALS["lang"]['command_options'] = '- Да.';
 
-$GLOBALS["lang"]['Connected To'] = 'Σύνδεση με';
+$GLOBALS["lang"]['Command Options'] = '- Да.';
 
-$GLOBALS["lang"]['connection'] = 'Σύνδεση';
+$GLOBALS["lang"]['command_output'] = '.';
 
-$GLOBALS["lang"]['Connection'] = 'Σύνδεση';
+$GLOBALS["lang"]['Command Output'] = '.';
 
-$GLOBALS["lang"]['Connection Options'] = 'Επιλογές σύνδεσης';
+$GLOBALS["lang"]['command_status'] = '.';
 
-$GLOBALS["lang"]['connection_status'] = 'Κατάσταση σύνδεσης';
+$GLOBALS["lang"]['Command Status'] = '.';
 
-$GLOBALS["lang"]['Connection Status'] = 'Κατάσταση σύνδεσης';
+$GLOBALS["lang"]['command_time_to_execute'] = '.';
 
-$GLOBALS["lang"]['connections'] = 'Συνδέσεις';
+$GLOBALS["lang"]['Command Time To Execute'] = '.';
 
-$GLOBALS["lang"]['Connections'] = 'Συνδέσεις';
+$GLOBALS["lang"]['comment'] = '- Не.';
 
-$GLOBALS["lang"]['Consider filtered Ports Open'] = 'Εξετάστε το φιλτραρισμένο Άνοιγμα θυρών';
+$GLOBALS["lang"]['Comment'] = '- Не.';
 
-$GLOBALS["lang"]['Consider open|filtered Ports Open'] = 'Θεώρησέ το ανοιχτό. Άνοιγμα θυρών';
+$GLOBALS["lang"]['Comment out the below line (about line 49 or so). Just place a hash # at the start of the line.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['contact'] = 'Επικοινωνία';
+$GLOBALS["lang"]['comments'] = '- Да.';
 
-$GLOBALS["lang"]['Contact'] = 'Επικοινωνία';
+$GLOBALS["lang"]['Comments'] = '- Да.';
 
-$GLOBALS["lang"]['contact_name'] = 'Όνομα επαφής';
+$GLOBALS["lang"]['commercial'] = '- Не, не.';
 
-$GLOBALS["lang"]['Contact Name'] = 'Όνομα επαφής';
+$GLOBALS["lang"]['Commercial'] = '- Не, не.';
 
-$GLOBALS["lang"]['contained_in'] = 'Περιεχόμενα';
+$GLOBALS["lang"]['Commercial Support'] = '.';
 
-$GLOBALS["lang"]['Contained In'] = 'Περιεχόμενα';
+$GLOBALS["lang"]['common_name'] = '.';
 
-$GLOBALS["lang"]['Contains a JSON object details the associated widgets and their positions.'] = 'Περιέχει ένα αντικείμενο JSON λεπτομέρειες τα σχετικά widgets και τις θέσεις τους.';
+$GLOBALS["lang"]['Common Name'] = '.';
 
-$GLOBALS["lang"]['Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.'] = 'Περιέχει τα πεδία που καθορίζουν αν θα πρέπει να χρησιμοποιούμε ssh, snmp και wmi επιλογές ανακάλυψης. Ένα αντικείμενο JSON.';
+$GLOBALS["lang"]['Commonly referred to as the clientId.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Context Engine ID'] = 'ID μηχανής κειμένου';
+$GLOBALS["lang"]['Commonly referred to as the clientSecret.'] = '.';
 
-$GLOBALS["lang"]['Context Name'] = 'Όνομα κειμένου';
+$GLOBALS["lang"]['Community'] = '- Да.';
 
-$GLOBALS["lang"]['contractual_obligations'] = 'Συμβατικές υποχρεώσεις';
+$GLOBALS["lang"]['Community Questions'] = '.';
 
-$GLOBALS["lang"]['Contractual Obligations'] = 'Συμβατικές υποχρεώσεις';
+$GLOBALS["lang"]['Community String'] = '.';
 
-$GLOBALS["lang"]['Cook Islands'] = 'Νήσοι Κουκ';
+$GLOBALS["lang"]['Comoros the'] = '.';
 
-$GLOBALS["lang"]['Copy and paste an audit result'] = 'Αντιγραφή και επικόλληση αποτελέσματος ελέγχου';
+$GLOBALS["lang"]['Compact'] = '- Не, не.';
 
-$GLOBALS["lang"]['Copy and paste the below to the forums, another instance of Open-AudIT or anywhere else you need to provide this item.'] = 'Αντιγραφή και επικόλληση των παρακάτω στα φόρουμ, μια άλλη περίπτωση του Open-AudIT ή οπουδήποτε αλλού θα πρέπει να παρέχουν αυτό το στοιχείο.';
+$GLOBALS["lang"]['Company'] = 'Όνομα';
 
-$GLOBALS["lang"]['core_count'] = 'Μέτρηση πυρήνα';
+$GLOBALS["lang"]['Complete these steps.'] = '.';
 
-$GLOBALS["lang"]['Core Count'] = 'Μέτρηση πυρήνα';
+$GLOBALS["lang"]['Complexity of the attack (Low or High).'] = 'Χουκούμ Κομπλίκσι (Aşagşv год. ya yüksk).';
 
-$GLOBALS["lang"]['Cores'] = 'Πυρήνες';
+$GLOBALS["lang"]['Component Table'] = '- Да.';
 
-$GLOBALS["lang"]['cost_center'] = 'Κέντρο κόστους';
+$GLOBALS["lang"]['Components (All Devices)'] = '.';
 
-$GLOBALS["lang"]['Cost Center'] = 'Κέντρο κόστους';
+$GLOBALS["lang"]['Compute'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['cost_code'] = 'Κωδικός κόστους';
+$GLOBALS["lang"]['Condition'] = '- Не, не.';
 
-$GLOBALS["lang"]['Cost Code'] = 'Κωδικός κόστους';
+$GLOBALS["lang"]['Conduct a risk assessment'] = '.';
 
-$GLOBALS["lang"]['Costa Rica'] = 'Κόστα Ρίκα';
+$GLOBALS["lang"]['Conduct awareness and training programs'] = '- Да.';
 
-$GLOBALS["lang"]['Cote d Ivoire'] = 'Ακτή Ελεφαντοστού';
+$GLOBALS["lang"]['Conduct management review meetings'] = '- Да.';
 
-$GLOBALS["lang"]['count'] = 'Αριθμός';
+$GLOBALS["lang"]['Conduct regular surveillance audits (usually annually)'] = '.';
 
-$GLOBALS["lang"]['Count'] = 'Αριθμός';
+$GLOBALS["lang"]['Conducted by an accredited body in two stages'] = '.';
 
-$GLOBALS["lang"]['country'] = 'Χώρες';
+$GLOBALS["lang"]['Config'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Country'] = 'Χώρες';
+$GLOBALS["lang"]['Config Default, currently '] = 'Тра ';
 
-$GLOBALS["lang"]['country_code'] = 'Κωδικός χώρας';
+$GLOBALS["lang"]['config_file'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Country Code'] = 'Κωδικός χώρας';
+$GLOBALS["lang"]['Config File'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['cpu_count'] = 'Αριθμός Cpu';
+$GLOBALS["lang"]['config_manager_error_code'] = 'Komissiya meneceri';
 
-$GLOBALS["lang"]['Cpu Count'] = 'Αριθμός Cpu';
+$GLOBALS["lang"]['Config Manager Error Code'] = 'Komissiya meneceri';
 
-$GLOBALS["lang"]['Create'] = 'Δημιουργία';
+$GLOBALS["lang"]['Configurable Role Based Access Control (RBAC)'] = '- Да.';
 
-$GLOBALS["lang"]['Create Example Devices'] = 'Δημιουργία παραδειγμάτων συσκευών';
+$GLOBALS["lang"]['configuration'] = 'Не, не.';
 
-$GLOBALS["lang"]['create_external_count'] = 'Δημιουργία εξωτερικού αριθμού';
+$GLOBALS["lang"]['Configuration'] = 'Не, не.';
 
-$GLOBALS["lang"]['Create External Count'] = 'Δημιουργία εξωτερικού αριθμού';
+$GLOBALS["lang"]['Configuration Change Detection and Reporting'] = '.';
 
-$GLOBALS["lang"]['create_external_from_internal'] = 'Δημιουργία εξωτερικού από το εσωτερικό';
+$GLOBALS["lang"]['Configure'] = '- Да.';
 
-$GLOBALS["lang"]['Create External From Internal'] = 'Δημιουργία εξωτερικού από το εσωτερικό';
+$GLOBALS["lang"]['Configure the agent server-side to perform audits on a schedule'] = '- Не, не.';
 
-$GLOBALS["lang"]['Create Geocode'] = 'Δημιουργία γεωκώδικα';
+$GLOBALS["lang"]['Congo'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['create_internal_count'] = 'Δημιουργία εσωτερικού αριθμού';
+$GLOBALS["lang"]['Congo the'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Create Internal Count'] = 'Δημιουργία εσωτερικού αριθμού';
+$GLOBALS["lang"]['Connected To'] = '- Да.';
 
-$GLOBALS["lang"]['create_internal_from_external'] = 'Δημιουργία εσωτερικού από εξωτερικό';
+$GLOBALS["lang"]['connection'] = 'E-Poçon';
 
-$GLOBALS["lang"]['Create Internal From External'] = 'Δημιουργία εσωτερικού από εξωτερικό';
+$GLOBALS["lang"]['Connection'] = 'E-Poçon';
 
-$GLOBALS["lang"]['Create NMIS Devices from Open-AudIT'] = 'Δημιουργία συσκευών NMIS από Open-AudIT';
+$GLOBALS["lang"]['Connection Options'] = '.';
 
-$GLOBALS["lang"]['Create Open-AudIT Devices from '] = 'Δημιουργία Open-AudIT Συσκευές από ';
+$GLOBALS["lang"]['connection_status'] = 'Не, не.';
 
-$GLOBALS["lang"]['Create Open-AudIT Devices from NMIS'] = 'Δημιουργία Open-AudIT Συσκευές από το NMIS';
+$GLOBALS["lang"]['Connection Status'] = 'Не, не.';
 
-$GLOBALS["lang"]['created_by'] = 'Δημιουργία από';
+$GLOBALS["lang"]['connections'] = '- Да.';
 
-$GLOBALS["lang"]['Created By'] = 'Δημιουργία από';
+$GLOBALS["lang"]['Connections'] = '- Да.';
 
-$GLOBALS["lang"]['created_date'] = 'Ημερομηνία δημιουργίας';
+$GLOBALS["lang"]['Consider filtered Ports Open'] = 'Не, не.';
 
-$GLOBALS["lang"]['Created Date'] = 'Ημερομηνία δημιουργίας';
+$GLOBALS["lang"]['Consider open|filtered Ports Open'] = '.';
 
-$GLOBALS["lang"]['Creating'] = 'Δημιουργία';
+$GLOBALS["lang"]['Consulting, implementation and other services are available through'] = '- Да.';
 
-$GLOBALS["lang"]['Creating Device'] = 'Δημιουργία συσκευής';
+$GLOBALS["lang"]['contact'] = '- Не, не.';
 
-$GLOBALS["lang"]['Creating a Query'] = 'Δημιουργία ενός ερωτήματος';
+$GLOBALS["lang"]['Contact'] = '- Не, не.';
 
-$GLOBALS["lang"]['creator'] = 'Δημιουργός';
+$GLOBALS["lang"]['contact_name'] = '.';
 
-$GLOBALS["lang"]['Creator'] = 'Δημιουργός';
+$GLOBALS["lang"]['Contact Name'] = '.';
 
-$GLOBALS["lang"]['credential'] = 'Κρητικό';
+$GLOBALS["lang"]['contained_in'] = '- Не, не.';
 
-$GLOBALS["lang"]['Credential'] = 'Κρητικό';
+$GLOBALS["lang"]['Contained In'] = '- Не, не.';
 
-$GLOBALS["lang"]['credentials'] = 'Καταχώριση';
+$GLOBALS["lang"]['Contains a JSON object details the associated widgets and their positions.'] = '.';
 
-$GLOBALS["lang"]['Credentials'] = 'Καταχώριση';
+$GLOBALS["lang"]['Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.'] = '- Да.';
 
-$GLOBALS["lang"]['Credentials Client ID'] = 'Ταυτότητα πελάτη';
+$GLOBALS["lang"]['Context & Leadership'] = '.';
 
-$GLOBALS["lang"]['Credentials Subscription ID'] = 'Συνδρομές ID';
+$GLOBALS["lang"]['Context Engine ID'] = '.';
 
-$GLOBALS["lang"]['Credentials Tenant ID'] = 'Ταυτότητα εντολοδόχου';
+$GLOBALS["lang"]['Context Name'] = '.';
 
-$GLOBALS["lang"]['Credentials for Amazon AWS used in Cloud Discovery'] = 'Έντυπο για το Amazon AWS που χρησιμοποιείται στο Cloud Discovery';
+$GLOBALS["lang"]['Continuously improve the ISMS'] = '.';
 
-$GLOBALS["lang"]['Credentials for Microsoft Azure used in Cloud Discovery'] = 'Έντυπο για τη Microsoft Azure χρησιμοποιείται στο Cloud Discovery';
+$GLOBALS["lang"]['contractual_obligations'] = '- Да.';
 
-$GLOBALS["lang"]['Critical'] = 'Κρίσιμη';
+$GLOBALS["lang"]['Contractual Obligations'] = '- Да.';
 
-$GLOBALS["lang"]['criticality'] = 'Κρισιμότητα';
+$GLOBALS["lang"]['Cook Islands'] = '- Не, не.';
 
-$GLOBALS["lang"]['Criticality'] = 'Κρισιμότητα';
+$GLOBALS["lang"]['Copy and paste an audit result'] = 'Не, не.';
 
-$GLOBALS["lang"]['Croatia'] = 'Κροατία';
+$GLOBALS["lang"]['Copy and paste the below to the forums, another instance of Open-AudIT or anywhere else you need to provide this item.'] = '.';
 
-$GLOBALS["lang"]['Cuba'] = 'Κούβα';
+$GLOBALS["lang"]['Copy the <i>Application ID</i> field and paste it into the Open-AudIT <i>Client ID</i> field for the new Auth Method.'] = '- Не, не. <i>.</i> . <i>.</i> .';
 
-$GLOBALS["lang"]['current'] = 'Τρέχων';
+$GLOBALS["lang"]['Copy the <i>Client ID</i> and paste it into the Open-AudIT <i>Client ID</i> field.<br>If there is no secret, click <i>Generate new secret</i>, then copy the value and paste it into the Open-AudIT <i>Client Secret</i> field.'] = '- Не, не. <i>.</i> . <i>.</i> - Да.<br/>. <i>.</i>. <i>.</i> - Да.';
 
-$GLOBALS["lang"]['Current'] = 'Τρέχων';
+$GLOBALS["lang"]['Copy the value and paste it into the Open-AudIT form for the <i>Client Secret</i> field.'] = '. <i>.</i> - Да.';
 
-$GLOBALS["lang"]['Current Discovery Processes'] = 'Τρέχουσες διαδικασίες ανακάλυψης';
+$GLOBALS["lang"]['core_count'] = '.';
 
-$GLOBALS["lang"]['Current date & time is '] = 'Τρέχουσα ημερομηνία & ώρα ';
+$GLOBALS["lang"]['Core Count'] = '.';
 
-$GLOBALS["lang"]['Currently Installed'] = 'Επί του παρόντος εγκατεστημένος';
+$GLOBALS["lang"]['Cores'] = 'Калерея.';
 
-$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = 'Οι τύποι που υποστηρίζονται σήμερα είναι <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> ή <code>windows</code>.';
+$GLOBALS["lang"]['cost_center'] = '.';
 
-$GLOBALS["lang"]['Custom TCP Ports'] = 'Προσαρμοσμένες θύρες TCP';
+$GLOBALS["lang"]['Cost Center'] = '.';
 
-$GLOBALS["lang"]['Custom UDP Ports'] = 'Προσαρμοσμένο UDP Λιμάνια';
+$GLOBALS["lang"]['cost_code'] = '.';
 
-$GLOBALS["lang"]['Cve'] = 'Κυψέλη';
+$GLOBALS["lang"]['Cost Code'] = '.';
 
-$GLOBALS["lang"]['Cyprus'] = 'Κύπρος';
+$GLOBALS["lang"]['Costa Rica'] = '- Да.';
 
-$GLOBALS["lang"]['Czech'] = 'Τσεχικά';
+$GLOBALS["lang"]['Cote d Ivoire'] = '- Да.';
 
-$GLOBALS["lang"]['Czech Republic'] = 'Τσεχική Δημοκρατία';
+$GLOBALS["lang"]['count'] = '- Да.';
 
-$GLOBALS["lang"]['DHCP'] = 'DHCP';
+$GLOBALS["lang"]['Count'] = '- Да.';
 
-$GLOBALS["lang"]['DN Account (optional)'] = 'Λογαριασμός DN (προαιρετικό)';
+$GLOBALS["lang"]['country'] = 'Не, не.';
 
-$GLOBALS["lang"]['DN Password (optional)'] = 'Κωδικός DN (προαιρετικό)';
+$GLOBALS["lang"]['Country'] = 'Не, не.';
+
+$GLOBALS["lang"]['country_code'] = '.';
+
+$GLOBALS["lang"]['Country Code'] = '.';
+
+$GLOBALS["lang"]['cpu_count'] = 'Cpu say';
+
+$GLOBALS["lang"]['Cpu Count'] = 'Cpu say';
+
+$GLOBALS["lang"]['Create'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['Create Example Devices'] = 'Kompüter Cihazlar';
+
+$GLOBALS["lang"]['create_external_count'] = '- Не, не.';
+
+$GLOBALS["lang"]['Create External Count'] = '- Не, не.';
+
+$GLOBALS["lang"]['create_external_from_internal'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Create External From Internal'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Create File'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['Create Geocode'] = 'Геокод Геокод.';
+
+$GLOBALS["lang"]['create_internal_count'] = 'Не, не.';
+
+$GLOBALS["lang"]['Create Internal Count'] = 'Не, не.';
+
+$GLOBALS["lang"]['create_internal_from_external'] = 'Νταξιλί γιαραντελάσμαντορ. kg';
+
+$GLOBALS["lang"]['Create Internal From External'] = 'Νταξιλί γιαραντελάσμαντορ. kg';
+
+$GLOBALS["lang"]['Create NMIS Devices from Open-AudIT'] = 'Οφένιο Prüfung';
+
+$GLOBALS["lang"]['Create Open-AudIT Devices from '] = 'Не, не. ';
+
+$GLOBALS["lang"]['Create Open-AudIT Devices from NMIS'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Create a Baseline for the example device'] = '.';
+
+$GLOBALS["lang"]['Create a Discovery'] = '.';
+
+$GLOBALS["lang"]['Create a Statement of Applicability (SoA)'] = 'Приложимост (SOA) (στα Αγγλικά).';
+
+$GLOBALS["lang"]['created_by'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Created By'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['created_date'] = '.';
+
+$GLOBALS["lang"]['Created Date'] = '.';
+
+$GLOBALS["lang"]['Creating'] = '- Да.';
+
+$GLOBALS["lang"]['Creating Credentials'] = '- Да.';
+
+$GLOBALS["lang"]['Creating Device'] = 'Cihaz aparat';
+
+$GLOBALS["lang"]['Creating Widgets'] = '.';
+
+$GLOBALS["lang"]['Creating a Discovery Scan Options entry'] = '- Да.';
+
+$GLOBALS["lang"]['Creating a Query'] = '- Да.';
+
+$GLOBALS["lang"]['Creating a SQL Statement for Groups'] = '.';
+
+$GLOBALS["lang"]['Creating a SQL Statement for Queries'] = ' :.';
+
+$GLOBALS["lang"]['Creating an Integration'] = 'Не, не.';
+
+$GLOBALS["lang"]['creator'] = 'Άξταρ@';
+
+$GLOBALS["lang"]['Creator'] = 'Άξταρ@';
+
+$GLOBALS["lang"]['credential'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Credential'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Credentials'] = '- Да.';
+
+$GLOBALS["lang"]['Credentials Client ID'] = '.';
+
+$GLOBALS["lang"]['Credentials Subscription ID'] = '.';
+
+$GLOBALS["lang"]['Credentials Tenant ID'] = '- Да.';
+
+$GLOBALS["lang"]['Credentials are stored in the <i>credentials</i> database table. The actual credential information is encrypted in storage. When a Discovery is run, a device has its specific credentials retrieved from the database, decrypted and tested. If these fail the list of credentials is also retrieved, decrypted and then tested against the device starting with credentials known to have worked previously. Device specific credentials are stored at an individual device level in the <i>credential</i> table (note - no <i>s</i> in the table name). SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.'] = '- Да. <i>- Да.</i> Имено. <i>- Да.</i> . <i> </i> - Όχι.';
+
+$GLOBALS["lang"]['Credentials can have one of a few different types - snmp v.1 / v.2, snmp v.3, ssh, ssh key, windows are all implemented. CAVEAT - ssh keys are not implemented for Windows Open-AudIT servers as yet.'] = '- Ζα πρβέ:';
+
+$GLOBALS["lang"]['Credentials for Amazon AWS used in Cloud Discovery'] = 'Имено.';
+
+$GLOBALS["lang"]['Credentials for Microsoft Azure used in Cloud Discovery'] = '. Azure Cloud Discovery istifad (Αζούρ Cloud Discovery istifad)';
+
+$GLOBALS["lang"]['Critical'] = '- Да.';
+
+$GLOBALS["lang"]['criticality'] = '- Да.';
+
+$GLOBALS["lang"]['Criticality'] = '- Да.';
+
+$GLOBALS["lang"]['Croatia'] = '- Да.';
+
+$GLOBALS["lang"]['Cuba'] = '.';
+
+$GLOBALS["lang"]['current'] = '- Да.';
+
+$GLOBALS["lang"]['Current'] = '- Да.';
+
+$GLOBALS["lang"]['Current Discovery Processes'] = '.';
+
+$GLOBALS["lang"]['Current date & time is '] = '. ';
+
+$GLOBALS["lang"]['Currently Installed'] = '- Не, не.';
+
+$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = '. <code>snmp</code>. <code>snmp_v3</code>. <code>ssh</code>. <code>ssh_key</code> . <code>windows</code>.';
+
+$GLOBALS["lang"]['Custom Fields'] = '.';
+
+$GLOBALS["lang"]['Custom TCP Ports'] = '.';
+
+$GLOBALS["lang"]['Custom TCP Ports. Any specific ports we would liuke scanned in addition to the Top TCP Ports. Comma seperated, no spaces.'] = 'TCP...';
+
+$GLOBALS["lang"]['Custom UDP Ports'] = '- Да.';
+
+$GLOBALS["lang"]['Custom UDP Ports. Any specific ports we would liuke scanned in addition to the Top UDP Ports. Comma seperated, no spaces.'] = '- Да.';
+
+$GLOBALS["lang"]['Customisable Scanning Options per Discovery'] = '.';
+
+$GLOBALS["lang"]['Cve'] = ' В';
+
+$GLOBALS["lang"]['Cyprus'] = 'Не, не.';
+
+$GLOBALS["lang"]['Czech'] = '- Да.';
+
+$GLOBALS["lang"]['Czech Republic'] = '.';
+
+$GLOBALS["lang"]['DHCP'] = 'Калерея.';
+
+$GLOBALS["lang"]['DN Account (optional)'] = '.';
+
+$GLOBALS["lang"]['DN Password (optional)'] = '.';
 
 $GLOBALS["lang"]['DNS FQDN'] = 'DNS FQDN';
 
 $GLOBALS["lang"]['DNS Hostname'] = 'Όνομα υπολογιστή DNS';
 
-$GLOBALS["lang"]['dashboard_id'] = 'ID πίνακα';
+$GLOBALS["lang"]['Danish'] = '- Не, не.';
 
-$GLOBALS["lang"]['Dashboard ID'] = 'ID πίνακα';
+$GLOBALS["lang"]['dashboard_id'] = '.';
 
-$GLOBALS["lang"]['dashboards'] = 'Δακτύλιοι';
+$GLOBALS["lang"]['Dashboard ID'] = '.';
 
-$GLOBALS["lang"]['Dashboards'] = 'Δακτύλιοι';
+$GLOBALS["lang"]['Dashboard Widgets'] = 'Калерея.';
 
-$GLOBALS["lang"]['Database'] = 'Βάση δεδομένων';
+$GLOBALS["lang"]['dashboards'] = '.';
 
-$GLOBALS["lang"]['db_action'] = 'Δράση βάσης δεδομένων';
+$GLOBALS["lang"]['Dashboards'] = '.';
 
-$GLOBALS["lang"]['Database Action'] = 'Δράση βάσης δεδομένων';
+$GLOBALS["lang"]['Dashboards and Widgets allow Enterprise licensed customers to create, read, update and delete both of these collections to ensure their homepage is exactly what they need to see. Not only that, but a user is able to set a given dashboard as their own homepage. Everyone does not need to use the same homepage (dashboard), nor the same widgets on that dashboard. Professional licensed customers can choose between two predefined dashboards to set as their own homepage.'] = 'Имено.';
 
-$GLOBALS["lang"]['db_column'] = 'Στήλη βάσης δεδομένων';
+$GLOBALS["lang"]['Dashboards provide <i>at a glance</i> important visibility for changes occurring on your network as well as providing quick links to device types, manufacturers, and operating systems and so much more.'] = '. <i>.</i> .';
 
-$GLOBALS["lang"]['Database Column'] = 'Στήλη βάσης δεδομένων';
+$GLOBALS["lang"]['Dashboards use'] = '- Да.';
 
-$GLOBALS["lang"]['Database Definition'] = 'Ορισμός βάσης δεδομένων';
+$GLOBALS["lang"]['Data'] = '.';
 
-$GLOBALS["lang"]['db_row'] = 'Γραμμή βάσης δεδομένων';
+$GLOBALS["lang"]['Data Export - CSV, XML, JSON'] = 'Експортиране на данни - CSV, XML, JSON';
 
-$GLOBALS["lang"]['Database Row'] = 'Γραμμή βάσης δεδομένων';
+$GLOBALS["lang"]['Data Retention'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Database Schema'] = 'Σχήμα βάσης δεδομένων';
+$GLOBALS["lang"]['Database'] = '.';
 
-$GLOBALS["lang"]['db_table'] = 'Πίνακας βάσης δεδομένων';
+$GLOBALS["lang"]['db_action'] = '- Да.';
 
-$GLOBALS["lang"]['Database Table'] = 'Πίνακας βάσης δεδομένων';
+$GLOBALS["lang"]['Database Action'] = '- Да.';
 
-$GLOBALS["lang"]['dataset_title'] = 'Τίτλος συνόλου δεδομένων';
+$GLOBALS["lang"]['db_column'] = ' Колона голота.';
 
-$GLOBALS["lang"]['Dataset Title'] = 'Τίτλος συνόλου δεδομένων';
+$GLOBALS["lang"]['Database Column'] = ' Колона голота.';
 
-$GLOBALS["lang"]['date'] = 'Ημερομηνία';
+$GLOBALS["lang"]['Database Definition'] = '.';
 
-$GLOBALS["lang"]['Date'] = 'Ημερομηνία';
+$GLOBALS["lang"]['db_row'] = '.';
 
-$GLOBALS["lang"]['Date D-M-Y'] = 'Ημερομηνία D-M-Y';
+$GLOBALS["lang"]['Database Row'] = '.';
 
-$GLOBALS["lang"]['Date M-D-Y'] = 'Ημερομηνία Μ-Δ-Υ';
+$GLOBALS["lang"]['Database Schema'] = '.';
 
-$GLOBALS["lang"]['Date Now'] = 'Ημερομηνία τώρα';
+$GLOBALS["lang"]['Database Server Discovery'] = '.';
 
-$GLOBALS["lang"]['date_of_manufacture'] = 'Ημερομηνία κατασκευής';
+$GLOBALS["lang"]['db_table'] = '.';
 
-$GLOBALS["lang"]['Date Of Manufacture'] = 'Ημερομηνία κατασκευής';
+$GLOBALS["lang"]['Database Table'] = '.';
 
-$GLOBALS["lang"]['date_paid'] = 'Ημερομηνία πληρωμής';
+$GLOBALS["lang"]['Database Tables'] = '.';
 
-$GLOBALS["lang"]['Date Paid'] = 'Ημερομηνία πληρωμής';
+$GLOBALS["lang"]['dataset_title'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['date_received'] = 'Ημερομηνία παραλαβής';
+$GLOBALS["lang"]['Dataset Title'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Date Received'] = 'Ημερομηνία παραλαβής';
+$GLOBALS["lang"]['date'] = '- Да.';
 
-$GLOBALS["lang"]['Date Y-M-D'] = 'Ημερομηνία Y-M-D';
+$GLOBALS["lang"]['Date'] = '- Да.';
 
-$GLOBALS["lang"]['Date and time when the CVE was last updated.'] = 'Ημερομηνία και ώρα κατά την οποία το CVE ενημερώθηκε τελευταία φορά.';
+$GLOBALS["lang"]['Date D-M-Y'] = '.';
 
-$GLOBALS["lang"]['Date and time when the CVE was published.'] = 'Ημερομηνία και ώρα δημοσίευσης του ΚΕΕ.';
+$GLOBALS["lang"]['Date M-D-Y'] = 'Μ-Δ-Υ';
 
-$GLOBALS["lang"]['Date when the CVE was published.'] = 'Ημερομηνία δημοσίευσης του ΚΕΕ.';
+$GLOBALS["lang"]['Date Now'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['DateTime Now'] = 'Ώρα ημερομηνίας τώρα';
+$GLOBALS["lang"]['date_of_manufacture'] = '.';
 
-$GLOBALS["lang"]['DateTime Y-M-D H:M:S'] = 'Ώρα ημερομηνίας Υ-Μ-Δ H:M:S';
+$GLOBALS["lang"]['Date Of Manufacture'] = '.';
 
-$GLOBALS["lang"]['day_of_month'] = 'Ημέρα του μήνα';
+$GLOBALS["lang"]['date_paid'] = '- Да.';
 
-$GLOBALS["lang"]['Day Of Month'] = 'Ημέρα του μήνα';
+$GLOBALS["lang"]['Date Paid'] = '- Да.';
 
-$GLOBALS["lang"]['day_of_week'] = 'Ημέρα της εβδομάδας';
+$GLOBALS["lang"]['date_received'] = '.';
 
-$GLOBALS["lang"]['Day Of Week'] = 'Ημέρα της εβδομάδας';
+$GLOBALS["lang"]['Date Received'] = '.';
 
-$GLOBALS["lang"]['Day of Month'] = 'Ημέρα του μήνα';
+$GLOBALS["lang"]['Date Y-M-D'] = 'Υ-Μ-Δ';
 
-$GLOBALS["lang"]['dbus_identifier'] = 'Αναγνωριστικό Dbus';
+$GLOBALS["lang"]['Date and time when the CVE was last updated.'] = '.';
 
-$GLOBALS["lang"]['Dbus Identifier'] = 'Αναγνωριστικό Dbus';
+$GLOBALS["lang"]['Date and time when the CVE was published.'] = '.';
 
-$GLOBALS["lang"]['Debug'] = 'Αποσφαλμάτωση';
+$GLOBALS["lang"]['Date when the CVE was published.'] = '.';
 
-$GLOBALS["lang"]['December'] = 'Δεκέμβριος';
+$GLOBALS["lang"]['DateTime Now'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['Default'] = 'Προκαθορισμένο';
+$GLOBALS["lang"]['DateTime Y-M-D H:M:S'] = '- Κρίστοφ. Μ: Σ';
 
-$GLOBALS["lang"]['Default Items'] = 'Προκαθορισμένα αντικείμενα';
+$GLOBALS["lang"]['day_of_month'] = '.';
 
-$GLOBALS["lang"]['Default Value'] = 'Προκαθορισμένη τιμή';
+$GLOBALS["lang"]['Day Of Month'] = '.';
 
-$GLOBALS["lang"]['Default of 389. Normally 636 used for Active Directory LDAPS.'] = 'Προκαθορισμένο του 389. Κανονικά 636 χρησιμοποιούνται για Active Directory LDAPS.';
+$GLOBALS["lang"]['day_of_week'] = 'Не, не.';
 
-$GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = 'Προκαθορισμένο <code>3</code> για LDAP και ενεργό κατάλογο.';
+$GLOBALS["lang"]['Day Of Week'] = 'Не, не.';
 
-$GLOBALS["lang"]['Defaults'] = 'Προκαθορισμένα';
+$GLOBALS["lang"]['Day of Month'] = '.';
 
-$GLOBALS["lang"]['delay_minutes'] = 'Καθυστέρηση λεπτών';
+$GLOBALS["lang"]['dbus_identifier'] = '.';
 
-$GLOBALS["lang"]['Delay Minutes'] = 'Καθυστέρηση λεπτών';
+$GLOBALS["lang"]['Dbus Identifier'] = '.';
 
-$GLOBALS["lang"]['Delete'] = 'Διαγραφή';
+$GLOBALS["lang"]['Debug'] = 'Дебъгария Дебъгария.';
 
-$GLOBALS["lang"]['Delete Example Devices'] = 'Διαγραφή παραδειγμάτων συσκευών';
+$GLOBALS["lang"]['Debugging'] = '- Не, не.';
 
-$GLOBALS["lang"]['delete_external_from_internal'] = 'Διαγραφή εξωτερικού από το εσωτερικό';
+$GLOBALS["lang"]['Debugging a Script'] = '- Да.';
 
-$GLOBALS["lang"]['Delete External From Internal'] = 'Διαγραφή εξωτερικού από το εσωτερικό';
+$GLOBALS["lang"]['December'] = '.';
 
-$GLOBALS["lang"]['Delete NMIS Devices if not in Open-AudIT'] = 'Διαγραφή NMIS Συσκευές αν όχι στο Open-AudIT';
+$GLOBALS["lang"]['Decommission'] = '- Да.';
 
-$GLOBALS["lang"]['Delete from Application'] = 'Διαγραφή από την εφαρμογή';
+$GLOBALS["lang"]['Default'] = '- Да.';
 
-$GLOBALS["lang"]['Delete from Cluster'] = 'Διαγραφή από τη συστάδα';
+$GLOBALS["lang"]['Default Authentication Level - Set to Connect'] = '. Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Denmark'] = 'Δανία';
+$GLOBALS["lang"]['Default Impersonation Level - Set to Identify'] = '.';
 
-$GLOBALS["lang"]['Derived by audit or manually set by user.'] = 'Παράγωγα με έλεγχο ή χειροκίνητα ρυθμισμένα από το χρήστη.';
+$GLOBALS["lang"]['Default Items'] = '- Не, не.';
 
-$GLOBALS["lang"]['Derived by audit.'] = 'Παράγωγα με έλεγχο.';
+$GLOBALS["lang"]['Default Orgs Groups'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['Derived from <code>rack_devices.device_id</code>.'] = 'Που προέρχονται από <code>rack_devices.device_id</code>.';
+$GLOBALS["lang"]['Default Roles Groups'] = '- Да.';
 
-$GLOBALS["lang"]['Derived from <code>rack_devices.rack_id</code>.'] = 'Που προέρχονται από <code>rack_devices.rack_id</code>.';
+$GLOBALS["lang"]['Default Value'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Derived from Collector discovery.'] = 'Προέρχεται από την ανακάλυψη του Συλλέκτη.';
+$GLOBALS["lang"]['Default of 389. Normally 636 used for Active Directory LDAPS.'] = '389... 636...';
 
-$GLOBALS["lang"]['Derived from OS Name.'] = 'Προέρχεται από το OS Name.';
+$GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = '- Да. <code>3</code> .';
 
-$GLOBALS["lang"]['Derived from cloud discovery.'] = 'Προέρχεται από την ανακάλυψη νεφών.';
+$GLOBALS["lang"]['Defaults'] = '- Не, не.';
 
-$GLOBALS["lang"]['Derived from device audits.'] = 'Προέρχεται από ελέγχους συσκευών.';
+$GLOBALS["lang"]['Deferred'] = '- Не, не.';
 
-$GLOBALS["lang"]['Derived from device type and OS.'] = 'Παράγωγα από τον τύπο της συσκευής και το λειτουργικό σύστημα.';
+$GLOBALS["lang"]['Define project scope and objectives'] = '.';
 
-$GLOBALS["lang"]['Derived from discovery.'] = 'Προέρχεται από την ανακάλυψη.';
+$GLOBALS["lang"]['Define the ISMS scope'] = '- Да.';
 
-$GLOBALS["lang"]['Derived from hostname, sysName, dns Hostname and IP in that order.'] = 'Προέρχεται από το όνομα του υπολογιστή, το sysName, το dns Hostname και το IP με αυτή τη σειρά.';
+$GLOBALS["lang"]['Define the context of the organization (internal/external issues)'] = '- Ναι.';
 
-$GLOBALS["lang"]['Derived from the integer severity.'] = 'Προέρχεται από την ακέραια σοβαρότητα.';
+$GLOBALS["lang"]['delay_minutes'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['description'] = 'Περιγραφή εμπορευμάτων';
+$GLOBALS["lang"]['Delay Minutes'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Description'] = 'Περιγραφή εμπορευμάτων';
+$GLOBALS["lang"]['Delete'] = '- Да.';
 
-$GLOBALS["lang"]['destination'] = 'Προορισμός';
+$GLOBALS["lang"]['Delete Example Devices'] = '.';
 
-$GLOBALS["lang"]['Destination'] = 'Προορισμός';
+$GLOBALS["lang"]['delete_external_from_internal'] = '- Да.';
 
-$GLOBALS["lang"]['detail'] = 'Στοιχεία';
+$GLOBALS["lang"]['Delete External From Internal'] = '- Да.';
 
-$GLOBALS["lang"]['Detail'] = 'Στοιχεία';
+$GLOBALS["lang"]['Delete NMIS Devices if not in Open-AudIT'] = '.';
 
-$GLOBALS["lang"]['Details'] = 'Λεπτομέρειες';
+$GLOBALS["lang"]['Delete a {collection} entry.'] = '.';
 
-$GLOBALS["lang"]['details'] = 'Λεπτομέρειες';
+$GLOBALS["lang"]['Delete from Application'] = '.';
 
-$GLOBALS["lang"]['Details of who is usually contactable at this site.'] = 'Λεπτομέρειες για το ποιος είναι συνήθως contactable σε αυτό το site.';
+$GLOBALS["lang"]['Delete from Cluster'] = '.';
 
-$GLOBALS["lang"]['device'] = 'Συσκευή';
+$GLOBALS["lang"]['Denmark'] = '- Не, не.';
 
-$GLOBALS["lang"]['Device'] = 'Συσκευή';
+$GLOBALS["lang"]['Derived by audit or manually set by user.'] = '- Да.';
 
-$GLOBALS["lang"]['Device Audits'] = 'Έλεγχοι συσκευών';
+$GLOBALS["lang"]['Derived by audit.'] = '- Да.';
 
-$GLOBALS["lang"]['Device ID'] = 'Ταυτότητα συσκευής';
+$GLOBALS["lang"]['Derived from <code>rack_devices.device_id</code>.'] = '. <code>rack_devices.device_id</code>.';
 
-$GLOBALS["lang"]['device_id'] = 'Ταυτότητα συσκευής';
+$GLOBALS["lang"]['Derived from <code>rack_devices.rack_id</code>.'] = '. <code>rack_devices.rack_id</code>.';
 
-$GLOBALS["lang"]['device_id_a'] = 'Ταυτότητα συσκευής A';
+$GLOBALS["lang"]['Derived from Collector discovery.'] = '.';
 
-$GLOBALS["lang"]['Device ID A'] = 'Ταυτότητα συσκευής A';
+$GLOBALS["lang"]['Derived from OS Name.'] = '.';
 
-$GLOBALS["lang"]['device_id_b'] = 'Ταυτότητα συσκευής B';
+$GLOBALS["lang"]['Derived from cloud discovery.'] = '.';
 
-$GLOBALS["lang"]['Device ID B'] = 'Ταυτότητα συσκευής B';
+$GLOBALS["lang"]['Derived from device audits.'] = '.';
 
-$GLOBALS["lang"]['Device Name'] = 'Όνομα συσκευής';
+$GLOBALS["lang"]['Derived from device type and OS.'] = '.';
 
-$GLOBALS["lang"]['Device Result'] = 'Αποτέλεσμα συσκευής';
+$GLOBALS["lang"]['Derived from discovery.'] = 'Не, не.';
 
-$GLOBALS["lang"]['Device Results'] = 'Αποτελέσματα συσκευής';
+$GLOBALS["lang"]['Derived from hostname, sysName, dns Hostname and IP in that order.'] = '.';
 
-$GLOBALS["lang"]['Device Seed'] = 'Σπόροι συσκευής';
+$GLOBALS["lang"]['Derived from the integer severity.'] = '.';
 
-$GLOBALS["lang"]['Device Seed IP'] = 'IP σπόρων συσκευών';
+$GLOBALS["lang"]['description'] = '- Да.';
 
-$GLOBALS["lang"]['Device Status'] = 'Κατάσταση συσκευής';
+$GLOBALS["lang"]['Description'] = '- Да.';
 
-$GLOBALS["lang"]['Device Types'] = 'Τύποι συσκευών';
+$GLOBALS["lang"]['destination'] = '- Да.';
 
-$GLOBALS["lang"]['Device is in the Subnet'] = 'Η συσκευή είναι στο Subnet';
+$GLOBALS["lang"]['Destination'] = '- Да.';
 
-$GLOBALS["lang"]['Devices'] = 'Συσκευές';
+$GLOBALS["lang"]['detail'] = '- Да.';
 
-$GLOBALS["lang"]['devices_assigned_to_location'] = 'Συσκευές που έχουν ανατεθεί σε τοποθεσία';
+$GLOBALS["lang"]['Detail'] = '- Да.';
 
-$GLOBALS["lang"]['Devices Assigned To Location'] = 'Συσκευές που έχουν ανατεθεί σε τοποθεσία';
+$GLOBALS["lang"]['Details'] = '- Да.';
 
-$GLOBALS["lang"]['devices_assigned_to_org'] = 'Συσκευές που έχουν ανατεθεί στον Οργανισμό';
+$GLOBALS["lang"]['Details of who is usually contactable at this site.'] = '- Да.';
 
-$GLOBALS["lang"]['Devices Assigned To Org'] = 'Συσκευές που έχουν ανατεθεί στον Οργανισμό';
+$GLOBALS["lang"]['Determine how often you want to run the Baseline check against the database and create a Scheduled Report'] = '.';
 
-$GLOBALS["lang"]['Devices Audited'] = 'Ελεγχόμενες συσκευές';
+$GLOBALS["lang"]['Determine risk treatment options'] = 'Имено.';
 
-$GLOBALS["lang"]['Devices Created in '] = 'Δημιουργήθηκαν συσκευές ';
+$GLOBALS["lang"]['Develop a Risk Treatment Plan'] = '.';
 
-$GLOBALS["lang"]['Devices Created in Open-AudIT'] = 'Οι συσκευές δημιουργήθηκαν στο Open-AudIT';
+$GLOBALS["lang"]['Develop policies, procedures, and controls'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['devices_default_display_columns'] = 'Προκαθορισμένες στήλες εμφάνισης συσκευών';
+$GLOBALS["lang"]['Develop required ISMS documentation (policies, procedures, etc.)'] = '.';
 
-$GLOBALS["lang"]['Devices Default Display Columns'] = 'Προκαθορισμένες στήλες εμφάνισης συσκευών';
+$GLOBALS["lang"]['device'] = '- Не, не.';
 
-$GLOBALS["lang"]['Devices Found Last 7 Days'] = 'Συσκευές που βρέθηκαν τις τελευταίες 7 ημέρες';
+$GLOBALS["lang"]['Device'] = '- Не, не.';
 
-$GLOBALS["lang"]['Devices Found Today'] = 'Βρέθηκαν συσκευές σήμερα';
+$GLOBALS["lang"]['Device Audits'] = 'Не, не.';
 
-$GLOBALS["lang"]['Devices Found Yesterday'] = 'Βρέθηκαν συσκευές χθες';
+$GLOBALS["lang"]['Device Component Names'] = '- Да.';
 
-$GLOBALS["lang"]['Devices Not Audited'] = 'Οι συσκευές δεν ελέγχθηκαν';
+$GLOBALS["lang"]['Device ID'] = '.';
 
-$GLOBALS["lang"]['Devices Not Seen 30 Days'] = 'Οι συσκευές δεν βλέπουν 30 ημέρες';
+$GLOBALS["lang"]['device_id'] = '.';
 
-$GLOBALS["lang"]['Devices Not Seen 7 Days'] = 'Οι συσκευές δεν βλέπουν 7 ημέρες';
+$GLOBALS["lang"]['device_id_a'] = '.';
 
-$GLOBALS["lang"]['Devices Not Seen 90 Days'] = 'Οι συσκευές δεν βλέπουν 90 ημέρες';
+$GLOBALS["lang"]['Device ID A'] = '.';
 
-$GLOBALS["lang"]['Devices Retrieved via API'] = 'Συσκευές Ανακτήθηκε μέσω API';
+$GLOBALS["lang"]['device_id_b'] = '.';
 
-$GLOBALS["lang"]['Devices Selected from '] = 'Επιλέχθηκαν συσκευές από ';
+$GLOBALS["lang"]['Device ID B'] = '.';
 
-$GLOBALS["lang"]['Devices Selected from Open-AudIT'] = 'Οι συσκευές επιλέχθηκαν από το Open-AudIT';
+$GLOBALS["lang"]['Device Matching Rules'] = '.';
 
-$GLOBALS["lang"]['Devices Updated in '] = 'Ενημέρωση συσκευών ';
+$GLOBALS["lang"]['Device Name'] = '.';
 
-$GLOBALS["lang"]['Devices Updated in Open-AudIT'] = 'Ενημέρωση συσκευών σε Open-AudIT';
+$GLOBALS["lang"]['Device Result'] = '- Не, не.';
 
-$GLOBALS["lang"]['Devices are being benchmarked.'] = 'Οι συσκευές αξιολογούνται.';
+$GLOBALS["lang"]['Device Results'] = '.';
 
-$GLOBALS["lang"]['Devices are not being benchmarked.'] = 'Οι συσκευές δεν αξιολογούνται.';
+$GLOBALS["lang"]['Device Seed'] = 'Калашдирма (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Devices could be benchmarked.'] = 'Οι συσκευές θα μπορούσαν να αξιολογηθούν.';
+$GLOBALS["lang"]['Device Seed Discoveries are a good option if you know that your network consists of a range of subnets, but you are unsure what they are. Seed the discovery with a local router and watch your network unfold before your eyes.'] = 'Domen ad ';
 
-$GLOBALS["lang"]['Devices in Running State'] = 'Συσκευές σε κατάσταση λειτουργίας';
+$GLOBALS["lang"]['Device Seed IP'] = 'Cihaz Qiym... t IP';
 
-$GLOBALS["lang"]['Devices in Stopped State'] = 'Συσκευές σε κατάσταση διακοπής';
+$GLOBALS["lang"]['Device Status'] = '- Не, не.';
 
-$GLOBALS["lang"]['Devices in this'] = 'Συσκευές σε αυτό';
+$GLOBALS["lang"]['Device Types'] = '.';
 
-$GLOBALS["lang"]['Devired from type or OS.'] = 'Απεικόνιση από τύπο ή λειτουργικό σύστημα.';
+$GLOBALS["lang"]['Device and Software and Hardware Auditing'] = '.';
 
-$GLOBALS["lang"]['dhcp_enabled'] = 'Ενεργοποίηση Dhcp';
+$GLOBALS["lang"]['Device is in the Subnet'] = '.';
 
-$GLOBALS["lang"]['Dhcp Enabled'] = 'Ενεργοποίηση Dhcp';
+$GLOBALS["lang"]['Devices'] = '- Да.';
 
-$GLOBALS["lang"]['dhcp_lease_expires'] = 'Λήγει η μίσθωση Dhcp';
+$GLOBALS["lang"]['devices_assigned_to_location'] = 'Имено.';
 
-$GLOBALS["lang"]['Dhcp Lease Expires'] = 'Λήγει η μίσθωση Dhcp';
+$GLOBALS["lang"]['Devices Assigned To Location'] = 'Имено.';
 
-$GLOBALS["lang"]['dhcp_lease_obtained'] = 'Μίσθωση Dhcp που αποκτήθηκε';
+$GLOBALS["lang"]['devices_assigned_to_org'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Dhcp Lease Obtained'] = 'Μίσθωση Dhcp που αποκτήθηκε';
+$GLOBALS["lang"]['Devices Assigned To Org'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['dhcp_server'] = 'Εξυπηρετητής Dhcp';
+$GLOBALS["lang"]['Devices Audited'] = '.';
 
-$GLOBALS["lang"]['Dhcp Server'] = 'Εξυπηρετητής Dhcp';
+$GLOBALS["lang"]['Devices Collection'] = '.';
 
-$GLOBALS["lang"]['Did the command complete successfully and return expected data.'] = 'Η εντολή ολοκληρώθηκε επιτυχώς και επέστρεψε τα αναμενόμενα δεδομένα.';
+$GLOBALS["lang"]['Devices Created in '] = '. ';
 
-$GLOBALS["lang"]['direction'] = 'Κατεύθυνση';
+$GLOBALS["lang"]['Devices Created in Open-AudIT'] = '.';
 
-$GLOBALS["lang"]['Direction'] = 'Κατεύθυνση';
+$GLOBALS["lang"]['devices_default_display_columns'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['directory'] = 'Κατάλογος';
+$GLOBALS["lang"]['Devices Default Display Columns'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Directory'] = 'Κατάλογος';
+$GLOBALS["lang"]['Devices Found Last 7 Days'] = '.';
 
-$GLOBALS["lang"]['disabled'] = 'Απενεργοποιημένο';
+$GLOBALS["lang"]['Devices Found Today'] = '.';
 
-$GLOBALS["lang"]['Disabled'] = 'Απενεργοποιημένο';
+$GLOBALS["lang"]['Devices Found Yesterday'] = '.';
 
-$GLOBALS["lang"]['discard'] = 'Απόρριψη';
+$GLOBALS["lang"]['Devices Missing Information'] = '- Не, не.';
 
-$GLOBALS["lang"]['Discard'] = 'Απόρριψη';
+$GLOBALS["lang"]['Devices Not Audited'] = 'Имено.';
 
-$GLOBALS["lang"]['Discover'] = 'Ανακαλύψτε';
+$GLOBALS["lang"]['Devices Not Seen 30 Days'] = '.';
 
-$GLOBALS["lang"]['discoveries'] = 'Ανακαλύψεις';
+$GLOBALS["lang"]['Devices Not Seen 7 Days'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['Discoveries'] = 'Ανακαλύψεις';
+$GLOBALS["lang"]['Devices Not Seen 90 Days'] = '.';
 
-$GLOBALS["lang"]['Discovery'] = 'Ανακάλυψη';
+$GLOBALS["lang"]['Devices Older Than X'] = '.';
 
-$GLOBALS["lang"]['Discovery Change Logs'] = 'Ανακάλυψη αλλαγών καταγραφής';
+$GLOBALS["lang"]['Devices Retrieved via API'] = '.';
 
-$GLOBALS["lang"]['Discovery Data Retention'] = 'Διατήρηση δεδομένων ανακάλυψης';
+$GLOBALS["lang"]['Devices Selected from '] = '. ';
 
-$GLOBALS["lang"]['discovery_id'] = 'ID ανακάλυψης';
+$GLOBALS["lang"]['Devices Selected from Open-AudIT'] = '.';
 
-$GLOBALS["lang"]['Discovery ID'] = 'ID ανακάλυψης';
+$GLOBALS["lang"]['Devices Updated in '] = '. ';
 
-$GLOBALS["lang"]['Discovery Issues'] = 'Θέματα ανακάλυψης';
+$GLOBALS["lang"]['Devices Updated in Open-AudIT'] = 'Οφένιο Prüfung';
 
-$GLOBALS["lang"]['discovery_log'] = 'Καταγραφή ανακάλυψης';
+$GLOBALS["lang"]['Devices are being benchmarked.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Discovery Log'] = 'Καταγραφή ανακάλυψης';
+$GLOBALS["lang"]['Devices are not being benchmarked.'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['Discovery Match Options'] = 'Επιλογές ταιριάσματος ανακάλυψης';
+$GLOBALS["lang"]['Devices could be benchmarked.'] = '- Да.';
 
-$GLOBALS["lang"]['Discovery Name'] = 'Όνομα ανακάλυψης';
+$GLOBALS["lang"]['Devices from Open-AudIT'] = '.';
 
-$GLOBALS["lang"]['Discovery Options'] = 'Επιλογές ανακάλυψης';
+$GLOBALS["lang"]['Devices in Running State'] = 'Имено.';
 
-$GLOBALS["lang"]['Discovery Queue Count'] = 'Αριθμός αναμονής ανακάλυψης';
+$GLOBALS["lang"]['Devices in Stopped State'] = '.';
 
-$GLOBALS["lang"]['Discovery Queue Limit'] = 'Όριο αναμονής ανακάλυψης';
+$GLOBALS["lang"]['Devices in this'] = '.';
 
-$GLOBALS["lang"]['discovery_run'] = 'Εκτέλεση ανακαλύψεων';
+$GLOBALS["lang"]['Devices will not be matched if their status is set to <i>deleted</i>. Any other status will allow a match to occur.'] = '. <i>- Да.</i>.';
 
-$GLOBALS["lang"]['Discovery Run'] = 'Εκτέλεση ανακαλύψεων';
+$GLOBALS["lang"]['Devices with Expired Warranties'] = 'Имено.';
 
-$GLOBALS["lang"]['discovery_scan_options'] = 'Επιλογές ανίχνευσης Discovery';
+$GLOBALS["lang"]['Devired from type or OS.'] = '- Да.';
 
-$GLOBALS["lang"]['Discovery Scan Options'] = 'Επιλογές ανίχνευσης Discovery';
+$GLOBALS["lang"]['dhcp_enabled'] = 'Вкля чване на Dhcp (στα Αγγλικά).';
 
-$GLOBALS["lang"]['disk'] = 'Δίσκος';
+$GLOBALS["lang"]['Dhcp Enabled'] = 'Вкля чване на Dhcp (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Disk'] = 'Δίσκος';
+$GLOBALS["lang"]['dhcp_lease_expires'] = 'Наемане на Dhcp изтича Бена на на стича.';
 
-$GLOBALS["lang"]['display_version'] = 'Εμφάνιση έκδοσης';
+$GLOBALS["lang"]['Dhcp Lease Expires'] = 'Наемане на Dhcp изтича Бена на на стича.';
 
-$GLOBALS["lang"]['Display Version'] = 'Εμφάνιση έκδοσης';
+$GLOBALS["lang"]['dhcp_lease_obtained'] = 'Dhcp лизиня almaq (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Display in Menu'] = 'Εμφάνιση σε μενού';
+$GLOBALS["lang"]['Dhcp Lease Obtained'] = 'Dhcp лизиня almaq (στα Αγγλικά).';
 
-$GLOBALS["lang"]['district'] = 'Περιφέρεια';
+$GLOBALS["lang"]['dhcp_server'] = 'Сървър Dhcp (στα Αγγλικά).';
 
-$GLOBALS["lang"]['District'] = 'Περιφέρεια';
+$GLOBALS["lang"]['Dhcp Server'] = 'Сървър Dhcp (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Djibouti'] = 'Τζιμπουτί';
+$GLOBALS["lang"]['Did the command complete successfully and return expected data.'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['dns'] = 'Δον';
+$GLOBALS["lang"]['direction'] = '- Да.';
 
-$GLOBALS["lang"]['Dns'] = 'Δον';
+$GLOBALS["lang"]['Direction'] = '- Да.';
+
+$GLOBALS["lang"]['directory'] = '- Да.';
+
+$GLOBALS["lang"]['Directory'] = '- Да.';
+
+$GLOBALS["lang"]['disabled'] = '.';
+
+$GLOBALS["lang"]['Disabled'] = '.';
+
+$GLOBALS["lang"]['discard'] = 'Πουλς';
+
+$GLOBALS["lang"]['Discard'] = 'Πουλς';
+
+$GLOBALS["lang"]['Discover'] = '- Да.';
+
+$GLOBALS["lang"]['Discoveries'] = '- Да.';
+
+$GLOBALS["lang"]['Discoveries are at the very heart of what Open-AudIT does. How else would you know <i>Whats On Your Network?</i>'] = '- Да. <i>- Да.</i>';
+
+$GLOBALS["lang"]['Discoveries are entries that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.'] = '- Да.';
+
+$GLOBALS["lang"]['Discovery'] = '- Да.';
+
+$GLOBALS["lang"]['Discovery Change Logs'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Discovery Data Retention'] = '.';
+
+$GLOBALS["lang"]['discovery_id'] = '- Не, не.';
+
+$GLOBALS["lang"]['Discovery ID'] = '- Не, не.';
+
+$GLOBALS["lang"]['Discovery Issues'] = '.';
+
+$GLOBALS["lang"]['discovery_log'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Discovery Log'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Discovery Match Options'] = '- Да.';
+
+$GLOBALS["lang"]['Discovery Name'] = '.';
+
+$GLOBALS["lang"]['Discovery Options'] = '.';
+
+$GLOBALS["lang"]['Discovery Queue Count'] = 'AxtarşQeydiyat Ημερομηνία γέννησης:';
+
+$GLOBALS["lang"]['Discovery Queue Limit'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['discovery_run'] = '.';
+
+$GLOBALS["lang"]['Discovery Run'] = '.';
+
+$GLOBALS["lang"]['discovery_scan_options'] = '.';
+
+$GLOBALS["lang"]['Discovery Scan Options'] = '.';
+
+$GLOBALS["lang"]['Discovery Scan Options are just another item collection. Enterprise users can create, read, update and delete entries as required. Professional users can read all entries, but not create new entries, update existing entries or delete entries. Community users have no GUI that allows access to this collection.'] = 'Имено.';
+
+$GLOBALS["lang"]['Discovery Scan Types'] = 'Дискавъри Сканиране növl...';
+
+$GLOBALS["lang"]['Discovery Support'] = '.';
+
+$GLOBALS["lang"]['Discovery has stopped working'] = '.';
+
+$GLOBALS["lang"]['disk'] = 'Диско';
+
+$GLOBALS["lang"]['Disk'] = 'Диско';
+
+$GLOBALS["lang"]['display_version'] = '.';
+
+$GLOBALS["lang"]['Display Version'] = '.';
+
+$GLOBALS["lang"]['Display in Menu'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['Displays a standard web form for submission to POST /{collection}.'] = 'Пост / {спомен}.';
+
+$GLOBALS["lang"]['Displays a standard web form for submission to POST /{collection}/import.'] = 'POST / {συλλογή} / Εισαγωγή üçün standart web formas';
+
+$GLOBALS["lang"]['district'] = '- Да.';
+
+$GLOBALS["lang"]['District'] = '- Да.';
+
+$GLOBALS["lang"]['Djibouti'] = '.';
+
+$GLOBALS["lang"]['dns'] = 'Δ';
+
+$GLOBALS["lang"]['Dns'] = 'Δ';
 
 $GLOBALS["lang"]['dns_domain'] = 'Τομέας Dns';
 
 $GLOBALS["lang"]['Dns Domain'] = 'Τομέας Dns';
 
-$GLOBALS["lang"]['dns_domain_reg_enabled'] = 'Ενεργοποίηση Reg τομέα Dns';
+$GLOBALS["lang"]['dns_domain_reg_enabled'] = 'Dns Dmain Verordnung (EG) Nr. 882/2004 des Europäischen Parlaments und des rates vom 20. Dezember 2006 über die Haushaltsordnung für den Gesamthaushaltsplan der Union (ABl.';
 
-$GLOBALS["lang"]['Dns Domain Reg Enabled'] = 'Ενεργοποίηση Reg τομέα Dns';
+$GLOBALS["lang"]['Dns Domain Reg Enabled'] = 'Dns Dmain Verordnung (EG) Nr. 882/2004 des Europäischen Parlaments und des rates vom 20. Dezember 2006 über die Haushaltsordnung für den Gesamthaushaltsplan der Union (ABl.';
 
-$GLOBALS["lang"]['dns_fqdn'] = 'ΔΝ Fqdn';
+$GLOBALS["lang"]['dns_fqdn'] = 'Δn Fqd';
 
-$GLOBALS["lang"]['Dns Fqdn'] = 'ΔΝ Fqdn';
+$GLOBALS["lang"]['Dns Fqdn'] = 'Δn Fqd';
 
-$GLOBALS["lang"]['dns_host_name'] = 'Όνομα υπολογιστή Dns';
+$GLOBALS["lang"]['dns_host_name'] = '.';
 
-$GLOBALS["lang"]['Dns Host Name'] = 'Όνομα υπολογιστή Dns';
+$GLOBALS["lang"]['Dns Host Name'] = '.';
 
-$GLOBALS["lang"]['dns_hostname'] = 'Όνομα υπολογιστή Dns';
+$GLOBALS["lang"]['dns_hostname'] = 'Име на хост.';
 
-$GLOBALS["lang"]['Dns Hostname'] = 'Όνομα υπολογιστή Dns';
+$GLOBALS["lang"]['Dns Hostname'] = 'Име на хост.';
 
-$GLOBALS["lang"]['dns_server'] = 'Εξυπηρετητής Dns';
+$GLOBALS["lang"]['dns_server'] = 'Сървър Dns (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Dns Server'] = 'Εξυπηρετητής Dns';
+$GLOBALS["lang"]['Dns Server'] = 'Сървър Dns (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Do not scan these TCP ports.'] = 'Μην σαρώσετε αυτές τις θύρες TCP.';
+$GLOBALS["lang"]['Do not forget there is a mountain of documentation on the wiki'] = '.';
 
-$GLOBALS["lang"]['Do not scan these UDP ports.'] = 'Μην σκανάρετε αυτές τις θύρες UDP.';
+$GLOBALS["lang"]['Do not scan these TCP ports.'] = '.';
 
-$GLOBALS["lang"]['Do not show me again'] = 'Μην μου το ξαναδείς.';
+$GLOBALS["lang"]['Do not scan these UDP ports.'] = '.';
 
-$GLOBALS["lang"]['Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.'] = 'Θέλετε να χρησιμοποιήσετε ασφαλή μεταφορά (LDAPS) ή τακτική μη κρυπτογραφημένη LDAP.';
+$GLOBALS["lang"]['Do not show me again'] = '.';
 
-$GLOBALS["lang"]['Do you wish to see the standard sidebar on the left.'] = 'Θέλετε να δείτε την τυπική πλευρική μπάρα στα αριστερά;';
+$GLOBALS["lang"]['Do you have a perfect example of this configuration? Perhaps a device located in a lab environment or a workstation you use to clone workstation VMs from.'] = '.';
 
-$GLOBALS["lang"]['documentation'] = 'Τεκμηρίωση';
+$GLOBALS["lang"]['Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.'] = '.';
 
-$GLOBALS["lang"]['Documentation'] = 'Τεκμηρίωση';
+$GLOBALS["lang"]['Do you wish to see the standard sidebar on the left.'] = '.';
 
-$GLOBALS["lang"]['Does the license apply to child Orgs.'] = 'Η άδεια ισχύει για παιδιά Orgs.';
+$GLOBALS["lang"]['documentation'] = 'Не, не.';
 
-$GLOBALS["lang"]['domain'] = 'Τομέας';
+$GLOBALS["lang"]['Documentation'] = 'Не, не.';
 
-$GLOBALS["lang"]['Domain'] = 'Τομέας';
+$GLOBALS["lang"]['Documentation about a particular collection.'] = '.';
 
-$GLOBALS["lang"]['domain_controller_address'] = 'Διεύθυνση ελεγκτή τομέα';
+$GLOBALS["lang"]['Does Not Equal'] = '.';
 
-$GLOBALS["lang"]['Domain Controller Address'] = 'Διεύθυνση ελεγκτή τομέα';
+$GLOBALS["lang"]['Does the license apply to child Orgs.'] = '.';
 
-$GLOBALS["lang"]['domain_controller_name'] = 'Ελεγκτής τομέα Όνομα';
+$GLOBALS["lang"]['domain'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Domain Controller Name'] = 'Ελεγκτής τομέα Όνομα';
+$GLOBALS["lang"]['Domain'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['domain_role'] = 'Ρόλος τομέα';
+$GLOBALS["lang"]['domain_controller_address'] = 'Имено.';
 
-$GLOBALS["lang"]['Domain Role'] = 'Ρόλος τομέα';
+$GLOBALS["lang"]['Domain Controller Address'] = 'Имено.';
 
-$GLOBALS["lang"]['domain_short'] = 'Συντόμευση τομέα';
+$GLOBALS["lang"]['domain_controller_name'] = 'Имено.';
 
-$GLOBALS["lang"]['Domain Short'] = 'Συντόμευση τομέα';
+$GLOBALS["lang"]['Domain Controller Name'] = 'Имено.';
 
-$GLOBALS["lang"]['Dominica'] = 'Ντομίνικα';
+$GLOBALS["lang"]['domain_role'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['Dominican Republic'] = 'Δομινικανή Δημοκρατία';
+$GLOBALS["lang"]['Domain Role'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.'] = 'Μην κρατάς το χέρι μου, ξέρω τι κάνω. Δεν υπάρχει φίλτρο και η δυνατότητα να ενταχθούν προσαρμοσμένα τραπέζια.';
+$GLOBALS["lang"]['domain_short'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Download'] = 'Λήψη';
+$GLOBALS["lang"]['Domain Short'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Download a file from URL'] = 'Λήψη αρχείου από το URL';
+$GLOBALS["lang"]['Dominica'] = '- Да.';
 
-$GLOBALS["lang"]['driver'] = 'Οδηγός';
+$GLOBALS["lang"]['Dominican Republic'] = 'Не, не.';
 
-$GLOBALS["lang"]['Driver'] = 'Οδηγός';
+$GLOBALS["lang"]['Don\\'] = '.';
 
-$GLOBALS["lang"]['duplex'] = 'Διπλό';
+$GLOBALS["lang"]['Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.'] = '.';
 
-$GLOBALS["lang"]['Duplex'] = 'Διπλό';
+$GLOBALS["lang"]['Download'] = '- Да.';
 
-$GLOBALS["lang"]['duration'] = 'Διάρκεια';
+$GLOBALS["lang"]['Download a File'] = '.';
 
-$GLOBALS["lang"]['Duration'] = 'Διάρκεια';
+$GLOBALS["lang"]['Download a file from URL'] = '.';
 
-$GLOBALS["lang"]['ESXi'] = 'ESXi';
+$GLOBALS["lang"]['Download the test_windows_client.vbs script directly'] = '.';
 
-$GLOBALS["lang"]['EULA'] = 'ΕΕΛΑ';
+$GLOBALS["lang"]['Download your updated version from'] = '.';
 
-$GLOBALS["lang"]['Ecuador'] = 'Ισημερινός';
+$GLOBALS["lang"]['driver'] = '.';
 
-$GLOBALS["lang"]['Edit'] = 'Επεξεργασία';
+$GLOBALS["lang"]['Driver'] = '.';
 
-$GLOBALS["lang"]['edit_log'] = 'Επεξεργασία καταγραφής';
+$GLOBALS["lang"]['duplex'] = 'Автомобил Автомобил.';
 
-$GLOBALS["lang"]['Edit Log'] = 'Επεξεργασία καταγραφής';
+$GLOBALS["lang"]['Duplex'] = 'Автомобил Автомобил.';
 
-$GLOBALS["lang"]['editable'] = 'Επεξεργασία';
+$GLOBALS["lang"]['Duplicate Devices / Missing Devices'] = '- Да.';
 
-$GLOBALS["lang"]['Editable'] = 'Επεξεργασία';
+$GLOBALS["lang"]['duration'] = 'Не, не.';
 
-$GLOBALS["lang"]['edited_by'] = 'Επεξεργασία από';
+$GLOBALS["lang"]['Duration'] = 'Не, не.';
 
-$GLOBALS["lang"]['Edited By'] = 'Επεξεργασία από';
+$GLOBALS["lang"]['Dutch'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['edited_date'] = 'Επεξεργασία ημερομηνίας';
+$GLOBALS["lang"]['ESXi'] = 'ΣΑΛΑ';
 
-$GLOBALS["lang"]['Edited Date'] = 'Επεξεργασία ημερομηνίας';
+$GLOBALS["lang"]['EULA'] = 'АБ';
 
-$GLOBALS["lang"]['edition'] = 'Έκδοση';
+$GLOBALS["lang"]['Each IP is scanned with the discovery configured options (see Discovery Scan Options and Discovery - Community vs Professional vs Enterprise on the wiki). In general, Nmap will test for ports 22 (ssh), 135 (wmi), 62078 (iPhone) and UDP 161 (snmp). If 22, 135 or 161 respond the credential list is retrieved and each credential tested in turn. The first working credentials are used for further queries directly from the device. Note - if a device has previously been discovered and has working credentials, those credentials are tested first. Only if those fail are the other credentials then attempted.'] = 'Имено. Nmap portlar üçün test ed.c.c.k. 22 (sh), 135 (wmi), 62078 (iPhone) v по UDP 161 (snmp. Имено.';
 
-$GLOBALS["lang"]['Edition'] = 'Έκδοση';
+$GLOBALS["lang"]['Each time a device is discovered or an audit result is processed, all rules are retrieved from the database and run against the attributes of the specific device. Rules run against one device at a time - there is no facility to say <i>Run the rules against all devices<i> or <i>Run the rules against these devices<i>. An individual rule will test one or more attributes of the device and if they match the rule, the result will be applied. Several attributes can be tested. Several attributes can be set. Think of this as an If This, Then That system for Open-AudIT.'] = ' гонката, която е по-голяма отова, което се случва. <i>.<i> . <i>.<i>. Имено.</i></i></i></i>';
 
-$GLOBALS["lang"]['Egypt'] = 'Αίγυπτος';
+$GLOBALS["lang"]['Easily run a discovery upon a network in a single click, without entering the details of that network each and every time.'] = '.';
 
-$GLOBALS["lang"]['Either Amazon, Google or Microsoft.'] = 'Είτε Amazon, Google ή Microsoft.';
+$GLOBALS["lang"]['Ecuador'] = '.';
+
+$GLOBALS["lang"]['Edit'] = 'Τάριξ';
+
+$GLOBALS["lang"]['edit_log'] = 'Τάριξ';
+
+$GLOBALS["lang"]['Edit Log'] = 'Τάριξ';
+
+$GLOBALS["lang"]['editable'] = 'Τάριξ';
+
+$GLOBALS["lang"]['Editable'] = 'Τάριξ';
+
+$GLOBALS["lang"]['edited_by'] = 'Τάριξ';
+
+$GLOBALS["lang"]['Edited By'] = 'Τάριξ';
+
+$GLOBALS["lang"]['edited_date'] = '- Да.';
+
+$GLOBALS["lang"]['Edited Date'] = '- Да.';
+
+$GLOBALS["lang"]['edition'] = ' Издание Издание.';
+
+$GLOBALS["lang"]['Edition'] = ' Издание Издание.';
+
+$GLOBALS["lang"]['Egypt'] = '- Не, не.';
+
+$GLOBALS["lang"]['Either Amazon, Google or Microsoft.'] = '.';
 
 $GLOBALS["lang"]['Either none or present.
 
@@ -1851,1613 +2389,2083 @@ $GLOBALS["lang"]['Either none or present.
 
 A race condition must be won to successfully exploit the vulnerability. The successfulness of the attack is conditioned on execution conditions that are not under full control of the attacker. The attack may need to be launched multiple times against a single target before being successful.
 
-Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).'] = 'Ή κανένα ή παρόν.
+Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).'] = '.
 
-<strong>Καμία</strong> - Η επιτυχής επίθεση δεν εξαρτάται από τις συνθήκες ανάπτυξης και εκτέλεσης του ευάλωτου συστήματος. Ο επιτιθέμενος μπορεί να περιμένει να είναι σε θέση να φτάσει την ευπάθεια και να εκτελέσει την εκμετάλλευση κάτω από όλες ή τις περισσότερες περιπτώσεις της ευπάθειας.
+<strong>.</strong> - Ναι.
 
-<strong>Παρόν</strong> - Η επιτυχής επίθεση εξαρτάται από την παρουσία ειδικών συνθηκών ανάπτυξης και εκτέλεσης του ευάλωτου συστήματος που επιτρέπουν την επίθεση. Αυτά περιλαμβάνουν:
+<strong>Инди.</strong> Имено.
 
-Μια κατάσταση φυλής πρέπει να κερδηθεί για να εκμεταλλευτεί επιτυχώς την ευπάθεια. Η επιτυχία της επίθεσης εξαρτάται από συνθήκες εκτέλεσης που δεν βρίσκονται υπό τον πλήρη έλεγχο του επιτιθέμενου. Η επίθεση μπορεί να χρειαστεί να ξεκινήσει πολλές φορές εναντίον ενός και μόνο στόχου πριν να είναι επιτυχής.
+Имено.
 
-Ένεση δικτύου. Ο επιτιθέμενος πρέπει να εγχυθεί στη λογική διαδρομή δικτύου μεταξύ του στόχου και του πόρου που ζήτησε το θύμα (π.χ. τρωτά σημεία που απαιτούν επιτιθέμενο κατά τη διαδρομή).';
+Имено.';
 
-$GLOBALS["lang"]['El Salvador'] = 'Ελ Σαλβαδόρ';
+$GLOBALS["lang"]['El Salvador'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['email'] = 'Ηλεκτρονικό ταχυδρομείο';
+$GLOBALS["lang"]['email'] = 'Електронна поща';
 
-$GLOBALS["lang"]['Email'] = 'Ηλεκτρονικό ταχυδρομείο';
+$GLOBALS["lang"]['Email'] = 'Електронна поща';
 
-$GLOBALS["lang"]['email_address'] = 'Διεύθυνση ηλεκτρονικού ταχυδρομείου';
+$GLOBALS["lang"]['email_address'] = '- Не, не.';
 
-$GLOBALS["lang"]['Email Address'] = 'Διεύθυνση ηλεκτρονικού ταχυδρομείου';
+$GLOBALS["lang"]['Email Address'] = '- Не, не.';
 
-$GLOBALS["lang"]['Email Configuration'] = 'Configuration email';
+$GLOBALS["lang"]['Email Configuration'] = 'E- poçt ünvan';
 
-$GLOBALS["lang"]['Email to send test to'] = 'Email για να στείλετε τη δοκιμή';
+$GLOBALS["lang"]['Email to send test to'] = '.';
 
-$GLOBALS["lang"]['Enable'] = 'Ενεργοποίηση';
+$GLOBALS["lang"]['Enable'] = '- Не, не.';
 
-$GLOBALS["lang"]['enabled'] = 'Ενεργοποίηση';
+$GLOBALS["lang"]['Enable Distributed COM on this computer - Option is checked'] = 'Bu kompüter üzr... asan Dağlīq COM - Seçki .';
 
-$GLOBALS["lang"]['Enabled'] = 'Ενεργοποίηση';
+$GLOBALS["lang"]['enabled'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['encryption'] = 'Κρυπτογράφηση';
+$GLOBALS["lang"]['Enabled'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Encryption'] = 'Κρυπτογράφηση';
+$GLOBALS["lang"]['Enabling the Feature Under Windows'] = '.';
 
-$GLOBALS["lang"]['encryption_method'] = 'Μέθοδος κρυπτογράφησης';
+$GLOBALS["lang"]['encryption'] = 'Не, не.';
 
-$GLOBALS["lang"]['Encryption Method'] = 'Μέθοδος κρυπτογράφησης';
+$GLOBALS["lang"]['Encryption'] = 'Не, не.';
 
-$GLOBALS["lang"]['encryption_status'] = 'Κατάσταση κρυπτογράφησης';
+$GLOBALS["lang"]['encryption_method'] = '- Да.';
 
-$GLOBALS["lang"]['Encryption Status'] = 'Κατάσταση κρυπτογράφησης';
+$GLOBALS["lang"]['Encryption Method'] = '- Да.';
 
-$GLOBALS["lang"]['end_date'] = 'Ημερομηνία λήξης';
+$GLOBALS["lang"]['encryption_status'] = '.';
 
-$GLOBALS["lang"]['End Date'] = 'Ημερομηνία λήξης';
+$GLOBALS["lang"]['Encryption Status'] = '.';
 
-$GLOBALS["lang"]['End OF Life Product ID'] = 'ID προϊόντος τέλους ζωής';
+$GLOBALS["lang"]['end_date'] = '- Да.';
 
-$GLOBALS["lang"]['end_of_life'] = 'Τέλος της ζωής';
+$GLOBALS["lang"]['End Date'] = '- Да.';
 
-$GLOBALS["lang"]['End Of Life'] = 'Τέλος της ζωής';
+$GLOBALS["lang"]['End OF Life Product ID'] = '.';
 
-$GLOBALS["lang"]['end_of_production'] = 'Τέλος παραγωγής';
+$GLOBALS["lang"]['end_of_life'] = '.';
 
-$GLOBALS["lang"]['End Of Production'] = 'Τέλος παραγωγής';
+$GLOBALS["lang"]['End Of Life'] = '.';
 
-$GLOBALS["lang"]['end_of_service'] = 'Τέλος υπηρεσίας';
+$GLOBALS["lang"]['end_of_production'] = '.';
 
-$GLOBALS["lang"]['End Of Service'] = 'Τέλος υπηρεσίας';
+$GLOBALS["lang"]['End Of Production'] = '.';
 
-$GLOBALS["lang"]['end_of_service_life'] = 'Τέλος της ζωής υπηρεσίας';
+$GLOBALS["lang"]['end_of_service'] = '.';
 
-$GLOBALS["lang"]['End Of Service Life'] = 'Τέλος της ζωής υπηρεσίας';
+$GLOBALS["lang"]['End Of Service'] = '.';
 
-$GLOBALS["lang"]['English'] = 'Αγγλικά';
+$GLOBALS["lang"]['end_of_service_life'] = '.';
 
-$GLOBALS["lang"]['enterprise'] = 'Επιχείρηση';
+$GLOBALS["lang"]['End Of Service Life'] = '.';
 
-$GLOBALS["lang"]['Enterprise'] = 'Επιχείρηση';
+$GLOBALS["lang"]['Endpoint'] = '.';
 
-$GLOBALS["lang"]['Enterprise Private Network'] = 'Ιδιωτικό δίκτυο επιχειρήσεων';
+$GLOBALS["lang"]['English'] = '- Да.';
 
-$GLOBALS["lang"]['Entitlement Type'] = 'Τύπος δικαιώματος';
+$GLOBALS["lang"]['Enhances regulatory compliance'] = '.';
 
-$GLOBALS["lang"]['environment'] = 'Περιβάλλον';
+$GLOBALS["lang"]['Enrichment is complete. The CVE has full metadata and is considered stable.'] = 'Сабит sayşr.';
 
-$GLOBALS["lang"]['Environment'] = 'Περιβάλλον';
+$GLOBALS["lang"]['Ensure documentation is controlled and accessible'] = 'Не, не.';
 
-$GLOBALS["lang"]['Equal To'] = 'Ίση με';
+$GLOBALS["lang"]['enterprise'] = 'Корпоратив Корпоратив.';
 
-$GLOBALS["lang"]['Equal To or Greater Than'] = 'Ίσα με ή Μεγαλύτερα από';
+$GLOBALS["lang"]['Enterprise'] = 'Корпоратив Корпоратив.';
 
-$GLOBALS["lang"]['Equal To or Less Than'] = 'Ισότητα με ή λιγότερο από';
+$GLOBALS["lang"]['Enterprise Private Network'] = 'Не, не.';
 
-$GLOBALS["lang"]['Equals'] = 'Ισότητα';
+$GLOBALS["lang"]['Enterprise private network'] = '.';
 
-$GLOBALS["lang"]['Equatorial Guinea'] = 'Ισημερινή Γουινέα';
+$GLOBALS["lang"]['Entitlement Type'] = '.';
 
-$GLOBALS["lang"]['Eritrea'] = 'Ερυθραία';
+$GLOBALS["lang"]['Entra'] = 'Εντρασίγια';
 
-$GLOBALS["lang"]['Error'] = 'Σφάλμα';
+$GLOBALS["lang"]['environment'] = '- Не, не.';
 
-$GLOBALS["lang"]['Error Code'] = 'Κωδικός σφάλματος';
+$GLOBALS["lang"]['Environment'] = '- Не, не.';
 
-$GLOBALS["lang"]['Established'] = 'Καθιερώθηκε';
+$GLOBALS["lang"]['Equal To'] = '.';
 
-$GLOBALS["lang"]['Estonia'] = 'Εσθονία';
+$GLOBALS["lang"]['Equal To or Greater Than'] = '.';
 
-$GLOBALS["lang"]['Ethernet MAC'] = 'MAC Ethernet';
+$GLOBALS["lang"]['Equal To or Less Than'] = '.';
 
-$GLOBALS["lang"]['ethernet_mac'] = 'Εθερνέτ MacName';
+$GLOBALS["lang"]['Equals'] = '- Да.';
 
-$GLOBALS["lang"]['Ethernet Mac'] = 'Εθερνέτ MacName';
+$GLOBALS["lang"]['Equatorial Guinea'] = 'Не, не.';
 
-$GLOBALS["lang"]['Ethiopia'] = 'Αιθιοπία';
+$GLOBALS["lang"]['Eritrea'] = '- Да.';
 
-$GLOBALS["lang"]['Every'] = 'Κάθε';
+$GLOBALS["lang"]['Error'] = '.';
 
-$GLOBALS["lang"]['Every Day'] = 'Κάθε μέρα';
+$GLOBALS["lang"]['Error Code'] = '- Да.';
 
-$GLOBALS["lang"]['Exceptions'] = 'Εξαιρέσεις';
+$GLOBALS["lang"]['Esperanto'] = ' Εσπεράντο';
 
-$GLOBALS["lang"]['exclude'] = 'Εξαίρεση';
+$GLOBALS["lang"]['Establish a project plan and timeline'] = '.';
 
-$GLOBALS["lang"]['Exclude'] = 'Εξαίρεση';
+$GLOBALS["lang"]['Establish an information security policy'] = '.';
 
-$GLOBALS["lang"]['exclude_ip'] = 'Εξαίρεση IP';
+$GLOBALS["lang"]['Established'] = '.';
 
-$GLOBALS["lang"]['Exclude IP'] = 'Εξαίρεση IP';
+$GLOBALS["lang"]['Estonia'] = '- Да.';
 
-$GLOBALS["lang"]['Exclude IP Addresses'] = 'Εξαίρεση διευθύνσεων IP';
+$GLOBALS["lang"]['Estonian'] = '- Да.';
 
-$GLOBALS["lang"]['Exclude TCP Ports'] = 'Εξαίρεση θυρών TCP';
+$GLOBALS["lang"]['Ethernet MAC'] = 'Ιππιζιά';
 
-$GLOBALS["lang"]['exclude_tcp_ports'] = 'Εξαίρεση θυρών Tcp';
+$GLOBALS["lang"]['ethernet_mac'] = 'Ιππιζιά';
 
-$GLOBALS["lang"]['Exclude Tcp Ports'] = 'Εξαίρεση θυρών Tcp';
+$GLOBALS["lang"]['Ethernet Mac'] = 'Ιππιζιά';
 
-$GLOBALS["lang"]['Exclude UDP Ports'] = 'Εξαίρεση θυρών UDP';
+$GLOBALS["lang"]['Ethiopia'] = '- Да.';
 
-$GLOBALS["lang"]['exclude_udp_ports'] = 'Εξαίρεση θυρών Udp';
+$GLOBALS["lang"]['Evaluate the ISMS internally'] = 'ISMS daxili';
 
-$GLOBALS["lang"]['Exclude Udp Ports'] = 'Εξαίρεση θυρών Udp';
+$GLOBALS["lang"]['Every'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Exclude these IP addresses from being Nmap scanned.'] = 'Αποκλείστε αυτές τις διευθύνσεις IP από την σάρωση Nmap.';
+$GLOBALS["lang"]['Every Day'] = '.';
 
-$GLOBALS["lang"]['Excluded'] = 'Εξαιρούνται';
+$GLOBALS["lang"]['Example'] = '.';
 
-$GLOBALS["lang"]['exclusion_reasons'] = 'Λόγοι αποκλεισμού';
+$GLOBALS["lang"]['Example Devices'] = '.';
 
-$GLOBALS["lang"]['Exclusion Reasons'] = 'Λόγοι αποκλεισμού';
+$GLOBALS["lang"]['Example Org Chart with Access'] = 'Достъ К до картата на Оря.';
 
-$GLOBALS["lang"]['executable'] = 'Εκτελέσιμο';
+$GLOBALS["lang"]['Example text from'] = '.';
 
-$GLOBALS["lang"]['Executable'] = 'Εκτελέσιμο';
+$GLOBALS["lang"]['Examples'] = '- Не, не.';
 
-$GLOBALS["lang"]['executable_id'] = 'Εκτελέσιμο ID';
+$GLOBALS["lang"]['Exceptions'] = '.';
 
-$GLOBALS["lang"]['Executable ID'] = 'Εκτελέσιμο ID';
+$GLOBALS["lang"]['exclude'] = 'Не, не.';
 
-$GLOBALS["lang"]['executables'] = 'Εκτελέσιμα';
+$GLOBALS["lang"]['Exclude'] = 'Не, не.';
 
-$GLOBALS["lang"]['Executables'] = 'Εκτελέσιμα';
+$GLOBALS["lang"]['exclude_ip'] = '- \'νω.';
 
-$GLOBALS["lang"]['Execute'] = 'Εκτέλεση';
+$GLOBALS["lang"]['Exclude IP'] = '- \'νω.';
 
-$GLOBALS["lang"]['Executing'] = 'Εκτέλεση';
+$GLOBALS["lang"]['Exclude IP Addresses'] = 'E-Poçon';
 
-$GLOBALS["lang"]['exemption_reason'] = 'Λόγος απαλλαγής';
+$GLOBALS["lang"]['Exclude IP Addresses (individual IP - 192.168.1.20, ranges - 192.168.1.30-40 or subnets - 192.168.1.100/30) listed from being scanned. Comma seperated, no spaces.'] = 'E-poçt ünvanzania..';
 
-$GLOBALS["lang"]['Exemption Reason'] = 'Λόγος απαλλαγής';
+$GLOBALS["lang"]['Exclude TCP Ports'] = 'TCP Θύρα';
 
-$GLOBALS["lang"]['Existing Building'] = 'Υφιστάμενο κτίριο';
+$GLOBALS["lang"]['exclude_tcp_ports'] = 'Автомобил Автомобил.';
 
-$GLOBALS["lang"]['Existing Floor'] = 'Υφιστάμενος όροφος';
+$GLOBALS["lang"]['Exclude Tcp Ports'] = 'Автомобил Автомобил.';
 
-$GLOBALS["lang"]['Existing Room'] = 'Υπάρχον δωμάτιο';
+$GLOBALS["lang"]['Exclude UDP Ports'] = 'UDP ΠόρτουName';
 
-$GLOBALS["lang"]['Existing Row'] = 'Υπάρχουσα γραμμή';
+$GLOBALS["lang"]['exclude_udp_ports'] = 'Портове Udp Αριθ. διαβατηρίου:';
 
-$GLOBALS["lang"]['expire_date'] = 'Ημερομηνία λήξης';
+$GLOBALS["lang"]['Exclude Udp Ports'] = 'Портове Udp Αριθ. διαβατηρίου:';
 
-$GLOBALS["lang"]['Expire Date'] = 'Ημερομηνία λήξης';
+$GLOBALS["lang"]['Exclude any ports listed from being scanned. Comma seperated, no spaces.'] = 'Имено.';
 
-$GLOBALS["lang"]['expire_minutes'] = 'Λήξη των συνοπτικών πρακτικών';
+$GLOBALS["lang"]['Exclude these IP addresses from being Nmap scanned.'] = '.';
 
-$GLOBALS["lang"]['Expire Minutes'] = 'Λήξη των συνοπτικών πρακτικών';
+$GLOBALS["lang"]['Excluded'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['expires'] = 'Λήγει';
+$GLOBALS["lang"]['exclusion_reasons'] = 'Не, не.';
 
-$GLOBALS["lang"]['Expires'] = 'Λήγει';
+$GLOBALS["lang"]['Exclusion Reasons'] = 'Не, не.';
 
-$GLOBALS["lang"]['expiry_date'] = 'Ημερομηνία λήξης';
+$GLOBALS["lang"]['executable'] = '- Да.';
 
-$GLOBALS["lang"]['Expiry Date'] = 'Ημερομηνία λήξης';
+$GLOBALS["lang"]['Executable'] = '- Да.';
 
-$GLOBALS["lang"]['exploit_maturity'] = 'Εκμετάλλευση Ωριμότητας';
+$GLOBALS["lang"]['executable_id'] = '- Да.';
 
-$GLOBALS["lang"]['Exploit Maturity'] = 'Εκμετάλλευση Ωριμότητας';
+$GLOBALS["lang"]['Executable ID'] = '- Да.';
 
-$GLOBALS["lang"]['Export'] = 'Εξαγωγή';
+$GLOBALS["lang"]['executables'] = '- Да.';
 
-$GLOBALS["lang"]['Export by Device'] = 'Εξαγωγή με συσκευή';
+$GLOBALS["lang"]['Executables'] = '- Да.';
 
-$GLOBALS["lang"]['Export by Policy'] = 'Εξαγωγή ανά πολιτική';
+$GLOBALS["lang"]['Execute'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Export data to'] = 'Εξαγωγή δεδομένων';
+$GLOBALS["lang"]['Executing'] = '- Да.';
 
-$GLOBALS["lang"]['expose'] = 'Εκθέστε';
+$GLOBALS["lang"]['exemption_reason'] = '.';
 
-$GLOBALS["lang"]['Expose'] = 'Εκθέστε';
+$GLOBALS["lang"]['Exemption Reason'] = '.';
 
-$GLOBALS["lang"]['External'] = 'Εξωτερικό';
+$GLOBALS["lang"]['Existing Building'] = '.';
 
-$GLOBALS["lang"]['External Field Name'] = 'Όνομα εξωτερικού πεδίου';
+$GLOBALS["lang"]['Existing Floor'] = '.';
 
-$GLOBALS["lang"]['External Field Type'] = 'Τύπος εξωτερικού πεδίου';
+$GLOBALS["lang"]['Existing Room'] = '.';
 
-$GLOBALS["lang"]['external_ident'] = 'Εξωτερική ταυτότητα';
+$GLOBALS["lang"]['Existing Row'] = '- Не, не.';
 
-$GLOBALS["lang"]['External Ident'] = 'Εξωτερική ταυτότητα';
+$GLOBALS["lang"]['expire_date'] = '- Да.';
 
-$GLOBALS["lang"]['external_link'] = 'Εξωτερικός δεσμός';
+$GLOBALS["lang"]['Expire Date'] = '- Да.';
 
-$GLOBALS["lang"]['External Link'] = 'Εξωτερικός δεσμός';
+$GLOBALS["lang"]['expire_minutes'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['extra_columns'] = 'Επιπλέον στήλες';
+$GLOBALS["lang"]['Expire Minutes'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Extra Columns'] = 'Επιπλέον στήλες';
+$GLOBALS["lang"]['expires'] = '- Да.';
 
-$GLOBALS["lang"]['Extra and more verbose logging is generated for troubleshooting.'] = 'Επιπλέον και περισσότερη καταγραφή verbose δημιουργείται για την αντιμετώπιση προβλημάτων.';
+$GLOBALS["lang"]['Expires'] = '- Да.';
 
-$GLOBALS["lang"]['FAQ'] = 'Συχνές ερωτήσεις';
+$GLOBALS["lang"]['expiry_date'] = '.';
 
-$GLOBALS["lang"]['FQDN'] = 'FQDN';
+$GLOBALS["lang"]['Expiry Date'] = '.';
 
-$GLOBALS["lang"]['FW Revision'] = 'Αναθεώρηση FW';
+$GLOBALS["lang"]['exploit_maturity'] = '- Не, не.';
 
-$GLOBALS["lang"]['Fail'] = 'Αποτυχία';
+$GLOBALS["lang"]['Exploit Maturity'] = '- Не, не.';
 
-$GLOBALS["lang"]['Failed'] = 'Αποτυχία';
+$GLOBALS["lang"]['Export'] = '- Да.';
 
-$GLOBALS["lang"]['Failed Severity'] = 'Αποτυχία σοβαρότητας';
+$GLOBALS["lang"]['Export by Device'] = 'Město κατά Itálii';
 
-$GLOBALS["lang"]['Falkland Islands (Malvinas)'] = 'Νήσοι Φώκλαντ (Μάλβινες)';
+$GLOBALS["lang"]['Export by Policy'] = '.';
 
-$GLOBALS["lang"]['Family'] = 'Οικογένεια';
+$GLOBALS["lang"]['Export data to'] = '.';
 
-$GLOBALS["lang"]['Faroe Islands'] = 'Νήσοι Φερόε';
+$GLOBALS["lang"]['Exporting a Device'] = '- Да.';
 
-$GLOBALS["lang"]['Features'] = 'Χαρακτηριστικά';
+$GLOBALS["lang"]['expose'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['February'] = 'Φεβρουάριος';
+$GLOBALS["lang"]['Expose'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['field'] = 'Πεδίο';
+$GLOBALS["lang"]['External'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Field'] = 'Πεδίο';
+$GLOBALS["lang"]['External Field Name'] = '- Да.';
 
-$GLOBALS["lang"]['field_id'] = 'ID πεδίου';
+$GLOBALS["lang"]['External Field Type'] = '.';
 
-$GLOBALS["lang"]['Field ID'] = 'ID πεδίου';
+$GLOBALS["lang"]['External Field Types'] = '- Да.';
 
-$GLOBALS["lang"]['Field Name'] = 'Όνομα πεδίου';
+$GLOBALS["lang"]['external_ident'] = '.';
 
-$GLOBALS["lang"]['Field Type'] = 'Τύπος πεδίου';
+$GLOBALS["lang"]['External Ident'] = '.';
 
-$GLOBALS["lang"]['Fields'] = 'Πεδία';
+$GLOBALS["lang"]['external_link'] = 'Odkaz Xarici Ημερομηνία γέννησης:';
 
-$GLOBALS["lang"]['fields'] = 'Πεδία';
+$GLOBALS["lang"]['External Link'] = 'Odkaz Xarici Ημερομηνία γέννησης:';
 
-$GLOBALS["lang"]['Fiji the Fiji Islands'] = 'Φίτζι τα νησιά Φίτζι';
+$GLOBALS["lang"]['extra_columns'] = '- Да.';
 
-$GLOBALS["lang"]['File'] = 'Αρχείο';
+$GLOBALS["lang"]['Extra Columns'] = '- Да.';
 
-$GLOBALS["lang"]['File Import'] = 'Εισαγωγή αρχείου';
+$GLOBALS["lang"]['Extra and Time based Reporting'] = 'Имено.';
 
-$GLOBALS["lang"]['File Input'] = 'Εισαγωγή αρχείου';
+$GLOBALS["lang"]['Extra and more verbose logging is generated for troubleshooting.'] = '.';
 
-$GLOBALS["lang"]['file_name'] = 'Όνομα αρχείου';
+$GLOBALS["lang"]['FAQ'] = 'E-Poçon';
 
-$GLOBALS["lang"]['File Name'] = 'Όνομα αρχείου';
+$GLOBALS["lang"]['FQDN'] = 'Калерея.';
 
-$GLOBALS["lang"]['file_size'] = 'Μέγεθος αρχείου';
+$GLOBALS["lang"]['FW Revision'] = '.';
 
-$GLOBALS["lang"]['File Size'] = 'Μέγεθος αρχείου';
+$GLOBALS["lang"]['Fail'] = '- Да.';
 
-$GLOBALS["lang"]['filename'] = 'Όνομα αρχείου';
+$GLOBALS["lang"]['Failed'] = '.';
 
-$GLOBALS["lang"]['Filename'] = 'Όνομα αρχείου';
+$GLOBALS["lang"]['Failed Severity'] = 'Не, не.';
 
-$GLOBALS["lang"]['files'] = 'Αρχεία';
+$GLOBALS["lang"]['Falkland Islands (Malvinas)'] = '- Ναι.';
 
-$GLOBALS["lang"]['Files'] = 'Αρχεία';
+$GLOBALS["lang"]['Family'] = 'Не, не.';
 
-$GLOBALS["lang"]['files_id'] = 'ID αρχείων';
+$GLOBALS["lang"]['Faroe Islands'] = '.';
 
-$GLOBALS["lang"]['Files ID'] = 'ID αρχείων';
+$GLOBALS["lang"]['Features'] = 'Не, не.';
 
-$GLOBALS["lang"]['filter'] = 'Φίλτρο';
+$GLOBALS["lang"]['February'] = '.';
 
-$GLOBALS["lang"]['Filter'] = 'Φίλτρο';
+$GLOBALS["lang"]['field'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['filtered'] = 'Φιλτραρισμένο';
+$GLOBALS["lang"]['Field'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Filtered'] = 'Φιλτραρισμένο';
+$GLOBALS["lang"]['field_id'] = 'Не, не.';
 
-$GLOBALS["lang"]['Finland'] = 'Φινλανδία';
+$GLOBALS["lang"]['Field ID'] = 'Не, не.';
 
-$GLOBALS["lang"]['Firewall'] = 'Τοίχος πυρκαγιάς';
+$GLOBALS["lang"]['Field Name'] = '- Да.';
 
-$GLOBALS["lang"]['firewall_rule'] = 'Κανόνας του τείχους πυρός';
+$GLOBALS["lang"]['Field Type'] = '- Да.';
 
-$GLOBALS["lang"]['Firewall Rule'] = 'Κανόνας του τείχους πυρός';
+$GLOBALS["lang"]['Fields'] = '- Да.';
 
-$GLOBALS["lang"]['firmware'] = 'Υφασμάτινα είδη';
+$GLOBALS["lang"]['fields'] = '- Да.';
 
-$GLOBALS["lang"]['Firmware'] = 'Υφασμάτινα είδη';
+$GLOBALS["lang"]['Fields attributes are'] = 'Не, не.';
 
-$GLOBALS["lang"]['firmware_revision'] = 'Αναθεώρηση firmware';
+$GLOBALS["lang"]['Fiji the Fiji Islands'] = '.';
 
-$GLOBALS["lang"]['Firmware Revision'] = 'Αναθεώρηση firmware';
+$GLOBALS["lang"]['File'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['First Name'] = 'Όνομα';
+$GLOBALS["lang"]['File Auditing'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['first_run'] = 'Πρώτη εκτέλεση';
+$GLOBALS["lang"]['File Import'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['First Run'] = 'Πρώτη εκτέλεση';
+$GLOBALS["lang"]['File Input'] = '.';
 
-$GLOBALS["lang"]['first_seen'] = 'Πρώτα Είδατε';
+$GLOBALS["lang"]['file_name'] = '.';
 
-$GLOBALS["lang"]['First Seen'] = 'Πρώτα Είδατε';
+$GLOBALS["lang"]['File Name'] = '.';
 
-$GLOBALS["lang"]['FirstWave'] = 'Πρώτη προβολή';
+$GLOBALS["lang"]['File Share Discovery'] = 'Калерея.';
 
-$GLOBALS["lang"]['Fix'] = 'Διόρθωση';
+$GLOBALS["lang"]['file_size'] = '.';
 
-$GLOBALS["lang"]['Fixed'] = 'Σταθερό';
+$GLOBALS["lang"]['File Size'] = '.';
 
-$GLOBALS["lang"]['Floor'] = 'Όροφος';
+$GLOBALS["lang"]['filename'] = '- Да.';
 
-$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = 'Ακολουθήστε οποιονδήποτε από τους παρακάτω συνδέσμους και ανακαλύψτε πώς να χρησιμοποιήσετε το Open-AudIT για να μάθετε <b>Τι Υπάρχει στο Δίκτυό Σας;</b>';
+$GLOBALS["lang"]['Filename'] = '- Да.';
 
-$GLOBALS["lang"]['For a seed discovery, should I only discover IPs in the private IP address space.'] = 'Για μια ανακάλυψη σπόρων, θα πρέπει να ανακαλύψω μόνο τις IP στον ιδιωτικό χώρο διευθύνσεων IP.';
+$GLOBALS["lang"]['files'] = '- Да.';
 
-$GLOBALS["lang"]['For a seed discovery, should I only discover IPs on the chosen subnet.'] = 'Για μια ανακάλυψη σπόρων, θα πρέπει να ανακαλύψω μόνο IPs στο επιλεγμένο υποδίκτυο.';
+$GLOBALS["lang"]['Files'] = '- Да.';
 
-$GLOBALS["lang"]['For a seed discovery, should I ping the subnet before running the discovery.'] = 'Για μια ανακάλυψη σπόρου, πρέπει να βρω το υποδίκτυο πριν εκτελέσω την ανακάλυψη.';
+$GLOBALS["lang"]['files_id'] = '- Да.';
 
-$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.'] = 'Για προχωρημένη είσοδο ενός ακατέργαστου ερωτήματος SQL. Σύμφωνα με τις ερωτήσεις, πρέπει να συμπεριλάβετε <code>WHERE @filter AND<code> in your SQL.</code></code>';
+$GLOBALS["lang"]['Files ID'] = '- Да.';
 
-$GLOBALS["lang"]['For licenses that are not perpetual, when does the license expire.'] = 'Για άδειες που δεν είναι αέναες, πότε λήγει η άδεια.';
+$GLOBALS["lang"]['filter'] = '- Да.';
 
-$GLOBALS["lang"]['form_factor'] = 'Συντελεστής μορφής';
+$GLOBALS["lang"]['Filter'] = '- Да.';
 
-$GLOBALS["lang"]['Form Factor'] = 'Συντελεστής μορφής';
+$GLOBALS["lang"]['filtered'] = '- Да.';
 
-$GLOBALS["lang"]['format'] = 'Μορφή';
+$GLOBALS["lang"]['Filtered'] = '- Да.';
 
-$GLOBALS["lang"]['Format'] = 'Μορφή';
+$GLOBALS["lang"]['Filtered Ports'] = '- Да.';
 
-$GLOBALS["lang"]['fqdn'] = 'Fqdn';
+$GLOBALS["lang"]['Finland'] = '.';
 
-$GLOBALS["lang"]['Fqdn'] = 'Fqdn';
+$GLOBALS["lang"]['Finnish'] = '.';
 
-$GLOBALS["lang"]['France, French Republic'] = 'Γαλλία, Γαλλική Δημοκρατία';
+$GLOBALS["lang"]['Firewall'] = '- Да.';
 
-$GLOBALS["lang"]['free'] = 'Δωρεάν';
+$GLOBALS["lang"]['Firewall Packages'] = '.';
 
-$GLOBALS["lang"]['Free'] = 'Δωρεάν';
+$GLOBALS["lang"]['firewall_rule'] = '- Не, не.';
 
-$GLOBALS["lang"]['French'] = 'Γαλλικά';
+$GLOBALS["lang"]['Firewall Rule'] = '- Не, не.';
 
-$GLOBALS["lang"]['French Guiana'] = 'Γαλλική Γουιάνα';
+$GLOBALS["lang"]['firmware'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['French Polynesia'] = 'Γαλλική Πολυνησία';
+$GLOBALS["lang"]['Firmware'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['French Southern Territories'] = 'Γαλλικά Νότια Εδάφη';
+$GLOBALS["lang"]['firmware_revision'] = '.';
 
-$GLOBALS["lang"]['Frequently Asked Questions'] = 'Συχνές ερωτήσεις';
+$GLOBALS["lang"]['Firmware Revision'] = '.';
 
-$GLOBALS["lang"]['Friday'] = 'Παρασκευή';
+$GLOBALS["lang"]['First'] = '- Да.';
 
-$GLOBALS["lang"]['From 100 Devices'] = 'Από 100 συσκευές';
+$GLOBALS["lang"]['First Name'] = '.';
 
-$GLOBALS["lang"]['From 500 Devices'] = 'Από 500 συσκευές';
+$GLOBALS["lang"]['first_run'] = '- Да.';
 
-$GLOBALS["lang"]['full_name'] = 'Πλήρες όνομα';
+$GLOBALS["lang"]['First Run'] = '- Да.';
 
-$GLOBALS["lang"]['Full Name'] = 'Πλήρες όνομα';
+$GLOBALS["lang"]['first_seen'] = 'Илк БаксъК.';
 
-$GLOBALS["lang"]['function'] = 'Συνάρτηση';
+$GLOBALS["lang"]['First Seen'] = 'Илк БаксъК.';
 
-$GLOBALS["lang"]['Function'] = 'Συνάρτηση';
+$GLOBALS["lang"]['First focus on what the end need is: are you trying to baseline software, users, or Netstat data? What is the important thing(s) to compare and report on?'] = '- Да.';
 
-$GLOBALS["lang"]['GROUP BY'] = 'ΟΜΑΔΑ';
+$GLOBALS["lang"]['FirstWave'] = '.';
 
-$GLOBALS["lang"]['Gabon'] = 'Γκαμπόν';
+$GLOBALS["lang"]['Fix'] = 'Κομπούτερ';
 
-$GLOBALS["lang"]['Gambia the'] = 'Γκάμπια';
+$GLOBALS["lang"]['Fixed'] = '.';
 
-$GLOBALS["lang"]['gateway'] = 'Πύλη';
+$GLOBALS["lang"]['Fixing the Issue'] = '.';
 
-$GLOBALS["lang"]['Gateway'] = 'Πύλη';
+$GLOBALS["lang"]['Floor'] = '- Да.';
 
-$GLOBALS["lang"]['gateways'] = 'Πύλες';
+$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = '. <b>- Да.</b>';
 
-$GLOBALS["lang"]['Gateways'] = 'Πύλες';
+$GLOBALS["lang"]['For'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Generated By'] = 'Δημιουργία από';
+$GLOBALS["lang"]['For <i>Type</i> make sure to select Baseline, and for Group you should select a Group of devices, if applicable to this baseline, that best represent the devices to apply the baseline against. This will prevent erroneous entries.'] = 'Άξταρ@ <i>- Да.</i> Имено.';
 
-$GLOBALS["lang"]['geo'] = 'Γεω';
+$GLOBALS["lang"]['For Debian/Ubuntu run, including setting dpkg to remember your override so an apt-get upgrade will not break'] = '.';
 
-$GLOBALS["lang"]['Geo'] = 'Γεω';
+$GLOBALS["lang"]['For SNMP Open-AudIT can use v1, v2 and v3 credentials. The device is queried regardless of it being a router, switch (regular network devices) or a computer (Linux and Windows often run SNMP for monitoring tools).'] = 'Имено.';
 
-$GLOBALS["lang"]['Georgia'] = 'Γεωργία';
+$GLOBALS["lang"]['For a primer on cron, see this Wikipedia page'] = '.';
 
-$GLOBALS["lang"]['German'] = 'Γερμανικά';
+$GLOBALS["lang"]['For a seed discovery, should I only discover IPs in the private IP address space.'] = 'Имено.';
 
-$GLOBALS["lang"]['Germany'] = 'Γερμανία';
+$GLOBALS["lang"]['For a seed discovery, should I only discover IPs on the chosen subnet.'] = 'Имено.';
 
-$GLOBALS["lang"]['Get Lat/Long'] = 'Πάρτε Lat / Long';
+$GLOBALS["lang"]['For a seed discovery, should I ping the subnet before running the discovery.'] = '.';
 
-$GLOBALS["lang"]['Get Started'] = 'Ξεκινήστε';
+$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.'] = 'Имено. <code>WHERE @filter AND<code> in your SQL.</code></code>';
 
-$GLOBALS["lang"]['Get a Free License'] = 'Λήψη δωρεάν άδειας';
+$GLOBALS["lang"]['For each spawned process, the below occurs.'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Getting Started'] = 'Έναρξη';
+$GLOBALS["lang"]['For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enable you to determine this.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Ghana'] = 'Γκάνα';
+$GLOBALS["lang"]['For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Gibraltar'] = 'Γιβραλτάρ';
+$GLOBALS["lang"]['For further details information, see the wiki.'] = '.';
 
-$GLOBALS["lang"]['Global Discovery Options'] = 'Επιλογές παγκόσμιας ανακάλυψης';
+$GLOBALS["lang"]['For licenses that are not perpetual, when does the license expire.'] = '.';
 
-$GLOBALS["lang"]['Go'] = 'Πήγαινε.';
+$GLOBALS["lang"]['For more detailed information, check the Open-AudIT Knowledge Base.'] = '- Да.';
 
-$GLOBALS["lang"]['Google Compute Fields'] = 'Υπολογίστε πεδία Google';
+$GLOBALS["lang"]['For more information please see the following guide which includes a video. Use'] = '.';
 
-$GLOBALS["lang"]['Google Maps API Key'] = 'API χαρτών Google Κλειδί';
+$GLOBALS["lang"]['For more information, see'] = '.';
 
-$GLOBALS["lang"]['Greater Than'] = 'Μεγαλύτερο από';
+$GLOBALS["lang"]['form_factor'] = 'Φακτόρ';
 
-$GLOBALS["lang"]['Greater Than or Equals'] = 'Μεγαλύτερο από ή ίσο';
+$GLOBALS["lang"]['Form Factor'] = 'Φακτόρ';
 
-$GLOBALS["lang"]['Greece'] = 'Ελλάδα';
+$GLOBALS["lang"]['format'] = '.';
 
-$GLOBALS["lang"]['Green Query'] = 'Πράσινο ερώτημα';
+$GLOBALS["lang"]['Format'] = '.';
 
-$GLOBALS["lang"]['Greenland'] = 'Γροιλανδία';
+$GLOBALS["lang"]['Forth'] = 'Ümumi';
 
-$GLOBALS["lang"]['Grenada'] = 'Γρενάδα';
+$GLOBALS["lang"]['fqdn'] = '.';
 
-$GLOBALS["lang"]['Group'] = 'Ομάδα';
+$GLOBALS["lang"]['Fqdn'] = '.';
 
-$GLOBALS["lang"]['group_by'] = 'Ομάδα από';
+$GLOBALS["lang"]['France, French Republic'] = 'Не, не.';
 
-$GLOBALS["lang"]['Group By'] = 'Ομάδα από';
+$GLOBALS["lang"]['free'] = '.';
 
-$GLOBALS["lang"]['group_id'] = 'ID ομάδας';
+$GLOBALS["lang"]['Free'] = '.';
 
-$GLOBALS["lang"]['Group ID'] = 'ID ομάδας';
+$GLOBALS["lang"]['French'] = '- Не, не.';
 
-$GLOBALS["lang"]['groups'] = 'Ομάδες';
+$GLOBALS["lang"]['French Guiana'] = '.';
 
-$GLOBALS["lang"]['Groups'] = 'Ομάδες';
+$GLOBALS["lang"]['French Polynesia'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Guadeloupe'] = 'Γουαδελούπη';
+$GLOBALS["lang"]['French Southern Territories'] = '- Да.';
 
-$GLOBALS["lang"]['Guam'] = 'Γκουάμ';
+$GLOBALS["lang"]['Frequently Asked Questions'] = '.';
 
-$GLOBALS["lang"]['Guatemala'] = 'Γουατεμάλα';
+$GLOBALS["lang"]['Friday'] = '.';
 
-$GLOBALS["lang"]['Guernsey'] = 'Γκέρνσεϊ';
+$GLOBALS["lang"]['From 100 Devices'] = '100 na druhou.';
 
-$GLOBALS["lang"]['guest_device_id'] = 'Ταυτότητα συσκευής του επισκέπτη';
+$GLOBALS["lang"]['From 500 Devices'] = ' Καλιμπάλο. 500';
 
-$GLOBALS["lang"]['Guest Device ID'] = 'Ταυτότητα συσκευής του επισκέπτη';
+$GLOBALS["lang"]['From that page'] = '.';
 
-$GLOBALS["lang"]['guid'] = 'Γκιντ';
+$GLOBALS["lang"]['full_name'] = '.';
 
-$GLOBALS["lang"]['Guid'] = 'Γκιντ';
+$GLOBALS["lang"]['Full Name'] = '.';
 
-$GLOBALS["lang"]['Guinea'] = 'Γουινέα';
+$GLOBALS["lang"]['Full cloud auditing with all the details from a regular Open-AudIT audit AND details such as the machine type and size.'] = '- Не, не.';
 
-$GLOBALS["lang"]['Guinea-Bissau'] = 'Γουινέα-Μπισσάου';
+$GLOBALS["lang"]['function'] = '- Да.';
 
-$GLOBALS["lang"]['Guyana'] = 'Γουιάνα';
+$GLOBALS["lang"]['Function'] = '- Да.';
 
-$GLOBALS["lang"]['HP-UX'] = 'HP-UX';
+$GLOBALS["lang"]['GROUP BY'] = '.';
 
-$GLOBALS["lang"]['HW Revision'] = 'Αναθεώρηση HW';
+$GLOBALS["lang"]['Gabon'] = '.';
 
-$GLOBALS["lang"]['Haiti'] = 'Αϊτή';
+$GLOBALS["lang"]['Galician'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['hard_drive_index'] = 'Δείκτης σκληρού δίσκου';
+$GLOBALS["lang"]['Gambia the'] = '- Да.';
 
-$GLOBALS["lang"]['Hard Drive Index'] = 'Δείκτης σκληρού δίσκου';
+$GLOBALS["lang"]['Gap Analysis (optional)'] = '- Ναι.';
 
-$GLOBALS["lang"]['hardware_revision'] = 'Αναθεώρηση υλικού';
+$GLOBALS["lang"]['gateway'] = '- Да.';
 
-$GLOBALS["lang"]['Hardware Revision'] = 'Αναθεώρηση υλικού';
+$GLOBALS["lang"]['Gateway'] = '- Да.';
 
-$GLOBALS["lang"]['Has this policy been applied in this organization.'] = 'Έχει εφαρμοστεί αυτή η πολιτική σε αυτόν τον οργανισμό.';
+$GLOBALS["lang"]['gateways'] = '- Да.';
 
-$GLOBALS["lang"]['hash'] = 'Χας.';
+$GLOBALS["lang"]['Gateways'] = '- Да.';
 
-$GLOBALS["lang"]['Hash'] = 'Χας.';
+$GLOBALS["lang"]['Generated By'] = '- Не.';
 
-$GLOBALS["lang"]['Head'] = 'Υπεύθυνος';
+$GLOBALS["lang"]['geo'] = ' Геометрия Геометрия.';
 
-$GLOBALS["lang"]['Heard Island and McDonald Islands'] = 'Νήσοι Χερντ και ΜακΝτόναλντ';
+$GLOBALS["lang"]['Geo'] = ' Геометрия Геометрия.';
 
-$GLOBALS["lang"]['height'] = 'Ύψος';
+$GLOBALS["lang"]['Geographical Maps'] = '.';
 
-$GLOBALS["lang"]['Height'] = 'Ύψος';
+$GLOBALS["lang"]['Georgia'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Height in RU'] = 'Ύψος σε ΕΣ';
+$GLOBALS["lang"]['German'] = '- Да.';
 
-$GLOBALS["lang"]['Help'] = 'Βοήθεια';
+$GLOBALS["lang"]['Germany'] = '- Да.';
 
-$GLOBALS["lang"]['Help and Frequently Asked Questions'] = 'Βοήθεια και Συχνές Ερωτήσεις';
+$GLOBALS["lang"]['Get Lat/Long'] = '.';
 
-$GLOBALS["lang"]['high'] = 'Υψηλή';
+$GLOBALS["lang"]['Get News'] = '.';
 
-$GLOBALS["lang"]['High'] = 'Υψηλή';
+$GLOBALS["lang"]['Get Started'] = '- Да.';
 
-$GLOBALS["lang"]['High Availability'] = 'Υψηλή διαθεσιμότητα';
+$GLOBALS["lang"]['Get a Free License'] = 'Не, не.';
 
-$GLOBALS["lang"]['Holy See (Vatican City State)'] = 'Αγία Έδρα (Πόλη του Βατικανού)';
+$GLOBALS["lang"]['Get familiar with the Open-AudIT platform and explore some of its features.'] = '.';
 
-$GLOBALS["lang"]['Home'] = 'Σπίτι';
+$GLOBALS["lang"]['Getting Started'] = '- Да.';
 
-$GLOBALS["lang"]['home'] = 'Σπίτι';
+$GLOBALS["lang"]['Ghana'] = '- Да.';
 
-$GLOBALS["lang"]['Home Area Network'] = 'Δίκτυο Home Area';
+$GLOBALS["lang"]['Gibraltar'] = '.';
 
-$GLOBALS["lang"]['Honduras'] = 'Ονδούρα';
+$GLOBALS["lang"]['Github'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Hong Kong'] = 'Χονγκ Κονγκ';
+$GLOBALS["lang"]['Global Discovery Options'] = 'Настройки на глобалното откритие,';
 
-$GLOBALS["lang"]['host'] = 'Υπολογιστής';
+$GLOBALS["lang"]['Global area network'] = 'Не, не.';
 
-$GLOBALS["lang"]['Host'] = 'Υπολογιστής';
+$GLOBALS["lang"]['Go'] = '.';
 
-$GLOBALS["lang"]['hostname'] = 'Όνομα υπολογιστή';
+$GLOBALS["lang"]['Go back to your Open-AudIT server and create a discovery with the target Windows computers IP Address as the subnet (this will save having to discover the entire subnet again). Run the discovery, taking note of any issues. For any issues found, take appropriate actions.'] = 'Имено.';
 
-$GLOBALS["lang"]['Hostname'] = 'Όνομα υπολογιστή';
+$GLOBALS["lang"]['Go the target Windows PC (or use RDP) and log on as the user used by your discovery credential set.'] = '.';
 
-$GLOBALS["lang"]['hour'] = 'Ώρα';
+$GLOBALS["lang"]['Go to menu'] = '- Не, не.';
 
-$GLOBALS["lang"]['Hour'] = 'Ώρα';
+$GLOBALS["lang"]['Go to the <i>Applications</i> -> <i>App registrations</i> menu item on the far left. Search for Open-AudIT. Click the Open-AudIT entry in the list (assuming you named the app Open-AudIT).'] = '. <i>- Да.</i> - Ναι. <i>.</i> да го направим, да го направим.';
 
-$GLOBALS["lang"]['How and Why is Open-AudIT More Secure'] = 'Πώς και γιατί το Open-AudIT είναι πιο ασφαλές';
+$GLOBALS["lang"]['Go to the <i>Certificates and secrets</i> menu item under <i>Manage</i> in the center menu.'] = '. <i>.</i> . <i>Κεϊντιγιάτ</i> - \'νω.';
 
-$GLOBALS["lang"]['How long did the command take to execute.'] = 'Πόση ώρα πήρε η εντολή για να εκτελεστεί.';
+$GLOBALS["lang"]['Go to the <i>Single sign-on</i> menu item and click SAML for <i>Select a single sign-on method</i>.'] = '. <i>.</i> - Да. <i>.</i>.';
 
-$GLOBALS["lang"]['How long should Nmap wait for a response, per device.'] = 'Πόσο καιρό θα πρέπει να Nmap περιμένει για μια απάντηση, ανά συσκευή.';
+$GLOBALS["lang"]['Google Compute Fields'] = 'E- poçt ünvan';
 
-$GLOBALS["lang"]['How many circuit feed to this rack.'] = 'Πόσα κυκλώματα σε αυτό το ράφι.';
+$GLOBALS["lang"]['Google JSON Credentials'] = ' Google годежът на Гугъл.';
 
-$GLOBALS["lang"]['How many policies results in a fail.'] = 'Πόσες πολιτικές καταλήγουν σε αποτυχία.';
+$GLOBALS["lang"]['Google Maps API Key'] = 'Google Maps API ..';
 
-$GLOBALS["lang"]['How many policies results in a pass.'] = 'Πόσες πολιτικές οδηγούν σε ένα πέρασμα.';
+$GLOBALS["lang"]['Great, then you can help! Send FirstWave the text shown in the GUI and what should be shown. We will include that in the language file so going forward, the translation is improved and you do not need to worry about updating it for every release!'] = 'Имено.';
 
-$GLOBALS["lang"]['How many power sockets in this rack.'] = 'Πόσες πρίζες σε αυτό το ράφι.';
+$GLOBALS["lang"]['Greater Than'] = '.';
 
-$GLOBALS["lang"]['How many rack units in height is this rack.'] = 'Πόσες μονάδες σε ύψος είναι αυτό το ράφι.';
+$GLOBALS["lang"]['Greater Than or Equals'] = '.';
 
-$GLOBALS["lang"]['How often should the collector ask the server for a task.'] = 'Πόσο συχνά θα πρέπει ο συλλέκτης να ζητήσει από το διακομιστή για μια εργασία.';
+$GLOBALS["lang"]['Greece'] = '.';
 
-$GLOBALS["lang"]['How should we select devices to be integrated (using an Attribute, Query or a Group).'] = 'Πώς θα πρέπει να επιλέξουμε συσκευές για να ενσωματωθούν (χρησιμοποιώντας ένα χαρακτηριστικό, ερωτηματικό ή μια ομάδα).';
+$GLOBALS["lang"]['Greek'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).'] = 'Πώς αξιοποιείται η ευπάθεια (π.χ., Δίκτυο, Επιφανές, Τοπικό, Φυσικό).';
+$GLOBALS["lang"]['Green Query'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['How to compare'] = 'Πώς να συγκρίνετε';
+$GLOBALS["lang"]['Greenland'] = '- Да.';
 
-$GLOBALS["lang"]['Human-readable explanation of the vulnerability.'] = 'Ανθρώπινη εξήγηση της ευπάθειας.';
+$GLOBALS["lang"]['Grenada'] = '- Да.';
 
-$GLOBALS["lang"]['Hungary'] = 'Ουγγαρία';
+$GLOBALS["lang"]['Group'] = '.';
 
-$GLOBALS["lang"]['hw_cpe'] = 'Hw Cpe';
+$GLOBALS["lang"]['group_by'] = '.';
 
-$GLOBALS["lang"]['Hw Cpe'] = 'Hw Cpe';
+$GLOBALS["lang"]['Group By'] = '.';
 
-$GLOBALS["lang"]['hyperthreading'] = 'Υπερηχογράφημα';
+$GLOBALS["lang"]['group_id'] = '.';
 
-$GLOBALS["lang"]['Hyperthreading'] = 'Υπερηχογράφημα';
+$GLOBALS["lang"]['Group ID'] = '.';
 
-$GLOBALS["lang"]['I have read the EULA.'] = 'Διάβασα την EULA.';
+$GLOBALS["lang"]['groups'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['id'] = 'ID';
+$GLOBALS["lang"]['Groups'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <i>devices.id</i> only. If requested using the web interface, they return the standard column attribute list. Groups can be used for Integrations, Baselines and other items.'] = 'JSON istifad.. etm.k. diyiniz zaman, onlar bir siyahşsīgeri (στα Αγγλικά). <i>- Да.</i> Имено.';
+
+$GLOBALS["lang"]['Guadeloupe'] = '- Да.';
+
+$GLOBALS["lang"]['Guam'] = '- Не, не.';
+
+$GLOBALS["lang"]['Guatemala'] = '- Да.';
+
+$GLOBALS["lang"]['Guernsey'] = '- Да.';
+
+$GLOBALS["lang"]['guest_device_id'] = '.';
+
+$GLOBALS["lang"]['Guest Device ID'] = '.';
+
+$GLOBALS["lang"]['guid'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['Guid'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['Guinea'] = '- Да.';
+
+$GLOBALS["lang"]['Guinea-Bissau'] = '- Не, не.';
+
+$GLOBALS["lang"]['Guyana'] = '- Да.';
+
+$GLOBALS["lang"]['HP-UX'] = 'Η HP- UX';
+
+$GLOBALS["lang"]['HW Revision'] = 'HW';
+
+$GLOBALS["lang"]['Haiti'] = '- Да.';
+
+$GLOBALS["lang"]['hard_drive_index'] = '.';
+
+$GLOBALS["lang"]['Hard Drive Index'] = '.';
+
+$GLOBALS["lang"]['Hardware'] = '- Не, не.';
+
+$GLOBALS["lang"]['hardware_revision'] = '.';
+
+$GLOBALS["lang"]['Hardware Revision'] = '.';
+
+$GLOBALS["lang"]['Has this policy been applied in this organization.'] = '.';
+
+$GLOBALS["lang"]['hash'] = ' {\Όχι.';
+
+$GLOBALS["lang"]['Hash'] = ' {\Όχι.';
+
+$GLOBALS["lang"]['Have the agent always run the latest audit script (if you upgrade Open-AudIT and manually copy the scripts to the targets, then set cron - you will need to update these scripts for each upgrade).'] = '.';
+
+$GLOBALS["lang"]['Have your user open a command prompt (using <i>Run as Administrator</i>). Paste the below into the prompt to download the Agent.'] = '. <i>- Да.</i> )';
+
+$GLOBALS["lang"]['Head'] = ' Глава.';
+
+$GLOBALS["lang"]['Heard Island and McDonald Islands'] = '- Да.';
+
+$GLOBALS["lang"]['Hebrew'] = '- Да.';
+
+$GLOBALS["lang"]['height'] = '- Да.';
+
+$GLOBALS["lang"]['Height'] = '- Да.';
+
+$GLOBALS["lang"]['Height in RU'] = '.';
+
+$GLOBALS["lang"]['Help'] = '- Не, не.';
+
+$GLOBALS["lang"]['Help and Frequently Asked Questions'] = 'Имено.';
+
+$GLOBALS["lang"]['Helps manage and mitigate information security risks'] = '- Да.';
+
+$GLOBALS["lang"]['Hide Audit Window'] = '.';
+
+$GLOBALS["lang"]['high'] = '- Да.';
+
+$GLOBALS["lang"]['High'] = '- Да.';
+
+$GLOBALS["lang"]['High Availability'] = '.';
+
+$GLOBALS["lang"]['Hindi'] = 'Uşaq Ημερομηνία γέννησης:';
+
+$GLOBALS["lang"]['Holy See (Vatican City State)'] = '.';
+
+$GLOBALS["lang"]['Home'] = 'Не, не.';
+
+$GLOBALS["lang"]['home'] = 'Не, не.';
+
+$GLOBALS["lang"]['Home Area Network'] = '.';
+
+$GLOBALS["lang"]['Home area network'] = '- Да.';
+
+$GLOBALS["lang"]['Honduras'] = 'Не, не.';
+
+$GLOBALS["lang"]['Hong Kong'] = '.';
+
+$GLOBALS["lang"]['host'] = '- Да.';
+
+$GLOBALS["lang"]['Host'] = '- Да.';
+
+$GLOBALS["lang"]['hostname'] = '.';
+
+$GLOBALS["lang"]['Hostname'] = '.';
+
+$GLOBALS["lang"]['hour'] = 'Předseda Αριθ. CAS:';
+
+$GLOBALS["lang"]['Hour'] = 'Předseda Αριθ. CAS:';
+
+$GLOBALS["lang"]['How Does It Work?'] = '.';
+
+$GLOBALS["lang"]['How Does it Work?'] = '.';
+
+$GLOBALS["lang"]['How Long Does it Take'] = '.';
+
+$GLOBALS["lang"]['How and Why is'] = '.';
+
+$GLOBALS["lang"]['How and Why is Open-AudIT More Secure'] = '.';
+
+$GLOBALS["lang"]['How do they work?'] = '- Да.';
+
+$GLOBALS["lang"]['How does a Device Seed Discovery find known IPs?'] = '- Да.';
+
+$GLOBALS["lang"]['How long did the command take to execute.'] = '.';
+
+$GLOBALS["lang"]['How long should Nmap wait for a response, per device.'] = '.';
+
+$GLOBALS["lang"]['How many circuit feed to this rack.'] = '.';
+
+$GLOBALS["lang"]['How many policies results in a fail.'] = '.';
+
+$GLOBALS["lang"]['How many policies results in a pass.'] = '.';
+
+$GLOBALS["lang"]['How many power sockets in this rack.'] = '.';
+
+$GLOBALS["lang"]['How many rack units in height is this rack.'] = '.';
+
+$GLOBALS["lang"]['How often should the collector ask the server for a task.'] = '.';
+
+$GLOBALS["lang"]['How should we select devices to be integrated (using an Attribute, Query or a Group).'] = 'Това е така.';
+
+$GLOBALS["lang"]['How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).'] = 'Qarşşq nec... istismar edilir (напр. Network, Zusätzliche, lokale, Fizik).';
+
+$GLOBALS["lang"]['How to compare'] = 'Не, не.';
+
+$GLOBALS["lang"]['Human-readable explanation of the vulnerability.'] = '.';
+
+$GLOBALS["lang"]['Hungarian'] = '- Да.';
+
+$GLOBALS["lang"]['Hungary'] = '- Да.';
+
+$GLOBALS["lang"]['hw_cpe'] = 'Калерея.';
+
+$GLOBALS["lang"]['Hw Cpe'] = 'Калерея.';
+
+$GLOBALS["lang"]['hyperthreading'] = 'Яипертания';
+
+$GLOBALS["lang"]['Hyperthreading'] = 'Яипертания';
+
+$GLOBALS["lang"]['I have read the EULA.'] = 'Имено.';
+
+$GLOBALS["lang"]['I hope this post has alleviated any concerns you have about Open-AudIT and Security. If you have any questions at all, please do not hesitate to reach out to us here at FirstWave. We are always happy to discuss your concerns and needs. And maybe if your question is not something I have addressed here, I can add it here for future users'] = 'Имено.';
+
+$GLOBALS["lang"]['id'] = '- Не, не.';
 
 $GLOBALS["lang"]['ID'] = 'ID';
 
-$GLOBALS["lang"]['IF'] = 'ΑΝ';
+$GLOBALS["lang"]['IF'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['IOS Version'] = 'Έκδοση IOS';
+$GLOBALS["lang"]['IMPORTANT'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['IP'] = 'IP';
+$GLOBALS["lang"]['INPUTS'] = ' Βιγκλ.';
 
-$GLOBALS["lang"]['ip'] = 'IP';
+$GLOBALS["lang"]['IOS Version'] = 'Версия ΙΟΣ';
 
-$GLOBALS["lang"]['IP Address'] = 'Διεύθυνση IP';
+$GLOBALS["lang"]['IP'] = 'E-Poçon';
 
-$GLOBALS["lang"]['IP Addresses'] = 'Διευθύνσεις IP';
+$GLOBALS["lang"]['ip'] = 'E-Poçon';
 
-$GLOBALS["lang"]['IP Last Seen'] = 'Τελευταία προβολή IP';
+$GLOBALS["lang"]['IP Address'] = 'ΙΡ-Ουνβάν';
 
-$GLOBALS["lang"]['IP Set By'] = 'Ορισμός IP από';
+$GLOBALS["lang"]['IP Addresses'] = 'IP Ünvanlar';
 
-$GLOBALS["lang"]['ISO 27001 only.'] = 'Μόνο το ISO 27001.';
+$GLOBALS["lang"]['IP Last Seen'] = 'IP- Συγχρονισμός';
 
-$GLOBALS["lang"]['Iceland'] = 'Ισλανδία';
+$GLOBALS["lang"]['IP Set By'] = 'Δαξίλη';
 
-$GLOBALS["lang"]['icon'] = 'Εικονίδιο';
+$GLOBALS["lang"]['ISMS'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Icon'] = 'Εικονίδιο';
+$GLOBALS["lang"]['ISO 27001 only.'] = 'ISO 27001 год.';
 
-$GLOBALS["lang"]['Icon and Text'] = 'Εικονίδιο και κείμενο';
+$GLOBALS["lang"]['Iceland'] = '.';
 
-$GLOBALS["lang"]['Icon only, text only or icon and text.'] = 'Εικονίδιο μόνο, κείμενο μόνο ή εικονίδιο και κείμενο.';
+$GLOBALS["lang"]['icon'] = 'Икона.';
 
-$GLOBALS["lang"]['id_internal'] = 'Ταυτότητα εσωτερικού';
+$GLOBALS["lang"]['Icon'] = 'Икона.';
 
-$GLOBALS["lang"]['Id Internal'] = 'Ταυτότητα εσωτερικού';
+$GLOBALS["lang"]['Icon and Text'] = 'Икона / текст';
 
-$GLOBALS["lang"]['id_number'] = 'Αριθμός αναγνώρισης';
+$GLOBALS["lang"]['Icon only, text only or icon and text.'] = 'Yalnīz, m.hsul yalnīz v.................................................................................................................................';
 
-$GLOBALS["lang"]['Id Number'] = 'Αριθμός αναγνώρισης';
+$GLOBALS["lang"]['id_internal'] = '- Да.';
 
-$GLOBALS["lang"]['identification'] = 'Ταυτοποίηση';
+$GLOBALS["lang"]['Id Internal'] = '- Да.';
 
-$GLOBALS["lang"]['Identification'] = 'Ταυτοποίηση';
+$GLOBALS["lang"]['id_number'] = '- Да.';
 
-$GLOBALS["lang"]['If'] = 'Εάν';
+$GLOBALS["lang"]['Id Number'] = '- Да.';
 
-$GLOBALS["lang"]['If a port responds with filtered, should we consider it available.'] = 'Εάν μια θύρα ανταποκρίνεται με φίλτρο, θα πρέπει να το θεωρήσουμε διαθέσιμο.';
+$GLOBALS["lang"]['identification'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['If a port responds with open|filtered, should we consider it available.'] = 'Εάν μια θύρα ανταποκρίνεται με ανοιχτόφιλτρα, θα πρέπει να το θεωρήσουμε διαθέσιμο.';
+$GLOBALS["lang"]['Identification'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['If a remote device does not exist in the Open-AudIT selected devices, should we delete it from the external system.'] = 'Εάν μια απομακρυσμένη συσκευή δεν υπάρχει στις επιλεγμένες συσκευές Open-AudIT, εάν τη διαγράψουμε από το εξωτερικό σύστημα.';
+$GLOBALS["lang"]['Identify information assets'] = 'Не, не.';
 
-$GLOBALS["lang"]['If an Open-AudIT device has been changed, should we update the external system.'] = 'Εάν έχει αλλάξει μια συσκευή Open-AudIT, θα πρέπει να ενημερώσουμε το εξωτερικό σύστημα.';
+$GLOBALS["lang"]['Identify interested parties and their requirements'] = '.';
 
-$GLOBALS["lang"]['If an Open-AudIT device is not on the external system, should we create it.'] = 'Εάν μια συσκευή Open-AudIT δεν είναι στο εξωτερικό σύστημα, θα πρέπει να τη δημιουργήσουμε.';
+$GLOBALS["lang"]['Identify key stakeholders and assign roles'] = '.';
 
-$GLOBALS["lang"]['If an agent reports its primary IP is in this subnet, perform the actions.'] = 'Εάν ένας πράκτορας αναφέρει την κύρια IP του είναι σε αυτό το υποδίκτυο, εκτελέστε τις ενέργειες.';
+$GLOBALS["lang"]['Identify the device(s) that are your exemplary, or <i>gold image</i> you want to compare similar devices against.'] = '. <i>.</i> .';
 
-$GLOBALS["lang"]['If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.'] = 'Εάν ανιχνευθεί κάποια από αυτές τις θύρες (διαχωρισμένες από το κώμα, χωρίς κενά), υποθέστε ότι η SSH τρέχει πάνω τους και τις χρησιμοποιεί για ώντιτινγκ. Δεν χρειάζεται να προσθέσετε αυτή τη θύρα στις προσαρμοσμένες θύρες TCP - θα προστεθεί αυτόματα.';
+$GLOBALS["lang"]['Identifying and evaluating security risks'] = 'Имено.';
 
-$GLOBALS["lang"]['If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.'] = 'Αν οριστεί, κρατά μια σειρά JSON από συγκεκριμένες στήλες συσκευών που αυτός ο χρήστης έχει επιλέξει να δει, εκτός από τις προκαθορισμένες ρυθμίσεις.';
+$GLOBALS["lang"]['If'] = '.';
 
-$GLOBALS["lang"]['If the agent OS family (case insensitive) contains this string, perform the actions.'] = 'Εάν η οικογένεια του παράγοντα OS (περίπτωση αναίσθητη) περιέχει αυτή τη συμβολοσειρά, εκτελέστε τις ενέργειες.';
+$GLOBALS["lang"]['If a device is individually discovered using the <i>Discover Device</i> link on the device details page, we first check if this device has been discovered previously (by Discovery) and if so, use the discovery options from that scan. If it has not been previously discovered, we revert to the configuration item discovery_default_scan_option the settings.'] = '. <i>.</i> да го направим, да го направим.';
 
-$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>'] = 'Εάν πληρούνται οι ακόλουθες προϋποθέσεις:<br/><ul><li>ένας ρόλος έχει ανατεθεί ad_group</li><li>ένας οργανισμός έχει μια καθορισμένη ad_group</li><li>LDAP Ο εξυπηρετητής έχει ρυθμίσει το y</li><li>ένας χρήστης υπάρχει στο LDAP (π.χ. Active Directory ή OpenLDAP) και είναι στις εκχωρημένες ad_groups</li></ul>Αυτός ο χρήστης μπορεί να συνδεθεί στο Open-AudIT χωρίς λογαριασμό στο Open-AudIT που χρειάζεται να δημιουργηθεί. Το Open-AudIT θα διερωτηθεί το LDAP εν προκειμένω και αν ο χρήστης βρίσκεται στις απαιτούμενες ομάδες αλλά όχι στο Open-AudIT, οι ιδιότητες χρήστη τους (όνομα, πλήρες όνομα, email, ρόλοι, οργς, κλπ) εντός του Open-AudIT θα κατοικηθούν αυτόματα και θα συνδεθούν.<br/> <br/>';
+$GLOBALS["lang"]['If a new Org is created, an LDAP group name is automatically derived from the name. For example, if a new Org is created and is named Test, the corresponding LDAP group will be named open-audit_orgs_test.'] = ' Org yaradīlīrsa, bir LDAP qsad addan avtomatik olarac yaranīlīr. Ημερομηνία γέννησης:  Org yaradīlīrsa κατά... Тест adlandīrţlsa, müxt голиК LDAP qrupu açţq-одит _ orgs _ test adlandīrīlacaq.';
 
-$GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.'] = 'Εάν ο χρήστης συνδεθεί στο Open-AudIT δεν έχει πρόσβαση στην αναζήτηση LDAP, μπορείτε να χρησιμοποιήσετε έναν άλλο λογαριασμό που έχει αυτή την πρόσβαση.';
+$GLOBALS["lang"]['If a port responds with filtered, should we consider it available.'] = '.';
 
-$GLOBALS["lang"]['If this many or more minutes have passed since the device contacted the server, perform the actions.'] = 'Εάν αυτά τα πολλά ή περισσότερα λεπτά έχουν περάσει από τότε που η συσκευή επικοινώνησε με τον εξυπηρετητή, εκτελέστε τις ενέργειες.';
+$GLOBALS["lang"]['If a port responds with open|filtered, should we consider it available.'] = '.';
 
-$GLOBALS["lang"]['If you choose a Collector, it will be scheduled to execute on the next 5 minute boundary.'] = 'Αν επιλέξετε έναν Συλλέκτη, θα προγραμματιστεί να εκτελεστεί στο επόμενο όριο των 5 λεπτών.';
+$GLOBALS["lang"]['If a remote device does not exist in the Open-AudIT selected devices, should we delete it from the external system.'] = '.';
 
-$GLOBALS["lang"]['ifadminstatus'] = 'Ifadminstatus Αριθ. CAS:';
+$GLOBALS["lang"]['If an Open-AudIT device has been changed, should we update the external system.'] = '.';
 
-$GLOBALS["lang"]['Ifadminstatus'] = 'Ifadminstatus Αριθ. CAS:';
+$GLOBALS["lang"]['If an Open-AudIT device is not on the external system, should we create it.'] = '- Да.';
 
-$GLOBALS["lang"]['iflastchange'] = 'Η τελευταία αλλαγή';
+$GLOBALS["lang"]['If an agent reports its primary IP is in this subnet, perform the actions.'] = '.';
 
-$GLOBALS["lang"]['Iflastchange'] = 'Η τελευταία αλλαγή';
+$GLOBALS["lang"]['If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.'] = 'Bu (komma seferated, hesbir yrl горл горльшдирилмК) limanlarő hesablanşrsa, SSH onlarşişl гольйр ваа онларя одит üçün istifad год. Xüsusi TCP portlarşna bu port год.';
 
-$GLOBALS["lang"]['Ignored'] = 'Παράβλεψη';
+$GLOBALS["lang"]['If no operator is specified, the default is =. Properties should be fully qualified - ie, devices.hostname (not just hostname).'] = 'Имено.';
 
-$GLOBALS["lang"]['image'] = 'Εικόνα';
+$GLOBALS["lang"]['If no value is present, supply this value. EG: for system.nmis_group / configuraion.group we use'] = ' год.: sistem üçün.nmis _ ομάδα / konfiguraion. Не, не.';
 
-$GLOBALS["lang"]['Image'] = 'Εικόνα';
+$GLOBALS["lang"]['If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.'] = '- Да.';
 
-$GLOBALS["lang"]['Images'] = 'Εικόνες';
+$GLOBALS["lang"]['If the OS Family (as reported by the device) contains this item, pass.</li>'] = 'OS Ail';
 
-$GLOBALS["lang"]['impact_availability'] = 'Διαθεσιμότητα επιπτώσεων';
+$GLOBALS["lang"]['If the Open-AudIT Server has Collectors reporting to it, an additional drop down is provided. You can select this to specify which Collector the task should run on. Only Discovery tasks are supported for Collectors.'] = 'Open-Audit Server \'n buraxdīşkollektorlar varsa, гор dalla verilir. Имено.';
 
-$GLOBALS["lang"]['Impact Availability'] = 'Διαθεσιμότητα επιπτώσεων';
+$GLOBALS["lang"]['If the agent OS family (case insensitive) contains this string, perform the actions.'] = '.';
 
-$GLOBALS["lang"]['impact_confidentiality'] = 'Εμπιστευτικότητα αντίκτυπου';
+$GLOBALS["lang"]['If the binary is not found in either of these locations, a warning message will be displayed in the installer.'] = '.';
 
-$GLOBALS["lang"]['Impact Confidentiality'] = 'Εμπιστευτικότητα αντίκτυπου';
+$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>'] = '.<br/><ul><li>Rol ad _ Gruppe t по şkal edir</li><li>- Да.</li><li>- Да.</li><li>çi LDAP var (bu aktiv Directory v... ya OpenLDAP) v... verilmişad _ gruppen</li></ul>Имено.<br/> <br/>';
 
-$GLOBALS["lang"]['impact_integrity'] = 'Ακεραιότητα αντίκτυπου';
+$GLOBALS["lang"]['If the local field is true (bool) or y (string) or Y (string) or 1 (integer) then set the external data to 1.'] = '- Да.';
 
-$GLOBALS["lang"]['Impact Integrity'] = 'Ακεραιότητα αντίκτυπου';
+$GLOBALS["lang"]['If the local field is true (bool) or y (string) or Y (string) or 1 (integer) then set the external data to y.'] = 'Yerli sah... sin doğru (bool) v... y y (string) v... y Y (estering) v... ya 1 (integer) olaraq xarici m... lumatriary y.';
 
-$GLOBALS["lang"]['implementation_notes'] = 'Σημειώσεις εφαρμογής';
+$GLOBALS["lang"]['If the primary IP (as reported by the device) is in this subnet, pass.</li>'] = '.';
 
-$GLOBALS["lang"]['Implementation Notes'] = 'Σημειώσεις εφαρμογής';
+$GLOBALS["lang"]['If the user account does not actually exist within Open-AudIT and <code>use_authorisation</code> is set, the user will be created. If it does exist, details such as email, full name, etc will be populated.'] = ' Να Ντρουχού Στράνου. <code>use_authorisation</code> Имено.';
 
-$GLOBALS["lang"]['Import'] = 'Εισαγωγή';
+$GLOBALS["lang"]['If the user either does not have valid credentials or is not in at least one Open-AudIT Role and Group (when using <code>use_authorisation</code>), Open-AudIT will fallback to using local Open-AudIT user details and attempt authentication and authorization there. Failing that, the user will be denied access.'] = '- Да. <code>use_authorisation</code> (вмъхнене) (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Import Example Data'] = 'Εισαγωγή ενδεικτικών δεδομένων';
+$GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.'] = '.';
 
-$GLOBALS["lang"]['improvement_opportunities'] = 'Ευκαιρίες βελτίωσης';
+$GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search OpenLDAP, you can use another account which does have this access. Use the dn_account and dn_password to configure this.'] = 'Имено.';
 
-$GLOBALS["lang"]['Improvement Opportunities'] = 'Ευκαιρίες βελτίωσης';
+$GLOBALS["lang"]['If the value is not set, the current timestamp will be used.'] = '.';
 
-$GLOBALS["lang"]['In'] = 'Μέσα';
+$GLOBALS["lang"]['If the value is set, that timestamp value will be used.'] = '.';
 
-$GLOBALS["lang"]['Inactive'] = 'Ανενεργός';
+$GLOBALS["lang"]['If this change does not work for you, all is not lost. We have added a configuration item (set to n by default, so it will use not this new option out of the box) called discovery_use_org_id_match. If you change it to y then the OrgID assigned to the device by the discovery will be used in the relevant match rules.'] = 'Vitли готварски, vitли дори дори не са го виждалики Бораста.';
 
-$GLOBALS["lang"]['Include'] = 'Συμπερίληψη';
+$GLOBALS["lang"]['If this many minutes (or more) have passed since the server last saw the device, pass.</li>'] = '.';
 
-$GLOBALS["lang"]['Incomplete'] = 'Ατελής';
+$GLOBALS["lang"]['If this many or more minutes have passed since the device contacted the server, perform the actions.'] = 'Имено.';
 
-$GLOBALS["lang"]['Index'] = 'Ευρετήριο';
+$GLOBALS["lang"]['If this occurs then the issue you are seeing is related to the table control being used on the webpage. It only stores in memory the state of the check boxes for the current page being viewed. If you make selections, then page forward/back those selections will be lost. You can, however, accomplish what you want by expanding the number of devices shown on each page. In the top-left corner is a drop-down labeled “records per page”; use this to expand the number of entries displayed until you see all you want to select for Bulk Edit.'] = 'Имено.';
 
-$GLOBALS["lang"]['India'] = 'Ινδία';
+$GLOBALS["lang"]['If we detect the san management software, should we run an auto-discover before the query.'] = '- Да.';
 
-$GLOBALS["lang"]['Indonesia'] = 'Ινδονησία';
+$GLOBALS["lang"]['If you add a Location Type, add those icons to'] = '.';
 
-$GLOBALS["lang"]['Info'] = 'Πληροφορίες';
+$GLOBALS["lang"]['If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory'] = 'Не, не.';
 
-$GLOBALS["lang"]['Informational'] = 'Ενημέρωση';
+$GLOBALS["lang"]['If you are a supported FirstWave customer,a couple of items will make helping your easier. Open a support ticket with FirstWave and attach the logfile. Also include the output from the Support button on the upper right of the'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['initial_size'] = 'Αρχικό μέγεθος';
+$GLOBALS["lang"]['If you are a supported customer and open a support ticket with FirstWave, please attach these files.'] = '.';
 
-$GLOBALS["lang"]['Initial Size'] = 'Αρχικό μέγεθος';
+$GLOBALS["lang"]['If you are having issues with Google Maps API keys or your company does not have access to create Google Maps API keys, please contact the FirstWave support team.'] = '.';
 
-$GLOBALS["lang"]['inode'] = 'Ανώδιο';
+$GLOBALS["lang"]['If you are on Windows or your NMIS server is remote, you will need to supply the URL, username and password to access that server.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Inode'] = 'Ανώδιο';
+$GLOBALS["lang"]['If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.'] = 'Имено. инсанлар кими дейир - T2 (Полит) онлар овлини qarşīlamaq daha az yaxş Имено.';
 
-$GLOBALS["lang"]['Input Type'] = 'Τύπος εισόδου';
+$GLOBALS["lang"]['If you are running a RedHat or Centos system and you have upgraded Nmap, please reset the SUID on the binary by'] = '.';
 
-$GLOBALS["lang"]['inputs'] = 'Εισροές';
+$GLOBALS["lang"]['If you are running an Open-AudIT server on Linux, this does not affect you.'] = 'Не, не.';
 
-$GLOBALS["lang"]['Inputs'] = 'Εισροές';
+$GLOBALS["lang"]['If you are using Open-AudIT on Windows or if your NMIS server is not on your Open-AudIT Server (in the case of some Linux installs), you will need to supply access credentials and a URL to the remote NMIS - but that is all! Yes - Integrations between NMIS and Open-AudIT even work with Windows based Open-AudIT now!'] = 'Имено.';
 
-$GLOBALS["lang"]['Insane'] = 'Παράφρων';
+$GLOBALS["lang"]['If you choose a Collector, it will be scheduled to execute on the next 5 minute boundary.'] = '.';
 
-$GLOBALS["lang"]['Insert example data and discover all that Open-AudIT can tell you.'] = 'Εισάγετε δεδομένα παραδείγματος και ανακαλύψτε όλα όσα μπορεί να σας πει το Open-AudIT.';
+$GLOBALS["lang"]['If you do normally set devices_assigned_to_org and the configuration item is enabled, then the OrgID will be used to further refine the match.'] = 'Не, не.';
 
-$GLOBALS["lang"]['Insert your Purchased license Key'] = 'Εισαγωγή Αγορασμένη άδεια Κλειδί';
+$GLOBALS["lang"]['If you do not normally set devices_assigned_to_org, then it will have no effect. We only check using the OrgID if it has been set in discovery (or manually in an audit script) and enabled in the configuration.'] = ' голи, но...';
 
-$GLOBALS["lang"]['install'] = 'Εγκατάσταση';
+$GLOBALS["lang"]['If you enable the configuration item, use discovery to assign an Org and then subsequently change the OrgID of a device after discovery then you will likely have a new device created the next time the discovery runs. In this instance, you should probably just unset devices_assigned_to_org before running subsequent discoveries. This is because (in this instance) you have told Open-AudIT <i>these devices from this discovery belong to Org X<i>, but then changed the Org of the device. You have changed the stored devices information. In this case - there is no no longer a device belonging to Org X, so we create a new one.'] = 'Имено. <i>.<i>.</i></i>';
 
-$GLOBALS["lang"]['Install'] = 'Εγκατάσταση';
+$GLOBALS["lang"]['If you have Anti-Virus software running, allowing the services of Opmantek (omkd), Apache (apache2.2) and MySQL (mysql) to auto start and run is essential. These services are used by Open-AudIT. You should only need to do this once. If your Anti-Virus program keeps prompting you about Open-AudIT, please post to the forums or send an email to support with the name and version of your Anti-Virus software.'] = 'Имено.';
 
-$GLOBALS["lang"]['install_date'] = 'Ημερομηνία εγκατάστασης';
+$GLOBALS["lang"]['If you have working credentials, you can expect the full amount of information possible.<br><br>Obviously, the best way to use Open-AudIT is to have working credentials for the devices being discovered (be they WMI, SSH, or SNMP credentials).<br><br>We also have a page on auditing without credentials.'] = '- Да.<br/><br/>Това е така.<br/><br/>.';
 
-$GLOBALS["lang"]['Install Date'] = 'Ημερομηνία εγκατάστασης';
+$GLOBALS["lang"]['If you include the \"id\" field <strong>and</strong> set it with a number, that item will be updated rather than created.'] = '. <strong>Κεϊντιγιάτ</strong> .';
 
-$GLOBALS["lang"]['install_directory'] = 'Εγκατάσταση καταλόγου';
+$GLOBALS["lang"]['If you need to configure Active Directory access, you can usually use the example of <code>cn=Users,dc=your,dc=domain,dc=com</code> for your <code>base_dn</code>. There is no need to set <code>user_dn</code>.'] = '. <code>cn=Users,dc=your,dc=domain,dc=com</code> . <code>base_dn</code>. <code>user_dn</code>.';
 
-$GLOBALS["lang"]['Install Directory'] = 'Εγκατάσταση καταλόγου';
+$GLOBALS["lang"]['If you need to configure OpenLDAP access for your users and a given users access DN is normally <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> then you should set <code>base_dn</code> to <code>dc=your,dc=domain,dc=com</code> and <code>user_dn</code> to <code>uid=@username@@domain,cn=People</code>. The special words <code>@username</code> and <code>@domain</code> will be replaced by the login details provided by your user on the login page.'] = '- Не, не. <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> . <code>base_dn</code> - Да. <code>dc=your,dc=domain,dc=com</code> Κεϊντιγιάτ <code>user_dn</code> - Да. <code>uid=@username@@domain,cn=People</code>... <code>@username</code> Κεϊντιγιάτ <code>@domain</code> - Не, не.';
 
-$GLOBALS["lang"]['Install OpenScap if required'] = 'Εγκατάσταση OpenScap αν απαιτείται';
+$GLOBALS["lang"]['If you run discovery upon a subnet that the Server (or Collector) is directly installed on, you can expect the following for responding devices'] = '.';
 
-$GLOBALS["lang"]['install_source'] = 'Εγκατάσταση πηγαίου κώδικα';
+$GLOBALS["lang"]['If you run discovery upon a subnet that your Server (or Collector) is not directly installed on, you can expect the following for responding devices'] = '.';
 
-$GLOBALS["lang"]['Install Source'] = 'Εγκατάσταση πηγαίου κώδικα';
+$GLOBALS["lang"]['If you select a List type, an additional field will appear called Values. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.'] = 'Имено.';
 
-$GLOBALS["lang"]['installed_by'] = 'Εγκαταστάθηκε από';
+$GLOBALS["lang"]['If you set the values for'] = '.';
 
-$GLOBALS["lang"]['Installed By'] = 'Εγκαταστάθηκε από';
+$GLOBALS["lang"]['If you want to force your Agents to use a particular configuration, you can supply the ID of the agents entry to use, as below (replace $id with the number of the Agents entry). When this Agent is installed, it will check-in with the sevrer and <strong>only</strong> check that one individual Agent entrys attributes (tests and actions). This may be useful if you are an MSP - create an Agents entry for a particular customer and have their devices all use this entry, which assigns them to an Org and Location.'] = 'Имено. <strong>.</strong> да го направим, да го направим.';
 
-$GLOBALS["lang"]['installed_on'] = 'Εγκαταστάθηκε On';
+$GLOBALS["lang"]['If you wish to dig in and customize the Integration, click the Advanced button (and try not to be overwhelmed!).'] = '.';
 
-$GLOBALS["lang"]['Installed On'] = 'Εγκαταστάθηκε On';
+$GLOBALS["lang"]['If you wish to run a Discovery on an externally provided device, select the option and when the Integration is created, so s the Discovery.'] = '.';
 
-$GLOBALS["lang"]['Installing on Linux'] = 'Εγκατάσταση στο Linux';
+$GLOBALS["lang"]['If you would like to use the script outside of Discovery we have created another endpoint called <i>scripts</i>. See the documentation'] = '. <i>Не, не, не.</i>.';
 
-$GLOBALS["lang"]['Installing on MacOS'] = 'Εγκατάσταση στο MacOS';
+$GLOBALS["lang"]['If your user does not have <i>Run as Administrator</i> rights, they can still download the agent (first command above) and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled.'] = '. <i>- Да.</i> Имено.';
 
-$GLOBALS["lang"]['Installing on Windows'] = 'Εγκατάσταση στα Windows';
+$GLOBALS["lang"]['ifadminstatus'] = 'Γιαξ-Τζι';
 
-$GLOBALS["lang"]['instance'] = 'Υποθ.';
+$GLOBALS["lang"]['Ifadminstatus'] = 'Γιαξ-Τζι';
 
-$GLOBALS["lang"]['Instance'] = 'Υποθ.';
+$GLOBALS["lang"]['iflastchange'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['instance_ident'] = 'Ταυτότητα περιστατικού';
+$GLOBALS["lang"]['Iflastchange'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Instance Ident'] = 'Ταυτότητα περιστατικού';
+$GLOBALS["lang"]['Ignore Invalid SSL'] = 'Игнориране невалидни SSL (στα Αγγλικά).';
 
-$GLOBALS["lang"]['instance_options'] = 'Επιλογές διαδικασίας';
+$GLOBALS["lang"]['Ignored'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Instance Options'] = 'Επιλογές διαδικασίας';
+$GLOBALS["lang"]['image'] = '- Да.';
 
-$GLOBALS["lang"]['instance_provider'] = 'Παροχέας περιστατικών';
+$GLOBALS["lang"]['Image'] = '- Да.';
 
-$GLOBALS["lang"]['Instance Provider'] = 'Παροχέας περιστατικών';
+$GLOBALS["lang"]['Images'] = '- Да.';
 
-$GLOBALS["lang"]['instance_reservation_ident'] = 'Επιφύλαξη του Πρωτοδικείου Ταυτοποίηση';
+$GLOBALS["lang"]['impact_availability'] = '- Да.';
 
-$GLOBALS["lang"]['Instance Reservation Ident'] = 'Επιφύλαξη του Πρωτοδικείου Ταυτοποίηση';
+$GLOBALS["lang"]['Impact Availability'] = '- Да.';
 
-$GLOBALS["lang"]['instance_state'] = 'Υπόθεση';
+$GLOBALS["lang"]['impact_confidentiality'] = '.';
 
-$GLOBALS["lang"]['Instance State'] = 'Υπόθεση';
+$GLOBALS["lang"]['Impact Confidentiality'] = '.';
 
-$GLOBALS["lang"]['instance_tags'] = 'Ετικέτα Πρωτοδικείου';
+$GLOBALS["lang"]['impact_integrity'] = '.';
 
-$GLOBALS["lang"]['Instance Tags'] = 'Ετικέτα Πρωτοδικείου';
+$GLOBALS["lang"]['Impact Integrity'] = '.';
 
-$GLOBALS["lang"]['instance_type'] = 'Τύπος έργου';
+$GLOBALS["lang"]['Implement selected controls and procedures'] = '- Да.';
 
-$GLOBALS["lang"]['Instance Type'] = 'Τύπος έργου';
+$GLOBALS["lang"]['Implementation'] = '- Да.';
+
+$GLOBALS["lang"]['implementation_notes'] = '- Да.';
+
+$GLOBALS["lang"]['Implementation Notes'] = '- Да.';
+
+$GLOBALS["lang"]['Import'] = '- Да.';
+
+$GLOBALS["lang"]['Import Example Data'] = '.';
+
+$GLOBALS["lang"]['Import multiple {collection} using a CSV.'] = 'Не, не.';
+
+$GLOBALS["lang"]['improvement_opportunities'] = '.';
+
+$GLOBALS["lang"]['Improvement Opportunities'] = '.';
+
+$GLOBALS["lang"]['Improves business continuity and resilience'] = 'Biznes inkişaf';
+
+$GLOBALS["lang"]['In'] = 'Инди.';
+
+$GLOBALS["lang"]['In a second tab or window go to your OKTA console and click <i>Create App Integration</i>.'] = '. <i>Όνομα</i>.';
+
+$GLOBALS["lang"]['In a second tab or window sign-on to your'] = '.';
+
+$GLOBALS["lang"]['In my personal opinion, the best way to find and audit every single item on your network is a Seed Discovery for each subnet, restricted to that subnet (using credentials). Seed Discoveries use switch, router and computer MAC Address tables to not miss a single device. If it is connected to the network and uses TCP/IP, a switch/router/computer has to know it is there - thats just how TCP/IP works. Combine that with custom TCP and/or UDP ports and you should then be able to determine the device type as well. But thats just my personal preference'] = 'Имено. Ağa baiglīr v год. TCP / IP istifad год. Edin, bir qazanma / router / kompüter orada...';
+
+$GLOBALS["lang"]['In order for Open-AudIT to be able to apply user permissions on items, we mandate the user of <code>WHERE @filter</code>. If you do not use this format, the queryCreateForm will throw a warning. Only users with the Admin role are permitted to create queries that lack this attribute and even then, only after the configuration item for <i>advanced_queries</i> has been enabled.'] = '. <code>WHERE @filter</code> Να Ντρουχού Στράνου. <i>- Не, не.</i> .';
+
+$GLOBALS["lang"]['In order to enable Google Maps you will need to a Google API Key follow this link and log in with your Google account,'] = '.';
+
+$GLOBALS["lang"]['In order to use the Azure Rest API, you will need to create an Azure Active Directory Application that is used for authentication.'] = '.';
+
+$GLOBALS["lang"]['In order to use this functionality, it must be enabled in the configuration - click'] = '.';
+
+$GLOBALS["lang"]['In the (comma seperated) list'] = 'Σιγιάχ@';
+
+$GLOBALS["lang"]['In the case of <code>in</code> and <code>notin</code>, you should enclose the values in round brackets and separate them using a comma (just a comma, not a comma, then space).<br><br>With these operators you can filter quite comprehensively.<br><br>When you add data and filter on multiple columns, those columns are combined using <strong>AND</strong>. You cannot filter using an <strong>OR</strong> condition. With the inclusion of <code>notin</code>, you should be able to get most searches working. And for those that do really require unsupported and complex selections, you can always write an actual query.'] = '. <code>in</code> Κεϊντιγιάτ <code>notin</code>- Не, не.<br/><br/>.<br/><br/>- Да. <strong>Κεϊντιγιάτ</strong>. <strong>.</strong> . <code>notin</code>.';
+
+$GLOBALS["lang"]['In the case where we store several fields (usually in JSON format) inside a BIGTEXT MySQL field (eg: credentials.credentials - the credentials column in the credentials table), you should use the format'] = 'Bir neber... sah... sind... bir neber... sah... si (genellikle JSON  Имено.';
+
+$GLOBALS["lang"]['In the command prompt shell, navigate to the download directory (likely <code>cd Downloads</code>).'] = 'Κομπότερ σιρ... <code>cd Downloads</code> )';
+
+$GLOBALS["lang"]['Inactive'] = '- Да.';
+
+$GLOBALS["lang"]['Include'] = 'Άξταρ@';
+
+$GLOBALS["lang"]['Incomplete'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Index'] = '- Да.';
+
+$GLOBALS["lang"]['India'] = '- Да.';
+
+$GLOBALS["lang"]['Indonesia'] = '- Да.';
+
+$GLOBALS["lang"]['Indonesian'] = '- Да.';
+
+$GLOBALS["lang"]['Info'] = '- Да.';
+
+$GLOBALS["lang"]['Information only.'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Informational'] = '- Да.';
+
+$GLOBALS["lang"]['initial_size'] = '.';
+
+$GLOBALS["lang"]['Initial Size'] = '.';
+
+$GLOBALS["lang"]['Initial login credentials are'] = '- Да.';
+
+$GLOBALS["lang"]['Initiation'] = '.';
+
+$GLOBALS["lang"]['inode'] = 'Инодеум.';
+
+$GLOBALS["lang"]['Inode'] = 'Инодеум.';
+
+$GLOBALS["lang"]['Input'] = 'Не, не.';
+
+$GLOBALS["lang"]['Input Type'] = 'Не, не.';
+
+$GLOBALS["lang"]['inputs'] = '- Да.';
+
+$GLOBALS["lang"]['Inputs'] = '- Да.';
+
+$GLOBALS["lang"]['Insane'] = ' Инсан.';
+
+$GLOBALS["lang"]['Insert a new {collection} entry.'] = '.';
+
+$GLOBALS["lang"]['Insert example data and discover all that Open-AudIT can tell you.'] = '.';
+
+$GLOBALS["lang"]['Insert your Purchased license Key'] = '.';
+
+$GLOBALS["lang"]['install'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Install'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['install_date'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Install Date'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['install_directory'] = 'Директоря Директоря.';
+
+$GLOBALS["lang"]['Install Directory'] = 'Директоря Директоря.';
+
+$GLOBALS["lang"]['Install OpenScap if required'] = '.';
+
+$GLOBALS["lang"]['install_source'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Install Source'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Install Support'] = '- Да.';
+
+$GLOBALS["lang"]['installed_by'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['Installed By'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['installed_on'] = '.';
+
+$GLOBALS["lang"]['Installed On'] = '.';
+
+$GLOBALS["lang"]['Installing'] = '- Да.';
+
+$GLOBALS["lang"]['Installing on Linux'] = '- Да.';
+
+$GLOBALS["lang"]['Installing on MacOS'] = '.';
+
+$GLOBALS["lang"]['Installing on Windows'] = '.';
+
+$GLOBALS["lang"]['instance'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['Instance'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['instance_ident'] = 'Иденти';
+
+$GLOBALS["lang"]['Instance Ident'] = 'Иденти';
+
+$GLOBALS["lang"]['instance_options'] = '.';
+
+$GLOBALS["lang"]['Instance Options'] = '.';
+
+$GLOBALS["lang"]['instance_provider'] = '.';
+
+$GLOBALS["lang"]['Instance Provider'] = '.';
+
+$GLOBALS["lang"]['instance_reservation_ident'] = 'Иденти';
+
+$GLOBALS["lang"]['Instance Reservation Ident'] = 'Иденти';
+
+$GLOBALS["lang"]['instance_state'] = '- Не.';
+
+$GLOBALS["lang"]['Instance State'] = '- Не.';
+
+$GLOBALS["lang"]['instance_tags'] = 'Ζνάτσι.';
+
+$GLOBALS["lang"]['Instance Tags'] = 'Ζνάτσι.';
+
+$GLOBALS["lang"]['instance_type'] = '- Да.';
+
+$GLOBALS["lang"]['Instance Type'] = '- Да.';
 
 $GLOBALS["lang"]['Integer'] = 'Ακέραιος';
 
-$GLOBALS["lang"]['Integration'] = 'Ολοκλήρωση';
+$GLOBALS["lang"]['Integration'] = '.';
 
-$GLOBALS["lang"]['integrations'] = 'Ολοκληρώσεις';
+$GLOBALS["lang"]['integrations'] = '.';
 
-$GLOBALS["lang"]['Integrations'] = 'Ολοκληρώσεις';
+$GLOBALS["lang"]['Integrations'] = '.';
 
-$GLOBALS["lang"]['integrations_id'] = 'ID ολοκληρωμένων';
+$GLOBALS["lang"]['integrations_id'] = 'Εταλανλάρη';
 
-$GLOBALS["lang"]['Integrations ID'] = 'ID ολοκληρωμένων';
+$GLOBALS["lang"]['Integrations ID'] = 'Εταλανλάρη';
 
-$GLOBALS["lang"]['integrations_log'] = 'Καταγραφή ενσωμάτωσης';
+$GLOBALS["lang"]['integrations_log'] = '.';
 
-$GLOBALS["lang"]['Integrations Log'] = 'Καταγραφή ενσωμάτωσης';
+$GLOBALS["lang"]['Integrations Log'] = '.';
 
-$GLOBALS["lang"]['interface'] = 'Διεπαφή';
+$GLOBALS["lang"]['Integrations can be scheduled as desired. This is left to the user.'] = 'Имено.';
 
-$GLOBALS["lang"]['Interface'] = 'Διεπαφή';
+$GLOBALS["lang"]['Integrations can be scheduled as per Discoveries, Queries, et al.'] = '.';
 
-$GLOBALS["lang"]['interface_id'] = 'ID διεπαφής';
+$GLOBALS["lang"]['Interactive Dashboards'] = '.';
 
-$GLOBALS["lang"]['Interface ID'] = 'ID διεπαφής';
+$GLOBALS["lang"]['Interactive dashboards provide instant visibility into the status of network inventory allowing IT teams to spot newly discovered devices and unusual device behaviour at a glance.'] = '- Да.';
 
-$GLOBALS["lang"]['interface_type'] = 'Τύπος διεπαφής';
+$GLOBALS["lang"]['interface'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Interface Type'] = 'Τύπος διεπαφής';
+$GLOBALS["lang"]['Interface'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Internal'] = 'Εσωτερικό';
+$GLOBALS["lang"]['interface_id'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Internal Field Name'] = 'Όνομα εσωτερικού πεδίου';
+$GLOBALS["lang"]['Interface ID'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Internal ID'] = 'Εσωτερικό αναγνωριστικό';
+$GLOBALS["lang"]['interface_type'] = '.';
 
-$GLOBALS["lang"]['Internal JSON array of valid access tokens for this user.'] = 'Εσωτερική σειρά έγκυρων σημείων πρόσβασης JSON για αυτόν τον χρήστη.';
+$GLOBALS["lang"]['Interface Type'] = '.';
 
-$GLOBALS["lang"]['Introduction'] = 'Εισαγωγή';
+$GLOBALS["lang"]['Internal'] = '.';
 
-$GLOBALS["lang"]['invoice'] = 'Τιμολόγιο';
+$GLOBALS["lang"]['Internal Audit'] = 'Не, не.';
 
-$GLOBALS["lang"]['Invoice'] = 'Τιμολόγιο';
+$GLOBALS["lang"]['Internal Audit & Review'] = 'Не, не.';
 
-$GLOBALS["lang"]['invoice_id'] = 'Ταυτότητα τιμολογίου';
+$GLOBALS["lang"]['Internal Field Name'] = 'Не, не.';
 
-$GLOBALS["lang"]['Invoice ID'] = 'Ταυτότητα τιμολογίου';
+$GLOBALS["lang"]['Internal ID'] = '.';
 
-$GLOBALS["lang"]['invoice_item'] = 'Θέση τιμολογίου';
+$GLOBALS["lang"]['Internal JSON array of valid access tokens for this user.'] = 'Имено.';
 
-$GLOBALS["lang"]['Invoice Item'] = 'Θέση τιμολογίου';
+$GLOBALS["lang"]['Introduction'] = '- Да.';
 
-$GLOBALS["lang"]['ios_version'] = 'Έκδοση Ios';
+$GLOBALS["lang"]['invoice'] = '- Да.';
 
-$GLOBALS["lang"]['Ios Version'] = 'Έκδοση Ios';
+$GLOBALS["lang"]['Invoice'] = '- Да.';
 
-$GLOBALS["lang"]['ip_address_external_a'] = 'Διεύθυνση Ip Εξωτερικό A';
+$GLOBALS["lang"]['invoice_id'] = ' Бична карта.';
 
-$GLOBALS["lang"]['Ip Address External A'] = 'Διεύθυνση Ip Εξωτερικό A';
+$GLOBALS["lang"]['Invoice ID'] = ' Бична карта.';
 
-$GLOBALS["lang"]['ip_address_external_b'] = 'Διεύθυνση Ip Εξωτερικό B';
+$GLOBALS["lang"]['invoice_item'] = '- Да.';
 
-$GLOBALS["lang"]['Ip Address External B'] = 'Διεύθυνση Ip Εξωτερικό B';
+$GLOBALS["lang"]['Invoice Item'] = '- Да.';
 
-$GLOBALS["lang"]['ip_address_internal_a'] = 'Διεύθυνση Ip Εσωτερικό A';
+$GLOBALS["lang"]['ios_version'] = 'Версия на Ios (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Ip Address Internal A'] = 'Διεύθυνση Ip Εσωτερικό A';
+$GLOBALS["lang"]['Ios Version'] = 'Версия на Ios (στα Αγγλικά).';
 
-$GLOBALS["lang"]['ip_address_internal_b'] = 'Διεύθυνση Ip Εσωτερικό Β';
+$GLOBALS["lang"]['ip_address_external_a'] = '- Не, не.';
 
-$GLOBALS["lang"]['Ip Address Internal B'] = 'Διεύθυνση Ip Εσωτερικό Β';
+$GLOBALS["lang"]['Ip Address External A'] = '- Не, не.';
 
-$GLOBALS["lang"]['ip_all_count'] = 'Ip Όλα Μέτρα';
+$GLOBALS["lang"]['ip_address_external_b'] = '.';
 
-$GLOBALS["lang"]['Ip All Count'] = 'Ip Όλα Μέτρα';
+$GLOBALS["lang"]['Ip Address External B'] = '.';
 
-$GLOBALS["lang"]['ip_audited_count'] = 'Αριθμός ελέγχου Ip';
+$GLOBALS["lang"]['ip_address_internal_a'] = '.';
 
-$GLOBALS["lang"]['Ip Audited Count'] = 'Αριθμός ελέγχου Ip';
+$GLOBALS["lang"]['Ip Address Internal A'] = '.';
 
-$GLOBALS["lang"]['ip_discovered_count'] = 'Ip Ανακαλύπτεται Κόμης';
+$GLOBALS["lang"]['ip_address_internal_b'] = '.';
 
-$GLOBALS["lang"]['Ip Discovered Count'] = 'Ip Ανακαλύπτεται Κόμης';
+$GLOBALS["lang"]['Ip Address Internal B'] = '.';
 
-$GLOBALS["lang"]['ip_enabled'] = 'Ενεργοποίηση IP';
+$GLOBALS["lang"]['ip_all_count'] = '.';
 
-$GLOBALS["lang"]['Ip Enabled'] = 'Ενεργοποίηση IP';
+$GLOBALS["lang"]['Ip All Count'] = '.';
 
-$GLOBALS["lang"]['ip_responding_count'] = 'Αντίστροφη μέτρηση Ip';
+$GLOBALS["lang"]['ip_audited_count'] = 'Ip Geprüft sagen (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Ip Responding Count'] = 'Αντίστροφη μέτρηση Ip';
+$GLOBALS["lang"]['Ip Audited Count'] = 'Ip Geprüft sagen (στα Αγγλικά).';
 
-$GLOBALS["lang"]['ip_scanned_count'] = 'Καταμέτρηση σάρωσης Ip';
+$GLOBALS["lang"]['ip_discovered_count'] = 'Ip Keçmişsayş@';
 
-$GLOBALS["lang"]['Ip Scanned Count'] = 'Καταμέτρηση σάρωσης Ip';
+$GLOBALS["lang"]['Ip Discovered Count'] = 'Ip Keçmişsayş@';
 
-$GLOBALS["lang"]['Iran'] = 'Ιράν';
+$GLOBALS["lang"]['ip_enabled'] = 'Вкля чен.';
 
-$GLOBALS["lang"]['Iraq'] = 'Ιράκ';
+$GLOBALS["lang"]['Ip Enabled'] = 'Вкля чен.';
 
-$GLOBALS["lang"]['Ireland'] = 'Ιρλανδία';
+$GLOBALS["lang"]['ip_responding_count'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Is FRU'] = 'Είναι FRU';
+$GLOBALS["lang"]['Ip Responding Count'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['is_fru'] = 'Είναι ο Φρου;';
+$GLOBALS["lang"]['ip_scanned_count'] = 'И';
 
-$GLOBALS["lang"]['Is Fru'] = 'Είναι ο Φρου;';
+$GLOBALS["lang"]['Ip Scanned Count'] = 'И';
 
-$GLOBALS["lang"]['Is the NMIS server local (on this Open-AudIT server) or remote?'] = 'Είναι ο εξυπηρετητής NMIS τοπικός (σε αυτόν τον εξυπηρετητή Open-AudIT) ή απομακρυσμένος;';
+$GLOBALS["lang"]['Iran'] = '- Да.';
 
-$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = 'Είναι ενεργός ο λογαριασμός; Εάν είναι προγραμματισμένο <code>n</code>, ο χρήστης δεν μπορεί να συνδεθεί.';
+$GLOBALS["lang"]['Iraq'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Is this query restricted to licensed customers.'] = 'Αυτό το ερώτημα περιορίζεται σε εξουσιοδοτημένους πελάτες.';
+$GLOBALS["lang"]['Ireland'] = '- Да.';
 
-$GLOBALS["lang"]['Is this task enabled (y/n).'] = 'Είναι ενεργοποιημένη αυτή η εργασία (y/n).';
+$GLOBALS["lang"]['Irish'] = '- Да.';
 
-$GLOBALS["lang"]['Isle of Man'] = 'Νήσος Μαν';
+$GLOBALS["lang"]['Is FRU'] = 'ΚΑΕ';
 
-$GLOBALS["lang"]['Israel'] = 'Ισραήλ';
+$GLOBALS["lang"]['is_fru'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Issue'] = 'Θέμα';
+$GLOBALS["lang"]['Is Fru'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['issuer'] = 'Εκδότης';
+$GLOBALS["lang"]['Is the NMIS server local (on this Open-AudIT server) or remote?'] = '.';
 
-$GLOBALS["lang"]['Issuer'] = 'Εκδότης';
+$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = '. <code>n</code>.';
 
-$GLOBALS["lang"]['issuer_name'] = 'Όνομα εκδότη';
+$GLOBALS["lang"]['Is this query restricted to licensed customers.'] = '.';
 
-$GLOBALS["lang"]['Issuer Name'] = 'Όνομα εκδότη';
+$GLOBALS["lang"]['Is this task enabled (y/n).'] = '.';
 
-$GLOBALS["lang"]['Issues'] = 'Θέματα';
+$GLOBALS["lang"]['Isle of Man'] = '.';
 
-$GLOBALS["lang"]['Italy'] = 'Ιταλία';
+$GLOBALS["lang"]['Israel'] = '- Да.';
 
-$GLOBALS["lang"]['Items not in Baseline'] = 'Αντικείμενα που δεν βρίσκονται στην αρχική γραμμή';
+$GLOBALS["lang"]['Issue'] = '.';
 
-$GLOBALS["lang"]['JSON'] = 'JSON';
+$GLOBALS["lang"]['issuer'] = 'Τάριξ';
 
-$GLOBALS["lang"]['JSON to Import'] = 'JSON για εισαγωγή';
+$GLOBALS["lang"]['Issuer'] = 'Τάριξ';
 
-$GLOBALS["lang"]['Jamaica'] = 'Τζαμάικα';
+$GLOBALS["lang"]['issuer_name'] = '.';
 
-$GLOBALS["lang"]['January'] = 'Ιανουάριος';
+$GLOBALS["lang"]['Issuer Name'] = '.';
 
-$GLOBALS["lang"]['Japan'] = 'Ιαπωνία';
+$GLOBALS["lang"]['Issues'] = '.';
 
-$GLOBALS["lang"]['Jersey'] = 'Τζέρσεϊ';
+$GLOBALS["lang"]['It <i>Just Works</i> with NMIS'] = '- Да. <i>.</i> .';
 
-$GLOBALS["lang"]['Jordan'] = 'Ιορδανία';
+$GLOBALS["lang"]['It is available at Menu -> Help ->'] = '.';
 
-$GLOBALS["lang"]['July'] = 'Ιούλιος';
+$GLOBALS["lang"]['It is important to note that when Open-AudIT determines a match any properties set to <i>y</i> must match exactly (and not be blank) in order for Open-AudIT to determine that the discovered device matches a device already in the database. If none of the properties marked <i>y</i> match, then a new device entry will be created, which could result in duplicate device entries. In situations where properties are duplicated, for example a dbus_id is copied during a VM clone, then an existing device may incorrectly get overwritten/updated rather then a new entry being created resulting in missing devices.'] = 'Έλεγχος haqqnda hesbir xüsusiyrh <i> y</i> . <i> y</i> . Xüsusiyer';
 
-$GLOBALS["lang"]['June'] = 'Ιούνιος';
+$GLOBALS["lang"]['It is not uncommon to have an overlapping address space in a given Organisation. Not ideal, but not uncommon.'] = '.';
 
-$GLOBALS["lang"]['Kazakhstan'] = 'Καζακστάν';
+$GLOBALS["lang"]['It is very common for second tier motherboard manufacturers to not set this, to set it to all <i>0</i>s or even all <i>F</i>s.'] = ' да го направим, за да го направим. <i>.</i>. <i>.</i>Dáme vám vědět (στα Αγγλικά).';
 
-$GLOBALS["lang"]['Kenya'] = 'Κένυα';
+$GLOBALS["lang"]['Italian'] = '- Да.';
 
-$GLOBALS["lang"]['kernel_version'] = 'Έκδοση πυρήνα';
+$GLOBALS["lang"]['Italy'] = '- Да.';
 
-$GLOBALS["lang"]['Kernel Version'] = 'Έκδοση πυρήνα';
+$GLOBALS["lang"]['Items not in Baseline'] = '.';
 
-$GLOBALS["lang"]['Key'] = 'Κλειδί';
+$GLOBALS["lang"]['JSON'] = ' Ι';
 
-$GLOBALS["lang"]['Key Password (optional)'] = 'Κωδικός πρόσβασης κλειδιού (προαιρετικό)';
+$GLOBALS["lang"]['JSON to Import'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['keys'] = 'Κλειδιά';
+$GLOBALS["lang"]['Jamaica'] = '.';
 
-$GLOBALS["lang"]['Keys'] = 'Κλειδιά';
+$GLOBALS["lang"]['January'] = '.';
 
-$GLOBALS["lang"]['Kiribati'] = 'Κιριμπάτι';
+$GLOBALS["lang"]['Japan'] = '- Да.';
 
-$GLOBALS["lang"]['Korea'] = 'Κορέα';
+$GLOBALS["lang"]['Japanese'] = '- Да.';
 
-$GLOBALS["lang"]['Kuwait'] = 'Κουβέιτ';
+$GLOBALS["lang"]['Jersey'] = '- Да.';
 
-$GLOBALS["lang"]['Kyrgyz Republic'] = 'Δημοκρατία της Κιργιζίας';
+$GLOBALS["lang"]['Jordan'] = '- Не, не.';
 
-$GLOBALS["lang"]['lang'] = 'Λανγκ.';
+$GLOBALS["lang"]['July'] = '.';
 
-$GLOBALS["lang"]['Lang'] = 'Λανγκ.';
+$GLOBALS["lang"]['June'] = '.';
 
-$GLOBALS["lang"]['language'] = 'Γλώσσα';
+$GLOBALS["lang"]['Kazakhstan'] = '- Да.';
 
-$GLOBALS["lang"]['Language'] = 'Γλώσσα';
+$GLOBALS["lang"]['Kenya'] = '- Да.';
 
-$GLOBALS["lang"]['Lao'] = 'Λάο';
+$GLOBALS["lang"]['kernel_version'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['last_changed'] = 'Τελευταία αλλαγή';
+$GLOBALS["lang"]['Kernel Version'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Last Changed'] = 'Τελευταία αλλαγή';
+$GLOBALS["lang"]['Key'] = '- Да.';
 
-$GLOBALS["lang"]['last_finished'] = 'Τελευταία ολοκλήρωση';
+$GLOBALS["lang"]['Key Components'] = '.';
 
-$GLOBALS["lang"]['Last Finished'] = 'Τελευταία ολοκλήρωση';
+$GLOBALS["lang"]['Key Password (optional)'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['last_logon'] = 'Τελευταίο ημερολόγιο';
+$GLOBALS["lang"]['keys'] = '- Да.';
 
-$GLOBALS["lang"]['Last Logon'] = 'Τελευταίο ημερολόγιο';
+$GLOBALS["lang"]['Keys'] = '- Да.';
 
-$GLOBALS["lang"]['Last Name'] = 'Επώνυμο';
+$GLOBALS["lang"]['Kiribati'] = 'Не, не.';
 
-$GLOBALS["lang"]['last_os_update'] = 'Τελευταία ενημέρωση Os';
+$GLOBALS["lang"]['Korea'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Last Os Update'] = 'Τελευταία ενημέρωση Os';
+$GLOBALS["lang"]['Korean'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['last_result'] = 'Τελευταίο αποτέλεσμα';
+$GLOBALS["lang"]['Kuwait'] = '- Не, не.';
 
-$GLOBALS["lang"]['Last Result'] = 'Τελευταίο αποτέλεσμα';
+$GLOBALS["lang"]['Kyrgyz'] = '- Да.';
 
-$GLOBALS["lang"]['last_run'] = 'Τελευταία εκτέλεση';
+$GLOBALS["lang"]['Kyrgyz Republic'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Last Run'] = 'Τελευταία εκτέλεση';
+$GLOBALS["lang"]['LDAP Group'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['last_seen'] = 'Τελευταία Είδατε';
+$GLOBALS["lang"]['LDAP was searched for this user and their account was found.'] = '.';
 
-$GLOBALS["lang"]['Last Seen'] = 'Τελευταία Είδατε';
+$GLOBALS["lang"]['LDAP was searched for this user and their account was not found. Check the LDAP server logs. The user credentials have worked, but the user was not found. Also check you have specified the correct Base DN attribute when you created the LDAP Server in Open-AudIT.'] = 'Имено.';
 
-$GLOBALS["lang"]['last_seen_by'] = 'Τελευταία Είδατε Από';
+$GLOBALS["lang"]['lang'] = '- Да.';
 
-$GLOBALS["lang"]['Last Seen By'] = 'Τελευταία Είδατε Από';
+$GLOBALS["lang"]['Lang'] = '- Да.';
 
-$GLOBALS["lang"]['last_user'] = 'Τελευταίος χρήστης';
+$GLOBALS["lang"]['language'] = 'Не, не.';
 
-$GLOBALS["lang"]['Last User'] = 'Τελευταίος χρήστης';
+$GLOBALS["lang"]['Language'] = 'Не, не.';
 
-$GLOBALS["lang"]['lastModified'] = 'Τελευταία τροποποίηση';
+$GLOBALS["lang"]['Lao'] = '- Да.';
 
-$GLOBALS["lang"]['LastModified'] = 'Τελευταία τροποποίηση';
+$GLOBALS["lang"]['last_changed'] = '.';
 
-$GLOBALS["lang"]['latitude'] = 'Γεωγραφικό πλάτος';
+$GLOBALS["lang"]['Last Changed'] = '.';
 
-$GLOBALS["lang"]['Latitude'] = 'Γεωγραφικό πλάτος';
+$GLOBALS["lang"]['last_finished'] = '- Да.';
 
-$GLOBALS["lang"]['Latvia'] = 'Λετονία';
+$GLOBALS["lang"]['Last Finished'] = '- Да.';
 
-$GLOBALS["lang"]['Layout'] = 'Διάταξη';
+$GLOBALS["lang"]['last_logon'] = '- Да.';
 
-$GLOBALS["lang"]['ldap'] = 'Ldap';
+$GLOBALS["lang"]['Last Logon'] = '- Да.';
 
-$GLOBALS["lang"]['Ldap'] = 'Ldap';
+$GLOBALS["lang"]['Last Name'] = '.';
 
-$GLOBALS["lang"]['ldap_base_dn'] = 'Βάση Ldap Dn';
+$GLOBALS["lang"]['last_os_update'] = '.';
 
-$GLOBALS["lang"]['Ldap Base Dn'] = 'Βάση Ldap Dn';
+$GLOBALS["lang"]['Last Os Update'] = '.';
 
-$GLOBALS["lang"]['ldap_dn_account'] = 'Λογαριασμός Ldap Dn';
+$GLOBALS["lang"]['last_result'] = '.';
 
-$GLOBALS["lang"]['Ldap Dn Account'] = 'Λογαριασμός Ldap Dn';
+$GLOBALS["lang"]['Last Result'] = '.';
 
-$GLOBALS["lang"]['ldap_dn_password'] = 'Κωδικός πρόσβασης Ldap Dn';
+$GLOBALS["lang"]['last_run'] = '.';
 
-$GLOBALS["lang"]['Ldap Dn Password'] = 'Κωδικός πρόσβασης Ldap Dn';
+$GLOBALS["lang"]['Last Run'] = '.';
 
-$GLOBALS["lang"]['Learn About'] = 'Μάθετε για';
+$GLOBALS["lang"]['last_seen'] = '.';
 
-$GLOBALS["lang"]['Learn More'] = 'Μάθετε Περισσότερα';
+$GLOBALS["lang"]['Last Seen'] = '.';
 
-$GLOBALS["lang"]['lease_expiry_date'] = 'Ημερομηνία λήξης της μίσθωσης';
+$GLOBALS["lang"]['last_seen_by'] = '.';
 
-$GLOBALS["lang"]['Lease Expiry Date'] = 'Ημερομηνία λήξης της μίσθωσης';
+$GLOBALS["lang"]['Last Seen By'] = '.';
 
-$GLOBALS["lang"]['Lebanon'] = 'Λίβανος';
+$GLOBALS["lang"]['last_user'] = '- Да.';
 
-$GLOBALS["lang"]['legal_requirements'] = 'Νομικές απαιτήσεις';
+$GLOBALS["lang"]['Last User'] = '- Да.';
 
-$GLOBALS["lang"]['Legal Requirements'] = 'Νομικές απαιτήσεις';
+$GLOBALS["lang"]['Last up is WMI. For Windows as in Linux, a user with Administrator level access is preferred (see Target Client Configuration on the wiki).'] = '.';
 
-$GLOBALS["lang"]['Lesotho'] = 'Λεσόθο';
+$GLOBALS["lang"]['lastModified'] = '.';
 
-$GLOBALS["lang"]['Less Than'] = 'Λιγότερο από';
+$GLOBALS["lang"]['LastModified'] = '.';
 
-$GLOBALS["lang"]['Less Than or Equals'] = 'Λιγότερο από ή ίσοι';
+$GLOBALS["lang"]['latitude'] = '.';
 
-$GLOBALS["lang"]['level'] = 'Επίπεδο';
+$GLOBALS["lang"]['Latitude'] = '.';
 
-$GLOBALS["lang"]['Level'] = 'Επίπεδο';
+$GLOBALS["lang"]['Latvia'] = '.';
 
-$GLOBALS["lang"]['Level of privileges needed to exploit (None, Low, High).'] = 'Επίπεδο των προνομίων που απαιτούνται για την εκμετάλλευση (None, Low, High).';
+$GLOBALS["lang"]['Latvian'] = '.';
 
-$GLOBALS["lang"]['Liberia'] = 'Λιβερία';
+$GLOBALS["lang"]['Layout'] = '.';
 
-$GLOBALS["lang"]['Libyan Arab Jamahiriya'] = 'Αραβική Λιβύη Jamahiriya';
+$GLOBALS["lang"]['ldap'] = 'ΑΝΑΝΓΚ';
 
-$GLOBALS["lang"]['License'] = 'Άδεια';
+$GLOBALS["lang"]['Ldap'] = 'ΑΝΑΝΓΚ';
 
-$GLOBALS["lang"]['License Key'] = 'Κλειδί άδειας χρήσης';
+$GLOBALS["lang"]['ldap_base_dn'] = 'Не, не.';
 
-$GLOBALS["lang"]['License Required'] = 'Απαιτούμενη άδεια';
+$GLOBALS["lang"]['Ldap Base Dn'] = 'Не, не.';
 
-$GLOBALS["lang"]['licenses'] = 'Άδειες';
+$GLOBALS["lang"]['ldap_dn_account'] = 'Д';
 
-$GLOBALS["lang"]['Licenses'] = 'Άδειες';
+$GLOBALS["lang"]['Ldap Dn Account'] = 'Д';
 
-$GLOBALS["lang"]['Liechtenstein'] = 'Λιχτενστάιν';
+$GLOBALS["lang"]['ldap_dn_password'] = 'Ldap Dn Парола Бора.';
 
-$GLOBALS["lang"]['Like'] = 'Όπως...';
+$GLOBALS["lang"]['Ldap Dn Password'] = 'Ldap Dn Парола Бора.';
 
-$GLOBALS["lang"]['limit'] = 'Όριο';
+$GLOBALS["lang"]['Learn About'] = '.';
 
-$GLOBALS["lang"]['Limit'] = 'Όριο';
+$GLOBALS["lang"]['Learn More'] = '.';
 
-$GLOBALS["lang"]['Limit the query to the first X items.'] = 'Περιορίστε το ερώτημα στα πρώτα αντικείμενα X.';
+$GLOBALS["lang"]['lease_expiry_date'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Limited to 100 rows.'] = 'Περιορισμένη σε 100 σειρές.';
+$GLOBALS["lang"]['Lease Expiry Date'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['line_amount'] = 'Ποσό γραμμής';
+$GLOBALS["lang"]['Lebanon'] = '- Да.';
 
-$GLOBALS["lang"]['Line Amount'] = 'Ποσό γραμμής';
+$GLOBALS["lang"]['legal_requirements'] = 'Не, не.';
 
-$GLOBALS["lang"]['Line Graph'] = 'Γράφημα γραμμής';
+$GLOBALS["lang"]['Legal Requirements'] = 'Не, не.';
 
-$GLOBALS["lang"]['line_number_a'] = 'Αριθμός γραμμής A';
+$GLOBALS["lang"]['Lesotho'] = 'Не, не.';
 
-$GLOBALS["lang"]['Line Number A'] = 'Αριθμός γραμμής A';
+$GLOBALS["lang"]['Less Than'] = '- Да.';
 
-$GLOBALS["lang"]['line_number_b'] = 'Αριθμός γραμμής Β';
+$GLOBALS["lang"]['Less Than or Equals'] = '.';
 
-$GLOBALS["lang"]['Line Number B'] = 'Αριθμός γραμμής Β';
+$GLOBALS["lang"]['Lets set the logging to debug. Copy the file:'] = '- Не, не.';
 
-$GLOBALS["lang"]['line_text'] = 'Κείμενο γραμμής';
+$GLOBALS["lang"]['level'] = '- Не, не.';
 
-$GLOBALS["lang"]['Line Text'] = 'Κείμενο γραμμής';
+$GLOBALS["lang"]['Level'] = '- Не, не.';
 
-$GLOBALS["lang"]['link'] = 'Δεσμός';
+$GLOBALS["lang"]['Level of privileges needed to exploit (None, Low, High).'] = 'istismara lozīm olan imtiyazlarşn говмилии (No, Aşa';
 
-$GLOBALS["lang"]['Link'] = 'Δεσμός';
+$GLOBALS["lang"]['Liberia'] = '.';
 
-$GLOBALS["lang"]['Link (Advanced)'] = 'Δεσμός (προχωρημένος)';
+$GLOBALS["lang"]['Libraries (ie, code that another program might include). These are typically items like Wordpress extensions, drupal extensions, node.js libraries, Android / iPhone / Windows libraries, python libraries, etc.'] = 'Въпреки това, това може да се дъджи на ';
 
-$GLOBALS["lang"]['Linked Files'] = 'Συνδεδεμένα αρχεία';
+$GLOBALS["lang"]['Libyan Arab Jamahiriya'] = '.';
 
-$GLOBALS["lang"]['links'] = 'Σύνδεσμοι';
+$GLOBALS["lang"]['License'] = '- Да.';
 
-$GLOBALS["lang"]['Links'] = 'Σύνδεσμοι';
+$GLOBALS["lang"]['License Key'] = '.';
 
-$GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.'] = 'Συνδέει αυτή την ανακάλυψη με το σχετικό σύννεφο (αν απαιτείται). Συνδέσεις <code>clouds.id</code>.';
+$GLOBALS["lang"]['License Required'] = '.';
 
-$GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = 'Συνδέσεις <code>discovery_scan_options.id</code>.';
+$GLOBALS["lang"]['Licensed users are free to add or modify the rules as you see fit. If you have a device with an SNMP OID that does not match a model already in the file - now you can add it easily. No more waiting for us to provide a patch and add it to the code base for you.<br><br>When you create a Rules entry, you will need to provide a name and a list of inputs and outputs. The inputs and outputs are stored as JSON arrays within the database.<br><br>Inputs have a table and attribute, an operator and a value. When executing the condition, it works thus: If $table . $attribute $operator $value then apply the outputs.<br><br>An example rule to match an SNMP OID and set the model is below.<br>'] = 'Имено.<br/><br/>Имено.<br/><br/>Имено.<br/><br/>Имено.<br/>';
 
-$GLOBALS["lang"]['Links to <code>standards.id</code>'] = 'Συνδέσεις <code>standards.id</code>';
+$GLOBALS["lang"]['Licenses'] = '.';
 
-$GLOBALS["lang"]['Links to <standards_policies.id</code>'] = 'Συνδέσεις <standards_policies.id< code=""></standards_policies.id<>';
+$GLOBALS["lang"]['Liechtenstein'] = '- Да.';
 
-$GLOBALS["lang"]['Linux'] = 'Linux';
+$GLOBALS["lang"]['Like'] = '- Да.';
 
-$GLOBALS["lang"]['List'] = 'Λίστα';
+$GLOBALS["lang"]['Like most other attributes, Additional Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Additional Fields are available for input.'] = '.';
 
-$GLOBALS["lang"]['list_table_format'] = 'Εμφάνιση μορφής πίνακα';
+$GLOBALS["lang"]['Like versus Equals'] = '.';
 
-$GLOBALS["lang"]['List Table Format'] = 'Εμφάνιση μορφής πίνακα';
+$GLOBALS["lang"]['limit'] = 'Калерея.';
 
-$GLOBALS["lang"]['Lithuania'] = 'Λιθουανία';
+$GLOBALS["lang"]['Limit'] = 'Калерея.';
 
-$GLOBALS["lang"]['Load Balancing'] = 'Εξισορρόπηση φορτίου';
+$GLOBALS["lang"]['Limit the query to the first X items.'] = '.';
 
-$GLOBALS["lang"]['Local'] = 'Τοπικό';
+$GLOBALS["lang"]['Limited to 100 rows.'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['Local Area Network'] = 'Δίκτυο τοπικής περιοχής';
+$GLOBALS["lang"]['line_amount'] = '.';
 
-$GLOBALS["lang"]['local_port'] = 'Τοπική θύρα';
+$GLOBALS["lang"]['Line Amount'] = '.';
 
-$GLOBALS["lang"]['Local Port'] = 'Τοπική θύρα';
+$GLOBALS["lang"]['Line Graph'] = 'Гра';
 
-$GLOBALS["lang"]['Localhost'] = 'Τοπικός υπολογιστής';
+$GLOBALS["lang"]['line_number_a'] = '.';
 
-$GLOBALS["lang"]['Localisation'] = 'Εντοπισμός';
+$GLOBALS["lang"]['Line Number A'] = '.';
 
-$GLOBALS["lang"]['Location'] = 'Τοποθεσία';
+$GLOBALS["lang"]['line_number_b'] = '.';
 
-$GLOBALS["lang"]['Location A'] = 'Τοποθεσία A';
+$GLOBALS["lang"]['Line Number B'] = '.';
 
-$GLOBALS["lang"]['Location B'] = 'Τοποθεσία B';
+$GLOBALS["lang"]['line_text'] = '.';
 
-$GLOBALS["lang"]['location_id'] = 'ID τοποθεσίας';
+$GLOBALS["lang"]['Line Text'] = '.';
 
-$GLOBALS["lang"]['Location ID'] = 'ID τοποθεσίας';
+$GLOBALS["lang"]['Line charts must return date or my_date, description or my_description and count.'] = '.';
 
-$GLOBALS["lang"]['location_id_a'] = 'Ταυτότητα τοποθεσίας A';
+$GLOBALS["lang"]['link'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Location ID A'] = 'Ταυτότητα τοποθεσίας A';
+$GLOBALS["lang"]['Link'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['location_id_b'] = 'Ταυτότητα τοποθεσίας B';
+$GLOBALS["lang"]['Link (Advanced)'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['Location ID B'] = 'Ταυτότητα τοποθεσίας B';
+$GLOBALS["lang"]['Linked Files'] = '.';
 
-$GLOBALS["lang"]['location_latitude'] = 'Γεωγραφικό πλάτος τοποθεσίας';
+$GLOBALS["lang"]['links'] = '- Да.';
 
-$GLOBALS["lang"]['Location Latitude'] = 'Γεωγραφικό πλάτος τοποθεσίας';
+$GLOBALS["lang"]['Links'] = '- Да.';
 
-$GLOBALS["lang"]['location_level'] = 'Επίπεδο τοποθεσίας';
+$GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.'] = 'Имено. <code>clouds.id</code>.';
 
-$GLOBALS["lang"]['Location Level'] = 'Επίπεδο τοποθεσίας';
+$GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = '. <code>discovery_scan_options.id</code>.';
 
-$GLOBALS["lang"]['location_longitude'] = 'Γεωγραφικό μήκος τοποθεσίας';
+$GLOBALS["lang"]['Links to <code>standards.id</code>'] = '. <code>standards.id</code>';
 
-$GLOBALS["lang"]['Location Longitude'] = 'Γεωγραφικό μήκος τοποθεσίας';
+$GLOBALS["lang"]['Links to <standards_policies.id</code>'] = '. <standards_policies.id< code=""></standards_policies.id<>';
 
-$GLOBALS["lang"]['location_rack'] = 'Θέση Rack';
+$GLOBALS["lang"]['Linux'] = '- Не, не.';
 
-$GLOBALS["lang"]['Location Rack'] = 'Θέση Rack';
+$GLOBALS["lang"]['Linux Packages'] = '.';
 
-$GLOBALS["lang"]['location_rack_position'] = 'Θέση Rack';
+$GLOBALS["lang"]['List'] = '- Не, не.';
 
-$GLOBALS["lang"]['Location Rack Position'] = 'Θέση Rack';
+$GLOBALS["lang"]['List All NMAP Ports, Protocols and Programs for Each Device'] = 'Βούττεν-ΝΜΑΠ Портове, Protokollar v год.';
 
-$GLOBALS["lang"]['location_rack_size'] = 'Μέγεθος Rack τοποθεσίας';
+$GLOBALS["lang"]['List Devices'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Location Rack Size'] = 'Μέγεθος Rack τοποθεσίας';
+$GLOBALS["lang"]['List Discoveries'] = '- Да.';
 
-$GLOBALS["lang"]['location_room'] = 'Αίθουσα τοποθεσίας';
+$GLOBALS["lang"]['list_table_format'] = '- Да.';
 
-$GLOBALS["lang"]['Location Room'] = 'Αίθουσα τοποθεσίας';
+$GLOBALS["lang"]['List Table Format'] = '- Да.';
 
-$GLOBALS["lang"]['location_suite'] = 'Σουίτα τοποθεσίας';
+$GLOBALS["lang"]['List Tables'] = '.';
 
-$GLOBALS["lang"]['Location Suite'] = 'Σουίτα τοποθεσίας';
+$GLOBALS["lang"]['Lithuania'] = '- Да.';
 
-$GLOBALS["lang"]['locations'] = 'Τοποθεσίες';
+$GLOBALS["lang"]['Lithuanian'] = '- Да.';
 
-$GLOBALS["lang"]['Locations'] = 'Τοποθεσίες';
+$GLOBALS["lang"]['Load Balancing'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Locations in this'] = 'Τοποθεσίες σε αυτό';
+$GLOBALS["lang"]['Local'] = '- Да.';
 
-$GLOBALS["lang"]['log'] = 'Καταγραφή';
+$GLOBALS["lang"]['Local Area Network'] = '.';
 
-$GLOBALS["lang"]['Log'] = 'Καταγραφή';
+$GLOBALS["lang"]['local_port'] = '.';
 
-$GLOBALS["lang"]['log_format'] = 'Μορφή καταγραφής';
+$GLOBALS["lang"]['Local Port'] = '.';
 
-$GLOBALS["lang"]['Log Format'] = 'Μορφή καταγραφής';
+$GLOBALS["lang"]['Local area network'] = '.';
 
-$GLOBALS["lang"]['log_path'] = 'Διαδρομή καταγραφής';
+$GLOBALS["lang"]['Localhost'] = '.';
 
-$GLOBALS["lang"]['Log Path'] = 'Διαδρομή καταγραφής';
+$GLOBALS["lang"]['Localisation'] = '- Да.';
 
-$GLOBALS["lang"]['log_rotation'] = 'Περιστροφή καταγραφής';
+$GLOBALS["lang"]['Location'] = '- Не, не.';
 
-$GLOBALS["lang"]['Log Rotation'] = 'Περιστροφή καταγραφής';
+$GLOBALS["lang"]['Location A'] = '.';
 
-$GLOBALS["lang"]['log_status'] = 'Κατάσταση καταγραφής';
+$GLOBALS["lang"]['Location B'] = '- Да.';
 
-$GLOBALS["lang"]['Log Status'] = 'Κατάσταση καταγραφής';
+$GLOBALS["lang"]['location_id'] = '- Да.';
 
-$GLOBALS["lang"]['Logical Cores '] = 'Λογικοί πυρήνες ';
+$GLOBALS["lang"]['Location ID'] = '- Да.';
 
-$GLOBALS["lang"]['logical_count'] = 'Λογικός αριθμός';
+$GLOBALS["lang"]['location_id_a'] = '.';
 
-$GLOBALS["lang"]['Logical Count'] = 'Λογικός αριθμός';
+$GLOBALS["lang"]['Location ID A'] = '.';
 
-$GLOBALS["lang"]['Logout'] = 'Αποσύνδεση';
+$GLOBALS["lang"]['location_id_b'] = '- Да.';
 
-$GLOBALS["lang"]['Logs'] = 'Καταγραφές';
+$GLOBALS["lang"]['Location ID B'] = '- Да.';
 
-$GLOBALS["lang"]['longitude'] = 'Γεωγραφικό μήκος';
+$GLOBALS["lang"]['location_latitude'] = '- Не, не.';
 
-$GLOBALS["lang"]['Longitude'] = 'Γεωγραφικό μήκος';
+$GLOBALS["lang"]['Location Latitude'] = '- Не, не.';
 
-$GLOBALS["lang"]['low'] = 'Χαμηλή';
+$GLOBALS["lang"]['location_level'] = '.';
 
-$GLOBALS["lang"]['Low'] = 'Χαμηλή';
+$GLOBALS["lang"]['Location Level'] = '.';
 
-$GLOBALS["lang"]['Lower Case'] = 'Κάτω περίπτωση';
+$GLOBALS["lang"]['location_longitude'] = '- Не, не.';
 
-$GLOBALS["lang"]['Luxembourg'] = 'Λουξεμβούργο';
+$GLOBALS["lang"]['Location Longitude'] = '- Не, не.';
 
-$GLOBALS["lang"]['MAC Address'] = 'Διεύθυνση MAC';
+$GLOBALS["lang"]['Location Name'] = '- Да.';
 
-$GLOBALS["lang"]['MAC Manufacturer'] = 'MAC Παραγωγός';
+$GLOBALS["lang"]['location_rack'] = '- Не, не.';
 
-$GLOBALS["lang"]['mac'] = 'Μακ';
+$GLOBALS["lang"]['Location Rack'] = '- Не, не.';
 
-$GLOBALS["lang"]['Mac'] = 'Μακ';
+$GLOBALS["lang"]['location_rack_position'] = '- Не, не.';
 
-$GLOBALS["lang"]['Mac Address'] = 'Διεύθυνση Mac';
+$GLOBALS["lang"]['Location Rack Position'] = '- Не, не.';
 
-$GLOBALS["lang"]['MacOS'] = 'ΜΑΚΟΣ';
+$GLOBALS["lang"]['location_rack_size'] = '- Не, не.';
 
-$GLOBALS["lang"]['Macao'] = 'Μακάο';
+$GLOBALS["lang"]['Location Rack Size'] = '- Не, не.';
 
-$GLOBALS["lang"]['Macedonia'] = 'ΠΓΔΜ';
+$GLOBALS["lang"]['location_room'] = '.';
 
-$GLOBALS["lang"]['Madagascar'] = 'Μαδαγασκάρη';
+$GLOBALS["lang"]['Location Room'] = '.';
 
-$GLOBALS["lang"]['maintenance_expires'] = 'Λήγει η συντήρηση';
+$GLOBALS["lang"]['location_suite'] = '- Не, не.';
 
-$GLOBALS["lang"]['Maintenance Expires'] = 'Λήγει η συντήρηση';
+$GLOBALS["lang"]['Location Suite'] = '- Не, не.';
 
-$GLOBALS["lang"]['Make My Default Dashboard'] = 'Κάντε το προκαθορισμένο ταμπλό μου';
+$GLOBALS["lang"]['Locations'] = '- Не, не.';
 
-$GLOBALS["lang"]['Make this install a Collector'] = 'Κάντε αυτό την εγκατάσταση ενός συλλέκτη';
+$GLOBALS["lang"]['Locations in this'] = '.';
 
-$GLOBALS["lang"]['Malawi'] = 'Μαλάουι';
+$GLOBALS["lang"]['log'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Malaysia'] = 'Μαλαισία';
+$GLOBALS["lang"]['Log'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Maldives'] = 'Μαλδίβες';
+$GLOBALS["lang"]['log_format'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Mali'] = 'Μάλι';
+$GLOBALS["lang"]['Log Format'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Malta'] = 'Μάλτα';
+$GLOBALS["lang"]['Log Line'] = '.';
 
-$GLOBALS["lang"]['Manage'] = 'Διαχείριση';
+$GLOBALS["lang"]['log_path'] = 'Адсояд.';
 
-$GLOBALS["lang"]['Manage Licenses'] = 'Διαχείριση αδειών';
+$GLOBALS["lang"]['Log Path'] = 'Адсояд.';
 
-$GLOBALS["lang"]['Manage in NMIS'] = 'Διαχείριση σε NMIS';
+$GLOBALS["lang"]['log_rotation'] = '- Да.';
 
-$GLOBALS["lang"]['Managed'] = 'Διαχείριση';
+$GLOBALS["lang"]['Log Rotation'] = '- Да.';
 
-$GLOBALS["lang"]['managed_by'] = 'Διαχείριση από';
+$GLOBALS["lang"]['log_status'] = '- Да.';
 
-$GLOBALS["lang"]['Managed By'] = 'Διαχείριση από';
+$GLOBALS["lang"]['Log Status'] = '- Да.';
 
-$GLOBALS["lang"]['Manual Input'] = 'Χειροκίνητη είσοδος';
+$GLOBALS["lang"]['Logging in'] = '- Да.';
 
-$GLOBALS["lang"]['Manually set by user, defaults to Production.'] = 'Χειροκίνητα ρυθμίζονται από το χρήστη, προεπιλεγμένα στην παραγωγή.';
+$GLOBALS["lang"]['Logical Cores '] = 'Калерея. ';
 
-$GLOBALS["lang"]['Manually set by user.'] = 'Χειροκίνητα ρυθμίζονται από το χρήστη.';
+$GLOBALS["lang"]['logical_count'] = '.';
 
-$GLOBALS["lang"]['manufacture_date'] = 'Ημερομηνία κατασκευής';
+$GLOBALS["lang"]['Logical Count'] = '.';
 
-$GLOBALS["lang"]['Manufacture Date'] = 'Ημερομηνία κατασκευής';
+$GLOBALS["lang"]['Logout'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['manufacturer'] = 'Παραγωγός';
+$GLOBALS["lang"]['Logs'] = '.';
 
-$GLOBALS["lang"]['Manufacturer'] = 'Παραγωγός';
+$GLOBALS["lang"]['longitude'] = '- Да.';
 
-$GLOBALS["lang"]['manufacturer_code'] = 'Κωδικός κατασκευαστή';
+$GLOBALS["lang"]['Longitude'] = '- Да.';
 
-$GLOBALS["lang"]['Manufacturer Code'] = 'Κωδικός κατασκευαστή';
+$GLOBALS["lang"]['low'] = '- Да.';
 
-$GLOBALS["lang"]['Map'] = 'Χάρτης';
+$GLOBALS["lang"]['Low'] = '- Да.';
 
-$GLOBALS["lang"]['maps'] = 'Χάρτες';
+$GLOBALS["lang"]['Lower Case'] = '.';
 
-$GLOBALS["lang"]['Maps'] = 'Χάρτες';
+$GLOBALS["lang"]['Lowercase Hostname'] = '.';
 
-$GLOBALS["lang"]['March'] = 'Μάρτιος';
+$GLOBALS["lang"]['Luxembourg'] = '.';
 
-$GLOBALS["lang"]['Marshall Islands'] = 'Νήσοι Μάρσαλ';
+$GLOBALS["lang"]['MAC Address'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Martinique'] = 'Μαρτινίκα';
+$GLOBALS["lang"]['MAC Manufacturer'] = ' MAC';
 
-$GLOBALS["lang"]['mask'] = 'Μάσκα';
+$GLOBALS["lang"]['mac'] = '.';
 
-$GLOBALS["lang"]['Mask'] = 'Μάσκα';
+$GLOBALS["lang"]['Mac'] = '.';
 
-$GLOBALS["lang"]['Match'] = 'Ταίριασμα';
+$GLOBALS["lang"]['Mac Address'] = 'Εταλανλάρη';
 
-$GLOBALS["lang"]['match_options'] = 'Επιλογές ταιριάσματος';
+$GLOBALS["lang"]['MacOS'] = 'Άξταρ';
 
-$GLOBALS["lang"]['Match Options'] = 'Επιλογές ταιριάσματος';
+$GLOBALS["lang"]['MacOS Packages'] = '.';
 
-$GLOBALS["lang"]['match_string'] = 'Ταίριασμα συμβολοσειρών';
+$GLOBALS["lang"]['Macao'] = '- Да.';
 
-$GLOBALS["lang"]['Match String'] = 'Ταίριασμα συμβολοσειρών';
+$GLOBALS["lang"]['Macedonia'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Matching Attribute'] = 'Ταίριασμα χαρακτηριστικών';
+$GLOBALS["lang"]['Madagascar'] = '- Да.';
 
-$GLOBALS["lang"]['maturity_level'] = 'Επίπεδο ληκτότητας';
+$GLOBALS["lang"]['Maintain records of risk assessments and treatments'] = 'Имено.';
 
-$GLOBALS["lang"]['Maturity Level'] = 'Επίπεδο ληκτότητας';
+$GLOBALS["lang"]['maintenance_expires'] = '.';
 
-$GLOBALS["lang"]['maturity_score'] = 'Βαθμός ληκτότητας';
+$GLOBALS["lang"]['Maintenance Expires'] = '.';
 
-$GLOBALS["lang"]['Maturity Score'] = 'Βαθμός ληκτότητας';
+$GLOBALS["lang"]['Make My Default Dashboard'] = '- Да.';
 
-$GLOBALS["lang"]['Mauritania'] = 'Μαυριτανία';
+$GLOBALS["lang"]['Make this install a Collector'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Mauritius'] = 'Μαυρίκιος';
+$GLOBALS["lang"]['Malawi'] = '- Не, не.';
 
-$GLOBALS["lang"]['max_file_size'] = 'Μέγιστο μέγεθος αρχείου';
+$GLOBALS["lang"]['Malay'] = '- Да.';
 
-$GLOBALS["lang"]['Max File Size'] = 'Μέγιστο μέγεθος αρχείου';
+$GLOBALS["lang"]['Malaysia'] = '- Да.';
 
-$GLOBALS["lang"]['Max Length'] = 'Μέγιστο μήκος';
+$GLOBALS["lang"]['Maldives'] = '.';
 
-$GLOBALS["lang"]['max_size'] = 'Μέγιστο μέγεθος';
+$GLOBALS["lang"]['Mali'] = '- Да.';
 
-$GLOBALS["lang"]['Max Size'] = 'Μέγιστο μέγεθος';
+$GLOBALS["lang"]['Malta'] = '- Не, не.';
 
-$GLOBALS["lang"]['May'] = 'Μάιος';
+$GLOBALS["lang"]['Manage'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Mayotte'] = 'Μαγιότ';
+$GLOBALS["lang"]['Manage Licenses'] = '.';
 
-$GLOBALS["lang"]['Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.'] = 'Μετράει την πιθανότητα επίθεσης της ευπάθειας, και βασίζεται στην τρέχουσα κατάσταση των τεχνικών εκμετάλλευσης, εκμετάλλευση της διαθεσιμότητας κώδικα, ή ενεργός, “in-the-wild” εκμετάλλευση.';
+$GLOBALS["lang"]['Manage in NMIS'] = '- Да.';
 
-$GLOBALS["lang"]['medium'] = 'Μεσαίο';
+$GLOBALS["lang"]['Manage incidents and nonconformities'] = 'Не, не.';
 
-$GLOBALS["lang"]['Medium'] = 'Μεσαίο';
+$GLOBALS["lang"]['Managed'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['members'] = 'Μέλη';
+$GLOBALS["lang"]['managed_by'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Members'] = 'Μέλη';
+$GLOBALS["lang"]['Managed By'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['memory'] = 'Μνήμη';
+$GLOBALS["lang"]['Manual Input'] = '.';
 
-$GLOBALS["lang"]['Memory'] = 'Μνήμη';
+$GLOBALS["lang"]['Manually set by user, defaults to Production.'] = '.';
 
-$GLOBALS["lang"]['memory_count'] = 'Αριθμός μνήμης';
+$GLOBALS["lang"]['Manually set by user.'] = '.';
 
-$GLOBALS["lang"]['Memory Count'] = 'Αριθμός μνήμης';
+$GLOBALS["lang"]['manufacture_date'] = '.';
 
-$GLOBALS["lang"]['memory_slot_count'] = 'Αριθμός Slot μνήμης';
+$GLOBALS["lang"]['Manufacture Date'] = '.';
 
-$GLOBALS["lang"]['Memory Slot Count'] = 'Αριθμός Slot μνήμης';
+$GLOBALS["lang"]['manufacturer'] = '.';
 
-$GLOBALS["lang"]['menu_category'] = 'Κατηγορία μενού';
+$GLOBALS["lang"]['Manufacturer'] = '.';
 
-$GLOBALS["lang"]['Menu Category'] = 'Κατηγορία μενού';
+$GLOBALS["lang"]['manufacturer_code'] = '.';
 
-$GLOBALS["lang"]['menu_display'] = 'Εμφάνιση μενού';
+$GLOBALS["lang"]['Manufacturer Code'] = '.';
 
-$GLOBALS["lang"]['Menu Display'] = 'Εμφάνιση μενού';
+$GLOBALS["lang"]['Map'] = '- Да.';
 
-$GLOBALS["lang"]['message'] = 'Μήνυμα';
+$GLOBALS["lang"]['maps'] = 'Не, не.';
 
-$GLOBALS["lang"]['Message'] = 'Μήνυμα';
+$GLOBALS["lang"]['Maps'] = 'Не, не.';
 
-$GLOBALS["lang"]['meta_last_changed'] = 'Τελευταία αλλαγή Meta';
+$GLOBALS["lang"]['March'] = '.';
 
-$GLOBALS["lang"]['Meta Last Changed'] = 'Τελευταία αλλαγή Meta';
+$GLOBALS["lang"]['Marshall Islands'] = 'Не, не.';
 
-$GLOBALS["lang"]['metric'] = 'Μετρικό';
+$GLOBALS["lang"]['Martinique'] = ' Мартин.';
 
-$GLOBALS["lang"]['Metric'] = 'Μετρικό';
+$GLOBALS["lang"]['mask'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Metropolitan Area Network'] = 'Δίκτυο Μητροπολιτικής Περιοχής';
+$GLOBALS["lang"]['Mask'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Mexico'] = 'Μεξικό';
+$GLOBALS["lang"]['Match'] = 'Ουνκούτσακ';
 
-$GLOBALS["lang"]['Micronesia'] = 'Μικρονησία';
+$GLOBALS["lang"]['match_options'] = '.';
+
+$GLOBALS["lang"]['Match Options'] = '.';
+
+$GLOBALS["lang"]['Match Order'] = '.';
+
+$GLOBALS["lang"]['Match Process'] = '.';
+
+$GLOBALS["lang"]['match_string'] = 'Калерея.';
+
+$GLOBALS["lang"]['Match String'] = 'Калерея.';
+
+$GLOBALS["lang"]['Matching Attribute'] = '- Да.';
+
+$GLOBALS["lang"]['Matching Devices - Including OrgID'] = ' - Ναι.';
+
+$GLOBALS["lang"]['Matching Linux Devices'] = '- Да.';
+
+$GLOBALS["lang"]['Matching is conducted in the following order'] = '.';
+
+$GLOBALS["lang"]['maturity_level'] = '.';
+
+$GLOBALS["lang"]['Maturity Level'] = '.';
+
+$GLOBALS["lang"]['maturity_score'] = '- Да.';
+
+$GLOBALS["lang"]['Maturity Score'] = '- Да.';
+
+$GLOBALS["lang"]['Mauritania'] = '- Да.';
+
+$GLOBALS["lang"]['Mauritius'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['max_file_size'] = '(...)';
+
+$GLOBALS["lang"]['Max File Size'] = '(...)';
+
+$GLOBALS["lang"]['Max Length'] = '.';
+
+$GLOBALS["lang"]['max_size'] = '(...)';
+
+$GLOBALS["lang"]['Max Size'] = '(...)';
+
+$GLOBALS["lang"]['May'] = '.';
+
+$GLOBALS["lang"]['Mayotte'] = ' Μάγια';
+
+$GLOBALS["lang"]['Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.'] = 'Имено.';
+
+$GLOBALS["lang"]['medium'] = '- Да.';
+
+$GLOBALS["lang"]['Medium'] = '- Да.';
+
+$GLOBALS["lang"]['members'] = '.';
+
+$GLOBALS["lang"]['Members'] = '.';
+
+$GLOBALS["lang"]['memory'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Memory'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['memory_count'] = 'Ζάχλα';
+
+$GLOBALS["lang"]['Memory Count'] = 'Ζάχλα';
+
+$GLOBALS["lang"]['memory_slot_count'] = 'Ζάχλα';
+
+$GLOBALS["lang"]['Memory Slot Count'] = 'Ζάχλα';
+
+$GLOBALS["lang"]['menu_category'] = '.';
+
+$GLOBALS["lang"]['Menu Category'] = '.';
+
+$GLOBALS["lang"]['menu_display'] = 'Ζάχλα';
+
+$GLOBALS["lang"]['Menu Display'] = 'Ζάχλα';
+
+$GLOBALS["lang"]['message'] = 'Не, не.';
+
+$GLOBALS["lang"]['Message'] = 'Не, не.';
+
+$GLOBALS["lang"]['meta_last_changed'] = 'Μέτα Синн на гризача Борича.';
+
+$GLOBALS["lang"]['Meta Last Changed'] = 'Μέτα Синн на гризача Борича.';
+
+$GLOBALS["lang"]['metric'] = '.';
+
+$GLOBALS["lang"]['Metric'] = '.';
+
+$GLOBALS["lang"]['Metropolitan Area Network'] = '.';
+
+$GLOBALS["lang"]['Metropolitan area network'] = '.';
+
+$GLOBALS["lang"]['Mexico'] = '- Не, не.';
+
+$GLOBALS["lang"]['Micronesia'] = '- Да.';
 
 $GLOBALS["lang"]['Microsoft Azure Fields'] = 'Πεδία Azure της Microsoft';
 
-$GLOBALS["lang"]['microtime'] = 'Μικροχρόνος';
+$GLOBALS["lang"]['microtime'] = 'Не, не.';
 
-$GLOBALS["lang"]['Microtime'] = 'Μικροχρόνος';
+$GLOBALS["lang"]['Microtime'] = 'Не, не.';
 
-$GLOBALS["lang"]['minute'] = 'Λεπτό';
+$GLOBALS["lang"]['minute'] = '- Да.';
 
-$GLOBALS["lang"]['Minute'] = 'Λεπτό';
+$GLOBALS["lang"]['Minute'] = '- Да.';
 
-$GLOBALS["lang"]['Minutes Since last Audit are Greater than'] = 'Πρακτικά Από την τελευταία επιθεώρηση είναι μεγαλύτερη από ό, τι';
+$GLOBALS["lang"]['Minutes'] = '- Да.';
 
-$GLOBALS["lang"]['model'] = 'Μοντέλο';
+$GLOBALS["lang"]['Minutes Since last Audit are Greater than'] = '.';
 
-$GLOBALS["lang"]['Model'] = 'Μοντέλο';
+$GLOBALS["lang"]['model'] = 'Не, не.';
 
-$GLOBALS["lang"]['model_family'] = 'Υπόδειγμα Οικογένειας';
+$GLOBALS["lang"]['Model'] = 'Не, не.';
 
-$GLOBALS["lang"]['Model Family'] = 'Υπόδειγμα Οικογένειας';
+$GLOBALS["lang"]['model_family'] = '.';
 
-$GLOBALS["lang"]['module'] = 'Ενότητα';
+$GLOBALS["lang"]['Model Family'] = '.';
 
-$GLOBALS["lang"]['Module'] = 'Ενότητα';
+$GLOBALS["lang"]['Modified'] = 'Τάριξ';
 
-$GLOBALS["lang"]['module_index'] = 'Δείκτης ενότητας';
+$GLOBALS["lang"]['Modifying an Existing Script'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Module Index'] = 'Δείκτης ενότητας';
+$GLOBALS["lang"]['module'] = '- Не, не.';
 
-$GLOBALS["lang"]['Modules'] = 'Ενότητες';
+$GLOBALS["lang"]['Module'] = '- Не, не.';
 
-$GLOBALS["lang"]['Moldova'] = 'Μολδαβία';
+$GLOBALS["lang"]['module_index'] = '.';
 
-$GLOBALS["lang"]['Monaco'] = 'Μονακό';
+$GLOBALS["lang"]['Module Index'] = '.';
 
-$GLOBALS["lang"]['Monday'] = 'Δευτέρα';
+$GLOBALS["lang"]['Modules'] = 'Модулар.';
 
-$GLOBALS["lang"]['Mongolia'] = 'Μογγολία';
+$GLOBALS["lang"]['Moldova'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['monitor'] = 'Παρακολούθηση';
+$GLOBALS["lang"]['Monaco'] = '- Да.';
 
-$GLOBALS["lang"]['Monitor'] = 'Παρακολούθηση';
+$GLOBALS["lang"]['Monday'] = '.';
 
-$GLOBALS["lang"]['Montenegro'] = 'Μαυροβούνιο';
+$GLOBALS["lang"]['Mongolia'] = '.';
 
-$GLOBALS["lang"]['month'] = 'Μήνας';
+$GLOBALS["lang"]['monitor'] = '.';
 
-$GLOBALS["lang"]['Month'] = 'Μήνας';
+$GLOBALS["lang"]['Monitor'] = '.';
 
-$GLOBALS["lang"]['Montserrat'] = 'Μονσεράτ';
+$GLOBALS["lang"]['Monitor and measure ISMS performance'] = '.';
 
-$GLOBALS["lang"]['Morocco'] = 'Μαρόκο';
+$GLOBALS["lang"]['Montenegro'] = '.';
 
-$GLOBALS["lang"]['motherboard'] = 'Μητρική πλακέτα';
+$GLOBALS["lang"]['month'] = '- Да.';
 
-$GLOBALS["lang"]['Motherboard'] = 'Μητρική πλακέτα';
+$GLOBALS["lang"]['Month'] = '- Да.';
 
-$GLOBALS["lang"]['mount_point'] = 'Σημείο προσάρτησης';
+$GLOBALS["lang"]['Montserrat'] = '- Да.';
 
-$GLOBALS["lang"]['Mount Point'] = 'Σημείο προσάρτησης';
+$GLOBALS["lang"]['More Information'] = '.';
 
-$GLOBALS["lang"]['mount_type'] = 'Τύπος προσάρτησης';
+$GLOBALS["lang"]['More Secure'] = '.';
 
-$GLOBALS["lang"]['Mount Type'] = 'Τύπος προσάρτησης';
+$GLOBALS["lang"]['More elaborate SQL can used to group attributes within a range. Below shows the SQL for devices not seen in a pie chart grouped by last seen date ranges.'] = 'Имено.';
 
-$GLOBALS["lang"]['Mozambique'] = 'Μοζαμβίκη';
+$GLOBALS["lang"]['More information about debugging this can be found on a helpful Stack Overflow thread'] = '.';
 
-$GLOBALS["lang"]['Must Respond to Ping'] = 'Πρέπει να απαντήσετε στο Ping';
+$GLOBALS["lang"]['Morocco'] = '.';
 
-$GLOBALS["lang"]['Myanmar'] = 'Μιανμάρ';
+$GLOBALS["lang"]['Most likely the Windows firewall (or a third party firewall) is denying the connection attempt.<br><br>Please log on to the target Windows machine and check the firewall settings.'] = 'Не, не.<br/><br/>.';
 
-$GLOBALS["lang"]['N+1'] = 'N+1';
+$GLOBALS["lang"]['Most of Open-AudIT is Licensed with GNU AGPL.'] = 'Επίθεση...';
 
-$GLOBALS["lang"]['N+M'] = 'N+Μ';
+$GLOBALS["lang"]['motherboard'] = '- Да.';
 
-$GLOBALS["lang"]['N-to-1'] = 'N-προς-1';
+$GLOBALS["lang"]['Motherboard'] = '- Да.';
 
-$GLOBALS["lang"]['N-to-N'] = 'Ν- σε-Ν';
+$GLOBALS["lang"]['mount_point'] = 'Άξταρ@';
+
+$GLOBALS["lang"]['Mount Point'] = 'Άξταρ@';
+
+$GLOBALS["lang"]['mount_type'] = '.';
+
+$GLOBALS["lang"]['Mount Type'] = '.';
+
+$GLOBALS["lang"]['Mozambique'] = '.';
+
+$GLOBALS["lang"]['Must Respond To Ping. If set, Nmap will fist attempt to send and listen for an ICMP response. If the device does not respond, no further scanning will occur.<br>Previously a device did not have to respond to a ping for Open-AudIT to continue scanning.'] = 'Имено.<br/>.';
+
+$GLOBALS["lang"]['Must Respond to Ping'] = '.';
+
+$GLOBALS["lang"]['My AntiVirus is prompting me to deny/allow things'] = 'Не, не.';
+
+$GLOBALS["lang"]['My time is off in Open-AudIT'] = '.';
+
+$GLOBALS["lang"]['Myanmar'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['N+1'] = 'N + 1';
+
+$GLOBALS["lang"]['N+M'] = 'Ν + Ν';
+
+$GLOBALS["lang"]['N-to-1'] = 'Ν-ζου-1';
+
+$GLOBALS["lang"]['N-to-N'] = '.';
 
 $GLOBALS["lang"]['NMIS Business Service'] = 'NMIS Business Service (Υπηρεσία Επιχειρήσεων)';
 
-$GLOBALS["lang"]['NMIS Customer'] = 'Πελάτης NMIS';
+$GLOBALS["lang"]['NMIS Customer'] = 'NIS';
 
-$GLOBALS["lang"]['NMIS Device Options'] = 'Επιλογές συσκευής NMIS';
+$GLOBALS["lang"]['NMIS Device Options'] = 'Настройки на NIS устройство на NIS устройство.';
 
-$GLOBALS["lang"]['NMIS Device Selection'] = 'Επιλογή συσκευής NMIS';
+$GLOBALS["lang"]['NMIS Device Selection'] = 'Избор на устройствоза. NMIS';
 
-$GLOBALS["lang"]['NMIS Field Name'] = 'Όνομα πεδίου NMIS';
+$GLOBALS["lang"]['NMIS Field Name'] = '- Да.';
 
-$GLOBALS["lang"]['NMIS Field Type'] = 'Τύπος πεδίου NMIS';
+$GLOBALS["lang"]['NMIS Field Type'] = 'NMIS Ταρίξι';
 
-$GLOBALS["lang"]['NMIS Group'] = 'Ομάδα NMIS';
+$GLOBALS["lang"]['NMIS Group'] = 'ΝΜΙΣ Κουρπού';
 
-$GLOBALS["lang"]['NMIS Poller'] = 'Πολίτης NMIS';
+$GLOBALS["lang"]['NMIS Poller'] = 'Πολίτης NIS';
 
-$GLOBALS["lang"]['NMIS Role'] = 'NMIS Ρόλος';
+$GLOBALS["lang"]['NMIS Role'] = 'NIS (στα Αγγλικά).';
 
-$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.'] = 'ΣΗΜΕΙΩΣΗ - Μπορείτε να αποτρέψετε τα διαπιστευτήρια απλού κειμένου που εμφανίζονται παρακάτω με τον καθορισμό του αντικειμένου ρυθμίσεων για <code>decrypt_credentials</code> προς <code>n</code>.';
+$GLOBALS["lang"]['NOTE'] = '- Да.';
 
-$GLOBALS["lang"]['name'] = 'Όνομα';
+$GLOBALS["lang"]['NOTE #2'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Name'] = 'Όνομα';
+$GLOBALS["lang"]['NOTE - For more info on DateTime formats, see'] = 'Имено.';
 
-$GLOBALS["lang"]['Namibia'] = 'Ναμίμπια';
+$GLOBALS["lang"]['NOTE - If you request a downloaded CSV, XML or JSON format (either a single credential, or the complete collection) the actual credential details will be sent. Not the encrypted string, the actual username, password, community string, etc. Any sensitive details are not displayed in the web GUI, but are made available via other formats. To prevent this export a configuration item is available called decrypt_credentials.'] = 'Имено. Имено.';
 
-$GLOBALS["lang"]['Nauru'] = 'Ναούρου';
+$GLOBALS["lang"]['NOTE - The curly brackets in the data filed should be used as-is (not replaced as per other examples above).'] = 'Въпреки това, това, което се е случило, е, че това, което се е случило, е, че не е било въожно.';
 
-$GLOBALS["lang"]['Nepal'] = 'Νεπάλ';
+$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.'] = 'Имено. <code>decrypt_credentials</code> - Да. <code>n</code>.';
 
-$GLOBALS["lang"]['net_index'] = 'Καθαρός δείκτης';
+$GLOBALS["lang"]['name'] = '- Да.';
 
-$GLOBALS["lang"]['Net Index'] = 'Καθαρός δείκτης';
+$GLOBALS["lang"]['Name'] = '- Да.';
 
-$GLOBALS["lang"]['Netherlands Antilles'] = 'Ολλανδικές Αντίλλες';
+$GLOBALS["lang"]['Name: The name you are giving to this field. Ideally it should be unique.'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Netherlands the'] = 'Κάτω Χώρες';
+$GLOBALS["lang"]['Namibia'] = '- Да.';
 
-$GLOBALS["lang"]['netmask'] = 'Μάσκα δικτύου';
+$GLOBALS["lang"]['Nauru'] = '- Да.';
 
-$GLOBALS["lang"]['Netmask'] = 'Μάσκα δικτύου';
+$GLOBALS["lang"]['Nepal'] = '- Да.';
 
-$GLOBALS["lang"]['netstat'] = 'Netstat';
+$GLOBALS["lang"]['net_index'] = '.';
 
-$GLOBALS["lang"]['Netstat'] = 'Netstat';
+$GLOBALS["lang"]['Net Index'] = '.';
 
-$GLOBALS["lang"]['Netstat Policies'] = 'Πολιτικές Netstat';
+$GLOBALS["lang"]['Netherlands Antilles'] = '.';
 
-$GLOBALS["lang"]['Network'] = 'Δίκτυο';
+$GLOBALS["lang"]['Netherlands the'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['network_address'] = 'Διεύθυνση δικτύου';
+$GLOBALS["lang"]['netmask'] = 'Нетна маска Нетна маска.';
 
-$GLOBALS["lang"]['Network Address'] = 'Διεύθυνση δικτύου';
+$GLOBALS["lang"]['Netmask'] = 'Нетна маска Нетна маска.';
 
-$GLOBALS["lang"]['network_domain'] = 'Τομέας δικτύου';
+$GLOBALS["lang"]['netstat'] = 'Άξταρ';
 
-$GLOBALS["lang"]['Network Domain'] = 'Τομέας δικτύου';
+$GLOBALS["lang"]['Netstat'] = 'Άξταρ';
 
-$GLOBALS["lang"]['Network Types'] = 'Τύποι δικτύου';
+$GLOBALS["lang"]['Netstat Policies'] = 'Netstat Politikalar';
 
-$GLOBALS["lang"]['networks'] = 'Δίκτυα';
+$GLOBALS["lang"]['Netstat Ports'] = 'Πόρτου Netstat';
 
-$GLOBALS["lang"]['Networks'] = 'Δίκτυα';
+$GLOBALS["lang"]['Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.'] = '.';
 
-$GLOBALS["lang"]['Networks Generated By'] = 'Δίκτυα που δημιουργήθηκαν από';
+$GLOBALS["lang"]['Network'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Networks using a CIDR Mask of'] = 'Δίκτυα που χρησιμοποιούν μάσκα CIDR';
+$GLOBALS["lang"]['network_address'] = '.';
 
-$GLOBALS["lang"]['New Building Name'] = 'Όνομα νέου κτιρίου';
+$GLOBALS["lang"]['Network Address'] = '.';
 
-$GLOBALS["lang"]['New Caledonia'] = 'Νέα Καληδονία';
+$GLOBALS["lang"]['Network Discovery'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['New Floor Name'] = 'Όνομα νέου ορόφου';
+$GLOBALS["lang"]['network_domain'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['New Room Name'] = 'Όνομα νέου δωματίου';
+$GLOBALS["lang"]['Network Domain'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['New Row Name'] = 'Νέο όνομα γραμμής';
+$GLOBALS["lang"]['Network Types'] = '.';
 
-$GLOBALS["lang"]['New Zealand'] = 'Νέα Ζηλανδία';
+$GLOBALS["lang"]['Network type is set to Local Area Network by default, but can be changed by the user as they see fit. The types supported are below (with thanks to Wikipedia).<br><br>A network can be characterized by its physical capacity or its organizational purpose. Use of the network, including user authorization and access rights, differ accordingly.'] = 'Имено.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['News'] = 'Νέα';
+$GLOBALS["lang"]['networks'] = '.';
 
-$GLOBALS["lang"]['next_hop'] = 'Επόμενη πτώση';
+$GLOBALS["lang"]['Networks'] = '.';
 
-$GLOBALS["lang"]['Next Hop'] = 'Επόμενη πτώση';
+$GLOBALS["lang"]['Networks Generated By'] = '.';
 
-$GLOBALS["lang"]['next_run'] = 'Επόμενη εκτέλεση';
+$GLOBALS["lang"]['Networks are updated with every discovery. Items such as IPs Available and IPs Used, along with Gateways, DHCP and DNS Servers are added as found.'] = '.';
 
-$GLOBALS["lang"]['Next Run'] = 'Επόμενη εκτέλεση';
+$GLOBALS["lang"]['Networks respond differently depending on how they are configured. Some routers and/or firewalls can respond <i>on behalf</i> of IPs on the other side of their interfaces to the Open-AudIT Server. It is quite common to see Nmap report a probe for SNMP (UDP port 161) to respond as open|filtered for devices that do and do not exist. This is misleading as there is no device at that IP, yet it ends up with a device entry in the database. 99.9% of the time, it is not Open-AudIT, nor even Nmap, but the network causing this issue. Now that we have the options to treat open|filtered ports as either open or closed, we can eliminate a lot of this confusion. Enterprise users even have the option to change this on a per discovery basis (more than just using the Medium (Classic) item, as above).'] = ' да го направим, да го направим. <i>Не, не.</i> . Nmap, SNMP (UDP-Port 161) üçün bir problem görm гок üçün ümumimidir. (στα Αγγλικά). - Да Вакстен 99,9% -и Open- Audit deyil, hr hansmap deyil, lakin aşbu m.hsula s гол. Имено.';
 
-$GLOBALS["lang"]['Nicaragua'] = 'Νικαράγουα';
+$GLOBALS["lang"]['Networks using a CIDR Mask of'] = 'Не, не.';
 
-$GLOBALS["lang"]['Niger'] = 'Νίγηρας';
+$GLOBALS["lang"]['New Building Name'] = '- Да.';
 
-$GLOBALS["lang"]['Nigeria'] = 'Νιγηρία';
+$GLOBALS["lang"]['New Caledonia'] = '.';
 
-$GLOBALS["lang"]['Niue'] = 'Νιούε';
+$GLOBALS["lang"]['New Floor Name'] = '.';
+
+$GLOBALS["lang"]['New Room Name'] = '.';
+
+$GLOBALS["lang"]['New Row Name'] = '.';
+
+$GLOBALS["lang"]['New Zealand'] = '- Да.';
+
+$GLOBALS["lang"]['News'] = '- Да.';
+
+$GLOBALS["lang"]['News checks-in each time you login for updated queries & packages, configuration recommendations, release announcements, blog posts and more.'] = '.';
+
+$GLOBALS["lang"]['News is our way of keeping you up-to-date with the latest fixes, announcements, query updates, software versions and more.<br><br>You do not need to keep on top of the wiki or check for new releases, we can send these to you!'] = 'Не, не.<br/><br/>.';
+
+$GLOBALS["lang"]['next_hop'] = '- Да.';
+
+$GLOBALS["lang"]['Next Hop'] = '- Да.';
+
+$GLOBALS["lang"]['next_run'] = '.';
+
+$GLOBALS["lang"]['Next Run'] = '.';
+
+$GLOBALS["lang"]['Next click <i>Create your own application</i>.'] = '. <i>.</i>.';
+
+$GLOBALS["lang"]['Next, click OK, then right click the Apache 2.4 service and click Restart. Done!'] = '- Да.';
+
+$GLOBALS["lang"]['Next, right click the Apache2.4 service and select Properties, then click the Log On tab.'] = '. Имоти, които не могат да бъдат използвани дннн.';
+
+$GLOBALS["lang"]['Nicaragua'] = '- Да.';
+
+$GLOBALS["lang"]['Niger'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Nigeria'] = '- Да.';
+
+$GLOBALS["lang"]['Niue'] = '- Да.';
 
 $GLOBALS["lang"]['nmap'] = 'Nmap';
 
 $GLOBALS["lang"]['Nmap'] = 'Nmap';
 
-$GLOBALS["lang"]['Nmap Port Scanning Responses'] = 'Ανταποκρίσεις σάρωσης θύρας Nmap';
+$GLOBALS["lang"]['Nmap Port Scanning Responses'] = 'Отговори сканиране на портове.';
 
 $GLOBALS["lang"]['nmap_tcp_ports'] = 'Λιμάνια Nmap Tcp';
 
@@ -3467,29 +4475,35 @@ $GLOBALS["lang"]['nmap_udp_ports'] = 'Λιμάνια Nmap Udp';
 
 $GLOBALS["lang"]['Nmap Udp Ports'] = 'Λιμάνια Nmap Udp';
 
+$GLOBALS["lang"]['Nmap cannot determine whether the port is open because packet filtering prevents its probes from reaching the port. The filtering could be from a dedicated firewall device, router rules, or host-based firewall software. These ports frustrate attackers because they provide so little information. Sometimes they respond with ICMP error messages such as type 3 code 13 (destination unreachable: communication administratively prohibited), but filters that simply drop probes without responding are far more common. This forces Nmap to retry several times just in case the probe was dropped due to network congestion rather than filtering. This slows down the scan dramatically.'] = 'Nmap port açţq olduğunu hesab ed год гол, çünkü paket filtreleme limana çatdţrmaqdan onun prodular да го направим, да го направим. Въпреки това, както е посочено по-горе, не може да се счита, че това е така.';
+
+$GLOBALS["lang"]['Nmap places ports in this state when it is unable to determine whether a port is open or filtered. This occurs for scan types in which open ports give no response. The lack of response could also mean that a packet filter dropped the probe or any response it elicited. So Nmap does not know for sure whether the port is open or being filtered. The UDP, IP protocol, FIN, NULL, and Xmas scans classify ports this way.'] = 'Bir port açţq v... ein filtrovaný deyil ki, bu dövründ... Пристани год.';
+
+$GLOBALS["lang"]['Nmap timing details are found on the bottom of this linked page'] = '- Да.';
+
 $GLOBALS["lang"]['nmis_business_service'] = 'Υπηρεσία Επιχειρήσεων Nmis';
 
 $GLOBALS["lang"]['Nmis Business Service'] = 'Υπηρεσία Επιχειρήσεων Nmis';
 
-$GLOBALS["lang"]['nmis_customer'] = 'Πελάτης Nmis';
+$GLOBALS["lang"]['nmis_customer'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Nmis Customer'] = 'Πελάτης Nmis';
+$GLOBALS["lang"]['Nmis Customer'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['nmis_group'] = 'Ομάδα Nmis';
+$GLOBALS["lang"]['nmis_group'] = 'Σκουπίνα Νμις.';
 
-$GLOBALS["lang"]['Nmis Group'] = 'Ομάδα Nmis';
+$GLOBALS["lang"]['Nmis Group'] = 'Σκουπίνα Νμις.';
 
-$GLOBALS["lang"]['nmis_manage'] = 'Διαχείριση Nmis';
+$GLOBALS["lang"]['nmis_manage'] = '.';
 
-$GLOBALS["lang"]['Nmis Manage'] = 'Διαχείριση Nmis';
+$GLOBALS["lang"]['Nmis Manage'] = '.';
 
-$GLOBALS["lang"]['nmis_name'] = 'Όνομα Nmis';
+$GLOBALS["lang"]['nmis_name'] = 'Nmis AdmitusCity in Kalifornien ΗΠΑ';
 
-$GLOBALS["lang"]['Nmis Name'] = 'Όνομα Nmis';
+$GLOBALS["lang"]['Nmis Name'] = 'Nmis AdmitusCity in Kalifornien ΗΠΑ';
 
-$GLOBALS["lang"]['nmis_notes'] = 'Σημειώσεις Nmis';
+$GLOBALS["lang"]['nmis_notes'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Nmis Notes'] = 'Σημειώσεις Nmis';
+$GLOBALS["lang"]['Nmis Notes'] = 'Κεϊντιγιάτ';
 
 $GLOBALS["lang"]['nmis_poller'] = 'Nmis Poller';
 
@@ -3499,2941 +4513,4103 @@ $GLOBALS["lang"]['nmis_poller_uuid'] = 'Nmis Πολίτης Uuid';
 
 $GLOBALS["lang"]['Nmis Poller Uuid'] = 'Nmis Πολίτης Uuid';
 
-$GLOBALS["lang"]['nmis_role'] = 'Ρόλος Nmis';
+$GLOBALS["lang"]['nmis_role'] = 'Nmis rol';
 
-$GLOBALS["lang"]['Nmis Role'] = 'Ρόλος Nmis';
+$GLOBALS["lang"]['Nmis Role'] = 'Nmis rol';
 
-$GLOBALS["lang"]['No'] = 'Όχι.';
+$GLOBALS["lang"]['No'] = '.';
 
-$GLOBALS["lang"]['No Devices Returned'] = 'Δεν επιστράφηκαν οι συσκευές';
+$GLOBALS["lang"]['No Devices Returned'] = '.';
 
-$GLOBALS["lang"]['No Google Maps API Key present, you will not be able to display the map.'] = 'Χωρίς χάρτες Google API Παρόν κλειδιού, δεν θα μπορείτε να εμφανίσετε το χάρτη.';
+$GLOBALS["lang"]['No Google Maps API Key present, you will not be able to display the map.'] = 'Google Maps API ..';
 
-$GLOBALS["lang"]['No License for Professional or Enterprise'] = 'Χωρίς Άδεια για Επαγγελματίες ή Επιχειρήσεις';
+$GLOBALS["lang"]['No License for Professional or Enterprise'] = 'Επαγγελματική επιχείρηση üçün lisenziya';
 
-$GLOBALS["lang"]['No Results'] = 'Χωρίς αποτελέσματα';
+$GLOBALS["lang"]['No Results'] = '.';
 
-$GLOBALS["lang"]['No data in License Key'] = 'Δεν υπάρχουν δεδομένα στο κλειδί άδειας χρήσης';
+$GLOBALS["lang"]['No data in License Key'] = 'Lisenziya m при lumatlarő (στα Αγγλικά).';
 
-$GLOBALS["lang"]['No database upgrade required at this time.'] = 'Δεν απαιτείται αναβάθμιση της βάσης δεδομένων αυτή τη στιγμή.';
+$GLOBALS["lang"]['No database upgrade required at this time.'] = '.';
 
-$GLOBALS["lang"]['Node'] = 'Κόμβος';
+$GLOBALS["lang"]['No devices are in the database.'] = '.';
 
-$GLOBALS["lang"]['None'] = 'Καμία';
+$GLOBALS["lang"]['Node'] = ' Не.';
 
-$GLOBALS["lang"]['Norfolk Island'] = 'Νήσος Νόρφολκ';
+$GLOBALS["lang"]['None'] = '.';
 
-$GLOBALS["lang"]['Normal'] = 'Κανονικό';
+$GLOBALS["lang"]['Norfolk Island'] = 'Остров Нор';
 
-$GLOBALS["lang"]['Northern Mariana Islands'] = 'Νήσοι Βόρειες Μαριάνες';
+$GLOBALS["lang"]['Normal'] = '- Да.';
 
-$GLOBALS["lang"]['Norway'] = 'Νορβηγία';
+$GLOBALS["lang"]['Northern Mariana Islands'] = '.';
 
-$GLOBALS["lang"]['Not Applicable'] = 'Δεν εφαρμόζεται';
+$GLOBALS["lang"]['Norway'] = '- Не, не.';
 
-$GLOBALS["lang"]['Not Checked'] = 'Δεν ελέγχθηκε';
+$GLOBALS["lang"]['Norwegian'] = '- Не, не.';
 
-$GLOBALS["lang"]['Not Equals'] = 'Όχι Ίσες';
+$GLOBALS["lang"]['Not Applicable'] = '.';
 
-$GLOBALS["lang"]['Not In'] = 'Όχι.';
+$GLOBALS["lang"]['Not Checked'] = '.';
 
-$GLOBALS["lang"]['Not Like'] = 'Όχι σαν';
+$GLOBALS["lang"]['Not Equals'] = '.';
 
-$GLOBALS["lang"]['Not Set'] = 'Χωρίς ρύθμιση';
+$GLOBALS["lang"]['Not In'] = '.';
 
-$GLOBALS["lang"]['Not normally used. If set, this requires the device to have an open port (as per Scan Options) to be considered responding. A MAC address, arp response or ping response is not considered sufficient to be considered responding. Useful if a router or firewall between the Open-AudIT server and target IP is responding to port scans on the IPs behalf.'] = 'Δεν χρησιμοποιείται κανονικά. Αν ρυθμιστεί, αυτό απαιτεί η συσκευή να έχει μια ανοικτή θύρα (ως προς τις επιλογές σάρωσης) να θεωρείται ότι ανταποκρίνεται. Μια διεύθυνση MAC, απόκριση arp ή απόκριση ping δεν θεωρείται επαρκής για να θεωρηθεί ότι ανταποκρίνεται. Χρήσιμο εάν ένας δρομολογητής ή ένα τείχος προστασίας μεταξύ του εξυπηρετητή Open-AudIT και του IP στόχου ανταποκρίνεται στις σαρώσεις θύρας για λογαριασμό των IPs.';
+$GLOBALS["lang"]['Not Like'] = '.';
 
-$GLOBALS["lang"]['Note'] = 'Σημείωση';
+$GLOBALS["lang"]['Not Set'] = '- Да.';
 
-$GLOBALS["lang"]['Note - Selecting a parent will automatically provide access to its children (although it wont be shown here).'] = 'Σημείωση - Η επιλογή γονέα θα παρέχει αυτόματα πρόσβαση στα παιδιά του (αν και δεν θα εμφανίζεται εδώ).';
+$GLOBALS["lang"]['Not every computer will be able to successfully complete a benchmark. We have seen in some fail in testing for reasons beyond our control. The logs should help point you in the right direction for these items.'] = ' гонката, която е по-голяма отова, което се случва.';
 
-$GLOBALS["lang"]['Notes'] = 'Σημειώσεις';
+$GLOBALS["lang"]['Not in the (comma seperated) list'] = '.';
 
-$GLOBALS["lang"]['notes'] = 'Σημειώσεις';
+$GLOBALS["lang"]['Not normally used. If set, this requires the device to have an open port (as per Scan Options) to be considered responding. A MAC address, arp response or ping response is not considered sufficient to be considered responding. Useful if a router or firewall between the Open-AudIT server and target IP is responding to port scans on the IPs behalf.'] = ' - \'νω.';
 
-$GLOBALS["lang"]['Notice'] = 'Ανακοίνωση';
+$GLOBALS["lang"]['Note'] = '- Да.';
 
-$GLOBALS["lang"]['notin'] = 'Σημείωση';
+$GLOBALS["lang"]['Note - Selecting a parent will automatically provide access to its children (although it wont be shown here).'] = 'Qeyd - Bir uşaq seçm...';
 
-$GLOBALS["lang"]['Notin'] = 'Σημείωση';
+$GLOBALS["lang"]['Note, you may need to make the script executable with'] = '.';
 
-$GLOBALS["lang"]['November'] = 'Νοέμβριος';
+$GLOBALS["lang"]['Notes'] = '- Да.';
+
+$GLOBALS["lang"]['notes'] = '- Да.';
+
+$GLOBALS["lang"]['Notice'] = '- Да.';
+
+$GLOBALS["lang"]['notin'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['Notin'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['November'] = '.';
+
+$GLOBALS["lang"]['Now for the Subscription ID, click All Services, Subscriptions and copy it.'] = '.';
+
+$GLOBALS["lang"]['Now we need to provide the Azure Active Directory application access to your subscription.<br><br>Click on Resource Groups and then the resource group you would like your Azure Active Directory Application to have access to.<br><br>Click Add. The role should be Contributor and then search for the app (Open-AudIT). Then click Save.<br><br>Now the application has access to the subscription, so we can make API calls. The API calls will be requested on behalf of the application, not your user.'] = '- Да.<br/><br/>.<br/><br/> - ...<br/><br/>Имено.';
 
 $GLOBALS["lang"]['nvd_json'] = 'Nvd Json';
 
 $GLOBALS["lang"]['Nvd Json'] = 'Nvd Json';
 
-$GLOBALS["lang"]['ORDER BY'] = 'ΔΙΑΤΑΞΗ ΑΠΟ';
+$GLOBALS["lang"]['ORDER BY'] = '- Да.';
 
-$GLOBALS["lang"]['OS'] = 'OS';
+$GLOBALS["lang"]['OS'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['OS Families'] = 'Οικογένειες OS';
+$GLOBALS["lang"]['OS Families'] = 'Не, не.';
 
-$GLOBALS["lang"]['OS Family'] = 'Οικογένεια OS';
+$GLOBALS["lang"]['OS Family'] = 'Не, не.';
 
-$GLOBALS["lang"]['OS Group'] = 'Ομάδα OS';
+$GLOBALS["lang"]['OS Group'] = '.';
 
-$GLOBALS["lang"]['oae_manage'] = 'Διαχείριση Oae';
+$GLOBALS["lang"]['OUTPUTS'] = '- Да.';
 
-$GLOBALS["lang"]['Oae Manage'] = 'Διαχείριση Oae';
+$GLOBALS["lang"]['oae_manage'] = 'Оае';
 
-$GLOBALS["lang"]['object_ident'] = 'Ταυτότητα αντικειμένου';
+$GLOBALS["lang"]['Oae Manage'] = 'Оае';
 
-$GLOBALS["lang"]['Object Ident'] = 'Ταυτότητα αντικειμένου';
+$GLOBALS["lang"]['object_ident'] = '- Да.';
 
-$GLOBALS["lang"]['October'] = 'Οκτώβριος';
+$GLOBALS["lang"]['Object Ident'] = '- Да.';
 
-$GLOBALS["lang"]['Oman'] = 'Ομάν';
+$GLOBALS["lang"]['Obtain top management support'] = '.';
+
+$GLOBALS["lang"]['October'] = '.';
+
+$GLOBALS["lang"]['Offset'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['Okta'] = ' Ο';
+
+$GLOBALS["lang"]['Oman'] = '.';
 
 $GLOBALS["lang"]['omk_uuid'] = 'Ομκ Ουίντ';
 
 $GLOBALS["lang"]['Omk Uuid'] = 'Ομκ Ουίντ';
 
-$GLOBALS["lang"]['On'] = 'Εμπρός';
+$GLOBALS["lang"]['On'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.'] = 'Ένα από τα <code>3x2</code>, <code>4x2</code>, <code>4x3</code> ή <code>4x4</code>.';
+$GLOBALS["lang"]['On Windows, Open-AudIT uses WMI as it is primary method of auditing. Windows has a notorious reputation where remote WMI is concerned. It tends to either <i>just work</i> or some mystery item on the target requires changing. If you are experiencing difficulty auditing remote Windows PCs, we have created a script called test_windows_client.vbs. You can run this script <strong>locally</strong> on the machine in question, after signing on as the user that is used by Open-AudIT to perform the audit. The script makes <strong>no changes</strong> to the target devices. It checks most (not all) of the items below and generates PASS, FAIL and INFO tags for various properties. NOTE - If your target system is being audited correctly, you should not change any settings. Some of the below do not exist on Windows PCs that are able to be audited and some do exist. Only change settings if your discoveries on particular PCs are not working as intended.'] = 'Windows \'da Open- Audit, providzorní birincil metodu olduğu kimi WMI istifad... edir. - Да. <i>.</i> Να Ντρουχού Στράνου. <strong>- Да.</strong> . <strong>.</strong> Имено. Aşaţdakşгод. на Windows PCs mövcud deyil v....';
 
-$GLOBALS["lang"]['One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.'] = 'Ένα από τα Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.';
+$GLOBALS["lang"]['On the Tasks List page, click the <i>Add New</i> button to configure a task.'] = '. <i>- Да.</i> Να Ντρουχού Στράνου.';
 
-$GLOBALS["lang"]['One of Development, Disaster Recovery, Evaluation, Pre-Production, Production, Testing, Training, User Acceptance Testing'] = 'Ένα από την ανάπτυξη, ανάκτηση καταστροφών, αξιολόγηση, προ-παραγωγή, παραγωγή, δοκιμές, κατάρτιση, δοκιμή αποδοχής χρηστών';
+$GLOBALS["lang"]['On the field <i>Match String</i> you should provide the name of the software that you want to track. You can use the percent sign (%) as a wildcard in where required.'] = '. <i>Калерея.</i> .';
 
-$GLOBALS["lang"]['One of allocated, delegated, planning, reserved, unallocated, unknown, unmanaged. Defaults to allocated.'] = 'Ένα από τα κατανεμημένα, εκχωρημένα, σχεδιασμό, κρατημένα, μη τοποθετημένα, άγνωστα, μη διαχειριζόμενα. Προκαθορισμένα προς κατανομή.';
+$GLOBALS["lang"]['On the next page you will be able to select Access Keys and see your key or create a new key.'] = '- Не, не.';
 
-$GLOBALS["lang"]['One of either <code>active directory</code> or <code>openldap</code>.'] = 'Ένα από τα δύο <code>active directory</code> ή <code>openldap</code>.';
+$GLOBALS["lang"]['On the target Windows PC, run the DCOM utility and verify (or set) the below attributes. Start -> Run, Enter DCOMCNFG and press OK. This will open the DCOMCNFG window.'] = 'Windows PC haqqinda, DCOM faydalşalşr v... aşagşdakşxüsusiyyyyy... Τι... Κλιφ Εντίρ...';
 
-$GLOBALS["lang"]['One of: antivirus, backup, firewall, approved, banned, ignored or other.'] = 'Ένα από: antivirus, backup, firewall, εγκεκριμένο, απαγορευμένο, αγνοείται ή άλλο.';
+$GLOBALS["lang"]['On the top right (underneath the menu bar) you will see several buttons. These allow you to select another dashboard, set the current dashboard as your homepage (if it is not already) and edit the current dashboard (if you have permission).'] = 'Не, не.';
 
-$GLOBALS["lang"]['Online Documentation'] = 'Ηλεκτρονική τεκμηρίωση';
+$GLOBALS["lang"]['On-Premise, Not Cloud'] = '.';
 
-$GLOBALS["lang"]['Open-AudIT'] = 'Ανοιχτό διάδρομο';
+$GLOBALS["lang"]['Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.'] = 'Имено.';
 
-$GLOBALS["lang"]['Open-AudIT Community'] = 'Κοινότητα Ανοιχτών Ενόδων';
+$GLOBALS["lang"]['Once commented out, your certificate will be validated, but may also fail this validation if you are using self-signed certificates and have not configured your server correctly.'] = '.';
 
-$GLOBALS["lang"]['Open-AudIT Device Selection'] = 'Επιλογή συσκευής Open-Audit';
+$GLOBALS["lang"]['Once the script has run on a target, should the script delete itself.'] = '.';
 
-$GLOBALS["lang"]['Open-AudIT Enterprise'] = 'Επιχείρηση Open-Audit';
+$GLOBALS["lang"]['Once those initial queries (snmp, ssh, wmi) are complete, if the device is a supported by the audit scripts (Windows, Linux, OSX, AIX, HP-UX, Solaris and ESXi), the correct audit script will be copied to the target and executed. The audit script will self delete upon completion. The result will be stored on the target machine as an XML file. The Open-AudIT server will then retrieve the result file for processing and delete the result file on the target. The location the audit script is copied to on the target device (at least for SSH audits) is configurable by editing the discovery_linux_script_directory config item. By default it is set to /tmp/. This may need changing if /tmp has noexec set. The result file is then processed and the device details updated within Open-AudIT.'] = 'Имено.';
 
-$GLOBALS["lang"]['Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.'] = 'Ανοιχτό Εντερπράιζ. Υψηλής κλίμακας ευέλικτη λύση ανακάλυψης και ελέγχου για μεγάλα δίκτυα. Όλα τα χαρακτηριστικά του Professional συν: Βασικές γραμμές, Ελέγχου αρχείων, Cloud Discovery, Διαχείριση Rack, Ρυθμιζόμενος έλεγχος πρόσβασης Basedόλων συμπεριλαμβανομένου του Ενεργού καταλόγου και LDAP.';
+$GLOBALS["lang"]['Once you click the execute button, Open-AudIT will spawn a process to initiate the discovery and return the user to the discovery details page. The newly spawned process takes the configured discovery options and executes Nmap commands to determine the initial list of IP addresses to be scanned (or queries Active Directory if that type is used). Each IP to be scanned is placed into a queue. Once the initial process has completed (and there are IPs to be scanned in the queue) a number of processes will be spawned to further scan each IP in parallel. This number of processes is configurable in the configuration, edit the attribute <i>queue_limit</i>. By default this is set to 20.'] = 'Yeni strained pressi konfiqurasiya versionlarşnşnşalşr v год. Имено. <i> Опашка _ лимит</i>.';
 
-$GLOBALS["lang"]['Open-AudIT Field Name'] = 'Όνομα πεδίου Open-AudIT';
+$GLOBALS["lang"]['Once you have chosen your devices to edit, click the pencil button on the top right of the table.'] = 'Имено.';
 
-$GLOBALS["lang"]['Open-AudIT Licenses'] = 'Άδειες Open-Audit';
+$GLOBALS["lang"]['Once you have done this, Open-AudIT will attempt to verify your user logon details against the configured Auth Method. If the user has valid credentials and <code>use_authorisation</code> is set, Open-AudIT will ask for the list of groups that the user belongs to. If the user is in the corresponding groups for Open-AudIT Roles and Orgs, those Roles and Orgs will be applied to that user.'] = 'Имено. <code>use_authorisation</code> .';
 
-$GLOBALS["lang"]['Open-AudIT Options'] = 'Επιλογές Open-Audit';
+$GLOBALS["lang"]['Once you have generated a Baseline Definition you can schedule it to be run against a specified group of devices.'] = 'Не, не.';
 
-$GLOBALS["lang"]['Open-AudIT Professional'] = 'Ανοιχτό επαγγελματίας';
+$GLOBALS["lang"]['Once you have those items, in Open-AudIT Enterprise you can go to menu -> Discover -> Clouds -> Create Clouds, select the <i>Amazon AWS</i> type and paste them in. Done.'] = 'Имено. <i>AWS</i> .';
 
-$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = 'Ανοιχτός επαγγελματίας. Ο κόσμος...';
+$GLOBALS["lang"]['Once you have those items, in Open-AudIT Enterprise you can go to menu -> Discover -> Clouds -> Create Clouds, select the <i>Microsoft Azure</i> type and paste them in. Done.'] = 'Имено. <i>Microsoft Azure</i> .';
 
-$GLOBALS["lang"]['Open-AudIT and Nmap'] = 'Open-AudIT και Nmap';
+$GLOBALS["lang"]['Once you have your cloud credentials, it is merely a matter of creating a new cloud and running the discovery - or scheduling first/future discoveries. Make sure you also have the credentials required to log on to your cloud machines, and it is all done for you just like a regular discovery. Credentials for your cloud'] = 'Имено.';
 
-$GLOBALS["lang"]['OpenScap is Installed'] = 'Το OpenScap είναι εγκατεστημένο';
+$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.'] = '. <code>3x2</code>. <code>4x2</code>. <code>4x3</code> . <code>4x4</code>.';
 
-$GLOBALS["lang"]['openldap_user_dn'] = 'Dn χρήστη Openldap';
+$GLOBALS["lang"]['One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.'] = 'Kampánie M прирки, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Пасивна оптична локална мрежа, Бична зона Мрежа, Storage-Area Network, Виртуална, Виртуална.';
 
-$GLOBALS["lang"]['Openldap User Dn'] = 'Dn χρήστη Openldap';
+$GLOBALS["lang"]['One of Development, Disaster Recovery, Evaluation, Pre-Production, Production, Testing, Training, User Acceptance Testing'] = '.';
 
-$GLOBALS["lang"]['openldap_user_membership_attribute'] = 'Χαρακτηριστικά ιδιότητας μέλους χρήστη Openldap';
+$GLOBALS["lang"]['One of allocated, delegated, planning, reserved, unallocated, unknown, unmanaged. Defaults to allocated.'] = '.';
 
-$GLOBALS["lang"]['Openldap User Membership Attribute'] = 'Χαρακτηριστικά ιδιότητας μέλους χρήστη Openldap';
+$GLOBALS["lang"]['One of either <code>active directory</code> or <code>openldap</code>.'] = '. <code>active directory</code> . <code>openldap</code>.';
 
-$GLOBALS["lang"]['open|filtered'] = 'Ανοιχτά';
+$GLOBALS["lang"]['One of: antivirus, backup, firewall, approved, banned, ignored or other.'] = 'Biri: антивирус, подръжка, за';
 
-$GLOBALS["lang"]['Open|filtered'] = 'Ανοιχτά';
+$GLOBALS["lang"]['One other item to be careful of - make sure you use the hostname (or fqdn) of your LDAP Server that matches what is in the certificate (not just the LDAP Servers IP address) when creating the LDAP entry in Open-AudIT.'] = '.';
 
-$GLOBALS["lang"]['Operating System'] = 'Λειτουργικό σύστημα';
+$GLOBALS["lang"]['Online Documentation'] = '- Да.';
 
-$GLOBALS["lang"]['Operating System Family Contains'] = 'Λειτουργικό σύστημα Οικογένεια περιέχει';
+$GLOBALS["lang"]['Open'] = '- Да.';
 
-$GLOBALS["lang"]['Operating Systems'] = 'Λειτουργικά συστήματα';
+$GLOBALS["lang"]['Open Data'] = '.';
 
-$GLOBALS["lang"]['optical'] = 'Οπτική';
+$GLOBALS["lang"]['Open Source'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Optical'] = 'Οπτική';
+$GLOBALS["lang"]['Open-AudIT'] = '- Да.';
 
-$GLOBALS["lang"]['Optimized'] = 'Βελτιστοποιημένο';
+$GLOBALS["lang"]['Open-AudIT Community source code is available on GitHub. You are encouraged to inspect any code you have concerns about, and because it is open source - you are also encouraged to ask us about any issues you have or report any findings. We are always more than happy to accept code contributions, vulnerability reports, or even simple questions. We are here to help.<br><br>The audit scripts themselves (Windows, Linux, MacOS, et al) are deliberately written in readable native shell script (VBScript for Windows, Bash for *nix). You can see exactly what commands are run. You can remove any commands you feel you do not need. You can ask a third party to inspect the code for you and (if you want to) report any findings.<br><br>Open-AudIT Enterprise performs the add-on commercial functions for Open-AudIT Community. It is included as a single compiled file with no external dependencies. Where Enterprise itself performs the function(s), if you are concerned with any issues Firstwave is happy to work through them with you - just ask! Try that with another commercial software vendor!'] = 'Имено.<br/><br/> Πέθανε. (Windows, Linux, Macos, et al)<br/><br/>Χικ μπιρ xüsusiyyr.';
 
-$GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = 'Προαιρετική έκδοση όπως ελέγχθηκε από το Open-AudIT. Χρησιμοποίησε το ποσοστό % ως μπαλαντέρ.';
+$GLOBALS["lang"]['Open-AudIT Device Selection'] = 'Οφφένιος Ελεγκτής СихаК Сечими Беринана Систа Сечими.';
 
-$GLOBALS["lang"]['options'] = 'Επιλογές';
+$GLOBALS["lang"]['Open-AudIT Enterprise has the ability to choose from a pre-defined list of discovery scan options and also to customise individual options per discovery.'] = '- Да.';
 
-$GLOBALS["lang"]['Options'] = 'Επιλογές';
+$GLOBALS["lang"]['Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.'] = 'Имено. Επαγγελματικό συν bütün xüsusiyyyyyyyy';
 
-$GLOBALS["lang"]['Or select from the below fields.'] = 'Ή επιλέξτε από τα παρακάτω πεδία.';
+$GLOBALS["lang"]['Open-AudIT Field Name'] = 'Имено.';
 
-$GLOBALS["lang"]['org_descendants'] = 'Απόγονοι Οργών';
+$GLOBALS["lang"]['Open-AudIT Licenses'] = '- Да.';
 
-$GLOBALS["lang"]['Org Descendants'] = 'Απόγονοι Οργών';
+$GLOBALS["lang"]['Open-AudIT Options'] = '.';
 
-$GLOBALS["lang"]['org_id'] = 'Ταυτότητα Org';
+$GLOBALS["lang"]['Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats.'] = 'Имено.';
 
-$GLOBALS["lang"]['Org ID'] = 'Ταυτότητα Org';
+$GLOBALS["lang"]['Open-AudIT Professional has the ability to choose from a pre-defined list of discovery scan options, per discovery.'] = '- Да.';
 
-$GLOBALS["lang"]['Organisation'] = 'Εισαγωγή';
+$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = '.';
 
-$GLOBALS["lang"]['organisation'] = 'Εισαγωγή';
+$GLOBALS["lang"]['Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate and authorize a user and in addition, to create a user account in Open-AudIT using assigned roles and orgs based on LDAP group membership. It can also use'] = 'Имено.';
 
-$GLOBALS["lang"]['Organisation Descendants'] = 'Οργάνωση απογόνων';
+$GLOBALS["lang"]['Open-AudIT can be run on your server in your data center. It does not need access to the internet at all. Even the installation on Linux where we use the distribution package manager for our prerequisites can be negated by you using an in-house and security team-approved package repository.<br><br>Open-AudIT does not store any of your data in the cloud. Even licensing information can be provided without having to access the internet from the Open-AudIT server.<br><br>Sure, it is easier to allow it to access the internet to download packages (including security fixes) for your distribution, but that is up to you and your security policies. Open-AudIT does not need the internet.'] = 'Имено.<br/><br/>Имено.<br/><br/>.';
 
-$GLOBALS["lang"]['Organisations'] = 'Οργανώσεις';
+$GLOBALS["lang"]['Open-AudIT can download, parse and use NIST CVE Vulnerability reports.'] = '.';
 
-$GLOBALS["lang"]['orgs'] = 'Οργανισμοί';
+$GLOBALS["lang"]['Open-AudIT can show in one of several languages. How you can improve this?'] = 'Имено.';
 
-$GLOBALS["lang"]['Orgs'] = 'Οργανισμοί';
+$GLOBALS["lang"]['Open-AudIT can store information in additional fields that are associated with each device.'] = '.';
 
-$GLOBALS["lang"]['Orgs Name'] = 'Όνομα Οργών';
+$GLOBALS["lang"]['Open-AudIT can use Microsoft Entra (previously known as Microsoft Azure Active Directory) as an authentication method. This means your user in Open-AudIT can click the Logon using Entra button on the logon page and use their Entra credentials to logon. That user will need to already exist within Open-AudIT (and be assigned'] = 'Имено.';
 
-$GLOBALS["lang"]['orientation'] = 'Προσανατολισμός';
+$GLOBALS["lang"]['Open-AudIT can use OKTA as an authentication method. This means your user in Open-AudIT can click the Logon using OKTA button on the logon page and use their OKTA credentials to logon. That user will need to already exist within Open-AudIT (and be assigned Roles and Orgs), but will not need to remember a separate set of logon credentials.'] = ' Εγώ προς Τακ. Това е вярно.';
 
-$GLOBALS["lang"]['Orientation'] = 'Προσανατολισμός';
+$GLOBALS["lang"]['Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.'] = ' да го направим, но не е така.';
 
-$GLOBALS["lang"]['os'] = 'Οσ';
+$GLOBALS["lang"]['Open-AudIT has a JSON Restful API to be used both in the web interface and via JSON requests.'] = '- Κο;';
 
-$GLOBALS["lang"]['Os'] = 'Οσ';
+$GLOBALS["lang"]['Open-AudIT has a granular permissions system to determine what a user within Open-AudIT can do, and the items he can do it to. Open-AudIT can be entirely self-contained, or use Active Directory or OpenLDAP for authentication and/or authorization.<br><br>It is entirely up to the administrator of Open-AudIT how they would like the Role Based Access Control to work.'] = '.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['os_arch'] = 'Ος Αψίδα';
+$GLOBALS["lang"]['Open-AudIT has a powerful change detection engine. Any device attributes that are added, removed or changed will be detected and stored. These changes can be reported upon and the relevant data confirmed as to what was expected from your company change and release process.<br><br>When a device is audited, attributes are divided into sections which correspond to tables in the database.<br><br>Each device (computer, router, printer, et al) has an entry in the <code>devices</code> table. Each entry in the devices table has an <code>id</code> column. This value is unique - it is an auto-incrementing id.<br><br>When the audit result is processed, each item in each section has its audit result compared to what is in the database.<br><br>For each section, if the key columns (see below table) contain the identical values, it is considered already installed and has its <code>last_seen</code> attribute updated. No change_log entry is created.<br><br>If any of the key columns do not match, it is considered a new attribute and is inserted. A <code>change_log</code> entry is created if the device had other attributes already present in the table.<br><br>At the completion of the audit processing, any database items that have not been updated (or inserted) are considered to not be present. The <code>current</code> attribute for this item is set to <i>n</i> and a change_log entry is generated.<br><br>So, we can determine if something is currently installed - the current column is <i>y</i>.<br><br>We can determine when something was initially detected - the <i>first_seen</i>.<br><br>We can determine if something was installed after the initial audit - first seen will be different in the component and device tables.<br><br>We can determine if something is not currently installed, but previously was - current = <i>n</i>.<br><br>We can determine the last time we detected an item - last_seen.<br><br>At any given point, we can determine what was on a system - by using the audit_log table and selecting the relevant components based on first_seen and last_seen.<br><br>Each section and its matching key columns are below.<br><br>NOTE - There are some exceptions as detailed below.<br><br>*1 - For network cards, if the computer is a VMware Esx machine it also uses the net_index and connection columns.<br><br>*2 - For partitions, f the computer is an AIX machine, we use the partition name.'] = 'Имено.<br/><br/>Имено.<br/><br/>. <code>devices</code> - Да. <code>id</code> Εγώ προς Τακ.<br/><br/>Имено.<br/><br/>- Да. <code>last_seen</code> .<br/><br/>. <code>change_log</code> .<br/><br/>Имено. Άξταρ@ <code>current</code> - Не, не. <i> n</i> - Да.<br/><br/>. <i> y</i>.<br/><br/>. <i>- Да.</i>.<br/><br/>.<br/><br/>. <i> n</i>.<br/><br/>.<br/><br/> за да сече, че това може да се се случи, ако не е въожно. Εγώ προς Τακ. Не, не, не.<br/><br/>.<br/><br/> да го направим, да го направим.<br/><br/> {\Όχι.<br/><br/>* 2 - год.';
 
-$GLOBALS["lang"]['Os Arch'] = 'Ος Αψίδα';
+$GLOBALS["lang"]['Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell \"What\\'] = 'Имено.';
 
-$GLOBALS["lang"]['os_bit'] = 'Os Bit';
+$GLOBALS["lang"]['Open-AudIT makes it easy to edit the attributes of multiple devices at once.'] = '- Да.';
 
-$GLOBALS["lang"]['Os Bit'] = 'Os Bit';
+$GLOBALS["lang"]['Open-AudIT needs specific directory permissions to be able to create files, upload results, etc. Please set as below.'] = 'Имено.';
 
-$GLOBALS["lang"]['os_cpe'] = 'Os Cpe';
+$GLOBALS["lang"]['Open-AudIT provides many built-in queries and makes it simple to create your own.'] = 'Имено.';
 
-$GLOBALS["lang"]['Os Cpe'] = 'Os Cpe';
+$GLOBALS["lang"]['Open-AudIT ships with inbuilt roles for admin, org_admin and user.<br><br>Generally, a user who is an administrator of the Open-AudIT application itself should have admin and possible org_admin roles.<br><br>A user can have multiple roles. The permission will be applied at the most permissive level - IE, if a user has the roles of user and org_admin, they will be able to create locations because org_admin grants this permission, even though the user role does not.<br><br>The admin role allows access to collections such as configuration, database, groups, ldap servers, logs, queries and roles. Global items that affect the entire application.<br><br>The org_admin role usually allows create, read, update and delete actions for any collection that contains the org_id column. Virtually all data except some of the collections mentioned above will contain an <code>org_id</code> column.<br><br>The user role generally allows read only access to all items with an org_id column.'] = 'Имено.<br/><br/>- Да.<br/><br/>Имено.<br/><br/>admin rol formasiya, baza, qruplar, ldap server, αρχεία καταγραφής, sorgular v гол...<br/><br/>Org _ admin rolu............... Имено. <code>org_id</code> - Да.<br/><br/>.';
 
-$GLOBALS["lang"]['os_display_version'] = 'Έκδοση εμφάνισης Os';
+$GLOBALS["lang"]['Open-AudIT ships with inbuilt roles for admin, org_admin and user.<br><br>Generally, a user who is an administrator of the Open-AudIT application itself should have admin and possible org_admin roles.<br><br>A user can have multiple roles. The permission will be applied at the most permissive level - IE, if a user has the roles of user and org_admin, they will be able to create locations because org_admin grants this permission, even though the user role does not.<br><br>The admin role allows access to collections such as configuration, database, groups, ldap servers, logs, queries and roles. Global items that affect the entire application.<br><br>The org_admin role usually allows create, read, update and delete actions for any collection that contains the org_id column. Virtually all data except some of the collections mentioned above will contain an org_id column.<br><br>The user role generally allows read only access to all items with an org_id column.'] = 'Имено.<br/><br/>- Да.<br/><br/>Имено.<br/><br/>admin rol formasiya, baza, qruplar, ldap server, αρχεία καταγραφής, sorgular v гол...<br/><br/>Org _ admin rolu............... Имено.<br/><br/>.';
 
-$GLOBALS["lang"]['Os Display Version'] = 'Έκδοση εμφάνισης Os';
+$GLOBALS["lang"]['Open-AudIT ships with several pre-configured Dashboards. If you are a Professional user, you can select between two of these and set it as your default page when you logon. If you are an Enterprise user, you can not only select between the five preconfigured Dashboards, but you also have the ability to create your own.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['os_family'] = 'Οικογένεια Os';
+$GLOBALS["lang"]['Open-AudIT should be installed on 64bit Windows <strong>Server</strong> systems only. Windows 10 and Windows 11 are <strong>not</strong> supported.'] = ' да го направим, да го направим. <strong>.</strong> .. 11 <strong>.</strong> - Да.';
 
-$GLOBALS["lang"]['Os Family'] = 'Οικογένεια Os';
+$GLOBALS["lang"]['Open-AudIT uses Nmap in its Discovery function. Nmap probes devices for open ports. Devices ideally should respond with open for working ports. Devices often do not respond with this. The varying responses are detailed below.'] = 'Това може да се дължи на ';
 
-$GLOBALS["lang"]['os_group'] = 'Ομάδα Os';
+$GLOBALS["lang"]['Open-AudIT uses Nmap in its Discovery function. Without Nmap, Open-AudIT will not function correctly. Every Open-AudIT install assumes Nmap is installed and will also test for it on the Discovery web pages. More information about Open-AudIT and Nmap is available here'] = '....';
 
-$GLOBALS["lang"]['Os Group'] = 'Ομάδα Os';
+$GLOBALS["lang"]['Open-AudIT uses Nmap in its Discovery function. Without Nmap, Open-AudIT will not function correctly. Every Open-AudIT install assumes Nmap is installed and will test for it on the Discovery web pages.'] = '....';
 
-$GLOBALS["lang"]['os_installation_date'] = 'Ημερομηνία εγκατάστασης Os';
+$GLOBALS["lang"]['Open-AudIT uses credentials to access your devices. These are encrypted and stored, just as you would expect.'] = 'Имено.';
 
-$GLOBALS["lang"]['Os Installation Date'] = 'Ημερομηνία εγκατάστασης Os';
+$GLOBALS["lang"]['Open-AudIT was written by an English speaking Australian. Everything in the application uses English wording. However Open-AudIT has always supported multiple languages for display. These translations are not always correct, because the developers do not natively speak the language of every translation offered.<br><br>What can you do if something is not correct in the translation?'] = 'Имено.<br/><br/>.';
 
-$GLOBALS["lang"]['os_licence_expiry'] = 'Λήξη άδειας Os';
+$GLOBALS["lang"]['OpenLDAP'] = 'Τάριξ';
 
-$GLOBALS["lang"]['Os Licence Expiry'] = 'Λήξη άδειας Os';
+$GLOBALS["lang"]['OpenScap is Installed'] = '.';
 
-$GLOBALS["lang"]['os_license'] = 'Άδεια Os';
+$GLOBALS["lang"]['Opening a Support Ticket?'] = '.';
 
-$GLOBALS["lang"]['Os License'] = 'Άδεια Os';
+$GLOBALS["lang"]['openldap_user_dn'] = '.';
 
-$GLOBALS["lang"]['os_license_code'] = 'Κωδικός άδειας Os';
+$GLOBALS["lang"]['Openldap User Dn'] = '.';
 
-$GLOBALS["lang"]['Os License Code'] = 'Κωδικός άδειας Os';
+$GLOBALS["lang"]['openldap_user_membership_attribute'] = 'Не, не.';
 
-$GLOBALS["lang"]['os_license_mode'] = 'Λειτουργία άδειας Os';
+$GLOBALS["lang"]['Openldap User Membership Attribute'] = 'Не, не.';
 
-$GLOBALS["lang"]['Os License Mode'] = 'Λειτουργία άδειας Os';
+$GLOBALS["lang"]['open|filtered'] = '- Да.';
 
-$GLOBALS["lang"]['os_license_type'] = 'Τύπος άδειας Os';
+$GLOBALS["lang"]['Open|filtered'] = '- Да.';
 
-$GLOBALS["lang"]['Os License Type'] = 'Τύπος άδειας Os';
+$GLOBALS["lang"]['Operating System'] = '- Да.';
 
-$GLOBALS["lang"]['os_name'] = 'Όνομα Os';
+$GLOBALS["lang"]['Operating System Family Contains'] = '- Да.';
 
-$GLOBALS["lang"]['Os Name'] = 'Όνομα Os';
+$GLOBALS["lang"]['Operating Systems'] = '.';
 
-$GLOBALS["lang"]['os_version'] = 'Έκδοση Os';
+$GLOBALS["lang"]['Operators'] = '- Да.';
 
-$GLOBALS["lang"]['Os Version'] = 'Έκδοση Os';
+$GLOBALS["lang"]['optical'] = '- Да.';
 
-$GLOBALS["lang"]['Other'] = 'Άλλα';
+$GLOBALS["lang"]['Optical'] = '- Да.';
 
-$GLOBALS["lang"]['Others'] = 'Άλλα';
+$GLOBALS["lang"]['Optimized'] = '- Да.';
 
-$GLOBALS["lang"]['Our timeout for a SSH response'] = 'Το τάιμ άουτ μας για μια απάντηση SSH';
+$GLOBALS["lang"]['Option #1 - Change the data'] = '. 1...';
 
-$GLOBALS["lang"]['Our timeout for a WMI response'] = 'Το τάιμ άουτ μας για μια απάντηση WMI';
+$GLOBALS["lang"]['Option #2 - Change the translation file'] = ' Να Ντρουχού Στράνου.';
 
-$GLOBALS["lang"]['Our timeout for an SNMP response'] = 'Το τάιμ άουτ μας για μια απάντηση SNMP';
+$GLOBALS["lang"]['Optional Agent Based Auditing'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Our timeout for an audit script response'] = 'Χρονικό όριο για μια απάντηση σεναρίων ελέγχου';
+$GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = 'Имено.';
 
-$GLOBALS["lang"]['output'] = 'Έξοδος';
+$GLOBALS["lang"]['options'] = '- Да.';
 
-$GLOBALS["lang"]['Output'] = 'Έξοδος';
+$GLOBALS["lang"]['Options'] = '- Да.';
 
-$GLOBALS["lang"]['outputs'] = 'Έξοδα';
+$GLOBALS["lang"]['Options, options, options'] = 'Имено.';
 
-$GLOBALS["lang"]['Outputs'] = 'Έξοδα';
+$GLOBALS["lang"]['Or'] = '.';
 
-$GLOBALS["lang"]['Overall severity score (0–10).'] = 'Συνολική βαθμολογία σοβαρότητας (0–10).';
+$GLOBALS["lang"]['Or select from the below fields.'] = '.';
 
-$GLOBALS["lang"]['overwrite'] = 'Αντικατάσταση';
+$GLOBALS["lang"]['org_descendants'] = 'Απόγονος οργάνων';
 
-$GLOBALS["lang"]['Overwrite'] = 'Αντικατάσταση';
+$GLOBALS["lang"]['Org Descendants'] = 'Απόγονος οργάνων';
 
-$GLOBALS["lang"]['owner'] = 'Ιδιοκτήτης';
+$GLOBALS["lang"]['org_id'] = 'Εταλανλάρη';
 
-$GLOBALS["lang"]['Owner'] = 'Ιδιοκτήτης';
+$GLOBALS["lang"]['Org ID'] = 'Εταλανλάρη';
 
-$GLOBALS["lang"]['PHP'] = 'PHP';
+$GLOBALS["lang"]['Organisation'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['POD'] = 'POD';
+$GLOBALS["lang"]['organisation'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Package'] = 'Συσκευασία';
+$GLOBALS["lang"]['Organisation Descendants'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['packages'] = 'Πακέτα';
+$GLOBALS["lang"]['Organisations'] = '.';
 
-$GLOBALS["lang"]['Packages'] = 'Πακέτα';
+$GLOBALS["lang"]['Organisations can extend and enhance the level of detail that is stored against every discovered device using custom fields and the open core allows for easy integration into CMDB, event management and ticketing systems.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['pagefile'] = 'Αρχείο σελίδας';
+$GLOBALS["lang"]['orgs'] = '.';
 
-$GLOBALS["lang"]['Pagefile'] = 'Αρχείο σελίδας';
+$GLOBALS["lang"]['Orgs'] = '.';
 
-$GLOBALS["lang"]['Pakistan'] = 'Πακιστάν';
+$GLOBALS["lang"]['Orgs Name'] = '- Да.';
 
-$GLOBALS["lang"]['Palau'] = 'Παλάου';
+$GLOBALS["lang"]['Orgs in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users <i>orgs</i> and <i>roles</i> define what they can and cannot do within Open-AudIT.<br><br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc, etc.<br><br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, most of the time (not always) they also have access to that Orgs descendants.'] = '- Да. <i>.</i> Κεϊντιγιάτ <i>.</i> .<br/><br/>(Pop-Audit).<br/><br/>Имено. Бир исти Org daxil varsa, vaxtīn гон çoxu (he Οργάδες qбul edir.';
 
-$GLOBALS["lang"]['Palestinian Territory'] = 'Παλαιστινιακό Έδαφος';
+$GLOBALS["lang"]['orientation'] = '- Да.';
 
-$GLOBALS["lang"]['Panama'] = 'Παναμάς';
+$GLOBALS["lang"]['Orientation'] = '- Да.';
 
-$GLOBALS["lang"]['Papua New Guinea'] = 'Παπουασία-Νέα Γουινέα';
+$GLOBALS["lang"]['os'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['Paraguay'] = 'Παραγουάη';
+$GLOBALS["lang"]['Os'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['Paranoid'] = 'Παρανοϊκός';
+$GLOBALS["lang"]['os_arch'] = 'Oxunub:';
 
-$GLOBALS["lang"]['Parent'] = 'Γονέας';
+$GLOBALS["lang"]['Os Arch'] = 'Oxunub:';
 
-$GLOBALS["lang"]['parent_id'] = 'Ταυτότητα γονέα';
+$GLOBALS["lang"]['os_bit'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['Parent ID'] = 'Ταυτότητα γονέα';
+$GLOBALS["lang"]['Os Bit'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['parent_name'] = 'Όνομα γονέα';
+$GLOBALS["lang"]['os_cpe'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['Parent Name'] = 'Όνομα γονέα';
+$GLOBALS["lang"]['Os Cpe'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['part_number'] = 'Αριθμός μέρους';
+$GLOBALS["lang"]['os_display_version'] = '- Не, не.';
 
-$GLOBALS["lang"]['Part Number'] = 'Αριθμός μέρους';
+$GLOBALS["lang"]['Os Display Version'] = '- Не, не.';
 
-$GLOBALS["lang"]['part_of_domain'] = 'Μέρος τομέα';
+$GLOBALS["lang"]['os_family'] = 'Не, не.';
 
-$GLOBALS["lang"]['Part Of Domain'] = 'Μέρος τομέα';
+$GLOBALS["lang"]['Os Family'] = 'Не, не.';
 
-$GLOBALS["lang"]['Partition'] = 'Κατάτμηση';
+$GLOBALS["lang"]['os_group'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['partition_count'] = 'Αριθμός κατατμήσεων';
+$GLOBALS["lang"]['Os Group'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['Partition Count'] = 'Αριθμός κατατμήσεων';
+$GLOBALS["lang"]['os_installation_date'] = '.';
 
-$GLOBALS["lang"]['partition_disk_index'] = 'Δείκτης δίσκων κατάτμησης';
+$GLOBALS["lang"]['Os Installation Date'] = '.';
 
-$GLOBALS["lang"]['Partition Disk Index'] = 'Δείκτης δίσκων κατάτμησης';
+$GLOBALS["lang"]['os_licence_expiry'] = 'Oxunub:';
 
-$GLOBALS["lang"]['Pass'] = 'Πάσο';
+$GLOBALS["lang"]['Os Licence Expiry'] = 'Oxunub:';
 
-$GLOBALS["lang"]['Passed'] = 'Πέρασε';
+$GLOBALS["lang"]['os_license'] = '.';
 
-$GLOBALS["lang"]['Passive Optical Local Area Network'] = 'Παθητικό οπτικό τοπικό δίκτυο περιοχής';
+$GLOBALS["lang"]['Os License'] = '.';
 
-$GLOBALS["lang"]['Password'] = 'Κωδικός πρόσβασης';
+$GLOBALS["lang"]['os_license_code'] = 'Не, не.';
 
-$GLOBALS["lang"]['password'] = 'Κωδικός πρόσβασης';
+$GLOBALS["lang"]['Os License Code'] = 'Не, не.';
 
-$GLOBALS["lang"]['password_changeable'] = 'Αλλαγή κωδικού πρόσβασης';
+$GLOBALS["lang"]['os_license_mode'] = 'Oxunub:';
 
-$GLOBALS["lang"]['Password Changeable'] = 'Αλλαγή κωδικού πρόσβασης';
+$GLOBALS["lang"]['Os License Mode'] = 'Oxunub:';
 
-$GLOBALS["lang"]['password_disabled'] = 'Απενεργοποιημένος κωδικός πρόσβασης';
+$GLOBALS["lang"]['os_license_type'] = '.';
 
-$GLOBALS["lang"]['Password Disabled'] = 'Απενεργοποιημένος κωδικός πρόσβασης';
+$GLOBALS["lang"]['Os License Type'] = '.';
 
-$GLOBALS["lang"]['password_expires'] = 'Λήγει ο κωδικός πρόσβασης';
+$GLOBALS["lang"]['os_name'] = '- Да.';
 
-$GLOBALS["lang"]['Password Expires'] = 'Λήγει ο κωδικός πρόσβασης';
+$GLOBALS["lang"]['Os Name'] = '- Да.';
 
-$GLOBALS["lang"]['password_last_changed'] = 'Τελευταία αλλαγή κωδικού πρόσβασης';
+$GLOBALS["lang"]['os_version'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['Password Last Changed'] = 'Τελευταία αλλαγή κωδικού πρόσβασης';
+$GLOBALS["lang"]['Os Version'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['password_required'] = 'Απαιτούμενος κωδικός πρόσβασης';
+$GLOBALS["lang"]['Other'] = 'Дигър.';
 
-$GLOBALS["lang"]['Password Required'] = 'Απαιτούμενος κωδικός πρόσβασης';
+$GLOBALS["lang"]['Other than that restriction, you are free to select attributes as required. It is a good idea to use the menu'] = 'Имено.';
 
-$GLOBALS["lang"]['patch_panel'] = 'Πίνακας διόρθωσης';
+$GLOBALS["lang"]['Others'] = '.';
 
-$GLOBALS["lang"]['Patch Panel'] = 'Πίνακας διόρθωσης';
+$GLOBALS["lang"]['Our default Integration also enables a discovery on any externally supplied devices. So we ship a default discovery for the Default Integration out of the box. These use the default matching rules, but also enable matching on IP address.'] = 'Имено.';
 
-$GLOBALS["lang"]['patch_panel_port'] = 'Θύρα πίνακα patch';
+$GLOBALS["lang"]['Our examples will use the <i>type</i> column.'] = '. <i>- Да.</i> - Да.';
 
-$GLOBALS["lang"]['Patch Panel Port'] = 'Θύρα πίνακα patch';
+$GLOBALS["lang"]['Our framework uploads files here for processing, then deletes them. Think submitted audit results, etc.'] = '.';
 
-$GLOBALS["lang"]['path'] = 'Διαδρομή';
+$GLOBALS["lang"]['Our goal with the initial integrations release was specifically for NMIS to Open-AudIT integration to <i>just work</i>. If you are using the programs on Linux, you can literally click a single button to execute the integration. Nothing more is required. Having said that, the integration itself is extremely configurable - so if something is not to your preference, it can easily be changed.'] = 'Имено. <i>.</i>. Имено.';
 
-$GLOBALS["lang"]['Path'] = 'Διαδρομή';
+$GLOBALS["lang"]['Our new feature called Vulnerabilities gives you the ability to quickly determine if any devices are affected by any CVE (Common Vulnerability Exposure) - but how?<br><br>FirstWave constantly consumes the output from the Nist NVD feed. We take this and apply a few restrictions, then extract the affected programs and build a SQL query for reporting. Your Open-AudIT instance reaches out to FirstWave and requests any new vulnerabilities on a regular basis. When it receives a new vulnerability record, it is run against the database and the result stored. Each time a device is processed, all matching vulnerabilities are again executed and the result stored. This means when viewing a vulnerability list, we do not need to calculate all affected devices - we already have the result. When you view an individual vulnerability record, we do indeed recalculate the result for this singular vulnerability.<br><br>So, you are always up to date!<br><br>In addition to this, we also calculate the result of all vulnerabilities for all devices daily (usually at a quiet time, say 2am).<br><br>In your instance of Open-AudIT, we allow you to select which vendors you care about. i.e. there is no use retrieving vulnerability records from a vendor whose software you do not use or have installed. By default, our vendor list is Adobe, Apple, Cisco, Google, Microsoft, Mozilla, and Redhat.<br><br>This all sounds very simple, but behind the scenes a <b>lot</b> is going on. For instance, the CVE record contains a list of affected software - but those software names do not match what we receive when we audit a computer. A good example is Apache. Typically, a CVE record will say the affected software is http_server. In reality, this appears as apache2 (Ubuntu), httpd (Redhat), Apache HTTP Server (Windows) - and others. So, we have to first determine what is the actual name of the program we receive when we ask a computer, and there may be multiple names. After that we must parse the CVE record and create a matching SQL statement. Allowing for multiple program names as above, and multiple versions, version ranges, and even multiple different pieces of software (an example is Thunderbird and Firefox in a single CVE). And your instance of Open-AudIT must take this and apply Orgs filtering as well. And that is just a single CVE. What about determining which CVEs you have and do not have? What about adding a vendor to the list later? So many things to consider!<br><br>As well as the usual reporting, we also have a few new widgets available for Dashboards, based on Vulnerabilities data.'] = 'Имено.<br/><br/>Имено.<br/><br/>.<br/><br/>Не, не, не.<br/><br/> - ...<br/><br/>- Да. <b>.</b> дори, рдо, доди.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['Performance'] = 'Επιδόσεις';
+$GLOBALS["lang"]['Our timeout for a SSH response'] = '.';
 
-$GLOBALS["lang"]['Performed'] = 'Εκτέλεση';
+$GLOBALS["lang"]['Our timeout for a WMI response'] = '.';
 
-$GLOBALS["lang"]['permission'] = 'Άδεια';
+$GLOBALS["lang"]['Our timeout for an SNMP response'] = '.';
 
-$GLOBALS["lang"]['Permission'] = 'Άδεια';
+$GLOBALS["lang"]['Our timeout for an audit script response'] = '.';
 
-$GLOBALS["lang"]['permissions'] = 'Άδειες';
+$GLOBALS["lang"]['output'] = 'Не, не.';
 
-$GLOBALS["lang"]['Permissions'] = 'Άδειες';
+$GLOBALS["lang"]['Output'] = 'Не, не.';
 
-$GLOBALS["lang"]['Personal Area Network'] = 'Δίκτυο προσωπικής περιοχής';
+$GLOBALS["lang"]['outputs'] = '- Не, не.';
 
-$GLOBALS["lang"]['Peru'] = 'Περού';
+$GLOBALS["lang"]['Outputs'] = '- Не, не.';
 
-$GLOBALS["lang"]['Philippines'] = 'Φιλιππίνες';
+$GLOBALS["lang"]['Overall severity score (0–10).'] = ' )';
 
-$GLOBALS["lang"]['phone'] = 'Τηλέφωνο';
+$GLOBALS["lang"]['overwrite'] = '.';
 
-$GLOBALS["lang"]['Phone'] = 'Τηλέφωνο';
+$GLOBALS["lang"]['Overwrite'] = '.';
 
-$GLOBALS["lang"]['Physical CPUs'] = 'Φυσικές ΚΜΕ';
+$GLOBALS["lang"]['owner'] = 'Не, не.';
 
-$GLOBALS["lang"]['physical_count'] = 'Αριθμός φυσικών στοιχείων';
+$GLOBALS["lang"]['Owner'] = 'Не, не.';
 
-$GLOBALS["lang"]['Physical Count'] = 'Αριθμός φυσικών στοιχείων';
+$GLOBALS["lang"]['PAExec is a freely-redistributable re-implementation of SysInternal/Microsofts popular PsExec program.  PAExec aims to be a drop in replacement for PsExec, so the command-line usage is identical, with additional options also supported.  This work was originally inspired by Talha Tariqs RemCom.'] = 'PExec, Sysinther / Microsofts mövcud PsExec proqramīnţn onlayn qeyd edilm. Имено.';
 
-$GLOBALS["lang"]['physical_depth'] = 'Φυσικό βάθος';
+$GLOBALS["lang"]['PHP'] = ' PHP';
 
-$GLOBALS["lang"]['Physical Depth'] = 'Φυσικό βάθος';
+$GLOBALS["lang"]['POD'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['physical_height'] = 'Φυσικό Ύψος';
+$GLOBALS["lang"]['POSTing data'] = '.';
 
-$GLOBALS["lang"]['Physical Height'] = 'Φυσικό Ύψος';
+$GLOBALS["lang"]['Package'] = '- Да.';
 
-$GLOBALS["lang"]['physical_width'] = 'Φυσικό Πλάτος';
+$GLOBALS["lang"]['packages'] = '- Да.';
 
-$GLOBALS["lang"]['Physical Width'] = 'Φυσικό Πλάτος';
+$GLOBALS["lang"]['Packages'] = '- Да.';
 
-$GLOBALS["lang"]['picture'] = 'Εικόνα';
+$GLOBALS["lang"]['Packages are used to report on things such as <i>banned software</i>, AntiVirus on servers, etc.<br><br>Open-AudIT provides widgets that build upon also supplied repots to detemine the status of antivirus, firewall and other software.'] = '. <i>Не, не.</i>Διακομιστής, v... s.<br/><br/> готварската граница е, че тя може да се използва и за да се орпедели дали е спобна да се се пратива се се се се се се се се се се се се се се се пра се се се се се се се се се се се се се пра ва се се се се ва се се се се се се се се се се се се се се се ';
 
-$GLOBALS["lang"]['Picture'] = 'Εικόνα';
+$GLOBALS["lang"]['pagefile'] = '.';
 
-$GLOBALS["lang"]['pid'] = 'Pid';
+$GLOBALS["lang"]['Pagefile'] = '.';
 
-$GLOBALS["lang"]['Pid'] = 'Pid';
+$GLOBALS["lang"]['Pakistan'] = '- Не, не.';
 
-$GLOBALS["lang"]['Pie Chart'] = 'Γράφημα πίτας';
+$GLOBALS["lang"]['Palau'] = '- Да.';
 
-$GLOBALS["lang"]['ping'] = 'Πινγκ';
+$GLOBALS["lang"]['Palestinian Territory'] = 'Не, не.';
 
-$GLOBALS["lang"]['Ping'] = 'Πινγκ';
+$GLOBALS["lang"]['Panama'] = '.';
 
-$GLOBALS["lang"]['Pitcairn Islands'] = 'Νήσοι Πίτκερν';
+$GLOBALS["lang"]['Papua New Guinea'] = '.';
 
-$GLOBALS["lang"]['placement'] = 'Τοποθέτηση';
+$GLOBALS["lang"]['Paraguay'] = 'Не, не.';
 
-$GLOBALS["lang"]['Placement'] = 'Τοποθέτηση';
+$GLOBALS["lang"]['Parameters'] = '- Да.';
 
-$GLOBALS["lang"]['Please have an Open-AudIT administrator logon and upgrade the database.'] = 'Παρακαλώ έχετε ένα λογότυπο διαχειριστή Open-AudIT και την αναβάθμιση της βάσης δεδομένων.';
+$GLOBALS["lang"]['Paranoid'] = '.';
 
-$GLOBALS["lang"]['Please note that the select box will override the text input box.'] = 'Παρακαλώ σημειώστε ότι το επιλεγμένο πλαίσιο θα παρακάμψει το πλαίσιο εισαγωγής κειμένου.';
+$GLOBALS["lang"]['Parent'] = '- Не, не.';
 
-$GLOBALS["lang"]['Please set using'] = 'Παρακαλώ ρυθμίστε τη χρήση';
+$GLOBALS["lang"]['parent_id'] = '.';
 
-$GLOBALS["lang"]['pod'] = 'Σκόνη';
+$GLOBALS["lang"]['Parent ID'] = '.';
 
-$GLOBALS["lang"]['Pod'] = 'Σκόνη';
+$GLOBALS["lang"]['parent_name'] = '.';
 
-$GLOBALS["lang"]['Poland'] = 'Πολωνία';
+$GLOBALS["lang"]['Parent Name'] = '.';
 
-$GLOBALS["lang"]['Policies'] = 'Πολιτικές';
+$GLOBALS["lang"]['part_number'] = '- Да.';
 
-$GLOBALS["lang"]['Policies have exceptions.'] = 'Οι πολιτικές έχουν εξαιρέσεις.';
+$GLOBALS["lang"]['Part Number'] = '- Да.';
 
-$GLOBALS["lang"]['policy'] = 'Πολιτική';
+$GLOBALS["lang"]['part_of_domain'] = '.';
 
-$GLOBALS["lang"]['Policy'] = 'Πολιτική';
+$GLOBALS["lang"]['Part Of Domain'] = '.';
 
-$GLOBALS["lang"]['policy_id'] = 'ID πολιτικής';
+$GLOBALS["lang"]['Partition'] = '- Да.';
 
-$GLOBALS["lang"]['Policy ID'] = 'ID πολιτικής';
+$GLOBALS["lang"]['partition_count'] = '.';
 
-$GLOBALS["lang"]['Policy Result'] = 'Αποτέλεσμα πολιτικής';
+$GLOBALS["lang"]['Partition Count'] = '.';
 
-$GLOBALS["lang"]['Policy Results'] = 'Αποτελέσματα πολιτικής';
+$GLOBALS["lang"]['partition_disk_index'] = 'Не, не.';
 
-$GLOBALS["lang"]['Polite'] = 'Ευγενικό';
+$GLOBALS["lang"]['Partition Disk Index'] = 'Не, не.';
 
-$GLOBALS["lang"]['Populated by audit.'] = 'Με έλεγχο.';
+$GLOBALS["lang"]['Pass'] = '- Да.';
 
-$GLOBALS["lang"]['Populated by discovery and audit.'] = 'Διαμορφώθηκε από την ανακάλυψη και τον έλεγχο.';
+$GLOBALS["lang"]['Passed'] = '.';
 
-$GLOBALS["lang"]['Populated dynamically.'] = 'Διαμορφώθηκε δυναμικά.';
+$GLOBALS["lang"]['Passive Optical Local Area Network'] = 'Имено.';
 
-$GLOBALS["lang"]['Populated from DNS.'] = 'Είναι από το DNS.';
+$GLOBALS["lang"]['Password'] = '.';
 
-$GLOBALS["lang"]['Populated from SNMP discovery.'] = 'Από την ανακάλυψη του SNMP.';
+$GLOBALS["lang"]['password'] = '.';
 
-$GLOBALS["lang"]['Populated from device audits.'] = 'Εκδίδεται από ελέγχους συσκευών.';
+$GLOBALS["lang"]['password_changeable'] = '- Да.';
 
-$GLOBALS["lang"]['Populated from hostname.'] = 'Διαμορφώθηκε από το όνομα υπολογιστή.';
+$GLOBALS["lang"]['Password Changeable'] = '- Да.';
 
-$GLOBALS["lang"]['Populated from machine-id on Linux.'] = 'Δημιουργήθηκε από το machine-id στο Linux.';
+$GLOBALS["lang"]['password_disabled'] = '.';
 
-$GLOBALS["lang"]['Populated from the IP for the default route or the IP detected in discovery.'] = 'Δημιουργήθηκε από την IP για την προκαθορισμένη διαδρομή ή την IP ανιχνεύθηκε στην ανακάλυψη.';
+$GLOBALS["lang"]['Password Disabled'] = '.';
 
-$GLOBALS["lang"]['Populated from the hostname command.'] = 'Διατυπώθηκε από την εντολή hostname.';
+$GLOBALS["lang"]['password_expires'] = '- Да.';
 
-$GLOBALS["lang"]['Populated with additional data from the external system, in a JSON representation.'] = 'Δημιουργήθηκε με πρόσθετα δεδομένα από το εξωτερικό σύστημα, σε μια αναπαράσταση JSON.';
+$GLOBALS["lang"]['Password Expires'] = '- Да.';
 
-$GLOBALS["lang"]['port'] = 'Θύρα';
+$GLOBALS["lang"]['password_last_changed'] = '.';
 
-$GLOBALS["lang"]['Port'] = 'Θύρα';
+$GLOBALS["lang"]['Password Last Changed'] = '.';
 
-$GLOBALS["lang"]['port_name'] = 'Όνομα θύρας';
+$GLOBALS["lang"]['password_required'] = '.';
 
-$GLOBALS["lang"]['Port Name'] = 'Όνομα θύρας';
+$GLOBALS["lang"]['Password Required'] = '.';
 
-$GLOBALS["lang"]['port_number'] = 'Αριθμός θύρας';
+$GLOBALS["lang"]['patch_panel'] = '.';
 
-$GLOBALS["lang"]['Port Number'] = 'Αριθμός θύρας';
+$GLOBALS["lang"]['Patch Panel'] = '.';
 
-$GLOBALS["lang"]['ports_in_order'] = 'Λιμάνια σε τάξη';
+$GLOBALS["lang"]['patch_panel_port'] = '.';
 
-$GLOBALS["lang"]['Ports In Order'] = 'Λιμάνια σε τάξη';
+$GLOBALS["lang"]['Patch Panel Port'] = '.';
 
-$GLOBALS["lang"]['ports_stop_after'] = 'Οι θύρες σταματούν μετά';
+$GLOBALS["lang"]['path'] = 'Τακ Τζο.';
 
-$GLOBALS["lang"]['Ports Stop After'] = 'Οι θύρες σταματούν μετά';
+$GLOBALS["lang"]['Path'] = 'Τακ Τζο.';
 
-$GLOBALS["lang"]['Portugal, Portuguese Republic'] = 'Πορτογαλία, Πορτογαλική Δημοκρατία';
+$GLOBALS["lang"]['Performance'] = '- Не, не.';
 
-$GLOBALS["lang"]['position'] = 'Θέση';
+$GLOBALS["lang"]['Performed'] = '- Не, не.';
 
-$GLOBALS["lang"]['Position'] = 'Θέση';
+$GLOBALS["lang"]['Permission'] = 'Не, не.';
 
-$GLOBALS["lang"]['postcode'] = 'Ταχυδρομικός κώδικας';
+$GLOBALS["lang"]['Permission Required'] = '- Да.';
 
-$GLOBALS["lang"]['Postcode'] = 'Ταχυδρομικός κώδικας';
+$GLOBALS["lang"]['permissions'] = '- Не, не.';
 
-$GLOBALS["lang"]['power_circuit'] = 'Κύκλωμα ισχύος';
+$GLOBALS["lang"]['Permissions'] = '- Не, не.';
 
-$GLOBALS["lang"]['Power Circuit'] = 'Κύκλωμα ισχύος';
+$GLOBALS["lang"]['Persian'] = 'Άξταρ';
 
-$GLOBALS["lang"]['power_sockets'] = 'Ηλεκτρικές υποδοχές';
+$GLOBALS["lang"]['Personal Area Network'] = '.';
 
-$GLOBALS["lang"]['Power Sockets'] = 'Ηλεκτρικές υποδοχές';
+$GLOBALS["lang"]['Personal area network'] = 'Не, не.';
 
-$GLOBALS["lang"]['Predictable'] = 'Προβλεπόμενο';
+$GLOBALS["lang"]['Peru'] = 'Не, не.';
 
-$GLOBALS["lang"]['Preferences'] = 'Προτιμήσεις';
+$GLOBALS["lang"]['Philippines'] = 'Не, не.';
 
-$GLOBALS["lang"]['Prerequisites'] = 'Προαπαιτούμενα';
+$GLOBALS["lang"]['phone'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Prerequisites and Tests'] = 'Προαπαιτούμενα και δοκιμές';
+$GLOBALS["lang"]['Phone'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['present'] = 'Παρόν';
+$GLOBALS["lang"]['Physical CPUs'] = '- Да.';
 
-$GLOBALS["lang"]['Present'] = 'Παρόν';
+$GLOBALS["lang"]['physical_count'] = '- Да.';
 
-$GLOBALS["lang"]['previous_value'] = 'Προηγούμενη τιμή';
+$GLOBALS["lang"]['Physical Count'] = '- Да.';
 
-$GLOBALS["lang"]['Previous Value'] = 'Προηγούμενη τιμή';
+$GLOBALS["lang"]['physical_depth'] = '.';
 
-$GLOBALS["lang"]['primary'] = 'Πρωτοβάθμια';
+$GLOBALS["lang"]['Physical Depth'] = '.';
 
-$GLOBALS["lang"]['Primary'] = 'Πρωτοβάθμια';
+$GLOBALS["lang"]['physical_height'] = '.';
 
-$GLOBALS["lang"]['Primary Key'] = 'Βασικό κλειδί';
+$GLOBALS["lang"]['Physical Height'] = '.';
 
-$GLOBALS["lang"]['print_queue'] = 'Σε αναμονή εκτύπωσης';
+$GLOBALS["lang"]['physical_width'] = 'Не, не.';
 
-$GLOBALS["lang"]['Print Queue'] = 'Σε αναμονή εκτύπωσης';
+$GLOBALS["lang"]['Physical Width'] = 'Не, не.';
 
-$GLOBALS["lang"]['printer_color'] = 'Χρώμα εκτυπωτή';
+$GLOBALS["lang"]['picture'] = '- Да.';
 
-$GLOBALS["lang"]['Printer Color'] = 'Χρώμα εκτυπωτή';
+$GLOBALS["lang"]['Picture'] = '- Да.';
 
-$GLOBALS["lang"]['printer_duplex'] = 'Διπλότυπο εκτυπωτή';
+$GLOBALS["lang"]['pid'] = 'ΣΑΛΑ';
 
-$GLOBALS["lang"]['Printer Duplex'] = 'Διπλότυπο εκτυπωτή';
+$GLOBALS["lang"]['Pid'] = 'ΣΑΛΑ';
 
-$GLOBALS["lang"]['printer_port_name'] = 'Όνομα θύρας εκτυπωτή';
+$GLOBALS["lang"]['Pie Chart'] = 'Τάριξ';
 
-$GLOBALS["lang"]['Printer Port Name'] = 'Όνομα θύρας εκτυπωτή';
+$GLOBALS["lang"]['Pie charts must return name or my_name, description or my_description and count.'] = '.';
 
-$GLOBALS["lang"]['printer_shared'] = 'Κοινόχρηστος εκτυπωτής';
+$GLOBALS["lang"]['ping'] = ' Π';
 
-$GLOBALS["lang"]['Printer Shared'] = 'Κοινόχρηστος εκτυπωτής';
+$GLOBALS["lang"]['Ping'] = ' Π';
 
-$GLOBALS["lang"]['printer_shared_name'] = 'Όνομα κοινόχρηστου εκτυπωτή';
+$GLOBALS["lang"]['Ping Target'] = '.';
 
-$GLOBALS["lang"]['Printer Shared Name'] = 'Όνομα κοινόχρηστου εκτυπωτή';
+$GLOBALS["lang"]['Pitcairn Islands'] = '.';
 
-$GLOBALS["lang"]['priority'] = 'Προτεραιότητα';
+$GLOBALS["lang"]['placement'] = '- Да.';
 
-$GLOBALS["lang"]['Priority'] = 'Προτεραιότητα';
+$GLOBALS["lang"]['Placement'] = '- Да.';
 
-$GLOBALS["lang"]['Privacy Passphrase'] = 'Απόρρητη φράση πρόσβασης';
+$GLOBALS["lang"]['Plan and conduct internal audits'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['privileges_required'] = 'Απαιτούμενα προνόμια';
+$GLOBALS["lang"]['Please have an Open-AudIT administrator logon and upgrade the database.'] = '.';
 
-$GLOBALS["lang"]['Privileges Required'] = 'Απαιτούμενα προνόμια';
+$GLOBALS["lang"]['Please log in and change these ASAP.'] = '.';
 
-$GLOBALS["lang"]['processor'] = 'Επεξεργαστής';
+$GLOBALS["lang"]['Please log on to the Open-AudIT Server (either Windows or Linux) and run <code>nslookup IP_ADDRESS_OF_TARGET</code> in the command prompt or shell. It must be able to resolve the IP to a name.'] = 'Не, не, не. <code>nslookup IP_ADDRESS_OF_TARGET</code> .';
 
-$GLOBALS["lang"]['Processor'] = 'Επεξεργαστής';
+$GLOBALS["lang"]['Please note that the select box will override the text input box.'] = '.';
 
-$GLOBALS["lang"]['processor_count'] = 'Αριθμός επεξεργαστή';
+$GLOBALS["lang"]['Please see the FAQ'] = '.';
 
-$GLOBALS["lang"]['Processor Count'] = 'Αριθμός επεξεργαστή';
+$GLOBALS["lang"]['Please send all three files to your support contact at Opmantek and describe your issue.'] = 'Имено.';
 
-$GLOBALS["lang"]['processor_slot_count'] = 'Αριθμός Slot επεξεργαστή';
+$GLOBALS["lang"]['Please set using'] = '.';
 
-$GLOBALS["lang"]['Processor Slot Count'] = 'Αριθμός Slot επεξεργαστή';
+$GLOBALS["lang"]['Please visit the homepage at'] = '.';
 
-$GLOBALS["lang"]['processor_type'] = 'Τύπος επεξεργαστή';
+$GLOBALS["lang"]['pod'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Processor Type'] = 'Τύπος επεξεργαστή';
+$GLOBALS["lang"]['Pod'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Processors'] = 'Επεξεργαστές';
+$GLOBALS["lang"]['Poland'] = '.';
 
-$GLOBALS["lang"]['product_name'] = 'Ονομασία προϊόντος';
+$GLOBALS["lang"]['Policies'] = '- Да.';
 
-$GLOBALS["lang"]['Product Name'] = 'Ονομασία προϊόντος';
+$GLOBALS["lang"]['Policies have exceptions.'] = '- Да.';
 
-$GLOBALS["lang"]['Product Name Match from CPE: '] = 'Όνομα προϊόντος Ταίριασμα από CPE: ';
+$GLOBALS["lang"]['policy'] = '- Да.';
 
-$GLOBALS["lang"]['products'] = 'Προϊόντα';
+$GLOBALS["lang"]['Policy'] = '- Да.';
 
-$GLOBALS["lang"]['Products'] = 'Προϊόντα';
+$GLOBALS["lang"]['policy_id'] = '.';
 
-$GLOBALS["lang"]['profile'] = 'Προφίλ';
+$GLOBALS["lang"]['Policy ID'] = '.';
 
-$GLOBALS["lang"]['Profile'] = 'Προφίλ';
+$GLOBALS["lang"]['Policy Result'] = '.';
 
-$GLOBALS["lang"]['program'] = 'Πρόγραμμα';
+$GLOBALS["lang"]['Policy Results'] = '.';
 
-$GLOBALS["lang"]['Program'] = 'Πρόγραμμα';
+$GLOBALS["lang"]['Polish'] = '.';
 
-$GLOBALS["lang"]['protocol'] = 'Πρωτόκολλο';
+$GLOBALS["lang"]['Polite'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Protocol'] = 'Πρωτόκολλο';
+$GLOBALS["lang"]['Populate the with values provided below:'] = '.';
 
-$GLOBALS["lang"]['provider'] = 'Παροχέας';
+$GLOBALS["lang"]['Populated by audit.'] = '- Да.';
 
-$GLOBALS["lang"]['Provider'] = 'Παροχέας';
+$GLOBALS["lang"]['Populated by discovery and audit.'] = 'Не, не.';
 
-$GLOBALS["lang"]['published'] = 'Δημοσίευση';
+$GLOBALS["lang"]['Populated dynamically.'] = '.';
 
-$GLOBALS["lang"]['Published'] = 'Δημοσίευση';
+$GLOBALS["lang"]['Populated from DNS.'] = 'Κρίστοφ.';
 
-$GLOBALS["lang"]['published_date'] = 'Ημερομηνία δημοσίευσης';
+$GLOBALS["lang"]['Populated from SNMP discovery.'] = '- \'νω.';
 
-$GLOBALS["lang"]['Published Date'] = 'Ημερομηνία δημοσίευσης';
+$GLOBALS["lang"]['Populated from device audits.'] = '.';
 
-$GLOBALS["lang"]['publisher'] = 'Εκδότης';
+$GLOBALS["lang"]['Populated from hostname.'] = '.';
 
-$GLOBALS["lang"]['Publisher'] = 'Εκδότης';
+$GLOBALS["lang"]['Populated from machine-id on Linux.'] = '.';
 
-$GLOBALS["lang"]['Puerto Rico'] = 'Πουέρτο Ρίκο';
+$GLOBALS["lang"]['Populated from the IP for the default route or the IP detected in discovery.'] = ' Να Ντρουχού Στράνου.';
 
-$GLOBALS["lang"]['Purchase'] = 'Αγορά';
+$GLOBALS["lang"]['Populated from the hostname command.'] = '- Да.';
 
-$GLOBALS["lang"]['purchase_amount'] = 'Ποσό αγοράς';
+$GLOBALS["lang"]['Populated with additional data from the external system, in a JSON representation.'] = '- Да.';
 
-$GLOBALS["lang"]['Purchase Amount'] = 'Ποσό αγοράς';
+$GLOBALS["lang"]['port'] = '- Не, не.';
 
-$GLOBALS["lang"]['purchase_cost_center'] = 'Αγορά Cost Center';
+$GLOBALS["lang"]['Port'] = '- Не, не.';
 
-$GLOBALS["lang"]['Purchase Cost Center'] = 'Αγορά Cost Center';
+$GLOBALS["lang"]['port_name'] = '- Да.';
 
-$GLOBALS["lang"]['purchase_count'] = 'Αριθμός αγοράς';
+$GLOBALS["lang"]['Port Name'] = '- Да.';
 
-$GLOBALS["lang"]['Purchase Count'] = 'Αριθμός αγοράς';
+$GLOBALS["lang"]['port_number'] = '- Не, не.';
 
-$GLOBALS["lang"]['purchase_date'] = 'Ημερομηνία αγοράς';
+$GLOBALS["lang"]['Port Number'] = '- Не, не.';
 
-$GLOBALS["lang"]['Purchase Date'] = 'Ημερομηνία αγοράς';
+$GLOBALS["lang"]['ports_in_order'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['purchase_invoice'] = 'Τιμολόγιο αγοράς';
+$GLOBALS["lang"]['Ports In Order'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Purchase Invoice'] = 'Τιμολόγιο αγοράς';
+$GLOBALS["lang"]['ports_stop_after'] = '.';
 
-$GLOBALS["lang"]['purchase_order'] = 'Παραγγελία αγοράς';
+$GLOBALS["lang"]['Ports Stop After'] = '.';
 
-$GLOBALS["lang"]['Purchase Order'] = 'Παραγγελία αγοράς';
+$GLOBALS["lang"]['Portugal, Portuguese Republic'] = 'Имено.';
 
-$GLOBALS["lang"]['purchase_order_number'] = 'Αριθμός παραγγελίας αγοράς';
+$GLOBALS["lang"]['Portuguese'] = '- Да.';
 
-$GLOBALS["lang"]['Purchase Order Number'] = 'Αριθμός παραγγελίας αγοράς';
+$GLOBALS["lang"]['Portuguese (Brazil)'] = '.';
 
-$GLOBALS["lang"]['purchase_service_contract_number'] = 'Αριθμός σύμβασης υπηρεσιών αγοράς';
+$GLOBALS["lang"]['position'] = '- Не, не.';
 
-$GLOBALS["lang"]['Purchase Service Contract Number'] = 'Αριθμός σύμβασης υπηρεσιών αγοράς';
+$GLOBALS["lang"]['Position'] = '- Не, не.';
 
-$GLOBALS["lang"]['purchase_vendor'] = 'Αγορά Προμηθευτή';
+$GLOBALS["lang"]['Post-Certification'] = '.';
 
-$GLOBALS["lang"]['Purchase Vendor'] = 'Αγορά Προμηθευτή';
+$GLOBALS["lang"]['postcode'] = 'Προκράμ';
 
-$GLOBALS["lang"]['purpose'] = 'Αντικείμενο';
+$GLOBALS["lang"]['Postcode'] = 'Προκράμ';
 
-$GLOBALS["lang"]['Purpose'] = 'Αντικείμενο';
+$GLOBALS["lang"]['power_circuit'] = '.';
 
-$GLOBALS["lang"]['Qatar'] = 'Κατάρ';
+$GLOBALS["lang"]['Power Circuit'] = '.';
 
-$GLOBALS["lang"]['queries'] = 'Ερωτήματα';
+$GLOBALS["lang"]['power_sockets'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Queries'] = 'Ερωτήματα';
+$GLOBALS["lang"]['Power Sockets'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Query'] = 'Ερώτηση';
+$GLOBALS["lang"]['Predictable'] = '- Да.';
 
-$GLOBALS["lang"]['queue'] = 'Σε αναμονή';
+$GLOBALS["lang"]['Preferences'] = '- Да.';
 
-$GLOBALS["lang"]['Queue'] = 'Σε αναμονή';
+$GLOBALS["lang"]['Prepare for recertification every 3 years'] = 'Не, не.';
 
-$GLOBALS["lang"]['Queue Limit'] = 'Όριο αναμονής';
+$GLOBALS["lang"]['Prerequisites'] = '- Да.';
 
-$GLOBALS["lang"]['Queued Device Audits'] = 'Έλεγχος συσκευών σε αναμονή';
+$GLOBALS["lang"]['Prerequisites and Tests'] = '.';
 
-$GLOBALS["lang"]['Queued IP Scans'] = 'Σε αναμονή σάρωσης IP';
+$GLOBALS["lang"]['present'] = 'Инди.';
 
-$GLOBALS["lang"]['Queued Items'] = 'Αντικείμενα σε αναμονή';
+$GLOBALS["lang"]['Present'] = 'Инди.';
 
-$GLOBALS["lang"]['RU Start'] = 'Έναρξη ΕΣ';
+$GLOBALS["lang"]['previous_value'] = '.';
 
-$GLOBALS["lang"]['RX Bitrate'] = 'Ρυθμός bit RX';
+$GLOBALS["lang"]['Previous Value'] = '.';
 
-$GLOBALS["lang"]['RX Freq'] = 'ΡΧ Freq';
+$GLOBALS["lang"]['primary'] = '- Да.';
 
-$GLOBALS["lang"]['RX Level'] = 'Επίπεδο RX';
+$GLOBALS["lang"]['Primary'] = '- Да.';
 
-$GLOBALS["lang"]['RX Power'] = 'Ισχύς RX';
+$GLOBALS["lang"]['Primary Key'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['RX Profile'] = 'Προφίλ RX';
+$GLOBALS["lang"]['print_queue'] = '- Да.';
 
-$GLOBALS["lang"]['Rack'] = 'Ρακ';
+$GLOBALS["lang"]['Print Queue'] = '- Да.';
 
-$GLOBALS["lang"]['rack_devices'] = 'Συσκευές Rack';
+$GLOBALS["lang"]['printer_color'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Rack Devices'] = 'Συσκευές Rack';
+$GLOBALS["lang"]['Printer Color'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['rack_id'] = 'Ταυτότητα Rack';
+$GLOBALS["lang"]['printer_duplex'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Rack ID'] = 'Ταυτότητα Rack';
+$GLOBALS["lang"]['Printer Duplex'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Racks'] = 'Ρακς';
+$GLOBALS["lang"]['printer_port_name'] = '.';
 
-$GLOBALS["lang"]['racks'] = 'Ρακς';
+$GLOBALS["lang"]['Printer Port Name'] = '.';
 
-$GLOBALS["lang"]['radio'] = 'Radio';
+$GLOBALS["lang"]['printer_shared'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Radio'] = 'Radio';
+$GLOBALS["lang"]['Printer Shared'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Radio MAC'] = 'Radio MAC';
+$GLOBALS["lang"]['printer_shared_name'] = '.';
 
-$GLOBALS["lang"]['rationale'] = 'Συνέπειες';
+$GLOBALS["lang"]['Printer Shared Name'] = '.';
 
-$GLOBALS["lang"]['Rationale'] = 'Συνέπειες';
+$GLOBALS["lang"]['priority'] = '- Да.';
 
-$GLOBALS["lang"]['raw'] = 'Ακατέργαστο';
+$GLOBALS["lang"]['Priority'] = '- Да.';
 
-$GLOBALS["lang"]['Raw'] = 'Ακατέργαστο';
+$GLOBALS["lang"]['Privacy Passphrase'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['read'] = 'Ανάγνωση';
+$GLOBALS["lang"]['Privacy Protocol'] = 'Не, не.';
 
-$GLOBALS["lang"]['Read'] = 'Ανάγνωση';
+$GLOBALS["lang"]['privileges_required'] = '.';
 
-$GLOBALS["lang"]['Read our online documentation on the Open-AudIT Wiki.'] = 'Διαβάστε τα διαδικτυακά μας έγγραφα για το Open-AudIT Wiki.';
+$GLOBALS["lang"]['Privileges Required'] = '.';
 
-$GLOBALS["lang"]['Red Query'] = 'Κόκκινο ερώτημα';
+$GLOBALS["lang"]['processor'] = '.';
 
-$GLOBALS["lang"]['Redirect URI'] = 'Ανακατεύθυνση URI';
+$GLOBALS["lang"]['Processor'] = '.';
 
-$GLOBALS["lang"]['redirect_uri'] = 'Ανακατεύθυνση Uri';
+$GLOBALS["lang"]['processor_count'] = '- Да.';
 
-$GLOBALS["lang"]['Redirect Uri'] = 'Ανακατεύθυνση Uri';
+$GLOBALS["lang"]['Processor Count'] = '- Да.';
 
-$GLOBALS["lang"]['references'] = 'Παραπομπές';
+$GLOBALS["lang"]['processor_slot_count'] = '.';
 
-$GLOBALS["lang"]['References'] = 'Παραπομπές';
+$GLOBALS["lang"]['Processor Slot Count'] = '.';
 
-$GLOBALS["lang"]['region'] = 'Περιφέρεια';
+$GLOBALS["lang"]['processor_type'] = '- Да.';
 
-$GLOBALS["lang"]['Region'] = 'Περιφέρεια';
+$GLOBALS["lang"]['Processor Type'] = '- Да.';
 
-$GLOBALS["lang"]['registered_user'] = 'Εγγεγραμμένος χρήστης';
+$GLOBALS["lang"]['Processors'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Registered User'] = 'Εγγεγραμμένος χρήστης';
+$GLOBALS["lang"]['product_name'] = '- Да.';
 
-$GLOBALS["lang"]['rel'] = 'Ρελ';
+$GLOBALS["lang"]['Product Name'] = '- Да.';
 
-$GLOBALS["lang"]['Rel'] = 'Ρελ';
+$GLOBALS["lang"]['Product Name Match from CPE: '] = '- Да. ';
 
-$GLOBALS["lang"]['Release'] = 'Αποδέσμευση';
+$GLOBALS["lang"]['products'] = '- Да.';
 
-$GLOBALS["lang"]['remediation'] = 'Αποκατάσταση';
+$GLOBALS["lang"]['Products'] = '- Да.';
 
-$GLOBALS["lang"]['Remediation'] = 'Αποκατάσταση';
+$GLOBALS["lang"]['Professional'] = '.';
 
-$GLOBALS["lang"]['Remote'] = 'Απομακρυσμένο';
+$GLOBALS["lang"]['profile'] = ' Про';
 
-$GLOBALS["lang"]['remote_address'] = 'Απομακρυσμένη διεύθυνση';
+$GLOBALS["lang"]['Profile'] = ' Про';
 
-$GLOBALS["lang"]['Remote Address'] = 'Απομακρυσμένη διεύθυνση';
+$GLOBALS["lang"]['program'] = 'Προκράμ';
 
-$GLOBALS["lang"]['remote_port'] = 'Απομακρυσμένη θύρα';
+$GLOBALS["lang"]['Program'] = 'Προκράμ';
 
-$GLOBALS["lang"]['Remote Port'] = 'Απομακρυσμένη θύρα';
+$GLOBALS["lang"]['Properties'] = '- Да.';
 
-$GLOBALS["lang"]['Remove'] = 'Αφαίρεση';
+$GLOBALS["lang"]['Proprietary. If you want to modify HighCharts you may require a'] = '.';
 
-$GLOBALS["lang"]['Remove Exception'] = 'Αφαίρεση εξαίρεσης';
+$GLOBALS["lang"]['Protects confidentiality, integrity, and availability of information'] = '.';
 
-$GLOBALS["lang"]['Report'] = 'Έκθεση';
+$GLOBALS["lang"]['protocol'] = '- Да.';
 
-$GLOBALS["lang"]['Report on your devices, networks and more'] = 'Αναφορά για τις συσκευές, τα δίκτυα και πολλά άλλα';
+$GLOBALS["lang"]['Protocol'] = '- Да.';
 
-$GLOBALS["lang"]['reportable'] = 'Αναφέρσιμο';
+$GLOBALS["lang"]['Provide a description and select and expires duration.'] = 'Мылли';
 
-$GLOBALS["lang"]['Reportable'] = 'Αναφέρσιμο';
+$GLOBALS["lang"]['Provide a name - we humbly recommand Open-AudIT &#128512;, but you can name it anything you like.<br>From the Open-AudIT form, copy the value for the <i>Redirect URI</i> field and paste it into the <i>Sign-in redirect URIs</i> field in OKTA.<br>The Sign-out redirect URIs is optional, but if you want you can use open-audit/index.php/logout with your Open-AudIT servers http address, as per the screenshot.<br>Normally your Open-AudIT URL will look something like'] = '.<br/>. <i>ΟΥΡΙ</i> . <i>.</i> .<br/>Имено. Open- Audit Serverl по php / logout http adres, ekran başna kimi.<br/>.';
 
-$GLOBALS["lang"]['Reports'] = 'Εκθέσεις';
+$GLOBALS["lang"]['Provided you have the correct credentials, Device Seed Discovery works as follows'] = '- Не, не.';
 
-$GLOBALS["lang"]['request'] = 'Αίτηση';
+$GLOBALS["lang"]['provider'] = 'Истешалчи.';
 
-$GLOBALS["lang"]['Request'] = 'Αίτηση';
+$GLOBALS["lang"]['Provider'] = 'Истешалчи.';
 
-$GLOBALS["lang"]['Request a Specific CVE'] = 'Αίτηση ειδικού χαρακτήρα ΚΒΑ';
+$GLOBALS["lang"]['published'] = '- Да.';
 
-$GLOBALS["lang"]['requested'] = 'Αιτήθηκε';
+$GLOBALS["lang"]['Published'] = '- Да.';
 
-$GLOBALS["lang"]['Requested'] = 'Αιτήθηκε';
+$GLOBALS["lang"]['published_date'] = '.';
 
-$GLOBALS["lang"]['require_port'] = 'Απαίτηση θύρας';
+$GLOBALS["lang"]['Published Date'] = '.';
 
-$GLOBALS["lang"]['Require Port'] = 'Απαίτηση θύρας';
+$GLOBALS["lang"]['publisher'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Require an Open Port'] = 'Απαίτηση μιας ανοικτής θύρας';
+$GLOBALS["lang"]['Publisher'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Required'] = 'Απαιτούμενη';
+$GLOBALS["lang"]['Puerto Rico'] = 'Не, не.';
 
-$GLOBALS["lang"]['Reset'] = 'Επαναφορά';
+$GLOBALS["lang"]['Purchase'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Reset All Data'] = 'Επαναφορά όλων των δεδομένων';
+$GLOBALS["lang"]['purchase_amount'] = '.';
 
-$GLOBALS["lang"]['Reset to Default'] = 'Επαναφορά στο προκαθορισμένο';
+$GLOBALS["lang"]['Purchase Amount'] = '.';
 
-$GLOBALS["lang"]['resource'] = 'Πόρος';
+$GLOBALS["lang"]['purchase_cost_center'] = 'Не, не.';
 
-$GLOBALS["lang"]['Resource'] = 'Πόρος';
+$GLOBALS["lang"]['Purchase Cost Center'] = 'Не, не.';
 
-$GLOBALS["lang"]['Resource Name'] = 'Όνομα πόρου';
+$GLOBALS["lang"]['purchase_count'] = 'Не, не.';
 
-$GLOBALS["lang"]['Resources'] = 'Πόροι';
+$GLOBALS["lang"]['Purchase Count'] = 'Не, не.';
 
-$GLOBALS["lang"]['response'] = 'Ανταπόκριση';
+$GLOBALS["lang"]['purchase_date'] = '- Да.';
 
-$GLOBALS["lang"]['Response'] = 'Ανταπόκριση';
+$GLOBALS["lang"]['Purchase Date'] = '- Да.';
 
-$GLOBALS["lang"]['responsibility'] = 'Ευθύνη';
+$GLOBALS["lang"]['purchase_invoice'] = '- Да.';
 
-$GLOBALS["lang"]['Responsibility'] = 'Ευθύνη';
+$GLOBALS["lang"]['Purchase Invoice'] = '- Да.';
 
-$GLOBALS["lang"]['Restore my Licenses'] = 'Επαναφορά των αδειών μου';
+$GLOBALS["lang"]['purchase_order'] = '.';
 
-$GLOBALS["lang"]['Restrict to Private'] = 'Περιορισμός στο Ιδιωτικό';
+$GLOBALS["lang"]['Purchase Order'] = '.';
 
-$GLOBALS["lang"]['Restrict to Subnet'] = 'Περιορισμός στο υποδίκτυο';
+$GLOBALS["lang"]['purchase_order_number'] = '.';
 
-$GLOBALS["lang"]['result'] = 'Αποτέλεσμα';
+$GLOBALS["lang"]['Purchase Order Number'] = '.';
 
-$GLOBALS["lang"]['Result'] = 'Αποτέλεσμα';
+$GLOBALS["lang"]['purchase_service_contract_number'] = 'Не, не.';
 
-$GLOBALS["lang"]['Results'] = 'Αποτελέσματα';
+$GLOBALS["lang"]['Purchase Service Contract Number'] = 'Не, не.';
 
-$GLOBALS["lang"]['retrieved'] = 'Ανακτήθηκε';
+$GLOBALS["lang"]['purchase_vendor'] = 'Předseda Αριθ. CAS:';
 
-$GLOBALS["lang"]['Retrieved'] = 'Ανακτήθηκε';
+$GLOBALS["lang"]['Purchase Vendor'] = 'Předseda Αριθ. CAS:';
 
-$GLOBALS["lang"]['retrieved_ident'] = 'Αναζητημένο Ident';
+$GLOBALS["lang"]['purpose'] = '- Да.';
 
-$GLOBALS["lang"]['Retrieved Ident'] = 'Αναζητημένο Ident';
+$GLOBALS["lang"]['Purpose'] = '- Да.';
 
-$GLOBALS["lang"]['retrieved_name'] = 'Ανακτήθηκε το όνομα';
+$GLOBALS["lang"]['Qatar'] = '- Да.';
 
-$GLOBALS["lang"]['Retrieved Name'] = 'Ανακτήθηκε το όνομα';
+$GLOBALS["lang"]['queries'] = '.';
 
-$GLOBALS["lang"]['Retrieved from the device - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostsvc/hostsummary, HP-UX:machinfo, Solaris:smbios, AIX:uname.'] = 'Ανακτήθηκε από τη συσκευή - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostvc/host conclusion, HP-UX:machifo, Solaris:smbios, AIX:uname.';
+$GLOBALS["lang"]['Queries'] = '.';
 
-$GLOBALS["lang"]['Reunion'] = 'Reϋνιόν';
+$GLOBALS["lang"]['Queries are an important part of Open-AudIT. They are what enables you to get meaningful information from all the device data you have discovered. Along with summaries and groups, they provide a powerful mechanism to extract crucial information.'] = 'Имено.';
 
-$GLOBALS["lang"]['revision'] = 'Αναθεώρηση';
+$GLOBALS["lang"]['Queries for Groups should select only the'] = 'Qruplar üçün proqramlar yalnţz seçm годир Бодир.';
 
-$GLOBALS["lang"]['Revision'] = 'Αναθεώρηση';
+$GLOBALS["lang"]['Query'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['risk_assesment_result'] = 'Αποτέλεσμα αξιολόγησης κινδύνου';
+$GLOBALS["lang"]['Query this Active Directory attribute first to determine the users work unit.'] = 'Bu Active Directory istifad...';
 
-$GLOBALS["lang"]['Risk Assesment Result'] = 'Αποτέλεσμα αξιολόγησης κινδύνου';
+$GLOBALS["lang"]['Query this Active Directory attribute second to determine the users work unit.'] = 'Bu Active Directory istifad...';
 
-$GLOBALS["lang"]['role'] = 'Ρόλος';
+$GLOBALS["lang"]['queue'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Role'] = 'Ρόλος';
+$GLOBALS["lang"]['Queue'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['roles'] = 'Ρόλοι';
+$GLOBALS["lang"]['Queue Limit'] = 'Калерея.';
 
-$GLOBALS["lang"]['Roles'] = 'Ρόλοι';
+$GLOBALS["lang"]['Queued Device Audits'] = 'Имено.';
 
-$GLOBALS["lang"]['Romania'] = 'Ρουμανία';
+$GLOBALS["lang"]['Queued IP Scans'] = 'Прокрамлар.';
 
-$GLOBALS["lang"]['Room'] = 'Δωμάτιο';
+$GLOBALS["lang"]['Queued Items'] = '.';
 
-$GLOBALS["lang"]['route'] = 'Οδός';
+$GLOBALS["lang"]['RBAC for Active Directory and openLDAP'] = 'üçün RBAC';
 
-$GLOBALS["lang"]['Route'] = 'Οδός';
+$GLOBALS["lang"]['RU Start'] = 'RU Başlamaq Ημερομηνία γέννησης:';
 
-$GLOBALS["lang"]['Row'] = 'Γραμμή';
+$GLOBALS["lang"]['RX Bitrate'] = 'ΣΑΛΑ';
 
-$GLOBALS["lang"]['Row Count'] = 'Αριθμός γραμμών';
+$GLOBALS["lang"]['RX Freq'] = 'Калерея.';
 
-$GLOBALS["lang"]['row_position'] = 'Θέση γραμμής';
+$GLOBALS["lang"]['RX Level'] = 'RX';
 
-$GLOBALS["lang"]['Row Position'] = 'Θέση γραμμής';
+$GLOBALS["lang"]['RX Power'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['Rows'] = 'Γραμμές';
+$GLOBALS["lang"]['RX Profile'] = ' RX';
 
-$GLOBALS["lang"]['ru_height'] = 'Ύψος Ru';
+$GLOBALS["lang"]['Rack'] = 'Калерея.';
 
-$GLOBALS["lang"]['Ru Height'] = 'Ύψος Ru';
+$GLOBALS["lang"]['rack_devices'] = '.';
 
-$GLOBALS["lang"]['ru_start'] = 'RU Εκκίνηση';
+$GLOBALS["lang"]['Rack Devices'] = '.';
 
-$GLOBALS["lang"]['Ru Start'] = 'RU Εκκίνηση';
+$GLOBALS["lang"]['rack_id'] = 'Κεϋς.';
 
-$GLOBALS["lang"]['rule_group'] = 'Ομάδα Κανόνα';
+$GLOBALS["lang"]['Rack ID'] = 'Κεϋς.';
 
-$GLOBALS["lang"]['Rule Group'] = 'Ομάδα Κανόνα';
+$GLOBALS["lang"]['Rack Management and Reporting'] = '- Да.';
 
-$GLOBALS["lang"]['rules'] = 'Κανόνες';
+$GLOBALS["lang"]['Racks'] = 'Калерея.';
 
-$GLOBALS["lang"]['Rules'] = 'Κανόνες';
+$GLOBALS["lang"]['racks'] = 'Калерея.';
 
-$GLOBALS["lang"]['Run Discovery'] = 'Εκτέλεση ανακάλυψης';
+$GLOBALS["lang"]['radio'] = '- Да.';
 
-$GLOBALS["lang"]['Run Discovery on Devices'] = 'Εκτέλεση ανακάλυψης σε συσκευές';
+$GLOBALS["lang"]['Radio'] = '- Да.';
 
-$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = 'Κάνε μια ανακάλυψη και μάθε. <b>Τι Υπάρχει στο Δίκτυό Σας;</b>';
+$GLOBALS["lang"]['Radio MAC'] = 'Ιππιζιά';
 
-$GLOBALS["lang"]['Run this Command'] = 'Εκτέλεση αυτής της εντολής';
+$GLOBALS["lang"]['rationale'] = '.';
 
-$GLOBALS["lang"]['runas'] = 'Ρούνες';
+$GLOBALS["lang"]['Rationale'] = '.';
 
-$GLOBALS["lang"]['Runas'] = 'Ρούνες';
+$GLOBALS["lang"]['raw'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['Running Open-AudIT Apache Service Under Windows'] = 'Εκτέλεση υπηρεσίας Apache Open-Audit υπό Windows';
+$GLOBALS["lang"]['Raw'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['Russian Federation'] = 'Ρωσική Ομοσπονδία';
+$GLOBALS["lang"]['read'] = 'Не, не.';
 
-$GLOBALS["lang"]['Rwanda'] = 'Ρουάντα';
+$GLOBALS["lang"]['Read'] = 'Не, не.';
 
-$GLOBALS["lang"]['rx_bitrate'] = 'Ρx ρυθμός bit';
+$GLOBALS["lang"]['Read our online documentation on the Open-AudIT Wiki.'] = '.';
 
-$GLOBALS["lang"]['Rx Bitrate'] = 'Ρx ρυθμός bit';
+$GLOBALS["lang"]['Read through the log file at'] = '.';
+
+$GLOBALS["lang"]['Received'] = '- Не, не.';
+
+$GLOBALS["lang"]['Recently we have been asked the question - do you consider Open-AudIT more secure than other similar programs? As with most things, the answer is <i>it depends</i>.<br><br>Open-AudIT can be operated in such a way as to be extremely secure. But as usual with computer-based security, the more secure you wish to make something, the more inconvenient it becomes to use. The old phrase <i>the most secure computer is one that is turned off and in the cupboard<i> comes to mind.<br><br>Below we will outline some options that can be used with Open-AudIT that will increase security. Like most items within Open-AudIT, these are options and not mandatory. How far you take security is up to you.'] = 'Имено. <i>- Да.</i>.<br/><br/>Имено. <i>Не, не, не.<i> .<br/><br/>Имено.</i></i>';
+
+$GLOBALS["lang"]['Recertification:</strong> Required every three years'] = '.';
+
+$GLOBALS["lang"]['Red Query'] = '.';
+
+$GLOBALS["lang"]['Redirect URI'] = 'ΟΥΡΙ';
+
+$GLOBALS["lang"]['redirect_uri'] = 'Пренасочване на Uri';
+
+$GLOBALS["lang"]['Redirect Uri'] = 'Пренасочване на Uri';
+
+$GLOBALS["lang"]['Reduces risk of data breaches and cyber threats'] = '.';
+
+$GLOBALS["lang"]['references'] = '- Да.';
+
+$GLOBALS["lang"]['References'] = '- Да.';
+
+$GLOBALS["lang"]['region'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Region'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['registered_user'] = '- Не, не.';
+
+$GLOBALS["lang"]['Registered User'] = '- Не, не.';
+
+$GLOBALS["lang"]['Rejected'] = ' Ζουρίκ';
+
+$GLOBALS["lang"]['rel'] = ' Ζουρίκ';
+
+$GLOBALS["lang"]['Rel'] = ' Ζουρίκ';
+
+$GLOBALS["lang"]['Release'] = '.';
+
+$GLOBALS["lang"]['remediation'] = '- Да.';
+
+$GLOBALS["lang"]['Remediation'] = '- Да.';
+
+$GLOBALS["lang"]['Remote'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['remote_address'] = '.';
+
+$GLOBALS["lang"]['Remote Address'] = '.';
+
+$GLOBALS["lang"]['remote_port'] = 'Порт Даксили,';
+
+$GLOBALS["lang"]['Remote Port'] = 'Порт Даксили,';
+
+$GLOBALS["lang"]['Remove'] = '.';
+
+$GLOBALS["lang"]['Remove Exception'] = '.';
+
+$GLOBALS["lang"]['Repeat until you have a completely discovered and audited Windows PC.'] = '- Да.';
+
+$GLOBALS["lang"]['Report'] = '.';
+
+$GLOBALS["lang"]['Report on your devices, networks and more'] = 'Sizin cihazlarín, ş... h...';
+
+$GLOBALS["lang"]['reportable'] = '- Да.';
+
+$GLOBALS["lang"]['Reportable'] = '- Да.';
+
+$GLOBALS["lang"]['Reports'] = '- Да.';
+
+$GLOBALS["lang"]['request'] = '- Да.';
+
+$GLOBALS["lang"]['Request'] = '- Да.';
+
+$GLOBALS["lang"]['Request Method'] = '- Да.';
+
+$GLOBALS["lang"]['Request Vulnerability'] = '- Да.';
+
+$GLOBALS["lang"]['Request a Specific CVE'] = '.';
+
+$GLOBALS["lang"]['requested'] = '- Да.';
+
+$GLOBALS["lang"]['Requested'] = '- Да.';
+
+$GLOBALS["lang"]['require_port'] = '.';
+
+$GLOBALS["lang"]['Require Port'] = '.';
+
+$GLOBALS["lang"]['Require an Open Port'] = '.';
+
+$GLOBALS["lang"]['Required'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Required AWS user permissions'] = '- Да.';
+
+$GLOBALS["lang"]['Required Fields'] = '.';
+
+$GLOBALS["lang"]['Reset'] = '.';
+
+$GLOBALS["lang"]['Reset All Data'] = '.';
+
+$GLOBALS["lang"]['Reset to Default'] = 'E- poçt ünvan';
+
+$GLOBALS["lang"]['resource'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Resource'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Resource Name'] = '.';
+
+$GLOBALS["lang"]['Resources'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['response'] = '- Да.';
+
+$GLOBALS["lang"]['Response'] = '- Да.';
+
+$GLOBALS["lang"]['responsibility'] = '- Да.';
+
+$GLOBALS["lang"]['Responsibility'] = '- Да.';
+
+$GLOBALS["lang"]['Restore my Licenses'] = '.';
+
+$GLOBALS["lang"]['Restrict to Private'] = 'Република Реста.';
+
+$GLOBALS["lang"]['Restrict to Subnet'] = 'Субнетектив Субнев.';
+
+$GLOBALS["lang"]['result'] = '- Да.';
+
+$GLOBALS["lang"]['Result'] = '- Да.';
+
+$GLOBALS["lang"]['Resulting Function'] = '.';
+
+$GLOBALS["lang"]['Results'] = '- Да.';
+
+$GLOBALS["lang"]['Retrieve a list of devices in the'] = '.';
+
+$GLOBALS["lang"]['Retrieve a list of devices with OS Name like Windows 2008'] = 'Windows 2008 kimi OS Adşil';
+
+$GLOBALS["lang"]['Retrieve all details about the device with id 88.'] = ' да го направим, да го направим.';
+
+$GLOBALS["lang"]['Retrieve all devices running Windows.'] = '- Да.';
+
+$GLOBALS["lang"]['Retrieve all devices with the standard columns'] = ' Εγώ προς Τακ.';
+
+$GLOBALS["lang"]['Retrieve the first 10 devices running Windows ordered by hostname'] = ' @ Info: whatsthis';
+
+$GLOBALS["lang"]['Retrieve the properties id, ip, hostname, domain, type from all devices'] = '.';
+
+$GLOBALS["lang"]['retrieved'] = 'ΠΙΛΟΑ';
+
+$GLOBALS["lang"]['Retrieved'] = 'ΠΙΛΟΑ';
+
+$GLOBALS["lang"]['retrieved_ident'] = '- Да.';
+
+$GLOBALS["lang"]['Retrieved Ident'] = '- Да.';
+
+$GLOBALS["lang"]['retrieved_name'] = '- Да.';
+
+$GLOBALS["lang"]['Retrieved Name'] = '- Да.';
+
+$GLOBALS["lang"]['Retrieved from the device - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostsvc/hostsummary, HP-UX:machinfo, Solaris:smbios, AIX:uname.'] = ' Zurück: Win32 _ ComputerSystemProdukt, Linux: dmidecode, MacOS: system _ profiler, ESXi: vim-cmd hostvc / hostsubture, HPUX -: machinfo, ';
+
+$GLOBALS["lang"]['Retrieving a List of Credentials'] = '.';
+
+$GLOBALS["lang"]['Retrieving or Creating'] = '- Да.';
+
+$GLOBALS["lang"]['Return a collection of devices with the default set of columns (devices.id, devices.icon, devices.type, devices.name, devices.ip, devices.dns_fqdn, devices.identification, devices.description, devices.manufacturer, devices.os_family, devices.status)'] = '.';
+
+$GLOBALS["lang"]['Return a list of all Modules installed on Routers'] = '.';
+
+$GLOBALS["lang"]['Return an individual device\\'] = '.';
+
+$GLOBALS["lang"]['Returns a list of {collection}.'] = '- Да.';
+
+$GLOBALS["lang"]['Returns a {collection} details.'] = '.';
+
+$GLOBALS["lang"]['Reunion'] = '- Не, не.';
+
+$GLOBALS["lang"]['Review current practices against ISO 27001 requirements'] = 'ISO 27001 t год.';
+
+$GLOBALS["lang"]['revision'] = '- Да.';
+
+$GLOBALS["lang"]['Revision'] = '- Да.';
+
+$GLOBALS["lang"]['risk_assesment_result'] = '.';
+
+$GLOBALS["lang"]['Risk Assesment Result'] = '.';
+
+$GLOBALS["lang"]['Risk Assessment & Treatment'] = '.';
+
+$GLOBALS["lang"]['Risk Management'] = '.';
+
+$GLOBALS["lang"]['Role'] = '.';
+
+$GLOBALS["lang"]['roles'] = '.';
+
+$GLOBALS["lang"]['Roles'] = '.';
+
+$GLOBALS["lang"]['Roles can only be created and edited if you have an Open-AudIT Enterprise license. For most users, the default set of Roles should be all that is required.'] = '.';
+
+$GLOBALS["lang"]['Romania'] = '- Да.';
+
+$GLOBALS["lang"]['Romanian'] = '- Да.';
+
+$GLOBALS["lang"]['Room'] = '.';
+
+$GLOBALS["lang"]['route'] = '- Да.';
+
+$GLOBALS["lang"]['Route'] = '- Да.';
+
+$GLOBALS["lang"]['Row'] = 'ΠΙΛΟΑ';
+
+$GLOBALS["lang"]['Row Count'] = '- Да.';
+
+$GLOBALS["lang"]['row_position'] = '.';
+
+$GLOBALS["lang"]['Row Position'] = '.';
+
+$GLOBALS["lang"]['Rows'] = 'Калерея.';
+
+$GLOBALS["lang"]['ru_height'] = 'Калерея.';
+
+$GLOBALS["lang"]['Ru Height'] = 'Калерея.';
+
+$GLOBALS["lang"]['ru_start'] = '- Да.';
+
+$GLOBALS["lang"]['Ru Start'] = '- Да.';
+
+$GLOBALS["lang"]['rule_group'] = '.';
+
+$GLOBALS["lang"]['Rule Group'] = '.';
+
+$GLOBALS["lang"]['rules'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Rules'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Rules are created and run against a device when the device is discovered or an audit result is processed. Rules can be used to set a device attribute based on other attributes.<br><br>NOTE - At present we cannot delete a rule input or output that contains a /. This is because the framework is parsing the / as part of the URL and returning a 404, even before our code runs. The work-around for this is to delete the Rule itself, then recreate the inputs and outputs as required. Fortunately inputs and outputs that contain a / are rare (indeed, none exist by default).'] = 'Имено.<br/><br/>Имено.';
+
+$GLOBALS["lang"]['Run Discovery'] = '.';
+
+$GLOBALS["lang"]['Run Discovery on Devices'] = '- Да.';
+
+$GLOBALS["lang"]['Run Your Discovery'] = '.';
+
+$GLOBALS["lang"]['Run a Command'] = '.';
+
+$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = '. <b>- Да.</b>';
+
+$GLOBALS["lang"]['Run the script by typing <code>cscript test_windows_client.vbs</code> in the console.'] = 'Не, не, не. <code>cscript test_windows_client.vbs</code> - Да.';
+
+$GLOBALS["lang"]['Run this Command'] = '.';
+
+$GLOBALS["lang"]['runas'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Runas'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Running'] = '- Да.';
+
+$GLOBALS["lang"]['Running Open-AudIT Apache Service Under Windows'] = '. Απάτσι големогаве К.';
+
+$GLOBALS["lang"]['Russian'] = 'Не, не.';
+
+$GLOBALS["lang"]['Russian Federation'] = '.';
+
+$GLOBALS["lang"]['Rwanda'] = '.';
+
+$GLOBALS["lang"]['rx_bitrate'] = 'Rx Битрат x Rxxxxx.';
+
+$GLOBALS["lang"]['Rx Bitrate'] = 'Rx Битрат x Rxxxxx.';
 
 $GLOBALS["lang"]['rx_freq'] = 'Ρx Freq';
 
 $GLOBALS["lang"]['Rx Freq'] = 'Ρx Freq';
 
-$GLOBALS["lang"]['rx_level'] = 'Επίπεδο Rx';
+$GLOBALS["lang"]['rx_level'] = '- Не, не.';
 
-$GLOBALS["lang"]['Rx Level'] = 'Επίπεδο Rx';
+$GLOBALS["lang"]['Rx Level'] = '- Не, не.';
 
-$GLOBALS["lang"]['rx_power'] = 'Ισχύς Rx';
+$GLOBALS["lang"]['rx_power'] = 'Rx gücü';
 
-$GLOBALS["lang"]['Rx Power'] = 'Ισχύς Rx';
+$GLOBALS["lang"]['Rx Power'] = 'Rx gücü';
 
 $GLOBALS["lang"]['rx_profile'] = 'Προφίλ Rx';
 
 $GLOBALS["lang"]['Rx Profile'] = 'Προφίλ Rx';
 
-$GLOBALS["lang"]['SELECT'] = 'ΕΠΙΛΟΓΗ';
+$GLOBALS["lang"]['SAN Audit'] = 'E-Poçon';
 
-$GLOBALS["lang"]['SID'] = 'SID';
+$GLOBALS["lang"]['SAN Auto-Discover'] = 'SAN Automatik αντικείμενο';
 
-$GLOBALS["lang"]['SM Version'] = 'Έκδοση SM';
+$GLOBALS["lang"]['SELECT'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['SNMP (v1 / v2)'] = 'SNMP (v1 / v2)';
+$GLOBALS["lang"]['SID'] = 'Калерея.';
 
-$GLOBALS["lang"]['SNMP Details'] = 'SNMP Λεπτομέρειες';
+$GLOBALS["lang"]['SM Version'] = 'Версия на SM';
 
-$GLOBALS["lang"]['SNMP OID'] = 'ΟΦΠ SNMP';
+$GLOBALS["lang"]['SNMP (v1 / v2)'] = 'SNMP (v1/v2)';
 
-$GLOBALS["lang"]['SNMP Version'] = 'Έκδοση SNMP';
+$GLOBALS["lang"]['SNMP Details'] = ' SN';
 
-$GLOBALS["lang"]['SNMP v3'] = 'SNMP v3';
+$GLOBALS["lang"]['SNMP OID'] = 'Калерея.';
 
-$GLOBALS["lang"]['SQL'] = 'SQL';
+$GLOBALS["lang"]['SNMP Version'] = 'Версия на SNMP';
 
-$GLOBALS["lang"]['SQL (Advanced)'] = 'SQL (προχωρημένο)';
+$GLOBALS["lang"]['SNMP v3'] = 'V3';
 
-$GLOBALS["lang"]['SQL Creation Statements'] = 'Δηλώσεις δημιουργίας SQL';
+$GLOBALS["lang"]['SQL'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['SSH'] = 'SH';
+$GLOBALS["lang"]['SQL (Advanced)'] = 'E- poçt ünvan';
 
-$GLOBALS["lang"]['SSH Key'] = 'SH Κλειδί';
+$GLOBALS["lang"]['SQL Creation Statements'] = 'SQL jaradţlmascalonia mбlumatlarī@';
 
-$GLOBALS["lang"]['SW Revision'] = 'Αναθεώρηση SW';
+$GLOBALS["lang"]['SQL not containing this condition will result in the widget failing to be executed.'] = 'Bu xidm. ed.n SQL, widget-da itra olunacq.';
 
-$GLOBALS["lang"]['Saint Barthelemy'] = 'Άγιος Βαρθολομαίος';
+$GLOBALS["lang"]['SSH'] = 'Калерея.';
 
-$GLOBALS["lang"]['Saint Helena'] = 'Αγία Ελένη';
+$GLOBALS["lang"]['SSH Key'] = 'SH големогав Болостосто столав.';
 
-$GLOBALS["lang"]['Saint Kitts and Nevis'] = 'Άγιος Χριστόφορος και Νέβις';
+$GLOBALS["lang"]['SW Revision'] = ' ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Saint Lucia'] = 'Αγία Λουκία';
+$GLOBALS["lang"]['Saint Barthelemy'] = '.';
 
-$GLOBALS["lang"]['Saint Martin'] = 'Άγιος Μαρτίνος';
+$GLOBALS["lang"]['Saint Helena'] = '.';
 
-$GLOBALS["lang"]['Saint Pierre and Miquelon'] = 'Σεν Πιερ και Μικελόν';
+$GLOBALS["lang"]['Saint Kitts and Nevis'] = '- Да.';
 
-$GLOBALS["lang"]['Saint Vincent and the Grenadines'] = 'Άγιος Βικέντιος και Γρεναδίνες';
+$GLOBALS["lang"]['Saint Lucia'] = '.';
 
-$GLOBALS["lang"]['Samoa'] = 'Σαμόα';
+$GLOBALS["lang"]['Saint Martin'] = '.';
 
-$GLOBALS["lang"]['san'] = 'Σαν.';
+$GLOBALS["lang"]['Saint Pierre and Miquelon'] = '.';
 
-$GLOBALS["lang"]['San'] = 'Σαν.';
+$GLOBALS["lang"]['Saint Vincent and the Grenadines'] = '.';
 
-$GLOBALS["lang"]['San Marino'] = 'Άγιος Μαρίνος';
+$GLOBALS["lang"]['Samoa'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Sao Tome and Principe'] = 'Σάο Τομέ και Πρίνσιπε';
+$GLOBALS["lang"]['san'] = '.';
 
-$GLOBALS["lang"]['Saturday'] = 'Σάββατο';
+$GLOBALS["lang"]['San'] = '.';
 
-$GLOBALS["lang"]['Saudi Arabia'] = 'Σαουδική Αραβία';
+$GLOBALS["lang"]['San Marino'] = '.';
 
-$GLOBALS["lang"]['Save as Default'] = 'Αποθήκευση ως προκαθορισμένο';
+$GLOBALS["lang"]['Sao Tome and Principe'] = '.';
 
-$GLOBALS["lang"]['scaling'] = 'Σκάλιση';
+$GLOBALS["lang"]['Saturday'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Scaling'] = 'Σκάλιση';
+$GLOBALS["lang"]['Saudi Arabia'] = '.';
 
-$GLOBALS["lang"]['scan_options'] = 'Επιλογές σάρωσης';
+$GLOBALS["lang"]['Save and run the file. Make sure you run the file as an Administrator in order to install it (right click, Run as Administrator).'] = '.';
 
-$GLOBALS["lang"]['Scan Options'] = 'Επιλογές σάρωσης';
+$GLOBALS["lang"]['Save as Default'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['Scan Options ID'] = 'ID επιλογών σάρωσης';
+$GLOBALS["lang"]['Save the downloaded file.'] = '- Да.';
 
-$GLOBALS["lang"]['Scan the Nmap top number of TCP ports.'] = 'Σαρώστε τον κορυφαίο αριθμό θυρών TCP του Nmap.';
+$GLOBALS["lang"]['scaling'] = 'Скалиране.';
 
-$GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = 'Σαρώστε τον κορυφαίο αριθμό θυρών UDP του Nmap.';
+$GLOBALS["lang"]['Scaling'] = 'Скалиране.';
 
-$GLOBALS["lang"]['schedule'] = 'Πρόγραμμα';
+$GLOBALS["lang"]['scan_options'] = '- Да.';
 
-$GLOBALS["lang"]['Schedule'] = 'Πρόγραμμα';
+$GLOBALS["lang"]['Scan Options'] = '- Да.';
 
-$GLOBALS["lang"]['scope'] = 'Πεδίο εφαρμογής';
+$GLOBALS["lang"]['Scan Options ID'] = '- Да.';
 
-$GLOBALS["lang"]['Scope'] = 'Πεδίο εφαρμογής';
+$GLOBALS["lang"]['Scan for this port(s) and if detected open, use this port for SSH communication. This is added to the list of Custom TCP Ports above (if not already included), so there is no need to include it in that list as well. Comma seperated, no spaces.'] = 'Bu port (s) üçün Scan v... açţqlanmşsa, SHSH... laq... Bu, üz гонят xüsusi TCP Ports siyahīna..';
 
-$GLOBALS["lang"]['script_timeout'] = 'Χρονικό όριο σεναρίου';
+$GLOBALS["lang"]['Scan the Nmap top number of TCP ports.'] = '.';
 
-$GLOBALS["lang"]['Script Timeout'] = 'Χρονικό όριο σεναρίου';
+$GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = '.';
 
-$GLOBALS["lang"]['scripts'] = 'Σενάρια';
+$GLOBALS["lang"]['schedule'] = '- Не, не.';
 
-$GLOBALS["lang"]['Scripts'] = 'Σενάρια';
+$GLOBALS["lang"]['Schedule'] = '- Не, не.';
 
-$GLOBALS["lang"]['scsi'] = 'Σκι.';
+$GLOBALS["lang"]['Scheduled device discovery and reporting make Open-AudIT Professional an efficient solution for busy IT professionals looking to reduce overheads and increase insights.'] = '.';
 
-$GLOBALS["lang"]['Scsi'] = 'Σκι.';
+$GLOBALS["lang"]['Scheduling - discovery, reporting &amp; more'] = '"Ντάχα Σοξ';
 
-$GLOBALS["lang"]['scsi_bus'] = 'Λεωφορείο Scsi';
+$GLOBALS["lang"]['scope'] = '- Да.';
 
-$GLOBALS["lang"]['Scsi Bus'] = 'Λεωφορείο Scsi';
+$GLOBALS["lang"]['Scope'] = '- Да.';
 
-$GLOBALS["lang"]['scsi_logical_unit'] = 'Λογική μονάδα Scsi';
+$GLOBALS["lang"]['Scope is known as Authorization Scope, representing whether a vulnerability affects resources beyond the original security authority of the vulnerable component.<br><br>The only two valid values for this attribute are'] = 'Имено.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['Scsi Logical Unit'] = 'Λογική μονάδα Scsi';
+$GLOBALS["lang"]['script_timeout'] = '.';
 
-$GLOBALS["lang"]['scsi_port'] = 'Θύρα Scsi';
+$GLOBALS["lang"]['Script Timeout'] = '.';
 
-$GLOBALS["lang"]['Scsi Port'] = 'Θύρα Scsi';
+$GLOBALS["lang"]['scripts'] = 'Εταλανλάρη';
 
-$GLOBALS["lang"]['Search'] = 'Αναζήτηση';
+$GLOBALS["lang"]['Scripts'] = 'Εταλανλάρη';
 
-$GLOBALS["lang"]['Search For a Device'] = 'Αναζήτηση μιας συσκευής';
+$GLOBALS["lang"]['scsi'] = 'Калерея.';
 
-$GLOBALS["lang"]['Search for Device'] = 'Αναζήτηση συσκευής';
+$GLOBALS["lang"]['Scsi'] = 'Калерея.';
 
-$GLOBALS["lang"]['Searching Using DataTables'] = 'Αναζήτηση χρησιμοποιώντας πίνακες δεδομένων';
+$GLOBALS["lang"]['scsi_bus'] = 'Калерея.';
 
-$GLOBALS["lang"]['secondary'] = 'Δευτερεύον';
+$GLOBALS["lang"]['Scsi Bus'] = 'Калерея.';
 
-$GLOBALS["lang"]['Secondary'] = 'Δευτερεύον';
+$GLOBALS["lang"]['scsi_logical_unit'] = '- Да.';
 
-$GLOBALS["lang"]['Secondary Text'] = 'Δευτεροβάθμιο κείμενο';
+$GLOBALS["lang"]['Scsi Logical Unit'] = '- Да.';
 
-$GLOBALS["lang"]['section'] = 'Τμήμα';
+$GLOBALS["lang"]['scsi_port'] = 'Калерея.';
 
-$GLOBALS["lang"]['Section'] = 'Τμήμα';
+$GLOBALS["lang"]['Scsi Port'] = 'Калерея.';
 
-$GLOBALS["lang"]['secure'] = 'Ασφαλής';
+$GLOBALS["lang"]['Search'] = '- Да.';
 
-$GLOBALS["lang"]['Secure'] = 'Ασφαλής';
+$GLOBALS["lang"]['Search For a Device'] = '.';
 
-$GLOBALS["lang"]['Security Name'] = 'Όνομα ασφαλείας';
+$GLOBALS["lang"]['Searching Using DataTables'] = '.';
 
-$GLOBALS["lang"]['Security Status'] = 'Καθεστώς ασφαλείας';
+$GLOBALS["lang"]['Second'] = '- Да.';
 
-$GLOBALS["lang"]['security_zone'] = 'Ζώνη ασφαλείας';
+$GLOBALS["lang"]['secondary'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Security Zone'] = 'Ζώνη ασφαλείας';
+$GLOBALS["lang"]['Secondary'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['seed_ip'] = 'IP σπόρων';
+$GLOBALS["lang"]['Secondary Text'] = '.';
 
-$GLOBALS["lang"]['Seed IP'] = 'IP σπόρων';
+$GLOBALS["lang"]['Secret Key'] = '.';
 
-$GLOBALS["lang"]['seed_ping'] = 'Πινγκ σπόρων';
+$GLOBALS["lang"]['section'] = '- Не, не.';
 
-$GLOBALS["lang"]['Seed Ping'] = 'Πινγκ σπόρων';
+$GLOBALS["lang"]['Section'] = '- Не, не.';
 
-$GLOBALS["lang"]['seed_restrict_to_private'] = 'Σπόροι Περιορισμός σε Ιδιωτικό';
+$GLOBALS["lang"]['secure'] = '- Да.';
 
-$GLOBALS["lang"]['Seed Restrict To Private'] = 'Σπόροι Περιορισμός σε Ιδιωτικό';
+$GLOBALS["lang"]['Secure'] = '- Да.';
 
-$GLOBALS["lang"]['seed_restrict_to_subnet'] = 'Οι σπόροι περιορίζονται στο υποδίκτυο';
+$GLOBALS["lang"]['Security Content Automation Protocol'] = 'Не, не.';
 
-$GLOBALS["lang"]['Seed Restrict To Subnet'] = 'Οι σπόροι περιορίζονται στο υποδίκτυο';
+$GLOBALS["lang"]['Security Level'] = '.';
 
-$GLOBALS["lang"]['Select'] = 'Επιλογή';
+$GLOBALS["lang"]['Security Name'] = '.';
 
-$GLOBALS["lang"]['Select All'] = 'Επιλογή όλων';
+$GLOBALS["lang"]['Security Status'] = '.';
 
-$GLOBALS["lang"]['select_external_attribute'] = 'Επιλογή εξωτερικού χαρακτηριστικού';
+$GLOBALS["lang"]['security_zone'] = '.';
 
-$GLOBALS["lang"]['Select External Attribute'] = 'Επιλογή εξωτερικού χαρακτηριστικού';
+$GLOBALS["lang"]['Security Zone'] = '.';
 
-$GLOBALS["lang"]['select_external_count'] = 'Επιλογή εξωτερικού αριθμού';
+$GLOBALS["lang"]['See above. NOTE - This could also be caused by a self-signed certificate on the LDAP server. We are working to allow for this in a future release.'] = '- Да Имено.';
 
-$GLOBALS["lang"]['Select External Count'] = 'Επιλογή εξωτερικού αριθμού';
+$GLOBALS["lang"]['See our page on enabling'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['select_external_type'] = 'Επιλογή εξωτερικού Τύπος';
+$GLOBALS["lang"]['Seed Discoveries'] = '.';
 
-$GLOBALS["lang"]['Select External Type'] = 'Επιλογή εξωτερικού Τύπος';
+$GLOBALS["lang"]['seed_ip'] = 'Βενζύλιο';
 
-$GLOBALS["lang"]['select_external_value'] = 'Επιλογή εξωτερικού Τιμή';
+$GLOBALS["lang"]['Seed IP'] = 'Βενζύλιο';
 
-$GLOBALS["lang"]['Select External Value'] = 'Επιλογή εξωτερικού Τιμή';
+$GLOBALS["lang"]['seed_ping'] = '- Не, не.';
 
-$GLOBALS["lang"]['select_internal_attribute'] = 'Επιλογή εσωτερικών χαρακτηριστικών';
+$GLOBALS["lang"]['Seed Ping'] = '- Не, не.';
 
-$GLOBALS["lang"]['Select Internal Attribute'] = 'Επιλογή εσωτερικών χαρακτηριστικών';
+$GLOBALS["lang"]['seed_restrict_to_private'] = '.';
 
-$GLOBALS["lang"]['select_internal_count'] = 'Επιλογή εσωτερικού αριθμού';
+$GLOBALS["lang"]['Seed Restrict To Private'] = '.';
 
-$GLOBALS["lang"]['Select Internal Count'] = 'Επιλογή εσωτερικού αριθμού';
+$GLOBALS["lang"]['seed_restrict_to_subnet'] = 'Подмрежа.';
 
-$GLOBALS["lang"]['select_internal_type'] = 'Επιλογή εσωτερικού Τύπος';
+$GLOBALS["lang"]['Seed Restrict To Subnet'] = 'Подмрежа.';
 
-$GLOBALS["lang"]['Select Internal Type'] = 'Επιλογή εσωτερικού Τύπος';
+$GLOBALS["lang"]['Select'] = 'Не, не.';
 
-$GLOBALS["lang"]['select_internal_value'] = 'Επιλογή εσωτερικού Τιμή';
+$GLOBALS["lang"]['Select Admin -> Tasks -> Create Task from the menu.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Select Internal Value'] = 'Επιλογή εσωτερικού Τιμή';
+$GLOBALS["lang"]['Select All'] = '- Да.';
 
-$GLOBALS["lang"]['Select a Table'] = 'Επιλογή πίνακα';
+$GLOBALS["lang"]['Select All Devices'] = '- Да.';
 
-$GLOBALS["lang"]['Senegal'] = 'Σενεγάλη';
+$GLOBALS["lang"]['select_external_attribute'] = 'Отмъ';
 
-$GLOBALS["lang"]['sensitivity'] = 'Ευαισθησία';
+$GLOBALS["lang"]['Select External Attribute'] = 'Отмъ';
 
-$GLOBALS["lang"]['Sensitivity'] = 'Ευαισθησία';
+$GLOBALS["lang"]['select_external_count'] = 'Xarici sayşse';
 
-$GLOBALS["lang"]['September'] = 'Σεπτέμβριος';
+$GLOBALS["lang"]['Select External Count'] = 'Xarici sayşse';
 
-$GLOBALS["lang"]['Serbia'] = 'Σερβία';
+$GLOBALS["lang"]['select_external_type'] = '- Не, не.';
 
-$GLOBALS["lang"]['serial'] = 'Σειριακό';
+$GLOBALS["lang"]['Select External Type'] = '- Не, не.';
 
-$GLOBALS["lang"]['Serial'] = 'Σειριακό';
+$GLOBALS["lang"]['select_external_value'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['serial_imei'] = 'Σειριακή Imei';
+$GLOBALS["lang"]['Select External Value'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Serial Imei'] = 'Σειριακή Imei';
+$GLOBALS["lang"]['select_internal_attribute'] = 'Отмъ';
 
-$GLOBALS["lang"]['serial_sim'] = 'Σειριακή προσομοίωση';
+$GLOBALS["lang"]['Select Internal Attribute'] = 'Отмъ';
 
-$GLOBALS["lang"]['Serial Sim'] = 'Σειριακή προσομοίωση';
+$GLOBALS["lang"]['select_internal_count'] = '- Не, не.';
 
-$GLOBALS["lang"]['series'] = 'Σειρά';
+$GLOBALS["lang"]['Select Internal Count'] = '- Не, не.';
 
-$GLOBALS["lang"]['Series'] = 'Σειρά';
+$GLOBALS["lang"]['select_internal_type'] = 'Не, не.';
 
-$GLOBALS["lang"]['server'] = 'Διακομιστής';
+$GLOBALS["lang"]['Select Internal Type'] = 'Не, не.';
 
-$GLOBALS["lang"]['Server'] = 'Διακομιστής';
+$GLOBALS["lang"]['select_internal_value'] = '.';
 
-$GLOBALS["lang"]['server_id'] = 'ID εξυπηρετητή';
+$GLOBALS["lang"]['Select Internal Value'] = '.';
 
-$GLOBALS["lang"]['Server ID'] = 'ID εξυπηρετητή';
+$GLOBALS["lang"]['Select Menu -> Manage -> Baselines -> List Baselines.'] = '.';
 
-$GLOBALS["lang"]['Server Is'] = 'Ο εξυπηρετητής είναι';
+$GLOBALS["lang"]['Select a Table'] = '.';
 
-$GLOBALS["lang"]['server_item'] = 'Αντικείμενο εξυπηρετητή';
+$GLOBALS["lang"]['Select an accredited certification body'] = '.';
 
-$GLOBALS["lang"]['Server Item'] = 'Αντικείμενο εξυπηρετητή';
+$GLOBALS["lang"]['Select and apply appropriate controls (Annex A)'] = 'Имено.';
 
-$GLOBALS["lang"]['Server Status'] = 'Κατάσταση εξυπηρετητή';
+$GLOBALS["lang"]['Select the <i>COM Security</i> tab<br><br>Click on Access Permissions Edit Default'] = 'Не, не, не. <i>.</i> подпрозре К.<br/><br/>Προκράμ';
 
-$GLOBALS["lang"]['Servers'] = 'Εξυπηρετητές';
+$GLOBALS["lang"]['Select the <i>Sign On</i> tab and copy the value for <i>Issuer</i> (just the URL itself). Paste this into the Open-AudIT <i>Issuer</i> field.'] = 'Не, не, не. <i>Не, не.</i> . <i>Τάριξ</i> ... <i>Τάριξ</i> - Да.';
 
-$GLOBALS["lang"]['service'] = 'Υπηρεσία';
+$GLOBALS["lang"]['Select the <i>This Account</i> checkbox and provide the account name and password.'] = 'Не, не, не. <i>.</i> .';
 
-$GLOBALS["lang"]['Service'] = 'Υπηρεσία';
+$GLOBALS["lang"]['Select the Start menu and type <i>services<.i>. Click the Services icon.'] = '. <i>- Да...</i>';
 
-$GLOBALS["lang"]['service_identifier'] = 'Αναγνωριστικό υπηρεσίας';
+$GLOBALS["lang"]['Select the type of Auth Menthod to create and input the relevant details.'] = '- Да.';
 
-$GLOBALS["lang"]['Service Identifier'] = 'Αναγνωριστικό υπηρεσίας';
+$GLOBALS["lang"]['Self Delete'] = '.';
 
-$GLOBALS["lang"]['service_level_a'] = 'Επίπεδο υπηρεσίας A';
+$GLOBALS["lang"]['Senegal'] = '- Да.';
 
-$GLOBALS["lang"]['Service Level A'] = 'Επίπεδο υπηρεσίας A';
+$GLOBALS["lang"]['sensitivity'] = '- Не, не.';
 
-$GLOBALS["lang"]['service_level_b'] = 'Επίπεδο υπηρεσίας Β';
+$GLOBALS["lang"]['Sensitivity'] = '- Не, не.';
 
-$GLOBALS["lang"]['Service Level B'] = 'Επίπεδο υπηρεσίας Β';
+$GLOBALS["lang"]['September'] = '.';
 
-$GLOBALS["lang"]['service_network'] = 'Δίκτυο υπηρεσιών';
+$GLOBALS["lang"]['Serbia'] = '- Да.';
 
-$GLOBALS["lang"]['Service Network'] = 'Δίκτυο υπηρεσιών';
+$GLOBALS["lang"]['serial'] = '.';
 
-$GLOBALS["lang"]['service_number'] = 'Αριθμός υπηρεσίας';
+$GLOBALS["lang"]['Serial'] = '.';
 
-$GLOBALS["lang"]['Service Number'] = 'Αριθμός υπηρεσίας';
+$GLOBALS["lang"]['serial_imei'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['service_pack'] = 'Πακέτο υπηρεσιών';
+$GLOBALS["lang"]['Serial Imei'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Service Pack'] = 'Πακέτο υπηρεσιών';
+$GLOBALS["lang"]['serial_sim'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['service_plan'] = 'Σχέδιο εξυπηρέτησης';
+$GLOBALS["lang"]['Serial Sim'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Service Plan'] = 'Σχέδιο εξυπηρέτησης';
+$GLOBALS["lang"]['series'] = '- Да.';
 
-$GLOBALS["lang"]['service_provider'] = 'Παροχέας υπηρεσιών';
+$GLOBALS["lang"]['Series'] = '- Да.';
 
-$GLOBALS["lang"]['Service Provider'] = 'Παροχέας υπηρεσιών';
+$GLOBALS["lang"]['server'] = '.';
 
-$GLOBALS["lang"]['service_tag'] = 'Ετικέτα υπηρεσίας';
+$GLOBALS["lang"]['Server'] = '.';
 
-$GLOBALS["lang"]['Service Tag'] = 'Ετικέτα υπηρεσίας';
+$GLOBALS["lang"]['server_id'] = '.';
 
-$GLOBALS["lang"]['service_type'] = 'Τύπος υπηρεσίας';
+$GLOBALS["lang"]['Server ID'] = '.';
 
-$GLOBALS["lang"]['Service Type'] = 'Τύπος υπηρεσίας';
+$GLOBALS["lang"]['Server Is'] = '- Да.';
 
-$GLOBALS["lang"]['service_version'] = 'Έκδοση υπηρεσίας';
+$GLOBALS["lang"]['server_item'] = '- Да.';
 
-$GLOBALS["lang"]['Service Version'] = 'Έκδοση υπηρεσίας';
+$GLOBALS["lang"]['Server Item'] = '- Да.';
 
-$GLOBALS["lang"]['Set'] = 'Ορισμός';
+$GLOBALS["lang"]['Server Status'] = '.';
 
-$GLOBALS["lang"]['set_by'] = 'Ορισμός by';
+$GLOBALS["lang"]['Servers'] = '.';
 
-$GLOBALS["lang"]['Set By'] = 'Ορισμός by';
+$GLOBALS["lang"]['Servers Only'] = '.';
 
-$GLOBALS["lang"]['Set the size (normal or compact) of the tables on the List screens.'] = 'Ορισμός του μεγέθους (κανονικό ή συμπαγές) των πινάκων στις οθόνες της Λίστας.';
+$GLOBALS["lang"]['service'] = '.';
 
-$GLOBALS["lang"]['severity'] = 'Σοβαρότητα';
+$GLOBALS["lang"]['Service'] = '.';
 
-$GLOBALS["lang"]['Severity'] = 'Σοβαρότητα';
+$GLOBALS["lang"]['service_identifier'] = ' Να Ντρουχού Στράνου.';
 
-$GLOBALS["lang"]['severity_text'] = 'Κείμενο σοβαρότητας';
+$GLOBALS["lang"]['Service Identifier'] = ' Να Ντρουχού Στράνου.';
 
-$GLOBALS["lang"]['Severity Text'] = 'Κείμενο σοβαρότητας';
+$GLOBALS["lang"]['service_level_a'] = '.';
 
-$GLOBALS["lang"]['Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.'] = 'Η σοβαρότητα υπολογίζεται από το <code>base_score</code> και μπορεί να είναι ένα από: Κανένα, χαμηλό, μεσαίο, υψηλό, κρίσιμο.';
+$GLOBALS["lang"]['Service Level A'] = '.';
 
-$GLOBALS["lang"]['Seychelles'] = 'Σεϋχέλλες';
+$GLOBALS["lang"]['service_level_b'] = '.';
 
-$GLOBALS["lang"]['share'] = 'Μερίδιο';
+$GLOBALS["lang"]['Service Level B'] = '.';
 
-$GLOBALS["lang"]['Share'] = 'Μερίδιο';
+$GLOBALS["lang"]['service_network'] = '.';
 
-$GLOBALS["lang"]['Share Name'] = 'Όνομα μετοχής';
+$GLOBALS["lang"]['Service Network'] = '.';
 
-$GLOBALS["lang"]['shared'] = 'Κοινή χρήση';
+$GLOBALS["lang"]['service_number'] = '.';
 
-$GLOBALS["lang"]['Shared'] = 'Κοινή χρήση';
+$GLOBALS["lang"]['Service Number'] = '.';
 
-$GLOBALS["lang"]['shared_name'] = 'Κοινόχρηστο όνομα';
+$GLOBALS["lang"]['service_pack'] = '.';
 
-$GLOBALS["lang"]['Shared Name'] = 'Κοινόχρηστο όνομα';
+$GLOBALS["lang"]['Service Pack'] = '.';
 
-$GLOBALS["lang"]['shell'] = 'Κέλυφος';
+$GLOBALS["lang"]['service_plan'] = '- Да.';
 
-$GLOBALS["lang"]['Shell'] = 'Κέλυφος';
+$GLOBALS["lang"]['Service Plan'] = '- Да.';
 
-$GLOBALS["lang"]['Ship Date'] = 'Ημερομηνία πλοίου';
+$GLOBALS["lang"]['service_provider'] = '- Да.';
 
-$GLOBALS["lang"]['short'] = 'Σύντομη';
+$GLOBALS["lang"]['Service Provider'] = '- Да.';
 
-$GLOBALS["lang"]['Short'] = 'Σύντομη';
+$GLOBALS["lang"]['service_tag'] = '.';
 
-$GLOBALS["lang"]['Should I remove all non-current data from this device?'] = 'Να αφαιρέσω όλα τα μη τρέχοντα δεδομένα από αυτή τη συσκευή;';
+$GLOBALS["lang"]['Service Tag'] = '.';
 
-$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = 'Εάν αυτό το αρχείο (ή μοτίβο) χρησιμοποιηθεί για να αποκλειστεί η αναφορά αρχείων. Κανονικά, για τα αρχεία ελέγχου, αυτό είναι καθορισμένο για <code>y</code>.';
+$GLOBALS["lang"]['service_type'] = '.';
 
-$GLOBALS["lang"]['Should this vendor be used when retrieving vulnerabilities from FirstWave.'] = 'Σε περίπτωση που αυτός ο πωλητής χρησιμοποιηθεί κατά την ανάκτηση τρωτά σημεία από FirstWave.';
+$GLOBALS["lang"]['Service Type'] = '.';
 
-$GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = 'Θα πρέπει να προσθέσουμε συσκευές από την απομακρυσμένη υπηρεσία, τοπικά.';
+$GLOBALS["lang"]['Service Under Windows'] = '.';
 
-$GLOBALS["lang"]['Should we apply this license to the selected Org as well as the Orgs children?'] = 'Να εφαρμόσουμε αυτή την άδεια στον επιλεγμένο Οργ καθώς και στα παιδιά των Οργάδων;';
+$GLOBALS["lang"]['service_version'] = '.';
 
-$GLOBALS["lang"]['Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?'] = 'Θα πρέπει να θεωρήσουμε μια διηθημένη θύρα ως ανοικτή θύρα - και συνεπώς να επισημάνουμε ότι αυτή η IP έχει μια συσκευή προσαρτημένη;';
+$GLOBALS["lang"]['Service Version'] = '.';
 
-$GLOBALS["lang"]['Should we consider an open|filtered port to be an open port - and therefore flag this IP as having a device attached?'] = 'Θα πρέπει να θεωρήσουμε μια ανοικτή θύρα ως ανοικτή θύρα - και επομένως να επισημάνουμε ότι αυτή η IP έχει προσαρτημένη μια συσκευή;';
+$GLOBALS["lang"]['Set'] = '.';
 
-$GLOBALS["lang"]['Should we expose this group in the web interface.'] = 'Πρέπει να εκθέσουμε αυτή την ομάδα στο διαδίκτυο.';
+$GLOBALS["lang"]['set_by'] = '- Да.';
 
-$GLOBALS["lang"]['Should we expose this query in the list of reports under the Report menu in the web interface.'] = 'Εάν εκθέσουμε αυτό το ερώτημα στη λίστα των αναφορών στο μενού Αναφορά στη διασύνδεση ιστού.';
+$GLOBALS["lang"]['Set By'] = '- Да.';
 
-$GLOBALS["lang"]['Should we expose this query in the list of reports under the Reports menu in the web interface.'] = 'Θα πρέπει να εκθέσουμε αυτό το ερώτημα στη λίστα των αναφορών κάτω από το μενού Reports στη διασύνδεση ιστού.';
+$GLOBALS["lang"]['Set by the Discovery function - do not normally set this manually.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Should we install Open-Scap on the target machine.'] = 'Θα πρέπει να εγκαταστήσετε Open-Scap στο μηχάνημα στόχο.';
+$GLOBALS["lang"]['Set by the audit_domain or discover_domain scripts. Do not set.'] = ' голмите, които не могат да се сбъднат.';
 
-$GLOBALS["lang"]['Should we match a device based mac address even if its a known likely duplicate from VMware.'] = 'Θα πρέπει να ταιριάζει με μια συσκευή που βασίζεται mac διεύθυνση ακόμα και αν είναι ένα γνωστό πιθανό αντίγραφο από VMware.';
+$GLOBALS["lang"]['Set the external text to capitalized version of the internal data.'] = '.';
 
-$GLOBALS["lang"]['Should we match a device based on its DNS fqdn.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση το DNS fqdn της.';
+$GLOBALS["lang"]['Set the external text to lowercase.'] = '- Да.';
 
-$GLOBALS["lang"]['Should we match a device based on its DNS hostname.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση το όνομα υπολογιστή του DNS.';
+$GLOBALS["lang"]['Set the external text to uppercase.'] = '.';
 
-$GLOBALS["lang"]['Should we match a device based on its UUID.'] = 'Πρέπει να ταιριάξουμε μια συσκευή βασισμένη στο UUID της.';
+$GLOBALS["lang"]['Set the size (normal or compact) of the tables on the List screens.'] = '- Да.';
 
-$GLOBALS["lang"]['Should we match a device based on its dbus id.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση την ταυτότητα του.';
+$GLOBALS["lang"]['Set this if you wish to insert systems from AD that may not be contactable, but have been seen by AD since that date.'] = '.';
 
-$GLOBALS["lang"]['Should we match a device based on its fqdn.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση το FQDN της.';
+$GLOBALS["lang"]['Setting up Discovery on a subnet is almost identical to running a regular Discovery via the web interface. The only additional items are the scheduled hour and day(s) and a name for the Scheduled Task itself. You can take advantage of this to schedule multiple discoveries using different sets of credentials.<br><br>As per the Subnet Discovery, the Active Directory Discovery is also simply the same fields as a regular Active Directory Discovery with the addition of a day, hour(s) and name.<br><br>If the Open-AudIT Server has Collectors reporting to it, an additional drop down is provided. You can select this to specify which Collector the task should run on. Only Discovery tasks are supported for Collectors. Specify the same items as a regular Discovery, but provide the alternate Collector to run this task.'] = 'Имено.<br/><br/>Subnet Discovery-da olduğu kimi, Active Directory Discovery bir gün, saat (s) v год.<br/><br/>Open-Audit Server \'n buraxdīşkollektorlar varsa, гор dalla verilir. Имено.';
 
-$GLOBALS["lang"]['Should we match a device based on its hostname and UUID.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση το όνομα του υπολογιστή και το UUID.';
+$GLOBALS["lang"]['severity'] = '- Не.';
 
-$GLOBALS["lang"]['Should we match a device based on its hostname and dbus id.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση το όνομα του υπολογιστή και την ταυτότητα του dbus.';
+$GLOBALS["lang"]['Severity'] = '- Не.';
 
-$GLOBALS["lang"]['Should we match a device based on its hostname and serial.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση το όνομα του υπολογιστή και τη σειρά της.';
+$GLOBALS["lang"]['severity_text'] = '.';
 
-$GLOBALS["lang"]['Should we match a device based on its ip if we have an existing device with no data.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση το ip της αν έχουμε μια υπάρχουσα συσκευή χωρίς δεδομένα.';
+$GLOBALS["lang"]['Severity Text'] = '.';
 
-$GLOBALS["lang"]['Should we match a device based on its ip.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση το ip του.';
+$GLOBALS["lang"]['Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.'] = '. <code>base_score</code> да го направим, да го направим.';
 
-$GLOBALS["lang"]['Should we match a device based on its mac address.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση την διεύθυνση mac της.';
+$GLOBALS["lang"]['Seychelles'] = '- Да.';
 
-$GLOBALS["lang"]['Should we match a device based on its serial and type.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση τον σειριακό και τον τύπο της.';
+$GLOBALS["lang"]['share'] = ' Дяла. kgm';
 
-$GLOBALS["lang"]['Should we match a device based on its serial number.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση τον σειριακό της αριθμό.';
+$GLOBALS["lang"]['Share'] = ' Дяла. kgm';
 
-$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName and serial.'] = 'Θα πρέπει να ταιριάξουμε μια συσκευή με βάση μόνο το SNMP sysName και το σειριακό.';
+$GLOBALS["lang"]['Share Name'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName.'] = 'Θα πρέπει να ταιριάξουμε μια συσκευή με βάση μόνο το SNMP sysName.';
+$GLOBALS["lang"]['shared'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Should we match a device based only on its hostname.'] = 'Πρέπει να ταιριάξουμε μια συσκευή με βάση μόνο το όνομά της.';
+$GLOBALS["lang"]['Shared'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Should we ping the IP before attempting to scan it? If it does not respond to the ping, skip this device.'] = 'Να εντοπίσουμε την IP πριν προσπαθήσουμε να το σαρώσουμε; Εάν δεν ανταποκριθεί στο ping, παραλείψτε αυτή τη συσκευή.';
+$GLOBALS["lang"]['shared_name'] = '.';
 
-$GLOBALS["lang"]['Should we populate the external system from our local devices.'] = 'Πρέπει να κατοικήσουμε το εξωτερικό σύστημα από τις τοπικές μας συσκευές.';
+$GLOBALS["lang"]['Shared Name'] = '.';
 
-$GLOBALS["lang"]['Should we run an audit and submit it (y/n).'] = 'Πρέπει να τρέξουμε έναν έλεγχο και να τον υποβάλουμε (y/n).';
+$GLOBALS["lang"]['shell'] = 'Автомобил Автомобил.';
 
-$GLOBALS["lang"]['Should we test for SNMP using UDP port 161.'] = 'Θα πρέπει να εξετάσουμε για SNMP χρησιμοποιώντας UDP θύρα 161.';
+$GLOBALS["lang"]['Shell'] = 'Автомобил Автомобил.';
 
-$GLOBALS["lang"]['Should we test for SSH using TCP port 22.'] = 'Θα πρέπει να εξετάσουμε για SSH χρησιμοποιώντας TCP θύρα 22.';
+$GLOBALS["lang"]['Ship Date'] = '- Не, не.';
 
-$GLOBALS["lang"]['Should we test for WMI using TCP port 135.'] = 'Θα πρέπει να εξετάσουμε για WMI χρησιμοποιώντας TCP θύρα 135.';
+$GLOBALS["lang"]['Shipped are a set of default items. These can be found by going to menu'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Should we uninstall the agent (y/n).'] = 'Πρέπει να απεγκαταστήσουμε τον πράκτορα (y/n).';
+$GLOBALS["lang"]['short'] = '- Да.';
 
-$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.'] = 'Πρέπει να χρησιμοποιήσουμε αυτή τη μέθοδο για να επιβεβαιώσουμε τα διαπιστευτήρια των χρηστών. Ορισμός σε <code>y</code> ή <code>n</code>.';
+$GLOBALS["lang"]['Short'] = '- Да.';
 
-$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.'] = 'Πρέπει να χρησιμοποιήσουμε αυτή τη μέθοδο για να γεμίσουμε τους ρόλους των χρηστών. Το πεδίο <code>use_auth</code> πρέπει να είναι ρυθμισμένη <code>y</code> Για να χρησιμοποιήσω αυτό. Ορισμός σε <code>y</code> ή <code>n</code>.';
+$GLOBALS["lang"]['Should I remove all non-current data from this device?'] = '.';
 
-$GLOBALS["lang"]['Show All'] = 'Εμφάνιση όλων';
+$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = 'Имено. <code>y</code>.';
 
-$GLOBALS["lang"]['sid'] = 'Σιντ.';
+$GLOBALS["lang"]['Should this vendor be used when retrieving vulnerabilities from FirstWave.'] = '.';
 
-$GLOBALS["lang"]['Sid'] = 'Σιντ.';
+$GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = '.';
 
-$GLOBALS["lang"]['sidebar'] = 'Πλευρική μπάρα';
+$GLOBALS["lang"]['Should we apply this license to the selected Org as well as the Orgs children?'] = '.';
 
-$GLOBALS["lang"]['Sidebar'] = 'Πλευρική μπάρα';
+$GLOBALS["lang"]['Should we audit a SAN if the management software is detected.'] = ' - \'νω.';
 
-$GLOBALS["lang"]['Sierra Leone'] = 'Σιέρα Λεόνε';
+$GLOBALS["lang"]['Should we audit mount points.'] = '.';
 
-$GLOBALS["lang"]['Singapore'] = 'Σιγκαπούρη';
+$GLOBALS["lang"]['Should we audit netstat ports (yes, no, servers only).'] = 'Не, не.';
 
-$GLOBALS["lang"]['Site A'] = 'Ιστοσελίδα A';
+$GLOBALS["lang"]['Should we audit the installed software.'] = '- Да.';
 
-$GLOBALS["lang"]['Site B'] = 'Τόπος Β';
+$GLOBALS["lang"]['Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?'] = '.';
 
-$GLOBALS["lang"]['site_hours_a'] = 'Ώρες site A';
+$GLOBALS["lang"]['Should we consider an open|filtered port to be an open port - and therefore flag this IP as having a device attached?'] = '.';
 
-$GLOBALS["lang"]['Site Hours A'] = 'Ώρες site A';
+$GLOBALS["lang"]['Should we convert the hostname to lowercase.'] = '.';
 
-$GLOBALS["lang"]['site_hours_b'] = 'Ώρες τοποθεσίας B';
+$GLOBALS["lang"]['Should we create a file based on the audit result.'] = '- Да.';
 
-$GLOBALS["lang"]['Site Hours B'] = 'Ώρες τοποθεσίας B';
+$GLOBALS["lang"]['Should we expose this group in the web interface.'] = '.';
 
-$GLOBALS["lang"]['size'] = 'Μέγεθος';
+$GLOBALS["lang"]['Should we expose this query in the list of reports under the Report menu in the web interface.'] = '.';
 
-$GLOBALS["lang"]['Size'] = 'Μέγεθος';
+$GLOBALS["lang"]['Should we expose this query in the list of reports under the Reports menu in the web interface.'] = '.';
 
-$GLOBALS["lang"]['slaves'] = 'Σκλάβοι';
+$GLOBALS["lang"]['Should we hide the audit script window when executing.'] = '- Да.';
 
-$GLOBALS["lang"]['Slaves'] = 'Σκλάβοι';
+$GLOBALS["lang"]['Should we ignore an invalid or self signed SSL certificate and submit the result anyway.'] = '.';
 
-$GLOBALS["lang"]['Slovakia (Slovak Republic)'] = 'Σλοβακία (Σλοβακική Δημοκρατία)';
+$GLOBALS["lang"]['Should we install Open-Scap on the target machine.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Slovenia'] = 'Σλοβενία';
+$GLOBALS["lang"]['Should we match a device based mac address even if its a known likely duplicate from VMware.'] = '.';
 
-$GLOBALS["lang"]['Smart Status'] = 'Έξυπνη κατάσταση';
+$GLOBALS["lang"]['Should we match a device based on its DNS fqdn.'] = '.';
 
-$GLOBALS["lang"]['smversion'] = 'Μετατροπή';
+$GLOBALS["lang"]['Should we match a device based on its DNS hostname.'] = '.';
 
-$GLOBALS["lang"]['Smversion'] = 'Μετατροπή';
+$GLOBALS["lang"]['Should we match a device based on its UUID.'] = '.';
 
-$GLOBALS["lang"]['Sneaky'] = 'Ύπουλο';
+$GLOBALS["lang"]['Should we match a device based on its dbus id.'] = '.';
 
-$GLOBALS["lang"]['snmp_enterprise_id'] = 'Snmp Enterprise ID';
+$GLOBALS["lang"]['Should we match a device based on its fqdn.'] = '.';
 
-$GLOBALS["lang"]['Snmp Enterprise ID'] = 'Snmp Enterprise ID';
+$GLOBALS["lang"]['Should we match a device based on its hostname and UUID.'] = '.';
 
-$GLOBALS["lang"]['snmp_enterprise_name'] = 'Όνομα επιχείρησης Snmp';
+$GLOBALS["lang"]['Should we match a device based on its hostname and dbus id.'] = '.';
 
-$GLOBALS["lang"]['Snmp Enterprise Name'] = 'Όνομα επιχείρησης Snmp';
+$GLOBALS["lang"]['Should we match a device based on its hostname and serial.'] = '.';
 
-$GLOBALS["lang"]['snmp_oid'] = 'Σνμπ Οιντ';
+$GLOBALS["lang"]['Should we match a device based on its ip if we have an existing device with no data.'] = '.';
 
-$GLOBALS["lang"]['Snmp Oid'] = 'Σνμπ Οιντ';
+$GLOBALS["lang"]['Should we match a device based on its ip.'] = '.';
 
-$GLOBALS["lang"]['snmp_timeout'] = 'Χρονικό όριο Snmp';
+$GLOBALS["lang"]['Should we match a device based on its mac address.'] = '.';
 
-$GLOBALS["lang"]['Snmp Timeout'] = 'Χρονικό όριο Snmp';
+$GLOBALS["lang"]['Should we match a device based on its serial and type.'] = '.';
 
-$GLOBALS["lang"]['snmp_version'] = 'Έκδοση Snmp';
+$GLOBALS["lang"]['Should we match a device based on its serial number.'] = '.';
 
-$GLOBALS["lang"]['Snmp Version'] = 'Έκδοση Snmp';
+$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName and serial.'] = '.';
 
-$GLOBALS["lang"]['socket'] = 'Υποδοχή';
+$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName.'] = '.';
 
-$GLOBALS["lang"]['Socket'] = 'Υποδοχή';
+$GLOBALS["lang"]['Should we match a device based only on its hostname.'] = '.';
 
-$GLOBALS["lang"]['software'] = 'Λογισμικό';
+$GLOBALS["lang"]['Should we ping the IP before attempting to scan it? If it does not respond to the ping, skip this device.'] = '.';
 
-$GLOBALS["lang"]['Software'] = 'Λογισμικό';
+$GLOBALS["lang"]['Should we populate the external system from our local devices.'] = '.';
 
-$GLOBALS["lang"]['Software Found Last 7 Days'] = 'Λογισμικό βρέθηκαν τις τελευταίες 7 ημέρες';
+$GLOBALS["lang"]['Should we retrieve all DNS names'] = '.';
 
-$GLOBALS["lang"]['Software Found Today'] = 'Βρέθηκε λογισμικό σήμερα';
+$GLOBALS["lang"]['Should we run an audit and submit it (y/n).'] = 'Имено.';
 
-$GLOBALS["lang"]['Software Found Yesterday'] = 'Λογισμικό Βρέθηκε Χθες';
+$GLOBALS["lang"]['Should we test for SNMP using UDP port 161.'] = '.';
 
-$GLOBALS["lang"]['software_key'] = 'Κλειδί λογισμικού';
+$GLOBALS["lang"]['Should we test for SSH using TCP port 22.'] = ' гонката е на TCP22.';
 
-$GLOBALS["lang"]['Software Key'] = 'Κλειδί λογισμικού';
+$GLOBALS["lang"]['Should we test for WMI using TCP port 135.'] = '.';
 
-$GLOBALS["lang"]['software_name'] = 'Όνομα λογισμικού';
+$GLOBALS["lang"]['Should we uninstall the agent (y/n).'] = '.';
 
-$GLOBALS["lang"]['Software Name'] = 'Όνομα λογισμικού';
+$GLOBALS["lang"]['Should we use the system or user level proxy to submit the audit result.'] = '.';
 
-$GLOBALS["lang"]['Software Policies'] = 'Πολιτικές λογισμικού';
+$GLOBALS["lang"]['Should we use the win32_product WMI class (not recommended by Microsoft) when retrieving installed software.'] = 'Имено.';
 
-$GLOBALS["lang"]['software_revision'] = 'Αναθεώρηση λογισμικού';
+$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.'] = '. <code>y</code> . <code>n</code>.';
 
-$GLOBALS["lang"]['Software Revision'] = 'Αναθεώρηση λογισμικού';
+$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.'] = '. <code>use_auth</code> . <code>y</code> - Да. <code>y</code> . <code>n</code>.';
 
-$GLOBALS["lang"]['software_version'] = 'Έκδοση λογισμικού';
+$GLOBALS["lang"]['Should we use this value to match external and internal devices. Our default Integration uses IP and UUID here. If either of these match between external and internal device, we consider them to be the same device.'] = '.';
 
-$GLOBALS["lang"]['Software Version'] = 'Έκδοση λογισμικού';
+$GLOBALS["lang"]['Show All'] = '.';
 
-$GLOBALS["lang"]['Solaris'] = 'Σολάρις';
+$GLOBALS["lang"]['sid'] = '- Да.';
 
-$GLOBALS["lang"]['Solomon Islands'] = 'Νήσοι Σολομώντος';
+$GLOBALS["lang"]['Sid'] = '- Да.';
 
-$GLOBALS["lang"]['Somalia, Somali Republic'] = 'Σομαλία, Σομαλία';
+$GLOBALS["lang"]['sidebar'] = ' Страничен.';
 
-$GLOBALS["lang"]['sound'] = 'Ήχος';
+$GLOBALS["lang"]['Sidebar'] = ' Страничен.';
 
-$GLOBALS["lang"]['Sound'] = 'Ήχος';
+$GLOBALS["lang"]['Sierra Leone'] = '- Не, не.';
 
-$GLOBALS["lang"]['source'] = 'Πηγή';
+$GLOBALS["lang"]['Singapore'] = '- Да.';
 
-$GLOBALS["lang"]['Source'] = 'Πηγή';
+$GLOBALS["lang"]['Site A'] = '.';
 
-$GLOBALS["lang"]['South Africa'] = 'Νότια Αφρική';
+$GLOBALS["lang"]['Site B'] = '- Да.';
 
-$GLOBALS["lang"]['South Georgia and the South Sandwich Islands'] = 'Νότια Γεωργία και Νότιοι Νήσοι Σάντουιτς';
+$GLOBALS["lang"]['site_hours_a'] = 'Αξτάρα';
 
-$GLOBALS["lang"]['Spain'] = 'Ισπανία';
+$GLOBALS["lang"]['Site Hours A'] = 'Αξτάρα';
 
-$GLOBALS["lang"]['Spanish'] = 'Ισπανικά';
+$GLOBALS["lang"]['site_hours_b'] = 'Сайт Saatlar';
 
-$GLOBALS["lang"]['Specific to Azure.'] = 'Ειδικά για την Αζούρ.';
+$GLOBALS["lang"]['Site Hours B'] = 'Сайт Saatlar';
 
-$GLOBALS["lang"]['Specific to OKTA.'] = 'Ειδικά στην OKTA.';
+$GLOBALS["lang"]['size'] = '- Да.';
 
-$GLOBALS["lang"]['Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.'] = 'Καθορίζει μια λίστα χωρισμένων με κόμματα στόχων (χωρίς κενά) που πρέπει να εξαιρεθούν από τη σάρωση. Η λίστα που περνάτε χρησιμοποιεί κανονική σύνταξη Nmap, έτσι ώστε να μπορεί να περιλαμβάνει ονόματα host, CIDR netblocks, ectet ranges, κλπ.';
+$GLOBALS["lang"]['Size'] = '- Да.';
 
-$GLOBALS["lang"]['speed'] = 'Ταχύτητα';
+$GLOBALS["lang"]['slaves'] = 'Не, не.';
 
-$GLOBALS["lang"]['Speed'] = 'Ταχύτητα';
+$GLOBALS["lang"]['Slaves'] = 'Не, не.';
 
-$GLOBALS["lang"]['speed_down_a'] = 'Ταχύτητα κάτω Α';
+$GLOBALS["lang"]['Slovak'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Speed Down A'] = 'Ταχύτητα κάτω Α';
+$GLOBALS["lang"]['Slovakia (Slovak Republic)'] = '- Ναι.';
 
-$GLOBALS["lang"]['speed_down_b'] = 'Ταχύτητα κάτω Β';
+$GLOBALS["lang"]['Slovenia'] = '- Да.';
 
-$GLOBALS["lang"]['Speed Down B'] = 'Ταχύτητα κάτω Β';
+$GLOBALS["lang"]['Slovenian'] = '- Ναι.';
 
-$GLOBALS["lang"]['speed_up_a'] = 'Ταχύτητα A';
+$GLOBALS["lang"]['Smart Status'] = '.';
 
-$GLOBALS["lang"]['Speed Up A'] = 'Ταχύτητα A';
+$GLOBALS["lang"]['smversion'] = 'Не, не.';
 
-$GLOBALS["lang"]['speed_up_b'] = 'Ταχύτητα B';
+$GLOBALS["lang"]['Smversion'] = 'Не, не.';
 
-$GLOBALS["lang"]['Speed Up B'] = 'Ταχύτητα B';
+$GLOBALS["lang"]['Sneaky'] = 'Калерея.';
 
-$GLOBALS["lang"]['sql'] = 'Ι';
+$GLOBALS["lang"]['snmp_enterprise_id'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['Sql'] = 'Ι';
+$GLOBALS["lang"]['Snmp Enterprise ID'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['Sri Lanka'] = 'Σρι Λάνκα';
+$GLOBALS["lang"]['snmp_enterprise_name'] = '.';
+
+$GLOBALS["lang"]['Snmp Enterprise Name'] = '.';
+
+$GLOBALS["lang"]['snmp_oid'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Snmp Oid'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['snmp_timeout'] = '.';
+
+$GLOBALS["lang"]['Snmp Timeout'] = '.';
+
+$GLOBALS["lang"]['snmp_version'] = 'Σνμπ βερζέ';
+
+$GLOBALS["lang"]['Snmp Version'] = 'Σνμπ βερζέ';
+
+$GLOBALS["lang"]['So a script is not working on a recalcitrant device. Grrr. The scripts for Windows, Linux, and MacOS all accept the debugging argument. This can be set in the script itself, or provided on the command line. Run the script using that option set to 5 and you should see in which section of the script the failure occurs. For example'] = 'Имено...';
+
+$GLOBALS["lang"]['So apart from a regular word, what other options are there - I am glad you asked! As per the standard Open-AudIT API, we have several operators for filtering. Operators that can precede the value are'] = 'V této souvislosti je třeba poznamenat, že v případě, že je to nezbytné pro dosažení cíl';
+
+$GLOBALS["lang"]['So you have an issue providing Open-AudIT credentials to discover your devices. I have an answer - dont then! Sure, I mean, discovery is the best thing since sliced bread. You do not need to know ahead of time <i>Whats On Your Network</i>. But how can you extract data from devices without providing credentials?<br><br>In the case of computers, an easy option is to copy the appropriate audit script to the target machines and set it to execute on a schedule. More details on the wiki. The machines will send their data to Open-AudIT on that schedule, almost as if you were running discovery. The device simply runs the audit script on a schedule (again, you can read the audit script) as the user you tell it to and sends the output to the server. No credentials are involved at all.<br><br>And now we have Agents for Windows. The advantages of an actual installed Agent are'] = '- Да... <i>.</i>. Не, не.<br/><br/>Имено.<br/><br/>.';
+
+$GLOBALS["lang"]['socket'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['Socket'] = 'Даксил ол Бол.';
+
+$GLOBALS["lang"]['software'] = 'Не, не.';
+
+$GLOBALS["lang"]['Software'] = 'Не, не.';
+
+$GLOBALS["lang"]['Software Found Last 7 Days'] = '.';
+
+$GLOBALS["lang"]['Software Found Today'] = 'Не, не.';
+
+$GLOBALS["lang"]['Software Found Yesterday'] = '.';
+
+$GLOBALS["lang"]['software_key'] = 'Имено.';
+
+$GLOBALS["lang"]['Software Key'] = 'Имено.';
+
+$GLOBALS["lang"]['Software License Reporting'] = '- Не, не.';
+
+$GLOBALS["lang"]['software_name'] = '.';
+
+$GLOBALS["lang"]['Software Name'] = '.';
+
+$GLOBALS["lang"]['Software Policies'] = 'Не, не.';
+
+$GLOBALS["lang"]['software_revision'] = '.';
+
+$GLOBALS["lang"]['Software Revision'] = '.';
+
+$GLOBALS["lang"]['software_version'] = 'Не, не.';
+
+$GLOBALS["lang"]['Software Version'] = 'Не, не.';
+
+$GLOBALS["lang"]['Solaris'] = 'ΠΙΛΟΑ';
+
+$GLOBALS["lang"]['Solomon Islands'] = '.';
+
+$GLOBALS["lang"]['Somalia, Somali Republic'] = 'Имено.';
+
+$GLOBALS["lang"]['Some collections can be executed - queries, etc - see below.'] = '.';
+
+$GLOBALS["lang"]['Some examples are at the bottom of this page. All endpoints also have a minimum list of required fields. These are below.'] = ' да го направим, да го направим.';
+
+$GLOBALS["lang"]['Some of our templates support the new move to dataTables, using server side processing. This massivley improves load times.'] = '.';
+
+$GLOBALS["lang"]['Some other error has occurred when attempting to bind to the LDAP server. It is contactable (ie, the <i>connect</i> above has worked), but for some other reason, binding has not occurred. Check the logs on the LDAP server.'] = 'Имено. <i>- Не, не.</i> Имено.';
+
+$GLOBALS["lang"]['Something has gone seriously wrong. Open-AudIT cannot read the <i>orgs</i> table.'] = '. <i>.</i> - Не, не.';
+
+$GLOBALS["lang"]['Something has gone seriously wrong. Open-AudIT cannot read the <i>roles</i> table.'] = '. <i>.</i> - Не, не.';
+
+$GLOBALS["lang"]['Sometimes agentless discovery just does not fit your use-case. Maybe your PCs have tight firewalls. Maybe they are not on the network when your discoveries are scheduled. Maybe they are used by remote workers. Whatever the case, this is where an agent can help. Install it on the target machine and it will <i>check-in</i> with your Open-AudIT server on a schedule and accept tasks. The most common task the server requests is for the agent to audit itself and send the result.'] = 'Имено. <i>- Да.</i> Не, не.';
+
+$GLOBALS["lang"]['Sort'] = '- Да.';
+
+$GLOBALS["lang"]['sound'] = 'Не, не.';
+
+$GLOBALS["lang"]['Sound'] = 'Не, не.';
+
+$GLOBALS["lang"]['source'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Source'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['South Africa'] = '- Да.';
+
+$GLOBALS["lang"]['South Georgia and the South Sandwich Islands'] = 'Не, не.';
+
+$GLOBALS["lang"]['Spain'] = '- Не, не.';
+
+$GLOBALS["lang"]['Spanish'] = '- Да.';
+
+$GLOBALS["lang"]['Specific to Azure.'] = '.';
+
+$GLOBALS["lang"]['Specific to OKTA.'] = '- Ναι.';
+
+$GLOBALS["lang"]['Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.'] = 'Имено.';
+
+$GLOBALS["lang"]['speed'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Speed'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['speed_down_a'] = '.';
+
+$GLOBALS["lang"]['Speed Down A'] = '.';
+
+$GLOBALS["lang"]['speed_down_b'] = '.';
+
+$GLOBALS["lang"]['Speed Down B'] = '.';
+
+$GLOBALS["lang"]['speed_up_a'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Speed Up A'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['speed_up_b'] = '.';
+
+$GLOBALS["lang"]['Speed Up B'] = '.';
+
+$GLOBALS["lang"]['sql'] = ' Σ';
+
+$GLOBALS["lang"]['Sql'] = ' Σ';
+
+$GLOBALS["lang"]['Sri Lanka'] = '.';
 
 $GLOBALS["lang"]['ssh_ports'] = 'Θύρα Ssh';
 
 $GLOBALS["lang"]['Ssh Ports'] = 'Θύρα Ssh';
 
-$GLOBALS["lang"]['ssh_timeout'] = 'Χρονικό όριο Ssh';
+$GLOBALS["lang"]['ssh_timeout'] = '.';
 
-$GLOBALS["lang"]['Ssh Timeout'] = 'Χρονικό όριο Ssh';
+$GLOBALS["lang"]['Ssh Timeout'] = '.';
 
-$GLOBALS["lang"]['Stand-Alone'] = 'Σταθερά Μόνος';
+$GLOBALS["lang"]['Stage 1: Documentation review'] = '- Да. 1:';
 
-$GLOBALS["lang"]['Standard'] = 'Πρότυπο';
+$GLOBALS["lang"]['Stage 2: Implementation and effectiveness review'] = 'Да. 02: год.';
 
-$GLOBALS["lang"]['standard_id'] = 'Τυποποιημένο ID';
+$GLOBALS["lang"]['Stand-Alone'] = '.';
 
-$GLOBALS["lang"]['Standard ID'] = 'Τυποποιημένο ID';
+$GLOBALS["lang"]['Standard'] = '- Да.';
 
-$GLOBALS["lang"]['standards'] = 'Πρότυπα';
+$GLOBALS["lang"]['standard_id'] = 'Не, не.';
 
-$GLOBALS["lang"]['Standards'] = 'Πρότυπα';
+$GLOBALS["lang"]['Standard ID'] = 'Не, не.';
 
-$GLOBALS["lang"]['standards_policies'] = 'Πολιτικές προτύπων';
+$GLOBALS["lang"]['standards'] = '- Да.';
 
-$GLOBALS["lang"]['Standards Policies'] = 'Πολιτικές προτύπων';
+$GLOBALS["lang"]['Standards'] = '- Да.';
 
-$GLOBALS["lang"]['standards_results'] = 'Αποτελέσματα προτύπων';
+$GLOBALS["lang"]['standards_policies'] = '- Да.';
 
-$GLOBALS["lang"]['Standards Results'] = 'Αποτελέσματα προτύπων';
+$GLOBALS["lang"]['Standards Policies'] = '- Да.';
 
-$GLOBALS["lang"]['start_date'] = 'Ημερομηνία έναρξης';
+$GLOBALS["lang"]['standards_results'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Start Date'] = 'Ημερομηνία έναρξης';
+$GLOBALS["lang"]['Standards Results'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['start_mode'] = 'Λειτουργία εκκίνησης';
+$GLOBALS["lang"]['start_date'] = '- Да.';
 
-$GLOBALS["lang"]['Start Mode'] = 'Λειτουργία εκκίνησης';
+$GLOBALS["lang"]['Start Date'] = '- Да.';
 
-$GLOBALS["lang"]['started_date'] = 'Ημερομηνία έναρξης';
+$GLOBALS["lang"]['start_mode'] = '- Да.';
 
-$GLOBALS["lang"]['Started Date'] = 'Ημερομηνία έναρξης';
+$GLOBALS["lang"]['Start Mode'] = '- Да.';
 
-$GLOBALS["lang"]['state'] = 'Κατάσταση';
+$GLOBALS["lang"]['Start a web browser and go to'] = '.';
 
-$GLOBALS["lang"]['State'] = 'Κατάσταση';
+$GLOBALS["lang"]['started_date'] = '- Да.';
 
-$GLOBALS["lang"]['Stats'] = 'Στατιστικά';
+$GLOBALS["lang"]['Started Date'] = '- Да.';
 
-$GLOBALS["lang"]['status'] = 'Κατάσταση';
+$GLOBALS["lang"]['Starting June 2018 Google has implemented a pay-as-you-go pricing model for the Google Maps Platform APIs. Previously, most users with moderate usage could use Google Maps, which are embedded into opCharts and Open-AudIT Professional/Enterprise, for free. Googles new policy is outlined here,'] = 'Имено.';
 
-$GLOBALS["lang"]['Status'] = 'Κατάσταση';
+$GLOBALS["lang"]['Starts With'] = '.';
 
-$GLOBALS["lang"]['Storage'] = 'Αποθήκευση';
+$GLOBALS["lang"]['state'] = '- Не.';
 
-$GLOBALS["lang"]['storage_count'] = 'Αριθμός αποθήκευσης';
+$GLOBALS["lang"]['State'] = '- Не.';
 
-$GLOBALS["lang"]['Storage Count'] = 'Αριθμός αποθήκευσης';
+$GLOBALS["lang"]['Stats'] = 'Статистика Статистика.';
 
-$GLOBALS["lang"]['Storage-Area Network'] = 'Δίκτυο αποθήκευσης-περιοχής';
+$GLOBALS["lang"]['status'] = 'Не, не.';
 
-$GLOBALS["lang"]['string'] = 'Στρινγκ';
+$GLOBALS["lang"]['Status'] = 'Не, не.';
 
-$GLOBALS["lang"]['String'] = 'Στρινγκ';
+$GLOBALS["lang"]['Storage'] = '- Да.';
 
-$GLOBALS["lang"]['sub_resource_id'] = 'Υπο ID πόρου';
+$GLOBALS["lang"]['storage_count'] = '.';
 
-$GLOBALS["lang"]['Sub Resource ID'] = 'Υπο ID πόρου';
+$GLOBALS["lang"]['Storage Count'] = '.';
 
-$GLOBALS["lang"]['sub_type'] = 'Υποκατηγορία';
+$GLOBALS["lang"]['Storage area network'] = '- Да.';
 
-$GLOBALS["lang"]['Sub Type'] = 'Υποκατηγορία';
+$GLOBALS["lang"]['Storage-Area Network'] = '- Да.';
 
-$GLOBALS["lang"]['subject_key_ident'] = 'Ταυτότητα κλειδιού θέματος';
+$GLOBALS["lang"]['string'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Subject Key Ident'] = 'Ταυτότητα κλειδιού θέματος';
+$GLOBALS["lang"]['String'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Submit'] = 'Υποβολή';
+$GLOBALS["lang"]['sub_resource_id'] = ' Να Ντρουχού Στράνου.';
 
-$GLOBALS["lang"]['Submitted From'] = 'Υποβλήθηκε από';
+$GLOBALS["lang"]['Sub Resource ID'] = ' Να Ντρουχού Στράνου.';
 
-$GLOBALS["lang"]['subnet'] = 'Υποδίκτυο';
+$GLOBALS["lang"]['sub_type'] = '- Да.';
 
-$GLOBALS["lang"]['Subnet'] = 'Υποδίκτυο';
+$GLOBALS["lang"]['Sub Type'] = '- Да.';
 
-$GLOBALS["lang"]['Subscription ID'] = 'ID συνδρομής';
+$GLOBALS["lang"]['subject_key_ident'] = '.';
 
-$GLOBALS["lang"]['suburb'] = 'Προάστιο';
+$GLOBALS["lang"]['Subject Key Ident'] = '.';
 
-$GLOBALS["lang"]['Suburb'] = 'Προάστιο';
+$GLOBALS["lang"]['Submit'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Success'] = 'Επιτυχία';
+$GLOBALS["lang"]['Submit Online'] = 'Онлайн.';
 
-$GLOBALS["lang"]['Sudan'] = 'Σουδάν';
+$GLOBALS["lang"]['Submitted From'] = '- Да.';
 
-$GLOBALS["lang"]['Sudo Password'] = 'Κωδικός πρόσβασης Sudo';
+$GLOBALS["lang"]['Subnet'] = ' ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Sudo Password (optional)'] = 'Κωδικός πρόσβασης Sudo (προαιρετικό)';
+$GLOBALS["lang"]['Subnet Discoveries'] = 'Υποδίκτυο Keçmiş@';
 
-$GLOBALS["lang"]['suite'] = 'Σουίτα';
+$GLOBALS["lang"]['Subscription ID'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Suite'] = 'Σουίτα';
+$GLOBALS["lang"]['suburb'] = '- Не.';
 
-$GLOBALS["lang"]['summaries'] = 'Περιλήψεις';
+$GLOBALS["lang"]['Suburb'] = '- Не.';
 
-$GLOBALS["lang"]['Summaries'] = 'Περιλήψεις';
+$GLOBALS["lang"]['Success'] = '- Да.';
 
-$GLOBALS["lang"]['Summary'] = 'Περίληψη';
+$GLOBALS["lang"]['Sudan'] = '- Да.';
 
-$GLOBALS["lang"]['Sunday'] = 'Κυριακή';
+$GLOBALS["lang"]['Sudo Password'] = '.';
 
-$GLOBALS["lang"]['supplier'] = 'Προμηθευτής';
+$GLOBALS["lang"]['Sudo Password (optional)'] = '- Ναι.';
 
-$GLOBALS["lang"]['Supplier'] = 'Προμηθευτής';
+$GLOBALS["lang"]['suite'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Support'] = 'Υποστήριξη';
+$GLOBALS["lang"]['Suite'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = 'Υποστηριγμένοι τύποι είναι <code>subnet</code>, <code>seed</code> και <code>active directory</code>.';
+$GLOBALS["lang"]['summaries'] = '- Да.';
 
-$GLOBALS["lang"]['Suriname'] = 'Σουρινάμ';
+$GLOBALS["lang"]['Summaries'] = '- Да.';
 
-$GLOBALS["lang"]['Svalbard & Jan Mayen Islands'] = 'Νήσοι Σβάλμπαρντ & Γιαν Μάγεν';
+$GLOBALS["lang"]['Summaries are a single query against the database with a <i>group by</i> command. Using this simple method we can easily create a summary for virtually any attribute.<br><br>We no longer require a separate report for each <i>type</i> of a device. We now simply have a summary that groups by <i>devices.type</i> and shows the result. You can then click on a given type from the list and see the matching devices. In this case, one Summary replaces (potentially) 78 reports (there are 78 device types).<br><br>A summary is different to a query in that a summary is designed to group items by a given attribute then provide a <i>click through</i> link to the actual devices. A query is simply a list of items with no further links. As above - this of a Summary as a combined <i>report + subreport</i>, whereas a query is simply a single Report.<br><br>Summaries have a different collection template to the other resources within Open-AudIT. This template shows the Summary as you would expect and also shows buttons with counts of other resources. This page is designed to be the HomePage of Open-AudIT.'] = '- Да. <i>.</i> Имено.<br/><br/>. <i>- Да.</i> . <i>.</i> .<br/><br/>Ζήτημα <i>- Да.</i> Имено. <i>.</i>.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['Swaziland'] = 'Σουαζιλάνδη';
+$GLOBALS["lang"]['Summaries are designed to group items by a particular matching column and then to provide a link to individual devices. In the previous versions of Open-AudIT, this would have been two different items - a report and subreport. We have now bundled these into what we call a Summary.'] = 'Имено.';
 
-$GLOBALS["lang"]['Sweden'] = 'Σουηδία';
+$GLOBALS["lang"]['Summaries provide drilldown reporting capabilities. Simple, intuitive, powerful.'] = 'Имено.';
 
-$GLOBALS["lang"]['switch_device_id'] = 'Εναλλαγή ID συσκευής';
+$GLOBALS["lang"]['Summaries take the same arguments as Queries.'] = '- Да.';
 
-$GLOBALS["lang"]['Switch Device ID'] = 'Εναλλαγή ID συσκευής';
+$GLOBALS["lang"]['Summary'] = '- Да.';
 
-$GLOBALS["lang"]['switch_port'] = 'Εναλλαγή θύρας';
+$GLOBALS["lang"]['Sunday'] = '- Да.';
 
-$GLOBALS["lang"]['Switch Port'] = 'Εναλλαγή θύρας';
+$GLOBALS["lang"]['supplier'] = 'Не, не.';
 
-$GLOBALS["lang"]['Switzerland, Swiss Confederation'] = 'Ελβετία, Ελβετική Συνομοσπονδία';
+$GLOBALS["lang"]['Supplier'] = 'Не, не.';
 
-$GLOBALS["lang"]['Syrian Arab Republic'] = 'Αραβική Δημοκρατία της Συρίας';
+$GLOBALS["lang"]['Support'] = '- Да.';
 
-$GLOBALS["lang"]['sysContact'] = 'Επικοινωνία Sys';
+$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = '. <code>subnet</code>. <code>seed</code> Κεϊντιγιάτ <code>active directory</code>.';
 
-$GLOBALS["lang"]['SysContact'] = 'Επικοινωνία Sys';
+$GLOBALS["lang"]['Supports compliance with legal and regulatory requirements'] = '.';
 
-$GLOBALS["lang"]['sysDescr'] = 'SysDescr (Υπουργείο Υγείας και Προστασίας των Καταναλωτών)';
+$GLOBALS["lang"]['Suriname'] = '.';
 
-$GLOBALS["lang"]['SysDescr'] = 'SysDescr (Υπουργείο Υγείας και Προστασίας των Καταναλωτών)';
+$GLOBALS["lang"]['Surveillance Audits:</strong> Annual audits to maintain certification'] = ' да го направим, ';
 
-$GLOBALS["lang"]['sysLocation'] = 'SysΤοποθεσία';
+$GLOBALS["lang"]['Svalbard & Jan Mayen Islands'] = '.';
 
-$GLOBALS["lang"]['SysLocation'] = 'SysΤοποθεσία';
+$GLOBALS["lang"]['Swaziland'] = '- Да.';
 
-$GLOBALS["lang"]['sysName'] = 'SysName';
+$GLOBALS["lang"]['Sweden'] = '- Не, не.';
 
-$GLOBALS["lang"]['SysName'] = 'SysName';
+$GLOBALS["lang"]['Swedish'] = '- Не, не.';
 
-$GLOBALS["lang"]['sysObjectID'] = 'Συστοιχίες';
+$GLOBALS["lang"]['switch_device_id'] = '.';
 
-$GLOBALS["lang"]['SysObjectID'] = 'Συστοιχίες';
+$GLOBALS["lang"]['Switch Device ID'] = '.';
 
-$GLOBALS["lang"]['sysUpTime'] = 'Χρόνος SysUp';
+$GLOBALS["lang"]['switch_port'] = '- Да.';
 
-$GLOBALS["lang"]['SysUpTime'] = 'Χρόνος SysUp';
+$GLOBALS["lang"]['Switch Port'] = '- Да.';
 
-$GLOBALS["lang"]['system_component'] = 'Συστατικό συστήματος';
+$GLOBALS["lang"]['Switzerland, Swiss Confederation'] = '.';
 
-$GLOBALS["lang"]['System Component'] = 'Συστατικό συστήματος';
+$GLOBALS["lang"]['Symptom'] = '- Не, не.';
 
-$GLOBALS["lang"]['System-Area Network'] = 'Δίκτυο συστήματος-περιοχής';
+$GLOBALS["lang"]['Syrian Arab Republic'] = '.';
 
-$GLOBALS["lang"]['TX Bitrate'] = 'Ρυθμός bit TX';
+$GLOBALS["lang"]['sysContact'] = '- Не, не.';
+
+$GLOBALS["lang"]['SysContact'] = '- Не, не.';
+
+$GLOBALS["lang"]['sysDescr'] = 'Калерея.';
+
+$GLOBALS["lang"]['SysDescr'] = 'Калерея.';
+
+$GLOBALS["lang"]['sysLocation'] = '- Не, не.';
+
+$GLOBALS["lang"]['SysLocation'] = '- Не, не.';
+
+$GLOBALS["lang"]['sysName'] = 'Калерея.';
+
+$GLOBALS["lang"]['SysName'] = 'Калерея.';
+
+$GLOBALS["lang"]['sysObjectID'] = '- Не, не.';
+
+$GLOBALS["lang"]['SysObjectID'] = '- Не, не.';
+
+$GLOBALS["lang"]['sysUpTime'] = '- Не, не.';
+
+$GLOBALS["lang"]['SysUpTime'] = '- Не, не.';
+
+$GLOBALS["lang"]['system_component'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['System Component'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['System-Area Network'] = '- Да.';
+
+$GLOBALS["lang"]['TX Bitrate'] = 'TX битрат бббб.';
 
 $GLOBALS["lang"]['TX Freq'] = 'ΤΧ Freq';
 
-$GLOBALS["lang"]['TX Level'] = 'Επίπεδο TX';
+$GLOBALS["lang"]['TX Level'] = 'Ниво TX Αριθ. καταλόγου:';
 
-$GLOBALS["lang"]['TX Power'] = 'Ισχύς TX';
+$GLOBALS["lang"]['TX Power'] = 'TX gücü';
 
 $GLOBALS["lang"]['TX Profile'] = 'Προφίλ TX';
 
-$GLOBALS["lang"]['table'] = 'Πίνακας';
+$GLOBALS["lang"]['Table'] = '- Да.';
 
-$GLOBALS["lang"]['Table'] = 'Πίνακας';
+$GLOBALS["lang"]['tag'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['tag'] = 'Ετικέτα';
+$GLOBALS["lang"]['Tag'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Tag'] = 'Ετικέτα';
+$GLOBALS["lang"]['tag_1'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['tag_1'] = 'Ετικέτα 1';
+$GLOBALS["lang"]['Tag 1'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Tag 1'] = 'Ετικέτα 1';
+$GLOBALS["lang"]['tag_2'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['tag_2'] = 'Ετικέτα 2';
+$GLOBALS["lang"]['Tag 2'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Tag 2'] = 'Ετικέτα 2';
+$GLOBALS["lang"]['tag_3'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['tag_3'] = 'Ετικέτα 3';
+$GLOBALS["lang"]['Tag 3'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['Tag 3'] = 'Ετικέτα 3';
+$GLOBALS["lang"]['Tagalog'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['tags'] = 'Ετικέτες';
+$GLOBALS["lang"]['tags'] = 'Κατεκορίγια';
 
-$GLOBALS["lang"]['Tags'] = 'Ετικέτες';
+$GLOBALS["lang"]['Tags'] = 'Κατεκορίγια';
 
-$GLOBALS["lang"]['Tags :: '] = 'Ετικέτες :: ';
+$GLOBALS["lang"]['Tags :: '] = '- Да. ';
 
-$GLOBALS["lang"]['Taiwan'] = 'Ταϊβάν';
+$GLOBALS["lang"]['Taiwan'] = '- Да.';
 
-$GLOBALS["lang"]['Tajikistan'] = 'Τατζικιστάν';
+$GLOBALS["lang"]['Tajikistan'] = '- Да.';
 
-$GLOBALS["lang"]['Tanzania'] = 'Τανζανία';
+$GLOBALS["lang"]['Take note of all output and action each item as appropriate.'] = '1 - год.';
 
-$GLOBALS["lang"]['task'] = 'Εργασία';
+$GLOBALS["lang"]['Tanzania'] = ' Танзания Танания.';
 
-$GLOBALS["lang"]['Task'] = 'Εργασία';
+$GLOBALS["lang"]['Target Computer'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['tasks'] = 'Καθήκοντα';
+$GLOBALS["lang"]['task'] = 'Не, не.';
 
-$GLOBALS["lang"]['Tasks'] = 'Καθήκοντα';
+$GLOBALS["lang"]['Task'] = 'Не, не.';
 
-$GLOBALS["lang"]['tcp_ports'] = 'Θύρα Tcp';
+$GLOBALS["lang"]['tasks'] = 'Не, не.';
 
-$GLOBALS["lang"]['Tcp Ports'] = 'Θύρα Tcp';
+$GLOBALS["lang"]['Tasks'] = 'Не, не.';
 
-$GLOBALS["lang"]['tenant'] = 'Ένοικος';
+$GLOBALS["lang"]['Tasks can be one of several distinct types: Baseline, Discovery, Report, Query, Summary or Collector.'] = '. Въпрос:';
 
-$GLOBALS["lang"]['Tenant'] = 'Ένοικος';
+$GLOBALS["lang"]['tcp_ports'] = 'Tcp портове Tп Tововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововов повововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововов';
 
-$GLOBALS["lang"]['ternary'] = 'Τεταρτημόριο';
+$GLOBALS["lang"]['Tcp Ports'] = 'Tcp портове Tп Tововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововов повововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововововов';
 
-$GLOBALS["lang"]['Ternary'] = 'Τεταρτημόριο';
+$GLOBALS["lang"]['Technical Details'] = '.';
 
-$GLOBALS["lang"]['Test 1'] = 'Δοκιμή 1';
+$GLOBALS["lang"]['tenant'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Test 2'] = 'Δοκιμή 2';
+$GLOBALS["lang"]['Tenant'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Test 3'] = 'Δοκιμή 3';
+$GLOBALS["lang"]['Tenant ID'] = 'Не, не.';
 
-$GLOBALS["lang"]['test_minutes'] = 'Πρακτικά δοκιμής';
+$GLOBALS["lang"]['Tennant ID'] = 'Не, не.';
 
-$GLOBALS["lang"]['Test Minutes'] = 'Πρακτικά δοκιμής';
+$GLOBALS["lang"]['ternary'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['test_os'] = 'Δοκιμή Os';
+$GLOBALS["lang"]['Ternary'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Test Os'] = 'Δοκιμή Os';
+$GLOBALS["lang"]['Test 1'] = '- Да. 1';
 
-$GLOBALS["lang"]['test_subnet'] = 'Δοκιμή υποδίκτυο';
+$GLOBALS["lang"]['Test 2'] = '- Да. 2';
 
-$GLOBALS["lang"]['Test Subnet'] = 'Δοκιμή υποδίκτυο';
+$GLOBALS["lang"]['Test 3'] = '3';
 
-$GLOBALS["lang"]['tests'] = 'Δοκιμές';
+$GLOBALS["lang"]['Test Email'] = 'Не, не.';
 
-$GLOBALS["lang"]['Tests'] = 'Δοκιμές';
+$GLOBALS["lang"]['test_minutes'] = '.';
 
-$GLOBALS["lang"]['Text'] = 'Κείμενο';
+$GLOBALS["lang"]['Test Minutes'] = '.';
 
-$GLOBALS["lang"]['Thailand'] = 'Ταϊλάνδη';
+$GLOBALS["lang"]['test_os'] = '- Οξούνουμπ.';
 
-$GLOBALS["lang"]['The Active Directory domain to retrieve a list of subnets from.'] = 'Το πεδίο Active Directory για την ανάκτηση μιας λίστας υποδικτύων από.';
+$GLOBALS["lang"]['Test Os'] = '- Οξούνουμπ.';
 
-$GLOBALS["lang"]['The Active Directory server to retrieve a list of subnets from.'] = 'Ο εξυπηρετητής Active Directory για να ανακτήσει μια λίστα υποδικτύων από.';
+$GLOBALS["lang"]['test_subnet'] = 'Не, не.';
 
-$GLOBALS["lang"]['The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).'] = 'Η αυτόματη μέτρηση αποτυπώνει την απάντηση στην ερώτηση <strong>Μπορεί ένας επιτιθέμενος να αυτοματοποιήσει γεγονότα εκμετάλλευσης για αυτή την ευπάθεια σε πολλούς στόχους;</strong> Βάσει των βημάτων 1-4 της αλυσίδας θανάτου. Αυτά τα βήματα είναι η αναγνώριση, ο οπλισμός, η παράδοση και η εκμετάλλευση (Not Defined, Όχι, Ναι).';
+$GLOBALS["lang"]['Test Subnet'] = 'Не, не.';
 
-$GLOBALS["lang"]['The CVE identifier.'] = 'Το αναγνωριστικό CVE.';
+$GLOBALS["lang"]['tests'] = 'Не, не.';
 
-$GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = 'Το Σύννεφο που κατέχει αυτό το αντικείμενο. Συνδέσεις <code>clouds.id</code>.';
+$GLOBALS["lang"]['Tests'] = 'Не, не.';
 
-$GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = 'Η ομάδα διοικούσε την βασική γραμμή. Συνδέσεις <code>groups.id</code>.';
+$GLOBALS["lang"]['Text'] = '.';
 
-$GLOBALS["lang"]['The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.'] = 'Το ID από τον πίνακα συσκευών (οι συσκευές.όνομα θα εμφανίζονται) του NTU σε αυτό το τέλος της σύνδεσης. Συνδέσεις <code>devices.id</code>.';
+$GLOBALS["lang"]['Thai'] = '- Да.';
 
-$GLOBALS["lang"]['The ID from the imported benchmark policy.'] = 'Το ID από την εισαγόμενη πολιτική αναφοράς.';
+$GLOBALS["lang"]['Thailand'] = '- Да.';
 
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.'] = 'Η ταυτότητα από τον πίνακα των τοποθεσιών (οι τοποθεσίες.όνομα θα εμφανίζονται) αυτής της κατάληξης της σύνδεσης. Συνδέσεις <code>locations.id</code>. Η τοποθεσία Α είναι συνήθως η <code>FROM</code> τοποθεσία.';
+$GLOBALS["lang"]['Thank you for starting your journey with the best discovery and inventory tool around.'] = '.';
 
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.'] = 'Η ταυτότητα από τον πίνακα των τοποθεσιών (οι τοποθεσίες.όνομα θα εμφανίζονται) αυτής της κατάληξης της σύνδεσης. Συνδέσεις <code>locations.id</code>. Η θέση Β είναι συνήθως η <code>TO</code> τοποθεσία.';
+$GLOBALS["lang"]['Thanks to'] = '- Не, не.';
 
-$GLOBALS["lang"]['The ID of the associated device (if any). Links to <code>devices.id</code>.'] = 'Το αναγνωριστικό της συνδεδεμένης συσκευής (εάν υπάρχει). Συνδέσεις <code>devices.id</code>.';
+$GLOBALS["lang"]['Thats it! You have just edited the attributes of as many devices as you need to.'] = '.';
 
-$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = 'Η ταυτότητα της σχετικής ανακάλυψης. Σύνδεση με <code>discoveries.id</code>';
+$GLOBALS["lang"]['The <i>Roles</i> endpoint allows you to manage the set of permissions(Create, Read, Update, Delete) that are granted to the users and are applied to each endpoint.'] = 'Άξταρ@ <i>.</i> Не, не.';
 
-$GLOBALS["lang"]['The ID of the item of the associated type.'] = 'Το ID του στοιχείου του σχετικού τύπου.';
+$GLOBALS["lang"]['The API uses a cookie. You can request a cookie by sending a POST to the URL below, containing the username and password attributes and values:'] = 'Не, не.';
 
-$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = 'Η ταυτότητα αυτού του οργανισμού. Σύνδεση με <code>orgs.id</code>';
+$GLOBALS["lang"]['The Active Directory domain to retrieve a list of subnets from.'] = '.';
 
-$GLOBALS["lang"]['The ID provided by the provider.'] = 'Η ταυτότητα που παρέχεται από τον πάροχο.';
+$GLOBALS["lang"]['The Active Directory server to retrieve a list of subnets from.'] = '- Да.';
 
-$GLOBALS["lang"]['The ID retrieved from a Cloud discovery.'] = 'Η ταυτότητα ανακτήθηκε από μια ανακάλυψη του Cloud.';
+$GLOBALS["lang"]['The Applications endpoint allows you to define an application which you can then associate to a device (or devices).'] = '.';
 
-$GLOBALS["lang"]['The IP address of this collector used to communicate with the server.'] = 'Η διεύθυνση IP αυτού του συλλέκτη που χρησιμοποιείται για την επικοινωνία με τον εξυπηρετητή.';
+$GLOBALS["lang"]['The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.'] = 'Българактеристики крайна точка Open-Audit müxt... H.R.y.r.v., Orgs üçün Tip xüsusiyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyi, h.mçi üçün Menkulator Kateqoriyasī. Ημερομηνία γέννησης: - Да.';
 
-$GLOBALS["lang"]['The IP of the device to start a seed discovery with.'] = 'Η IP της συσκευής για να ξεκινήσει μια ανακάλυψη σπόρων με.';
+$GLOBALS["lang"]['The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).'] = 'Не, не, не. <strong>.</strong> да го направим, да го направим.';
 
-$GLOBALS["lang"]['The IP of the external interface.'] = 'Η IP της εξωτερικής διεπαφής.';
+$GLOBALS["lang"]['The CVE has been marked as invalid or withdrawn in the CVE List. It remains in the NVD but is excluded from default search results.'] = 'CVE CVE siyahşsşqeyd olunmuşv го gieri alşnmşdşr. Bu NVD-da saxlayşr, λάκιν αρχική axtarşn...';
 
-$GLOBALS["lang"]['The IP of the internal interface.'] = 'Η IP της εσωτερικής διεπαφής.';
+$GLOBALS["lang"]['The CVE has been published to the CVE List and included in the NVD dataset. Initial ingestion only.'] = 'Имено.';
 
-$GLOBALS["lang"]['The ISP or Telco providing this link.'] = 'Ο ISP ή το Telco παρέχει αυτή τη σύνδεση.';
+$GLOBALS["lang"]['The CVE has been updated after initial analysis. NVD enrichment data may have been revised.'] = 'CVE ilk analiz sonra γενίλ... nmişdir.';
 
-$GLOBALS["lang"]['The JSON record from Mitre.'] = 'Το ρεκόρ του JSON από τον Μίτρε.';
+$GLOBALS["lang"]['The CVE identifier.'] = '.';
 
-$GLOBALS["lang"]['The JSON record from the NVD feed.'] = 'Το αρχείο JSON από την NVD.';
+$GLOBALS["lang"]['The CVE is actively being enriched with CVSS scores, CWE classifications, reference tags, and CPE applicability.'] = 'CVE, CVS puanlary, CWE imtahanlary, год.';
 
-$GLOBALS["lang"]['The LDAP OU of this user (if LDAP is used).'] = 'Το LDAP OU αυτού του χρήστη (αν χρησιμοποιείται LDAP).';
+$GLOBALS["lang"]['The CVE is not currently prioritized for enrichment due to resource constraints or other reasons.'] = 'Имено.';
 
-$GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = 'Η τοποθεσία που περιέχει αυτό το δίκτυο. Συνδέσεις <code>locations.id</code>.';
+$GLOBALS["lang"]['The CVE is queued for enrichment by NVD analysts. No detailed metadata yet.'] = 'CVE NVD analitikl... ng üçün smalangur (στα Αγγλικά).';
 
-$GLOBALS["lang"]['The NVD assigned base status.'] = 'Το καθεστώς βάσης της NVD.';
+$GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = '- Да. <code>clouds.id</code>.';
 
-$GLOBALS["lang"]['The Nmap timing preset.'] = 'Η προεπιλεγμένη χρονική στιγμή του Nmap.';
+$GLOBALS["lang"]['The Device Seed Discovery type is the newest highly-effective method for network crawling, giving you the ability to target your network as narrowly or as broadly as you need. It is fast, it works and it is great.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['The OS this package should be reported against. Blank for all. Use the percent sign % as a wildcard. Will be tested against os_group, os_family and os_name in that order.'] = 'Το λειτουργικό σύστημα αυτό το πακέτο πρέπει να αναφέρεται κατά. Κενό για όλους. Χρησιμοποίησε το ποσοστό % ως μπαλαντέρ. Θα δοκιμαστεί κατά os_group, os_family και os_name με αυτή τη σειρά.';
+$GLOBALS["lang"]['The Discovery Scan Options we ship are detailed in the table below. As above, Enterprise users can create more of these or edit the shipped items.'] = 'Имено.';
 
-$GLOBALS["lang"]['The Open-AudIT API'] = 'Το Open-AudIT API';
+$GLOBALS["lang"]['The Elevated User query'] = '- Да.';
 
-$GLOBALS["lang"]['The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.'] = 'Η ταυτότητα Open-AudIT του συνδεδεμένου σύννεφου. Συνδέσεις <code>clouds.id</code>.';
+$GLOBALS["lang"]['The Executables feature scans the disk of a device as part of the audit and checks that every executable file is known to the package manager. Because it uses the package manager, the feature applies to Linux target devices only, and further than that, only rpm or deb based distributions. Anything Redhat or Debian based should work.'] = 'Изпълнители xüsusi procedur bir seine... - Ζα πρβέ:';
 
-$GLOBALS["lang"]['The Open-AudIT server code was exeucted within this file.'] = 'Το Open-Aud Ο κωδικός του εξυπηρετητή IT ήταν exucted μέσα σε αυτό το αρχείο.';
+$GLOBALS["lang"]['The FROM'] = '- Да.';
 
-$GLOBALS["lang"]['The Open-AudIT server code was exeucted within this function.'] = 'Το Open-Aud Ο κωδικός εξυπηρετητή IT ήταν exucted μέσα σε αυτή τη λειτουργία.';
+$GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = 'Имено. <code>groups.id</code>.';
 
-$GLOBALS["lang"]['The Organisation that owns this item. Links to <code>orgs.id</code>.'] = 'Ο Οργανισμός που κατέχει αυτό το στοιχείο. Συνδέσεις <code>orgs.id</code>.';
+$GLOBALS["lang"]['The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.'] = '. <code>devices.id</code>.';
 
-$GLOBALS["lang"]['The Process Identifier of the running associated discovery.'] = 'Ο αναγνωριστικός διεργασίας της εκτελούμενης σχετικής ανακάλυψης.';
+$GLOBALS["lang"]['The ID from the imported benchmark policy.'] = '.';
 
-$GLOBALS["lang"]['The RU positon of the top of this device.'] = 'Το RU ποζιτόν της κορυφής αυτής της συσκευής.';
+$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.'] = '. <code>locations.id</code>... <code>FROM</code> - Не, не.';
 
-$GLOBALS["lang"]['The SNMP community string.'] = 'Η χορδή της κοινότητας SNMP.';
+$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.'] = '. <code>locations.id</code>Τακ, Τακ. <code>TO</code> - Не, не.';
 
-$GLOBALS["lang"]['The SNMP v3 Authentication Passphrase.'] = 'Η φράση πρόσβασης ταυτοποίησης SNMP v3.';
+$GLOBALS["lang"]['The ID of the associated device (if any). Links to <code>devices.id</code>.'] = ' да го направим, да го направим. <code>devices.id</code>.';
 
-$GLOBALS["lang"]['The SNMP v3 Authentication Protocol.'] = 'Το πρωτόκολλο ταυτοποίησης SNMP v3.';
+$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = '. <code>discoveries.id</code>';
 
-$GLOBALS["lang"]['The SNMP v3 Privacy Passphrase.'] = 'Η φράση SNMP v3 Privacy Pass.';
+$GLOBALS["lang"]['The ID of the item of the associated type.'] = 'Не, не.';
 
-$GLOBALS["lang"]['The SNMP v3 Privacy Protocol.'] = 'Το SNMP v3 Privacy Protocol.';
+$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = '. <code>orgs.id</code>';
 
-$GLOBALS["lang"]['The SNMP v3 Security Level.'] = 'Το επίπεδο ασφαλείας SNMP v3.';
+$GLOBALS["lang"]['The ID provided by the provider.'] = '- Не, не.';
 
-$GLOBALS["lang"]['The SNMP v3 Security Name.'] = 'Το SNMP v3 όνομα ασφαλείας.';
+$GLOBALS["lang"]['The ID retrieved from a Cloud discovery.'] = '.';
 
-$GLOBALS["lang"]['The SNMPv3 context Engine ID (optional).'] = 'Το SNMPv3 πλαίσιο Engine ID (προαιρετικό).';
+$GLOBALS["lang"]['The IP address of this collector used to communicate with the server.'] = '.';
 
-$GLOBALS["lang"]['The SNMPv3 context Name (optional).'] = 'Το όνομα πλαισίου SNMPv3 (προαιρετικό).';
+$GLOBALS["lang"]['The IP of the device to start a seed discovery with.'] = 'E- poçt ünvan';
 
-$GLOBALS["lang"]['The URL of the external system.'] = 'Το URL του εξωτερικού συστήματος.';
+$GLOBALS["lang"]['The IP of the external interface.'] = 'Τζεν...';
 
-$GLOBALS["lang"]['The URL of your Open-AudIT Server that this Collector will report to (no trailing slash).'] = 'Το URL του Open-AudIT σας Εξυπηρετητής στον οποίο θα αναφερθεί αυτός ο Συλλέκτης (δεν θα ακολουθήσει slap).';
+$GLOBALS["lang"]['The IP of the internal interface.'] = 'IP год.';
 
-$GLOBALS["lang"]['The URL the audit scripts should submit their result to.'] = 'Το URL τα σενάρια ελέγχου θα πρέπει να υποβάλουν το αποτέλεσμα τους.';
+$GLOBALS["lang"]['The ISO/IEC 27001 certification process and its key elements.'] = 'ISO / IEC 27001 sertifikatlaşdşrma paresi v готварски елемент гггггггггггггггггггггггггггггггггггггггггггггггггггггггггггггггггггггггtifвtiftiftiftiftifгггtiftiftiftiftiftiftiftiftifввввввввввввввввввввввtifвввввввввввввввввввввввввввввввввввввввввввввввввввввввввв вввввввввввввввввввввввввввввввввввввввввв';
 
-$GLOBALS["lang"]['The actual full name of this user.'] = 'Το πραγματικό πλήρες όνομα αυτού του χρήστη.';
+$GLOBALS["lang"]['The ISP or Telco providing this link.'] = 'ISP сре Telco bu linki t гомин edir. (στα Αγγλικά).';
 
-$GLOBALS["lang"]['The associated baseline. Links to <code>baselines.id</code>.'] = 'Η σχετική βάση. Συνδέσεις <code>baselines.id</code>.';
+$GLOBALS["lang"]['The JSON record from Mitre.'] = '- Ναι.';
 
-$GLOBALS["lang"]['The associated discovery (if required). Links to <code>discoveries.id</code>.'] = 'Η σχετική ανακάλυψη (εφόσον απαιτείται). Συνδέσεις <code>discoveries.id</code>.';
+$GLOBALS["lang"]['The JSON record from the NVD feed.'] = 'Ν.Β.Δ.';
 
-$GLOBALS["lang"]['The attribute to test (from the <code>devices</code> table).'] = 'Το χαρακτηριστικό προς δοκιμή (από το <code>devices</code> τραπέζι).';
+$GLOBALS["lang"]['The LDAP OU of this user (if LDAP is used).'] = 'Bu istifad гончинин LDAP OU (ако LDAP istifad по olunur).';
 
-$GLOBALS["lang"]['The attribute to test (must match an external field name from below).'] = 'Το χαρακτηριστικό δοκιμής (πρέπει να ταιριάζει με ένα εξωτερικό όνομα πεδίου από κάτω).';
+$GLOBALS["lang"]['The LDAP server could not be connected to. At all. Check it is pingable from the Open-AudIT server. Check the correct port is open to the Open-AudIT server. An nmap from the Open-AudIT server will show this. Substitute your LDAP servers IP for $ip. Try:<code>nmap -vv $ip</code>'] = 'Имено.<code>nmap -vv $ip</code>';
 
-$GLOBALS["lang"]['The audit script upon which to base your customisations.'] = 'Το σενάριο ελέγχου πάνω στο οποίο θα βασίσετε τις παραμετροποιήσεις σας.';
+$GLOBALS["lang"]['The LDAP server type is invalid. It should be either <i>active directory</i> or <i>openldap</i>.'] = '. <i>.</i> . <i>.</i>.';
 
-$GLOBALS["lang"]['The base path from which to search for Users.'] = 'Η βασική διαδρομή από την οποία να αναζητήσετε τους χρήστες.';
+$GLOBALS["lang"]['The LDAP server was connected to and the user credentials accepted for bind.'] = '.';
 
-$GLOBALS["lang"]['The benchmark type.'] = 'Ο τύπος του δείκτη αναφοράς.';
+$GLOBALS["lang"]['The Linux Open-AudIT installer will test for and if required, install Open-AudITs dependencies from your distributions repository, including setting the Nmap SetUID. This is required for SNMP (UDP 161) detection by a non-root user. This is supported on RedHat/CentOS and Debian/Ubuntu. If you need to manually install Nmap:<br><br>For RedHat/CentOS do (NOTE - if you upgrade using yum, you will need to reapply this <i>chmod</i> setting).'] = 'Имено. Χάρτης:<br/><br/>Имено. <i> Όνομα</i> (...)';
 
-$GLOBALS["lang"]['The building the rack is located in.'] = 'Το κτίριο στο ράφι βρίσκεται.';
+$GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = '. <code>locations.id</code>.';
 
-$GLOBALS["lang"]['The calculated number of devices to be created externally.'] = 'Ο υπολογισμένος αριθμός των συσκευών που θα δημιουργηθούν εξωτερικά.';
+$GLOBALS["lang"]['The NVD assigned base status.'] = '.';
 
-$GLOBALS["lang"]['The calculated number of devices to be created in Open-AudIT.'] = 'Ο υπολογισμένος αριθμός συσκευών που θα δημιουργηθούν στο Open-AudIT.';
+$GLOBALS["lang"]['The National Institute of Standards and Technology is the federal technology agency. They advance official technology, measurement science and standards.'] = 'Σταντάρτραρ κατά год. Texnologia Мили Инстития  Не, не.';
 
-$GLOBALS["lang"]['The collectors internal IP used when it runs a discovery.'] = 'Το εσωτερικό IP συλλέκτη χρησιμοποιείται όταν τρέχει μια ανακάλυψη.';
+$GLOBALS["lang"]['The Network to Discover'] = '.';
 
-$GLOBALS["lang"]['The column name from the foreign table. Should be one of: class, environment, status, type or menu_category.'] = 'Το όνομα της στήλης από τον ξένο πίνακα. Θα πρέπει να είναι ένα από: τάξη, περιβάλλον, κατάσταση, τύπος ή menu_κατηγορία.';
+$GLOBALS["lang"]['The Nmap timing preset.'] = '.';
 
-$GLOBALS["lang"]['The command executed upon the target device or Open-AudIT server code executed during discovery.'] = 'Η εντολή που εκτελέστηκε επί της συσκευής προορισμού ή του κώδικα εξυπηρετητή Open-AudIT που εκτελέστηκε κατά τη διάρκεια της ανακάλυψης.';
+$GLOBALS["lang"]['The OS this package should be reported against. Blank for all. Use the percent sign % as a wildcard. Will be tested against os_group, os_family and os_name in that order.'] = 'Имено.';
 
-$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.'] = 'Η διαμόρφωση της συστάδας σας μπορεί να είναι: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> ή κενό.';
+$GLOBALS["lang"]['The Open-AudIT API'] = 'API Prüfung';
 
-$GLOBALS["lang"]['The credentials password. If the credentials are an SSH Key, this is the password used to unlock the key and is optional.'] = 'Ο κωδικός αναγνώρισης. Εάν τα διαπιστευτήρια είναι ένα κλειδί SSH, αυτός είναι ο κωδικός πρόσβασης που χρησιμοποιείται για να ξεκλειδώσετε το κλειδί και είναι προαιρετικό.';
+$GLOBALS["lang"]['The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.'] = 'Не, не. <code>clouds.id</code>.';
 
-$GLOBALS["lang"]['The credentials username.'] = 'Τα διαπιστευτήρια όνομα χρήστη.';
+$GLOBALS["lang"]['The Open-AudIT server code was exeucted within this file.'] = 'Имено.';
 
-$GLOBALS["lang"]['The current status of the Cloud Discovery.'] = 'Η τρέχουσα κατάσταση του Cloud Discovery.';
+$GLOBALS["lang"]['The Open-AudIT server code was exeucted within this function.'] = '.';
 
-$GLOBALS["lang"]['The current status of the discovery.'] = 'Η τρέχουσα κατάσταση της ανακάλυψης.';
+$GLOBALS["lang"]['The OpenSCAP ecosystem provides multiple tools to assist administrators and auditors with assessment, measurement, and enforcement of security baselines including a wide variety of hardening guides and configuration baselines developed by the open source community, ensuring that you can choose a security policy which best suits the needs of your organization, regardless of its size.'] = 'Имено.';
 
-$GLOBALS["lang"]['The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.'] = 'Το ταμπλό που θα εμφανιστεί από προεπιλογή για αυτόν τον χρήστη. Συνδέσεις <code>dashboards.id</code>.';
+$GLOBALS["lang"]['The OpenSCAP project is a collection of open source tools for implementing and enforcing this standard, and has been awarded the SCAP 1.2 certification by NIST in 2014.'] = 'OpenSCAP laih... bu standart t... NIST t при';
 
-$GLOBALS["lang"]['The database version and web version are inconsistent.'] = 'Η έκδοση της βάσης δεδομένων και η έκδοση ιστού είναι ασυνεπείς.';
+$GLOBALS["lang"]['The Organisation that owns this item. Links to <code>orgs.id</code>.'] = '- Да. <code>orgs.id</code>.';
 
-$GLOBALS["lang"]['The date of license expiration.'] = 'Η ημερομηνία λήξης της άδειας.';
+$GLOBALS["lang"]['The Process Identifier of the running associated discovery.'] = '- Да.';
 
-$GLOBALS["lang"]['The date the software is discontinued by the manufacturer. Usually replaced by a newer version. Maintenance may still be available.'] = 'Η ημερομηνία διακοπής του λογισμικού από τον κατασκευαστή. Συνήθως αντικαθίσταται από μια νεότερη έκδοση. Η συντήρηση μπορεί να είναι ακόμα διαθέσιμη.';
+$GLOBALS["lang"]['The RU positon of the top of this device.'] = ' Имено.';
 
-$GLOBALS["lang"]['The date the software no longer receives updates and is effectively discontinued altogether. Maintenance is discontinued.'] = 'Η ημερομηνία που το λογισμικό δεν λαμβάνει πλέον ενημερώσεις και διακόπτεται αποτελεσματικά εντελώς. Η συντήρηση διακόπτεται.';
+$GLOBALS["lang"]['The Racks feature is used to manage and visualize your rack use with an Organisation, Location, Building, Floor, Room and Row.'] = 'Ρακς xüsusiyyyyyyyyy... Да, Бина. Кат, Oda v год. Κωπηλατήστε...';
 
-$GLOBALS["lang"]['The date this item was changed or added (read only). NOTE - This is the timestamp from the server.'] = 'Η ημερομηνία που αυτό το στοιχείο άλλαξε ή προστέθηκε (διαβάστε μόνο). ΣΗΜΕΙΩΣΗ - Αυτή είναι η χρονοσφραγίδα από τον εξυπηρετητή.';
+$GLOBALS["lang"]['The SCAP is a specification for expressing and manipulating security data in standardized ways. SCAP uses several individual specifications in concert to automate continuous monitoring, vulnerability management, and security policy compliance evaluation reporting'] = 'SCAP standartlaşdşrşlmşyollarla t голя к... sizliyi veril...';
 
-$GLOBALS["lang"]['The date/time when this result was created.'] = 'Η ημερομηνία/ώρα που δημιουργήθηκε αυτό το αποτέλεσμα.';
+$GLOBALS["lang"]['The SELECT'] = 'Κεϊντιγιάτ';
 
-$GLOBALS["lang"]['The day of the month when this task should execute (* for every day).'] = 'Η ημέρα του μήνα κατά την οποία αυτή η εργασία θα πρέπει να εκτελέσει (* για κάθε ημέρα).';
+$GLOBALS["lang"]['The SELECT section of the query should use full dot notation and also request the field with its full dot name. IE - SELECT devices.id AS `devices.id`. Each field should be selected in this fashion to enable GUI side attribute filtering.'] = 'Araşdţrmanşn SE bölm год. - Да.';
 
-$GLOBALS["lang"]['The day of the week when this task should execute (* for every day).'] = 'Η ημέρα της εβδομάδας κατά την οποία αυτή η εργασία θα πρέπει να εκτελέσει (* για κάθε ημέρα).';
+$GLOBALS["lang"]['The SELECT section of your SQL must contain fully qualified columns and specify certain columns.'] = '- Не, не.';
 
-$GLOBALS["lang"]['The default language assigned to any user created by this method.'] = 'Η προεπιλεγμένη γλώσσα που αποδίδεται σε κάθε χρήστη που δημιουργείται με αυτή τη μέθοδο.';
+$GLOBALS["lang"]['The SNMP community string.'] = '.';
 
-$GLOBALS["lang"]['The device must respond to an Nmap ping before it is considered online.'] = 'Η συσκευή πρέπει να ανταποκρίνεται σε ένα πινγκ Nmap πριν θεωρηθεί online.';
+$GLOBALS["lang"]['The SNMP v3 Authentication Passphrase.'] = '.';
 
-$GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>.'] = 'Η συσκευή μέσα στο Open-AudIT. Συνδέσεις <code>devices.id</code>.';
+$GLOBALS["lang"]['The SNMP v3 Authentication Protocol.'] = 'SNMP v3 Иденти';
 
-$GLOBALS["lang"]['The direct link for the script is'] = 'Ο άμεσος σύνδεσμος για το σενάριο είναι';
+$GLOBALS["lang"]['The SNMP v3 Privacy Passphrase.'] = 'SNMP v3 Πτυχία απορρήτου.';
 
-$GLOBALS["lang"]['The email address of the reciever'] = 'Η διεύθυνση ηλεκτρονικού ταχυδρομείου του ανταποκριτή';
+$GLOBALS["lang"]['The SNMP v3 Privacy Protocol.'] = 'SNMP v3 Γκίζλικ Πρωτοκόλου.';
 
-$GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = 'Το δυαδικό της επιχείρησης από το FirstWave απαιτείται για μια άδεια. Παρακαλώ κατεβάστε το Open-AudIT από';
+$GLOBALS["lang"]['The SNMP v3 Security Level.'] = '.';
 
-$GLOBALS["lang"]['The entire associated baseline this result is from.'] = 'Το σύνολο της σχετικής βάσης του αποτελέσματος αυτού είναι από.';
+$GLOBALS["lang"]['The SNMP v3 Security Name.'] = 'Předseda Αριθ. CAS: 3.';
 
-$GLOBALS["lang"]['The externally referenced location ID. Usually populated by Cloud audits.'] = 'Η εξωτερικά αναφερόμενη τοποθεσία ID. Συνήθως κατοικείται από ελέγχους Cloud.';
+$GLOBALS["lang"]['The SNMPv3 context Engine ID (optional).'] = 'SNMPv3 konfrans maşţn ID (по избор) (στα Αγγλικά).';
 
-$GLOBALS["lang"]['The first time that Open-AudIT retrieved details of this device.'] = 'Την πρώτη φορά που το Open-AudIT ανέκτησε λεπτομέρειες αυτής της συσκευής.';
+$GLOBALS["lang"]['The SNMPv3 context Name (optional).'] = 'SNMPv3 konfrans';
 
-$GLOBALS["lang"]['The floor the rack is located on.'] = 'Το πάτωμα στο ράφι βρίσκεται.';
+$GLOBALS["lang"]['The SQL cannot contain <strong>WHERE @filter OR</strong>. That SQL will not be executed, however <strong>WHERE @filter AND</strong> queries are allowed.'] = '. <strong>България България Селититър И</strong>. <strong>Калерея.</strong> - Да.';
 
-$GLOBALS["lang"]['The foreign table to reference. Should be one of: devices, locations, orgs or queries.'] = 'Ο ξένος πίνακας αναφοράς. Θα πρέπει να είναι μία από: συσκευές, τοποθεσίες, οργ ή ερωτήματα.';
+$GLOBALS["lang"]['The SQL queries used in Open-AudIT require the use of the backtick - ` character and NOT the standard single quote for fields. On most US Windows keyboards the backtick key is located in the top-left of the keyboard along with the tilde ~. On a US Mac keyboard the backtick key is located next to the SHIFT key. The standard single quote is still used to enclose values as the examples below illustrate.'] = 'Ανοιχτή ακρόαση. Eil. edil.n SQL sorgular Ιχ μπιν...';
 
-$GLOBALS["lang"]['The format used for the output to be emailed.'] = 'Η μορφή που χρησιμοποιείται για την έξοδο προς αποστολή ηλεκτρονικού ταχυδρομείου.';
+$GLOBALS["lang"]['The SQL query is essentially broken into three parts.'] = 'SQL sorğu год.';
 
-$GLOBALS["lang"]['The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.'] = 'Η στήλη με τα πλήρως προσόντα πάνω στην οποία θα ομαδοποιηθεί. ΣΗΜΕΙΩΣΗ: Όταν ο τύπος = κυκλοφορία, αυτό αντιπροσωπεύει το κόκκινο id ερώτημα.';
+$GLOBALS["lang"]['The Standards functionality in Open-AudIT allows you to, ahead of time, complete the questions auditors require when completing ISO 27001 certification.'] = '.';
 
-$GLOBALS["lang"]['The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).'] = 'Ο πλήρως καταρτισμένος πίνακας.στήλη. Μπορούν να παρέχονται πολλαπλάσια, χωρισμένα με κόμμα (χωρίς κενά).';
+$GLOBALS["lang"]['The URL of the external system.'] = 'Xarici sistemin URL (στα Αγγλικά).';
 
-$GLOBALS["lang"]['The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.'] = 'Το παραγόμενο ερώτημα SQL για τη δοκιμή αυτής της ευπάθειας. Αυτό το πεδίο μπορεί να επεξεργαστεί για να διορθώσει το ερώτημα όπως απαιτείται.';
+$GLOBALS["lang"]['The URL of your Open-AudIT Server that this Collector will report to (no trailing slash).'] = 'E- poçt ünvan';
 
-$GLOBALS["lang"]['The group of devices on which the baseline was run against.'] = 'Η ομάδα των συσκευών στις οποίες ήταν σε λειτουργία η γραμμή βάσης.';
+$GLOBALS["lang"]['The URL the audit scripts should submit their result to.'] = 'URL- devět bifficiар olunmasmanatia ленивци.';
 
-$GLOBALS["lang"]['The group that provides a list of devices for the integration. Links to <code>groups.id</code>.'] = 'Η ομάδα που παρέχει μια λίστα συσκευών για την ενσωμάτωση. Συνδέσεις <code>groups.id</code>.';
+$GLOBALS["lang"]['The User endpoint allows you to manage user accounts within Open-AudIT.'] = '.';
 
-$GLOBALS["lang"]['The hour of the day when this task should execute (* for every hour).'] = 'Η ώρα της ημέρας κατά την οποία αυτή η εργασία θα πρέπει να εκτελέσει (* για κάθε ώρα).';
+$GLOBALS["lang"]['The WHERE'] = '- Да.';
 
-$GLOBALS["lang"]['The id of the linked device. Links to <code>devices.id</code>'] = 'Η ταυτότητα της συνδεδεμένης συσκευής. Συνδέσεις <code>devices.id</code>';
+$GLOBALS["lang"]['The WHERE section of your SQL <em>must</em> contain'] = '. <em>.</em> - Да.';
 
-$GLOBALS["lang"]['The identifier column (integer) in the database (read only).'] = 'Η στήλη αναγνώρισης (ακεραιωτής) στη βάση δεδομένων (διαβάστε μόνο).';
+$GLOBALS["lang"]['The Windows'] = '- Не, не.';
 
-$GLOBALS["lang"]['The importance of this baseline (not used yet).'] = 'Η σημασία αυτής της βάσης (δεν έχει χρησιμοποιηθεί ακόμη).';
+$GLOBALS["lang"]['The Windows log may say the following'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['The integer of severity.'] = 'Ο ακέραιος της σοβαρότητας.';
+$GLOBALS["lang"]['The account must have a password; WMI does not allow blank passwords.'] = '.';
 
-$GLOBALS["lang"]['The ip address of the Auth method.'] = 'Η διεύθυνση IP της μεθόδου Auth.';
+$GLOBALS["lang"]['The account password must NOT contain \" (double quotes). This is because cscript (and wscript) cannot parse argument values containing double quotes. They are simply stripped. No (before you ask) escaping will not work. This is a cscript limitation and nothing to do with Open-AudIT.'] = 'Имено.';
 
-$GLOBALS["lang"]['The language to translate the web interface into for the user.'] = 'Η γλώσσα για τη μετάφραση της διεπαφής ιστού για το χρήστη.';
+$GLOBALS["lang"]['The actual full name of this user.'] = 'Не, не.';
 
-$GLOBALS["lang"]['The last date and time this item was executed (read only).'] = 'Η τελευταία ημερομηνία και ώρα που εκτελέστηκε αυτό το στοιχείο (διαβάστε μόνο).';
+$GLOBALS["lang"]['The address of the Open-AudIT server submit page.'] = 'Έλεγχος Offene сървър в ünvan';
 
-$GLOBALS["lang"]['The last time that Open-AudIT retrieved details of this device.'] = 'Την τελευταία φορά που το Open-AudIT ανακάλυψε λεπτομέρειες αυτής της συσκευής.';
+$GLOBALS["lang"]['The administrator supplied credentials that were successfully used to bind to LDAP.'] = '.';
 
-$GLOBALS["lang"]['The last time this benchmarks was executed.'] = 'Την τελευταία φορά που εκτελέστηκαν αυτά τα κριτήρια.';
+$GLOBALS["lang"]['The administrator supplied credentials to bind to the LDAP server, but they have not been accepted by the LDAP sevrer. Double check the credentials work on the LDAP server, and then check (or reset them) in the Open-AudIT LDAP Server entry.'] = 'Имено.';
 
-$GLOBALS["lang"]['The last time this integration was run.'] = 'Την τελευταία φορά που έγινε αυτή η ενσωμάτωση.';
+$GLOBALS["lang"]['The agent and server are also intelligent enough to self-update the agent if a newer version is installed on the server (say after upgrading Open-AudIT).'] = '.';
 
-$GLOBALS["lang"]['The line number assigned by the provider to the line at this end of the connection.'] = 'Ο αριθμός γραμμής που εκχωρείται από τον πάροχο στη γραμμή στο τέλος της σύνδεσης.';
+$GLOBALS["lang"]['The agent should download a fresh copy of the audit script, run it and submit the result to the server.'] = 'Агент одит скрипт Yeni bir nümun... Yükl... m... k lazelīmdīr, пуснете го на сървър q...';
 
-$GLOBALS["lang"]['The location the rack is located in. Links to <code>locations.id</code>.'] = 'Η τοποθεσία στο ράφι βρίσκεται. Συνδέσεις <code>locations.id</code>.';
+$GLOBALS["lang"]['The application creates temporary audit scrtips here, copies them to the target machines, then deletes them.'] = '.';
 
-$GLOBALS["lang"]['The locations address.'] = 'Η διεύθυνση της τοποθεσίας.';
+$GLOBALS["lang"]['The associated baseline. Links to <code>baselines.id</code>.'] = '. <code>baselines.id</code>.';
 
-$GLOBALS["lang"]['The locations area.'] = 'Η περιοχή των τοποθεσιών.';
+$GLOBALS["lang"]['The associated discovery (if required). Links to <code>discoveries.id</code>.'] = '... <code>discoveries.id</code>.';
 
-$GLOBALS["lang"]['The locations city.'] = 'Οι τοποθεσίες της πόλης.';
+$GLOBALS["lang"]['The attribute to test (from the <code>devices</code> table).'] = '. <code>devices</code> - Да.';
 
-$GLOBALS["lang"]['The locations country.'] = 'Οι τοποθεσίες της χώρας.';
+$GLOBALS["lang"]['The attribute to test (must match an external field name from below).'] = 'Tesin xüsusiyyyyyyyyyy... (aşaşdan xarici bir sah... si adīil... eşl... yir).';
 
-$GLOBALS["lang"]['The locations district.'] = 'Η περιοχή των τοποθεσιών.';
+$GLOBALS["lang"]['The attributes for discovery scan options are as below.'] = '.';
 
-$GLOBALS["lang"]['The locations latitude.'] = 'Οι τοποθεσίες γεωγραφικό πλάτος.';
+$GLOBALS["lang"]['The audit script upon which to base your customisations.'] = '.';
 
-$GLOBALS["lang"]['The locations level.'] = 'Το επίπεδο των τοποθεσιών.';
+$GLOBALS["lang"]['The audit script will use the files[ ] array and retrieve the file details.'] = 'Audit Skript fayllar';
 
-$GLOBALS["lang"]['The locations longitude.'] = 'Οι τοποθεσίες γεωγραφικό μήκος.';
+$GLOBALS["lang"]['The audit scripts all accept a debugging argument. You can run the script utilizing that and see in more detail what the issue is. And if you cannot figure it out - that is what we are here for! Open a support case and we will get things running in no time.'] = 'Имено.';
 
-$GLOBALS["lang"]['The locations phone.'] = 'Οι τοποθεσίες τηλεφωνούν.';
+$GLOBALS["lang"]['The base path from which to search for Users.'] = '.';
 
-$GLOBALS["lang"]['The locations postcode.'] = 'Οι τοποθεσίες ταχυδρομικός κώδικας.';
+$GLOBALS["lang"]['The below steps are not the fault of or unique to Open-AudIT and would affect <strong>any</strong> discovery application using remote WMI and/or Windows.'] = '. <strong>.</strong> .';
 
-$GLOBALS["lang"]['The locations region.'] = 'Οι περιοχές.';
+$GLOBALS["lang"]['The benchmark type.'] = '.';
 
-$GLOBALS["lang"]['The locations room.'] = 'Το δωμάτιο των τοποθεσιών.';
+$GLOBALS["lang"]['The building the rack is located in.'] = '- Да.';
 
-$GLOBALS["lang"]['The locations state.'] = 'Οι τοποθεσίες δηλώνουν.';
+$GLOBALS["lang"]['The calculated number of devices to be created externally.'] = '- Ναι.';
 
-$GLOBALS["lang"]['The locations suburb.'] = 'Οι τοποθεσίες προάστιο.';
+$GLOBALS["lang"]['The calculated number of devices to be created in Open-AudIT.'] = 'Open- Audit yaradīlmaslar üçün cihaslar hesablanan say';
 
-$GLOBALS["lang"]['The locations suite.'] = 'Η σουίτα των τοποθεσιών.';
+$GLOBALS["lang"]['The client ID is the ID of an Azure Active Directory application. The client secret is the key that you give that application.'] = '.';
 
-$GLOBALS["lang"]['The maximum physical weight (in KGs) this rack can hold.'] = 'Το μέγιστο φυσικό βάρος (σε KGs) αυτό το ράφι μπορεί να κρατήσει.';
+$GLOBALS["lang"]['The collector is essentially a full install of Open-AudIT in <i>collector</i> mode. The collector is designed to run discovery upon the network it is situated in. It is not restricted to only that network, but ideally it would essentially be one collector per subnet where required. The collector is driven on a schedule by the server and runs discovery upon the network as specified.<br>When in Stand Alone mode the Collector acts as an independant server, simply forwarding all devices found to the main server.<br><br>Once installed and setup, control of the Collector is performed on the Server (not in Stand Alone mode).<br><br>The only required network ports between the collector and server are 80 or 443 (TCP connection established from the Collector to the Server). The Open-AudIT database is not (and cannot be) shared between these installs.<br><br>By default the collector (not in Stand Alone mode) will request from the server any discovery tasks every 5 minutes (you can configure this on the server for new Collectors using the configuration item collector_check_minutes) therefor any discovery tasks for the collector should be scheduled for 0, 5, 10, 15, etc minutes.'] = '. <i>.</i> Имено.<br/>.<br/><br/> да го направим, да го направим.<br/><br/>Kompüter v готварски сървър arasīnda yalnīz t К олунан a Offen- Audit bazaső bu yüks... kl... r arasaşnda paylaşlan (ve ola bilmir) deyil.<br/><br/>Имено.';
 
-$GLOBALS["lang"]['The maximum total BTUs this rack is rated for.'] = 'Το μέγιστο σύνολο BTUs αυτό το ράφι έχει βαθμολογηθεί για.';
+$GLOBALS["lang"]['The collector is essentially a full install of Open-AudIT in <i>collector</i> mode. This mode would reduce visible functionality in an effort to simplify and focus the application. It is designed to collect information about local networks and devices, where firewall and/or network traversal is an issue from the server.'] = '. <i>.</i> Имено.';
 
-$GLOBALS["lang"]['The minute of the hour when this task should execute (* for every minute).'] = 'Το λεπτό της ώρας που η εργασία αυτή θα πρέπει να εκτελέσει (* για κάθε λεπτό).';
+$GLOBALS["lang"]['The collectors internal IP used when it runs a discovery.'] = 'Имено.';
 
-$GLOBALS["lang"]['The month of the year when this task should execute (* for every month).'] = 'Ο μήνας του έτους κατά τον οποίο η εργασία αυτή πρέπει να εκτελείται (* για κάθε μήνα).';
+$GLOBALS["lang"]['The column name from the foreign table. Should be one of: class, environment, status, type or menu_category.'] = '- Да.';
 
-$GLOBALS["lang"]['The name given to this item.'] = 'Το όνομα που δίνεται σε αυτό το στοιχείο.';
+$GLOBALS["lang"]['The command executed upon the target device or Open-AudIT server code executed during discovery.'] = '.';
 
-$GLOBALS["lang"]['The name given to this item. Ideally it should be unique.'] = 'Το όνομα που δίνεται σε αυτό το στοιχείο. Ιδανικά θα πρέπει να είναι μοναδικό.';
+$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.'] = 'Не, не, не. <code>active/active</code>. <code>active/passive</code>. <code>N+1</code>. <code>N+M</code>. <code>N-to-1</code>. <code>N-to-N</code>. <code>other</code> .';
 
-$GLOBALS["lang"]['The name given to this user (used to login). Ideally it should be unique.'] = 'Το όνομα που δόθηκε σε αυτόν τον χρήστη (χρησιμοποιήθηκε για σύνδεση). Ιδανικά θα πρέπει να είναι μοναδικό.';
+$GLOBALS["lang"]['The credentials password. If the credentials are an SSH Key, this is the password used to unlock the key and is optional.'] = '- Не, не.';
 
-$GLOBALS["lang"]['The name of the associated cloud (if required).'] = 'Το όνομα του σχετικού νέφους (εάν απαιτείται).';
+$GLOBALS["lang"]['The credentials supplied by the user have failed.'] = '- Да.';
 
-$GLOBALS["lang"]['The name of the software package, as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = 'Το όνομα του πακέτου λογισμικού, όπως ελέγχεται από το Open-AudIT. Χρησιμοποίησε το ποσοστό % ως μπαλαντέρ.';
+$GLOBALS["lang"]['The credentials username.'] = '.';
 
-$GLOBALS["lang"]['The name of the user who last changed or added this item (read only).'] = 'Το όνομα του χρήστη που τελευταία άλλαξε ή πρόσθεσε αυτό το στοιχείο (διαβάστε μόνο).';
+$GLOBALS["lang"]['The current date and time in the format: Y-m-d H:i:s.'] = 'Υ-μ-δ';
 
-$GLOBALS["lang"]['The name provided by the provider.'] = 'Το όνομα που παρέχεται από τον πάροχο.';
+$GLOBALS["lang"]['The current date in Y-m-d format.'] = 'Y- m- d Bildungşnda cari tarix.';
 
-$GLOBALS["lang"]['The network in the format 192.168.1.0/24.'] = 'Το δίκτυο με τη μορφή 192.168.1.0/24.';
+$GLOBALS["lang"]['The current status of the Cloud Discovery.'] = '.';
 
-$GLOBALS["lang"]['The network subnet to execute the discovery on.'] = 'Το δίκτυο υποδικτύων για την εκτέλεση της ανακάλυψης.';
+$GLOBALS["lang"]['The current status of the discovery.'] = '- Да.';
 
-$GLOBALS["lang"]['The number of RUs this device occupies.'] = 'Ο αριθμός των ΕΣ που καταλαμβάνει αυτή η συσκευή.';
+$GLOBALS["lang"]['The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.'] = '. <code>dashboards.id</code>.';
 
-$GLOBALS["lang"]['The number of associated locations. Links to <code>locations.cloud_id</code>.'] = 'Ο αριθμός των σχετικών θέσεων. Συνδέσεις <code>locations.cloud_id</code>.';
+$GLOBALS["lang"]['The data stored in the database is not showing in the application translated. We leave the data as it is. However, there is nothing to stop you, the user, changing the name (for example) of an item in the database to your language.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['The number of associated networks. Links to <code>networks.cloud_id</code>.'] = 'Ο αριθμός των συνδεδεμένων δικτύων. Συνδέσεις <code>networks.cloud_id</code>.';
+$GLOBALS["lang"]['The data you input will be used in a <code>LIKE</code> clause, not (as per the API) an <code>equals</code> clause. Another example - if you input <code>comput</code>, it would still return all computers. And because we are using a <code>LIKE</code> clause, it is case-insensitive.'] = '- Да. <code>LIKE</code> . <code>equals</code> . <code>comput</code>- Не, не. <code>LIKE</code> .';
 
-$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = 'Ο αριθμός των ελεγχόμενων συσκευών σε αυτό το σύννεφο. Συνδέσεις <code>devices.cloud_id</code> και <code>devices.serial</code>.';
+$GLOBALS["lang"]['The database schema can be found in the application if the user has database::read permission by going to menu: Admin -> Database ->'] = 'Имено.';
 
-$GLOBALS["lang"]['The number of critical severity vulnerabilities held by FirstWave (not in your database).'] = 'Ο αριθμός των τρωτών σημείων κρίσιμης σοβαρότητας που κατέχει το FirstWave (όχι στη βάση δεδομένων σας).';
+$GLOBALS["lang"]['The database version and web version are inconsistent.'] = 'Στο Webová verze zövq edir.';
 
-$GLOBALS["lang"]['The number of devices found by this discovery.'] = 'Ο αριθμός των συσκευών που βρέθηκαν από αυτή την ανακάλυψη.';
+$GLOBALS["lang"]['The date of license expiration.'] = 'Не, не.';
 
-$GLOBALS["lang"]['The number of devices in the associated group.'] = 'Ο αριθμός των συσκευών της συνδεδεμένης ομάδας.';
+$GLOBALS["lang"]['The date the software is discontinued by the manufacturer. Usually replaced by a newer version. Maintenance may still be available.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Ο αριθμός των συσκευών σε αυτό το σύννεφο με μια κατάσταση λειτουργίας. Συνδέσεις <code>devices.cloud_id</code> και <code>devices.instance_state</code>.';
+$GLOBALS["lang"]['The date the software no longer receives updates and is effectively discontinued altogether. Maintenance is discontinued.'] = 'proqram artīq yenil.ndirilm.si almaq сре - Да.';
 
-$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Ο αριθμός των συσκευών σε αυτό το σύννεφο με μια κατάσταση σταμάτησε. Συνδέσεις <code>devices.cloud_id</code> και <code>devices.instance_state</code>.';
+$GLOBALS["lang"]['The date this item was changed or added (read only). NOTE - This is the timestamp from the server.'] = ' да го направим, да го направим. - Ναι.';
 
-$GLOBALS["lang"]['The number of devices in this cloud. Links to <code>devices.cloud_id</code>.'] = 'Ο αριθμός των συσκευών σε αυτό το σύννεφο. Συνδέσεις <code>devices.cloud_id</code>.';
+$GLOBALS["lang"]['The date/time when this result was created.'] = 'Имено.';
 
-$GLOBALS["lang"]['The number of devices this benchmark will be executed upon. Derived from <code>benchmarks.devices</code>.'] = 'Ο αριθμός των συσκευών που θα εκτελεστεί αυτό το σημείο αναφοράς. Που προέρχονται από <code>benchmarks.devices</code>.';
+$GLOBALS["lang"]['The day of the month when this task should execute (* for every day).'] = '- Да.';
 
-$GLOBALS["lang"]['The number of devices to limit this discovery to.'] = 'Ο αριθμός των συσκευών για τον περιορισμό αυτής της ανακάλυψης.';
+$GLOBALS["lang"]['The day of the week when this task should execute (* for every day).'] = '.';
 
-$GLOBALS["lang"]['The number of high severity vulnerabilities held by FirstWave (not in your database).'] = 'Ο αριθμός των υψηλής σοβαρότητας τρωτά σημεία που κατέχει η FirstWave (όχι στη βάση δεδομένων σας).';
+$GLOBALS["lang"]['The debug level (will output to command prompt window). Lower means less output with 0 being no output.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['The number of low severity vulnerabilities held by FirstWave (not in your database).'] = 'Ο αριθμός των τρωτά σημεία χαμηλής σοβαρότητας που κατέχει το FirstWave (όχι στη βάση δεδομένων σας).';
+$GLOBALS["lang"]['The default discovery scan option is the UltraFast set.'] = '- Да.';
 
-$GLOBALS["lang"]['The number of medium severity vulnerabilities held by FirstWave (not in your database).'] = 'Ο αριθμός των τρωτά σημεία μέσης σοβαρότητας που κατέχει η FirstWave (όχι στη βάση δεδομένων σας).';
+$GLOBALS["lang"]['The default language assigned to any user created by this method.'] = 'Bu üsul t по-малко от50. (στα Αγγλικά).';
 
-$GLOBALS["lang"]['The number of purchased licenses.'] = 'Ο αριθμός των αγορασμένων αδειών.';
+$GLOBALS["lang"]['The device must respond to an Nmap ping before it is considered online.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['The number of seconds to try and communicate with the target IP.'] = 'Ο αριθμός των δευτερολέπτων για να προσπαθήσουμε να επικοινωνήσουμε με το στόχο IP.';
+$GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>.'] = 'Не, не, не. <code>devices.id</code>.';
 
-$GLOBALS["lang"]['The number of vulnerabilities without a severity held by FirstWave (not in your database).'] = 'Ο αριθμός των τρωτών σημείων χωρίς σοβαρότητα που κατέχει το FirstWave (όχι στη βάση δεδομένων σας).';
+$GLOBALS["lang"]['The direct link for the script is'] = '.';
 
-$GLOBALS["lang"]['The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.'] = 'Η προαιρετική δευτερεύουσα στήλη. ΣΗΜΕΙΩΣΗ: Όταν ο τύπος = κυκλοφορία, αυτό αντιπροσωπεύει το κίτρινο id ερώτημα.';
+$GLOBALS["lang"]['The email address of the reciever'] = 'Не, не.';
 
-$GLOBALS["lang"]['The optional third column. NOTE: When type = traffic, this represents the green query id.'] = 'Η προαιρετική τρίτη στήλη. ΣΗΜΕΙΩΣΗ: Όταν ο τύπος = κυκλοφορία, αυτό αντιπροσωπεύει το πράσινο id ερώτημα.';
+$GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = 'BirinciWave... ikilisi lisenziya üçün t....';
 
-$GLOBALS["lang"]['The orientation of this device.'] = 'Ο προσανατολισμός αυτής της συσκευής.';
+$GLOBALS["lang"]['The entire associated baseline this result is from.'] = '- Да.';
 
-$GLOBALS["lang"]['The password for the dn_account attribute.'] = 'Ο κωδικός πρόσβασης για το χαρακτηριστικό dn_account.';
+$GLOBALS["lang"]['The exploited vulnerability can affect resources beyond the security authority of the vulnerable component. This usually means a privilege or trust boundary is crossed (for example, escaping from a container to the host OS).'] = 'Не, не. Bu, bir imtiyaz v го я гом голият хата keçirilir (örnegin, ev sahibi OS bir konteyner qarşsţnşalmq).';
 
-$GLOBALS["lang"]['The password used to access the external system.'] = 'Ο κωδικός πρόσβασης που χρησιμοποιείται για την πρόσβαση στο εξωτερικό σύστημα.';
+$GLOBALS["lang"]['The exploited vulnerability only impacts resources within the same security authority as the vulnerable component. In other words, the attacker’s actions stay within the original trust boundary.'] = 'Имено.';
 
-$GLOBALS["lang"]['The path to the file or directory.'] = 'Η διαδρομή προς το αρχείο ή τον κατάλογο.';
+$GLOBALS["lang"]['The externally referenced location ID. Usually populated by Cloud audits.'] = '- Да.';
 
-$GLOBALS["lang"]['The path to the file or directory. Directories should end with a trailing slash.'] = 'Η διαδρομή προς το αρχείο ή τον κατάλογο. Οι κατάλογοι θα πρέπει να τελειώνουν με ένα ίχνος.';
+$GLOBALS["lang"]['The fields associated with an Integration are stored in the database as a JSON array of objects. Each field has the following attributes'] = 'Bir inteqrasiya il...';
 
-$GLOBALS["lang"]['The physical depth (in CMs) of the rack.'] = 'Το φυσικό βάθος (σε CMs) της σχάρας.';
+$GLOBALS["lang"]['The first time that Open-AudIT retrieved details of this device.'] = '.';
 
-$GLOBALS["lang"]['The physical height (in CMs) of the rack.'] = 'Το φυσικό ύψος (σε CMs) της σχάρας.';
+$GLOBALS["lang"]['The floor the rack is located on.'] = '.';
 
-$GLOBALS["lang"]['The physical weight (in KGs) of the rack at present.'] = 'Το φυσικό βάρος (σε KGs) της σχάρας προς το παρόν.';
+$GLOBALS["lang"]['The foreign table to reference. Should be one of: devices, locations, orgs or queries.'] = 'Имено.';
 
-$GLOBALS["lang"]['The physical weight (in KGs) of the rack when empty.'] = 'Το φυσικό βάρος (σε KGs) της σχάρας όταν είναι άδειο.';
+$GLOBALS["lang"]['The format of your data should be in the form'] = '.';
 
-$GLOBALS["lang"]['The physical width (in CMs) of the rack.'] = 'Το φυσικό πλάτος (σε CMs) της σχάρας.';
+$GLOBALS["lang"]['The format used for the output to be emailed.'] = '.';
 
-$GLOBALS["lang"]['The pod (if any) that this rack is part of.'] = 'Το λοβό (αν υπάρχει) που αυτό το ράφι είναι μέρος του.';
+$GLOBALS["lang"]['The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.'] = 'Имено.';
 
-$GLOBALS["lang"]['The power circuit this rack attaches to.'] = 'Το κύκλωμα ρεύματος που συνδέεται με αυτό το ράφι.';
+$GLOBALS["lang"]['The fully qualified name returned by the external system. EG: for NMIS we use configuration.roleType.'] = 'Xarici sistem t гор гонят там. E готвешсе да го направя.';
 
-$GLOBALS["lang"]['The primary database table upon which to base this widget.'] = 'Ο κύριος πίνακας βάσης δεδομένων πάνω στον οποίο θα βασιστεί αυτό το γραφικό συστατικό.';
+$GLOBALS["lang"]['The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).'] = '.';
 
-$GLOBALS["lang"]['The process identifier of this queue item.'] = 'Το αναγνωριστικό διεργασίας αυτού του στοιχείου ουράς.';
+$GLOBALS["lang"]['The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.'] = 'Bu boşluğu test üçün jaradīlan SQL sorğu jaradīlīb. Не, не.';
 
-$GLOBALS["lang"]['The process that was used last to retrieve details about the device'] = 'Η διαδικασία που χρησιμοποιήθηκε τελευταία για την ανάκτηση λεπτομερειών σχετικά με τη συσκευή';
+$GLOBALS["lang"]['The group of devices on which the baseline was run against.'] = 'Bazalşn qarşişl гон cyhazlar qrupu.';
 
-$GLOBALS["lang"]['The query that provides a list of devices for the integration. Links to <code>queries.id</code>.'] = 'Το ερώτημα που παρέχει μια λίστα συσκευών για την ενσωμάτωση. Συνδέσεις <code>queries.id</code>.';
+$GLOBALS["lang"]['The group that provides a list of devices for the integration. Links to <code>groups.id</code>.'] = '- Да... <code>groups.id</code>.';
 
-$GLOBALS["lang"]['The rack asset number.'] = 'Ο αριθμός του περιουσιακού στοιχείου.';
+$GLOBALS["lang"]['The hour of the day when this task should execute (* for every hour).'] = '.';
 
-$GLOBALS["lang"]['The rack asset tag.'] = 'Η ταμπέλα με τα λεφτά.';
+$GLOBALS["lang"]['The id of the linked device. Links to <code>devices.id</code>'] = '- Да. <code>devices.id</code>';
 
-$GLOBALS["lang"]['The rack bar code.'] = 'Ο κωδικός του μπαρ.';
+$GLOBALS["lang"]['The identifier column (integer) in the database (read only).'] = 'Имено.';
 
-$GLOBALS["lang"]['The rack model.'] = 'Το μοντέλο του σχάρα.';
+$GLOBALS["lang"]['The importance of this baseline (not used yet).'] = 'Bu üslubunun говмилиииии (heşistifad по етм...).';
 
-$GLOBALS["lang"]['The rack serial.'] = 'Το σειριακό ράφι.';
+$GLOBALS["lang"]['The integer of severity.'] = '.';
 
-$GLOBALS["lang"]['The rack series.'] = 'Η σειρά με τα ράφια.';
+$GLOBALS["lang"]['The internal value, reformatted in this format.'] = 'Имено.';
 
-$GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = 'Το ράφι που βρίσκεται αυτή η συσκευή. Συνδέσεις <code>racks.id</code>.';
+$GLOBALS["lang"]['The ip address of the Auth method.'] = '.';
 
-$GLOBALS["lang"]['The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.'] = 'Η συνιστώμενη διαδικασία αντιμετώπισης και καθορισμού των διαπιστωθέντων τρωτών σημείων ασφαλείας. Αυτό συνήθως περιλαμβάνει την εφαρμογή patches, ενημερώσεις, ή άλλα μέτρα για την εξάλειψη του κινδύνου που τίθεται από τα τρωτά σημεία.';
+$GLOBALS["lang"]['The language to translate the web interface into for the user.'] = '.';
 
-$GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = 'Η κανονική σημειογραφία τομέα του καταλόγου σας. Π.χ. <code>open-audit.lan</code>.';
+$GLOBALS["lang"]['The last date and time this item was executed (read only).'] = '.';
 
-$GLOBALS["lang"]['The result of the command.'] = 'Το αποτέλεσμα της εντολής.';
+$GLOBALS["lang"]['The last time that Open-AudIT retrieved details of this device.'] = '.';
 
-$GLOBALS["lang"]['The room the rack is located in.'] = 'Το δωμάτιο στο οποίο βρίσκεται το ράφι.';
+$GLOBALS["lang"]['The last time this benchmarks was executed.'] = '.';
 
-$GLOBALS["lang"]['The row the rack is located in.'] = 'Η σειρά στο ράφι βρίσκεται.';
+$GLOBALS["lang"]['The last time this integration was run.'] = '.';
 
-$GLOBALS["lang"]['The secret key used in conjunction with your AWS EC2 API key.'] = 'Το μυστικό κλειδί που χρησιμοποιείται σε συνδυασμό με το κλειδί AWS EC2 API σας.';
+$GLOBALS["lang"]['The license endpoint allows you to track the number of licenses found on your devices.'] = '- Да.';
 
-$GLOBALS["lang"]['The software end-of-life date.'] = 'Η ημερομηνία λήξης της ζωής του λογισμικού.';
+$GLOBALS["lang"]['The line number assigned by the provider to the line at this end of the connection.'] = 'Това е всичко.';
 
-$GLOBALS["lang"]['The software end-of-service-life date.'] = 'Η ημερομηνία λήξης της χρήσης λογισμικού.';
+$GLOBALS["lang"]['The location the rack is located in. Links to <code>locations.id</code>.'] = '- Да. <code>locations.id</code>.';
 
-$GLOBALS["lang"]['The specific database column from the specified database table.'] = 'Η συγκεκριμένη στήλη βάσης δεδομένων από τον καθορισμένο πίνακα βάσης δεδομένων.';
+$GLOBALS["lang"]['The locations address.'] = '- Да.';
 
-$GLOBALS["lang"]['The specific database table.'] = 'Ο συγκεκριμένος πίνακας δεδομένων.';
+$GLOBALS["lang"]['The locations area.'] = '- Да.';
 
-$GLOBALS["lang"]['The standard Nmap timing options. We usually use -T4 (Aggressive) as this is recommended for a decent broadband or ethernet connection.'] = 'Οι τυπικές επιλογές συγχρονισμού Nmap. Συνήθως χρησιμοποιούμε το -T4 (Επιθετικό) καθώς αυτό συνιστάται για μια αξιοπρεπή ευρυζωνική ή ethernet σύνδεση.';
+$GLOBALS["lang"]['The locations city.'] = '- Да.';
 
-$GLOBALS["lang"]['The status of this integration'] = 'Η κατάσταση αυτής της ολοκλήρωσης';
+$GLOBALS["lang"]['The locations country.'] = '- Да.';
 
-$GLOBALS["lang"]['The status of this queued item.'] = 'Η κατάσταση αυτού του αντικειμένου σε αναμονή.';
+$GLOBALS["lang"]['The locations district.'] = '- Да.';
 
-$GLOBALS["lang"]['The target IP this log entry referers to (if any).'] = 'Ο στόχος IP αυτή η καταχώρηση καταγραφής referers σε (αν υπάρχει).';
+$GLOBALS["lang"]['The locations latitude.'] = '.';
 
-$GLOBALS["lang"]['The template for the link to be generated per result line.'] = 'Το πρότυπο για τον σύνδεσμο που θα δημιουργηθεί ανά γραμμή αποτελέσματος.';
+$GLOBALS["lang"]['The locations level.'] = '.';
 
-$GLOBALS["lang"]['The text for the bottom of the chart in a line chart (only).'] = 'Το κείμενο για το κάτω μέρος του χάρτη σε ένα διάγραμμα γραμμής (μόνο).';
+$GLOBALS["lang"]['The locations longitude.'] = '.';
 
-$GLOBALS["lang"]['The text that is displayed.'] = 'Το κείμενο που εμφανίζεται.';
+$GLOBALS["lang"]['The locations phone.'] = '- Да.';
 
-$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = 'Η χρονοσφραγίδα μετά την οποία, αυτή η εργασία θα πρέπει να τρέξει. Για παράδειγμα, εκτελέστε μια εργασία μετά την 1η Ιουνίου 2017 στις 10 π.μ., που να <code>2017-06-01 09:59:00</code>. Η τιμή αυτή πρέπει να είναι μηδενική (δηλαδή 09, όχι 9). Προκαθορισμένες τιμές <code>2000-01-01 00:00:00</code> που σημαίνει εξ ορισμού, μια προγραμματισμένη εργασία θα εκτελεστεί στον επόμενο προγραμματισμένο χρόνο εκτέλεσης.';
+$GLOBALS["lang"]['The locations postcode.'] = '- Да.';
 
-$GLOBALS["lang"]['The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.'] = 'Οι κορυφές 10, 100 ή 1000 (ή καμία) θύρες TCP που χρησιμοποιούνται συνήθως σύμφωνα με το Nmap.';
+$GLOBALS["lang"]['The locations region.'] = '- Да.';
 
-$GLOBALS["lang"]['The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.'] = 'Τα top 10, 100 ή 1000 (ή κανένα) UDP λιμάνια συνήθως σε χρήση σύμφωνα με το Nmap.';
+$GLOBALS["lang"]['The locations room.'] = '- Да.';
 
-$GLOBALS["lang"]['The total BTU output by this rack.'] = 'Η συνολική έξοδος BTU από αυτό το ράφι.';
+$GLOBALS["lang"]['The locations state.'] = '.';
 
-$GLOBALS["lang"]['The type of device.'] = 'Ο τύπος της συσκευής.';
+$GLOBALS["lang"]['The locations suburb.'] = '- Да.';
 
-$GLOBALS["lang"]['The type of organisation.'] = 'Ο τύπος της οργάνωσης.';
+$GLOBALS["lang"]['The locations suite.'] = '.';
 
-$GLOBALS["lang"]['The type of rack (compute, power, network, etc).'] = 'Ο τύπος της σχάρας (υπολογιστής, ισχύς, δίκτυο, κλπ).';
+$GLOBALS["lang"]['The logic for device matching is contained in the devices_helper.php file, which on a Linux install can be found here'] = '- Да.';
 
-$GLOBALS["lang"]['The type of task to run. One of: baseline, benchmark, cloud discovery, discovery, integration, report, query.'] = 'Το είδος της εργασίας που πρέπει να εκτελέσετε. Ένα από τα εξής: βάση, σημείο αναφοράς, ανακάλυψη νεφών, ανακάλυψη, ενσωμάτωση, αναφορά, ερώτημα.';
+$GLOBALS["lang"]['The machine-default permission settings do not grant Local Activation permission for the COM Server application with'] = '- Да.';
 
-$GLOBALS["lang"]['The type of the integration (usually named after the external system).'] = 'Ο τύπος της ενσωμάτωσης (συνήθως πήρε το όνομά του από το εξωτερικό σύστημα).';
+$GLOBALS["lang"]['The maximum physical weight (in KGs) this rack can hold.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['The unique identifier of this server.'] = 'Το μοναδικό αναγνωριστικό αυτού του εξυπηρετητή.';
+$GLOBALS["lang"]['The maximum total BTUs this rack is rated for.'] = '.';
 
-$GLOBALS["lang"]['The user account this collector uses. Links to <code>users.id</code>.'] = 'Ο λογαριασμός χρήστη αυτός ο συλλέκτης χρησιμοποιεί. Συνδέσεις <code>users.id</code>.';
+$GLOBALS["lang"]['The minimum required attributes for attributes are'] = '.';
 
-$GLOBALS["lang"]['The username used to access the external system.'] = 'Το όνομα χρήστη που χρησιμοποιείται για την πρόσβαση στο εξωτερικό σύστημα.';
+$GLOBALS["lang"]['The minute of the hour when this task should execute (* for every minute).'] = '.';
 
-$GLOBALS["lang"]['The users email address.'] = 'Η διεύθυνση ηλεκτρονικού ταχυδρομείου των χρηστών.';
+$GLOBALS["lang"]['The month of the year when this task should execute (* for every month).'] = '.';
 
-$GLOBALS["lang"]['The usual hours of operation at this site.'] = 'Οι συνήθεις ώρες λειτουργίας σε αυτό το site.';
+$GLOBALS["lang"]['The name given to this item.'] = '.';
 
-$GLOBALS["lang"]['The value assigned to the item.'] = 'Η τιμή που αποδίδεται στο στοιχείο.';
+$GLOBALS["lang"]['The name given to this item. Ideally it should be unique.'] = 'Имено.';
 
-$GLOBALS["lang"]['The value that is stored for this particular item.'] = 'Η τιμή που αποθηκεύεται για το συγκεκριμένο στοιχείο.';
+$GLOBALS["lang"]['The name given to this user (used to login). Ideally it should be unique.'] = 'Μπου Ιστιφάντ...';
 
-$GLOBALS["lang"]['The vendor name as per CPE entries.'] = 'Το όνομα του πωλητή σύμφωνα με τις εγγραφές CPE.';
+$GLOBALS["lang"]['The name of the associated cloud (if required).'] = '.';
 
-$GLOBALS["lang"]['The vendor taken from the CPE.'] = 'Ο πωλητής που πήρε από το CPE.';
+$GLOBALS["lang"]['The name of the software package, as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = 'Open- Aud IT t гонят баксилан proqram paketin in ad - Да.';
 
-$GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = 'Ο κατάλογος ιστού στον υπολογιστή που εγκαθίσταται το Open-AudIT (απαιτεί μια οριζοντίωση).';
+$GLOBALS["lang"]['The name of the user who last changed or added this item (read only).'] = '.';
 
-$GLOBALS["lang"]['The widget at position '] = 'Το γραφικό συστατικό στη θέση ';
+$GLOBALS["lang"]['The name provided by the provider.'] = '.';
 
-$GLOBALS["lang"]['The width of this device.'] = 'Το πλάτος αυτής της συσκευής.';
+$GLOBALS["lang"]['The network in the format 192.168.1.0/24.'] = ' Мрежа 192.168.1.0 /24.';
 
-$GLOBALS["lang"]['Then'] = 'Τότε...';
+$GLOBALS["lang"]['The network subnet to execute the discovery on.'] = 'Имено.';
 
-$GLOBALS["lang"]['This CVE will be retrieved and overwrite the existing CVE if it exists.'] = 'Αυτό το CVE θα ανακτηθεί και θα αντικαταστήσει το υπάρχον CVE εάν υπάρχει.';
+$GLOBALS["lang"]['The new Agent runs a PowerShell version of the old audit script in preparation for the depreciation of VBScript (yes, it is coming).'] = '- Не, не.';
 
-$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = 'Αυτή η ιδιότητα αποθηκεύεται ως αντικείμενο JSON. Είναι ο κατάλογος όλων των συλλογών και περιέχει το όνομα συλλογής μαζί με <code>c</code>, <code>r</code>, <code>u</code> και, ή <code>d</code> που αντιπροσωπεύουν δημιουργία, ανάγνωση, ενημέρωση και διαγραφή. Αυτές είναι οι ενέργειες που μπορεί να εκτελέσει ένας χρήστης σε αντικείμενα από τη συγκεκριμένη συλλογή.';
+$GLOBALS["lang"]['The number of RUs this device occupies.'] = '.';
 
-$GLOBALS["lang"]['This can be either a varchar (a text field), a list (a list of values that can be selected) or a date.'] = 'Αυτό μπορεί να είναι είτε ένα varchar (ένα πεδίο κειμένου), μια λίστα (μια λίστα τιμών που μπορεί να επιλεγεί) είτε μια ημερομηνία.';
+$GLOBALS["lang"]['The number of associated locations. Links to <code>locations.cloud_id</code>.'] = '. <code>locations.cloud_id</code>.';
 
-$GLOBALS["lang"]['This collectors universally unique identifier.'] = 'Αυτός ο συλλέκτης παγκοσμίως μοναδικό αναγνωριστικό.';
+$GLOBALS["lang"]['The number of associated networks. Links to <code>networks.cloud_id</code>.'] = '. <code>networks.cloud_id</code>.';
 
-$GLOBALS["lang"]['This description is auto-populated and should ideally be left as-is.'] = 'Αυτή η περιγραφή είναι αυτόματη-πληθυσμός και θα πρέπει ιδανικά να μείνει όπως-είναι.';
+$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = '- Да. <code>devices.cloud_id</code> Κεϊντιγιάτ <code>devices.serial</code>.';
 
-$GLOBALS["lang"]['This feature requires a Professional or an Enterprise license.'] = 'Αυτό το χαρακτηριστικό απαιτεί μια επαγγελματική ή μια άδεια Enterprise.';
+$GLOBALS["lang"]['The number of critical severity vulnerabilities held by FirstWave (not in your database).'] = '.';
 
-$GLOBALS["lang"]['This is generally the primary column, unless otherwise configured. NOTE: When type = traffic, this represents the secondary text.'] = 'Αυτή είναι γενικά η κύρια στήλη, εκτός εάν άλλως ρυθμιστεί. ΣΗΜΕΙΩΣΗ: Όταν ο τύπος = κυκλοφορία, αυτό αντιπροσωπεύει το δευτερεύον κείμενο.';
+$GLOBALS["lang"]['The number of devices found by this discovery.'] = '.';
 
-$GLOBALS["lang"]['This item must match the value of the attribute selected or contains the ID of the query to be used.'] = 'Αυτό το στοιχείο πρέπει να ταιριάζει με την τιμή του χαρακτηριστικού που επιλέχθηκε ή περιέχει το ID του ερωτήματος που θα χρησιμοποιηθεί.';
+$GLOBALS["lang"]['The number of devices in the associated group.'] = '.';
 
-$GLOBALS["lang"]['This item must match the value of the attribute selected.'] = 'Αυτό το στοιχείο πρέπει να ταιριάζει με την τιμή του επιλεγμένου χαρακτηριστικού.';
+$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = 'Имено. <code>devices.cloud_id</code> Κεϊντιγιάτ <code>devices.instance_state</code>.';
 
-$GLOBALS["lang"]['This license expires on'] = 'Αυτή η άδεια λήγει στις';
+$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = '. <code>devices.cloud_id</code> Κεϊντιγιάτ <code>devices.instance_state</code>.';
 
-$GLOBALS["lang"]['This should be set to either 1 or the height of the rack.'] = 'Αυτό πρέπει να ρυθμιστεί είτε στο 1 είτε στο ύψος της σχάρας.';
+$GLOBALS["lang"]['The number of devices in this cloud. Links to <code>devices.cloud_id</code>.'] = 'Не, не. <code>devices.cloud_id</code>.';
 
-$GLOBALS["lang"]['This will auto-populate.'] = 'Αυτό θα γίνει αυτόματα.';
+$GLOBALS["lang"]['The number of devices this benchmark will be executed upon. Derived from <code>benchmarks.devices</code>.'] = '. <code>benchmarks.devices</code>.';
 
-$GLOBALS["lang"]['This will considerably slow the discovery scan.'] = 'Αυτό θα επιβραδύνει σημαντικά την σάρωση ανακάλυψης.';
+$GLOBALS["lang"]['The number of devices to limit this discovery to.'] = '- Да.';
 
-$GLOBALS["lang"]['Thursday'] = 'Πέμπτη';
+$GLOBALS["lang"]['The number of high severity vulnerabilities held by FirstWave (not in your database).'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['time_caption'] = 'Τίτλος χρόνου';
+$GLOBALS["lang"]['The number of low severity vulnerabilities held by FirstWave (not in your database).'] = 'Имено.';
 
-$GLOBALS["lang"]['Time Caption'] = 'Τίτλος χρόνου';
+$GLOBALS["lang"]['The number of medium severity vulnerabilities held by FirstWave (not in your database).'] = '.';
 
-$GLOBALS["lang"]['time_daylight'] = 'Χρονικό φως';
+$GLOBALS["lang"]['The number of purchased licenses.'] = '- Не, не.';
 
-$GLOBALS["lang"]['Time Daylight'] = 'Χρονικό φως';
+$GLOBALS["lang"]['The number of seconds to try and communicate with the target IP.'] = '.';
 
-$GLOBALS["lang"]['Time to Execute'] = 'Ώρα για εκτέλεση';
+$GLOBALS["lang"]['The number of vulnerabilities without a severity held by FirstWave (not in your database).'] = '.';
 
-$GLOBALS["lang"]['timeout'] = 'Χρονικό όριο';
+$GLOBALS["lang"]['The offset is the count of devices you wish to return data from.'] = '.';
 
-$GLOBALS["lang"]['Timeout'] = 'Χρονικό όριο';
+$GLOBALS["lang"]['The only required permission / policy name (in our testing) is'] = 'Γιαλνίζ Λοντενίμ ολάν';
 
-$GLOBALS["lang"]['Timeout Per Target (Seconds)'] = 'Χρονικό όριο ανά στόχο (δευτερεύοντα)';
+$GLOBALS["lang"]['The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.'] = 'Имено.';
 
-$GLOBALS["lang"]['Timesatamp'] = 'Χρονοσφραγίδα';
+$GLOBALS["lang"]['The optional third column. NOTE: When type = traffic, this represents the green query id.'] = 'Имено.';
 
-$GLOBALS["lang"]['Timestamp'] = 'Χρονοσφραγίδα';
+$GLOBALS["lang"]['The order of information retrieval is snmp, ssh, wmi.'] = 'Имено.';
 
-$GLOBALS["lang"]['timing'] = 'Χρόνος';
+$GLOBALS["lang"]['The orientation of this device.'] = '.';
 
-$GLOBALS["lang"]['Timing'] = 'Χρόνος';
+$GLOBALS["lang"]['The password (if not using the user running the script).'] = '.';
 
-$GLOBALS["lang"]['Timor-Leste'] = 'Τιμόρ-Λέστε';
+$GLOBALS["lang"]['The password for the dn_account attribute.'] = 'Не, не.';
 
-$GLOBALS["lang"]['Title'] = 'Τίτλος';
+$GLOBALS["lang"]['The password used to access the external system.'] = '.';
 
-$GLOBALS["lang"]['Togo'] = 'Τόγκο';
+$GLOBALS["lang"]['The path to the file or directory.'] = '- Да.';
 
-$GLOBALS["lang"]['Tokelau'] = 'Τοκελάου';
+$GLOBALS["lang"]['The path to the file or directory. Directories should end with a trailing slash.'] = '.';
 
-$GLOBALS["lang"]['Tonga'] = 'Τόνγκα';
+$GLOBALS["lang"]['The physical depth (in CMs) of the rack.'] = '.';
 
-$GLOBALS["lang"]['toolbar_style'] = 'Στυλ γραμμής εργαλείων';
+$GLOBALS["lang"]['The physical height (in CMs) of the rack.'] = '- Да.';
 
-$GLOBALS["lang"]['Toolbar Style'] = 'Στυλ γραμμής εργαλείων';
+$GLOBALS["lang"]['The physical weight (in KGs) of the rack at present.'] = '.';
 
-$GLOBALS["lang"]['Top Nmap TCP Ports'] = 'Κορυφαίες θύρες TCP Nmap';
+$GLOBALS["lang"]['The physical weight (in KGs) of the rack when empty.'] = '- Да.';
 
-$GLOBALS["lang"]['Top Nmap UDP Ports'] = 'Κορυφαίες θύρες UDP Nmap';
+$GLOBALS["lang"]['The physical width (in CMs) of the rack.'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Traditional Chinese'] = 'Παραδοσιακοί Κινέζοι';
+$GLOBALS["lang"]['The pod (if any) that this rack is part of.'] = '.';
 
-$GLOBALS["lang"]['Traffic Light'] = 'Φως κίνησης';
+$GLOBALS["lang"]['The power circuit this rack attaches to.'] = 'Не, не.';
 
-$GLOBALS["lang"]['Trinidad and Tobago'] = 'Τρινιδάδ και Τομπάγκο';
+$GLOBALS["lang"]['The primary database table upon which to base this widget.'] = '.';
 
-$GLOBALS["lang"]['Troubleshooting LDAP Logins'] = 'Αντιμετώπιση προβλημάτων σύνδεσης LDAP';
+$GLOBALS["lang"]['The primary method for authorization (what a user can do) is now based on the users Roles. Roles are defined as admin, org_admin, reporter, and user by default. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. Standard roles as shipped should cover 99.9 percent of use-cases. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.'] = '- Ναι. Имено.';
 
-$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"'] = 'Δοκιμάστε όλα τα τελευταία χαρακτηριστικά με άδεια χρήσης δωρεάν 100 συσκευών του Open-AudIT Enterprise. Παρακαλώ διαβάστε το < a href=\""';
+$GLOBALS["lang"]['The process identifier of this queue item.'] = 'Μπουσούρα Μαντ';
 
-$GLOBALS["lang"]['Tuesday'] = 'Τρίτη';
+$GLOBALS["lang"]['The process that was used last to retrieve details about the device'] = 'Όνομα m';
 
-$GLOBALS["lang"]['Tunisia'] = 'Τυνησία';
+$GLOBALS["lang"]['The purpose of this licensing page is to list the products and licenses included in Firstwave Commercial products including products based upon open source works.Open-AudIT is licensed from Firstwave under AGPLv3 or later with Enterprise and Professional functionality licensed under commercial terms.Open-AudIT when downloaded from FirstWave may include the following libraries and projects, which are supplied unmodified and licensed as indicated:'] = 'Bu lisenziiya s готварски siminin m.hsullarzanin v по lisenziyalarzania açīq m.hsullar daxil olan ilkwave Commercial m.hsullarzania daxildir. Въпреки тоува, това, което се се е случило, е, че че това, което се е случило, е, че това, което се е е е се е е е е е е е е е е е е е е е е се е е е е се е се е е е е се е е е се е е е е е е е е е е е е е се е е е е е е е е е е е е е е е е е е е е е е е е е ';
 
-$GLOBALS["lang"]['Turkey'] = 'Τουρκία';
+$GLOBALS["lang"]['The query that provides a list of devices for the integration. Links to <code>queries.id</code>.'] = '- Да... <code>queries.id</code>.';
 
-$GLOBALS["lang"]['Turkmenistan'] = 'Τουρκμενιστάν';
+$GLOBALS["lang"]['The rack asset number.'] = '.';
 
-$GLOBALS["lang"]['Turks and Caicos Islands'] = 'Νήσοι Τερκς και Κάικος';
+$GLOBALS["lang"]['The rack asset tag.'] = '.';
 
-$GLOBALS["lang"]['Tuvalu'] = 'Τουβαλού';
+$GLOBALS["lang"]['The rack bar code.'] = '.';
 
-$GLOBALS["lang"]['tx_bitrate'] = 'Ρυθμός bit Tx';
+$GLOBALS["lang"]['The rack model.'] = '.';
 
-$GLOBALS["lang"]['Tx Bitrate'] = 'Ρυθμός bit Tx';
+$GLOBALS["lang"]['The rack serial.'] = '.';
+
+$GLOBALS["lang"]['The rack series.'] = '.';
+
+$GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = '. <code>racks.id</code>.';
+
+$GLOBALS["lang"]['The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.'] = 'Müasir t голя к... sizlik açţqlarşnşqarşlaşdşrmaq v... qarşlaşdma presesi. Не, не.';
+
+$GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = '. Ιγκ... <code>open-audit.lan</code>.';
+
+$GLOBALS["lang"]['The requested properties should be in a comma-separated list. Properties should be fully qualified - ie, system.hostname (not just hostname).'] = '- Да.';
+
+$GLOBALS["lang"]['The result of the command.'] = '.';
+
+$GLOBALS["lang"]['The room the rack is located in.'] = 'Не, не.';
+
+$GLOBALS["lang"]['The row the rack is located in.'] = '.';
+
+$GLOBALS["lang"]['The search for group on the LDAP server failed. Check the LDAP server logs. Have you created these groups (for roles and orgs) on the LDAP server and assigned LDAP users to them?'] = 'LDAP Serverind год...';
+
+$GLOBALS["lang"]['The secret key used in conjunction with your AWS EC2 API key.'] = '- Да.';
+
+$GLOBALS["lang"]['The software end-of-life date.'] = '.';
+
+$GLOBALS["lang"]['The software end-of-service-life date.'] = '.';
+
+$GLOBALS["lang"]['The specific database column from the specified database table.'] = 'Qeyd edilmişbaszar masas';
+
+$GLOBALS["lang"]['The specific database table.'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['The standard Nmap timing options. Previously set at T4 (aggressive).'] = 'Не, не.';
+
+$GLOBALS["lang"]['The standard Nmap timing options. We usually use -T4 (Aggressive) as this is recommended for a decent broadband or ethernet connection.'] = '- Да.';
+
+$GLOBALS["lang"]['The status of this integration'] = '.';
+
+$GLOBALS["lang"]['The status of this queued item.'] = '.';
+
+$GLOBALS["lang"]['The steps below outline the process.'] = '- Да.';
+
+$GLOBALS["lang"]['The target IP this log entry referers to (if any).'] = ' да го направим, да го направим.';
+
+$GLOBALS["lang"]['The target computer to audit. \".\" means localhost.'] = 'Имено.';
+
+$GLOBALS["lang"]['The template for the link to be generated per result line.'] = '- Да.';
+
+$GLOBALS["lang"]['The text for the bottom of the chart in a line chart (only).'] = '- Да.';
+
+$GLOBALS["lang"]['The text that is displayed.'] = '.';
+
+$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = 'Sonrakşvaxtlar, bu qurgu işl год. 10: <code>2017-06-01 09:59:00</code>. Имено. <code>2000-01-01 00:00:00</code> Имено.';
+
+$GLOBALS["lang"]['The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.'] = 'ТоК 10, 100 v... 1000 (ya da he Nmap gör... Istifad... olunur.';
+
+$GLOBALS["lang"]['The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.'] = 'ТоК 10, 100 v... 1000 (ya da heşbir) UDP portlar Nmap gör... Istifad... olunur.';
+
+$GLOBALS["lang"]['The total BTU output by this rack.'] = 'Не, не.';
+
+$GLOBALS["lang"]['The type of device.'] = '.';
+
+$GLOBALS["lang"]['The type of organisation.'] = '.';
+
+$GLOBALS["lang"]['The type of rack (compute, power, network, etc).'] = '.';
+
+$GLOBALS["lang"]['The type of task to run. One of: baseline, benchmark, cloud discovery, discovery, integration, report, query.'] = 'Имено.';
+
+$GLOBALS["lang"]['The type of the integration (usually named after the external system).'] = '.';
+
+$GLOBALS["lang"]['The unfiltered state means that a port is accessible, but Nmap is unable to determine whether it is open or closed. Only the ACK scan, which is used to map firewall rulesets, classifies ports into this state. Scanning unfiltered ports with other scan types such as Window scan, SYN scan, or FIN scan, may help resolve whether the port is open.'] = 'Не';
+
+$GLOBALS["lang"]['The unique identifier of this server.'] = '- Да.';
+
+$GLOBALS["lang"]['The user account this collector uses. Links to <code>users.id</code>.'] = 'Имено. <code>users.id</code>.';
+
+$GLOBALS["lang"]['The user in Active Directory / OpenLDAP must be a direct member of the required Open-AudIT groups for Roles and Orgs. A member of a group that is a member another group that is a member of the Open-AudIT group will not work.'] = 'Ενεργός κατάλογος / OpenLDAP istifad год. Ανοιχτός έλεγχος qrupun bir üzvü olan bir qrupun üzvüdür.';
+
+$GLOBALS["lang"]['The user is in LDAP and their credentials are valid, but is not in any of the Open-AudIT LDAP groups for Orgs.'] = '- Да.';
+
+$GLOBALS["lang"]['The user is in LDAP and their credentials are valid, but is not in any of the Open-AudIT LDAP groups for Roles.'] = '- Да.';
+
+$GLOBALS["lang"]['The user is in LDAP and their credentials are valid, but is not in any of the required Open-AudIT LDAP groups.'] = '.';
+
+$GLOBALS["lang"]['The user is in the LDAP group that matches this Org.'] = '- Да.';
+
+$GLOBALS["lang"]['The user is in the LDAP group that matches this Role.'] = '.';
+
+$GLOBALS["lang"]['The user is not in the LDAP group that matches this Org.'] = '.';
+
+$GLOBALS["lang"]['The user is not in the LDAP group that matches this Role.'] = '.';
+
+$GLOBALS["lang"]['The user that was specified exists in LDAP, but Open-AudIT is not configured to consume the LDAP groups for roles and that user does not exist within Open-AudIT. Either select <i>Use LDAP for Roles</i> on the Open-AudIT LDAP Server screen or create this user within Open-AudIT and assign roles and orgs.'] = 'LDAP-da qeyd olunan istifad... çi, lakin Open-Audit Rollar üçün LDAP qruplarţnīistehsal etm... üçün konfiqurasiya deyil v... çi Open-Audit daxil deyil... <i>Istifad LDAP</i> Open-Audit LDAP.................................................................';
+
+$GLOBALS["lang"]['The username (if not using the user running the script).'] = '.';
+
+$GLOBALS["lang"]['The username used to access the external system.'] = 'Qeydiyatdan Istifad (στα Αγγλικά).';
+
+$GLOBALS["lang"]['The users details were not retrieved from LDAP. Check the LDAP server logs.'] = 'Имено.';
+
+$GLOBALS["lang"]['The users details were retrieved from LDAP.'] = 'Имено.';
+
+$GLOBALS["lang"]['The users email address.'] = '- Не, не.';
+
+$GLOBALS["lang"]['The usual hours of operation at this site.'] = 'Не, не.';
+
+$GLOBALS["lang"]['The value assigned to the item.'] = '.';
+
+$GLOBALS["lang"]['The value that is stored for this particular item.'] = '.';
+
+$GLOBALS["lang"]['The vendor name as per CPE entries.'] = '.';
+
+$GLOBALS["lang"]['The vendor taken from the CPE.'] = '.';
+
+$GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = 'Offene Audit- nin quraşdşşşiev sah... sind... web klassikaső (bir izl... şdirm...).';
+
+$GLOBALS["lang"]['The widget at position '] = '. ';
+
+$GLOBALS["lang"]['The width of this device.'] = '- Да.';
+
+$GLOBALS["lang"]['Their OrgIDs and their descendants'] = '- Да.';
+
+$GLOBALS["lang"]['Their OrgIDs only'] = '- Да.';
+
+$GLOBALS["lang"]['Their OrgIDs, ascendants and descendants'] = 'Имено.';
+
+$GLOBALS["lang"]['Then'] = '.';
+
+$GLOBALS["lang"]['Then create a new Auth method in Open-AudIT by going to menu -> Admin -> Auth Methods -> Create Auth. Provide a name and set the <i>type</i> to Entra.'] = 'Имено. <i>- Да.</i> .';
+
+$GLOBALS["lang"]['Then you can use Open-AudIT (unsupported) to receive audit data directly from the clients. Discovery <strong>will fail</strong>, but if youre not using Discovery (the main feature Open-AudIT was designed around), you can still get device data. You would need to run the audit scripts directly on the clients using cron, or use the Windows Agent feature (Enterprise only).'] = ' да го направим, за да го направим. <strong>- Да.</strong>.';
+
+$GLOBALS["lang"]['There is a button to export to JSON. This will display only the device table of attributes. To export the device with all associated component tables, view the device details, then add'] = ' (...)';
+
+$GLOBALS["lang"]['There is absolutely no need to manually edit each individual device.'] = '.';
+
+$GLOBALS["lang"]['There is no need to do anything if you are running Open-AudIT on a Linux server.<br><br>Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.'] = '.<br/><br/>Имено. Bu hesab uzaq (въК основа на мрежа) rekursuna daxil deyil. Имено.';
+
+$GLOBALS["lang"]['These are only examples. You may need to adjust these attributes to suit your particular LDAP.'] = '.';
+
+$GLOBALS["lang"]['These parameters enable you to audit only what is useful and relevant to you, saving processing time and allowing you to discover your network in an orderly manner.'] = '.';
+
+$GLOBALS["lang"]['Thing'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Think of mail.domain1.com and mail.domain2.com - same hostname.'] = '.';
+
+$GLOBALS["lang"]['Third'] = '- Да.';
+
+$GLOBALS["lang"]['This CVE will be retrieved and overwrite the existing CVE if it exists.'] = '.';
+
+$GLOBALS["lang"]['This Org has no AD group specified. Check the roles details within Open-AudIT.'] = '.';
+
+$GLOBALS["lang"]['This Org has no AD group specified. Check the roles details within Open-AudIT. <span class=\"confluence-link\">Have you created these groups (for orgs) on the LDAP server and assigned LDAP users to them?'] = '. <span class=\'\"confluence-link\"\'>.</span>';
+
+$GLOBALS["lang"]['This Role has no AD group specified. Check the roles details within Open-AudIT.'] = 'Bu rol hesbir AD qrupu qeyd edir...';
+
+$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = '. <code>c</code>. <code>r</code>. <code>u</code> Κεϊντιγιάτ <code>d</code> .';
+
+$GLOBALS["lang"]['This can be either a varchar (a text field), a list (a list of values that can be selected) or a date.'] = '.';
+
+$GLOBALS["lang"]['This code relys on the great work done by the'] = '.';
+
+$GLOBALS["lang"]['This collectors universally unique identifier.'] = '.';
+
+$GLOBALS["lang"]['This column is required by'] = '.';
+
+$GLOBALS["lang"]['This column is required by '] = '. ';
+
+$GLOBALS["lang"]['This description is auto-populated and should ideally be left as-is.'] = 'Bu tarif auto-populiert v го compiеален olaraq sol olmalţdţr. (στα Αγγλικά).';
+
+$GLOBALS["lang"]['This endpoint enables you to add the connections that are part of your network infrastructure, it allows you to customize a variety of attributes, specify where this connection is located and the organization that it belongs.'] = '.';
+
+$GLOBALS["lang"]['This error indicates that SMB1 has been disabled or removed from the target machine. This is normal for modern version of Windows and you will only see this message when the SMB2 connection attempt has failed. If the SMB2 connection fails, we attempt SMB1 to enable discovery on old versions of Windows. If the target Windows machine <i>is</i> running an old version of Windows, it is likely your credentials have failed. In that case, see'] = 'Имено. <i>- Да.</i> - Да.';
+
+$GLOBALS["lang"]['This error indicates that not enough virtual memory or paging file quota is available to complete the specified operation. You should try again later.'] = 'Имено.';
+
+$GLOBALS["lang"]['This error indicates the credentials used either are incorrect, do not exist or do not have sufficient privileges to log on remotely to the target Windows machine. You should verify the credentials and check the below.'] = '.';
+
+$GLOBALS["lang"]['This example creates a list of all Modules marked as'] = 'България мун КИМО К';
+
+$GLOBALS["lang"]['This example creates a list of devices and the open Ports, Protocols, and Programs found by the NMAP scan.'] = 'Bu s готварски cihazlar';
+
+$GLOBALS["lang"]['This example creates a list of devices where the Function or Description fields are blank OR the Purchase Date is the default.'] = 'Bu nümun... funksiya κατά... ...';
+
+$GLOBALS["lang"]['This example query retrieves a list of devices OVER 3 years old. The query uses today'] = 'Имено.';
+
+$GLOBALS["lang"]['This example uses'] = '.';
+
+$GLOBALS["lang"]['This feature requires a Professional or an Enterprise license.'] = '- Да.';
+
+$GLOBALS["lang"]['This feature, because it has the ability to affect target devices more than usual must be manually enabled. To enable this feature, change the configuration item feature_executables to <i>yes</i>.'] = 'Имено. <i>.</i>.';
+
+$GLOBALS["lang"]['This file tells Linux to poll the application to determine if there are any scheduled tasks that should be run.'] = 'Имено.';
+
+$GLOBALS["lang"]['This form provides a simple way to get started discovering the devices on your network. For more (much more) detailed options, you can individually create'] = '.';
+
+$GLOBALS["lang"]['This is also the way that PAExec works.'] = '.';
+
+$GLOBALS["lang"]['This is an optional configuration option, enabled by setting discovery_use_org_id_match in the global configuration.'] = 'Имено.';
+
+$GLOBALS["lang"]['This is generally the primary column, unless otherwise configured. NOTE: When type = traffic, this represents the secondary text.'] = 'Това е, което се е случило.';
+
+$GLOBALS["lang"]['This is likely due to MySQL time being off. MySQL typically uses the host devices time. You can check this by'] = '.';
+
+$GLOBALS["lang"]['This is settable by users and so even though it should be globally unique, there is certainly no guarantee of this.'] = '- Да.';
+
+$GLOBALS["lang"]['This is the directory where we store any attachments to devices.'] = '.';
+
+$GLOBALS["lang"]['This is to be used as the first point of call when troubleshooting Open-AudIT issues. You can click the Export button on the top right to retrieve this as a JSON file (to be added to the support ticket / email.'] = 'Имено.';
+
+$GLOBALS["lang"]['This issue is under investigation.'] = '- Да.';
+
+$GLOBALS["lang"]['This item must match the value of the attribute selected or contains the ID of the query to be used.'] = 'Τι;';
+
+$GLOBALS["lang"]['This item must match the value of the attribute selected.'] = '.';
+
+$GLOBALS["lang"]['This license expires on'] = '.';
+
+$GLOBALS["lang"]['This security permission can be modified using the Component Services administrative tool.'] = '.';
+
+$GLOBALS["lang"]['This should be commented out after troubleshooting as debug mode will generate a lot of logs on the disk for no benefit.'] = '.';
+
+$GLOBALS["lang"]['This should be globally unique, but I have seen instances where it is not.'] = '- Да.';
+
+$GLOBALS["lang"]['This should be set to either 1 or the height of the rack.'] = '.';
+
+$GLOBALS["lang"]['This should be the fully qualified field name in the database. Currently columns from the system, fields and credentials tables are supported. EG: system.nmis_role.'] = '- Да.';
+
+$GLOBALS["lang"]['This state is used when Nmap is unable to determine whether a port is closed or filtered. It is only used for the IP ID idle scan.'] = 'Имено.';
+
+$GLOBALS["lang"]['This will auto-populate.'] = '.';
+
+$GLOBALS["lang"]['This will considerably slow the discovery scan.'] = '.';
+
+$GLOBALS["lang"]['This will delete the current rows in the'] = '- Да.';
+
+$GLOBALS["lang"]['This will permanently DELETE this license.'] = '.';
+
+$GLOBALS["lang"]['This will show you the Bulk Edit form. Any attributes you set on this form will be applied to all selected devices. You can set multiple attributes at once.'] = '.';
+
+$GLOBALS["lang"]['Thursday'] = '- Да.';
+
+$GLOBALS["lang"]['time_caption'] = '- Да.';
+
+$GLOBALS["lang"]['Time Caption'] = '- Да.';
+
+$GLOBALS["lang"]['time_daylight'] = '- Да.';
+
+$GLOBALS["lang"]['Time Daylight'] = '- Да.';
+
+$GLOBALS["lang"]['Time to Execute'] = '.';
+
+$GLOBALS["lang"]['timeout'] = '- Да.';
+
+$GLOBALS["lang"]['Timeout'] = '- Да.';
+
+$GLOBALS["lang"]['Timeout Per Target (Seconds)'] = '- Ναι.';
+
+$GLOBALS["lang"]['Timeout per Target. Wait for X seconds for a target response.'] = '.';
+
+$GLOBALS["lang"]['Timesatamp'] = 'Κατεκορίγια';
+
+$GLOBALS["lang"]['Timestamp'] = 'Κατεκορίγια';
+
+$GLOBALS["lang"]['timing'] = '- Не, не.';
+
+$GLOBALS["lang"]['Timing'] = '- Не, не.';
+
+$GLOBALS["lang"]['Timor-Leste'] = '- Да.';
+
+$GLOBALS["lang"]['Title'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['To a new file named .env (in the same directory). Now edit that new file and uncomment (remove the #) the line below (line 17)'] = 'Имено.';
+
+$GLOBALS["lang"]['To actually execute the query, append a /execute, thus /open-audit/index.php/queries/{$id}/execute.'] = 'Sorğu icra ethm год. üçün, proqram bir / екзекутират, bel го / open-одит / index.php / questions / {$id} / ausführen.';
+
+$GLOBALS["lang"]['To audit a machine, you must have credentials and administrator level access.'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['To audit a remote machine on an Active Directory domain, your supplied user (or if none provided, the user running the script) must be a member of the target machines Administrators group (or subgroup).'] = '.';
+
+$GLOBALS["lang"]['To audit a remote machine that is not in a domain, you must use the Administrator account (not <i>an</i> admin account, <i>the</i> Administrator account) on the target PC. #1 and #2'] = '. <i>Άξταρ@</i> . <i> MIRE</i> .';
+
+$GLOBALS["lang"]['To audit localhost, any supplied credentials are disregarded and the connection is made using the details of the user running the script.'] = 'Yerli düşm (στα Αγγλικά).';
+
+$GLOBALS["lang"]['To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being <i>equal to</i>, <i>greater than</i> or <i>equal to or greater than</i>.'] = 'Имено. <i>.</i>. <i>.</i> . <i>.</i>.';
+
+$GLOBALS["lang"]['To create a new entry click the Create button in the upper right hand corner.'] = '.';
+
+$GLOBALS["lang"]['To create a resource, you should POST the required data.'] = '- Да.';
+
+$GLOBALS["lang"]['To enable a remote machine (Vista or above) to be audited that is not on a domain, by an account in the Administrators group, other than the actual Administrator account see the below section on UAC.'] = ' ...';
+
+$GLOBALS["lang"]['To enable this, create a new Auth item by going to menu -> Admin -> Auth -> Create Auth Method.'] = 'Не, не.';
+
+$GLOBALS["lang"]['To execute the Windows powershell script, open a command prompt as Administrator and use the following command'] = '.';
+
+$GLOBALS["lang"]['To execute the audit script, open a terminal and use the following command'] = 'Не, не.';
+
+$GLOBALS["lang"]['To filter by a property value, use the property name. Operators that should precede the value are'] = '- Да.';
+
+$GLOBALS["lang"]['To install Nmap on Windows, visit the Nmap page at'] = '.';
+
+$GLOBALS["lang"]['To make the change, just follow the steps below.'] = 'Не, не.';
+
+$GLOBALS["lang"]['To retrieve the Tenant ID. Open the Azure portal click on Azure Active Directory, Properties and the Tenant ID is displayed as your Directory ID - do not blame me for the name mismatch, that is how Microsoft roll.'] = 'Имено.';
+
+$GLOBALS["lang"]['To retrieve your key, log in to the AWS Console and select your username, then My Security Credentials.'] = 'Имено.';
+
+$GLOBALS["lang"]['To return a specific component item.'] = '.';
+
+$GLOBALS["lang"]['To return all items for a compnent type for a specific device.'] = '.';
+
+$GLOBALS["lang"]['To return all items for a component type. If you wanted all software you would use'] = ' да го направим, да го направим.';
+
+$GLOBALS["lang"]['To reverse sort, insert a minus, thus'] = '- Да.';
+
+$GLOBALS["lang"]['To run the test script on the target Windows PC'] = '- Да.';
+
+$GLOBALS["lang"]['To select devices to be integrated, we use nmis_manage = y, but you might like (for example) type = router. You can also use a Group or Query if you prefer something more complex.'] = 'Имено.';
+
+$GLOBALS["lang"]['To sort by a database column, use'] = '.';
+
+$GLOBALS["lang"]['To use this Enterprise feature, you first need to create your user in Open-AudIT as per usual. Assigning a password is not necessary. You do have to assign Roles and Orgs. The username in Open-AudIT should match the Entra <i>preferred username</i> attribute. There is no need for a Full Name or Email - these will be populated from Entra. If you do not know your users <i>preferred username</i>, fear not. You can create the new Auth Method in Open-AudIT and the Enterprise Application in Entra and when a user attempts to sign-on to Open-AudIT without a pre-existing user, check the logs and you will see their <i>preferred username</i> logged for your convienence.'] = 'Имено. <i>.</i> Имено. <i>.</i>. <i>.</i> .';
+
+$GLOBALS["lang"]['To use this Enterprise feature, you first need to create your user in Open-AudIT as per usual. Assigning a password is not necessary. You do have to assign Roles and Orgs. The username in Open-AudIT should match the OKTA <i>name</i> attribute. There is no need for a Full Name or Email - these will be populated from OKTA. If you do not know your users <i>name<i>, fear not. You can create the new Auth Menthod in Open-AudIT and the Application in OKTA and when a user attempts to sign-on to Open-AudIT without a pre-existing user, check the logs and you will see their <i>name<i> logged for your convienence.<br></p><p>Then create a new Auth method in Open-AudIT by going to menu -> Admin -> Auth Methods -> Create Auth. Provide a name and set the <i>type</i> to Okta.'] = 'Имено. <i>- Да.</i> Имено. <i>- Да.<i>Имено. <i>- Да.<i> .<br/><p>Имено. <i>- Да.</i> .</p></i></i></i></i>';
+
+$GLOBALS["lang"]['To use this feature you must enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed. For more on Open-AudITs matching rules see HERE: Matching Devices'] = 'Имено.';
+
+$GLOBALS["lang"]['To view the details of a query, the standard URL structure of /open-audit/index.php/queries/{$id} should be used.'] = 'Bir sorgounun m... lumatlarīn, / open-одит / index standart URL strukturunu baxīn. Fp / Fragen / {$id} istifad. olunmalīdīr.';
+
+$GLOBALS["lang"]['Togo'] = '- Да.';
+
+$GLOBALS["lang"]['Tokelau'] = '- Да.';
+
+$GLOBALS["lang"]['Tonga'] = '.';
+
+$GLOBALS["lang"]['toolbar_style'] = 'Стил на лентата с инструменти.';
+
+$GLOBALS["lang"]['Toolbar Style'] = 'Стил на лентата с инструменти.';
+
+$GLOBALS["lang"]['Top Nmap TCP Ports'] = '.';
+
+$GLOBALS["lang"]['Top Nmap TCP Ports. The top 10, 100, 1000 ports to scan as per Nmaps &quot;top ports&quot; options.'] = 'Имено.';
+
+$GLOBALS["lang"]['Top Nmap UDP Ports'] = '.';
+
+$GLOBALS["lang"]['Top Nmap UDP Ports. The top 10, 100, 1000 ports to scan as per Nmaps &quot;top ports&quot; options.'] = 'Това може да се случи, ако не е така.';
+
+$GLOBALS["lang"]['Traditional Chinese'] = '.';
+
+$GLOBALS["lang"]['Traffic Light'] = '- Да.';
+
+$GLOBALS["lang"]['Trinidad and Tobago'] = 'Не, не.';
+
+$GLOBALS["lang"]['Troubleshooting'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['Troubleshooting LDAP Logins'] = 'Не, не.';
+
+$GLOBALS["lang"]['Try Open-AudIT Enterprise, on us without a time limit. All the features of Enterprise. Limited to 20 devices.'] = 'Имено.';
+
+$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"'] = '.';
+
+$GLOBALS["lang"]['Try logging in using an LDAP user. We are assuming this will fail (otherwise, why are you still reading this?). Next, comment out the line from ther file above.'] = '.';
+
+$GLOBALS["lang"]['Tuesday'] = '- Да.';
+
+$GLOBALS["lang"]['Tunisia'] = '.';
+
+$GLOBALS["lang"]['Turkey'] = '.';
+
+$GLOBALS["lang"]['Turkish'] = '- Да.';
+
+$GLOBALS["lang"]['Turkmenistan'] = '- Да.';
+
+$GLOBALS["lang"]['Turks and Caicos Islands'] = '.';
+
+$GLOBALS["lang"]['Tuvalu'] = '- Да.';
+
+$GLOBALS["lang"]['tx_bitrate'] = 'Tx Битрат Бит.';
+
+$GLOBALS["lang"]['Tx Bitrate'] = 'Tx Битрат Бит.';
 
 $GLOBALS["lang"]['tx_freq'] = 'Tx Φρεκ';
 
 $GLOBALS["lang"]['Tx Freq'] = 'Tx Φρεκ';
 
-$GLOBALS["lang"]['tx_level'] = 'Επίπεδο Tx';
+$GLOBALS["lang"]['tx_level'] = '.';
 
-$GLOBALS["lang"]['Tx Level'] = 'Επίπεδο Tx';
+$GLOBALS["lang"]['Tx Level'] = '.';
 
-$GLOBALS["lang"]['tx_power'] = 'Ισχύς Tx';
+$GLOBALS["lang"]['tx_power'] = 'TX güü';
 
-$GLOBALS["lang"]['Tx Power'] = 'Ισχύς Tx';
+$GLOBALS["lang"]['Tx Power'] = 'TX güü';
 
-$GLOBALS["lang"]['tx_profile'] = 'Προφίλ Tx';
+$GLOBALS["lang"]['tx_profile'] = 'Tx Προφίλ';
 
-$GLOBALS["lang"]['Tx Profile'] = 'Προφίλ Tx';
+$GLOBALS["lang"]['Tx Profile'] = 'Tx Προφίλ';
 
-$GLOBALS["lang"]['type'] = 'Τύπος';
+$GLOBALS["lang"]['type'] = '- Да.';
 
-$GLOBALS["lang"]['Type'] = 'Τύπος';
+$GLOBALS["lang"]['Type'] = '- Да.';
 
-$GLOBALS["lang"]['URL'] = 'URL';
+$GLOBALS["lang"]['Type: This can be either a varchar (a text field) or a List (a list of values that can be selected).'] = ' за да се види, че това може да се случи, но това не е вярно.';
 
-$GLOBALS["lang"]['uuid'] = 'UUID';
+$GLOBALS["lang"]['Types of Networks'] = '.';
 
-$GLOBALS["lang"]['UUID'] = 'UUID';
+$GLOBALS["lang"]['URL'] = ' Адрес Адрес (στα Αγγλικά).';
 
-$GLOBALS["lang"]['udp_ports'] = 'Λιμάνια Udp';
+$GLOBALS["lang"]['uuid'] = 'Uşaq Ημερομηνία γέννησης:';
 
-$GLOBALS["lang"]['Udp Ports'] = 'Λιμάνια Udp';
+$GLOBALS["lang"]['UUID'] = 'Uşaq Ημερομηνία γέννησης:';
 
-$GLOBALS["lang"]['Uganda'] = 'Ουγκάντα';
+$GLOBALS["lang"]['udp_ports'] = '.';
 
-$GLOBALS["lang"]['Ukraine'] = 'Ουκρανία';
+$GLOBALS["lang"]['Udp Ports'] = '.';
 
-$GLOBALS["lang"]['uninstall'] = 'Αποεγκατάσταση';
+$GLOBALS["lang"]['Uganda'] = '- Да.';
 
-$GLOBALS["lang"]['Uninstall'] = 'Αποεγκατάσταση';
+$GLOBALS["lang"]['Ukraine'] = '- Да.';
 
-$GLOBALS["lang"]['Uninstall the Agent'] = 'Απεγκαταστήστε τον πράκτορα';
+$GLOBALS["lang"]['Ukrainian'] = '- Да.';
 
-$GLOBALS["lang"]['United Arab Emirates'] = 'Ηνωμένα Αραβικά Εμιράτα';
+$GLOBALS["lang"]['Undergo Stage 1 audit (documentation review)'] = 'Имено.';
 
-$GLOBALS["lang"]['United Kingdom'] = 'Ηνωμένο Βασίλειο';
+$GLOBALS["lang"]['Undergo Stage 2 audit (implementation review)'] = '- Не, не.';
 
-$GLOBALS["lang"]['United States Minor Outlying Islands'] = 'Ηνωμένες Πολιτείες';
+$GLOBALS["lang"]['Undergoing Analysis'] = '.';
 
-$GLOBALS["lang"]['United States Virgin Islands'] = 'Ηνωμένες Πολιτείες';
+$GLOBALS["lang"]['Unfiltered'] = '.';
 
-$GLOBALS["lang"]['United States of America'] = 'Ηνωμένες Πολιτείες της Αμερικής';
+$GLOBALS["lang"]['uninstall'] = 'Προβινσι Ιταλιεν. kgm';
 
-$GLOBALS["lang"]['Unknown'] = 'Άγνωστο';
+$GLOBALS["lang"]['Uninstall'] = 'Προβινσι Ιταλιεν. kgm';
 
-$GLOBALS["lang"]['unlock_pin'] = 'Ξεκλείδωμα καρφίτσας';
+$GLOBALS["lang"]['Uninstall the Agent'] = '.';
 
-$GLOBALS["lang"]['Unlock Pin'] = 'Ξεκλείδωμα καρφίτσας';
+$GLOBALS["lang"]['United Arab Emirates'] = 'Не, не.';
 
-$GLOBALS["lang"]['Unscheduled'] = 'Μη προγραμματισμένο';
+$GLOBALS["lang"]['United Kingdom'] = 'Не, не.';
 
-$GLOBALS["lang"]['Unused as at 5.2.0.'] = 'Χωρίς χρήση όπως στο 5.2.0.';
+$GLOBALS["lang"]['United States Minor Outlying Islands'] = 'Америка Бирл';
 
-$GLOBALS["lang"]['Unused.'] = 'Χωρίς χρήση.';
+$GLOBALS["lang"]['United States Virgin Islands'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Update'] = 'Ενημέρωση';
+$GLOBALS["lang"]['United States of America'] = '.';
 
-$GLOBALS["lang"]['update_external_count'] = 'Ενημέρωση αριθμού εξωτερικών';
+$GLOBALS["lang"]['Unknown'] = '.';
 
-$GLOBALS["lang"]['Update External Count'] = 'Ενημέρωση αριθμού εξωτερικών';
+$GLOBALS["lang"]['unlock_pin'] = 'Калерея.';
 
-$GLOBALS["lang"]['update_external_from_internal'] = 'Ενημέρωση εξωτερικών από το εσωτερικό';
+$GLOBALS["lang"]['Unlock Pin'] = 'Калерея.';
 
-$GLOBALS["lang"]['Update External From Internal'] = 'Ενημέρωση εξωτερικών από το εσωτερικό';
+$GLOBALS["lang"]['Unscheduled'] = '.';
 
-$GLOBALS["lang"]['update_internal_count'] = 'Ενημέρωση εσωτερικού αριθμού';
+$GLOBALS["lang"]['Unused as at 5.2.0.'] = ' - \'νω.';
 
-$GLOBALS["lang"]['Update Internal Count'] = 'Ενημέρωση εσωτερικού αριθμού';
+$GLOBALS["lang"]['Unused.'] = '.';
 
-$GLOBALS["lang"]['update_internal_from_external'] = 'Ενημέρωση Εσωτερικού από Εξωτερικό';
+$GLOBALS["lang"]['Update'] = '.';
 
-$GLOBALS["lang"]['Update Internal From External'] = 'Ενημέρωση Εσωτερικού από Εξωτερικό';
+$GLOBALS["lang"]['update_external_count'] = 'Πουλσούζ-Στίμμεν γενν.';
 
-$GLOBALS["lang"]['Update NMIS Devices from Open-AudIT'] = 'Ενημέρωση συσκευών NMIS από Open-AudIT';
+$GLOBALS["lang"]['Update External Count'] = 'Πουλσούζ-Στίμμεν γενν.';
 
-$GLOBALS["lang"]['Update Open-AudIT Devices from '] = 'Ενημέρωση Open-Audit Συσκευές από ';
+$GLOBALS["lang"]['update_external_from_internal'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Update Open-AudIT Devices from NMIS'] = 'Ενημέρωση Open-Audit Συσκευές από το NMIS';
+$GLOBALS["lang"]['Update External From Internal'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed with IPs detected to be responding.'] = 'Ενημέρωση κάθε φορά ανακάλυψη έχει εκτελεστεί με IPs ανιχνεύονται να ανταποκρίνονται.';
+$GLOBALS["lang"]['update_internal_count'] = 'Ο Νταξιλί λέει:';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed with IPs that have been scanned by Nmap.'] = 'Ενημέρωση κάθε φορά ανακάλυψη έχει εκτελεστεί με IPs που έχουν σαρωθεί από Nmap.';
+$GLOBALS["lang"]['Update Internal Count'] = 'Ο Νταξιλί λέει:';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to audit.'] = 'Ενημέρωση κάθε φορά ανακάλυψη έχει εκτελεστεί με συσκευές που μπορέσαμε να ελέγξουμε.';
+$GLOBALS["lang"]['update_internal_from_external'] = 'Xarici';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to query.'] = 'Ενημέρωση κάθε φορά ανακάλυψη έχει εκτελεστεί με συσκευές ήμασταν σε θέση να διερευνήσει.';
+$GLOBALS["lang"]['Update Internal From External'] = 'Xarici';
 
-$GLOBALS["lang"]['Updated each time discovery has been executed.'] = 'Ενημέρωση κάθε φορά που η ανακάλυψη έχει εκτελεστεί.';
+$GLOBALS["lang"]['Update NMIS Devices from Open-AudIT'] = 'Έλεγχος Offene- dan proqramlar';
 
-$GLOBALS["lang"]['Updated each time the discovery has been executed.'] = 'Ενημέρωση κάθε φορά που η ανακάλυψη έχει εκτελεστεί.';
+$GLOBALS["lang"]['Update Open-AudIT Devices from '] = 'Open-Audit του Aktualizovat ';
 
-$GLOBALS["lang"]['Updated each time the discovery has completed execution.'] = 'Ενημέρωση κάθε φορά που η ανακάλυψη έχει ολοκληρώσει την εκτέλεση.';
+$GLOBALS["lang"]['Update Open-AudIT Devices from NMIS'] = 'Βερζ, άνοιξε το.';
 
-$GLOBALS["lang"]['Updating'] = 'Ενημέρωση';
+$GLOBALS["lang"]['Update Vulnerabilities'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['Upgrade'] = 'Αναβάθμιση';
+$GLOBALS["lang"]['Update an attribute of a {collection} entry.'] = 'Girişbir nümayişini Γιενίλ.';
 
-$GLOBALS["lang"]['Upload an audit result file'] = 'Αποστολή αρχείου αποτελέσματος ελέγχου';
+$GLOBALS["lang"]['Update attributes'] = '.';
 
-$GLOBALS["lang"]['Upper Case'] = 'Άνω περίπτωση';
+$GLOBALS["lang"]['Updated each time discovery has been executed with IPs detected to be responding.'] = '.';
 
-$GLOBALS["lang"]['uptime'] = 'Χρόνος αναμονής';
+$GLOBALS["lang"]['Updated each time discovery has been executed with IPs that have been scanned by Nmap.'] = '.';
 
-$GLOBALS["lang"]['Uptime'] = 'Χρόνος αναμονής';
+$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to audit.'] = '.';
 
-$GLOBALS["lang"]['url'] = 'Ουρλ';
+$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to query.'] = '.';
 
-$GLOBALS["lang"]['Url'] = 'Ουρλ';
+$GLOBALS["lang"]['Updated each time discovery has been executed.'] = '.';
 
-$GLOBALS["lang"]['Uruguay, Eastern Republic of'] = 'Ουρουγουάη, Ανατολική Δημοκρατία';
+$GLOBALS["lang"]['Updated each time the discovery has been executed.'] = '.';
 
-$GLOBALS["lang"]['usb'] = 'Μύδια';
+$GLOBALS["lang"]['Updated each time the discovery has completed execution.'] = '- Да.';
 
-$GLOBALS["lang"]['Usb'] = 'Μύδια';
+$GLOBALS["lang"]['Updating'] = '- Да.';
 
-$GLOBALS["lang"]['use'] = 'Χρήση';
+$GLOBALS["lang"]['Upgrade'] = '- Да.';
 
-$GLOBALS["lang"]['Use'] = 'Χρήση';
+$GLOBALS["lang"]['Upload an audit result file'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['use_authentication'] = 'Χρήση ταυτοποίησης';
+$GLOBALS["lang"]['Upper Case'] = '- Да.';
 
-$GLOBALS["lang"]['Use Authentication'] = 'Χρήση ταυτοποίησης';
+$GLOBALS["lang"]['uptime'] = '.';
 
-$GLOBALS["lang"]['use_authorisation'] = 'Άδεια χρήσης';
+$GLOBALS["lang"]['Uptime'] = '.';
 
-$GLOBALS["lang"]['Use Authorisation'] = 'Άδεια χρήσης';
+$GLOBALS["lang"]['Urdu'] = 'Τάριξ';
 
-$GLOBALS["lang"]['Use SNMP'] = 'Χρήση SNMP';
+$GLOBALS["lang"]['url'] = 'Τάριξ';
 
-$GLOBALS["lang"]['Use SSH'] = 'Χρήση SSH';
+$GLOBALS["lang"]['Url'] = 'Τάριξ';
 
-$GLOBALS["lang"]['Use Secure (LDAPS)'] = 'Χρήση ασφαλούς (LDAPS)';
+$GLOBALS["lang"]['Uruguay, Eastern Republic of'] = 'Не, не.';
 
-$GLOBALS["lang"]['Use Service Version Detection'] = 'Χρήση ανίχνευσης έκδοσης υπηρεσιών';
+$GLOBALS["lang"]['usb'] = ' ΗΠΑ-Dollar';
 
-$GLOBALS["lang"]['Use WMI'] = 'Χρήση WMI';
+$GLOBALS["lang"]['Usb'] = ' ΗΠΑ-Dollar';
 
-$GLOBALS["lang"]['Use for Authentication'] = 'Χρήση για ταυτοποίηση';
+$GLOBALS["lang"]['use'] = '- Да.';
 
-$GLOBALS["lang"]['Use for Roles'] = 'Χρήση για ρόλους';
+$GLOBALS["lang"]['Use'] = '- Да.';
 
-$GLOBALS["lang"]['used'] = 'Χρήση';
+$GLOBALS["lang"]['use_authentication'] = 'Не, не.';
 
-$GLOBALS["lang"]['Used'] = 'Χρήση';
+$GLOBALS["lang"]['Use Authentication'] = 'Не, не.';
 
-$GLOBALS["lang"]['used_count'] = 'Αριθμός χρήσης';
+$GLOBALS["lang"]['use_authorisation'] = '.';
 
-$GLOBALS["lang"]['Used Count'] = 'Αριθμός χρήσης';
+$GLOBALS["lang"]['Use Authorisation'] = '.';
 
-$GLOBALS["lang"]['Used by OpenLDAP only.'] = 'Χρησιμοποιείται μόνο από το OpenLDAP.';
+$GLOBALS["lang"]['Use Proxy'] = 'Πληρεξούσιος';
 
-$GLOBALS["lang"]['Used internally when discovering a single device.'] = 'Χρησιμοποιείται εσωτερικά κατά την ανακάλυψη μιας μόνο συσκευής.';
+$GLOBALS["lang"]['Use SNMP'] = 'SNMP';
 
-$GLOBALS["lang"]['Used internally when discovering a single device. Links to <code>devices.id</code>.'] = 'Χρησιμοποιείται εσωτερικά κατά την ανακάλυψη μιας μόνο συσκευής. Συνδέσεις <code>devices.id</code>.';
+$GLOBALS["lang"]['Use SSH'] = 'SH';
 
-$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.'] = 'Χρησιμοποιείται όταν οι εξυπηρετητές LDAP έχουν ρυθμιστεί για να γεμίσουν τις λεπτομέρειες των χρηστών - αυτό περιλαμβάνει τους οργανισμούς στους οποίους έχουν πρόσβαση. Αν ένας χρήστης είναι σε αυτή την ομάδα LDAP, του ανατίθεται αυτός ο οργανισμός.';
+$GLOBALS["lang"]['Use Secure (LDAPS)'] = 'Не, не.';
 
-$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.'] = 'Χρησιμοποιείται όταν οι εξυπηρετητές LDAP έχουν ρυθμιστεί για να γεμίσουν τις λεπτομέρειες των χρηστών - αυτό περιλαμβάνει τους ρόλους που τους ανατίθενται. Εάν ένας χρήστης είναι σε αυτή την ομάδα LDAP, τους ανατίθεται αυτός ο ρόλος.';
+$GLOBALS["lang"]['Use Service Version Detection'] = '.';
 
-$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = 'Χρησιμοποιείται κατά την αναζήτηση του OpenLDAP για να ταιριάξει ένα χρήστη uid με ένα μέλος ομάδων. Προκαθορισμένο <code>memberUid</code>. Χρησιμοποιείται μόνο από το OpenLDAP.';
+$GLOBALS["lang"]['Use Service Version Detection. When a detected port is detected as open, if set to <i>y</i>, Nmap will query the target device in an attempt to determine the version of the service running on this port.<br>This can be useful when identifying unclassified devices. This was not previously used.'] = '. <i> y</i>- Да.<br/>. Bu daha говв ';
 
-$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications.'] = 'Χρησιμοποιείται με εφαρμογές Integrations και FirstWave παρακολούθησης.';
+$GLOBALS["lang"]['Use WMI'] = 'WMI';
 
-$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications. Set to y if working SNMP detected by discovery.'] = 'Χρησιμοποιείται με εφαρμογές Integrations και FirstWave παρακολούθησης. Ρυθμίστε σε y αν λειτουργεί SNMP ανιχνεύεται με την ανακάλυψη.';
+$GLOBALS["lang"]['Use a <i>Sign-in method</i> of OIDC - OpenID Connect and an <i>Application Type</i> of Web Application. Click <i>Next</i>.'] = '- Да. <i>- Да.</i> OIDC - OpenID Connect v по Bir <i>- Да.</i> {\Σωστά! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! Σώπα! ΣΥΓΧΡΗΜΑΤΟΔΟΤΗΣΗ ... ΠΡΟΣΩΠΙΚΟ ... <i>- Да.</i>.';
 
-$GLOBALS["lang"]['user'] = 'Χρήστης';
+$GLOBALS["lang"]['Use for Authentication'] = 'Не, не.';
 
-$GLOBALS["lang"]['User'] = 'Χρήστης';
+$GLOBALS["lang"]['Use for Roles'] = '.';
 
-$GLOBALS["lang"]['User DN'] = 'Χρήστης DN';
+$GLOBALS["lang"]['Use the standard install options when displayed and click the <i>I Agree</i>, <i>Next</i> and <i>Install</i> buttons to install Nmap.'] = 'Не, не, не. <i>.</i>. <i>- Да.</i> Κεϊντιγιάτ <i>Даксил ол Бол.</i> Не, не, не.';
 
-$GLOBALS["lang"]['user_group'] = 'Ομάδα χρηστών';
+$GLOBALS["lang"]['used'] = '- Да.';
 
-$GLOBALS["lang"]['User Group'] = 'Ομάδα χρηστών';
+$GLOBALS["lang"]['Used'] = '- Да.';
 
-$GLOBALS["lang"]['user_id'] = 'ID χρήστη';
+$GLOBALS["lang"]['used_count'] = 'Не, не.';
 
-$GLOBALS["lang"]['User ID'] = 'ID χρήστη';
+$GLOBALS["lang"]['Used Count'] = 'Не, не.';
 
-$GLOBALS["lang"]['user_interaction'] = 'Αλληλεπίδραση χρήστη';
+$GLOBALS["lang"]['Used by OpenLDAP only.'] = '.';
 
-$GLOBALS["lang"]['User Interaction'] = 'Αλληλεπίδραση χρήστη';
+$GLOBALS["lang"]['Used internally when discovering a single device.'] = '.';
 
-$GLOBALS["lang"]['User Membership Attribute'] = 'Χαρακτηριστικά ιδιότητας μέλους χρήστη';
+$GLOBALS["lang"]['Used internally when discovering a single device. Links to <code>devices.id</code>.'] = '. <code>devices.id</code>.';
 
-$GLOBALS["lang"]['user_name'] = 'Όνομα χρήστη';
+$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['User Name'] = 'Όνομα χρήστη';
+$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.'] = 'Имено. Το LDAP qrupunda bir istifad... - Ναι.';
 
-$GLOBALS["lang"]['User Policies'] = 'Πολιτικές χρηστών';
+$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = '- Да. <code>memberUid</code>Имено.';
 
-$GLOBALS["lang"]['Username'] = 'Όνομα χρήστη';
+$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications.'] = '.';
 
-$GLOBALS["lang"]['username'] = 'Όνομα χρήστη';
+$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications. Set to y if working SNMP detected by discovery.'] = '.';
 
-$GLOBALS["lang"]['users'] = 'Χρήστες';
+$GLOBALS["lang"]['user'] = '- Да.';
 
-$GLOBALS["lang"]['Users'] = 'Χρήστες';
+$GLOBALS["lang"]['User'] = '- Да.';
 
-$GLOBALS["lang"]['Users, Roles and Orgs'] = 'Χρήστες, Ρόλοι και Οργανισμοί';
+$GLOBALS["lang"]['User DN'] = 'DN';
 
-$GLOBALS["lang"]['Using Entra for Auth'] = 'Χρήση Entra για Auth';
+$GLOBALS["lang"]['user_group'] = '.';
 
-$GLOBALS["lang"]['Using OKTA for Auth'] = 'Χρήση OKTA για Auth';
+$GLOBALS["lang"]['User Group'] = '.';
 
-$GLOBALS["lang"]['Usually Mb/s, from Location A.'] = 'Συνήθως Mb/s, από την τοποθεσία A.';
+$GLOBALS["lang"]['user_id'] = '.';
 
-$GLOBALS["lang"]['Usually Mb/s, from Location B.'] = 'Συνήθως Mb/s, από την τοποθεσία B.';
+$GLOBALS["lang"]['User ID'] = '.';
 
-$GLOBALS["lang"]['Usually Mb/s, to Location A.'] = 'Συνήθως Mb/s, στην τοποθεσία A.';
+$GLOBALS["lang"]['user_interaction'] = '.';
 
-$GLOBALS["lang"]['Usually Mb/s, to Location B.'] = 'Συνήθως Mb/s, στην τοποθεσία B.';
+$GLOBALS["lang"]['User Interaction'] = '.';
 
-$GLOBALS["lang"]['Uzbekistan'] = 'Ουζμπεκιστάν';
+$GLOBALS["lang"]['User Membership Attribute'] = '- Да.';
 
-$GLOBALS["lang"]['VLAN'] = 'ΒΛΑΝ';
+$GLOBALS["lang"]['user_name'] = '.';
 
-$GLOBALS["lang"]['VLAN ID'] = 'Ταυτότητα VLAN';
+$GLOBALS["lang"]['User Name'] = '.';
 
-$GLOBALS["lang"]['valid_from'] = 'Ισχύει από';
+$GLOBALS["lang"]['User Policies'] = 'Не, не.';
 
-$GLOBALS["lang"]['Valid From'] = 'Ισχύει από';
+$GLOBALS["lang"]['Username'] = '- Да.';
 
-$GLOBALS["lang"]['valid_from_raw'] = 'Ισχύει από ακατέργαστο';
+$GLOBALS["lang"]['username'] = '- Да.';
 
-$GLOBALS["lang"]['Valid From Raw'] = 'Ισχύει από ακατέργαστο';
+$GLOBALS["lang"]['users'] = '- Да.';
 
-$GLOBALS["lang"]['valid_to'] = 'Ισχύει για';
+$GLOBALS["lang"]['Users'] = '- Да.';
 
-$GLOBALS["lang"]['Valid To'] = 'Ισχύει για';
+$GLOBALS["lang"]['Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.'] = '- Μπιρ Ιστιφάντ...';
 
-$GLOBALS["lang"]['valid_to_raw'] = 'Ισχύει για ωμό';
+$GLOBALS["lang"]['Users, Roles and Orgs'] = 'Имено.';
 
-$GLOBALS["lang"]['Valid To Raw'] = 'Ισχύει για ωμό';
+$GLOBALS["lang"]['Uses the CodeIgniter PHP Framework.'] = '(год.)';
 
-$GLOBALS["lang"]['Valid Values'] = 'Έγκυρες τιμές';
+$GLOBALS["lang"]['Using'] = '- Да.';
 
-$GLOBALS["lang"]['value'] = 'Τιμή';
+$GLOBALS["lang"]['Using Entra for Auth'] = '.';
 
-$GLOBALS["lang"]['Value'] = 'Τιμή';
+$GLOBALS["lang"]['Using LDAPS'] = 'ΔΑΠΣ';
 
-$GLOBALS["lang"]['values'] = 'Τιμές';
+$GLOBALS["lang"]['Using OKTA for Auth'] = '- Не, не.';
 
-$GLOBALS["lang"]['Values'] = 'Τιμές';
+$GLOBALS["lang"]['Using the format option is useful when using a web browser but you wish to see the result in JSON format. Adding format=json achieves this. Normally a web browser will set its accept header to HTML, so in that case, we return the rendered page. Using an API to retrieve JSON you should set the accept header to'] = '...................................................................................';
 
-$GLOBALS["lang"]['Vanuatu'] = 'Βανουάτου';
+$GLOBALS["lang"]['Usually Mbs, from Location A.'] = '.';
 
-$GLOBALS["lang"]['VarChar'] = 'Βαρσάρ';
+$GLOBALS["lang"]['Usually Mbs, from Location B.'] = '.';
 
-$GLOBALS["lang"]['Varchar'] = 'Βαρσάρ.';
+$GLOBALS["lang"]['Usually Mbs, to Location A.'] = 'М';
 
-$GLOBALS["lang"]['variable'] = 'Μεταβλητή';
+$GLOBALS["lang"]['Usually Mbs, to Location B.'] = '.';
 
-$GLOBALS["lang"]['Variable'] = 'Μεταβλητή';
+$GLOBALS["lang"]['Usually should be set to 3.'] = '3';
 
-$GLOBALS["lang"]['vendor'] = 'Προμηθευτής';
+$GLOBALS["lang"]['Uzbekistan'] = '- Да.';
 
-$GLOBALS["lang"]['Vendor'] = 'Προμηθευτής';
+$GLOBALS["lang"]['VLAN'] = ' Βιγκλ.';
 
-$GLOBALS["lang"]['vendors'] = 'Προμηθευτές';
+$GLOBALS["lang"]['VLAN ID'] = 'Иденти';
 
-$GLOBALS["lang"]['Vendors'] = 'Προμηθευτές';
+$GLOBALS["lang"]['valid_from'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Venezuela'] = 'Βενεζουέλα';
+$GLOBALS["lang"]['Valid From'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['version'] = 'Έκδοση';
+$GLOBALS["lang"]['valid_from_raw'] = 'Ιαπωνία. kgm';
 
-$GLOBALS["lang"]['Version'] = 'Έκδοση';
+$GLOBALS["lang"]['Valid From Raw'] = 'Ιαπωνία. kgm';
 
-$GLOBALS["lang"]['version_padded'] = 'Προσαρμοσμένη έκδοση';
+$GLOBALS["lang"]['valid_to'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Version Padded'] = 'Προσαρμοσμένη έκδοση';
+$GLOBALS["lang"]['Valid To'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['version_raw'] = 'Έκδοση Raw';
+$GLOBALS["lang"]['valid_to_raw'] = 'Ιαπωνία. kgm';
 
-$GLOBALS["lang"]['Version Raw'] = 'Έκδοση Raw';
+$GLOBALS["lang"]['Valid To Raw'] = 'Ιαπωνία. kgm';
 
-$GLOBALS["lang"]['version_string'] = 'συμβολοσειρά έκδοσης';
+$GLOBALS["lang"]['Valid Values'] = 'Даксил ол Бол.';
 
-$GLOBALS["lang"]['Version String'] = 'συμβολοσειρά έκδοσης';
+$GLOBALS["lang"]['value'] = '- Да.';
 
-$GLOBALS["lang"]['video'] = 'Βίντεο';
+$GLOBALS["lang"]['Value'] = '- Да.';
 
-$GLOBALS["lang"]['Video'] = 'Βίντεο';
+$GLOBALS["lang"]['Value Types'] = '.';
 
-$GLOBALS["lang"]['Vietnam'] = 'Βιετνάμ';
+$GLOBALS["lang"]['values'] = '- Да.';
 
-$GLOBALS["lang"]['View'] = 'Προβολή';
+$GLOBALS["lang"]['Values'] = '- Да.';
 
-$GLOBALS["lang"]['View All'] = 'Προβολή όλων';
+$GLOBALS["lang"]['Values: In the case of a <i>list</i> field, this should be a comma separated list of valid values.'] = ' Εγώ προς Τακ. <i>- Не, не.</i> .';
 
-$GLOBALS["lang"]['View Details'] = 'Προβολή λεπτομερειών';
+$GLOBALS["lang"]['Vanuatu'] = '- Да.';
 
-$GLOBALS["lang"]['View Device'] = 'Προβολή συσκευής';
+$GLOBALS["lang"]['VarChar'] = 'Άξταρ';
 
-$GLOBALS["lang"]['View Discovery'] = 'Προβολή ανακάλυψης';
+$GLOBALS["lang"]['Varchar'] = 'Άξταρ';
 
-$GLOBALS["lang"]['View Policy'] = 'Πολιτική προβολής';
+$GLOBALS["lang"]['variable'] = '.';
 
-$GLOBALS["lang"]['Virtual Private Network'] = 'Εικονικό ιδιωτικό δίκτυο';
+$GLOBALS["lang"]['Variable'] = '.';
 
-$GLOBALS["lang"]['Virtualisation'] = 'Εικονισμός';
+$GLOBALS["lang"]['Various'] = '- Не, не.';
 
-$GLOBALS["lang"]['Visit our YouTube channel for instructional videos.'] = 'Επισκεφθείτε το κανάλι μας στο YouTube για εκπαιδευτικά βίντεο.';
+$GLOBALS["lang"]['vendor'] = '- Не, не.';
 
-$GLOBALS["lang"]['vlan'] = 'Βαν';
+$GLOBALS["lang"]['Vendor'] = '- Не, не.';
 
-$GLOBALS["lang"]['Vlan'] = 'Βαν';
+$GLOBALS["lang"]['Vendor Report'] = '.';
 
-$GLOBALS["lang"]['vlan_id'] = 'Ταυτότητα Vlan';
+$GLOBALS["lang"]['vendors'] = '- Да.';
 
-$GLOBALS["lang"]['Vlan ID'] = 'Ταυτότητα Vlan';
+$GLOBALS["lang"]['Vendors'] = '- Да.';
 
-$GLOBALS["lang"]['vm'] = 'Vm';
+$GLOBALS["lang"]['Venezuela'] = '- Не, не.';
 
-$GLOBALS["lang"]['Vm'] = 'Vm';
+$GLOBALS["lang"]['Version'] = 'Προκράμ';
 
-$GLOBALS["lang"]['vm_device_id'] = 'Ταυτότητα συσκευής Vm';
+$GLOBALS["lang"]['version_padded'] = '.';
 
-$GLOBALS["lang"]['Vm Device ID'] = 'Ταυτότητα συσκευής Vm';
+$GLOBALS["lang"]['Version Padded'] = '.';
 
-$GLOBALS["lang"]['vm_group'] = 'Ομάδα Vm';
+$GLOBALS["lang"]['version_raw'] = 'Κατεκορίγια';
 
-$GLOBALS["lang"]['Vm Group'] = 'Ομάδα Vm';
+$GLOBALS["lang"]['Version Raw'] = 'Κατεκορίγια';
 
-$GLOBALS["lang"]['vm_ident'] = 'Αναγνωριστικός κωδικός Vm';
+$GLOBALS["lang"]['version_string'] = '.';
 
-$GLOBALS["lang"]['Vm Ident'] = 'Αναγνωριστικός κωδικός Vm';
+$GLOBALS["lang"]['Version String'] = '.';
 
-$GLOBALS["lang"]['vm_server_name'] = 'Όνομα εξυπηρετητή Vm';
+$GLOBALS["lang"]['video'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Vm Server Name'] = 'Όνομα εξυπηρετητή Vm';
+$GLOBALS["lang"]['Video'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['vm_vendor'] = 'Vm Προμηθευτής';
+$GLOBALS["lang"]['Vietnam'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['Vm Vendor'] = 'Vm Προμηθευτής';
+$GLOBALS["lang"]['Vietnamese'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['vuln_status'] = 'Κατάσταση Vuln';
+$GLOBALS["lang"]['View'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Vuln Status'] = 'Κατάσταση Vuln';
+$GLOBALS["lang"]['View All'] = '.';
 
-$GLOBALS["lang"]['vulnerabilities'] = 'Ευπάθεια';
+$GLOBALS["lang"]['View Details'] = '- Да.';
 
-$GLOBALS["lang"]['Vulnerabilities'] = 'Ευπάθεια';
+$GLOBALS["lang"]['View Device'] = 'Cihaz axtarsti@';
 
-$GLOBALS["lang"]['vulnerabilities_cache'] = 'Λοίμωξη ευπαθειών';
+$GLOBALS["lang"]['View Discovery'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['Vulnerabilities Cache'] = 'Λοίμωξη ευπαθειών';
+$GLOBALS["lang"]['View Policy'] = 'ΠΙΛΟΑ';
 
-$GLOBALS["lang"]['vulnerability_id'] = 'Ταυτότητα ευπάθειας';
+$GLOBALS["lang"]['View Racks'] = 'Όνομα';
 
-$GLOBALS["lang"]['Vulnerability ID'] = 'Ταυτότητα ευπάθειας';
+$GLOBALS["lang"]['View the'] = '- Да.';
 
-$GLOBALS["lang"]['WHERE'] = 'ΟΠΟΥ';
+$GLOBALS["lang"]['View the discovery in question, then click the Support button in the top right toolbar. This will provide the discovery settings, config items, the discovery device list as well as the logs for this particular discovery.'] = 'Имено.';
 
-$GLOBALS["lang"]['wall_port'] = 'Θύρα τοίχου';
+$GLOBALS["lang"]['View the release notes on the'] = '.';
 
-$GLOBALS["lang"]['Wall Port'] = 'Θύρα τοίχου';
+$GLOBALS["lang"]['Virtual Private Network'] = '.';
 
-$GLOBALS["lang"]['Wallis and Futuna'] = 'Γουόλις και Φουτούνα';
+$GLOBALS["lang"]['Virtual private network'] = '.';
 
-$GLOBALS["lang"]['Want to know more?'] = 'Θέλεις να μάθεις περισσότερα;';
+$GLOBALS["lang"]['Virtualisation'] = '- Да.';
 
-$GLOBALS["lang"]['Warning'] = 'Προειδοποίηση';
+$GLOBALS["lang"]['Visit our YouTube channel for instructional videos.'] = '.';
 
-$GLOBALS["lang"]['warranty'] = 'Εγγύηση';
+$GLOBALS["lang"]['vlan'] = ' Βιγκλ.';
 
-$GLOBALS["lang"]['Warranty'] = 'Εγγύηση';
+$GLOBALS["lang"]['Vlan'] = ' Βιγκλ.';
 
-$GLOBALS["lang"]['warranty_duration'] = 'Διάρκεια εγγύησης';
+$GLOBALS["lang"]['vlan_id'] = 'Иденти';
 
-$GLOBALS["lang"]['Warranty Duration'] = 'Διάρκεια εγγύησης';
+$GLOBALS["lang"]['Vlan ID'] = 'Иденти';
 
-$GLOBALS["lang"]['warranty_expires'] = 'Λήγει η εγγύηση';
+$GLOBALS["lang"]['vm'] = 'Άξταρ';
 
-$GLOBALS["lang"]['Warranty Expires'] = 'Λήγει η εγγύηση';
+$GLOBALS["lang"]['Vm'] = 'Άξταρ';
 
-$GLOBALS["lang"]['warranty_status'] = 'Καθεστώς εγγύησης';
+$GLOBALS["lang"]['vm_device_id'] = 'ID на Vm устройство Vйййй.';
 
-$GLOBALS["lang"]['Warranty Status'] = 'Καθεστώς εγγύησης';
+$GLOBALS["lang"]['Vm Device ID'] = 'ID на Vm устройство Vйййй.';
 
-$GLOBALS["lang"]['warranty_type'] = 'Τύπος εγγύησης';
+$GLOBALS["lang"]['vm_group'] = 'Σκουπίνα Vm';
 
-$GLOBALS["lang"]['Warranty Type'] = 'Τύπος εγγύησης';
+$GLOBALS["lang"]['Vm Group'] = 'Σκουπίνα Vm';
 
-$GLOBALS["lang"]['Web'] = 'Ιστός';
+$GLOBALS["lang"]['vm_ident'] = 'Vm Иденти';
 
-$GLOBALS["lang"]['Webserver'] = 'Εξυπηρετητής ιστού';
+$GLOBALS["lang"]['Vm Ident'] = 'Vm Иденти';
 
-$GLOBALS["lang"]['Website'] = 'Ιστοσελίδα';
+$GLOBALS["lang"]['vm_server_name'] = 'Vm сървър Ad';
 
-$GLOBALS["lang"]['Wednesday'] = 'Τετάρτη';
+$GLOBALS["lang"]['Vm Server Name'] = 'Vm сървър Ad';
 
-$GLOBALS["lang"]['weight'] = 'Βάρος';
+$GLOBALS["lang"]['vm_vendor'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['Weight'] = 'Βάρος';
+$GLOBALS["lang"]['Vm Vendor'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['weight_current'] = 'Τρέχον βάρος';
+$GLOBALS["lang"]['vuln_status'] = 'Състояние на вулна.';
 
-$GLOBALS["lang"]['Weight Current'] = 'Τρέχον βάρος';
+$GLOBALS["lang"]['Vuln Status'] = 'Състояние на вулна.';
 
-$GLOBALS["lang"]['weight_empty'] = 'Άδειο βάρος';
+$GLOBALS["lang"]['vulnerabilities'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Weight Empty'] = 'Άδειο βάρος';
+$GLOBALS["lang"]['Vulnerabilities'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['weight_max'] = 'Μέγιστο βάρος';
+$GLOBALS["lang"]['vulnerabilities_cache'] = '.';
 
-$GLOBALS["lang"]['Weight Max'] = 'Μέγιστο βάρος';
+$GLOBALS["lang"]['Vulnerabilities Cache'] = '.';
 
-$GLOBALS["lang"]['Welcome'] = 'Καλωσόρισμα';
+$GLOBALS["lang"]['Vulnerabilities and Results'] = 'Не, не.';
 
-$GLOBALS["lang"]['Welcome Dashboard'] = 'Καλωσορίστε τον πίνακα';
+$GLOBALS["lang"]['Vulnerabilities initially published before 1st January, 2025 (by default). We see no sense in returning vulnerabilities from years prior. This can be changed in the configuration.'] = 'Zranitelnost ilkin 1 yanvardan ..';
 
-$GLOBALS["lang"]['Welcome to FirstWave Open-AudIT'] = 'Καλωσήλθατε στο Open-AudIT της ΠρώτηςWave';
+$GLOBALS["lang"]['vulnerability_id'] = '.';
 
-$GLOBALS["lang"]['Western Sahara'] = 'Δυτική Σαχάρα';
+$GLOBALS["lang"]['Vulnerability ID'] = '.';
 
-$GLOBALS["lang"]['What Can I Expect if I Have no Credentials'] = 'Τι Μπορώ να Αναμένω αν Δεν Έχω Εντολή';
+$GLOBALS["lang"]['Vulnerability Status'] = '.';
 
-$GLOBALS["lang"]['What is the purpose of this rack.'] = 'Ποιος είναι ο σκοπός αυτού του ράφι.';
+$GLOBALS["lang"]['WARNING - When creating a baseline using software policies, at present Centos and RedHat package the kernel using the names <i>kernel</i> and <i>kernel-devel</i>. There can be multiple packages with this name and different versions concurrently installed. Debian based distributions use names like <i>linux-image-3.13.0-24-generic</i>, note the version number is included in the package name. Because RedHat based operating systems use this format and subsequently have multiple identical package names with different versions we currently exclude <i>kernel</i> and <i>kernel-devel</i> from software policies. This may be addressed in a future update.'] = 'ВНИМАНИ etdiyiniz zaman, mövcud Centos κατά... <i> Όνομα</i> Κεϊντιγιάτ <i> </i>. Имено. <i>Linux-Bild- 3.13.0-0 Generikum (στα Αγγλικά).</i>. <i> Όνομα</i> Κεϊντιγιάτ <i> </i> .';
 
-$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = 'Ποιος είναι ο τύπος αυτής της τοποθεσίας. Επιτρεπόμενοι τύποι που τηρούνται σε <code>attributes</code> τραπέζι.';
+$GLOBALS["lang"]['WHERE'] = '- Да.';
 
-$GLOBALS["lang"]['When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?'] = 'Κατά την ενσωμάτωση συσκευών από το εξωτερικό σύστημα, αν η συσκευή δεν υπάρχει στο Open-AudIT θα πρέπει να τη δημιουργήσουμε;';
+$GLOBALS["lang"]['WMI Credentials Requirements'] = '.';
 
-$GLOBALS["lang"]['When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?'] = 'Κατά την ενσωμάτωση συσκευών από το εξωτερικό σύστημα, εάν η συσκευή έχει ενημερωθεί στο εξωτερικό σύστημα θα πρέπει να την ενημερώσουμε στο Open-AudIT;';
+$GLOBALS["lang"]['Wait for it to complete, then paste in this next line to install the Agent.'] = '.';
 
-$GLOBALS["lang"]['When retrieve an external device, should we run discovery upon it?'] = 'Όταν ανακτήσουμε μια εξωτερική συσκευή, πρέπει να την ανακαλύψουμε;';
+$GLOBALS["lang"]['wall_port'] = 'Калерея.';
 
-$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.'] = 'Όταν αυτό το σημείο αναφοράς είναι προγραμματισμένο να εκτελεστεί. Παράγωγα από τα σχετικά <code>tasks.type</code> και <code>tasks.sub_resource_id</code>.';
+$GLOBALS["lang"]['Wall Port'] = 'Калерея.';
 
-$GLOBALS["lang"]['When this log was created.'] = 'Όταν δημιουργήθηκε αυτό το αρχείο καταγραφής.';
+$GLOBALS["lang"]['Wallis and Futuna'] = 'Калерея.';
 
-$GLOBALS["lang"]['When this queue item started processing.'] = 'Όταν αυτό το στοιχείο ουράς ξεκίνησε την επεξεργασία.';
+$GLOBALS["lang"]['Want to know more?'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.'] = 'Όταν εκτελούμε αυτή τη γραμμή βάσης, θα πρέπει να ελέγξουμε για αντικείμενα σε συσκευές που δεν είναι σε μια πολιτική για αυτή τη γραμμή βάσης.';
+$GLOBALS["lang"]['Warning'] = '- Да.';
 
-$GLOBALS["lang"]['When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.'] = 'Όταν λαμβάνουμε μια ανοικτή θύρα, θα πρέπει να προσπαθήσουμε να δοκιμάσουμε για την έκδοση της υπηρεσίας που αυτή τη στιγμή τρέχει πάνω της; Αυτό βοηθά στην επιβεβαίωση των πραγματικών υπηρεσιών λειτουργίας.';
+$GLOBALS["lang"]['warranty'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['where'] = 'Πού;';
+$GLOBALS["lang"]['Warranty'] = 'Ζάχλα';
 
-$GLOBALS["lang"]['Where'] = 'Πού;';
+$GLOBALS["lang"]['warranty_duration'] = '- Да.';
 
-$GLOBALS["lang"]['Where on the Device Details screen you would like to see this field appear.'] = 'Πού στην οθόνη Λεπτομέρειες συσκευής θα θέλατε να δείτε αυτό το πεδίο να εμφανίζεται.';
+$GLOBALS["lang"]['Warranty Duration'] = '- Да.';
 
-$GLOBALS["lang"]['Where the rack is in the row.'] = 'Εκεί που είναι το ράφι στη σειρά.';
+$GLOBALS["lang"]['warranty_expires'] = '.';
 
-$GLOBALS["lang"]['Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.'] = 'Αν η ευπάθεια επηρεάζει τα συστατικά πέρα από τη δική της χρήση Impact, Διαθεσιμότητα και Εμπιστευτικότητα.';
+$GLOBALS["lang"]['Warranty Expires'] = '.';
 
-$GLOBALS["lang"]['Whether user interaction is required (None, Passive, Active).'] = 'Αν απαιτείται αλληλεπίδραση χρήστη (Κανένας, Παθητικός, Ενεργός).';
+$GLOBALS["lang"]['warranty_status'] = '.';
 
-$GLOBALS["lang"]['Which OS this benchmark applies to.'] = 'Σε ποιο λειτουργικό σύστημα εφαρμόζεται αυτό το σημείο αναφοράς.';
+$GLOBALS["lang"]['Warranty Status'] = '.';
 
-$GLOBALS["lang"]['Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.'] = 'Ποιες συσκευές πρέπει να δημιουργούν Open-AudIT από το εξωτερικό σύστημα (αν υπάρχουν). Χρησιμοποιώντας όλα, Κανένα ή ένα δεδομένο χαρακτηριστικό.';
+$GLOBALS["lang"]['warranty_type'] = '.';
 
-$GLOBALS["lang"]['Which sub-menu should we display this query in.'] = 'Σε ποιο υπο-μενού πρέπει να επιδείξουμε αυτό το ερώτημα.';
+$GLOBALS["lang"]['Warranty Type'] = '.';
 
-$GLOBALS["lang"]['Who made this rack.'] = 'Ποιος έφτιαξε αυτό το ράφι.';
+$GLOBALS["lang"]['We also have an option to Ping Before Scan (important for routers with long lived ARP caches). This is usually a good idea.'] = 'Имено.';
 
-$GLOBALS["lang"]['Why Windows Server Only?'] = 'Γιατί μόνο Windows Server;';
+$GLOBALS["lang"]['We also have our action items (which are executed in the order below):'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['Why do we exclude this policy?'] = 'Γιατί αποκλείουμε αυτή την πολιτική;';
+$GLOBALS["lang"]['We are often asked this question and the answer most definitely is <i>it depends</i>. It depends on the number of IPs to be scanned, the network connection speed, the speed of the devices being scanned, the type of devices being scanned, the number of different credentials being tested and the speed of the Open-AudIT server. We do not have a calculator that would allow us to input those variables and return a value. It is simply too complex. Generally I limit my discoveries to 256 IP addresses - ie, a /24 subnet. We have had customers scan /16 subnets (65k addresses) and it does work - but it can take a long time. You are much better off scanning in /24 blocks. If you simply do not know what your address ranges are, then this is a good case for a Seed discovery.'] = '- Да. <i>- Да.</i>. Имено. - Да.';
 
-$GLOBALS["lang"]['Wide Area Network'] = 'Δίκτυο ευρείας περιοχής';
+$GLOBALS["lang"]['We have more detailed instructions on'] = '.';
 
-$GLOBALS["lang"]['Widget'] = 'Γραφικό συστατικό';
+$GLOBALS["lang"]['We have tests for:'] = '.';
 
-$GLOBALS["lang"]['Widget # '] = 'Γραφικό συστατικό # ';
+$GLOBALS["lang"]['We hope you find Open-AudIT as useful as we do.'] = '.';
 
-$GLOBALS["lang"]['Widget Type'] = 'Τύπος συστατικού';
+$GLOBALS["lang"]['We initially setup the default list of scripts with the default options. The list of script is viewable at /scripts. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu: Discover -> Audit Scripts -> List Audit Scripts.'] = 'Имено.';
 
-$GLOBALS["lang"]['widgets'] = 'Γραφικά συστατικά';
+$GLOBALS["lang"]['We need some credentials to be able to effectively talk to the devices on your network.'] = 'Не, не.';
 
-$GLOBALS["lang"]['Widgets'] = 'Γραφικά συστατικά';
+$GLOBALS["lang"]['We only send the minimum amount of data and nothing of a sensitive nature. We send our license data (name, type, etc), our application data (name, version, platform, timezone, etc), any logged errors, a count of device types and a count of the features used. <i>Any</i> environment has devices and that is the only piece of your data we send. And only the type of device and a count. Not the manufacturer, not the model. We send nothing special. No networks. No IP addresses. No OS versions. No software names. The UUID and Server fields are sha256 encoded (so we do not know the value). We send just the data we need to improve the product. We hope you see the benefit to all of us with this information. It will provide us guided direction on where to focus improvements and new features in the product.'] = '. <i>.</i> - Όχι.';
 
-$GLOBALS["lang"]['width'] = 'Πλάτος';
+$GLOBALS["lang"]['We tend to use the Google Chrome extension called Postman for testing actual restful queries. You might like to install and test with that.'] = 'Имено.';
 
-$GLOBALS["lang"]['Width'] = 'Πλάτος';
+$GLOBALS["lang"]['Web'] = 'Οξενούμπ';
 
-$GLOBALS["lang"]['windows'] = 'Παράθυρα';
+$GLOBALS["lang"]['Web Application Routes'] = '.';
 
-$GLOBALS["lang"]['Windows'] = 'Παράθυρα';
+$GLOBALS["lang"]['Web Server Discovery'] = '- Да.';
 
-$GLOBALS["lang"]['Windows Test Script'] = 'Σενάριο δοκιμής παραθύρων';
+$GLOBALS["lang"]['Webserver'] = 'Сбсървър.';
 
-$GLOBALS["lang"]['Wireless Local Area Network'] = 'Ασύρματο δίκτυο τοπικής περιοχής';
+$GLOBALS["lang"]['Website'] = '.';
 
-$GLOBALS["lang"]['wmi_fails'] = 'Αποτυχία Wmi';
+$GLOBALS["lang"]['Wednesday'] = 'Не, не.';
 
-$GLOBALS["lang"]['Wmi Fails'] = 'Αποτυχία Wmi';
+$GLOBALS["lang"]['weight'] = 'Не, не.';
 
-$GLOBALS["lang"]['wmi_timeout'] = 'Χρονικό όριο Wmi';
+$GLOBALS["lang"]['Weight'] = 'Не, не.';
 
-$GLOBALS["lang"]['Wmi Timeout'] = 'Χρονικό όριο Wmi';
+$GLOBALS["lang"]['weight_current'] = '- Да.';
 
-$GLOBALS["lang"]['workgroup'] = 'Ομάδα εργασίας';
+$GLOBALS["lang"]['Weight Current'] = '- Да.';
 
-$GLOBALS["lang"]['Workgroup'] = 'Ομάδα εργασίας';
+$GLOBALS["lang"]['weight_empty'] = '.';
 
-$GLOBALS["lang"]['Working Credentials'] = 'Ένταξη εργασίας';
+$GLOBALS["lang"]['Weight Empty'] = '.';
 
-$GLOBALS["lang"]['XML'] = 'XML';
+$GLOBALS["lang"]['weight_max'] = 'Кадин Макс.';
 
-$GLOBALS["lang"]['Yellow Query'] = 'Κίτρινο ερώτημα';
+$GLOBALS["lang"]['Weight Max'] = 'Кадин Макс.';
 
-$GLOBALS["lang"]['Yemen'] = 'Υεμένη';
+$GLOBALS["lang"]['Welcome'] = '.';
 
-$GLOBALS["lang"]['Yes'] = 'Ναι.';
+$GLOBALS["lang"]['Welcome Dashboard'] = '.';
 
-$GLOBALS["lang"]['You may want to copy and paste this URL in an email to your staff.'] = 'Μπορεί να θέλετε να αντιγράψετε και να επικολλήσετε αυτό το URL σε ένα email στο προσωπικό σας.';
+$GLOBALS["lang"]['Welcome to'] = '.';
 
-$GLOBALS["lang"]['You must delete your existing license before adding a new license.'] = 'Πρέπει να διαγράψετε την υπάρχουσα άδειά σας πριν προσθέσετε μια νέα άδεια.';
+$GLOBALS["lang"]['Western Sahara'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['YouTube Tutorials'] = 'Μαθήματα στο YouTube';
+$GLOBALS["lang"]['What Can I Expect if I Have no Credentials'] = '.';
 
-$GLOBALS["lang"]['Your AWS EC2 API key.'] = 'Το κλειδί AWS EC2 API σας.';
+$GLOBALS["lang"]['What about fields that I want from NMIS that are not in Open-AudIT? We have got you covered. Any fields in the external system (NMIS) that do not exist in Open-AudIT will be automatically created as Open-AudIT Custom fields.'] = 'Имено.';
 
-$GLOBALS["lang"]['Your Google Compute credentials as JSON.'] = 'Το Google σας Compute διαπιστευτήρια ως JSON.';
+$GLOBALS["lang"]['What about other network devices? Think switches, routers, printers, etc. Obviously, it is best if you can provide some SNMP credentials for these devices. They only need <i>read-only</i> access. But if you do not want to do even that, there is nothing stopping you from running discovery, finding the devices, and making a rule or two to identify them (maybe use MAC Address prefix in combination with open ports, for example). You wont have much information, but you will know they are on the network, what they are, and when the last time they were seen was. You will also see if anything new appears on the network.'] = ' да го направим, да го направим. <i>- Да.</i> .';
 
-$GLOBALS["lang"]['Your Licenses'] = 'Οι Άδειές Σας';
+$GLOBALS["lang"]['What do we send?'] = '.';
 
-$GLOBALS["lang"]['Your Microsoft Azure Client ID.'] = 'Η ταυτότητα του πελάτη σας Microsoft Azure.';
+$GLOBALS["lang"]['What does this actually mean to you?'] = '.';
 
-$GLOBALS["lang"]['Your Microsoft Azure Client Secret.'] = 'Το μυστικό πελάτη της Microsoft Azure.';
+$GLOBALS["lang"]['What is the purpose of this rack.'] = '.';
 
-$GLOBALS["lang"]['Your Microsoft Azure Subscription ID.'] = 'Το Microsoft Azure ID συνδρομής σας.';
+$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = '. <code>attributes</code> - Не, не.';
 
-$GLOBALS["lang"]['Your Microsoft Azure Tennant ID.'] = 'Η ταυτότητα του Microsoft Azure Tennant.';
+$GLOBALS["lang"]['When Open-AudIT on Linux discovers a Windows machine, in order to execute a remote command we use'] = '.';
 
-$GLOBALS["lang"]['Your SQL to select attributes that will populate this query.'] = 'Το SQL σας για να επιλέξετε χαρακτηριστικά που θα γεμίσουν αυτό το ερώτημα.';
+$GLOBALS["lang"]['When Open-AudIT on Windows discovers a Windows machine, in order to execute a remote command we use'] = '.';
 
-$GLOBALS["lang"]['Your SQL to select devices that will populate this group.'] = 'Το SQL σας για να επιλέξετε συσκευές που θα γεμίσουν αυτή την ομάδα.';
+$GLOBALS["lang"]['When Open-AudIT receives data about a device, either by discovering the device during an audit run or by the user importing the device, it must determine if this discovered device matches a device that already exists within its database, or if it is a new device that should be added. Open-AudIT uses a series of twelve property matches to determine this. The Match Rules work as OR comparisons, not AND. This means the first rule that matches a field in the discovered device to one in the dB resolves as an existing device. All Matching Rules have to fail in order for a device to be new and result in a new record being created.'] = 'Имено. Имено.';
 
-$GLOBALS["lang"]['Your SSH key.'] = 'Το κλειδί σου.';
+$GLOBALS["lang"]['When POSTing data, you must include an access token. An access token is generated with every request type, so make a GET (for example) and Accept: application/json, parse the response for meta→access_token, and include that with your request. This should be placed in the field data[access_token], IE, the top level.'] = 'Въпреки, че това не е така, трябва да се отбележи, че това нетака. Μπου-σα';
 
-$GLOBALS["lang"]['Your access credentials, as per that clouds native API.'] = 'Τα διαπιστευτήριά σας πρόσβασης, σύμφωνα με τα σύννεφα αυτόχθονα API.';
+$GLOBALS["lang"]['When a device is Discovered the audit script will be injected with the file (or directory) details. Both audit_linux.sh and audit_windows.vbs will be populated, regardless of the file path. If you are thinking <i>but putting a Linux path into a Windows machine will break things!</i>, it wont break, you just wont receive any data from that file or directory entry.<br>Retrieved details will be stored in the <i>file</i> database table and are stored like any other attribute. File details will be stored as any other attribute and generate alerts if any of the following attributes change - <i>full_name</i>, <i>hash</i>, <i>inode</i>, <i>last_changed</i>. The table contain a system_id, first_seen, last_seen and current columns as well as the file details.<br>Attributes recorded are:<br><ul><li>Windows - name, size, directory, SHA1 hash (of the file contents), last changed, permissions, owner, version (file permitting).</li><br><li>Linux - name, size, directory, SHA1 hash (of the file contents), last changed, meta data last changed, permissions, owner, group, inode.</li></ul>You will see a section in both the Windows and Linux audit scripts as below'] = ' Να Ντρουχού Στράνου. <i>.</i>.<br/>- Да. <i>.</i> . <i>.</i>. <i>.</i>. <i>Инодеум.</i>. <i>.</i>- Ναι.<br/>.<br/><ul><li>Windows - ad</li><br/><li>Linux - ad</li></ul>.';
 
-$GLOBALS["lang"]['Your description of the status of this connection (provisioned, retired, etc).'] = 'Η περιγραφή σας για την κατάσταση αυτής της σύνδεσης (παρέχεται, συνταξιοδοτείται, κλπ).';
+$GLOBALS["lang"]['When a discovery is run, the relevant discovery scan option is chosen and those settings are used by Nmap to scan the target devices.  The scan options determine which ports nmap scans, how fast they scan and whether or not nmap ping is first used to determine if the IP is live or not.'] = 'Имено.';
 
-$GLOBALS["lang"]['Your description of this item.'] = 'Η περιγραφή σας αυτού του αντικειμένου.';
+$GLOBALS["lang"]['When a discovery is run, the relevant discovery scan option is chosen and those settings used by Nmap to scan the target devices. If no option set is chosen, the default configuration item (discovery_default_scan_option) is selected and used. Open-AudIT Community will use the default options as per the configuration for all discoveries.'] = 'Българтова, което е по-голямо отова, което е по-голямова отова, което е полямо отова.';
 
-$GLOBALS["lang"]['Your generic name for this piece of software'] = 'Το γενικό σας όνομα για αυτό το κομμάτι του λογισμικού';
+$GLOBALS["lang"]['When a subnet discovery is executed it first runs, if selected, an Nmap ping scan on the range or IP addresses. Any device responding will be port scanned. If an Nmap ping scan is not requested, each IP is individually port scanned. Which ports? That is determined by the'] = 'Имено.';
 
-$GLOBALS["lang"]['Your generic version for this piece of software'] = 'Η γενική έκδοση σας για αυτό το κομμάτι του λογισμικού';
+$GLOBALS["lang"]['When auditing a Linux device via SSH, some Linux distributions do not allow sudo commands to be passed without a TTY (which we are doing). To completely audit one of these linux distributions it is best to supply the root user credentials. If no root is supplied and sudo without a TTY is not possible, the audit script will be run but will not contain the amount of data as would otherwise. Subsequent audits using root (or run locally using sudo) will therefore provide extra details about the system and generate several <i>changes</i>.'] = 'Имено. <i>Не, не, не.</i>.';
 
-$GLOBALS["lang"]['Zambia'] = 'Ζάμπια';
+$GLOBALS["lang"]['When combining devices, which system is the authoritative source for information.'] = '- Да.';
 
-$GLOBALS["lang"]['Zimbabwe'] = 'Ζιμπάμπουε';
+$GLOBALS["lang"]['When complete, close the command window and you are done!'] = '.';
 
-$GLOBALS["lang"]['active'] = 'ενεργό';
+$GLOBALS["lang"]['When creating a widget, if you select the <i>Advanced</i> button you will have the ability to upload your own custom SQL.'] = '. <i>Не, не.</i> .';
 
-$GLOBALS["lang"]['active directory'] = 'ενεργός κατάλογος';
+$GLOBALS["lang"]['When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?'] = '.';
 
-$GLOBALS["lang"]['active/active'] = 'ενεργό/ενεργό';
+$GLOBALS["lang"]['When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?'] = '- Не, не.';
 
-$GLOBALS["lang"]['active/passive'] = 'ενεργό/παθητικό';
+$GLOBALS["lang"]['When investigating a Discovery, support will request the Exported Discovery Logs. To retrieve these, go to menu -> Discoveries ->'] = 'Имено.';
 
-$GLOBALS["lang"]['advertisement'] = 'διαφήμιση';
+$GLOBALS["lang"]['When matching a Linux based device, we prefer to use the Dbus id concatenated with the hostname. We can also use other options as per the below table, but we can retrieve the Dbus ID without root. To retrieve the UUID (from the motherboard), we need to run dmidecode, which does require root. Unfortunately, when you clone an ESXi guest, the Dbus ID does not get recreated - hence our concatenating this with the hostname. There is a good article linked here that details the <i>why</i> of hardware IDs.'] = 'Имено. <i>- Да.</i> - Да.';
 
-$GLOBALS["lang"]['alert'] = 'Συναγερμός';
+$GLOBALS["lang"]['When requesting JSON, by default no limit is set. When requesting screen display, the limit is set to 1000 by default. This can be changed in the configuration. See the \\'] = 'JSON t... r... finden... n ist... y... n, heglibir limit t... şkal edir. да го направим, да го направим.';
 
-$GLOBALS["lang"]['all'] = 'όλα';
+$GLOBALS["lang"]['When retrieve an external device, should we run discovery upon it?'] = '.';
 
-$GLOBALS["lang"]['allocated'] = 'κατανεμημένη';
+$GLOBALS["lang"]['When running Open-AudIT on Windows the Apache service account must be that of a <i>regular</i> user (or the Administrator). This is because the <i>Local System</i> account normally used to run Apache has no access to any network resources. IE - We cannot use Apache when running as the Local System account account to copy the audit script to Windows PCs.'] = '( <i>Не, не, не.</i> ... <i>.</i> . Ντομέν adşqeydiyatdan keçirt. IE - Biz Windows PCs одитен скрипт kopyalamaq üçün Yerli Sistem hesab';
 
-$GLOBALS["lang"]['amazon'] = 'αμαζόνη';
+$GLOBALS["lang"]['When the configuration option is set, we take this into account for devices for a certain defined subset of match rules where the configuration item has been enabled. These rules are:'] = 'Имено.';
 
-$GLOBALS["lang"]['antivirus'] = 'antivirus';
+$GLOBALS["lang"]['When the rules run in discovery, any matching rules will appear in the discovery log. See below for an example.'] = 'Имено.';
 
-$GLOBALS["lang"]['application'] = 'αίτηση';
+$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.'] = '. <code>tasks.type</code> Κεϊντιγιάτ <code>tasks.sub_resource_id</code>.';
 
-$GLOBALS["lang"]['approved'] = 'εγκεκριμένη';
+$GLOBALS["lang"]['When this log was created.'] = '.';
 
-$GLOBALS["lang"]['attribute'] = 'χαρακτηριστικό';
+$GLOBALS["lang"]['When this queue item started processing.'] = '- Да.';
 
-$GLOBALS["lang"]['auto'] = 'αυτόματη';
+$GLOBALS["lang"]['When using Open-AudIT Professional or Enterprise, widgets are available and customisable to be displayed on Dashboards.'] = 'Tyto prostředky jsou určeny na pokrytí: (στα Αγγλικά).';
 
-$GLOBALS["lang"]['backup'] = 'αντίγραφο ασφαλείας';
+$GLOBALS["lang"]['When we are converting an internally selected device to an object for the external system, what should the external data be. EG: integer, string, etc.'] = ' Να Ντρουχού Στράνου.';
 
-$GLOBALS["lang"]['banned'] = 'απαγορεύεται';
+$GLOBALS["lang"]['When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.'] = '.';
 
-$GLOBALS["lang"]['blog'] = 'blog';
+$GLOBALS["lang"]['When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.'] = '.';
 
-$GLOBALS["lang"]['bottom'] = 'κάτω';
+$GLOBALS["lang"]['When you are using Clouds to discover your Amazon AWS instances, you will need two credential items - key and secret key. Your key should already be known to you and your secret key as well. Of note is that you cannot retrieve your secret key using the AWS Console provided by Amazon. If you have misplaced it, you will need to generate a new one.'] = '- Да.';
 
-$GLOBALS["lang"]['browser_lang'] = 'Περιηγητής_ lang';
+$GLOBALS["lang"]['When you are using Clouds to discover your Microsoft Azure instances, you will need four credential items - subscription id, tenant id, client id and client secret.'] = 'Не, не.';
 
-$GLOBALS["lang"]['building'] = 'κτίριο';
+$GLOBALS["lang"]['When you create a discovery you have an option to devices_assigned_to_org. This means that any devices discovered for this discovery will be assigned (have <code>devices.org_id</code> set to) your chosen Organisation.'] = '. <code>devices.org_id</code> .';
 
-$GLOBALS["lang"]['cloud'] = 'νέφος';
+$GLOBALS["lang"]['When you create a new discovery if you click the Advanced button, you have many more options to change, one of them being the type of discovery.Types have always been Subnet (encompassing the above range, subnet, ip options) and Active Directory. As at v4.1, Open-AudIT has a new discovery type called Seed.'] = '.';
 
-$GLOBALS["lang"]['code'] = 'κωδικός';
+$GLOBALS["lang"]['When you enable a Query to be run on a schedule, the query is emailed to your chosen address. You must have set up email via menu -> Admin -> Enterprise -> Email Config. We also have a <i>test email<i> button on that page. Input your details, save it and then test it. You should have a modal box that informs you if it successful or not and obviously a test email should arrive if it is successful. Once you have email configured, your scheduled query can be configured.<br><br>Provide a name, optional description, choose <i>Query</i> type, select the desired query, provide an email address, choose a format and set the schedule.<br><br>Provide an hour (hour only, no minutes as yet), give the task a name (this is not the name of the actual scheduled query itself), select which days you would like the query run, choose which query you would like run, supply an email address and choose a query format and you are done.<br>Queries will be sent with an email body of the query (in html format) and the query attached in the requested format.'] = '. <i>- Не, не.<i> .<br/><br/>Adegha, isteghe bagliştбsvir, seçin <i>ΠΙΛΟΑ</i> .<br/><br/>Bir saat (saat yalnīz, hr hansībir d гонят), bir ad verm гок (bu, real planlaşdţrmşsorgunun ad<br/>Имено.</i></i>';
 
-$GLOBALS["lang"]['collector'] = 'συλλέκτης';
+$GLOBALS["lang"]['When you enter text into one of the column headings, you can simply use a normal word. For example, when you enter <code>computer</code> into the search box above the <i>Type</i> column, the search will return all devices with the type of Computer. Essentially, Open-AudIT requests data using a URL like <code>devices?devices.type=computer</code>. Now there is one significant difference when using the dataTables search, versus the standard'] = 'Не, не. <code>computer</code> . <i>- Да.</i> Имено. <code>devices?devices.type=computer</code>да го направим, а?';
 
-$GLOBALS["lang"]['compute'] = 'υπολογισμός';
+$GLOBALS["lang"]['where'] = '- Да.';
 
-$GLOBALS["lang"]['config'] = 'config';
+$GLOBALS["lang"]['Where'] = '- Да.';
 
-$GLOBALS["lang"]['contains'] = 'περιέχει';
+$GLOBALS["lang"]['Where $x is a number. This many LDAP entries are in the DB and have been retrieved.'] = '- Да.';
 
-$GLOBALS["lang"]['create'] = 'δημιουργία';
+$GLOBALS["lang"]['Where on the Device Details screen you would like to see this field appear.'] = '.';
 
-$GLOBALS["lang"]['created'] = 'δημιουργήθηκε';
+$GLOBALS["lang"]['Where the rack is in the row.'] = '.';
 
-$GLOBALS["lang"]['critical'] = 'κρίσιμη';
+$GLOBALS["lang"]['Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.'] = '.';
 
-$GLOBALS["lang"]['cve'] = 'ΚΕΦ';
+$GLOBALS["lang"]['Whether user interaction is required (None, Passive, Active).'] = '(...)................................................';
 
-$GLOBALS["lang"]['database'] = 'βάση δεδομένων';
+$GLOBALS["lang"]['Which OS this benchmark applies to.'] = '.';
 
-$GLOBALS["lang"]['debug'] = 'αποσφαλμάτωση';
+$GLOBALS["lang"]['Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.'] = '.';
 
-$GLOBALS["lang"]['delegated'] = 'εξουσιοδότηση';
+$GLOBALS["lang"]['Which network should we discover. This should be in the format of'] = '.';
 
-$GLOBALS["lang"]['delete'] = 'διαγραφή';
+$GLOBALS["lang"]['Which sub-menu should we display this query in.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['deleted'] = 'διαγράφεται';
+$GLOBALS["lang"]['Who made this rack.'] = '.';
 
-$GLOBALS["lang"]['denied'] = 'απορρίπτεται';
+$GLOBALS["lang"]['Why Windows Server Only?'] = '- Ναι.';
 
-$GLOBALS["lang"]['devices'] = 'συσκευές';
+$GLOBALS["lang"]['Why do we exclude this policy?'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['digitalocean'] = 'διπολική';
+$GLOBALS["lang"]['Wide Area Network'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['does not equal'] = 'δεν είναι ίσο';
+$GLOBALS["lang"]['Wide area network'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['emergency'] = 'έκτακτης ανάγκης';
+$GLOBALS["lang"]['Widget'] = ' Ναζέβ';
 
-$GLOBALS["lang"]['entra'] = 'Έντρα';
+$GLOBALS["lang"]['Widget #'] = '- Да.';
 
-$GLOBALS["lang"]['equals'] = 'ίσον';
+$GLOBALS["lang"]['Widget # '] = '- Да. ';
 
-$GLOBALS["lang"]['error'] = 'σφάλμα';
+$GLOBALS["lang"]['Widget Type'] = '- Да.';
 
-$GLOBALS["lang"]['established'] = 'καθιερωμένη';
+$GLOBALS["lang"]['widgets'] = '- Да.';
 
-$GLOBALS["lang"]['excluded'] = 'εκτός';
+$GLOBALS["lang"]['Widgets'] = '- Да.';
 
-$GLOBALS["lang"]['expired'] = 'Λήξη';
+$GLOBALS["lang"]['Widgets are designed to be used on Dashboards. Enterprise users have complete freedom to create, update and delete widgets as required.'] = ' да го направим, да го направим.';
+
+$GLOBALS["lang"]['width'] = 'Ендрим';
+
+$GLOBALS["lang"]['Width'] = 'Ендрим';
+
+$GLOBALS["lang"]['windows'] = '- Не, не.';
+
+$GLOBALS["lang"]['Windows'] = '- Не, не.';
+
+$GLOBALS["lang"]['Windows Packages'] = '.';
+
+$GLOBALS["lang"]['Windows Test Script'] = 'Ουνκούτσακ';
+
+$GLOBALS["lang"]['Windows User Work Unit #1'] = '.';
+
+$GLOBALS["lang"]['Windows User Work Unit #2'] = '.';
+
+$GLOBALS["lang"]['Windows may also have blocked the service from starting. On the target start the Windows Security applet and ensure the WinExeSvc executable is allowed to run (click Allow on Device and then Start Actions).'] = 'Имено.';
+
+$GLOBALS["lang"]['Winexe page on Samba'] = 'Předseda Αριθ. CAS:';
+
+$GLOBALS["lang"]['Winexe requires the following Windows services to be started and running: netlogon and rpc services to be running.<br><br>Please log on to the target Windows machine and check the services for netlogon and rpc are running.'] = '.<br/><br/>.';
+
+$GLOBALS["lang"]['Winexe uses the admin$ and RPC (net service start) to install and start a remote service (winexesvc). This service initializes a named pipe that is used to transport commands from the Open-AudIT server to the target and the output in the reverse way. When finished, the named pipe closes and the winexesvc waits for more connections or uninstalls (depending of the options given).'] = 'Имено.';
+
+$GLOBALS["lang"]['Wireless Local Area Network'] = 'Не, не.';
+
+$GLOBALS["lang"]['With the 3.3.0 release of Open-AudIT we have introduced the concept of a Cluster. This intuitively maps to the idea of a web cluster, database cluster or file cluster (or one of several other purposes) into a given type (high availability, redundancy, scaling, etc).<br><br>Depending on the purpose of cluster chosen, the reporting will be slightly different.<br><br>For example, if you create a Cluster with a purpose of virtualisation, when you have added devices to it you will also see the virtual machines on those devices.'] = '3 = 3, 0 - 0, 0 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -<br/><br/>Не, не.<br/><br/>.';
+
+$GLOBALS["lang"]['With the introduction of the Clouds feature, you can supply details of your cloud, Amazon AWS or Microsoft Azure, and Open-AudIT will use the relevant API to retrieve a list of locations, networks, and instances, then discover each of these instances.'] = 'Въпреки това, това, което се случва, може да се случи, ако не е въожно. ';
+
+$GLOBALS["lang"]['wmi_fails'] = 'Wmi başarşşşz (στα Αγγλικά).';
+
+$GLOBALS["lang"]['Wmi Fails'] = 'Wmi başarşşşz (στα Αγγλικά).';
+
+$GLOBALS["lang"]['wmi_timeout'] = 'Калерея.';
+
+$GLOBALS["lang"]['Wmi Timeout'] = 'Калерея.';
+
+$GLOBALS["lang"]['workgroup'] = '.';
+
+$GLOBALS["lang"]['Workgroup'] = '.';
+
+$GLOBALS["lang"]['Working Credentials'] = '.';
+
+$GLOBALS["lang"]['Wrap Up'] = '- Не, не.';
+
+$GLOBALS["lang"]['Written in the PHP scripting language.'] = ' да го направим, да го направим.';
+
+$GLOBALS["lang"]['XML'] = ' XML';
+
+$GLOBALS["lang"]['Yellow Query'] = 'Българта справка.';
+
+$GLOBALS["lang"]['Yemen'] = '- Да.';
+
+$GLOBALS["lang"]['Yes'] = '.';
+
+$GLOBALS["lang"]['You are able to define extra directories to be scanned as entries in the Executables collection. When defined, the directory and all sub-directories are scanned for files that are executable. You can also define directories and files to be excluded. When activated, these are injected into the linux audit script and performed whenever it is run (usually as part of a discovery). If you want these in a script you can manually copy to the target, use menu -> Discover -> Scripts -> List Scripts and download the script from there.'] = 'Имено.';
+
+$GLOBALS["lang"]['You are always free to modify the audit scripts themselves to suit your specific requirements. You will need to (re)incorporate those changes whenever you upgrade as they will be overwritten by the default scripts. I would suggest saving a master copy of your modified script, upgrading Open-AudIT, then running a diff between the new default script and your modified script and applying the differences. The audit scripts are native scripts (Windows is VBScript, all others are Bash). Simple and easy to modify - just make sure to have a copy of your changes before you upgrade.'] = 'Имено.';
+
+$GLOBALS["lang"]['You are running version'] = '.';
+
+$GLOBALS["lang"]['You can access the collection using the normal Open-AudIT JSON based API. Just like any other collection. Please see'] = 'Имено.';
+
+$GLOBALS["lang"]['You can also'] = '- Да.';
+
+$GLOBALS["lang"]['You can also see at the bottom of the page a table showing the devices the changes will be applied to.'] = '- Да.';
+
+$GLOBALS["lang"]['You can also specify properties using the below format.'] = '.';
+
+$GLOBALS["lang"]['You can always run the Firstwave VM on your virtual infrastructure (ESX, Azure, et al). The Firstwave VM runs Debian linux and is free from OS licensing concerns and limitations. Or install on your own Linux distro of choice. We support Redhat 9, Ubuntu 20.04, 22.04 and 24.04 as well as Debian 11 and 12.'] = '(ESX, Azure, κ.ά.) "Llkwave VM", "Debian Linux çalşr" сре';
+
+$GLOBALS["lang"]['You can assign devices to a location automatically using'] = 'Не, не.';
+
+$GLOBALS["lang"]['You can assign devices using custom'] = '.';
+
+$GLOBALS["lang"]['You can audit a remote machine without the using the actual Administrator account by creating a registry key. Create the below key on every machine to be audited and make sure the user credentials used is a member of the Administrators group.'] = '- Да.';
+
+$GLOBALS["lang"]['You can certainly run a discovery without any valid credentials on the devices within the network, however, the information retrieved will be a very small subset of what Open-AudIT has the ability to retrieve <i>with</i> credentials.'] = 'Имено. <i>.</i> - Да.';
+
+$GLOBALS["lang"]['You can create a baseline, run it against a group of devices and view the results, add scheduled execution, add more tables for comparison (currently only software, netstat ports and users are enabled), in place baseline editing, archiving of results and more.'] = '.';
+
+$GLOBALS["lang"]['You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.'] = ' Να Ντρουχού Στράνου.';
+
+$GLOBALS["lang"]['You can customize the entire integration down to which system (NMIS or Open-AudIT) is the authority on a per field basis. There are options to create and/or update devices in Open-AudIT or NMIS. Should we run a discovery on a created or updated device and so much more. There are explanations for each item on the right side of the page.'] = 'Имено.';
+
+$GLOBALS["lang"]['You can define an application and associate a device to this application. A device may be associated to more than one application. An application may be associated to more than one device.'] = ' да го направим, да го направим.';
+
+$GLOBALS["lang"]['You can edit the value of the Additional Field for each individual device on the device details page. View the device details screen, open the section containing the field and (if you have'] = '- Не, не.';
+
+$GLOBALS["lang"]['You can limit the Device Seed Discovery to fall within a strict set of parameters, including: <i>Restrict to Subnet</i> and <i>Restrict to Private</i>'] = '. <i>Субнетектив Субнев.</i> Κεϊντιγιάτ <i>Република Реста.</i>';
+
+$GLOBALS["lang"]['You can manually assign devices using'] = 'Имено.';
+
+$GLOBALS["lang"]['You can override this by providing the format option in the URL.'] = '- Да.';
+
+$GLOBALS["lang"]['You can select individual devices by clicking their check-boxes on the right side or selecting all devices clicking the checkbox on the top right of the table (underneath the Edit button that looks like a pencil).'] = 'Не, не.';
+
+$GLOBALS["lang"]['You can select the devices to be integrated by choosing any attribute in the system (device) table and matching (see menu → Admin → Database → List Tables → system for a list of fields). An attribute match can only match a single value.'] = 'Имено. Нарушена е отровата, която е била написана в началото.';
+
+$GLOBALS["lang"]['You can turn any server into a collector by going to menu -> Admin -> Collectors -> Make this install a Collector. You will need credentials to log on to the server this install will report in to.'] = 'Имено.';
+
+$GLOBALS["lang"]['You can view by clicking on the blue view icon. You can also edit or delete if you have permissions.'] = '.';
+
+$GLOBALS["lang"]['You do not have the PHP MBString extension installed. This extension is required.'] = '.';
+
+$GLOBALS["lang"]['You do not have the PHP SNMP extension installed. This extension is highly recommended.'] = ' Να Ντρουχού Στράνου.';
+
+$GLOBALS["lang"]['You may want to copy and paste this URL in an email to your staff.'] = '- Не, не.';
+
+$GLOBALS["lang"]['You may wish to have Active Directory or OpenLDAP authenticate your users, but not provide authorization. To do this, make sure <i>Use for Authentication</i> is set to Y and <i>Use for Roles</i> is set to N. The credentials will be validated by LDAP, but you will need to have the user already created and assigned Roles in Open-AudIT. This also <i>automatically</i> applies to'] = ' да го направим, да го направим. <i>Не, не.</i> . <i>.</i> . <i>Не, не, не.</i> .';
+
+$GLOBALS["lang"]['You might have noticed these match rules are for items that might not be globally unique. Some examples:'] = '- Да.';
+
+$GLOBALS["lang"]['You must delete your existing license before adding a new license.'] = '- Да.';
+
+$GLOBALS["lang"]['You must have working SSH credentials to execute a benchmark. The following Operating Systems are currently supported: Centos 7, Debian 12, Redhat 7, Redhat 8, Redhat 9, SLES 15, Ubuntu 20.04, Ubuntu 22.04. We plan to expand on these with further releases.'] = '. Aşaşdakşгод.';
+
+$GLOBALS["lang"]['You should copy and paste the entire file into the textbox. In the case below, copy ALL the text.'] = '.';
+
+$GLOBALS["lang"]['You should not include the edited_by and edited_date fields. These will be automatically set.'] = '.';
+
+$GLOBALS["lang"]['You should only change the second sentence of text, the'] = '.';
+
+$GLOBALS["lang"]['You should substitute the required column (eg, org_id) for ATTRIBUTE_NAME.'] = '.';
+
+$GLOBALS["lang"]['You should use a header line containing the names of the columns you wish to populate, then your data lines below that.'] = '.';
+
+$GLOBALS["lang"]['You should use only those tables that contain attributes you need. I usually use a left join. For example'] = '.';
+
+$GLOBALS["lang"]['You will need a'] = '.';
+
+$GLOBALS["lang"]['You will need the ports for WMI on the Windows firewall opened on each target Windows computer. For Windows Core servers, ensure you allow the firewall connections as per'] = '.';
+
+$GLOBALS["lang"]['You will see a list of'] = '.';
+
+$GLOBALS["lang"]['YouTube Tutorials'] = 'Счили';
+
+$GLOBALS["lang"]['Your AWS EC2 API key.'] = 'Имено.';
+
+$GLOBALS["lang"]['Your Google Compute credentials as JSON.'] = 'Боже мой!';
+
+$GLOBALS["lang"]['Your Host is'] = '- Да.';
+
+$GLOBALS["lang"]['Your Licenses'] = '- Да.';
+
+$GLOBALS["lang"]['Your Microsoft Azure Client ID.'] = '.';
+
+$GLOBALS["lang"]['Your Microsoft Azure Client Secret.'] = '- Ναι.';
+
+$GLOBALS["lang"]['Your Microsoft Azure Subscription ID.'] = '.';
+
+$GLOBALS["lang"]['Your Microsoft Azure Tennant ID.'] = 'Азуре Тент.';
+
+$GLOBALS["lang"]['Your PHP version is'] = '.';
+
+$GLOBALS["lang"]['Your SQL to select attributes that will populate this query.'] = 'E- poçt ünvan';
+
+$GLOBALS["lang"]['Your SQL to select devices that will populate this group.'] = '.';
+
+$GLOBALS["lang"]['Your SSH key.'] = '.';
+
+$GLOBALS["lang"]['Your access credentials, as per that clouds native API.'] = 'Имено.';
+
+$GLOBALS["lang"]['Your data is your data. You can extract it any time you like. We even helpfully provide exports to CSV, JSON and XML. And we have a JSON API. And you can write custom reports and have those output in CSV, XML, and JSON! Again, it is your data - not anyone else. You can be confident that the security of your data is in your hands.'] = 'Имено.';
+
+$GLOBALS["lang"]['Your database platform is'] = '.';
+
+$GLOBALS["lang"]['Your description of the status of this connection (provisioned, retired, etc).'] = '.';
+
+$GLOBALS["lang"]['Your description of this item.'] = '.';
+
+$GLOBALS["lang"]['Your generic name for this piece of software'] = '.';
+
+$GLOBALS["lang"]['Your generic version for this piece of software'] = '- Не, не.';
+
+$GLOBALS["lang"]['Your user should now be able to logon by clicking the <i>Logon with Entra</i> button on the Open-AudIT logon page. As mentioned above, if the logon fails, please check the logfile and verify the users <i>preferred username</i>.<br><br>And that should be all there is too it. Now your users should have one less set of credentials to remember!<br><br>As always, if you have troubles with this feature, please email'] = '- Да. <i>ςδ</i> . <i>.</i>.<br/><br/>Имено.<br/><br/>.';
+
+$GLOBALS["lang"]['Your user should now be able to logon by clicking the <i>Logon with OKTA</i> button on the Open-AudIT logon page. As mentioned above, if the logon fails, please check the logfile and verify the users <i>name</i>.<br><br>And that should be all there is too it. Now your users should have one less set of credentials to remember!<br><br>As always, if you have troubles with this feature, please email'] = '- Да. <i>Εντάξει...</i> . <i>- Да.</i>.<br/><br/>Имено.<br/><br/>.';
+
+$GLOBALS["lang"]['Your web server is'] = '.';
+
+$GLOBALS["lang"]['Zambia'] = '- Да.';
+
+$GLOBALS["lang"]['Zimbabwe'] = '- Не, не.';
+
+$GLOBALS["lang"]['a String'] = 'Напречен ним.';
+
+$GLOBALS["lang"]['active'] = '.';
+
+$GLOBALS["lang"]['active directory'] = '.';
+
+$GLOBALS["lang"]['active/active'] = '.';
+
+$GLOBALS["lang"]['active/passive'] = '.';
+
+$GLOBALS["lang"]['advertisement'] = '.';
+
+$GLOBALS["lang"]['alert'] = '.';
+
+$GLOBALS["lang"]['all'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['allocated'] = '- Да.';
+
+$GLOBALS["lang"]['amazon'] = 'Αμαζόνιος';
+
+$GLOBALS["lang"]['an Integer'] = ' αΐνη';
+
+$GLOBALS["lang"]['and'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['and / or'] = 'Κεϊντιγιάτ';
+
+$GLOBALS["lang"]['and a support ticket will be created and actioned.'] = '.';
+
+$GLOBALS["lang"]['and another'] = '- Да.';
+
+$GLOBALS["lang"]['and download the Latest Release self-installer. You may need to scroll down the page to find it.'] = '- Да.';
+
+$GLOBALS["lang"]['and go to Applications -> Enterprise Applications (far left menu), then click <i>New application</i>.'] = 'Имено. <i>.</i>.';
+
+$GLOBALS["lang"]['and it\\'] = '♪';
+
+$GLOBALS["lang"]['and looks for a warranty expiration date prior to today.'] = '.';
+
+$GLOBALS["lang"]['and review what is possible.'] = '.';
+
+$GLOBALS["lang"]['and the Sign-out redirect URI being'] = 'Имено.';
+
+$GLOBALS["lang"]['and the final lines will likely be of most interest. These lines should give you the exact point at which the login failed.'] = ' да го направим, да го направим.';
+
+$GLOBALS["lang"]['antivirus'] = '.';
+
+$GLOBALS["lang"]['application'] = '- Да.';
+
+$GLOBALS["lang"]['approved'] = '.';
+
+$GLOBALS["lang"]['are required.'] = '- Да.';
+
+$GLOBALS["lang"]['are used.'] = '- Да.';
+
+$GLOBALS["lang"]['as a device responding on this port.<br>This has caused some customers issues where firewalls respond on behalf of a non-existing device, and hence cause false positive device detection. We now have this attribute available to set per scan.'] = 'Не, не.<br/>.';
+
+$GLOBALS["lang"]['as the reference point and filters out all virtual machines via a check of the system.serial field for VM.'] = ' да го направим, да го направим.';
+
+$GLOBALS["lang"]['assuming working and client populated DNS'] = '.';
+
+$GLOBALS["lang"]['attribute'] = '- Да.';
+
+$GLOBALS["lang"]['auto'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['backup'] = '- Да.';
+
+$GLOBALS["lang"]['banned'] = '- Да.';
+
+$GLOBALS["lang"]['blog'] = '- Да.';
+
+$GLOBALS["lang"]['blue'] = '- Не, не.';
+
+$GLOBALS["lang"]['bottom'] = '- Да.';
+
+$GLOBALS["lang"]['building'] = '- Да.';
+
+$GLOBALS["lang"]['can be used for user authentication (is the users name and password correct) as well as user authorization (what roles and orgs does a user have).<br><br>If a user is not in the configured LDAP but is in Open-AudIT (eg: the <i>admin</i> user), Open-AudIT will fallback to using itself for both authentication and authorization.<br><br>Open-AudIT uses specific LDAP groups for roles and orgs. A user must be a direct member of these group(s) in order for Open-AudIT to determine that users access.<br><br>When configured correctly, LDAP use can completely remove the need to create users in Open-AudIT. Simply configure Open-AudIT to use LDAP for both authentication and authorization. If the user does not exist in Open-AudIT but does exist in LDAP and their credentials are correct and they are a member of the required groups Open-AudIT will create the user account automatically.'] = 'Имено.<br/><br/>Μπιρ Ιστιφάντ... LDAP deyil, lakin Open- Audit (напр.: <i>- Да.</i> (...)<br/><br/>Имено.<br/><br/>Имено. Γιάντα Σάξα..';
+
+$GLOBALS["lang"]['can now retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database. This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server. Supported clients are Windows and Linux.'] = 'Имено.';
+
+$GLOBALS["lang"]['changed'] = '.';
+
+$GLOBALS["lang"]['chosen. From there if a port for WMI, SSH or SNMP is detected responding the device is further queried using '] = 'WMI, SSH сре ';
+
+$GLOBALS["lang"]['cloud'] = '- Да.';
+
+$GLOBALS["lang"]['code'] = '- Не, не.';
+
+$GLOBALS["lang"]['collections and details pages is an icon to execute.'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['collector'] = '.';
+
+$GLOBALS["lang"]['collectors'] = '- Не, не.';
+
+$GLOBALS["lang"]['column'] = '- Да.';
+
+$GLOBALS["lang"]['column will contain either <i>y</i> or <i>n</i>. This indicates if this row is currently present on the device. For example software may be installed (which would result in <i>software.current = y</i>), but on a subsequent audit it may not be detected. Open-AudIT will then change this rows current attribute to <i>n</i>.'] = '. <i> y</i> . <i> n</i>... <i>- Да.</i> ) <i> n</i>.';
+
+$GLOBALS["lang"]['column. The'] = '-Axtarşş.';
+
+$GLOBALS["lang"]['compute'] = '- Не, не.';
+
+$GLOBALS["lang"]['config'] = ' ';
+
+$GLOBALS["lang"]['console'] = ' Кон.';
+
+$GLOBALS["lang"]['contains'] = '- Да.';
+
+$GLOBALS["lang"]['create'] = '- Не, не.';
+
+$GLOBALS["lang"]['created'] = '.';
+
+$GLOBALS["lang"]['credentials'] = '- Да.';
+
+$GLOBALS["lang"]['critical'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['cve'] = ' γ)';
+
+$GLOBALS["lang"]['database'] = '.';
+
+$GLOBALS["lang"]['debug'] = ' р';
+
+$GLOBALS["lang"]['delegated'] = '- Да.';
+
+$GLOBALS["lang"]['delete'] = '- Не, не.';
+
+$GLOBALS["lang"]['deleted'] = '- Да.';
+
+$GLOBALS["lang"]['denied'] = '.';
+
+$GLOBALS["lang"]['details'] = '- Да.';
+
+$GLOBALS["lang"]['devices'] = '- Не, не.';
+
+$GLOBALS["lang"]['digitalocean'] = '.';
+
+$GLOBALS["lang"]['discoveries'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['documentation for further details.'] = '- Да.';
+
+$GLOBALS["lang"]['does <strong>not</strong> provide vulnerability reports for the following'] = '. <strong>.</strong> .';
+
+$GLOBALS["lang"]['does not equal'] = '.';
+
+$GLOBALS["lang"]['emergency'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['entra'] = '- Не, не.';
+
+$GLOBALS["lang"]['equals'] = '.';
+
+$GLOBALS["lang"]['error'] = 'Не, не.';
+
+$GLOBALS["lang"]['established'] = '.';
+
+$GLOBALS["lang"]['excluded'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['expired'] = '.';
 
 $GLOBALS["lang"]['extreme - Without which, the organisation would fail.
 
@@ -6445,171 +8621,273 @@ medium - Functions that are necessary but can tolerate longer downtime.
 
 low - Non-essential functions that can be delayed without significant impact.
 
-unassigned - The default until set.'] = 'ακραίο - Χωρίς το οποίο, η οργάνωση θα αποτύχει.
+unassigned - The default until set.'] = '- Да.
 
-πολύ υψηλές - λειτουργίες που είναι απαραίτητες για την επιβίωση των οργανισμών και πρέπει να αποκατασταθούν αμέσως.
+Имено.
 
-υψηλές - σημαντικές λειτουργίες που πρέπει να αποκατασταθούν γρήγορα αλλά μπορεί να έχουν λίγο μεγαλύτερο χρόνο ανάρρωσης.
+Имено.
 
-medium - Λειτουργίες που είναι απαραίτητες, αλλά μπορούν να ανεχθούν περισσότερο χρόνο downtime.
+Имено.
 
-χαμηλές - μη βασικές λειτουργίες που μπορεί να καθυστερήσει χωρίς σημαντικό αντίκτυπο.
+Имено.
 
-χωρίς ανάθεση - Η προεπιλογή μέχρι να οριστεί.';
+- Να Ντρουχού Στράνου.';
 
-$GLOBALS["lang"]['fail'] = 'αποτυχία';
+$GLOBALS["lang"]['fail'] = '.';
 
-$GLOBALS["lang"]['false'] = 'ψευδές';
+$GLOBALS["lang"]['false'] = 'Не, не.';
 
-$GLOBALS["lang"]['file'] = 'αρχείο';
+$GLOBALS["lang"]['file'] = '.';
 
-$GLOBALS["lang"]['firewall'] = 'τείχος προστασίας';
+$GLOBALS["lang"]['firewall'] = '.';
 
-$GLOBALS["lang"]['fixed'] = 'σταθερό';
+$GLOBALS["lang"]['first'] = '- Да.';
 
-$GLOBALS["lang"]['floor'] = 'δάπεδο';
+$GLOBALS["lang"]['fixed'] = '.';
 
-$GLOBALS["lang"]['front'] = 'εμπρός';
+$GLOBALS["lang"]['floor'] = '.';
 
-$GLOBALS["lang"]['front-left'] = 'εμπρόσθια-αριστερά';
+$GLOBALS["lang"]['for'] = 'Άξταρ@';
 
-$GLOBALS["lang"]['front-right'] = 'Μπροστινή δεξιά';
+$GLOBALS["lang"]['for authentication'] = '- Да.';
 
-$GLOBALS["lang"]['github'] = 'γιθούβη';
+$GLOBALS["lang"]['for this information.'] = '.';
 
-$GLOBALS["lang"]['google'] = 'Google';
+$GLOBALS["lang"]['from Audit Script Result'] = ' Εγώ προς Τακ.';
 
-$GLOBALS["lang"]['greater or equals'] = 'μεγαλύτερο ή ίσο';
+$GLOBALS["lang"]['from NMIS'] = '.';
 
-$GLOBALS["lang"]['greater than'] = 'μεγαλύτερη από';
+$GLOBALS["lang"]['from address LocalHost (Using LRPC) running in the application container'] = '(Използване на LRPC)';
 
-$GLOBALS["lang"]['group'] = 'ομάδα';
+$GLOBALS["lang"]['front'] = '- Да.';
 
-$GLOBALS["lang"]['head'] = 'κεφαλή';
+$GLOBALS["lang"]['front-left'] = '- Да.';
 
-$GLOBALS["lang"]['here'] = 'Εδώ.';
+$GLOBALS["lang"]['front-right'] = '- Да.';
 
-$GLOBALS["lang"]['high availability'] = 'υψηλή διαθεσιμότητα';
+$GLOBALS["lang"]['github'] = 'Калерея.';
 
-$GLOBALS["lang"]['howto'] = 'Πώς να';
+$GLOBALS["lang"]['google'] = ' Google';
 
-$GLOBALS["lang"]['ignored'] = 'αγνοείται';
+$GLOBALS["lang"]['greater or equals'] = '.';
 
-$GLOBALS["lang"]['in'] = 'μέσα';
+$GLOBALS["lang"]['greater than'] = '.';
 
-$GLOBALS["lang"]['inactive'] = 'ανενεργό';
+$GLOBALS["lang"]['group'] = '.';
 
-$GLOBALS["lang"]['incomplete'] = 'ατελής';
+$GLOBALS["lang"]['has not been set'] = '.';
 
-$GLOBALS["lang"]['info'] = 'Πληροφορίες';
+$GLOBALS["lang"]['have a working reverse DNS resolvable IP to the target Windows PC.'] = ' ...';
 
-$GLOBALS["lang"]['int, text, bool (y/n), etc'] = 'int, κείμενο, bool (y/n), κ.λπ.';
+$GLOBALS["lang"]['have the ability to be executed. On the'] = '.';
 
-$GLOBALS["lang"]['is licensed to'] = 'έχει άδεια για';
+$GLOBALS["lang"]['head'] = '- Да.';
 
-$GLOBALS["lang"]['left'] = 'αριστερά';
+$GLOBALS["lang"]['here'] = '- Да.';
 
-$GLOBALS["lang"]['less or equals'] = 'λιγότερο ή ίσο';
+$GLOBALS["lang"]['high availability'] = '.';
 
-$GLOBALS["lang"]['less than'] = 'λιγότερο από';
+$GLOBALS["lang"]['howto'] = '- Да.';
 
-$GLOBALS["lang"]['license'] = 'άδεια';
+$GLOBALS["lang"]['if you clone a Linux virtual machine, unless you manually regenerate this (and in my experience, people do not) it will remain the same.'] = '.';
 
-$GLOBALS["lang"]['like'] = 'Όπως';
+$GLOBALS["lang"]['ignored'] = '.';
 
-$GLOBALS["lang"]['line'] = 'γραμμή';
+$GLOBALS["lang"]['import the example device data'] = 'Не, не.';
 
-$GLOBALS["lang"]['load balancing'] = 'εξισορρόπηση φορτίου';
+$GLOBALS["lang"]['in'] = '- Да.';
 
-$GLOBALS["lang"]['location'] = 'τοποθεσία';
+$GLOBALS["lang"]['in Enterprise.'] = '.';
 
-$GLOBALS["lang"]['managed'] = 'διαχείριση';
+$GLOBALS["lang"]['in Inputs can have the following values.'] = 'Girişaşaşdşdakşqiym.tl.';
 
-$GLOBALS["lang"]['microsoft'] = 'microsoft';
+$GLOBALS["lang"]['in Outputs can have the following values.'] = '.';
 
-$GLOBALS["lang"]['mount point'] = 'Σημείο προσάρτησης';
+$GLOBALS["lang"]['inactive'] = '- Да.';
 
-$GLOBALS["lang"]['network'] = 'δίκτυο';
+$GLOBALS["lang"]['incomplete'] = '- Не, не.';
 
-$GLOBALS["lang"]['news'] = 'Νέα';
+$GLOBALS["lang"]['info'] = '- Да.';
 
-$GLOBALS["lang"]['no'] = 'Όχι';
+$GLOBALS["lang"]['installer will test for the presence of Nmap in its standard install locations of'] = 'Nmap-σε standart quraşdşrma yrl... κρούστα...';
 
-$GLOBALS["lang"]['node'] = 'κόμβος';
+$GLOBALS["lang"]['int, text, bool (y/n), etc'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['none'] = 'κανένα';
+$GLOBALS["lang"]['is U.S. standard maintained by National Institute of Standards and Technology'] = 'Да, да.';
 
-$GLOBALS["lang"]['normal'] = 'φυσιολογικό';
+$GLOBALS["lang"]['is an international standard for managing information security. It provides a framework for establishing, implementing, maintaining, and continually improving an Information Security Management System (ISMS).'] = '.';
 
-$GLOBALS["lang"]['not applicable'] = 'Άνευ αντικειμένου';
+$GLOBALS["lang"]['is based upon'] = '.';
 
-$GLOBALS["lang"]['not in'] = 'όχι σε';
+$GLOBALS["lang"]['is licensed to'] = '.';
 
-$GLOBALS["lang"]['not like'] = 'Όχι όπως';
+$GLOBALS["lang"]['is next on the list and Open-AudIT can use password and key authentication. Open-AudIT can also use a sudo enabled user as opposed to the root use directly (although it can also use root). For best results, the root user or a sudo enabled user should be used (see Auditing Linux without root and Target Client Configuration on the wiki). Windows devices can also run ssh, however if Open-AudIT detects this it will stop the SSH queries and instead use WMI (assuming working WMI credentials).'] = ' да го направим, да го направим......... Имено.';
 
-$GLOBALS["lang"]['notice'] = 'ειδοποίηση';
+$GLOBALS["lang"]['is the link to the'] = '.';
 
-$GLOBALS["lang"]['notification'] = 'κοινοποίηση';
+$GLOBALS["lang"]['item to view the specific tables and their columns. This will enable you to find exactly what you need, rather than trawling through the MySQL console of the schema creation script.'] = ' да го направим, да го направим.';
 
-$GLOBALS["lang"]['okta'] = 'Εντάξει.';
+$GLOBALS["lang"]['key required to retrieve lat/long and display map. See'] = '.';
 
-$GLOBALS["lang"]['openldap'] = 'openldap';
+$GLOBALS["lang"]['left'] = '.';
 
-$GLOBALS["lang"]['optimized'] = 'βελτιστοποιημένο';
+$GLOBALS["lang"]['less or equals'] = '.';
 
-$GLOBALS["lang"]['optionally '] = 'προαιρετικά ';
+$GLOBALS["lang"]['less than'] = '- Да.';
 
-$GLOBALS["lang"]['other'] = 'Άλλα';
+$GLOBALS["lang"]['license'] = '- Да.';
 
-$GLOBALS["lang"]['package'] = 'συσκευασία';
+$GLOBALS["lang"]['licenses'] = '.';
 
-$GLOBALS["lang"]['partition'] = 'κατάτμηση';
+$GLOBALS["lang"]['like'] = '- Да.';
 
-$GLOBALS["lang"]['pass'] = 'Πάσο';
+$GLOBALS["lang"]['line'] = '- Да.';
 
-$GLOBALS["lang"]['pending'] = 'εκκρεμεί';
+$GLOBALS["lang"]['list'] = '- Не, не.';
 
-$GLOBALS["lang"]['performance'] = 'απόδοση';
+$GLOBALS["lang"]['list View, using the Create button'] = 'Имено.';
 
-$GLOBALS["lang"]['performed'] = 'που εκτελέστηκαν';
+$GLOBALS["lang"]['load balancing'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['pie'] = 'πίτα';
+$GLOBALS["lang"]['location'] = '- Не, не.';
 
-$GLOBALS["lang"]['planning'] = 'σχεδιασμός';
+$GLOBALS["lang"]['locations'] = 'Не, не.';
 
-$GLOBALS["lang"]['predictable'] = 'προβλέψιμο';
+$GLOBALS["lang"]['managed'] = '- Да.';
 
-$GLOBALS["lang"]['query'] = 'Ερώτηση';
+$GLOBALS["lang"]['methods'] = '.';
 
-$GLOBALS["lang"]['rear'] = 'πίσω';
+$GLOBALS["lang"]['microsoft'] = 'Microsoft';
 
-$GLOBALS["lang"]['rear-left'] = 'πίσω-αριστερά';
+$GLOBALS["lang"]['mount point'] = '- Да.';
 
-$GLOBALS["lang"]['rear-right'] = 'πίσω δεξιά';
+$GLOBALS["lang"]['must'] = '.';
 
-$GLOBALS["lang"]['regex'] = 'regγκέξ';
+$GLOBALS["lang"]['network'] = 'Не, не, не.';
 
-$GLOBALS["lang"]['release'] = 'απελευθέρωση';
+$GLOBALS["lang"]['news'] = '- Да.';
 
-$GLOBALS["lang"]['reserved'] = 'δεσμευμένη';
+$GLOBALS["lang"]['no'] = '.';
 
-$GLOBALS["lang"]['right'] = 'δεξιά';
+$GLOBALS["lang"]['node'] = '- Не, не.';
 
-$GLOBALS["lang"]['room'] = 'δωμάτιο';
+$GLOBALS["lang"]['none'] = '.';
 
-$GLOBALS["lang"]['row'] = 'γραμμή';
+$GLOBALS["lang"]['normal'] = '- Да.';
 
-$GLOBALS["lang"]['stand-alone'] = 'αυτόνομη';
+$GLOBALS["lang"]['not applicable'] = '.';
 
-$GLOBALS["lang"]['standard'] = 'πρότυπο';
+$GLOBALS["lang"]['not in'] = '.';
 
-$GLOBALS["lang"]['starts with'] = 'ξεκινά με';
+$GLOBALS["lang"]['not like'] = '.';
 
-$GLOBALS["lang"]['storage'] = 'αποθήκευση';
+$GLOBALS["lang"]['notice'] = '- Да.';
 
-$GLOBALS["lang"]['timestamp'] = 'χρονοσφραγίδα';
+$GLOBALS["lang"]['notification'] = 'Не, не.';
 
-$GLOBALS["lang"]['top'] = 'πάνω';
+$GLOBALS["lang"]['okta'] = '.';
+
+$GLOBALS["lang"]['on devices where'] = '.';
+
+$GLOBALS["lang"]['openldap'] = '.';
+
+$GLOBALS["lang"]['optimized'] = '- Да.';
+
+$GLOBALS["lang"]['optionally '] = '- Да. ';
+
+$GLOBALS["lang"]['or'] = '.';
+
+$GLOBALS["lang"]['or the GitHub page at'] = '.';
+
+$GLOBALS["lang"]['other'] = '- Да.';
+
+$GLOBALS["lang"]['package'] = '.';
+
+$GLOBALS["lang"]['page. Export your LDAP server from menu -> Admin -> LDAP Servers -> Details to JSON and save and include this data as well.'] = 'Имено.';
+
+$GLOBALS["lang"]['partition'] = '- Да.';
+
+$GLOBALS["lang"]['pass'] = '- Да.';
+
+$GLOBALS["lang"]['pending'] = '.';
+
+$GLOBALS["lang"]['performance'] = '- Не, не.';
+
+$GLOBALS["lang"]['performed'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['permission'] = '.';
+
+$GLOBALS["lang"]['permissions required per endpoint'] = '.';
+
+$GLOBALS["lang"]['pie'] = '- Да.';
+
+$GLOBALS["lang"]['planning'] = '- Да.';
+
+$GLOBALS["lang"]['predictable'] = ' Εγώ προς Τακ.';
+
+$GLOBALS["lang"]['query'] = 'Не, не.';
+
+$GLOBALS["lang"]['rear'] = 'Българса.';
+
+$GLOBALS["lang"]['rear-left'] = '.';
+
+$GLOBALS["lang"]['rear-right'] = '.';
+
+$GLOBALS["lang"]['regex'] = ' Βερορντνούνγκ';
+
+$GLOBALS["lang"]['release'] = '- Да.';
+
+$GLOBALS["lang"]['removed from display, but has been set'] = '.';
+
+$GLOBALS["lang"]['reserved'] = '- Не, не.';
+
+$GLOBALS["lang"]['right'] = '.';
+
+$GLOBALS["lang"]['rights) you can click on the field value to edit it.'] = '.';
+
+$GLOBALS["lang"]['role'] = '.';
+
+$GLOBALS["lang"]['room'] = '- Не, не.';
+
+$GLOBALS["lang"]['row'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['service failed to start due to the following error'] = '.';
+
+$GLOBALS["lang"]['so Open-AudIT knows to restrict your query to the appropriate Orgs.'] = '.';
+
+$GLOBALS["lang"]['stand-alone'] = '.';
+
+$GLOBALS["lang"]['standard'] = '- Да.';
+
+$GLOBALS["lang"]['starts with'] = '.';
+
+$GLOBALS["lang"]['storage'] = '- Да.';
+
+$GLOBALS["lang"]['subnet'] = '.';
+
+$GLOBALS["lang"]['table'] = '- Да.';
+
+$GLOBALS["lang"]['table and insert the original rows.'] = '- Да.';
+
+$GLOBALS["lang"]['team'] = '.';
+
+$GLOBALS["lang"]['text. The first is the array index and should be left as-is. The index is used in the templates to lookup the translated text.'] = 'Имено.';
+
+$GLOBALS["lang"]['then clicking on the details button for the table.'] = '.';
+
+$GLOBALS["lang"]['then clicking on the details button for the table. Device details are stored in the'] = '.';
+
+$GLOBALS["lang"]['timestamp'] = 'Не, не, не.';
+
+$GLOBALS["lang"]['to'] = '- Да.';
+
+$GLOBALS["lang"]['to create an item of this type'] = '.';
+
+$GLOBALS["lang"]['to the URL, you will get the full database entry, including all component tables, of a given device.'] = ' да го направим, да го направим.';
+
+$GLOBALS["lang"]['to the user'] = '.';
+
+$GLOBALS["lang"]['top'] = '- Да.';
 
 $GLOBALS["lang"]['top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
 
@@ -6625,47 +8903,69 @@ public - Private Sector classification. Public data is data that is generally sh
 
 unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
 
-unassigned - The default until set.'] = 'top secret - Στρατιωτική / Κυβερνητική ταξινόμηση. Η αποκάλυψη θα προκαλούσε εξαιρετικά σοβαρό κίνδυνο για την εθνική ασφάλεια.
+unassigned - The default until set.'] = ' Να Ντρουχού Στράνου.
 
-μυστικό - Στρατιωτική / κυβερνητική ταξινόμηση. Η αποκάλυψη θα προκαλούσε σοβαρή ζημιά στην εθνική ασφάλεια.
+да го направим, да го направим.
 
-εμπιστευτική - Στρατιωτική / Κυβερνητική και Ιδιωτική ταξινόμηση τομέα. Τα δεδομένα που είναι εμπιστευτικά περιλαμβάνουν εμπορικά μυστικά, διανοητικά δεδομένα, κώδικα προγραμματισμού εφαρμογών, και άλλα δεδομένα που θα μπορούσαν να επηρεάσουν σοβαρά τον οργανισμό αν συμβεί μη εξουσιοδοτημένη αποκάλυψη. Τα δεδομένα σε αυτό το επίπεδο θα είναι διαθέσιμα μόνο στο προσωπικό του οργανισμού του οποίου οι ανάγκες εργασίας ή σχετίζονται άμεσα με τα προσπελάσιμα δεδομένα. Η πρόσβαση σε εμπιστευτικά δεδομένα απαιτεί συνήθως άδεια για κάθε πρόσβαση.
+Имено.
 
-private - Ταξινόμηση ιδιωτικού τομέα. Τα δεδομένα που είναι ιδιωτικά περιλαμβάνουν κάθε πληροφορία που σχετίζεται με το προσωπικό, συμπεριλαμβανομένων των αρχείων ανθρώπινου δυναμικού, ιατρικών αρχείων και πληροφοριών μισθού, που χρησιμοποιείται μόνο εντός του οργανισμού.
+.
 
-ευαίσθητο - Στρατιωτική / Κυβερνητική και Ιδιωτική ταξινόμηση τομέα. Τα δεδομένα που είναι ευαίσθητα περιλαμβάνουν οργανωτικές οικονομικές πληροφορίες και απαιτούν επιπλέον μέτρα για να διασφαλιστεί η CIA και η ακρίβειά της. Η αποκάλυψη μπορεί να βλάψει την εθνική ασφάλεια.
+Имено.
 
-δημόσιο - Ταξινόμηση Ιδιωτικού Τομέα. Τα δημόσια δεδομένα είναι δεδομένα που γενικά μοιράζονται με το κοινό και δεν θα προκαλούσαν αρνητικό αντίκτυπο στον οργανισμό. Παραδείγματα δημόσιων δεδομένων περιλαμβάνουν το πόσοι άνθρωποι εργάζονται στον οργανισμό και τι προϊόντα κατασκευάζει ή πωλεί ένας οργανισμός.
+Имено.
 
-μη ταξινομημένα - Στρατιωτική / Κυβερνητική ταξινόμηση. Οποιαδήποτε πληροφορία μπορεί γενικά να διανεμηθεί στο κοινό χωρίς καμία απειλή για το εθνικό συμφέρον.
+Να Ντρουχού Στράνου.
 
-χωρίς ανάθεση - Η προεπιλογή μέχρι να οριστεί.';
+- Να Ντρουχού Στράνου.';
 
-$GLOBALS["lang"]['traffic'] = 'κυκλοφορία';
+$GLOBALS["lang"]['traffic'] = '.';
 
-$GLOBALS["lang"]['true'] = 'αλήθεια';
+$GLOBALS["lang"]['true'] = '.';
 
-$GLOBALS["lang"]['unallocated'] = 'μη διαχωρισμένο';
+$GLOBALS["lang"]['true or false (in JSON context)'] = '.';
 
-$GLOBALS["lang"]['unauthorised'] = 'μη εξουσιοδοτημένη';
+$GLOBALS["lang"]['unallocated'] = '.';
 
-$GLOBALS["lang"]['unknown'] = 'άγνωστο';
+$GLOBALS["lang"]['unauthorised'] = '.';
 
-$GLOBALS["lang"]['unmanaged'] = 'μη επανδρωμένο';
+$GLOBALS["lang"]['unchanged'] = '.';
 
-$GLOBALS["lang"]['unused'] = 'αχρησιμοποίητα';
+$GLOBALS["lang"]['unknown'] = '- Да.';
 
-$GLOBALS["lang"]['update'] = 'ενημέρωση';
+$GLOBALS["lang"]['unmanaged'] = '.';
 
-$GLOBALS["lang"]['valid'] = 'έγκυρο';
+$GLOBALS["lang"]['unused'] = '- Да.';
 
-$GLOBALS["lang"]['virtualisation'] = 'εικονικοποίηση';
+$GLOBALS["lang"]['update'] = '.';
 
-$GLOBALS["lang"]['warning'] = 'προειδοποίηση';
+$GLOBALS["lang"]['uses the data collected from your devices and matches the software installed with the value provided, it counts the matches calculates how many licenses have been used and how many are left. It allows the use of wildcards on the <i>match string</i> field which matches the software.name attribute.'] = 'Имено. <i>- Да.</i> .';
 
-$GLOBALS["lang"]['web'] = 'Ιστός';
+$GLOBALS["lang"]['using the main menu items.'] = '- Да.';
 
-$GLOBALS["lang"]['yes'] = 'Ναι';
+$GLOBALS["lang"]['valid'] = '.';
+
+$GLOBALS["lang"]['version'] = '- Да.';
+
+$GLOBALS["lang"]['virtualisation'] = '- Да.';
+
+$GLOBALS["lang"]['warning'] = '- Да.';
+
+$GLOBALS["lang"]['web'] = '.';
+
+$GLOBALS["lang"]['with Local and Remote access permissions set.'] = '.';
+
+$GLOBALS["lang"]['with devices::update permission.'] = ' Να Ντρουχού Στράνου.';
+
+$GLOBALS["lang"]['with the Sign-On Redirect URI being'] = '.';
+
+$GLOBALS["lang"]['with the intention of providing simple and intuitive access in a manner familiar to developers. In addition to this API, the web interface will use the same request format and supply some additional actions (eg: HTML forms for creating items).'] = '. Bu API \'ya год., web interfeys eyni istehsal Bildungşn ED.c.k. v. v.';
+
+$GLOBALS["lang"]['yes'] = '.';
+
+$GLOBALS["lang"]['you do not require a HighCharts license to use Firstwave products. License'] = '.';
+
+$GLOBALS["lang"]['you will assign any found devices to that Org or Location.'] = '- Да.';
 
 $GLOBALS["lang"]['AF'] = 'AF';
 
