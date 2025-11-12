@@ -30,7 +30,6 @@ html
     font-size: 16px;
 }
 
-
 body
 {
     font-family: Inter, -apple-system, Helvetica, 'sans-serif',BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,Icons16,sans-serif;
@@ -42,6 +41,40 @@ body
     /* background-color: #f9f9f9; */
 
     -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"] {
+    display:inline-block;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 16px;
+    padding-bottom: 4px;
+    vertical-align: middle !important;
+}
+
+/*[class^="icon-"].[class^="text-"] {
+    padding-right: 6px;
+}*/
+
+/* General colors */
+.text-oa-success {
+    color: #8cc152;
+    padding-right: 6px;
+}
+
+.text-oa-primary {
+    color: #0d6efd;
+    padding-right: 6px;
+}
+
+.text-oa-warning {
+    color: rgb(255, 193, 7);
+    padding-right: 6px;
+}
+
+.text-oa-danger {
+    color: rgb(220, 53, 69);
+    padding-right: 6px;
 }
 
 h6,
@@ -181,10 +214,7 @@ Disabled as the light grey is a bit too light
 
 
 
-/* General colors */
-.text-oa-success {
-    color:#8cc152;
-}
+
 
 /* Used when $user->list_table_size === 'compact' ($GLOBALS['table']), otherwise use btn-sm */
 .btn-xs, .btn-group-xs > .btn {
