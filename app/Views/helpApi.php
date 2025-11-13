@@ -334,7 +334,7 @@ format=xml</code></p>
             <tr>
                 <td>GET</td>
                 <td>/devices/{id}</td>
-                <td><?= __('Return an individual device\'s details.') ?></td>
+                <td><?= __('Return an individual device details.') ?></td>
             </tr>
             <tr>
                 <td>GET</td>

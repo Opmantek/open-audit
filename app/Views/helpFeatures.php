@@ -49,7 +49,7 @@ if ($license === 'free' and $product === 'enterprise') {
     $highlightPro = "background: rgba(var(--bs-body-color-rgb), 0.03)";
     $btnPro = 'btn-success';
     $btnProStyle = 'style="color:white;"';
-    $message = __('Open-AudIT Professional. The world\'s most flexible network discovery and audit solution. All the features of Community plus: Interactive Dashboards, Geographical Maps, Scheduled Time-based or Historical Reporting, Commercial Support.');
+    $message = __('Open-AudIT Professional. The worlds most flexible network discovery and audit solution. All the features of Community plus: Interactive Dashboards, Geographical Maps, Scheduled Time-based or Historical Reporting, Commercial Support.');
 }
 
 if ($product === 'community') {
