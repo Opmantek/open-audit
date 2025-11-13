@@ -2265,6 +2265,8 @@ $GLOBALS["lang"]['dns_server'] = 'Dns Server';
 
 $GLOBALS["lang"]['Dns Server'] = 'Dns Server';
 
+$GLOBALS["lang"]['Do not forget about the Open-AudIT wiki for all your documentation.'] = 'لا تنسي أمر (أودي) المفتوح من أجل جميع وثائقك';
+
 $GLOBALS["lang"]['Do not forget there is a mountain of documentation on the wiki'] = 'لا تنسى أن هناك جبل من الوثائق على الويكي';
 
 $GLOBALS["lang"]['Do not scan these TCP ports.'] = 'لا تمسح موانئ التاي سي';
@@ -2312,8 +2314,6 @@ $GLOBALS["lang"]['Domain Short'] = 'Domain Short';
 $GLOBALS["lang"]['Dominica'] = 'دومينيكا';
 
 $GLOBALS["lang"]['Dominican Republic'] = 'الجمهورية الدومينيكية';
-
-$GLOBALS["lang"]['Don\\'] = 'لا';
 
 $GLOBALS["lang"]['Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.'] = 'لا تمسك يدي، أعرف ما أفعله لا تصفية والقدرة على الانضمام إلى الطاولات العرفية';
 
@@ -3384,8 +3384,6 @@ $GLOBALS["lang"]['In the case where we store several fields (usually in JSON for
 $GLOBALS["lang"]['In the command prompt shell, navigate to the download directory (likely <code>cd Downloads</code>).'] = 'In the command prompt shell, navigate to the download directory (likely <code>cd Downloads</code>)';
 
 $GLOBALS["lang"]['Inactive'] = 'الخاملة';
-
-$GLOBALS["lang"]['Include'] = 'Include';
 
 $GLOBALS["lang"]['Incomplete'] = 'Incomplete';
 
@@ -4569,6 +4567,8 @@ $GLOBALS["lang"]['Note'] = 'ملاحظة';
 
 $GLOBALS["lang"]['Note - Selecting a parent will automatically provide access to its children (although it wont be shown here).'] = 'Note - Selecting a parent will automatically provide access to its children (although it wont be shown here).';
 
+$GLOBALS["lang"]['Note that the 100 device Enterprise license does not include support.'] = 'Note that the 100 tool Enterprise license does not include support.';
+
 $GLOBALS["lang"]['Note, you may need to make the script executable with'] = 'ملاحظة، قد تحتاج إلى جعل النص قابل للتنفيذ';
 
 $GLOBALS["lang"]['Notes'] = 'الحواشي';
@@ -4705,7 +4705,7 @@ $GLOBALS["lang"]['Open-AudIT Professional and Enterprise include Enhanced Report
 
 $GLOBALS["lang"]['Open-AudIT Professional has the ability to choose from a pre-defined list of discovery scan options, per discovery.'] = 'مفتوح المهنيون لديهم القدرة على الاختيار من قائمة محددة مسبقاً لخيارات المسح الاكتشافي لكل اكتشاف';
 
-$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = 'مهني مفتوح العالم';
+$GLOBALS["lang"]['Open-AudIT Professional. The worlds'] = 'مهني مفتوح العالم';
 
 $GLOBALS["lang"]['Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate and authorize a user and in addition, to create a user account in Open-AudIT using assigned roles and orgs based on LDAP group membership. It can also use'] = 'مفتوح ويمكن تشكيل تكنولوجيا المعلومات لاستخدام خواديم برنامج العمل دون الإقليمي (الدليل النشط و/أو برنامج العمل المفتوح العضوية) لتوثيق وترخيص مستعمل، وإضافة إلى ذلك، لإنشاء حساب للمستعملين في نظام تبادل المعلومات المفتوح باستخدام الأدوار المسندة والأوراق القائمة على العضوية في مجموعة برنامج العمل الطويل الأجل. ويمكنها أيضا أن تستخدم';
 
@@ -4729,7 +4729,7 @@ $GLOBALS["lang"]['Open-AudIT has a granular permissions system to determine what
 
 $GLOBALS["lang"]['Open-AudIT has a powerful change detection engine. Any device attributes that are added, removed or changed will be detected and stored. These changes can be reported upon and the relevant data confirmed as to what was expected from your company change and release process.<br><br>When a device is audited, attributes are divided into sections which correspond to tables in the database.<br><br>Each device (computer, router, printer, et al) has an entry in the <code>devices</code> table. Each entry in the devices table has an <code>id</code> column. This value is unique - it is an auto-incrementing id.<br><br>When the audit result is processed, each item in each section has its audit result compared to what is in the database.<br><br>For each section, if the key columns (see below table) contain the identical values, it is considered already installed and has its <code>last_seen</code> attribute updated. No change_log entry is created.<br><br>If any of the key columns do not match, it is considered a new attribute and is inserted. A <code>change_log</code> entry is created if the device had other attributes already present in the table.<br><br>At the completion of the audit processing, any database items that have not been updated (or inserted) are considered to not be present. The <code>current</code> attribute for this item is set to <i>n</i> and a change_log entry is generated.<br><br>So, we can determine if something is currently installed - the current column is <i>y</i>.<br><br>We can determine when something was initially detected - the <i>first_seen</i>.<br><br>We can determine if something was installed after the initial audit - first seen will be different in the component and device tables.<br><br>We can determine if something is not currently installed, but previously was - current = <i>n</i>.<br><br>We can determine the last time we detected an item - last_seen.<br><br>At any given point, we can determine what was on a system - by using the audit_log table and selecting the relevant components based on first_seen and last_seen.<br><br>Each section and its matching key columns are below.<br><br>NOTE - There are some exceptions as detailed below.<br><br>*1 - For network cards, if the computer is a VMware Esx machine it also uses the net_index and connection columns.<br><br>*2 - For partitions, f the computer is an AIX machine, we use the partition name.'] = 'مفتوح تكنولوجيا المعلومات لديها محرك كشف قوي وسيتم الكشف عن أي خصائص للأجهزة تضاف أو تزيل أو تتغير وتخزينها. ويمكن الإبلاغ عن هذه التغييرات والتحقق من البيانات ذات الصلة بما كان متوقعاً من عملية التغيير والإفراج في شركتكم.<br/><br/>وعندما يُراجع الجهاز، تُقسم الخصائص إلى أجزاء تتطابق مع الجداول في قاعدة البيانات.<br/><br/>كل جهاز (الحواسيب، الدراجات، الطابعات، إلخ) له دخول <code>devices</code> طاولة كل دخول في طاولة الأجهزة لديه <code>id</code> العمود هذه القيمة فريدة من نوعها - إنها متطورة آلياً -<br/><br/>وعند تجهيز نتائج مراجعة الحسابات، يكون لكل بند في كل باب نتيجة مراجعة الحسابات مقارنة بما يوجد في قاعدة البيانات.<br/><br/>بالنسبة لكل باب، إذا كانت الأعمدة الرئيسية (انظر الجدول أدناه) تحتوي على قيم متطابقة، فإنها تعتبر رُكبت بالفعل ولديها قيمها. <code>last_seen</code> تم تحديثها لا يوجد تغيير<br/><br/>وإذا لم تتطابق أي من الأعمدة الرئيسية، فإنها تعتبر سمة جديدة وتدرج. ألف <code>change_log</code> ويُنشأ الدخول إذا كان للجهاز خصائص أخرى موجودة بالفعل في الجدول.<br/><br/>وعند الانتهاء من عملية مراجعة الحسابات، تعتبر أي بنود في قاعدة البيانات لم تستكمل (أو تدرج) موجودة. The <code>current</code> عزو لهذا البند <i>n</i> وتغيّر...<br/><br/>لذا، يمكننا تحديد ما إذا كان هناك شيء مركب حالياً العمود الحالي <i>y</i>.<br/><br/>يمكننا تحديد متى تم اكتشاف شيء في البداية <i>أولاً</i>.<br/><br/>ويمكننا أن نحدد ما إذا كان قد تم تركيب شيء بعد المراجعة الأولية للحسابات - سيختلف النظر إليه أولا في جداول المكونات والأجهزة.<br/><br/>يمكننا تحديد ما إذا لم يتم تركيب شيء في الوقت الراهن، ولكن سابقا كان - الحالية = <i>n</i>.<br/><br/>يمكننا تحديد آخر مرة إكتشفنا فيها صنفاً آخر مرّة<br/><br/>وفي أي مرحلة من المراحل، يمكننا أن نحدد ما كان على نظام - باستخدام جدول مراجعة الحسابات - واختيار العناصر ذات الصلة استنادا إلى الـ (سين) الأول والثاني عشر.<br/><br/>ويرد أدناه كل قسم وأعمدة رئيسية مطابقة له.<br/><br/>ملاحظة - هناك بعض الاستثناءات على النحو المفصل أدناه.<br/><br/>*1 - بالنسبة لبطاقات الشبكة، إذا كان الحاسوب آلة VMware Esx، فإنه يستخدم أيضاً عموداً صافياً وعلامات اتصال.<br/><br/>*2 - للتجزئة، والحاسب هو آلة AIX، ونحن استخدام اسم تقسيم.';
 
-$GLOBALS["lang"]['Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell \"What\\'] = 'البرنامج المفتوح هو برنامج مصمم لتتبع المعلومات وما يتصل بها من تفاصيل وتشكيلات والإبلاغ عنها. "افتح الباب"';
+$GLOBALS["lang"]['Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell <i>What is On Your Network?</i>, how it is configured and if there have been any changes. Open-AudIT delivers a sleek, flexible and easy to use platform for device discovery, IT auditing and inventory management automation straight out of the box.'] = 'البرنامج المفتوح هو برنامج مصمم لتتبع المعلومات وما يتصل بها من تفاصيل وتشكيلات والإبلاغ عنها. مفتوح يمكن أن يقول <i>ما هو على شبكة الخاص بك؟</i>كيف يتم تشكيله وإذا حدث أي تغيير وتوفِّر شركة &quot; أوديت &quot; (Pop-AudIT) منصة مرنة يسهل استخدامها لاكتشاف الأجهزة، ومراجعة حسابات تكنولوجيا المعلومات، والتشغيل الآلي لإدارة المخزون خارج الصندوق مباشرة.';
 
 $GLOBALS["lang"]['Open-AudIT makes it easy to edit the attributes of multiple devices at once.'] = 'مفتوح يجعل من السهل تحرير خصائص الأجهزة المتعددة في آن واحد.';
 
@@ -5641,7 +5641,7 @@ $GLOBALS["lang"]['Return a collection of devices with the default set of columns
 
 $GLOBALS["lang"]['Return a list of all Modules installed on Routers'] = 'أعد قائمة بجميع الوحدات التي تم تركيبها في روترز';
 
-$GLOBALS["lang"]['Return an individual device\\'] = 'أعد جهازاً فردياً';
+$GLOBALS["lang"]['Return an individual device details'] = 'أعد جهازاً فردياً';
 
 $GLOBALS["lang"]['Returns a list of {collection}.'] = 'يُعيدُ a قائمة {colection}.';
 
@@ -7597,7 +7597,7 @@ $GLOBALS["lang"]['Troubleshooting LDAP Logins'] = 'المشاكل التي تص�
 
 $GLOBALS["lang"]['Try Open-AudIT Enterprise, on us without a time limit. All the features of Enterprise. Limited to 20 devices.'] = 'حاول فتح الباب "إنتربرايز"، علينا بدون حدود زمنية. كل سمات المؤسسة محدود إلى 20 جهاز';
 
-$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"'] = 'جربي أحدث الملامح مع رخصة مئة جهاز من طراز FREE رجاءً إقرأْ href="';
+$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the '] = 'جربي أحدث الملامح مع رخصة مئة جهاز من طراز FREE من فضلك اقرأ ';
 
 $GLOBALS["lang"]['Try logging in using an LDAP user. We are assuming this will fail (otherwise, why are you still reading this?). Next, comment out the line from ther file above.'] = 'حاولي قطع الأشجار باستخدام مُستخدمة لـ (د.د.ب) ونحن نفترض أن هذا سيفشل (سواء، لماذا لا تزال تقرأ هذا؟ ) التالي، تعليق خارج الخط من ملف الطبيب أعلاه.';
 
@@ -7871,13 +7871,13 @@ $GLOBALS["lang"]['Using OKTA for Auth'] = 'استخدام الموافقة ال�
 
 $GLOBALS["lang"]['Using the format option is useful when using a web browser but you wish to see the result in JSON format. Adding format=json achieves this. Normally a web browser will set its accept header to HTML, so in that case, we return the rendered page. Using an API to retrieve JSON you should set the accept header to'] = 'واستخدام الخيار الشكلي مفيد عند استخدام مصفح على شبكة الإنترنت ولكنكم ترغبون في رؤية النتيجة في شكل مشترك. إضافه لشكل (جيسون) تحقق هذا عادةً مصفف الإنترنت سيضع رئيسه المقبّل لـ (HTML)، لذا في هذه الحالة، سنعيد الصفحة المقدمة. (بإستعمال (أي بي آي لإسترجاع (جوسون يجب عليك أن تضع رئيس القبول';
 
-$GLOBALS["lang"]['Usually Mbs, from Location A.'] = 'عادة Mb/s، من الموقع A.';
+$GLOBALS["lang"]['Usually Mbs, from Location A.'] = 'عادة ميغابس، من الموقع ألف.';
 
-$GLOBALS["lang"]['Usually Mbs, from Location B.'] = 'عادة Mb/s، من الموقع B.';
+$GLOBALS["lang"]['Usually Mbs, from Location B.'] = 'عادة ميغابس، من الموقع باء.';
 
-$GLOBALS["lang"]['Usually Mbs, to Location A.'] = 'عادة Mb/s، إلى الموقع ألف.';
+$GLOBALS["lang"]['Usually Mbs, to Location A.'] = 'عادة ميغابس، إلى الموقع ألف.';
 
-$GLOBALS["lang"]['Usually Mbs, to Location B.'] = 'عادة Mb/s، إلى الموقع B.';
+$GLOBALS["lang"]['Usually Mbs, to Location B.'] = 'عادة ميغابس، إلى الموقع باء.';
 
 $GLOBALS["lang"]['Usually should be set to 3.'] = 'عادة يجب أن تكون 3';
 
@@ -8185,7 +8185,7 @@ $GLOBALS["lang"]['When investigating a Discovery, support will request the Expor
 
 $GLOBALS["lang"]['When matching a Linux based device, we prefer to use the Dbus id concatenated with the hostname. We can also use other options as per the below table, but we can retrieve the Dbus ID without root. To retrieve the UUID (from the motherboard), we need to run dmidecode, which does require root. Unfortunately, when you clone an ESXi guest, the Dbus ID does not get recreated - hence our concatenating this with the hostname. There is a good article linked here that details the <i>why</i> of hardware IDs.'] = 'عندما نطابق جهازاً مبنياً على (لينكس)، نفضّل استخدام الـ(دبوس) المزوّد بالاسم المضيف. ويمكننا أيضا أن نستخدم خيارات أخرى وفقا للجدول الوارد أدناه، ولكن يمكننا استعادة هوية ديبوس بدون جذور. ولاسترجاع الـ (UID) (من اللوحة الأم)، يجب أن ندير (دميديكود)، وهو ما يتطلب الجذور. لسوء الحظ، عندما إستنسخت ضيف إكسى، هويّة ديبوس لا يُسترجعُ - هناك مقال جيد مرتبط هنا يفصل التفاصيل <i>لماذا</i> هويات الأجهزة';
 
-$GLOBALS["lang"]['When requesting JSON, by default no limit is set. When requesting screen display, the limit is set to 1000 by default. This can be changed in the configuration. See the \\'] = 'When requesting JSON, by default no limit is set. وعند طلب عرض الشاشة، يُحدّد الحد الأقصى إلى 1000 قبل التقصير. ويمكن تغيير ذلك في التشكيلة. انظر:';
+$GLOBALS["lang"]['When requesting JSON, by default no limit is set. When requesting screen display, the limit is set to 1000 by default. This can be changed in the configuration. See the <i>page_size</i> item'] = 'When requesting JSON, by default no limit is set. وعند طلب عرض الشاشة، يُحدّد الحد الأقصى إلى 1000 قبل التقصير. ويمكن تغيير ذلك في التشكيلة. انظر <i>Page</i> البند';
 
 $GLOBALS["lang"]['When retrieve an external device, should we run discovery upon it?'] = 'عندما نسترجع جهازاً خارجياً هل يجب أن نكتشفه؟';
 
@@ -8487,7 +8487,7 @@ $GLOBALS["lang"]['and download the Latest Release self-installer. You may need t
 
 $GLOBALS["lang"]['and go to Applications -> Enterprise Applications (far left menu), then click <i>New application</i>.'] = 'والذهاب إلى تطبيقات -  Enterprise تطبيقات المشاريع (القائمة اليسرى) ثم النقر <i>طلب جديد</i>.';
 
-$GLOBALS["lang"]['and it\\'] = '♪';
+$GLOBALS["lang"]['and its current time is'] = 'والوقت الحالي';
 
 $GLOBALS["lang"]['and looks for a warranty expiration date prior to today.'] = 'ويبحث عن تاريخ انتهاء الصلاحية قبل اليوم';
 

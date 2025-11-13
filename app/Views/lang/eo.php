@@ -2265,6 +2265,8 @@ $GLOBALS["lang"]['dns_server'] = 'Dns Server';
 
 $GLOBALS["lang"]['Dns Server'] = 'Dns Server';
 
+$GLOBALS["lang"]['Do not forget about the Open-AudIT wiki for all your documentation.'] = 'Ne forgesu pri la Open-AudIT-Vikio por via tuta dokumentado.';
+
 $GLOBALS["lang"]['Do not forget there is a mountain of documentation on the wiki'] = 'Ne forgesu ke ekzistas monto de dokumentaro sur la Vikio';
 
 $GLOBALS["lang"]['Do not scan these TCP ports.'] = 'Ne skanas tiujn TCP-havenojn.';
@@ -2312,8 +2314,6 @@ $GLOBALS["lang"]['Domain Short'] = 'Estas mallonga';
 $GLOBALS["lang"]['Dominica'] = 'Dominiko';
 
 $GLOBALS["lang"]['Dominican Republic'] = 'Dominika Respubliko';
-
-$GLOBALS["lang"]['Don\\'] = 'Dono estas';
 
 $GLOBALS["lang"]['Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.'] = 'Ne tenu mian manon, mi scias kion mi faras. Neniu filtrilo kaj kapablo aliĝi al kutimo tabloj.';
 
@@ -3384,8 +3384,6 @@ $GLOBALS["lang"]['In the case where we store several fields (usually in JSON for
 $GLOBALS["lang"]['In the command prompt shell, navigate to the download directory (likely <code>cd Downloads</code>).'] = 'En la komanda prompta ŝelo, navigi al la elŝuta adresaro (verŝajne <code>cd Downloads</code>).';
 
 $GLOBALS["lang"]['Inactive'] = 'Iniciata';
-
-$GLOBALS["lang"]['Include'] = 'Inkludas';
 
 $GLOBALS["lang"]['Incomplete'] = 'En kompleta';
 
@@ -4569,6 +4567,8 @@ $GLOBALS["lang"]['Note'] = 'Notu';
 
 $GLOBALS["lang"]['Note - Selecting a parent will automatically provide access to its children (although it wont be shown here).'] = 'Notu: Elekti gepatron aŭtomate disponigos aliron al siaj infanoj (kvankam ĝi ne estos montrita ĉi tie).';
 
+$GLOBALS["lang"]['Note that the 100 device Enterprise license does not include support.'] = 'Notu ke la 100-aparato Enterprise licenco ne inkludas subtenon.';
+
 $GLOBALS["lang"]['Note, you may need to make the script executable with'] = 'Notu, vi povas devi igi la manuskripton efektivigebla kun';
 
 $GLOBALS["lang"]['Notes'] = 'Notaĵoj';
@@ -4705,7 +4705,7 @@ $GLOBALS["lang"]['Open-AudIT Professional and Enterprise include Enhanced Report
 
 $GLOBALS["lang"]['Open-AudIT Professional has the ability to choose from a pre-defined list of discovery scan options, per discovery.'] = 'Open-AudIT Profesia havas la kapablon elekti de antaŭ-difinita listo de malkovro-skanadaj opcioj, per eltrovaĵo.';
 
-$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = 'Open-AudIT Professional. La mondo estas';
+$GLOBALS["lang"]['Open-AudIT Professional. The worlds'] = 'Open-AudIT Professional. La mondo estas';
 
 $GLOBALS["lang"]['Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate and authorize a user and in addition, to create a user account in Open-AudIT using assigned roles and orgs based on LDAP group membership. It can also use'] = 'Open-Aud IT povas esti formita por uzi LDAP-servilojn (Microsoft Active Directory kaj/aŭ OpenLDAP) al aŭtentikulo kaj rajtigi uzanton kaj krome, krei uzantkonton en Open-AudIT uzanta asignitajn rolojn kaj orgojn bazitajn sur LDAP grupmembreco. Ĝi ankaŭ povas uzi';
 
@@ -4729,7 +4729,7 @@ $GLOBALS["lang"]['Open-AudIT has a granular permissions system to determine what
 
 $GLOBALS["lang"]['Open-AudIT has a powerful change detection engine. Any device attributes that are added, removed or changed will be detected and stored. These changes can be reported upon and the relevant data confirmed as to what was expected from your company change and release process.<br><br>When a device is audited, attributes are divided into sections which correspond to tables in the database.<br><br>Each device (computer, router, printer, et al) has an entry in the <code>devices</code> table. Each entry in the devices table has an <code>id</code> column. This value is unique - it is an auto-incrementing id.<br><br>When the audit result is processed, each item in each section has its audit result compared to what is in the database.<br><br>For each section, if the key columns (see below table) contain the identical values, it is considered already installed and has its <code>last_seen</code> attribute updated. No change_log entry is created.<br><br>If any of the key columns do not match, it is considered a new attribute and is inserted. A <code>change_log</code> entry is created if the device had other attributes already present in the table.<br><br>At the completion of the audit processing, any database items that have not been updated (or inserted) are considered to not be present. The <code>current</code> attribute for this item is set to <i>n</i> and a change_log entry is generated.<br><br>So, we can determine if something is currently installed - the current column is <i>y</i>.<br><br>We can determine when something was initially detected - the <i>first_seen</i>.<br><br>We can determine if something was installed after the initial audit - first seen will be different in the component and device tables.<br><br>We can determine if something is not currently installed, but previously was - current = <i>n</i>.<br><br>We can determine the last time we detected an item - last_seen.<br><br>At any given point, we can determine what was on a system - by using the audit_log table and selecting the relevant components based on first_seen and last_seen.<br><br>Each section and its matching key columns are below.<br><br>NOTE - There are some exceptions as detailed below.<br><br>*1 - For network cards, if the computer is a VMware Esx machine it also uses the net_index and connection columns.<br><br>*2 - For partitions, f the computer is an AIX machine, we use the partition name.'] = 'Open-Aud Ĝi havas potencan ŝanĝan detektomotoron. Ĉiu aparato atribuas tion estas aldonita, forigita aŭ ŝanĝita estos detektita kaj stokita. Tiuj ŝanĝoj povas esti raportitaj sur kaj la signifaj datenoj konfirmitaj kiel al kio estis atendita de via firmaoŝanĝo kaj eldonprocezo.<br/><br/>Kiam aparato estas reviziita, atributoj estas dividitaj en sekciojn kiuj egalrilatas al tabloj en la datumbazo.<br/><br/>Ĉiu aparato (komputilo, itineranto, printilo, et al) havas eniron en la <code>devices</code> tablo. Ĉiu eniro en la tablo de aparatoj havas <code>id</code> kolono. Tiu valoro estas unika - ĝi estas aŭto-inklina id.<br/><br/>Kiam la reviziorezulto estas prilaborita, ĉiu objekto en ĉiu sekcio havas sian reviziorezulton komparite kun kio estas en la datumbazo.<br/><br/>Por ĉiu sekcio, se la ŝlosilkolonoj (vidu sub tablo) enhavas la identajn valorojn, ĝi estas konsiderita jam instalita kaj havas it\'ojn esencajn kolonojn. <code>last_seen</code> Atributo ĝisdatigita. Neniu ŝanĝo estas kreita.<br/><br/>Se entute de la esencaj kolonoj ne egalas, ĝi estas konsiderita nova atributo kaj estas enigita. A. A. A <code>change_log</code> eniro estas kreita se la aparato havis aliajn atributojn jam nunaj en la tabelo.<br/><br/>Ĉe la kompletigo de la reviziopretigo, ĉiuj datumbazobjektoj kiuj ne estis ĝisdatigitaj (aŭ enigitaj) estas konsideritaj ne ĉeesti. La <code>current</code> Atributo por tiu objekto estas atribuita al <i>n</i> Ŝanĝo estas generita.<br/><br/>Tiel, ni povas determini ĉu io estas nuntempe instalita - la nuna kolono estas <i>y y</i>.<br/><br/>Ni povas determini kiam io estis komence detektita - la <i>La unua</i>.<br/><br/>Ni povas determini ĉu io estis instalita post la komenca revizio - unue vidita estos malsama en la komponento kaj aparatotabloj.<br/><br/>Ni povas determini ĉu io ne estas nuntempe instalita, sed antaŭe estis - fluo = <i>n</i>.<br/><br/>Ni povas determini la lastan fojon kiam ni detektis objekton - lastan.<br/><br/>Ĉe iu antaŭfiksita punkto, ni povas determini kio estis sur sistemo - utiligante la revizoran tablon kaj selektante la signifajn komponentojn bazitajn sur unua_seen kaj last_vidn.<br/><br/>Ĉiu sekcio kaj ĝiaj egalaj esencaj kolonoj estas malsupre.<br/><br/>Ekzistas kelkaj esceptoj kiel detalaj malsupre.<br/><br/>÷ 1 - Por sendostaciaj kartoj, se la komputilo estas VMware Esx-maŝino ĝi ankaŭ uzas la tt_index kaj ligokolonojn.<br/><br/>2 - Por sekcioj, f la komputilo estas AIIX-maŝino, ni uzas la sekcionomon.';
 
-$GLOBALS["lang"]['Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell \"What\\'] = 'Open-AudIT estas programo dizajnita por spuri kaj raporti pri via IT kaj rilataj aktivaĵoj detaloj kaj konfiguracio. Open-AudIT povas diri "Kio"';
+$GLOBALS["lang"]['Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell <i>What is On Your Network?</i>, how it is configured and if there have been any changes. Open-AudIT delivers a sleek, flexible and easy to use platform for device discovery, IT auditing and inventory management automation straight out of the box.'] = 'Open-AudIT estas programo dizajnita por spuri kaj raporti pri via IT kaj rilataj aktivaĵoj detaloj kaj konfiguracio. Open-AudIT povas diri <i>Kio estas sur via reto?</i>Kiel ĝi estas formita kaj se ekzistas ajnaj ŝanĝoj. Open-AudIT liveras sleek, flekseblan kaj facile uzi platformon por aparato malkovro, IT-reviziado kaj stokregistro administrado aŭtomatigo rekta el la skatolo.';
 
 $GLOBALS["lang"]['Open-AudIT makes it easy to edit the attributes of multiple devices at once.'] = 'Open-Aud Ĝi faciligas redakti la atributojn de multoblaj aparatoj tuj.';
 
@@ -5641,7 +5641,7 @@ $GLOBALS["lang"]['Return a collection of devices with the default set of columns
 
 $GLOBALS["lang"]['Return a list of all Modules installed on Routers'] = 'Revenu listo de ĉiuj Moduloj instalitaj sur Routers';
 
-$GLOBALS["lang"]['Return an individual device\\'] = 'Reveno de individua aparato';
+$GLOBALS["lang"]['Return an individual device details'] = 'Reveno de individua aparato';
 
 $GLOBALS["lang"]['Returns a list of {collection}.'] = 'Revenas liston de {kollection} .';
 
@@ -7597,7 +7597,7 @@ $GLOBALS["lang"]['Troubleshooting LDAP Logins'] = 'Problemo de LDAP Logins';
 
 $GLOBALS["lang"]['Try Open-AudIT Enterprise, on us without a time limit. All the features of Enterprise. Limited to 20 devices.'] = 'Malfermaĵo - AudIT Enterprise, sur ni sen tempo limo. Ĉiuj trajtoj de Enterprise. Limigita al 20 aparatoj.';
 
-$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the <a href=\"'] = 'Provu ĉiujn plej malfruajn ecojn kun libera 100-aparato licenco de Open-AudIT Enterprise. Bonvolu legi la <a href';
+$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the '] = 'Provu ĉiujn plej malfruajn ecojn kun libera 100-aparato licenco de Open-AudIT Enterprise. Bonvolu legi la ';
 
 $GLOBALS["lang"]['Try logging in using an LDAP user. We are assuming this will fail (otherwise, why are you still reading this?). Next, comment out the line from ther file above.'] = 'Provu registradi en uzado de LDAP-uzantoj. Ni supozas ke tio malsukcesas (alie, kial vi ankoraŭ legas tion?). Venonta, komentu la linion de la dosiero supre.';
 
@@ -7871,13 +7871,13 @@ $GLOBALS["lang"]['Using OKTA for Auth'] = 'Uzante OKTA por Auth';
 
 $GLOBALS["lang"]['Using the format option is useful when using a web browser but you wish to see the result in JSON format. Adding format=json achieves this. Normally a web browser will set its accept header to HTML, so in that case, we return the rendered page. Using an API to retrieve JSON you should set the accept header to'] = 'Uzante la formatelekton estas utila dum uzado de retumilo sed vi deziras vidi la rezulton en JSON formato. Aldona formato json atingas tion. Normale tTT-legilo metos sian akceptantan pli kapon al HTML, tiel en tiu kazo, ni resendas la igitan paĝon. Uzante API por preni JSON vi devus meti la akceptantan kapon al';
 
-$GLOBALS["lang"]['Usually Mbs, from Location A.'] = 'Kutime Mb/s, de Loko A.';
+$GLOBALS["lang"]['Usually Mbs, from Location A.'] = 'Kutime Mbs, de Loko A.';
 
-$GLOBALS["lang"]['Usually Mbs, from Location B.'] = 'Kutime Mb/s, de Loko B.';
+$GLOBALS["lang"]['Usually Mbs, from Location B.'] = 'Kutime Mbs, de Loko B.';
 
-$GLOBALS["lang"]['Usually Mbs, to Location A.'] = 'Kutime Mb/s, lokigi A.';
+$GLOBALS["lang"]['Usually Mbs, to Location A.'] = 'Kutime Mbs, lokigi A.';
 
-$GLOBALS["lang"]['Usually Mbs, to Location B.'] = 'Kutime Mb/s, al Loko B.';
+$GLOBALS["lang"]['Usually Mbs, to Location B.'] = 'Kutime Mbs, lokigi B.';
 
 $GLOBALS["lang"]['Usually should be set to 3.'] = 'Kutime oni devas doni al 3.';
 
@@ -8185,7 +8185,7 @@ $GLOBALS["lang"]['When investigating a Discovery, support will request the Expor
 
 $GLOBALS["lang"]['When matching a Linux based device, we prefer to use the Dbus id concatenated with the hostname. We can also use other options as per the below table, but we can retrieve the Dbus ID without root. To retrieve the UUID (from the motherboard), we need to run dmidecode, which does require root. Unfortunately, when you clone an ESXi guest, the Dbus ID does not get recreated - hence our concatenating this with the hostname. There is a good article linked here that details the <i>why</i> of hardware IDs.'] = 'Dum egalado de Linukso-bazita aparato, ni preferas uzi la Dbus-identigon akompanate kun la mastro-nomo. Ni ankaŭ povas uzi aliajn opciojn kiel per la subtablo, sed ni povas preni la Dbus ID sen radiko. Por preni la UUID (de la patrintabulo), ni devas kuri dmidecode, kiu postulas radikon. Bedaŭrinde, kiam vi klonas ESXi gaston, la Dbus ID ne ricevas rekreitan - tial nia akompananta tion kun la mastro-nomo. Ekzistas bona artikolo ligita ĉi tie kiu detaligas la <i>Kial kial kial</i> aŭtomobilaj identigiloj.';
 
-$GLOBALS["lang"]['When requesting JSON, by default no limit is set. When requesting screen display, the limit is set to 1000 by default. This can be changed in the configuration. See the \\'] = 'Dum petado de JSON, defaŭlte neniu limo estas metita. Dum petado de ekranekrano, la limo estas metita al 1000 defaŭlte. Tio povas esti ŝanĝita en la konfiguracio. Vidu la "\"';
+$GLOBALS["lang"]['When requesting JSON, by default no limit is set. When requesting screen display, the limit is set to 1000 by default. This can be changed in the configuration. See the <i>page_size</i> item'] = 'Dum petado de JSON, defaŭlte neniu limo estas metita. Dum petado de ekranekrano, la limo estas metita al 1000 defaŭlte. Tio povas esti ŝanĝita en la konfiguracio. Vidu la <i>paĝo de la paĝo</i> objekto';
 
 $GLOBALS["lang"]['When retrieve an external device, should we run discovery upon it?'] = 'Kiam ni prenas eksteran aparaton, ĉu ni devus trovi malkovron sur ĝi?';
 
@@ -8487,7 +8487,7 @@ $GLOBALS["lang"]['and download the Latest Release self-installer. You may need t
 
 $GLOBALS["lang"]['and go to Applications -> Enterprise Applications (far left menu), then click <i>New application</i>.'] = 'Kaj iru al Aplikoj -> Enterprise Applications (malproksima maldekstro menuo), tiam klakas <i>Nova aplikaĵo</i>.';
 
-$GLOBALS["lang"]['and it\\'] = 'kaj ĝi estas';
+$GLOBALS["lang"]['and its current time is'] = 'kaj ĝia nuna tempo estas';
 
 $GLOBALS["lang"]['and looks for a warranty expiration date prior to today.'] = 'Por dio en la Quran (Alaho), vidu Alaho\'n de Zeki Saritoprak, p.';
 
