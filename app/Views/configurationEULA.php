@@ -34,6 +34,11 @@ if (!empty($config->license_eula)) {
 window.onload = function () {
     $(document).ready(function() {
 
+        $("#button_export_json").remove();
+        $("#button_delete").remove();
+        $("#button_create").remove();
+        $("#button_help").remove();
+
         $(document).on('click', '.accept', function (e) {
             console.log('clicked');
         });
