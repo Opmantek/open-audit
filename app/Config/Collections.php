@@ -7,6 +7,8 @@ use Config\Database;
 
 #[\AllowDynamicProperties]
 
+// Icons use https://lucide.dev/icons/
+
 class Collections extends BaseConfig
 {
     public $agents;
@@ -70,7 +72,7 @@ class Collections extends BaseConfig
         parent::__construct();
 
         $this->agents = new \StdClass();
-        $this->agents->icon = 'fa-regular fa-comments';
+        $this->agents->icon = 'icon-messages-square';
         $this->agents->name = 'Agents';
         $this->agents->edition = 'Enterprise';
         $this->agents->orgs = 'b';
@@ -80,7 +82,7 @@ class Collections extends BaseConfig
         $this->agents->actions->community = '';
 
         $this->applications = new \StdClass();
-        $this->applications->icon = 'fa fa-th-list';
+        $this->applications->icon = 'icon-app-window';
         $this->applications->name = 'Applications';
         $this->applications->edition = 'Enterprise';
         $this->applications->orgs = 'd';
@@ -90,7 +92,7 @@ class Collections extends BaseConfig
         $this->applications->actions->community = '';
 
         $this->attributes = new \StdClass();
-        $this->attributes->icon = 'fa fa-list-ul';
+        $this->attributes->icon = 'icon-list';
         $this->attributes->name = 'Attributes';
         $this->attributes->edition = 'Community';
         $this->attributes->orgs = 'b';
@@ -100,7 +102,7 @@ class Collections extends BaseConfig
         $this->attributes->actions->community = 'crud';
 
         $this->auth = new \StdClass();
-        $this->auth->icon = 'fa fa-key';
+        $this->auth->icon = 'icon-id-card';
         $this->auth->name = 'Auth';
         $this->auth->edition = 'Community';
         $this->auth->orgs = 'd';
@@ -110,7 +112,7 @@ class Collections extends BaseConfig
         $this->auth->actions->community = 'crud';
 
         $this->baselines = new \StdClass();
-        $this->baselines->icon = 'fa fa-line-chart';
+        $this->baselines->icon = 'icon-chart-line';
         $this->baselines->name = 'Baselines';
         $this->baselines->edition = 'Enterprise';
         $this->baselines->orgs = 'd';
@@ -120,7 +122,7 @@ class Collections extends BaseConfig
         $this->baselines->actions->community = '';
 
         $this->baselines_policies = new \StdClass();
-        $this->baselines_policies->icon = 'fa fa-area-chart';
+        $this->baselines_policies->icon = 'icon-chart-area';
         $this->baselines_policies->name = 'Baselines Policies';
         $this->baselines_policies->edition = 'Enterprise';
         $this->baselines_policies->orgs = 'd';
@@ -130,7 +132,7 @@ class Collections extends BaseConfig
         $this->baselines_policies->actions->community = '';
 
         $this->baselines_results = new \StdClass();
-        $this->baselines_results->icon = 'fa fa-table';
+        $this->baselines_results->icon = 'icon-table-2';
         $this->baselines_results->name = 'Baselines Results';
         $this->baselines_results->edition = 'Enterprise';
         $this->baselines_results->orgs = 'd';
@@ -140,7 +142,7 @@ class Collections extends BaseConfig
         $this->baselines_results->actions->community = '';
 
         $this->benchmarks = new \StdClass();
-        $this->benchmarks->icon = 'fa-solid fa-shield-halved';
+        $this->benchmarks->icon = 'icon-shield-half';
         $this->benchmarks->name = 'Benchmarks';
         $this->benchmarks->edition = 'Enterprise';
         $this->benchmarks->orgs = 'b';
@@ -150,7 +152,7 @@ class Collections extends BaseConfig
         $this->benchmarks->actions->community = '';
 
         $this->benchmarks_exceptions = new \StdClass();
-        $this->benchmarks_exceptions->icon = 'fa-solid fa-wand-sparkles';
+        $this->benchmarks_exceptions->icon = 'icon-wand';
         $this->benchmarks_exceptions->name = 'Benchmarks Exception';
         $this->benchmarks_exceptions->edition = 'Enterprise';
         $this->benchmarks_exceptions->orgs = 'b';
@@ -160,7 +162,7 @@ class Collections extends BaseConfig
         $this->benchmarks_exceptions->actions->community = '';
 
         $this->benchmarks_policies = new \StdClass();
-        $this->benchmarks_policies->icon = 'fa-solid fa-wand-sparkles';
+        $this->benchmarks_policies->icon = 'icon-wand';
         $this->benchmarks_policies->name = 'Benchmarks Policies';
         $this->benchmarks_policies->edition = 'Enterprise';
         $this->benchmarks_policies->orgs = 'b';
@@ -170,7 +172,7 @@ class Collections extends BaseConfig
         $this->benchmarks_policies->actions->community = '';
 
         $this->certificates = new \StdClass();
-        $this->certificates->icon = 'fa-solid fa-lock';
+        $this->certificates->icon = 'icon-shield-check';
         $this->certificates->name = 'Certificates';
         $this->certificates->edition = 'Enterprise';
         $this->certificates->orgs = 'd';
@@ -180,7 +182,7 @@ class Collections extends BaseConfig
         $this->certificates->actions->community = '';
 
         $this->clouds = new \StdClass();
-        $this->clouds->icon = 'fa fa-cloud';
+        $this->clouds->icon = 'icon-cloud';
         $this->clouds->name = 'Clouds';
         $this->clouds->edition = 'Enterprise';
         $this->clouds->orgs = 'd';
@@ -190,7 +192,7 @@ class Collections extends BaseConfig
         $this->clouds->actions->community = '';
 
         $this->clusters = new \StdClass();
-        $this->clusters->icon = 'fa fa-cubes';
+        $this->clusters->icon = 'icon-boxes';
         $this->clusters->name = 'Clusters';
         $this->clusters->edition = 'Professional';
         $this->clusters->orgs = 'd';
@@ -200,7 +202,7 @@ class Collections extends BaseConfig
         $this->clusters->actions->community = '';
 
         $this->collectors = new \StdClass();
-        $this->collectors->icon = 'fa fa-cogs';
+        $this->collectors->icon = 'icon-cog';
         $this->collectors->name = 'Collectors';
         $this->collectors->edition = 'Enterprise';
         $this->collectors->orgs = 'd';
@@ -210,7 +212,7 @@ class Collections extends BaseConfig
         $this->collectors->actions->community = '';
 
         $this->components = new \StdClass();
-        $this->components->icon = 'fa fa-desktop';
+        $this->components->icon = 'icon-layers';
         $this->components->name = 'Components';
         $this->components->edition = 'Community';
         $this->components->orgs = 'd';
@@ -220,7 +222,7 @@ class Collections extends BaseConfig
         $this->components->actions->community = 'crud';
 
         $this->configuration = new \StdClass();
-        $this->configuration->icon = 'fa fa-sliders';
+        $this->configuration->icon = 'icon-settings';
         $this->configuration->name = 'Configuration';
         $this->configuration->edition = 'Community';
         $this->configuration->orgs = 'u';
@@ -230,7 +232,7 @@ class Collections extends BaseConfig
         $this->configuration->actions->community = 'crud';
 
         $this->connections = new \StdClass();
-        $this->connections->icon = 'fa fa-link';
+        $this->connections->icon = 'icon-cable';
         $this->connections->name = 'Connections';
         $this->connections->edition = 'Community';
         $this->connections->orgs = 'd';
@@ -240,7 +242,7 @@ class Collections extends BaseConfig
         $this->connections->actions->community = 'crud';
 
         $this->credentials = new \StdClass();
-        $this->credentials->icon = 'fa fa-shield';
+        $this->credentials->icon = 'icon-shield';
         $this->credentials->name = 'Credentials';
         $this->credentials->edition = 'Community';
         $this->credentials->orgs = 'd';
@@ -250,7 +252,7 @@ class Collections extends BaseConfig
         $this->credentials->actions->community = 'crud';
 
         $this->dashboards = new \StdClass();
-        $this->dashboards->icon = 'fa fa-dashboard';
+        $this->dashboards->icon = 'icon-gauge';
         $this->dashboards->name = 'Dashboards';
         $this->dashboards->edition = 'Enterprise';
         $this->dashboards->orgs = 'b';
@@ -260,7 +262,7 @@ class Collections extends BaseConfig
         $this->dashboards->actions->community = '';
 
         $this->database = new \StdClass();
-        $this->database->icon = 'fa fa-database';
+        $this->database->icon = 'icon-database';
         $this->database->name = 'Database';
         $this->database->edition = 'Community';
         $this->database->orgs = 'u';
@@ -270,7 +272,7 @@ class Collections extends BaseConfig
         $this->database->actions->community = 'crud';
 
         $this->devices = new \StdClass();
-        $this->devices->icon = 'fa fa-desktop';
+        $this->devices->icon = 'icon-computer';
         $this->devices->name = 'Devices';
         $this->devices->edition = 'Community';
         $this->devices->orgs = 'd';
@@ -280,7 +282,7 @@ class Collections extends BaseConfig
         $this->devices->actions->community = 'crud';
 
         $this->discoveries = new \StdClass();
-        $this->discoveries->icon = 'fa fa-binoculars';
+        $this->discoveries->icon = 'icon-radar';
         $this->discoveries->name = 'Discoveries';
         $this->discoveries->edition = 'Community';
         $this->discoveries->orgs = 'd';
@@ -290,7 +292,7 @@ class Collections extends BaseConfig
         $this->discoveries->actions->community = 'crud';
 
         $this->discovery_log = new \StdClass();
-        $this->discovery_log->icon = 'fa fa-terminal';
+        $this->discovery_log->icon = 'icon-logs';
         $this->discovery_log->name = 'Discovery Log';
         $this->discovery_log->edition = 'Community';
         $this->discovery_log->orgs = 'd';
@@ -300,7 +302,7 @@ class Collections extends BaseConfig
         $this->discovery_log->actions->community = 'crud';
 
         $this->discovery_scan_options = new \StdClass();
-        $this->discovery_scan_options->icon = 'fa fa-random';
+        $this->discovery_scan_options->icon = 'icon-option';
         $this->discovery_scan_options->name = 'Discovery Scan Options';
         $this->discovery_scan_options->edition = 'Enterprise';
         $this->discovery_scan_options->orgs = 'b';
@@ -310,7 +312,7 @@ class Collections extends BaseConfig
         $this->discovery_scan_options->actions->community = 'r';
 
         $this->executables = new \StdClass();
-        $this->executables->icon = 'fa fa-file-code-o';
+        $this->executables->icon = 'icon-square-code';
         $this->executables->name = 'Executables';
         $this->executables->edition = 'Enterprise';
         $this->executables->orgs = 'b';
@@ -320,7 +322,7 @@ class Collections extends BaseConfig
         $this->executables->actions->community = '';
 
         $this->fields = new \StdClass();
-        $this->fields->icon = 'fa fa-comments-o';
+        $this->fields->icon = 'messages-square';
         $this->fields->name = 'Fields';
         $this->fields->edition = 'Community';
         $this->fields->orgs = 'b';
@@ -330,7 +332,7 @@ class Collections extends BaseConfig
         $this->fields->actions->community = 'crud';
 
         $this->files = new \StdClass();
-        $this->files->icon = 'fa fa-file-image-o';
+        $this->files->icon = 'icon-file-check';
         $this->files->name = 'Files';
         $this->files->edition = 'Enterprise';
         $this->files->orgs = 'b';
@@ -340,7 +342,7 @@ class Collections extends BaseConfig
         $this->files->actions->community = '';
 
         $this->groups = new \StdClass();
-        $this->groups->icon = 'fa fa-tags';
+        $this->groups->icon = 'icon-group';
         $this->groups->name = 'Groups';
         $this->groups->edition = 'Community';
         $this->groups->orgs = 'b';
@@ -350,7 +352,7 @@ class Collections extends BaseConfig
         $this->groups->actions->community = 'crud';
 
         $this->help = new \StdClass();
-        $this->help->icon = 'fa fa-question';
+        $this->help->icon = 'icon-message-circle-question-mark';
         $this->help->name = 'Help';
         $this->help->edition = 'Community';
         $this->help->orgs = 'u';
@@ -360,7 +362,7 @@ class Collections extends BaseConfig
         $this->help->actions->community = 'crud';
 
         $this->integrations = new \StdClass();
-        $this->integrations->icon = 'fa fa-exchange';
+        $this->integrations->icon = 'icon-workflow';
         $this->integrations->name = 'Integrations';
         $this->integrations->edition = 'Enterprise';
         $this->integrations->orgs = 'd';
@@ -370,7 +372,7 @@ class Collections extends BaseConfig
         $this->integrations->actions->community = '';
 
         $this->integrations_log = new \StdClass();
-        $this->integrations_log->icon = 'fa fa-terminal';
+        $this->integrations_log->icon = 'icon-logs';
         $this->integrations_log->name = 'Integrations Log';
         $this->integrations_log->edition = 'Enterprise';
         $this->integrations_log->orgs = 'd';
@@ -380,7 +382,7 @@ class Collections extends BaseConfig
         $this->integrations_log->actions->community = '';
 
         $this->integrations_rules = new \StdClass();
-        $this->integrations_rules->icon = 'fa fa-area-chart';
+        $this->integrations_rules->icon = 'icon-message-square-diff';
         $this->integrations_rules->name = 'Integrations';
         $this->integrations_rules->edition = 'Enterprise';
         $this->integrations_rules->orgs = 'd';
@@ -390,7 +392,7 @@ class Collections extends BaseConfig
         $this->integrations_rules->actions->community = '';
 
         $this->licenses = new \StdClass();
-        $this->licenses->icon = 'fa fa-leanpub';
+        $this->licenses->icon = 'icon-receipt-text';
         $this->licenses->name = 'Licenses';
         $this->licenses->edition = 'Community';
         $this->licenses->orgs = 'd';
@@ -400,7 +402,7 @@ class Collections extends BaseConfig
         $this->licenses->actions->community = 'crud';
 
         $this->locations = new \StdClass();
-        $this->locations->icon = 'fa fa-building';
+        $this->locations->icon = 'icon-building';
         $this->locations->name = 'Locations';
         $this->locations->edition = 'Community';
         $this->locations->orgs = 'd';
@@ -410,7 +412,7 @@ class Collections extends BaseConfig
         $this->locations->actions->community = 'crud';
 
         $this->maps = new \StdClass();
-        $this->maps->icon = 'fa fa-map-o';
+        $this->maps->icon = 'icon-map';
         $this->maps->name = 'Maps';
         $this->maps->edition = 'Professional';
         $this->maps->orgs = 'd';
@@ -420,7 +422,7 @@ class Collections extends BaseConfig
         $this->maps->actions->community = '';
 
         $this->networks = new \StdClass();
-        $this->networks->icon = 'fa fa-wifi';
+        $this->networks->icon = 'icon-wifi';
         $this->networks->name = 'Networks';
         $this->networks->edition = 'Community';
         $this->networks->orgs = 'd';
@@ -430,7 +432,7 @@ class Collections extends BaseConfig
         $this->networks->actions->community = 'crud';
 
         $this->news = new \StdClass();
-        $this->news->icon = 'fa-solid fa-rss';
+        $this->news->icon = 'icon-rss';
         $this->news->name = 'News';
         $this->news->edition = 'Community';
         $this->news->orgs = 'u';
@@ -440,7 +442,7 @@ class Collections extends BaseConfig
         $this->news->actions->community = 'crud';
 
         $this->orgs = new \StdClass();
-        $this->orgs->icon = 'fa fa-bank';
+        $this->orgs->icon = 'icon-landmark';
         $this->orgs->name = 'Organisations';
         $this->orgs->edition = 'Community';
         $this->orgs->orgs = 'd';
@@ -450,7 +452,7 @@ class Collections extends BaseConfig
         $this->orgs->actions->community = 'crud';
 
         $this->packages = new \StdClass();
-        $this->packages->icon = 'fa-solid fa-box-open';
+        $this->packages->icon = 'icon-monitor-cloud';
         $this->packages->name = 'Packages';
         $this->packages->edition = 'Enterprise';
         $this->packages->orgs = 'd';
@@ -460,7 +462,7 @@ class Collections extends BaseConfig
         $this->packages->actions->community = 'r';
 
         $this->queries = new \StdClass();
-        $this->queries->icon = 'fa fa-table';
+        $this->queries->icon = 'icon-columns-3-cog';
         $this->queries->name = 'Queries';
         $this->queries->edition = 'Community';
         $this->queries->orgs = 'b';
@@ -470,7 +472,7 @@ class Collections extends BaseConfig
         $this->queries->actions->community = 'crud';
 
         $this->rack_devices = new \StdClass();
-        $this->rack_devices->icon = 'fa fa-desktop';
+        $this->rack_devices->icon = 'icon-computer';
         $this->rack_devices->name = 'Rack Devices';
         $this->rack_devices->edition = 'Enterprise';
         $this->rack_devices->orgs = 'd';
@@ -480,7 +482,7 @@ class Collections extends BaseConfig
         $this->rack_devices->actions->community = '';
 
         $this->racks = new \StdClass();
-        $this->racks->icon = 'fa fa-film';
+        $this->racks->icon = 'icon-film';
         $this->racks->name = 'Racks';
         $this->racks->edition = 'Enterprise';
         $this->racks->orgs = 'd';
@@ -490,7 +492,7 @@ class Collections extends BaseConfig
         $this->racks->actions->community = '';
 
         $this->roles = new \StdClass();
-        $this->roles->icon = 'fa fa-lock';
+        $this->roles->icon = 'icon-user-check';
         $this->roles->name = 'Roles';
         $this->roles->edition = 'Community';
         $this->roles->orgs = 'b';
@@ -500,7 +502,7 @@ class Collections extends BaseConfig
         $this->roles->actions->community = 'r';
 
         $this->rules = new \StdClass();
-        $this->rules->icon = 'fa fa-map-signs';
+        $this->rules->icon = 'icon-square-sigma';
         $this->rules->name = 'Rules';
         $this->rules->edition = 'Enterprise';
         $this->rules->orgs = 'b';
@@ -510,7 +512,7 @@ class Collections extends BaseConfig
         $this->rules->actions->community = 'r';
 
         $this->scripts = new \StdClass();
-        $this->scripts->icon = 'fa fa-code';
+        $this->scripts->icon = 'icon-code';
         $this->scripts->name = 'Scripts';
         $this->scripts->edition = 'Professional';
         $this->scripts->orgs = 'b';
@@ -520,7 +522,7 @@ class Collections extends BaseConfig
         $this->scripts->actions->community = 'r';
 
         $this->search = new \StdClass();
-        $this->search->icon = 'fa fa-desktop';
+        $this->search->icon = 'icon-search';
         $this->search->name = 'Search';
         $this->search->edition = 'Community';
         $this->search->orgs = 'd';
@@ -530,7 +532,7 @@ class Collections extends BaseConfig
         $this->search->actions->community = 'crud';
 
         $this->standards = new \StdClass();
-        $this->standards->icon = 'fa-solid fa-check-double';
+        $this->standards->icon = 'icon-check-check';
         $this->standards->name = 'Standards';
         $this->standards->edition = 'Enterprise';
         $this->standards->orgs = 'd';
@@ -540,7 +542,7 @@ class Collections extends BaseConfig
         $this->standards->actions->community = '';
 
         $this->standards_results = new \StdClass();
-        $this->standards_results->icon = 'fa-solid fa-check-double';
+        $this->standards_results->icon = 'icon-check-check';
         $this->standards_results->name = 'Standards Results';
         $this->standards_results->edition = 'Enterprise';
         $this->standards_results->orgs = 'd';
@@ -550,7 +552,7 @@ class Collections extends BaseConfig
         $this->standards_results->actions->community = '';
 
         $this->summaries = new \StdClass();
-        $this->summaries->icon = 'fa fa-pie-chart';
+        $this->summaries->icon = 'icon-chart-pie';
         $this->summaries->name = 'Summaries';
         $this->summaries->edition = 'Professional';
         $this->summaries->orgs = 'b';
@@ -560,7 +562,7 @@ class Collections extends BaseConfig
         $this->summaries->actions->community = 'r';
 
         $this->support = new \StdClass();
-        $this->support->icon = 'fa-solid fa-headset';
+        $this->support->icon = 'icon-headset';
         $this->support->name = 'Support';
         $this->support->edition = 'Community';
         $this->support->orgs = 'b';
@@ -570,7 +572,7 @@ class Collections extends BaseConfig
         $this->support->actions->community = 'crud';
 
         $this->tasks = new \StdClass();
-        $this->tasks->icon = 'fa fa-clock-o';
+        $this->tasks->icon = 'icon-clock';
         $this->tasks->name = 'Tasks';
         $this->tasks->edition = 'Professional';
         $this->tasks->orgs = 'd';
@@ -580,7 +582,7 @@ class Collections extends BaseConfig
         $this->tasks->actions->community = '';
 
         $this->users = new \StdClass();
-        $this->users->icon = 'fa fa-users';
+        $this->users->icon = 'icon-users';
         $this->users->name = 'Users';
         $this->users->edition = 'Community';
         $this->users->orgs = 'd';
@@ -590,7 +592,7 @@ class Collections extends BaseConfig
         $this->users->actions->community = 'crud';
 
         $this->vendors = new \StdClass();
-        $this->vendors->icon = 'fa-solid fa-industry';
+        $this->vendors->icon = 'icon-factory';
         $this->vendors->name = 'Vendors';
         $this->vendors->edition = 'Enterprise';
         $this->vendors->orgs = 'd';
@@ -600,7 +602,7 @@ class Collections extends BaseConfig
         $this->vendors->actions->community = '';
 
         $this->vulnerabilities = new \StdClass();
-        $this->vulnerabilities->icon = 'fa-solid fa-bug';
+        $this->vulnerabilities->icon = 'icon-bug';
         $this->vulnerabilities->name = 'Vulnerabilities';
         $this->vulnerabilities->edition = 'Enterprise';
         $this->vulnerabilities->orgs = 'd';
@@ -610,7 +612,7 @@ class Collections extends BaseConfig
         $this->vulnerabilities->actions->community = '';
 
         $this->vulnerabilities_filters = new \StdClass();
-        $this->vulnerabilities_filters->icon = 'fa-solid fa-bug';
+        $this->vulnerabilities_filters->icon = 'icon-bug';
         $this->vulnerabilities_filters->name = 'Vulnerabilities Filters';
         $this->vulnerabilities_filters->edition = 'Enterprise';
         $this->vulnerabilities_filters->orgs = 'd';
@@ -620,7 +622,7 @@ class Collections extends BaseConfig
         $this->vulnerabilities_filters->actions->community = '';
 
         $this->widgets = new \StdClass();
-        $this->widgets->icon = 'fa fa-chart-column';
+        $this->widgets->icon = 'icon-chart-column';
         $this->widgets->name = 'Widgets';
         $this->widgets->edition = 'Professional';
         $this->widgets->orgs = 'b';
