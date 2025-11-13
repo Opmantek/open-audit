@@ -1665,7 +1665,7 @@ if ($skip_sections.Contains("print_queue,") -eq $false) {
     }
     $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
     if ($debug -gt 0) {
-        $count = [int]$result.printer.count
+        $count = [int]$result.print_queue.count
         Write-Host "$count entries took $totalSecs seconds"
     }
 }
