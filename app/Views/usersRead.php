@@ -17,10 +17,7 @@ $files = array_diff(scandir($path), array('.', '..', '.DS_Store'));
 $lang["sq"] = "Albanian";
 $lang["ar"] = "Arabic";
 $lang["az"] = "Azerbaijani";
-$lang["eu"] = "Basque";
 $lang["bg"] = "Bulgarian";
-$lang["bn"] = "Bengali";
-$lang["ca"] = "Catalan";
 $lang["zh"] = "Chinese";
 $lang["cs"] = "Czech";
 $lang["da"] = "Danish";
@@ -28,20 +25,17 @@ $lang["nl"] = "Dutch";
 $lang["en"] = "English";
 $lang["eo"] = "Esperanto";
 $lang["et"] = "Estonian";
-$lang["gl"] = "Galician";
 $lang["de"] = "German";
 $lang["el"] = "Greek";
 $lang["fi"] = "Finnish";
 $lang["fr"] = "French";
 $lang["ga"] = "Irish";
-$lang["he"] = "Hebrew";
 $lang["hi"] = "Hindi";
 $lang["hu"] = "Hungarian";
 $lang["id"] = "Indonesian";
 $lang["it"] = "Italian";
 $lang["ja"] = "Japanese";
 $lang["ko"] = "Korean";
-$lang["ky"] = "Kyrgyz";
 $lang["lt"] = "Lithuanian";
 $lang["lv"] = "Latvian";
 $lang["ms"] = "Malay";
@@ -96,9 +90,17 @@ $lang["vi"] = "Vietnamese";
                                             }
                                             foreach ($lang as $key => $value) {
                                                 if ($resource->lang !== 'en') {
-                                                    echo '<option value="' . $key . '">' . __($value) . ' (' . $value . ')</option>';
+                                                    if (file_exists($path . '/' . $key . '.php')) {
+                                                        echo '<option value="' . $key . '">' . __($value) . ' (' . $value . ')</option>';
+                                                    } else {
+                                                        log_message('info', $path . '/' . $key . '.php does not exist');
+                                                    }
                                                 } else {
-                                                    echo '<option value="' . $key . '">' . $value . '</option>';
+                                                    if (file_exists($path . '/' . $key . '.php')) {
+                                                        echo '<option value="' . $key . '">' . $value . '</option>';
+                                                    } else {
+                                                        log_message('info', $path . '/' . $key . '.php does not exist');
+                                                    }
                                                 }
                                             }
                                             ?>
