@@ -2,7 +2,6 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
-#$data_order = $meta->data_order;
 $data_order = ['id', 'count', 'base_severity', 'cve', 'name', 'vendor', 'published'];
 $url = base_url() . 'index.php/vulnerabilities?format=dataTables';
 foreach ($meta->filter as $filter) {
@@ -29,33 +28,81 @@ if (!empty($meta->filter)) {
 }
 ?>
         <main class="container-fluid">
-
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-3 clearfix">
-                                    <h6 style="padding-top: 10px; padding-bottom:8px;"><span class="icon-bug oa-icon"></span>&nbsp;<?= __('Vulnerabilities and Results') ?></h6>
+            <div class="card" style="background-color: #F9FAFB; border: 0px;">
+                <div class="card-body">
+                    <div class="row">
+                        <?php
+                        $total = 0;
+                        foreach ($included['severity'] as $key => $value) {
+                            $from = (!empty($included['all_severity']->{$key})) ? intval($included['all_severity']->{$key}) : 0;
+                            $total = $total + $from;
+                            $image_style = '';
+                            if ($key === 'critical') {
+                                $alert = 'danger';
+                            } else if ($key === 'high') {
+                                $alert = 'danger alert-high';
+                                $image_style = 'filter: invert(63%) sepia(75%) saturate(3838%) hue-rotate(352deg) brightness(104%) contrast(98%);';
+                            } else if ($key === 'medium') {
+                                $alert = 'warning';
+                            } else if ($key === 'low') {
+                                $alert = 'info';
+                            }
+                            ?>
+                        <div class="col-2">
+                            <div class="alert alert-<?= $alert ?>" role="alert">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <span style="color: #65758B"><?= ucwords($key) ?></span><br>
+                                        <a href="<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=<?= $key ?>&count=>0"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;"><?= $value ?></span></a><br>
+                                        <?= __('Detected CVEs') ?>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <div class="float-end" style="background-color: rgba(255, 255, 255, 0.4); border-radius: 6px; padding: 12px; min-width:64px; max-width:64px; height:56px;">
+                                            <a href="<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=<?= $key ?>&count=>0"><img src="<?= base_url() ?>icons/security-<?= $key ?>.svg" style="width:32px;" style="<?= $image_style ?>"/></a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <?php foreach ($included['severity'] as $key => $value) {
-                                    $from = (!empty($included['all_severity']->{$key})) ? intval($included['all_severity']->{$key}) : 0; ?>
-                                <div class="col-lg-3 text-center" style="padding-top: 18px;">
-                                    <a href="<?= url_to('vulnerabilitiesCollection') ?>?vulnerabilities.base_severity=<?= $key ?>&count=>0" class="btn btn-light btn-lg text-bg-<?= (!empty($key)) ? $key : 'success' ?>" role="button">
-                                        <span class="badge rounded-pill text-bg-<?= $key ?>"><?= (!empty($key)) ? $key : 'unknown' ?> :: <?= $value ?> / <?= $from ?></span><br>
-                                    </a>
+                        <?php } ?>
+
+                        <div class="col-2">
+                            <div class="alert alert-success" role="alert">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <span style="color: #65758B"><?= __('Devices') ?></span><br>
+                                        <a href="<?= url_to('devicesCollection') ?>?devices.cve=!="><span style="font-weight: 700; font-size: 1.875rem; color:#494242;"><?= $included['device_count'] ?></span></a><br>
+                                        <?= __('Affected Devices') ?>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <div class="float-end" style="background-color: rgba(255, 255, 255, 0.4); border-radius: 6px; padding: 12px; min-width:64px; max-width:64px; height:56px;">
+                                            <img src="<?= base_url() ?>icons/devices.svg" style="width:32px;"/>
+                                        </div>
+                                    </div>
                                 </div>
-                                <?php } ?>
-                                <br>&nbsp;
                             </div>
                         </div>
+
+                        <div class="col-2">
+                            <div class="alert alert-primary" role="alert">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <span style="color: #65758B"><?= __('All Vulnerabilities') ?></span><br>
+                                        <a href="<?= url_to('vulnerabilitiesCollection') ?>"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;"><?= number_format($total) ?></span></a><br>
+                                        <?= __('All CVEs') ?>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <div class="float-end" style="background-color: rgba(255, 255, 255, 0.4); border-radius: 6px; padding: 12px; min-width:64px; max-width:64px; height:56px;">
+                                            <img src="<?= base_url() ?>icons/security-grey.svg" style="width:32px;"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    <br>
-                    <br>
-
+                </div>
+            </div>
 
             <div class="card">
                 <div class="card-header">
@@ -63,29 +110,25 @@ if (!empty($meta->filter)) {
                 </div>
                 <div class="card-body">
                     <br>
-                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[2,"asc"],[1,"desc"]]'>
+                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[1,"asc"]]' id="cveTable">
                         <thead>
                             <tr>
-<?php foreach ($data_order as $key) {
-                                $align = '';
-                                if ($key === 'id' or $key === 'count' or $key === 'view' or $key === 'count' or strpos($key, '_id') !== false) {
-                                    $align = 'text-center dt-body-center';
-                                }
-                                if ($key === 'id') { $key = 'View Vulnerability'; }
-                                if ($key === 'base_severity') { $key = 'Severity'; }
-                                if ($key === 'cve') { $key = 'CVE'; }
-                                if ($key === 'count') { $key = 'Device Count'; }
-                                echo '                                <th class="' . $align . '">' . collection_column_name($key) . "</th>\n";
-                            } ?>
+                                <th class="text-center dt-body-center" data-orderable="false"><?= __('View') ?></th>
+                                <th class="text-center dt-body-center"><?= __('Devices') ?></th>
+                                <th class="text-center dt-body-center"><?= __('Severity') ?></th>
+                                <th class="text-center dt-body-center"><?= __('CVE') ?></th>
+                                <th><?= __('Name') ?></th>
+                                <th class="text-center dt-body-center"><?= __('Vendor') ?></th>
+                                <th class="text-center dt-body-center"><?= __('Published') ?></th>
                             </tr>
                             <tr>
-<?php foreach ($data_order as $key) {
-                                echo '                                <th><div class="input-group">';
-                                if ($key !== 'id' and $key !== 'count' and $key !== 'view') {
-                                    echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="' . __('Search')  . ' ' . collection_column_name($key) . '">';
-                                }
-                                echo "</div></th>\n";
-                            } ?>
+                                <th data-orderable="false"></th>
+                                <th class="nobutton"></th>
+                                <th class="nobutton text-center dt-body-center"><div class="input-group"><input id="alllogseverity" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="<?= __('Search') ?> <?= __('Severity') ?>"></div></th>
+                                <th class="nobutton text-center dt-body-center"><div class="input-group"><input id="alllogcve" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="<?= __('Search') ?> <?= __('CVE') ?>"></div></th>
+                                <th class="nobutton"><div class="input-group"><input id="alllogname" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="<?= __('Search') ?> <?= __('Name') ?>"></div></th>
+                                <th class="nobutton text-center dt-body-center"><div class="input-group"><input id="alllogvendor" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="<?= __('Search') ?> <?= __('Vendor') ?>"></div></th>
+                                <th class="nobutton text-center dt-body-center"><div class="input-group"><input id="alllogpublished" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="<?= __('Search') ?> <?= __('Published') ?>"></div></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -258,7 +301,7 @@ window.onload = function () {
                 },
                 { data: 'attributes.count',
                     render: function (data, type, row, meta) {
-                        return "<a title=\"<?= __('Devices') ?>\" role=\"button\" class=\"btn <?= $GLOBALS['button'] ?> btn-devices\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "#devices\"><strong>" + row.attributes.count + "</strong></a>";
+                        return "<span style=\"display:none;\">" + row.attributes.count + "</span><a title=\"<?= __('Devices') ?>\" role=\"button\" class=\"btn <?= $GLOBALS['button'] ?> btn-devices\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "#devices\"><strong>" + row.attributes.count + "</strong></a>";
                     }
                 },
                 { data: 'attributes.base_severity',
@@ -268,10 +311,14 @@ window.onload = function () {
                     }
                 },
                 { data: 'attributes.cve' },
-                { data: 'attributes.name' },
+                { data: 'attributes.name' ,
+                    render: function (data, type, row, meta) {
+                        return '<span class="d-inline-block text-truncate" style="max-width:58em;">' + row.attributes.name + '</span>';
+                    }
+                },
                 { data: 'attributes.vendor',
                     render: function (data, type, row, meta) {
-                        return '<a href="?vulnerabilities.vendor=' + row.attributes.vendor + '">' + row.attributes.vendor + '</a>';
+                        return '<span class="d-inline-block text-truncate" style="max-width:10em;"><a href="?vulnerabilities.vendor=' + row.attributes.vendor + '">' + row.attributes.vendor + '</a></span>';
                     }
                 },
                 { data: 'attributes.published',
@@ -281,12 +328,12 @@ window.onload = function () {
                 },
             ],
             columnDefs: [
-                {className: "text-center", target: 0, width: "10em"},
-                {className: "text-center", target: 1, width: "10em"},
+                {className: "text-center", target: 0, width: "7em"},
+                {className: "text-center", target: 1, width: "7em"},
                 {className: "text-center", target: 2, width: "10em"},
                 {className: "text-center", target: 3, width: "10em"},
-                {className: "text-left", target: 4, width: "50em"},
-                {className: "text-center", target: 5, width: "20em"},
+                {className: "text-left", target: 4},
+                {className: "text-center", target: 5, width: "10em"},
                 {className: "text-center", target: 6, width: "15em"}
             ],
             info: true,
@@ -309,6 +356,8 @@ window.onload = function () {
                 myDataTable.ajax.reload();
             }
         });
+
+        $(".nobutton").children('.dt-column-order').remove();
 
     });
 }
