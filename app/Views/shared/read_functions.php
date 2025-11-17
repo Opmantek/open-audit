@@ -227,7 +227,7 @@ function read_field_header(string $collection = '', string $name = '', string $d
                                                 </div>
                                                 <div class="col-2">
                                                     <div class="float-end">
-                                                    <a role="button" tabindex="0" class="btn btn-clear btn-sm"           data-bs-container="#header_row_' . $name . '_' . $count . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . $field . nl2br(str_replace('"', '\"', __($dictionary))) . '"><i class="icon-circle-question-mark" style="color:#74C0FC;"></i></a>
+                                                    <a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#header_row_' . $name . '_' . $count . '" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="' . $field . nl2br(str_replace('"', '\"', __($dictionary))) . '"><i class="icon-circle-question-mark" style="color:#74C0FC;"></i></a>
                                                     </div>
                                                 </div>
                                             </div>';
