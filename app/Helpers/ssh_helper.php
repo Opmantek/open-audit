@@ -9,6 +9,7 @@ use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Crypt\RSA;
 use phpseclib3\Net\SFTP;
 use phpseclib3\Net\SSH2;
+use phpseclib3\Exception\ConnectionClosedException;
 
 if (! function_exists('scp')) {
     /**
@@ -614,7 +615,7 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
 
     foreach ($credentials as $credential) {
         if ($credential->type === 'ssh_key') {
-            log_message('debug', 'Testing SSH Key credentials named: ' . $credential->name . ' on ' . $ip);
+            log_message('debug', '(ssh_connect) Testing SSH Key credentials named: ' . $credential->name . ' on ' . $ip);
             unset($test);
             $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
             $ssh->setTimeout($timeout);
@@ -644,13 +645,19 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                 unset($test);
             }
         } elseif ($credential->type === 'ssh') {
-            log_message('debug', 'Testing SSH credentials named: ' . $credential->name . ' on ' . $ip);
+            log_message('debug', '(ssh_connect) Testing SSH credentials named: ' . $credential->name . ' on ' . $ip);
             unset($test);
             $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
             $ssh->setTimeout($timeout);
-            $test = @$ssh->login($credential->credentials->username, $credential->credentials->password);
-            if (!empty($test)) {
-                $banner = @$ssh->getBannerMessage();
+            try {
+                if (!$ssh->login($credential->credentials->username, $credential->credentials->password)) {
+                    log_message('debug', '(ssh_connect) Testing SSH credentials named: ' . $credential->name . ' FAILED on ' . $ip);
+                    $ssh->disconnect();
+                    unset($ssh);
+                    unset($test);
+                    continue;
+                }
+                $banner = $ssh->getBannerMessage();
                 if (!empty($banner) and stripos($banner, 'Invalid user') !== false) {
                     $ssh->disconnect();
                     unset($ssh);
@@ -662,11 +669,19 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                     $GLOBALS[$discovery_id . '_' . $ip] = $credential->id;
                     break;
                 }
-            }
-            if (empty($test)) {
+            } catch (ConnectionClosedException $e) {
+                log_message('debug', "(ssh_connect) Connection closed for $ip: " . $e->getMessage());
                 $ssh->disconnect();
                 unset($ssh);
                 unset($test);
+                continue;
+            } catch (\Exception $e) {
+                // Catch any other unexpected exceptions
+                log_message('debug', "(ssh_connect) Error on $ip: " . $e->getMessage());
+                $ssh->disconnect();
+                unset($ssh);
+                unset($test);
+                continue;
             }
         }
     }
@@ -782,7 +797,7 @@ if (! function_exists('ssh_audit')) {
             if ($credential->type === 'ssh_key') {
                 $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
                 $ssh->setTimeout(10);
-                log_message('debug', 'Testing SSH Key credentials named: ' . $credential->name . ' for ' . $ip);
+                log_message('debug', '(ssh_audit) Testing SSH Key credentials named: ' . $credential->name . ' for ' . $ip);
                 unset($test);
                 if (!empty($credential->credentials->password)) {
                     $key = PublicKeyLoader::load($credential->credentials->ssh_key, $credential->credentials->password);
@@ -807,25 +822,38 @@ if (! function_exists('ssh_audit')) {
                     unset($test);
                 }
             } elseif ($credential->type === 'ssh') {
-                log_message('debug', 'Testing SSH credentials named: ' . $credential->name . ' for ' . $ip);
+                log_message('debug', '(ssh_audit) Testing SSH credentials named: ' . $credential->name . ' for ' . $ip);
                 unset($test);
                 $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
-                $ssh->setTimeout($timeout);
-                $test = @$ssh->login($credential->credentials->username, $credential->credentials->password);
-                if (!empty($test)) {
+                $ssh->setTimeout(10);
+                try {
+                    if (!$ssh->login($credential->credentials->username, $credential->credentials->password)) {
+                        log_message('debug', '(ssh_audit) Testing SSH credentials named: ' . $credential->name . ' FAILED on ' . $ip);
+                        $ssh->disconnect();
+                        unset($ssh);
+                        unset($test);
+                        continue;
+                    }
                     $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
                     $discoveryLogModel->create($log);
                     $username = $credential->credentials->username;
                     $password = (!empty($credential->credentials->password)) ? $credential->credentials->password : '';
                     break;
-                }
-                if (empty($test)) {
+                } catch (ConnectionClosedException $e) {
+                    log_message('debug', "(ssh_audit) Connection closed for $ip: " . $e->getMessage());
                     $ssh->disconnect();
                     unset($ssh);
                     unset($test);
+                    continue;
+                } catch (\Exception $e) {
+                    // Catch any other unexpected exceptions
+                    log_message('debug', "(ssh_audit) Error on $ip: " . $e->getMessage());
+                    $ssh->disconnect();
+                    unset($ssh);
+                    unset($test);
+                    continue;
                 }
-
             }
         }
 
