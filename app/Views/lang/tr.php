@@ -325,7 +325,7 @@ $GLOBALS["lang"]['API Key required.'] = 'API Key gerekli.';
 
 $GLOBALS["lang"]['API Result'] = 'API Sonuç';
 
-$GLOBALS["lang"]['About'] = 'About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About About';
+$GLOBALS["lang"]['About'] = 'About';
 
 $GLOBALS["lang"]['Above are the only required items.'] = 'Yukarıdaki tek gerekli öğelerdir.';
 
@@ -3033,7 +3033,7 @@ $GLOBALS["lang"]['Height'] = 'Yükseklik';
 
 $GLOBALS["lang"]['Height in RU'] = 'RU\'de Yükseklik';
 
-$GLOBALS["lang"]['Help'] = 'Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım Yardım';
+$GLOBALS["lang"]['Help'] = 'Yardım';
 
 $GLOBALS["lang"]['Help and Frequently Asked Questions'] = 'Yardım ve Sık Sorulan Sorular';
 
@@ -8571,7 +8571,7 @@ $GLOBALS["lang"]['critical'] = 'kritik kritik kritik kritik kritik kritik';
 
 $GLOBALS["lang"]['cve'] = 'c';
 
-$GLOBALS["lang"]['database'] = 'veritabanı veritabanı veritabanı veritabanı veritabanı veritabanı veritabanı veritabanı veritabanı veritabanı veritabanı database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database';
+$GLOBALS["lang"]['database'] = 'veritabanı';
 
 $GLOBALS["lang"]['debug'] = 'debug';
 
@@ -8589,7 +8589,7 @@ $GLOBALS["lang"]['devices'] = 'cihazlar';
 
 $GLOBALS["lang"]['digitalocean'] = 'dijitalocean';
 
-$GLOBALS["lang"]['discoveries'] = 'keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif keşif';
+$GLOBALS["lang"]['discoveries'] = 'keşif';
 
 $GLOBALS["lang"]['documentation for further details.'] = 'Daha fazla ayrıntı için belgeler.';
 

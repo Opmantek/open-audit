@@ -42,7 +42,7 @@ class Dictionary extends BaseController
         $config = new \Config\OpenAudit();
         helper('utility');
         $db = db_connect() or die("Cannot establish a database connection.");
-        $supported = array('ar', 'az', 'bg', 'cs', 'dq', 'de', 'el', 'eo', 'es', 'et', 'fi', 'fr', 'hu', 'it', 'ja', 'ko', 'lt', 'nl', 'pb', 'pl', 'ru', 'tr', 'uk', 'zh');
+        $supported = array('ar', 'az', 'bg', 'cs', 'da', 'dq', 'de', 'el', 'eo', 'es', 'et', 'fi', 'fr', 'ga', 'hi', 'hu', 'id', 'it', 'ja', 'ko', 'lt', 'lv', 'nl', 'pb', 'pl', 'ru', 'sq', 'tr', 'uk', 'zh');
         $sCount = 0;
 
         foreach ($supported as $support) {
