@@ -1534,7 +1534,7 @@ if (! function_exists('ip_audit')) {
                 $log->command_status = 'notice';
                 $log->message = 'Processing Software OS for ' . $device->ip;
                 $discoveryLogModel->create($log);
-                $componentsModel->upsert('software', $device, [$software]);
+                $componentsModel->upsert('software', $device, $software);
             }
         }
 
