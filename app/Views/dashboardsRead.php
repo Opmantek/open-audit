@@ -31,6 +31,7 @@ array_unshift($included['widgets'], $item);
                                             <option value='4x2'>4 x 2</option>
                                             <option value='4x3'>4 x 3</option>
                                             <option value='4x4'>4 x 4</option>
+                                            <option value='6x4'>6 x 4</option>
                                         </select>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
