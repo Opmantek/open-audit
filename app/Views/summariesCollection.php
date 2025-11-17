@@ -8,7 +8,7 @@ include 'shared/collection_functions.php';
                 <div class="card-header">
                     <div class="row">
                         <div class="col-4 clearfix">
-                                <h6 style="padding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h6>
+                                <h5 class="mt-2" style="dddpadding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h5>
                         </div>
                     </div>
                 </div>
@@ -55,6 +55,9 @@ include 'shared/collection_functions.php';
                         }
                         if ($collection->name === 'Baselines Results') {
                             $collection->name = 'Base Results';
+                        }
+                        if ($collection->name === 'Discovery Scan Options') {
+                            $collection->name = 'Scan Options';
                         }
                         ?>
                         <div class="col-lg-1 text-center">
