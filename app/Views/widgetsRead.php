@@ -75,7 +75,7 @@ if (!empty($included['queries'])) {
                                     <?= read_field('where', $resource->where, $dictionary->columns->where, $update, __('Icon'), '', '', '', $meta->collection) ?>
                                     <?= read_select('primary', $resource->primary, $dictionary->columns->primary, $update, __('Red Query'), $included['queries'], $meta->collection) ?>
                                     <?= read_select('secondary', $resource->secondary, $dictionary->columns->secondary, $update, __('Yellow Query'), $included['queries'], $meta->collection) ?>
-                                    <?= read_select('ternary', $resource->ternary, $dictionary->columns->ternary, $update, __('Green Query'), $included['queries'], $meta->collection) ?><?= __('Thing') ?>
+                                    <?= read_select('ternary', $resource->ternary, $dictionary->columns->ternary, $update, __('Green Query'), $included['queries'], $meta->collection) ?>
                                 <?php } ?>
                             <?php } ?>
                                 <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
