@@ -1634,6 +1634,9 @@ if (!function_exists('response_valid_permissions')) {
         $permission['example'] = 'c';
         $permission['exampleform'] = 'c';
         $permission['execute'] = 'u';
+        if ($collection === 'vulnerabilities') {
+            $permission['updatedevicesall'] = 'r';
+        }
         $permission['executeform'] = 'u';
         $permission['executecollector'] = 'u';
         $permission['export'] = 'r';

@@ -59,7 +59,6 @@ class VulnerabilitiesModel extends BaseModel
         $this->builder->join('vulnerabilities_cache', 'vulnerabilities.id = vulnerabilities_cache.vulnerability_id', 'left');
         $this->builder->select($properties, false);
         foreach ($resp->meta->filter as $filter) {
-
             if ($filter->name === 'search') {
                 $this->builder->where('(vulnerabilities.name LIKE ' . $this->db->escape($filter->value) .
                     ' OR vulnerabilities.cve LIKE ' . $this->db->escape(ip_address_to_db($filter->value)) .
@@ -221,7 +220,14 @@ class VulnerabilitiesModel extends BaseModel
             \Config\Services::session()->setFlashdata('error', json_encode($error));
             return null;
         }
-        $this->updateCacheSingle($id);
+        $devices = $this->execute($id);
+        if (!empty($devices)) {
+            log_message('debug', json_encode($devices));
+            foreach ($devices as $device) {
+                $sql = "UPDATE devices SET cve = (IF(devices.cve != '', CONCAT(devices.cve, ',', ?), ?)) WHERE id = ?";
+                $query = $this->db->query($sql, [$formattedData->cve, $formattedData->cve, $device->attributes->{'devices.id'}]);
+            }
+        }
         return ($id);
     }
 
@@ -271,7 +277,7 @@ class VulnerabilitiesModel extends BaseModel
             log_message('warning', 'No SQL for vulnerability ' . $id . ', CVE: ' . $vulnerability->cve);
             return array();
         }
-        // log_message('debug', 'Executing vulnerability ' . $id . ', CVE: ' . $vulnerability->cve);
+        // log_message('debug', 'vulnerabilitiesModel::execute ' . $id . ', CVE: ' . $vulnerability->cve);
         if (empty($orgs)) {
             $orgsModel = new \App\Models\OrgsModel();
             $allOrgs = $orgsModel->listAll();
@@ -300,10 +306,13 @@ class VulnerabilitiesModel extends BaseModel
      */
     public function executeAll(?int $id = 0): void
     {
+        $cves = array();
         if (!empty($id)) {
-            $cves = array();
             $sql = "UPDATE devices SET cve = '' WHERE id = ?";
             $this->db->query($sql, [$id]);
+        } else {
+            $sql = "UPDATE devices SET cve = ''";
+            $this->db->query($sql);
         }
         $instance = & get_instance();
         $vulnerabilities = $this->builder->get()->getResult();
@@ -370,6 +379,13 @@ class VulnerabilitiesModel extends BaseModel
         foreach($result as $row) {
             $included['all_severity']->{$row->base_severity} = intval($row->count);
         }
+
+        $sql = "SELECT COUNT(devices.id) AS `count` FROM devices WHERE cve !='' AND devices.org_id IN (" . implode(',', $org_list) . ")";
+        $result = $this->db->query($sql)->getResult();
+        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        $included['device_count'] = $result[0]->count;
+
+
         return $included;
     }
 
@@ -612,21 +628,71 @@ class VulnerabilitiesModel extends BaseModel
         }
         foreach ($vulnerabilities as $vulnerability) {
             if (empty($vulnerability->sql)) {
-                log_message('warning', 'No SQL for VulnerabilitiesModel::updateCacheAll, ID: ' . $id . '.');
+                log_message('warning', 'No SQL for VulnerabilitiesModel::updateCacheAll, ID: ' . $vulnerability->id . '.');
+                continue;
+            }
+            foreach ($orgs as $org) {
+                set_time_limit(90);
+                $sql = $vulnerability->sql . " AND devices.org_id = " . $org;
+                $devices = $db->query($sql)->getResult();
+                $sql = "DELETE FROM vulnerabilities_cache WHERE vulnerability_id = ? AND org_id = ?";
+                $this->db->query($sql, [$vulnerability->id, $org]);
+                if (!empty($devices) and count($devices) > 0) {
+                    $sql = "INSERT INTO vulnerabilities_cache VALUES (null, ?, ?, ?, NOW())";
+                    $this->db->query($sql, [$vulnerability->id, $org, count($devices)]);
+                }
+            }
+        }
+        return true;
+    }
+
+    public function updateDevicesAll(): bool
+    {
+        $start = microtime(true);
+        // Clear all devices.cve
+        $sql = "UPDATE devices SET cve = ''";
+        $this->db->query($sql);
+        // Clear the vulnerability cache
+        $sql = "DELETE FROM vulnerabilities_cache";
+        $this->db->query($sql);
+
+        $db = \Config\Database::connect('nodebug');
+        $builder = $db->table('vulnerabilities');
+        // Get all vulnerabilities
+        $vulnerabilities = $builder->get()->getResult();
+        // Get all Orgs
+        $orgsModel = new \App\Models\OrgsModel();
+        $allOrgs = $orgsModel->listAll();
+        foreach ($allOrgs as $singleOrg) {
+            $orgs[] = $singleOrg->id;
+        }
+        // Loop through vulnerabilities and orgs
+        $count = 1;
+        $total = count($vulnerabilities);
+        foreach ($vulnerabilities as $vulnerability) {
+            // log_message('debug', $count . ' / ' . $total . ' vulnerabilities executed.');
+            if (empty($vulnerability->sql)) {
+                log_message('warning', 'No SQL for VulnerabilitiesModel::updateCacheAll, ID: ' . $vulnerability->id . '.');
                 continue;
             }
             foreach ($orgs as $org) {
                 set_time_limit(60);
-                $sql = $vulnerability->sql . " AND devices.org_id = " . $org->id;
+                $sql = $vulnerability->sql . " AND devices.org_id = " . $org . ' GROUP BY devices.id';
                 $devices = $db->query($sql)->getResult();
                 $sql = "DELETE FROM vulnerabilities_cache WHERE vulnerability_id = ? AND org_id = ?";
-                $this->db->query($sql, [$id, $org->id]);
+                $this->db->query($sql, [$vulnerability->id, $org]);
                 if (!empty($devices) and count($devices) > 0) {
                     $sql = "INSERT INTO vulnerabilities_cache VALUES (null, ?, ?, ?, NOW())";
-                    $this->db->query($sql, [$id, $org->id, count($devices)]);
+                    $this->db->query($sql, [$vulnerability->id, $org, count($devices)]);
+                    foreach ($devices as $device) {
+                        $sql = "UPDATE devices SET cve = CONCAT(`cve`, ',', ?) WHERE devices.id = ?";
+                        $this->db->query($sql, [$vulnerability->cve, $device->{'devices.id'}]);
+                    }
                 }
             }
+            $count++;
         }
+        log_message('info', 'VulnerabilitiesModel::updateDevicesAll Took ' . (microtime(true) - $start) . ' seconds.');
         return true;
     }
 
