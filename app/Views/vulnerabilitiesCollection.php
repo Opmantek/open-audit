@@ -2,7 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
-$data_order = ['id', 'count', 'base_severity', 'cve', 'name', 'vendor', 'published'];
+$data_order = ['id', 'count', 'base_score', 'base_severity', 'cve', 'name', 'vendor', 'published'];
 $url = base_url() . 'index.php/vulnerabilities?format=dataTables';
 foreach ($meta->filter as $filter) {
     if (is_string($filter->value)) {
@@ -110,11 +110,12 @@ if (!empty($meta->filter)) {
                 </div>
                 <div class="card-body">
                     <br>
-                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[1,"asc"]]' id="cveTable">
+                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[2,"asc"]]' id="cveTable">
                         <thead>
                             <tr>
                                 <th class="text-center dt-body-center" data-orderable="false"><?= __('View') ?></th>
                                 <th class="text-center dt-body-center"><?= __('Devices') ?></th>
+                                <th class="text-center dt-body-center"><?= __('Score') ?></th>
                                 <th class="text-center dt-body-center"><?= __('Severity') ?></th>
                                 <th class="text-center dt-body-center"><?= __('CVE') ?></th>
                                 <th><?= __('Name') ?></th>
@@ -123,6 +124,7 @@ if (!empty($meta->filter)) {
                             </tr>
                             <tr>
                                 <th data-orderable="false"></th>
+                                <th class="nobutton"></th>
                                 <th class="nobutton"></th>
                                 <th class="nobutton text-center dt-body-center"><div class="input-group"><input id="alllogseverity" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="<?= __('Search') ?> <?= __('Severity') ?>"></div></th>
                                 <th class="nobutton text-center dt-body-center"><div class="input-group"><input id="alllogcve" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="<?= __('Search') ?> <?= __('CVE') ?>"></div></th>
@@ -242,6 +244,15 @@ window.onload = function () {
                                 d.sort = '-vulnerabilities.cve';
                             }
                         }
+                        if (d.columns[d.order[0].column].data == 'attributes.base_score') {
+                            logSort.column = 'vulnerabilities.base_score';
+                            logSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = 'vulnerabilities.base_score';
+                            } else {
+                                d.sort = '-vulnerabilities.base_score';
+                            }
+                        }
                         if (d.columns[d.order[0].column].data == 'attributes.name') {
                             logSort.column = 'vulnerabilities.name';
                             logSort.direction = d.order[0].dir;
@@ -329,6 +340,11 @@ window.onload = function () {
                         return "<span style=\"display:none;\">" + row.attributes.count + "</span><a title=\"<?= __('Devices') ?>\" role=\"button\" class=\"btn <?= $GLOBALS['button'] ?> btn-devices\" href=\"<?= base_url() ?>index.php/vulnerabilities/" + row.attributes.id + "#devices\"><strong>" + row.attributes.count + "</strong></a>";
                     }
                 },
+                { data: 'attributes.base_score',
+                    render: function (data, type, row, meta) {
+                        return "<span style=\"display:none;\">" + String(row.attributes.base_score).padStart(4, '0') + "</span>" + row.attributes.base_score;
+                    }
+                },
                 { data: 'attributes.base_severity',
                     render: function (data, type, row, meta) {
                         data = '<h5><a href="?<?= $urlFilter ?>&vulnerabilities.base_severity=' + row.attributes.base_severity + '"><span class="badge rounded-pill text-bg-' + row.attributes.base_severity + '">' + row.attributes.base_severity + '</span></a></h5>';
@@ -355,11 +371,12 @@ window.onload = function () {
             columnDefs: [
                 {className: "text-center", target: 0, width: "7em"},
                 {className: "text-center", target: 1, width: "7em"},
-                {className: "text-center", target: 2, width: "10em"},
+                {className: "text-center", target: 2, width: "7em"},
                 {className: "text-center", target: 3, width: "10em"},
-                {className: "text-left", target: 4},
-                {className: "text-center", target: 5, width: "10em"},
-                {className: "text-center", target: 6, width: "15em"}
+                {className: "text-center", target: 4, width: "10em"},
+                {className: "text-left", target: 5},
+                {className: "text-center", target: 6, width: "10em"},
+                {className: "text-center", target: 7, width: "15em"}
             ],
             info: true
         });

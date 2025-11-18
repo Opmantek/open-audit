@@ -33,7 +33,6 @@ class VulnerabilitiesModel extends BaseModel
 
         $GLOBALS['recordsTotal'] = $this->db->table('vulnerabilities')->countAll();
 
-
         // Our query without limit
         $this->builder = $this->db->table('vulnerabilities');
         if (!empty($resp->meta->groupby)) {
@@ -103,10 +102,18 @@ class VulnerabilitiesModel extends BaseModel
                     $this->builder->orderBy('`count`');
                 }
             } else {
-                $this->builder->orderBy($resp->meta->sort);
+                if (strpos($instance->resp->meta->sort, 'vulnerabilities.base_score') !== false) {
+                    if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+                        $this->builder->orderBy('CAST(base_score AS FLOAT) DESC');
+                    } else {
+                        $this->builder->orderBy('CAST(base_score AS FLOAT)');
+                    }
+                } else {
+                    $this->builder->orderBy($resp->meta->sort);
+                }
             }
         } else {
-            $this->builder->orderBy('vulnerabilities.published DESC');
+            $this->builder->orderBy('CAST(base_score AS FLOAT), `count` DESC');
         }
         $properties = $resp->meta->properties;
         $properties[] = 'SUM(vulnerabilities_cache.count) AS `count`';
