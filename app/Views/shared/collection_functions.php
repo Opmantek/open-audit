@@ -209,6 +209,7 @@ function collection_column_name(string $name = ''): string
     $name = str_replace('Dbus ', 'DBUS ', $name);
     $name = str_replace('Os ', 'OS ', $name);
     $name = str_replace(' Id', ' ID', $name);
+    $name = str_replace('Cve ', 'CVE ', $name);
     $name = __($name);
     return $name;
 }
