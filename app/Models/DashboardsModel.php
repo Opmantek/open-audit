@@ -169,7 +169,17 @@ class DashboardsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'dashboards');
+        $data = format_data($query->getResult(), 'dashboards');
+        $widgetsModel = new \App\Models\WidgetsModel();
+        foreach ($data[0]->attributes->options->widgets as $dashboardWidget) {
+            if (empty($dashboardWidget->widget_id) and !empty($dashboardWidget->widget_name)) {
+                $widget_id = $widgetsModel->findIdByName($dashboardWidget->widget_name);
+                if (!empty($widget_id)) {
+                    $dashboardWidget->widget_id = $widget_id;
+                }
+            }
+        }
+        return $data;
     }
 
     /**

@@ -77,7 +77,26 @@ class Dashboards extends BaseController
                 . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         }
         foreach ($this->resp->data[0]->attributes->options->widgets as $dashboardWidget) {
-            $widget = $this->widgetsModel->execute(intval($dashboardWidget->widget_id));
+            if (!empty($dashboardWidget->widget_id)) {
+                $widget_id = intval($dashboardWidget->widget_id);
+                $widget = $this->widgetsModel->execute($widget_id);
+                if (empty($widget) and !empty($dashboardWidget->widget_name)) {
+                    $widget_id = $this->widgetsModel->findIdByName($dashboardWidget->widget_name);
+                    if (!empty($widget_id)) {
+                        $widget = $this->widgetsModel->execute($widget_id);
+                    }
+                }
+                if (!empty($widget)) {
+                    $dashboardWidget->widget_id = $widget_id;
+                    $dashboardWidget->widget_name = $widget->name;
+                }
+            } else if (!empty($dashboardWidget->widget_name)) {
+                $widget_id = $this->widgetsModel->findIdByName($dashboardWidget->widget_name);
+                if (!empty($widget_id)) {
+                    $dashboardWidget->widget_id = $widget_id;
+                    $widget = $this->widgetsModel->execute($widget_id);
+                }
+            }
             if (!empty($widget->type) and $widget->type === 'pie') {
                 $widget->formatted = formatHighchartsPie($widget);
             }
