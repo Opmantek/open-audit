@@ -71,7 +71,7 @@ if (!empty($meta->filter)) {
                                 <div class="row">
                                     <div class="col-8">
                                         <span style="color: #65758B"><?= __('Devices') ?></span><br>
-                                        <a href="<?= url_to('devicesCollection') ?>?devices.cve=!="><span style="font-weight: 700; font-size: 1.875rem; color:#494242;"><?= $included['device_count'] ?></span></a><br>
+                                        <a href="<?= url_to('devicesCollection') ?>?devices.cve=!=&properties=devices.id,devices.icon,devices.name,devices.ip,devices.os_family,devices.cve_count"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;"><?= $included['device_count'] ?></span></a><br>
                                         <?= __('Affected Devices') ?>
                                     </div>
                                     <div class="col-4 text-center">
