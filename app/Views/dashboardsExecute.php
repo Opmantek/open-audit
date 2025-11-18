@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
+include 'shared/widget_functions.php';
 $summary_id = 0;
 $os_systems_id = 0;
 if (!empty($queries) and $resource->sidebar === 'y') {
@@ -25,6 +26,9 @@ foreach ($checks as $key => $value) {
 $temp = explode('x', $resource->options->layout);
 $columns = intval($temp[0]);
 $rows = intval($temp[1]);
+if ($columns === 6) {
+    $colWidth = 'col-2';
+}
 if ($columns === 4) {
     $colWidth = 'col-3';
 }
@@ -316,21 +320,17 @@ window.onload = function () {
         <?php
         foreach ($included['widgets'] as $widget) {
             if (!empty($widget->type) and $widget->type === 'traffic') {
-                $html = '<div class="row" style="height:140px;"><div class="col-4 text-center ' .  $widget->result->colour . ' h-100"><span class="' . $widget->result->icon . '" style="font-size:5em; padding-top:30px;"></span></div><div class="col-8 h-100" style="padding-top:14px;"><h5>' . $widget->result->title . '</h5><h4>';
-                if (is_numeric($widget->result->red)) {
-                    $html .= '&nbsp;<a href="' . url_to('queriesExecute', $widget->result->red_id) . '"><button class="btn btn-danger" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3">' . $widget->result->red . '</span></button></a>';
-                }
-                if (is_numeric($widget->result->yellow)) {
-                    $html .= '&nbsp;<a href="' . url_to('queriesExecute', $widget->result->yellow_id) . '"><button class="btn btn-warning" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3">' . $widget->result->yellow . '</span></button></a>&nbsp;';
-                }
-                if (is_numeric($widget->result->green)) {
-                    $html .= '<a href="' . url_to('queriesExecute', $widget->result->green_id) . '"><button class="btn btn-success" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3">' . $widget->result->green . '</span></button></a>';
-                }
-                $html .= '</h4><p><small class="text-body-secondary">' . $widget->result->secondary_text . '</small><br><br><br></p></div></div>';
-                echo "$(\"#widget_" . $widget->id . "\").html('" . $html . "');\n";
+                echo "$(\"#widget_" . $widget->id . "\").html('" . traffic_widget($widget) . "');\n";
             }
         }
         ?>
+
+    /* Enable pop-over's */
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    });
+
     });
 }
 </script>

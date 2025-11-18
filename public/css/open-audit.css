@@ -38,9 +38,17 @@ body
     line-height: 1.5;
 
     color: #181c32;
-    /* background-color: #f9f9f9; */
+    background-color: #F9FAFB;
 
     -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+    /* border-color: white; */
+}
+.card-header {
+    background: white;
+    border-bottom: white;
 }
 
 [class^="icon-"] {
@@ -50,6 +58,11 @@ body
     line-height: 16px;
     padding-bottom: 4px;
     vertical-align: middle !important;
+}
+
+.alert-high {
+    border-color: rgba(253, 126, 20, 0.4); !important;
+    background-color: rgba(253, 126, 20, 0.1);
 }
 
 /*[class^="icon-"].[class^="text-"] {
@@ -337,7 +350,6 @@ Disabled as the light grey is a bit too light
 {
     background-color: #da4453 !important;
 }
-
 
 .text-bg-none
 {
@@ -801,6 +813,17 @@ table.dataTable > thead .sorting_desc_disabled::after
 
 
 @media (prefers-color-scheme: dark) {
+    body {
+        background-color: #212529;
+    }
+    .card-body {
+        background-color: #212529;
+        border-dark-subtle;
+    }
+    .card-header {
+        background: #212529;
+        border-bottom: #212529;
+    }
     .nav-link
     {
         color: #fff;
