@@ -439,10 +439,17 @@ window.onload = function () {
             columns: [
                 <?php foreach ($meta->data_order as $key) {
                     $key = str_replace('devices.', '', $key);
-                    if ($key === 'id') {
+                    if ($key === 'id' and !in_array('cve_count', $meta->data_order)) {
                         echo '{ data: \'attributes.id\',
                             render: function (data, type, row, meta) {
                                 return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/devices/" + row.attributes.id + "\"><span title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
+                            }
+                        },';
+                        echo "\n";
+                    } else if ($key === 'id' and in_array('cve_count', $meta->data_order)) {
+                        echo '{ data: \'attributes.id\',
+                            render: function (data, type, row, meta) {
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/devices/" + row.attributes.id + "#vulnerabilities\"><span title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
                             }
                         },';
                         echo "\n";

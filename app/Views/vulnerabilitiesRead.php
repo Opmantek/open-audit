@@ -209,7 +209,7 @@ if ($resource->type === 'application') {
                                     <?php if (!empty($included['devices'])) { ?>
                                     <?php foreach ($included['devices'] as $item) { ?>
                                     <tr>
-                                        <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="icon-computer" aria-hidden="true"></i></a></td>
+                                        <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>#vulnerabilities" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="icon-computer" aria-hidden="true"></i></a></td>
                                         <td><?= $item->attributes->{'devices.name'} ?></td>
                                         <td><?= $item->attributes->{'orgs.name'} ?></td>
                                         <?php foreach ($columns as $column) {

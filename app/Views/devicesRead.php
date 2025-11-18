@@ -2981,6 +2981,12 @@ if (empty($resource->type)) {
 
 <script {csp-script-nonce}>
 window.onload = function () {
+
+    var hash = window.location.hash;
+    if (hash != "") {
+        $(hash + "_section").css('display', 'block');
+    }
+
     /* Show / Hide section on device details */
     $(document).on('click', '.section_toggle', function (e) {
         var section = $(this).attr("data-section");
