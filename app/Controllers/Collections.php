@@ -175,7 +175,11 @@ class Collections extends BaseController
         if ($this->resp->meta->format !== 'html') {
             if (!empty($GLOBALS['collection'])) {
                 // This is dataTables response
-                $this->resp->recordsTotal = (!empty($this->resp->data)) ? count($this->resp->data) : 0;
+                if (!empty($GLOBALS['recordsTotal'])) {
+                    $this->resp->recordsTotal = intval($GLOBALS['recordsTotal']);
+                } else {
+                    $this->resp->recordsTotal = (!empty($this->resp->data)) ? count($this->resp->data) : 0;
+                }
                 $this->resp->recordsFiltered = 0;
                 if (!empty($GLOBALS['recordsFiltered'])) {
                     $this->resp->recordsFiltered = $GLOBALS['recordsFiltered'];

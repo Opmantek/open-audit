@@ -31,6 +31,9 @@ class VulnerabilitiesModel extends BaseModel
         $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
         $org_list = array_unique($org_list);
 
+        $GLOBALS['recordsTotal'] = $this->db->table('vulnerabilities')->countAll();
+
+
         // Our query without limit
         $this->builder = $this->db->table('vulnerabilities');
         if (!empty($resp->meta->groupby)) {

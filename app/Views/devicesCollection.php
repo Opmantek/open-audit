@@ -411,9 +411,6 @@ window.onload = function () {
             },
             autoWidth: false,
             info: true,
-            language: {
-                infoFiltered: ""
-            },
             layout: {
                 bottomStart: {
                     info: {
@@ -439,7 +436,6 @@ window.onload = function () {
                     }
                 }
             },
-
             columns: [
                 <?php foreach ($meta->data_order as $key) {
                     $key = str_replace('devices.', '', $key);

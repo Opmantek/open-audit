@@ -26,6 +26,19 @@ class DevicesModel extends BaseModel
      */
     public function collection(object $resp): array
     {
+
+        $orgs = '';
+        foreach ($resp->meta->filter as $filter) {
+            if ($filter->name === 'devices.org_id' and $filter->operator === 'in') {
+                $orgs = implode(',', $filter->value);
+            }
+        }
+        if (!empty($orgs)) {
+            $sql = "SELECT COUNT(id) AS `count` FROM devices WHERE devices.org_id IN ($orgs)";
+            $result = $this->db->query($sql)->getResult();
+            $GLOBALS['recordsTotal'] = (!empty($result[0]->count)) ? intval($result[0]->count) : 0;
+        }
+
         $instance = & get_instance();
         // First run the requested query, but only retrieve count(*) and use that for recordsFiltered for dataTables (stored in GLOBAL)
         // Second, rebuild the query including all properties and return that result as data

@@ -293,6 +293,31 @@ window.onload = function () {
                     delete d.columns;
                 }
             },
+            layout: {
+                bottomStart: {
+                    info: {
+                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                    }
+                },
+                bottomEnd: {
+                    paging: {
+                        type: 'full_numbers'
+                    }
+                },
+                top2Start: {
+                    buttons: [
+                        { extend: 'copy', className: 'btn btn-light mb-2', text: 'Copy' },
+                        { extend: 'csv', className: 'btn btn-light mb-2', text: 'CSV' },
+                        { extend: 'excel', className: 'btn btn-light mb-2', text: 'Excel' },
+                        { extend: 'print', className: 'btn btn-light mb-2', text: 'Print' }
+                    ]
+                },
+                top2End: {
+                    div: {
+                        html: "<a href=\"<?= url_to('helpFAQ') ?>?name=Searching Using DataTables\" type=\"button\" class=\"btn btn-light mb-2\">HowTo Search</a>"
+                    }
+                }
+            },
             columns: [
                 { data: 'attributes.view',
                     render: function (data, type, row, meta) {
@@ -336,14 +361,7 @@ window.onload = function () {
                 {className: "text-center", target: 5, width: "10em"},
                 {className: "text-center", target: 6, width: "15em"}
             ],
-            info: true,
-            layout: {
-                bottomEnd: {
-                    paging: {
-                        type: 'full_numbers'
-                    }
-                }
-            }
+            info: true
         });
 
         /* This stops the sort when clicking in a search text box in the table header */
