@@ -102,6 +102,11 @@ $routes->get('news/execute/vulnerabilities', 'News::executeAll/vulnerabilities',
 $routes->cli('news/execute/vulnerabilities', 'Cli::executeNews/vulnerabilities', ['as' => 'executeNewsAllVulnerabilities']);
 $routes->cli('news/execute/vendors', 'Cli::executeNews/vendors', ['as' => 'executeNewsAllVendors']);
 $routes->cli('news/execute/(:any)', 'Cli::executeNews/$1', ['as' => 'executeNewsAction']);
+
+#$routes->get('vulnerabilities/vendor', 'Vulnerabilities::vendor', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesVendor']);
+#$routes->get('vulnerabilities/vendors', 'Vulnerabilities::vendors', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesVendors']);
+$routes->get('vulnerabilities/0/execute', 'Vulnerabilities::updateDevicesAll', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesUpdateDevicesAll']);
+$routes->cli('vulnerabilities/0/execute', 'Vulnerabilities::updateDevicesAll', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesUpdateDevicesAll']);
 $routes->post('vulnerabilities', 'News::executeAll/vulnerabilities', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesRequestSingle']);
 
 $routes->get('news/execute/vendors', 'News::executeAll/vendors', ['as' => 'newsExecuteAllVendors']);
@@ -161,10 +166,6 @@ $routes->cli('clouds/(:num)/execute', 'Cli::executeCloud/$1', ['as' => 'executeC
 $routes->cli('devices/(:num)/cloudDevice', 'Cli::cloudDevice/$1', ['as' => 'cloudDevice']);
 
 $routes->patch('devices/(:num)/reset', 'Devices::reset/$1', ['filter' => \App\Filters\Session::class, 'as' => 'DeviceReset']);
-
-#$routes->get('vulnerabilities/vendor', 'Vulnerabilities::vendor', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesVendor']);
-#$routes->get('vulnerabilities/vendors', 'Vulnerabilities::vendors', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesVendors']);
-
 
 foreach ($collections as $collection) {
     // Account for users editing the config and including a space character
