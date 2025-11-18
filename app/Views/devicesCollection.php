@@ -39,6 +39,15 @@ for ($i = 0; $i < count($meta->data_order); $i++) {
     }
 }
 
+if (in_array('cve_count', $meta->data_order)) {
+    $sort_column_name = 'cve_count';
+    for ($i = 0; $i < count($meta->data_order); $i++) {
+        if ($meta->data_order[$i] === $sort_column_name) {
+            $sort_column_index = $i;
+        }
+    }
+}
+
 if (strpos($user->permissions[$meta->collection], 'd') !== false or strpos($user->permissions[$meta->collection], 'u') !== false) {
     $meta->data_order[] = 'delete';
     $meta->data_order[] = 'update';
@@ -181,12 +190,12 @@ if (!empty($meta->filter)) {
                                             <tr>
                                             <?php foreach ($meta->data_order as $key) {
                                                 $align = '';
-                                                if ($key === 'audit_status' or $key === 'icon' or $key === 'id' or strpos($key, '_id') !== false or $key === 'delete' or $key === 'update') {
+                                                if ($key === 'audit_status' or $key === 'icon' or $key === 'id' or strpos($key, '_id') !== false or $key === 'delete' or $key === 'update' or $key === 'cve_count') {
                                                     $align = 'text-center dt-body-center';
                                                 } ?>
                                                 <th class="<?= $align ?>"><?= collection_column_name(str_replace('ip__', '', $key)) ?>
                                                 <?php
-                                                if ($key !== 'audit_status' and $key !== 'icon' and $key !== 'id' and $key !== 'delete' and $key !== 'update') {
+                                                if ($key !== 'audit_status' and $key !== 'icon' and $key !== 'id' and $key !== 'delete' and $key !== 'update' and $key !== 'cve_count') {
                                                     echo'<hr><input id="search_' . $key . '" type="search" class="form-control form-control-sm dataTableSearchField" placeholder="Search ' . collection_column_name(str_replace('ip__', '', $key)) . '">';
                                                 } else if ($key === 'update') {
                                                     echo "<hr><button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"margin-left:5em; --bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\" title=\"Bulk Edit\" id=\"bulkEditButton\"><span style=\"font-size: 1.2rem;\" class=\"icon-pencil\"></span></button>\n";
@@ -332,7 +341,7 @@ window.onload = function () {
         });
         <?php
         $sort_order = 'asc';
-        if ($sort_column_name === 'ip') {
+        if ($sort_column_name === 'ip' or $sort_column_name === 'cve_count') {
             $sort_order = 'desc';
         }
         ?>
@@ -485,6 +494,13 @@ window.onload = function () {
                         echo '{ data: \'attributes.id\',
                             render: function (data, type, row, meta) {
                                 return "<td style=\"text-align: center;\"><input aria-labelledby=\'bulkEditButton\' aria-label=\'Select\' type=\'checkbox\' id=\'ids[" + row.attributes.id + "]\' value=\'" + row.attributes.id + "\' name=\'ids[" + row.attributes.id + "]\' ></td>";
+                            }
+                        },';
+                        echo "\n";
+                    } else if ($key === 'cve_count') {
+                        echo '{ data: \'attributes.cve_count\',
+                            render: function (data, type, row, meta) {
+                                return "<td style=\"text-align: center;\" --data-order=\"" + String(row.attributes.cve_count).padStart(10, \'0\') + "\">" + row.attributes.cve_count + "</td>";
                             }
                         },';
                         echo "\n";

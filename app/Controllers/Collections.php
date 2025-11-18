@@ -100,7 +100,13 @@ class Collections extends BaseController
         if (strpos($this->resp->meta->query_string, 'limit=') === false and $this->resp->meta->filtered < $this->resp->meta->total and $this->resp->meta->filtered === $this->config->page_size and $this->resp->meta->format === 'html') {
             $_SESSION['success'] = 'Result limited to ' . $this->config->page_size . ' items as per configuration. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '. You can change this in the configuration, <a href="' . url_to('configurationRead', 'page_size') . '">here</a>.';
         }
-
+        if ($this->resp->meta->collection === 'devices') {
+            foreach ($this->resp->meta->filter as $filter) {
+                if ($filter->name === 'devices.cve' and $filter->operator === '!=' and $filter->value === '') {
+                    $this->resp->meta->properties[] = 'cve_count';
+                }
+            }
+        }
         $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
         if (empty($this->resp->meta->properties[0]) or $this->resp->meta->properties[0] === $this->resp->meta->collection . '.*') {
             $this->resp->meta->data_order = $dictionary->attributes->collection;

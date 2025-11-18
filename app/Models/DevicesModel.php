@@ -131,7 +131,6 @@ class DevicesModel extends BaseModel
             $properties[] = "locations.id as `locations.id`";
             $resp->meta->properties[] = 'locations.id';
         }
-        $this->builder->select($properties, false);
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
         $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
         $joined_tables = array();
@@ -152,6 +151,10 @@ class DevicesModel extends BaseModel
                     ')');
                 continue;
             }
+            if ($filter->name === 'devices.cve' and $filter->operator === '!=' and $filter->value === '') {
+                $properties[] = "(LENGTH(devices.cve) - LENGTH(REPLACE(devices.cve, ',', ''))) AS `cve_count`";
+                $resp->meta->sort = "cve_count DESC";
+            }
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 if ($filter->name === 'devices.tags' and $filter->operator === '=') {
                     $filter->function = 'like';
@@ -167,6 +170,7 @@ class DevicesModel extends BaseModel
                 $joined_tables[] = $joined_table[0];
             }
         }
+        $this->builder->select($properties, false);
         $joined_tables = array_unique($joined_tables);
         if (!empty($joined_tables)) {
             foreach ($joined_tables as $joined_table) {
