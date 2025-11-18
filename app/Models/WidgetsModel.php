@@ -139,6 +139,18 @@ class WidgetsModel extends BaseModel
         return ($widget);
     }
 
+    public function findIdByName(string $name = ''): ?int
+    {
+        $this->builder->select('id');
+        $this->builder->where('name', $name);
+        $result = $this->builder->get(1)->getResult();
+        if (!empty($result[0]->id)) {
+            return intval($result[0]->id);
+        }
+        log_message('warning', 'WidgetsModel::findIdByName name not found: ' . $name);
+        return false;
+    }
+
     /**
      * Return an array containing arrays of related items to be stored in resp->included
      *
@@ -675,10 +687,13 @@ class WidgetsModel extends BaseModel
         }
         if ($result->red > 0) {
             $result->colour = 'text-bg-danger';
+            $result->colour = 'danger';
         } else if ($result->yellow > 0) {
             $result->colour = 'text-bg-warning';
+            $result->colour = 'warning';
         } else {
             $result->colour = 'text-bg-success';
+            $result->colour = 'success';
         }
 
         return $result;
