@@ -60,6 +60,15 @@ body
     vertical-align: middle !important;
 }
 
+.widget-icon {
+    display:inline-block;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 28px;
+    padding-bottom: 4px;
+    vertical-align: middle !important;
+}
+
 .alert-high {
     border-color: rgba(253, 126, 20, 0.4); !important;
     background-color: rgba(253, 126, 20, 0.1);
