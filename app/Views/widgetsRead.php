@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
+include 'shared/widget_functions.php';
 if (!empty($included['queries'])) {
     $item = new \stdClass();
     $item->id = 0;
@@ -30,21 +31,15 @@ if (!empty($included['queries'])) {
                                         <select class="form-select" id="type" name="type" data-original-value="<?= $resource->type ?>" disabled>
                                             <option value="line" <?php if ($resource->type === 'line') { echo 'selected'; } ?>><?= __('Line Graph') ?></option>
                                             <option value="pie" <?php if ($resource->type === 'pie') { echo 'selected'; } ?>><?= __('Pie Chart') ?></option>
+                                            <option value="status" <?php if ($resource->type === 'status') { echo 'selected'; } ?>><?= __('Status') ?></option>
                                             <option value="traffic" <?php if ($resource->type === 'traffic') { echo 'selected'; } ?>><?= __('Traffic Light') ?></option>
                                         </select>
-                                        <?php if ($update) { ?>
-                                        <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
-                                            <div data-attribute="type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
-                                            <div data-attribute="type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
-                                        </div>
-                                        <?php } ?>
                                     </div>
                                     <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                 </div>
                             </div>
 
-                            <?php if (!empty($resource->sql)) { ?>
+                            <?php if (in_array('sql', $dictionary->{$resource->type . '_fields'})) { ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <?= read_field_header($meta->collection, 'sql', $dictionary->columns->sql, 'SQL') ?>
@@ -61,34 +56,150 @@ if (!empty($included['queries'])) {
                                     <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
                                 </div>
                             </div>
-                                <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update, '', '', '', '', $meta->collection) ?>
-                            <?php } else {
-                                if ($resource->type !== 'traffic') { ?>
-                                    <?= read_field('primary', $resource->primary, $dictionary->columns->primary, $update, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('secondary', $resource->secondary, $dictionary->columns->secondary, $update, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('where', $resource->where, $dictionary->columns->where, $update, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('limit', $resource->limit, $dictionary->columns->limit, $update, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update, '', '', '', '', $meta->collection) ?>
-                                <?php } else { ?>
-                                    <?= read_field('dataset_title', $resource->dataset_title, $dictionary->columns->dataset_title, $update, __('Title'), '', '', '', $meta->collection) ?>
-                                    <?= read_field('group_by', html_entity_decode($resource->group_by), $dictionary->columns->group_by, $update, __('Secondary Text'), '', '', '', $meta->collection) ?>
-                                    <?= read_field('where', $resource->where, $dictionary->columns->where, $update, __('Icon'), '', '', '', $meta->collection) ?>
-                                    <?= read_select('primary', $resource->primary, $dictionary->columns->primary, $update, __('Red Query'), $included['queries'], $meta->collection) ?>
-                                    <?= read_select('secondary', $resource->secondary, $dictionary->columns->secondary, $update, __('Yellow Query'), $included['queries'], $meta->collection) ?>
-                                    <?= read_select('ternary', $resource->ternary, $dictionary->columns->ternary, $update, __('Green Query'), $included['queries'], $meta->collection) ?>
-                                    <?= read_field('link', html_entity_decode($resource->link), $dictionary->columns->link, $update, '', '', '', '', $meta->collection) ?>
-                                <?php } ?>
                             <?php } ?>
-                                <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
-                                <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
+
+
+                            <?php
+                            foreach ($dictionary->text_fields as $field) {
+                                if (in_array($field, $dictionary->{$resource->type . '_fields'}) and $field !== 'line_table') {
+                                    echo '<div class="collapse" id="' . $field . '_details">';
+                                    echo read_field($field, $resource->{$field}, $dictionary->columns->{$field}, $update, '', '', '', '', $meta->collection);
+                                    echo "</div>";
+                                }
+                            }
+
+                            if (in_array($field, $dictionary->{$resource->type . '_fields'}) and $field === 'line_table') { ?>
+                            <div class="row" style="padding-top:16px;">
+                                <div class="offset-2 col-8" style="position:relative;">
+                                    <?= read_field_header($meta->collection, 'line_table', $dictionary->columns->line_table) ?>
+                                    <div class="input-group">
+                                        <select class="form-select" id="line_table" name="line_table" disabled>
+                                            <?php $dictionary->valid_tables[] = ""; ?>
+                                            <?php foreach ($dictionary->valid_tables as $table) { ?>
+                                            <option value="<?= $table ?>" <?php if ($resource->line_table === $table) { echo "selected"; } ?>><?= $table ?></option>
+                                            <?php } ?>
+                                        </select>
+                                        <?php if ($update) { ?>
+                                        <div class="pull-right" style="padding-left:4px;">
+                                            <div data-attribute="line_table" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="line_table" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="line_table" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php } ?>
+
+
+                            <?php if (in_array('status_primary_color', $dictionary->{$resource->type . '_fields'})) { ?>
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-8" style="position:relative;">
+                                        <?= read_field_header($meta->collection, 'status_primary_color', $dictionary->columns->status_primary_color) ?>
+                                        <div class="input-group">
+                                            <select class="form-select" id="status_primary_color" name="status_primary_color" data-original-value="<?= $resource->status_primary_color ?>" disabled>
+                                                <?php
+                                                foreach ($dictionary->colors as $color) {
+                                                    echo '<option value="' . $color . '"';
+                                                    if ($resource->status_primary_color === $color) {
+                                                        echo 'selected';
+                                                    }
+                                                    echo '>' . $color . "</option>\n";
+                                                } ?>
+                                            </select>
+                                            <?php if ($update) { ?>
+                                            <div class="float-end" style="padding-left:4px;">
+                                                <div data-attribute="status_primary_color" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                <div data-attribute="status_primary_color" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                <div data-attribute="status_primary_color" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
+                                            </div>
+                                            <?php } ?>
+                                        </div>
+                                        <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->status_primary_color ?>"><span><br></span></div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
+
+                            <?php if (in_array('status_secondary_color', $dictionary->{$resource->type . '_fields'})) { ?>
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-8" style="position:relative;">
+                                        <?= read_field_header($meta->collection, 'status_secondary_color', $dictionary->columns->status_secondary_color) ?>
+                                        <div class="input-group">
+                                            <select class="form-select" id="status_secondary_color" name="status_secondary_color" data-original-value="<?= $resource->status_secondary_color ?>" disabled>
+                                                <?php
+                                                foreach ($dictionary->colors as $color) {
+                                                    echo '<option value="' . $color . '"';
+                                                    if ($resource->status_secondary_color === $color) {
+                                                        echo 'selected';
+                                                    }
+                                                    echo '>' . $color . "</option>\n";
+                                                } ?>
+                                            </select>
+                                            <?php if ($update) { ?>
+                                            <div class="float-end" style="padding-left:4px;">
+                                                <div data-attribute="status_secondary_color" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                                <div data-attribute="status_secondary_color" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                                <div data-attribute="status_secondary_color" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
+                                            </div>
+                                            <?php } ?>
+                                        </div>
+                                        <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->status_secondary_color ?>"><span><br></span></div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
+                            <?php if (in_array('traffic_primary_query_id', $dictionary->{$resource->type . '_fields'})) { ?>
+                            <?= read_select('traffic_primary_query_id', $resource->traffic_primary_query_id, $dictionary->columns->traffic_primary_query_id, $update, '', $included['queries'], $meta->collection) ?>
+                            <?php } ?>
+
+                            <?php if (in_array('traffic_secondary_query_id', $dictionary->{$resource->type . '_fields'})) { ?>
+                            <?= read_select('traffic_secondary_query_id', $resource->traffic_secondary_query_id, $dictionary->columns->traffic_secondary_query_id, $update, '', $included['queries'], $meta->collection) ?>
+                            <?php } ?>
+
+                            <?php if (in_array('traffic_ternary_query_id', $dictionary->{$resource->type . '_fields'})) { ?>
+                            <?= read_select('traffic_ternary_query_id', $resource->traffic_ternary_query_id, $dictionary->columns->traffic_ternary_query_id, $update, '', $included['queries'], $meta->collection) ?>
+                            <?php } ?>
+
+                            <?php if (in_array('status_link_query_id', $dictionary->{$resource->type . '_fields'})) { ?>
+                            <?= read_select('status_link_query_id', $resource->status_link_query_id, $dictionary->columns->status_link_query_id, $update, '', $included['queries'], $meta->collection) ?>
+                            <?php } ?>
+
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
                             <br>
                             <div class="offset-2 col-8">
                                 <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                             </div>
+                            <br>
+                            <div class="offset-2 col-8">
+                                <?php
+                                    $dict = new stdClass();
+                                    $dict->columns = new stdClass();
+                                    foreach ($dictionary->{$resource->type . '_fields'} as $field) {
+                                        $dict->columns->{$field} = $dictionary->columns->{$field};
+                                    }
+                                    echo fieldsInfoDiv($dict);
+                                ?>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function () {
+        <?php foreach ($dictionary->{$resource->type . '_fields'} as $field) {
+            echo "\$('#" . $field . "_details').show();\n";
+        } ?>
+    });
+}
+</script>
+
+
+
+
+

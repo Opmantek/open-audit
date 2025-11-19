@@ -173,6 +173,9 @@ class QueriesModel extends BaseModel
     public function execute(int $id = 0, ?object $user = null): array
     {
         $instance = & get_instance();
+        if (!empty($user->org_list) and is_array($user->org_list)) {
+            $user->org_list = implode(',', $user->org_list);
+        }
         $query = $this->builder->getWhere(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -346,7 +349,7 @@ class QueriesModel extends BaseModel
         $this->builder->select($properties, false);
         $this->builder->join('orgs', 'queries.org_id = orgs.id', 'left');
         $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->whereIn('commercial', $commercial);
+        #$this->builder->whereIn('commercial', $commercial);
         $this->builder->where($where);
         $this->builder->orderBy('queries.name');
         $query = $this->builder->get();

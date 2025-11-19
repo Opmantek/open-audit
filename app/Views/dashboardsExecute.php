@@ -184,7 +184,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                             for ($col = 1; $col < ($columns + 1); $col++) {
                                 foreach ($resource->options->widgets as $widget) {
                                     if ($widget->position == (($row * $columns) + $col)) {
-                                        echo "                               <div data-num=\"col $col, row $row, pos $widget->position\" id=\"widget_" . $widget->widget_id . "\" class=\"$colWidth\" style=\"padding: 50px 15px;\"></div>\n";
+                                        echo "                               <div data-num=\"col $col, row $row, pos $widget->position\" id=\"widget_" . @$widget->widget_id . "\" class=\"$colWidth\" style=\"padding: 50px 15px;\"></div>\n";
                                     }
                                 }
                             }
@@ -322,14 +322,17 @@ window.onload = function () {
             if (!empty($widget->type) and $widget->type === 'traffic') {
                 echo "$(\"#widget_" . $widget->id . "\").html('" . traffic_widget($widget) . "');\n";
             }
+            if (!empty($widget->type) and $widget->type === 'status') {
+                echo "$(\"#widget_" . $widget->id . "\").html('" . status_widget($widget) . "');\n";
+            }
         }
         ?>
 
-    /* Enable pop-over's */
-    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl)
-    });
+        /* Enable pop-over's */
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        });
 
     });
 }

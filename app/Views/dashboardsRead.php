@@ -48,7 +48,7 @@ array_unshift($included['widgets'], $item);
                                 // Allow for 20 widgets
                                 for ($i = 0; $i < 20; $i++) {
                                     foreach ($resource->options->widgets as $widget) {
-                                        if ($widget->position == $i) {
+                                        if ($widget->position == $i and !empty($widget->widget_id)) {
                                             echo read_select('options.widgets.position.' . $widget->position, $widget->widget_id, '<code>options.widgets.position.' . $i . '</code><br>' . __('The widget at position ') . $i . '.', $update, __('Widget #') . $widget->position, $included['widgets']);
                                         }
                                     }

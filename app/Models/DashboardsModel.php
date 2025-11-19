@@ -170,12 +170,14 @@ class DashboardsModel extends BaseModel
             return array();
         }
         $data = format_data($query->getResult(), 'dashboards');
-        $widgetsModel = new \App\Models\WidgetsModel();
-        foreach ($data[0]->attributes->options->widgets as $dashboardWidget) {
-            if (empty($dashboardWidget->widget_id) and !empty($dashboardWidget->widget_name)) {
-                $widget_id = $widgetsModel->findIdByName($dashboardWidget->widget_name);
-                if (!empty($widget_id)) {
-                    $dashboardWidget->widget_id = $widget_id;
+        if (!empty($data[0]->attributes->options->widgets)) {
+            $widgetsModel = new \App\Models\WidgetsModel();
+            foreach ($data[0]->attributes->options->widgets as $dashboardWidget) {
+                if (empty($dashboardWidget->widget_id) and !empty($dashboardWidget->widget_name)) {
+                    $widget_id = $widgetsModel->findIdByName($dashboardWidget->widget_name);
+                    if (!empty($widget_id)) {
+                        $dashboardWidget->widget_id = $widget_id;
+                    }
                 }
             }
         }

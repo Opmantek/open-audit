@@ -31,9 +31,9 @@ include 'shared/collection_functions.php';
                             <?php if (!empty($data)) { ?>
                                 <?php foreach ($data as $item) {
                                     if ($item->attributes->type === 'traffic') {
-                                        $item->attributes->primary = !empty($item->attributes->{'queries.primary_query_name'}) ? $item->attributes->{'queries.primary_query_name'} : $item->attributes->primary;
-                                        $item->attributes->secondary = !empty($item->attributes->{'queries.secondary_query_name'}) ? $item->attributes->{'queries.secondary_query_name'} : $item->attributes->secondary;
-                                        $item->attributes->ternary = !empty($item->attributes->{'queries.ternary_query_name'}) ? $item->attributes->{'queries.ternary_query_name'} : $item->attributes->ternary;
+                                        $item->attributes->primary = !empty($item->attributes->{'queries.primary_query_name'}) ? $item->attributes->{'queries.primary_query_name'} : $item->attributes->primary_text;
+                                        $item->attributes->secondary = !empty($item->attributes->{'queries.secondary_query_name'}) ? $item->attributes->{'queries.secondary_query_name'} : $item->attributes->secondary_text;
+                                        $item->attributes->ternary = !empty($item->attributes->{'queries.ternary_query_name'}) ? $item->attributes->{'queries.ternary_query_name'} : $item->attributes->ternary_text;
                                     }
                                     ?>
                                 <tr>

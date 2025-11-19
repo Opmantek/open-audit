@@ -3,32 +3,28 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
+include 'shared/widget_functions.php';
 
 $html = '';
-if ($included[0]->attributes->type === 'traffic') {
-    $html = '<div class="row" style="height:140px;">
-                <div class="offset-4 col-2 text-center ' .  $data->result->colour . ' h-100">
-                    <span class="' . $data->result->icon . '" style="font-size:5em; padding-top:30px;"></span>
-                </div>
-                <div class="col-6 h-100" style="padding-top:14px;">
-                <h5>' . $data->result->title . '</h5>
-                <h4>';
-    if (is_numeric($data->result->red)) {
-        $html .= '&nbsp;<a href="' . url_to('queriesExecute', $data->result->red_id) . '"><button class="btn btn-danger" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3">' . $data->result->red . '</span></button></a>';
-    }
-    if (is_numeric($data->result->yellow)) {
-        $html .= '&nbsp;<a href="' . url_to('queriesExecute', $data->result->yellow_id) . '"><button class="btn btn-warning" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3">' . $data->result->yellow . '</span></button></a>&nbsp;';
-    }
-    if (is_numeric($data->result->green)) {
-        $html .= '<a href="' . url_to('queriesExecute', $data->result->green_id) . '"><button class="btn btn-success" style="padding-top: 8px; margin-bottom: 0px; border: var(--bs-border-width) solid var(--bs-border-color);" role="button"><span style="margin-bottom: 0px;" class="h3">' . $data->result->green . '</span></button></a>';
-    }
-    $html .= '</h4><p><small class="text-body-secondary">' . $data->result->secondary_text . '</small><br><br><br></p></div></div>';
+if (!empty($included[0]->attributes->type)) {
+    $data = $included[0]->attributes;
+} else if (is_array($data) and !empty($data[0]->type)) {
+    $data = $data[0];
+} else if (!empty($data->type)) {
+    $data = $data;
 }
+if ($data->type === 'traffic') {
+    $html = '<div class="col-6 offset-3">' . traffic_widget($data) . '</div>';
+}
+if ($data->type === 'status') {
+    $html = '<div class="col-6 offset-3">' . status_widget($data) . '</div>';
+}
+
 ?>
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $included[0]->attributes->name, $meta->action) ?>
+                    <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $data->name, $meta->action) ?>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -58,7 +54,20 @@ window.onload = function () {
         $(".delete_link").remove();
         $('.chart-raw-legend').css('overflow-y','visible');
 
-        <?php if ($included[0]->attributes->type !== 'traffic') { ?>
+        <?php
+        // foreach ($included as $widget) {
+        //     if (!empty($data->type) and $data->type === 'traffic') {
+        //         echo "$(\"#widget_" . $widget->id . "\").html('" . traffic_widget($widget) . "');\n";
+        //     }
+        // }
+        // if (!empty($data->type) and $data->type === 'status') {
+        //     echo "$(\"#widget_" . $data->id . "\").html('" . status_widget($data) . "');\n";
+        // }
+
+        ?>
+
+
+        <?php if ($data->type !== 'traffic') { ?>
             Highcharts.generictheme = {
                 colors: ['#1f284f', '#4a3165', '#7a3671', '#a83a71', '#d14565', '#ef5c51', '#ff7e35', '#ffa600'],
                 chart: {
@@ -126,6 +135,13 @@ window.onload = function () {
             } ?>
 
         <?php } ?>
-    })};
+
+        /* Enable pop-over's */
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        });
+    })
+};
 </script>
 

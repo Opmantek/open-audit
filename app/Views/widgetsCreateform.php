@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
 include 'shared/common_functions.php';
+$items = array('line', 'pie', 'status', 'traffic');
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -26,68 +27,161 @@ include 'shared/common_functions.php';
                                             <option value="" selected><?= __('Select') ?></option>
                                             <option value="line"><?= __('Line Graph') ?></option>
                                             <option value="pie"><?= __('Pie Chart') ?></option>
+                                            <option value="status"><?= __('Status') ?></option>
                                             <option value="traffic"><?= __('Traffic Light') ?></option>
                                         </select>
                                     </div>
                                 </div>
 
-                                <?= create_text_field('data[attributes][dataset_title]', __('Title'), $dictionary->attributes->create, 'Your Title') ?>
+                                <?php
+                                foreach ($dictionary->text_fields as $text_field) {
+                                    echo '                                <div class="collapse" id="' . $text_field . '_details">';
+                                    echo '                                    ' . create_text_field('data[attributes][' . $text_field . ']', create_column_name($text_field), $dictionary->attributes->create);
+                                    echo '                                </div>';
+                                }
+                                ?>
 
-                                <div class="collapse" id="group_by_details">
-                                    <?= create_text_field('data[attributes][group_by]', __('Group By'), $dictionary->attributes->create) ?>
-                                </div>
-
-                                <div class="collapse" id="primary_details">
+                                <div class="collapse" id="line_table_details">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label id="label_column" for="data[attributes][primary]" class="form-label"><?= __('Primary') ?></label><br>
-                                            <select class="form-select" name="data[attributes][primary]" id="data[attributes][primary]">
+                                            <label id="label_column" for="data[attributes][line_table]" class="form-label"><?= __('Table') ?></label><br>
+                                            <select class="form-select" name="data[attributes][line_table]" id="data[attributes][line_table]">
+                                                <?php foreach ($dictionary->valid_tables as $table) {
+                                                    echo "\n                                                <option value=\"" . $table . "\">" . $table . "</option>";
+                                                } ?>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="collapse" id="secondary_details">
+                                <div class="collapse" id="line_event_details">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="data[attributes][secondary]" class="form-label"><?= __('Secondary') ?></label><br>
-                                            <select class="form-select" name="data[attributes][secondary]" id="data[attributes][secondary]">
+                                            <label id="label_column" for="data[attributes][line_event]" class="form-label"><?= __('Event') ?></label><br>
+                                            <select class="form-select" name="data[attributes][line_event]" id="data[attributes][line_event]">
+                                                <option value="">&nbsp;</option>
+                                                <option value="create"><?= __('Create') ?></option>
+                                                <option value="delete"><?= __('Delete') ?></option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="collapse" id="ternary_details">
+                                <div class="collapse" id="pie_column_details">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label for="data[attributes][ternary]" class="form-label"><?= __('Ternary') ?></label><br>
-                                            <select class="form-select" name="data[attributes][ternary]" id="data[attributes][ternary]">
+                                            <label id="label_column" for="data[attributes][pie_column]" class="form-label"><?= __('Column') ?></label><br>
+                                            <select class="form-select" name="data[attributes][pie_column]" id="data[attributes][pie_column]">
+                                                <?php foreach ($dictionary->valid_columns as $column) {
+                                                    echo "\n                                                <option value=\"" . $column . "\">" . $column . "</option>";
+                                                } ?>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
 
-
-                                <div class="collapse" id="where_details">
-                                    <?= create_text_field('data[attributes][where]', __('Where'), $dictionary->attributes->create) ?>
+                                <div class="collapse" id="traffic_primary_query_id_details">
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label id="label_column" for="data[attributes][traffic_primary_query_id]" class="form-label"><?= __('Primary Query ID') ?></label><br>
+                                            <select class="form-select" name="data[attributes][traffic_primary_query_id]" id="data[attributes][traffic_primary_query_id]">
+                                                <option value="0">&nbsp;</option>
+                                                <?php foreach ($included['queries'] as $query) {
+                                                    echo "\n                                                <option value=\"" . $query->id . "\">" . $query->attributes->name . "</option>";
+                                                } ?>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="collapse" id="limit_details">
-                                    <?= create_text_field('data[attributes][limit]', __('Limit'), $dictionary->attributes->create, '', 'number') ?>
+                                <div class="collapse" id="traffic_secondary_query_id_details">
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label id="label_column" for="data[attributes][traffic_secondary_query_id]" class="form-label"><?= __('Secondary Query ID') ?></label><br>
+                                            <select class="form-select" name="data[attributes][traffic_secondary_query_id]" id="data[attributes][traffic_secondary_query_id]">
+                                                <option value="0">&nbsp;</option>
+                                                <?php foreach ($included['queries'] as $query) {
+                                                    echo "\n                                                <option value=\"" . $query->id . "\">" . $query->attributes->name . "</option>";
+                                                } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="collapse" id="traffic_ternary_query_id_details">
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label id="label_column" for="data[attributes][traffic_ternary_query_id]" class="form-label"><?= __('Ternary Query ID') ?></label><br>
+                                            <select class="form-select" name="data[attributes][traffic_ternary_query_id]" id="data[attributes][traffic_ternary_query_id]">
+                                                <option value="0">&nbsp;</option>
+                                                <?php foreach ($included['queries'] as $query) {
+                                                    echo "\n                                                <option value=\"" . $query->id . "\">" . $query->attributes->name . "</option>";
+                                                } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="collapse" id="status_primary_color_details">
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label id="label_column" for="data[attributes][status_primary_color]" class="form-label"><?= __('Primary Color') ?></label><br>
+                                            <select class="form-select" name="data[attributes][status_primary_color]" id="data[attributes][status_primary_color]">
+                                                <option value="">&nbsp;</option>
+                                                <?php foreach ($dictionary->colors as $color) {
+                                                    echo "\n                                                <option value=\"" . $color . "\">" . __($color) . "</option>";
+                                                } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="collapse" id="status_secondary_color_details">
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label id="label_column" for="data[attributes][status_secondary_color]" class="form-label"><?= __('Secondary Color') ?></label><br>
+                                            <select class="form-select" name="data[attributes][status_secondary_color]" id="data[attributes][status_secondary_color]">
+                                                <option value="">&nbsp;</option>
+                                                <?php foreach ($dictionary->colors as $color) {
+                                                    echo "\n                                                <option value=\"" . $color . "\">" . __($color) . "</option>";
+                                                } ?>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="collapse" id="sql_details">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8">
-                                            <label class="form-label" for="data[attributes][sql]"><?= __('SQL (Advanced)'); ?></label>
+                                            <label class="form-label" for="data[attributes][sql]"><?= __('SQL'); ?></label>
                                             <textarea class="form-control" rows="6" name="data[attributes][sql]" id="data[attributes][sql]"></textarea>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="collapse" id="link_details">
-                                    <?= create_text_field('data[attributes][link]', __('Link (Advanced)'), $dictionary->attributes->create) ?>
+                                <div class="collapse" id="status_secondary_sql_details">
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8">
+                                            <label class="form-label" for="data[attributes][status_secondary_sql]"><?= __('Secondary SQL'); ?></label>
+                                            <textarea class="form-control" rows="6" name="data[attributes][status_secondary_sql]" id="data[attributes][status_secondary_sql]"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <div class="collapse" id="status_link_query_id_details">
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label id="label_column" for="data[attributes][status_link_query_id]" class="form-label"><?= __('Query ID') ?></label><br>
+                                            <select class="form-select" name="data[attributes][status_link_query_id]" id="data[attributes][status_link_query_id]">
+                                                <option value="0">&nbsp;</option>
+                                                <?php foreach ($included['queries'] as $query) {
+                                                    echo "\n                                                <option value=\"" . $query->id . "\">" . $query->attributes->name . "</option>";
+                                                } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
@@ -100,8 +194,19 @@ include 'shared/common_functions.php';
 
                         <div class="col-md-6">
                             <div class="offset-2 col-8">
-                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
-                                <?= fieldsInfoDiv ($dictionary) ?>
+                                <?= aboutNotesDiv($meta->collection, $dictionary) ?>
+                                <?php
+                                    foreach ($items as $item) {
+                                        $dict = new stdClass();
+                                        $dict->columns = new stdClass();
+                                        foreach ($dictionary->{$item . '_fields'} as $field) {
+                                            $dict->columns->{$field} = $dictionary->columns->{$field};
+                                        }
+                                        echo '<div class="collapse" id="' . $item . '_help">';
+                                        echo fieldsInfoDiv($dict);
+                                        echo '</div>';
+                                    }
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -113,100 +218,67 @@ include 'shared/common_functions.php';
 window.onload = function () {
     $(document).ready(function () {
         $("#data\\[attributes\\]\\[name\\]").focus();
+        $("#data\\[attributes\\]\\[line_days\\]").attr('type', 'number');
+        $("#data\\[attributes\\]\\[pie_limit\\]").attr('type', 'number');
+
         $('#data\\[attributes\\]\\[type\\]').change(function() {
             var $type = $(this).val();
             if ($type == "pie") {
-                $("label[for = data\\[attributes\\]\\[primary\\]]").text("Column");
-                $('#data\\[attributes\\]\\[primary\\]').empty();
-                $('#data\\[attributes\\]\\[primary\\]').append($('<option>', { value: "", text: "<?= __('Choose') ?>" }));
-                <?php foreach ($dictionary->valid_columns as $column) { ?>
-                $('#data\\[attributes\\]\\[primary\\]').append($('<option>', {
-                    value: "<?= $column ?>",
-                    text: "<?= $column ?>"
-                }));
-                <?php } ?>
-                $('#primary_details').show();
+                <?php
+                foreach ($items as $item) {
+                    echo "\$('#" . $item . "_help').hide();\n";
+                }
+                echo "\$('#pie_help').show();\n";
 
-                $('#secondary_details').hide();
-                $('#ternary_details').hide();
-                $('#group_by_details').hide();
-
-                $("label[for = data\\[attributes\\]\\[where\\]]").text("Where");
-                $("label[for = data\\[attributes\\]\\[where\\]]").show();
-                $('#where_details').show();
-
-                $("label[for = data\\[attributes\\]\\[limit\\]]").text("Limit");
-                $("label[for = data\\[attributes\\]\\[limit\\]]").show();
-                $('#limit_details').show();
-
-                $('#sql_details').show();
-                $('#link_details').show();
-
+                foreach ($dictionary->all_fields as $field) {
+                    echo "\$('#" . $field . "_details').hide();\n";
+                }
+                foreach ($dictionary->pie_fields as $field) {
+                    echo "\$('#" . $field . "_details').show();\n";
+                }
+                ?>
             } else if ($type == "line") {
-                $("label[for = data\\[attributes\\]\\[primary\\]]").text("Table");
-                $('#data\\[attributes\\]\\[primary\\]').empty();
-                $('#data\\[attributes\\]\\[primary\\]').append($('<option>', { value: "", text: "<?= __('Choose') ?>" }));
-                <?php foreach ($dictionary->valid_tables as $column) { ?>
-                $('#data\\[attributes\\]\\[primary\\]').append($('<option>', {
-                    value: "<?= $column ?>",
-                    text: "<?= $column ?>"
-                }));
-                <?php } ?>
-                $('#primary_details').show();
+                <?php
+                foreach ($items as $item) {
+                    echo "\$('#" . $item . "_help').hide();\n";
+                }
+                echo "\$('#line_help').show();\n";
 
-                $("label[for = data\\[attributes\\]\\[secondary\\]]").text("Event");
-                $('#data\\[attributes\\]\\[secondary\\]').empty();
-                $('#data\\[attributes\\]\\[secondary\\]').append($('<option>', { value: "", text: "<?= __('Choose') ?>" }));
-                $('#data\\[attributes\\]\\[secondary\\]').append($('<option>', { value: "create", text: "<?= __('Create') ?>" }));
-                $('#data\\[attributes\\]\\[secondary\\]').append($('<option>', { value: "delete", text: "<?= __('Delete') ?>" }));
-                $('#secondary_details').show();
-
-                $('#ternary_details').hide();
-                $('#group_by_details').hide();
-
-                $("label[for = data\\[attributes\\]\\[where\\]]").text("Where");
-                $('#where_details').show();
-
-                $("label[for = data\\[attributes\\]\\[limit\\]]").text("Days");
-                $('#limit_details').show();
-
-                $('#sql_details').show();
-                $('#link_details').show();
-
+                foreach ($dictionary->all_fields as $field) {
+                    echo "\$('#" . $field . "_details').hide();\n";
+                }
+                foreach ($dictionary->line_fields as $field) {
+                    echo "\$('#" . $field . "_details').show();\n";
+                }
+                ?>
             } else if ($type == "traffic") {
-                $("label[for = data\\[attributes\\]\\[primary\\]]").text("Red Query");
-                $('#data\\[attributes\\]\\[primary\\]').empty();
-                $('#data\\[attributes\\]\\[primary\\]').append($('<option>', { value: "", text: "<?= __('Choose') ?>" }));
-                <?php foreach ($included['queries'] as $query) {
-                    echo "\$('#data\\\\[attributes\\\\]\\\\[primary\\\\]').append('<option value=\"" . $query->id . "\">" . $query->attributes->name . "</option>');\n";
-                } ?>
-                $('#primary_details').show();
+                <?php
+                foreach ($items as $item) {
+                    echo "\$('#" . $item . "_help').hide();\n";
+                }
+                echo "\$('#traffic_help').show();\n";
 
-                $("label[for = data\\[attributes\\]\\[secondary\\]]").text("Yellow Query");
-                $('#data\\[attributes\\]\\[secondary\\]').empty();
-                $('#data\\[attributes\\]\\[secondary\\]').append($('<option>', { value: "", text: "<?= __('Choose') ?>" }));
-                <?php foreach ($included['queries'] as $query) {
-                    echo "\$('#data\\\\[attributes\\\\]\\\\[secondary\\\\]').append('<option value=\"" . $query->id . "\">" . $query->attributes->name . "</option>');\n";
-                } ?>
-                $('#secondary_details').show();
+                foreach ($dictionary->all_fields as $field) {
+                    echo "\$('#" . $field . "_details').hide();\n";
+                }
+                foreach ($dictionary->traffic_fields as $field) {
+                    echo "\$('#" . $field . "_details').show();\n";
+                }
+                ?>
+            } else if ($type == "status") {
+                <?php
+                foreach ($items as $item) {
+                    echo "\$('#" . $item . "_help').hide();\n";
+                }
+                echo "\$('#status_help').show();\n";
 
-                $("label[for = data\\[attributes\\]\\[ternary\\]]").text("Green Query");
-                $('#data\\[attributes\\]\\[ternary\\]').empty();
-                $('#data\\[attributes\\]\\[ternary\\]').append($('<option>', { value: "", text: "<?= __('Choose') ?>" }));
-                <?php foreach ($included['queries'] as $query) {
-                    echo "\$('#data\\\\[attributes\\\\]\\\\[ternary\\\\]').append('<option value=\"" . $query->id . "\">" . $query->attributes->name . "</option>');\n";
-                } ?>
-                $('#ternary_details').show();
-
-                $("label[for = data\\[attributes\\]\\[group_by\\]]").text("Secondary Text");
-                $('#group_by_details').show();
-
-                $("label[for = data\\[attributes\\]\\[where\\]]").text("Icon");
-                $('#where_details').show();
-
-                $('#limit_details').hide();
-                $('#sql_details').hide();
-                $('#link_details').hide();
+                foreach ($dictionary->all_fields as $field) {
+                    echo "\$('#" . $field . "_details').hide();\n";
+                }
+                foreach ($dictionary->status_fields as $field) {
+                    echo "\$('#" . $field . "_details').show();\n";
+                }
+                ?>
             }
         });
     });

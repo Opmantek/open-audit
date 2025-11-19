@@ -575,7 +575,7 @@ if (!function_exists('response_create')) {
             }
             if (!empty($response->errors)) {
                 $redirect = false;
-                if ($response->errors = "EULA must be accepted to use commercial functions.") {
+                if ($response->errors === "EULA must be accepted to use commercial functions.") {
                     $redirect = true;
                 }
                 \Config\Services::session()->setFlashdata('error', $response->errors);

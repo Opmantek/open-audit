@@ -103,7 +103,9 @@ class Dashboards extends BaseController
             if (!empty($widget->type) and $widget->type === 'line') {
                 $widget->formatted = formatHighchartsLine($widget);
             }
-            $this->resp->included['widgets'][] = $widget;
+            if (!empty($widget)) {
+                $this->resp->included['widgets'][] = $widget;
+            }
         }
         if ($this->resp->meta->format !== 'html') {
             output($this);

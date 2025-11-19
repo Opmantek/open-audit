@@ -302,11 +302,11 @@ if (!function_exists('output')) {
 
         $output->yAxis = new \StdClass();
         $output->yAxis->title = new \StdClass();
-        $output->yAxis->title->text = $data->primary;
+        $output->yAxis->title->text = $data->primary_text;
 
         $output->series = array();
         $dataset = new \StdClass();
-        $dataset->name = $data->dataset_title;
+        $dataset->name = $data->primary_text;
         $dataset->color = '#333333';
         $dataset->data = array();
         $sub_title_text = '';
@@ -370,7 +370,7 @@ if (!function_exists('output')) {
 
         $output->series = array();
         $item = new \StdClass();
-        $item->name = @$data->dataset_title;
+        $item->name = @$data->primary_text;
         $item->colorByPoint = true;
         $item->data = array();
         for ($i = 0; $i < count($data->result); $i++) {
@@ -449,7 +449,7 @@ if (!function_exists('output')) {
 
         $output->series = array();
         $item = new \StdClass();
-        $item->name = $resp->included[0]->attributes->dataset_title;
+        $item->name = $resp->included[0]->attributes->primary_text;
         $item->colorByPoint = true;
         $item->data = array();
         for ($i = 0; $i < count($resp->data); $i++) {
@@ -523,7 +523,7 @@ if (!function_exists('output')) {
 
         $output->series = array();
         $dataset = new \StdClass();
-        $dataset->name = $resp->included[0]->attributes->dataset_title;
+        $dataset->name = $resp->included[0]->attributes->primary_text;
         $dataset->color = '#333333';
         $dataset->data = array();
         $sub_title_text = '';

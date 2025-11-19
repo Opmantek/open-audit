@@ -42,7 +42,7 @@ class Widgets extends BaseController
         $widget = $this->widgetsModel->read($this->resp->meta->id);
         $this->resp->meta->name = $widget[0]->attributes->name;
         $this->resp->data = $this->widgetsModel->execute($this->resp->meta->id, $this->user);
-        $this->resp->included = $widget;
+        // $this->resp->included = $widget;
         $this->resp->meta->total = (!empty($this->resp->data) and is_countable($this->resp->data)) ? count($this->resp->data) : 0;
         $this->resp->meta->filtered = (!empty($this->resp->data) and is_countable($this->resp->data)) ? count($this->resp->data) : 0;
         if ($this->resp->data->type === 'pie') {
