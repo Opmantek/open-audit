@@ -3,6 +3,56 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/create_functions.php';
 include 'shared/common_functions.php';
+
+$path = 'c:\\xampp\\open-audit\\app\\Views\\lang';
+if (php_uname('s') !== 'Windows NT') {
+    $path = '/usr/local/open-audit/app/Views/lang';
+}
+$files = array_diff(scandir($path), array('.', '..', '.DS_Store'));
+
+$lang["sq"] = "Albanian";
+$lang["ar"] = "Arabic";
+$lang["az"] = "Azerbaijani";
+$lang["bg"] = "Bulgarian";
+$lang["zh"] = "Chinese";
+$lang["cs"] = "Czech";
+$lang["da"] = "Danish";
+$lang["nl"] = "Dutch";
+$lang["en"] = "English";
+$lang["eo"] = "Esperanto";
+$lang["et"] = "Estonian";
+$lang["de"] = "German";
+$lang["el"] = "Greek";
+$lang["fi"] = "Finnish";
+$lang["fr"] = "French";
+$lang["ga"] = "Irish";
+$lang["hi"] = "Hindi";
+$lang["hu"] = "Hungarian";
+$lang["id"] = "Indonesian";
+$lang["it"] = "Italian";
+$lang["ja"] = "Japanese";
+$lang["ko"] = "Korean";
+$lang["lt"] = "Lithuanian";
+$lang["lv"] = "Latvian";
+$lang["ms"] = "Malay";
+$lang["nb"] = "Norwegian";
+$lang["fa"] = "Persian";
+$lang["pb"] = "Portuguese (Brazil)";
+$lang["pl"] = "Polish";
+$lang["pt"] = "Portuguese";
+$lang["ro"] = "Romanian";
+$lang["ru"] = "Russian";
+$lang["sk"] = "Slovak";
+$lang["sl"] = "Slovenian";
+$lang["es"] = "Spanish";
+$lang["sv"] = "Swedish";
+$lang["th"] = "Thai";
+$lang["tl"] = "Tagalog";
+$lang["tr"] = "Turkish";
+$lang["uk"] = "Ukrainian";
+$lang["ur"] = "Urdu";
+$lang["vi"] = "Vietnamese";
+
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -26,14 +76,10 @@ include 'shared/common_functions.php';
                                     <div class="offset-2 col-8">
                                         <label class="form-label" for="data[attributes][lang]"><?= __('Language'); ?> <span style="color: #dc3545;">*</span></label>
                                         <select class="form-select" name="data[attributes][lang]" id="data[attributes][lang]" required>
-                                            <option value=''><?= __('Choose'); ?></option>
-                                            <option value='cs'><?= __('Czech'); ?></option>
-                                            <option value='de'><?= __('German'); ?></option>
                                             <option value='en' selected><?= __('English'); ?></option>
-                                            <option value='es'><?= __('Spanish'); ?></option>
-                                            <option value='fr'><?= __('French'); ?></option>
-                                            <option value='pt-br'><?= __('Brazilian Portuguese'); ?></option>
-                                            <option value='zh-tw'><?= __('Traditional Chinese'); ?></option>
+                                            <?php foreach ($lang as $key => $value) { ?>
+                                            <option value='<?= $key ?>'><?= $value ?></option>
+                                            <?php } ?>
                                         </select>
                                     </div>
                                 </div>
