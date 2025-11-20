@@ -1081,7 +1081,9 @@ class ComponentsModel extends BaseModel
             $count = count($data);
             for ($i = 0; $i < $count; $i++) {
                 // new DERIVED column `name`
-                $data[$i]->name = $data[$i]->mount_type;
+                if (!empty($data[$i]->mount_type)) {
+                    $data[$i]->name = $data[$i]->mount_type;
+                }
                 if (!empty($data[$i]->mount_point)) {
                     $data[$i]->name .= ' at ' . $data[$i]->mount_point;
                 }
