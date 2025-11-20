@@ -164,6 +164,7 @@ class OpenAudit extends BaseConfig
     public string $feature_vulnerabilities_interval;
     public string $feature_vulnerabilities_date;
     public string $feature_vulnerabilities_last_request_datetime;
+    public string $feature_vulnerabilities_url;
     public string $feature_vulnerabilities_vendors;
     public string $firstwave_prompt;
     public int $graph_days;
