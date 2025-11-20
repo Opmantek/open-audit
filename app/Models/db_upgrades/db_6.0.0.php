@@ -1894,71 +1894,71 @@ if (!empty($result[0])) {
 // $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 // log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` CHANGE `type` `type` enum('line','pie','traffic','status','') DEFAULT 'line'";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "ALTER TABLE `widgets` CHANGE `type` `type` enum('line','pie','traffic','status','') DEFAULT 'line'";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` CHANGE `dataset_title` `title` varchar(200) NOT NULL DEFAULT ''";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "ALTER TABLE `widgets` CHANGE `dataset_title` `title` varchar(200) NOT NULL DEFAULT ''";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` ADD `icon` varchar(50) NOT NULL DEFAULT '' AFTER `link`";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "ALTER TABLE `widgets` ADD `icon` varchar(50) NOT NULL DEFAULT '' AFTER `link`";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` ADD `color` varchar(50) NOT NULL DEFAULT '' AFTER `icon`";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "ALTER TABLE `widgets` ADD `color` varchar(50) NOT NULL DEFAULT '' AFTER `icon`";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` ADD `secondary_text` varchar(200) NOT NULL DEFAULT '' AFTER `color`";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "ALTER TABLE `widgets` ADD `secondary_text` varchar(200) NOT NULL DEFAULT '' AFTER `color`";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` ADD `ternary_text` varchar(200) NOT NULL DEFAULT '' AFTER `secondary_text`";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "ALTER TABLE `widgets` ADD `ternary_text` varchar(200) NOT NULL DEFAULT '' AFTER `secondary_text`";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` ADD `help_text` varchar(200) NOT NULL DEFAULT '' AFTER `ternary_text`";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "ALTER TABLE `widgets` ADD `help_text` varchar(200) NOT NULL DEFAULT '' AFTER `ternary_text`";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE widgets SET `secondary_text` = `group_by` WHERE `type` = 'traffic'";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "UPDATE widgets SET `secondary_text` = `group_by` WHERE `type` = 'traffic'";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE widgets SET `group_by` = '' WHERE `type` = 'traffic'";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "UPDATE widgets SET `group_by` = '' WHERE `type` = 'traffic'";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE widgets SET `icon` = `where` WHERE `type` = 'traffic'";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "UPDATE widgets SET `icon` = `where` WHERE `type` = 'traffic'";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE widgets SET `where` = '' WHERE `type` = 'traffic'";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "UPDATE widgets SET `where` = '' WHERE `type` = 'traffic'";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE `widgets` SET `help_text` = `description` WHERE `type` = 'traffic'";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
-
+// $sql = "UPDATE `widgets` SET `help_text` = `description` WHERE `type` = 'traffic'";
+// $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
 
 
-$sql = "INSERT INTO `dashboards` VALUES (null, 'Default Dashboard', 1, 'org', 0, 'The Default Open-AudIT Dashboard', 'y', '', 'system', '2000-01-01 00:00:00')";
+
+
+// $sql = "INSERT INTO `dashboards` VALUES (null, 'Default Dashboard', 1, 'org', 0, 'The Default Open-AudIT Dashboard', 'y', '', 'system', '2000-01-01 00:00:00')";
 
 
 // // New Dashboard
