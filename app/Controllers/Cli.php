@@ -1142,4 +1142,14 @@ class Cli extends Controller
         echo $id;
         return;
     }
+
+    public function updateDevicesAll()
+    {
+        log_message('debug', 'Executing updateDevicesAll');
+
+        $vulnerabilitiesModel = model('VulnerabilitiesModel');
+        $vulnerabilitiesModel->updateDevicesAll();
+        return redirect()->route('vulnerabilitiesCollection');
+    }
+
 }

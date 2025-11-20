@@ -229,10 +229,15 @@ class NewsModel extends BaseModel
 
         $client = service('curlrequest');
         try {
-            $response = @$client->request('POST', $config->feature_news_url, [
+            $url = $config->feature_news_url;
+            if ($action === 'vulnerabilities' or $action === 'vendors') {
+                $url = $config->feature_vulnerabilities_url;
+            }
+            $response = @$client->request('POST', $url, [
                 # 'debug' => true,
                 # 'http_errors' => false,
                 'form_params' => $send,
+                'allow_redirects' => true
             ]);
         } catch (\Exception $e) {
             log_message('error', 'Requesting news failed: ' . $e->getMessage() . "\n");

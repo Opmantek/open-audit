@@ -165,7 +165,7 @@ class DevicesModel extends BaseModel
                 continue;
             }
             if ($filter->name === 'devices.cve' and $filter->operator === '!=' and $filter->value === '') {
-                $properties[] = "(LENGTH(devices.cve) - LENGTH(REPLACE(devices.cve, ',', ''))) AS `cve_count`";
+                $properties[] = "(LENGTH(devices.cve) - LENGTH(REPLACE(devices.cve, ',', '')) + 1) AS `cve_count`";
                 $resp->meta->sort = "cve_count DESC";
             }
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {

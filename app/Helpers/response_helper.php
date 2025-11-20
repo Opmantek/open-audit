@@ -72,7 +72,7 @@ if (!function_exists('response_create')) {
         $get_format = $request->getGet('format');
         if ($response->meta->request_method === 'CLI') {
             // Check if we've been passed a format on the CLI
-            $getPath = $uri->getPath();
+            $getPath = explode('/', $uri->getPath());
             if (!empty($getPath)) {
                 foreach ($getPath as $segment) {
                     if (strpos($segment, 'format=') !== false) {

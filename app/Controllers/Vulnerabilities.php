@@ -59,11 +59,4 @@ class Vulnerabilities extends BaseController
             view('vulnerabilitiesVendor', ['data' => filter_response($this->resp->data), 'meta' => $this->resp->meta])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
-
-    public function updateDevicesAll()
-    {
-        $this->vulnerabilitiesModel->updateDevicesAll();
-        return redirect()->route('vulnerabilitiesCollection');
-    }
-
 }
