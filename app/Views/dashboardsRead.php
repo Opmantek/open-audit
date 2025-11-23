@@ -8,6 +8,10 @@ $item->id = 0;
 $item->attributes = new stdClass();
 $item->attributes->name = '';
 array_unshift($included['widgets'], $item);
+$temp = explode('x', $resource->options->layout);
+$columns = intval($temp[0]);
+$rows = intval($temp[1]);
+$total_widgets = intval($rows * $columns);
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -31,6 +35,7 @@ array_unshift($included['widgets'], $item);
                                             <option value='4x2'>4 x 2</option>
                                             <option value='4x3'>4 x 3</option>
                                             <option value='4x4'>4 x 4</option>
+                                            <option value='6x3'>6 x 3</option>
                                             <option value='6x4'>6 x 4</option>
                                         </select>
                                         <?php if ($update) { ?>
@@ -45,14 +50,30 @@ array_unshift($included['widgets'], $item);
                             </div>
                             <?php
                             if (!empty($resource->options->widgets)) {
-                                // Allow for 20 widgets
-                                for ($i = 0; $i < 20; $i++) {
-                                    foreach ($resource->options->widgets as $widget) {
-                                        if ($widget->position == $i and !empty($widget->widget_id)) {
-                                            echo read_select('options.widgets.position.' . $widget->position, $widget->widget_id, '<code>options.widgets.position.' . $i . '</code><br>' . __('The widget at position ') . $i . '.', $update, __('Widget #') . $widget->position, $included['widgets']);
-                                        }
+                                foreach ($included['widgets'] as $w) {
+                                    $w->attributes->name = $w->attributes->name . ' (' . @$w->attributes->type . ')';
+                                    if ($w->attributes->name === '()') {
+                                        $w->attributes->name = '';
                                     }
                                 }
+                                #$count = 0;
+                                for ($i = 1; $i <= $total_widgets; $i++) {
+                                    $hit = false;
+                                    foreach ($resource->options->widgets as $widget) {
+                                        if ($widget->position == $i) {
+                                            $wid_id = 0;
+                                            if (!empty($widget->widget_id)) {
+                                                $wid_id = $widget->widget_id;
+                                            }
+                                            echo read_select('options.widgets.position.' . $widget->position, $wid_id, '<code>options.widgets.position.' . $i . '</code><br>' . __('The widget at position ') . $i . '.', $update, __('Widget #') . $widget->position, $included['widgets']);
+                                            $hit = true;
+                                        }
+                                    }
+                                    if ($hit === false) {
+                                        echo read_select('options.widgets.position.' . $i, '', '<code>options.widgets.position.' . $i . '</code><br>' . __('The widget at position ') . $i . '.', $update, __('Widget #') . $i, $included['widgets']);
+                                    }
+                                }
+                                #echo read_select('options.widgets.position.' . $count, '', '<code>options.widgets.position.' . $count . '</code><br>' . __('The widget at position ') . $count . '.', $update, __('Widget #') . $count, $included['widgets']);
                             }
                             ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>

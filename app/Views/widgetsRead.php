@@ -58,6 +58,24 @@ if (!empty($included['queries'])) {
                             </div>
                             <?php } ?>
 
+                            <?php if (in_array('status_secondary_sql', $dictionary->{$resource->type . '_fields'})) { ?>
+                            <div class="row" style="padding-top:16px;">
+                                <div class="offset-2 col-8" style="position:relative;">
+                                    <?= read_field_header($meta->collection, 'status_secondary_sql', $dictionary->columns->sql, 'Secondary SQL') ?>
+                                    <div class="input-group">
+                                        <textarea class="form-control" rows="14" id="status_secondary_sql" name="status_secondary_sql" data-original-value="<?= $resource->status_secondary_sql ?>" disabled><?= html_entity_decode($resource->status_secondary_sql) ?></textarea>
+                                        <?php if ($update) { ?>
+                                        <div class="float-end" style="padding-left:4px;">
+                                            <div data-attribute="status_secondary_sql" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
+                                            <div data-attribute="status_secondary_sql" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
+                                            <div data-attribute="status_secondary_sql" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="status_secondary_sql" data-dictionary="<?= $dictionary->columns->status_secondary_sql ?>"><span><br></span></div>
+                                </div>
+                            </div>
+                            <?php } ?>
 
                             <?php
                             foreach ($dictionary->text_fields as $field) {
@@ -161,8 +179,12 @@ if (!empty($included['queries'])) {
                             <?= read_select('traffic_ternary_query_id', $resource->traffic_ternary_query_id, $dictionary->columns->traffic_ternary_query_id, $update, '', $included['queries'], $meta->collection) ?>
                             <?php } ?>
 
+                            <?php if (in_array('status_query_id', $dictionary->{$resource->type . '_fields'})) { ?>
+                            <?= read_select('status_query_id', $resource->status_query_id, $dictionary->columns->status_query_id, $update, 'Query ID', $included['queries'], $meta->collection) ?>
+                            <?php } ?>
+
                             <?php if (in_array('status_link_query_id', $dictionary->{$resource->type . '_fields'})) { ?>
-                            <?= read_select('status_link_query_id', $resource->status_link_query_id, $dictionary->columns->status_link_query_id, $update, '', $included['queries'], $meta->collection) ?>
+                            <?= read_select('status_link_query_id', $resource->status_link_query_id, $dictionary->columns->status_link_query_id, $update, 'Link Query ID', $included['queries'], $meta->collection) ?>
                             <?php } ?>
 
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>

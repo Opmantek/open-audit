@@ -168,10 +168,24 @@ $items = array('line', 'pie', 'status', 'traffic');
                                     </div>
                                 </div>
 
+                                <div class="collapse" id="status_query_id_details">
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <label id="label_column" for="data[attributes][status_query_id]" class="form-label"><?= __('Query ID') ?></label><br>
+                                            <select class="form-select" name="data[attributes][status_query_id]" id="data[attributes][status_query_id]">
+                                                <option value="0">&nbsp;</option>
+                                                <?php foreach ($included['queries'] as $query) {
+                                                    echo "\n                                                <option value=\"" . $query->id . "\">" . $query->attributes->name . "</option>";
+                                                } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="collapse" id="status_link_query_id_details">
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <label id="label_column" for="data[attributes][status_link_query_id]" class="form-label"><?= __('Query ID') ?></label><br>
+                                            <label id="label_column" for="data[attributes][status_link_query_id]" class="form-label"><?= __('Link Query ID') ?></label><br>
                                             <select class="form-select" name="data[attributes][status_link_query_id]" id="data[attributes][status_link_query_id]">
                                                 <option value="0">&nbsp;</option>
                                                 <?php foreach ($included['queries'] as $query) {

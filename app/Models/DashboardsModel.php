@@ -225,10 +225,19 @@ class DashboardsModel extends BaseModel
                     $widget_id = $value;
                 }
             }
+            $updated = false;
             foreach ($existing->widgets as $widget) {
                 if (isset($widget->position) and isset($widget_position) and intval($widget->position) === intval($widget_position)) {
                     $widget->widget_id = $widget_id;
+                    $updated = true;
                 }
+            }
+            if (!$updated and !empty($widget_position)) {
+                $widget = new stdClass();
+                $widget->id = $widget_id;
+                $widget->position = $widget_position;
+                $widget->size = 1;
+                $existing->widgets->{$widget_position} = $widget;
             }
             $data->options = (string)json_encode($existing);
         }

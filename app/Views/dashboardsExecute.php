@@ -184,7 +184,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                             for ($col = 1; $col < ($columns + 1); $col++) {
                                 foreach ($resource->options->widgets as $widget) {
                                     if ($widget->position == (($row * $columns) + $col)) {
-                                        echo "                               <div data-num=\"col $col, row $row, pos $widget->position\" id=\"widget_" . @$widget->widget_id . "\" class=\"$colWidth\" style=\"padding: 50px 15px;\"></div>\n";
+                                        echo "                               <div data-num=\"col $col, row $row, pos $widget->position\" id=\"widget_" . @$widget->widget_id . "\" class=\"$colWidth\" style=\"padding: 10px 10px;\"></div>\n";
                                     }
                                 }
                             }
@@ -309,11 +309,12 @@ window.onload = function () {
 
         <?php
         foreach ($included['widgets'] as $widget) {
-            if (!empty($widget->formatted) and !empty($widget->type) and $widget->type !== 'traffic') {
+            if (!empty($widget->formatted) and !empty($widget->type) and $widget->type !== 'traffic' and $widget->type !== 'status') {
                 $wf = json_encode($widget->formatted);
                 $wf = htmlspecialchars_decode($wf, ENT_QUOTES);
                 $wf = str_replace('"function(event){location.href = this.options.url;}"', 'function(event){location.href = this.options.url;}', $wf);
-                echo "\n\tHighcharts.chart(" . html_entity_decode($wf) . ");\n";
+                // echo "\n\tHighcharts.chart(" . html_entity_decode($wf) . ");\n";
+                echo "\n\tHighcharts.chart(" . $wf . ");\n";
             }
         } ?>
 

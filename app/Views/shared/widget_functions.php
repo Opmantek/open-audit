@@ -37,7 +37,9 @@ function traffic_widget($widget)
         $icon = '<img src="' . base_url() . 'icons/' . $widget->icon . '.svg" style="width:32px; height:32px;" title=\"' . $widget->description . '\"/>';
     }
 
-    $help = '<div class="float-end" style="margin-right: -10px;"><a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" data-bs-content="' . nl2br(str_replace('"', '\"', __($widget->help_text))) . '"><i class="icon-circle-question-mark" style="color:#74C0FC;"></i></a></div>';
+    $widget_link = "&nbsp;&nbsp;<a href=\\'" . url_to('widgetsRead', $widget->id) . "\\'>" . __('Edit') . "</a>";
+
+    $help = '<div class="float-end" style="margin-right: -10px;"><a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" data-bs-content="' . nl2br(str_replace('"', '\"', __($widget->help_text))) . $widget_link . '"><i class="icon-circle-question-mark" style="color:#74C0FC;"></i></a></div>';
 
     $return = '<div class="alert alert-' . $widget->result->color . '" role="alert">
         <div class="row">
@@ -68,7 +70,7 @@ function status_widget($widget)
     if (!empty($widget->status_link_query_id) and is_numeric($widget->status_link_query_id)) {
         $link = '<a href="' . url_to('queriesExecute', $widget->status_link_query_id) . '"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;">' . $widget->result->result . '</span></a>';
     } else if (!empty($widget->link)) {
-        $link = '<a href="' . base_url() . '?' . $widget->link . '"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;">' . $widget->result->result . '</span></a>';
+        $link = '<a href="' . base_url() . $widget->link . '"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;">' . $widget->result->result . '</span></a>';
     }
 
     $icon = '';
@@ -78,10 +80,9 @@ function status_widget($widget)
     if (strpos($widget->icon, 'icon-') === false) {
         $icon = '<img src="' . base_url() . 'icons/' . $widget->icon . '.svg" style="width:32px; height:32px;" title=\"' . $widget->description . '\"/>';
     }
+    $widget_link = "&nbsp;&nbsp;<a href=\\'" . url_to('widgetsRead', $widget->id) . "\\'>" . __('Edit') . "</a>";
 
-    $help = '<div class="float-end" style="margin-right: -10px;"><a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" data-bs-content="' . nl2br(htmlentities($widget->help_text)) . '"><i class="icon-circle-question-mark" style="color:#74C0FC;"></i></a></div>';
-
-    log_message('debug', json_encode($widget));
+    $help = '<div class="float-end" style="margin-right: -10px;"><a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="focus" data-bs-content="' . nl2br(htmlentities($widget->help_text)) . $widget_link . '"><i class="icon-circle-question-mark" style="color:#74C0FC;"></i></a></div>';
 
     $return = '<div class="alert alert-' . $widget->result->color . '" role="alert">
         <div class="row">

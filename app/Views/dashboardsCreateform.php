@@ -28,17 +28,24 @@ include 'shared/common_functions.php';
                                             <option value="4x2">4 x 2</option>
                                             <option value="4x3">4 x 3</option>
                                             <option value="4x4">4 x 4</option>
+                                            <option value="6x3">6 x 3</option>
                                             <option value="6x4">6 x 4</option>
                                         </select>
                                     </div>
                                 </div>
 
-                                <?php for ($i = 1; $i <= 16; $i++) { ?>
-                                    <?= create_select('data[attributes][options][widgets][' . $i . '][widget_id]', __('Widget # ') . $i, $included['widgets'], $dictionary->attributes->create) ?>
-                                <?php } ?>
+                                <?php for ($i = 1; $i <= 24; $i++) {
+                                    foreach ($included['widgets'] as $w) {
+                                        $w->attributes->name = $w->attributes->name . ' (' . @$w->attributes->type . ')';
+                                        if ($w->attributes->name === '()') {
+                                            $w->attributes->name = '';
+                                        }
+                                    }
+                                    echo create_select('data[attributes][options][widgets][' . $i . '][widget_id]', __('Widget # ') . $i, $included['widgets'], $dictionary->attributes->create);
+                                } ?>
 
 
-                                <?php for ($i = 1; $i <= 16; $i++) { ?>
+                                <?php for ($i = 1; $i <= 24; $i++) { ?>
                                 <input type="hidden" name="data[attributes][options][widgets][<?= $i ?>][size]" id="data[attributes][options][widgets][<?= $i ?>][size]" value="1" />
                                 <input type="hidden" name="data[attributes][options][widgets][<?= $i ?>][position]" id="data[attributes][options][widgets][<?= $i ?>][position]" value="<?= $i ?>" />
                                 <?php } ?>

@@ -609,31 +609,75 @@ class WidgetsModel extends BaseModel
         $return->result = 0;
         $return->color = $widget->status_secondary_color;
 
-        if (empty($widget->sql)) {
-            $instance->resp->meta->errors = 'No widget->sql passed to WidgetsModel::statusData';
-            log_message('warning', 'No widget->sql passed to WidgetsModel::statusData');
+        if (empty($widget->sql) and empty($widget->status_query_id)) {
+            $instance->resp->meta->errors = 'You must specify SQL or a query ID for WidgetsModel::statusData';
+            log_message('warning', 'You must specify SQL or a query ID for a status widget');
             return $return;
         }
 
-        $sql = $widget->sql;
-        $filter = "devices.org_id in (" . $org_list . ")";
-        $sql = str_replace('@filter', $filter, $sql);
-        $query = $this->db->query($sql);
-        if (empty($query)) {
-            log_message('error', 'Could not execute SQL: ' . $sql);
-            return $return;
+        if (!empty($widget->sql)) {
+            $sql = $widget->sql;
+            if (strpos($sql, 'WHERE @filter') !== false) {
+                $filter = "WHERE devices.org_id in (" . $org_list . ")";
+                $sql = str_replace('WHERE @filter', $filter, $sql);
+            }
+            if (strpos($sql, '(@filter)') !== false) {
+                $sql = str_replace('@filter', $org_list, $sql);
+            }
+            #echo $sql; exit;
+            $query = $this->db->query($sql);
+            if (empty($query)) {
+                log_message('error', 'Could not execute SQL: ' . $sql);
+                return $return;
+            }
+            $result = $query->getResult();
+            if (empty($result)) {
+                log_message('error', 'Could not retrieve result');
+                return $return;
+            }
+            if (!empty($result[0]->count)) {
+                $return->result = $result[0]->count;
+            }
+            unset($result);
         }
-        $result = $query->getResult();
-        if (empty($result)) {
-            log_message('error', 'Could not retrieve result');
-            return $return;
+        if (empty($widget->sql) and !empty($widget->status_query_id)) {
+            $queriesModel = new \App\Models\QueriesModel();
+            $result = $queriesModel->execute(intval($widget->status_query_id, $instance->user));
+            if (!empty($result[0]->count)) {
+                $return->result = $result[0]->count;
+            } else {
+                $return->result = count($result);
+            }
         }
-        $return->result = intval($result[0]->count);
+
         if (empty($return->result)) {
             $return->result = 0;
             $return->color = $widget->status_secondary_color;
         } else {
             $return->color = $widget->status_primary_color;
+        }
+        if (!empty($widget->status_secondary_sql)) {
+            $sql = $widget->status_secondary_sql;
+            if (strpos($sql, 'WHERE @filter') !== false) {
+                $filter = "WHERE devices.org_id in (" . $org_list . ")";
+                $sql = str_replace('WHERE @filter', $filter, $sql);
+            }
+            if (strpos($sql, '(@filter)') !== false) {
+                $sql = str_replace('@filter', $org_list, $sql);
+            }
+            $query = $this->db->query($sql);
+            if (empty($query)) {
+                log_message('error', 'Could not execute SQL: ' . $sql);
+                return $return;
+            }
+            $result = $query->getResult();
+            if (empty($result)) {
+                log_message('error', 'Could not retrieve result');
+                return $return;
+            }
+            if (!empty($result[0]->secondary_text)) {
+                $widget->secondary_text = $result[0]->secondary_text;
+            }
         }
         return $return;
     }
@@ -739,7 +783,7 @@ class WidgetsModel extends BaseModel
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->type = 'Can be <code>line</code>, <code>pie</code>, <code>status</code> or <code>traffic</code>.';
         $dictionary->columns->options = 'Unused.';
-        $dictionary->columns->sql = 'For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND</code> in your SQL. Used by line, pie and status widgets.';
+        $dictionary->columns->sql = 'For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND</code> in your SQL. For status widgets, must return the required number using the <code>count</code> name. Used by line, pie and status widgets.';
         $dictionary->columns->link = 'The template for the link to be generated per result line. Used by line and status widgets.';
         $dictionary->columns->icon = 'Can be an svg from /open-audit/public/icons (just the name, android, not android.svg) or an icon from Lucide (icon-computer). Used for status and traffic widgets.';
         $dictionary->columns->help_text = 'A short clarifying description. Used by status and traffic widgets.';
@@ -755,9 +799,10 @@ class WidgetsModel extends BaseModel
         $dictionary->columns->traffic_primary_query_id = 'The ID of the query for the red result. Used by traffic widgets.';
         $dictionary->columns->traffic_secondary_query_id = 'The ID of the query for the yellow result. Used by traffic widgets.';
         $dictionary->columns->traffic_ternary_query_id = 'The ID of the query for the green result. Used by traffic widgets.';
-        $dictionary->columns->status_secondary_sql = 'Used to create the small secondary text. Used by status widgets.';
+        $dictionary->columns->status_secondary_sql = 'Used to create the small secondary text. Must return the required data using the <code>secondary_text</code> name. Used by status widgets.';
         $dictionary->columns->status_primary_color = 'The color of the widget. This is used if the query triggers a positive result. Used by status widget.';
         $dictionary->columns->status_secondary_color = 'The color of the widget. This is used if the query does not trigger a result. Used by status widget.';
+        $dictionary->columns->status_query_id = 'The ID of the query to populate the main number. If SQL is provided, this will be ignored. Counts the rows returned. Used by status widgets.';
         $dictionary->columns->status_link_query_id = 'When link is empty, used to build a URL to the associated query. Used by status widgets.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
@@ -770,7 +815,7 @@ class WidgetsModel extends BaseModel
         $dictionary->text_fields = array('link', 'icon', 'help_text', 'primary_text', 'secondary_text', 'ternary_text', 'where', 'line_table', 'line_days', 'pie_column', 'pie_limit');
         $dictionary->line_fields = array('sql', 'primary_text', 'where', 'line_table', 'line_event', 'line_days');
         $dictionary->pie_fields = array('link', 'sql', 'primary_text', 'where', 'pie_column', 'pie_limit');
-        $dictionary->status_fields = array('sql', 'link', 'icon', 'help_text', 'primary_text', 'secondary_text', 'status_secondary_sql', 'status_primary_color', 'status_secondary_color', 'status_link_query_id');
+        $dictionary->status_fields = array('sql', 'link', 'icon', 'help_text', 'primary_text', 'secondary_text', 'status_secondary_sql', 'status_primary_color', 'status_secondary_color', 'status_query_id', 'status_link_query_id');
         $dictionary->traffic_fields = array('link', 'icon', 'help_text', 'primary_text', 'secondary_text', 'traffic_primary_query_id', 'traffic_secondary_query_id', 'traffic_ternary_query_id');
 
         $dictionary->all_fields = array_merge($dictionary->line_fields, $dictionary->pie_fields, $dictionary->status_fields, $dictionary->traffic_fields);
