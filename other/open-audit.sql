@@ -5099,6 +5099,7 @@ CREATE TABLE `widgets` (
   `status_secondary_sql` text NOT NULL,
   `status_primary_color` varchar(50) NOT NULL DEFAULT '',
   `status_secondary_color` varchar(50) NOT NULL DEFAULT '',
+  `status_query_id` smallint(6) NOT NULL DEFAULT '0',
   `status_link_query_id` smallint(6) NOT NULL DEFAULT '0',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',

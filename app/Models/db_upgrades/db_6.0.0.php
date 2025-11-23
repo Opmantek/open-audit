@@ -1495,8 +1495,6 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-
-
 $sql = "ALTER TABLE `widgets` CHANGE `type` `type` enum('line','pie','status','traffic','') DEFAULT 'line'";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -1602,7 +1600,12 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` ADD `status_link_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER `status_secondary_color`";
+$sql = "ALTER TABLE `widgets` ADD `status_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER status_secondary_color";
+$result = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "ALTER TABLE `widgets` ADD `status_link_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER `status_query_id`";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
