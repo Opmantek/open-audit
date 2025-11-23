@@ -166,7 +166,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
 
     # catch all for catalyst == switch
-    if (!empty($details->model) and (stripos($details->model, 'catalyst') !== false or stripos($details->os_family, 'cataylst') !== false)) {
+    if (!empty($details->model) and (stripos($details->model, 'catalyst') !== false or stripos($details->os_family, 'catalyst') !== false)) {
         $details->type = 'switch';
     }
 
