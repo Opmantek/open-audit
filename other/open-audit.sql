@@ -1340,7 +1340,7 @@ INSERT INTO `configuration` VALUES (NULL,'feature_news','y','bool','y','system',
 INSERT INTO `configuration` VALUES (NULL,'feature_news_last_request_date','2000-01-01','text','y','system','2000-01-01 00:00:00','When did we last request a feed article.');
 INSERT INTO `configuration` VALUES (NULL,'feature_news_remind_days','30','number','n','system','2000-01-01 00:00:00','If not enabled, reminder the user every this number of days.');
 INSERT INTO `configuration` VALUES (NULL,'feature_news_request_days','7','number','n','system','2000-01-01 00:00:00','Make a feed request every this number of days.');
-INSERT INTO `configuration` VALUES (NULL,'feature_news_url','https://news.firstwave.com/feeds','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve news articles.');
+INSERT INTO `configuration` VALUES (NULL,'feature_news_url','https://news.firstwave.com/news','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve news articles.');
 INSERT INTO `configuration` VALUES (NULL,'feature_powershell_audit','y','bool','y','system','2000-01-01 00:00:00','Use the PowerShell audit script instead of the VBScript audit script in discoveries.');
 INSERT INTO `configuration` VALUES (NULL,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.');
 INSERT INTO `configuration` VALUES (NULL,'feature_syslog_access','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT log access to syslog (Linux only).');
@@ -1350,7 +1350,7 @@ INSERT INTO `configuration` VALUES (NULL,'feature_syslog_vulnerabilities','n','b
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities','y','bool','y','system','2000-01-01 00:00:00','Enable the vulnerabilities feature.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_interval','60','number','y','system','2000-01-01 00:00:00','Check for new vulnerabilities every X minutes.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_date','2025-01-01','date','y','system','2000-01-01 00:00:00','Retrieve vulnerabilities since this date.');
-INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_url','https://news.firstwave.com/feeds','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve vulnerability data.');
+INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_url','https://news.firstwave.com/news','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve vulnerability data.');
 INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_last_request_datetime','2000-01-01 00:00:00','text','y','system','2000-01-01 00:00:00','When did we last request the vulnerability list.');
 INSERT INTO `configuration` VALUES (NULL,'firstwave_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt about FirstWave products.');
 INSERT INTO `configuration` VALUES (NULL,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');

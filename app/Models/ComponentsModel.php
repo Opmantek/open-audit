@@ -898,7 +898,7 @@ class ComponentsModel extends BaseModel
                     }
                 }
             }
-            if ($device->type === 'computer' and !empty($device->os_group) and $device->os_group === 'VMware') {
+            if (!empty($device->type) and $device->type === 'computer' and !empty($device->os_group) and $device->os_group === 'VMware') {
                 // TODO - fix the below somewhow ?!??
                 // the issue is that ESXi provides different values for network cards from the command line and from SNMP
                 $sql = 'DELETE FROM `ip` WHERE `ip`.`device_id` = ?';
@@ -906,7 +906,7 @@ class ComponentsModel extends BaseModel
                 // set the below so we don't generate alerts for this
                 $create_change_log = false;
             }
-            if ($device->type === 'computer' and !empty($device->manufacturer) and $device->manufacturer === 'Xen' and !empty($device->model) and $device->model === 'HVM domU') {
+            if (!empty($device->type) and $device->type === 'computer' and !empty($device->manufacturer) and $device->manufacturer === 'Xen' and !empty($device->model) and $device->model === 'HVM domU') {
                 // TODO - fix the below somewhow ?!??
                 // the issue is that AWS provides no IPv6 information via the API
                 $sql = 'DELETE FROM `ip` WHERE `ip`.`device_id` = ?';
