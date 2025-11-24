@@ -62,11 +62,11 @@ $sql = "CREATE TABLE `license` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `name` varchar(200) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
-  `raw` text NOT NULL,
+  `description` mediumtext NOT NULL,
+  `raw` mediumtext NOT NULL,
   `purchase_count` int(10) unsigned NOT NULL DEFAULT '0',
   `used_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `software_name` text NOT NULL,
+  `software_name` mediumtext NOT NULL,
   `software_version` varchar(200) NOT NULL DEFAULT '',
   `expiry_date` date NOT NULL DEFAULT '2000-01-01',
   `end_of_life` date NOT NULL DEFAULT '2000-01-01',
@@ -90,7 +90,7 @@ $sql = "CREATE TABLE `news` (
   `short` varchar(200) NOT NULL DEFAULT '',
   `description` varchar(200) NOT NULL DEFAULT '',
   `type` enum('advertisement','code','config','cve','blog','file','howto','news','notification','other','package','query','release','') NOT NULL DEFAULT '',
-  `body` text NOT NULL,
+  `body` mediumtext NOT NULL,
   `published` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `link` varchar(200) NOT NULL DEFAULT '',
   `image` varchar(200) DEFAULT NULL,
@@ -430,7 +430,7 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 
-$sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Servers Without OS Updates for more than 30 Days','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_os_update != \'2000-01-01 00:00:00\', devices.last_os_update, \'\') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 14 DAY) AND devices.last_os_update != \'\' AND devices.last_os_update != \'2000-01-01 00:00:00\' AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\')','','n','y','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Servers Without OS Updates for more than 30 Days','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_os_update != \'2000-01-01 00:00:00\', devices.last_os_update, \'\') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 30 DAY) AND devices.last_os_update != \'\' AND devices.last_os_update != \'2000-01-01 00:00:00\' AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\')','','n','y','system','2000-01-01 00:00:00')";
 $db->query($sql, [$id]);
 $widgets['Windows Server Not Latest Build'] = intval($db->insertID());
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -633,7 +633,7 @@ $sql = "CREATE TABLE `standards` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
+  `description` mediumtext NOT NULL,
   `type` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -652,17 +652,17 @@ $sql = "CREATE TABLE `standards_results` (
   `applied` varchar(200) NOT NULL DEFAULT '',
   `maturity_score` decimal(1,1) NOT NULL DEFAULT '0.0',
   `maturity_level` enum('incomplete','performed','managed','established','predictable','optimized','') NOT NULL DEFAULT '',
-  `legal_requirements` text NOT NULL,
-  `contractual_obligations` text NOT NULL,
-  `business_requirements` text NOT NULL,
-  `best_practises` text NOT NULL,
-  `risk_assesment_result` text NOT NULL,
-  `implementation_notes` text NOT NULL,
-  `exclusion_reasons` text NOT NULL,
-  `responsibility` text NOT NULL,
-  `attachments` text NOT NULL,
-  `links` text NOT NULL,
-  `improvement_opportunities` text NOT NULL,
+  `legal_requirements` mediumtext NOT NULL,
+  `contractual_obligations` mediumtext NOT NULL,
+  `business_requirements` mediumtext NOT NULL,
+  `best_practises` mediumtext NOT NULL,
+  `risk_assesment_result` mediumtext NOT NULL,
+  `implementation_notes` mediumtext NOT NULL,
+  `exclusion_reasons` mediumtext NOT NULL,
+  `responsibility` mediumtext NOT NULL,
+  `attachments` mediumtext NOT NULL,
+  `links` mediumtext NOT NULL,
+  `improvement_opportunities` mediumtext NOT NULL,
   `result` enum('fail', 'other', 'excluded', 'not applicable', 'pass', '') NOT NULL DEFAULT '',
   `notes` longtext NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -681,7 +681,7 @@ $sql = "CREATE TABLE `standards_policies` (
   `class` varchar(200) NOT NULL DEFAULT '',
   `section` varchar(200) NOT NULL DEFAULT '',
   `name` varchar(200) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
+  `description` mediumtext NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
@@ -1221,7 +1221,7 @@ if (!$db->fieldExists('hw_cpe', 'devices')) {
 }
 
 if (!$db->fieldExists('cve', 'devices')) {
-  $sql = "ALTER TABLE devices ADD `cve` text NOT NULL AFTER identification";
+  $sql = "ALTER TABLE devices ADD `cve` mediumtext NOT NULL AFTER identification";
   $db->query($sql);
   $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
   log_message('info', (string)$db->getLastQuery());
@@ -1341,7 +1341,7 @@ $sql = "CREATE TABLE `vulnerabilities` (
   `automatable` varchar(20) NOT NULL DEFAULT '',
   `base_score` varchar(20) NOT NULL DEFAULT '',
   `base_severity` varchar(20) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
+  `description` mediumtext NOT NULL,
   `exploit_maturity` varchar(20) NOT NULL DEFAULT '',
   `impact_availability` varchar(20) NOT NULL DEFAULT '',
   `impact_confidentiality` varchar(20) NOT NULL DEFAULT '',
@@ -1351,7 +1351,7 @@ $sql = "CREATE TABLE `vulnerabilities` (
   `published_date` date NOT NULL DEFAULT '2000-01-01',
   `published` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `references` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '[]' CHECK (json_valid(`references`)),
-  `remediation` text NOT NULL,
+  `remediation` mediumtext NOT NULL,
   `scope` varchar(20) NOT NULL DEFAULT '',
   `type` varchar(20) NOT NULL DEFAULT '',
   `user_interaction` varchar(20) NOT NULL DEFAULT '',
@@ -1600,17 +1600,17 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` CHANGE `options` `options` text NOT NULL AFTER `dataset_title`";
+$sql = "ALTER TABLE `widgets` CHANGE `options` `options` mediumtext NOT NULL AFTER `dataset_title`";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` CHANGE `sql` `sql` text NOT NULL AFTER `options`";
+$sql = "ALTER TABLE `widgets` CHANGE `sql` `sql` mediumtext NOT NULL AFTER `options`";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` CHANGE `link` `link` text NOT NULL AFTER `sql`";
+$sql = "ALTER TABLE `widgets` CHANGE `link` `link` mediumtext NOT NULL AFTER `sql`";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -1685,7 +1685,7 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` ADD `status_secondary_sql` text NOT NULL AFTER `traffic_ternary_query_id`";
+$sql = "ALTER TABLE `widgets` ADD `status_secondary_sql` mediumtext NOT NULL AFTER `traffic_ternary_query_id`";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -2021,7 +2021,13 @@ if (!empty($result[0])) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-
+$tables_to_utf8mb4 = array('access_point', 'agents', 'antivirus', 'application', 'applications', 'arp', 'attachment', 'attributes', 'audit_log', 'auth', 'baselines', 'baselines_policies', 'baselines_results', 'benchmarks', 'benchmarks_exceptions', 'benchmarks_log', 'benchmarks_policies', 'benchmarks_result', 'bios', 'certificate', 'change_log', 'cli_config', 'cloud_log', 'clouds', 'cluster', 'clusters', 'collectors', 'configuration', 'connections', 'credential', 'credentials', 'dashboards', 'devices', 'discoveries', 'discovery_log', 'discovery_scan_options', 'disk', 'dns', 'edit_log', 'enterprise', 'executable', 'executables', 'field', 'fields', 'file', 'files', 'firewall', 'firewall_rule', 'groups', 'image', 'integrations', 'integrations_log', 'invoice', 'invoice_item', 'ip', 'licenses', 'locations', 'log', 'maps', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'networks', 'nmap', 'optical', 'orgs', 'packages', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'queries', 'queue', 'rack_devices', 'racks', 'radio', 'roles', 'route', 'rules', 'san', 'scripts', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'summaries', 'task', 'tasks', 'usb', 'user', 'user_group', 'users', 'variable', 'video', 'vm', 'warranty', 'widgets', 'windows');
+foreach ($tables_to_utf8mb4 as $table) {
+    $sql = "ALTER TABLE `$table` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 
 // set our versions
