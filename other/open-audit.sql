@@ -1,8 +1,9 @@
--- MariaDB dump 10.19  Distrib 10.10.2-MariaDB, for osx10.18 (arm64)
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19-12.0.2-MariaDB, for osx10.20 (arm64)
 --
 -- Host: localhost    Database: openaudit
 -- ------------------------------------------------------
--- Server version	10.10.2-MariaDB-log
+-- Server version	12.0.2-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -13,7 +14,7 @@
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
 --
 -- Table structure for table `access_point`
@@ -21,7 +22,7 @@
 
 DROP TABLE IF EXISTS `access_point`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `access_point` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -41,11 +42,11 @@ CREATE TABLE `access_point` (
   `software_version` varchar(100) NOT NULL DEFAULT '',
   `ios_version` varchar(100) NOT NULL DEFAULT '',
   `type` varchar(200) NOT NULL DEFAULT '',
-  `port_number` int(10) unsigned DEFAULT '0',
+  `port_number` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `access_point_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,13 +64,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `agents`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `agents` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT 'Default Agent',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
-  `weight` int(10) unsigned NOT NULL DEFAULT '100',
+  `weight` int(10) unsigned NOT NULL DEFAULT 100,
   `test_minutes` int(10) unsigned DEFAULT 1300,
   `test_subnet` varchar(45) NOT NULL DEFAULT '',
   `test_os` varchar(45) NOT NULL DEFAULT '',
@@ -84,7 +85,7 @@ CREATE TABLE `agents` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +94,7 @@ CREATE TABLE `agents` (
 
 LOCK TABLES `agents` WRITE;
 /*!40000 ALTER TABLE `agents` DISABLE KEYS */;
-INSERT INTO `agents` VALUES (NULL, 'Default Agent', 1, 'Audit every day.', 100, 1300, '', '', '[]', '', '', null, null, 'y', 'n', '[]', 'system', '2000-01-01 00:00:00');
+INSERT INTO `agents` VALUES (NULL,'Default Agent',1,'Audit every day.',100,1300,'','','[]','','',NULL,NULL,'y','n','[]','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `agents` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,7 +104,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `antivirus`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `antivirus` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -122,7 +123,7 @@ CREATE TABLE `antivirus` (
   KEY `last_seen` (`last_seen`),
   KEY `name` (`name`),
   CONSTRAINT `antivirus_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,18 +141,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `application`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `application` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
-  `application_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `application_id` int(10) unsigned NOT NULL DEFAULT 0,
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `application_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,17 +170,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `applications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `applications` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,7 +198,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `arp`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `arp` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -214,7 +215,7 @@ CREATE TABLE `arp` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `arp_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -232,7 +233,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `attachment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `attachment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -243,7 +244,7 @@ CREATE TABLE `attachment` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `attachment_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -261,10 +262,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `attributes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `attributes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `resource` varchar(200) NOT NULL DEFAULT '',
   `type` varchar(200) NOT NULL DEFAULT '',
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -272,7 +273,7 @@ CREATE TABLE `attributes` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -517,7 +518,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `audit_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `audit_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -533,7 +534,7 @@ CREATE TABLE `audit_log` (
   KEY `audit_log_system_id_type` (`device_id`,`type`),
   KEY `audit_log_system_id_timestamp` (`device_id`,`timestamp`),
   CONSTRAINT `audit_log_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -551,11 +552,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `auth`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `auth` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `use_authentication` enum('y','n') NOT NULL DEFAULT 'y',
   `use_authorisation` enum('y','n') NOT NULL DEFAULT 'n',
@@ -565,7 +566,7 @@ CREATE TABLE `auth` (
   `port` varchar(200) NOT NULL DEFAULT '389',
   `domain` varchar(200) NOT NULL DEFAULT '',
   `type` enum('active directory','entra','openldap','github','okta') NOT NULL DEFAULT 'active directory',
-  `version` int(1) unsigned NOT NULL DEFAULT '3',
+  `version` int(1) unsigned NOT NULL DEFAULT 3,
   `ldap_base_dn` varchar(200) NOT NULL DEFAULT '',
   `ldap_dn_account` varchar(200) NOT NULL DEFAULT '',
   `ldap_dn_password` varchar(250) NOT NULL DEFAULT '',
@@ -579,7 +580,7 @@ CREATE TABLE `auth` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -597,22 +598,22 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `baselines`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `baselines` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `notes` text NOT NULL,
   `documentation` text NOT NULL,
   `notin` enum('y','n') NOT NULL DEFAULT 'n',
-  `priority` int(10) unsigned NOT NULL DEFAULT '5',
+  `priority` int(10) unsigned NOT NULL DEFAULT 5,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   CONSTRAINT `baselines_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -630,13 +631,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `baselines_policies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `baselines_policies` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `baseline_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `baseline_id` int(10) unsigned NOT NULL DEFAULT 1,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `priority` int(10) unsigned NOT NULL DEFAULT '5',
+  `priority` int(10) unsigned NOT NULL DEFAULT 5,
   `notes` text NOT NULL,
   `documentation` text NOT NULL,
   `table` varchar(45) NOT NULL DEFAULT '',
@@ -646,7 +647,7 @@ CREATE TABLE `baselines_policies` (
   PRIMARY KEY (`id`),
   KEY `baseline_id` (`baseline_id`),
   CONSTRAINT `baselines_policies_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -664,11 +665,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `baselines_results`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `baselines_results` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `baseline_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `baseline_id` int(10) unsigned NOT NULL DEFAULT 1,
   `name` varchar(200) NOT NULL DEFAULT '',
   `baseline` longtext NOT NULL,
   `result` longtext NOT NULL,
@@ -676,7 +677,7 @@ CREATE TABLE `baselines_results` (
   PRIMARY KEY (`id`),
   KEY `baseline_id` (`baseline_id`),
   CONSTRAINT `baselines_results_baseline_id` FOREIGN KEY (`baseline_id`) REFERENCES `baselines` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -694,11 +695,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `benchmarks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `benchmarks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `os` varchar(200) NOT NULL DEFAULT '',
   `type` varchar(200) NOT NULL DEFAULT '',
@@ -710,7 +711,7 @@ CREATE TABLE `benchmarks` (
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   CONSTRAINT `benchmarks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -722,15 +723,16 @@ LOCK TABLES `benchmarks` WRITE;
 /*!40000 ALTER TABLE `benchmarks` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
 -- Table structure for table `benchmarks_exceptions`
 --
 
 DROP TABLE IF EXISTS `benchmarks_exceptions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `benchmarks_exceptions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `external_ident` varchar(200) NOT NULL DEFAULT '',
   `benchmarks` text NOT NULL,
   `devices` text NOT NULL,
@@ -738,7 +740,7 @@ CREATE TABLE `benchmarks_exceptions` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -756,7 +758,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `benchmarks_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `benchmarks_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `benchmark_id` int(10) unsigned DEFAULT NULL,
@@ -770,7 +772,7 @@ CREATE TABLE `benchmarks_log` (
   KEY `benchmark_id` (`benchmark_id`),
   CONSTRAINT `benchmarks_log_benchmark_id` FOREIGN KEY (`benchmark_id`) REFERENCES `benchmarks` (`id`) ON DELETE CASCADE,
   CONSTRAINT `benchmarks_log_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -788,7 +790,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `benchmarks_policies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `benchmarks_policies` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `external_ident` varchar(200) NOT NULL DEFAULT '',
@@ -803,7 +805,7 @@ CREATE TABLE `benchmarks_policies` (
   `created_by` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `external_ident` (`external_ident`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -821,7 +823,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `benchmarks_result`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `benchmarks_result` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -834,7 +836,7 @@ CREATE TABLE `benchmarks_result` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `benchmarks_result_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -852,7 +854,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `bios`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bios` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -871,7 +873,7 @@ CREATE TABLE `bios` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `bios_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -889,7 +891,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `certificate`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `certificate` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -913,7 +915,7 @@ CREATE TABLE `certificate` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `certificate_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -931,11 +933,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `certificates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `certificates` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `serial` varchar(100) NOT NULL DEFAULT '',
   `active` enum('y','n','') NOT NULL DEFAULT '',
   `auto_renew` enum('y','n','') NOT NULL DEFAULT '',
@@ -945,7 +947,7 @@ CREATE TABLE `certificates` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -963,12 +965,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `change_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `change_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
   `db_table` varchar(50) NOT NULL DEFAULT '',
-  `db_row` int(10) unsigned NOT NULL DEFAULT '0',
+  `db_row` int(10) unsigned NOT NULL DEFAULT 0,
   `db_action` enum('','create','update','delete') NOT NULL DEFAULT '',
   `details` text NOT NULL,
   `ack_by` varchar(200) NOT NULL DEFAULT '',
@@ -985,7 +987,7 @@ CREATE TABLE `change_log` (
   KEY `change_log_db_action` (`db_action`),
   KEY `change_log_timestamp` (`timestamp`),
   CONSTRAINT `change_log_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1003,7 +1005,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `cli_config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cli_config` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -1016,7 +1018,7 @@ CREATE TABLE `cli_config` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `cli_config_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1034,19 +1036,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `cloud_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cloud_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cloud_id` int(10) unsigned DEFAULT NULL,
   `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
-  `pid` int(10) unsigned NOT NULL DEFAULT '0',
+  `pid` int(10) unsigned NOT NULL DEFAULT 0,
   `message` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `cloud_id` (`cloud_id`),
   CONSTRAINT `cloud_log_cloud_id` FOREIGN KEY (`cloud_id`) REFERENCES `clouds` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1064,11 +1066,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `clouds`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `clouds` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `type` enum('amazon','microsoft','google','digitalocean','') NOT NULL DEFAULT '',
   `credentials` text NOT NULL,
@@ -1077,7 +1079,7 @@ CREATE TABLE `clouds` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1095,11 +1097,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `cluster`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cluster` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
-  `cluster_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `cluster_id` int(10) unsigned NOT NULL DEFAULT 0,
   `role` enum('head','node','storage','network','other','') NOT NULL DEFAULT '',
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -1109,7 +1111,7 @@ CREATE TABLE `cluster` (
   KEY `cluster_clusters_id` (`cluster_id`),
   CONSTRAINT `cluster_clusters_id` FOREIGN KEY (`cluster_id`) REFERENCES `clusters` (`id`) ON DELETE CASCADE,
   CONSTRAINT `cluster_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1127,11 +1129,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `clusters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `clusters` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `type` enum('high availability','load balancing','performance','storage','other','') NOT NULL DEFAULT '',
   `purpose` enum('application','compute','database','storage','virtualisation','web','other','') NOT NULL DEFAULT '',
@@ -1144,7 +1146,7 @@ CREATE TABLE `clusters` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1162,15 +1164,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `collectors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `collectors` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `ip` varchar(45) NOT NULL DEFAULT '',
   `status` enum('created','pending','approved','denied','deleted','') NOT NULL DEFAULT '',
-  `check_minutes` int(10) unsigned NOT NULL DEFAULT '0',
+  `check_minutes` int(10) unsigned NOT NULL DEFAULT 0,
   `user_id` int(10) unsigned DEFAULT NULL,
   `uuid` text NOT NULL,
   `network_address` varchar(100) NOT NULL DEFAULT '',
@@ -1180,7 +1182,7 @@ CREATE TABLE `collectors` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1198,7 +1200,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `configuration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `configuration` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -1209,7 +1211,7 @@ CREATE TABLE `configuration` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `description` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1411,10 +1413,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `connections`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `connections` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `provider` varchar(100) NOT NULL DEFAULT '',
@@ -1422,12 +1424,12 @@ CREATE TABLE `connections` (
   `product_name` varchar(100) NOT NULL DEFAULT '',
   `service_identifier` varchar(100) NOT NULL DEFAULT '',
   `circuit_status` varchar(100) NOT NULL DEFAULT '',
-  `speed_down_a` float(7,3) NOT NULL DEFAULT '0.000',
-  `speed_up_a` float(7,3) NOT NULL DEFAULT '0.000',
-  `speed_down_b` float(7,3) NOT NULL DEFAULT '0.000',
-  `speed_up_b` float(7,3) NOT NULL DEFAULT '0.000',
-  `location_id_a` int(10) unsigned NOT NULL DEFAULT '1',
-  `location_id_b` int(10) unsigned NOT NULL DEFAULT '1',
+  `speed_down_a` float(7,3) NOT NULL DEFAULT 0.000,
+  `speed_up_a` float(7,3) NOT NULL DEFAULT 0.000,
+  `speed_down_b` float(7,3) NOT NULL DEFAULT 0.000,
+  `speed_up_b` float(7,3) NOT NULL DEFAULT 0.000,
+  `location_id_a` int(10) unsigned NOT NULL DEFAULT 1,
+  `location_id_b` int(10) unsigned NOT NULL DEFAULT 1,
   `device_id_a` int(10) unsigned DEFAULT NULL,
   `device_id_b` int(10) unsigned DEFAULT NULL,
   `line_number_a` varchar(100) NOT NULL DEFAULT '',
@@ -1443,7 +1445,7 @@ CREATE TABLE `connections` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1461,7 +1463,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `credential`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `credential` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -1475,7 +1477,7 @@ CREATE TABLE `credential` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `credential_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1493,18 +1495,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `credentials`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `credentials` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other',
   `credentials` text NOT NULL,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1522,20 +1524,20 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `dashboards`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dashboards` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `type` enum('default','org','user','') NOT NULL DEFAULT '',
-  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned NOT NULL DEFAULT 0,
   `description` text NOT NULL,
   `sidebar` enum('y','n') NOT NULL DEFAULT 'y',
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1553,8 +1555,6 @@ INSERT INTO `dashboards` VALUES (null,'Clouds Dashboard',1,'org',0,'The details 
 INSERT INTO `dashboards` VALUES (null,'Summary Dashboard',1,'org',0,'Summary Information','n','[]','system','2000-01-01 00:00:00');
 INSERT INTO `dashboards` VALUES (null,'Windows Security Dashboard',1,'org',0,'Windows Security Information','n','{\"layout\":\"6x4\",\"widget_count\":16,\"widgets\":[{\"size\":1,\"position\":1,\"widget_name\":\"Windows Clients Without AntiVirus\"},{\"size\":1,\"position\":2,\"widget_name\":\"Windows Clients Without Firewall\"},{\"size\":1,\"position\":3,\"widget_name\":\"Windows 10 Not Latest Build\"},{\"size\":1,\"position\":4,\"widget_name\":\"Windows 11 Not Latest Build\"},{\"size\":1,\"position\":5,\"widget_name\":\"Windows Clients Without OS Updates for more than 30 Days\"},{\"size\":1,\"position\":6,\"widget_name\":\"Windows Clients Not Seen for more than 30 Days\"},{\"size\":1,\"position\":7,\"widget_name\":\"Windows Server Without AntiVirus\"},{\"size\":1,\"position\":8,\"widget_name\":\"Windows Server Without Firewall\"},{\"size\":1,\"position\":9,\"widget_name\":\"Windows Server Not Latest Build\"},{\"size\":1,\"position\":10,\"widget_name\":\"Windows Servers Without OS Updates for more than 30 Days\"},{\"size\":1,\"position\":11,\"widget_name\":\"Windows Servers Not Seen for more than 30 Days\"},{\"size\":1,\"position\":12,\"widget_name\":\"Open Windows Shares\"}]}','system','2000-01-01 00:00:00');
 INSERT INTO `dashboards` VALUES (null,'Security Dashboard',1,'org',0,'Security Information','y','{\"layout\":\"4x3\",\"widget_count\":12,\"widgets\":[{\"size\":1,\"position\":1,\"widget_id\":52},{\"size\":1,\"position\":2,\"widget_id\":41},{\"size\":1,\"position\":3,\"widget_id\":43},{\"size\":1,\"position\":4,\"widget_id\":55},{\"size\":1,\"position\":5,\"widget_id\":57},{\"size\":1,\"position\":6,\"widget_id\":59},{\"size\":1,\"position\":7,\"widget_id\":56},{\"size\":1,\"position\":8,\"widget_id\":58},{\"size\":1,\"position\":9,\"widget_id\":22},{\"size\":1,\"position\":10,\"widget_id\":1},{\"size\":1,\"position\":11,\"widget_id\":27},{\"size\":1,\"position\":12,\"widget_id\":2}]}','system','2000-01-01 00:00:00');
-
-
 /*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1564,12 +1564,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `devices`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `devices` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(100) NOT NULL DEFAULT '',
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `ip` varchar(45) NOT NULL DEFAULT '',
   `hostname` varchar(100) NOT NULL DEFAULT '',
@@ -1608,7 +1608,7 @@ CREATE TABLE `devices` (
   `os_licence_expiry` date NOT NULL DEFAULT '2000-01-01',
   `memory_count` bigint(20) unsigned NOT NULL DEFAULT '0',
   `processor_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `storage_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `storage_count` int(10) unsigned NOT NULL DEFAULT 0,
   `os_installation_date` date NOT NULL DEFAULT '2000-01-01',
   `printer_port_name` varchar(50) NOT NULL DEFAULT '',
   `printer_shared` varchar(50) NOT NULL DEFAULT '',
@@ -1622,13 +1622,13 @@ CREATE TABLE `devices` (
   `owner` varchar(100) NOT NULL DEFAULT '',
   `criticality` varchar(100) NOT NULL DEFAULT 'unassigned',
   `sensitivity` varchar(100) NOT NULL DEFAULT 'unassigned',
-  `location_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `location_id` int(10) unsigned NOT NULL DEFAULT 1,
   `location_level` varchar(100) NOT NULL DEFAULT '',
   `location_suite` varchar(100) NOT NULL DEFAULT '',
   `location_room` varchar(100) NOT NULL DEFAULT '',
   `location_rack` varchar(100) NOT NULL DEFAULT '',
   `location_rack_position` varchar(100) NOT NULL DEFAULT '',
-  `location_rack_size` int(10) unsigned NOT NULL DEFAULT '0',
+  `location_rack_size` int(10) unsigned NOT NULL DEFAULT 0,
   `location_latitude` float(10,6) NOT NULL DEFAULT '0.000000',
   `location_longitude` float(10,6) NOT NULL DEFAULT '0.000000',
   `asset_number` varchar(50) NOT NULL DEFAULT '',
@@ -1649,7 +1649,7 @@ CREATE TABLE `devices` (
   `purchase_service_contract_number` varchar(255) NOT NULL DEFAULT '',
   `lease_expiry_date` date NOT NULL DEFAULT '2000-01-01',
   `purchase_amount` varchar(50) NOT NULL DEFAULT '',
-  `warranty_duration` int(5) unsigned NOT NULL DEFAULT '0',
+  `warranty_duration` int(5) unsigned NOT NULL DEFAULT 0,
   `warranty_expires` date NOT NULL DEFAULT '2000-01-01',
   `warranty_type` enum('','24x7x365','9x5x5','Next Business Day') NOT NULL DEFAULT '',
   `warranty_status` varchar(100) NOT NULL DEFAULT '',
@@ -1658,9 +1658,9 @@ CREATE TABLE `devices` (
   `end_of_service` date NOT NULL DEFAULT '2000-01-01',
   `end_of_production` date NOT NULL DEFAULT '2000-01-01',
   `switch_device_id` int(10) unsigned DEFAULT NULL,
-  `switch_port` int(10) unsigned NOT NULL DEFAULT '0',
+  `switch_port` int(10) unsigned NOT NULL DEFAULT 0,
   `patch_panel` varchar(45) NOT NULL DEFAULT '',
-  `patch_panel_port` int(10) unsigned NOT NULL DEFAULT '0',
+  `patch_panel_port` int(10) unsigned NOT NULL DEFAULT 0,
   `wall_port` varchar(100) NOT NULL DEFAULT '',
   `contact_name` varchar(50) NOT NULL DEFAULT '',
   `service_number` varchar(100) NOT NULL DEFAULT '',
@@ -1689,7 +1689,7 @@ CREATE TABLE `devices` (
   `sysName` varchar(255) NOT NULL DEFAULT '',
   `sysLocation` varchar(255) NOT NULL DEFAULT '',
   `snmp_version` varchar(10) NOT NULL DEFAULT '',
-  `snmp_enterprise_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `snmp_enterprise_id` int(10) unsigned NOT NULL DEFAULT 0,
   `snmp_enterprise_name` varchar(255) NOT NULL DEFAULT '',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -1713,7 +1713,7 @@ CREATE TABLE `devices` (
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1731,11 +1731,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `discoveries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `discoveries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `type` varchar(100) NOT NULL DEFAULT '',
   `subnet` varchar(45) NOT NULL DEFAULT '',
@@ -1758,17 +1758,17 @@ CREATE TABLE `discoveries` (
   `last_finished` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `duration` time NOT NULL DEFAULT '00:00:00',
   `status` varchar(20) NOT NULL DEFAULT '',
-  `ip_all_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `ip_responding_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `ip_scanned_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `ip_discovered_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `ip_audited_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `cloud_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `ip_all_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `ip_responding_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `ip_scanned_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `ip_discovered_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `ip_audited_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `cloud_id` int(10) unsigned NOT NULL DEFAULT 0,
   `cloud_name` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1788,7 +1788,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `discovery_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `discovery_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `discovery_id` int(10) unsigned DEFAULT NULL,
@@ -1796,7 +1796,7 @@ CREATE TABLE `discovery_log` (
   `timestamp` datetime DEFAULT current_timestamp(),
   `severity` int(1) unsigned NOT NULL DEFAULT '5',
   `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
-  `pid` int(10) unsigned NOT NULL DEFAULT '0',
+  `pid` int(10) unsigned NOT NULL DEFAULT 0,
   `ip` varchar(45) NOT NULL DEFAULT '',
   `file` varchar(100) NOT NULL DEFAULT '',
   `function` varchar(100) NOT NULL DEFAULT '',
@@ -1810,7 +1810,7 @@ CREATE TABLE `discovery_log` (
   KEY `pid` (`pid`),
   KEY `discovery_id` (`discovery_id`),
   CONSTRAINT `discovery_log_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1828,24 +1828,24 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `discovery_scan_options`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `discovery_scan_options` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `ping` enum('','y','n') NOT NULL DEFAULT 'y',
   `service_version` enum('','y','n') NOT NULL DEFAULT 'n',
   `open|filtered` enum('','y','n') NOT NULL DEFAULT 'n',
   `filtered` enum('','y','n') NOT NULL DEFAULT 'n',
-  `timeout` int(10) unsigned NOT NULL DEFAULT '0',
+  `timeout` int(10) unsigned NOT NULL DEFAULT 0,
   `snmp_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `ssh_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `wmi_timeout` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `script_timeout` tinyint(5) unsigned NOT NULL DEFAULT '0',
   `timing` int(1) unsigned NOT NULL DEFAULT '4',
-  `nmap_tcp_ports` int(10) unsigned NOT NULL DEFAULT '0',
-  `nmap_udp_ports` int(10) unsigned NOT NULL DEFAULT '0',
+  `nmap_tcp_ports` int(10) unsigned NOT NULL DEFAULT 0,
+  `nmap_udp_ports` int(10) unsigned NOT NULL DEFAULT 0,
   `tcp_ports` text NOT NULL,
   `udp_ports` text NOT NULL,
   `exclude_tcp_ports` text NOT NULL,
@@ -1859,7 +1859,7 @@ CREATE TABLE `discovery_scan_options` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1883,7 +1883,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `disk`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `disk` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -1902,7 +1902,7 @@ CREATE TABLE `disk` (
   `scsi_bus` varchar(10) NOT NULL DEFAULT '',
   `scsi_logical_unit` varchar(100) NOT NULL DEFAULT '',
   `scsi_port` varchar(10) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `size` int(10) unsigned NOT NULL DEFAULT 0,
   `status` varchar(100) NOT NULL DEFAULT '',
   `firmware` varchar(100) NOT NULL DEFAULT '',
   `model_family` varchar(200) NOT NULL DEFAULT '',
@@ -1910,7 +1910,7 @@ CREATE TABLE `disk` (
   KEY `hard_drive_index` (`hard_drive_index`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `disk_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1928,7 +1928,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `dns`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dns` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -1941,7 +1941,7 @@ CREATE TABLE `dns` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `dns_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1959,14 +1959,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `edit_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `edit_log` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned DEFAULT NULL,
   `device_id` int(10) unsigned DEFAULT NULL,
   `details` varchar(200) NOT NULL DEFAULT '',
   `source` varchar(100) NOT NULL DEFAULT '',
-  `weight` int(10) unsigned NOT NULL DEFAULT '0',
+  `weight` int(10) unsigned NOT NULL DEFAULT 0,
   `db_table` varchar(100) NOT NULL DEFAULT '',
   `db_column` varchar(100) NOT NULL DEFAULT '',
   `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -1975,7 +1975,7 @@ CREATE TABLE `edit_log` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `edit_log_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1987,14 +1987,13 @@ LOCK TABLES `edit_log` WRITE;
 /*!40000 ALTER TABLE `edit_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
 --
 -- Table structure for table `enterprise`
 --
 
 DROP TABLE IF EXISTS `enterprise`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `enterprise` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `request` text NOT NULL,
@@ -2002,7 +2001,7 @@ CREATE TABLE `enterprise` (
   `timestamp` datetime NOT NULL DEFAULT current_timestamp(),
   `output` mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2020,7 +2019,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `executable`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `executable` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2032,7 +2031,7 @@ CREATE TABLE `executable` (
   `full_name` text NOT NULL,
   `description` varchar(1000) NOT NULL,
   `package` varchar(1000) NOT NULL,
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `size` int(10) unsigned NOT NULL DEFAULT 0,
   `directory` text NOT NULL,
   `hash` varchar(250) NOT NULL DEFAULT '',
   `last_changed` varchar(100) NOT NULL DEFAULT '',
@@ -2050,7 +2049,7 @@ CREATE TABLE `executable` (
   KEY `system_id` (`device_id`),
   KEY `name` (`name`),
   CONSTRAINT `executable_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2068,11 +2067,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `executables`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `executables` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `path` text NOT NULL,
   `description` text NOT NULL,
   `os_family` varchar(50) NOT NULL DEFAULT '',
@@ -2080,7 +2079,7 @@ CREATE TABLE `executables` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2098,17 +2097,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `field`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `field` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
-  `field_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `field_id` int(10) unsigned NOT NULL DEFAULT 0,
   `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `value` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `field_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2126,19 +2125,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `fields`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fields` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `group_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `group_id` int(10) unsigned NOT NULL DEFAULT 1,
   `type` enum('varchar','list','date') NOT NULL DEFAULT 'varchar',
   `values` text NOT NULL,
   `placement` enum('custom','system') NOT NULL DEFAULT 'system',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2165,7 +2164,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `file`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `file` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2175,7 +2174,7 @@ CREATE TABLE `file` (
   `files_id` int(10) unsigned DEFAULT NULL,
   `name` varchar(200) NOT NULL DEFAULT '',
   `full_name` text NOT NULL,
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `size` int(10) unsigned NOT NULL DEFAULT 0,
   `directory` text NOT NULL,
   `hash` varchar(250) NOT NULL DEFAULT '',
   `last_changed` varchar(100) NOT NULL DEFAULT '',
@@ -2190,7 +2189,7 @@ CREATE TABLE `file` (
   KEY `system_id` (`device_id`),
   KEY `name` (`name`),
   CONSTRAINT `file_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2208,17 +2207,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `files`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `path` text NOT NULL,
   `description` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2236,7 +2235,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `firewall`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `firewall` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2255,7 +2254,7 @@ CREATE TABLE `firewall` (
   KEY `last_seen` (`last_seen`),
   KEY `name` (`name`),
   CONSTRAINT `firewall_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2273,7 +2272,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `firewall_rule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `firewall_rule` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2300,7 +2299,7 @@ CREATE TABLE `firewall_rule` (
   KEY `last_seen` (`last_seen`),
   KEY `name` (`name`),
   CONSTRAINT `firewall_rule_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2318,10 +2317,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `groups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `groups` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `sql` text NOT NULL,
@@ -2330,7 +2329,7 @@ CREATE TABLE `groups` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2364,7 +2363,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `image`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `image` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2376,7 +2375,7 @@ CREATE TABLE `image` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `image_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2394,11 +2393,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `integrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `integrations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `type` varchar(45) NOT NULL DEFAULT 'nmis',
   `additional_items` longtext NOT NULL,
@@ -2428,11 +2427,11 @@ CREATE TABLE `integrations` (
   `delete_external_from_internal` enum('y','n') NOT NULL DEFAULT 'n',
   `status` varchar(200) NOT NULL DEFAULT '',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `duration` int(10) unsigned DEFAULT '0',
+  `duration` int(10) unsigned DEFAULT 0,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2451,16 +2450,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `integrations_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `integrations_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `integrations_id` int(10) unsigned DEFAULT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
   `microtime` decimal(16,6) DEFAULT NULL,
   `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
   `message` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2478,10 +2477,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `invoice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `invoice` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `purchase_order` varchar(100) NOT NULL DEFAULT '',
   `cost_center` varchar(100) NOT NULL DEFAULT '',
   `date_received` varchar(100) NOT NULL DEFAULT '',
@@ -2491,7 +2490,7 @@ CREATE TABLE `invoice` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2509,7 +2508,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `invoice_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `invoice_item` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2520,7 +2519,7 @@ CREATE TABLE `invoice_item` (
   `line_amount` varchar(200) NOT NULL DEFAULT '',
   `notes` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2538,7 +2537,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `ip`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ip` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2560,7 +2559,7 @@ CREATE TABLE `ip` (
   KEY `mac` (`mac`),
   KEY `network` (`network`),
   CONSTRAINT `ip_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2578,7 +2577,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `license`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `license` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2588,8 +2587,8 @@ CREATE TABLE `license` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `raw` text NOT NULL,
-  `purchase_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `used_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `purchase_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `used_count` int(10) unsigned NOT NULL DEFAULT 0,
   `software_name` text NOT NULL,
   `software_version` varchar(200) NOT NULL DEFAULT '',
   `expiry_date` date NOT NULL DEFAULT '2000-01-01',
@@ -2598,7 +2597,7 @@ CREATE TABLE `license` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `license_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2616,14 +2615,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `licenses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `licenses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `org_descendants` enum('y','n') NOT NULL DEFAULT 'y',
-  `purchase_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `used_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `purchase_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `used_count` int(10) unsigned NOT NULL DEFAULT 0,
   `description` text NOT NULL,
   `match_string` text NOT NULL,
   `software_name` text NOT NULL,
@@ -2635,7 +2634,7 @@ CREATE TABLE `licenses` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2653,11 +2652,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `locations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `locations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `parent_id` int(10) unsigned DEFAULT '1',
   `type` varchar(100) NOT NULL DEFAULT '',
@@ -2688,7 +2687,7 @@ CREATE TABLE `locations` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2707,7 +2706,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2716,13 +2715,13 @@ CREATE TABLE `log` (
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `name` varchar(200) NOT NULL DEFAULT '',
   `file_name` text NOT NULL,
-  `file_size` int(10) unsigned NOT NULL DEFAULT '0',
-  `max_file_size` int(10) unsigned NOT NULL DEFAULT '0',
+  `file_size` int(10) unsigned NOT NULL DEFAULT 0,
+  `max_file_size` int(10) unsigned NOT NULL DEFAULT 0,
   `overwrite` varchar(30) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `log_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2740,17 +2739,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `maps`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `maps` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2768,7 +2767,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `memory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `memory` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2782,13 +2781,13 @@ CREATE TABLE `memory` (
   `type` varchar(100) NOT NULL DEFAULT '',
   `form_factor` varchar(100) NOT NULL DEFAULT '',
   `detail` varchar(100) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
-  `speed` int(10) unsigned NOT NULL DEFAULT '0',
+  `size` int(10) unsigned NOT NULL DEFAULT 0,
+  `speed` int(10) unsigned NOT NULL DEFAULT 0,
   `tag` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `memory_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2806,7 +2805,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `module`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `module` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2829,7 +2828,7 @@ CREATE TABLE `module` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `module_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2847,7 +2846,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `monitor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `monitor` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2868,7 +2867,7 @@ CREATE TABLE `monitor` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `monitor_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2886,7 +2885,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `motherboard`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `motherboard` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2904,7 +2903,7 @@ CREATE TABLE `motherboard` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `motherboard_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2922,7 +2921,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `netstat`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `netstat` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2937,7 +2936,7 @@ CREATE TABLE `netstat` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `netstat_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2955,7 +2954,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `network`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `network` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -2994,7 +2993,7 @@ CREATE TABLE `network` (
   KEY `dhcp_server` (`dhcp_server`),
   KEY `dns_server` (`dns_server`),
   CONSTRAINT `network_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3012,12 +3011,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `networks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `networks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `network` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `type` enum('Campus Area Network','Cloud Network','Enterprise Private Network','Home Area Network','Local Area Network','Metropolitan Area Network','Passive Optical Local Area Network','Personal Area Network','Storage-Area Network','System-Area Network','Virtual Private Network','Wide Area Network','Wireless Local Area Network') NOT NULL DEFAULT 'Local Area Network',
   `description` text NOT NULL,
   `external_ident` varchar(200) NOT NULL DEFAULT '',
@@ -3033,7 +3032,7 @@ CREATE TABLE `networks` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `networks_cloud_id` (`cloud_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3051,7 +3050,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `news`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `news` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -3071,7 +3070,7 @@ CREATE TABLE `news` (
   `actioned_by` varchar(200) NOT NULL DEFAULT '',
   `actioned_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3089,7 +3088,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `nmap`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `nmap` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -3104,7 +3103,7 @@ CREATE TABLE `nmap` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `nmap_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3122,7 +3121,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `optical`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `optical` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -3137,7 +3136,7 @@ CREATE TABLE `optical` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `optical_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3155,7 +3154,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `orgs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orgs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -3166,7 +3165,7 @@ CREATE TABLE `orgs` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3185,15 +3184,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `packages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `packages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `org_descendants` enum('y','n') NOT NULL DEFAULT 'y',
-  `purchase_count` int(10) unsigned NOT NULL DEFAULT '0',
-  `used_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `purchase_count` int(10) unsigned NOT NULL DEFAULT 0,
+  `used_count` int(10) unsigned NOT NULL DEFAULT 0,
   `match_string` text NOT NULL,
   `software_name` text NOT NULL,
   `software_version` varchar(200) NOT NULL DEFAULT '',
@@ -3206,7 +3205,7 @@ CREATE TABLE `packages` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3290,7 +3289,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `pagefile`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pagefile` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -3298,13 +3297,13 @@ CREATE TABLE `pagefile` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `name` varchar(200) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
-  `initial_size` int(10) unsigned NOT NULL DEFAULT '0',
-  `max_size` int(10) unsigned NOT NULL DEFAULT '0',
+  `size` int(10) unsigned NOT NULL DEFAULT 0,
+  `initial_size` int(10) unsigned NOT NULL DEFAULT 0,
+  `max_size` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `pagefile_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3322,7 +3321,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `partition`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `partition` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -3337,9 +3336,9 @@ CREATE TABLE `partition` (
   `partition_disk_index` varchar(50) NOT NULL DEFAULT '',
   `mount_type` enum('mount point','partition','other') NOT NULL DEFAULT 'partition',
   `mount_point` varchar(200) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '1',
-  `free` int(10) unsigned NOT NULL DEFAULT '1',
-  `used` int(10) unsigned NOT NULL DEFAULT '1',
+  `size` int(10) unsigned NOT NULL DEFAULT 1,
+  `free` int(10) unsigned NOT NULL DEFAULT 1,
+  `used` int(10) unsigned NOT NULL DEFAULT 1,
   `format` varchar(20) NOT NULL DEFAULT '',
   `bootable` varchar(10) NOT NULL DEFAULT '',
   `type` varchar(100) NOT NULL DEFAULT 'local',
@@ -3348,7 +3347,7 @@ CREATE TABLE `partition` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `partition_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3366,7 +3365,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `policy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `policy` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -3381,7 +3380,7 @@ CREATE TABLE `policy` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `policy_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3399,7 +3398,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `print_queue`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `print_queue` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -3424,7 +3423,7 @@ CREATE TABLE `print_queue` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `print_queue_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3442,7 +3441,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `processor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `processor` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -3454,7 +3453,7 @@ CREATE TABLE `processor` (
   `core_count` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `logical_count` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
-  `speed` int(10) unsigned NOT NULL DEFAULT '0',
+  `speed` int(10) unsigned NOT NULL DEFAULT 0,
   `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `architecture` varchar(100) NOT NULL DEFAULT '',
   `socket` varchar(100) NOT NULL DEFAULT '',
@@ -3462,7 +3461,7 @@ CREATE TABLE `processor` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `processor_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3480,10 +3479,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `queries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `queries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `name` varchar(200) NOT NULL DEFAULT '',
   `menu_category` varchar(200) NOT NULL DEFAULT 'Device',
   `menu_display` enum('y','n') NOT NULL DEFAULT 'y',
@@ -3495,7 +3494,7 @@ CREATE TABLE `queries` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3609,10 +3608,10 @@ INSERT INTO `queries` VALUES (102,1,'Windows 2016 Not Latest Build','Software','
 INSERT INTO `queries` VALUES (103,1,'Windows Clients Without OS Updates for more than 30 Days','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_os_update != \'2000-01-01 00:00:00\', devices.last_os_update, \'\') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 30 DAY) AND devices.last_os_update != \'\' AND devices.last_os_update != \'2000-01-01 00:00:00\' AND os_family IN (\'Windows 10\', \'Windows 11\')','','n','y','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (104,1,'Windows Servers Without OS Updates for more than 30 Days','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_os_update != \'2000-01-01 00:00:00\', devices.last_os_update, \'\') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 30 DAY) AND devices.last_os_update != \'\' AND devices.last_os_update != \'2000-01-01 00:00:00\' AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\')','','n','y','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (105,1,'Windows Clients Not Seen for more than 30 Days','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_seen != \'2000-01-01 00:00:00\', devices.last_seen, \'\') AS `devices.last_seen`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND os_family IN (\'Windows 10\', \'Windows 11\') AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','y','y','system','2000-01-01 00:00:00');
-INSERT INTO `queries` VALUES (106,1,'Windows Servers Not Seen for more than 30 Days','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, devices.last_seen AS `devices.last_seen`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\') AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','y','y','system','2000-01-01 00:00:00');
-INSERT INTO `queries` VALUES (107,1,'Windows Software','Software','y','','SELECT devices.id AS `devices.id`, software.name AS `software.name`, software.version AS `software.version`, devices.os_family AS `devices.os_family`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, locations.id AS `locations.id`, locations.name AS `locations.name` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id AND software.current = \'y\') LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND software.name NOT LIKE \'KB%\' AND devices.os_group = \'Windows\' ORDER BY software.name','','n','n','Administrator','2025-11-21 12:55:46');
-INSERT INTO `queries` VALUES (108,1,'Hardware Manufacturers','Hardware','y','','SELECT devices.manufacturer AS `devices.manufacturer`, COUNT(id) AS `count` FROM devices WHERE @filter GROUP BY devices.manufacturer','','n','n','Administrator','2025-11-21 14:28:45');
-INSERT INTO `queries` VALUES (109,1,'Windows Client Latest Build','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, devices.os_family AS `devices.os_family`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = \'y\') WHERE @filter AND ((windows.build_number = \'19045.6575\' AND devices.os_family = \'Windows 10\') OR (windows.build_number = \'26200.7171\' AND devices.os_family = \'Windows 11\'))','','n','n','Administrator','2025-11-21 16:51:17');
+INSERT INTO `queries` VALUES (106,1,'Windows Servers Not Seen for more than 30 Days','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, IF(devices.last_seen != \'2000-01-01 00:00:00\', devices.last_seen, \'\') AS `devices.last_os_update`, locations.name AS `locations.name` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\') AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','y','y','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (107,1,'Windows Software','Software','y','','SELECT devices.id AS `devices.id`, software.name AS `software.name`, software.version AS `software.version`, devices.os_family AS `devices.os_family`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, locations.id AS `locations.id`, locations.name AS `locations.name` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id AND software.current = \'y\') LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND software.name NOT LIKE \'KB%\' AND devices.os_group = \'Windows\' ORDER BY software.name','','n','n','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (108,1,'Hardware Manufacturers','Hardware','y','','SELECT devices.manufacturer AS `devices.manufacturer`, COUNT(id) AS `count` FROM devices WHERE @filter GROUP BY devices.manufacturer','','n','n','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (109,1,'Windows Client Latest Build','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, devices.os_family AS `devices.os_family`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = \'y\') WHERE @filter AND ((windows.build_number = \'19045.6575\' AND devices.os_family = \'Windows 10\') OR (windows.build_number = \'26200.7171\' AND devices.os_family = \'Windows 11\'))','','n','n','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `queries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3622,19 +3621,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `queue`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `queue` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   `type` varchar(20) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `pid` int(10) NOT NULL DEFAULT '0',
   `status` varchar(20) NOT NULL DEFAULT '',
   `details` text NOT NULL,
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `started_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3652,16 +3651,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `rack_devices`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rack_devices` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `rack_id` int(10) unsigned DEFAULT NULL,
   `device_id` int(10) unsigned DEFAULT NULL,
-  `position` int(10) unsigned NOT NULL DEFAULT '1',
-  `height` int(10) unsigned NOT NULL DEFAULT '1',
-  `width` int(10) unsigned NOT NULL DEFAULT '1',
+  `position` int(10) unsigned NOT NULL DEFAULT 1,
+  `height` int(10) unsigned NOT NULL DEFAULT 1,
+  `width` int(10) unsigned NOT NULL DEFAULT 1,
   `orientation` enum('front','front-right','front-left','rear','rear-left','rear-right') NOT NULL DEFAULT 'front',
   `options` text NOT NULL,
   `notes` text NOT NULL,
@@ -3673,7 +3672,7 @@ CREATE TABLE `rack_devices` (
   KEY `rack_id` (`rack_id`),
   CONSTRAINT `rack_devices_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
   CONSTRAINT `rack_devices_rack_id` FOREIGN KEY (`rack_id`) REFERENCES `racks` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3691,11 +3690,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `racks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `racks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `location_id` int(10) unsigned DEFAULT NULL,
   `description` text NOT NULL,
   `building` varchar(200) NOT NULL DEFAULT '',
@@ -3704,14 +3703,14 @@ CREATE TABLE `racks` (
   `row` varchar(200) NOT NULL DEFAULT '',
   `row_position` varchar(200) NOT NULL DEFAULT '',
   `pod` varchar(200) NOT NULL DEFAULT '',
-  `physical_height` int(10) unsigned NOT NULL DEFAULT '2000',
-  `physical_width` int(10) unsigned NOT NULL DEFAULT '600',
-  `physical_depth` int(10) unsigned NOT NULL DEFAULT '1050',
-  `weight_empty` int(10) unsigned NOT NULL DEFAULT '1',
-  `weight_current` int(10) unsigned NOT NULL DEFAULT '1',
-  `weight_max` int(10) unsigned NOT NULL DEFAULT '1',
-  `ru_start` int(10) unsigned NOT NULL DEFAULT '1',
-  `ru_height` int(10) unsigned NOT NULL DEFAULT '42',
+  `physical_height` int(10) unsigned NOT NULL DEFAULT 2000,
+  `physical_width` int(10) unsigned NOT NULL DEFAULT 600,
+  `physical_depth` int(10) unsigned NOT NULL DEFAULT 1050,
+  `weight_empty` int(10) unsigned NOT NULL DEFAULT 1,
+  `weight_current` int(10) unsigned NOT NULL DEFAULT 1,
+  `weight_max` int(10) unsigned NOT NULL DEFAULT 1,
+  `ru_start` int(10) unsigned NOT NULL DEFAULT 1,
+  `ru_height` int(10) unsigned NOT NULL DEFAULT 42,
   `type` varchar(200) NOT NULL DEFAULT '',
   `purpose` varchar(200) NOT NULL DEFAULT '',
   `manufacturer` varchar(200) NOT NULL DEFAULT '',
@@ -3723,9 +3722,9 @@ CREATE TABLE `racks` (
   `bar_code` varchar(200) NOT NULL DEFAULT '',
   `power_circuit` varchar(200) NOT NULL DEFAULT '',
   `power_sockets` varchar(200) NOT NULL DEFAULT '',
-  `circuit_count` int(10) unsigned NOT NULL DEFAULT '1',
-  `btu_total` int(10) unsigned NOT NULL DEFAULT '1',
-  `btu_max` int(10) unsigned NOT NULL DEFAULT '1',
+  `circuit_count` int(10) unsigned NOT NULL DEFAULT 1,
+  `btu_total` int(10) unsigned NOT NULL DEFAULT 1,
+  `btu_max` int(10) unsigned NOT NULL DEFAULT 1,
   `options` text NOT NULL,
   `notes` text NOT NULL,
   `tags` varchar(250) NOT NULL DEFAULT '',
@@ -3734,7 +3733,7 @@ CREATE TABLE `racks` (
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   CONSTRAINT `racks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3752,7 +3751,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `radio`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `radio` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -3774,7 +3773,7 @@ CREATE TABLE `radio` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `radio_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3792,7 +3791,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `roles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -3802,7 +3801,7 @@ CREATE TABLE `roles` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3824,7 +3823,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `route`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `route` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -3842,7 +3841,7 @@ CREATE TABLE `route` (
   KEY `system_id` (`device_id`),
   KEY `next_hop` (`next_hop`),
   CONSTRAINT `route_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3860,19 +3859,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `rules`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rules` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
-  `weight` int(10) unsigned NOT NULL DEFAULT '100',
+  `weight` int(10) unsigned NOT NULL DEFAULT 100,
   `inputs` text NOT NULL,
   `outputs` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3948,7 +3947,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `san`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `san` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -3967,7 +3966,7 @@ CREATE TABLE `san` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `san_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3985,11 +3984,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `scripts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `scripts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `options` text NOT NULL,
   `description` text NOT NULL,
   `based_on` varchar(200) NOT NULL DEFAULT '',
@@ -3997,7 +3996,7 @@ CREATE TABLE `scripts` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4023,7 +4022,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `scsi`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `scsi` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4039,7 +4038,7 @@ CREATE TABLE `scsi` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `scsi_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4057,7 +4056,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `server`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `server` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4078,7 +4077,7 @@ CREATE TABLE `server` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `server_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4096,7 +4095,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `server_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `server_item` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4116,7 +4115,7 @@ CREATE TABLE `server_item` (
   `parent_id` int(11) unsigned DEFAULT NULL,
   `instance` varchar(100) NOT NULL DEFAULT '',
   `path` varchar(250) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `size` int(10) unsigned NOT NULL DEFAULT 0,
   `log_status` varchar(100) NOT NULL DEFAULT '',
   `log_format` varchar(100) NOT NULL DEFAULT '',
   `log_path` varchar(100) NOT NULL DEFAULT '',
@@ -4126,7 +4125,7 @@ CREATE TABLE `server_item` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `server_item_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4144,7 +4143,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `service`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `service` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4163,7 +4162,7 @@ CREATE TABLE `service` (
   KEY `last_seen` (`last_seen`),
   KEY `name` (`name`),
   CONSTRAINT `service_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4181,7 +4180,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `share`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `share` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4191,12 +4190,12 @@ CREATE TABLE `share` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `path` varchar(250) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `size` int(10) unsigned NOT NULL DEFAULT 0,
   `users` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `share_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4214,7 +4213,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `software`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `software` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4244,7 +4243,7 @@ CREATE TABLE `software` (
   KEY `name` (`name`),
   FULLTEXT KEY `software_name_fulltext` (`name`),
   CONSTRAINT `software_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4262,7 +4261,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `software_key`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `software_key` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4276,7 +4275,7 @@ CREATE TABLE `software_key` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `software_key_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4294,7 +4293,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sound`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sound` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4308,7 +4307,7 @@ CREATE TABLE `sound` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `sound_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4326,11 +4325,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `standards`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `standards` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `type` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -4338,7 +4337,7 @@ CREATE TABLE `standards` (
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   CONSTRAINT `standards_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4356,7 +4355,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `standards_policies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `standards_policies` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(200) NOT NULL DEFAULT '',
@@ -4368,7 +4367,7 @@ CREATE TABLE `standards_policies` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `type` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4479,11 +4478,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `standards_results`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `standards_results` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `standard_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `policy_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `standard_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `policy_id` int(10) unsigned NOT NULL DEFAULT 1,
   `applied` varchar(200) NOT NULL DEFAULT '',
   `maturity_score` decimal(1,1) NOT NULL DEFAULT 0.0,
   `maturity_level` enum('incomplete','performed','managed','established','predictable','optimized','') NOT NULL DEFAULT '',
@@ -4505,7 +4504,7 @@ CREATE TABLE `standards_results` (
   PRIMARY KEY (`id`),
   KEY `standard_id` (`standard_id`),
   CONSTRAINT `standards_results_standard_id` FOREIGN KEY (`standard_id`) REFERENCES `standards` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4523,11 +4522,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `summaries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `summaries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `menu_category` varchar(200) NOT NULL DEFAULT 'Device',
   `menu_display` enum('y','n') NOT NULL DEFAULT 'y',
   `table` varchar(100) NOT NULL DEFAULT '',
@@ -4536,7 +4535,7 @@ CREATE TABLE `summaries` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4567,7 +4566,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `task` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4588,7 +4587,7 @@ CREATE TABLE `task` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `task_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4606,13 +4605,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `tasks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tasks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
-  `sub_resource_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `sub_resource_id` int(10) unsigned NOT NULL DEFAULT 1,
   `uuid` varchar(100) NOT NULL DEFAULT '',
   `enabled` enum('y','n') NOT NULL DEFAULT 'y',
   `type` varchar(100) NOT NULL DEFAULT 'command',
@@ -4621,17 +4620,17 @@ CREATE TABLE `tasks` (
   `day_of_month` varchar(100) NOT NULL DEFAULT '*',
   `month` varchar(100) NOT NULL DEFAULT '*',
   `day_of_week` varchar(100) NOT NULL DEFAULT '*',
-  `delay_minutes` int(10) unsigned NOT NULL DEFAULT '0',
-  `expire_minutes` int(10) unsigned NOT NULL DEFAULT '0',
+  `delay_minutes` int(10) unsigned NOT NULL DEFAULT 0,
+  `expire_minutes` int(10) unsigned NOT NULL DEFAULT 0,
   `first_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `email_address` varchar(100) NOT NULL DEFAULT '',
   `format` varchar(100) NOT NULL DEFAULT '',
-  `group_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `group_id` int(10) unsigned NOT NULL DEFAULT 0,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4652,7 +4651,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `usb`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usb` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4672,7 +4671,7 @@ CREATE TABLE `usb` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `usb_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4690,7 +4689,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4717,7 +4716,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `user_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4735,7 +4734,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_group` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4749,7 +4748,7 @@ CREATE TABLE `user_group` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `user_group_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4767,11 +4766,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `password` varchar(250) NOT NULL DEFAULT '',
   `full_name` varchar(100) NOT NULL DEFAULT '',
   `email` varchar(100) NOT NULL DEFAULT '',
@@ -4790,7 +4789,7 @@ CREATE TABLE `users` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4809,7 +4808,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `variable`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `variable` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4823,7 +4822,7 @@ CREATE TABLE `variable` (
   KEY `system_id` (`device_id`),
   KEY `device_id_name` (`device_id`,`name`),
   CONSTRAINT `variable_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4841,21 +4840,21 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `vendors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vendors` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `critical` int(10) unsigned NOT NULL DEFAULT '0',
-  `high` int(10) unsigned NOT NULL DEFAULT '0',
-  `medium` int(10) unsigned NOT NULL DEFAULT '0',
-  `low` int(10) unsigned NOT NULL DEFAULT '0',
-  `none` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `critical` int(10) unsigned NOT NULL DEFAULT 0,
+  `high` int(10) unsigned NOT NULL DEFAULT 0,
+  `medium` int(10) unsigned NOT NULL DEFAULT 0,
+  `low` int(10) unsigned NOT NULL DEFAULT 0,
+  `none` int(10) unsigned NOT NULL DEFAULT 0,
   `use` enum('y','n','') NOT NULL DEFAULT 'n',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4864,13 +4863,6 @@ CREATE TABLE `vendors` (
 
 LOCK TABLES `vendors` WRITE;
 /*!40000 ALTER TABLE `vendors` DISABLE KEYS */;
-INSERT INTO `vendors` VALUES (null, 'adobe', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'apple', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'cisco', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'google', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'microsoft', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'mozilla', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
-INSERT INTO `vendors` VALUES (null, 'redhat', 1, 0, 0, 0, 0, 0, 'y', 'system', '2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `vendors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4880,7 +4872,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `video`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `video` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4891,12 +4883,12 @@ CREATE TABLE `video` (
   `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `model` varchar(200) NOT NULL DEFAULT '',
   `device` varchar(100) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `size` int(10) unsigned NOT NULL DEFAULT 0,
   `caption` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `video_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4914,7 +4906,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `vm`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vm` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -4929,13 +4921,13 @@ CREATE TABLE `vm` (
   `vm_group` text NOT NULL,
   `config_file` text NOT NULL,
   `memory_count` int(12) unsigned NOT NULL DEFAULT '0',
-  `cpu_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `cpu_count` int(10) unsigned NOT NULL DEFAULT 0,
   `status` varchar(100) NOT NULL DEFAULT '',
   `icon` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `vm_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4953,11 +4945,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `vulnerabilities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vulnerabilities` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `cve` varchar(200) NOT NULL DEFAULT '',
   `attack_complexity` varchar(20) NOT NULL DEFAULT '',
   `attack_requirements` varchar(20) NOT NULL DEFAULT '',
@@ -4993,7 +4985,7 @@ CREATE TABLE `vulnerabilities` (
   KEY `published_date` (`published_date`),
   KEY `cvevendor` (`cve`,`vendor`),
   KEY `vendorbaseseverity` (`vendor`,`base_severity`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5011,18 +5003,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `vulnerabilities_cache`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 
 CREATE TABLE `vulnerabilities_cache` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `vulnerability_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `count` int(10) unsigned NOT NULL DEFAULT '0',
+  `vulnerability_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+  `count` int(10) unsigned NOT NULL DEFAULT 0,
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `vulnerabilities_cache_org_id` (`org_id`),
   CONSTRAINT `vulnerabilities_cache_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5040,7 +5032,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `warranty`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `warranty` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -5059,7 +5051,7 @@ CREATE TABLE `warranty` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `warranty_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5077,11 +5069,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `widgets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `widgets` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` text NOT NULL,
   `type` enum('line','pie','status','traffic','') DEFAULT 'line',
   `options` text NOT NULL,
@@ -5109,7 +5101,7 @@ CREATE TABLE `widgets` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5189,37 +5181,21 @@ INSERT INTO `widgets` VALUES (68,'Windows Server Not Latest Build',1,'','status'
 INSERT INTO `widgets` VALUES (69,'Windows Servers Without OS Updates for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 14 DAY) AND devices.last_os_update != \'\' AND devices.last_os_update != \'2000-01-01 00:00:00\' AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\')','','update','Windows Servers that have not been updated for 30 days or more.','No Updates','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',104,'admin','2025-11-19 21:20:45');
 INSERT INTO `widgets` VALUES (70,'Windows Servers Not Seen for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\') AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','discoveries','Windows Servers not seen for 30 or more days.','Not Seen','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',106,'admin','2025-11-19 21:22:57');
 INSERT INTO `widgets` VALUES (71,'Total Devices',1,'','status','','SELECT COUNT(id) AS `count` FROM devices WHERE @filter','devices','icon-database','The total number of devices in Open-AudIT.','Total Devices','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','primary',0,0,'admin','2025-11-21 13:21:17');
-
-INSERT INTO `widgets` VALUES (72,'Recently Audited',1,'','status','','SELECT CONCAT(ROUND(COUNT(id) / COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END), 0) * 100, \'%\') AS `count` FROM devices WHERE @filter','devices','icon-radar','Devices scanned this week.','Audited (7 Days)','','','','','',0,'',0,0,0,0,'SELECT CONCAT(COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END), \' / \', COUNT(id)) AS `secondary_text` FROM devices WHERE @filter','success','success',0,0,'admin','2025-11-20 19:12:37');
-
-INSERT INTO `widgets` VALUES (73,'Orphaned Devices',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','icon-eye-off','Devices not seen for 30+ days.','Orphaned Devices','30 days.','','','','',0,'',0,0,0,0,'','warning','success',0,91,'admin','2025-11-21 10:04:54');
-
+INSERT INTO `widgets` VALUES (72,'Recently Audited',1,'','status','','SELECT CONCAT(ROUND(COUNT(id) / COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END), 0) * 100, \'%\') AS `count` FROM devices WHERE @filter','devices','icon-radar','Devices scanned this week.','Audited (7 Days)','','','','','',0,'',0,0,0,0,'SELECT CONCAT(COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END), \' / \', COUNT(id)) AS `secondary_text` FROM devices WHERE @filter','primary','primary',0,0,'admin','2025-11-20 19:12:37');
+INSERT INTO `widgets` VALUES (73,'Orphaned Devices',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','icon-eye-off','Devices not seen for 30+ days.','Orphaned Devices','30 days.','','','','',0,'',0,0,0,0,'','danger','success',0,91,'admin','2025-11-21 10:04:54');
 INSERT INTO `widgets` VALUES (74,'Software Changes',1,'','status','','SELECT COUNT(change_log.id) AS `count` FROM `change_log` LEFT JOIN `devices` ON change_log.device_id = devices.id WHERE @filter AND  `db_table` = \'software\' AND `timestamp` > DATE(NOW()  - INTERVAL 7 DAY) AND `db_action` = \'create\'','','icon-monitor-cloud','Software additions in the last 7 days.','Software Changes','Last 7 days.','','','','',0,'',0,0,0,0,'','warning','success',0,32,'admin','2025-11-21 10:06:59');
-
 INSERT INTO `widgets` VALUES (75,'Vulnerabilities',1,'','status','','SELECT COUNT(DISTINCT vulnerabilities_cache.vulnerability_id) AS `count` FROM vulnerabilities_cache LEFT JOIN orgs ON vulnerabilities_cache.org_id = orgs.id LEFT JOIN devices ON devices.org_id = orgs.id WHERE @filter','vulnerabilities','icon-bug','Detected vulnerabilites on your devices.','Vulnerabilities','To be Addressed','','','','',0,'',0,0,0,0,'','danger','success',0,0,'admin','2025-11-21 08:08:10');
-
 INSERT INTO `widgets` VALUES (76,'Hardware Changes',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.db_table in (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\', \'video\') AND `timestamp` > DATE(NOW() - INTERVAL 7 DAY)','','icon-replace-all','Changes detected in bios, disk, memory, module, monitor, motherboard, optical, partition, processor, network, scsi, sound, video tables.','Hardware Changes','Last 7 days.','','','','',0,'',0,0,0,0,'','warning','success',0,29,'admin','2025-11-21 07:59:56');
-
 INSERT INTO `widgets` VALUES (77,'Windows Software',1,'Windows Software, excluding names starting with KB','status','','SELECT COUNT(*) AS `count` FROM software LEFT JOIN devices ON (software.device_id = devices.id AND software.current = \'y\') WHERE @filter AND software.name NOT LIKE \'KB%\' AND devices.os_group = \'Windows\'','devices','icon-monitor-cloud','Windows Software, excluding names starting with KB','Windows Software','Installed','','','','',0,'',0,0,0,0,'','primary','primary',0,107,'admin','2025-11-21 12:59:05');
-
 INSERT INTO `widgets` VALUES (78,'/24 Networks',1,'','status','','SELECT COUNT(id) AS `count` FROM networks WHERE networks.org_id IN (@filter) AND networks.network LIKE \'%/24\'','networks?networks.network=LIKE%/24','icon-wifi','/24 Networks','/24 Networks','Discovered Networks','','','','',0,'',0,0,0,0,'SELECT IF(networks.edited_date > DATE(NOW() - INTERVAL 7 day), CONCAT(\'+\', COUNT(networks.id), \' this week\'), \'\') AS `secondary_text` FROM networks WHERE networks.org_id IN (@filter) AND networks.network LIKE \'%/24\';','success','success',0,0,'admin','2025-11-21 13:20:04');
-
-INSERT INTO `widgets` VALUES (79,'Windows Clients',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_family IN (\'Windows 10\', \'Windows 11\') AND devices.type = \'computer\'','devices?devices.os_family=in(\'windows 10\',\'windows 11\')','icon-computer','Windows 10 and 11 PCs.','Windows Clients','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_family IN (\'Windows 10\', \'Windows 11\') AND devices.type = \'computer\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','info','info',0,0,'admin','2025-11-21 13:34:06');
-
-INSERT INTO `widgets` VALUES (80,'Windows Servers',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_group = \'Windows\' AND devices.os_name LIKE \'%server%\' AND devices.type = \'computer\'','devices?devices.os_group=Windows&devices.os_name=LIKEserver','icon-server','Windows Servers','Windows Servers','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_group = \'Windows\' AND devices.os_name LIKE \'%server%\' AND devices.type = \'computer\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','info','warning',0,0,'admin','2025-11-21 13:34:39');
-
-INSERT INTO `widgets` VALUES (81,'Other Computers',1,'Not Windows and Not Apple computers','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_name NOT LIKE \'%Windows%\' AND devices.os_name NOT LIKE \'%MacOS%\'','devices?devices.os_name=NOT LIKEwindows&devices.os_name=NOT LIKEMacOS','icon-database','Computers not running Windows or MacOS.','Other Computers','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_name NOT LIKE \'%Windows%\' AND devices.os_name NOT LIKE \'%MacOS%\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','warning',0,0,'admin','2025-11-21 13:41:30');
-
-INSERT INTO `widgets` VALUES (82,'Apple Computers',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_name LIKE \'%MacOS%\' AND devices.type = \'computer\'','devices?devices.os_nameLIKEMacOS','icon-apple','Apple computers running MacOS','Apple MacOS','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_name LIKE \'%MacOS%\' AND devices.type = \'computer\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','warning',0,0,'admin','2025-11-21 13:33:47');
-
+INSERT INTO `widgets` VALUES (79,'Windows Clients',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_family IN (\'Windows 10\', \'Windows 11\') AND devices.type = \'computer\'','devices?devices.os_family=in(\'windows 10\',\'windows 11\')','icon-computer','Windows 10 and 11 PCs.','Windows Clients','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_family IN (\'Windows 10\', \'Windows 11\') AND devices.type = \'computer\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','primary',0,0,'admin','2025-11-21 13:34:06');
+INSERT INTO `widgets` VALUES (80,'Windows Servers',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_group = \'Windows\' AND devices.os_name LIKE \'%server%\' AND devices.type = \'computer\'','devices?devices.os_group=Windows&devices.os_name=LIKEserver','icon-server','Windows Servers','Windows Servers','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_group = \'Windows\' AND devices.os_name LIKE \'%server%\' AND devices.type = \'computer\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','primary',0,0,'admin','2025-11-21 13:34:39');
+INSERT INTO `widgets` VALUES (81,'Other Computers',1,'Not Windows and Not Apple computers','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_name NOT LIKE \'%Windows%\' AND devices.os_name NOT LIKE \'%MacOS%\'','devices?devices.os_name=NOT LIKEwindows&devices.os_name=NOT LIKEMacOS&devices.os_group=!=Linux','icon-database','Computers not running Windows or MacOS.','Other Computers','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_name NOT LIKE \'%Windows%\' AND devices.os_name NOT LIKE \'%MacOS%\' AND devices.os_group != \'Linux\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','primary',0,0,'admin','2025-11-21 13:41:30');
+INSERT INTO `widgets` VALUES (82,'Apple Computers',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_name LIKE \'%MacOS%\' AND devices.type = \'computer\'','devices?devices.os_nameLIKEMacOS','icon-apple','Apple computers running MacOS','Apple MacOS','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_name LIKE \'%MacOS%\' AND devices.type = \'computer\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','primary',0,0,'admin','2025-11-21 13:33:47');
 INSERT INTO `widgets` VALUES (83,'Unknown Devices',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.type IN (\'unknown\', \'unclassified\')','devices?devices.type=IN(\'unknown\',\'unclassified\')','icon-shield-question-mark','These devices are unknown or not yet classified. They should be investigated.','Unknown Devices','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'0 new unknown devices\')) AS `secondary_text` FROM devices WHERE @filter AND devices.type IN (\'unknown\', \'unclassified\') AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','danger','success',0,0,'admin','2025-11-21 14:30:08');
-
 INSERT INTO `widgets` VALUES (84,'Hardware Manufacturers',1,'','status','','SELECT COUNT(DISTINCT devices.manufacturer) AS `count` FROM devices WHERE @filter','','icon-factory','The number of hardware manufacturers in your database.','H/W Manufacturers','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(DISTINCT devices.manufacturer), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE first_seen > DATE(NOW() - INTERVAL 7 DAY) AND devices.manufacturer NOT IN (SELECT devices.manufacturer FROM devices WHERE devices.first_seen < DATE(NOW() - INTERVAL 7 DAY))','primary','primary',0,108,'admin','2025-11-21 14:41:22');
-
 INSERT INTO `widgets` VALUES (85,'Linux Computers',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_group = \'Linux\' AND devices.type = \'computer\'','devices?devices.os_group=Linux','icon-server','Computers running Linux.','Linux','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_group = \'Linux\' AND devices.type = \'computer\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','primary',0,0,'admin','2025-11-21 16:30:46');
-
-INSERT INTO `widgets` VALUES (86,'Network Devices',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.type NOT IN (\'computer\', \'unknown\', \'unclassified\')','devices?devices.type=not in(\'computer\',\'unknown\',\'unclassified\')','icon-radio-receiver','Devices that are not computers.','Network Devices','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND  devices.type NOT IN (\'computer\', \'unknown\', \'unclassified\') AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','warning',0,0,'admin','2025-11-21 16:26:12');
-
+INSERT INTO `widgets` VALUES (86,'Network Devices',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.type NOT IN (\'computer\', \'unknown\', \'unclassified\')','devices?devices.type=not in(\'computer\',\'unknown\',\'unclassified\')','icon-radio-receiver','Devices that are not computers.','Network Devices','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND  devices.type NOT IN (\'computer\', \'unknown\', \'unclassified\') AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','primary',0,0,'admin','2025-11-21 16:26:12');
 INSERT INTO `widgets` VALUES (87,'Windows Client Not Latest Version',1,'','traffic','','','','icon-grid-2x2','Windows 10 and 11 not running the latest available version from Microsoft.','Not Latest Version','Windows Clients','','','','',0,'',0,99,0,109,'','','',0,0,'admin','2025-11-21 16:54:17');
 /*!40000 ALTER TABLE `widgets` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -5230,7 +5206,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `windows`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `windows` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `device_id` int(10) unsigned DEFAULT NULL,
@@ -5264,7 +5240,7 @@ CREATE TABLE `windows` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`device_id`),
   CONSTRAINT `windows_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5275,28 +5251,6 @@ LOCK TABLES `windows` WRITE;
 /*!40000 ALTER TABLE `windows` DISABLE KEYS */;
 /*!40000 ALTER TABLE `windows` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'openaudit'
---
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-/*!50003 DROP FUNCTION IF EXISTS `cidr_to_mask` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb3 */ ;
-/*!50003 SET character_set_results = utf8mb3 */ ;
-/*!50003 SET collation_connection  = utf8mb3_general_ci */ ;
-DELIMITER ;;
-CREATE DEFINER=`openaudit`@`localhost` FUNCTION `cidr_to_mask`(cidr INT(2)) RETURNS char(15) CHARSET latin1 COLLATE latin1_swedish_ci
-    DETERMINISTIC
-RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10)) ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
