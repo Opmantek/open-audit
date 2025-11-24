@@ -1639,10 +1639,12 @@ if (!$db->fieldExists('help_text', 'widgets')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-$sql = "ALTER TABLE `widgets` CHANGE `dataset_title` `primary_text` varchar(200) NOT NULL DEFAULT '' AFTER `help_text`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('dataset_title', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` CHANGE `dataset_title` `primary_text` varchar(200) NOT NULL DEFAULT '' AFTER `help_text`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 if (!$db->fieldExists('secondary_text', 'widgets')) {
     $sql = "ALTER TABLE `widgets` ADD `secondary_text` varchar(200) NOT NULL DEFAULT '' AFTER `primary_text`";
@@ -1663,10 +1665,12 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` CHANGE `table` `line_table` varchar(50) NOT NULL DEFAULT '' AFTER `where`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('table', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` CHANGE `table` `line_table` varchar(50) NOT NULL DEFAULT '' AFTER `where`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 if (!$db->fieldExists('line_event', 'widgets')) {
     $sql = "ALTER TABLE `widgets` ADD `line_event` varchar(50) NOT NULL DEFAULT '' AFTER `line_table`";
