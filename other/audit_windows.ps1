@@ -496,6 +496,31 @@ if ($debug -gt 0) {
     Write-Host "1 entry took $totalSecs seconds"
 }
 
+if ($skip_sections.Contains("arp,") -eq $false) {
+    if ($debug -gt 0) {
+        Write-Host "arp:  " -NoNewline
+    }
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    $result.arp = @()
+    $item = @{}
+    Get-NetNeighbor | ForEach {
+        $item = @{}
+        $item.mac = [string]$_.LinkLayerAddress
+        $item.ip = [string]$_.IPAddress[0]
+        $item.interface = [string]$_.InterfaceAlias
+        $item.interface_id = [string]$_.InterfaceIndex
+        if ($item.mac -ne $null) {
+            $result.arp += $item
+        }
+        Clear-Variable -name item
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.arp.count
+        Write-Host "$count entries took $totalSecs seconds"
+    }
+}
+
 
 if ($skip_sections.Contains("bios,") -eq $false) {
     if ($debug -gt 0) {
