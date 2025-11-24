@@ -1756,15 +1756,15 @@ if (!$db->fieldExists('status_link_query_id', 'widgets')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-$sql = "UPDATE `widgets` SET `line_table` = `primary` WHERE `type` = 'line'";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "UPDATE `widgets` SET `line_table` = `primary` WHERE `type` = 'line'";
+// $result = $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE `widgets` SET `line_event` = `secondary` WHERE `type` = 'line'";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+// $sql = "UPDATE `widgets` SET `line_event` = `secondary` WHERE `type` = 'line'";
+// $result = $db->query($sql);
+// $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+// log_message('info', (string)$db->getLastQuery());
 
 $sql = "UPDATE `widgets` SET `line_days` = `limit` WHERE `type` = 'line'";
 $result = $db->query($sql);
@@ -1846,30 +1846,40 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` DROP COLUMN `limit`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('limit', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` DROP COLUMN `limit`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` DROP COLUMN `primary`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('primary', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` DROP COLUMN `primary`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` DROP COLUMN `secondary`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('secondary', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` DROP COLUMN `secondary`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` DROP COLUMN `ternary`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('ternary', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` DROP COLUMN `ternary`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` DROP COLUMN `group_by`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('group_by', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` DROP COLUMN `group_by`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 $sql = "INSERT INTO `widgets` VALUES (null,'Top 10 Vulnerable Devices',1,'','pie','','SELECT devices.id AS `description`, devices.name AS `name`, LENGTH(devices.cve) - LENGTH(REPLACE(devices.cve, \',\', \'\')) AS `count` FROM devices WHERE @filter AND devices.cve > \'\' ORDER BY `count` DESC LIMIT 10','devices?devices.id=@description','','','Top 10 Vulnerable Devices','','','','','',0,'',0,0,0,0,'','primary','',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
