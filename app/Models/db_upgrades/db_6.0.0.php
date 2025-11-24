@@ -276,10 +276,12 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `queries` ADD `commercial` enum('y','n') NOT NULL DEFAULT 'n' AFTER `advanced`";
-$db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('commercial', 'queries')) {
+    $sql = "ALTER TABLE `queries` ADD `commercial` enum('y','n') NOT NULL DEFAULT 'n' AFTER `advanced`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 $sql = "UPDATE `queries` SET `commercial` = 'y' WHERE `name` IN ('Windows Clients With AntiVirus',
             'Windows Clients Without AntiVirus',
@@ -450,17 +452,17 @@ $widgets['Windows Server Not Latest Build'] = intval($db->insertID());
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (107,1,'Windows Software','Software','y','','SELECT devices.id AS `devices.id`, software.name AS `software.name`, software.version AS `software.version`, devices.os_family AS `devices.os_family`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, locations.id AS `locations.id`, locations.name AS `locations.name` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id AND software.current = \'y\') LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND software.name NOT LIKE \'KB%\' AND devices.os_group = \'Windows\' ORDER BY software.name','','n','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Software','Software','y','','SELECT devices.id AS `devices.id`, software.name AS `software.name`, software.version AS `software.version`, devices.os_family AS `devices.os_family`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, locations.id AS `locations.id`, locations.name AS `locations.name` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id AND software.current = \'y\') LEFT JOIN locations ON (devices.location_id = locations.id) WHERE @filter AND software.name NOT LIKE \'KB%\' AND devices.os_group = \'Windows\' ORDER BY software.name','','n','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (108,1,'Hardware Manufacturers','Hardware','y','','SELECT devices.manufacturer AS `devices.manufacturer`, COUNT(id) AS `count` FROM devices WHERE @filter GROUP BY devices.manufacturer','','n','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Hardware Manufacturers','Hardware','y','','SELECT devices.manufacturer AS `devices.manufacturer`, COUNT(id) AS `count` FROM devices WHERE @filter GROUP BY devices.manufacturer','','n','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `queries` VALUES (109,1,'Windows Client Latest Build','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, devices.os_family AS `devices.os_family`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = \'y\') WHERE @filter AND ((windows.build_number = \'19045.6575\' AND devices.os_family = \'Windows 10\') OR (windows.build_number = \'26200.7171\' AND devices.os_family = \'Windows 11\'))','','n','n','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Windows Client Latest Build','Software','n','','SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.domain AS `devices.domain`, devices.os_name AS `devices.os_name`, locations.name AS `locations.name`, devices.os_family AS `devices.os_family`, windows.build_number AS `windows.build_number` FROM devices LEFT JOIN locations ON (devices.location_id = locations.id) LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = \'y\') WHERE @filter AND ((windows.build_number = \'19045.6575\' AND devices.os_family = \'Windows 10\') OR (windows.build_number = \'26200.7171\' AND devices.os_family = \'Windows 11\'))','','n','n','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -1600,10 +1602,18 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` CHANGE `options` `options` mediumtext NOT NULL AFTER `dataset_title`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+
+if ($db->fieldExists('dataset_title', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` CHANGE `options` `options` mediumtext NOT NULL AFTER `dataset_title`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+} else if ($db->fieldExists('primary_text', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` CHANGE `options` `options` mediumtext NOT NULL AFTER `primary_text`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 $sql = "ALTER TABLE `widgets` CHANGE `sql` `sql` mediumtext NOT NULL AFTER `options`";
 $result = $db->query($sql);
@@ -1615,30 +1625,38 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` ADD `icon` varchar(50) NOT NULL DEFAULT '' AFTER `link`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('icon', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `icon` varchar(50) NOT NULL DEFAULT '' AFTER `link`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `help_text` varchar(200) NOT NULL DEFAULT '' AFTER `icon`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('help_text', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `help_text` varchar(200) NOT NULL DEFAULT '' AFTER `icon`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 $sql = "ALTER TABLE `widgets` CHANGE `dataset_title` `primary_text` varchar(200) NOT NULL DEFAULT '' AFTER `help_text`";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` ADD `secondary_text` varchar(200) NOT NULL DEFAULT '' AFTER `primary_text`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('secondary_text', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `secondary_text` varchar(200) NOT NULL DEFAULT '' AFTER `primary_text`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `ternary_text` varchar(200) NOT NULL DEFAULT '' AFTER `secondary_text`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('ternary_text', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `ternary_text` varchar(200) NOT NULL DEFAULT '' AFTER `secondary_text`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 $sql = "ALTER TABLE `widgets` CHANGE `where` `where` varchar(50) NOT NULL DEFAULT '' AFTER `ternary_text`";
 $result = $db->query($sql);
@@ -1650,65 +1668,89 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "ALTER TABLE `widgets` ADD `line_event` varchar(50) NOT NULL DEFAULT '' AFTER `line_table`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('line_event', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `line_event` varchar(50) NOT NULL DEFAULT '' AFTER `line_table`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `line_days` smallint(6) NOT NULL DEFAULT '0' AFTER `line_event`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('line_days', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `line_days` smallint(6) NOT NULL DEFAULT '0' AFTER `line_event`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `pie_column` varchar(50) NOT NULL DEFAULT '' AFTER `line_days`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('pie_column', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `pie_column` varchar(50) NOT NULL DEFAULT '' AFTER `line_days`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `pie_limit` smallint(6) NOT NULL DEFAULT '0' AFTER `pie_column`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('pie_limit', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `pie_limit` smallint(6) NOT NULL DEFAULT '0' AFTER `pie_column`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `traffic_primary_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER `pie_limit`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('traffic_primary_query_id', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `traffic_primary_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER `pie_limit`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `traffic_secondary_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER `traffic_primary_query_id`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('traffic_secondary_query_id', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `traffic_secondary_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER `traffic_primary_query_id`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `traffic_ternary_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER `traffic_secondary_query_id`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('traffic_ternary_query_id', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `traffic_ternary_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER `traffic_secondary_query_id`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `status_secondary_sql` mediumtext NOT NULL AFTER `traffic_ternary_query_id`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('status_secondary_sql', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `status_secondary_sql` mediumtext NOT NULL AFTER `traffic_ternary_query_id`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `status_primary_color` varchar(50) NOT NULL DEFAULT '' AFTER `status_secondary_sql`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('status_primary_color', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `status_primary_color` varchar(50) NOT NULL DEFAULT '' AFTER `status_secondary_sql`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `status_secondary_color` varchar(50) NOT NULL DEFAULT '' AFTER `status_primary_color`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('status_secondary_color', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `status_secondary_color` varchar(50) NOT NULL DEFAULT '' AFTER `status_primary_color`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `status_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER status_secondary_color";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('status_query_id', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `status_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER status_secondary_color";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "ALTER TABLE `widgets` ADD `status_link_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER `status_query_id`";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if (!$db->fieldExists('status_link_query_id', 'widgets')) {
+    $sql = "ALTER TABLE `widgets` ADD `status_link_query_id` smallint(6) NOT NULL DEFAULT '0' AFTER `status_query_id`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 $sql = "UPDATE `widgets` SET `line_table` = `primary` WHERE `type` = 'line'";
 $result = $db->query($sql);
