@@ -27,7 +27,7 @@ use Foxworth42\OAuth2\Client\Provider\Okta;
  * @author    Mark Unwin <mark.unwin@firstwave.com>
  * @copyright 2023 FirstWave
  * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   GIT: Open-AudIT_5.6.5
+ * @version   GIT: Open-AudIT_6.0.0
  * @link      http://www.open-audit.org
  */
 

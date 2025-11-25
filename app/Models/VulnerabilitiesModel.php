@@ -351,7 +351,7 @@ class VulnerabilitiesModel extends BaseModel
                     $sql = "UPDATE `news` SET `version` = ?, `read` = 'n' WHERE id = ?";
                     $this->db->query($sql, [intval($newsItems[0]->version + 1), $newsItems[0]->id]);
                 } else {
-                    $sql = "INSERT INTO `news` VALUES (null, 'You have vulnerable programs!', 'Some programs in your database have current CVE records.', 'Open-AudIT has detected installed programs matching current CVE vulnerabilities. To report on these and more, upgrade to Open-AudIT Enterprise.', 'cve', 'body', NOW(), 'link', '', '', '', 'danger', '1', 'n', 'n', '', '2000-01-01 00:00:00')";
+                    $sql = "INSERT INTO `news` VALUES (null, 'You have vulnerable programs!', 'Some programs in your database have current CVE records.', 'Open-AudIT has detected installed programs matching current CVE vulnerabilities. To report on these and more, upgrade to Open-AudIT Enterprise.', 'cve', 'body', NOW(), 'link', '', '2000-01-01 00:00:00', '2000-01-01 00:00:00', 'danger', '1', 'n', 'n', '', '2000-01-01 00:00:00')";
                     $this->db->query($sql);
                 }
             }

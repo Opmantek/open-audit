@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="5.6.5"
+version="6.0.0"
 
 ORIGIFS=$IFS
 NEWLINEIFS=$(echo -en "\n\b");

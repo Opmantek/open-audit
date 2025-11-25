@@ -1,6 +1,6 @@
 #!/bin/sh
 
-version="5.6.5"
+version="6.0.0"
 
 O=$IFS
 IFS=$'\n'

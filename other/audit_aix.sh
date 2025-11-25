@@ -24,7 +24,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <mark.unwin@firstwave.com>
-# @version   GIT: Open-AudIT_5.6.5
+# @version   GIT: Open-AudIT_6.0.0
 # @copyright Copyright (c) 2022, Firstwave
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -47,7 +47,7 @@ url="http://localhost/open-audit/index.php/input/devices"
 debugging=1
 
 # Version
-version="5.6.5"
+version="6.0.0"
 
 discovery_id=""
 help=""
