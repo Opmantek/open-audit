@@ -630,6 +630,21 @@ class Dictionary extends BaseController
                 $LANG['To use this Enterprise feature, you first need to create your user in Open-AudIT as per usual. Assigning a password is not necessary. You do have to assign Roles and Orgs. The username in Open-AudIT should match the OKTA <i>name</i> attribute. There is no need for a Full Name or Email - these will be populated from OKTA. If you do not know your users <i>name<i>, fear not. You can create the new Auth Menthod in Open-AudIT and the Application in OKTA and when a user attempts to sign-on to Open-AudIT without a pre-existing user, check the logs and you will see their <i>name<i> logged for your convienence.<br></p><p>Then create a new Auth method in Open-AudIT by going to menu -> Admin -> Auth Methods -> Create Auth. Provide a name and set the <i>type</i> to Okta.'] = 'इस एंटरप्राइज़ सुविधा का उपयोग करने के लिए, आपको पहले अपने उपयोगकर्ता को सामान्य रूप से ओपन-ऑडिट में बनाने की आवश्यकता है। पासवर्ड देना आवश्यक नहीं है। आपको भूमिकाओं और संगठनों को असाइन करना होगा। ओपन-ऑडिट में उपयोगकर्ता नाम OKTA से मेल खाता है <i>नाम</i> विशेषता। एक पूर्ण नाम या ईमेल की आवश्यकता नहीं है - ये OKTA से पॉप्युलेट किया जाएगा। यदि आप अपने उपयोगकर्ताओं को नहीं जानते हैं <i>नाम<i>, डर नहीं। आप ओपन-ऑडिट में नया Auth Menthod बना सकते हैं और OKTA में आवेदन कर सकते हैं और जब एक उपयोगकर्ता पूर्व-existing उपयोगकर्ता के बिना ओपन-ऑडिट पर हस्ताक्षर करने का प्रयास करता है, तो लॉग्स की जांच करें और आपको उनकी राय होगी। <i>नाम<i> अपने विवेक के लिए लॉग इन करें।<br/><p>फिर मेनू में जाकर ओपन-ऑडिट में एक नया Auth विधि बनाएं -> व्यवस्थापक -> प्राधिकरण विधियाँ -> Auth. एक नाम प्रदान करें और सेट करें <i>प्रकार</i> ओक्टा।</p></i></i></i></i>';
             }
 
+            if ($support === 'zh') {
+                $LANG['agents'] = '代理程序';
+                $LANG['Agents'] = '代理程序';
+                $LANG['dashboards'] = '仪表板';
+                $LANG['Dashboards'] = '仪表板';
+                $LANG['Home'] = '首页';
+                $LANG['home'] = '首页';
+                $LANG['Racks'] = '机柜';
+                $LANG['racks'] = '机柜';
+                $LANG['vulnerabilities'] = ' 安全漏洞';
+                $LANG['Vulnerabilities'] = ' 安全漏洞';
+                $LANG['widgets'] = '控件';
+                $LANG['Widgets'] = '控件';
+            }
+
             unset($LANG['<']);
             unset($LANG['=<']);
             unset($LANG['==']);

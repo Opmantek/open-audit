@@ -497,9 +497,9 @@ $GLOBALS["lang"]['After completing the above, uninstall the agent.'] = '完成�
 
 $GLOBALS["lang"]['Agent? Discovery? Credentials?'] = '探员? 发现? 证书?';
 
-$GLOBALS["lang"]['agents'] = '探员';
+$GLOBALS["lang"]['agents'] = '代理程序';
 
-$GLOBALS["lang"]['Agents'] = '探员';
+$GLOBALS["lang"]['Agents'] = '代理程序';
 
 $GLOBALS["lang"]['Agents entries can be created that specify a duration, a network and an operating system. If all tests match, the server then asks the agent to perform actions. If any test is not set, it is excluded from the <i>all must match</i> requirement.<br><br>You can create multiple agents and have the server check one or all agent entries. You might (for example) specify one agent that says <i>If the agent IP is in this subnet, set the location_id of the device</i>.<br><br>Another example might be not running an audit at all, rather download a script and run it. If the agent is installed with admin rights, you can now manage your machines without opening <strong>any</strong> ports from it to the world.</p><p>Enabling advanced agents means an agent can be instructed to download any file and execute any command. <strong>WARNING</strong>: This comes with security risks. This configuration will <strong>only</strong> function when running Open-AudIT using HTTPS and a valid (Certificate Authority provided) certificate for '] = '可以创建指定持续时间,网络和操作系统的代理条目. 如果所有测试都匹配,那么服务器会要求代理执行动作. 如果未设置任何测试,则排除于 <i>全部必须匹配</i> 要求。<br/><br/>您可以创建多个代理并让服务器检查一个或所有代理条目. 您可以( 例如) 指定一个代理人, 说 <i>如果代理IP在此子网中, 请设置设备的位置_ id</i>。 。 。<br/><br/>另一个例子可能根本不是运行审计,而是下载脚本并运行. 如果代理安装了管理员权限, 您现在可以不打开而管理您的机器 <strong>任何</strong> 从这里到世界的港口<p>允许高级代理意味着可以指示代理下载任何文件并执行任何命令. <strong>警告</strong>数字 : 这带来安全风险。 此配置将 <strong>仅限</strong> 函数使用 HTTPS 运行 Open-AudIT 和有效证书( 提供了证书授权) 时 </p>';
 
@@ -1817,9 +1817,9 @@ $GLOBALS["lang"]['Dashboard ID'] = '盘式识别码';
 
 $GLOBALS["lang"]['Dashboard Widgets'] = '磁盘板部件';
 
-$GLOBALS["lang"]['dashboards'] = '电线板';
+$GLOBALS["lang"]['dashboards'] = '仪表板';
 
-$GLOBALS["lang"]['Dashboards'] = '电线板';
+$GLOBALS["lang"]['Dashboards'] = '仪表板';
 
 $GLOBALS["lang"]['Dashboards and Widgets allow Enterprise licensed customers to create, read, update and delete both of these collections to ensure their homepage is exactly what they need to see. Not only that, but a user is able to set a given dashboard as their own homepage. Everyone does not need to use the same homepage (dashboard), nor the same widgets on that dashboard. Professional licensed customers can choose between two predefined dashboards to set as their own homepage.'] = 'Dashboards和Widgets让企业号获得许可的客户可以创建,阅读,更新和删除这两份收藏,以确保其主页正是他们需要看到的. 不仅如此,用户还可以将给定的仪表板设置为自己的主页. 每个人不需要使用同一个主页(dashboard),也不需要同一个部件在仪表板上. 专业的持证客户可以在两个预先定义的仪表板中选择设置为自己的主页.';
 
@@ -3051,9 +3051,9 @@ $GLOBALS["lang"]['Hindi'] = '印地语';
 
 $GLOBALS["lang"]['Holy See (Vatican City State)'] = '罗马教廷(瓦蒂坎州)';
 
-$GLOBALS["lang"]['Home'] = '页 次';
+$GLOBALS["lang"]['Home'] = '首页';
 
-$GLOBALS["lang"]['home'] = '页 次';
+$GLOBALS["lang"]['home'] = '首页';
 
 $GLOBALS["lang"]['Home Area Network'] = '家园区域网';
 
@@ -5451,9 +5451,9 @@ $GLOBALS["lang"]['Rack ID'] = '麦克身份证';
 
 $GLOBALS["lang"]['Rack Management and Reporting'] = 'Rack 管理和报告';
 
-$GLOBALS["lang"]['Racks'] = '垃圾袋';
+$GLOBALS["lang"]['Racks'] = '机柜';
 
-$GLOBALS["lang"]['racks'] = '垃圾袋';
+$GLOBALS["lang"]['racks'] = '机柜';
 
 $GLOBALS["lang"]['radio'] = '无线电';
 
@@ -8027,9 +8027,9 @@ $GLOBALS["lang"]['vuln_status'] = 'Vuln 状态';
 
 $GLOBALS["lang"]['Vuln Status'] = 'Vuln 状态';
 
-$GLOBALS["lang"]['vulnerabilities'] = '脆弱性';
+$GLOBALS["lang"]['vulnerabilities'] = ' 安全漏洞';
 
-$GLOBALS["lang"]['Vulnerabilities'] = '脆弱性';
+$GLOBALS["lang"]['Vulnerabilities'] = ' 安全漏洞';
 
 $GLOBALS["lang"]['vulnerabilities_cache'] = '脆弱缓存';
 
@@ -8261,9 +8261,9 @@ $GLOBALS["lang"]['Widget # '] = '部件 # ';
 
 $GLOBALS["lang"]['Widget Type'] = '部件类型';
 
-$GLOBALS["lang"]['widgets'] = '部件';
+$GLOBALS["lang"]['widgets'] = '控件';
 
-$GLOBALS["lang"]['Widgets'] = '部件';
+$GLOBALS["lang"]['Widgets'] = '控件';
 
 $GLOBALS["lang"]['Widgets are designed to be used on Dashboards. Enterprise users have complete freedom to create, update and delete widgets as required.'] = '部件被设计成用于Dashboards. 企业用户有完全的自由根据需要创建,更新和删除部件.';
 
