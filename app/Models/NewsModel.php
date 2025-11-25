@@ -236,6 +236,7 @@ class NewsModel extends BaseModel
             $response = @$client->request('POST', $url, [
                 # 'debug' => true,
                 # 'http_errors' => false,
+                'user_agent' => 'Open-AudIT',
                 'form_params' => $send,
                 'allow_redirects' => true
             ]);
