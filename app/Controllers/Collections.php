@@ -210,7 +210,7 @@ class Collections extends BaseController
             $csp->reportOnly(true);
         }
 
-        if ($this->config->product !== 'enterprise' and $this->resp->meta->action === 'collection' and date('Y-m-d') > $this->config->feature_vulnerabilities_alert_date and $this->config->feature_vulnerabilities === 'y') {
+        if ($this->config->product !== 'enterprise' and $this->resp->meta->action === 'collection' and !empty($this->config->feature_vulnerabilities_alert_date) and date('Y-m-d') > $this->config->feature_vulnerabilities_alert_date and $this->config->feature_vulnerabilities === 'y') {
             $vulnerabilitiesModel = model('App\Models\VulnerabilitiesModel');
             $temp = $vulnerabilitiesModel->includedCollection();
             if (!empty($temp['device_count'])) {
