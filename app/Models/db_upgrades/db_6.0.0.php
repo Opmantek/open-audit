@@ -1528,6 +1528,17 @@ $query = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+
+$sql = "DELETE FROM `configuration` WHERE `name` = 'feature_vulnerabilities_alert_date'";
+$result = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'feature_vulnerabilities_alert_date','n','date','y','system','2000-01-01 00:00:00','The last time a vulnerabilitiy alert was shown.')";
+$query = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
 $sql = "DELETE FROM `configuration` WHERE `name` = 'feature_vulnerabilities_interval'";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";

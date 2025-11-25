@@ -1403,6 +1403,7 @@ INSERT INTO `configuration` VALUES (189,'feature_syslog_access','n','bool','y','
 INSERT INTO `configuration` VALUES (190,'feature_syslog_components','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a change is detected in a component table.');
 INSERT INTO `configuration` VALUES (191,'feature_syslog_devices','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a new device detected.');
 INSERT INTO `configuration` VALUES (192,'feature_syslog_vulnerabilities','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a device has a vulnerability detected.');
+INSERT INTO `configuration` VALUES (193,'feature_vulnerabilities_alert_date','n','date','y','system','2000-01-01 00:00:00','The last time a vulnerabilitiy alert was shown.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
