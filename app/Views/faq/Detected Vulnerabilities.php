@@ -17,7 +17,7 @@ In your environment right now.
                 </div>
                 <div class="col-4 text-center">
                     <div class="float-end text-center" style="background-color: rgba(255, 255, 255, 0.4); border-radius: 6px; padding: 12px; min-width:64px; max-width:64px; height:56px;">
-                        <img src="' . base_url() . 'icons/warning.svg" style="width:32px; height:32px;" title="Detected Critical Vulnerabilities"/>
+                        <img src="' . base_url() . 'icons/warning.svg" style="width:32px; height:32px;" title="Detected Severe Vulnerabilities"/>
                     </div>
                 </div>
             </div>
