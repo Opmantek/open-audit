@@ -161,6 +161,7 @@ class OpenAudit extends BaseConfig
     public string $feature_syslog_devices;
     public string $feature_syslog_vulnerabilities;
     public string $feature_vulnerabilities;
+    public string $feature_vulnerabilities_alert_date;
     public string $feature_vulnerabilities_interval;
     public string $feature_vulnerabilities_date;
     public string $feature_vulnerabilities_last_request_datetime;
