@@ -1364,8 +1364,8 @@ INSERT INTO `configuration` VALUES (146,'modules','','text','n','system','2000-0
 INSERT INTO `configuration` VALUES (149,'license','none','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (150,'license_string','','text','y','system','2000-01-01 00:00:00','The license string (or key) for Open-AudIT (if used).');
 INSERT INTO `configuration` VALUES (151,'license_string_collector','','text','y','system','2000-01-01 00:00:00','The license string (or key) for Open-AudIT Collectors (if used).');
-INSERT INTO `configuration` VALUES (152,'license_eula','{\"Open-AudIT--Commercial--6.0.0\":1763978624}','text','n','Administrator','2025-11-24 20:03:46','The date of EULA acceptance.');
-INSERT INTO `configuration` VALUES (153,'oae_prompt','2015-06-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (152,'license_eula','','text','n','Administrator','2000-01-01 00:00:00','The date of EULA acceptance.');
+INSERT INTO `configuration` VALUES (153,'oae_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (154,'output_escape_csv','y','bool','y','system','2000-01-01 00:00:00','Escape CSV output so Excel will not attempt to run contents.');
 INSERT INTO `configuration` VALUES (155,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.');
 INSERT INTO `configuration` VALUES (156,'process_netstat_windows_dns','n','bool','y','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
@@ -1373,7 +1373,7 @@ INSERT INTO `configuration` VALUES (157,'queue_count','0','number','n','system',
 INSERT INTO `configuration` VALUES (158,'queue_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should run.');
 INSERT INTO `configuration` VALUES (161,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.');
 INSERT INTO `configuration` VALUES (162,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
-INSERT INTO `configuration` VALUES (163,'uuid','c844e468-c91c-11f0-8acc-2a5118f157b6','text','n','system','2025-11-24 10:03:09','The unique identfier of this Open-AudIT server.');
+INSERT INTO `configuration` VALUES (163,'uuid',UUID(),'text','n','system','2000-01-01 00:00:00','The unique identfier of this Open-AudIT server.');
 INSERT INTO `configuration` VALUES (164,'feature_agents_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Agents to execute commands and download files.');
 INSERT INTO `configuration` VALUES (165,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.');
 INSERT INTO `configuration` VALUES (166,'feature_executables','n','bool','y','system','2000-01-01 00:00:00','Activate the linux based Executables feature.');
