@@ -507,8 +507,9 @@ function createNewsData()
     $data->products = array_unique($data->products);
     $data->uuid = hash('sha256', $config->uuid);
     $data->server = hash('sha256', trim(`hostname`));
-    $data->server_platform = $config->server_platform;
-    $data->server_os = $config->server_os;
+    $os = getOS();
+    $data->server_os = $os->server_os;
+    $data->server_platform = $os->server_platform;
     $data->server_timezone = getOsTimezone();
 
     $data->device_count = (!empty($config->device_known)) ? $config->device_known : 0;
