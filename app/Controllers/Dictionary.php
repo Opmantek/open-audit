@@ -618,6 +618,18 @@ class Dictionary extends BaseController
                 $LANG['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It doesn\t matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>Agents lassen Sie PCs ohne Entdeckung testen. Installieren Sie den Agenten und es wird jeden Tag mit dem Server Check-in und Audit selbst. Es spielt keine Rolle, ob Ihre Computer Firewall sind, Audit-Daten erscheinen immer noch in Open-AudIT.</p>p> Prüfung <strong>if</strong> ein Agent sollte Aktionen durchführen, alle drei Tests müssen passieren (wenn der Test eingestellt ist). <strong>die</strong> Maßnahmen ergriffen werden.</p>';
             }
 
+            if ($support === 'hi') {
+                $LANG['Devices Found Yesterday'] = 'कल मिला हुआ उपकरण';
+                $LANG['org_id'] = 'संगठन पहचान';
+
+                $LANG['Org ID'] = 'संगठन पहचान';
+                $LANG['credentials'] = 'परिचय पत्र';
+                $LANG['Credentials'] = 'परिचय पत्र';
+                $LANG['Auth Methods'] = 'प्राधिकरण विधियाँ';
+                $LANG['Then create a new Auth method in Open-AudIT by going to menu -> Admin -> Auth Methods -> Create Auth. Provide a name and set the <i>type</i> to Entra.'] = 'फिर मेनू में जाकर ओपन-ऑडिट में एक नया Auth विधि बनाएं -> व्यवस्थापक -> प्राधिकरण विधियाँ -> Auth. एक नाम प्रदान करें और सेट करें <i>प्रकार</i> Entra.';
+                $LANG['To use this Enterprise feature, you first need to create your user in Open-AudIT as per usual. Assigning a password is not necessary. You do have to assign Roles and Orgs. The username in Open-AudIT should match the OKTA <i>name</i> attribute. There is no need for a Full Name or Email - these will be populated from OKTA. If you do not know your users <i>name<i>, fear not. You can create the new Auth Menthod in Open-AudIT and the Application in OKTA and when a user attempts to sign-on to Open-AudIT without a pre-existing user, check the logs and you will see their <i>name<i> logged for your convienence.<br></p><p>Then create a new Auth method in Open-AudIT by going to menu -> Admin -> Auth Methods -> Create Auth. Provide a name and set the <i>type</i> to Okta.'] = 'इस एंटरप्राइज़ सुविधा का उपयोग करने के लिए, आपको पहले अपने उपयोगकर्ता को सामान्य रूप से ओपन-ऑडिट में बनाने की आवश्यकता है। पासवर्ड देना आवश्यक नहीं है। आपको भूमिकाओं और संगठनों को असाइन करना होगा। ओपन-ऑडिट में उपयोगकर्ता नाम OKTA से मेल खाता है <i>नाम</i> विशेषता। एक पूर्ण नाम या ईमेल की आवश्यकता नहीं है - ये OKTA से पॉप्युलेट किया जाएगा। यदि आप अपने उपयोगकर्ताओं को नहीं जानते हैं <i>नाम<i>, डर नहीं। आप ओपन-ऑडिट में नया Auth Menthod बना सकते हैं और OKTA में आवेदन कर सकते हैं और जब एक उपयोगकर्ता पूर्व-existing उपयोगकर्ता के बिना ओपन-ऑडिट पर हस्ताक्षर करने का प्रयास करता है, तो लॉग्स की जांच करें और आपको उनकी राय होगी। <i>नाम<i> अपने विवेक के लिए लॉग इन करें।<br/><p>फिर मेनू में जाकर ओपन-ऑडिट में एक नया Auth विधि बनाएं -> व्यवस्थापक -> प्राधिकरण विधियाँ -> Auth. एक नाम प्रदान करें और सेट करें <i>प्रकार</i> ओक्टा।</p></i></i></i></i>';
+            }
+
             unset($LANG['<']);
             unset($LANG['=<']);
             unset($LANG['==']);
