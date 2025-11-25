@@ -61,7 +61,7 @@ if (!$binary) {
 
 $button_prompt_never = '';
 $button_prompt_later = '';
-if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
+if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
     // $button_prompt_never = '<span id="button_prompt_never"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="2100-01-01">' . __('Do not show me again') . '</a></span>';
     $button_prompt_later = '<span id="button_prompt_later"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="' . date('Y-m-d', strtotime(date('Y-m-d') . ' + 30 day')) . '">' . __('Ask me later') . '</a></span>';
 }
@@ -271,6 +271,24 @@ $countries = array(
                             <td class="text-center" style="<?= $highlightEnt ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
                         </tr>
                         <tr>
+                            <td class=" "><a href="<?= url_to('vulnerabilitiesHelp') ?>"><?= __('Vulnerability Detection and Reporting') ?></a></td>
+                            <td class="text-center" style="<?= $highlightCom ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                            <td class="text-center" style="<?= $highlightPro ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                            <td class="text-center" style="<?= $highlightEnt ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
+                        </tr>
+                        <tr>
+                            <td class=" "><a href="<?= url_to('standardsHelp') ?>"><?= __('ISO 27001 Standards Reporting') ?></a></td>
+                            <td class="text-center" style="<?= $highlightCom ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                            <td class="text-center" style="<?= $highlightPro ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                            <td class="text-center" style="<?= $highlightEnt ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
+                        </tr>
+                        <tr>
+                            <td class=" "><a href="<?= url_to('certificatesHelp') ?>"><?= __('Certificate Management and Reporting') ?></a></td>
+                            <td class="text-center" style="<?= $highlightCom ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                            <td class="text-center" style="<?= $highlightPro ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                            <td class="text-center" style="<?= $highlightEnt ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
+                        </tr>
+                        <tr>
                             <td class=" "><a href="<?= url_to('supportHelp') ?>">Commercial Support</a></td>
                             <td class="text-center" style="<?= $highlightCom ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
                             <td class="text-center" style="<?= $highlightPro ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
@@ -295,13 +313,13 @@ $countries = array(
 
                 <div class="row">
                     <div class="col-6 clearfix pull-left">
-                        <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and $binary) {
+                        <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and $binary) {
                             echo $button_prompt_later;
                         } ?>
                     </div>
                     <div class="col-6 clearfix pull-right">
                         <div class="float-end">
-                            <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and $binary) {
+                            <?php if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and $binary) {
                                 echo $button_prompt_never;
                             } ?>
                         </div>
@@ -317,7 +335,7 @@ $countries = array(
 $(window).on("load", function() {
     $(document).ready(function () {
         <?php
-        if (($meta->collection === 'summaries' or $meta->collection === 'groups' or $meta->collection === 'help') and $config->oae_prompt <= date('Y-m-d') and empty($config->license_string) and $binary) {
+        if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and empty($config->license_string) and $binary) {
             echo "\n            $('#modalCompareLicense').modal('show');\n";
         }
         ?>

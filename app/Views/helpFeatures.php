@@ -254,6 +254,24 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $c
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
                                     </tr>
                                     <tr>
+                                        <td class=" "><a href="<?= url_to('vulnerabilitiesHelp') ?>"><?= __('Vulnerability Detection and Reporting') ?></a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('standardsHelp') ?>"><?= __('ISO 27001 Standards Reporting') ?></a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="<?= url_to('certificatesHelp') ?>"><?= __('Certificate Management and Reporting') ?></a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
                                         <td class=" "><a href="<?= url_to('supportHelp') ?>"><?= __('Commercial Support') ?></a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="icon-x" style="color:#d9534f; opacity: 0.5;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
