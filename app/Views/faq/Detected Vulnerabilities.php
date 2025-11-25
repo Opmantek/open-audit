@@ -88,21 +88,44 @@ In your environment right now.
 <br><br>';
 
 $body = '<div class="row" style="margin-top:50px;">
-<div class="col-12"><h2>A Preview of Vulnerabilities Detected in Your Network</h2><br>
+<div class="col-12"><h2>A Preview of Vulnerabilities Detected in Your Network</h2><br><br>
 Below are examples of CVEs detected in your installed software. The full list, affected devices, and remediation guidance are available in Open-AudIT Enterprise.<br>
 </div></div>
-<div class="row"><div class="col-12 text-center">
-<table class="table"><thead><tr><th>CVE</th><th>Severity</th><th>Devices Affected</th><th>Products</th><th></th></tr></thead><tbody>';
-foreach ($included['top_5'] as $row) {
-    $products = array();
-    $row->products = json_decode($row->products);
-    foreach ($row->products as $key => $value) {
-        $products[] = $key;
+<div class="row">
+<div class="col-12 text-center">
+<table class="table">
+    <thead>
+        <tr>
+            <th>CVE</th>
+            <th>Severity</th>
+            <th>Devices Affected</th>
+            <th>Products</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>';
+if (!empty($included['top_5'])) {
+    foreach ($included['top_5'] as $row) {
+        $products = array();
+        $row->products = json_decode($row->products);
+        foreach ($row->products as $key => $value) {
+            $products[] = $key;
+        }
+        $body .= '<tr><td>' . $row->cve . '</td><td>' . $row->base_severity . '</td><td>' . $row->count . '</td><td>' . implode(', ', $products) . '</td><td><a class="" href="#" data-bs-toggle="modal" data-bs-target="#modalCompareLicense">Upgrade to View</a></td></tr>';
     }
-    $body .= '<tr><td>' . $row->cve . '</td><td>' . $row->base_severity . '</td><td>' . $row->count . '</td><td>' . implode(', ', $products) . '</td><td><a class="" href="#" data-bs-toggle="modal" data-bs-target="#modalCompareLicense">Upgrade to View</a></td></tr>';
+} else {
+    if (empty($config->feature_vulnerabilities) or $config->feature_vulnerabilities === 'n') {
+        $body .= '<tr><td colspan="5">The vulnerabilities feature has been disabled. <a href="' . url_to('configurationCollection') . '?configuration.name=likefeature_vulnerabilities">Enable it</a> to see any devices with vulnerabilities.';
+    } else {
+        $body .= '<tr><td colspan="5">No vulnerabilities have been detected, congratulations!';
+    }
 }
-$body .= '</tbody></table>
-And ' . $included['total'] . ' more vulnerabilities in your environment.</div></div>
+$body .= '</tbody></table>';
+if (!empty($included['top_5'])) {
+    $body .= 'And ' . $included['total'] . ' more vulnerabilities in your environment.';
+}
+
+$body .= '</div></div>
 
 <div class="row" style="margin-top:50px;">
     <div class="col-12">

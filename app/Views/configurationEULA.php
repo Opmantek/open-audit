@@ -65,7 +65,11 @@ window.onload = function () {
                         return new bootstrap.Toast(toastEl)
                     });
                     toastList.forEach(toast => toast.show());
+                    <?php if (!empty($config->device_count)) { ?>
                     window.location = '<?= base_url() ?>index.php';
+                    <?php } else { ?>
+                    window.location = '<?= base_url() ?>index.php/welcome';
+                    <?php } ?>
                 },
                 error: function (data) {
                     data = JSON.parse(data.responseText);

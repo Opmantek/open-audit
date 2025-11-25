@@ -182,6 +182,21 @@ class ConfigurationModel extends BaseModel
                 }
             }
         }
+        if (!empty($result[0]->name) and $result[0]->name === 'feature_vulnerabilities' and $data->value === 'n') {
+            // Delete all vulnerabilities
+            $sql = "DELETE FROM vulnerabilities";
+            $this->db->query($sql);
+            // And the cache
+            $sql = "DELETE FROM vulnerabilities_cache";
+            $this->db->query($sql);
+            // Reset the request interval
+            $sql = "UPDATE configuration SET VALUE = 60 WHERE name = 'feature_vulnerabilities_interval";
+            $this->db->query($sql);
+            // And set the last request to default
+            $sql = "UPDATE configuration SET VALUE = '2000-01-01' WHERE name = 'feature_vulnerabilities_last_request_datetime";
+            $this->db->query($sql);
+        }
+
         return true;
     }
 

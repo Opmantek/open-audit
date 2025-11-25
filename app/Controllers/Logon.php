@@ -176,6 +176,8 @@ class Logon extends Controller
                     $command = 'nohup php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
                     exec($command, $output);
                 }
+                $sql = 'UPDATE configuration SET value = NOW() WHERE name = "feature_vulnerabilities_last_request_datetime"';
+                $db->query($sql);
             }
         }
 

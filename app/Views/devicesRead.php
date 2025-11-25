@@ -69,9 +69,7 @@ if (empty($resource->type)) {
                                                     <?php if ($config->product === 'enterprise' and !empty($included['warranty'])) { ?>
                                                     <li class="list-group-item section_toggle" data-section="warranty_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/warranty.svg" alt=""> <a href="#"><?= __('Warranty') ?></a></li>
                                                     <?php } ?>
-                                                    <?php if (!empty($included['vulnerabilities'])) { ?>
                                                     <li class="list-group-item section_toggle" data-section="vulnerabilities_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/vulnerabilities.svg" alt=""> <a href="#"><?= __('Vulnerabilities') ?></a></li>
-                                                    <?php } ?>
                                                     <?php if (!empty($included['windows'])) { ?>
                                                     <li class="list-group-item section_toggle" data-section="windows_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/windows.svg" alt=""> <a href="#"><?= __('Windows') ?></a></li>
                                                     <?php } ?>
@@ -986,37 +984,54 @@ if (empty($resource->type)) {
                             </div>
                             <?php } ?>
 
-                            <?php if ($config->product === 'enterprise' and !empty($included['vulnerabilities'])) { ?>
                             <div style="margin-bottom:20px; display:none;" class="card" id="vulnerabilities_section">
                                 <?=  device_panel('vulnerabilities', $user->toolbar_style, 0, base_url() . "icons/vulnerabilities.svg", $update); ?>
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"],[3,"asc"]]'>
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center" data-orderable="false"><?= __('View') ?></th>
-                                                    <th><?= __('Name') ?></th>
-                                                    <th><?= __('Vendor') ?></th>
-                                                    <th><?= __('CVE') ?></th>
-                                                    <th class="text-center"><?= __('Severity') ?></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            <?php foreach ($included['vulnerabilities'] as $row) { ?>
-                                                <tr>
-                                                    <td class="text-center"><span style="display:none;"><?= $row->id ?></span><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('vulnerabilitiesRead', $row->id) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="icon-eye" aria-hidden="true"></span></a></td>
-                                                    <td><?= $row->name ?></td>
-                                                    <td><?= $row->vendor ?></td>
-                                                    <td><?= $row->cve ?></td>
-                                                    <td class="text-center"><span class="badge rounded-pill text-bg-<?= $row->base_severity ?>"><?= $row->base_severity ?></span></td>
-                                                </tr>
-                                            <?php } ?>
-                                            </tbody>
-                                        </table>
+                                        <div class="col-12">
+                                        <?php
+                                        if ($config->product === 'enterprise') {
+                                            if (!empty($config->feature_vulnerabilities) and $config->feature_vulnerabilities === 'y') {
+                                                if (!empty($included['vulnerabilities'])) { ?>
+                                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"],[3,"asc"]]'>
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center" data-orderable="false"><?= __('View') ?></th>
+                                                            <th><?= __('Name') ?></th>
+                                                            <th><?= __('Vendor') ?></th>
+                                                            <th><?= __('CVE') ?></th>
+                                                            <th class="text-center"><?= __('Severity') ?></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($included['vulnerabilities'] as $row) { ?>
+                                                            <tr>
+                                                                <td class="text-center"><span style="display:none;"><?= $row->id ?></span><a title="<?= __('View') ?>" role="button" class="btn btn-sm btn-primary" href="<?= url_to('vulnerabilitiesRead', $row->id) ?>"><span style="width:1rem;" title="<?= __('View') ?>" class="icon-eye" aria-hidden="true"></span></a></td>
+                                                                <td><?= $row->name ?></td>
+                                                                <td><?= $row->vendor ?></td>
+                                                                <td><?= $row->cve ?></td>
+                                                                <td class="text-center"><span class="badge rounded-pill text-bg-<?= $row->base_severity ?>"><?= $row->base_severity ?></span></td>
+                                                            </tr>
+                                                        <?php } ?>
+                                                    </tbody>
+                                                </table>
+                                                <?php } else {
+                                                    echo "No Vulnerabilities detected!\n";
+                                                }
+                                            } else {
+                                                echo "Vulnerabilites feature disabled.\n";
+                                            }
+                                        } else if (!empty($config->feature_vulnerabilities) and $config->feature_vulnerabilities === 'n') {
+                                            echo "Vulnerabilites feature disabled.\nVulnerability detection is available to Open-AudIT Enterprise customers. Click <a href=\"" . base_url() . "index.php/faq?name=Detected Vulnerabilities\">here</a> to see more.\n";
+                                        } else if (!empty($resource->cve)) {
+                                            echo "Warning! Open-AudIT has detected vulnerabilities for this device. Click <a href=\"" . base_url() . "index.php/faq?name=Detected Vulnerabilities\">here</a> to see more.\n";
+                                        } else {
+                                            echo "Vulnerability detection is available to Open-AudIT Enterprise customers. Click <a href=\"" . base_url() . "index.php/faq?name=Detected Vulnerabilities\">here</a> to see more.\n";
+                                        } ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <?php } ?>
 
                             <?php if ($config->product === 'enterprise' and !empty($included['warranty'])) { ?>
                             <div style="margin-bottom:20px; display:none;" class="card" id="warranty_section">

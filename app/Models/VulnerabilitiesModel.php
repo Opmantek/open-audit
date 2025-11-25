@@ -339,11 +339,12 @@ class VulnerabilitiesModel extends BaseModel
                 }
             }
         }
+
         if (!empty($id)) {
-            if (!empty($cves) and $instance->config->product === 'enterprise') {
+            // if (!empty($cves) and $instance->config->product === 'enterprise') {
                 $sql = "UPDATE devices SET cve = '" . implode(',', $cves) . "' WHERE id = ?";
                 $query = $this->db->query($sql, [$id]);
-            }
+            // }
             // if (!empty($cves) and $instance->config->product !== 'enterprise') {
             //     $sql = "SELECT * FROM `news` WHERE type = 'cve' LIMIT 1";
             //     $newsItems = $this->db->query($sql)->getResult();

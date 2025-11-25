@@ -184,14 +184,14 @@ abstract class BaseController extends Controller
         // No EULA accepted
         if (empty($this->config->license_eula)) {
             // Running commercial code
-            if (!empty($this->config->enterprise_binary)) {
+            // if (!empty($this->config->enterprise_binary)) {
                 // Requesting a dashboard or summary
-                if (!empty($this->resp->meta->collection) and ($this->resp->meta->collection === 'dashboards' or $this->resp->meta->collection === 'summaries')) {
+                if (!empty($this->resp->meta->collection) and ($this->resp->meta->collection === 'dashboards' or $this->resp->meta->collection === 'summaries' or $this->resp->meta->collection === 'help')) {
                     // Require EULA acceptance.
                     header('Location: ' . url_to('configurationEULA'));
                     exit;
                 }
-            }
+            // }
         }
 
         if (!empty($this->resp->meta->collection)) {
