@@ -1389,7 +1389,7 @@ INSERT INTO `configuration` VALUES (175,'default_geocode','Uluru, Northern Terri
 INSERT INTO `configuration` VALUES (176,'components_extra_columns','','text','y','system','2000-01-01 00:00:00','Any extra columns from the devices table to show on the components list page. Should be comman separated, no spaces, column name only.');
 INSERT INTO `configuration` VALUES (177,'feature_devices_manufacturer_logo','y','bool','y','system','2000-01-01 00:00:00','When viewing the device list, should we show manufacturers logos, not just text.');
 INSERT INTO `configuration` VALUES (178,'feature_news','y','bool','y','system','2000-01-01 00:00:00','Use online requests for news, updates, queries and packages.');
-INSERT INTO `configuration` VALUES (179,'feature_news_url','https://open-audit.com/news','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve news articles.');
+INSERT INTO `configuration` VALUES (179,'feature_news_url','https://news.firstwave.com/news','text','y','system','2000-01-01 00:00:00','The URL to connect to, to retrieve news articles.');
 INSERT INTO `configuration` VALUES (180,'feature_news_last_request_date','2000-01-01','text','y','system','2000-01-01 00:00:00','When did we last request a news article.');
 INSERT INTO `configuration` VALUES (181,'feature_news_request_days','7','number','n','system','2000-01-01 00:00:00','Make a news request every this number of days.');
 INSERT INTO `configuration` VALUES (182,'feature_news_remind_days','30','number','n','system','2000-01-01 00:00:00','If not enabled, reminder the user every this number of days.');
