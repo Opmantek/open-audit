@@ -2009,7 +2009,7 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 // LIKELY REVISE AND ADD A QUERY LINK
-$sql = "INSERT INTO `widgets` VALUES (null,'Recently Audited',1,'','status','','SELECT CONCAT(ROUND(COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END) / COUNT(devices.id) * 100, 0), \'%\') FROM devices WHERE @filter','devices','icon-radar','Devices scanned this week.','Audited (7 Days)','','','','','',0,'',0,0,0,0,'SELECT CONCAT(COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END), \' / \', COUNT(id)) AS `secondary_text` FROM devices WHERE @filter','primary','primary',0,0,'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Recently Audited',1,'','status','','SELECT CONCAT(ROUND(COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END) / COUNT(devices.id) * 100, 0), \'%\') AS `count` FROM devices WHERE @filter','devices','icon-radar','Devices scanned this week.','Audited (7 Days)','','','','','',0,'',0,0,0,0,'SELECT CONCAT(COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END), \' / \', COUNT(id)) AS `secondary_text` FROM devices WHERE @filter','primary','primary',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
