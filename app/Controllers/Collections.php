@@ -209,6 +209,16 @@ class Collections extends BaseController
             $csp = $this->response->getCSP();
             $csp->reportOnly(true);
         }
+
+        if ($this->config->product !== 'enterprise' and $this->resp->meta->action === 'collection' and date('Y-m-d') > $this->config->feature_vulnerabilities_alert_date and $this->config->feature_vulnerabilities === 'y') {
+            $vulnerabilitiesModel = model('App\Models\VulnerabilitiesModel');
+            $temp = $vulnerabilitiesModel->includedCollection();
+            if (!empty($temp['device_count'])) {
+                $_SESSION['warning'] = 'You have Vulnerabilities detected! Click <a href="' . base_url() . 'index.php/faq?name=Detected Vulnerabilities">here</a> to learn more.';
+            }
+        }
+
+
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),

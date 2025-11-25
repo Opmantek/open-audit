@@ -161,6 +161,17 @@ class Help extends BaseController
         if (!in_array($name, $valid_names)) {
             redirect('home');
         }
+        $included = array();
+        if ($name === 'Detected Vulnerabilities') {
+            $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
+            $included = $vulnerabilitiesModel->includedCollection();
+            $included['severe'] = $included['severity']->critical + $included['severity']->high;
+            $included['total'] = $included['severity']->critical + $included['severity']->high + $included['severity']->medium + $included['severity']->low;
+            $db = db_connect();
+            $sql = "UPDATE configuration SET value = ? WHERE name = 'feature_vulnerabilities_alert_date'";
+            $result = $db->query($sql, [date('Y-m-d')]);
+        }
+
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -169,7 +180,7 @@ class Help extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('helpFAQ', ['name' => $name])
+            view('helpFAQ', ['name' => $name, 'included' => $included])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 

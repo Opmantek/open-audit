@@ -344,17 +344,17 @@ class VulnerabilitiesModel extends BaseModel
                 $sql = "UPDATE devices SET cve = '" . implode(',', $cves) . "' WHERE id = ?";
                 $query = $this->db->query($sql, [$id]);
             }
-            if (!empty($cves) and $instance->config->product !== 'enterprise') {
-                $sql = "SELECT * FROM `news` WHERE type = 'cve' LIMIT 1";
-                $newsItems = $this->db->query($sql)->getResult();
-                if (!empty($newsItems)) {
-                    $sql = "UPDATE `news` SET `version` = ?, `read` = 'n' WHERE id = ?";
-                    $this->db->query($sql, [intval($newsItems[0]->version + 1), $newsItems[0]->id]);
-                } else {
-                    $sql = "INSERT INTO `news` VALUES (null, 'You have vulnerable programs!', 'Some programs in your database have current CVE records.', 'Open-AudIT has detected installed programs matching current CVE vulnerabilities. To report on these and more, upgrade to Open-AudIT Enterprise.', 'cve', 'body', NOW(), 'link', '', '2000-01-01 00:00:00', '2000-01-01 00:00:00', 'danger', '1', 'n', 'n', '', '2000-01-01 00:00:00')";
-                    $this->db->query($sql);
-                }
-            }
+            // if (!empty($cves) and $instance->config->product !== 'enterprise') {
+            //     $sql = "SELECT * FROM `news` WHERE type = 'cve' LIMIT 1";
+            //     $newsItems = $this->db->query($sql)->getResult();
+            //     if (!empty($newsItems)) {
+            //         $sql = "UPDATE `news` SET `version` = ?, `read` = 'n' WHERE id = ?";
+            //         $this->db->query($sql, [intval($newsItems[0]->version + 1), $newsItems[0]->id]);
+            //     } else {
+            //         $sql = "INSERT INTO `news` VALUES (null, 'You have vulnerable programs!', 'Some programs in your database have current CVE records.', 'Open-AudIT has detected installed programs matching current CVE vulnerabilities. To report on these and more, upgrade to Open-AudIT Enterprise.', 'cve', 'body', NOW(), 'link', '', '2000-01-01 00:00:00', '2000-01-01 00:00:00', 'danger', '1', 'n', 'n', '', '2000-01-01 00:00:00')";
+            //         $this->db->query($sql);
+            //     }
+            // }
         }
     }
 
@@ -392,6 +392,8 @@ class VulnerabilitiesModel extends BaseModel
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         $included['device_count'] = $result[0]->count;
 
+        $sql = "SELECT vulnerabilities.cve, vulnerabilities.base_severity, vulnerabilities_cache.vulnerability_id, SUM(vulnerabilities_cache.count) AS `count`, products FROM vulnerabilities_cache LEFT JOIN vulnerabilities ON vulnerabilities_cache.vulnerability_id = vulnerabilities.id WHERE vulnerabilities_cache.org_id IN (" . implode(',', $org_list) . ") GROUP BY vulnerability_id ORDER BY vulnerabilities_cache.count DESC, vulnerabilities.base_severity ASC LIMIT 5";
+        $included['top_5'] =  $this->db->query($sql)->getResult();
 
         return $included;
     }
