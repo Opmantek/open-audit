@@ -1963,7 +1963,7 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 // LIKELY REVISE AND ADD A QUERY LINK
-$sql = "INSERT INTO `widgets` VALUES (null,'Recently Audited',1,'','status','','SELECT CONCAT(ROUND(COUNT(id) / COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END), 0) * 100, \'%\') AS `count` FROM devices WHERE @filter','devices','icon-radar','Devices scanned this week.','Audited (7 Days)','','','','','',0,'',0,0,0,0,'SELECT CONCAT(COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END), \' / \', COUNT(id)) AS `secondary_text` FROM devices WHERE @filter','primary','primary',0,0,'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Recently Audited',1,'','status','','SELECT CONCAT(ROUND(COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END) / COUNT(devices.id) * 100, 0), \'%\') FROM devices WHERE @filter','devices','icon-radar','Devices scanned this week.','Audited (7 Days)','','','','','',0,'',0,0,0,0,'SELECT CONCAT(COUNT(CASE WHEN devices.last_seen > DATE(NOW() - INTERVAL 7 DAY) THEN 1 END), \' / \', COUNT(id)) AS `secondary_text` FROM devices WHERE @filter','primary','primary',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -2018,12 +2018,12 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Unknown Devices',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.type IN (\'unknown\', \'unclassified\')','devices?devices.type=IN(\'unknown\',\'unclassified\')','icon-shield-question-mark','These devices are unknown or not yet classified. They should be investigated.','Unknown Devices','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'0 new unknown devices\')) AS `secondary_text` FROM devices WHERE @filter AND devices.type IN (\'unknown\', \'unclassified\') AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','danger','success',0,0,'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Unknown Devices',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.type IN (\'unknown\', \'unclassified\')','devices?devices.type=IN(\'unknown\',\'unclassified\')','icon-shield-question-mark','These devices are unknown or not yet classified. They should be investigated.','Unknown Devices','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'0 new devices\')) AS `secondary_text` FROM devices WHERE @filter AND devices.type IN (\'unknown\', \'unclassified\') AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','danger','success',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Hardware Manufacturers',1,'','status','','SELECT COUNT(DISTINCT devices.manufacturer) AS `count` FROM devices WHERE @filter','','icon-factory','The number of hardware manufacturers in your database.','H/W Manufacturers','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(DISTINCT devices.manufacturer), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE first_seen > DATE(NOW() - INTERVAL 7 DAY) AND devices.manufacturer NOT IN (SELECT devices.manufacturer FROM devices WHERE devices.first_seen < DATE(NOW() - INTERVAL 7 DAY))','primary','primary',0,(SELECT `id` FROM `queries` WHERE `name` = 'Hardware Manufacturers'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Hardware Manufacturers',1,'','status','','SELECT COUNT(DISTINCT devices.manufacturer) AS `count` FROM devices WHERE @filter','','icon-factory','The number of hardware manufacturers in your database.','H/W Vendors','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(DISTINCT devices.manufacturer), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE first_seen > DATE(NOW() - INTERVAL 7 DAY) AND devices.manufacturer NOT IN (SELECT devices.manufacturer FROM devices WHERE devices.first_seen < DATE(NOW() - INTERVAL 7 DAY))','primary','primary',0,(SELECT `id` FROM `queries` WHERE `name` = 'Hardware Manufacturers'),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -2043,6 +2043,10 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "UPDATE `widgets` SET `primary_text` = 'Anyone can write', `icon` = 'icon-folder' WHERE `name` = 'Open Windows Shares'";
+$result = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 
 $sql = "DELETE FROM dashboards WHERE name = 'Windows Security Dashboard'";
