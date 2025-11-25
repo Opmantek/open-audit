@@ -76,8 +76,8 @@ Open-AudIT when downloaded from FirstWave may include the following libraries an
             <td><a href="<?= url_to('appLicenses') ?>?license=cc-sa-3">CC BY SA 3.0</a></td>
         </tr>
         <tr>
-            <td>Font Awesome Free</td>
-            <td><a href="<?= url_to('appLicenses') ?>?license=font-awesome">SIL Open Font License</a></td>
+            <td>Lucide Icons</td>
+            <td><a href="<?= url_to('appLicenses') ?>?license=lucide">ISC / MIT</a></td>
         </tr>
         <tr>
             <td>HighCharts</td>
