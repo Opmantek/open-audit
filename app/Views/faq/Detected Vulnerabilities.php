@@ -23,7 +23,7 @@ In your environment right now.
             </div>
             <div class="row">
                 <div class="col-12">
-                    <span style="color: #65758B">Critical Vulnerabilities Detected</span>
+                    <span style="color: #65758B">Severe Vulnerabilities Detected</span>
                 </div>
             </div>
         </div>
