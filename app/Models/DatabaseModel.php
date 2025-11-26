@@ -400,26 +400,24 @@ class DatabaseModel extends BaseModel
 
         if (intval(config('Openaudit')->internal_version) < 20250615) {
             include "db_upgrades/db_6.0.0.php";
-            log_message('info', 'Testing for enterprise binary.');
-            if (!empty($config->enterprise_binary)) {
-                log_message('info', 'Found enterprise binary. Retrieving V list');
-                $vulnerabilities = model('App\Models\VulnerabilitiesModel')->listAll();
-                log_message('info', 'Retrieved ' . count($vulnerabilities) . ' vulnerabilities. Testing if not empty.');
-                if (empty($vulnerabilities)) {
-                    log_message('debug', 'Not empty, requesting vulnerabilities');
-                    if (php_uname('s') === 'Windows NT') {
-                        $command = "%comspec% /c start c:\\xampp\\php\\php.exe " . FCPATH . "index.php news execute vulnerabilities";
-                        pclose(popen($command, 'r'));
-                    } elseif (php_uname('s') === 'Darwin') {
-                        $command = 'php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
-                        @exec($command, $cli_output);
-                    } else {
-                        $command = 'nohup php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
-                        exec($command, $cli_output);
-                    }
-                    $sql = 'UPDATE configuration SET value = NOW() WHERE name = "feature_vulnerabilities_last_request_datetime"';
-                    $db->query($sql);
+
+            log_message('info', 'Retrieving vulnerabilites list');
+            $vulnerabilities = model('App\Models\VulnerabilitiesModel')->listAll();
+            log_message('info', 'Retrieved ' . @count($vulnerabilities) . ' vulnerabilities from database. Testing if not empty.');
+            if (empty($vulnerabilities)) {
+                log_message('debug', 'Not empty, requesting vulnerabilities');
+                if (php_uname('s') === 'Windows NT') {
+                    $command = "%comspec% /c start c:\\xampp\\php\\php.exe " . FCPATH . "index.php news execute vulnerabilities";
+                    pclose(popen($command, 'r'));
+                } elseif (php_uname('s') === 'Darwin') {
+                    $command = 'php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
+                    @exec($command, $cli_output);
+                } else {
+                    $command = 'nohup php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
+                    exec($command, $cli_output);
                 }
+                $sql = 'UPDATE configuration SET value = NOW() WHERE name = "feature_vulnerabilities_last_request_datetime"';
+                $db->query($sql);
             }
         }
 
