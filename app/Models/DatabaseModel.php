@@ -400,10 +400,13 @@ class DatabaseModel extends BaseModel
 
         if (intval(config('Openaudit')->internal_version) < 20250615) {
             include "db_upgrades/db_6.0.0.php";
+            log_message('info', 'Testing for enterprise binary.');
             if (!empty($config->enterprise_binary)) {
+                log_message('info', 'Found enterprise binary. Retrieving V list');
                 $vulnerabilities = model('App\Models\VulnerabilitiesModel')->listAll();
+                log_message('info', 'Retrieved ' . count($vulnerabilities) . ' vulnerabilities. Testing if not empty.');
                 if (empty($vulnerabilities)) {
-                    log_message('debug', 'Requesting vulnerabilities');
+                    log_message('debug', 'Not empty, requesting vulnerabilities');
                     if (php_uname('s') === 'Windows NT') {
                         $command = "%comspec% /c start c:\\xampp\\php\\php.exe " . FCPATH . "index.php news execute vulnerabilities";
                         pclose(popen($command, 'r'));

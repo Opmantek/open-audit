@@ -265,7 +265,7 @@ class NewsModel extends BaseModel
         if (!empty($body) and $action === 'vendors') {
             $body = (array)$body;
         }
-        if (empty($body)) {
+        if (empty($body) and $action !== 'install' and $action !== 'upgrade' and $action !== 'add_license') {
             log_message('debug', 'No ' . $action . ' articles returned.');
             $_SESSION['warning'] = 'No ' . $action . ' returned.';
             return null;
