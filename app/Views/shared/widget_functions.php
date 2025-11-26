@@ -70,7 +70,7 @@ function status_widget($widget)
     if (!empty($widget->status_link_query_id) and is_numeric($widget->status_link_query_id)) {
         $link = '<a href="' . url_to('queriesExecute', $widget->status_link_query_id) . '"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;">' . $widget->result->result . '</span></a>';
     } else if (!empty($widget->link)) {
-        $link = '<a href="' . base_url() . $widget->link . '"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;">' . $widget->result->result . '</span></a>';
+        $link = '<a href="' . base_url() . 'index.php/' . $widget->link . '"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;">' . $widget->result->result . '</span></a>';
     }
 
     $icon = '';
