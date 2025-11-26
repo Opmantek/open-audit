@@ -173,7 +173,13 @@ class NewsModel extends BaseModel
         set_time_limit(600);
         $id = 0;
         log_message('debug', 'executeAll called with action ' . $action);
-        if (!$this->db->tableExists('news')) {
+        if (!$this->db->tableExists('news') and $action !== 'install' and $action !== 'upgrade') {
+            return null;
+        }
+        if (!$this->db->tableExists('vulnerabilities') and $action === 'vulnerabilities') {
+            return null;
+        }
+        if (!$this->db->tableExists('vendors') and $action === 'vendors') {
             return null;
         }
         $config = new \Config\OpenAudit();
@@ -229,9 +235,9 @@ class NewsModel extends BaseModel
 
         $client = service('curlrequest');
         try {
-            $url = $config->feature_news_url;
+            $url = (!empty($config->feature_news_url)) ? $config->feature_news_url : 'https://news.firstwave.com/news';
             if ($action === 'vulnerabilities' or $action === 'vendors') {
-                $url = $config->feature_vulnerabilities_url;
+                $url = (!empty($config->feature_vulnerabilities_url)) ? $config->feature_vulnerabilities_url : 'https://news.firstwave.com/news';
             }
             $response = @$client->request('POST', $url, [
                 # 'debug' => true,
