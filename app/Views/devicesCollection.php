@@ -470,7 +470,7 @@ window.onload = function () {
                         echo '{ data: \'attributes.manufacturer\',
                         render: function (data, type, row, meta) {
                             if (row.attributes.manufacturer_logo) {
-                                data = \'<td style=\"text-align: center;\"><img src="' . base_url() . '/brands/\' + row.attributes.manufacturer_logo + \'.svg" alt="\' + data + \'" title="\' + row.attributes.manufacturer + \'" width="50px"></img></td>\';
+                                data = \'<td style=\"text-align: center;\"><img src="' . base_url() . 'brands/\' + row.attributes.manufacturer_logo + \'.svg" alt="\' + data + \'" title="\' + row.attributes.manufacturer + \'" width="50px"></img></td>\';
                             }
                             return data;
                             }
