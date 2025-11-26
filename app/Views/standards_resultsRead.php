@@ -173,7 +173,7 @@ window.onload = function () {
         $("#button_export_csv").remove();
         $("#button_export_json").remove();
         $("#button_delete").remove();
-        $("#button_list").attr("href", "<?= base_url() ?>standards/<?= $resource->standard_id ?>#results");
+        $("#button_list").attr("href", "<?= base_url() ?>index.php/standards/<?= $resource->standard_id ?>#results");
 
         <?php if (!empty($resource->links)) {
         echo "\n" . '        var $links = \''. json_encode($resource->links) . '\';' . "\n";
