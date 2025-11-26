@@ -306,8 +306,8 @@ $countries = array(
                         <tr>
                             <td class="text-center"><a class="btn btn-default" href="<?= url_to('configurationReadLicense') ?>"><?= __('Restore my Licenses') ?></a></td>
                             <td class="text-center"><a class="btn <?= $btnCom ?>"  data-bs-dismiss="modal" <?= $btnComStyle ?> href="<?= base_url() ?>index.php"><?= $btnComText ?></a></td>
-                            <td class="text-center"><a class="btn <?= $btnPro ?>" <?= $btnProStyle ?> href="https://firstwave.com/products/network-discovery-and-inventory-software/"><?= $btnProText ?></a></td>
-                            <td class="text-center"><a class="btn <?= $btnEnt ?>" <?= $btnEntStyle ?> href="https://firstwave.com/products/network-discovery-and-inventory-software/"><?= $btnEntText ?></a></td>
+                            <td class="text-center"><a class="btn <?= $btnPro ?>" <?= $btnProStyle ?> target="_blank" href="https://open-audit.com/buy/"><?= $btnProText ?></a></td>
+                            <td class="text-center"><a class="btn <?= $btnEnt ?>" <?= $btnEntStyle ?> target="_blank" href="https://open-audit.com/buy/"><?= $btnEntText ?></a></td>
                         </tr>
                     </tfoot>
                 </table>

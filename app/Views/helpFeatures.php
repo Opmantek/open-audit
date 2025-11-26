@@ -280,8 +280,8 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $c
                                     <tr>
                                         <td class=" "><a href="<?= url_to('devicesHelp') ?>"><?= __('Devices') ?></a></td>
                                         <td class=" ">&nbsp;</td>
-                                        <td class="text-center"><?= __('From 500 Devices') ?></td>
-                                        <td class="text-center"><?= __('From 100 Devices') ?></td>
+                                        <td class="text-center"><a href="https://open-audit.com/buy/" target="_blank"><?= __('From 500 Devices') ?></a></td>
+                                        <td class="text-center"><a href="https://open-audit.com/buy/" target="_blank"><?= __('From 100 Devices') ?></a></td>
                                     </tr>
                                 </tbody>
                             </table>
