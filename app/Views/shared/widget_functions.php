@@ -22,9 +22,7 @@ function traffic_widget($widget)
     if (empty($link)) {
         $link = '<a href="#"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;">0</span></a>';
         if (!empty($widget->link)) {
-            $link = '<a href="' . base_url() . $widget->link . '"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;">0</span></a>';
-            log_message('debug', $widget->link);
-            log_message('debug', $link);
+            $link = '<a href="' . base_url() . 'index.php/' . $widget->link . '"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;">0</span></a>';
         }
         $widget->result->color = 'success';
     }
