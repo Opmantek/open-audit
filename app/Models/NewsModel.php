@@ -257,7 +257,7 @@ class NewsModel extends BaseModel
         $body = $response->getBody();
         // log_message('debug', 'Bytes in reply: ' . strlen($body));
         $body = @json_decode($body);
-        if (!is_array($body) and $action !== 'vendors') {
+        if (!is_array($body) and $action !== 'vendors' and $action !== 'install' and $action !== 'upgrade' and $action !== 'add_license') {
             log_message('error', 'Body returned but body not an array. Body is a ' . gettype($body));
             $_SESSION['warning'] = 'No ' . $action . ' returned.';
             return null;
