@@ -69,7 +69,32 @@ class Logon extends Controller
         $db = db_connect();
         $sql = "SELECT * FROM discoveries WHERE id = 1";
         $result = $db->query($sql)->getResult();
-        if (empty($result[0]->subnet)) {
+        $subnet = (!empty($result[0]->subnet)) ? $result[0]->subnet : '';
+
+        $sql = "SELECT `value` FROM `configuration` WHERE `name` = 'server_ip'";
+        $result = $db->query($sql)->getResult();
+        $server_ip = (!empty($result[0]->value)) ? $result[0]->value : '';
+
+        $sql = "SELECT `value` FROM `configuration` WHERE `name` = 'server_os'";
+        $result = $db->query($sql)->getResult();
+        $server_os = (!empty($result[0]->value)) ? $result[0]->value : '';
+
+        if (empty($subnet) and empty($server_ip) and empty($server_os)) {
+            // First time logging on - a new install
+            if (php_uname('s') === 'Windows NT') {
+                $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . "index.php news install";
+                @exec($command, $output);
+                pclose(popen($command, 'r'));
+            } elseif (php_uname('s') === 'Darwin') {
+                $command = 'php ' . FCPATH . 'index.php news install > /dev/null 2>&1 &';
+                @exec($command, $output);
+            } else {
+                $command = 'nohup php ' . FCPATH . 'index.php news install > /dev/null 2>&1 &';
+                @exec($command, $output);
+            }
+        }
+
+        if (empty($subnet)) {
             helper('network');
             $ips = server_ip();
             $ips = explode(',', $ips);

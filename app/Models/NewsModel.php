@@ -172,25 +172,28 @@ class NewsModel extends BaseModel
     {
         set_time_limit(600);
         $id = 0;
-        log_message('debug', 'executeAll called with action ' . $action);
-        if (!$this->db->tableExists('news') and $action !== 'install' and $action !== 'upgrade') {
+        log_message('debug', 'NewsModel::executeAll called with action ' . $action);
+        if (!$this->db->tableExists('news') and $action === 'news') {
+            log_message('warning', 'News table does not exist, returning from NewsModel::executeAll.');
             return null;
         }
         if (!$this->db->tableExists('vulnerabilities') and $action === 'vulnerabilities') {
+            log_message('warning', 'Vulnerabilities table does not exist, returning from NewsModel::executeAll.');
             return null;
         }
         if (!$this->db->tableExists('vendors') and $action === 'vendors') {
+            log_message('warning', 'Vendors table does not exist, returning from NewsModel::executeAll.');
             return null;
         }
         $config = new \Config\OpenAudit();
-        if (empty($config->feature_news) or $config->feature_news !== 'y' and $action === 'news') {
+        if ((empty($config->feature_news) or $config->feature_news !== 'y') and $action === 'news') {
             // Do not run
-            log_message('info', 'News not executed because config item set to n.');
+            log_message('info', 'News not executed because config item set to n, returning from NewsModel::executeAll.');
             return null;
         }
-        if (empty($config->feature_vulnerabilities) or $config->feature_vulnerabilities !== 'y' and ($action === 'vulnerabilities' or $action === 'vendors')) {
+        if ((empty($config->feature_vulnerabilities) or $config->feature_vulnerabilities !== 'y') and ($action === 'vulnerabilities' or $action === 'vendors')) {
             // Do not run
-            log_message('info', 'Vulnerabilities not executed because config item set to n.');
+            log_message('info', 'Vulnerabilities not executed because config item set to n, returning from NewsModel::executeAll.');
             return null;
         }
         helper('utility_helper');
@@ -222,7 +225,7 @@ class NewsModel extends BaseModel
         if ($action === 'vulnerabilities' or $action === 'vendors') {
             unset($send['issues']);
             $send['issues'] = array();
-            $send['last_request_date'] = $config->feature_vulnerabilities_last_request_datetime;
+            $send['last_request_date'] = (!empty($config->feature_vulnerabilities_last_request_datetime)) ? $config->feature_vulnerabilities_last_request_datetime : '2000-01-01 00:00:00';
             $sql = "SELECT `cve` FROM `vulnerabilities`";
             $result = $this->db->query($sql)->getResult();
             $send['cves'] = array();

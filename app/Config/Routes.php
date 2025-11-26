@@ -96,12 +96,12 @@ $routes->get('discoveries/(:any)/download', 'Discoveries::download/$1', ['filter
 $routes->get('discoveries/(:num)/executeForm', 'Discoveries::executeForm/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesExecuteForm']);
 $routes->post('discoveries/(:num)/executeForm', 'Discoveries::executeCollector/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesExecuteCollector']);
 
-$routes->get('news/execute', 'News::executeAll', ['as' => 'newsExecuteAll']);
-$routes->cli('news/execute', 'Cli::executeNews', ['as' => 'executeNewsAll']);
 $routes->get('news/execute/vulnerabilities', 'News::executeAll/vulnerabilities', ['as' => 'newsExecuteAllVulnerabilities']);
 $routes->cli('news/execute/vulnerabilities', 'Cli::executeNews/vulnerabilities', ['as' => 'executeNewsAllVulnerabilities']);
 $routes->cli('news/execute/vendors', 'Cli::executeNews/vendors', ['as' => 'executeNewsAllVendors']);
 $routes->cli('news/execute/(:any)', 'Cli::executeNews/$1', ['as' => 'executeNewsAction']);
+$routes->get('news/execute', 'News::executeAll', ['as' => 'newsExecuteAll']);
+$routes->cli('news/execute', 'Cli::executeNews', ['as' => 'executeNewsAll']);
 
 #$routes->get('vulnerabilities/vendor', 'Vulnerabilities::vendor', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesVendor']);
 #$routes->get('vulnerabilities/vendors', 'Vulnerabilities::vendors', ['filter' => \App\Filters\Session::class, 'as' => 'vulnerabilitiesVendors']);
