@@ -400,6 +400,24 @@ class DatabaseModel extends BaseModel
 
         if (intval(config('Openaudit')->internal_version) < 20250615) {
             include "db_upgrades/db_6.0.0.php";
+            if (!empty($config->enterprise_binary)) {
+                $vulnerabilities = model('App\Models\VulnerabilitiesModel')->listAll();
+                if (empty($vulnerabilities)) {
+                    log_message('debug', 'Requesting vulnerabilities');
+                    if (php_uname('s') === 'Windows NT') {
+                        $command = "%comspec% /c start c:\\xampp\\php\\php.exe " . FCPATH . "index.php news execute vulnerabilities";
+                        pclose(popen($command, 'r'));
+                    } elseif (php_uname('s') === 'Darwin') {
+                        $command = 'php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
+                        @exec($command, $output);
+                    } else {
+                        $command = 'nohup php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
+                        exec($command, $output);
+                    }
+                    $sql = 'UPDATE configuration SET value = NOW() WHERE name = "feature_vulnerabilities_last_request_datetime"';
+                    $db->query($sql);
+                }
+            }
         }
 
         $instance = & get_instance();
