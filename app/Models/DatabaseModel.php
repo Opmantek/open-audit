@@ -409,10 +409,10 @@ class DatabaseModel extends BaseModel
                         pclose(popen($command, 'r'));
                     } elseif (php_uname('s') === 'Darwin') {
                         $command = 'php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
-                        @exec($command, $output);
+                        @exec($command, $cli_output);
                     } else {
                         $command = 'nohup php ' . FCPATH . 'index.php news execute vulnerabilities > /dev/null 2>&1 &';
-                        exec($command, $output);
+                        exec($command, $cli_output);
                     }
                     $sql = 'UPDATE configuration SET value = NOW() WHERE name = "feature_vulnerabilities_last_request_datetime"';
                     $db->query($sql);
@@ -425,10 +425,10 @@ class DatabaseModel extends BaseModel
             pclose(popen($command, 'r'));
         } elseif (php_uname('s') === 'Darwin') {
             $command = 'php ' . FCPATH . 'index.php news execute upgrade > /dev/null 2>&1 &';
-            @exec($command, $output);
+            @exec($command, $cli_output);
         } else {
             $command = 'nohup php ' . FCPATH . 'index.php news execute upgrade > /dev/null 2>&1 &';
-            exec($command, $output);
+            exec($command, $cli_output);
         }
 
         $instance = & get_instance();
