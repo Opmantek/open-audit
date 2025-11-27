@@ -1938,7 +1938,7 @@ if ($db->fieldExists('group_by', 'widgets')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Top 10 Vulnerable Devices',1,'','pie','','SELECT devices.id AS `description`, devices.name AS `name`, LENGTH(devices.cve) - LENGTH(REPLACE(devices.cve, \',\', \'\')) AS `count` FROM devices WHERE @filter AND devices.cve > \'\' ORDER BY `count` DESC LIMIT 10','devices?devices.id=@description','','','Top 10 Vulnerable Devices','','','','','',0,'',0,0,0,0,'','primary','',0,0,'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Top 10 Vulnerable Devices',1,'','pie','','SELECT devices.id AS `description`, devices.name AS `name`, LENGTH(devices.cve) - LENGTH(REPLACE(devices.cve, \',\', \'\')) + 1 AS `count` FROM devices WHERE @filter AND devices.cve LIKE \'%CVE%\' ORDER BY `count` DESC LIMIT 10','devices?devices.id=@description','','','Top 10 Vulnerable Devices','','','','','',0,'',0,0,0,0,'','primary','',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
