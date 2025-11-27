@@ -93,13 +93,13 @@ $lang["vi"] = "Vietnamese";
                                                     if (file_exists($path . '/' . $key . '.php')) {
                                                         echo '<option value="' . $key . '">' . __($value) . ' (' . $value . ')</option>';
                                                     } else {
-                                                        log_message('info', $path . '/' . $key . '.php does not exist');
+                                                        log_message('debug', $path . '/' . $key . '.php does not exist');
                                                     }
                                                 } else {
                                                     if (file_exists($path . '/' . $key . '.php')) {
                                                         echo '<option value="' . $key . '">' . $value . '</option>';
                                                     } else {
-                                                        log_message('info', $path . '/' . $key . '.php does not exist');
+                                                        log_message('debug', $path . '/' . $key . '.php does not exist');
                                                     }
                                                 }
                                             }
