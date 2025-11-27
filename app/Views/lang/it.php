@@ -851,7 +851,7 @@ $GLOBALS["lang"]['Audit Result Input'] = 'Audit Reult Input';
 
 $GLOBALS["lang"]['Audit Software'] = 'Software di controllo';
 
-$GLOBALS["lang"]['Audit Status'] = 'Stato dell\'audit';
+$GLOBALS["lang"]['Audit Status'] = 'Stato dell audit';
 
 $GLOBALS["lang"]['Audit Win32 Product'] = 'Audit Win32 Prodotto';
 

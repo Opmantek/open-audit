@@ -4705,7 +4705,7 @@ $GLOBALS["lang"]['Open-AudIT Professional and Enterprise include Enhanced Report
 
 $GLOBALS["lang"]['Open-AudIT Professional has the ability to choose from a pre-defined list of discovery scan options, per discovery.'] = 'Open- Audit Profesional ir iespēja izvēlēties no iepriekš noteikta saraksta atklājumu skenēšanas iespējas, uz vienu atklājumu.';
 
-$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = 'Open-AudIT Professional. Pasaule\';
+$GLOBALS["lang"]['Open-AudIT Professional. The world\\'] = 'Open-AudIT Professional. Pasaule\\';
 
 $GLOBALS["lang"]['Open-AudIT Professional. The worlds most flexible network discovery and audit solution. All the features of Community plus: Interactive Dashboards, Geographical Maps, Scheduled Time-based or Historical Reporting, Commercial Support.'] = 'Open-AudIT Professional. Pasaulē elastīgākais tīkla atklāšanas un revīzijas risinājums. Visas iezīmes Community plus: Interactive Dashboards, Ģeogrāfiskās kartes, Plānota Laika balstītas vai Vēsturiskas atskaites, Komerciāls atbalsts.';
 
