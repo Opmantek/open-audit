@@ -223,40 +223,40 @@ class DevicesModel extends BaseModel
                 $result[$i]->audit_text = '';
                 # BAD
                 if ($result[$i]->{'devices.last_seen_by'} === 'nmap' and ($result[$i]->{'devices.type'} === 'unclassified' or $result[$i]->{'devices.type'} === 'unknown')) {
-                    $result[$i]->audit_class = 'fa fa-times text-danger';
+                    $result[$i]->audit_class = 'icon-x text-danger';
                     $result[$i]->audit_text = 'Nmap discovered, data retrieval will be very limited.';
                 # NOT GOOD
                 } elseif ($result[$i]->{'devices.last_seen_by'} === 'nmap' and $result[$i]->{'devices.type'} !== 'unclassified' and $result[$i]->{'devices.type'} !== 'unknown') {
-                    $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
+                    $result[$i]->audit_class = 'icon-triangle-alert text-warning';
                     $result[$i]->audit_text = 'Last discovery only Nmap worked. This may be an issue, or it may be a device of a type we cannot audit.';
                 } elseif ($result[$i]->{'devices.last_seen_by'} === 'cloud') {
-                    $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
+                    $result[$i]->audit_class = 'icon-triangle-alert text-warning';
                     $result[$i]->audit_text = 'Cloud import, data retrieval will be very limited.';
                 } elseif ($result[$i]->{'devices.last_seen_by'} === 'integrations') {
-                    $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
+                    $result[$i]->audit_class = 'icon-triangle-alert text-warning';
                     $result[$i]->audit_text = 'Integration import, data retrieval will be very limited.';
                 } elseif ($result[$i]->{'devices.type'} === 'computer' and ($result[$i]->{'devices.last_seen_by'} === 'ssh' or $result[$i]->{'devices.last_seen_by'} === 'windows' or $result[$i]->{'devices.last_seen_by'} === 'wmi' or $result[$i]->{'devices.last_seen_by'} === 'snmp')) {
-                    $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
+                    $result[$i]->audit_class = 'icon-triangle-alert text-warning';
                     $result[$i]->audit_text = 'Partially discovered computer. Data retrieval limited.';
                 } elseif ($result[$i]->{'devices.last_seen_by'} === 'web form') {
-                    $result[$i]->audit_class = 'fa fa-exclamation-triangle text-warning';
+                    $result[$i]->audit_class = 'icon-triangle-alert text-warning';
                     $result[$i]->audit_text = 'Manually created ' . $result[$i]->{'devices.type'} . '. Data retrieval limited.';
                 # GOOD
                 } elseif ($result[$i]->{'devices.type'} === 'computer' and ($result[$i]->{'devices.last_seen_by'} === 'audit_wmi' or $result[$i]->{'devices.last_seen_by'} === 'audit_ssh')) {
-                    $result[$i]->audit_class = 'fa fa-check text-success';
+                    $result[$i]->audit_class = 'icon-check text-success';
                     $result[$i]->audit_text = 'Discovered and audited computer.';
                 } elseif ($result[$i]->{'devices.type'} === 'computer' and $result[$i]->{'devices.last_seen_by'} === 'audit') {
-                    $result[$i]->audit_class = 'fa fa-check text-success';
+                    $result[$i]->audit_class = 'icon-check text-success';
                     $result[$i]->audit_text = 'Audited computer.';
                 } elseif ($result[$i]->{'devices.type'} === 'san' and $result[$i]->{'devices.last_seen_by'} === 'audit') {
-                    $result[$i]->audit_class = 'fa fa-check text-success';
+                    $result[$i]->audit_class = 'icon-check text-success';
                     $result[$i]->audit_text = 'Audited SAN.';
                 } elseif ($result[$i]->{'devices.type'} !== 'computer' and !empty($result[$i]->snmp_oid)) {
-                    $result[$i]->audit_class = 'fa fa-check text-success';
+                    $result[$i]->audit_class = 'icon-check text-success';
                     $result[$i]->audit_text = 'Discovered and audited ' . $result[$i]->{'devices.type'} . '.';
                 # BAD - FALLBACK
                 } else {
-                    $result[$i]->audit_class = 'fa fa-question text-danger';
+                    $result[$i]->audit_class = 'icon-circle-question-mark text-danger';
                     $result[$i]->audit_text = 'Limited information available.';
                 }
                 $result[$i]->audit_status = '<span class="' . $result[$i]->audit_class . '" title="' . $result[$i]->audit_text . '"></span>';

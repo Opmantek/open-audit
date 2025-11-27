@@ -149,7 +149,7 @@ class Database extends BaseController
         $meta->collection = 'database';
         $meta->action = 'read';
         $meta->access_token = '';
-        $meta->icon = 'fa fa-database';
+        $meta->icon = 'icon-database';
 
         return view('shared/header', [
             'config' => $this->config,
@@ -231,7 +231,7 @@ class Database extends BaseController
         $meta->collection = 'database';
         $meta->action = 'updateForm';
         $meta->access_token = '';
-        $meta->icon = 'fa fa-database';
+        $meta->icon = 'icon-database';
         $license_string = (!empty($this->resp->meta->license_string)) ? $this->resp->meta->license_string : '';
         if ($action !== 'post') {
             $this->data = $this->databaseModel->updateForm();
