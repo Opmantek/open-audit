@@ -152,9 +152,13 @@ $rulesModel = new \App\Models\RulesModel();
 $rulesModel->execute(null, @intval($device->system->discovery_id), 'update', intval($device->system->id));
 
 // Test for vulnerabilities
-if (empty($device->system->domain) or $device->system->domain !== 'open-audit.local') {
-    // exclude the example devices
+if (!empty($this->config->feature_vulnerabilities) and $this->config->feature_vulnerabilities === 'y') {
+    $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
+    $log->message = 'Executing vulnerabilities for ' . @$device->system->hostname . ', ID ' . $device->system->id;
+    $discoveryLogModel->create($log);
     $vulnerabilitiesModel->executeAll(intval($device->system->id));
+    $log->message = 'Completed vulnerabilities for ' . @$device->system->hostname . ', ID ' . $device->system->id;
+    $discoveryLogModel->create($log);
 }
 
 // Because Rules may set the last_seen_by, update it here.

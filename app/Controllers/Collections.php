@@ -1114,6 +1114,21 @@ class Collections extends BaseController
             exit();
         }
         $this->{$this->resp->meta->collection . 'Model'}->reset();
+        if ($this->resp->meta->collection === 'vulnerabilities' and !empty($this->config->feature_vulnerabilities) and $this->config->feature_vulnerabilities === 'y'){
+            if (php_uname('s') === 'Windows NT') {
+                $command = "%comspec% /c start c:\\xampp\\php\\php.exe " . FCPATH . "index.php news execute vulnerabilities reset";
+                pclose(popen($command, 'r'));
+            } elseif (php_uname('s') === 'Darwin') {
+                $command = 'php ' . FCPATH . 'index.php news execute vulnerabilities reset > /dev/null 2>&1 &';
+                @exec($command, $cli_output);
+            } else {
+                $command = 'nohup php ' . FCPATH . 'index.php news execute vulnerabilities reset > /dev/null 2>&1 &';
+                exec($command, $cli_output);
+            }
+            $db = db_connect();
+            $sql = 'UPDATE configuration SET value = NOW() WHERE name = "feature_vulnerabilities_last_request_datetime"';
+            $db->query($sql);
+        }
         if ($this->resp->meta->format !== 'html') {
             output($this);
             return true;

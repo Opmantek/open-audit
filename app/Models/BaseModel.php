@@ -186,8 +186,14 @@ class BaseModel extends Model
             }
         }
 
-        \Config\Services::session()->setFlashdata('success', "The {$table} table has been reset - existing data removed and default data inserted.");
-        log_message('info', "The {$table} table has been reset - existing data removed and default data inserted.");
+        $instance = & get_instance();
+        if ($table === 'vulnerabilities' and $instance->config->feature_vulnerabilities === 'y') {
+            $message = "The vulnerabiliites table has been reset and the vulnerability list is being retrieved. Please wait, this may take a while.";
+        } else {
+            $message = "The {$table} table has been reset - existing data removed and default data inserted.";
+        }
+        \Config\Services::session()->setFlashdata('success', $message);
+        log_message('info', $message);
         return true;
     }
 

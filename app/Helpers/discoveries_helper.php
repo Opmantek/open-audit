@@ -2492,14 +2492,29 @@ if (! function_exists('discovery_check_finished')) {
                 $device_count = intval($result[0]->ip_responding_count);
                 $status = $result[0]->status;
                 if ($count >= $device_count and $status !== 'complete') {
+
                     // NOTE - the log_helper will mark this in the database as complete for us, think Collector / Server
                     $log->discovery_id = $id;
-                    $log->message = 'Discovery has finished.';
                     $log->command = '';
                     $log->command_output = '';
                     $log->command_status = 'finished';
                     $log->ip = '127.0.0.1';
                     unset($log->device_id);
+
+                    // Test for vulnerabilities
+                    if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y') {
+                        $log->message = 'Executing vulnerabilities';
+                        log_message('debug', 'Executing vulnerabilities for discovery: ' . $id);
+                        $discoveryLogModel->create($log);
+                        $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
+                        $vulnerabilitiesModel->executeAll(intval($device->id));
+                        log_message('debug', 'Completed vulnerabilities for discovery: ' . $id);
+                        $log->message = 'Completed vulnerabilities';
+                        $discoveryLogModel->create($log);
+                    }
+
+                    log_message('debug', 'Discovery ' . $id . ' has finished.');
+                    $log->message = 'Discovery has finished.';
                     $discoveryLogModel->create($log);
                     // If we are a collector and the discovery is an instant - delete it locally
                     $instance = & get_instance();
@@ -2525,6 +2540,19 @@ if (! function_exists('discovery_check_finished')) {
                     $log->command_status = 'finished';
                     $log->ip = '127.0.0.1';
                     unset($log->device_id);
+                    $discoveryLogModel->create($log);
+                }
+            }
+            if (!empty($result) and count($result) > 0) {
+                // Test for vulnerabilities
+                if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y') {
+                    $log->message = 'Executing vulnerabilities';
+                    log_message('debug', 'Executing vulnerabilities for discovery: ' . $id);
+                    $discoveryLogModel->create($log);
+                    $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
+                    $vulnerabilitiesModel->executeAll(intval($device->id));
+                    log_message('debug', 'Completed vulnerabilities for discovery: ' . $id);
+                    $log->message = 'Completed vulnerabilities';
                     $discoveryLogModel->create($log);
                 }
             }

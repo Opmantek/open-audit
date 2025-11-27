@@ -267,7 +267,7 @@ class VulnerabilitiesModel extends BaseModel
      *
      * @return array        Success or failure
      */
-    public function execute(int $id = 0, ?array $orgs = array()): array
+    public function execute(int $id = 0, ?array $orgs = array(), ?int $device_id = 0): array
     {
         $query = $this->builder->getWhere(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
@@ -295,7 +295,11 @@ class VulnerabilitiesModel extends BaseModel
         // Update the cache
         $this->updateCacheSingle($id);
         // Run the SQL for the required Orgs and return the result
-        $sql = $vulnerability->sql . " AND devices.org_id IN (" . implode(',', $orgs) . ") GROUP BY devices.id";
+        if (empty($device_id)) {
+            $sql = $vulnerability->sql . " AND devices.org_id IN (" . implode(',', $orgs) . ") GROUP BY devices.id";
+        } else {
+            $sql = $vulnerability->sql . " AND devices.org_id IN (" . implode(',', $orgs) . ") AND devices.id = $device_id GROUP BY devices.id";
+        }
         $query = $this->db->query($sql);
         $devices = array();
         if (!empty($query)) {
@@ -324,7 +328,7 @@ class VulnerabilitiesModel extends BaseModel
         $instance = & get_instance();
         $vulnerabilities = $this->builder->get()->getResult();
         foreach ($vulnerabilities as $vulnerability) {
-            $result = $this->execute(intval($vulnerability->id));
+            $result = $this->execute(intval($vulnerability->id), [], $id);
             if (!empty($id)) {
                 foreach ($result as $device) {
                     if ($device->id === $id) {
@@ -341,21 +345,8 @@ class VulnerabilitiesModel extends BaseModel
         }
 
         if (!empty($id)) {
-            // if (!empty($cves) and $instance->config->product === 'enterprise') {
-                $sql = "UPDATE devices SET cve = '" . implode(',', $cves) . "' WHERE id = ?";
-                $query = $this->db->query($sql, [$id]);
-            // }
-            // if (!empty($cves) and $instance->config->product !== 'enterprise') {
-            //     $sql = "SELECT * FROM `news` WHERE type = 'cve' LIMIT 1";
-            //     $newsItems = $this->db->query($sql)->getResult();
-            //     if (!empty($newsItems)) {
-            //         $sql = "UPDATE `news` SET `version` = ?, `read` = 'n' WHERE id = ?";
-            //         $this->db->query($sql, [intval($newsItems[0]->version + 1), $newsItems[0]->id]);
-            //     } else {
-            //         $sql = "INSERT INTO `news` VALUES (null, 'You have vulnerable programs!', 'Some programs in your database have current CVE records.', 'Open-AudIT has detected installed programs matching current CVE vulnerabilities. To report on these and more, upgrade to Open-AudIT Enterprise.', 'cve', 'body', NOW(), 'link', '', '2000-01-01 00:00:00', '2000-01-01 00:00:00', 'danger', '1', 'n', 'n', '', '2000-01-01 00:00:00')";
-            //         $this->db->query($sql);
-            //     }
-            // }
+            $sql = "UPDATE devices SET cve = '" . implode(',', $cves) . "' WHERE id = ?";
+            $query = $this->db->query($sql, [$id]);
         }
     }
 

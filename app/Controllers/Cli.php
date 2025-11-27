@@ -285,6 +285,13 @@ class Cli extends Controller
         $newsModel->executeAll($action);
     }
 
+    public function executeVulnerabilitiesReset()
+    {
+        $GLOBALS['vulnerabilitiesReset'] = true;
+        $newsModel = model('App\Models\NewsModel');
+        $newsModel->executeAll('vulnerabilities');
+    }
+
     public function executeIntegration($id)
     {
         $id = intval($id);

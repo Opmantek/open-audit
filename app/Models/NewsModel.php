@@ -209,6 +209,7 @@ class NewsModel extends BaseModel
         $send['features'] = json_encode($send['features']);
         $send['devices'] = json_encode($send['devices']);
         $send['stats'] = json_encode($send['stats']);
+        $send['reset'] = (!empty($GLOBALS['vulnerabilitiesReset'])) ? 'y' : '';
 
         if (!empty($_POST['data']['attributes']['cve'])) {
             $cve = strtoupper($_POST['data']['attributes']['cve']);
