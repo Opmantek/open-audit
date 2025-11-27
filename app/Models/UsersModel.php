@@ -417,7 +417,7 @@ class UsersModel extends BaseModel
         $dictionary->columns->active = 'Is this account active? If set to <code>n</code>, the user cannot logon.';
         $dictionary->columns->ldap = 'The LDAP OU of this user (if LDAP is used).';
         $dictionary->columns->type = 'Can be <code>user</code> or <code>collector</code>.';
-        $dictionary->columns->devices_default_display_columns = 'If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.';
+        $dictionary->columns->devices_default_display_columns = 'If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default. This should be set on the List Devices page.';
         $dictionary->columns->access_token = 'Internal JSON array of valid access tokens for this user.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
