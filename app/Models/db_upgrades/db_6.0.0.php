@@ -1968,7 +1968,7 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows 11 Not Latest Build',1,'','traffic','','','','windows','Windows 11 devices not running the latest release from Microsoft.','Not Latest Version','Windows 11','','','','',0,'',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 11 Not Latest Build'),0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 11 Latest Build'),'','','',0,0,'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows 11 Not Latest Build',1,'','traffic','','','','icon-grid-2x2','Windows 11 devices not running the latest release from Microsoft.','Not Latest Version','Windows 11','','','','',0,'',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 11 Not Latest Build'),0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 11 Latest Build'),'','','',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -2008,7 +2008,7 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Servers Not Seen for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\') AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','discoveries','Windows Servers not seen for 30 or more days.','Not Seen','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Servers Not Seen for more than 30 Days'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Servers Not Seen for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\') AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','icon-radar','Windows Servers not seen for 30 or more days.','Not Seen','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Servers Not Seen for more than 30 Days'),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -2065,7 +2065,7 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Other Computers',1,'Not Windows and Not Apple computers','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_name NOT LIKE \'%Windows%\' AND devices.os_name NOT LIKE \'%MacOS%\' AND devices.os_group != \'Linux\'','devices?devices.os_name=NOT LIKEwindows&devices.os_name=NOT LIKEMacOS&devices.os_group=!=Linux','icon-database','Computers not running Windows or MacOS.','Other Computers','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_name NOT LIKE \'%Windows%\' AND devices.os_name NOT LIKE \'%MacOS%\' AND devices.os_group != \'Linux\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','primary',0,0,'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Other Computers',1,'Not Windows, Apple or Linux computers','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.os_name NOT LIKE \'%Windows%\' AND devices.os_name NOT LIKE \'%MacOS%\' AND devices.os_group != \'Linux\'','devices?devices.os_name=NOT LIKEwindows&devices.os_name=NOT LIKEMacOS&devices.os_group=!=Linux','icon-database','Computers not running Windows or MacOS.','Other Computers','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(id), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE @filter AND devices.os_name NOT LIKE \'%Windows%\' AND devices.os_name NOT LIKE \'%MacOS%\' AND devices.os_group != \'Linux\' AND first_seen > DATE(NOW() - INTERVAL 7 DAY)','primary','primary',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -2100,7 +2100,7 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE `widgets` SET `primary_text` = 'Anyone can write', `icon` = 'icon-folder' WHERE `name` = 'Open Windows Shares'";
+$sql = "UPDATE `widgets` SET `primary_text` = 'Open Shares', `secondary-text` = 'Anyone can write here', `help-text` = 'No authentication required.', `icon` = 'icon-folder' WHERE `name` = 'Open Windows Shares'";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
