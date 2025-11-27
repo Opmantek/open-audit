@@ -81,7 +81,6 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="applied" data-dictionary="<?= $dictionary->columns->applied ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -106,7 +105,6 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="result" data-dictionary="<?= $dictionary->columns->result ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -131,7 +129,6 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="maturity_level" data-dictionary="<?= $dictionary->columns->result ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -152,7 +149,6 @@ include 'shared/read_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position:absolute; right:0;" data-attribute="<?= $column ?>" data-dictionary="<?= $dictionary->columns->$column ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php } ?>

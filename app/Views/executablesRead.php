@@ -33,7 +33,6 @@ include 'shared/common_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="exclude" data-dictionary="<?= $dictionary->columns->exclude ?>"><span><br></span></div>
                                 </div>
                             </div>
 

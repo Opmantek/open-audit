@@ -32,7 +32,6 @@ include 'shared/common_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php if (!empty($resource->values) and $resource->type = 'list') { ?>

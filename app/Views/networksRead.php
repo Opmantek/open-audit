@@ -114,7 +114,6 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="admin_status" data-dictionary="<?= $dictionary->columns->admin_status ?>"><span><br></span></div>
                                         </div>
                                     </div>
                                     <?php $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.security_zone=" . urlencode($resource->security_zone) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">"; ?>

@@ -241,7 +241,6 @@ if ($resource->type === 'application') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
                                         </div>
                                     </div>
                                 </div>

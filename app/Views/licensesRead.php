@@ -57,7 +57,6 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } ?>
                                             </div>
-                                            <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="org_descendants" data-dictionary="<?= $dictionary->columns->org_descendants ?>"><span><br></span></div>
                                         </div>
                                     </div>
                                     <?= read_field('purchase_count', $resource->purchase_count, $dictionary->columns->purchase_count, $update, '', '', '', '', $meta->collection) ?>

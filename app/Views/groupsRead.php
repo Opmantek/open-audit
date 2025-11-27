@@ -28,7 +28,6 @@ include 'shared/common_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>

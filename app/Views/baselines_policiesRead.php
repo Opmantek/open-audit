@@ -81,7 +81,6 @@ include 'shared/common_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="notes" data-dictionary="<?= $dictionary->columns->notes ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -98,7 +97,6 @@ include 'shared/common_functions.php';
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="documentation" data-dictionary="<?= $dictionary->columns->documentation ?>"><span><br></span></div>
                                 </div>
                             </div>
 

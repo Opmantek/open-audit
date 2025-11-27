@@ -62,7 +62,6 @@ $fields->all = array('client_ident', 'client_secret', 'redirect_uri', 'issuer', 
                                             <div data-attribute="use_authorisation" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
                                         </div>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="use_authorisation" data-dictionary="<?= $dictionary->columns->use_authorisation ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php } ?>

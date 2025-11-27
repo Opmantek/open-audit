@@ -35,7 +35,6 @@ if (!empty($included['queries'])) {
                                             <option value="traffic" <?php if ($resource->type === 'traffic') { echo 'selected'; } ?>><?= __('Traffic Light') ?></option>
                                         </select>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                 </div>
                             </div>
 
@@ -53,7 +52,6 @@ if (!empty($included['queries'])) {
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="sql" data-dictionary="<?= $dictionary->columns->sql ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php } ?>
@@ -72,7 +70,6 @@ if (!empty($included['queries'])) {
                                         </div>
                                         <?php } ?>
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="status_secondary_sql" data-dictionary="<?= $dictionary->columns->status_secondary_sql ?>"><span><br></span></div>
                                 </div>
                             </div>
                             <?php } ?>
@@ -133,7 +130,6 @@ if (!empty($included['queries'])) {
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->status_primary_color ?>"><span><br></span></div>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -162,7 +158,6 @@ if (!empty($included['queries'])) {
                                             </div>
                                             <?php } ?>
                                         </div>
-                                        <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->status_secondary_color ?>"><span><br></span></div>
                                     </div>
                                 </div>
                             <?php } ?>

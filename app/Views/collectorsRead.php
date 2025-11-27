@@ -27,17 +27,7 @@ include 'shared/common_functions.php';
                                             <option value="collector"><?= __('Collector') ?></option>
                                             <option value="stand-alone"><?= __('Stand-Alone') ?></option>
                                         </select>
-                                        <!--
-                                        <?php if ($update) { ?>
-                                        <div class="float-end" style="padding-left:4px;">
-                                            <div data-attribute="type" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
-                                            <div data-attribute="type" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class='icon-check'></span></div>
-                                            <div data-attribute="type" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class='icon-x'></span></div>
-                                        </div>
-                                        <?php } ?>
-                                    -->
                                     </div>
-                                    <div class="form-text form-help float-end" style="position: absolute; right: 0;" data-attribute="type" data-dictionary="<?= $dictionary->columns->type ?>"><span><br></span></div>
                                 </div>
                             </div>
 
