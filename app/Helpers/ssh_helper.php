@@ -524,13 +524,15 @@ if (! function_exists('ssh_command')) {
         if (strpos($command, 'sudo') === false) {
             $ssh->setTimeout($timeout);
             // Not using sudo, so no password prompt
-            $result = $ssh->exec($command);
+            $result = $ssh->exec('export LANG=C 2>/dev/null; ' . $command);
             $output = $result;
             $result = explode("\n", $result);
             // remove the last line as it's always blank
             unset($result[count($result) - 1]);
         } else {
             // Using sudo - need to input in response to password prompt
+            $ssh->write("export LANG=C 2>/dev/null;\n");
+            sleep(5);
             $ssh->setTimeout(10);
             $ssh->write($command . "\n");
             $output = $ssh->read('assword');
