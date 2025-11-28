@@ -1897,6 +1897,12 @@ if (! function_exists('ip_audit')) {
                 $parameters->command = $command;
                 $parameters->ssh_port = $ip_scan->ssh_port;
                 $result = ssh_command($parameters);
+                if (empty($result)) {
+                    $log->severity = 4;
+                    $log->message = 'Audit script not successful.';
+                    $log->command_status = 'fail';
+                    $discoveryLogModel->create($log);
+                }
             } else {
                 // $log->severity = 3;
                 // $log->message = 'No audit script for ' . $device->ip;
@@ -2043,15 +2049,20 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Converting audit result';
             $discoveryLogModel->create($log);
             $audit_result = str_replace('data=<?xml version="1.0" encoding="UTF-8"?>', '<?xml version="1.0" encoding="UTF-8"?>', $audit_result);
-            $audit = audit_convert($audit_result);
+            $audit = audit_convert($audit_result, $device->ip, $discovery_id);
             if (!empty($audit)) {
                 $ip_audited_count = 1;
+            } else {
+                $log->severity = 4;
+                $log->message = 'Could not convert audit result';
+                $log->command_status = 'fail';
+                $log->command_output = $audit_result;
             }
         }
 
         // Delete the local audit result file
-        if (!empty($audit_result)) {
-            if (!empty($audit)) {
+        // if (!empty($audit_result)) {
+            // if (!empty($audit)) {
                 if (!empty($destination)) {
                     $log->severity = 7;
                     $log->message = 'Delete audit result from filesystem.';
@@ -2070,15 +2081,15 @@ if (! function_exists('ip_audit')) {
                     }
                     $discoveryLogModel->create($log);
                 }
-            } else {
-                $log->severity = 5;
-                $log->message = "Audit result left on filesystem at {$destination}, please check.";
-                $log->command_status = 'fail';
-                $log->command = '';
-                $log->command_output = '';
-                $discoveryLogModel->create($log);
-            }
-        }
+        //     } else {
+        //         $log->severity = 5;
+        //         $log->message = "Audit result left on filesystem at {$destination}, please check.";
+        //         $log->command_status = 'fail';
+        //         $log->command = '';
+        //         $log->command_output = '';
+        //         $discoveryLogModel->create($log);
+        //     }
+        // }
         $log->severity = 7;
         $log->message = '';
         $log->command_status = 'notice';
@@ -2351,10 +2362,11 @@ if (! function_exists('ip_audit')) {
 
         // NOTE - The log helper will increase the count in discoveries.ip_discovered_count for us because Collector / Server
         //      - It will match on the message string, so don't change without also changing log_helper
-        if (!empty($ip_audited_count)) {
+        // NOTE - Change with 6.0.0, increase the count even if we have no result, otherwise we won't ever be marked as discovery completed.
+        // if (!empty($ip_audited_count)) {
             $log->message = 'Audited device at ' . $device->ip;
             $discoveryLogModel->create($log);
-        }
+        // }
 
         $instance->devicesModel->setIdentification($device->id);
 

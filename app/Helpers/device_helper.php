@@ -6,11 +6,11 @@
 declare(strict_types=1);
 
 if (!function_exists('audit_convert')) {
-    function audit_convert(string $input)
+    function audit_convert(string $input, ?string $ip = '', ?int $discovery_id = 0)
     {
         $log = new \StdClass();
-        $log->discovery_id = '';
-        $log->ip = '';
+        $log->discovery_id = (!empty($discovery_id)) ? $discovery_id : '';
+        $log->ip = (!empty($ip)) ? $ip : '';
         $log->file = 'audit_helper';
         $log->function = 'audit_convert';
         $log->command = '';
@@ -88,10 +88,12 @@ if (!function_exists('audit_convert')) {
             // See if we have stringified XML
             // Remove the data= from the start if it exists
             if (strpos($input, 'data=') === 0) {
+                log_message('debug', 'Removing data= from start of audit result.');
                 $input = substr($input, 5);
             }
             $xml = html_entity_decode($input);
             if (mb_detect_encoding($xml) !== 'UTF-8') {
+                log_message('debug', 'Converting to UTF8 from ' . mb_detect_encoding($xml));
                 $xml = mb_convert_encoding($xml, 'UTF-8', mb_list_encodings());
             }
             $xml = iconv('UTF-8', 'UTF-8//TRANSLIT', $xml);
@@ -179,6 +181,8 @@ if (!function_exists('audit_convert')) {
                     $discoveryLogModel->create($log);
                 }
                 log_message('debug', $log->message);
+            } else {
+                log_message('warning', 'XML is empty.');
             }
         }
 
