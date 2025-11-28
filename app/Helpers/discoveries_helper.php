@@ -2505,11 +2505,11 @@ if (! function_exists('discovery_check_finished')) {
                     // Test for vulnerabilities
                     if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y') {
                         $log->message = 'Executing vulnerabilities';
-                        log_message('debug', 'Executing vulnerabilities for discovery: ' . $id);
+                        log_message('debug', 'Executing vulnerabilities for discovery: ' . $result[0]->name);
                         $discoveryLogModel->create($log);
                         $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
-                        $vulnerabilitiesModel->executeAll(intval($device->id));
-                        log_message('debug', 'Completed vulnerabilities for discovery: ' . $id);
+                        $vulnerabilitiesModel->executeAll();
+                        log_message('debug', 'Completed vulnerabilities for discovery: ' . $result[0]->name);
                         $log->message = 'Completed vulnerabilities';
                         $discoveryLogModel->create($log);
                     }
@@ -2527,7 +2527,7 @@ if (! function_exists('discovery_check_finished')) {
             }
         } else {
             // Check if any discoveries are complete and set status if so
-            $sql = 'SELECT discoveries.id, discoveries.ip_responding_count, discoveries.status, COUNT(discovery_log.id) AS `count` FROM `discoveries` LEFT JOIN `discovery_log` ON discoveries.id = discovery_log.discovery_id WHERE `command_status` = "device complete" GROUP BY discoveries.id';
+            $sql = 'SELECT discoveries.id, discoveries.name, discoveries.ip_responding_count, discoveries.status, COUNT(discovery_log.id) AS `count` FROM `discoveries` LEFT JOIN `discovery_log` ON discoveries.id = discovery_log.discovery_id WHERE `command_status` = "device complete" GROUP BY discoveries.id';
             $query = $db->query($sql);
             $result = $query->getResult();
             foreach ($result as $discovery) {
@@ -2546,14 +2546,10 @@ if (! function_exists('discovery_check_finished')) {
             if (!empty($result) and count($result) > 0) {
                 // Test for vulnerabilities
                 if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y') {
-                    $log->message = 'Executing vulnerabilities';
-                    log_message('debug', 'Executing vulnerabilities for discovery: ' . $id);
-                    $discoveryLogModel->create($log);
+                    log_message('debug', 'Executing vulnerabilities for completed discoveries.');
                     $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
-                    $vulnerabilitiesModel->executeAll(intval($device->id));
-                    log_message('debug', 'Completed vulnerabilities for discovery: ' . $id);
-                    $log->message = 'Completed vulnerabilities';
-                    $discoveryLogModel->create($log);
+                    $vulnerabilitiesModel->executeAll();
+                    log_message('debug', 'Completed vulnerabilities for completed discoveries.');
                 }
             }
         }
