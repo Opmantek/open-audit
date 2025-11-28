@@ -761,6 +761,8 @@ Network injection. The attacker must inject themselves into the logical network 
         $dictionary->columns->user_interaction = 'Whether user interaction is required (None, Passive, Active).';
         $dictionary->columns->vendor = 'The vendor taken from the CPE.';
         $dictionary->columns->vuln_status = 'The NVD assigned base status.';
+        $dictionary->columns->status = 'Unused.';
+        $dictionary->columns->affected = 'Unused.';
         $dictionary->columns->filter  = 'A JSON array of values to test for this vulnerability.';
         $dictionary->columns->sql  = 'The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.';
         $dictionary->columns->nvd_json  = 'The JSON record from the NVD feed.';

@@ -524,7 +524,9 @@ if (! function_exists('ssh_command')) {
         if (strpos($command, 'sudo') === false) {
             $ssh->setTimeout($timeout);
             // Not using sudo, so no password prompt
-            $result = $ssh->exec('export LANG=C 2>/dev/null; ' . $command);
+            $result = $ssh->exec('export LANG=C 2>/dev/null;');
+            log_message('debug', 'export LANG=C 2>/dev/null; ' . $result);
+            $result = $ssh->exec($command);
             $output = $result;
             $result = explode("\n", $result);
             // remove the last line as it's always blank
@@ -533,8 +535,8 @@ if (! function_exists('ssh_command')) {
             // Using sudo - need to input in response to password prompt
             $ssh->write("export LANG=C 2>/dev/null;\n");
             sleep(5);
-            $ssh->setTimeout(10);
             $ssh->write($command . "\n");
+            sleep(5);
             $output = $ssh->read('assword');
             if (stripos($output, 'assword') !== false) {
                 $ssh->write($password . "\n");

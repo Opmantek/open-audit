@@ -190,7 +190,7 @@ class ConfigurationModel extends BaseModel
             $sql = "DELETE FROM vulnerabilities_cache";
             $this->db->query($sql);
             // Reset the request interval
-            $sql = "UPDATE configuration SET VALUE = 60 WHERE name = 'feature_vulnerabilities_interval";
+            $sql = "UPDATE configuration SET VALUE = 60 WHERE name = 'feature_vulnerabilities_interval'";
             $this->db->query($sql);
             // And set the last request to default
             $sql = "UPDATE configuration SET VALUE = '2000-01-01' WHERE name = 'feature_vulnerabilities_last_request_datetime'";

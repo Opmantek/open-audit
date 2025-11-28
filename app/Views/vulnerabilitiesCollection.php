@@ -179,26 +179,28 @@ window.onload = function () {
         $("#button_export_csv").remove();
         $("#button_export_json").remove();
 
-        $('#submitV').on('click', function () {
-            $('#submitV').html("<span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"></span>&nbsp;<?= __('Updating') ?>");
-            $("#vulnerabilityRequestForm").submit();
-        });
+        <?php if (!empty($config->feature_vulnerabilities) and $config->feature_vulnerabilities === 'y') { ?>
+            $('#submitV').on('click', function () {
+                $('#submitV').html("<span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"></span>&nbsp;<?= __('Updating') ?>");
+                $("#vulnerabilityRequestForm").submit();
+            });
 
-        $('#executeAll').on('click', function () {
-            if (confirm("Are you sure?\n\nThis will execute all <?= number_format($total) ?> vulnerabilities and may impact performance.") == true) {
-                window.location = "<?= url_to('vulnerabilitiesUpdateDevicesAll') ?>";
-            };
-        });
+            $('#executeAll').on('click', function () {
+                if (confirm("Are you sure?\n\nThis will execute all <?= number_format($total) ?> vulnerabilities and may impact performance.") == true) {
+                    window.location = "<?= url_to('vulnerabilitiesUpdateDevicesAll') ?>";
+                };
+            });
 
-        // If a user clicks Update Vulnerabilities, disable the other buttons and show a spinner to indicate activity
-        document.getElementById('update_vulnerabilities').addEventListener('click', function(event) {
-            $("#update_vulnerabilities").html("<span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"></span>&nbsp;<?= __('Updating') ?>");
-            $("#update_vulnerabilities").attr("href", "#");
-            $("#button_import_json").attr("href", "#");
-            $("#request_vulnerability").attr("data-bs-target", "");
-            $("#vendors").attr("href", "#");
-            window.location.href = "<?= url_to('newsExecuteAllVulnerabilities') ?>";
-        });
+            // If a user clicks Update Vulnerabilities, disable the other buttons and show a spinner to indicate activity
+            document.getElementById('update_vulnerabilities').addEventListener('click', function(event) {
+                $("#update_vulnerabilities").html("<span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"></span>&nbsp;<?= __('Updating') ?>");
+                $("#update_vulnerabilities").attr("href", "#");
+                $("#button_import_json").attr("href", "#");
+                $("#request_vulnerability").attr("data-bs-target", "");
+                $("#vendors").attr("href", "#");
+                window.location.href = "<?= url_to('newsExecuteAllVulnerabilities') ?>";
+            });
+        <?php } ?>
 
         let logSort = {};
         var myDataTable = new DataTable('.dataTableAjax', {

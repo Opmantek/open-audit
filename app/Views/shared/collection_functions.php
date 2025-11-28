@@ -116,18 +116,27 @@ function collection_card_header(string $collection = '', string $icon = '', ?obj
     }
 
     if ($collection === 'vulnerabilities') {
-        if ($style === 'icontext') {
-            $show_all_button = "<a id=\"update_vulnerabilities\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Update Vulnerabilities') . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\"><span class=\"icon-rss text-oa-primary\"></span>" . __('Update Vulnerabilities') . "</a>";
-        } elseif ($style === 'icon') {
-            $show_all_button = "<a id=\"update_vulnerabilities\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Update Vulnerabilities') . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\"><span class=\"icon-rss text-primary\"></span></a>";
+        $instance = & get_instance();
+        log_message('debug', $instance->config->feature_vulnerabilities);
+        if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y') {
+            if ($style === 'icontext') {
+                $show_all_button = "<a id=\"update_vulnerabilities\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Update Vulnerabilities') . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\"><span class=\"icon-rss text-oa-primary\"></span>" . __('Update Vulnerabilities') . "</a>";
+            } elseif ($style === 'icon') {
+                $show_all_button = "<a id=\"update_vulnerabilities\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Update Vulnerabilities') . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\"><span class=\"icon-rss text-primary\"></span></a>";
+            } else {
+                $show_all_button = "<a id=\"update_vulnerabilities\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Update Vulnerabilities') . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\">" . __('Update Vulnerabilities') . "</a>";
+            }
+
+            $import_csv_button = "<button id=\"request_vulnerability\"  data-bs-toggle=\"modal\" data-bs-target=\"#requestVulnerabilityModal\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Request Vulnerability') . "\"><span class=\"icon-rss text-oa-primary\"></span>" . __('Request Vulnerability') . "</button>";
+
+
+            $create_button = "<a role=\"button\" href=\"#\" id=\"executeAll\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Execute All') . "\"><span class=\"icon-play text-oa-primary\"></span>" . __('Execute All') . "</button>";
         } else {
-            $show_all_button = "<a id=\"update_vulnerabilities\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Update Vulnerabilities') . "\" href=\"" . url_to('newsExecuteAllVulnerabilities') . "\">" . __('Update Vulnerabilities') . "</a>";
+            $show_all_button = "";
+            $import_csv_button = "";
+            $create_button = "";
+            $import_json_button = "";
         }
-
-        $import_csv_button = "<button id=\"request_vulnerability\"  data-bs-toggle=\"modal\" data-bs-target=\"#requestVulnerabilityModal\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Request Vulnerability') . "\"><span class=\"icon-rss text-oa-primary\"></span>" . __('Request Vulnerability') . "</button>";
-
-
-        $create_button = "<a role=\"button\" href=\"#\" id=\"executeAll\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Execute All') . "\"><span class=\"icon-play text-oa-primary\"></span>" . __('Execute All') . "</button>";
     }
 
     $return = "<div class=\"row\">

@@ -2227,5 +2227,6 @@ function audit_format_system($parameters)
     if (!empty($input->mac_address)) {
         $input->mac_address = strtolower($input->mac_address);
     }
+    log_message('debug', $input->ip . ' - returning from device_helper::audit_format_system.');
     return $input;
 }

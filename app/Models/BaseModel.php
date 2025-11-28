@@ -188,7 +188,7 @@ class BaseModel extends Model
 
         $instance = & get_instance();
         if ($table === 'vulnerabilities' and $instance->config->feature_vulnerabilities === 'y') {
-            $message = "The vulnerabiliites table has been reset and the vulnerability list is being retrieved. Please wait, this may take a while.";
+            $message = "The vulnerabilites table has been reset and the vulnerability list is being retrieved. Please wait, this may take a while.";
         } else {
             $message = "The {$table} table has been reset - existing data removed and default data inserted.";
         }
