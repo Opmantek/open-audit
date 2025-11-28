@@ -2479,6 +2479,7 @@ if (! function_exists('discovery_check_finished')) {
 
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $db = db_connect();
+        $instance = & get_instance();
 
         if (!empty($id)) {
             // Check if this discovery is complete and set status if so
@@ -2517,7 +2518,6 @@ if (! function_exists('discovery_check_finished')) {
                     $log->message = 'Discovery has finished.';
                     $discoveryLogModel->create($log);
                     // If we are a collector and the discovery is an instant - delete it locally
-                    $instance = & get_instance();
                     if (!empty($instance->config->servers) and $instance->config->servers->type === 'collector') {
                         log_message('info', 'Deleting discovery named: ' . $result[0]->name);
                         $sql = "DELETE FROM `discoveries` WHERE `id` = ?";
