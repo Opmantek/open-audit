@@ -541,15 +541,19 @@ if (! function_exists('ssh_command')) {
             while (true) {
                 $output .= $ssh->read('[prompt]');
                 if (stripos($output, 'Audit Completed') !== false) {
+                    log_message('debug', $ip . ' - Detected Audit Completed, breaking.');
                     break;
                 }
                 if ((microtime(true) - $item_start) > $timeout) {
+                    log_message('warning', $ip . ' - timeout of ' . $timeout . ' seconds reached, breaking.');
                     break;
                 }
+                sleep(10);
             }
             $result = explode("\n", $output);
         }
         log_message('debug', $ip . ' - SSH command completed.');
+        log_message('debug', $ip . ' - Output: ' . json_encode($output));
         $item_end = microtime(true);
         $ssh->disconnect();
         unset($ssh);
