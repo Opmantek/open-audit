@@ -2951,7 +2951,7 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 					echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
 					echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
 					echo "			<version_raw>$(escape_xml $version_raw)</version_raw>" >> "$xml_file"
-					echo "			<url>$(url $description)</url>" >> "$xml_file"
+					echo "			<url>$(escape_xml $description)</url>" >> "$xml_file"
 					echo "		</item>" >> "$xml_file"
 				done
 				;;
