@@ -483,6 +483,7 @@ if (! function_exists('ssh_command')) {
                 }
                 return false;
             }
+            log_message('debug', $ip . ' - Successful login using SSH key ' . $credentials->name);
         } elseif ($credentials->type === 'ssh') {
             try {
                 $ssh->login($credentials->credentials->username, $credentials->credentials->password);
@@ -501,6 +502,7 @@ if (! function_exists('ssh_command')) {
                 }
                 return false;
             }
+            log_message('debug', $ip . ' - Successful login using SSH ' . $credentials->name);
         } else {
             $log->message = 'No credentials of ssh or ssh_key passed to ssh_command function.';
             $log->severity = 4;
@@ -518,6 +520,7 @@ if (! function_exists('ssh_command')) {
         $log->severity = 7;
         $log->message = 'Executing SSH command';
         $item_start = microtime(true);
+        log_message('debug', $ip . ' - Executing SSH command: ' . $command);
         if (strpos($command, 'sudo') === false) {
             $ssh->setTimeout($timeout);
             // Not using sudo, so no password prompt
@@ -528,7 +531,7 @@ if (! function_exists('ssh_command')) {
             unset($result[count($result) - 1]);
         } else {
             // Using sudo - need to input in response to password prompt
-            $ssh->setTimeout(1);
+            $ssh->setTimeout(10);
             $ssh->write($command . "\n");
             $output = $ssh->read('assword');
             if (stripos($output, 'assword') !== false) {
@@ -546,9 +549,11 @@ if (! function_exists('ssh_command')) {
             }
             $result = explode("\n", $output);
         }
+        log_message('debug', $ip . ' - SSH command completed.');
         $item_end = microtime(true);
         $ssh->disconnect();
         unset($ssh);
+        log_message('debug', $ip . ' - SSH session destroyed.');
         if ((($item_end - $item_start) > $timeout) and stripos($output, 'Audit Completed') === false and strpos($command, 'sudo rm ') === false) {
             if (!empty($parameters->discovery_id)) {
                 $log->command_time_to_execute = ($item_end - $item_start);
@@ -558,7 +563,7 @@ if (! function_exists('ssh_command')) {
                 $log->command_output = json_encode($result);
                 $discoveryLogModel->create($log);
             }
-            log_message('warning', 'SSH command timed out to ' . $ip);
+            log_message('warning', $ip . ' - SSH command timed out (took more than ' . number_format($timeout) . ' seconds).');
             return false;
         }
         for ($i = 0; $i < count($result); $i++) {
@@ -576,6 +581,7 @@ if (! function_exists('ssh_command')) {
             $discoveryLogModel->create($log);
         }
         unset($log);
+        log_message('debug', $ip . ' - Returning from ssh_command.');
         return($result);
     }
 }

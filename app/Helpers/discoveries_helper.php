@@ -2135,6 +2135,16 @@ if (! function_exists('ip_audit')) {
             }
             $audit->system->id = $audit_device;
             $audit->system->cve = ' ';
+            $devName = '';
+            if (!empty($audit->system->name)) {
+                $devName = $audit->system->name;
+            } elseif (!empty($audit->system->hostname)) {
+                $devName = $audit->system->hostname;
+            } elseif (!empty($audit->system->sysName)) {
+                $devName = $audit->system->sysName;
+            } elseif (!empty($audit->system->dns_hostname)) {
+                $devName = $audit->system->dns_hostname;
+            }
             if (empty($audit_device)) {
                 // insert a new system
                 # Set the device org_id based on this discovery
@@ -2144,17 +2154,18 @@ if (! function_exists('ip_audit')) {
                 if (!empty($discovery->devices_assigned_to_location)) {
                     $audit->system->location_id = $discovery->devices_assigned_to_location;
                 }
-                log_message('debug', 'CREATE entry for ' . @$audit->system->name . ' (' . @$audit->system->ip . ')');
+                log_message('debug', 'CREATE entry for ' . $devName . ' (' . @$audit->system->ip . ')');
                 $audit->system->id = $instance->devicesModel->create($audit->system);
-                $log->message = 'CREATE entry for ' . @$audit->system->name . ' (' . @$audit->system->ip . '), System ID ' . $audit->system->id;
+                $log->message = 'CREATE entry for ' . $devName . ' (' . @$audit->system->ip . '), System ID ' . $audit->system->id;
                 $discoveryLogModel->create($log);
                 $audit->system->original_last_seen = '';
             } else {
                 // update an existing system
-                log_message('debug', 'UPDATE entry for ' . @$audit->system->name . ' (' . @$audit->system->ip . '), System ID ' . $audit->system->id);
-                $log->message = 'UPDATE entry for ' . @$audit->system->name . ' (' . @$audit->system->ip . '), System ID ' . $audit->system->id;
+                log_message('debug', 'UPDATE entry for ' . $devName . ' (' . @$audit->system->ip . '), System ID ' . $audit->system->id);
+                $log->message = 'UPDATE entry for ' . $devName . ' (' . @$audit->system->ip . '), System ID ' . $audit->system->id;
                 $discoveryLogModel->create($log);
                 $instance->devicesModel->update($audit->system->id, $audit->system);
+                log_message('debug', 'UPDATE entry completed for ' . $devName . ' (' . @$audit->system->ip . '), System ID ' . $audit->system->id);
             }
             $log->device_id = intval($audit->system->id);
             $device->id = intval($audit->system->id);
