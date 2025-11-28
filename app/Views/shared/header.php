@@ -541,6 +541,7 @@ if (!empty($config->servers)) {
                                         <?= menuItem('scripts', '', $user, 'scriptsDefaults', 'Scripts') ?>
                                         <?= menuItem('summaries', '', $user, 'summariesDefaults', 'Summaries') ?>
                                         <?= menuItem('users', '', $user, 'usersDefaults', 'Users') ?>
+                                        <?= menuItem('vulnerabilities', '', $user, 'vulnerabilitiesDefaults', 'Vulnerabilities') ?>
                                         <?= menuItem('widgets', '', $user, 'widgetsDefaults', 'Widgets') ?>
                                     </ul>
                                 </li>
