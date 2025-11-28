@@ -1377,7 +1377,7 @@ INSERT INTO `configuration` VALUES (163,'uuid',UUID(),'text','n','system','2000-
 INSERT INTO `configuration` VALUES (164,'feature_agents_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Agents to execute commands and download files.');
 INSERT INTO `configuration` VALUES (165,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.');
 INSERT INTO `configuration` VALUES (166,'feature_executables','n','bool','y','system','2000-01-01 00:00:00','Activate the linux based Executables feature.');
-INSERT INTO `configuration` VALUES (167,'feature_powershell_audit','n','bool','y','system','2000-01-01 00:00:00','Use the PowerShell audit script instead of the VBScript audit script in discoveries.');
+INSERT INTO `configuration` VALUES (167,'feature_powershell_audit','y','bool','y','system','2000-01-01 00:00:00','Use the PowerShell audit script instead of the VBScript audit script in discoveries.');
 INSERT INTO `configuration` VALUES (168,'product','community','text','n','system','2000-01-01 00:00:00','Product type.');
 INSERT INTO `configuration` VALUES (169,'license_footer','','text','n','system','2000-01-01 00:00:00','Footer text.');
 INSERT INTO `configuration` VALUES (170,'license_limit','','number','n','system','2000-01-01 00:00:00','Licensed devices.');
