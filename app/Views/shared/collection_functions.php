@@ -127,10 +127,7 @@ function collection_card_header(string $collection = '', string $icon = '', ?obj
         $import_csv_button = "<button id=\"request_vulnerability\"  data-bs-toggle=\"modal\" data-bs-target=\"#requestVulnerabilityModal\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Request Vulnerability') . "\"><span class=\"icon-rss text-oa-primary\"></span>" . __('Request Vulnerability') . "</button>";
 
 
-        // $create_button = "<a role=\"button\" href=\"" . url_to('vendorsCollection') . "\" id=\"vendors\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Vendor Report') . "\"><span class=\"icon-store text-oa-primary\"></span>" . __('Vendor Report') . "</button>";
-
-        $create_button = '';
-
+        $create_button = "<a role=\"button\" href=\"#\" id=\"executeAll\" style=\"margin-right:6px;\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Execute All') . "\"><span class=\"icon-play text-oa-primary\"></span>" . __('Execute All') . "</button>";
     }
 
     $return = "<div class=\"row\">

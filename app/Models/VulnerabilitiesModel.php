@@ -671,7 +671,7 @@ class VulnerabilitiesModel extends BaseModel
         $count = 1;
         $total = count($vulnerabilities);
         foreach ($vulnerabilities as $vulnerability) {
-            // log_message('debug', $count . ' / ' . $total . ' vulnerabilities executed.');
+            log_message('debug', $count . ' / ' . $total . ' vulnerabilities executed.');
             if (empty($vulnerability->sql)) {
                 log_message('warning', 'No SQL for VulnerabilitiesModel::updateCacheAll, ID: ' . $vulnerability->id . '.');
                 continue;

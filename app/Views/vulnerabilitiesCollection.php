@@ -184,6 +184,12 @@ window.onload = function () {
             $("#vulnerabilityRequestForm").submit();
         });
 
+        $('#executeAll').on('click', function () {
+            if (confirm("Are you sure?\n\nThis will execute all <?= number_format($total) ?> vulnerabilities and may impact performance.") == true) {
+                window.location = "<?= url_to('vulnerabilitiesUpdateDevicesAll') ?>";
+            };
+        });
+
         // If a user clicks Update Vulnerabilities, disable the other buttons and show a spinner to indicate activity
         document.getElementById('update_vulnerabilities').addEventListener('click', function(event) {
             $("#update_vulnerabilities").html("<span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"></span>&nbsp;<?= __('Updating') ?>");
