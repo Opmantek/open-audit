@@ -3014,23 +3014,23 @@ if [ -z $(echo "$skip_sections" | grep "service,") ]; then
 		fi
 		systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | grep -v ● | awk '{ print $1 }' | cut -d. -f1)
 		for name in      $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | grep -v ● | awk '{ print $1 }'); do
-			description=$(systemctl show "$name" -p Description | cut -d= -f2)
+			description=$(systemctl show "$name" -p Description 2>/dev/null | cut -d= -f2)
 			description="$description (using systemd)"
-			binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2 | sort -u)
-			state=$(systemctl show "$name" -p ActiveState | cut -d= -f2)
-			user=$(systemctl show "$name" -p User | cut -d= -f2)
+			binary=$(systemctl show "$name" -p ExecStart 2>/dev/null | cut -d" " -f2 | cut -d= -f2 | sort -u)
+			state=$(systemctl show "$name" -p ActiveState 2>/dev/null | cut -d= -f2)
+			user=$(systemctl show "$name" -p User 2>/dev/null | cut -d= -f2)
 			# start_mode order of attribute preference is WantedBy, Wants, After
-			start_mode=$(systemctl show "$name" -p WantedBy | cut -d= -f2)
+			start_mode=$(systemctl show "$name" -p WantedBy 2>/dev/null | cut -d= -f2)
 			if [ -z "$start_mode" ]; then
-				start_mode=$(systemctl show "$name" -p Wants | cut -d= -f2)
+				start_mode=$(systemctl show "$name" -p Wants 2>/dev/null | cut -d= -f2)
 			fi
 			if [ -z "$start_mode" ]; then
-				start_mode=$(systemctl show "$name" -p After | cut -d= -f2)
+				start_mode=$(systemctl show "$name" -p After 2>/dev/null | cut -d= -f2)
 			fi
 			service_name=$(lcase "$name")
 			suffix=".service"
 			service_name=${service_name%$suffix}
-			service_name=$(systemd-escape --unescape "$service_name")
+			service_name=$(systemd-escape --unescape "$service_name" 2>/dev/null )
 			{
 			echo "		<item>"
 			echo "			<name>$(escape_xml "$service_name")</name>"
@@ -3104,9 +3104,9 @@ if [ -z $(echo "$skip_sections" | grep "service,") ]; then
 			systemctl=$(which systemctl 2>/dev/null)
 			if [ -n "$systemctl" ]; then
 				# systemd is present - ask it
-				service_state=$(systemctl show "$service_name" -p ActiveState | grep " Active:" | awk '{ print $2 }')
-				service_description=$(systemctl show "$service_name" -p Description | cut -d= -f2)
-				service_binary=$(systemctl show "$service_name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)
+				service_state=$(systemctl show "$service_name" -p ActiveState 2>/dev/null | grep " Active:" | awk '{ print $2 }')
+				service_description=$(systemctl show "$service_name" -p Description 2>/dev/null | cut -d= -f2)
+				service_binary=$(systemctl show "$service_name" -p ExecStart 2>/dev/null | cut -d" " -f2 | cut -d= -f2)
 			fi
 			if [ -z "service_description" ] || [ "$service_description" = " " ] || [ "$service_description" = "$service_name.service" ]; then
 				service_description="$service"
