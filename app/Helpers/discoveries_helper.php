@@ -2121,7 +2121,7 @@ if (! function_exists('ip_audit')) {
         }
 
         if (!empty($audit)) {
-            log_message('debug', 'Matching device from audit result');
+            log_message('debug', $device->ip . ' - Matching device from audit result');
             $log->message = 'Matching device from audit result';
             $discoveryLogModel->create($log);
             $audit_device = deviceMatch($audit->system, intval($discovery->id), $discovery->match_options);
