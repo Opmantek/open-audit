@@ -79,8 +79,10 @@ class Logon extends Controller
         $result = $db->query($sql)->getResult();
         $server_os = (!empty($result[0]->value)) ? $result[0]->value : '';
 
-        if (empty($subnet) and empty($server_ip) and empty($server_os)) {
+        $newsRequested = false;
+        if (empty($server_os)) {
             // First time logging on - a new install
+            $newsRequested = true;
             if (php_uname('s') === 'Windows NT') {
                 $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . "index.php news install";
                 @exec($command, $output);
@@ -124,23 +126,29 @@ class Logon extends Controller
 
         $sql = 'UPDATE configuration SET value = ? WHERE name = "server_os"';
         $db->query($sql, [$server_os]);
-        log_message('info', 'Config auto-populated with ServerOS ' . $server_os . '.');
+        log_message('info', 'Config auto-populated with ServerOS: ' . $server_os . '.');
 
         $sql = 'UPDATE configuration SET value = ? WHERE name = "server_platform"';
         $db->query($sql, [$server_platform]);
-        log_message('info', 'Config auto-populated with ServerPlatform ' . $server_platform . '.');
+        log_message('info', 'Config auto-populated with ServerPlatform: ' . $server_platform . '.');
 
-        $server_ip = server_ip();
-        $server_ip = explode(',', $server_ip)[0];
-        $sql = 'UPDATE configuration SET value = ? WHERE name = "server_ip"';
-        $db->query($sql, [$server_ip]);
-        log_message('info', 'Config auto-populated with ServerIP ' . $server_ip . '.');
+        if (empty($server_ip)) {
+            $server_ip = server_ip();
+            $server_ip = explode(',', $server_ip)[0];
+            if (!empty($server_ip)) {
+                $sql = 'UPDATE configuration SET value = ? WHERE name = "server_ip"';
+                $db->query($sql, [$server_ip]);
+                log_message('info', 'Config auto-populated with ServerIP: ' . $server_ip . '.');
+            }
+        } else {
+            log_message('info', 'Config already populated with ServerIP: ' . $server_ip . '.');
+        }
 
         $duration = (microtime(true) - $start);
         log_message('debug', 'Config, ' . $duration);
         $start = microtime(true);
 
-        if (!empty($config->feature_news) and $config->feature_news === 'y') {
+        if (!empty($config->feature_news) and $config->feature_news === 'y' and $newsRequested === false) {
             $request_days = (!empty($config->feature_news_request_days)) ? intval($config->feature_news_request_days) : 7;
             $last_request_date = (!empty($config->feature_news_last_request_date)) ? strtotime("+" . $request_days . " days", strtotime($config->feature_news_last_request_date)) : strtotime('2001-01-01');
             $today = strtotime(date('Y-m-d'));
