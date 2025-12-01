@@ -1692,10 +1692,10 @@ function cpe_create($device)
         }
 
         // Dell
-        if (!empty($device->os_family) and $device->os_family = 'Dell OS9') {
+        if (!empty($device->os_family) and $device->os_family === 'Dell OS9') {
             $cpe = 'o:dell:networking_os9';
         }
-        if (!empty($device->os_family) and $device->os_family = 'Dell OS10') {
+        if (!empty($device->os_family) and $device->os_family === 'Dell OS10') {
             $cpe = 'o:dell:networking_os10';
         }
 
