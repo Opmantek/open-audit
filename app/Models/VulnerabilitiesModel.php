@@ -265,7 +265,7 @@ class VulnerabilitiesModel extends BaseModel
      * 
      * @param  $orgs array An optional list of integers representing specific Orgs to run the vulnerability against
      *
-     * @return array        Success or failure
+     * @return array       An array of formatted devices. Usually the SQL should contain SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.org_id AS `devices.org_id`, orgs.name AS `orgs.name`, devices.os_family AS `devices.os_family`, software.name AS `software.name`, software.version AS `software.version`
      */
     public function execute(int $id = 0, ?array $orgs = array(), ?int $device_id = 0): array
     {
@@ -301,6 +301,7 @@ class VulnerabilitiesModel extends BaseModel
             $sql = $vulnerability->sql . " AND devices.org_id IN (" . implode(',', $orgs) . ") AND devices.id = $device_id GROUP BY devices.id";
         }
         $query = $this->db->query($sql);
+        // log_message('debug', 'VulnerabilitiesModel::execute SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
         $devices = array();
         if (!empty($query)) {
             $devices = $query->getResult();
@@ -379,7 +380,7 @@ class VulnerabilitiesModel extends BaseModel
             $included['all_severity']->{$row->base_severity} = intval($row->count);
         }
 
-        $sql = "SELECT COUNT(devices.id) AS `count` FROM devices WHERE cve !='' AND devices.org_id IN (" . implode(',', $org_list) . ")";
+        $sql = "SELECT COUNT(devices.id) AS `count` FROM devices WHERE devices.cve LIKE '%CVE%' AND devices.org_id IN (" . implode(',', $org_list) . ")";
         $result = $this->db->query($sql)->getResult();
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         $included['device_count'] = $result[0]->count;
@@ -415,6 +416,23 @@ class VulnerabilitiesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
+        $query = $this->builder->getWhere(['id' => intval($id)]);
+        if ($this->sqlError($this->db->error())) {
+            log_message('warning', 'Invalid id: ' . $id . ' passed to execute.');
+            return false;
+        }
+        $temp = $query->getResult();
+        if (empty($temp[0])) {
+            log_message('warning', 'No result matching id: ' . $id . ' for vulnerabilities execute.');
+            return false;
+        }
+        $vulnerability = $temp[0];
+        if (empty($vulnerability->sql)) {
+            log_message('warning', 'No SQL for vulnerability ' . $id . ', CVE: ' . $vulnerability->cve);
+            return array();
+        }
+
+
         $instance = & get_instance();
         $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
         $org_list = array_unique($org_list);
@@ -430,6 +448,23 @@ class VulnerabilitiesModel extends BaseModel
             $software = array_unique($software);
             $included['software'] = implode(', ', $software);
         }
+        foreach ($included['devices'] as $device) {
+            $sql = "SELECT `cve` FROM devices WHERE id = ?";
+            $result = $this->db->query($sql, [$device->id])->getResult();
+            // log_message('debug', 'VulnerabilitiesModel::includedRead SQL #1: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
+            $allCve = array();
+            if (!empty($result[0]->cve)) {
+                $allCve = explode(',', $result[0]->cve);
+            }
+            $allCve[] = $vulnerability->cve;
+            $allCve = array_unique($allCve);
+            $stringCVE = (string)implode(',', $allCve);
+
+            $sql = "UPDATE devices SET `cve` = ? WHERE id = ?";
+            $this->db->query($sql, [$stringCVE, $device->id]);
+            // log_message('debug', 'VulnerabilitiesModel::includedRead SQL #2: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        }
+
         return $included;
     }
 
@@ -605,12 +640,14 @@ class VulnerabilitiesModel extends BaseModel
             $query = $this->db->query($sql);
             if (!empty($query)) {
                 $devices = $query->getResult();
-                // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+                // log_message('debug', 'VulnerabilitiesModel::updateCacheSingle SQL #1: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
                 $sql = "DELETE FROM vulnerabilities_cache WHERE vulnerability_id = ? AND org_id = ?";
                 $this->db->query($sql, [$id, $org]);
+                // log_message('debug', 'VulnerabilitiesModel::updateCacheSingle SQL #2: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
                 if (count($devices) > 0) {
                     $sql = "INSERT INTO vulnerabilities_cache VALUES (null, ?, ?, ?, NOW())";
                     $this->db->query($sql, [$id, $org, count($devices)]);
+                    // log_message('debug', 'VulnerabilitiesModel::updateCacheSingle SQL #3: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
                 }
             }
         }
@@ -680,8 +717,8 @@ class VulnerabilitiesModel extends BaseModel
                 set_time_limit(60);
                 $sql = $vulnerability->sql . " AND devices.org_id = " . $org . ' GROUP BY devices.id';
                 $devices = $db->query($sql)->getResult();
-                $sql = "DELETE FROM vulnerabilities_cache WHERE vulnerability_id = ? AND org_id = ?";
-                $this->db->query($sql, [$vulnerability->id, $org]);
+                #$sql = "DELETE FROM vulnerabilities_cache WHERE vulnerability_id = ? AND org_id = ?";
+                #$this->db->query($sql, [$vulnerability->id, $org]);
                 if (!empty($devices) and count($devices) > 0) {
                     $sql = "INSERT INTO vulnerabilities_cache VALUES (null, ?, ?, ?, NOW())";
                     $this->db->query($sql, [$vulnerability->id, $org, count($devices)]);
