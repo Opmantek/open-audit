@@ -2012,7 +2012,7 @@ function reset_icons($id = '')
                 $details->icon = 'oracle';
             }
             if (strripos($details->os_name, 'raspbian') !== false) {
-                $details->icon = 'debian';
+                $details->icon = 'raspbian';
             }
             if ((strripos($details->os_name, 'red hat') !== false) or (strripos($details->os_name, 'redhat') !== false)) {
                 $details->icon = 'redhat';
