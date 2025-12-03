@@ -140,20 +140,22 @@ class TasksModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
+        $included = array();
         $result = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
-        $type = ucfirst($result->type);
-        if ($type != 'Collector') {
-            $namespace = "\\App\\Models\\" . $type . "Model";
-        }
-        if ($type === 'Collector') {
-            $namespace = "\\App\\Models\\CollectorsModel";
-        }
-        $typeModel = new $namespace();
-        $included[strtolower($type)] = $typeModel->listUser();
-
-        if ($type === 'Baselines') {
-            $groupsModel = new \App\Models\GroupsModel();
-            $included['groups'] = $groupsModel->listUser();
+        if ( $result->type !== 'vulnerabilities_all') {
+            $type = ucfirst($result->type);
+            if ($type != 'Collector') {
+                $namespace = "\\App\\Models\\" . $type . "Model";
+            }
+            if ($type === 'Collector') {
+                $namespace = "\\App\\Models\\CollectorsModel";
+            }
+            $typeModel = new $namespace();
+            $included[strtolower($type)] = $typeModel->listUser();
+            if ($type === 'Baselines') {
+                $groupsModel = new \App\Models\GroupsModel();
+                $included['groups'] = $groupsModel->listUser();
+            }
         }
         return $included;
     }
@@ -257,7 +259,7 @@ class TasksModel extends BaseModel
         }
         if ($result !== false) {
             for ($i = 0; $i < count($result); $i++) {
-                if ($result[$i]->type !== 'reports' && $result[$i]->type !== 'collector') {
+                if ($result[$i]->type !== 'collector' and $result[$i]->type !== 'reports' and $result[$i]->type !== 'vulnerabilities_all') {
                     $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
                     $data_result = $this->db->query($sql, [$result[$i]->sub_resource_id])->getResult();
                     if (!empty($data_result[0]->name)) {
