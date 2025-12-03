@@ -784,7 +784,7 @@ class WidgetsModel extends BaseModel
         $dictionary->columns->type = 'Can be <code>line</code>, <code>pie</code>, <code>status</code> or <code>traffic</code>.';
         $dictionary->columns->options = 'Unused.';
         $dictionary->columns->sql = 'For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND</code> in your SQL. For status widgets, must return the required number using the <code>count</code> name. Used by line, pie and status widgets.';
-        $dictionary->columns->link = 'The template for the link to be generated per result line. Used by line and status widgets.';
+        $dictionary->columns->link = 'The template for the link to be generated per result line. Used by line, pie and status widgets.';
         $dictionary->columns->icon = 'Can be an svg from /open-audit/public/icons (just the name, android, not android.svg) or an icon from Lucide (icon-computer). Used for status and traffic widgets.';
         $dictionary->columns->help_text = 'A short clarifying description. Used by status and traffic widgets.';
         $dictionary->columns->primary_text = 'The heading for display. Used by line, pie, status and traffic widgets.';
