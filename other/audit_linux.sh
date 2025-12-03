@@ -2540,7 +2540,7 @@ if [ -z $(echo "$skip_sections" | grep "log,") ]; then
 			log_max_file_size_pre=$(grep -E '\ size\ ' "$log" | sed -e 's/size//g' | tr -d '[:space:]')
 			if [ "$log_max_file_size_pre" != "" ]; then
 				nlen="${#log_max_file_size_pre}"
-				if [ "${nlen}" > "1" ]; then
+				if [ "${nlen}" -gt "1" ]; then
 					num=$(all_but_last_char "${log_max_file_size_pre}")
 					unt=$(last_char "${log_max_file_size_pre}")
 					case $unt in
@@ -4022,6 +4022,7 @@ if [ -z $(echo "$skip_sections" | grep "server,") ]; then
 		echo "		</item>"
 		} >> "$xml_file"
 	done
+	rm "$tempfile"
 
 
 	# alexander.szele@umanitoba.ca
