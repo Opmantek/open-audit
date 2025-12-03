@@ -717,7 +717,7 @@ if [ "$system_os_family" == "\"amzn\"" ]; then
 	system_os_family="Amazon"
 fi
 
-if [ "$system_os_family" == "debian" ] || [ "$system_os_family" == "Debian GNU/Linux" ]; then
+if [[ "$system_os_family" == *"debian"* ]] || [[ "$system_os_family" == *"Debian"* ]]; then
 	system_os_family="Debian"
 fi
 
