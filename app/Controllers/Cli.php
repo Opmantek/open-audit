@@ -182,6 +182,12 @@ class Cli extends Controller
         }
 
         // # Perform some directory permissions fixing
+        if (!file_exists(ROOTPATH . 'writable/logs/log-' . date('Y-m-d') . '.log')) {
+            // Create the log file and assign permissions
+            $file = fopen(ROOTPATH . 'writable/logs/log-' . date('Y-m-d') . '.log', 'w');
+            fclose($file);
+            chmod(ROOTPATH . 'writable/logs/log-' . date('Y-m-d') . '.log', 0666);
+        }
 
         // # Lang Files
         // chmod(ROOTPATH . 'app/Views/lang/cs.inc', 0666);
