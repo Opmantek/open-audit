@@ -70,6 +70,13 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (empty($details->os_version)) {
         $details->os_version = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.6.0');
     }
+    if (empty($details->os_version) and stripos($sysDescr, 'laserjet') !== false) {
+        $hexString = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.11.2.3.9.4.2.1.1.18.7.0');
+        $hexArray = explode(' ', $hexString);
+        foreach ($hexArray as $hex) {
+            $details->os_version .= hexdec($hex);
+        }
+    }
 
     return($details);
 };
