@@ -294,7 +294,7 @@ class QueriesModel extends BaseModel
         $included['attributes'] = $attributes;
         foreach ($included['attributes'] as $category) {
             if (empty($category->attributes->value)) {
-                $category->attributes->name = '&nbsp;';
+                $category->attributes->name = ' ';
             }
         }
         $components = array('devices', 'arp', 'bios', 'certificate', 'disk', 'dns', 'executable', 'field', 'file', 'ip', 'license', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'policy', 'print_queue', 'processor', 'radio', 'route', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'usb', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
