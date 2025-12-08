@@ -1149,7 +1149,12 @@ class DevicesModel extends BaseModel
         if (empty($data->os_cpe)) {
             $cpe = cpe_create($data);
             if (!empty($cpe)) {
-                $data->os_cpe = $cpe;
+                if (stripos($cpe, 'cpe:2.3:h:') !== false) {
+                    $data->hw_cpe = $cpe;
+                }
+                if (stripos($cpe, 'cpe:2.3:o:') !== false) {
+                    $data->os_cpe = $cpe;
+                }
             }
         }
         if (empty($data->discovery_id)) {
