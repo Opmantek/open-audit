@@ -421,7 +421,7 @@ class DatabaseModel extends BaseModel
             }
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20250402) {
+        if (intval(config('Openaudit')->internal_version) < 20251130) {
             include "db_upgrades/db_6.0.1.php";
         }
 
