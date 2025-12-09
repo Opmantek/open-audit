@@ -35,7 +35,7 @@ include('shared/lang.php');
         <script {csp-script-nonce}>
             window.onload = function () {
                 $(document).ready(function () {
-                    help_windows = "<?= __('To execute the Windows powershell script, open a command prompt as Administrator and use the following command') ?>:<br><code>powershell.exe -executionpolicy bypass -file .\\audit_windows.ps1</code>";
+                    help_windows = "<?= __('To execute the Windows powershell script, open a command prompt as Administrator, change directory to where you downloaded this script and use the following command') ?>:<br><code>powershell.exe -executionpolicy bypass -file .\\audit_windows.ps1 --debugging 1</code>";
                     help_other = "<?= __('To execute the audit script, open a terminal and use the following command') ?>:<br><code>sudo ./audit_linux.sh</code>. <?= __('Note, you may need to make the script executable with') ?> <code>chmod +x audit_linux.sh</code> <?= __('first') ?>.";
 
                     let prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';

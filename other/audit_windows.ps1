@@ -51,6 +51,7 @@ if ($debug -gt 0) {
     Write-Host "================"
     Write-Host "CreateFile:   $create_file"
     Write-Host "SubmitOnline: $submit_online"
+    Write-Host "URL:          $url"
     Write-Host "Location:     $location_id"
     Write-Host "Organisation: $org_id"
     Write-Host "Debug:        $debugging"
@@ -498,7 +499,7 @@ if ($debug -gt 0) {
 
 if ($skip_sections.Contains("arp,") -eq $false) {
     if ($debug -gt 0) {
-        Write-Host "arp:  " -NoNewline
+        Write-Host "arp:          " -NoNewline
     }
     $itimer = [Diagnostics.Stopwatch]::StartNew()
     $result.arp = @()
