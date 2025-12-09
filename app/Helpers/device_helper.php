@@ -1738,11 +1738,9 @@ function cpe_create($device)
 
         // HP Laserjet
         // HP LaserJet 500 color MFP M575 -> h:hp:laserjet_enterprise_500_color_mfp_m575
-        if (stripos($device->manufacturer, 'hewlett') !== false and
-                strtolower($device->type) === 'network printer' and
-                stripos($device->sysDescr, 'laserjet') !== false and
-                !empty($device->model) and
-                stripos($device->model, 'HP Laserjet') === 0) {
+        if (!empty($device->manufacturer) and stripos($device->manufacturer, 'hewlett') !== false and
+            !empty($device->type) and stripos($device->type, 'printer') !== false and
+            !empty($device->sysDescr) and stripos($device->sysDescr, 'laserjet') !== false) {
             $model = $device->model;
             $model = strtolower($model);
             $model = str_replace('hp laserjet ', '', $model);
