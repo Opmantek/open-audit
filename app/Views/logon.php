@@ -35,12 +35,17 @@ include('shared/lang.php');
         <script {csp-script-nonce}>
             window.onload = function () {
                 $(document).ready(function () {
+
                     help_windows = "<?= __('To execute the Windows powershell script, open a command prompt as Administrator, change directory to where you downloaded this script and use the following command') ?>:<br><code>powershell.exe -executionpolicy bypass -file .\\audit_windows.ps1 --debugging 1</code>";
-                    help_other = "<?= __('To execute the audit script, open a terminal and use the following command') ?>:<br><code>sudo ./audit_linux.sh</code>. <?= __('Note, you may need to make the script executable with') ?> <code>chmod +x audit_linux.sh</code> <?= __('first') ?>.";
+
+                    help_other = "<?= __('To execute the audit script, open a terminal and use the following command') ?>: <code>sudo ./audit_linux.sh</code><br><?= __('Note, you may need to make the script executable with') ?> <code>chmod +x audit_linux.sh</code><br><?= __('You may also wish to enable debugging to view the progress in the terminal thus:') ?> <code>sudo ./audit_linux.sh debugging=1</code>";
 
                     let prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
                     let html = document.querySelector('html');
+
                     html.classList.add(prefers);
+
                     html.setAttribute('data-bs-theme', prefers);
 
                     var checkurl = "https://services.opmantek.com/api/versioncheck/Open-AudIT/<?= $config->display_version ?>";
@@ -74,7 +79,7 @@ include('shared/lang.php');
                         $("#go_link").attr("href", "<?= site_url() ?>/scripts/linux/download");
                         $("#go_link").html("<?= site_url() ?>/scripts/linux/download");
                         $("#script_type").val("linux");
-                        $("#help").html(help_other.replace(/audit_linux/g, "audit_" + $(this).val()));
+                        $("#help").html(help_other.replace(/audit_linux/g, "audit_linux.sh"));
                     }
 
                     var testOsx = navigator.userAgent.match(/Mac OS X/i);
@@ -83,7 +88,7 @@ include('shared/lang.php');
                         $("#go_link").attr("href", "<?= site_url() ?>/scripts/osx/download");
                         $("#go_link").html("<?= site_url() ?>/scripts/osx/download");
                         $("#script_type").val("osx");
-                        $("#help").html(help_other.replace(/audit_linux/g, "audit_" + $(this).val()));
+                        $("#help").html(help_other.replace(/audit_linux/g, "audit_osx.sh"));
                     }
 
                     $( "#script_type" ).change(function() {
