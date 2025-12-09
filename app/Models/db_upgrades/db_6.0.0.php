@@ -2100,7 +2100,7 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE `widgets` SET `primary_text` = 'Open Shares', `secondary-text` = 'Anyone can write here', `help-text` = 'No authentication required.', `icon` = 'icon-folder' WHERE `name` = 'Open Windows Shares'";
+$sql = "UPDATE `widgets` SET `primary_text` = 'Open Shares', `secondary_text` = 'Anyone can write here', `help_text` = 'No authentication required.', `icon` = 'icon-folder' WHERE `name` = 'Open Windows Shares'";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
