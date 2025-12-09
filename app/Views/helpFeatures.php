@@ -2,7 +2,6 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/collection_functions.php';
-$this->db = db_connect();
 $operating_system = $config->server_platform;
 
 $highlightCom = '';
@@ -141,6 +140,12 @@ if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $c
                                     </tr>
                                     <tr>
                                         <td class=" "><a href="#"><?= __('Data Export - CSV, XML, JSON') ?></a></td>
+                                        <td class="text-center" style="<?= $highlightCom ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightPro ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
+                                        <td class="text-center" style="<?= $highlightEnt ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td class=" "><a href="#"><?= __('Newsfeeds to keep you current') ?></a></td>
                                         <td class="text-center" style="<?= $highlightCom ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightPro ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
                                         <td class="text-center" style="<?= $highlightEnt ?>"><i class="icon-check" style="color:#5cb85c;"></i></td>
