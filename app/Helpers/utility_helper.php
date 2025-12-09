@@ -551,7 +551,7 @@ function createNewsData()
             # CRITICAL - 2024-11-18 16:06:29 --> ErrorException: Attempt to read property "name" on array in APPPATH/Models/NewsModel.php on line 191.
             for ($i = 0; $i < $count; $i++) {
                 if (strpos($lines[$i], 'CRITICAL') !== false and strpos($lines[$i], 'menuItem, no permission requested') === false) {
-                    $line = $lines[$i] . ' ' . $lines[$i + 1];
+                    $line = $lines[$i] . ' ' . $lines[$i + 1] . ' ' . $lines[$i + 2];
                     #$line = substr($line, strpos($line, '--> ') + 4);
                     $line = str_replace("\n", "", $line);
                     # $data->issues[] = 'CRITICAL - ' . $line;
