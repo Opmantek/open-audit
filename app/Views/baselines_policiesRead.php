@@ -72,7 +72,7 @@ include 'shared/common_functions.php';
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <label for="notes" class="form-label"><?= __('Notes') ?></label>
                                     <div class="input-group">
-                                        <textarea class="form-control" rows="6" id="sql" name="notes" data-original-value="<?= $resource->notes ?>" disabled><?= $resource->notes ?></textarea>
+                                        <textarea class="form-control" rows="6" id="notes" name="notes" data-original-value="<?= $resource->notes ?>" disabled><?= $resource->notes ?></textarea>
                                         <?php if ($update) { ?>
                                         <div class="float-end" style="padding-left:4px;">
                                             <div data-attribute="notes" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class='icon-pencil'></span></div>
