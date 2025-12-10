@@ -615,6 +615,7 @@ class DevicesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
+        log_message('debug', 'DevicesModel::includedRead start.');
         $instance = & get_instance();
         $resp_include = array();
 
@@ -887,6 +888,7 @@ class DevicesModel extends BaseModel
                 }
             }
         }
+        log_message('debug', 'DevicesModel::includedRead finish.');
         return $include;
     }
 
@@ -961,6 +963,7 @@ class DevicesModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
+        log_message('debug', 'DevicesModel::read start.');
         $query = $this->builder->getWhere(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -992,6 +995,7 @@ class DevicesModel extends BaseModel
                 log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             }
         }
+        log_message('debug', 'DevicesModel::read finish.');
         return format_data($device, 'devices');
     }
 

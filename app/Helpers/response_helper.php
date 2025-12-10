@@ -456,6 +456,7 @@ if (!function_exists('response_create')) {
         $permission_requested = $response->meta->permission_requested;
         $collections = new \Config\Collections();
         if (!empty($config->enterprise_binary) and ($db->tableExists('enterprise') and !empty($collections->{$response->meta->collection}->edition) and $collections->{$response->meta->collection}->edition !== 'Community') or $license_config === true) {
+            log_message('debug', 'Calling enterprise binary.');
             $query_string = $response->meta->query_string;
             unset($response->meta->query_string);
             $function = $response->meta->collection . '_' . $response->meta->action;
@@ -587,6 +588,7 @@ if (!function_exists('response_create')) {
             unset($response->meta->user_details);
             unset($response->meta->config);
             $response->meta->query_string = $query_string;
+            log_message('debug', 'Completed enterprise binary.');
         }
         return $response;
     }

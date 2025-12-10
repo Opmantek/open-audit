@@ -25,6 +25,7 @@ class ComponentsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
+        log_message('debug', 'ComponentsModel::collection start.');
         $table = '';
         $tables = array();
         $result = array();
@@ -156,6 +157,7 @@ class ComponentsModel extends BaseModel
         $query = $this->builder->get();
         $result = $query->getResult();
         $result = format_data($result, $table);
+        log_message('debug', 'ComponentsModel::collection finish.');
         return $result;
     }
 
