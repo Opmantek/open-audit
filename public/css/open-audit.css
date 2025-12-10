@@ -927,7 +927,10 @@ table.dataTable > thead .sorting_desc_disabled::after
     }
 }
 
+
+
 /*
+
 
 body {
    background-color: #000;
@@ -937,6 +940,20 @@ body {
    background-attachment: fixed;
    background-size: 100% 100% ;
    color: white !important;
+}
+
+.table {
+    color: white;
+}
+
+.table-striped > tbody > tr:nth-of-type(2n+1) > * {
+    --bs-table-accent-bg: var(--bs-table-striped-bg);
+    color: white;
+    font-weight: bold;
+}
+
+.table > :not(caption) > * > * {
+    font-weight: bold;
 }
 
 .dropdown-toggle {
