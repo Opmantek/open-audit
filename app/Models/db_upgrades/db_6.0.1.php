@@ -8,6 +8,23 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
+$sql = "UPDATE `tasks` SET `minute` = FLOOR(RAND()*(55-5)+5), `hour` = FLOOR(RAND()*(3)+1) WHERE `name` = 'Vulnerability Retrieval'";
+$result = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `minute` = FLOOR(RAND()*(55-5)+5), `hour` = FLOOR(RAND()*(3)+3) WHERE `name` = 'Run All Vulnerabilities'";
+$result = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM tasks WHERE name = 'Vendor Retrieval'";
+$result = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+
+
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20251130' WHERE `name` = 'internal_version'";
 $db->query($sql);
