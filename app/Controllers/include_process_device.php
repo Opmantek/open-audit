@@ -111,6 +111,7 @@ $log->ip = (!empty($device->system->ip)) ? ip_address_from_db($device->system->i
 log_message('debug', 'Update discovery log start');
 $discoveryLogModel->update($initial_log_id, $log);
 log_message('debug', 'Update discovery log finish');
+$log->id = null;
 
 $audit_ip = '127.000.000.001';
 if (!empty($_SERVER['REMOTE_ADDR'])) {
@@ -155,9 +156,11 @@ $rulesModel->execute(null, @intval($device->system->discovery_id), 'update', int
 if (!empty($this->config->feature_vulnerabilities) and $this->config->feature_vulnerabilities === 'y') {
     $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
     $log->message = 'Executing vulnerabilities for ' . @$device->system->hostname . ', ID ' . $device->system->id;
+    log_message('debug', $log->message);
     $discoveryLogModel->create($log);
     $vulnerabilitiesModel->executeAll(intval($device->system->id));
     $log->message = 'Completed vulnerabilities for ' . @$device->system->hostname . ', ID ' . $device->system->id;
+    log_message('debug', $log->message);
     $discoveryLogModel->create($log);
 }
 
