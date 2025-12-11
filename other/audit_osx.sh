@@ -133,18 +133,16 @@ if [ "$debugging" -gt "0" ]; then
 fi
 system_timestamp=$(date +'%F %T')
 system_uuid=$(system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g')
-
-if [[ $system_hostname == *"."* ]]; then
-    system_domain=$(hostname | cut -d. -f2-)
-else
-    system_domain=""
-fi
+system_domain=$(hostname -d)
 system_os_version=$(sw_vers | grep "ProductVersion:" | cut -d: -f2 | xargs)
 system_os_version_major=$(echo "$system_os_version" | cut -d. -f1)
 system_os_version_minor=$(echo "$system_os_version" | cut -d. -f2)
 system_os_name="MacOS $system_os_version"
 system_os_display_version=""
 
+if [[ "$system_os_version_major" -eq 26 ]]; then
+    system_os_display_version="macOS Tahoe"
+fi
 if [[ "$system_os_version_major" -eq 15 ]]; then
     system_os_display_version="macOS Sequoia"
 fi
@@ -226,6 +224,11 @@ if [[ ${#system_serial} = 12 ]]; then
     manufacturer_code=${system_serial: -4}
 fi
 system_model=$(system_profiler SPHardwareDataType | grep 'Model Identifier:' | cut -d':' -f2 | sed 's/^ *//g')
+system_description=$(/usr/libexec/PlistBuddy -c 'Print :0:product-name' /dev/stdin <<< "$(ioreg -arc IOPlatformDevice -k product-name)" 2> /dev/null | tr -cd '[:print:]')
+form_factor=""
+if [[ "$system_description" == *"MacBook"* ]]; then
+    form_factor="Laptop"
+fi
 # todo - below displays days and stops at hours
 # system_uptime=`system_profiler SPSoftwareDataType | grep "Time since boot:" | cut -d":" -f2 | sed 's/^ *//g'`
 system_uptime=""
@@ -256,9 +259,8 @@ echo  "     <id>$system_id</id>" >> $xml_file
 echo  "     <uuid>$system_uuid</uuid>" >> $xml_file
 echo  "     <hostname>$system_hostname</hostname>" >> $xml_file
 echo  "     <domain>$system_domain</domain>" >> $xml_file
-echo  "     <description></description>" >> $xml_file
+echo  "     <description>$system_description</description>" >> $xml_file
 echo  "     <ip>$system_ip</ip>" >> $xml_file
-echo  "     <class></class>" >> $xml_file
 echo  "     <type>computer</type>" >> $xml_file
 echo  "     <os_group>Apple</os_group>" >> $xml_file
 echo  "     <os_family>MacOS</os_family>" >> $xml_file
@@ -268,9 +270,7 @@ echo  "     <os_display_version>$system_os_display_version</os_display_version>"
 echo  "     <serial>$system_serial</serial>" >> $xml_file
 echo  "     <model>$system_model</model>" >> $xml_file
 echo  "     <manufacturer>Apple, Inc.</manufacturer>" >> $xml_file
-echo  "     <manufacturer_code>$manufacturer_code</manufacturer_code>" >> $xml_file
-echo  "     <uptime>$system_uptime</uptime>" >> $xml_file
-echo  "     <form_factor></form_factor>" >> $xml_file
+echo  "     <form_factor>$form_factor</form_factor>" >> $xml_file
 echo  "     <os_bit>$system_pc_os_bit</os_bit>" >> $xml_file
 echo  "     <os_arch>$system_pc_os_arch</os_arch>" >> $xml_file
 echo  "     <memory_count>$system_pc_memory</memory_count>" >> $xml_file
@@ -420,8 +420,10 @@ echo "  <memory>" >> $xml_file
 if [ "$processor_architecture" == "arm64" ]; then
     memory_type=$(system_profiler SPMemoryDataType | grep Type | cut -d: -f2 | sed 's/^ *//g')
     memory_capacity=$(expr "$system_pc_memory" / 1024)
+    memory_manufacturer=$(system_profiler SPMemoryDataType | grep Manufacturer | cut -d: -f2 | sed 's/^ *//g')
 
     echo "      <item>" >> $xml_file
+    echo "          <manufacturer>$memory_manufacturer</manufacturer>" >> $xml_file
     echo "          <bank>1</bank>" >> $xml_file
     echo "          <type>$memory_type</type>" >> $xml_file
     echo "          <form_factor></form_factor>" >> $xml_file
