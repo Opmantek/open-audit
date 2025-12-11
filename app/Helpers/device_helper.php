@@ -1820,7 +1820,7 @@ function cpe_create($device)
         }
     }
 
-    if (!empty($device->os_family) and $device->type === 'computer') {
+    if (!empty($device->os_family) and !empty($device->type) and $device->type === 'computer') {
         switch (strtolower($device->os_family)) {
             // TODO
             // almalinux:almalinux
