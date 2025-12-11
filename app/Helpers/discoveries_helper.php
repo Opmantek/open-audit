@@ -2525,18 +2525,6 @@ if (! function_exists('discovery_check_finished')) {
                     $log->ip = '127.0.0.1';
                     unset($log->device_id);
 
-                    // Test for vulnerabilities
-                    if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y') {
-                        $log->message = 'Executing vulnerabilities';
-                        log_message('debug', 'Executing vulnerabilities for discovery: ' . $result[0]->name);
-                        $discoveryLogModel->create($log);
-                        $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
-                        $vulnerabilitiesModel->executeAll();
-                        log_message('debug', 'Completed vulnerabilities for discovery: ' . $result[0]->name);
-                        $log->message = 'Completed vulnerabilities';
-                        $discoveryLogModel->create($log);
-                    }
-
                     log_message('debug', 'Discovery ' . $id . ' has finished.');
                     $log->message = 'Discovery has finished.';
                     $discoveryLogModel->create($log);
@@ -2564,15 +2552,6 @@ if (! function_exists('discovery_check_finished')) {
                     $log->ip = '127.0.0.1';
                     unset($log->device_id);
                     $discoveryLogModel->create($log);
-                }
-            }
-            if (!empty($result) and count($result) > 0) {
-                // Test for vulnerabilities
-                if (!empty($instance->config->feature_vulnerabilities) and $instance->config->feature_vulnerabilities === 'y') {
-                    log_message('debug', 'Executing vulnerabilities for completed discoveries.');
-                    $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
-                    $vulnerabilitiesModel->executeAll();
-                    log_message('debug', 'Completed vulnerabilities for completed discoveries.');
                 }
             }
         }

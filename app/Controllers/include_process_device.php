@@ -152,18 +152,6 @@ foreach ($device as $key => $value) {
 $rulesModel = new \App\Models\RulesModel();
 $rulesModel->execute(null, @intval($device->system->discovery_id), 'update', intval($device->system->id));
 
-// Test for vulnerabilities
-if (!empty($this->config->feature_vulnerabilities) and $this->config->feature_vulnerabilities === 'y') {
-    $vulnerabilitiesModel = new \App\Models\VulnerabilitiesModel();
-    $log->message = 'Executing vulnerabilities for ' . @$device->system->hostname . ', ID ' . $device->system->id;
-    log_message('debug', $log->message);
-    $discoveryLogModel->create($log);
-    $vulnerabilitiesModel->executeAll(intval($device->system->id));
-    $log->message = 'Completed vulnerabilities for ' . @$device->system->hostname . ', ID ' . $device->system->id;
-    log_message('debug', $log->message);
-    $discoveryLogModel->create($log);
-}
-
 // Because Rules may set the last_seen_by, update it here.
 $sql = "UPDATE devices SET last_seen_by = ? WHERE id = ?";
 $db->query($sql, [$device->system->last_seen_by, $device->system->id]);
