@@ -1300,6 +1300,9 @@ if (! function_exists('ssh_audit')) {
             unset($device->google_instance_ident);
         }
 
+        if (!empty($device->os_family) and $device->os_family === 'Debian GNU/Linux') {
+            $device->os_family = 'Debian';
+        }
         if (!empty($device->ubiquiti_os)) {
             #$device->os_family = 'Ubiquiti';
             $device->os_group = '';
