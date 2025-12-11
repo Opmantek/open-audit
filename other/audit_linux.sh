@@ -48,6 +48,7 @@
 ########################################################
 
 # Below are the default settings
+export LANG=C
 
 # submit the audit to the Open-AudIT server
 submit_online="n"
@@ -2650,10 +2651,10 @@ if [ -z $(echo "$skip_sections" | grep "user,") ]; then
 		password_expires=$(chage -l "$name" 2>/dev/null | grep -i "^Password expires" | cut -d: -f2)
 		echo "                  <password_expires>$(escape_xml "$password_expires")</password_expires>" >> $xml_file
 
-		password_last_changed=$(chage -l "$name" 2>/dev/null | grep -i "^Last password change" | cut -d: -f2 | xargs -I {} date -d "{}" +"%F 00:00:00")
+		password_last_changed=$(chage -l "$name" 2>/dev/null | grep -i "^Last password change" | cut -d: -f2 | xargs -I {} date -d "{}" +"%F 00:00:00" 2>/dev/null)
 		echo "                  <password_last_changed>$(escape_xml "$password_last_changed")</password_last_changed>" >> $xml_file
 
-		last_logon=$(lastlog -u "$name" 2>/dev/null | sed '1d' | awk '{$1=$2=$3=$4=""; print substr($0,5)}' | xargs -I {} date -d "{}" +"%Y-%m-%d %H:%M:%S")
+		last_logon=$(lastlog -u "$name" 2>/dev/null | sed '1d' | awk '{$1=$2=$3=$4=""; print substr($0,5)}' | xargs -I {} date -d "{}" +"%Y-%m-%d %H:%M:%S" 2>/dev/null)
 		echo "                  <last_logon>$(escape_xml "$last_logon")</last_logon>" >> $xml_file
 
 		test1=$(grep "^$name:" /etc/shadow 2>/dev/null | cut -d: -f8)
@@ -2819,9 +2820,6 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 			fi
 			if [[ "$name" == *"NMIS"* ]] && [[ "$installed_on" == "" ]]; then
 				installed_on=$(env stat --format=%y /usr/local/nmis9/lib/NMISNG.pm 2>/dev/null | cut -d. -f1)
-			fi
-			if [[ "$name" == *"Open-AudIT"* ]]; then
-				installed_on=$(env stat --format=%y /usr/local/omk/lib/OaeController.pm.exe 2>/dev/null | cut -d. -f1)
 			fi
 			if [[ "$name" == *"opAddress"* ]]; then
 				installed_on=$(env stat --format=%y /usr/local/omk/lib/AddressController.pm.exe 2>/dev/null | cut -d. -f1)
