@@ -175,7 +175,7 @@ class Agents extends BaseController
     public function execute($id = null)
     {
         // Do not use dot's here so we can compare to (intval)$input->version
-        $current_agent_version = 565;
+        $current_agent_version = str_replace('.', '', $this->config->display_version);
 
         $id = (int)$id;
         $request = service('request');
