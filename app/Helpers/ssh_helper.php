@@ -549,12 +549,13 @@ if (! function_exists('ssh_command')) {
             }
             while (true) {
                 $output .= $ssh->read('[prompt]');
+                log_message('debug', $ip . ' - Output: ' . json_encode($output));
                 if (stripos($output, 'Audit Completed') !== false) {
                     log_message('debug', $ip . ' - Detected Audit Completed, breaking.');
                     break;
                 }
                 if ((microtime(true) - $item_start) > $timeout) {
-                    log_message('warning', $ip . ' - timeout of ' . $timeout . ' seconds reached, breaking.');
+                    log_message('warning', $ip . ' - timeout of ' . $timeout . ' seconds reached, breaking. Attempting to execute command: ' . $command);
                     break;
                 }
                 sleep(10);
