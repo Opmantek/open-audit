@@ -521,6 +521,7 @@ if (! function_exists('ssh_command')) {
         $log->message = 'Executing SSH command';
         $item_start = microtime(true);
         log_message('debug', $ip . ' - Executing SSH command: ' . $command);
+        $output = '';
         if (strpos($command, 'sudo') === false) {
             $ssh->setTimeout($timeout);
             // Not using sudo, so no password prompt
@@ -537,10 +538,14 @@ if (! function_exists('ssh_command')) {
             sleep(5);
             $ssh->write($command . "\n");
             sleep(5);
-            $output = $ssh->read('assword');
-            if (stripos($output, 'assword') !== false) {
-                $ssh->write($password . "\n");
-                $output = $ssh->read('[prompt]');
+            while (true) {
+                $output .= $ssh->read('assword');
+                if (stripos($output, 'assword') !== false or stripos($output, ' for ' . $username) !== false) {
+                    $ssh->write($password . "\n");
+                    $output = $ssh->read('[prompt]');
+                    log_message('debug', $ip . ' - Sent password for sudo.');
+                    break;
+                }
             }
             while (true) {
                 $output .= $ssh->read('[prompt]');
