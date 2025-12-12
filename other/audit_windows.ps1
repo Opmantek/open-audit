@@ -506,8 +506,8 @@ if ($skip_sections.Contains("arp,") -eq $false) {
     $item = @{}
     Get-NetNeighbor | ForEach {
         $item = @{}
-        $item.mac = [string]$_.LinkLayerAddress
-        $item.ip = [string]$_.IPAddress[0]
+        $item.mac = [string]$_.LinkLayerAddress.replace("-", ":");
+        $item.ip = [string]$_.IPAddress
         $item.interface = [string]$_.InterfaceAlias
         $item.interface_id = [string]$_.InterfaceIndex
         if ($item.mac -ne $null) {
@@ -2776,7 +2776,8 @@ if ($create_file -eq "y") {
     }
     $result | Out-File $file
     if ($debug -gt 0) {
-        Write-Host "complete. File: $file"
+        Write-Host "complete."
+        Write-Host "File     $file"
     }
 }
 
