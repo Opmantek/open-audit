@@ -224,7 +224,7 @@ if [[ ${#system_serial} = 12 ]]; then
     manufacturer_code=${system_serial: -4}
 fi
 system_model=$(system_profiler SPHardwareDataType | grep 'Model Identifier:' | cut -d':' -f2 | sed 's/^ *//g')
-system_description=$(/usr/libexec/PlistBuddy -c 'Print :0:product-name' /dev/stdin <<< "$(ioreg -arc IOPlatformDevice -k product-name)" 2> /dev/null | tr -cd '[:print:]')
+system_description=$(/usr/libexec/PlistBuddy -c 'Print :0:product-name' /dev/stdin <<< "$(ioreg -arc IOPlatformDevice -k product-name)" 2>/dev/null | tr -cd '[:print:]')
 form_factor=""
 if [[ "$system_description" == *"MacBook"* ]]; then
     form_factor="Laptop"
@@ -282,6 +282,143 @@ echo  "     <last_seen_by>$last_seen_by</last_seen_by>" >> $xml_file
 echo  "     <discovery_id>$discovery_id</discovery_id>" >> $xml_file
 echo  " </sys>" >> $xml_file
 
+
+if [ "$debugging" -gt "0" ]; then
+    echo "Monitors Info"
+fi
+echo "  <monitor>" >> $xml_file
+for monitor in $(system_profiler SPDisplaysDataType -json 2>/dev/null | grep _name | tail -n+2 | cut -d\" -f4); do
+    model="$monitor"
+    serial=$(system_profiler SPDisplaysDataType -json 2>/dev/null | grep -A13 _name | grep -A13 "$monitor" | grep "_spdisplays_display-serial-number" | head -n1 | cut -d\" -f4 | xargs)
+    description=$(system_profiler SPDisplaysDataType -json 2>/dev/null | grep -A13 _name | grep -A13 "$monitor" | grep "_spdisplays_pixels" | head -n1 | cut -d\" -f4 | xargs)
+    manufacture_date=$(system_profiler SPDisplaysDataType -json 2>/dev/null | grep -A13 _name | grep -A13 "$monitor" | grep "_spdisplays_display-year" | head -n1 | cut -d\" -f4 | xargs)
+    if [ "$manufacture_date" = "0" ]; then
+        manufacture_date=""
+    fi
+    # week=$(system_profiler SPDisplaysDataType -json | grep -A13 _name | grep -A13 "$monitor" | grep "_spdisplays_display-week" | head -n1 | cut -d\" -f4 | xargs)
+    # long_description=$(system_profiler SPDisplaysDataType | grep -A6 "$monitor:" | grep "Resolution:" | head -n1 | cut -d: -f2- | xargs)
+
+    meta_data=$(ioreg -lw0 2>/dev/null | grep "$monitor" | grep Metadata)
+    interface=$(awk -F'DFP Type Description' '{print $2}' <<< "$meta_data" | cut -d\" -f3)
+    manufacturer_code=$(awk -F'ManufacturerName' '{print $2}' <<< "$meta_data" | cut -d\" -f3)
+
+    display_attributes=$(ioreg -lw0 2>/dev/null | grep "$monitor" | grep DisplayAttributes)
+
+    temp_serial=$(awk -F'AlphanumericSerialNumber' '{print $2}' <<< "$display_attributes" | cut -d\" -f3)
+    if [ "$temp_serial" != "" ]; then
+        serial="$temp_serial"
+    fi
+
+    aspect_ratio=""
+    if [ "$description" = "1280 x 720" ]; then aspect_ratio="16:9"; fi
+    if [ "$description" = "1280 x 800" ]; then aspect_ratio="16:10"; fi
+    if [ "$description" = "1280 x 1024" ]; then aspect_ratio="5:4"; fi
+    if [ "$description" = "1360 x 768" ]; then aspect_ratio="16:9"; fi
+    if [ "$description" = "1366 x 768" ]; then aspect_ratio="16:9"; fi
+    if [ "$description" = "1440 x 900" ]; then aspect_ratio="16:10"; fi
+    if [ "$description" = "1600 x 900" ]; then aspect_ratio="16:9"; fi
+    if [ "$description" = "1600 x 1200" ]; then aspect_ratio="4:3"; fi
+    if [ "$description" = "1680 x 1050" ]; then aspect_ratio="16:10"; fi
+    if [ "$description" = "1920 x 1080" ]; then aspect_ratio="16:9"; fi
+    if [ "$description" = "1920 x 1200" ]; then aspect_ratio="16:10"; fi
+    if [ "$description" = "2560 x 1080" ]; then aspect_ratio="21:9"; fi
+    if [ "$description" = "2560 x 1440" ]; then aspect_ratio="16:9"; fi
+    if [ "$description" = "2560 x 1600" ]; then aspect_ratio="16:10"; fi
+    if [ "$description" = "3440 x 1440" ]; then aspect_ratio="21:9"; fi
+    if [ "$description" = "3840 x 2160" ]; then aspect_ratio="16:9"; fi
+    if [ "$description" = "3024 x 1964" ]; then aspect_ratio="3:2"; fi
+
+    manufacturer=""
+    if [ "$manufacturer_code" = "ACR" ]; then manufacturer="Acer"; fi
+    if [ "$manufacturer_code" = "ACT" ]; then manufacturer="Targa"; fi
+    if [ "$manufacturer_code" = "ADI" ]; then manufacturer="ADI"; fi
+    if [ "$manufacturer_code" = "AOC" ]; then manufacturer="AOC International"; fi
+    if [ "$manufacturer_code" = "API" ]; then manufacturer="Acer"; fi
+    if [ "$manufacturer_code" = "APP" ]; then manufacturer="Apple"; fi
+    if [ "$manufacturer_code" = "ART" ]; then manufacturer="ArtMedia"; fi
+    if [ "$manufacturer_code" = "AST" ]; then manufacturer="AST Research"; fi
+    if [ "$manufacturer_code" = "CPL" ]; then manufacturer="Compal"; fi
+    if [ "$manufacturer_code" = "CPQ" ]; then manufacturer="Compaq"; fi
+    if [ "$manufacturer_code" = "CTX" ]; then manufacturer="Chuntex"; fi
+    if [ "$manufacturer_code" = "DEC" ]; then manufacturer="Digital Equipment Corporation"; fi
+    if [ "$manufacturer_code" = "DEL" ]; then manufacturer="Dell"; fi
+    if [ "$manufacturer_code" = "DPC" ]; then manufacturer="Delta"; fi
+    if [ "$manufacturer_code" = "DWE" ]; then manufacturer="Daewoo"; fi
+    if [ "$manufacturer_code" = "ECS" ]; then manufacturer="Elitegroup Computer Systems"; fi
+    if [ "$manufacturer_code" = "EIZ" ]; then manufacturer="EIZO"; fi
+    if [ "$manufacturer_code" = "EPI" ]; then manufacturer="Envision"; fi
+    if [ "$manufacturer_code" = "FCM" ]; then manufacturer="Funai"; fi
+    if [ "$manufacturer_code" = "FUS" ]; then manufacturer="Fujitsu"; fi
+    if [ "$manufacturer_code" = "GSM" ]; then manufacturer="LG Electronics"; fi
+    if [ "$manufacturer_code" = "GWY" ]; then manufacturer="Gateway 2000"; fi
+    if [ "$manufacturer_code" = "HEI" ]; then manufacturer="Hyundai"; fi
+    if [ "$manufacturer_code" = "HIT" ]; then manufacturer="Hitachi"; fi
+    if [ "$manufacturer_code" = "HSD" ]; then manufacturer="Hanns.G"; fi
+    if [ "$manufacturer_code" = "HSL" ]; then manufacturer="Hansol Electronics"; fi
+    if [ "$manufacturer_code" = "HTC" ]; then manufacturer="Hitachi"; fi
+    if [ "$manufacturer_code" = "HWP" ]; then manufacturer="Hewlett Packard"; fi
+    if [ "$manufacturer_code" = "IBM" ]; then manufacturer="IBM"; fi
+    if [ "$manufacturer_code" = "ICL" ]; then manufacturer="Fujitsu"; fi
+    if [ "$manufacturer_code" = "IVM" ]; then manufacturer="Idek Iiyama"; fi
+    if [ "$manufacturer_code" = "KFC" ]; then manufacturer="KFC Computek"; fi
+    if [ "$manufacturer_code" = "LEN" ]; then manufacturer="Lenovo"; fi
+    if [ "$manufacturer_code" = "LGD" ]; then manufacturer="LG Display"; fi
+    if [ "$manufacturer_code" = "LKM" ]; then manufacturer="ADLAS / AZALEA"; fi
+    if [ "$manufacturer_code" = "LNK" ]; then manufacturer="LINK Technologies"; fi
+    if [ "$manufacturer_code" = "LTN" ]; then manufacturer="Lite-On"; fi
+    if [ "$manufacturer_code" = "MAG" ]; then manufacturer="MAG InnoVision"; fi
+    if [ "$manufacturer_code" = "MAX" ]; then manufacturer="Maxdata Computer"; fi
+    if [ "$manufacturer_code" = "MEI" ]; then manufacturer="Panasonic"; fi
+    if [ "$manufacturer_code" = "MEL" ]; then manufacturer="Mitsubishi Electronics"; fi
+    if [ "$manufacturer_code" = "MIR" ]; then manufacturer="Miro"; fi
+    if [ "$manufacturer_code" = "MTC" ]; then manufacturer="MITAC"; fi
+    if [ "$manufacturer_code" = "NAN" ]; then manufacturer="NANAO"; fi
+    if [ "$manufacturer_code" = "NEC" ]; then manufacturer="NEC"; fi
+    if [ "$manufacturer_code" = "NOK" ]; then manufacturer="Nokia"; fi
+    if [ "$manufacturer_code" = "OQI" ]; then manufacturer="Optiquest"; fi
+    if [ "$manufacturer_code" = "PBN" ]; then manufacturer="Packard Bell"; fi
+    if [ "$manufacturer_code" = "PGS" ]; then manufacturer="Princeton Graphic Systems"; fi
+    if [ "$manufacturer_code" = "PHL" ]; then manufacturer="Philips"; fi
+    if [ "$manufacturer_code" = "PNP" ]; then manufacturer="Plug n Play (Microsoft)"; fi
+    if [ "$manufacturer_code" = "REL" ]; then manufacturer="Relisys"; fi
+    if [ "$manufacturer_code" = "SAM" ]; then manufacturer="Samsung"; fi
+    if [ "$manufacturer_code" = "SEC" ]; then manufacturer="Samsung"; fi
+    if [ "$manufacturer_code" = "SHP" ]; then manufacturer="Sharp"; fi
+    if [ "$manufacturer_code" = "SMI" ]; then manufacturer="Smile"; fi
+    if [ "$manufacturer_code" = "SMC" ]; then manufacturer="Samtron"; fi
+    if [ "$manufacturer_code" = "SNI" ]; then manufacturer="Siemens Nixdorf"; fi
+    if [ "$manufacturer_code" = "SNY" ]; then manufacturer="Sony Corporation"; fi
+    if [ "$manufacturer_code" = "SPT" ]; then manufacturer="Sceptre"; fi
+    if [ "$manufacturer_code" = "SRC" ]; then manufacturer="Shamrock Technology"; fi
+    if [ "$manufacturer_code" = "STN" ]; then manufacturer="Samtron"; fi
+    if [ "$manufacturer_code" = "STP" ]; then manufacturer="Sceptre"; fi
+    if [ "$manufacturer_code" = "TAT" ]; then manufacturer="Tatung"; fi
+    if [ "$manufacturer_code" = "TRL" ]; then manufacturer="Royal Information Company"; fi
+    if [ "$manufacturer_code" = "TOS" ]; then manufacturer="Toshiba"; fi
+    if [ "$manufacturer_code" = "TSB" ]; then manufacturer="Toshiba"; fi
+    if [ "$manufacturer_code" = "UNM" ]; then manufacturer="Unisys"; fi
+    if [ "$manufacturer_code" = "VSC" ]; then manufacturer="ViewSonic"; fi
+    if [ "$manufacturer_code" = "WTC" ]; then manufacturer="Wen Technology"; fi
+    if [ "$manufacturer_code" = "ZCM" ]; then manufacturer="Zenith Data Systems"; fi
+    if [ "$manufacturer_code" = "___" ]; then manufacturer="Targa"; fi
+    if [ "$model" = "Color LCD" ] && [ "$manufacturer_code" = "" ]; then manufacturer="Apple"; fi
+
+    size=""
+
+    echo "      <item>" >> $xml_file
+    echo "          <manufacturer>$manufacturer</manufacturer>" >> $xml_file
+    echo "          <model>$model</model>" >> $xml_file
+    echo "          <serial>$serial</serial>" >> $xml_file
+    echo "          <description>$description</description>" >> $xml_file
+    echo "          <manufacture_date>$manufacture_date</manufacture_date>" >> $xml_file
+    echo "          <size>$size</size>" >> $xml_file
+    echo "          <aspect_ratio>$aspect_ratio</aspect_ratio>" >> $xml_file
+    echo "          <interface>$interface</interface>" >> $xml_file
+    echo "      </item>" >> $xml_file
+done
+echo "  </monitor>" >> $xml_file
+
+
 if [ "$debugging" -gt "0" ]; then
     echo "Network Cards Info"
 fi
@@ -318,6 +455,11 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
     fi
 done
 echo "  </network>" >> $xml_file
+
+
+if [ "$debugging" -gt "0" ]; then
+    echo "IP Info"
+fi
 echo "  <ip>" >> $xml_file
 for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | cut -d":" -f2); do
     line=`echo "${line}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
@@ -366,7 +508,6 @@ echo "  </ip>" >> $xml_file
 if [ "$debugging" -gt "0" ]; then
     echo "Processor Info"
 fi
-
 processor_cores=`system_profiler SPHardwareDataType | grep "Total Number of Cores" | awk '{print $5}'`
 processor_logical=`sysctl hw.ncpu | awk '{print $2}'`
 processor_socket=""
@@ -396,7 +537,6 @@ else
     processor_manufacturer="GenuineIntel"
     processor_architecture="x64"
 fi
-
 echo  " <processor>" >> $xml_file
 echo  "     <item>" >> $xml_file
 echo  "         <physical_count>$processor_count</physical_count>" >> $xml_file
@@ -409,8 +549,6 @@ echo  "         <manufacturer>$processor_manufacturer</manufacturer>" >> $xml_fi
 echo  "         <architecture>$processor_architecture</architecture>" >> $xml_file
 echo  "     </item>" >> $xml_file
 echo  " </processor>" >> $xml_file
-
-
 
 
 if [ "$debugging" -gt "0" ]; then
@@ -698,7 +836,6 @@ done
 echo "  </arp>" >> "$xml_file"
 
 
-
 if [ "$debugging" -gt "0" ]; then
     echo "Software Info"
 fi
@@ -788,7 +925,6 @@ done
 echo "  </software>" >> $xml_file
 
 
-
 if [ "$debugging" -gt "0" ]; then
     echo "Software Keys"
 fi
@@ -855,8 +991,6 @@ fi
 
 
 echo "  </software_keys>" >> $xml_file
-
-
 
 
 echo "</system>" >> $xml_file
