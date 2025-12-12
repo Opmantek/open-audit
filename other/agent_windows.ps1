@@ -16,7 +16,7 @@ param (
 )
 
 $url = ''
-$programVersion = "6.0.0"
+$programVersion = "6.0.1"
 $programPath = 'C:\Program Files\Open-AudIT Agent'
 $programReg = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Open-AudIT Agent'
 $agentId = ''
@@ -71,6 +71,9 @@ function Execute-Audit($location_id, $org_id) {
     if ($debug -eq 1) {
         Write-Host "$($command)"
     }
+    $seconds = Get-Random -Minimum 1200 -Maximum 10800  # Random time of 20 min to 3 hours
+    Start-Sleep -Seconds $seconds
+    Write-Host "Paused for $seconds seconds."
     iex "& $command"
 }
 
@@ -649,6 +652,7 @@ if ($post.os_name -like "*2012*") { $post.os_family = "Windows 2012" }
 if ($post.os_name -like "*2016*") { $post.os_family = "Windows 2016" }
 if ($post.os_name -like "*2019*") { $post.os_family = "Windows 2019" }
 if ($post.os_name -like "*2022*") { $post.os_family = "Windows 2022" }
+if ($post.os_name -like "*2025*") { $post.os_family = "Windows 2025" }
 
 $response = Invoke-WebRequest -UseBasicParsing "$($url)/agents/execute" -Method POST -Body ($post | ConvertTo-Json) -ContentType 'application/json'
 if ($debug -eq 1) {
