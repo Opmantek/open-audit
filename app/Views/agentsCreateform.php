@@ -40,6 +40,7 @@ include 'shared/common_functions.php';
                             <?= create_select('data[attributes][action_devices_assigned_to_org]', __('Assign Device to Organisation'), $orgs, $dictionary->attributes->create) ?>
                             <?= create_select('data[attributes][action_audit]', __('Audit the Device'), null, $dictionary->attributes->create) ?>
                             <?= create_select('data[attributes][action_uninstall]', __('Uninstall the Agent'), null, $dictionary->attributes->create) ?>
+                            <?= create_text_field('data[attributes][action_delay]', __('Execute sometime between now and this number of minutes'), $dictionary->attributes->create) ?>
 
                             <br>
                             <div class="row">
@@ -69,6 +70,7 @@ window.onload = function () {
         $("#data\\[attributes\\]\\[action_uninstall\\]").val('n');
         $('#data\\[attributes\\]\\[action_devices_assigned_to_location\\] option[value=""]').text("");
         $('#data\\[attributes\\]\\[action_devices_assigned_to_org\\] option[value=""]').text("");
+        $("#data\\[attributes\\]\\[action_delay\\]").val(120);
     });
 }
 </script>

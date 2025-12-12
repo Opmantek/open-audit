@@ -189,6 +189,7 @@ class Agents extends BaseController
         $agentResponse->actions->org_id = 0;
         $agentResponse->actions->location_id = 0;
         $agentResponse->actions->uninstall = false;
+        $agentResponse->actions->delay = 120;
 
         try {
             $input = json_decode(file_get_contents('php://input'), false, 512, JSON_THROW_ON_ERROR);
@@ -306,6 +307,9 @@ class Agents extends BaseController
                     }
                 }
             }
+        }
+        if (!empty($agents[0]->action_delay)) {
+            $agentResponse->actions->delay = intval($agents[0]->action_delay);
         }
         // If we didn't retrieve any agents, just tell the remote host to audit itself
         // A fallback in case all agent entries are deleted

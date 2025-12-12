@@ -53,6 +53,7 @@ $output_count = 0;
                             <?= read_select('action_devices_assigned_to_org', $resource->action_devices_assigned_to_org, $dictionary->columns->action_devices_assigned_to_org, $update, '', $orgs, $meta->collection) ?>
                             <?= read_select('action_audit', $resource->action_audit, $dictionary->columns->action_audit, $update, '', array(), $meta->collection) ?>
                             <?= read_select('action_uninstall', $resource->action_uninstall, $dictionary->columns->action_uninstall, $update, '', array(), $meta->collection) ?>
+                            <?= read_field('action_delay', $resource->action_delay, $dictionary->columns->action_delay, $update, '', '', '', 'number', $meta->collection) ?>
                         </div>
 
                         <div class="col-md-4">
