@@ -81,6 +81,7 @@ CREATE TABLE `agents` (
   `action_devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
   `action_audit` enum('y','n') NOT NULL DEFAULT 'y',
   `action_uninstall` enum('y','n') NOT NULL DEFAULT 'n',
+  `action_delay` int(10) unsigned DEFAULT 120,
   `actions` mediumtext NOT NULL DEFAULT '[]',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -94,7 +95,7 @@ CREATE TABLE `agents` (
 
 LOCK TABLES `agents` WRITE;
 /*!40000 ALTER TABLE `agents` DISABLE KEYS */;
-INSERT INTO `agents` VALUES (1,'Default Agent',1,'Audit every day.',100,1300,'','','[]','','',NULL,NULL,'y','n','[]','system','2000-01-01 00:00:00');
+INSERT INTO `agents` VALUES (1,'Default Agent',1,'Audit every day.',100,1300,'','','[]','','',NULL,NULL,'y','n',120,'[]','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `agents` ENABLE KEYS */;
 UNLOCK TABLES;
 
