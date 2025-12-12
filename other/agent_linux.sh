@@ -17,6 +17,7 @@ org_id=""
 uninstall="n"
 update="n"
 url=""
+delay=120
 
 # Not setable by user
 programPath="/usr/local/Open-AudIT-Agent"
@@ -44,24 +45,46 @@ lcase ()
     echo "$result"
 }
 
-i=$(($#-1))
-while [ $i -ge 0 ]; do
-    case ${BASH_ARGV[$i]} in
-        "--audit" )
-            audit="y" ;;
-        "--debug" )
-            debug="y" ;;
-        "--help" )
-            help="y" ;;
-        "--install" )
-            install="y" ;;
-        "--uninstall" )
-            uninstall="y" ;;
-        "--url" )
-            url=${BASH_ARGV[$i-1]} ;;
-    esac
-    i=$((i-1))
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --audit)
+      audit="y"
+      shift
+      ;;
+    --debug)
+      debug="y"
+      shift
+      ;;
+    --help)
+      help="y"
+      shift
+      ;;
+    --install)
+      install="y"
+      shift
+      ;;
+    --uninstall)
+      uninstall="y"
+      shift
+      ;;
+    --url)
+      url="$2"
+      shift
+      shift
+      ;;
+    --delay)
+      delay="$2"
+      shift
+      shift
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift
+      ;;
+  esac
 done
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 if [ "$help" = "y" ]; then
     echo ""
@@ -72,7 +95,8 @@ if [ "$help" = "y" ]; then
     echo " --uninstall: Uninstall this agent (default n)."
     echo " --audit: Audit the local computer and submit the result (default n)."
     echo " --help: These options."
-    echo " --url \$url: Hard set a URL to report in to. (default empty)"
+    echo " --url: The URL to use, no trailing slash. EG: http://your_server/open-audit/index.php (default empty)"
+    echo " --delay: A random amount of minutes between 0 and this value, before we execute the assigned action. (default 120)"
     echo ""
     echo "Running from $scriptPath"
     exit 0
@@ -96,6 +120,7 @@ if [ "$debug" = "y" ]; then
     echo "Uninstall: $uninstall"
     echo "Update: $update"
     echo "URL: $url"
+    echo "Delay: $delay"
     echo "----------------------------"
     echo ""
 fi
@@ -105,10 +130,14 @@ execute_audit ()
     location_id="$1"
     org_id="$2"
     debugging="$3"
+    delay=$((0 + $RANDOM % "$4"))
 
     if [ "$debug" = "y" ]; then
+        echo "Sleeping for $delay minutes." > `tty`
         echo "Auditing" > `tty`
     fi
+
+    `sleep "$delay"m`
 
     # Make sure we have a directory
     if [ ! -d "$programPath" ]; then
@@ -122,7 +151,6 @@ execute_audit ()
     if [ "$debug" = "y" ]; then
         echo "Attempting to download audit_linux.sh from ${url}/scripts/linux/download" > `tty`
         echo "And store it in ${programPath}/audit_linux.sh" > `tty`
-        echo "" > `tty`
     fi
 
     test=$(execute_download "$url/scripts/linux/download" "${programPath}/audit_linux.sh")
@@ -143,10 +171,10 @@ execute_audit ()
     if [ "$debugging" = "y" ]; then
         command="$command debugging=5"
     fi
-    if [ "$location_id" ]; then
+    if [ "$location_id" ] && [ "$location_id" -gt 0 ]; then
         command="$command location_id=$location_id"
     fi
-    if [ "$org_id" ]; then
+    if [ "$org_id" ] && [ "$org_id" -gt 0 ]; then
         command="$command org_id=$org_id"
     fi
     if [ "$debug" = "y" ]; then
@@ -569,9 +597,9 @@ fi
 
 if [ "$debug" = "y" ]; then
     if [ "$agentId" ]; then
-        echo "Sending to: ${url}agents/${agentId}/execute"
+        echo "Sending to: ${url}/agents/${agentId}/execute"
     else
-        echo "Sending to: ${url}agents/execute"
+        echo "Sending to: ${url}/agents/execute"
     fi
     echo ""
     echo "$postDetails"
@@ -580,9 +608,9 @@ if [ "$debug" = "y" ]; then
 fi
 
 if [ "$agentId" ]; then
-    response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "${url}agents/${agentId}/execute")
+    response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "${url}/agents/${agentId}/execute")
 else
-    response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "${url}agents/execute")
+    response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "${url}/agents/execute")
 fi
 
 if [ "$debug" = "y" ]; then
@@ -596,8 +624,7 @@ if [ "$debug" = "y" ]; then
     echo "Processing response"
 fi
 
-for line in $(echo $response); do
-
+for line in $response; do
     # Audit
     if [ $(echo "$line" | grep "\"audit\": true") ]; then
         audit="y"
@@ -641,6 +668,7 @@ for line in $(echo $response); do
     fi
 done
 
+
 if [ "$debug" = "y" ]; then
     echo "Completed processing response"
     echo "----------------"
@@ -657,7 +685,7 @@ if [ "$update" = "y" ]; then
 fi
 
 if [ "$audit" = "y" ]; then
-    test=$(execute_audit "$location_id" "$org_id" "")
+    test=$(execute_audit "$location_id" "$org_id" "$debug" "$delay")
 fi
 
 if [ "$uninstall" = "y" ]; then
